@@ -4,32 +4,81 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Convention.Tests;
 
-internal static class TAuditTruthWalker
+internal static partial class TAuditTruthWalker
 {
     private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
         languageVersion: LanguageVersion.Preview,
         documentationMode: DocumentationMode.None,
         kind: SourceCodeKind.Regular);
 
+    private static readonly object TAuditGate = new();
+
+    private static List<SyntaxNode> TAuditRoots = [];
+
+    private static readonly char[] TAuditTypeBreaks = ['<', '>', ',', '.', '[', ']', ' ', '(', ')'];
+
     private sealed record TAuditTruthField(
         string TFieldName,
         string TFieldType,
         string TFieldPath,
-        int TFieldLine);
+        int TFieldLine,
+        bool TFieldShared);
 
-    public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> sourcePaths)
+    public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> sourcePaths, IEnumerable<string> controls)
     {
-        List<TViolation> violations = [];
-        Dictionary<string, List<ClassDeclarationSyntax>> parts = new(StringComparer.Ordinal);
+        lock (TAuditGate)
+        {
+            List<TViolation> violations = [];
+            TAuditControlNames = new HashSet<string>(controls, StringComparer.Ordinal);
+            Dictionary<string, List<TypeDeclarationSyntax>> parts = TAuditPartRead(sourcePaths);
+            foreach (SyntaxNode root in TAuditRoots)
+            {
+                TAuditMutationScan(root, violations);
+                TAuditShapeScan(root, violations);
+            }
+
+            foreach (List<TypeDeclarationSyntax> type in parts.Values)
+            {
+                TAuditBaseCheck(type, violations);
+                TAuditLocalScan(type, violations);
+                TAuditSequenceScan(type, violations);
+                foreach (TAuditTruthField field in TAuditFieldRead(type))
+                {
+                    TAuditFieldCheck(field, type, violations);
+                }
+            }
+
+            return violations;
+        }
+    }
+
+    public static IReadOnlySet<string> TAuditReaderRead(IEnumerable<string> sourcePaths)
+    {
+        lock (TAuditGate)
+        {
+            TAuditPartRead(sourcePaths);
+            return new HashSet<string>(TAuditReaderNames.Concat(TAuditRelayNames), StringComparer.Ordinal);
+        }
+    }
+
+    private static Dictionary<string, List<TypeDeclarationSyntax>> TAuditPartRead(IEnumerable<string> sourcePaths)
+    {
+        Dictionary<string, List<TypeDeclarationSyntax>> parts = new(StringComparer.Ordinal);
+        TAuditRoots = [];
         foreach (string path in sourcePaths)
         {
             SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path);
             SyntaxNode root = tree.GetRoot();
-            TAuditMutationScan(root, violations);
-            foreach (ClassDeclarationSyntax type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
+            TAuditRoots.Add(root);
+            foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
             {
+                if (type.Ancestors().OfType<TypeDeclarationSyntax>().Any())
+                {
+                    continue;
+                }
+
                 string key = type.Identifier.ValueText;
-                if (!parts.TryGetValue(key, out List<ClassDeclarationSyntax>? list))
+                if (!parts.TryGetValue(key, out List<TypeDeclarationSyntax>? list))
                 {
                     list = [];
                     parts[key] = list;
@@ -39,65 +88,131 @@ internal static class TAuditTruthWalker
             }
         }
 
-        foreach (List<ClassDeclarationSyntax> type in parts.Values)
-        {
-            foreach (TAuditTruthField field in TAuditFieldRead(type))
-            {
-                TAuditFieldCheck(field, type, violations);
-            }
-        }
-
-        return violations;
+        TAuditRelayNames = TAuditRelayRead(parts.Values.SelectMany(type => type).ToList());
+        TAuditSendNames = TAuditSendResolve(parts.Values.SelectMany(type => type).ToList());
+        return parts;
     }
 
-    private static IEnumerable<TAuditTruthField> TAuditFieldRead(IReadOnlyList<ClassDeclarationSyntax> type)
+    private static IEnumerable<TAuditTruthField> TAuditFieldRead(IReadOnlyList<TypeDeclarationSyntax> type)
     {
-        foreach (ClassDeclarationSyntax part in type)
+        foreach (TypeDeclarationSyntax part in type.SelectMany(part =>
+                     part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>()))
         {
             foreach (FieldDeclarationSyntax field in part.Members.OfType<FieldDeclarationSyntax>())
             {
                 bool fixture = field.Modifiers.Any(modifier =>
                     modifier.IsKind(SyntaxKind.ReadOnlyKeyword)
-                    || modifier.IsKind(SyntaxKind.ConstKeyword)
-                    || modifier.IsKind(SyntaxKind.StaticKeyword));
-                if (fixture)
-                {
-                    continue;
-                }
-
-                string typeName = field.Declaration.Type.ToString().TrimEnd('?');
+                    || modifier.IsKind(SyntaxKind.ConstKeyword));
+                string typeName = TAuditTypeRead(field.Declaration.Type);
                 foreach (VariableDeclaratorSyntax variable in field.Declaration.Variables)
                 {
                     string name = variable.Identifier.ValueText;
-                    bool wired = variable.Initializer?.Value is PostfixUnaryExpressionSyntax
-                    {
-                        RawKind: (int)SyntaxKind.SuppressNullableWarningExpression,
-                        Operand: LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NullLiteralExpression }
-                    };
-                    if (!wired && name.StartsWith(TAuditTruthSetting.TAuditFieldPrefix, StringComparison.Ordinal))
+                    bool wired = TAuditWiredCheck(variable.Initializer?.Value);
+                    if (!wired && (!fixture || TAuditFillCheck(name, type)))
                     {
                         yield return new TAuditTruthField(
-                            name, typeName, field.SyntaxTree.FilePath, TAuditLineRead(variable));
+                            name, typeName, field.SyntaxTree.FilePath, TAuditLineRead(variable), false);
                     }
+                }
+            }
+
+            foreach (ParameterSyntax parameter in part.ParameterList?.Parameters ?? [])
+            {
+                if (parameter.Type is not null)
+                {
+                    yield return new TAuditTruthField(
+                        parameter.Identifier.ValueText,
+                        TAuditTypeRead(parameter.Type),
+                        parameter.SyntaxTree.FilePath,
+                        TAuditLineRead(parameter),
+                        true);
+                }
+            }
+
+            foreach (PropertyDeclarationSyntax property in part.Members.OfType<PropertyDeclarationSyntax>())
+            {
+                bool settable = property.AccessorList?.Accessors.Any(accessor =>
+                    accessor.IsKind(SyntaxKind.SetAccessorDeclaration)
+                    || accessor.IsKind(SyntaxKind.InitAccessorDeclaration)) == true;
+                string name = property.Identifier.ValueText;
+                if (settable && !TAuditWiredCheck(property.Initializer?.Value))
+                {
+                    yield return new TAuditTruthField(
+                        name,
+                        TAuditTypeRead(property.Type),
+                        property.SyntaxTree.FilePath,
+                        TAuditLineRead(property),
+                        true);
                 }
             }
         }
     }
 
+    private static string TAuditTypeRead(TypeSyntax type)
+    {
+        return type is NullableTypeSyntax nullable ? nullable.ElementType.ToString() : type.ToString();
+    }
+
+    private static bool TAuditFillCheck(string name, IReadOnlyList<TypeDeclarationSyntax> type)
+    {
+        return type.SelectMany(part => part.DescendantNodes().OfType<IdentifierNameSyntax>())
+            .Where(identifier => string.Equals(identifier.Identifier.ValueText, name, StringComparison.Ordinal))
+            .Select(TAuditReferenceRead)
+            .Any(reference => TAuditWriteCheck(reference, out _));
+    }
+
+    private static bool TAuditWiredCheck(ExpressionSyntax? value)
+    {
+        return value is PostfixUnaryExpressionSyntax
+        {
+            RawKind: (int)SyntaxKind.SuppressNullableWarningExpression,
+            Operand: LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NullLiteralExpression }
+        };
+    }
+
     private static void TAuditFieldCheck(
-        TAuditTruthField field, IReadOnlyList<ClassDeclarationSyntax> type, List<TViolation> violations)
+        TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)
     {
         bool handle = TAuditTruthSetting.TAuditTruthHandles.Contains(field.TFieldType, StringComparer.Ordinal);
+        if (!handle && field.TFieldType.Split(TAuditTypeBreaks, StringSplitOptions.RemoveEmptyEntries)
+                .Any(TAuditLogicCheck))
+        {
+            violations.Add(new TViolation(
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", $"holds a {field.TFieldType}"));
+        }
+        else if (field.TFieldName.EndsWith(TAuditTruthSetting.TAuditStateSuffix, StringComparison.Ordinal))
+        {
+            violations.Add(new TViolation(
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "names a state the engine owns"));
+        }
+        else if (string.Equals(field.TFieldType, "object", StringComparison.Ordinal))
+        {
+            violations.Add(new TViolation(
+                field.TFieldPath, field.TFieldLine, field.TFieldName, "Mirror", "holds an untyped value"));
+        }
+
         HashSet<MemberDeclarationSyntax> scopes = [];
+        HashSet<MemberDeclarationSyntax> toggles = [];
+        HashSet<string> writers = TAuditWriterRead(field, type);
         SyntaxNode? engineWrite = null;
         SyntaxNode? plainWrite = null;
 
-        foreach (ClassDeclarationSyntax part in type)
+        IEnumerable<SyntaxNode> homes = field.TFieldShared ? type.Concat<SyntaxNode>(TAuditRoots) : type;
+        foreach (SyntaxNode part in homes)
         {
             foreach (IdentifierNameSyntax identifier in part.DescendantNodes().OfType<IdentifierNameSyntax>())
             {
-                if (!string.Equals(identifier.Identifier.ValueText, field.TFieldName, StringComparison.Ordinal))
+                string name = identifier.Identifier.ValueText;
+                if (!string.Equals(name, field.TFieldName, StringComparison.Ordinal))
                 {
+                    if (!handle && part is not CompilationUnitSyntax && writers.Contains(name)
+                        && identifier.Parent is InvocationExpressionSyntax
+                        && identifier.FirstAncestorOrSelf<MemberDeclarationSyntax>() is { } caller
+                        && toggles.Add(caller))
+                    {
+                        TAuditToggleCheck(field, caller, writers, violations);
+                    }
+
                     continue;
                 }
 
@@ -110,7 +225,27 @@ internal static class TAuditTruthWalker
 
                 if (TAuditWriteCheck(reference, out ExpressionSyntax? value))
                 {
-                    switch (TAuditWriterResolve(value, scope))
+                    if (!handle && part is not CompilationUnitSyntax && toggles.Add(scope))
+                    {
+                        TAuditToggleCheck(field, scope, writers, violations);
+                    }
+
+                    if (reference.Parent is AssignmentExpressionSyntax
+                        {
+                            RawKind: (int)SyntaxKind.CoalesceAssignmentExpression
+                        } cache
+                        && TAuditRequestCheck(cache.Right))
+                    {
+                        violations.Add(new TViolation(
+                            reference.SyntaxTree.FilePath,
+                            TAuditLineRead(reference),
+                            field.TFieldName,
+                            "Mirror",
+                            "caches a request"));
+                    }
+
+                    bool emptied = value is null && reference.Parent is MemberAccessExpressionSyntax;
+                    switch (emptied ? "clear" : TAuditWriterResolve(value, scope))
                     {
                         case "engine":
                             engineWrite ??= reference;
@@ -123,7 +258,7 @@ internal static class TAuditTruthWalker
                     continue;
                 }
 
-                if (handle || !scopes.Add(scope))
+                if (handle || part is CompilationUnitSyntax || !scopes.Add(scope))
                 {
                     continue;
                 }
@@ -211,93 +346,6 @@ internal static class TAuditTruthWalker
         return tainted;
     }
 
-    private static (string TViolationKind, string TViolationReason)? TAuditSinkRead(SyntaxNode reference)
-    {
-        if (reference.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == reference
-            || reference.Parent is ConditionalAccessExpressionSyntax { Expression: var target } && target == reference)
-        {
-            return null;
-        }
-
-        foreach (SyntaxNode ancestor in reference.Ancestors())
-        {
-            switch (ancestor)
-            {
-                case MemberDeclarationSyntax:
-                    return null;
-                case ArgumentSyntax { Parent.Parent: ExpressionSyntax call }
-                    when TAuditCallRead(call) is string callee:
-                    return ("Argument", $"passed to {callee}");
-                case InitializerExpressionSyntax { Parent: WithExpressionSyntax }:
-                    return ("Argument", "written into a record copy");
-                case InitializerExpressionSyntax { Parent: BaseObjectCreationExpressionSyntax creation }
-                    when TAuditCallRead(creation) is string built:
-                    return ("Argument", $"written into new {built}");
-                case IfStatementSyntax branch
-                    when branch.Condition.Span.Contains(reference.Span) && TAuditGuardCheck(branch):
-                    return ("Guard", "decides a request in an if");
-                case ConditionalExpressionSyntax choice
-                    when choice.Condition.Span.Contains(reference.Span)
-                         && (TAuditRequestCheck(choice.WhenTrue) || TAuditRequestCheck(choice.WhenFalse)):
-                    return ("Guard", "decides a request in a ternary");
-                case SwitchStatementSyntax select
-                    when select.Expression.Span.Contains(reference.Span) && TAuditRequestCheck(select):
-                    return ("Guard", "decides a request in a switch");
-                case SwitchExpressionSyntax arms
-                    when arms.GoverningExpression.Span.Contains(reference.Span) && TAuditRequestCheck(arms):
-                    return ("Guard", "decides a request in a switch expression");
-            }
-        }
-
-        return null;
-    }
-
-    private static bool TAuditGuardCheck(IfStatementSyntax branch)
-    {
-        if (TAuditRequestCheck(branch.Statement)
-            || (branch.Else is not null && TAuditRequestCheck(branch.Else)))
-        {
-            return true;
-        }
-
-        bool jump = branch.Statement.DescendantNodesAndSelf().Any(node =>
-            node is ReturnStatementSyntax or ThrowStatementSyntax or ContinueStatementSyntax or BreakStatementSyntax);
-        MemberDeclarationSyntax? scope = branch.FirstAncestorOrSelf<MemberDeclarationSyntax>();
-        return jump && scope is not null && TAuditRequestCheck(scope);
-    }
-
-    private static bool TAuditRequestCheck(SyntaxNode node)
-    {
-        return node.DescendantNodesAndSelf().Any(child =>
-            child is ExpressionSyntax call
-            && (call is InvocationExpressionSyntax || call is BaseObjectCreationExpressionSyntax)
-            && TAuditCallRead(call) is not null);
-    }
-
-    private static string? TAuditCallRead(ExpressionSyntax call)
-    {
-        string? name = call switch
-        {
-            InvocationExpressionSyntax invocation => TAuditNameRead(invocation.Expression),
-            ObjectCreationExpressionSyntax creation => TAuditNameRead(creation.Type),
-            _ => null
-        };
-        return name is not null && TAuditLogicCheck(name) ? name : null;
-    }
-
-    private static string? TAuditNameRead(ExpressionSyntax expression)
-    {
-        return expression switch
-        {
-            SimpleNameSyntax simple => simple.Identifier.ValueText,
-            MemberAccessExpressionSyntax access => access.Name.Identifier.ValueText,
-            MemberBindingExpressionSyntax binding => binding.Name.Identifier.ValueText,
-            QualifiedNameSyntax qualified => qualified.Right.Identifier.ValueText,
-            NullableTypeSyntax nullable => TAuditNameRead(nullable.ElementType),
-            _ => null
-        };
-    }
-
     private static string TAuditWriterResolve(ExpressionSyntax? value, MemberDeclarationSyntax scope)
     {
         if (value is null)
@@ -312,8 +360,17 @@ internal static class TAuditTruthWalker
             return "clear";
         }
 
-        if (value.DescendantNodesAndSelf().OfType<SimpleNameSyntax>()
-            .Any(name => TAuditLogicCheck(name.Identifier.ValueText)))
+        bool asked = value.DescendantNodesAndSelf().Any(node => node switch
+        {
+            MemberAccessExpressionSyntax access => TAuditLogicCheck(access.Name.Identifier.ValueText),
+            MemberBindingExpressionSyntax binding => TAuditLogicCheck(binding.Name.Identifier.ValueText),
+            InvocationExpressionSyntax call
+                => TAuditCallRead(call) is not null
+                   || (TAuditNameRead(call.Expression) is string callee && TAuditReaderNames.Contains(callee)),
+            BaseObjectCreationExpressionSyntax creation => TAuditCallRead(creation) is not null,
+            _ => false
+        });
+        if (asked)
         {
             return "engine";
         }
@@ -348,30 +405,12 @@ internal static class TAuditTruthWalker
         return false;
     }
 
-    private static void TAuditMutationScan(SyntaxNode root, List<TViolation> violations)
-    {
-        foreach (AssignmentExpressionSyntax assignment in root.DescendantNodes().OfType<AssignmentExpressionSyntax>())
-        {
-            if (!assignment.IsKind(SyntaxKind.SimpleAssignmentExpression)
-                || assignment.Parent is InitializerExpressionSyntax
-                || assignment.Left is not MemberAccessExpressionSyntax target
-                || !TAuditLogicCheck(target.Name.Identifier.ValueText))
-            {
-                continue;
-            }
-
-            violations.Add(new TViolation(
-                root.SyntaxTree.FilePath,
-                TAuditLineRead(assignment),
-                target.ToString(),
-                "Mutation",
-                "assigns a logic member from the shell"));
-        }
-    }
-
     private static SyntaxNode TAuditReferenceRead(IdentifierNameSyntax identifier)
     {
-        return identifier.Parent is MemberAccessExpressionSyntax { Expression: ThisExpressionSyntax } access
+        return identifier.Parent is MemberAccessExpressionSyntax
+               {
+                   Expression: ThisExpressionSyntax or IdentifierNameSyntax
+               } access
                && access.Name == identifier
             ? access
             : identifier;
@@ -384,6 +423,16 @@ internal static class TAuditTruthWalker
         {
             case AssignmentExpressionSyntax assignment when assignment.Left == reference:
                 value = assignment.IsKind(SyntaxKind.SimpleAssignmentExpression) ? assignment.Right : null;
+                return true;
+            case ElementAccessExpressionSyntax { Parent: AssignmentExpressionSyntax slot } element
+                when element.Expression == reference && slot.Left == element:
+                value = slot.IsKind(SyntaxKind.SimpleAssignmentExpression) ? slot.Right : null;
+                return true;
+            case MemberAccessExpressionSyntax { Parent: InvocationExpressionSyntax fill } access
+                when access.Expression == reference
+                     && TAuditTruthSetting.TAuditFillVerbs.Contains(
+                         access.Name.Identifier.ValueText, StringComparer.Ordinal):
+                value = fill.ArgumentList.Arguments.LastOrDefault()?.Expression;
                 return true;
             case PrefixUnaryExpressionSyntax or PostfixUnaryExpressionSyntax:
                 return reference.Parent.IsKind(SyntaxKind.PreIncrementExpression)

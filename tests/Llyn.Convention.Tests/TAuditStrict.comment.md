@@ -6,6 +6,7 @@ The strict shell rules, ahead of the split into a veneer and a deportment.
 A veneer class holds no state and never branches, it only shows and calls.
 A deportment class may hold logic for the UI itself but never computes over logic values.
 While `TAuditStrictEnforced` is false every fact passes and reports as a warning.
+Enforced, a kind fails when it counts above its ceiling.
 
 ## `private static readonly Lazy<(IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers)>`
 
@@ -32,13 +33,32 @@ A veneer member containing a branch, a loop, an operator or a pattern.
 A shell line that compares, computes or queries over a logic value.
 A bare logic verdict deciding a branch is asking the engine and is not treatment.
 
+## `public void AuditStrict_ShellLocals_CarryNoLogic()`
+
+A shell line that computes over a carried logic value, or over the input of a control.
+The value reached the line one hop from logic, so the treat rule alone did not see it.
+
+## `public void AuditStrict_ShellMarkup_ReachNoLogic()`
+
+A markup line that maps a logic namespace, reads a logic constant, or binds through a logic member.
+The markup asked logic directly instead of showing what the shell was given.
+
+## `private static readonly string[] TAuditStrictKinds = ["Storage", "Flow", "Treat", "Reach", "Taint"];`
+
+The hit kinds in report order.
+
+## `public void AuditStrict_Ceiling_MatchesHits()`
+
+Every ceiling equals its count, so a ceiling left above the count is stale.
+This holds even when the strict rules are not enforced.
+
 ## `private void TAuditStrictCheck(string kind, string summary)`
 
-Prints the count and the report path, then asserts only when enforced.
+Prints the count, the ceiling and the report path, then asserts the count under the ceiling when enforced.
 
 ## `private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers) TAuditStrictRead()`
 
-Enumerates the shell sources with Git and runs the walker once, with paths made repo-relative.
+Enumerates the shell sources and markup with Git and runs both walkers once, with paths made repo-relative.
 
 ## `private static string TAuditReportSave()`
 

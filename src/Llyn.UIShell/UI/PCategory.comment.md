@@ -11,15 +11,15 @@ A pack cannot have thought of everything a user will want to write down.
 So the field still takes anything typed.
 What is typed anew joins the menu, so the pack's list is a starting point rather than a ceiling.
 
-The values are held apart from the rows shown.
-The rows are what the field's text has narrowed the values to, rebuilt on every change.
+The presets are rows read from the engine and held apart from the rows shown.
+The rows shown are what the field's text has narrowed the presets to, rebuilt on every change.
 That is what makes the field an editable dropdown rather than a box beside a list.
 
 ## Inline notes
 
 ### `internal void PCategoryLoad()`
 
-Reads the presets the chosen language declares and makes them the menu's values.
+Reads the presets the chosen language declares and makes them the menu's rows.
 It runs whenever that language changes, because the parts of speech are the language's.
 An entry moved from English to Japanese is offered Japanese's presets from that moment.
 
@@ -32,12 +32,9 @@ The presets are a convenience, and losing them is not a reason to refuse the typ
 
 A part of speech no preset names is declared as one, under the chosen language.
 It is what makes the next entry in that language offer what this one taught it.
-A name already held is returned as it stands, so picking from the menu declares nothing new.
+The engine returns a name already held as it stands, so picking from the menu declares nothing new.
 A write that fails returns null and leaves the chip standing, because the entry is what the user was writing.
-
-### `private LSpeechValue? PCategoryFind(string name)`
-
-The held value whose name matches, trimmed and without case, or null.
+The presets are read again after the write, so the menu offers what was just declared.
 
 ### `private void PCategoryUpdate()`
 

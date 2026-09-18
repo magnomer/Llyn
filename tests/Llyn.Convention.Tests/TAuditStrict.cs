@@ -11,6 +11,8 @@ public sealed class TAuditStrict
 
     private static readonly Lazy<string> TAuditStrictWritten = new(TAuditReportSave);
 
+    private static readonly string[] TAuditStrictKinds = ["Storage", "Flow", "Treat", "Reach", "Taint"];
+
     private readonly ITestOutputHelper _tAuditOutput;
 
     public TAuditStrict(ITestOutputHelper output)
@@ -36,17 +38,50 @@ public sealed class TAuditStrict
         TAuditStrictCheck("Treat", "shell line(s) compute over logic values");
     }
 
+    [Fact]
+    public void AuditStrict_ShellMarkup_ReachNoLogic()
+    {
+        TAuditStrictCheck("Reach", "markup line(s) reach into logic");
+    }
+
+    [Fact]
+    public void AuditStrict_ShellLocals_CarryNoLogic()
+    {
+        TAuditStrictCheck("Taint", "shell line(s) compute over a carried logic value or control text");
+    }
+
+    [Fact]
+    public void AuditStrict_Ceiling_MatchesHits()
+    {
+        List<string> stale = [];
+        foreach ((string kind, int ceiling) in TAuditStrictSetting.TAuditStrictCeiling)
+        {
+            int count = TAuditStrictHits.Value.TAuditHits.Count(hit =>
+                string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
+            if (count < ceiling)
+            {
+                stale.Add($"  {kind}: {count} hit(s), ceiling {ceiling}");
+            }
+        }
+
+        Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITSTRICT",
+            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+    }
+
     private void TAuditStrictCheck(string kind, string summary)
     {
         List<TViolation> hits = TAuditStrictHits.Value.TAuditHits
             .Where(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal))
             .ToList();
         string report = TAuditStrictWritten.Value;
-        _tAuditOutput.WriteLine($"AUDITSTRICT {kind}: {hits.Count} {summary}. Report: {report}");
+        int ceiling = TAuditStrictSetting.TAuditStrictCeiling.GetValueOrDefault(kind);
+        _tAuditOutput.WriteLine($"AUDITSTRICT {kind}: {hits.Count} {summary}, ceiling {ceiling}. Report: {report}");
 
-        Assert.True(!TAuditStrictSetting.TAuditStrictEnforced || hits.Count == 0, TAuditConvention.TAuditReportFormat(
+        bool held = !TAuditStrictSetting.TAuditStrictEnforced || hits.Count <= ceiling;
+        Assert.True(held, TAuditConvention.TAuditReportFormat(
             "AUDITSTRICT",
-            $"{hits.Count} {summary}. See {report}"));
+            $"{hits.Count} {summary}, above the ceiling of {ceiling}. See {report}"));
     }
 
     private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers) TAuditStrictRead()
@@ -60,7 +95,19 @@ public sealed class TAuditStrict
             TAuditNameSetting.TAuditExcludedPrefixes,
             []);
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
+        TAuditScope markup = new(
+            [],
+            TAuditStrictSetting.TAuditReachInclude,
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            []);
+        IReadOnlyList<string> markups = TAuditSource.TAuditFileRead(repoRoot, markup);
+        IReadOnlySet<string> readers = TAuditTruthWalker.TAuditReaderRead(sources);
+        HashSet<string> controls = new(TAuditReachWalker.TAuditControlRead(markups), StringComparer.Ordinal);
         IReadOnlyList<TViolation> hits = TAuditStrictWalker.TAuditRun(sources, out List<string> veneers)
+            .Concat(TAuditReachWalker.TAuditRun(markups))
+            .Concat(TAuditTaintWalker.TAuditRun(sources, readers, controls))
             .Select(hit => hit with
             {
                 TViolationPath = Path.GetRelativePath(repoRoot, hit.TViolationPath).Replace('\\', '/')
@@ -86,7 +133,7 @@ public sealed class TAuditStrict
         text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
         text.AppendLine($"- Enforced: {TAuditStrictSetting.TAuditStrictEnforced}");
         text.AppendLine($"- Veneer classes: {veneers.Count}");
-        foreach (string kind in new[] { "Storage", "Flow", "Treat" })
+        foreach (string kind in TAuditStrictKinds)
         {
             int count = hits.Count(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
             text.AppendLine($"- {kind}: {count}");
@@ -106,7 +153,7 @@ public sealed class TAuditStrict
             text.AppendLine($"| {veneer} | {storage} | {flow} | {treat} |");
         }
 
-        foreach (string kind in new[] { "Storage", "Flow", "Treat" })
+        foreach (string kind in TAuditStrictKinds)
         {
             text.AppendLine();
             text.AppendLine($"## {kind}");

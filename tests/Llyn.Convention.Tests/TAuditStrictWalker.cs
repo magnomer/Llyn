@@ -49,6 +49,7 @@ internal static class TAuditStrictWalker
             SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path);
             SyntaxNode root = tree.GetRoot();
             TAuditTreatScan(root, violations);
+            TAuditGlyphScan(root, violations);
             foreach (ClassDeclarationSyntax type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
                 string key = type.Identifier.ValueText;
@@ -167,7 +168,7 @@ internal static class TAuditStrictWalker
 
     private static void TAuditTreatScan(SyntaxNode root, List<TViolation> violations)
     {
-        HashSet<int> seen = [];
+        HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (SyntaxNode node in root.DescendantNodes())
         {
             string? reason = node switch
@@ -185,6 +186,12 @@ internal static class TAuditStrictWalker
                          && (TAuditDataCheck(access.Expression)
                              || query.ArgumentList.Arguments.Any(argument => TAuditDataCheck(argument)))
                     => $"logic value queried by {access.Name.Identifier.ValueText}",
+                CastExpressionSyntax cast when TAuditDataCheck(cast.Expression)
+                    => $"logic value cast to {cast.Type}",
+                TypeOfExpressionSyntax reflected when TAuditDataCheck(reflected.Type)
+                    => "logic type taken by typeof",
+                AttributeArgumentSyntax argument when TAuditDataCheck(argument.Expression)
+                    => "logic value in an attribute",
                 IfStatementSyntax branch when TAuditConditionCheck(branch.Condition)
                     => "logic value decides an if",
                 ConditionalExpressionSyntax choice when TAuditConditionCheck(choice.Condition)
@@ -202,7 +209,7 @@ internal static class TAuditStrictWalker
             }
 
             int line = TAuditLineRead(node);
-            if (seen.Add(line))
+            if (seen.Add($"{line}:{reason}"))
             {
                 string excerpt = node.ToString().Split('\n')[0].Trim();
                 violations.Add(new TViolation(root.SyntaxTree.FilePath, line, excerpt, "Treat", reason));
@@ -251,6 +258,7 @@ internal static class TAuditStrictWalker
                 => access.Name.Identifier.ValueText,
             InvocationExpressionSyntax { Expression: IdentifierNameSyntax callee } => callee.Identifier.ValueText,
             MemberAccessExpressionSyntax access => access.Name.Identifier.ValueText,
+            IdentifierNameSyntax bare => bare.Identifier.ValueText,
             _ => null
         };
         return name is not null && TAuditLogicCheck(name);
@@ -281,10 +289,8 @@ internal static class TAuditStrictWalker
         {
             bool logic = child switch
             {
-                MemberAccessExpressionSyntax access => TAuditLogicCheck(access.Name.Identifier.ValueText),
+                IdentifierNameSyntax name => TAuditLogicCheck(name.Identifier.ValueText),
                 MemberBindingExpressionSyntax binding => TAuditLogicCheck(binding.Name.Identifier.ValueText),
-                InvocationExpressionSyntax { Expression: IdentifierNameSyntax callee }
-                    => TAuditLogicCheck(callee.Identifier.ValueText),
                 _ => false
             };
             if (logic)
@@ -294,6 +300,24 @@ internal static class TAuditStrictWalker
         }
 
         return false;
+    }
+
+    private static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)
+    {
+        foreach (SyntaxToken token in root.DescendantTokens())
+        {
+            if (!token.IsKind(SyntaxKind.IdentifierToken) || token.ValueText.All(char.IsAscii))
+            {
+                continue;
+            }
+
+            violations.Add(new TViolation(
+                root.SyntaxTree.FilePath,
+                TAuditLineRead(token.Parent ?? root),
+                token.ValueText,
+                "Treat",
+                "identifier carries a non-ASCII glyph"));
+        }
     }
 
     private static bool TAuditWiredCheck(VariableDeclaratorSyntax variable)

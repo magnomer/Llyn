@@ -8,12 +8,26 @@ No script writes this file.
 ## `public const bool TAuditStrictEnforced = false;`
 
 False makes every strict fact a warning that passes.
-Flip it once the shell is split and the counts are zero.
+True fails a fact when a kind counts above its ceiling.
 
 ## `public const string TAuditStrictReport = "temp/audit/Truth-{0}.md";`
 
 Where the report lands, with the version in the name.
 `temp` is ignored by Git, so a run never dirties the tree.
+
+## `public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling`
+
+The hit count each kind may reach.
+A count above fails the fact, a ceiling above the count is stale and fails too.
+Lower a ceiling when the shell sheds a hit, never raise one to admit a new one.
+
+## `public static readonly string[] TAuditReachInclude`
+
+The `git ls-files` patterns of the shell markup.
+
+## `public static readonly string[] TAuditReachNamespaces`
+
+Namespaces a markup file may not map, since mapping one lets a binding reach logic.
 
 ## `public static readonly string[] TAuditVeneerBases`
 

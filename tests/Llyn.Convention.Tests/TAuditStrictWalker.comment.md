@@ -30,7 +30,7 @@ One hit per veneer member, naming each flow kind found in it.
 
 ## `private static void TAuditTreatScan(SyntaxNode root, List<TViolation> violations)`
 
-One hit per line where a logic value is an operand, a query source, or a condition.
+One hit per line and reason where a logic value is an operand, query source, cast, `typeof`, attribute or condition.
 Null checks, coalescing and the logical connectives are not treatment.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
@@ -39,7 +39,7 @@ True when the condition treats a logic value, and false for a null check or a ba
 
 ## `private static bool TAuditVerdictCheck(ExpressionSyntax condition)`
 
-True when the condition, once unwrapped from parentheses and negation, is one logic call or member.
+True when the condition, once unwrapped from parentheses and negation, is one logic call, member or name.
 Asking the engine a question is not treating its data.
 
 ## `private static bool TAuditPatternCheck(PatternSyntax pattern)`
@@ -52,7 +52,13 @@ True for the `null` or `default` literal.
 
 ## `private static bool TAuditDataCheck(SyntaxNode node)`
 
-True when the node contains a logic member access or a logic call.
+True when the node contains a logic name, whether bare, as a member access or as a call.
+A bare name covers a value brought in by `using static`.
+
+## `private static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)`
+
+One hit per identifier holding a character outside ASCII.
+A look-alike glyph would let a name pass every prefix rule while reading as another.
 
 ## `private static bool TAuditWiredCheck(VariableDeclaratorSyntax variable)`
 

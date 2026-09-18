@@ -2,7 +2,7 @@
 
 ## Generation
 
-AUDITNAMES GENERATION 8.
+AUDITNAMES GENERATION 9.
 
 A generation is not a revision count.
 It names functionality, not edits.
@@ -28,6 +28,9 @@ Generation 8 checks missing prefix, component count, base registration, and verb
 It exempts descriptive test methods under an all-or-nothing test-prefix consistency gate.
 It audits a generated name at the declaration it is built from.
 It clears a name only through a scoped row of the exempt block.
+
+Generation 9 changes nothing the name audit reports.
+The number rises with the custody and strict audits, which share it.
 It does not audit the tooling's own files, and sources reach it through a `TAuditScope`.
 What says a specimen lies outside the audit lives in `TAuditNameFilter.cs`.
 

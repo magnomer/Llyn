@@ -2,9 +2,31 @@ namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
-    public const int TAuditGeneration = 8;
-    public const bool TAuditStrictEnforced = false;
+    public const int TAuditGeneration = 9;
+    public const bool TAuditStrictEnforced = true;
     public const string TAuditStrictReport = "temp/audit/Truth-{0}.md";
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
+    {
+        ["Storage"] = 131,
+        ["Flow"] = 953,
+        ["Treat"] = 455,
+        ["Reach"] = 64,
+        ["Taint"] = 437,
+    };
+
+    public static readonly string[] TAuditReachInclude =
+    [
+        "src/Llyn.UIShell/*.xaml",
+    ];
+
+    public static readonly string[] TAuditReachNamespaces =
+    [
+        "Llyn.Core",
+        "Llyn.ShellEngine",
+        "Llyn.Infrastructure",
+    ];
+
 
     public static readonly string[] TAuditVeneerBases =
     [

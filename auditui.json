@@ -1,5 +1,5 @@
 {
-  "generation": 8,
+  "generation": 9,
   "project": "Llyn",
   "test": {
     "project": "tests/Llyn.Convention.Tests",
@@ -11,10 +11,10 @@
     "strict": "temp/audit/Truth-{version}.md"
   },
   "custody": {
-    "kinds": [ "Argument", "Guard", "Fork", "Mutation" ]
+    "kinds": [ "Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape" ]
   },
   "strict": {
-    "kinds": [ "Storage", "Flow", "Treat" ]
+    "kinds": [ "Storage", "Flow", "Treat", "Reach", "Taint" ]
   },
   "report": {
     "directory": "docs-work/audit",

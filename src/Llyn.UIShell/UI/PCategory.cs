@@ -10,12 +10,10 @@ public partial class PEditor
 {
     private readonly ObservableCollection<PCategoryItem> _pCategoryItem = [];
 
-    private readonly List<LSpeechValue> _pCategoryValue = [];
+    private readonly List<PCategoryItem> _pCategoryPreset = [];
 
     internal void PCategoryLoad()
     {
-        _pCategoryValue.Clear();
-
         IReadOnlyList<LSpeechValue> values;
         try
         {
@@ -26,18 +24,17 @@ public partial class PEditor
             values = [];
         }
 
-        _pCategoryValue.AddRange(values);
+        _pCategoryPreset.Clear();
+        foreach (LSpeechValue value in values)
+        {
+            _pCategoryPreset.Add(new PCategoryItem(value.LSpeechValueId, value.LSpeechValueName, false));
+        }
+
         PCategoryUpdate();
     }
 
     private LSpeechValue? PCategoryAdd(string name)
     {
-        LSpeechValue? held = PCategoryFind(name);
-        if (held is not null)
-        {
-            return held;
-        }
-
         LSpeechValue? created;
         try
         {
@@ -48,32 +45,8 @@ public partial class PEditor
             return null;
         }
 
-        if (created is null)
-        {
-            return null;
-        }
-
-        held = PCategoryFind(created.LSpeechValueName);
-        if (held is not null)
-        {
-            return held;
-        }
-
-        _pCategoryValue.Add(created);
+        PCategoryLoad();
         return created;
-    }
-
-    private LSpeechValue? PCategoryFind(string name)
-    {
-        foreach (LSpeechValue held in _pCategoryValue)
-        {
-            if (string.Equals(held.LSpeechValueName.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase))
-            {
-                return held;
-            }
-        }
-
-        return null;
     }
 
     private void PCategoryUpdate()
@@ -81,18 +54,18 @@ public partial class PEditor
         string typed = (PMarkerField.Text ?? string.Empty).Trim();
 
         _pCategoryItem.Clear();
-        foreach (LSpeechValue value in _pCategoryValue)
+        foreach (PCategoryItem preset in _pCategoryPreset)
         {
-            string name = value.LSpeechValueName;
+            string name = preset.PCategoryItemName;
             if (typed.Length > 0 && name.IndexOf(typed, StringComparison.OrdinalIgnoreCase) < 0)
             {
                 continue;
             }
 
-            _pCategoryItem.Add(new PCategoryItem(value.LSpeechValueId, name, PMarkerFind(name)));
+            _pCategoryItem.Add(new PCategoryItem(preset.PCategoryItemValue, name, PMarkerFind(name)));
         }
 
-        bool declared = _pCategoryValue.Count > 0;
+        bool declared = _pCategoryPreset.Count > 0;
         PCategoryNotice.Visibility = declared ? Visibility.Collapsed : Visibility.Visible;
         PCategoryAbsent.Visibility = declared && _pCategoryItem.Count == 0
             ? Visibility.Visible
