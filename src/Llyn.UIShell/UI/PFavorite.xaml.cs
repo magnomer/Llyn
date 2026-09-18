@@ -11,8 +11,6 @@ public partial class PFavorite : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pFavoriteObserver;
-
     public PFavorite()
     {
         InitializeComponent();
@@ -24,9 +22,6 @@ public partial class PFavorite : UserControl
         _lEngine = engine;
 
         PRoster.ItemsSource = _pRosterList;
-
-        _pFavoriteObserver = new PObserver(this, PFavoriteBulletinHandle);
-        engine.LEngineObserverAttach(_pFavoriteObserver);
 
         PDisplay.PDisplayAttach(host, engine);
 
@@ -52,24 +47,18 @@ public partial class PFavorite : UserControl
 
     internal void PFavoriteClose()
     {
-        if (_pFavoriteObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pFavoriteObserver);
-            _pFavoriteObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }
 
     private void PFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pRosterEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pFavoriteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pRosterEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFavoriteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pFavoriteHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pFavoriteHost.PWindowLabelRead(), ticket));
@@ -78,7 +67,7 @@ public partial class PFavorite : UserControl
 
     private async void PFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pRosterEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFavoriteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pFavoriteHost.PWindowPortraitExport(entry);
         }

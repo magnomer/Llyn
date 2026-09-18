@@ -3,7 +3,7 @@
 ## `public partial class PSettings`
 
 The interface language the user picks in the settings panel.
-The chosen catalog is applied to the live resource dictionary at once.
+The handler only saves, and the settings bulletin the engine raises applies the catalog.
 It is kept as a setting so the next run opens in it.
 The language alone is handed downstream, never the whole settings record, so a geometry saved elsewhere is not overwritten.
 
@@ -15,8 +15,6 @@ A workspace change calls it as well, since the workspace moved onto may prefer a
 
 ## Inline notes
 
-### `if (!_pSettingsReady || PLocalization.SelectedValue is not string language)`
+### `if (PLocalization.SelectedValue is not string language)`
 
-Skip while the stored choice is being applied to the box.
-The program already opened in that language, so applying it again would only repeat the work.
-Only user changes apply and save.
+A cleared box has nothing to save.

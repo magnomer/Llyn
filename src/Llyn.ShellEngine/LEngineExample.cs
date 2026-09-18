@@ -68,7 +68,17 @@ public sealed partial class LEngine
     public IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
+        IReadOnlyList<LCatalogExample> found = LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogExample> rows = new(found.Count);
+        foreach (LCatalogExample row in found)
+        {
+            rows.Add(row with
+            {
+                LCatalogExampleChosen = row.LCatalogExampleStored.LExampleId == vista.LVistaChosen,
+            });
+        }
+
+        return rows;
     }
 
     public IReadOnlyDictionary<long, string> LEngineCitationRead()

@@ -20,7 +20,7 @@ public partial class PEditor
             return;
         }
 
-        string language = _pSpeakerChoice;
+        string language = PSpeakerLanguageRead();
         IReadOnlyList<LFanqieRow> rows;
         IReadOnlyList<LFanqieBook> books;
         bool pending;

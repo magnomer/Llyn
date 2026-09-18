@@ -42,7 +42,6 @@ The window asks the panel, because the panel is what the window knows.
 
 ## `internal void PReferenceClose()`
 
-Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so none outlives the window.
 
 ## `private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)`

@@ -14,3 +14,6 @@ public sealed record LRequestAuthorShift(long LRequestDraftId, long LRequestAuth
 
 public sealed record LRequestAuthorState(long LRequestDraftId, LState LRequestState)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestAuthorName(long LRequestDraftId, string LRequestText)
+    : LRequest(LRequestDraftId);

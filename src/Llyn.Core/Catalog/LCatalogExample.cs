@@ -7,7 +7,8 @@ namespace Llyn.Core;
 public sealed record LCatalogExample(
     LExample LCatalogExampleStored,
     string LCatalogExampleSource,
-    int LCatalogExampleUsage)
+    int LCatalogExampleUsage,
+    bool LCatalogExampleChosen = false)
 {
     public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)
     {

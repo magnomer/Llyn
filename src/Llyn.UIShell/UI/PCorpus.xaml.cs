@@ -12,8 +12,6 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pCorpusObserver;
-
     public PCorpus()
     {
         InitializeComponent();
@@ -38,9 +36,6 @@ public partial class PCorpus : UserControl, PChronicleHost
         PEditor.PEditorAttach(host, engine, PTranscriptOrigin, null);
         PEditor.PEditorChangeNotice = changed => PCorpusStore.IsEnabled = changed;
         PEditor.PEditorChronicleNotice = PChronicleUpdate;
-
-        _pCorpusObserver = new PObserver(this, PCorpusBulletinHandle);
-        engine.LEngineObserverAttach(_pCorpusObserver);
     }
 
     internal void PCorpusReset()
@@ -65,12 +60,6 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     internal void PCorpusClose()
     {
-        if (_pCorpusObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pCorpusObserver);
-            _pCorpusObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
         PCitationDrawer.IsOpen = false;
@@ -81,20 +70,20 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private void PCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_pExcerptExample is not null && PExcerpt.Visibility == Visibility.Visible);
+        e.CanExecute = (_pQuotationVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
+            || (_pCorpusVista?.LVistaChosen is not null && PExcerpt.Visibility == Visibility.Visible);
     }
 
     private async void PCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pQuotationVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pCorpusHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pCorpusHost.PWindowLabelRead(), ticket));
             return;
         }
 
-        if (_pExcerptExample is long shown && PExcerpt.Visibility == Visibility.Visible)
+        if (_pCorpusVista?.LVistaChosen is long shown && PExcerpt.Visibility == Visibility.Visible)
         {
             await _pCorpusHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
                 shown, LOwner.LOwnerExample, _pCorpusHost.PWindowLegendRead("Example"), ticket));
@@ -103,12 +92,12 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private void PCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pQuotationVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pQuotationVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pCorpusHost.PWindowPortraitExport(entry);
         }

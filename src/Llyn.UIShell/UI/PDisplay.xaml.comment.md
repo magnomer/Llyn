@@ -14,12 +14,20 @@ Puts the view on `engine`, the workspace the window opened.
 The engine is read for the flag beside the language, the linked headwords and the incoming cards.
 The window is held because an incoming row opens the entry it names.
 
+## `internal void PDisplayVistaRestore(LVista vista)`
+
+Takes the vista whose chosen entry this display reads.
+A tab listing entries hands its own vista, and any other tab hands the child vista of its entry column.
+The display holds no id of its own, so what it shows is always what the vista has chosen.
+The view's observers are attached to the vista here, since the vista is what carries bulletins to it.
+A vista replaced by a switched workspace was detached by the engine, so its observers fall silent.
+
 ## `private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
 
 The parts of speech as the names a reader reads.
 The draft keeps the stored value beside the name, and the panel shows only the name.
 
-## `internal void PDisplayShow(long id, LEntryDraft draft)`
+## `internal void PDisplayShow(LEntryDraft draft)`
 
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
@@ -28,8 +36,9 @@ The primary play button appears only when the entry owns a recording that is sti
 The volume tray appears while any pronunciation row has a recording.
 The volume is read from the workspace on every show.
 A level the editor set is the level this view plays at.
-The id is taken as well as the draft, because a draft does not say which entry it is.
+A draft does not say which entry it is, so the id comes from the vista the tab handed over.
 That id is what the incoming cards are looked up by.
+A vista choosing nothing clears the surface instead, since the draft then stands on no entry.
 
 ## `private void PDisplayStampShow(long id)`
 

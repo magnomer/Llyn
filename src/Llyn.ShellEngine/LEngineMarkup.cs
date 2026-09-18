@@ -201,6 +201,7 @@ public sealed partial class LEngine
                     && draft.LDraftExample is null
                     && draft.LDraftSituation is null
                     && draft.LDraftReference is null
+                    && draft.LDraftAuthorHeld is null
                     && _lEngineDraftHeld.Contains(draft.LDraftId))
                 {
                     throw new LRefusal(LRefusal.LRefusalStale);

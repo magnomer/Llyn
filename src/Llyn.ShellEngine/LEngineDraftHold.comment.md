@@ -13,16 +13,16 @@ A shell can keep an id the engine has already left behind.
 These are primitives, and `LTenure` in `LTenure.cs` is the session object that sequences them for a panel.
 The start, check, cancel and request primitives are internal, so the shell reaches them through a tenure alone.
 
-A held draft carries an entry, a sentence, a situation or a source.
+A held draft carries an entry, a sentence, a situation, a source or an author.
 The kind is a further content field rather than a tag beside one.
-`LDraftExample` carries the sentence, `LDraftSituation` the context and `LDraftReference` the source.
+`LDraftExample` carries the sentence, `LDraftSituation` the context, `LDraftReference` the source and `LDraftAuthorHeld` the author.
 Each is null for the kinds that are not its own.
 A tag would be a second statement of the same fact, and two statements can disagree after a bad write.
 The alternative was one content field of a union type.
 That would have rewritten every entry call for a case none of them has.
 The source followed this rule rather than inventing a second one.
 Each kind gets one nullable content field, null for every other kind.
-The sentence calls live in `LEngineDraftExample.cs`, the situation calls in `LEngineDraftSituation.cs` and the source calls in `LEngineDraftReference.cs`.
+The sentence, situation, source and author calls live in `LEngineDraftExample.cs`, `LEngineDraftSituation.cs`, `LEngineDraftReference.cs` and `LEngineDraftAuthor.cs`.
 Only the shared calls belong here.
 Start and commit differ per kind.
 Every edit in between is a request, applied in `LEngineRequest.cs` for all kinds alike.
@@ -37,7 +37,8 @@ The translation settlement a commit runs, and the deferred court pass after it, 
 ## `internal LDraft LEngineDraftStart(string origin, long? entryId)`
 
 Mints an id, writes the first file, and returns the held draft.
-With no entry the content is blank, which is a new word being typed.
+With no entry the content is blank but for its language, which is a new word being typed.
+That language is the first the engine lists, so the shell never picks one on the draft's behalf.
 With an entry the content is that entry loaded back into form shape, which is an edit.
 An entry that is gone is refused before a file is written, so no draft can point at nothing.
 `origin` records which surface opened the work, so a recovered draft can say where it came from.
@@ -81,6 +82,7 @@ This is the question the shell used to answer by holding a second copy of the fo
 A sentence draft is answered by `LEngineExampleCheck`, which measures it against the Example it names.
 A situation draft is answered by `LEngineSituationCheck` the same way.
 A source draft is answered by `LEngineReferenceCheck`, which measures it against the Reference it names.
+An author draft is answered by `LEngineAuthorCheck`, which measures its name against the Author it names.
 A draft carrying no entry id is measured against a blank entry.
 So a new word counts as changed the moment anything is typed into it.
 A draft whose entry has since gone is measured against blank too.

@@ -26,3 +26,8 @@ Moves one credit to `LRequestPosition`.
 
 Sets whether the authorship is known, unknown, or unrecorded.
 Crediting an author marks it known on its own, so this is sent for the other two.
+
+## `public sealed record LRequestAuthorName(long LRequestDraftId, string LRequestText)`
+
+Renames the author an author draft holds.
+This is the one request of the authors panel, which edits an author alone rather than as a credit.

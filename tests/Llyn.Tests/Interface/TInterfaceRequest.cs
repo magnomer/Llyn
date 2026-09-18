@@ -128,6 +128,9 @@ internal static partial class TInterface
     internal static LRequest TReferenceTitleCreate(long draftId, LStateValue value) =>
         new LRequestReferenceTitle(draftId, value.TStateWrittenRead());
 
+    internal static LRequest TAuthorNameCreate(long draftId, string name) =>
+        new LRequestAuthorName(draftId, name);
+
     internal static LRequest TAuthorAdditionCreate(long draftId, string name, int position) =>
         new LRequestAuthorAddition(draftId, name, position);
 

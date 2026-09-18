@@ -7,7 +7,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LTenure
+public sealed partial class LTenure
 {
     private static readonly LTenureState LTenureStateHalted = new(false, null, false, false, true);
 
@@ -52,6 +52,11 @@ public sealed class LTenure
         }
 
         return _lEngine.LEngineDraftRead(LTenureId);
+    }
+
+    public string LTenureLanguageRead()
+    {
+        return LTenureRead()?.LDraftContent.LEntryDraftLanguage ?? string.Empty;
     }
 
     public LTenureState LTenureStateRead()
@@ -158,6 +163,7 @@ public sealed class LTenure
         lock (_lTenureGate)
         {
             LTenureStop();
+            LTenureForayStop();
             _lTenureQueue.Clear();
             if (_lTenureEnded)
             {
@@ -218,6 +224,7 @@ public sealed class LTenure
             long stored = LTenureCommit();
             lock (_lTenureGate)
             {
+                LTenureForayStop();
                 _lTenureEnded = true;
             }
 
@@ -234,7 +241,9 @@ public sealed class LTenure
             LSubject.LSubjectExample => _lEngine.LEngineExampleCommit(LTenureId).LExampleId,
             LSubject.LSubjectSituation => _lEngine.LEngineSituationCommit(LTenureId).LSituationId,
             LSubject.LSubjectReference => _lEngine.LEngineReferenceCommit(LTenureId).LReferenceId,
-            _ => throw new InvalidOperationException("A tenure holds only an entry, example, situation or reference."),
+            LSubject.LSubjectAuthor => _lEngine.LEngineAuthorCommit(LTenureId).LAuthorId,
+            _ => throw new InvalidOperationException(
+                "A tenure holds only an entry, example, situation, reference or author."),
         };
     }
 

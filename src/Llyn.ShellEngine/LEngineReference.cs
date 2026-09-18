@@ -87,7 +87,17 @@ public sealed partial class LEngine
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineReferenceFind(vista.LVistaQuery, vista.LVistaOrder);
+        IReadOnlyList<LCatalogReference> found = LEngineReferenceFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogReference> rows = new(found.Count);
+        foreach (LCatalogReference row in found)
+        {
+            rows.Add(row with
+            {
+                LCatalogReferenceChosen = row.LCatalogReferenceStored.LReferenceId == vista.LVistaChosen,
+            });
+        }
+
+        return rows;
     }
 
     public IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)

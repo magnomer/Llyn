@@ -12,8 +12,6 @@ public partial class PReference : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pReferenceObserver;
-
     public PReference()
     {
         InitializeComponent();
@@ -41,9 +39,6 @@ public partial class PReference : UserControl
                 PReferenceStore.IsEnabled = changed;
             }
         };
-
-        _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
-        engine.LEngineObserverAttach(_pReferenceObserver);
     }
 
     internal static string PReferenceKindRead(LReferenceKind kind)
@@ -85,12 +80,6 @@ public partial class PReference : UserControl
 
     internal void PReferenceClose()
     {
-        if (_pReferenceObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pReferenceObserver);
-            _pReferenceObserver = null;
-        }
-
         PImprint.PImprintClose();
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
@@ -100,20 +89,20 @@ public partial class PReference : UserControl
 
     private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_pColophonReference is not null && PColophon.Visibility == Visibility.Visible);
+        e.CanExecute = (_pFootnoteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
+            || (_pReferenceVista?.LVistaChosen is not null && PColophon.Visibility == Visibility.Visible);
     }
 
     private async void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFootnoteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pReferenceHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pReferenceHost.PWindowLabelRead(), ticket));
             return;
         }
 
-        if (_pColophonReference is long shown && PColophon.Visibility == Visibility.Visible)
+        if (_pReferenceVista?.LVistaChosen is long shown && PColophon.Visibility == Visibility.Visible)
         {
             await _pReferenceHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
                 shown, LOwner.LOwnerReference, _pReferenceHost.PWindowLegendRead("Source"), ticket));
@@ -122,12 +111,12 @@ public partial class PReference : UserControl
 
     private void PReferencePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pFootnoteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PReferencePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFootnoteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pReferenceHost.PWindowPortraitExport(entry);
         }

@@ -6,10 +6,6 @@ public partial class PSettings
 {
     private void PFrequencyHandle(object sender, RoutedEventArgs e)
     {
-        if (_pSettingsReady)
-        {
-            _lEngine.LEngineFrequencySave(PFrequency.IsChecked == true);
-            PLedgerMetaApply();
-        }
+        _lEngine.LEngineFrequencySave(PFrequency.IsChecked == true);
     }
 }

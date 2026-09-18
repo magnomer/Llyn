@@ -11,6 +11,7 @@ An Example citing nothing carries an empty name rather than an id nobody would r
 - `LCatalogExampleStored` — The stored Example the row stands for.
 - `LCatalogExampleSource` — The name of the Source it cites, empty where it cites none.
 - `LCatalogExampleUsage` — How many places quote it.
+- `LCatalogExampleChosen` — True on the row of the Example the vista stands on, false until the vista find fills it.
 
 ## `public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)`
 

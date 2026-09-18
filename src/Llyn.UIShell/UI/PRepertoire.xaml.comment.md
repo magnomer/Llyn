@@ -38,7 +38,6 @@ The entry editor finishes its own draft, and the Situation editor finishes its o
 
 ## `internal void PRepertoireClose()`
 
-Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so neither outlives the window.
 
 ## `private void PRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)`

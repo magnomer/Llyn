@@ -51,7 +51,7 @@
                             <Image x:Name="PSpeakerFlag" Stretch="Uniform" />
                             <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                         </Grid>
-                        <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Language.Name}" Text="English" />
+                        <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Language.Name}" />
                         <Path Style="{StaticResource Theme.Language.Expand}" />
                     </StackPanel>
                 </ToggleButton>

@@ -61,6 +61,16 @@ public sealed partial class LEngine
                     continue;
                 }
 
+                if (draft.LDraftAuthorHeld is LAuthor author)
+                {
+                    if (!LEngineAuthorCheck(draft, author))
+                    {
+                        LEngineDraftCancel(draft.LDraftId);
+                    }
+
+                    continue;
+                }
+
                 LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntryId);
                 if (stored is null || !LEngineDraftMatch(stored, draft.LDraftContent))
                 {

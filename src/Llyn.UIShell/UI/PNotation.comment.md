@@ -1,4 +1,4 @@
-# PNotation.cs
+﻿# PNotation.cs
 
 ## `public partial class PEditor : LReceiver`
 
@@ -7,6 +7,8 @@ Every pronunciation row and every transcription row carries its own lookup butto
 The menu is one popup the editor owns, retargeted at the row that asked for it.
 Opening it starts a search for the headword, the same search from whichever row.
 A transcription row names its scheme, and the search then runs that scheme's sources instead of the IPA ones.
+The search is a foray the tenure starts, and the menu keeps only that handle.
+The word, language, target row, scheme and flag mode are read off the foray, never copied.
 Candidates stream in from the engine and fill the list, one reading per variety a source returned.
 Picking one writes it into the row that opened the menu and stores its variety on that row.
 This is the shell side of `LReceiver`.
@@ -26,32 +28,34 @@ That makes every declared source visible before any of them answers.
 
 ## Inline notes
 
-### `_pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);`
+### `if (scheme.Length == 0 && language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))`
 
-Whether the pack shows its varieties as flags is asked once, when the search starts.
-In flag mode every declared variety's flag is resolved before the search.
+Flags are loaded for a pronunciation search alone, before it starts.
+A transcription search returns untagged readings, so no flag would ever be drawn.
 A reading's flag is then ready the moment the reading lands.
-The language is kept with the answer, because the speaker choice may change while the search is still running.
+A menu closed while the flags loaded starts no search.
 
-### `await _lEngine.LEnginePronunciationFind(`
+### `_pNotationForay = held.LTenureTranscriptionStart(word, target, scheme, this);`
 
-The panel asks and then listens.
-It passes the draft it is editing, so the engine can hand back what that draft already found.
+The tenure starts the search and the menu listens.
+The tenure passes the draft it holds, so the engine can hand back what that draft already found.
 Whether a search runs at all is the engine's answer, not the menu's.
-The search is over when the receiver is told it is, never when this call returns.
-The two are not the same moment.
+The search is over when the receiver is told it is, never when the start returns.
 The engine reports the end through LReceiverLookupFinish.
-Reading completion off the awaited task gave the menu a second opinion.
-The search is not one the menu runs.
 
 ### `catch (Exception)`
 
-Superseded by a newer lookup, or the window closed.
-Ignore it.
+A lookup that could not be started reports no end of its own.
+So the menu is taken out of its searching state here.
+It is not left running under a search that never began.
+
+### `private void PNotationCancel()`
+
+Ends the search in flight and drops the handle, so a stale arrival finds no foray to read.
 
 ### `private async Task PNotationOpen(UIElement anchor, long target)`
 
-Opens the menu under the button of one pronunciation row and remembers which row it serves.
+Opens the menu under the button of one pronunciation row and starts the search for that row.
 A target of zero is the primary row, which the engine may not have minted yet.
 The popup is shut first, so a press on another row's button moves it instead of leaving it put.
 
@@ -68,20 +72,10 @@ The primary row and a further row each take a reading request sent at once, carr
 The engine derives the respelling from it, so the pick fills both forms whatever the field prints.
 The request is sent before the variety, because the primary row exists only once it has run.
 A further row that vanished while the menu stood open takes nothing.
+A menu with no search behind it takes nothing either.
 A reading without a variety writes the text alone.
 
-### `if (_pNotationFlagged && _pNotationScheme.Length == 0)`
-
-Flags are loaded for a pronunciation search alone.
-A transcription search returns untagged readings, so no flag would ever be drawn.
-
-### `_pNotationSearching = false;`
-
-A lookup that could not be started reports no end of its own.
-So the menu is taken out of its searching state here.
-It is not left running under a search that never began.
-
-### `private void PNotationUpdate()`
+### `private void PNotationUpdate(string scheme)`
 
 What the menu shows, from the two things it knows.
 Those are whether the search is still running, and what has arrived so far.
@@ -94,6 +88,7 @@ Reading it off "nothing found yet" instead is what left it running under a menu 
 The notice is the one line the menu says while it has no rows to show.
 It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing.
+The scheme names which empty notice, and comes from the opening before a foray exists and from the foray after.
 
 ### `void LReceiver.LReceiverCandidateAdd(LCandidate candidate)`
 
@@ -105,6 +100,6 @@ Silence would have said a word is missing from a dictionary that was in fact dow
 ### `private PNotationReading? PNotationReadingCreate(LCandidate candidate)`
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
-Its label and flag are resolved as a pronunciation row resolves its own, under the language the search began for.
+Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.
 It prints the candidate's respelling while the switch shows respellings and its phonetic otherwise.
 It is bracketed for a pronunciation search, between slashes for a phonemic respelling, and bare for a transcription search.

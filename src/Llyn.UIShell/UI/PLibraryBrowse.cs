@@ -13,29 +13,10 @@ public partial class PLibrary
 
     private LVista? _pLibraryVista;
 
-    private async void PLibraryBulletinHandle(LBulletin bulletin)
+    private async void PLibraryWorkspaceUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pLibraryVista is not null && bulletin.LBulletinId == _pLibraryVista.LVistaId)
-            {
-                PIndexFind();
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PLibraryReset();
-            return;
-        }
-
-        if (PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            PIndexEntryUpdate(bulletin);
-        }
+        await PEnsign.PEnsignLoad(_lEngine);
+        PLibraryReset();
     }
 
     private void PInquiryHandle(object sender, TextChangedEventArgs e)
@@ -68,6 +49,13 @@ public partial class PLibrary
     internal async void PLibraryVistaRestore(LVista vista)
     {
         _pLibraryVista = vista;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PLibraryWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PIndexEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PIndexFind));
+        vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PLibraryEntryUpdate));
+        PDisplay.PDisplayVistaRestore(vista);
         POrderRestore();
         PSieveRestore();
 
@@ -163,7 +151,7 @@ public partial class PLibrary
 
         _pLibraryVista?.LVistaSelect(id);
         PIndexChosenApply();
-        PLibraryEntryShow(id, draft);
+        PLibraryEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -173,20 +161,18 @@ public partial class PLibrary
 
     private void PIndexEntryUpdate(LBulletin bulletin)
     {
-        long id = bulletin.LBulletinId;
-        bool stored = bulletin.LBulletinSubject == LSubject.LSubjectEntry;
-        if (stored && id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pLibraryVista?.LVistaSelect(id);
+            _pLibraryVista?.LVistaSelect(bulletin.LBulletinId);
         }
 
         PLibraryCommandApply();
-
         PIndexFind();
+    }
 
-        if (!stored
-            || _pLibraryVista?.LVistaChosen is not long shown
-            || (id > 0 && shown != id))
+    private void PLibraryEntryUpdate(LBulletin bulletin)
+    {
+        if (_pLibraryVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -296,9 +282,9 @@ public partial class PLibrary
         return _pLibraryVista?.LVistaChosen ?? 0;
     }
 
-    private void PLibraryEntryShow(long id, LEntryDraft draft)
+    private void PLibraryEntryShow(LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(id, draft);
+        PDisplay.PDisplayShow(draft);
         PLibraryMode.IsEnabled = true;
         PLibraryCommandApply();
     }

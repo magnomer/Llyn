@@ -6,12 +6,11 @@ public partial class PSettings
 {
     private void PLocalizationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (!_pSettingsReady || PLocalization.SelectedValue is not string language)
+        if (PLocalization.SelectedValue is not string language)
         {
             return;
         }
 
-        PLocalizationApply(language);
         _lEngine.LEngineLocalizationSave(language);
     }
 

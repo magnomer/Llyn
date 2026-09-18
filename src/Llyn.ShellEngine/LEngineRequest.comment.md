@@ -33,6 +33,7 @@ The saved draft is returned as well, so a caller can read a minted id without wa
 
 The switch over the kinds that reach past the entry content.
 The example and source panels edit their own field of the draft, and the credits edit its author list.
+The authors panel renames the one Author its draft holds.
 The body records lay every field of a panel over the held one, so the engine decides what changed.
 A situation field request may mean the panel's situation or a chip, so it is routed by id.
 A situation body on a draft holding a Situation lands on that Situation, whatever id it carries.

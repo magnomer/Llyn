@@ -156,7 +156,7 @@ public partial class PCorpus
             return;
         }
 
-        if (_pExcerptExample is not null || _pDisplayEntry is not null)
+        if (_pCorpusVista?.LVistaChosen is not null || _pQuotationVista?.LVistaChosen is not null)
         {
             PQuotationEntryCreate();
             return;
@@ -198,7 +198,7 @@ public partial class PCorpus
             return;
         }
 
-        _pExcerptExample = example;
+        _pCorpusVista?.LVistaSelect(example);
 
         PAnthologyFind();
         PCorpusScribeShow(false);

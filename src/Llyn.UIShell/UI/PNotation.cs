@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor : LReceiver
 {
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
-    private CancellationTokenSource? _pNotationCancellation;
+    private LForay? _pNotationForay;
     private bool _pNotationSearching;
-    private bool _pNotationFlagged;
-    private string _pNotationLanguage = string.Empty;
     private PRespelling _pNotationRespelling = PRespelling.PRespellingPlain;
-    private long _pNotationTarget;
-    private string _pNotationScheme = string.Empty;
 
     private async void PPhoneticianHandle(object sender, RoutedEventArgs e)
     {
@@ -48,17 +44,20 @@ public partial class PEditor : LReceiver
     private async Task PNotationOpen(UIElement anchor, long target, string scheme)
     {
         PNotation.IsOpen = false;
-        _pNotationTarget = target;
-        _pNotationScheme = scheme;
         PNotation.PlacementTarget = anchor;
         PNotation.IsOpen = true;
-        await PNotationStart();
+        await PNotationStart(target, scheme);
     }
 
     private void PNotationApply(PNotationReading reading)
     {
-        long id = _pNotationTarget;
-        if (_pNotationScheme.Length > 0)
+        if (_pNotationForay is not LForay foray)
+        {
+            return;
+        }
+
+        long id = foray.LForayTarget;
+        if (foray.LForayScheme.Length > 0)
         {
             PTranscriptionItem? spelled = PTranscriptionFind(id);
             if (spelled is not null)
@@ -105,13 +104,14 @@ public partial class PEditor : LReceiver
 
     private PNotationReading PNotationReadingCreate(LCandidate candidate)
     {
+        string scheme = _pNotationForay?.LForayScheme ?? string.Empty;
         string variety = candidate.LCandidateVariety;
         string phonetic = candidate.LCandidatePhonetic ?? string.Empty;
-        string text = _pNotationScheme.Length == 0
+        string text = scheme.Length == 0
             ? _pNotationRespelling.PRespellingTextRead(phonetic, candidate.LCandidateRespelling)
             : phonetic;
-        string opener = _pNotationScheme.Length == 0 ? _pNotationRespelling.PRespellingOpener : string.Empty;
-        string closer = _pNotationScheme.Length == 0 ? _pNotationRespelling.PRespellingCloser : string.Empty;
+        string opener = scheme.Length == 0 ? _pNotationRespelling.PRespellingOpener : string.Empty;
+        string closer = scheme.Length == 0 ? _pNotationRespelling.PRespellingCloser : string.Empty;
         if (variety.Length == 0)
         {
             return new PNotationReading(variety, string.Empty, null, phonetic, text, opener, closer);
@@ -120,70 +120,57 @@ public partial class PEditor : LReceiver
         return new PNotationReading(
             variety,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
-            PAccentItem.PAccentFlagFind(_pNotationLanguage, _pNotationFlagged, variety),
+            PAccentItem.PAccentFlagFind(
+                _pNotationForay?.LForayLanguage ?? string.Empty, _pNotationForay?.LForayFlagged ?? false, variety),
             phonetic,
             text,
             opener,
             closer);
     }
 
-    private async Task PNotationStart()
+    private async Task PNotationStart(long target, string scheme)
     {
         PNotationCancel();
 
         string word = PHeadword.Text?.Trim() ?? string.Empty;
         _pNotationItem.Clear();
-        _pNotationSearching = word.Length > 0;
-        PNotationUpdate();
+        _pNotationSearching = word.Length > 0 && _pEditorTenure is not null;
+        PNotationUpdate(scheme);
 
-        if (word.Length == 0)
+        if (word.Length == 0 || _pEditorTenure is not LTenure held)
         {
             return;
         }
 
-        _pNotationCancellation = new CancellationTokenSource();
-        CancellationToken cancellation = _pNotationCancellation.Token;
-
         try
         {
-            _pNotationLanguage = _pSpeakerChoice;
-            _pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);
-            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, _pNotationLanguage);
-            if (_pNotationFlagged && _pNotationScheme.Length == 0)
+            string language = held.LTenureLanguageRead();
+            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, language);
+            if (scheme.Length == 0 && language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))
             {
                 await PEnsign.PEnsignVarietyLoad(
                     _lEngine,
-                    _pNotationLanguage,
-                    _lEngine.LEngineVarietyRead(_pNotationLanguage).Select(variety => variety.LVarietyName));
-                cancellation.ThrowIfCancellationRequested();
+                    language,
+                    _lEngine.LEngineVarietyRead(language).Select(variety => variety.LVarietyName));
+                if (!PNotation.IsOpen)
+                {
+                    return;
+                }
             }
 
-            if (_pNotationScheme.Length > 0)
-            {
-                await _lEngine.LEngineTranscriptionFind(
-                    PEditorDraft, word, _pNotationLanguage, _pNotationScheme, this, cancellation);
-            }
-            else
-            {
-                await _lEngine.LEnginePronunciationFind(
-                    PEditorDraft, word, _pNotationLanguage, this, cancellation);
-            }
-        }
-        catch (OperationCanceledException)
-        {
+            _pNotationForay = held.LTenureTranscriptionStart(word, target, scheme, this);
         }
         catch (Exception)
         {
             _pNotationSearching = false;
-            PNotationUpdate();
+            PNotationUpdate(scheme);
         }
     }
 
     private void PNotationCancel()
     {
-        _pNotationCancellation?.Cancel();
-        _pNotationCancellation?.Dispose();
-        _pNotationCancellation = null;
+        _pNotationForay?.LForayCancel();
+        _pNotationForay = null;
     }
 
     private PNotationItem PNotationPlace(string source, int order)
@@ -207,6 +194,11 @@ public partial class PEditor : LReceiver
 
     private void PNotationUpdate()
     {
+        PNotationUpdate(_pNotationForay?.LForayScheme ?? string.Empty);
+    }
+
+    private void PNotationUpdate(string scheme)
+    {
         bool candidates = _pNotationItem.Count > 0;
 
         PNotationList.Visibility = candidates ? Visibility.Visible : Visibility.Collapsed;
@@ -220,7 +212,7 @@ public partial class PEditor : LReceiver
 
         PNotationNotice.Text = _pEditorHost.PLocalizationTextRead(
             _pNotationSearching ? "Phonetician.Searching"
-            : _pNotationScheme.Length > 0 ? "Transcription.Empty"
+            : scheme.Length > 0 ? "Transcription.Empty"
             : "Phonetician.Empty");
         PNotationNotice.Visibility = Visibility.Visible;
     }

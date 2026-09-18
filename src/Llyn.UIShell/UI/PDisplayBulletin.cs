@@ -1,93 +1,90 @@
 ﻿using System;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PDisplay
 {
-    private void PDisplayBulletinHandle(LBulletin bulletin)
+    private void PDisplayObserverAttach(LVista vista)
     {
-        if (_pDisplayEntry is not long shown)
+        vista.LVistaChosenAttach(LSubject.LSubjectFavorite, new PObserver(this, PDisplayFavoriteUpdate));
+        vista.LVistaChosenAttach(LSubject.LSubjectGrasp, new PObserver(this, PDisplayGraspUpdate));
+        vista.LVistaChosenAttach(LSubject.LSubjectFrequency, new PObserver(this, PDisplayFrequencyUpdate));
+        vista.LVistaChosenAttach(LSubject.LSubjectInflection, new PObserver(this, PDisplayParadigmUpdate));
+        vista.LVistaChosenAttach(LSubject.LSubjectReflex, new PObserver(this, PDisplayReflexUpdate));
+        vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectScript, new PObserver(this, PDisplayScriptUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PDisplayFanqieUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PDisplayClear));
+        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectTag, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PDisplayEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDisplayEntryUpdate));
+    }
+
+    private void PDisplayFavoriteUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
-            return;
+            PDisplayFavoriteShow(shown);
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFavorite)
+    private void PDisplayGraspUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayFavoriteShow(shown);
-            }
-
-            return;
+            PDisplayGraspShow(shown);
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectGrasp)
+    private void PDisplayFrequencyUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayGraspShow(shown);
-            }
-
-            return;
+            PDisplayFrequencyShow(shown);
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFrequency)
+    private void PDisplayParadigmUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayFrequencyShow(shown);
-            }
-
-            return;
+            PDisplayParadigmShow(shown);
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectInflection)
+    private void PDisplayReflexUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayParadigmShow(shown);
-            }
-
-            return;
+            PDisplayReflexLoad(shown);
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectScript)
+    private void PDisplayScriptUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
             PDisplayScriptShow(shown, PDisplayLanguage.Text);
-            return;
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFanqie)
+    private void PDisplayFanqieUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is long shown)
         {
             PDisplayFanqieShow(shown, PDisplayLanguage.Text);
-            return;
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectReflex)
-        {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayReflexLoad(shown);
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            PDisplayClear();
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
-        {
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
-            && bulletin.LBulletinId > 0
-            && shown != bulletin.LBulletinId)
+    private void PDisplayEntryUpdate()
+    {
+        if (_pDisplayVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -108,6 +105,6 @@ public partial class PDisplay
             return;
         }
 
-        PDisplayShow(shown, draft);
+        PDisplayShow(draft);
     }
 }

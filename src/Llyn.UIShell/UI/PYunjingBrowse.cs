@@ -23,43 +23,10 @@ public partial class PYunjing
 
     private LVista? _pYunmuVista;
 
-    private async void PYunjingBulletinHandle(LBulletin bulletin)
+    private async void PYunjingWorkspaceUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (bulletin.LBulletinId == _pShengmuVista?.LVistaId || bulletin.LBulletinId == _pYunmuVista?.LVistaId)
-            {
-                PYunjingLoad();
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PYunjingReset();
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFanqie)
-        {
-            PYunjingLoad();
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
-        {
-            PDiweiLoad();
-            return;
-        }
-
-        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            return;
-        }
-
-        PXiaoyunEntryUpdate(bulletin.LBulletinId);
+        await PEnsign.PEnsignLoad(_lEngine);
+        PYunjingReset();
     }
 
     private void PYunjingLoad()
@@ -219,10 +186,20 @@ public partial class PYunjing
         _pYunmuVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pYunmuVista.LVistaOrder));
     }
 
-    internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu)
+    internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)
     {
         _pShengmuVista = shengmu;
         _pYunmuVista = yunmu;
+        _pXiaoyunVista = xiaoyun;
+        shengmu.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PYunjingLoad));
+        yunmu.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PYunjingLoad));
+        shengmu.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PYunjingWorkspaceUpdate));
+        shengmu.LVistaObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PYunjingLoad));
+        shengmu.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDiweiLoad));
+        shengmu.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PYunjingLoad));
+        xiaoyun.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PXiaoyunEntryUpdate));
+        xiaoyun.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PYunjingEntryUpdate));
+        PDisplay.PDisplayVistaRestore(xiaoyun);
         PLadderRestore();
         PStairRestore();
         shengmu.LVistaQuerySet(PPlumb.Text ?? string.Empty);

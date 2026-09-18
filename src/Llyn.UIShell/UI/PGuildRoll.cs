@@ -15,36 +15,13 @@ public partial class PGuild
 
     private IReadOnlyList<LCatalogAuthor> _pRollCatalog = [];
 
-    private long? _pRollAuthor;
-
     private LVista? _pGuildVista;
 
-    private void PGuildBulletinHandle(LBulletin bulletin)
+    private void PGuildCatalogUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pGuildVista is not null && bulletin.LBulletinId == _pGuildVista.LVistaId)
-            {
-                PRollFind();
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
-        {
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            PGuildReset();
-            return;
-        }
-
         PRollFind();
 
-        if (_pRollAuthor is long author && PRollCatalogFind(author) is not null)
+        if (_pGuildVista?.LVistaChosen is long author && PRollCatalogFind(author) is not null)
         {
             if (PAutograph.Visibility == Visibility.Visible)
             {
@@ -56,7 +33,7 @@ public partial class PGuild
             }
         }
 
-        if (_pColophonReference is long reference)
+        if (_pOeuvreVista?.LVistaChosen is long reference)
         {
             PColophonReferenceShow(reference);
         }
@@ -78,13 +55,24 @@ public partial class PGuild
         _pGuildVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pGuildVista.LVistaOrder));
     }
 
-    internal void PGuildVistaRestore(LVista vista)
+    internal void PGuildVistaRestore(LVista vista, LVista oeuvre)
     {
         _pGuildVista = vista;
+        _pOeuvreVista = oeuvre;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PRollFind));
+        oeuvre.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, POeuvreFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PGuildReset));
+        vista.LVistaObserverAttach(LSubject.LSubjectDraft, new PObserver(this, PAutographDraftUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectTenure, new PObserver(this, PAutographTenureUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PGuildCatalogUpdate));
         PEchelonRestore();
         PLouverRestore();
         PLouverBuild(vista.LVistaFilter);
         vista.LVistaQuerySet(PMuster.Text ?? string.Empty);
+        oeuvre.LVistaQuerySet(PComb.Text ?? string.Empty);
         PRollFind();
     }
 
@@ -109,11 +97,12 @@ public partial class PGuild
         return null;
     }
 
-    private void PRollSelect(long? id)
+    private void PRollChosenApply()
     {
+        long? chosen = _pGuildVista?.LVistaChosen;
         foreach (PRollItem item in _pRollList)
         {
-            item.PRollItemChosen = id is not null && item.PRollItemId == id;
+            item.PRollItemChosen = chosen is not null && item.PRollItemId == chosen;
         }
     }
 
@@ -152,18 +141,18 @@ public partial class PGuild
                 _pGuildHost.PLocalizationTextRead("Guild.Uncredited"), PGuildWorkRead(orphan.Count), cited));
         }
 
-        bool kept = _pRollAuthor == 0 && _pRollList.Count > 0;
+        bool kept = _pGuildVista.LVistaChosen == 0 && _pRollList.Count > 0;
         foreach (LCatalogAuthor row in _pRollCatalog)
         {
-            kept |= row.LCatalogAuthorStored.LAuthorId == _pRollAuthor;
+            kept |= row.LCatalogAuthorChosen;
             _pRollList.Add(new PRollItem(row, PGuildWorkRead(row.LCatalogAuthorWork)));
         }
 
         PRollEmpty.Visibility = _pRollList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PRollSelect(_pRollAuthor);
+        PRollChosenApply();
 
-        if (!kept && _pRollAuthor is not null)
+        if (!kept && _pGuildVista.LVistaChosen is not null)
         {
             PGuildClear();
             return;
@@ -192,8 +181,8 @@ public partial class PGuild
         bool editing = PAutograph.Visibility == Visibility.Visible;
         PAutographCancel();
 
-        _pRollAuthor = id;
-        PRollSelect(id);
+        _pGuildVista?.LVistaSelect(id);
+        PRollChosenApply();
         PColophonReferenceHide();
         POeuvreFind();
 

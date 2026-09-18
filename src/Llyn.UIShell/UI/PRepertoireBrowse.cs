@@ -16,61 +16,26 @@ public partial class PRepertoire
 
     private LVista? _pRepertoireVista;
 
-    private async void PRepertoireBulletinHandle(LBulletin bulletin)
+    private void PScenarioDraftUpdate(LBulletin bulletin)
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        if (bulletin.LBulletinId == PScenarioDraft)
         {
-            if (_pRepertoireVista is not null && bulletin.LBulletinId == _pRepertoireVista.LVistaId)
-            {
-                PAtlasFind();
-            }
-
-            return;
+            PScenarioDraftRestore();
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+    private void PScenarioTenureUpdate(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinId == PScenarioDraft)
         {
-            if (bulletin.LBulletinId == PScenarioDraft)
-            {
-                PScenarioDraftRestore();
-            }
-
-            return;
+            PScenarioChangeUpdate();
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectTenure)
-        {
-            if (bulletin.LBulletinId == PScenarioDraft)
-            {
-                PScenarioChangeUpdate();
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PRepertoireReset();
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
-            && bulletin.LBulletinId > 0
-            && _pDisplayEntry is null
-            && IsVisible
-            && PEditor.Visibility == Visibility.Visible)
-        {
-            _pDisplayEntry = bulletin.LBulletinId;
-        }
-
-        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            return;
-        }
-
-        PAtlasFind();
-        POccurrenceEntryUpdate(bulletin.LBulletinId);
+    private async void PRepertoireWorkspaceUpdate()
+    {
+        await PEnsign.PEnsignLoad(_lEngine);
+        PRepertoireReset();
     }
 
     private void PInquestHandle(object sender, TextChangedEventArgs e)
@@ -105,9 +70,20 @@ public partial class PRepertoire
         _pRepertoireVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pRepertoireVista.LVistaOrder));
     }
 
-    internal async void PRepertoireVistaRestore(LVista vista)
+    internal async void PRepertoireVistaRestore(LVista vista, LVista occurrence)
     {
         _pRepertoireVista = vista;
+        _pOccurrenceVista = occurrence;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAtlasFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectDraft, new PObserver(this, PScenarioDraftUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectTenure, new PObserver(this, PScenarioTenureUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PRepertoireWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PAtlasFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAtlasFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAtlasFind));
+        occurrence.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, POccurrenceEntryUpdate));
+        occurrence.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PRepertoireEntryUpdate));
+        PDisplay.PDisplayVistaRestore(occurrence);
         PTierRestore();
         PMeshRestore();
 
@@ -132,12 +108,13 @@ public partial class PRepertoire
         PMeshMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PAtlasSelect(long? id)
+    private void PAtlasChosenApply()
     {
+        long? chosen = _pRepertoireVista?.LVistaChosen;
         foreach (PAtlasItem item in _pAtlasList)
         {
-            item.PAtlasItemChosen = id is not null
-                && item.PAtlasItemId == id;
+            item.PAtlasItemChosen = chosen is not null
+                && item.PAtlasItemId == chosen;
         }
     }
 
@@ -167,21 +144,23 @@ public partial class PRepertoire
         bool kept = false;
         foreach (LCatalogSituation row in read)
         {
-            kept |= row.LCatalogSituationStored.LSituationId == _pVignetteSituation;
+            kept |= row.LCatalogSituationChosen;
             _pAtlasList.Add(new PAtlasItem(
                 row.LCatalogSituationStored,
                 row.LCatalogSituationUsage,
                 unknown,
-                untitled));
+                untitled)
+            {
+                PAtlasItemChosen = row.LCatalogSituationChosen,
+            });
         }
 
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PAtlasSelect(_pVignetteSituation);
-        PVignetteTally.Text = PRepertoireTallyRead(_pVignetteSituation);
+        PVignetteTally.Text = PRepertoireTallyRead(_pRepertoireVista?.LVistaChosen);
         PScenarioTally.Text = PRepertoireTallyRead(PScenarioSituationRead());
 
-        if (!kept && _pVignetteSituation is not null && PScenario.Visibility != Visibility.Visible)
+        if (!kept && _pRepertoireVista?.LVistaChosen is not null && PScenario.Visibility != Visibility.Visible)
         {
             PRepertoireClear();
         }
@@ -229,8 +208,8 @@ public partial class PRepertoire
             return;
         }
 
-        _pVignetteSituation = id;
-        PAtlasSelect(id);
+        _pRepertoireVista?.LVistaSelect(id);
+        PAtlasChosenApply();
         POccurrenceEntryHide();
 
         PVignetteTitleShow(situation.LSituationTitle);
@@ -253,7 +232,7 @@ public partial class PRepertoire
 
     private void PRepertoireBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not null || _pVignetteSituation is not long id)
+        if (_pOccurrenceVista?.LVistaChosen is not null || _pRepertoireVista?.LVistaChosen is not long id)
         {
             return;
         }
@@ -283,7 +262,7 @@ public partial class PRepertoire
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PRepertoireScribe);
-        if (_pDisplayEntry is not null || PEditor.Visibility == Visibility.Visible)
+        if (_pOccurrenceVista?.LVistaChosen is not null || PEditor.Visibility == Visibility.Visible)
         {
             POccurrenceScribeHandle(editing);
             return;
@@ -305,9 +284,9 @@ public partial class PRepertoire
             PScenarioDraftCancel();
             PRepertoireScribeShow(false);
 
-            if (_pVignetteSituation is not null)
+            if (_pRepertoireVista?.LVistaChosen is long chosen)
             {
-                PRepertoireShow(_pVignetteSituation.Value);
+                PRepertoireShow(chosen);
                 return;
             }
 
@@ -315,14 +294,14 @@ public partial class PRepertoire
             return;
         }
 
-        if (_pVignetteSituation is null)
+        if (_pRepertoireVista?.LVistaChosen is not long shown)
         {
             PRepertoireClear();
             return;
         }
 
         PRepertoireScribeShow(true);
-        PScenarioDraftShow(PScenarioDraftStart(_pVignetteSituation));
+        PScenarioDraftShow(PScenarioDraftStart(shown));
     }
 
     private void PRepertoireScribeShow(bool editing)
@@ -338,7 +317,7 @@ public partial class PRepertoire
 
     internal void PRepertoireScribeRestore(bool editing)
     {
-        if (editing && _pVignetteSituation is null)
+        if (editing && _pRepertoireVista?.LVistaChosen is null)
         {
             return;
         }
@@ -358,15 +337,15 @@ public partial class PRepertoire
 
     internal long PRepertoireVoyageRead()
     {
-        return _pVignetteSituation ?? 0;
+        return _pRepertoireVista?.LVistaChosen ?? 0;
     }
 
     private void PRepertoireClear()
     {
         PScenarioDraftCancel();
 
-        _pVignetteSituation = null;
-        PAtlasSelect(null);
+        _pRepertoireVista?.LVistaSelect(null);
+        PAtlasChosenApply();
         POccurrenceEntryHide();
         POccurrenceFind();
 

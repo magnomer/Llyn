@@ -26,7 +26,7 @@ A failed save keeps the panel where it is, so the user can read why.
 
 ## `internal void PGuildClose()`
 
-Stops listening and closes the dropdowns, so nothing stays open over a window that is going.
+Closes the dropdowns, so nothing stays open over a window that is going.
 
 ## `internal bool PGuildLeaveConfirm()`
 
@@ -56,4 +56,4 @@ Reopens the side the last session ended on, but only the reading side while no A
 
 ## `internal void PGuildClear()`
 
-Returns the panel to nothing chosen: no Author, no Source, every list read afresh, the reading side shown.
+Returns the panel to nothing chosen: both vistas stand on nothing, every list read afresh, the reading side shown.

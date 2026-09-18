@@ -38,7 +38,6 @@ The entry editor finishes its own draft, and the Example editor finishes its own
 
 ## `internal void PCorpusClose()`
 
-Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so none outlives the window.
 
 ## `private void PCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)`

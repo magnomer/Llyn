@@ -12,8 +12,6 @@ public partial class PGuild : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pGuildObserver;
-
     public PGuild()
     {
         InitializeComponent();
@@ -31,9 +29,6 @@ public partial class PGuild : UserControl
         PAutographUnionList.ItemsSource = _pAutographUnion;
 
         PColophon.PColophonAttach(host);
-
-        _pGuildObserver = new PObserver(this, PGuildBulletinHandle);
-        engine.LEngineObserverAttach(_pGuildObserver);
     }
 
     internal void PGuildReset()
@@ -65,12 +60,6 @@ public partial class PGuild : UserControl
 
     internal void PGuildClose()
     {
-        if (_pGuildObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pGuildObserver);
-            _pGuildObserver = null;
-        }
-
         PEchelonDropdown.IsOpen = false;
         PLouverDropdown.IsOpen = false;
     }
@@ -82,12 +71,12 @@ public partial class PGuild : UserControl
 
     private void PGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pColophonReference is not null && PColophon.Visibility == Visibility.Visible;
+        e.CanExecute = _pOeuvreVista?.LVistaChosen is not null && PColophon.Visibility == Visibility.Visible;
     }
 
     private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pColophonReference is long shown && PColophon.Visibility == Visibility.Visible)
+        if (_pOeuvreVista?.LVistaChosen is long shown && PColophon.Visibility == Visibility.Visible)
         {
             await _pGuildHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
                 shown, LOwner.LOwnerReference, _pGuildHost.PWindowLegendRead("Source"), ticket));
@@ -113,7 +102,7 @@ public partial class PGuild : UserControl
             PAutographCancel();
             PGuildScribeShow(false);
 
-            if (_pRollAuthor is long kept && kept > 0)
+            if (_pGuildVista?.LVistaChosen is long kept && kept > 0)
             {
                 PVitaShow(kept);
                 return;
@@ -123,7 +112,7 @@ public partial class PGuild : UserControl
             return;
         }
 
-        if (_pRollAuthor is not long author || author <= 0)
+        if (_pGuildVista?.LVistaChosen is not long author || author <= 0)
         {
             PGuildClear();
             return;
@@ -146,14 +135,14 @@ public partial class PGuild : UserControl
 
     internal void PGuildScribeRestore(bool editing)
     {
-        if (editing && (_pRollAuthor is not long author || author <= 0))
+        if (editing && (_pGuildVista?.LVistaChosen is not long author || author <= 0))
         {
             return;
         }
 
         PGuildScribeShow(editing);
 
-        if (editing && _pRollAuthor is long shown)
+        if (editing && _pGuildVista?.LVistaChosen is long shown)
         {
             PGuildMode.IsEnabled = true;
             PAutographOpen(shown);
@@ -164,8 +153,8 @@ public partial class PGuild : UserControl
     {
         PAutographCancel();
 
-        _pRollAuthor = null;
-        PRollSelect(null);
+        _pGuildVista?.LVistaSelect(null);
+        PRollChosenApply();
         PColophonReferenceHide();
         POeuvreFind();
 

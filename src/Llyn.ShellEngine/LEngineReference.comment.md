@@ -137,3 +137,4 @@ Both are needed to order and to match, so the browsing panel decides neither.
 
 The Sources the sources panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries citing the chosen Source, so it is not applied here.
+Each row carries its chosen mark, true where its id is the one the vista stands on.

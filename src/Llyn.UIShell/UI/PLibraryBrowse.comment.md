@@ -18,18 +18,9 @@ The panel keeps no copy of any of the four and reads each from the vista where i
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-### `private async void PLibraryBulletinHandle(LBulletin bulletin)`
+### `private async void PLibraryWorkspaceUpdate()`
 
-The panel answers the engine rather than its own visibility.
-So a save made in the input panel lands here at once, with no tab switch to trigger it.
-A vista announcement carrying this panel's vista id re-lists the index, since order, filter or query moved.
-Another panel's vista is not this panel's business and is skipped.
-A workspace that moved is the one announcement that empties the panel first.
-Its flags are reloaded before any row is built.
-Every announcement that can change a listed row re-lists the index.
-A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
-Those announcements are skipped.
-Each keystroke in the input panel announces a draft change, so re-listing on it stalled every edit.
+A workspace that moved empties the panel and reloads its flags before any row is built.
 
 ### `private void PInquiryHandle(object sender, TextChangedEventArgs e)`
 
@@ -50,10 +41,19 @@ The mark on the button is redrawn from the vista at once.
 ### `internal async void PLibraryVistaRestore(LVista vista)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel answers the engine through the vista rather than its own visibility.
+So a save made in the input panel lands here at once, with no tab switch to trigger it.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement re-lists the index, since order, filter or query moved.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each re-lists too.
+A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row.
+Those subjects are not attached, so each keystroke in the input panel costs the index nothing.
+The vista replaced by this one was detached by the engine, so its observers fall silent.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The index is then listed from the vista.
+The same vista is handed to the display, which reads its chosen entry from it.
 
 ### `private void POrderRestore()`
 
@@ -98,9 +98,14 @@ So the list is re-read rather than left offering a row that no longer loads.
 
 After a store, the headword the index lists may have changed.
 It is read again from what was written.
-The display re-reads its own entry on the same announcement, so it is not filled twice here.
-An Entry announcement alone carries an entry id, so only it may select a row or find the entry gone.
 The editor keeps the entry it is on — the user corrected it, they did not leave it.
+So an entry stored while the editor is open becomes the chosen row before the index is re-listed.
+
+### `private void PLibraryEntryUpdate(LBulletin bulletin)`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The display re-reads its own entry on the same announcement, so it is not filled twice here.
+The panel only learns whether the entry is still there, and clears when it is gone.
 
 ### `return;`
 
@@ -155,7 +160,7 @@ Nothing unsaved means nothing to ask about.
 The Entry the panel shows, as the station the window records before a jump away.
 Zero says no Entry is shown, so there is no place to come back to.
 
-### `private void PLibraryEntryShow(long id, LEntryDraft draft)`
+### `private void PLibraryEntryShow(LEntryDraft draft)`
 
 The shared display draws the entry, and this panel decides what the toggle may then do.
 An entry is selected now, so it can be written as well as read.

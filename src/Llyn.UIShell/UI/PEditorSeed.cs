@@ -6,7 +6,7 @@ public partial class PEditor
 {
     internal string PEditorLanguageRead()
     {
-        return _pSpeakerChoice;
+        return PSpeakerLanguageRead();
     }
 
     internal void PEditorTagAdd(long tagId)

@@ -12,12 +12,18 @@ This file moves the library onto it, and the other tabs follow.
 
 The ids handed out so far, so each vista's bulletin names one vista.
 
+## `private readonly Dictionary<string, LVista> _lEngineVistas = [];`
+
+The vista now standing for each tab, so a restart can detach the one it replaces.
+
 ## `public LVista LEngineVistaStart(string tab, LCatalogOrder fallback, bool blank = false)`
 
 Starts a vista for `tab`, reading its order and filter from the stored layout.
 A tab with no stored order lists by `fallback`, and one with no stored filter hides nothing.
 `blank` makes an empty query list nothing, which only the duplex wings ask for.
 Every start reads the layout afresh, so a switched workspace hands the panel its own choices.
+The vista is attached as an observer before it is returned, so it carries bulletins to the panel.
+The vista started earlier for the same tab is detached first, so a switched workspace leaves no ghost.
 
 ## `public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista)`
 

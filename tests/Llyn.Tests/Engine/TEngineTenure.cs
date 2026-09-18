@@ -204,6 +204,44 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void TenureFinish_Changed_CommitsAuthor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectAuthor, null);
+        tenure.TTenureRequestDefer(TInterface.TAuthorNameCreate(tenure.LTenureId, "Ada Lovelace"));
+
+        long? stored = tenure.TTenureFinish(true);
+
+        Assert.NotNull(stored);
+        Assert.Equal("Ada Lovelace", engine.TEngineAuthorRead(stored.Value)?.LAuthorName);
+        Assert.Null(engine.TEngineDraftRead(tenure.LTenureId));
+    }
+
+    [Fact]
+    public void TenureFinish_Renamed_UpdatesAuthor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
+
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectAuthor, author.LAuthorId);
+        Assert.Equal("Ada", tenure.TTenureRead()?.LDraftAuthorHeld?.LAuthorName);
+        Assert.False(tenure.TTenureStateRead().LTenureStateChanged);
+
+        tenure.TTenureRequestDefer(TInterface.TAuthorNameCreate(tenure.LTenureId, "Ada Lovelace"));
+        tenure.TTenurePersist();
+        Assert.True(tenure.TTenureStateRead().LTenureStateChanged);
+
+        Assert.Equal(author.LAuthorId, tenure.TTenureFinish(true));
+        Assert.Equal("Ada Lovelace", engine.TEngineAuthorRead(author.LAuthorId)?.LAuthorName);
+        Assert.Single(engine.TEngineAuthorRead());
+    }
+
+    [Fact]
     public void TenureDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

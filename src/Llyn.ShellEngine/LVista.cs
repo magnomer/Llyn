@@ -1,11 +1,18 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LVista
+public sealed class LVista : LObserver
 {
     private readonly LEngine _lEngine;
+
+    private readonly object _lVistaGate = new();
+
+    private readonly List<(LSubject, LObserver)> _lVistaObservers = [];
+
+    private readonly List<(LSubject, LObserver)> _lVistaChosenObservers = [];
 
     internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank)
     {
@@ -77,6 +84,85 @@ public sealed class LVista
             return;
         }
 
-        LVistaChosen = id;
+        lock (_lVistaGate)
+        {
+            LVistaChosen = id;
+        }
+    }
+
+    public void LVistaObserverAttach(LSubject subject, LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        lock (_lVistaGate)
+        {
+            _lVistaObservers.Add((subject, observer));
+        }
+    }
+
+    public void LVistaChosenAttach(LSubject subject, LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        lock (_lVistaGate)
+        {
+            _lVistaChosenObservers.Add((subject, observer));
+        }
+    }
+
+    public void LVistaObserverDetach(LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        lock (_lVistaGate)
+        {
+            _lVistaObservers.RemoveAll(pair => ReferenceEquals(pair.Item2, observer));
+            _lVistaChosenObservers.RemoveAll(pair => ReferenceEquals(pair.Item2, observer));
+        }
+    }
+
+    public void LObserverBulletinHandle(LBulletin bulletin)
+    {
+        ArgumentNullException.ThrowIfNull(bulletin);
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista && bulletin.LBulletinId != LVistaId)
+        {
+            return;
+        }
+
+        (LSubject, LObserver)[] observers;
+        (LSubject, LObserver)[] chosenObservers;
+        lock (_lVistaGate)
+        {
+            observers = [.. _lVistaObservers];
+            chosenObservers = [.. _lVistaChosenObservers];
+        }
+
+        foreach ((LSubject subject, LObserver observer) in observers)
+        {
+            if (subject == bulletin.LBulletinSubject)
+            {
+                observer.LObserverBulletinHandle(bulletin);
+            }
+        }
+
+        foreach ((LSubject subject, LObserver observer) in chosenObservers)
+        {
+            if (subject != bulletin.LBulletinSubject)
+            {
+                continue;
+            }
+
+            long? chosen;
+            lock (_lVistaGate)
+            {
+                chosen = LVistaChosen;
+            }
+
+            if (bulletin.LBulletinId <= 0 || bulletin.LBulletinId == chosen)
+            {
+                observer.LObserverBulletinHandle(bulletin);
+            }
+        }
     }
 }

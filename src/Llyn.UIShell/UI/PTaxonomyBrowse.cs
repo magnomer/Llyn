@@ -15,36 +15,18 @@ public partial class PTaxonomy
 
     private readonly ObservableCollection<PMembershipItem> _pMembershipList = [];
 
-    private long? _pDisplayEntry;
-
     private LVista? _pTaxonomyVista;
 
-    private async void PTaxonomyBulletinHandle(LBulletin bulletin)
+    private async void PTaxonomyWorkspaceUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pTaxonomyVista is not null && bulletin.LBulletinId == _pTaxonomyVista.LVistaId)
-            {
-                PDirectoryFind();
-            }
+        await PEnsign.PEnsignLoad(_lEngine);
+        PTaxonomyReset();
+    }
 
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PTaxonomyReset();
-            return;
-        }
-
-        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            return;
-        }
-
-        PMembershipEntryUpdate(
-            bulletin.LBulletinSubject == LSubject.LSubjectTag ? 0 : bulletin.LBulletinId);
+    private void PTaxonomyTagUpdate()
+    {
+        PDirectoryFind();
+        PTaxonomyEntryUpdate();
     }
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
@@ -79,9 +61,18 @@ public partial class PTaxonomy
         PLatticeRestore();
     }
 
-    internal async void PTaxonomyVistaRestore(LVista vista)
+    internal async void PTaxonomyVistaRestore(LVista vista, LVista membership)
     {
         _pTaxonomyVista = vista;
+        _pMembershipVista = membership;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PDirectoryFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTaxonomyWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectTag, new PObserver(this, PTaxonomyTagUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PDirectoryFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDirectoryFind));
+        membership.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PMembershipEntryUpdate));
+        membership.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
+        PDisplay.PDisplayVistaRestore(membership);
         PFunnelRestore();
         PLatticeRestore();
 
@@ -187,7 +178,7 @@ public partial class PTaxonomy
             return;
         }
 
-        if (_pTaxonomyVista?.LVistaChosen is null && _pDisplayEntry is null)
+        if (_pTaxonomyVista?.LVistaChosen is null && _pMembershipVista?.LVistaChosen is null)
         {
             PDirectoryTagCreate();
             return;
@@ -236,9 +227,9 @@ public partial class PTaxonomy
 
             PTaxonomyScribeShow(false);
 
-            if (_pDisplayEntry is not null)
+            if (_pMembershipVista?.LVistaChosen is long shown)
             {
-                PMembershipEntryShow(_pDisplayEntry.Value);
+                PMembershipEntryShow(shown);
                 return;
             }
 
@@ -246,13 +237,13 @@ public partial class PTaxonomy
             return;
         }
 
-        if (_pDisplayEntry is null)
+        if (_pMembershipVista?.LVistaChosen is not long edited)
         {
             PTaxonomyClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
+        PEditor.PEditorEntryShow(edited);
         PTaxonomyScribeShow(true);
     }
 
@@ -268,7 +259,7 @@ public partial class PTaxonomy
 
     internal void PTaxonomyScribeRestore(bool editing)
     {
-        if (editing && _pDisplayEntry is null)
+        if (editing && _pMembershipVista?.LVistaChosen is null)
         {
             return;
         }
@@ -291,16 +282,16 @@ public partial class PTaxonomy
         return _pTaxonomyVista?.LVistaChosen ?? 0;
     }
 
-    private void PTaxonomyEntryShow(long id, LEntryDraft draft)
+    private void PTaxonomyEntryShow(LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(id, draft);
+        PDisplay.PDisplayShow(draft);
         PTaxonomyMode.IsEnabled = true;
     }
 
     private void PTaxonomyClear()
     {
-        _pDisplayEntry = null;
-        PMembershipSelect(null);
+        _pMembershipVista?.LVistaSelect(null);
+        PMembershipChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTaxonomyScribeShow(false);
@@ -315,7 +306,7 @@ public partial class PTaxonomy
 
     private void PTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pMembershipVista?.LVistaChosen is not long id)
         {
             return;
         }

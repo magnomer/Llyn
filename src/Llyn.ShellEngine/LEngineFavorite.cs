@@ -46,7 +46,7 @@ public sealed partial class LEngine
                 entries.Add(favorite.LFavoriteEntry);
             }
 
-            return LEngineVistaBuild(entries, null);
+            return LEngineVistaBuild(entries, vista.LVistaChosen);
         }
     }
 

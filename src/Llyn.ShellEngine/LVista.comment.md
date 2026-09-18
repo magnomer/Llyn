@@ -1,6 +1,6 @@
 # LVista.cs
 
-## `public sealed class LVista`
+## `public sealed class LVista : LObserver`
 
 The engine's view state for one catalog tab: order, language filter, query and chosen row.
 A panel holds one vista and its controls, and keeps no copy of any of the four.
@@ -10,11 +10,30 @@ Every change to order, filter or query raises a vista bulletin carrying this vis
 The panel re-lists its rows from that bulletin, so the vista and the list never disagree.
 An unchanged value raises nothing, so a repeated click costs no re-list.
 The chosen row raises nothing, since the panel that chose it re-marks its rows in place.
-It is driven on the UI thread alone and so takes no lock of its own.
+It is also the panel's subscription to the engine's bulletins.
+The engine attaches every vista it starts, and the panel attaches one observer per subject to the vista.
+So the panel writes no switch over the subject and compares no bulletin id against its own.
+Before this every panel took every bulletin and sorted them itself, a hundred comparisons over the shell.
+A vista bulletin reaches the panel only when it names this vista, so a sibling tab's move is never seen.
+A chosen observer is reached only for the row the panel stands on, or for a bulletin naming no row.
+The setters run on the UI thread, while a bulletin may arrive on the thread that raised it.
+So the observer lists and the chosen row are read under a gate of their own.
 
 ## `private readonly LEngine _lEngine;`
 
 The engine that saves the layout and raises the bulletin.
+
+## `private readonly object _lVistaGate = new();`
+
+Guards the observer lists and the chosen row against a bulletin raised on a worker thread.
+
+## `private readonly List<(LSubject, LObserver)> _lVistaObservers = [];`
+
+The observers reached for every bulletin of their subject, in the order they were attached.
+
+## `private readonly List<(LSubject, LObserver)> _lVistaChosenObservers = [];`
+
+The observers reached only when the bulletin names the chosen row or no row at all.
 
 ## `internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank)`
 
@@ -68,3 +87,29 @@ Takes the search text and announces the move.
 
 Makes the row of `id` the chosen one, or none for null.
 No bulletin follows, because a chosen row changes no list and the chooser marks it in place.
+The write is gated, since a bulletin on another thread reads the chosen row to pick its observers.
+
+## `public void LVistaObserverAttach(LSubject subject, LObserver observer)`
+
+Subscribes `observer` to every bulletin of `subject` that reaches this vista.
+A vista bulletin reaches it only when it carries this vista's id.
+Observers are reached in the order attached, so an earlier one may move the chosen row for a later one.
+
+## `public void LVistaChosenAttach(LSubject subject, LObserver observer)`
+
+Subscribes `observer` to the bulletins of `subject` that name the chosen row or no row at all.
+The display attaches its per-record redraws here, so another entry's favorite mark never redraws its heart.
+A bulletin with an id of zero or less names every record, so it is delivered whatever row is chosen.
+The chosen observers are reached after every plain observer, so a plain one that selects the stored row is honoured.
+
+## `public void LVistaObserverDetach(LObserver observer)`
+
+Stops reaching `observer` from either list.
+A panel detaches its observers before it takes a replacement vista, so the old one falls silent.
+
+## `public void LObserverBulletinHandle(LBulletin bulletin)`
+
+The engine's announcement, forwarded to the observers whose subject it names.
+A vista bulletin for another vista is dropped at the door.
+Both lists are copied under the gate and the calls are made outside it, as the engine does.
+The chosen row is read afresh before each chosen observer, so a selection made a moment ago counts.

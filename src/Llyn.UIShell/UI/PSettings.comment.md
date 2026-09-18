@@ -8,14 +8,22 @@ What each choice costs — a catalog swap, a whole different workspace — lives
 ## `internal void PSettingsAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine` and shows the choices already stored in it.
-That is the last thing done before user changes start being saved.
+The panel also listens for settings bulletins, which drive every redraw a saved choice needs.
 
 ## `internal void PSettingsSync()`
 
 Aligns every control of the panel to the settings and workspace the engine now holds.
 It runs on attach and again after a workspace change, since the new workspace may carry other choices.
-The ready flag is lowered while the controls are set, so none of them writes its value back.
+Setting a control raises its change event, and the handler writes the value back to the engine.
+That write leaves the record equal, so the engine neither saves nor raises a bulletin.
 A stored language the interface does not carry is shown as English, the language the program opened in.
+
+## `private void PSettingsBulletinHandle(LBulletin bulletin)`
+
+Redraws the panel after the engine reports a settings change.
+The language catalog is applied from the record, so the interface follows whatever the engine holds.
+The ledger summaries are rewritten, since every one of them prints a stored choice.
+While tabs are linked, every tab takes the most recently dragged tab's widths, so the link shows at once.
 
 ## Inline notes
 
@@ -24,9 +32,3 @@ A stored language the interface does not carry is shown as English, the language
 The window this panel sits in.
 It is who asks before a workspace change throws typed work away.
 It also owns the other panels that change moves onto the new workspace.
-
-### `private bool _pSettingsReady;`
-
-Whether the stored choices have finished being applied.
-Applying them raises the same change events a user action does, and those must not be written back as choices.
-It is lowered again whenever the controls are aligned to another workspace.

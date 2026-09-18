@@ -4,6 +4,10 @@
 
 The Gloss gestures of a card's sentence row, turned into requests against the held draft.
 
+## `private const string PWindowLanguage = "English";`
+
+The language the program's own text is in, and so the first guess for a new Gloss.
+
 ## `internal void PGlossAddHandle(object sender, RoutedEventArgs e)`
 
 Adds a Gloss at the end of the row's list, in English.

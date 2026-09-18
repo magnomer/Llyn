@@ -89,6 +89,7 @@ public sealed partial class LEngine
             LRequestAuthorPick sent => LEngineAuthorInsert(draft, sent),
             LRequestAuthorRemoval sent => LEngineAuthorRemove(draft, sent.LRequestAuthorId),
             LRequestAuthorShift sent => LEngineAuthorMove(draft, sent),
+            LRequestAuthorName sent => LEngineAuthorChange(draft, sent.LRequestText),
             LRequestSituationTitle sent => LEngineSituationChange(
                 draft,
                 sent.LRequestSituationId,

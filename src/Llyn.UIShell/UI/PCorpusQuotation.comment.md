@@ -8,9 +8,9 @@ A chosen row swaps the Example reading for the entry display in place, without l
 
 ## Inline notes
 
-### `private long? _pDisplayEntry;`
+### `private LVista? _pQuotationVista;`
 
-The Entry the right-hand side stands on, held as an id, while it shows an Entry and not an Example.
+The child vista whose chosen entry the right-hand side stands on, while it shows an Entry and not an Example.
 The right-hand side shows one or the other and never both.
 An Entry row swaps the Example reading for the entry display in place, and an Example row swaps it back.
 The chosen Example keeps its mark meanwhile, because it still narrows the middle column.
@@ -37,9 +37,15 @@ The sentence editor is put away first, since one draft at a time is held.
 No Entry is shown yet, so the editor stands open with the row list unmarked until a store names one.
 An Entry started with no Example chosen comes up blank, since every Entry is listed then.
 
-## `private void PQuotationEntryUpdate(long id)`
+## `private void PQuotationEntryUpdate(LBulletin bulletin)`
 
-A store announced by the engine redraws the shown Entry when the store touched it.
+An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
+The citations and the catalog are then refilled, since the store may quote an Example.
+
+## `private void PCorpusEntryUpdate()`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The shown Entry is read back and redrawn.
 A store that deleted it falls back to the chosen Example, or clears the panel when none is chosen.
 
 ## `private void PQuotationScribeHandle(bool editing)`

@@ -123,7 +123,7 @@ public partial class PEditor
         IReadOnlyList<LRegister> found;
         try
         {
-            found = _lEngine.LEngineRegisterFind(word, _pSpeakerChoice);
+            found = _lEngine.LEngineRegisterFind(word, PSpeakerLanguageRead());
         }
         catch (Exception)
         {

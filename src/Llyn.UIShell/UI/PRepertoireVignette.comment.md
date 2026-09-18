@@ -6,13 +6,6 @@ The reading side of the Repertoire panel, the page one chosen Situation is shown
 Its title stands at the head, the kind and the reference count under it, then the description and the media.
 The Corpus panel draws its excerpt the same way in `PCorpusExcerpt.cs`.
 
-## Inline notes
-
-### `private long? _pVignetteSituation;`
-
-The Situation the reading stands on, held as an id and never as a record.
-Every showing reads it back, so nothing stale is drawn and no comparison is made against a cached copy.
-
 ## `private string? PVignetteTextRead(LStateValue value)`
 
 What one stored field reads as, or null for one never written.

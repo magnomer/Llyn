@@ -45,6 +45,14 @@ The body names situation zero, which the engine lands on the Situation the draft
 
 Finishing a changed reference tenure stores the source the same way.
 
+## `public void TenureFinish_Changed_CommitsAuthor()`
+
+Finishing a changed author tenure creates the Author under the deferred name.
+
+## `public void TenureFinish_Renamed_UpdatesAuthor()`
+
+An author tenure on a stored Author reads its name, stays unchanged until a name is deferred, then renames it.
+
 ## `public void TenureDefer_GlossTwice_OneChronicleStep()`
 
 Two deferrals of one gloss text reach the chronicle as one step, so one undo clears the gloss.

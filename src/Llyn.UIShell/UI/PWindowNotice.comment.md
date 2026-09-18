@@ -62,6 +62,7 @@ A prompt that promises a save is worse than no prompt.
 The corpus panel is on the list now that its sentence editor holds a draft it can commit.
 The repertoire panel joins it on the same terms, its situation editor holding one too.
 The reference panel completes the list, so every editor in the shell is both asked and finished.
+The authors panel joins now that its editor holds a tenure, so a typed name is asked about at exit.
 
 ### `internal bool PWindowDiscardConfirm()`
 

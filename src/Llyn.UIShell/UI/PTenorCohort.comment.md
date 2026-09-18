@@ -5,10 +5,15 @@
 The entry list of the tenor panel: the Entries carrying the chosen Register, and the one the reader stands on.
 Choosing a row loads it back from the workspace into the reader, or the editor when that side is open.
 
-## `private void PCohortSelect(long? id)`
+## `private LVista? _pCohortVista;`
 
-Marks the entry row the reader stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
+The child vista of the entry column, handed to the display so it reads the chosen entry from it.
+It is the only holder of the shown entry, so every reader here asks it.
+
+## `private void PCohortChosenApply()`
+
+Marks the entry row the vista has chosen and clears the mark from every other row.
+No chosen entry leaves no row marked, which is what a cleared panel shows.
 
 ## `private void PCohortHandle(object sender, RoutedEventArgs e)`
 
@@ -28,10 +33,16 @@ They are refilled whenever the catalog is, because the chosen Register may have 
 A Register carrying no id stands for the whole workspace, which is what the engine reads an empty id as.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
-### `private void PCohortEntryUpdate(long id)`
+### `private void PCohortEntryUpdate(LBulletin bulletin)`
 
 A store is answered by re-reading the catalog rather than the entry list alone.
 Storing may have marked a card with a Register nothing carried, or taken away the last card that carried one.
+An entry stored while the editor is open becomes the chosen row first, since the user did not leave it.
+
+### `private void PTenorEntryUpdate()`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The entry is read back and shown again, or the panel clears when it is gone.
 
 ### `private void PCohortEntryCreate()`
 

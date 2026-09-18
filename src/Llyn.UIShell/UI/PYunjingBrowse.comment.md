@@ -20,14 +20,9 @@ It is null until the window hands one over, so the handlers do nothing before th
 The engine's view state for the rime column, saved under the `yunmu` tab since one record holds one ordering.
 It is null until the window hands one over, so the handlers do nothing before that.
 
-## `private async void PYunjingBulletinHandle(LBulletin bulletin)`
+## `private async void PYunjingWorkspaceUpdate()`
 
-A vista announcement carrying either column's vista id rebuilds the columns, since an order or a search moved.
-Another panel's vista is not this panel's business and is skipped.
-A moved workspace resets the panel, stored placements reload the columns, anything else refreshes the entry side.
-A settings change fills the category page again, since the respelling switch decides whether its own shows.
-A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
-Those announcements are skipped.
+A moved workspace reloads the flags and resets the panel.
 
 ## `private void PYunjingLoad()`
 
@@ -83,12 +78,22 @@ The vista saves it and announces it, and the announcement rebuilds the columns.
 
 A pick in the rime ordering menu closes the menu and hands the ordering to the rime vista.
 
-## `internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu)`
+## `internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)`
 
 Takes the two vistas the window started for the two columns and puts the panel on them.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement from either column rebuilds the columns, since an order or a search moved.
+Each column's vista forwards its own announcement only, so no other panel's vista is seen.
+The subjects shared by the panel are attached to the onset vista alone, so none is answered twice.
+Stored placements reload the columns, and a reflex fill rewrites an epithet, so it reloads them too.
+A settings change fills the category page again, since the respelling switch decides whether its own shows.
+Every settings switch raises that bulletin, so a language or epithet change fills the page again as well.
+An entry announcement goes to the xiaoyun vista, whose chosen row is the entry it may name.
+A draft edit or a fetched frequency, paradigm or script row changes no listed row, and is not attached.
 Both dropdown marks are drawn from them first.
 Search text still standing in either box is handed to its vista, so a switched workspace keeps the search.
 The columns are then loaded once for both.
+The xiaoyun vista is kept for the entry column and handed to the display, which reads its chosen entry.
 
 ## `private void PLadderRestore()`
 

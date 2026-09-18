@@ -11,8 +11,6 @@ public partial class PTenor : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pTenorObserver;
-
     public PTenor()
     {
         InitializeComponent();
@@ -25,9 +23,6 @@ public partial class PTenor : UserControl
 
         PGamut.ItemsSource = _pGamutList;
         PCohort.ItemsSource = _pCohortList;
-
-        _pTenorObserver = new PObserver(this, PTenorBulletinHandle);
-        engine.LEngineObserverAttach(_pTenorObserver);
 
         PDisplay.PDisplayAttach(host, engine);
 
@@ -54,24 +49,18 @@ public partial class PTenor : UserControl
 
     internal void PTenorClose()
     {
-        if (_pTenorObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pTenorObserver);
-            _pTenorObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }
 
     private void PTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pCohortVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pCohortVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTenorHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pTenorHost.PWindowLabelRead(), ticket));
@@ -80,7 +69,7 @@ public partial class PTenor : UserControl
 
     private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pCohortVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTenorHost.PWindowPortraitExport(entry);
         }

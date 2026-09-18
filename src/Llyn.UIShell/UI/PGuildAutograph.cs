@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -13,32 +14,24 @@ public partial class PGuild
 
     private readonly ObservableCollection<PRollItem> _pAutographUnion = [];
 
-    private long? _pAutographDraft;
-
-    private string _pAutographStored = string.Empty;
+    private LTenure? _pAutographTenure;
 
     private void PAutographOpen(long? id)
     {
-        _pAutographDraft = id;
+        PAutographCancel();
 
         string name = string.Empty;
-        if (id is long stored)
+        try
         {
-            LAuthor? author;
-            try
-            {
-                author = _lEngine.LEngineAuthorRead(stored);
-            }
-            catch (Exception exception)
-            {
-                _pGuildHost.PWindowFailureShow("Guild.LoadFailed", exception);
-                author = null;
-            }
-
-            name = author?.LAuthorName ?? string.Empty;
+            _pAutographTenure = _lEngine.LEngineTenureStart("guild", LSubject.LSubjectAuthor, id);
+            name = _pAutographTenure.LTenureRead()?.LDraftAuthorHeld?.LAuthorName ?? string.Empty;
+        }
+        catch (Exception exception)
+        {
+            _pAutographTenure = null;
+            _pGuildHost.PWindowFailureShow("Guild.LoadFailed", exception);
         }
 
-        _pAutographStored = name.Trim();
         PAutographName.Text = name;
         PAutographTallyShow(id ?? 0);
 
@@ -53,8 +46,12 @@ public partial class PGuild
 
     private void PAutographCancel()
     {
-        _pAutographDraft = null;
-        _pAutographStored = string.Empty;
+        if (_pAutographTenure is LTenure held)
+        {
+            _pAutographTenure = null;
+            held.LTenureFinish(false);
+        }
+
         PAutographName.Text = string.Empty;
         PAutographUnion.Text = string.Empty;
         _pAutographUnion.Clear();
@@ -71,8 +68,7 @@ public partial class PGuild
 
     private bool PAutographChangeCheck()
     {
-        string typed = (PAutographName.Text ?? string.Empty).Trim();
-        return !string.Equals(typed, _pAutographStored, StringComparison.Ordinal);
+        return _pAutographTenure?.LTenureStateRead().LTenureStateChanged == true;
     }
 
     private void PAutographChangeUpdate()
@@ -85,6 +81,31 @@ public partial class PGuild
 
     private void PAutographNameHandle(object sender, TextChangedEventArgs e)
     {
+        if (_pAutographTenure is LTenure held)
+        {
+            held.LTenureRequestDefer(new LRequestAuthorName(held.LTenureId, PAutographName.Text ?? string.Empty));
+        }
+
+        PAutographChangeUpdate();
+    }
+
+    private void PAutographDraftUpdate(LBulletin bulletin)
+    {
+        if (_pAutographTenure is not LTenure held || bulletin.LBulletinId != held.LTenureId)
+        {
+            return;
+        }
+
+        PAutographChangeUpdate();
+    }
+
+    private void PAutographTenureUpdate(LBulletin bulletin)
+    {
+        if (_pAutographTenure is not LTenure held || bulletin.LBulletinId != held.LTenureId)
+        {
+            return;
+        }
+
         PAutographChangeUpdate();
     }
 
@@ -97,29 +118,35 @@ public partial class PGuild
             return false;
         }
 
+        if (_pAutographTenure is not LTenure held)
+        {
+            return true;
+        }
+
+        long? stored;
         try
         {
-            if (_pAutographDraft is long stored)
-            {
-                _lEngine.LEngineAuthorUpdate(new LAuthor(stored, typed));
-                _pAutographStored = typed;
-                PAutographChangeUpdate();
-                return true;
-            }
-
-            LAuthor created = _lEngine.LEngineAuthorCreate(new LAuthor(0, typed));
-            _pRollAuthor = created.LAuthorId;
-            PRollFind();
-            PGuildMode.IsEnabled = true;
-            PGuildBin.IsEnabled = true;
-            PAutographOpen(created.LAuthorId);
-            return true;
+            stored = held.LTenureFinish(true);
         }
         catch (Exception exception)
         {
             _pGuildHost.PWindowFailureShow("Guild.SaveFailed", exception);
             return false;
         }
+
+        _pAutographTenure = null;
+        long? shown = _pGuildVista?.LVistaChosen is long chosen && chosen > 0 ? chosen : null;
+        if (stored is long author && author != shown)
+        {
+            _pGuildVista?.LVistaSelect(author);
+            PRollFind();
+            PGuildMode.IsEnabled = true;
+            PGuildBin.IsEnabled = true;
+            shown = author;
+        }
+
+        PAutographOpen(shown);
+        return true;
     }
 
     private void PAutographUnionHandle(object sender, TextChangedEventArgs e)
@@ -127,7 +154,7 @@ public partial class PGuild
         string word = (PAutographUnion.Text ?? string.Empty).Trim();
         _pAutographUnion.Clear();
 
-        if (word.Length == 0 || _pAutographDraft is not long self)
+        if (word.Length == 0 || _pGuildVista?.LVistaChosen is not long self || self <= 0)
         {
             return;
         }
@@ -162,7 +189,8 @@ public partial class PGuild
     {
         if (e.OriginalSource is not FrameworkElement row
             || row.DataContext is not PRollItem item
-            || _pAutographDraft is not long dropped)
+            || _pGuildVista?.LVistaChosen is not long dropped
+            || dropped <= 0)
         {
             return;
         }
@@ -208,7 +236,7 @@ public partial class PGuild
 
     private void PGuildBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRollAuthor is not long id || id <= 0 || _pColophonReference is not null)
+        if (_pGuildVista?.LVistaChosen is not long id || id <= 0 || _pOeuvreVista?.LVistaChosen is not null)
         {
             return;
         }

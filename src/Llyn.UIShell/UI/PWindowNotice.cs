@@ -106,7 +106,8 @@ public partial class PWindow
             (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish),
             (PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
             (PRepertoire.PRepertoireChangeCheck, PRepertoire.PRepertoireDraftFinish),
-            (PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish)
+            (PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
+            (PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish)
         ];
     }
 

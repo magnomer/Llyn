@@ -13,13 +13,8 @@ A language is a property of the entry, so filling the form is what moves the pan
 The language selector moved onto the draft's language, flag included.
 A language whose pack is no longer on disk is still shown.
 It is what the entry was written in.
-This runs on every render, so a selector already standing on the language does nothing.
+This runs on every render and applies the draft's language each time, since the panel keeps no copy.
 Everything that follows the language moves with it: typography, sentence frames and the parts of speech on offer.
-
-### `_pSpeakerEntry = true;`
-
-Recorded only when the draft moved the selector.
-A blank draft carries the language the selector chose, which tells the language menu nothing new.
 
 ### `private void PEditorExampleShow(string language)`
 

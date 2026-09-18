@@ -7,8 +7,6 @@ namespace Llyn.UIShell;
 
 public partial class PRepertoire
 {
-    private long? _pVignetteSituation;
-
     private string? PVignetteTextRead(LStateValue value)
     {
         return PStateConverter.PStateConverterCheck(value)

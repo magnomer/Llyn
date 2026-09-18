@@ -11,8 +11,6 @@ public partial class PLibrary : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pLibraryObserver;
-
     public PLibrary()
     {
         InitializeComponent();
@@ -24,9 +22,6 @@ public partial class PLibrary : UserControl
         _lEngine = engine;
 
         PIndex.ItemsSource = _pIndexList;
-
-        _pLibraryObserver = new PObserver(this, PLibraryBulletinHandle);
-        engine.LEngineObserverAttach(_pLibraryObserver);
 
         PDisplay.PDisplayAttach(host, engine);
 
@@ -55,12 +50,6 @@ public partial class PLibrary : UserControl
 
     internal void PLibraryClose()
     {
-        if (_pLibraryObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pLibraryObserver);
-            _pLibraryObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }

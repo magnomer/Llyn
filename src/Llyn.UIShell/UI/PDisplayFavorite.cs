@@ -19,7 +19,7 @@ public partial class PDisplay
 
     private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is null)
+        if (_pDisplayVista?.LVistaChosen is not long shown)
         {
             PDisplayFavorite.IsChecked = false;
             return;
@@ -30,11 +30,11 @@ public partial class PDisplay
         {
             if (marked)
             {
-                _lEngine.LEngineFavoriteSave(_pDisplayEntry!.Value);
+                _lEngine.LEngineFavoriteSave(shown);
             }
             else
             {
-                _lEngine.LEngineFavoriteDelete(_pDisplayEntry!.Value);
+                _lEngine.LEngineFavoriteDelete(shown);
             }
         }
         catch (Exception exception)

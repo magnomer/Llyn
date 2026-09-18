@@ -41,7 +41,7 @@ public partial class PEditor
 
     internal void PSentenceFrameLoad(string language)
     {
-        string chosen = string.IsNullOrWhiteSpace(language) ? _pSpeakerChoice : language;
+        string chosen = string.IsNullOrWhiteSpace(language) ? PSpeakerLanguageRead() : language;
 
         LSentenceOrder order = _lEngine.LEngineOrderRead(chosen);
         PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
@@ -135,7 +135,7 @@ public partial class PEditor
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
-            _pSpeakerChoice,
+            PSpeakerLanguageRead(),
             entryId => PEditorRequestSend(
                 new LRequestMentionAddition(PEditorDraft, cardId, rowId, offset, length, entryId, 0)));
     }

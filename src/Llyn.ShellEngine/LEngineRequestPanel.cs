@@ -110,6 +110,12 @@ public sealed partial class LEngine
             false);
     }
 
+    private static LDraft LEngineAuthorChange(LDraft draft, string name)
+    {
+        LAuthor held = draft.LDraftAuthorHeld ?? throw new LRefusal(LRefusal.LRefusalLink);
+        return draft with { LDraftAuthorHeld = held with { LAuthorName = name ?? string.Empty } };
+    }
+
     private static LDraft LEngineAuthorApply(
         LDraft draft, Func<IReadOnlyList<LAuthor>, IReadOnlyList<LAuthor>> change, bool credited = true)
     {

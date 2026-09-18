@@ -5,17 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor : LListener
 {
     private readonly ObservableCollection<PClipItem> _pClipItem = [];
-    private CancellationTokenSource? _pClipCancellation;
+    private LForay? _pClipForay;
     private bool _pClipSearching;
-    private bool _pClipFlagged;
-    private string _pClipLanguage = string.Empty;
-    private long _pClipTarget;
     private PClipReading? _pClipPreview;
 
     private async void PDownloaderHandle(object sender, RoutedEventArgs e)
@@ -32,47 +30,41 @@ public partial class PEditor : LListener
     private async Task PClipOpen(UIElement anchor, long target)
     {
         PClip.IsOpen = false;
-        _pClipTarget = target;
         PClip.PlacementTarget = anchor;
         PClip.IsOpen = true;
-        await PClipStart();
+        await PClipStart(target);
     }
 
-    private async Task PClipStart()
+    private async Task PClipStart(long target)
     {
         PClipCancel();
 
         string word = PHeadword.Text?.Trim() ?? string.Empty;
         _pClipItem.Clear();
-        _pClipSearching = word.Length > 0;
+        _pClipSearching = word.Length > 0 && _pEditorTenure is not null;
         PClipUpdate();
 
-        if (word.Length == 0)
+        if (word.Length == 0 || _pEditorTenure is not LTenure held)
         {
             return;
         }
 
-        _pClipCancellation = new CancellationTokenSource();
-        CancellationToken cancellation = _pClipCancellation.Token;
-
         try
         {
-            _pClipLanguage = _pSpeakerChoice;
-            _pClipFlagged = _lEngine.LEngineFlaggedCheck(_pClipLanguage);
-            if (_pClipFlagged)
+            string language = held.LTenureLanguageRead();
+            if (language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))
             {
                 await PEnsign.PEnsignVarietyLoad(
                     _lEngine,
-                    _pClipLanguage,
-                    _lEngine.LEngineVarietyRead(_pClipLanguage).Select(variety => variety.LVarietyName));
-                cancellation.ThrowIfCancellationRequested();
+                    language,
+                    _lEngine.LEngineVarietyRead(language).Select(variety => variety.LVarietyName));
+                if (!PClip.IsOpen)
+                {
+                    return;
+                }
             }
 
-            await _lEngine.LEngineRecordingFind(
-                PEditorDraft, word, _pClipLanguage, _pClipTarget, this, cancellation);
-        }
-        catch (OperationCanceledException)
-        {
+            _pClipForay = held.LTenureRecordingStart(word, target, this);
         }
         catch (Exception)
         {
@@ -83,9 +75,8 @@ public partial class PEditor : LListener
 
     private void PClipCancel()
     {
-        _pClipCancellation?.Cancel();
-        _pClipCancellation?.Dispose();
-        _pClipCancellation = null;
+        _pClipForay?.LForayCancel();
+        _pClipForay = null;
     }
 
     private PClipItem PClipPlace(string source, int order)
@@ -119,7 +110,8 @@ public partial class PEditor : LListener
         return new PClipReading(
             recording,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
-            PAccentItem.PAccentFlagFind(_pClipLanguage, _pClipFlagged, variety),
+            PAccentItem.PAccentFlagFind(
+                _pClipForay?.LForayLanguage ?? string.Empty, _pClipForay?.LForayFlagged ?? false, variety),
             action);
     }
 
@@ -192,53 +184,31 @@ public partial class PEditor : LListener
 
     internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PClipReading reading } || !reading.PClipReadingReady)
+        if (sender is not FrameworkElement { DataContext: PClipReading reading }
+            || !reading.PClipReadingReady
+            || _pClipForay is not LForay foray)
         {
             return;
         }
-
-        string word = PHeadword.Text?.Trim() ?? string.Empty;
-        if (word.Length == 0)
-        {
-            return;
-        }
-
-        string language = _pClipLanguage;
-        long target = _pClipTarget;
-        LRecording recording = reading.PClipReadingModel;
 
         reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");
         reading.PClipReadingReady = false;
 
         try
         {
-            string path = await _lEngine.LEngineRecordingSave(recording, word, language, CancellationToken.None);
+            bool attached = await foray.LForayRecordingSave(reading.PClipReadingModel);
             reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saved");
 
-            if (!string.Equals(PHeadword.Text?.Trim(), word, StringComparison.Ordinal) ||
-                !string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
+            if (!attached)
             {
                 return;
             }
 
-            long id = target;
-            if (target == 0)
-            {
-                _pRecording = path;
-                _pRecordingSource = recording.LRecordingSource;
-                PPlaybackAction.Visibility = Visibility.Visible;
-                PEditorAudioSend();
-                id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
-            }
-            else
-            {
-                PEditorRequestSend(
-                    new LRequestPronunciationAudio(PEditorDraft, target, path, recording.LRecordingSource));
-            }
+            long id = foray.LForayTarget == 0
+                ? PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0
+                : foray.LForayTarget;
 
             PNotationVarietySend(id, reading.PClipReadingVariety);
-            PPlaybackTrayShow();
-            PVolumeLoad();
             PClip.IsOpen = false;
         }
         catch (Exception)

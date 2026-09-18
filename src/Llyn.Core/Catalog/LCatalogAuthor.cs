@@ -7,7 +7,8 @@ namespace Llyn.Core;
 public sealed record LCatalogAuthor(
     LAuthor LCatalogAuthorStored,
     int LCatalogAuthorWork,
-    int LCatalogAuthorUsage)
+    int LCatalogAuthorUsage,
+    bool LCatalogAuthorChosen = false)
 {
     public static LCatalogAuthor LCatalogAuthorCreate(
         LAuthor author,

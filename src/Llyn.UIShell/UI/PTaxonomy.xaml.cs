@@ -11,8 +11,6 @@ public partial class PTaxonomy : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pTaxonomyObserver;
-
     public PTaxonomy()
     {
         InitializeComponent();
@@ -25,9 +23,6 @@ public partial class PTaxonomy : UserControl
 
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
-
-        _pTaxonomyObserver = new PObserver(this, PTaxonomyBulletinHandle);
-        engine.LEngineObserverAttach(_pTaxonomyObserver);
 
         PDisplay.PDisplayAttach(host, engine);
 
@@ -54,24 +49,18 @@ public partial class PTaxonomy : UserControl
 
     internal void PTaxonomyClose()
     {
-        if (_pTaxonomyObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pTaxonomyObserver);
-            _pTaxonomyObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }
 
     private void PTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pMembershipVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pMembershipVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTaxonomyHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pTaxonomyHost.PWindowLabelRead(), ticket));
@@ -80,7 +69,7 @@ public partial class PTaxonomy : UserControl
 
     private async void PTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pMembershipVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTaxonomyHost.PWindowPortraitExport(entry);
         }

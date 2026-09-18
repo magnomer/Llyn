@@ -10,6 +10,8 @@ public sealed partial class LEngine
 {
     private long _lEngineVistaCount;
 
+    private readonly Dictionary<string, LVista> _lEngineVistas = [];
+
     public LVista LEngineVistaStart(string tab, LCatalogOrder fallback, bool blank = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
@@ -31,7 +33,19 @@ public sealed partial class LEngine
             }
         }
 
-        return new LVista(this, Interlocked.Increment(ref _lEngineVistaCount), tab, order, filter, blank);
+        LVista vista = new(this, Interlocked.Increment(ref _lEngineVistaCount), tab, order, filter, blank);
+        lock (_lEngineGate)
+        {
+            if (_lEngineVistas.TryGetValue(tab, out LVista? former))
+            {
+                LEngineObserverDetach(former);
+            }
+
+            _lEngineVistas[tab] = vista;
+        }
+
+        LEngineObserverAttach(vista);
+        return vista;
     }
 
     public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista)

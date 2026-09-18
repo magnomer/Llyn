@@ -33,6 +33,21 @@ public sealed class TDraft
     }
 
     [Fact]
+    public void DraftStart_Fresh_TakesFirstLanguage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<string> languages = engine.TEngineLanguageRead();
+        LDraft started = engine.TEngineDraftStart("editor", null);
+
+        Assert.NotEmpty(languages);
+        Assert.Equal(languages[0], started.LDraftContent.LEntryDraftLanguage);
+        Assert.Equal(languages[0], engine.TEngineDraftRead(started.LDraftId)?.LDraftContent.LEntryDraftLanguage);
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+    }
+
+    [Fact]
     public void DraftCommit_WriteRefused_KeepsDraftFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

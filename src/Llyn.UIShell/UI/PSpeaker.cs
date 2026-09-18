@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -8,13 +7,12 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private const string PWindowLanguage = "English";
-
     private readonly ObservableCollection<PLanguageItem> _pLanguageItem = [];
 
-    private string _pSpeakerChoice = PWindowLanguage;
-
-    private bool _pSpeakerEntry;
+    private string PSpeakerLanguageRead()
+    {
+        return _pEditorTenure?.LTenureLanguageRead() ?? string.Empty;
+    }
 
     internal async void PSpeakerLoad()
     {
@@ -28,27 +26,15 @@ public partial class PEditor
             _pLanguageItem.Add(new PLanguageItem(language, PEnsign.PEnsignFind(language)));
         }
 
-        bool switched = false;
-        if (!_pSpeakerEntry && languages.Count > 0 && !languages.Contains(_pSpeakerChoice))
-        {
-            _pSpeakerChoice = languages[0];
-            switched = true;
-        }
-
-        PSpeakerName.Text = _pSpeakerChoice;
-        PHeadwordFontApply(_pSpeakerChoice);
-        PEditorContourApply(_pSpeakerChoice);
-        PEditorSilentApply(_pSpeakerChoice);
+        string chosen = PSpeakerLanguageRead();
+        PSpeakerName.Text = chosen;
+        PHeadwordFontApply(chosen);
+        PEditorContourApply(chosen);
+        PEditorSilentApply(chosen);
         PSpeakerFlagUpdate();
         PLinkFlagUpdate();
         PCategoryLoad();
-        PSentenceFrameLoad(_pSpeakerChoice);
-
-        if (switched)
-        {
-            PEditorExampleShow(_pSpeakerChoice);
-            PEditorLanguageSend();
-        }
+        PSentenceFrameLoad(chosen);
     }
 
     internal void PSpeakerHandle(object sender, RoutedEventArgs e)
@@ -58,16 +44,11 @@ public partial class PEditor
             return;
         }
 
-        if (!string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
-        {
-            _pSpeakerChoice = language;
-            _pSpeakerEntry = false;
-            PCategoryLoad();
-            PSentenceFrameLoad(language);
-            PEditorExampleShow(language);
-            PEditorLanguageSend();
-        }
         PSpeakerName.Text = language;
+        PEditorLanguageSend();
+        PCategoryLoad();
+        PSentenceFrameLoad(language);
+        PEditorExampleShow(language);
         PHeadwordFontApply(language);
         PEditorContourApply(language);
         PEditorSilentApply(language);
@@ -77,10 +58,10 @@ public partial class PEditor
 
     private async void PSpeakerFlagUpdate()
     {
-        string chosen = _pSpeakerChoice;
+        string chosen = PSpeakerLanguageRead();
         await PEnsign.PEnsignLoad(_lEngine);
 
-        if (chosen != _pSpeakerChoice)
+        if (chosen != PSpeakerLanguageRead())
         {
             return;
         }

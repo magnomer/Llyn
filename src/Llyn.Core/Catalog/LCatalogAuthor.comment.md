@@ -11,6 +11,7 @@ An Author credited nowhere is still a row, because the workspace still holds it.
 - `LCatalogAuthorStored` — The stored Author the row stands for.
 - `LCatalogAuthorWork` — How many Sources credit the Author.
 - `LCatalogAuthorUsage` — How many Entries and Examples cite the Sources crediting the Author.
+- `LCatalogAuthorChosen` — True on the row of the Author the vista stands on, false until the vista find fills it.
 
 ## `public static LCatalogAuthor LCatalogAuthorCreate(LAuthor author, IReadOnlyList<LReference>? works, IReadOnlyDictionary<long, int>? usage)`
 

@@ -158,8 +158,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pVignetteSituation = situation;
-        PAtlasSelect(situation);
+        _pRepertoireVista?.LVistaSelect(situation);
 
         PAtlasFind();
         PRepertoireScribeShow(false);

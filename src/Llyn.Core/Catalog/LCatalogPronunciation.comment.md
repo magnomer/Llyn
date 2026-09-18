@@ -12,6 +12,7 @@ An entry with nothing stored carries an empty sound, which is what the pending o
 - `LCatalogPronunciationSound` — The IPA of the primary pronunciation, the first of the entry, empty where none is stored.
 - `LCatalogPronunciationName` — The headword with its twin number, empty until the vista find fills it.
 - `LCatalogPronunciationEpithet` — The entry's epithet, null where none shows or until the vista find fills it.
+- `LCatalogPronunciationChosen` — True on the row of the entry the vista stands on, false until the vista find fills it.
 
 ## `public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)`
 

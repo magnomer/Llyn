@@ -29,7 +29,7 @@ Whether the editor is the shown side and is holding a change, so leaving would l
 
 ## `internal void PYunjingClose()`
 
-Stops listening and closes the reader and the editor.
+Closes the reader and the editor.
 
 ## `private string? PYunjingLanguageFind()`
 

@@ -36,7 +36,10 @@ public sealed record LAnatomyTone(
             : [];
     }
 
-    public static IReadOnlyList<string> LAnatomyToneScan(IReadOnlyList<LAnatomyTone> rules, string language, string tone)
+    public static IReadOnlyList<string> LAnatomyToneScan(
+        IReadOnlyList<LAnatomyTone> rules,
+        string language,
+        string tone)
     {
         ArgumentNullException.ThrowIfNull(rules);
 

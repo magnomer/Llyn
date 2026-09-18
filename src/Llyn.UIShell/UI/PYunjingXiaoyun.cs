@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -11,7 +12,7 @@ public partial class PYunjing
 {
     private readonly ObservableCollection<PXiaoyunItem> _pXiaoyunList = [];
 
-    private long? _pDisplayEntry;
+    private LVista? _pXiaoyunVista;
 
     private void PXiaoyunFind()
     {
@@ -53,11 +54,12 @@ public partial class PYunjing
             : query.Length == 0 ? "Yunjing.XiaoyunVacant"
             : "Yunjing.XiaoyunUnmatched");
         PXiaoyunEmpty.Visibility = _pXiaoyunList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        PXiaoyunSelect(_pDisplayEntry);
+        PXiaoyunChosenApply();
     }
 
-    private void PXiaoyunSelect(long? id)
+    private void PXiaoyunChosenApply()
     {
+        long? id = _pXiaoyunVista?.LVistaChosen;
         foreach (PXiaoyunItem item in _pXiaoyunList)
         {
             item.PXiaoyunItemChosen = id is not null && item.PXiaoyunItemId == id;
@@ -99,10 +101,10 @@ public partial class PYunjing
             return;
         }
 
-        _pDisplayEntry = id;
-        PXiaoyunSelect(id);
+        _pXiaoyunVista?.LVistaSelect(id);
+        PXiaoyunChosenApply();
         PYunjingBin.IsEnabled = true;
-        PYunjingEntryShow(id, draft);
+        PYunjingEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -110,18 +112,21 @@ public partial class PYunjing
         }
     }
 
-    private void PXiaoyunEntryUpdate(long id)
+    private void PXiaoyunEntryUpdate(LBulletin bulletin)
     {
-        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pDisplayEntry = id;
-            PXiaoyunSelect(id);
+            _pXiaoyunVista?.LVistaSelect(bulletin.LBulletinId);
+            PXiaoyunChosenApply();
             PYunjingBin.IsEnabled = true;
         }
 
         PYunjingLoad();
+    }
 
-        if (_pDisplayEntry is not long shown || (id > 0 && shown != id))
+    private void PYunjingEntryUpdate()
+    {
+        if (_pXiaoyunVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -142,21 +147,21 @@ public partial class PYunjing
             return;
         }
 
-        PYunjingEntryShow(shown, draft);
+        PYunjingEntryShow(draft);
     }
 
-    private void PYunjingEntryShow(long id, LEntryDraft draft)
+    private void PYunjingEntryShow(LEntryDraft draft)
     {
         PDiweiHide();
-        PDisplay.PDisplayShow(id, draft);
+        PDisplay.PDisplayShow(draft);
         PYunjingMode.IsEnabled = true;
     }
 
     private void PYunjingClear()
     {
         PDiweiHide();
-        _pDisplayEntry = null;
-        PXiaoyunSelect(null);
+        _pXiaoyunVista?.LVistaSelect(null);
+        PXiaoyunChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PYunjingScribeShow(false);
@@ -183,7 +188,7 @@ public partial class PYunjing
 
     private void PYunjingBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pXiaoyunVista?.LVistaChosen is not long id)
         {
             return;
         }
@@ -224,9 +229,9 @@ public partial class PYunjing
 
             PYunjingScribeShow(false);
 
-            if (_pDisplayEntry is not null)
+            if (_pXiaoyunVista?.LVistaChosen is long shown)
             {
-                PXiaoyunEntryShow(_pDisplayEntry.Value);
+                PXiaoyunEntryShow(shown);
                 return;
             }
 
@@ -234,13 +239,13 @@ public partial class PYunjing
             return;
         }
 
-        if (_pDisplayEntry is null)
+        if (_pXiaoyunVista?.LVistaChosen is not long edited)
         {
             PYunjingClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
+        PEditor.PEditorEntryShow(edited);
         PYunjingScribeShow(true);
     }
 
@@ -256,7 +261,7 @@ public partial class PYunjing
 
     internal void PYunjingScribeRestore(bool editing)
     {
-        if (editing && _pDisplayEntry is null)
+        if (editing && _pXiaoyunVista?.LVistaChosen is null)
         {
             return;
         }

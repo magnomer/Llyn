@@ -19,6 +19,15 @@ internal sealed class PObserver : LObserver
         _pObserverTarget = target;
     }
 
+    internal PObserver(DispatcherObject surface, Action target)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(target);
+
+        _pObserverDispatcher = surface.Dispatcher;
+        _pObserverTarget = _ => target();
+    }
+
     internal PObserver(Action<LBulletin> target)
     {
         ArgumentNullException.ThrowIfNull(target);

@@ -99,3 +99,4 @@ A Situation is matched over its title, its description and its kind.
 
 The Situations the repertoire panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries referencing the chosen Situation, so it is not applied here.
+Each row carries its chosen mark, true where its id is the one the vista stands on.

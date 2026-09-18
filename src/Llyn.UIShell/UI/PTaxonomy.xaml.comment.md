@@ -72,11 +72,8 @@ It is given the workspace because it fetches the flag of the language it shows.
 
 The editor opens on no entry: this panel puts it on one when the reader asks to write.
 The origin names this panel, so its held work is told apart from the other panels'.
-
-### `_pTaxonomyObserver = new PObserver(this, PTaxonomyBulletinHandle);`
-
 A store may have changed the tags the entry carries and the headword the membership row lists.
-The engine announces it, so the catalog and the entries under it are read again from what was written.
+The engine announces it through the vistas, so the catalog and the entries under it are read again.
 An entry can leave the chosen tag by being stored, and the panel must show that it did.
 An entry stored in another tab moves the same way.
 The announcement is listened to rather than a sibling panel.

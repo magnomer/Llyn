@@ -162,12 +162,12 @@ public partial class PEditor
         PReflexClear();
         PMarkerShow(null);
         PRecordingClear();
-        _pSpeakerEntry = false;
-        PHeadwordFontApply(_pSpeakerChoice);
-        PEditorContourApply(_pSpeakerChoice);
-        PEditorSilentApply(_pSpeakerChoice);
-        PEditorExampleShow(_pSpeakerChoice);
-        PSentenceFrameLoad(_pSpeakerChoice);
+        string language = PSpeakerLanguageRead();
+        PHeadwordFontApply(language);
+        PEditorContourApply(language);
+        PEditorSilentApply(language);
+        PEditorExampleShow(language);
+        PSentenceFrameLoad(language);
 
         PNoteContents.Text = string.Empty;
 

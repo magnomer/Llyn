@@ -19,6 +19,13 @@ The rows come back ordered under `order`, or under the name where an Author does
 
 The Authors the authors panel's vista lists, with the query and order read off the vista.
 The vista's filter hides kinds from the Sources crediting the chosen Author, so it is not applied here.
+Each row carries its chosen mark, true where its id is the one the vista stands on.
+
+## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre)`
+
+The Sources the authors panel's oeuvre vista lists, under the Author and the kinds the roll vista holds.
+Query and order come off the oeuvre vista, the chosen Author and the kind filter off the roll vista.
+Each row carries its chosen mark, true where its id is the one the oeuvre vista stands on.
 
 ## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`
 

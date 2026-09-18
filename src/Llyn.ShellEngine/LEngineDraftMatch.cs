@@ -27,6 +27,12 @@ public sealed partial class LEngine
                 && LEngineCreditMatch(one.LDraftAuthor, other.LDraftAuthor);
         }
 
+        if (one.LDraftAuthorHeld is LAuthor author)
+        {
+            return other.LDraftAuthorHeld is LAuthor named
+                && string.Equals(author.LAuthorName.Trim(), named.LAuthorName.Trim(), StringComparison.Ordinal);
+        }
+
         return LEngineDraftMatch(one.LDraftContent, other.LDraftContent);
     }
 

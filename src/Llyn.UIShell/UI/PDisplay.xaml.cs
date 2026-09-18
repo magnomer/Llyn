@@ -19,9 +19,7 @@ public partial class PDisplay : UserControl
 
     private LEngine _lEngine = null!;
 
-    private long? _pDisplayEntry;
-
-    private PObserver? _pDisplayObserver;
+    private LVista? _pDisplayVista;
 
     public PDisplay()
     {
@@ -45,10 +43,13 @@ public partial class PDisplay : UserControl
         _pDisplayHost = host;
         _lEngine = engine;
 
-        _pDisplayObserver = new PObserver(this, PDisplayBulletinHandle);
-        engine.LEngineObserverAttach(_pDisplayObserver);
-
         PVolumeLoad();
+    }
+
+    internal void PDisplayVistaRestore(LVista vista)
+    {
+        _pDisplayVista = vista;
+        PDisplayObserverAttach(vista);
     }
 
     private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)
@@ -65,11 +66,16 @@ public partial class PDisplay : UserControl
         return named;
     }
 
-    internal void PDisplayShow(long id, LEntryDraft draft)
+    internal void PDisplayShow(LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        _pDisplayEntry = id;
+        if (_pDisplayVista?.LVistaChosen is not long id)
+        {
+            PDisplayClear();
+            return;
+        }
+
         PDisplaySwath.PSwathClear();
         PDisplayFavoriteShow(id);
         PDisplayGraspShow(id);
@@ -204,7 +210,6 @@ public partial class PDisplay : UserControl
 
     internal void PDisplayClear()
     {
-        _pDisplayEntry = null;
         PDisplaySwath.PSwathClear();
         PDisplayFavorite.IsChecked = false;
         PDisplayGrasp.PGraspStep = 0;
@@ -249,12 +254,6 @@ public partial class PDisplay : UserControl
 
     internal void PDisplayClose()
     {
-        if (_pDisplayObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pDisplayObserver);
-            _pDisplayObserver = null;
-        }
-
         _pDisplayPlayer.Close();
     }
 

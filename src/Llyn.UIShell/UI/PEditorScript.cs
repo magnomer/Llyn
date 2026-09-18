@@ -16,7 +16,7 @@ public partial class PEditor
             return;
         }
 
-        string language = _pSpeakerChoice;
+        string language = PSpeakerLanguageRead();
         IReadOnlyList<LScriptImage> images;
         IReadOnlyList<LScriptStyle> styles;
         bool pending;

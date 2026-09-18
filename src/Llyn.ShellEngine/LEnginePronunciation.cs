@@ -69,7 +69,7 @@ public sealed partial class LEngine
                 entries.Add(row.LCatalogPronunciationEntry);
             }
 
-            IReadOnlyList<LVistaRow> built = LEngineVistaBuild(entries, null);
+            IReadOnlyList<LVistaRow> built = LEngineVistaBuild(entries, vista.LVistaChosen);
             List<LCatalogPronunciation> rows = new(found.Count);
             for (int index = 0; index < found.Count; index++)
             {
@@ -77,6 +77,7 @@ public sealed partial class LEngine
                 {
                     LCatalogPronunciationName = built[index].LVistaRowName,
                     LCatalogPronunciationEpithet = built[index].LVistaRowEpithet,
+                    LCatalogPronunciationChosen = built[index].LVistaRowChosen,
                 });
             }
 

@@ -6,10 +6,6 @@ public partial class PSettings
 {
     private void PSettingsEpithetHandle(object sender, RoutedEventArgs e)
     {
-        if (_pSettingsReady)
-        {
-            _lEngine.LEngineEpithetSave(PSettingsEpithet.IsChecked == true);
-            PLedgerMetaApply();
-        }
+        _lEngine.LEngineEpithetSave(PSettingsEpithet.IsChecked == true);
     }
 }

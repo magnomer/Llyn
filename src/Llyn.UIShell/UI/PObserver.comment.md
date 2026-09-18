@@ -14,6 +14,11 @@ An import runs on a worker, so its announcement would otherwise reach a panel wh
 
 Watches for `surface`, running `target` on the thread that surface belongs to.
 
+## `internal PObserver(DispatcherObject surface, Action target)`
+
+Watches for `surface` with a response that needs nothing from the bulletin.
+A list that re-reads itself whole on a subject is attached this way, with no wrapper method of its own.
+
 ## `internal PObserver(Action<LBulletin> target)`
 
 Watches for something that owns no controls, running `target` on the announcing thread.

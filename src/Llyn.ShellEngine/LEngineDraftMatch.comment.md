@@ -11,6 +11,7 @@ This is what tells held work apart from the record it was started from.
 
 Whether two held drafts say the same thing, whatever kind of record they hold.
 An example, situation or reference draft is compared through that record's own matcher.
+An author draft is compared by held name, trimmed, because a name is all it carries.
 An entry draft is compared through its content, so blank scaffolding is ignored as it is everywhere.
 
 ## `private static bool LEngineDraftMatch(LEntryDraft one, LEntryDraft other)`

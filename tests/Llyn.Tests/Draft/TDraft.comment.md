@@ -11,6 +11,11 @@ Held work that reaches the database leaves the drafts folder empty and the entry
 A commit that wrote the entry but kept the file would offer the same work back.
 The next session would read it as unfinished.
 
+## `public void DraftStart_Fresh_TakesFirstLanguage()`
+
+A draft started on no entry already carries the first language the engine lists.
+Carrying it counts as no change, so a form opened and closed untouched still stores nothing.
+
 ## `public void DraftCommit_WriteRefused_KeepsDraftFile()`
 
 A commit the database refuses leaves the file exactly where it was, and writes no entry.

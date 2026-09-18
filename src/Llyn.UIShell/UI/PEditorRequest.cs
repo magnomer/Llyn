@@ -121,7 +121,13 @@ public partial class PEditor
 
     private void PEditorLanguageSend()
     {
-        PEditorRequestSend(new LRequestLanguage(PEditorDraft, _pSpeakerChoice));
+        string language = PSpeakerName.Text ?? string.Empty;
+        if (language.Length == 0)
+        {
+            return;
+        }
+
+        PEditorRequestSend(new LRequestLanguage(PEditorDraft, language));
     }
 
     private void PEditorSpeechSend()

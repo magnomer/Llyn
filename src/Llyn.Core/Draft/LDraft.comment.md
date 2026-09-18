@@ -9,6 +9,7 @@ One draft holds one kind of work, told apart by which content field carries it.
 A draft naming no example, no situation and no source holds an entry.
 One naming an example holds a sentence and one naming a situation holds a context.
 One naming a source holds a citation.
+One naming a held author holds that author's name.
 The kind is read from the content rather than from a tag beside it, so the two cannot disagree.
 
 **Parameters**
@@ -31,6 +32,8 @@ The kind is read from the content rather than from a tag beside it, so the two c
 - `LDraftAuthor` — The authors credited on the source being written, in order.
   Empty for a draft holding no source.
   A credit with a minted id names an author commit creates before attaching.
+- `LDraftAuthorHeld` — The author being named, or null when this draft holds no author.
+  An author draft carries no source and no credits, because an author is a shared row edited alone.
 
 ## `public IReadOnlyList<LAuthor> LDraftAuthor { get; init; }`
 

@@ -19,9 +19,9 @@ An empty result is shown rather than hidden, and its text says whether nothing r
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
 
-### `private long? _pDisplayEntry;`
+### `private LVista? _pOccurrenceVista;`
 
-The Entry the right-hand side stands on, held as an id, while it shows an Entry and not a Situation.
+The child vista whose chosen entry the right-hand side stands on, while it shows an Entry and not a Situation.
 The right-hand side shows one or the other and never both.
 An Entry row swaps the Situation reading for the entry display in place, and a Situation row swaps it back.
 The chosen Situation keeps its mark meanwhile, because it still narrows the middle column.
@@ -33,9 +33,15 @@ An open Situation editor is cancelled first, after the caller has asked about it
 An editing side already open stays open, so the Entry lands in `PEditor` rather than in the display.
 An Entry that is gone leaves the right-hand side on the Situation and refills the middle column.
 
-## `private void POccurrenceEntryUpdate(long id)`
+## `private void POccurrenceEntryUpdate(LBulletin bulletin)`
 
-A store announced by the engine redraws the shown Entry when the store touched it.
+An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
+The catalog and its reference figures are then read again, since the store may reference a Situation.
+
+## `private void PRepertoireEntryUpdate()`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The shown Entry is read back and redrawn.
 A store that deleted it falls back to the chosen Situation, or clears the panel when none is chosen.
 
 ## `private void POccurrenceEntryCreate()`

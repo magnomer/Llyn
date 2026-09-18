@@ -20,24 +20,14 @@ The chosen tag is null when none is chosen, which is the whole workspace, not an
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-### `private string? _pDisplayEntry;`
+### `private async void PTaxonomyWorkspaceUpdate()`
 
-The entry the right-hand side stands on, or null when none is selected.
-The reader may show it and the editor may be correcting it.
+A workspace that moved empties the panel and reloads its flags before any row is built.
 
-### `private async void PTaxonomyBulletinHandle(LBulletin bulletin)`
+### `private void PTaxonomyTagUpdate()`
 
-The panel answers the engine rather than its own visibility.
-So a tag written in the input panel is in the catalog at once.
-No tab switch is needed to trigger it.
-A vista announcement carrying this panel's vista id rebuilds the catalog, since order, filter or query moved.
-The entry list is rebuilt with it, so a moved filter reaches it the same way.
-Another panel's vista is not this panel's business and is skipped.
-A workspace that moved is the one announcement that empties the panel first.
-Its flags are reloaded before any row is built.
-A tag announcement carries a tag id, not an entry id, so it only refreshes the catalog.
-A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
-Those announcements are skipped.
+A tag announcement carries a tag id, not an entry id, so it never selects a row.
+It rebuilds the catalog and re-reads the shown entry, whose chips may carry the renamed tag.
 Passing it on as an entry would make a fresh entry being written adopt the tag's id.
 
 ### `private void PExplorationHandle(object sender, TextChangedEventArgs e)`
@@ -54,13 +44,22 @@ The vista saves it and announces it, and the announcement rebuilds the catalog.
 The ticked languages are read off the menu and handed to the vista, which saves and announces them.
 The mark on the button is redrawn from the vista at once.
 
-### `internal async void PTaxonomyVistaRestore(LVista vista)`
+### `internal async void PTaxonomyVistaRestore(LVista vista, LVista membership)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel answers the engine through the vistas rather than its own visibility.
+So a tag written in the input panel is in the catalog at once, with no tab switch needed.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement rebuilds the catalog, since order, filter or query moved.
+The entry list is rebuilt with it, so a moved filter reaches it the same way.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each rebuilds too.
+An entry announcement goes to the membership vista, whose chosen row is the entry it may name.
+A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The catalog is then listed from the vista.
+The membership vista is kept for the entry column and handed to the display, which reads its chosen entry.
 
 ### `private void PFunnelRestore()`
 

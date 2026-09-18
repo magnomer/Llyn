@@ -228,13 +228,13 @@ public partial class PEditor
         List<string> languages = [];
         foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!string.Equals(item.PLanguageItemName, _pSpeakerChoice, StringComparison.Ordinal))
+            if (!string.Equals(item.PLanguageItemName, PSpeakerLanguageRead(), StringComparison.Ordinal))
             {
                 languages.Add(item.PLanguageItemName);
             }
         }
 
-        languages.Add(_pSpeakerChoice);
+        languages.Add(PSpeakerLanguageRead());
         return languages;
     }
 }

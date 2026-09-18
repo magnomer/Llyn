@@ -25,12 +25,18 @@ It subscribes to no announcement, because the panel is announced to and drives t
 Starts a held Source and fills the controls from it, which is never done apart.
 Every caller wants both, so the pair is offered as one call.
 
-## `internal void PImprintBulletinHandle(LBulletin bulletin)`
+## `internal void PImprintDraftUpdate(LBulletin bulletin)`
 
-Takes the bulletins the owning panel receives, since this area holds no observer of its own.
+Attached by the owning panel to its vista, since this area holds no vista of its own.
 A draft bulletin redraws the held draft when it is the one named.
+
+## `internal void PImprintTenureUpdate(LBulletin bulletin)`
+
 A tenure bulletin for the held draft settles the panel's rail and the area's enabled state.
-Any other bulletin re-reads the author catalog, and an author bulletin redraws the credits too.
+
+## `internal void PImprintAuthorUpdate()`
+
+An author bulletin re-reads the author catalog and redraws the credits.
 So a rename made elsewhere shows its new name in the credit rows.
 
 ## `internal void PImprintClear()`

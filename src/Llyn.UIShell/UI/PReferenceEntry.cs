@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -11,7 +12,7 @@ public partial class PReference
 {
     private readonly ObservableCollection<PFootnoteItem> _pFootnoteList = [];
 
-    private long? _pDisplayEntry;
+    private LVista? _pFootnoteVista;
 
     private void PFootnoteFind()
     {
@@ -20,7 +21,7 @@ public partial class PReference
         {
             read = _lEngine.LEngineEntryFind(
                 new LReference(
-                    _pColophonReference ?? 0,
+                    _pReferenceVista?.LVistaChosen ?? 0,
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified,
                     LReferenceKind.LReferenceKindUnspecified,
@@ -57,15 +58,16 @@ public partial class PReference
             string.IsNullOrWhiteSpace(PRummage.Text) ? "Source.Vacant" : "Source.Unmatched");
         PFootnoteEmpty.Visibility = _pFootnoteList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PFootnoteSelect(_pDisplayEntry);
+        PFootnoteChosenApply();
     }
 
-    private void PFootnoteSelect(long? id)
+    private void PFootnoteChosenApply()
     {
+        long? chosen = _pFootnoteVista?.LVistaChosen;
         foreach (PFootnoteItem item in _pFootnoteList)
         {
-            item.PFootnoteItemChosen = id is not null
-                && item.PFootnoteItemId == id;
+            item.PFootnoteItemChosen = chosen is not null
+                && item.PFootnoteItemId == chosen;
         }
     }
 
@@ -110,9 +112,9 @@ public partial class PReference
         PImprint.Visibility = Visibility.Collapsed;
         PColophon.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = id;
-        PFootnoteSelect(id);
-        PDisplay.PDisplayShow(id, draft);
+        _pFootnoteVista?.LVistaSelect(id);
+        PFootnoteChosenApply();
+        PDisplay.PDisplayShow(draft);
         PReferenceMode.IsEnabled = true;
         PReferenceBin.IsEnabled = false;
 
@@ -126,14 +128,14 @@ public partial class PReference
 
     private void PFootnoteEntryCreate()
     {
-        long? reference = _pColophonReference;
+        long? reference = _pReferenceVista?.LVistaChosen;
 
         PImprint.PImprintDraftCancel();
         PImprint.Visibility = Visibility.Collapsed;
         PColophon.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = null;
-        PFootnoteSelect(null);
+        _pFootnoteVista?.LVistaSelect(null);
+        PFootnoteChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PReferenceMode.IsEnabled = true;
@@ -148,7 +150,7 @@ public partial class PReference
 
     private void PFootnoteScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pFootnoteVista?.LVistaChosen is not long id)
         {
             if (!editing)
             {
@@ -190,7 +192,7 @@ public partial class PReference
 
         PFootnoteScribeShow(false);
 
-        if (_pDisplayEntry is long stored)
+        if (_pFootnoteVista?.LVistaChosen is long stored)
         {
             PFootnoteEntryShow(stored);
             return;
@@ -198,7 +200,7 @@ public partial class PReference
 
         PEditor.PEditorReset();
 
-        if (_pColophonReference is long kept)
+        if (_pReferenceVista?.LVistaChosen is long kept)
         {
             PReferenceShow(kept);
             return;
@@ -260,10 +262,22 @@ public partial class PReference
         PImprint.PImprintStoreRun();
     }
 
-    private void PFootnoteEntryUpdate(long id)
+    private void PFootnoteEntryUpdate(LBulletin bulletin)
     {
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+        if (bulletin.LBulletinId > 0
+            && _pFootnoteVista?.LVistaChosen is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pFootnoteVista?.LVistaSelect(bulletin.LBulletinId);
+        }
+
+        PShelfFind();
+    }
+
+    private void PReferenceEntryUpdate()
+    {
+        if (_pFootnoteVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -280,7 +294,7 @@ public partial class PReference
 
         if (draft is null)
         {
-            if (_pColophonReference is long kept)
+            if (_pReferenceVista?.LVistaChosen is long kept)
             {
                 PReferenceShow(kept);
                 return;
@@ -290,7 +304,7 @@ public partial class PReference
             return;
         }
 
-        PDisplay.PDisplayShow(shown, draft);
+        PDisplay.PDisplayShow(draft);
     }
 
     private void PFootnoteEntryHide()
@@ -302,14 +316,14 @@ public partial class PReference
             PEditor.PEditorReset();
         }
 
-        _pDisplayEntry = null;
-        PFootnoteSelect(null);
+        _pFootnoteVista?.LVistaSelect(null);
+        PFootnoteChosenApply();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
         PReferenceScribeShow(editing);
-        PReferenceMode.IsEnabled = _pColophonReference is not null;
-        PReferenceBin.IsEnabled = _pColophonReference is not null;
+        PReferenceMode.IsEnabled = _pReferenceVista?.LVistaChosen is not null;
+        PReferenceBin.IsEnabled = _pReferenceVista?.LVistaChosen is not null;
     }
 
     private void PReferenceFreshHandle(object sender, RoutedEventArgs e)
@@ -319,7 +333,7 @@ public partial class PReference
             return;
         }
 
-        if (_pColophonReference is not null || _pDisplayEntry is not null)
+        if (_pReferenceVista?.LVistaChosen is not null || _pFootnoteVista?.LVistaChosen is not null)
         {
             PFootnoteEntryCreate();
             return;

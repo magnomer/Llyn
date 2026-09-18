@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Llyn.UIShell;
 
@@ -7,13 +6,11 @@ public partial class PEditor
 {
     private void PEditorLanguageShow(string language)
     {
-        if (language.Length == 0 || string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
+        if (language.Length == 0)
         {
             return;
         }
 
-        _pSpeakerEntry = true;
-        _pSpeakerChoice = language;
         PSpeakerName.Text = language;
         PSpeakerFlagUpdate();
         PHeadwordFontApply(language);

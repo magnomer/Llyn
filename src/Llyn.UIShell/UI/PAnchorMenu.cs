@@ -37,7 +37,7 @@ public partial class PEditor
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<string> classes = LAnatomyTone.LAnatomyToneScan(
-            _lEngine.LEngineToneRead(_pSpeakerChoice), row.PReflexItemLanguage, row.PReflexItemTone);
+            _lEngine.LEngineToneRead(PSpeakerLanguageRead()), row.PReflexItemLanguage, row.PReflexItemTone);
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(_pReflexFanqie, row.PReflexItemAnchors, classes);
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)

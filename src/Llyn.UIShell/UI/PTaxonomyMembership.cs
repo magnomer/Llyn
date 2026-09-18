@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PTaxonomy
 {
-    private void PMembershipSelect(long? id)
+    private LVista? _pMembershipVista;
+
+    private void PMembershipChosenApply()
     {
+        long? id = _pMembershipVista?.LVistaChosen;
         foreach (PMembershipItem item in _pMembershipList)
         {
             item.PMembershipItemChosen = id is not null
@@ -54,7 +58,7 @@ public partial class PTaxonomy
             string.IsNullOrWhiteSpace(PScout.Text) ? "Tag.Vacant" : "Tag.Unmatched");
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PMembershipSelect(_pDisplayEntry);
+        PMembershipChosenApply();
     }
 
     private void PMembershipHandle(object sender, RoutedEventArgs e)
@@ -92,10 +96,10 @@ public partial class PTaxonomy
             return;
         }
 
-        _pDisplayEntry = id;
-        PMembershipSelect(id);
+        _pMembershipVista?.LVistaSelect(id);
+        PMembershipChosenApply();
         PTaxonomyBin.IsEnabled = true;
-        PTaxonomyEntryShow(id, draft);
+        PTaxonomyEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -103,19 +107,21 @@ public partial class PTaxonomy
         }
     }
 
-    private void PMembershipEntryUpdate(long id)
+    private void PMembershipEntryUpdate(LBulletin bulletin)
     {
-        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pDisplayEntry = id;
-            PMembershipSelect(id);
+            _pMembershipVista?.LVistaSelect(bulletin.LBulletinId);
+            PMembershipChosenApply();
             PTaxonomyBin.IsEnabled = true;
         }
 
         PDirectoryFind();
+    }
 
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+    private void PTaxonomyEntryUpdate()
+    {
+        if (_pMembershipVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -136,7 +142,7 @@ public partial class PTaxonomy
             return;
         }
 
-        PTaxonomyEntryShow(shown, draft);
+        PTaxonomyEntryShow(draft);
     }
 
     private void PMembershipEntryCreate()

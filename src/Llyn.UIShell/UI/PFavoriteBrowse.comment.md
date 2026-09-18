@@ -12,16 +12,9 @@ The panel keeps no copy of any of the three and reads each from the vista where 
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-## `private async void PFavoriteBulletinHandle(LBulletin bulletin)`
+## `private async void PFavoriteWorkspaceUpdate()`
 
-Re-reads the roster whenever the engine announces a change, wherever it was made.
-A vista announcement carrying this panel's vista id re-lists the roster, since order, filter or query moved.
-Another panel's vista is not this panel's business and is skipped.
-A mark set from another tab puts its row here without the tab being opened.
-A workspace that moved empties the panel first, and its flags are loaded before the rows are built.
-A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
-Those announcements are skipped.
-A changed grasp is the exception when the roster is ordered by grasp, because the row moves.
+A workspace that moved empties the panel and loads its flags before the rows are built.
 
 ## `private void PRecallHandle(object sender, TextChangedEventArgs e)`
 
@@ -62,10 +55,16 @@ Loads the entry and shows it in the display.
 An entry that has left the workspace clears the panel and re-reads the roster.
 An open editor is moved onto the same entry, so the two never stand on different records.
 
-## `private void PRosterEntryUpdate(long id)`
+## `private void PRosterEntryUpdate(LBulletin bulletin)`
 
-Re-reads the roster and the display after the editor stored the entry.
+Re-reads the roster after the editor stored the entry.
 A headword the store changed must reach the row that carries it.
+An entry stored while the editor is open becomes the chosen row first, since the user did not leave it.
+
+## `private void PFavoriteEntryUpdate(LBulletin bulletin)`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The entry is read back and shown again, or the panel clears when it is gone.
 
 ## `private void PEditorEntryRestore()`
 
@@ -92,7 +91,7 @@ The side chosen is pushed downstream as it changes, so the panel opens on it nex
 Asks the window whether the unsaved changes may be dropped.
 An editor holding nothing answers yes without asking.
 
-## `private void PFavoriteEntryShow(long id, LEntryDraft draft)`
+## `private void PFavoriteEntryShow(LEntryDraft draft)`
 
 Fills the display and enables the mode toggle, which is dead while nothing is selected.
 
@@ -108,10 +107,18 @@ Under any other ordering the grasp is not shown, so the rows stay where they are
 ## `internal async void PFavoriteVistaRestore(LVista vista)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel re-reads the roster through the vista whenever the engine announces a change, wherever it was made.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement re-lists the roster, since order, filter or query moved.
+A mark set from another tab puts its row here without the tab being opened.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each re-lists too.
+A changed grasp re-lists only under the grasp ordering, because only then does the row move.
+A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The roster is then listed from the vista.
+The same vista is handed to the display, which reads its chosen entry from it.
 
 ## `private void PSeriesRestore()`
 
@@ -130,8 +137,13 @@ An empty editor is the state a new record is written in.
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
 
-### `private void PRosterSelect(string? id)`
+### `private void PRosterChosenApply()`
 
-Marks the catalog row the panel stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown entry changes, so the mark and the right-hand side never disagree.
+Marks the row of the entry the vista stands on and clears the mark from every other row.
+No row is marked when the vista stands on none, which is what a cleared panel shows.
+It walks the rows already listed, so choosing an entry never re-reads the roster.
+
+### `private void PFavoriteCommandApply()`
+
+The delete button acts on the entry the vista stands on.
+It is derived from that one fact rather than switched on at each place an entry appears.

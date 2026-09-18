@@ -21,5 +21,5 @@ Read and written volatile, because a tenure's timer reads it off the UI thread.
 ## `public LTenure LEngineTenureStart(string origin, LSubject subject, long? id)`
 
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.
-Only an entry, example, situation or source can be held, so another subject is a caller's error, not a refusal.
+Only an entry, example, situation, source or author can be held, so another subject is a caller's error.
 A missing stored record refuses as the underlying start does.

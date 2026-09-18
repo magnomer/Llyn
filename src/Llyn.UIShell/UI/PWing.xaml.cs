@@ -20,8 +20,6 @@ public partial class PWing : UserControl
 
     private LVista? _pWingVista;
 
-    private PObserver? _pWingObserver;
-
     public PWing()
     {
         InitializeComponent();
@@ -34,15 +32,17 @@ public partial class PWing : UserControl
 
         PWingIndex.ItemsSource = _pWingIndex;
 
-        _pWingObserver = new PObserver(this, PWingBulletinHandle);
-        engine.LEngineObserverAttach(_pWingObserver);
-
         PWingDisplay.PDisplayAttach(host, engine);
     }
 
     internal async void PWingRestore(LVista vista, long? id)
     {
         _pWingVista = vista;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PWingIndexFind));
+        PWingDisplay.PDisplayVistaRestore(vista);
         _pWingIndex.Clear();
         await PEnsign.PEnsignLoad(_lEngine);
 
@@ -62,31 +62,7 @@ public partial class PWing : UserControl
 
     internal void PWingClose()
     {
-        if (_pWingObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pWingObserver);
-            _pWingObserver = null;
-        }
-
         PWingDisplay.PDisplayClose();
-    }
-
-    private void PWingBulletinHandle(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pWingVista is not null && bulletin.LBulletinId == _pWingVista.LVistaId)
-            {
-                PWingIndexFind();
-            }
-
-            return;
-        }
-
-        if (PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            PWingIndexFind();
-        }
     }
 
     private void PWingOrderHandle(object sender, RoutedEventArgs e)
@@ -269,7 +245,7 @@ public partial class PWing : UserControl
 
         _pWingVista?.LVistaSelect(id);
         PWingChosenApply();
-        PWingDisplay.PDisplayShow(id, draft);
+        PWingDisplay.PDisplayShow(draft);
     }
 
     private void PWingEntrySave()

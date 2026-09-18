@@ -33,4 +33,4 @@ The same list with the marked entries in a hidden language left out.
 
 The rows the favorites panel's vista lists, with the query, order and filter read off the vista.
 They come back as vista rows, twins numbered and epithets read in one scan, so the panel only copies them.
-No row is marked chosen, because the panel's shown entry is its own to mark.
+The row of the entry the vista stands on comes back marked chosen, so the panel keeps no choice.

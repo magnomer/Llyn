@@ -77,15 +77,16 @@ A recording the engine dropped on a headword or language change arrives as an em
 The saved recording belongs to the entry that was just written.
 It does not belong to the empty form the next entry is typed into.
 
-### `_pSpeakerEntry = false;`
+### `string language = PSpeakerLanguageRead();`
 
-An empty form stands on no entry, so its language is nobody's.
-The language menu may move it onto an installed pack.
+The fresh draft already carries the first listed pack, which the engine chose when it started.
+The typography and frames follow that language until the pill says otherwise.
 
 ### `PEditorLanguageSend();`
 
-A blank draft has no language until the form says which one it is typed in.
-The chosen language is sent at once, so the first keystroke lands in a draft that knows it.
+The language the pill still shows from the last entry is carried over to the fresh draft.
+It is sent at once, so the first keystroke lands in a draft that knows it.
+A pill not yet filled sends nothing, and the engine's first listed pack stands.
 
 ### `PEditorDraftRestore();`
 

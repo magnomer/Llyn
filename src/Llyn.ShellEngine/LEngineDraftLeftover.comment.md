@@ -16,6 +16,7 @@ Such a draft is dropped here with its claim and its court rows.
 A sentence draft is measured the same way, against the Example it names rather than the entry.
 A situation draft is measured against the Situation it names.
 A source draft is measured against the Reference it names.
+An author draft is measured against the Author it names by name alone.
 A draft naming no entry, or an entry since deleted, is left for recovery to offer back.
 So is one whose content differs from the entry it names, which is work the user would lose.
 A draft this engine holds, or another running copy claims, is passed over untouched.

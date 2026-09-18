@@ -94,6 +94,7 @@ The name is resolved here, because matching on an id the reader never sees would
 
 The Examples the corpus panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries quoting the chosen Example, so it is not applied here.
+Each row carries its chosen mark, true where its id is the one the vista stands on.
 
 ## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
 

@@ -13,6 +13,8 @@ Applies `state` and the settings' layout records across the shell.
 Every browse panel takes a vista started here, which reads its own order and filter from the tab's layout record.
 Each panel's designed ordering is named at the call, since the record holds nothing before a choice.
 The yunjing panel takes two, since its two columns keep two orderings under two records.
+A tab whose middle column lists entries under a chosen record takes a child vista for that column as well.
+The child vista carries the chosen entry, which the display reads.
 It is also the Entry each duplex side stands on.
 It is also the tab standing open and whether that tab shows its editor.
 The vistas are handed over before the tab, so the opening panel lists in the ordering it was left in.

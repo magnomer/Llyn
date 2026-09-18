@@ -6,48 +6,47 @@ Audio download as the editor shows it.
 Every pronunciation row carries its own download button, and the menu opens under the one pressed.
 The menu is one popup the editor owns, retargeted at the row that asked for it.
 Opening it starts a search for recordings of the headword, the same search from whichever row.
+The search is a foray the tenure starts, and the menu keeps only that handle.
+The word, language, target row and flag mode are read off the foray, never copied.
 Recordings stream in from the engine and fill the list, one per variety a source returned.
 The engine already narrowed them to the variety of the row that opened the menu.
 Each recording can be previewed.
-Taking one downloads it into the workspace, attaches it to that row, and tags the row with its variety.
+Taking one has the foray download and attach it to that row, then tags the row with its variety.
+The form refills from the draft bulletin that attach raises.
 This is the shell side of `LListener`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
 
 ## Inline notes
 
-### `_pClipFlagged = _lEngine.LEngineFlaggedCheck(_pClipLanguage);`
+### `if (language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))`
 
-Whether the pack shows its varieties as flags is asked once, when the search starts.
-In flag mode every declared variety's flag is resolved before the search.
+In flag mode every declared variety's flag is resolved before the search starts.
 A recording's flag is then ready the moment the recording lands.
-The language is kept with the answer, because the speaker choice may change while the search is still running.
+A menu closed while the flags loaded starts no search.
 
-### `await _lEngine.LEngineRecordingFind(`
+### `_pClipForay = held.LTenureRecordingStart(word, target, this);`
 
-The panel asks and then listens.
-It passes the draft it is editing, so the engine can hand back what that draft already found.
-The search is over when the listener is told it is, never when this call returns.
+The tenure starts the search and the menu listens.
+The tenure passes the draft it holds, so the engine can hand back what that draft already found.
+The search is over when the listener is told it is, never when the start returns.
 The engine reports the end through LListenerFinish.
-Reading completion off the awaited task gave the menu a second opinion.
-The search is not one the menu runs.
 
 ### `catch (Exception)`
-
-Superseded by a newer discovery, or the window closed.
-Ignore it.
-
-### `private async Task PClipOpen(UIElement anchor, long target)`
-
-Opens the menu under the button of one row and remembers which row it serves.
-A target of zero is the primary row, which the engine may not have minted yet.
-The popup is shut first, so a press on another row's button moves it instead of leaving it put.
-
-### `_pClipSearching = false;`
 
 A discovery that could not be started reports no end of its own.
 So the menu is taken out of its searching state here.
 It is not left running under a search that never began.
+
+### `private async Task PClipOpen(UIElement anchor, long target)`
+
+Opens the menu under the button of one row and starts the search for that row.
+A target of zero is the primary row, which the engine may not have minted yet.
+The popup is shut first, so a press on another row's button moves it instead of leaving it put.
+
+### `private void PClipCancel()`
+
+Ends the search in flight and drops the handle, so a stale arrival finds no foray to read.
 
 ### `private PClipItem PClipPlace(string source, int order)`
 
@@ -59,7 +58,7 @@ A new row opens saying it is searching, so every declared source is visible befo
 ### `private PClipReading PClipReadingCreate(LRecording recording)`
 
 Builds the previewable, takeable entry for one recording that carries an address.
-Its label and flag are resolved as a pronunciation row resolves its own, under the language the search began for.
+Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.
 An untagged recording gets neither, so the row shows its two buttons alone.
 
 ### `private void PClipUpdate()`
@@ -106,19 +105,16 @@ The download is reported on the recording that was taken, not on the status card
 That card belongs to the search.
 A recording still arriving would overwrite whatever was written there.
 
-### `return;`
+### `if (!attached)`
 
-The form moved on while the bytes came down.
+The draft moved on while the bytes came down, and the foray attached nothing.
 The file stays in the workspace.
 But it is audio of a word the form no longer holds.
 
-### `if (target == 0)`
+### `long id = foray.LForayTarget == 0`
 
-The primary row keeps its recording on the form, the way it always has.
-A further row is sent an audio request on its own id, and the draft render shows the file.
-Either way the recording is fetched for the headword as it stands, and the engine drops it on a change.
-The recording is sent as a request at once, because a pick is a whole action.
-The primary row's id is read back after the audio is sent, since the engine mints that row late.
+The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
+The primary row's id is read back after the audio is attached, since the engine mints that row late.
 
 ### `PNotationVarietySend(id, reading.PClipReadingVariety);`
 

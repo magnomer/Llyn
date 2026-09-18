@@ -1,6 +1,6 @@
 # LTenure.cs
 
-## `public sealed class LTenure`
+## `public sealed partial class LTenure`
 
 The engine's hold on one draft, from the start of editing to its commit or its cancel.
 A panel holds one tenure and its controls, and nothing else about the draft.
@@ -69,6 +69,11 @@ The draft id, which is also the id every draft and tenure bulletin carries.
 
 The held draft as the engine has it, or null once the tenure ended.
 
+## `public string LTenureLanguageRead()`
+
+The held draft's language, or empty once the tenure ended.
+The editor reads its language here rather than mirroring it in a field of its own.
+
 ## `public LTenureState LTenureStateRead()`
 
 The state in one reading: changed, refusal, undo, redo and halted.
@@ -108,7 +113,7 @@ Drops the unreadable values of the draft, so a refused commit can be tried again
 
 ## `public void LTenureCancel()`
 
-Discards the draft and ends the tenure.
+Discards the draft and ends the tenure, cancelling any search still in flight for it.
 The tenure is marked ended before the engine is asked, so a failing discard cannot leave it writing.
 A failure here is swallowed, because the caller is already leaving the work behind.
 
@@ -119,6 +124,7 @@ Not storing cancels at once, so nothing waiting is written into a draft about to
 Otherwise what was waiting is written first, and nothing changed cancels and answers null.
 A halted tenure rethrows the failure that halted it, so the panel shows why and stays open.
 A refused commit leaves the tenure alive over the draft still on disk.
+A commit that went through cancels any search still in flight, since the draft it served is gone.
 
 ## `private long LTenureCommit()`
 

@@ -5,15 +5,20 @@
 The entry side of the yunjing panel: the entries at the chosen cell, the reader, the editor and their buttons.
 It mirrors the tenor panel's entry side, so an entry is read, edited, made and deleted the same way here.
 
+## `private LVista? _pXiaoyunVista;`
+
+The child vista of the entry column, handed to the display so it reads the chosen entry from it.
+It is the only holder of the shown entry, so every reader here asks it.
+
 ## `private void PXiaoyunFind()`
 
 Lists the entries at the cell the chosen onset and rime name together, or nothing while neither is chosen.
 The entry search narrows them by headword, and entries sharing a headword are numbered apart.
 The empty text says to choose, that the cell is empty, or that nothing matches.
 
-## `private void PXiaoyunSelect(long? id)`
+## `private void PXiaoyunChosenApply()`
 
-Marks the entry row the reader stands on.
+Marks the entry row the vista has chosen and clears the mark from every other row.
 
 ## `private void PXiaoyunHandle(object sender, RoutedEventArgs e)`
 
@@ -24,11 +29,16 @@ Reads the clicked entry, after an unsaved draft is settled.
 Reads one entry into the reader, and into the editor too when it is the shown side.
 An entry gone meanwhile clears the reader and reloads the columns.
 
-## `private void PXiaoyunEntryUpdate(long id)`
+## `private void PXiaoyunEntryUpdate(LBulletin bulletin)`
 
-An entry the editor just saved becomes the shown one, then the columns reload and the reader is read again.
+An entry the editor just saved becomes the shown one, then the columns reload.
 
-## `private void PYunjingEntryShow(long id, LEntryDraft draft)`
+## `private void PYunjingEntryUpdate()`
+
+Reached only for the entry the panel stands on, or for a store that named no entry.
+The entry is read back and shown again, or the panel clears when it is gone.
+
+## `private void PYunjingEntryShow(LEntryDraft draft)`
 
 Shows a draft in the reader and lets the mode switch be used.
 A category page standing there is hidden first.

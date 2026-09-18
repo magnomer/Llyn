@@ -7,6 +7,8 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
+    private const string PWindowLanguage = "English";
+
     internal void PGlossAddHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)

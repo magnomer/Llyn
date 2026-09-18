@@ -43,30 +43,23 @@ public partial class PImprint : UserControl, PChronicleHost
         PImprintApply(null);
     }
 
-    internal void PImprintBulletinHandle(LBulletin bulletin)
+    internal void PImprintDraftUpdate(LBulletin bulletin)
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+        PImprintDraftRestore(bulletin.LBulletinId);
+    }
+
+    internal void PImprintTenureUpdate(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinId == PImprintDraft)
         {
-            PImprintDraftRestore(bulletin.LBulletinId);
-            return;
+            PImprintChangeUpdate();
         }
+    }
 
-        if (bulletin.LBulletinSubject == LSubject.LSubjectTenure)
-        {
-            if (bulletin.LBulletinId == PImprintDraft)
-            {
-                PImprintChangeUpdate();
-            }
-
-            return;
-        }
-
+    internal void PImprintAuthorUpdate()
+    {
         PAuthorFind();
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectAuthor)
-        {
-            PImprintDraftRestore();
-        }
+        PImprintDraftRestore();
     }
 
     internal void PImprintClose()

@@ -11,8 +11,6 @@ public partial class PYunjing : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pYunjingObserver;
-
     public PYunjing()
     {
         InitializeComponent();
@@ -26,9 +24,6 @@ public partial class PYunjing : UserControl
         PShengmu.ItemsSource = _pShengmuList;
         PYunmu.ItemsSource = _pYunmuList;
         PXiaoyun.ItemsSource = _pXiaoyunList;
-
-        _pYunjingObserver = new PObserver(this, PYunjingBulletinHandle);
-        engine.LEngineObserverAttach(_pYunjingObserver);
 
         PDisplay.PDisplayAttach(host, engine);
         PDiweiAttach();
@@ -65,12 +60,6 @@ public partial class PYunjing : UserControl
 
     internal void PYunjingClose()
     {
-        if (_pYunjingObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pYunjingObserver);
-            _pYunjingObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }
@@ -90,12 +79,12 @@ public partial class PYunjing : UserControl
 
     private void PYunjingPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pXiaoyunVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pXiaoyunVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pYunjingHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pYunjingHost.PWindowLabelRead(), ticket));
@@ -104,7 +93,7 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pXiaoyunVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pYunjingHost.PWindowPortraitExport(entry);
         }

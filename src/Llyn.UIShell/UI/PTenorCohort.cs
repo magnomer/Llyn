@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PTenor
 {
-    private void PCohortSelect(long? id)
+    private LVista? _pCohortVista;
+
+    private void PCohortChosenApply()
     {
+        long? id = _pCohortVista?.LVistaChosen;
         foreach (PCohortItem item in _pCohortList)
         {
             item.PCohortItemChosen = id is not null
@@ -54,7 +58,7 @@ public partial class PTenor
             string.IsNullOrWhiteSpace(PQuest.Text) ? "Register.Vacant" : "Register.Unmatched");
         PCohortEmpty.Visibility = _pCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PCohortSelect(_pDisplayEntry);
+        PCohortChosenApply();
     }
 
     private void PCohortHandle(object sender, RoutedEventArgs e)
@@ -92,10 +96,10 @@ public partial class PTenor
             return;
         }
 
-        _pDisplayEntry = id;
-        PCohortSelect(id);
+        _pCohortVista?.LVistaSelect(id);
+        PCohortChosenApply();
         PTenorBin.IsEnabled = true;
-        PTenorEntryShow(id, draft);
+        PTenorEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -103,19 +107,21 @@ public partial class PTenor
         }
     }
 
-    private void PCohortEntryUpdate(long id)
+    private void PCohortEntryUpdate(LBulletin bulletin)
     {
-        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pDisplayEntry = id;
-            PCohortSelect(id);
+            _pCohortVista?.LVistaSelect(bulletin.LBulletinId);
+            PCohortChosenApply();
             PTenorBin.IsEnabled = true;
         }
 
         PGamutFind();
+    }
 
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+    private void PTenorEntryUpdate()
+    {
+        if (_pCohortVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -136,7 +142,7 @@ public partial class PTenor
             return;
         }
 
-        PTenorEntryShow(shown, draft);
+        PTenorEntryShow(draft);
     }
 
     private void PCohortEntryCreate()

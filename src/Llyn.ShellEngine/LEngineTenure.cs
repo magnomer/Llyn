@@ -22,8 +22,9 @@ public sealed partial class LEngine
             LSubject.LSubjectExample => LEngineExampleStart(origin, id),
             LSubject.LSubjectSituation => LEngineSituationStart(origin, id),
             LSubject.LSubjectReference => LEngineReferenceStart(origin, id),
+            LSubject.LSubjectAuthor => LEngineAuthorStart(origin, id),
             _ => throw new ArgumentOutOfRangeException(
-                nameof(subject), subject, "A tenure holds only an entry, example, situation or reference."),
+                nameof(subject), subject, "A tenure holds only an entry, example, situation, reference or author."),
         };
 
         return new LTenure(this, subject, started.LDraftId);

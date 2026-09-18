@@ -23,19 +23,19 @@ The panel keeps no copy of any of the three and reads each from the vista where 
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-## `private async void PCorpusBulletinHandle(LBulletin bulletin)`
+## `private void PTranscriptDraftUpdate(LBulletin bulletin)`
 
-Re-reads the workspace whenever the engine announces a change, wherever it was made.
-A vista announcement carrying this panel's vista id refills the catalog, since order, filter or query moved.
-The entry column is refilled with it, so a moved filter reaches it the same way.
-Another panel's vista is not this panel's business and is skipped.
-A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
-A tenure bulletin says the held draft's state moved, so the rail's buttons are settled and nothing else is read.
-A fetched frequency, paradigm, script, fanqie or reflex row changes no example or entry row, so those read nothing.
-The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
+A draft bulletin for the held draft is the panel's own typing coming back, so it redraws the editor.
+Another draft is some other panel's and is left alone.
+
+## `private void PTranscriptTenureUpdate(LBulletin bulletin)`
+
+A tenure bulletin for the held draft says its state moved, so the rail's buttons are settled.
+
+## `private async void PCorpusWorkspaceUpdate()`
+
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
-An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
-Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
+The panel is then emptied and listed again.
 
 ### `private void PQueryHandle(object sender, TextChangedEventArgs e)`
 
@@ -103,13 +103,22 @@ The held draft goes first, because nothing may write into a draft the panel no l
 The mode toggle and the bin are disabled with it.
 There is nothing to edit or delete while nothing is selected.
 
-### `internal async void PCorpusVistaRestore(LVista vista)`
+### `internal async void PCorpusVistaRestore(LVista vista, LVista quotation)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel re-reads the workspace through the vistas whenever the engine announces a change, wherever it was made.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement refills the catalog, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+A stored Example or Source refills the citations and the catalog, because a row cites a Source.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills the catalog too.
+An entry announcement goes to the quotation vista, whose chosen row is the entry it may name.
+A fetched frequency, paradigm, script or fanqie row changes no example or entry row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The speakers, the citations and the catalog are then listed.
+The quotation vista is kept for the entry column and handed to the display, which reads its chosen entry.
 
 ### `private void PRankRestore()`
 
@@ -128,11 +137,11 @@ An empty editor is the state a new record is written in.
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
 
-### `private void PAnthologySelect(long? id)`
+### `private void PAnthologyChosenApply()`
 
-Marks the catalog row the panel stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown example changes, so the mark and the right-hand side never disagree.
+Marks the row of the Example the vista stands on and clears the mark from every other row.
+No row is marked when the vista stands on none, which is what a cleared panel shows.
+It walks the rows already listed, so choosing an Example never re-reads the anthology.
 
 ## `internal long PCorpusVoyageRead()`
 

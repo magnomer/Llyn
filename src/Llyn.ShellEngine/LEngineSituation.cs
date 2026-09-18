@@ -61,7 +61,17 @@ public sealed partial class LEngine
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
+        IReadOnlyList<LCatalogSituation> found = LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogSituation> rows = new(found.Count);
+        foreach (LCatalogSituation row in found)
+        {
+            rows.Add(row with
+            {
+                LCatalogSituationChosen = row.LCatalogSituationStored.LSituationId == vista.LVistaChosen,
+            });
+        }
+
+        return rows;
     }
 
     private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)

@@ -10,8 +10,6 @@ public partial class PSettings : UserControl
 
     private LEngine _lEngine = null!;
 
-    private bool _pSettingsReady;
-
     public PSettings()
     {
         InitializeComponent();
@@ -21,6 +19,7 @@ public partial class PSettings : UserControl
     {
         _pSettingsHost = host;
         _lEngine = engine;
+        _lEngine.LEngineObserverAttach(new PObserver(this, PSettingsBulletinHandle));
 
         PSettingsSync();
         PLedgerBuild();
@@ -29,8 +28,6 @@ public partial class PSettings : UserControl
 
     internal void PSettingsSync()
     {
-        _pSettingsReady = false;
-
         LSettings settings = _lEngine.LEngineSettingsRead();
         PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
         PLocalization.SelectedValue = PLocalizationLoader.PLocalizationLoaderNormalize(settings.LSettingsLocalization);
@@ -39,7 +36,22 @@ public partial class PSettings : UserControl
         PFrequency.IsChecked = settings.LSettingsFrequency;
         PMorphology.IsChecked = settings.LSettingsMorphology;
         PLayoutLinked.IsChecked = settings.LSettingsLinked;
+    }
 
-        _pSettingsReady = true;
+    private void PSettingsBulletinHandle(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinSubject != LSubject.LSubjectSettings)
+        {
+            return;
+        }
+
+        LSettings settings = _lEngine.LEngineSettingsRead();
+        PLocalizationApply(PLocalizationLoader.PLocalizationLoaderNormalize(settings.LSettingsLocalization));
+        PLedgerMetaApply();
+
+        if (settings.LSettingsLinked)
+        {
+            _pSettingsHost.PWindowLayout.PLayoutSync();
+        }
     }
 }

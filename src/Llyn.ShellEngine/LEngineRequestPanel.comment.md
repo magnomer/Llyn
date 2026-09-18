@@ -58,6 +58,11 @@ Drops the credit carrying the id.
 
 Moves the credit carrying the id to the place asked for.
 
+## `private static LDraft LEngineAuthorChange(LDraft draft, string name)`
+
+Writes the typed name over the Author an author draft holds.
+A draft holding no Author is refused, because the request names work of another kind.
+
 ## `private static LDraft LEngineAuthorApply(`
 
 Rewrites the credit list through the routine given, on a draft that holds a source.

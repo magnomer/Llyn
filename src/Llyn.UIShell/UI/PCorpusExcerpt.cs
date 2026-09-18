@@ -7,8 +7,6 @@ namespace Llyn.UIShell;
 
 public partial class PCorpus
 {
-    private long? _pExcerptExample;
-
     private string? PExcerptTextRead(LStateValue value)
     {
         return PStateConverter.PStateConverterCheck(value)
@@ -44,7 +42,7 @@ public partial class PCorpus
 
     private void PExcerptMentionHandle(object? sender, PMentionArgument e)
     {
-        if (_pExcerptExample is not long id || !PCorpusLeaveConfirm())
+        if (_pCorpusVista?.LVistaChosen is not long id || !PCorpusLeaveConfirm())
         {
             return;
         }

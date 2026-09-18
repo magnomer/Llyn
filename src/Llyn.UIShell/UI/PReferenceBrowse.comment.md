@@ -28,21 +28,14 @@ The panel keeps no copy of any of the three and reads each from the vista where 
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-## `private void PReferenceBulletinHandle(LBulletin bulletin)`
+## `private void PReferenceWorkspaceUpdate()`
 
-Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
-A vista announcement carrying this panel's vista id refills the shelf, since order, filter or query moved.
-The entry column is refilled with it, so a moved filter reaches it the same way.
-Another panel's vista is not this panel's business and is skipped.
-A draft bulletin is the edit area's own typing coming back.
-It is handed to the area and nothing is re-read.
-A fetched frequency, paradigm, script, fanqie or reflex row changes no source or entry row, so those read nothing.
-Every other bulletin is handed to the area as well, so it re-reads its author catalog beside the shelf.
-The usage count beside a row and the credits under it are read with the shelf.
-A stored Source updates its own row.
+A workspace that moved empties the panel, then the shelf and the edit area's author catalog are re-read.
+
+## `private void PShelfReferenceUpdate()`
+
+A stored Source updates its row and the credits under it, so the author catalog is read before the shelf.
 That is what the panel used to do by re-reading straight after its own commit.
-A workspace that moved empties the panel before the same re-read runs.
-An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
 Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
 
 ### `private void PSurveyHandle(object sender, TextChangedEventArgs e)`
@@ -105,13 +98,24 @@ Held work is discarded first, because the panel is leaving behind everything the
 The mode toggle and the bin are disabled with it.
 There is nothing to edit or delete while nothing is selected.
 
-### `internal async void PReferenceVistaRestore(LVista vista)`
+### `internal async void PReferenceVistaRestore(LVista vista, LVista footnote)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel re-reads the shelf and the authors through the vistas whenever the engine announces a change.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement refills the shelf, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+The edit area's draft and tenure bulletins are attached for it, since the area holds no vista of its own.
+An author bulletin redraws the area's credits and refills the shelf, whose rows carry the credits.
+A stored Example or entry may move the usage count beside a row, so each refills the shelf.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills too.
+An entry announcement goes to the footnote vista, whose chosen row is the entry it may name.
+A fetched frequency, paradigm, script or fanqie row changes no source or entry row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The edit area's author catalog and the shelf are then listed.
+The footnote vista is kept for the entry column and handed to the display, which reads its chosen entry.
 
 ### `private void PGradeRestore()`
 
@@ -130,8 +134,8 @@ An empty editor is the state a new record is written in.
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
 
-### `private void PShelfSelect(string? id)`
+### `private void PShelfChosenApply()`
 
-Marks the catalog row the panel stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown source changes, so the mark and the right-hand side never disagree.
+Marks the row of the Source the vista stands on and clears the mark from every other row.
+No row is marked when the vista stands on none, which is what a cleared panel shows.
+It walks the rows already listed, so choosing a Source never re-reads the shelf.

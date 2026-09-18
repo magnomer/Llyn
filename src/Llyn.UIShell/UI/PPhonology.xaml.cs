@@ -11,8 +11,6 @@ public partial class PPhonology : UserControl
 
     private LEngine _lEngine = null!;
 
-    private PObserver? _pPhonologyObserver;
-
     public PPhonology()
     {
         InitializeComponent();
@@ -24,9 +22,6 @@ public partial class PPhonology : UserControl
         _lEngine = engine;
 
         PInventory.ItemsSource = _pInventoryList;
-
-        _pPhonologyObserver = new PObserver(this, PPhonologyBulletinHandle);
-        engine.LEngineObserverAttach(_pPhonologyObserver);
 
         PDisplay.PDisplayAttach(host, engine);
 
@@ -54,24 +49,18 @@ public partial class PPhonology : UserControl
 
     internal void PPhonologyClose()
     {
-        if (_pPhonologyObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pPhonologyObserver);
-            _pPhonologyObserver = null;
-        }
-
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }
 
     private void PPhonologyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pPhonologyVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pPhonologyVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pPhonologyHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pPhonologyHost.PWindowLabelRead(), ticket));
@@ -80,7 +69,7 @@ public partial class PPhonology : UserControl
 
     private async void PPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pPhonologyVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pPhonologyHost.PWindowPortraitExport(entry);
         }

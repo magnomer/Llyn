@@ -21,7 +21,7 @@ public partial class PDisplay
 
     private string PDisplayGraspFormat(int step)
     {
-        return _pDisplayEntry is null
+        return _pDisplayVista?.LVistaChosen is null
             ? string.Empty
             : _pDisplayHost.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
     }
@@ -33,7 +33,7 @@ public partial class PDisplay
 
     private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long shown)
+        if (_pDisplayVista?.LVistaChosen is not long shown)
         {
             PDisplayGrasp.PGraspStep = 0;
             return;

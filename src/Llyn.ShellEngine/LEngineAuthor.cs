@@ -39,7 +39,35 @@ public sealed partial class LEngine
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineAuthorFind(vista.LVistaQuery, vista.LVistaOrder);
+        IReadOnlyList<LCatalogAuthor> found = LEngineAuthorFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogAuthor> rows = new(found.Count);
+        foreach (LCatalogAuthor row in found)
+        {
+            rows.Add(row with
+            {
+                LCatalogAuthorChosen = row.LCatalogAuthorStored.LAuthorId == vista.LVistaChosen,
+            });
+        }
+
+        return rows;
+    }
+
+    public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre)
+    {
+        ArgumentNullException.ThrowIfNull(roll);
+        ArgumentNullException.ThrowIfNull(oeuvre);
+        IReadOnlyList<LCatalogReference> found = LEngineOeuvreFind(
+            roll.LVistaChosen, oeuvre.LVistaQuery, roll.LVistaFilter, oeuvre.LVistaOrder);
+        List<LCatalogReference> rows = new(found.Count);
+        foreach (LCatalogReference row in found)
+        {
+            rows.Add(row with
+            {
+                LCatalogReferenceChosen = row.LCatalogReferenceStored.LReferenceId == oeuvre.LVistaChosen,
+            });
+        }
+
+        return rows;
     }
 
     public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(

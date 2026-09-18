@@ -6,13 +6,6 @@ The reading side of the Corpus panel, the page one chosen Example is shown on.
 The sentence stands at its head and the cited Source under it.
 A click on a word asks the engine what it names.
 
-## Inline notes
-
-### `private long? _pExcerptExample;`
-
-The Example the panel stands on, held as an id, or null while nothing is chosen.
-Every side of the panel reads it, so it lives with the page that shows it.
-
 ## `private string? PExcerptTextRead(LStateValue value)`
 
 The text a three-state value reads as, or null when it was never written.

@@ -18,8 +18,9 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
             long entry = entryId is null or <= 0 ? 0 : entryId.Value;
+            IReadOnlyList<string> languages = LEngineLanguageRead();
             LEntryDraft content = entry == 0
-                ? new LEntryDraft(string.Empty, string.Empty, null, string.Empty, [], [])
+                ? LEngineDraftBlank with { LEntryDraftLanguage = languages.Count > 0 ? languages[0] : string.Empty }
                 : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
             LDraft draft = new(
@@ -115,6 +116,11 @@ public sealed partial class LEngine
         if (draft.LDraftReference is LReference reference)
         {
             return LEngineReferenceCheck(draft, reference);
+        }
+
+        if (draft.LDraftAuthorHeld is LAuthor author)
+        {
+            return LEngineAuthorCheck(draft, author);
         }
 
         LEntryDraft origin = draft.LDraftEntryId <= 0
@@ -323,7 +329,8 @@ public sealed partial class LEngine
     {
         if (draft.LDraftExample is not null
             || draft.LDraftSituation is not null
-            || draft.LDraftReference is not null)
+            || draft.LDraftReference is not null
+            || draft.LDraftAuthorHeld is not null)
         {
             return null;
         }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -11,7 +12,7 @@ public partial class PCorpus
 {
     private readonly ObservableCollection<PQuotationItem> _pQuotationList = [];
 
-    private long? _pDisplayEntry;
+    private LVista? _pQuotationVista;
 
     private void PQuotationFind()
     {
@@ -20,7 +21,7 @@ public partial class PCorpus
         {
             read = _lEngine.LEngineEntryFind(
                 new LExample(
-                    _pExcerptExample ?? 0,
+                    _pCorpusVista?.LVistaChosen ?? 0,
                     string.Empty,
                     LStateValue.LStateValueUnspecified,
                     LStateAnchor.LStateAnchorUnspecified),
@@ -54,15 +55,16 @@ public partial class PCorpus
             string.IsNullOrWhiteSpace(PDredge.Text) ? "Example.Vacant" : "Example.Unmatched");
         PQuotationEmpty.Visibility = _pQuotationList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PQuotationSelect(_pDisplayEntry);
+        PQuotationChosenApply();
     }
 
-    private void PQuotationSelect(long? id)
+    private void PQuotationChosenApply()
     {
+        long? chosen = _pQuotationVista?.LVistaChosen;
         foreach (PQuotationItem item in _pQuotationList)
         {
-            item.PQuotationItemChosen = id is not null
-                && item.PQuotationItemId == id;
+            item.PQuotationItemChosen = chosen is not null
+                && item.PQuotationItemId == chosen;
         }
     }
 
@@ -107,9 +109,9 @@ public partial class PCorpus
         PTranscript.Visibility = Visibility.Collapsed;
         PExcerpt.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = id;
-        PQuotationSelect(id);
-        PDisplay.PDisplayShow(id, draft);
+        _pQuotationVista?.LVistaSelect(id);
+        PQuotationChosenApply();
+        PDisplay.PDisplayShow(draft);
         PCorpusMode.IsEnabled = true;
         PCorpusBin.IsEnabled = false;
 
@@ -123,14 +125,14 @@ public partial class PCorpus
 
     private void PQuotationEntryCreate()
     {
-        long? example = _pExcerptExample;
+        long? example = _pCorpusVista?.LVistaChosen;
 
         PTranscriptDraftCancel();
         PTranscript.Visibility = Visibility.Collapsed;
         PExcerpt.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = null;
-        PQuotationSelect(null);
+        _pQuotationVista?.LVistaSelect(null);
+        PQuotationChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PCorpusMode.IsEnabled = true;
@@ -145,7 +147,7 @@ public partial class PCorpus
 
     private void PQuotationScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pQuotationVista?.LVistaChosen is not long id)
         {
             if (!editing)
             {
@@ -187,7 +189,7 @@ public partial class PCorpus
 
         PQuotationScribeShow(false);
 
-        if (_pDisplayEntry is long stored)
+        if (_pQuotationVista?.LVistaChosen is long stored)
         {
             PQuotationEntryShow(stored);
             return;
@@ -195,7 +197,7 @@ public partial class PCorpus
 
         PEditor.PEditorReset();
 
-        if (_pExcerptExample is long kept)
+        if (_pCorpusVista?.LVistaChosen is long kept)
         {
             PAnthologyExampleShow(kept);
             return;
@@ -215,10 +217,23 @@ public partial class PCorpus
         PChronicleUpdate();
     }
 
-    private void PQuotationEntryUpdate(long id)
+    private void PQuotationEntryUpdate(LBulletin bulletin)
     {
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+        if (bulletin.LBulletinId > 0
+            && _pQuotationVista?.LVistaChosen is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pQuotationVista?.LVistaSelect(bulletin.LBulletinId);
+        }
+
+        PCitationFind();
+        PAnthologyFind();
+    }
+
+    private void PCorpusEntryUpdate()
+    {
+        if (_pQuotationVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -235,7 +250,7 @@ public partial class PCorpus
 
         if (draft is null)
         {
-            if (_pExcerptExample is long kept)
+            if (_pCorpusVista?.LVistaChosen is long kept)
             {
                 PAnthologyExampleShow(kept);
                 return;
@@ -245,7 +260,7 @@ public partial class PCorpus
             return;
         }
 
-        PDisplay.PDisplayShow(shown, draft);
+        PDisplay.PDisplayShow(draft);
     }
 
     private void PQuotationEntryHide()
@@ -257,13 +272,13 @@ public partial class PCorpus
             PEditor.PEditorReset();
         }
 
-        _pDisplayEntry = null;
-        PQuotationSelect(null);
+        _pQuotationVista?.LVistaSelect(null);
+        PQuotationChosenApply();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
         PCorpusScribeShow(editing);
-        PCorpusMode.IsEnabled = _pExcerptExample is not null;
-        PCorpusBin.IsEnabled = _pExcerptExample is not null;
+        PCorpusMode.IsEnabled = _pCorpusVista?.LVistaChosen is not null;
+        PCorpusBin.IsEnabled = _pCorpusVista?.LVistaChosen is not null;
     }
 }

@@ -6,23 +6,19 @@ The language an entry is written in, as the editor chooses it.
 That is the dropdown of installed packs and the pill that shows the chosen one.
 The flag beside it belongs here too.
 The choice is what lookup, audio download, and the saved entry are all carried out in.
+The choice itself lives in the held draft, and every reader here asks the tenure for it.
 
 ## Inline notes
 
-### `private const string PWindowLanguage = "English";`
+### `private string PSpeakerLanguageRead()`
 
-Fallback language used until a pack is chosen, and when no pack folder is present on disk.
-
-### `private bool _pSpeakerEntry;`
-
-Whether the current language came from a loaded entry.
-A pack that is no longer on disk is still the language the entry was written in.
-So the start-up fallback to the first pack leaves it alone.
-Only a form standing on no entry may be moved off its language.
+The held draft's language, or empty when no tenure is held.
+The editor keeps no copy, so nothing here can drift from what the engine holds.
+A fresh draft already carries the first listed pack, which the engine chose when it started.
 
 ### `internal async void PSpeakerLoad()`
 
-Builds the language menu.
+Builds the language menu and shows the draft's language in the pill.
 Each row reads its flag from `PEnsign`, which every other tab reads too.
 The Translation chips are redrawn afterwards, because they were built before any flag existed.
 The flags may await a first-time fetch, hence async.
@@ -33,20 +29,10 @@ The menu waits for the shared flags rather than fetching its own.
 This tab once resolved every SVG again on its own, so a flag was parsed twice.
 The rows are added afterwards, in the order the packs were read.
 
-### `if (!_pSpeakerEntry && languages.Count > 0 && !languages.Contains(_pSpeakerChoice))`
+### `internal void PSpeakerHandle(object sender, RoutedEventArgs e)`
 
-A form standing on an entry keeps that entry's language even when no pack answers to it.
-The fallback is for a form that stands on nothing.
-Such a form would otherwise name a pack that is not installed.
-A fallback that moved the choice sends it, because the blank draft was started under the old one.
-
-### `PMarkerLoad();`
-
-The parts of speech on offer are the chosen language's, so a fallback that moved the choice moves them too.
-
-### `_pSpeakerEntry = false;`
-
-Chosen by hand, so the language is no longer the loaded entry's.
+A pack picked from the menu is written to the pill and sent to the draft, then painted.
+No comparison with the old choice is made, since the engine answers a repeat with the same draft.
 
 ### `PEditorLanguageSend();`
 
@@ -55,7 +41,7 @@ It is chosen whole, so its request goes at once rather than after a pause.
 It is not counted as unsaved work, because the tongue on offer is the panel's state.
 The engine drops every recording on this request, since each is audio in the old language.
 
-### `PMarkerLoad();`
+### `PCategoryLoad();`
 
 The presets belong to the language, so the dropdown now offers the new one's.
 What is already typed in the field is left alone.
@@ -70,12 +56,12 @@ So the first call may await that fetch, and later ones read what is kept.
 When the pack declares no flag or the download fails, a neutral globe stands in.
 A pack that is gone from disk fails inside `PEnsign` rather than here.
 
-### `if (chosen != _pSpeakerChoice)`
+### `if (chosen != PSpeakerLanguageRead())`
 
-The choice may have changed while the flags loaded.
+The draft's language may have changed while the flags loaded.
 Only paint the still-current one.
 
-### `PHeadwordFontApply(_pSpeakerChoice);`
+### `PHeadwordFontApply(language);`
 
 The headword is drawn in the typography of the language it is written in.
 A language chosen by hand changes that typography at once.

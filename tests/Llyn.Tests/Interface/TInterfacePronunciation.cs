@@ -283,6 +283,9 @@ internal static partial class TInterface
     internal static bool TEngineTonalCheck(this LEngine engine, string language) =>
         engine.LEngineTonalCheck(language);
 
+    internal static IReadOnlyList<string> TEngineLanguageRead(this LEngine engine) =>
+        engine.LEngineLanguageRead();
+
     internal static IReadOnlyList<LContour> TContourParse(string ipa) =>
         LContour.LContourParse(ipa);
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -15,11 +16,11 @@ public partial class PGuild
 
     private IReadOnlyList<LCatalogReference> _pOeuvreCatalog = [];
 
-    private long? _pColophonReference;
+    private LVista? _pOeuvreVista;
 
     private void PCombHandle(object sender, TextChangedEventArgs e)
     {
-        POeuvreFind();
+        _pOeuvreVista?.LVistaQuerySet(PComb.Text ?? string.Empty);
     }
 
     private void PLouverHandle(object sender, RoutedEventArgs e)
@@ -70,23 +71,25 @@ public partial class PGuild
         return null;
     }
 
-    private void POeuvreSelect(long? id)
+    private void POeuvreChosenApply()
     {
+        long? chosen = _pOeuvreVista?.LVistaChosen;
         foreach (PShelfItem item in _pOeuvreList)
         {
-            item.PShelfItemChosen = id is not null && item.PShelfItemId == id;
+            item.PShelfItemChosen = chosen is not null && item.PShelfItemId == chosen;
         }
     }
 
     private void POeuvreFind()
     {
+        if (_pGuildVista is null || _pOeuvreVista is null)
+        {
+            return;
+        }
+
         try
         {
-            _pOeuvreCatalog = _lEngine.LEngineOeuvreFind(
-                _pRollAuthor,
-                PComb.Text ?? string.Empty,
-                _pGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty,
-                LCatalogOrder.LCatalogOrderName);
+            _pOeuvreCatalog = _lEngine.LEngineOeuvreFind(_pGuildVista, _pOeuvreVista);
         }
         catch (Exception exception)
         {
@@ -101,20 +104,21 @@ public partial class PGuild
         bool kept = false;
         foreach (LCatalogReference row in _pOeuvreCatalog)
         {
-            kept |= row.LCatalogReferenceStored.LReferenceId == _pColophonReference;
-            _pOeuvreList.Add(new PShelfItem(row, unknown, unset));
+            kept |= row.LCatalogReferenceChosen;
+            _pOeuvreList.Add(new PShelfItem(row, unknown, unset)
+            {
+                PShelfItemChosen = row.LCatalogReferenceChosen,
+            });
         }
 
-        bool narrowed = !string.IsNullOrWhiteSpace(PComb.Text)
-            || _pGuildVista?.LVistaFilter.LCatalogFilterActive == true;
+        bool narrowed = !string.IsNullOrWhiteSpace(_pOeuvreVista.LVistaQuery)
+            || _pGuildVista.LVistaFilter.LCatalogFilterActive;
         POeuvreEmpty.SetResourceReference(
             TextBlock.TextProperty,
-            _pRollAuthor is null ? "Source.Empty" : narrowed ? "Guild.Unmatched" : "Guild.Vacant");
+            _pGuildVista.LVistaChosen is null ? "Source.Empty" : narrowed ? "Guild.Unmatched" : "Guild.Vacant");
         POeuvreEmpty.Visibility = _pOeuvreList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        POeuvreSelect(_pColophonReference);
-
-        if (!kept && _pColophonReference is not null)
+        if (!kept && _pOeuvreVista.LVistaChosen is not null)
         {
             PColophonReferenceHide();
         }
@@ -159,8 +163,8 @@ public partial class PGuild
         PGuildScribeShow(false);
 
         LCatalogReference? row = POeuvreCatalogFind(id);
-        _pColophonReference = id;
-        POeuvreSelect(id);
+        _pOeuvreVista?.LVistaSelect(id);
+        POeuvreChosenApply();
 
         PColophon.PColophonShow(
             reference,
@@ -175,8 +179,8 @@ public partial class PGuild
 
     private void PColophonReferenceHide()
     {
-        _pColophonReference = null;
-        POeuvreSelect(null);
+        _pOeuvreVista?.LVistaSelect(null);
+        POeuvreChosenApply();
         PColophon.PColophonClear();
         PColophon.Visibility = Visibility.Collapsed;
 
@@ -185,7 +189,7 @@ public partial class PGuild
             PVita.Visibility = Visibility.Visible;
         }
 
-        bool held = _pRollAuthor is long author && author > 0;
+        bool held = _pGuildVista?.LVistaChosen is long author && author > 0;
         PGuildMode.IsEnabled = held;
         PGuildBin.IsEnabled = held;
     }

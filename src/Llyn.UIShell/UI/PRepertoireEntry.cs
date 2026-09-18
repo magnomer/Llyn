@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -11,7 +12,7 @@ public partial class PRepertoire
 {
     private readonly ObservableCollection<POccurrenceItem> _pOccurrenceList = [];
 
-    private long? _pDisplayEntry;
+    private LVista? _pOccurrenceVista;
 
     private void POccurrenceFind()
     {
@@ -20,7 +21,7 @@ public partial class PRepertoire
         {
             read = _lEngine.LEngineEntryFind(
                 new LSituation(
-                    _pVignetteSituation ?? 0,
+                    _pRepertoireVista?.LVistaChosen ?? 0,
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified),
@@ -54,15 +55,16 @@ public partial class PRepertoire
             string.IsNullOrWhiteSpace(PSortie.Text) ? "Situation.Vacant" : "Situation.Unmatched");
         POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        POccurrenceSelect(_pDisplayEntry);
+        POccurrenceChosenApply();
     }
 
-    private void POccurrenceSelect(long? id)
+    private void POccurrenceChosenApply()
     {
+        long? chosen = _pOccurrenceVista?.LVistaChosen;
         foreach (POccurrenceItem item in _pOccurrenceList)
         {
-            item.POccurrenceItemChosen = id is not null
-                && item.POccurrenceItemId == id;
+            item.POccurrenceItemChosen = chosen is not null
+                && item.POccurrenceItemId == chosen;
         }
     }
 
@@ -107,9 +109,9 @@ public partial class PRepertoire
         PScenario.Visibility = Visibility.Collapsed;
         PVignette.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = id;
-        POccurrenceSelect(id);
-        PDisplay.PDisplayShow(id, draft);
+        _pOccurrenceVista?.LVistaSelect(id);
+        POccurrenceChosenApply();
+        PDisplay.PDisplayShow(draft);
         PRepertoireMode.IsEnabled = true;
         PRepertoireBin.IsEnabled = false;
 
@@ -123,14 +125,14 @@ public partial class PRepertoire
 
     private void POccurrenceEntryCreate()
     {
-        long? situation = _pVignetteSituation;
+        long? situation = _pRepertoireVista?.LVistaChosen;
 
         PScenarioDraftCancel();
         PScenario.Visibility = Visibility.Collapsed;
         PVignette.Visibility = Visibility.Collapsed;
 
-        _pDisplayEntry = null;
-        POccurrenceSelect(null);
+        _pOccurrenceVista?.LVistaSelect(null);
+        POccurrenceChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PRepertoireMode.IsEnabled = true;
@@ -145,7 +147,7 @@ public partial class PRepertoire
 
     private void POccurrenceScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pOccurrenceVista?.LVistaChosen is not long id)
         {
             if (!editing)
             {
@@ -187,7 +189,7 @@ public partial class PRepertoire
 
         POccurrenceScribeShow(false);
 
-        if (_pDisplayEntry is long stored)
+        if (_pOccurrenceVista?.LVistaChosen is long stored)
         {
             POccurrenceEntryShow(stored);
             return;
@@ -195,7 +197,7 @@ public partial class PRepertoire
 
         PEditor.PEditorReset();
 
-        if (_pVignetteSituation is long kept)
+        if (_pRepertoireVista?.LVistaChosen is long kept)
         {
             PRepertoireShow(kept);
             return;
@@ -226,10 +228,22 @@ public partial class PRepertoire
         PScenarioStoreRun();
     }
 
-    private void POccurrenceEntryUpdate(long id)
+    private void POccurrenceEntryUpdate(LBulletin bulletin)
     {
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+        if (bulletin.LBulletinId > 0
+            && _pOccurrenceVista?.LVistaChosen is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pOccurrenceVista?.LVistaSelect(bulletin.LBulletinId);
+        }
+
+        PAtlasFind();
+    }
+
+    private void PRepertoireEntryUpdate()
+    {
+        if (_pOccurrenceVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -246,7 +260,7 @@ public partial class PRepertoire
 
         if (draft is null)
         {
-            if (_pVignetteSituation is long kept)
+            if (_pRepertoireVista?.LVistaChosen is long kept)
             {
                 PRepertoireShow(kept);
                 return;
@@ -256,7 +270,7 @@ public partial class PRepertoire
             return;
         }
 
-        PDisplay.PDisplayShow(shown, draft);
+        PDisplay.PDisplayShow(draft);
     }
 
     private void POccurrenceEntryHide()
@@ -268,14 +282,14 @@ public partial class PRepertoire
             PEditor.PEditorReset();
         }
 
-        _pDisplayEntry = null;
-        POccurrenceSelect(null);
+        _pOccurrenceVista?.LVistaSelect(null);
+        POccurrenceChosenApply();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
         PRepertoireScribeShow(editing);
-        PRepertoireMode.IsEnabled = _pVignetteSituation is not null;
-        PRepertoireBin.IsEnabled = _pVignetteSituation is not null;
+        PRepertoireMode.IsEnabled = _pRepertoireVista?.LVistaChosen is not null;
+        PRepertoireBin.IsEnabled = _pRepertoireVista?.LVistaChosen is not null;
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
@@ -285,7 +299,7 @@ public partial class PRepertoire
             return;
         }
 
-        if (_pVignetteSituation is not null || _pDisplayEntry is not null)
+        if (_pRepertoireVista?.LVistaChosen is not null || _pOccurrenceVista?.LVistaChosen is not null)
         {
             POccurrenceEntryCreate();
             return;

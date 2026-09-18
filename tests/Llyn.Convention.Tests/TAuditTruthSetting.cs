@@ -15,6 +15,7 @@ internal static class TAuditTruthSetting
     public static readonly string[] TAuditTruthHandles =
     [
         "LEngine",
+        "LForay",
         "LTenure",
         "LVista",
         "PObserver",

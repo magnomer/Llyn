@@ -30,6 +30,9 @@ The display is its own subscriber, so it stays current on its own.
 
 Puts the side back on the workspace open now, with its vista, standing on the Entry `id` names.
 A switched workspace hands a fresh vista, so the order and filter are the new workspace's own.
+The side answers the engine through the vista, one subject per observer.
+A vista announcement re-lists the matches, since order, filter or query moved.
+A stored entry, a reflex fill or a flipped setting can change a listed row, so each re-lists too.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 The dropdown mark and the filter mark are drawn from the vista.
 The query is emptied and the side is cleared first.
@@ -37,16 +40,11 @@ The fresh vista starts with nothing typed and nothing chosen, so neither needs s
 A different workspace has its own database.
 So the Entry the side was comparing came from a workspace no longer open.
 A side the state names nothing for stays empty.
+The same vista is handed to the display, which reads its chosen entry from it.
 
 ### `internal void PWingClose()`
 
-Stops the side: the engine is left and the display releases its playback.
-
-### `private void PWingBulletinHandle(LBulletin bulletin)`
-
-A vista announcement carrying this side's vista id re-lists the matches, since order, filter or query moved.
-Another vista is not this side's business and is skipped.
-Every announcement that can change a listed row re-lists the matches too.
+Stops the side: the display releases its playback.
 
 ### `private void PWingOrderHandle(object sender, RoutedEventArgs e)`
 

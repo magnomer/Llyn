@@ -6,7 +6,8 @@ namespace Llyn.Core;
 
 public sealed record LCatalogSituation(
     LSituation LCatalogSituationStored,
-    int LCatalogSituationUsage)
+    int LCatalogSituationUsage,
+    bool LCatalogSituationChosen = false)
 {
     public static LCatalogSituation LCatalogSituationCreate(LSituation situation, int usage)
     {

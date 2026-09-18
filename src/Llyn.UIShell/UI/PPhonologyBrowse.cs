@@ -11,35 +11,12 @@ public partial class PPhonology
 {
     private readonly ObservableCollection<PInventoryItem> _pInventoryList = [];
 
-    private long? _pDisplayEntry;
-
     private LVista? _pPhonologyVista;
 
-    private async void PPhonologyBulletinHandle(LBulletin bulletin)
+    private async void PPhonologyWorkspaceUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pPhonologyVista is not null && bulletin.LBulletinId == _pPhonologyVista.LVistaId)
-            {
-                PInventoryFind();
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PPhonologyReset();
-            return;
-        }
-
-        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            return;
-        }
-
-        PInventoryEntryUpdate(bulletin.LBulletinId);
+        await PEnsign.PEnsignLoad(_lEngine);
+        PPhonologyReset();
     }
 
     private void PProbeHandle(object sender, TextChangedEventArgs e)
@@ -72,6 +49,13 @@ public partial class PPhonology
     internal async void PPhonologyVistaRestore(LVista vista)
     {
         _pPhonologyVista = vista;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PInventoryFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PPhonologyWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PInventoryEntryUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PInventoryFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PInventoryFind));
+        vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PPhonologyEntryUpdate));
+        PDisplay.PDisplayVistaRestore(vista);
         PSequenceRestore();
         PLensRestore();
 
@@ -96,12 +80,13 @@ public partial class PPhonology
         PLensMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PInventorySelect(long? id)
+    private void PInventoryChosenApply()
     {
+        long? chosen = _pPhonologyVista?.LVistaChosen;
         foreach (PInventoryItem item in _pInventoryList)
         {
-            item.PInventoryItemChosen = id is not null
-                && item.PInventoryItemId == id;
+            item.PInventoryItemChosen = chosen is not null
+                && item.PInventoryItemId == chosen;
         }
     }
 
@@ -123,12 +108,11 @@ public partial class PPhonology
                 row.LCatalogPronunciationEpithet ?? string.Empty)
             {
                 PInventoryItemName = row.LCatalogPronunciationName,
+                PInventoryItemChosen = row.LCatalogPronunciationChosen,
             });
         }
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-
-        PInventorySelect(_pDisplayEntry);
     }
 
     private void PInventoryHandle(object sender, RoutedEventArgs e)
@@ -166,10 +150,9 @@ public partial class PPhonology
             return;
         }
 
-        _pDisplayEntry = id;
-        PInventorySelect(id);
-        PPhonologyBin.IsEnabled = true;
-        PPhonologyEntryShow(id, draft);
+        _pPhonologyVista?.LVistaSelect(id);
+        PInventoryChosenApply();
+        PPhonologyEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -177,19 +160,20 @@ public partial class PPhonology
         }
     }
 
-    private void PInventoryEntryUpdate(long id)
+    private void PInventoryEntryUpdate(LBulletin bulletin)
     {
-        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pDisplayEntry = id;
-            PInventorySelect(id);
-            PPhonologyBin.IsEnabled = true;
+            _pPhonologyVista?.LVistaSelect(bulletin.LBulletinId);
         }
 
+        PPhonologyCommandApply();
         PInventoryFind();
+    }
 
-        if (_pDisplayEntry is not long shown
-            || (id > 0 && shown != id))
+    private void PPhonologyEntryUpdate(LBulletin bulletin)
+    {
+        if (_pPhonologyVista?.LVistaChosen is not long shown)
         {
             return;
         }
@@ -210,7 +194,7 @@ public partial class PPhonology
             return;
         }
 
-        PPhonologyEntryShow(shown, draft);
+        PPhonologyEntryShow(draft);
     }
 
     private void PPhonologyFreshHandle(object sender, RoutedEventArgs e)
@@ -243,9 +227,9 @@ public partial class PPhonology
 
             PPhonologyScribeShow(false);
 
-            if (_pDisplayEntry is not null)
+            if (_pPhonologyVista?.LVistaChosen is long chosen)
             {
-                PInventoryEntryShow(_pDisplayEntry.Value);
+                PInventoryEntryShow(chosen);
                 return;
             }
 
@@ -253,13 +237,13 @@ public partial class PPhonology
             return;
         }
 
-        if (_pDisplayEntry is null)
+        if (_pPhonologyVista?.LVistaChosen is not long shown)
         {
             PPhonologyClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
+        PEditor.PEditorEntryShow(shown);
         PPhonologyScribeShow(true);
     }
 
@@ -275,7 +259,7 @@ public partial class PPhonology
 
     internal void PPhonologyScribeRestore(bool editing)
     {
-        if (editing && _pDisplayEntry is null)
+        if (editing && _pPhonologyVista?.LVistaChosen is null)
         {
             return;
         }
@@ -293,21 +277,27 @@ public partial class PPhonology
         return _pPhonologyHost.PWindowDiscardConfirm(PPhonologyChangeCheck(), PPhonologyDraftFinish);
     }
 
-    private void PPhonologyEntryShow(long id, LEntryDraft draft)
+    private void PPhonologyEntryShow(LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(id, draft);
+        PDisplay.PDisplayShow(draft);
         PPhonologyMode.IsEnabled = true;
+        PPhonologyCommandApply();
+    }
+
+    private void PPhonologyCommandApply()
+    {
+        PPhonologyBin.IsEnabled = _pPhonologyVista?.LVistaChosen is not null;
     }
 
     private void PPhonologyClear()
     {
-        _pDisplayEntry = null;
-        PInventorySelect(null);
+        _pPhonologyVista?.LVistaSelect(null);
+        PInventoryChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PPhonologyScribeShow(false);
         PPhonologyMode.IsEnabled = false;
-        PPhonologyBin.IsEnabled = false;
+        PPhonologyCommandApply();
     }
 
     private void PPhonologyStoreHandle(object sender, RoutedEventArgs e)
@@ -317,7 +307,7 @@ public partial class PPhonology
 
     private void PPhonologyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pPhonologyVista?.LVistaChosen is not long id)
         {
             return;
         }

@@ -13,6 +13,7 @@ The credits and the count travel with the row because the ordering and the match
 - `LCatalogReferenceByline` — The `Author (Year)` line a citation of it is written as.
 - `LCatalogReferenceCredit` — The Authors credited on it, in the order the Source holds.
 - `LCatalogReferenceUsage` — How many Entries and Examples cite it.
+- `LCatalogReferenceChosen` — True on the row of the Source the vista stands on, false until the vista find fills it.
 
 ## `public static LCatalogReference LCatalogReferenceCreate(LReference reference, IReadOnlyList<LAuthor>? credits, int usage)`
 

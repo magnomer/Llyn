@@ -17,36 +17,18 @@ public partial class PTenor
 
     private readonly ObservableCollection<PCohortItem> _pCohortList = [];
 
-    private long? _pDisplayEntry;
-
     private LVista? _pTenorVista;
 
-    private async void PTenorBulletinHandle(LBulletin bulletin)
+    private async void PTenorWorkspaceUpdate()
     {
-        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-        {
-            if (_pTenorVista is not null && bulletin.LBulletinId == _pTenorVista.LVistaId)
-            {
-                PGamutFind();
-            }
+        await PEnsign.PEnsignLoad(_lEngine);
+        PTenorReset();
+    }
 
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            await PEnsign.PEnsignLoad(_lEngine);
-            PTenorReset();
-            return;
-        }
-
-        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
-        {
-            return;
-        }
-
-        PCohortEntryUpdate(
-            bulletin.LBulletinSubject == LSubject.LSubjectRegister ? 0 : bulletin.LBulletinId);
+    private void PTenorRegisterUpdate()
+    {
+        PGamutFind();
+        PTenorEntryUpdate();
     }
 
     private void PSoundingHandle(object sender, TextChangedEventArgs e)
@@ -81,9 +63,18 @@ public partial class PTenor
         PGrilleRestore();
     }
 
-    internal async void PTenorVistaRestore(LVista vista)
+    internal async void PTenorVistaRestore(LVista vista, LVista cohort)
     {
         _pTenorVista = vista;
+        _pCohortVista = cohort;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PGamutFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTenorWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PTenorRegisterUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PGamutFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PGamutFind));
+        cohort.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PCohortEntryUpdate));
+        cohort.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
+        PDisplay.PDisplayVistaRestore(cohort);
         PDegreeRestore();
         PGrilleRestore();
 
@@ -194,7 +185,7 @@ public partial class PTenor
             return;
         }
 
-        if (_pTenorVista?.LVistaChosen is null && _pDisplayEntry is null)
+        if (_pTenorVista?.LVistaChosen is null && _pCohortVista?.LVistaChosen is null)
         {
             PGamutRegisterCreate();
             return;
@@ -243,9 +234,9 @@ public partial class PTenor
 
             PTenorScribeShow(false);
 
-            if (_pDisplayEntry is not null)
+            if (_pCohortVista?.LVistaChosen is long shown)
             {
-                PCohortEntryShow(_pDisplayEntry.Value);
+                PCohortEntryShow(shown);
                 return;
             }
 
@@ -253,13 +244,13 @@ public partial class PTenor
             return;
         }
 
-        if (_pDisplayEntry is null)
+        if (_pCohortVista?.LVistaChosen is not long edited)
         {
             PTenorClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
+        PEditor.PEditorEntryShow(edited);
         PTenorScribeShow(true);
     }
 
@@ -275,7 +266,7 @@ public partial class PTenor
 
     internal void PTenorScribeRestore(bool editing)
     {
-        if (editing && _pDisplayEntry is null)
+        if (editing && _pCohortVista?.LVistaChosen is null)
         {
             return;
         }
@@ -298,16 +289,16 @@ public partial class PTenor
         return _pTenorVista?.LVistaChosen ?? 0;
     }
 
-    private void PTenorEntryShow(long id, LEntryDraft draft)
+    private void PTenorEntryShow(LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(id, draft);
+        PDisplay.PDisplayShow(draft);
         PTenorMode.IsEnabled = true;
     }
 
     private void PTenorClear()
     {
-        _pDisplayEntry = null;
-        PCohortSelect(null);
+        _pCohortVista?.LVistaSelect(null);
+        PCohortChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTenorScribeShow(false);
@@ -322,7 +313,7 @@ public partial class PTenor
 
     private void PTenorBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pCohortVista?.LVistaChosen is not long id)
         {
             return;
         }

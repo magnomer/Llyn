@@ -20,20 +20,18 @@ The panel keeps no copy of any of the three and reads each from the vista where 
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-### `private async void PRepertoireBulletinHandle(LBulletin bulletin)`
+### `private void PScenarioDraftUpdate(LBulletin bulletin)`
 
-The panel answers the engine rather than its own visibility.
-A vista announcement carrying this panel's vista id refills the catalog, since order, filter or query moved.
-The entry column is refilled with it, so a moved filter reaches it the same way.
-Another panel's vista is not this panel's business and is skipped.
-A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A draft bulletin for the held draft is the panel's own typing coming back, so it redraws the editor.
+Another draft is some other panel's and is left alone.
+
+### `private void PScenarioTenureUpdate(LBulletin bulletin)`
+
 A tenure bulletin for the held draft settles the rail's buttons and the editor's enabled state.
-A fetched frequency, paradigm, script, fanqie or reflex row changes no situation or entry row, so those read nothing.
-An entry stored in another tab may reference a Situation, so the catalog and its reference figures are read again.
-A workspace that moved is the one announcement that empties the panel first.
-Its flags are reloaded before any row is built.
-An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
-Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
+
+### `private async void PRepertoireWorkspaceUpdate()`
+
+A workspace that moved empties the panel and reloads its flags before any row is built.
 
 ### `private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<long, int>();`
 
@@ -80,13 +78,22 @@ A Situation nothing references is deleted outright.
 One something references is deleted only after the user is told how many places that reaches and says yes.
 The detaching and the delete are one operation in the store, because between two steps the count can change.
 
-### `internal async void PRepertoireVistaRestore(LVista vista)`
+### `internal async void PRepertoireVistaRestore(LVista vista, LVista occurrence)`
 
 Takes the vista the window started for this tab and puts the panel on it.
+The panel answers the engine through the vistas rather than its own visibility.
+Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
+A vista announcement refills the catalog, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+A stored Situation, or an entry that may reference one, refills the catalog and its reference figures.
+A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills too.
+An entry announcement goes to the occurrence vista, whose chosen row is the entry it may name.
+A fetched frequency, paradigm, script or fanqie row changes no situation or entry row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The catalog is then listed from the vista.
+The occurrence vista is kept for the entry column and handed to the display, which reads its chosen entry.
 
 ### `private void PTierRestore()`
 
@@ -105,11 +112,11 @@ An empty editor is the state a new record is written in.
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
 
-### `private void PAtlasSelect(long? id)`
+### `private void PAtlasChosenApply()`
 
-Marks the catalog row the panel stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown situation changes, so the mark and the right-hand side never disagree.
+Marks the row of the Situation the vista stands on and clears the mark from every other row.
+No row is marked when the vista stands on none, which is what a cleared panel shows.
+It walks the rows already listed, so choosing a Situation never re-reads the atlas.
 
 ## `internal long PRepertoireVoyageRead()`
 

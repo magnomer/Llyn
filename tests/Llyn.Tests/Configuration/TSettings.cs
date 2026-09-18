@@ -333,4 +333,51 @@ public sealed class TSettings
         Assert.False(settings.LSettingsLinked);
         Assert.Single(settings.LSettingsLayout ?? []);
     }
+
+    [Fact]
+    public void SettingsChange_Echo_RaisesNoBulletin()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LSettings settings = engine.TEngineSettingsRead();
+        TSettingsObserver observer = new();
+        engine.TEngineObserverAttach(observer);
+
+        engine.TEngineLocalizationSave(settings.LSettingsLocalization);
+        engine.TEngineRespellingSave(settings.LSettingsRespelled);
+        engine.TEngineEpithetSave(settings.LSettingsEpithet);
+        engine.TEngineFrequencySave(settings.LSettingsFrequency);
+        engine.TEngineMorphologySave(settings.LSettingsMorphology);
+        engine.TEngineLinkedSave(settings.LSettingsLinked);
+
+        Assert.Equal(0, observer.TSettingsObserverCount);
+    }
+
+    [Fact]
+    public void SettingsChange_Changed_RaisesBulletinOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LSettings settings = engine.TEngineSettingsRead();
+        TSettingsObserver observer = new();
+        engine.TEngineObserverAttach(observer);
+
+        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
+        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
+
+        Assert.Equal(1, observer.TSettingsObserverCount);
+    }
+
+    private sealed class TSettingsObserver : LObserver
+    {
+        internal int TSettingsObserverCount { get; private set; }
+
+        public void LObserverBulletinHandle(LBulletin bulletin)
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
+            {
+                TSettingsObserverCount++;
+            }
+        }
+    }
 }

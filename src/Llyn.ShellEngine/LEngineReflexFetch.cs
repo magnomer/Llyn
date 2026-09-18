@@ -285,6 +285,7 @@ public sealed partial class LEngine
                 || draft.LDraftExample is not null
                 || draft.LDraftSituation is not null
                 || draft.LDraftReference is not null
+                || draft.LDraftAuthorHeld is not null
                 || (!sweep && LEngineReflexScan(draft.LDraftContent.LEntryDraftReflexes).Count > 0))
             {
                 continue;

@@ -19,7 +19,10 @@ public sealed partial class LEngine
     public void LEngineLocalizationSave(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
-        LEngineSettingsChange(settings => settings with { LSettingsLocalization = language });
+        if (LEngineSettingsChange(settings => settings with { LSettingsLocalization = language }))
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
     }
 
     public void LEngineWindowSave(LWindowState window)
@@ -36,8 +39,10 @@ public sealed partial class LEngine
 
     public void LEngineRespellingSave(bool respelled)
     {
-        LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled });
-        LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        if (LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled }))
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
     }
 
     public bool LEngineRespellingCheck(string language)
@@ -57,7 +62,10 @@ public sealed partial class LEngine
 
     public void LEngineEpithetSave(bool epithet)
     {
-        LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet });
+        if (LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet }))
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
     }
 
     public void LEngineTallySave(bool respelled)
@@ -67,18 +75,27 @@ public sealed partial class LEngine
 
     public void LEngineFrequencySave(bool frequency)
     {
-        LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency });
+        if (LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency }))
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
     }
 
     public void LEngineMorphologySave(bool morphology)
     {
+        bool changed;
         lock (_lEngineGate)
         {
-            LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
-            if (!morphology)
+            changed = LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
+            if (changed && !morphology)
             {
                 LEngineInflectionClear();
             }
+        }
+
+        if (changed)
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -130,21 +147,25 @@ public sealed partial class LEngine
 
     public void LEngineLinkedSave(bool linked)
     {
-        LEngineSettingsChange(settings => settings with { LSettingsLinked = linked });
+        if (LEngineSettingsChange(settings => settings with { LSettingsLinked = linked }))
+        {
+            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
     }
 
-    private void LEngineSettingsChange(Func<LSettings, LSettings> change)
+    private bool LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lEngineGate)
         {
             LSettings changed = change(_lEngineSettings);
             if (changed == _lEngineSettings)
             {
-                return;
+                return false;
             }
 
             _lEngineSettings = changed;
             LEngineSettingsSave();
+            return true;
         }
     }
 

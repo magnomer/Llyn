@@ -72,10 +72,7 @@ It is told nothing about which entry to show, because that is this panel's decis
 
 The editor opens on no entry: this panel puts it on one when the reader asks to write.
 The origin names this panel, so its held work is told apart from the input panel's.
-
-### `_pLibraryObserver = new PObserver(this, PLibraryBulletinHandle);`
-
 A store may have changed the headword the index lists and the text the display shows.
-The engine announces it, so both are read again from what was written rather than left as they were.
+The engine announces it through the vista, so both are read again from what was written.
 It is the same announcement whether the store happened in this panel's editor or in another tab.
 The editor is told nothing about this panel, because a discard falls back on the entry its own draft names.

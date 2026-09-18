@@ -9,7 +9,8 @@ public sealed record LCatalogReference(
     string LCatalogReferenceName,
     string LCatalogReferenceByline,
     IReadOnlyList<LAuthor> LCatalogReferenceCredit,
-    int LCatalogReferenceUsage)
+    int LCatalogReferenceUsage,
+    bool LCatalogReferenceChosen = false)
 {
     private static readonly char[] LCatalogReferenceBreak = [' ', '	', '(', ')', ','];
 

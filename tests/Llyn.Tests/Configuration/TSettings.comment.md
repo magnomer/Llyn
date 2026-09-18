@@ -14,3 +14,5 @@ The morphology switch round-trips under the `morphology` key with the same rule.
 A file that is not JSON loads as defaults and is copied aside as `settings.broken.json` first.
 A save leaves no pending file behind and the saved file reports as existing.
 A window geometry saved twice unchanged writes the file once, because an equal record is not written again.
+A switch saved with the value already held raises no settings bulletin, so an echoing control is a no-op.
+A switch that changes raises the bulletin once, and saving the same value again raises nothing more.

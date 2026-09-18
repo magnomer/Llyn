@@ -13,7 +13,8 @@ public sealed record LDraft(
     LSituation? LDraftSituation = null,
     LReference? LDraftReference = null,
     int LDraftVersion = 0,
-    IReadOnlyList<LAuthor>? LDraftAuthor = null)
+    IReadOnlyList<LAuthor>? LDraftAuthor = null,
+    LAuthor? LDraftAuthorHeld = null)
 {
     public IReadOnlyList<LAuthor> LDraftAuthor { get; init; } = LDraftAuthor ?? [];
 
