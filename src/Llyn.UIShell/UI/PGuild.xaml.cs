@@ -76,10 +76,10 @@ public partial class PGuild : UserControl
 
     private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pOeuvreVista?.LVistaChosen is long shown && PColophon.Visibility == Visibility.Visible)
+        if (_pOeuvreVista?.LVistaChosen is not null && PColophon.Visibility == Visibility.Visible)
         {
             await _pGuildHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                shown, LOwner.LOwnerReference, _pGuildHost.PWindowLegendRead("Source"), ticket));
+                _pOeuvreVista, _pGuildHost.PWindowLegendRead("Source"), ticket));
         }
     }
 
@@ -124,7 +124,7 @@ public partial class PGuild : UserControl
 
     internal void PGuildScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pGuildVista?.LVistaEditingSet(editing);
 
         PAutograph.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PVita.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -154,7 +154,7 @@ public partial class PGuild : UserControl
         PAutographCancel();
 
         _pGuildVista?.LVistaSelect(null);
-        PRollChosenApply();
+        PRollFind();
         PColophonReferenceHide();
         POeuvreFind();
 

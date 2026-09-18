@@ -58,18 +58,18 @@ public partial class PFavorite : UserControl
 
     private async void PFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFavoriteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFavoriteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pFavoriteHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pFavoriteHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pFavoriteVista, _pFavoriteHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFavoriteVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pFavoriteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pFavoriteHost.PWindowPortraitExport(entry);
+            await _pFavoriteHost.PWindowPortraitExport(_pFavoriteVista);
         }
     }
 }

@@ -12,14 +12,16 @@ public sealed partial class LEngine
 
     private readonly Dictionary<string, LVista> _lEngineVistas = [];
 
-    public LVista LEngineVistaStart(string tab, LCatalogOrder fallback, bool blank = false)
+    public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
 
         LCatalogOrder order = fallback;
         LCatalogFilter filter = LCatalogFilter.LCatalogFilterEmpty;
+        bool editing;
         lock (_lEngineGate)
         {
+            editing = _lEngineSettings.LSettingsSplit;
             foreach (LLayout record in _lEngineSettings.LSettingsLayout ?? [])
             {
                 if (!string.Equals(record.LLayoutTab, tab, StringComparison.Ordinal))
@@ -33,7 +35,8 @@ public sealed partial class LEngine
             }
         }
 
-        LVista vista = new(this, Interlocked.Increment(ref _lEngineVistaCount), tab, order, filter, blank);
+        LVista vista = new(
+            this, Interlocked.Increment(ref _lEngineVistaCount), tab, subject, order, filter, blank, editing);
         lock (_lEngineGate)
         {
             if (_lEngineVistas.TryGetValue(tab, out LVista? former))
@@ -61,6 +64,33 @@ public sealed partial class LEngine
         {
             IReadOnlyList<LEntry> entries = LEngineEntryFind(vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
             return LEngineVistaBuild(entries, vista.LVistaChosen);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child)
+    {
+        if (parent is null || child is null)
+        {
+            return [];
+        }
+
+        lock (_lEngineGate)
+        {
+            long id = parent.LVistaChosen ?? 0;
+            IReadOnlyList<LEntry> entries = parent.LVistaSubject switch
+            {
+                LSubject.LSubjectTag => LEngineEntryFind(new LTag(id, string.Empty)),
+                LSubject.LSubjectRegister => LEngineEntryFind(new LRegister(id, LStateValue.LStateValueUnspecified)),
+                LSubject.LSubjectExample => LEngineEntryFind(new LExample(id, string.Empty,
+                    LStateValue.LStateValueUnspecified, LStateAnchor.LStateAnchorUnspecified)),
+                LSubject.LSubjectSituation => LEngineEntryFind(new LSituation(id,
+                    LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)),
+                LSubject.LSubjectReference => LEngineEntryFind(LEngineReferenceBlank with { LReferenceId = id }),
+                _ => [],
+            };
+            entries = LEngineEntryMatch(parent.LVistaFilter.LCatalogFilterApply(entries,
+                entry => entry.LEntryLanguage), child.LVistaQuery);
+            return LEngineVistaBuild(entries, child.LVistaChosen);
         }
     }
 
@@ -101,6 +131,27 @@ public sealed partial class LEngine
             place => entries[place].LEntryId);
 
         return names;
+    }
+
+    private static string[] LEngineTwinRead<LEngineRow>(IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
+    {
+        string[] names = new string[rows.Count];
+        int[] places = new int[rows.Count];
+        for (int index = 0; index < places.Length; index++)
+        {
+            places[index] = index;
+        }
+
+        LTwin.LTwinNameApply(places, place => name(rows[place]),
+            (place, twinned) => names[place] = twinned, place => id(rows[place]));
+        return names;
+    }
+
+    private static string LEngineNameRead(LStateValue value, string unknown, string fallback)
+    {
+        return value.LStateValueState == LState.LStateUnknown
+            ? unknown
+            : value.LStateValueShow() is { Length: > 0 } text ? text : fallback;
     }
 
     private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)

@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)
+    internal IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -15,7 +15,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)
+    internal void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)
     {
         lock (_lEngineGate)
         {
@@ -28,7 +28,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)
+    internal void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)
     {
         lock (_lEngineGate)
         {
@@ -61,7 +61,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineInflectionMove(long entryId, int position, int target)
+    internal void LEngineInflectionMove(long entryId, int position, int target)
     {
         lock (_lEngineGate)
         {
@@ -70,7 +70,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineInflectionDelete(long entryId, int position)
+    internal void LEngineInflectionDelete(long entryId, int position)
     {
         lock (_lEngineGate)
         {

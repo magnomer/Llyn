@@ -10,7 +10,7 @@ It lives beside it rather than inside it because the two share nothing but the d
 Creating writes rows in card order.
 Changing has to work out which stored row each card is first.
 
-## `public LEntry LEngineEntryUpdate(long id, LEntryDraft draft)`
+## `internal LEntry LEngineEntryUpdate(long id, LEntryDraft draft)`
 
 Applies `draft` to the entry identified by `id` and returns the stored entry as it now stands.
 The entry keeps its opaque id and its `added_utc`.

@@ -18,43 +18,43 @@ Only the citation moves there.
 The Reference row is never created, changed or deleted by pointing an Example at it.
 Pointing one away from it changes nothing either.
 
-## `public LExample LEngineExampleCreate(LExample example)`
+## `internal LExample LEngineExampleCreate(LExample example)`
 
 Creates `example` and returns it with its assigned id.
 
-## `public LExample? LEngineExampleRead(long id)`
+## `internal LExample? LEngineExampleRead(long id)`
 
 Reads the Example for `id`, or `null` when no Example has that id.
 
-## `public IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)`
 
 Reads the Examples the Meaning or Collocation identified by `ownerId` references.
 They arrive in the order that side holds them.
 
-## `public void LEngineExampleUpdate(LExample example)`
+## `internal void LEngineExampleUpdate(LExample example)`
 
 Rewrites the language, the sentence and the translation of the Example `example` identifies.
 The Source it cites is not touched here — that is `LEngineExampleUpdate(string, string?)`.
 
-## `public void LEngineExampleUpdate(long exampleId, string? referenceId)`
+## `internal void LEngineExampleUpdate(long exampleId, string? referenceId)`
 
 Sets or clears the single Reference the Example identified by `exampleId` cites — pass `null` to clear it.
 Only the citation moves: the Reference row itself is neither created, changed, nor deleted here.
 
-## `public void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)`
+## `internal void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)`
 
 References the Example identified by `exampleId` from the side identified by `ownerId`.
 That side is a Meaning or a Collocation, and the reference goes in at `position`.
 The set is renumbered around it so the positions stay contiguous.
 
-## `public void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)`
+## `internal void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)`
 
 Removes one side's reference to an Example.
 The Example and its other references survive.
 That is the rule a card edit follows.
 Dropping an Example from a card leaves what other cards quote.
 
-## `public void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)`
+## `internal void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)`
 
 Removes one side's reference to an Example and deletes the Example when that was its last reference.
 An Example quoted by nothing is unreachable data, so the reference going takes it.
@@ -65,19 +65,19 @@ So the row is judged against the references as they stand at that moment.
 That is why this is one seam and not three the shell composes.
 Between any two steps the answer to "does anything still quote this" can change.
 
-## `public void LEngineExampleDelete(long id)`
+## `internal void LEngineExampleDelete(long id)`
 
 Deletes the Example identified by `id`.
 Refused while any Meaning or Collocation still references it.
 `LEngineExampleRemove` is the seam that deletes one as its last reference goes.
 A Reference it cited is left standing.
 
-## `public IReadOnlyList<LExample> LEngineExampleRead()`
+## `internal IReadOnlyList<LExample> LEngineExampleRead()`
 
 Every Example in the workspace, for the panel that browses the shared stock of sentences itself.
 It is not a view of one card's references, so an Example nothing quotes is in it.
 
-## `public void LEngineExampleDelete(long id, bool detach)`
+## `internal void LEngineExampleDelete(long id, bool detach)`
 
 Deletes the Example, dropping every reference to it first when the user asked for that.
 Without `detach` it is the refusing delete above.

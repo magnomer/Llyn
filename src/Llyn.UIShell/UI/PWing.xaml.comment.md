@@ -88,13 +88,10 @@ Moves the dropdown mark onto the ordering the vista holds.
 
 Shows the mark on the sieve button while the vista hides any language.
 
-### `private void PWingChosenApply()`
-
-Marks the rows in place from the vista's choice, so the list keeps its scroll position.
-
 ### `private void PWingIndexFind()`
 
 Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.
+`PSplice` moves the marks in place when only the choice changed, so the list keeps its scroll position.
 A blank vista with nothing typed answers no rows, so nothing typed lists nothing.
 The empty text shows only while a typed query matched nothing.
 

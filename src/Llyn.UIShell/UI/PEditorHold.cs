@@ -23,12 +23,22 @@ public partial class PEditor
         {
             LTenure started = _lEngine.LEngineTenureStart(_pEditorOrigin, LSubject.LSubjectEntry, entry);
             _pEditorTenure = started;
+            started.LTenureEntryAttach(LSubject.LSubjectFrequency, new PObserver(this, PEditorFrequencyShow));
+            started.LTenureEntryAttach(LSubject.LSubjectGrasp, new PObserver(this, PEditorGraspShow));
+            started.LTenureEntryAttach(LSubject.LSubjectInflection, new PObserver(this, PEditorParadigmShow));
+            started.LTenureEntryAttach(LSubject.LSubjectReflex, new PObserver(this, PReflexPendingShow));
+            started.LTenureObserverAttach(LSubject.LSubjectScript, new PObserver(this, PEditorScriptShow));
+            started.LTenureObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PEditorFanqieShow));
+            started.LTenureObserverAttach(LSubject.LSubjectReference, new PObserver(this, PSentenceLoad));
+            started.LTenureObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PEditorDraftRestore));
+            started.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PEditorChangeUpdate));
+            started.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PEditorDraftRestore));
             IsEnabled = true;
             return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pEditorTenure = null;
+            PEditorDraftCancel();
             IsEnabled = false;
             _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
             return null;

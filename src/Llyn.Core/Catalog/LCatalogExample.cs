@@ -10,6 +10,8 @@ public sealed record LCatalogExample(
     int LCatalogExampleUsage,
     bool LCatalogExampleChosen = false)
 {
+    public string LCatalogExampleName { get; init; } = LCatalogExampleStored.LExampleText.LStateValueShow();
+
     public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)
     {
         ArgumentNullException.ThrowIfNull(example);

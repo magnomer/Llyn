@@ -9,7 +9,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LExample LEngineExampleCreate(LExample example)
+    internal LExample LEngineExampleCreate(LExample example)
     {
         lock (_lEngineGate)
         {
@@ -18,7 +18,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LExample? LEngineExampleRead(long id)
+    internal LExample? LEngineExampleRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -26,7 +26,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LExample> LEngineExampleRead()
+    internal IReadOnlyList<LExample> LEngineExampleRead()
     {
         lock (_lEngineGate)
         {
@@ -65,15 +65,18 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista)
+    public IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista, string unknown = "", string unwritten = "")
     {
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogExample> found = LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogExample> rows = new(found.Count);
-        foreach (LCatalogExample row in found)
+        string[] names = LEngineTwinRead(found, row => LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten), row => row.LCatalogExampleStored.LExampleId);
+        for (int index = 0; index < found.Count; index++)
         {
+            LCatalogExample row = found[index];
             rows.Add(row with
             {
+                LCatalogExampleName = names[index],
                 LCatalogExampleChosen = row.LCatalogExampleStored.LExampleId == vista.LVistaChosen,
             });
         }
@@ -112,7 +115,7 @@ public sealed partial class LEngine
             : id.ToString(CultureInfo.InvariantCulture);
     }
 
-    public IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -127,7 +130,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSentence> LEngineSentenceRead(long meaningId)
+    internal IReadOnlyList<LSentence> LEngineSentenceRead(long meaningId)
     {
         lock (_lEngineGate)
         {
@@ -135,7 +138,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSentence> LEngineSentenceRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LSentence> LEngineSentenceRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -149,7 +152,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleUpdate(LExample example)
+    internal void LEngineExampleUpdate(LExample example)
     {
         lock (_lEngineGate)
         {
@@ -157,7 +160,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleUpdate(long exampleId, LStateAnchor reference)
+    internal void LEngineExampleUpdate(long exampleId, LStateAnchor reference)
     {
         lock (_lEngineGate)
         {
@@ -165,7 +168,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)
+    internal void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -183,7 +186,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)
+    internal void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -201,7 +204,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)
+    internal void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -222,7 +225,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleDelete(long id)
+    internal void LEngineExampleDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -232,7 +235,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 
-    public void LEngineExampleDelete(long id, bool detach)
+    internal void LEngineExampleDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {

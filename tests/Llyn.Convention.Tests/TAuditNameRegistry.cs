@@ -215,6 +215,7 @@ internal static class TAuditNameRegistry
         "Speaker",
         "Specimen",
         "Speech",
+        "Splice",
         "Stack",
         "Stair",
         "Stamp",

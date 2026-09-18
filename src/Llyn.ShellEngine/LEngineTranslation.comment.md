@@ -18,17 +18,17 @@ So any other side is refused rather than guessed.
 The branch between the two sides is the engine's alone.
 The archive is handed a table and never learns which card kind asked.
 
-## `public IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)`
 
 Reads the links the Meaning or Collocation identified by `ownerId` carries.
 They arrive in the order that card holds them.
 
-## `public void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)`
+## `internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)`
 
 Writes that card's whole link line from the Entry ids given.
 Blank ids and repeats are dropped, and the surviving order is the order given.
 
-## `public IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)`
+## `internal IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)`
 
 Every Entry whose headword contains `query`, across every language the workspace holds.
 A link crosses languages, so the search cannot be narrowed to the card's own one.
@@ -47,7 +47,7 @@ Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, because a 
 Several Entries sharing a headword are a question, so this answers nothing and the caller asks.
 The answer says nothing about language, so a form that takes it without asking must show the language it got.
 
-## `public LEntry LEngineTranslationCreate(string headword, string language)`
+## `internal LEntry LEngineTranslationCreate(string headword, string language)`
 
 Creates the bare Entry a typed word no Entry answers needs, and returns it.
 The row carries a headword and a language and nothing else.

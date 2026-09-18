@@ -8,7 +8,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
+    internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
     {
         lock (_lEngineGate)
         {
@@ -52,7 +52,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)
+    internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)
     {
         lock (_lEngineGate)
         {
@@ -60,7 +60,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query)
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
     {
         ArgumentNullException.ThrowIfNull(query);
 
@@ -73,11 +73,11 @@ public sealed partial class LEngine
             }
 
             IReadOnlyList<LEntry> entries = new LEntryArchive(_lEngineDatabase).LEntryScan(ids, query);
-            return LEngineVistaBuild(entries, null);
+            return LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }
 
-    public void LEngineDiweiRebuild()
+    internal void LEngineDiweiRebuild()
     {
         lock (_lEngineGate)
         {

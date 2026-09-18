@@ -10,6 +10,8 @@ public sealed record LCatalogAuthor(
     int LCatalogAuthorUsage,
     bool LCatalogAuthorChosen = false)
 {
+    public string LCatalogAuthorName { get; init; } = LCatalogAuthorStored.LAuthorName;
+
     public static LCatalogAuthor LCatalogAuthorCreate(
         LAuthor author,
         IReadOnlyList<LReference>? works,

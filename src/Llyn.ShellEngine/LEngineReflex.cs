@@ -21,7 +21,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)
+    internal IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)
     {
         lock (_lEngineGate)
         {

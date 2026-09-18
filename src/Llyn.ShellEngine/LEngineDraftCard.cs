@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)
+    internal IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)
     {
         lock (_lEngineGate)
         {
@@ -32,7 +32,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)
+    internal IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)
     {
         lock (_lEngineGate)
         {
@@ -47,7 +47,7 @@ public sealed partial class LEngine
         }
     }
 
-    public long LEngineCardCreate()
+    internal long LEngineCardCreate()
     {
         lock (_lEngineGate)
         {

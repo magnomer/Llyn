@@ -66,10 +66,10 @@ public partial class PEditor
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        IReadOnlyList<LEntry> found;
+        IReadOnlyList<LVistaRow> found;
         try
         {
-            found = _lEngine.LEngineTranslationFind(word, null);
+            found = _lEngine.LEngineProspectFind(word);
         }
         catch (Exception exception)
         {
@@ -80,21 +80,15 @@ public partial class PEditor
         PProspectHide();
 
         List<PProspectItem> stored = new(found.Count);
-        foreach (LEntry entry in found)
+        foreach (LVistaRow entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
                 false,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+                entry.LVistaRowEpithet ?? string.Empty, entry.LVistaRowName));
         }
-
-        LTwin.LTwinNameApply(
-            stored,
-            row => row.PProspectItemHeadword,
-            (row, name) => row.PProspectItemName = name,
-            row => row.PProspectItemId);
 
         foreach (PProspectItem item in stored)
         {
@@ -168,7 +162,7 @@ public partial class PEditor
         PProspectHide();
     }
 
-    private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)
+    private void PProspectShow(PCard card, string word, IReadOnlyList<LVistaRow> found, bool chosen)
     {
         _pProspectItem.Clear();
         _pProspectChosen = null;
@@ -176,21 +170,15 @@ public partial class PEditor
         PProspect.VerticalOffset = 0;
 
         List<PProspectItem> stored = new(found.Count);
-        foreach (LEntry entry in found)
+        foreach (LVistaRow entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
                 false,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+                entry.LVistaRowEpithet ?? string.Empty, entry.LVistaRowName));
         }
-
-        LTwin.LTwinNameApply(
-            stored,
-            row => row.PProspectItemHeadword,
-            (row, name) => row.PProspectItemName = name,
-            row => row.PProspectItemId);
 
         long? self = PEditorEntryRead();
         foreach (PProspectItem item in stored)

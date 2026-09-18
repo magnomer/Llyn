@@ -234,7 +234,7 @@ public sealed class TEngineVista
         LVista vista = engine.TEngineVistaStart("taxonomy", LCatalogOrder.LCatalogOrderName);
         vista.TVistaQuerySet("no");
 
-        Assert.Equal(["noun"], engine.TEngineTagFind(vista).Select(tag => tag.LTagText));
+        Assert.Equal(["noun"], engine.TEngineTagFind(vista).Select(row => row.LCatalogTagStored.LTagText));
     }
 
     [Fact]

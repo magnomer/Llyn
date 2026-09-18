@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -18,7 +18,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)
+    internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -29,7 +29,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)
+    internal IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)
     {
         lock (_lEngineGate)
         {
@@ -58,6 +58,14 @@ public sealed partial class LEngine
 
             exact.AddRange(partial);
             return exact;
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)
+    {
+        lock (_lEngineGate)
+        {
+            return LEngineVistaBuild(LEngineTranslationFind(query, null), null);
         }
     }
 
@@ -95,7 +103,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LEntry LEngineTranslationCreate(string headword, string language)
+    internal LEntry LEngineTranslationCreate(string headword, string language)
     {
         LEntry entry;
         lock (_lEngineGate)
@@ -166,7 +174,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId);
+            return LEngineUsageResolve(new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId));
         }
     }
 }

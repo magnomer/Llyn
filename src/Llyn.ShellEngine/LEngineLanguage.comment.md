@@ -33,13 +33,13 @@ The pack declares only an ISO country code.
 The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
 So the UI never reaches into the `languages/` folder itself.
 
-## `public IReadOnlyList<LVariety> LEngineVarietyRead(string language)`
+## `internal IReadOnlyList<LVariety> LEngineVarietyRead(string language)`
 
 Returns the regional varieties the language pack declares, in the pack's order.
 Empty when the pack declares none, so a language without varieties shows plain rows.
 It reads the pack from the engine's cache, so a menu reopened does not reparse the file.
 
-## `public bool LEngineFlaggedCheck(string language)`
+## `internal bool LEngineFlaggedCheck(string language)`
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
 It reads the cached pack as `LEngineVarietyRead` does.
@@ -71,3 +71,7 @@ A rooted path is a pack's own SVG and answers itself when the file exists, with 
 The one place a language pack is read, kept by name after the first read.
 Every reader of a pack's declarations goes through here, so no path parses the file twice.
 It takes the gate itself, and a caller already holding it re-enters without harm.
+
+## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
+
+Reads the language from the displayed draft and treats an empty language as unflagged.

@@ -106,12 +106,14 @@ public partial class PImprint
         {
             LTenure started = _lEngine.LEngineTenureStart(PImprintOrigin, LSubject.LSubjectReference, reference);
             _pImprintTenure = started;
+            started.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PImprintDraftRestore));
+            started.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PImprintChangeUpdate));
             IsEnabled = true;
             return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pImprintTenure = null;
+            PImprintDraftCancel();
             IsEnabled = false;
             _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
             return null;
@@ -121,14 +123,6 @@ public partial class PImprint
     private void PImprintDraftShow(LDraft? started)
     {
         PImprintApply(started);
-    }
-
-    internal void PImprintDraftRestore(long id)
-    {
-        if (id == PImprintDraft)
-        {
-            PImprintDraftRestore();
-        }
     }
 
     private void PImprintDraftRestore()

@@ -19,7 +19,7 @@ A Reference no Example cites and an Author no Reference credits are both deliber
 Unlike a card's Examples and Tags, they are not created as a side effect of typing.
 So they go only when something says to delete them.
 
-## `public LReference LEngineReferenceCreate(LReference reference)`
+## `internal LReference LEngineReferenceCreate(LReference reference)`
 
 Creates `reference` and returns it with its assigned id.
 Its fields carry the three-state distinction the model gives them: unspecified, deliberately unknown, or a value.
@@ -31,39 +31,39 @@ The typed line is resolved like any written value, and a blank line is refused a
 The caller then cites the returned id the way it cites any picked row.
 Observers hear of the new Reference at once, because every open citation catalogue must list it.
 
-## `public LReference? LEngineReferenceRead(long id)`
+## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)`
 
 Reads the single Reference the Example identified by `ownerId` cites, as a list of one or none.
 An Example cites at most one, so its list holds either that one or nothing.
 
-## `public void LEngineReferenceUpdate(LReference reference)`
+## `internal void LEngineReferenceUpdate(LReference reference)`
 
 Rewrites the fields of the Reference `reference` identifies.
 
-## `public void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)`
+## `internal void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)`
 
 Cites the Reference identified by `referenceId` from the Example identified by `ownerId`.
 An Example holds one citation, so `position` orders nothing.
 An Example holds one citation, so the position is not used.
 Whatever it cited before is replaced.
 
-## `public void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)`
+## `internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)`
 
 Clears the citation the Example identified by `ownerId` holds.
 The Reference and its other citations survive.
 
-## `public void LEngineReferenceDelete(long id)`
+## `internal void LEngineReferenceDelete(long id)`
 
 Deletes the Reference identified by `id` together with the author credits it owns.
 Refused while any Example still cites it — clear those citations first.
 The Authors it credited survive.
 Only the credits between them and this Reference go.
 
-## `public LAuthor LEngineAuthorCreate(LAuthor author)`
+## `internal LAuthor LEngineAuthorCreate(LAuthor author)`
 
 Creates `author` and returns it with its assigned id.
 
@@ -95,33 +95,33 @@ Reads the Authors credited on the Reference identified by `ownerId`, in that Ref
 Reads the credits of every Reference at once, each in that Reference's own order.
 `LOwner` names the kind being asked about, as the usage seam does, and only a Reference has credits.
 
-## `public void LEngineAuthorUpdate(LAuthor author)`
+## `internal void LEngineAuthorUpdate(LAuthor author)`
 
 Renames the Author `author` identifies.
 Every credit reads the new name.
 
-## `public void LEngineAuthorAttach(long referenceId, long authorId, int position)`
+## `internal void LEngineAuthorAttach(long referenceId, long authorId, int position)`
 
 Credits the Author identified by `authorId` on the Reference identified by `referenceId` at `position` in that Reference's author order.
 The Author row stays available to every other Reference.
 
-## `public void LEngineAuthorDetach(long referenceId, long authorId)`
+## `internal void LEngineAuthorDetach(long referenceId, long authorId)`
 
 Removes one Reference's credit for an Author.
 The Author and its other credits survive.
 An Author is deliberate data, so losing a credit is not a reason to delete the person.
 
-## `public void LEngineReferenceDelete(long id, bool detach)`
+## `internal void LEngineReferenceDelete(long id, bool detach)`
 
 The same delete, with `detach` clearing every citation first.
 The detaching, the count, and the delete stand in one store session.
 
-## `public void LEngineAuthorDelete(long id, bool detach)`
+## `internal void LEngineAuthorDelete(long id, bool detach)`
 
 The same delete, with `detach` dropping every credit first.
 Deleting an Author never deletes a Reference.
 
-## `public void LEngineAuthorDelete(long id)`
+## `internal void LEngineAuthorDelete(long id)`
 
 Deletes the Author identified by `id`.
 Refused while any Reference still credits the Author — detach every credit first.

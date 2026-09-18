@@ -24,10 +24,13 @@ public partial class PGuild
         try
         {
             _pAutographTenure = _lEngine.LEngineTenureStart("guild", LSubject.LSubjectAuthor, id);
+            _pAutographTenure.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PAutographChangeUpdate));
+            _pAutographTenure.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PAutographChangeUpdate));
             name = _pAutographTenure.LTenureRead()?.LDraftAuthorHeld?.LAuthorName ?? string.Empty;
         }
         catch (Exception exception)
         {
+            _pAutographTenure?.LTenureCancel();
             _pAutographTenure = null;
             _pGuildHost.PWindowFailureShow("Guild.LoadFailed", exception);
         }
@@ -84,26 +87,6 @@ public partial class PGuild
         if (_pAutographTenure is LTenure held)
         {
             held.LTenureRequestDefer(new LRequestAuthorName(held.LTenureId, PAutographName.Text ?? string.Empty));
-        }
-
-        PAutographChangeUpdate();
-    }
-
-    private void PAutographDraftUpdate(LBulletin bulletin)
-    {
-        if (_pAutographTenure is not LTenure held || bulletin.LBulletinId != held.LTenureId)
-        {
-            return;
-        }
-
-        PAutographChangeUpdate();
-    }
-
-    private void PAutographTenureUpdate(LBulletin bulletin)
-    {
-        if (_pAutographTenure is not LTenure held || bulletin.LBulletinId != held.LTenureId)
-        {
-            return;
         }
 
         PAutographChangeUpdate();
@@ -176,7 +159,7 @@ public partial class PGuild
                 continue;
             }
 
-            _pAutographUnion.Add(new PRollItem(row, PGuildWorkRead(row.LCatalogAuthorWork)));
+            _pAutographUnion.Add(new PRollItem(row, PGuildWorkRead(row.LCatalogAuthorWork), false));
 
             if (_pAutographUnion.Count == PAutographUnionLimit)
             {
@@ -250,7 +233,7 @@ public partial class PGuild
 
         try
         {
-            _lEngine.LEngineAuthorDelete(id, works > 0);
+            _pGuildVista.LVistaDelete();
         }
         catch (Exception exception)
         {

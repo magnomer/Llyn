@@ -34,7 +34,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LExample LEngineExampleCommit(long id)
+    internal LExample LEngineExampleCommit(long id)
     {
         LExample settled;
         lock (_lEngineGate)

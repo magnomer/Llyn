@@ -5,7 +5,7 @@
 The diwei side of the engine: the 音韻地位 categories the stored placements of a language fall into.
 The categories are derived, never edited, so the engine only reads them and keeps them in step.
 
-## `public IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)`
+## `internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)`
 
 The categories of one kind with their entry counts.
 
@@ -24,7 +24,7 @@ The vista's filter names languages and the language is already given, so it is n
 
 Every stored placement linked to one category, for the category page to group.
 
-## `public IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)`
+## `internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)`
 
 The entries sitting at the cell the given categories name together.
 
@@ -36,7 +36,7 @@ Only those ids are read, so a cell never costs the whole entry table.
 Rows keep id order and are built by the vista row builder, twins numbered and epithets read in one scan.
 No row is marked chosen, because the panel's shown entry is its own to mark.
 
-## `public void LEngineDiweiRebuild()`
+## `internal void LEngineDiweiRebuild()`
 
 Derives every category again on request, so an edited hypothesis file shows without a restart.
 

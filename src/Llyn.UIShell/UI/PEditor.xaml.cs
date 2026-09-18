@@ -71,9 +71,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _lEngine = engine;
         _pEditorOrigin = origin;
 
-        _pEditorObserver = new PObserver(this, PEditorBulletinHandle);
-        engine.LEngineObserverAttach(_pEditorObserver);
-
         Visibility owned = string.Equals(origin, "Input", StringComparison.Ordinal)
             ? Visibility.Visible
             : Visibility.Collapsed;
@@ -97,11 +94,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     internal void PEditorClose()
     {
-        if (_pEditorObserver is not null)
-        {
-            _lEngine.LEngineObserverDetach(_pEditorObserver);
-            _pEditorObserver = null;
-        }
+        PEditorDraftCancel();
 
         PNotationCancel();
         PClipCancel();

@@ -19,7 +19,7 @@ The built frequency sources of one language, made once and kept for the engine's
 A pack without a `frequency` list yields no sources, so every fill for that language ends at once.
 An Entry with no language named has no pack, so it yields no sources either.
 
-## `public async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
+## `internal async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
 
 Asks every frequency source of `language` for `word` and returns one resolved row per source that answered, in written order.
 Returns an empty list when every source came up empty.
@@ -69,7 +69,7 @@ An Entry with no row whose pack has sources starts a fill before returning.
 So an old Entry fills itself on first display.
 An Entry the sources already answered with nothing this session is not asked again on every display.
 
-## `public void LEngineFrequencyStart(long entryId)`
+## `internal void LEngineFrequencyStart(long entryId)`
 
 Begins a background fill for the Entry identified by `entryId` and returns at once.
 A fill already running for that Entry is cancelled first, so the newest headword and language win.

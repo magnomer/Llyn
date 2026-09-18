@@ -18,6 +18,8 @@ public sealed record LMarkupEntry(
     string LMarkupEntryNote = "",
     int LMarkupEntryLine = 0) : IEquatable<LMarkupEntry>
 {
+    public string LMarkupEntryName { get; init; } = LMarkupEntryHeadword;
+
     public string LMarkupEntryHeadword { get; init; } = LMarkupEntryHeadword ?? string.Empty;
 
     public string LMarkupEntryLanguage { get; init; } = LMarkupEntryLanguage ?? string.Empty;

@@ -11,25 +11,12 @@ public partial class PTenor
 {
     private LVista? _pCohortVista;
 
-    private void PCohortChosenApply()
-    {
-        long? id = _pCohortVista?.LVistaChosen;
-        foreach (PCohortItem item in _pCohortList)
-        {
-            item.PCohortItemChosen = id is not null
-                && item.PCohortItemId == id;
-        }
-    }
-
     private void PCohortFind()
     {
-        IReadOnlyList<LEntry> read;
+        IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(
-                new LRegister(_pTenorVista?.LVistaChosen ?? 0, LStateValue.LStateValueUnspecified),
-                PQuest.Text ?? string.Empty,
-                _pTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+            read = _lEngine.LEngineEntryFind(_pTenorVista, _pCohortVista);
         }
         catch (Exception exception)
         {
@@ -37,28 +24,28 @@ public partial class PTenor
             return;
         }
 
-        _pCohortList.Clear();
-        foreach (LEntry entry in read)
+        List<PCohortItem> fresh = [];
+        foreach (LVistaRow entry in read)
         {
-            _pCohortList.Add(new PCohortItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            fresh.Add(new PCohortItem(
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
+                entry.LVistaRowEpithet ?? string.Empty,
+                entry.LVistaRowChosen)
+            {
+                PCohortItemName = entry.LVistaRowName,
+            });
         }
 
-        LTwin.LTwinNameApply(
-            _pCohortList,
-            row => row.PCohortItemHeadword,
-            (row, name) => row.PCohortItemName = name,
-            row => row.PCohortItemId);
+        PSplice.PSpliceApply(
+            _pCohortList, fresh, PCohortItem.PCohortItemMatch, PCohortItem.PCohortItemSync);
 
         PCohortEmpty.SetResourceReference(
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PQuest.Text) ? "Register.Vacant" : "Register.Unmatched");
         PCohortEmpty.Visibility = _pCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PCohortChosenApply();
     }
 
     private void PCohortHandle(object sender, RoutedEventArgs e)
@@ -81,7 +68,8 @@ public partial class PTenor
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pCohortVista?.LVistaSelect(id);
+            draft = _pCohortVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -97,7 +85,7 @@ public partial class PTenor
         }
 
         _pCohortVista?.LVistaSelect(id);
-        PCohortChosenApply();
+        PCohortFind();
         PTenorBin.IsEnabled = true;
         PTenorEntryShow(draft);
 
@@ -112,7 +100,7 @@ public partial class PTenor
         if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pCohortVista?.LVistaSelect(bulletin.LBulletinId);
-            PCohortChosenApply();
+            PCohortFind();
             PTenorBin.IsEnabled = true;
         }
 
@@ -121,15 +109,10 @@ public partial class PTenor
 
     private void PTenorEntryUpdate()
     {
-        if (_pCohortVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pCohortVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {

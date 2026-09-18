@@ -9,10 +9,6 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private bool _pEditorPreparing;
-
-    private bool _pEditorPrepareStale;
-
     private void PEditorDraftShow(LEntryDraft draft)
     {
         draft = PEditorDraftPrepare(draft);
@@ -61,41 +57,13 @@ public partial class PEditor
             return draft;
         }
 
-        _pEditorPreparing = true;
-        _pEditorPrepareStale = false;
-        try
+        return _pEditorTenure.LTenurePrepare(() =>
         {
             PCardPrepare(draft);
             PTranscriptionPrepare(draft);
             PGlyphPrepare(draft);
-            draft = PEditorDraftRead(draft);
-            PSentencePrepare(draft);
-            return PEditorDraftRead(draft);
-        }
-        finally
-        {
-            _pEditorPreparing = false;
-            _pEditorPrepareStale = false;
-        }
-    }
-
-    private LEntryDraft PEditorDraftRead(LEntryDraft draft)
-    {
-        if (!_pEditorPrepareStale || _pEditorTenure is not LTenure held)
-        {
-            return draft;
-        }
-
-        _pEditorPrepareStale = false;
-        try
-        {
-            return held.LTenureRead()?.LDraftContent ?? draft;
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
-            return draft;
-        }
+            PSentencePrepare(_pEditorTenure.LTenureRead()?.LDraftContent ?? draft);
+        })?.LDraftContent ?? draft;
     }
 
     private static void PEditorTextShow(TextBox box, string text)
@@ -173,16 +141,7 @@ public partial class PEditor
 
         _pEditorFill = false;
 
-        _pEditorPreparing = true;
-        try
-        {
-            PEditorLanguageSend();
-        }
-        finally
-        {
-            _pEditorPreparing = false;
-            _pEditorPrepareStale = false;
-        }
+        _pEditorTenure?.LTenurePrepare(PEditorLanguageSend);
 
         PEditorDraftRestore();
         PEditorChangeUpdate();

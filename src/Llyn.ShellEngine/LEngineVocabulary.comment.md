@@ -23,7 +23,7 @@ So a second run rewrites the same rows, keeps their ids, and adds nothing.
 That is why the tables are no longer empty on a fresh workspace.
 It is also why adding a language is still a folder rather than a change here.
 
-## `public LSpeechValue LEngineSpeechCreate(LSpeechValue value)`
+## `internal LSpeechValue LEngineSpeechCreate(LSpeechValue value)`
 
 Adds or replaces one part-of-speech value, keyed by its language and code, and returns it with its row id.
 
@@ -48,38 +48,38 @@ A new preset takes the next free order and a negative code, outside the space a 
 It returns the preset the name now stands for, or `null` when either argument is blank.
 This is what lets the dropdown grow with what a user writes.
 
-## `public LSpeechValue? LEngineSpeechFind(string language, string name)`
+## `internal LSpeechValue? LEngineSpeechFind(string language, string name)`
 
 Resolves the display `name` of a part of speech back to the row `language` declares.
 It returns `null` when no preset carries that name.
 That is what makes the typed text a custom part of speech rather than a preset.
 
-## `public LFeature LEngineFeatureCreate(LFeature feature)`
+## `internal LFeature LEngineFeatureCreate(LFeature feature)`
 
 Adds or replaces one feature under its part of speech, keyed by code.
 It returns the feature with its row id.
 
-## `public LMorphology LEngineMorphologyCreate(LMorphology value)`
+## `internal LMorphology LEngineMorphologyCreate(LMorphology value)`
 
 Adds or replaces one value under its feature, keyed by code, and returns it with its row id.
 
-## `public IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)`
+## `internal IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)`
 
 Reads the features the part of speech takes, in display order.
 
-## `public LFeature? LEngineFeatureFind(long speechValueId, string name)`
+## `internal LFeature? LEngineFeatureFind(long speechValueId, string name)`
 
 Resolves the feature `name` names under the part of speech, or `null` when none does.
 
-## `public LMorphology? LEngineMorphologyRead(long id)`
+## `internal LMorphology? LEngineMorphologyRead(long id)`
 
 Reads the morphology value with row id `id`, or `null` when no row has it.
 
-## `public IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)`
+## `internal IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)`
 
 Reads the values the feature takes, in display order.
 
-## `public LMorphology? LEngineMorphologyFind(long featureId, string name)`
+## `internal LMorphology? LEngineMorphologyFind(long featureId, string name)`
 
 Resolves the value `name` names under the feature, or `null` when none does.
 

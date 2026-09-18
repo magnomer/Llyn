@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,11 +8,11 @@ internal sealed class PCohortItem : INotifyPropertyChanged
 {
     private bool _pCohortItemChosen;
 
-    internal PCohortItem(long id, string headword, string language, string epithet = "")
+    internal PCohortItem(long id, string headword, string language, string epithet = "", bool chosen = false)
     {
+        _pCohortItemChosen = chosen;
         PCohortItemId = id;
         PCohortItemHeadword = headword;
-        PCohortItemName = headword;
         PCohortItemEpithet = epithet ?? string.Empty;
         PCohortItemLanguage = language;
         PCohortItemFlag = PEnsign.PEnsignFind(language);
@@ -23,11 +24,25 @@ internal sealed class PCohortItem : INotifyPropertyChanged
 
     public string PCohortItemEpithet { get; }
 
-    public string PCohortItemName { get; internal set; }
+    public required string PCohortItemName { get; init; }
 
     public string PCohortItemLanguage { get; }
 
     public ImageSource? PCohortItemFlag { get; }
+
+    internal static bool PCohortItemMatch(PCohortItem held, PCohortItem fresh)
+    {
+        return held.PCohortItemId == fresh.PCohortItemId
+            && string.Equals(held.PCohortItemHeadword, fresh.PCohortItemHeadword, StringComparison.Ordinal)
+            && string.Equals(held.PCohortItemEpithet, fresh.PCohortItemEpithet, StringComparison.Ordinal)
+            && string.Equals(held.PCohortItemName, fresh.PCohortItemName, StringComparison.Ordinal)
+            && string.Equals(held.PCohortItemLanguage, fresh.PCohortItemLanguage, StringComparison.Ordinal);
+    }
+
+    internal static void PCohortItemSync(PCohortItem held, PCohortItem fresh)
+    {
+        held.PCohortItemChosen = fresh.PCohortItemChosen;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

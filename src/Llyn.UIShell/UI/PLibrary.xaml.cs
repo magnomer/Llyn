@@ -61,18 +61,18 @@ public partial class PLibrary : UserControl
 
     private async void PLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pLibraryVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pLibraryVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pLibraryHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pLibraryHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pLibraryVista, _pLibraryHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pLibraryVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pLibraryVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pLibraryHost.PWindowPortraitExport(entry);
+            await _pLibraryHost.PWindowPortraitExport(_pLibraryVista);
         }
     }
 }

@@ -14,10 +14,19 @@ The row announces its chosen flag, so the mark moves without the list being rebu
 ## `public string PMembershipItemName`
 
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
-`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
+The engine numbers it on the row it returns, because a repeat is only visible across rows.
 `PMembershipItemHeadword` keeps the plain headword for everything that is not display.
 
 ## `public string PMembershipItemEpithet { get; }`
 
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
 The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.
+
+## `internal static bool PMembershipItemMatch(PMembershipItem held, PMembershipItem fresh)`
+
+Whether the two rows show the same values, the chosen mark left aside.
+`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+
+## `internal static void PMembershipItemSync(PMembershipItem held, PMembershipItem fresh)`
+
+Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.

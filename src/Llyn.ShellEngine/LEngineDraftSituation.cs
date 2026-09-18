@@ -35,7 +35,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LSituation LEngineSituationCommit(long id)
+    internal LSituation LEngineSituationCommit(long id)
     {
         LSituation settled;
         lock (_lEngineGate)

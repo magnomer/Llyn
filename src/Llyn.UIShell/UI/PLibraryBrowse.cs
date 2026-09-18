@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -80,36 +81,25 @@ public partial class PLibrary
         PSieveMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PIndexChosenApply()
-    {
-        long? chosen = _pLibraryVista?.LVistaChosen;
-        foreach (PIndexItem item in _pIndexList)
-        {
-            item.PIndexItemChosen = chosen is not null
-                && item.PIndexItemId == chosen;
-        }
-    }
-
     private void PIndexFind()
     {
-        _pIndexList.Clear();
-        if (_pLibraryVista is null)
+        List<PIndexItem> fresh = [];
+        IReadOnlyList<LVistaRow> read = _pLibraryVista is null ? [] : _lEngine.LEngineEntryFind(_pLibraryVista);
+        foreach (LVistaRow row in read)
         {
-            return;
-        }
-
-        foreach (LVistaRow row in _lEngine.LEngineEntryFind(_pLibraryVista))
-        {
-            _pIndexList.Add(new PIndexItem(
+            fresh.Add(new PIndexItem(
                 row.LVistaRowId,
                 row.LVistaRowHeadword,
                 row.LVistaRowLanguage,
-                row.LVistaRowEpithet ?? string.Empty)
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
             {
                 PIndexItemName = row.LVistaRowName,
-                PIndexItemChosen = row.LVistaRowChosen,
             });
         }
+
+        PSplice.PSpliceApply(
+            _pIndexList, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
 
         PIndexEmpty.Visibility = _pIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -134,7 +124,8 @@ public partial class PLibrary
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pLibraryVista?.LVistaSelect(id);
+            draft = _pLibraryVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -150,7 +141,7 @@ public partial class PLibrary
         }
 
         _pLibraryVista?.LVistaSelect(id);
-        PIndexChosenApply();
+        PIndexFind();
         PLibraryEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -249,7 +240,7 @@ public partial class PLibrary
 
     private void PLibraryScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pLibraryVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -297,7 +288,7 @@ public partial class PLibrary
     private void PLibraryClear()
     {
         _pLibraryVista?.LVistaSelect(null);
-        PIndexChosenApply();
+        PIndexFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PLibraryScribeShow(false);
@@ -312,11 +303,6 @@ public partial class PLibrary
 
     private void PLibraryBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pLibraryVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pLibraryHost.PWindowDeleteConfirm())
         {
             return;
@@ -324,7 +310,7 @@ public partial class PLibrary
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pLibraryVista?.LVistaDelete();
         }
         catch (Exception exception)
         {

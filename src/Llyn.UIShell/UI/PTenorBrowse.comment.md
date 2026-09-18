@@ -61,6 +61,7 @@ The flags are loaded before any row is built, then the language menu is built fr
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The catalog is then listed from the vista.
 The cohort vista is kept for the entry column and handed to the display, which reads its chosen entry.
+The cohort vista carries the entry search box, so its announcement refills the entry column alone.
 
 ### `private void PDegreeRestore()`
 

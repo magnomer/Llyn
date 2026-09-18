@@ -9,7 +9,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public void LEngineMarkupExport(IReadOnlyList<long> ids, string path)
+    internal void LEngineMarkupExport(IReadOnlyList<long> ids, string path)
     {
         ArgumentNullException.ThrowIfNull(ids);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);

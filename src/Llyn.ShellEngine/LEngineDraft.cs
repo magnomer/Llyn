@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LEntry LEngineEntrySave(LEntryDraft draft)
+    internal LEntry LEngineEntrySave(LEntryDraft draft)
     {
         return LEngineEntrySave(draft, []);
     }

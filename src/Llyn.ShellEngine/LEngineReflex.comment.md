@@ -17,7 +17,7 @@ An empty list means the language shows no reflex lines and nothing is fetched.
 Reads the reflexes the Entry identified by `entryId` keeps, in order.
 Empty when it keeps none.
 
-## `public IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)`
+## `internal IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)`
 
 Makes `reflexes` the whole list of the Entry, and returns the rows with their ids filled in.
 

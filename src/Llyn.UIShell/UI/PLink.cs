@@ -28,10 +28,10 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LEntry> found;
+        IReadOnlyList<LVistaRow> found;
         try
         {
-            found = _lEngine.LEngineTranslationFind(word, null);
+            found = _lEngine.LEngineProspectFind(word);
         }
         catch (Exception)
         {
@@ -214,12 +214,12 @@ public partial class PEditor
         }
 
         LEntry? single;
-        IReadOnlyList<LEntry> found;
+        IReadOnlyList<LVistaRow> found;
         try
         {
             long? entry = PEditorEntryRead();
             single = _lEngine.LEngineTranslationResolve(word, entry);
-            found = single is null || offered ? _lEngine.LEngineTranslationFind(word, null) : [];
+            found = single is null || offered ? _lEngine.LEngineProspectFind(word) : [];
         }
         catch (Exception exception)
         {

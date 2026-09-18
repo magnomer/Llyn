@@ -45,13 +45,13 @@ An entry that is gone is refused before a file is written, so no draft can point
 A claim naming this process is written beside the draft.
 Another launch reading the folder then knows the work is live.
 
-## `public LDraft? LEngineDraftRead(long id)`
+## `internal LDraft? LEngineDraftRead(long id)`
 
 Reads one held draft, or null when its file is gone or unknown.
 A missing file is an ordinary answer here, unlike the calls that go on to act on the draft.
 An id from a closed workspace is not a missing file and is refused rather than answered null.
 
-## `public IReadOnlyList<LDraft> LEngineDraftScan()`
+## `internal IReadOnlyList<LDraft> LEngineDraftScan()`
 
 Every held draft the folder still carries.
 This is what a session offers back after a crash.
@@ -97,7 +97,7 @@ The form always offers one empty card, and an empty card is not work.
 The dirty check over a draft already in hand, so a caller holding one need not read it again.
 The public checks and the chronicle share it.
 
-## `public void LEngineDraftSweep(long id)`
+## `internal void LEngineDraftSweep(long id)`
 
 Drops every unreadable value the held draft carries to unspecified and stores the draft again.
 A commit refuses a draft holding unreadable values.
@@ -105,7 +105,7 @@ The shell asks the user and then calls this before committing again.
 The data the store could not read is lost here, on purpose.
 A draft bulletin follows so every view re-reads.
 
-## `public LOutcome LEngineDraftCommit(long id)`
+## `internal LOutcome LEngineDraftCommit(long id)`
 
 Turns held work into a stored entry and returns it with the identity map.
 The map pairs every negative id the draft held with the row id the database gave it.

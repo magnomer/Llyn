@@ -52,7 +52,7 @@ A character the sites once answered nothing for is asked again too.
 
 Whether a fetch runs for any character of the entry.
 
-## `public async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(`
+## `internal async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(`
 
 Fetches the character's rows from every book without storing them, for a caller that wants the answer itself.
 

@@ -10,7 +10,7 @@ internal sealed class PUsageItem
         PUsageItemId = usage.LUsageId;
         PUsageItemEntry = usage.LUsageEntry;
         PUsageItemHeadword = usage.LUsageHeadword;
-        PUsageItemName = usage.LUsageHeadword;
+        PUsageItemName = usage.LUsageName;
         PUsageItemEpithet = epithet ?? string.Empty;
         PUsageItemLanguage = usage.LUsageLanguage;
         PUsageItemOwner = owner;
@@ -29,7 +29,7 @@ internal sealed class PUsageItem
 
     public string PUsageItemEpithet { get; }
 
-    public string PUsageItemName { get; internal set; }
+    public string PUsageItemName { get; }
 
     public string PUsageItemLanguage { get; }
 

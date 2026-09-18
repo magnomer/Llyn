@@ -33,6 +33,12 @@ public sealed partial class LEngine
             entries.Add(entry with { LMarkupEntryLanguage = string.Empty });
         }
 
+        string[] names = LEngineTwinRead(entries, entry => entry.LMarkupEntryHeadword, entry => entry.LMarkupEntryLine);
+        for (int index = 0; index < entries.Count; index++)
+        {
+            entries[index] = entries[index] with { LMarkupEntryName = names[index] };
+        }
+
         return new LMarkupCargo(entries, omissions);
     }
 

@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LSituation LEngineSituationCreate(LSituation situation)
+    internal LSituation LEngineSituationCreate(LSituation situation)
     {
         lock (_lEngineGate)
         {
@@ -23,7 +23,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSituation> LEngineSituationRead()
+    internal IReadOnlyList<LSituation> LEngineSituationRead()
     {
         lock (_lEngineGate)
         {
@@ -58,15 +58,18 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista)
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "")
     {
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogSituation> found = LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogSituation> rows = new(found.Count);
-        foreach (LCatalogSituation row in found)
+        string[] names = LEngineTwinRead(found, row => LEngineNameRead(row.LCatalogSituationStored.LSituationTitle, unknown, untitled), row => row.LCatalogSituationStored.LSituationId);
+        for (int index = 0; index < found.Count; index++)
         {
+            LCatalogSituation row = found[index];
             rows.Add(row with
             {
+                LCatalogSituationName = names[index],
                 LCatalogSituationChosen = row.LCatalogSituationStored.LSituationId == vista.LVistaChosen,
             });
         }
@@ -104,7 +107,7 @@ public sealed partial class LEngine
         return found;
     }
 
-    public LSituation? LEngineSituationRead(long id)
+    internal LSituation? LEngineSituationRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -112,7 +115,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -123,7 +126,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationUpdate(LSituation situation)
+    internal void LEngineSituationUpdate(LSituation situation)
     {
         lock (_lEngineGate)
         {
@@ -159,7 +162,7 @@ public sealed partial class LEngine
             (rowId, position) => videos.LVideoSituationAttach(situationId, rowId, position));
     }
 
-    public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
+    internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -174,7 +177,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)
+    internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -189,7 +192,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)
+    internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -210,7 +213,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationDelete(long id)
+    internal void LEngineSituationDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -220,7 +223,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 
-    public void LEngineSituationDelete(long id, bool detach)
+    internal void LEngineSituationDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {

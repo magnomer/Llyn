@@ -78,7 +78,7 @@ public sealed partial class LEngine
         }
     }
 
-    public async Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(
+    internal async Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(
         string headword, string language, CancellationToken cancellation)
     {
         (IReadOnlyList<LReflexDraft> found, _) =

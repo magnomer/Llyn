@@ -175,6 +175,7 @@ public sealed partial class LTenure
 
         try
         {
+            LTenureObserverClear();
             _lEngine.LEngineDraftCancel(LTenureId);
         }
         catch (Exception)
@@ -228,6 +229,7 @@ public sealed partial class LTenure
                 _lTenureEnded = true;
             }
 
+            LTenureObserverClear();
             LTenureStateRaise();
             return stored;
         }

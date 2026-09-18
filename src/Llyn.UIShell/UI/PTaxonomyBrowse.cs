@@ -36,7 +36,7 @@ public partial class PTaxonomy
 
     private void PScoutHandle(object sender, TextChangedEventArgs e)
     {
-        PMembershipFind();
+        _pMembershipVista?.LVistaQuerySet(PScout.Text);
     }
 
     private void PFunnelHandle(object sender, RoutedEventArgs e)
@@ -72,6 +72,7 @@ public partial class PTaxonomy
         vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDirectoryFind));
         membership.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PMembershipEntryUpdate));
         membership.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
+        membership.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PMembershipFind));
         PDisplay.PDisplayVistaRestore(membership);
         PFunnelRestore();
         PLatticeRestore();
@@ -80,6 +81,7 @@ public partial class PTaxonomy
 
         PChoice.PChoiceFilterBuild(PLatticeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PLatticeHandle);
         vista.LVistaQuerySet(PExploration.Text ?? string.Empty);
+        membership.LVistaQuerySet(PScout.Text);
         PDirectoryFind();
     }
 
@@ -109,7 +111,7 @@ public partial class PTaxonomy
             return;
         }
 
-        IReadOnlyList<LTag> read;
+        IReadOnlyList<LCatalogTag> read;
         try
         {
             read = _lEngine.LEngineTagFind(_pTaxonomyVista);
@@ -121,16 +123,16 @@ public partial class PTaxonomy
         }
 
         long? chosen = _pTaxonomyVista.LVistaChosen;
-        if (chosen is not null && !read.Any(tag => tag.LTagId == chosen))
+        if (chosen is not null && !read.Any(row => row.LCatalogTagChosen))
         {
             _pTaxonomyVista.LVistaSelect(null);
             chosen = null;
         }
 
         _pDirectoryList.Clear();
-        foreach (LTag tag in read)
+        foreach (LCatalogTag row in read)
         {
-            _pDirectoryList.Add(new PDirectoryItem(tag.LTagId, tag.LTagText, tag.LTagId == chosen));
+            _pDirectoryList.Add(new PDirectoryItem(row.LCatalogTagStored.LTagId, row.LCatalogTagStored.LTagText, row.LCatalogTagChosen));
         }
 
         PDirectoryEmpty.Visibility = _pDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -155,12 +157,7 @@ public partial class PTaxonomy
         }
 
         _pTaxonomyVista.LVistaSelect(id);
-        foreach (PDirectoryItem row in _pDirectoryList)
-        {
-            row.PDirectoryItemChosen = row.PDirectoryItemId == id;
-        }
-
-        PMembershipFind();
+        PDirectoryFind();
     }
 
     internal void PDirectoryTagShow(long id)
@@ -249,7 +246,7 @@ public partial class PTaxonomy
 
     private void PTaxonomyScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pMembershipVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -291,7 +288,7 @@ public partial class PTaxonomy
     private void PTaxonomyClear()
     {
         _pMembershipVista?.LVistaSelect(null);
-        PMembershipChosenApply();
+        PMembershipFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTaxonomyScribeShow(false);
@@ -306,11 +303,6 @@ public partial class PTaxonomy
 
     private void PTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pMembershipVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pTaxonomyHost.PWindowDeleteConfirm())
         {
             return;
@@ -318,7 +310,7 @@ public partial class PTaxonomy
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pMembershipVista?.LVistaDelete();
         }
         catch (Exception exception)
         {

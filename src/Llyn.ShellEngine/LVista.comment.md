@@ -2,8 +2,8 @@
 
 ## `public sealed class LVista : LObserver`
 
-The engine's view state for one catalog tab: order, language filter, query and chosen row.
-A panel holds one vista and its controls, and keeps no copy of any of the four.
+The engine's view state for one catalog tab: order, language filter, query, chosen row and editing mode.
+A panel holds one vista and its controls, and keeps no copy of these values.
 Order and filter are saved under the tab as they change, so a reopen finds them.
 Query and chosen row live only for the session, as they do today.
 Every change to order, filter or query raises a vista bulletin carrying this vista's id.
@@ -35,7 +35,7 @@ The observers reached for every bulletin of their subject, in the order they wer
 
 The observers reached only when the bulletin names the chosen row or no row at all.
 
-## `internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank)`
+## `internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
 
 Made by the engine alone, with the order and filter already read from the tab's layout.
 
@@ -113,3 +113,30 @@ The engine's announcement, forwarded to the observers whose subject it names.
 A vista bulletin for another vista is dropped at the door.
 Both lists are copied under the gate and the calls are made outside it, as the engine does.
 The chosen row is read afresh before each chosen observer, so a selection made a moment ago counts.
+
+## `public LSubject? LVistaSubject { get; }`
+
+The stored subject represented by this tab, named by the panel that started it.
+Structural sound tables pass no subject and cannot load or delete records.
+
+## `public LDraft? LVistaLoad()`
+
+Loads the selected subject into a read-only snapshot without opening an editing session.
+The snapshot carries its content in the matching draft member and has no draft identity.
+A cleared selection or missing record returns null.
+
+## `public LRevision? LVistaDelete()`
+
+Deletes the selected record of the vista's subject and clears the selection afterwards.
+Only an entry delete records a revision, so every other subject answers null after deleting.
+A catalog record is detached from every owner first, as the panel already confirmed the usage.
+Tag, register and structural vistas delete nothing and answer null.
+
+## `public bool LVistaEditing { get; private set; }`
+
+Each live vista owns its current mode while newly started vistas inherit the workspace preference.
+
+## `public void LVistaEditingSet(bool editing)`
+
+Saves the shared preference before notifying observers of a changed local mode.
+An unchanged local mode still saves the preference, since another vista may have changed it.

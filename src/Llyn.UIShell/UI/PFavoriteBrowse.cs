@@ -93,28 +93,12 @@ public partial class PFavorite
         PStrainerMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PRosterChosenApply()
-    {
-        long? chosen = _pFavoriteVista?.LVistaChosen;
-        foreach (PRosterItem item in _pRosterList)
-        {
-            item.PRosterItemChosen = chosen is not null
-                && item.PRosterItemId == chosen;
-        }
-    }
-
     private void PRosterFind()
     {
-        _pRosterList.Clear();
-        if (_pFavoriteVista is null)
-        {
-            return;
-        }
-
         IReadOnlyList<LVistaRow> favorites;
         try
         {
-            favorites = _lEngine.LEngineFavoriteFind(_pFavoriteVista);
+            favorites = _pFavoriteVista is null ? [] : _lEngine.LEngineFavoriteFind(_pFavoriteVista);
         }
         catch (Exception exception)
         {
@@ -122,18 +106,22 @@ public partial class PFavorite
             favorites = [];
         }
 
+        List<PRosterItem> fresh = [];
         foreach (LVistaRow row in favorites)
         {
-            _pRosterList.Add(new PRosterItem(
+            fresh.Add(new PRosterItem(
                 row.LVistaRowId,
                 row.LVistaRowHeadword,
                 row.LVistaRowLanguage,
-                row.LVistaRowEpithet ?? string.Empty)
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
             {
                 PRosterItemName = row.LVistaRowName,
-                PRosterItemChosen = row.LVistaRowChosen,
             });
         }
+
+        PSplice.PSpliceApply(
+            _pRosterList, fresh, PRosterItem.PRosterItemMatch, PRosterItem.PRosterItemSync);
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -158,7 +146,8 @@ public partial class PFavorite
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pFavoriteVista?.LVistaSelect(id);
+            draft = _pFavoriteVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -174,7 +163,7 @@ public partial class PFavorite
         }
 
         _pFavoriteVista?.LVistaSelect(id);
-        PRosterChosenApply();
+        PRosterFind();
         PFavoriteEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -196,15 +185,10 @@ public partial class PFavorite
 
     private void PFavoriteEntryUpdate(LBulletin bulletin)
     {
-        if (_pFavoriteVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pFavoriteVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -260,7 +244,7 @@ public partial class PFavorite
 
     private void PFavoriteScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pFavoriteVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -303,7 +287,7 @@ public partial class PFavorite
     private void PFavoriteClear()
     {
         _pFavoriteVista?.LVistaSelect(null);
-        PRosterChosenApply();
+        PRosterFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PFavoriteScribeShow(false);
@@ -318,11 +302,6 @@ public partial class PFavorite
 
     private void PFavoriteBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pFavoriteVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pFavoriteHost.PWindowDeleteConfirm())
         {
             return;
@@ -330,7 +309,7 @@ public partial class PFavorite
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pFavoriteVista?.LVistaDelete();
         }
         catch (Exception exception)
         {

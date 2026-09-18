@@ -49,7 +49,7 @@ public partial class PTenor
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
     {
-        PCohortFind();
+        _pCohortVista?.LVistaQuerySet(PQuest.Text);
     }
 
     private void PGrilleHandle(object sender, RoutedEventArgs e)
@@ -74,6 +74,7 @@ public partial class PTenor
         vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PGamutFind));
         cohort.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PCohortEntryUpdate));
         cohort.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
+        cohort.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PCohortFind));
         PDisplay.PDisplayVistaRestore(cohort);
         PDegreeRestore();
         PGrilleRestore();
@@ -82,6 +83,7 @@ public partial class PTenor
 
         PChoice.PChoiceFilterBuild(PGrilleList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGrilleHandle);
         vista.LVistaQuerySet(PSounding.Text ?? string.Empty);
+        cohort.LVistaQuerySet(PQuest.Text);
         PGamutFind();
     }
 
@@ -123,7 +125,7 @@ public partial class PTenor
         }
 
         long? chosen = _pTenorVista.LVistaChosen;
-        if (chosen is not null && !read.Any(row => row.LCatalogRegisterStored.LRegisterId == chosen))
+        if (chosen is not null && !read.Any(row => row.LCatalogRegisterChosen))
         {
             _pTenorVista.LVistaSelect(null);
             chosen = null;
@@ -137,7 +139,7 @@ public partial class PTenor
                 stored.LRegisterId,
                 stored.LRegisterName.LStateValueShow(),
                 row.LCatalogRegisterUsage,
-                stored.LRegisterId == chosen));
+                row.LCatalogRegisterChosen));
         }
 
         PGamutEmpty.Visibility = _pGamutList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -162,12 +164,7 @@ public partial class PTenor
         }
 
         _pTenorVista.LVistaSelect(id);
-        foreach (PGamutItem row in _pGamutList)
-        {
-            row.PGamutItemChosen = row.PGamutItemId == id;
-        }
-
-        PCohortFind();
+        PGamutFind();
     }
 
     internal void PGamutRegisterShow(long id)
@@ -256,7 +253,7 @@ public partial class PTenor
 
     private void PTenorScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pCohortVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -298,7 +295,7 @@ public partial class PTenor
     private void PTenorClear()
     {
         _pCohortVista?.LVistaSelect(null);
-        PCohortChosenApply();
+        PCohortFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTenorScribeShow(false);
@@ -313,11 +310,6 @@ public partial class PTenor
 
     private void PTenorBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pCohortVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pTenorHost.PWindowDeleteConfirm())
         {
             return;
@@ -325,7 +317,7 @@ public partial class PTenor
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pCohortVista?.LVistaDelete();
         }
         catch (Exception exception)
         {

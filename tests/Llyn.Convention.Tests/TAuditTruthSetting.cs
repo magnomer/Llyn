@@ -9,6 +9,8 @@ internal static partial class TAuditTruthSetting
 
     public static readonly string[] TAuditTruthInclude =
     [
+        "src/Llyn.UIVeneer/*.cs",
+        "src/Llyn.UIDeportment/*.cs",
         "src/Llyn.UIShell/*.cs",
     ];
 
@@ -81,9 +83,9 @@ internal static partial class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 392,
-        ["Guard"] = 296,
-        ["Fork"] = 39,
+        ["Argument"] = 293,
+        ["Guard"] = 287,
+        ["Fork"] = 37,
         ["Mirror"] = 45,
         ["Mutation"] = 26,
         ["Shape"] = 137,

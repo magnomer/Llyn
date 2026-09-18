@@ -1,4 +1,4 @@
-﻿# LEnginePronunciation.cs
+# LEnginePronunciation.cs
 
 ## `public sealed partial class LEngine`
 
@@ -19,53 +19,53 @@ The shell plays a path and never has to know the workspace folder.
 An entry opened from a moved workspace still resolves to a file that is there.
 A path outside the workspace has no relative form and is kept as it stands.
 
-## `public LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)`
+## `internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)`
 
 Creates `pronunciation` after the Entry's others, with its syllables as its ordered child rows.
 Returns it with its assigned id and position.
 
-## `public IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)`
+## `internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)`
 
 Reads the pronunciations the Entry identified by `entryId` keeps, in order, each with its syllables.
 Empty when it keeps none.
 
-## `public void LEnginePronunciationUpdate(LPronunciation pronunciation)`
+## `internal void LEnginePronunciationUpdate(LPronunciation pronunciation)`
 
 Rewrites the variety, the IPA and the syllables of the pronunciation `pronunciation` identifies.
 The audio hanging from it and its place in the list are untouched.
 Its id does not change, so the recording stays attached across an edit of the IPA.
 
-## `public void LEnginePronunciationDelete(long id)`
+## `internal void LEnginePronunciationDelete(long id)`
 
 Deletes the pronunciation identified by `id` with its syllables and audio row.
 The file on disk is not removed.
 The workspace owns it, and another entry may have been given the same recording.
 
-## `public void LEngineAudioSave(long pronunciationId, string file, string? source)`
+## `internal void LEngineAudioSave(long pronunciationId, string file, string? source)`
 
 Saves `file` as the audio of the pronunciation identified by `pronunciationId`.
 It replaces whatever it played before.
 It records the `source` the recording came from.
 The path is stored relative to the workspace when it lies inside it, so a moved workspace keeps its audio.
 
-## `public LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
+## `internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
 
 Reads the audio of the pronunciation identified by `pronunciationId`.
 Its file is resolved to a full path in the workspace in use now.
 It returns `null` when it has none.
 
-## `public void LEngineNoteSave(LNote note)`
+## `internal void LEngineNoteSave(LNote note)`
 
 Saves `note` as the note of its Entry, replacing the one there.
 The text is Markdown and is normalized by `LMarkdown` before it is written.
 An Entry keeps at most one note, keyed by the Entry itself.
 So a save is a create or a rewrite, and the caller need not know which.
 
-## `public LNote? LEngineNoteRead(long entryId)`
+## `internal LNote? LEngineNoteRead(long entryId)`
 
 Reads the note the Entry identified by `entryId` keeps, or `null` when it keeps none.
 
-## `public void LEngineNoteDelete(long entryId)`
+## `internal void LEngineNoteDelete(long entryId)`
 
 Deletes the note of the Entry identified by `entryId`, if it has one.
 

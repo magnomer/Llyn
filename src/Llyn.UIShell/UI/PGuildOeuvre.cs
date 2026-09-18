@@ -71,15 +71,6 @@ public partial class PGuild
         return null;
     }
 
-    private void POeuvreChosenApply()
-    {
-        long? chosen = _pOeuvreVista?.LVistaChosen;
-        foreach (PShelfItem item in _pOeuvreList)
-        {
-            item.PShelfItemChosen = chosen is not null && item.PShelfItemId == chosen;
-        }
-    }
-
     private void POeuvreFind()
     {
         if (_pGuildVista is null || _pOeuvreVista is null)
@@ -100,16 +91,16 @@ public partial class PGuild
         string unknown = _pGuildHost.PLocalizationTextRead("Display.Unknown");
         string unset = _pGuildHost.PLocalizationTextRead("Source.Unset");
 
-        _pOeuvreList.Clear();
+        List<PShelfItem> fresh = [];
         bool kept = false;
         foreach (LCatalogReference row in _pOeuvreCatalog)
         {
             kept |= row.LCatalogReferenceChosen;
-            _pOeuvreList.Add(new PShelfItem(row, unknown, unset)
-            {
-                PShelfItemChosen = row.LCatalogReferenceChosen,
-            });
+            fresh.Add(new PShelfItem(row, unknown, unset, row.LCatalogReferenceChosen));
         }
+
+        PSplice.PSpliceApply(
+            _pOeuvreList, fresh, PShelfItem.PShelfItemMatch, PShelfItem.PShelfItemSync);
 
         bool narrowed = !string.IsNullOrWhiteSpace(_pOeuvreVista.LVistaQuery)
             || _pGuildVista.LVistaFilter.LCatalogFilterActive;
@@ -144,7 +135,8 @@ public partial class PGuild
         LReference? reference;
         try
         {
-            reference = _lEngine.LEngineReferenceRead(id);
+            _pOeuvreVista?.LVistaSelect(id);
+            reference = _pOeuvreVista?.LVistaLoad()?.LDraftReference;
         }
         catch (Exception exception)
         {
@@ -164,7 +156,7 @@ public partial class PGuild
 
         LCatalogReference? row = POeuvreCatalogFind(id);
         _pOeuvreVista?.LVistaSelect(id);
-        POeuvreChosenApply();
+        POeuvreFind();
 
         PColophon.PColophonShow(
             reference,
@@ -180,7 +172,7 @@ public partial class PGuild
     private void PColophonReferenceHide()
     {
         _pOeuvreVista?.LVistaSelect(null);
-        POeuvreChosenApply();
+        POeuvreFind();
         PColophon.PColophonClear();
         PColophon.Visibility = Visibility.Collapsed;
 

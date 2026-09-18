@@ -9,6 +9,8 @@ public sealed record LCatalogSituation(
     int LCatalogSituationUsage,
     bool LCatalogSituationChosen = false)
 {
+    public string LCatalogSituationName { get; init; } = LCatalogSituationStored.LSituationTitle.LStateValueShow();
+
     public static LCatalogSituation LCatalogSituationCreate(LSituation situation, int usage)
     {
         ArgumentNullException.ThrowIfNull(situation);

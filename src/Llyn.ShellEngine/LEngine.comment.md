@@ -73,7 +73,7 @@ The engine owns the issuer, because the floor it counts from belongs to the work
 It is private because only the engine mints.
 A chip the UI builds carries id zero until the next draft save names it.
 
-## `public LRealm LEngineRealmRead()`
+## `internal LRealm LEngineRealmRead()`
 
 The realm of the open workspace, read once when the workspace opened.
 
@@ -114,7 +114,7 @@ Moves the user onto the workspace at `path` and records it as the one to open ne
 The open comes first and the pointer second, so a folder that fails to open is never pointed at.
 The pointer lives outside the workspace, which is why the tests exercise the open alone.
 
-## `public void LEngineWorkspaceOpen(string path)`
+## `internal void LEngineWorkspaceOpen(string path)`
 
 Opens the workspace at `path` without recording it as the next one to open.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.

@@ -19,7 +19,7 @@ A recovered draft names the same context it always did.
 A Situation that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
-## `public LSituation LEngineSituationCommit(long id)`
+## `internal LSituation LEngineSituationCommit(long id)`
 
 Turns a held Situation into a stored one and returns it.
 A draft naming no Situation is a create, one naming a Situation is a rewrite.

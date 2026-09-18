@@ -31,4 +31,13 @@ The catalog carries it and not only the editor.
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The panel sets it instead of refilling the list, so the catalog keeps its scroll position.
+The engine row carries it, and `PSplice` moves the mark in place, so the list keeps its scroll position.
+
+## `internal static bool PShelfItemMatch(PShelfItem held, PShelfItem fresh)`
+
+Whether the two rows show the same values, the chosen mark left aside.
+`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+
+## `internal static void PShelfItemSync(PShelfItem held, PShelfItem fresh)`
+
+Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.

@@ -39,7 +39,7 @@ An entry whose language lists no styles starts nothing.
 
 Whether a fetch is running for any character of the entry's headword.
 
-## `public async Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(string character, string language, CancellationToken cancellation)`
+## `internal async Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(string character, string language, CancellationToken cancellation)`
 
 Asks every style of the language for the character and returns what they drew, in pack order.
 

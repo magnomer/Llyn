@@ -30,7 +30,7 @@ public sealed partial class LEngine
         LEngineSettingsChange(settings => settings with { LSettingsMode = mode });
     }
 
-    public void LEngineSplitSave(bool split)
+    internal void LEngineSplitSave(bool split)
     {
         LEngineSettingsChange(settings => settings with { LSettingsSplit = split });
     }

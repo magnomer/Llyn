@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -71,7 +71,13 @@ public sealed partial class LEngine
     public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineRegisterFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogRegister> rows = [];
+        foreach (LCatalogRegister row in LEngineRegisterFind(vista.LVistaQuery, vista.LVistaOrder))
+        {
+            rows.Add(row with { LCatalogRegisterChosen = row.LCatalogRegisterStored.LRegisterId == vista.LVistaChosen });
+        }
+
+        return rows;
     }
 
     public LRegister LEngineRegisterCreate(string name)
@@ -91,7 +97,7 @@ public sealed partial class LEngine
         return created;
     }
 
-    public void LEngineRegisterChange(long registerId, string renamed)
+    internal void LEngineRegisterChange(long registerId, string renamed)
     {
         lock (_lEngineGate)
         {
@@ -105,7 +111,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
     }
 
-    public void LEngineRegisterDelete(long registerId)
+    internal void LEngineRegisterDelete(long registerId)
     {
         lock (_lEngineGate)
         {

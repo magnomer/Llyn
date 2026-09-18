@@ -8,7 +8,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)
+    internal IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)
     {
         if (entryId <= 0)
         {

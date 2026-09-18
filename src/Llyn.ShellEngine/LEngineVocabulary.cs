@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LSpeechValue LEngineSpeechCreate(LSpeechValue value)
+    internal LSpeechValue LEngineSpeechCreate(LSpeechValue value)
     {
         lock (_lEngineGate)
         {
@@ -60,7 +60,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LSpeechValue? LEngineSpeechFind(string language, string name)
+    internal LSpeechValue? LEngineSpeechFind(string language, string name)
     {
         lock (_lEngineGate)
         {
@@ -123,7 +123,7 @@ public sealed partial class LEngine
         return speeches;
     }
 
-    public LFeature LEngineFeatureCreate(LFeature feature)
+    internal LFeature LEngineFeatureCreate(LFeature feature)
     {
         lock (_lEngineGate)
         {
@@ -132,7 +132,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LMorphology LEngineMorphologyCreate(LMorphology value)
+    internal LMorphology LEngineMorphologyCreate(LMorphology value)
     {
         lock (_lEngineGate)
         {
@@ -141,7 +141,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)
+    internal IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)
     {
         lock (_lEngineGate)
         {
@@ -151,7 +151,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LFeature? LEngineFeatureFind(long speechValueId, string name)
+    internal LFeature? LEngineFeatureFind(long speechValueId, string name)
     {
         lock (_lEngineGate)
         {
@@ -161,7 +161,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LMorphology? LEngineMorphologyRead(long id)
+    internal LMorphology? LEngineMorphologyRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -169,7 +169,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)
+    internal IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)
     {
         lock (_lEngineGate)
         {
@@ -179,7 +179,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LMorphology? LEngineMorphologyFind(long featureId, string name)
+    internal LMorphology? LEngineMorphologyFind(long featureId, string name)
     {
         lock (_lEngineGate)
         {

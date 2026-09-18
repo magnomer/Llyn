@@ -127,7 +127,7 @@ public sealed partial class LEngine
         return false;
     }
 
-    public async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
+    internal async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
         string character, string language, CancellationToken cancellation)
     {
         (IReadOnlyList<LFanqieRow> found, _) =

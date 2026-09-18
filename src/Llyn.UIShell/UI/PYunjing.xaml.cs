@@ -84,18 +84,18 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pXiaoyunVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pXiaoyunVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pYunjingHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pYunjingHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pXiaoyunVista, _pYunjingHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pXiaoyunVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pXiaoyunVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pYunjingHost.PWindowPortraitExport(entry);
+            await _pYunjingHost.PWindowPortraitExport(_pXiaoyunVista);
         }
     }
 }

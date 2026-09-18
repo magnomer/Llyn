@@ -16,7 +16,7 @@ Title, description and kind are one row.
 Every card referencing it sees the new wording at once.
 A reference points at the row and never at a copy of its text.
 
-## `public LSituation LEngineSituationCreate(LSituation situation)`
+## `internal LSituation LEngineSituationCreate(LSituation situation)`
 
 Creates `situation` and returns it with its assigned id and its media read back.
 Its title is not identity: the same words saved twice are two Situations.
@@ -31,15 +31,15 @@ A new row is made rather than one guessed.
 The engine holds this rule.
 The form, a commit and any other client therefore all get one row for one wording.
 
-## `public LSituation? LEngineSituationRead(long id)`
+## `internal LSituation? LEngineSituationRead(long id)`
 
 Reads the Situation for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)`
 
 Reads the Situations the Meaning or Collocation identified by `ownerId` references, in the order that side holds them.
 
-## `public void LEngineSituationUpdate(LSituation situation)`
+## `internal void LEngineSituationUpdate(LSituation situation)`
 
 Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
 
@@ -52,35 +52,35 @@ What the list no longer names is detached and keeps its record.
 An Image is independent data another referrer may show.
 Living beside the card sync keeps one rule for how a draft row becomes a stored one.
 
-## `public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
+## `internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
 
 References the Situation identified by `situationId` from the side identified by `ownerId`.
 That side is a Meaning or a Collocation, and the reference goes in at `position`.
 The set is renumbered around it.
 
-## `public void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)`
+## `internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)`
 
 Removes one side's reference to a Situation.
 The Situation and its other references survive — the rule a card edit follows.
 
-## `public void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)`
+## `internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)`
 
 Removes one side's reference to a Situation and deletes the Situation when that was its last reference.
 Detach, count and delete share one session.
 So the row is judged against the references as they stand at that moment.
 No caller can compose the steps itself.
 
-## `public void LEngineSituationDelete(long id)`
+## `internal void LEngineSituationDelete(long id)`
 
 Deletes the Situation identified by `id`.
 Refused while any Meaning or Collocation still references it.
 `LEngineSituationRemove` is the seam that deletes one as its last reference goes.
 
-## `public IReadOnlyList<LSituation> LEngineSituationRead()`
+## `internal IReadOnlyList<LSituation> LEngineSituationRead()`
 
 Every Situation in the workspace, for the panel that browses the shelf itself rather than one card's references.
 
-## `public void LEngineSituationDelete(long id, bool detach)`
+## `internal void LEngineSituationDelete(long id, bool detach)`
 
 Deletes the Situation, dropping every reference to it first when the user asked for that.
 Without `detach` it is the refusing delete above.

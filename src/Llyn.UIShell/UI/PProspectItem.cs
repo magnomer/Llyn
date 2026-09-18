@@ -4,11 +4,11 @@ namespace Llyn.UIShell;
 
 internal sealed class PProspectItem
 {
-    internal PProspectItem(long id, string headword, string language, bool fresh, string epithet = "")
+    internal PProspectItem(long id, string headword, string language, bool fresh, string epithet = "", string? name = null)
     {
         PProspectItemId = id;
         PProspectItemHeadword = headword;
-        PProspectItemName = headword;
+        PProspectItemName = name ?? headword;
         PProspectItemEpithet = epithet ?? string.Empty;
         PProspectItemLanguage = language;
         PProspectItemFlag = PEnsign.PEnsignFind(language);
@@ -21,7 +21,7 @@ internal sealed class PProspectItem
 
     public string PProspectItemEpithet { get; }
 
-    public string PProspectItemName { get; internal set; }
+    public string PProspectItemName { get; }
 
     public string PProspectItemLanguage { get; }
 

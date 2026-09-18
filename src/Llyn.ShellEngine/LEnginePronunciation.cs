@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)
+    internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)
     {
         lock (_lEngineGate)
         {
@@ -18,7 +18,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)
+    internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -85,7 +85,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEnginePronunciationUpdate(LPronunciation pronunciation)
+    internal void LEnginePronunciationUpdate(LPronunciation pronunciation)
     {
         lock (_lEngineGate)
         {
@@ -95,7 +95,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEnginePronunciationDelete(long id)
+    internal void LEnginePronunciationDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -109,7 +109,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineAudioSave(long pronunciationId, string file, string? source)
+    internal void LEngineAudioSave(long pronunciationId, string file, string? source)
     {
         lock (_lEngineGate)
         {
@@ -124,7 +124,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LPronunciationAudio? LEngineAudioRead(long pronunciationId)
+    internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)
     {
         lock (_lEngineGate)
         {
@@ -136,7 +136,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineNoteSave(LNote note)
+    internal void LEngineNoteSave(LNote note)
     {
         lock (_lEngineGate)
         {
@@ -147,7 +147,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LNote? LEngineNoteRead(long entryId)
+    internal LNote? LEngineNoteRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -155,7 +155,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineNoteDelete(long entryId)
+    internal void LEngineNoteDelete(long entryId)
     {
         lock (_lEngineGate)
         {

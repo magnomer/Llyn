@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
 using Llyn.Core;
@@ -9,11 +10,11 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
 {
     private bool _pAnthologyItemChosen;
 
-    internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten)
+    internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten, bool chosen)
     {
+        _pAnthologyItemChosen = chosen;
         PAnthologyItemId = example.LExampleId;
         PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unknown) ?? unwritten;
-        PAnthologyItemName = PAnthologyItemText;
         PAnthologyItemLanguage = example.LExampleLanguage;
         PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
         PAnthologyItemCount = usage.ToString(CultureInfo.CurrentCulture);
@@ -23,7 +24,7 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
 
     public string PAnthologyItemText { get; }
 
-    public string PAnthologyItemName { get; internal set; }
+    public required string PAnthologyItemName { get; init; }
 
     public string PAnthologyItemLanguage { get; }
 
@@ -36,6 +37,20 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
         return PStateConverter.PStateConverterCheck(value)
             ? unknown
             : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
+    }
+
+    internal static bool PAnthologyItemMatch(PAnthologyItem held, PAnthologyItem fresh)
+    {
+        return held.PAnthologyItemId == fresh.PAnthologyItemId
+            && string.Equals(held.PAnthologyItemText, fresh.PAnthologyItemText, StringComparison.Ordinal)
+            && string.Equals(held.PAnthologyItemName, fresh.PAnthologyItemName, StringComparison.Ordinal)
+            && string.Equals(held.PAnthologyItemLanguage, fresh.PAnthologyItemLanguage, StringComparison.Ordinal)
+            && string.Equals(held.PAnthologyItemCount, fresh.PAnthologyItemCount, StringComparison.Ordinal);
+    }
+
+    internal static void PAnthologyItemSync(PAnthologyItem held, PAnthologyItem fresh)
+    {
+        held.PAnthologyItemChosen = fresh.PAnthologyItemChosen;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

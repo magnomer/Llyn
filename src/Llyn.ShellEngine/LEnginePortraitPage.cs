@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)
+    internal LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(legend);

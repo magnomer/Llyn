@@ -15,7 +15,7 @@ A Collocation takes its association rows.
 The independent Examples, Tags and Situations either referenced are left standing.
 Only the links go.
 
-## `public LMeaning LEngineMeaningCreate(LMeaning meaning)`
+## `internal LMeaning LEngineMeaningCreate(LMeaning meaning)`
 
 Creates `meaning` at the end of its Entry's Meanings.
 When it names a parent, it goes at the end of that parent's subordinate Meanings.
@@ -29,39 +29,39 @@ Reads the Meaning for `id`, or `null` when none has that id.
 
 Reads the Meanings of the Entry identified by `ownerId`, in stored order.
 
-## `public void LEngineMeaningUpdate(LMeaning meaning)`
+## `internal void LEngineMeaningUpdate(LMeaning meaning)`
 
 Rewrites the fields of the Meaning `meaning` identifies.
 Its place among its siblings is not touched here — `LEngineMeaningMove` owns the order.
 
-## `public void LEngineMeaningMove(long id, int position)`
+## `internal void LEngineMeaningMove(long id, int position)`
 
 Moves the Meaning identified by `id` to `position` among its siblings, renumbering the group so the positions stay contiguous.
 A position outside the group is clamped into it.
 
-## `public void LEngineMeaningDelete(long id)`
+## `internal void LEngineMeaningDelete(long id)`
 
 Deletes the Meaning identified by `id` with everything it owns.
 That is its subordinate Meanings and its Example, Tag and Situation association rows.
 
-## `public LCollocation LEngineCollocationCreate(LCollocation collocation)`
+## `internal LCollocation LEngineCollocationCreate(LCollocation collocation)`
 
 Creates `collocation` at the end of its Entry's Collocations and returns it with its assigned id and position.
 
-## `public IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)`
 
 Reads the Collocations of the Entry identified by `ownerId`, in stored order.
 
-## `public void LEngineCollocationUpdate(LCollocation collocation)`
+## `internal void LEngineCollocationUpdate(LCollocation collocation)`
 
 Rewrites the title, expression and meaning of the Collocation `collocation` identifies.
 
-## `public void LEngineCollocationMove(long id, int position)`
+## `internal void LEngineCollocationMove(long id, int position)`
 
 Moves the Collocation identified by `id` to `position` in its Entry's card order.
 It renumbers the set so the positions stay contiguous.
 
-## `public void LEngineCollocationDelete(long id)`
+## `internal void LEngineCollocationDelete(long id)`
 
 Deletes the Collocation identified by `id`.
 Its association rows go with it.

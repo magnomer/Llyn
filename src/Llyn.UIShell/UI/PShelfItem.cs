@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -9,8 +10,9 @@ internal sealed class PShelfItem : INotifyPropertyChanged
 {
     private bool _pShelfItemChosen;
 
-    internal PShelfItem(LCatalogReference row, string unknown, string unset)
+    internal PShelfItem(LCatalogReference row, string unknown, string unset, bool chosen)
     {
+        _pShelfItemChosen = chosen;
         LReference reference = row.LCatalogReferenceStored;
 
         PShelfItemId = reference.LReferenceId;
@@ -55,6 +57,20 @@ internal sealed class PShelfItem : INotifyPropertyChanged
         return PStateConverter.PStateConverterCheck(value)
             ? unknown
             : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
+    }
+
+    internal static bool PShelfItemMatch(PShelfItem held, PShelfItem fresh)
+    {
+        return held.PShelfItemId == fresh.PShelfItemId
+            && string.Equals(held.PShelfItemName, fresh.PShelfItemName, StringComparison.Ordinal)
+            && string.Equals(held.PShelfItemAuthor, fresh.PShelfItemAuthor, StringComparison.Ordinal)
+            && string.Equals(held.PShelfItemYear, fresh.PShelfItemYear, StringComparison.Ordinal)
+            && string.Equals(held.PShelfItemCount, fresh.PShelfItemCount, StringComparison.Ordinal);
+    }
+
+    internal static void PShelfItemSync(PShelfItem held, PShelfItem fresh)
+    {
+        held.PShelfItemChosen = fresh.PShelfItemChosen;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

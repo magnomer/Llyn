@@ -121,9 +121,6 @@ public partial class PGuild
                 usage, owner, unknown, string.Empty, _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
         }
 
-        LTwin.LTwinNameApply(
-            _pVitaCitation, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
-
         PVitaCitationSection.Visibility = _pVitaCitation.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
 

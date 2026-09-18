@@ -10,7 +10,7 @@ A slot a reached source could not fill reads unknown, as the lacuna rows `LEngin
 The pack is read once per language through `LSpeechLoader` and kept beside the language packs.
 The cache is cleared with the workspace, as the language packs are.
 
-## `public IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)`
+## `internal IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)`
 
 Reads the expected forms of the entry identified by `entryId`, one slot per form, in part-of-speech order.
 The read never starts a fetch, because the caller decides when to ask the web.

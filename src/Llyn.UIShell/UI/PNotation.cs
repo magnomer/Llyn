@@ -146,12 +146,9 @@ public partial class PEditor : LReceiver
         {
             string language = held.LTenureLanguageRead();
             _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, language);
-            if (scheme.Length == 0 && language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))
+            if (scheme.Length == 0 && held.LTenureFlaggedCheck())
             {
-                await PEnsign.PEnsignVarietyLoad(
-                    _lEngine,
-                    language,
-                    _lEngine.LEngineVarietyRead(language).Select(variety => variety.LVarietyName));
+                await PEnsign.PEnsignVarietyLoad(_lEngine, held);
                 if (!PNotation.IsOpen)
                 {
                     return;

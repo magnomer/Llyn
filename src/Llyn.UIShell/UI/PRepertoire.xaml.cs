@@ -72,17 +72,17 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pOccurrenceVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pOccurrenceVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pRepertoireHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pRepertoireHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pOccurrenceVista, _pRepertoireHost.PWindowLabelRead(), ticket));
             return;
         }
 
-        if (_pRepertoireVista?.LVistaChosen is long shown && PVignette.Visibility == Visibility.Visible)
+        if (_pRepertoireVista?.LVistaChosen is not null && PVignette.Visibility == Visibility.Visible)
         {
             await _pRepertoireHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                shown, LOwner.LOwnerSituation, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
+                _pRepertoireVista, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
         }
     }
 
@@ -93,9 +93,9 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private async void PRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pOccurrenceVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pOccurrenceVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pRepertoireHost.PWindowPortraitExport(entry);
+            await _pRepertoireHost.PWindowPortraitExport(_pOccurrenceVista);
         }
     }
 }

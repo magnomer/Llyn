@@ -18,7 +18,7 @@ public partial class PDisplay
     private void PDisplayAccentShow(LEntryDraft draft)
     {
         string language = draft.LEntryDraftLanguage;
-        bool flagged = language.Length > 0 && _lEngine.LEngineFlaggedCheck(language);
+        bool flagged = _lEngine.LEngineFlaggedCheck(draft);
         _pDisplayAccentLanguage = language;
         _pDisplayAccentFlagged = flagged;
         _pDisplayAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;

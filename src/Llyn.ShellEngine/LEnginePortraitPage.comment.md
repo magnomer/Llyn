@@ -5,7 +5,7 @@
 Assembles the likeness of one example, source or situation from what the workspace holds.
 The panels read the same rows through the same engine, so screen and page show one thing.
 
-## `public LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)`
+## `internal LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)`
 
 Which realm is portrayed is what `owner` names, and each realm is read under the engine's lock.
 A missing row is an error, because a caller asked to portray one that no longer stands.

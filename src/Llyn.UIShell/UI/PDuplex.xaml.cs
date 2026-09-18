@@ -23,9 +23,11 @@ public partial class PDuplex : UserControl
     internal void PDuplexRestore(LWorkspaceState state)
     {
         PLeftWing.PWingRestore(
-            _lEngine.LEngineVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true), state.LWorkspaceStateLeft);
+            _lEngine.LEngineVistaStart("left", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
+            state.LWorkspaceStateLeft);
         PRightWing.PWingRestore(
-            _lEngine.LEngineVistaStart("right", LCatalogOrder.LCatalogOrderHeadword, true), state.LWorkspaceStateRight);
+            _lEngine.LEngineVistaStart("right", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
+            state.LWorkspaceStateRight);
     }
 
     internal void PDuplexClose()

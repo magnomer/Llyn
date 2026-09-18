@@ -8,15 +8,16 @@ internal static class TAuditStrictSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 131,
-        ["Flow"] = 953,
-        ["Treat"] = 455,
+        ["Storage"] = 128,
+        ["Flow"] = 927,
+        ["Treat"] = 405,
         ["Reach"] = 64,
-        ["Taint"] = 437,
+        ["Taint"] = 411,
     };
 
     public static readonly string[] TAuditReachInclude =
     [
+        "src/Llyn.UIVeneer/*.xaml",
         "src/Llyn.UIShell/*.xaml",
     ];
 

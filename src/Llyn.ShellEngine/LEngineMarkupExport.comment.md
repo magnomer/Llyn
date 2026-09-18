@@ -1,4 +1,4 @@
-﻿# LEngineMarkupExport.cs
+# LEngineMarkupExport.cs
 
 ## `public sealed partial class LEngine`
 
@@ -6,7 +6,7 @@ The markup half of export.
 Stored entries become `LMarkupEntry` records through `LMarkupLoader` and those become one `.llx` file.
 Import stands in `LEngineMarkup.cs`, and the two share only the record shapes.
 
-## `public void LEngineMarkupExport(IReadOnlyList<long> ids, string path)`
+## `internal void LEngineMarkupExport(IReadOnlyList<long> ids, string path)`
 
 Writes the entries named by `ids` to `path` as one markup file in the given order.
 One session covers every read, so the file describes one moment of the workspace.

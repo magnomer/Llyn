@@ -109,12 +109,14 @@ public partial class PCorpus
         {
             LTenure started = _lEngine.LEngineTenureStart(PTranscriptOrigin, LSubject.LSubjectExample, example);
             _pTranscriptTenure = started;
+            started.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PTranscriptDraftRestore));
+            started.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PTranscriptChangeUpdate));
             PTranscript.IsEnabled = true;
             return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pTranscriptTenure = null;
+            PTranscriptDraftCancel();
             PTranscript.IsEnabled = false;
             _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
             return null;

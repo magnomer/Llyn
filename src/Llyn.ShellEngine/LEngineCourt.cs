@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LCourt LEngineCourtSave(
+    internal LCourt LEngineCourtSave(
         long ownerId, long targetId, string headword, string language)
     {
         lock (_lEngineGate)

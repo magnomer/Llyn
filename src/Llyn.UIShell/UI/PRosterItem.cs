@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,8 +8,9 @@ internal sealed class PRosterItem : INotifyPropertyChanged
 {
     private bool _pRosterItemChosen;
 
-    internal PRosterItem(long id, string headword, string language, string epithet = "")
+    internal PRosterItem(long id, string headword, string language, string epithet = "", bool chosen = false)
     {
+        _pRosterItemChosen = chosen;
         PRosterItemId = id;
         PRosterItemHeadword = headword;
         PRosterItemName = headword;
@@ -28,6 +30,20 @@ internal sealed class PRosterItem : INotifyPropertyChanged
     public string PRosterItemLanguage { get; }
 
     public ImageSource? PRosterItemFlag { get; }
+
+    internal static bool PRosterItemMatch(PRosterItem held, PRosterItem fresh)
+    {
+        return held.PRosterItemId == fresh.PRosterItemId
+            && string.Equals(held.PRosterItemHeadword, fresh.PRosterItemHeadword, StringComparison.Ordinal)
+            && string.Equals(held.PRosterItemEpithet, fresh.PRosterItemEpithet, StringComparison.Ordinal)
+            && string.Equals(held.PRosterItemName, fresh.PRosterItemName, StringComparison.Ordinal)
+            && string.Equals(held.PRosterItemLanguage, fresh.PRosterItemLanguage, StringComparison.Ordinal);
+    }
+
+    internal static void PRosterItemSync(PRosterItem held, PRosterItem fresh)
+    {
+        held.PRosterItemChosen = fresh.PRosterItemChosen;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

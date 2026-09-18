@@ -62,8 +62,6 @@ public partial class PGuild
         vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PRollFind));
         oeuvre.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, POeuvreFind));
         vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PGuildReset));
-        vista.LVistaObserverAttach(LSubject.LSubjectDraft, new PObserver(this, PAutographDraftUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectTenure, new PObserver(this, PAutographTenureUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PGuildCatalogUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PGuildCatalogUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PGuildCatalogUpdate));
@@ -97,15 +95,6 @@ public partial class PGuild
         return null;
     }
 
-    private void PRollChosenApply()
-    {
-        long? chosen = _pGuildVista?.LVistaChosen;
-        foreach (PRollItem item in _pRollList)
-        {
-            item.PRollItemChosen = chosen is not null && item.PRollItemId == chosen;
-        }
-    }
-
     private void PRollFind()
     {
         if (_pGuildVista is null)
@@ -127,8 +116,7 @@ public partial class PGuild
             return;
         }
 
-        _pRollList.Clear();
-
+        List<PRollItem> fresh = [];
         if (string.IsNullOrWhiteSpace(query) && orphan.Count > 0)
         {
             int cited = 0;
@@ -137,20 +125,23 @@ public partial class PGuild
                 cited += row.LCatalogReferenceUsage;
             }
 
-            _pRollList.Add(new PRollItem(
-                _pGuildHost.PLocalizationTextRead("Guild.Uncredited"), PGuildWorkRead(orphan.Count), cited));
+            fresh.Add(new PRollItem(
+                _pGuildHost.PLocalizationTextRead("Guild.Uncredited"),
+                PGuildWorkRead(orphan.Count),
+                cited,
+                _pGuildVista.LVistaChosen == 0));
         }
 
-        bool kept = _pGuildVista.LVistaChosen == 0 && _pRollList.Count > 0;
+        bool kept = _pGuildVista.LVistaChosen == 0 && fresh.Count > 0;
         foreach (LCatalogAuthor row in _pRollCatalog)
         {
             kept |= row.LCatalogAuthorChosen;
-            _pRollList.Add(new PRollItem(row, PGuildWorkRead(row.LCatalogAuthorWork)));
+            fresh.Add(new PRollItem(row, PGuildWorkRead(row.LCatalogAuthorWork), row.LCatalogAuthorChosen));
         }
 
+        PSplice.PSpliceApply(
+            _pRollList, fresh, PRollItem.PRollItemMatch, PRollItem.PRollItemSync);
         PRollEmpty.Visibility = _pRollList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-
-        PRollChosenApply();
 
         if (!kept && _pGuildVista.LVistaChosen is not null)
         {
@@ -182,7 +173,7 @@ public partial class PGuild
         PAutographCancel();
 
         _pGuildVista?.LVistaSelect(id);
-        PRollChosenApply();
+        PRollFind();
         PColophonReferenceHide();
         POeuvreFind();
 

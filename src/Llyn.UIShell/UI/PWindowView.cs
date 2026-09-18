@@ -8,31 +8,34 @@ public partial class PWindow
     {
         LSettings settings = _lEngine.LEngineSettingsRead();
 
-        PLibrary.PLibraryVistaRestore(_lEngine.LEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        PPhonology.PPhonologyVistaRestore(_lEngine.LEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword));
-        PFavorite.PFavoriteVistaRestore(_lEngine.LEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword));
+        PLibrary.PLibraryVistaRestore(
+            _lEngine.LEngineVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+        PPhonology.PPhonologyVistaRestore(
+            _lEngine.LEngineVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+        PFavorite.PFavoriteVistaRestore(
+            _lEngine.LEngineVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PTaxonomy.PTaxonomyVistaRestore(
-            _lEngine.LEngineVistaStart("taxonomy", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("membership", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PTenor.PTenorVistaRestore(
-            _lEngine.LEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("cohort", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PRepertoire.PRepertoireVistaRestore(
-            _lEngine.LEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PReference.PReferenceVistaRestore(
-            _lEngine.LEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PCorpus.PCorpusVistaRestore(
-            _lEngine.LEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText),
-            _lEngine.LEngineVistaStart("quotation", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
+            _lEngine.LEngineVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PGuild.PGuildVistaRestore(
-            _lEngine.LEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("oeuvre", LCatalogOrder.LCatalogOrderName));
+            _lEngine.LEngineVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
         PYunjing.PYunjingVistaRestore(
-            _lEngine.LEngineVistaStart("yunjing", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("yunmu", LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("xiaoyun", LCatalogOrder.LCatalogOrderHeadword));
+            _lEngine.LEngineVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
+            _lEngine.LEngineVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
 
         PDuplex.PDuplexRestore(state);
 

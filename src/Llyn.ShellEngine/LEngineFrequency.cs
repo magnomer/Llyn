@@ -34,7 +34,7 @@ public sealed partial class LEngine
         return sources;
     }
 
-    public async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(
+    internal async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(
         string word, string language, CancellationToken cancellation)
     {
         (IReadOnlyList<LFrequency> found, _) = await LEngineFrequencyScan(word, language, cancellation)
@@ -199,7 +199,7 @@ public sealed partial class LEngine
         return rows;
     }
 
-    public void LEngineFrequencyStart(long entryId)
+    internal void LEngineFrequencyStart(long entryId)
     {
         LEntry? entry;
         CancellationTokenSource fetch;

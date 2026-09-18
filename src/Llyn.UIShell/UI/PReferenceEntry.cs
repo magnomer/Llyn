@@ -16,20 +16,10 @@ public partial class PReference
 
     private void PFootnoteFind()
     {
-        IReadOnlyList<LEntry> read;
+        IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(
-                new LReference(
-                    _pReferenceVista?.LVistaChosen ?? 0,
-                    LStateValue.LStateValueUnspecified,
-                    LStateValue.LStateValueUnspecified,
-                    LReferenceKind.LReferenceKindUnspecified,
-                    LStateValue.LStateValueUnspecified,
-                    LStateValue.LStateValueUnspecified,
-                    LStateMark.LStateMarkUnspecified),
-                PRummage.Text ?? string.Empty,
-                _pReferenceVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+            read = _lEngine.LEngineEntryFind(_pReferenceVista, _pFootnoteVista);
         }
         catch (Exception exception)
         {
@@ -37,38 +27,28 @@ public partial class PReference
             return;
         }
 
-        _pFootnoteList.Clear();
-        foreach (LEntry entry in read)
+        List<PFootnoteItem> fresh = [];
+        foreach (LVistaRow entry in read)
         {
-            _pFootnoteList.Add(new PFootnoteItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            fresh.Add(new PFootnoteItem(
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
+                entry.LVistaRowEpithet ?? string.Empty,
+                entry.LVistaRowChosen)
+            {
+                PFootnoteItemName = entry.LVistaRowName,
+            });
         }
 
-        LTwin.LTwinNameApply(
-            _pFootnoteList,
-            row => row.PFootnoteItemHeadword,
-            (row, name) => row.PFootnoteItemName = name,
-            row => row.PFootnoteItemId);
+        PSplice.PSpliceApply(
+            _pFootnoteList, fresh, PFootnoteItem.PFootnoteItemMatch, PFootnoteItem.PFootnoteItemSync);
 
         PFootnoteEmpty.SetResourceReference(
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PRummage.Text) ? "Source.Vacant" : "Source.Unmatched");
         PFootnoteEmpty.Visibility = _pFootnoteList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PFootnoteChosenApply();
-    }
-
-    private void PFootnoteChosenApply()
-    {
-        long? chosen = _pFootnoteVista?.LVistaChosen;
-        foreach (PFootnoteItem item in _pFootnoteList)
-        {
-            item.PFootnoteItemChosen = chosen is not null
-                && item.PFootnoteItemId == chosen;
-        }
     }
 
     private void PFootnoteHandle(object sender, RoutedEventArgs e)
@@ -91,7 +71,8 @@ public partial class PReference
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pFootnoteVista?.LVistaSelect(id);
+            draft = _pFootnoteVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -113,7 +94,7 @@ public partial class PReference
         PColophon.Visibility = Visibility.Collapsed;
 
         _pFootnoteVista?.LVistaSelect(id);
-        PFootnoteChosenApply();
+        PFootnoteFind();
         PDisplay.PDisplayShow(draft);
         PReferenceMode.IsEnabled = true;
         PReferenceBin.IsEnabled = false;
@@ -135,7 +116,7 @@ public partial class PReference
         PColophon.Visibility = Visibility.Collapsed;
 
         _pFootnoteVista?.LVistaSelect(null);
-        PFootnoteChosenApply();
+        PFootnoteFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PReferenceMode.IsEnabled = true;
@@ -211,7 +192,7 @@ public partial class PReference
 
     private void PFootnoteScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pFootnoteVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -277,15 +258,10 @@ public partial class PReference
 
     private void PReferenceEntryUpdate()
     {
-        if (_pFootnoteVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pFootnoteVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -317,7 +293,7 @@ public partial class PReference
         }
 
         _pFootnoteVista?.LVistaSelect(null);
-        PFootnoteChosenApply();
+        PFootnoteFind();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;

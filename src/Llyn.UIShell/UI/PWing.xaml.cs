@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -141,7 +142,7 @@ public partial class PWing : UserControl
             : Math.Max(place - 1, 0);
         PIndexItem target = _pWingIndex[place];
         _pWingVista.LVistaSelect(target.PIndexItemId);
-        PWingChosenApply();
+        PWingIndexFind();
         if (PWingIndex.ItemContainerGenerator.ContainerFromItem(target) is FrameworkElement container)
         {
             container.BringIntoView();
@@ -187,38 +188,25 @@ public partial class PWing : UserControl
         PWingSieveMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PWingChosenApply()
-    {
-        long? chosen = _pWingVista?.LVistaChosen;
-        foreach (PIndexItem item in _pWingIndex)
-        {
-            item.PIndexItemChosen = chosen is not null
-                && item.PIndexItemId == chosen;
-        }
-    }
-
     private void PWingIndexFind()
     {
-        _pWingIndex.Clear();
-        if (_pWingVista is null)
+        List<PIndexItem> fresh = [];
+        IReadOnlyList<LVistaRow> read = _pWingVista is null ? [] : _lEngine.LEngineEntryFind(_pWingVista);
+        foreach (LVistaRow row in read)
         {
-            return;
-        }
-
-        foreach (LVistaRow row in _lEngine.LEngineEntryFind(_pWingVista))
-        {
-            _pWingIndex.Add(new PIndexItem(
+            fresh.Add(new PIndexItem(
                 row.LVistaRowId,
                 row.LVistaRowHeadword,
                 row.LVistaRowLanguage,
-                row.LVistaRowEpithet ?? string.Empty)
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
             {
                 PIndexItemName = row.LVistaRowName,
-                PIndexItemChosen = row.LVistaRowChosen,
             });
         }
 
-        bool typed = _pWingVista.LVistaQuery.Trim().Length > 0;
+        PSplice.PSpliceApply(_pWingIndex, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
+        bool typed = _pWingVista?.LVistaQuery.Trim().Length > 0;
         PWingEmpty.Visibility = typed && _pWingIndex.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -238,13 +226,13 @@ public partial class PWing : UserControl
         if (draft is null)
         {
             _pWingVista?.LVistaSelect(null);
-            PWingChosenApply();
+            PWingIndexFind();
             PWingDisplay.PDisplayClear();
             return;
         }
 
         _pWingVista?.LVistaSelect(id);
-        PWingChosenApply();
+        PWingIndexFind();
         PWingDisplay.PDisplayShow(draft);
     }
 

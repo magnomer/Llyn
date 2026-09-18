@@ -60,18 +60,18 @@ public partial class PPhonology : UserControl
 
     private async void PPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pPhonologyVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pPhonologyVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pPhonologyHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pPhonologyHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pPhonologyVista, _pPhonologyHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pPhonologyVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pPhonologyVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pPhonologyHost.PWindowPortraitExport(entry);
+            await _pPhonologyHost.PWindowPortraitExport(_pPhonologyVista);
         }
     }
 }

@@ -24,7 +24,7 @@ Nothing happens while a fill runs already, or when the Entry is missing or its p
 
 Whether a fill for the Entry is running, so a surface may show its loading line.
 
-## `public async Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(`
+## `internal async Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(`
 
 Asks the rules of `language` for `headword` and returns what they read, stored nowhere.
 

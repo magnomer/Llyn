@@ -21,22 +21,6 @@ public partial class PCorpus
 
     private LVista? _pCorpusVista;
 
-    private void PTranscriptDraftUpdate(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinId == PTranscriptDraft)
-        {
-            PTranscriptDraftRestore();
-        }
-    }
-
-    private void PTranscriptTenureUpdate(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinId == PTranscriptDraft)
-        {
-            PTranscriptChangeUpdate();
-        }
-    }
-
     private async void PCorpusWorkspaceUpdate()
     {
         await PEnsign.PEnsignLoad(_lEngine);
@@ -65,8 +49,6 @@ public partial class PCorpus
         _pCorpusVista = vista;
         _pQuotationVista = quotation;
         vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAnthologyFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectDraft, new PObserver(this, PTranscriptDraftUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectTenure, new PObserver(this, PTranscriptTenureUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PCorpusWorkspaceUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PCitationFind));
         vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PAnthologyFind));
@@ -76,6 +58,7 @@ public partial class PCorpus
         vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAnthologyFind));
         quotation.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PQuotationEntryUpdate));
         quotation.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PCorpusEntryUpdate));
+        quotation.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PQuotationFind));
         PDisplay.PDisplayVistaRestore(quotation);
         PRankRestore();
         PGauzeRestore();
@@ -84,6 +67,7 @@ public partial class PCorpus
 
         PChoice.PChoiceFilterBuild(PGauzeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGauzeHandle);
         vista.LVistaQuerySet(PQuery.Text ?? string.Empty);
+        quotation.LVistaQuerySet(PDredge.Text);
         PSpeakerLoad();
         PCitationFind();
         PAnthologyFind();
@@ -105,7 +89,7 @@ public partial class PCorpus
 
     private void PDredgeHandle(object sender, TextChangedEventArgs e)
     {
-        PQuotationFind();
+        _pQuotationVista?.LVistaQuerySet(PDredge.Text);
     }
 
     private void PGauzeHandle(object sender, RoutedEventArgs e)
@@ -119,16 +103,6 @@ public partial class PCorpus
         PGauzeRestore();
     }
 
-    private void PAnthologyChosenApply()
-    {
-        long? chosen = _pCorpusVista?.LVistaChosen;
-        foreach (PAnthologyItem item in _pAnthologyList)
-        {
-            item.PAnthologyItemChosen = chosen is not null
-                && item.PAnthologyItemId == chosen;
-        }
-    }
-
     private void PAnthologyFind()
     {
         if (_pCorpusVista is null)
@@ -139,7 +113,8 @@ public partial class PCorpus
         IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleFind(_pCorpusVista);
+            read = _lEngine.LEngineExampleFind(_pCorpusVista,
+                _pCorpusHost.PLocalizationTextRead("Display.Unknown"), _pCorpusHost.PLocalizationTextRead("Example.Unwritten"));
             _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)
@@ -151,23 +126,24 @@ public partial class PCorpus
         string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
         string unwritten = _pCorpusHost.PLocalizationTextRead("Example.Unwritten");
 
-        _pAnthologyList.Clear();
+        List<PAnthologyItem> fresh = [];
         bool kept = false;
         foreach (LCatalogExample row in read)
         {
             kept |= row.LCatalogExampleChosen;
-            _pAnthologyList.Add(new PAnthologyItem(
+            fresh.Add(new PAnthologyItem(
                 row.LCatalogExampleStored,
                 row.LCatalogExampleUsage,
                 unknown,
-                unwritten)
+                unwritten,
+                row.LCatalogExampleChosen)
             {
-                PAnthologyItemChosen = row.LCatalogExampleChosen,
+                PAnthologyItemName = row.LCatalogExampleName,
             });
         }
 
-        LTwin.LTwinNameApply(
-            _pAnthologyList, row => row.PAnthologyItemText, (row, name) => row.PAnthologyItemName = name);
+        PSplice.PSpliceApply(
+            _pAnthologyList, fresh, PAnthologyItem.PAnthologyItemMatch, PAnthologyItem.PAnthologyItemSync);
 
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -202,7 +178,8 @@ public partial class PCorpus
         LExample? example;
         try
         {
-            example = _lEngine.LEngineExampleRead(id);
+            _pCorpusVista?.LVistaSelect(id);
+            example = _pCorpusVista?.LVistaLoad()?.LDraftExample;
         }
         catch (Exception exception)
         {
@@ -218,7 +195,7 @@ public partial class PCorpus
         }
 
         _pCorpusVista?.LVistaSelect(id);
-        PAnthologyChosenApply();
+        PAnthologyFind();
         PQuotationEntryHide();
 
         PExcerptSentenceShow(example);
@@ -257,7 +234,7 @@ public partial class PCorpus
 
         try
         {
-            _lEngine.LEngineExampleDelete(id, usage > 0);
+            _pCorpusVista.LVistaDelete();
         }
         catch (Exception exception)
         {
@@ -341,7 +318,7 @@ public partial class PCorpus
 
     private void PCorpusScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pCorpusVista?.LVistaEditingSet(editing);
 
         PTranscript.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -380,7 +357,7 @@ public partial class PCorpus
         PTranscriptDraftCancel();
 
         _pCorpusVista?.LVistaSelect(null);
-        PAnthologyChosenApply();
+        PAnthologyFind();
         PQuotationEntryHide();
         PQuotationFind();
 

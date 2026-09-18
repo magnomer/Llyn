@@ -9,7 +9,7 @@ It is the inverse of `LEntryLoader`.
 So it lives on its own rather than among the engine's lookup and workspace calls.
 Everything it writes shares one session, so an entry is written whole or not at all.
 
-## `public LEntry LEngineEntrySave(LEntryDraft draft)`
+## `internal LEntry LEngineEntrySave(LEntryDraft draft)`
 
 Saves the whole input form as one new entry.
 That is the headword row and its meanings and collocations in card order.

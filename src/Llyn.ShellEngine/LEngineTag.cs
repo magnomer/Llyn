@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LTag> LEngineTagRead()
+    internal IReadOnlyList<LTag> LEngineTagRead()
     {
         lock (_lEngineGate)
         {
@@ -35,13 +35,19 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LTag> LEngineTagFind(LVista vista)
+    public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
-        return LEngineTagFind(vista.LVistaQuery, vista.LVistaOrder);
+        List<LCatalogTag> rows = [];
+        foreach (LTag tag in LEngineTagFind(vista.LVistaQuery, vista.LVistaOrder))
+        {
+            rows.Add(new LCatalogTag(tag, tag.LTagId == vista.LVistaChosen));
+        }
+
+        return rows;
     }
 
-    public IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -52,7 +58,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)
+    internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -89,7 +95,7 @@ public sealed partial class LEngine
         return created;
     }
 
-    public void LEngineTagChange(long tagId, string renamed)
+    internal void LEngineTagChange(long tagId, string renamed)
     {
         lock (_lEngineGate)
         {
@@ -99,7 +105,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
     }
 
-    public void LEngineTagDelete(long tagId)
+    internal void LEngineTagDelete(long tagId)
     {
         lock (_lEngineGate)
         {

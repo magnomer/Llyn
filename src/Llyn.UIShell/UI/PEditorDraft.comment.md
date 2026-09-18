@@ -33,17 +33,11 @@ A card with no sentence row is asked for a blank one.
 So there is always somewhere to type.
 An empty row never dirties the draft, so the ask costs nothing when it is left blank.
 Each ask answers with a draft bulletin.
-The bulletin handler only marks the draft stale while this runs.
-Rendering on each answer drew the whole form three or four times per entry.
-A wide Chinese form stalled the switch that way.
-The stale draft is read back once before the sentence pass, because a fresh card needs its id first.
-It is read once more at the end, so the render that follows draws every row that was asked for.
-Nothing is asked during a render or with no tenure, since such a request would be dropped anyway.
-
-### `private LEntryDraft PEditorDraftRead(LEntryDraft draft)`
-
-The tenure's current draft when an ask changed it, otherwise the draft handed in.
-A read that fails is shown as a hold failure, since the draft itself could not be reached.
+`LTenurePrepare` drops this tenure's draft notices until the outermost preparation ends, then returns the current draft.
+The show that follows renders that draft once, so no notice is replayed.
+The sentence pass reads the updated draft because a fresh card needs its engine id first.
+Nothing is asked during a render or with no tenure.
+The shell keeps no preparation flags or stale-draft cache.
 
 ### `private static void PEditorTextShow(TextBox box, string text)`
 

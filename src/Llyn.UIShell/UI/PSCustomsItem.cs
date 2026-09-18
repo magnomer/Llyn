@@ -19,7 +19,7 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(candidates);
 
         PSCustomsItemIndex = index;
-        _psCustomsItemHeadword = entry.LMarkupEntryHeadword;
+        _psCustomsItemHeadword = entry.LMarkupEntryName;
         PSCustomsItemLanguage = entry.LMarkupEntryLanguage;
         PSCustomsItemCandidate = candidates;
         _psCustomsItemMode = candidates.Count == 1 ? LMarkupMode.LMarkupModeMerge : LMarkupMode.LMarkupModeNew;

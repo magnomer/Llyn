@@ -23,18 +23,18 @@ They are not stored as words.
 A form knows it is plural.
 What "plural" is called in a language is a fact of that language's pack.
 
-## `public IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)`
+## `internal IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)`
 
 Reads the inflected forms of the Entry identified by `entryId`, in stored order, each with its features in theirs.
 
-## `public void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)`
+## `internal void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Makes the stored inflections of the Entry identified by `entryId` exactly `inflections`.
 They are stored in the order given, and an empty list clears them.
 A pending fetch is cancelled and the Entry's lacuna rows are deleted.
 A hand edit is a reason to ask the web again.
 
-## `public void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)`
+## `internal void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Appends `inflections` to the end of the Entry's list, leaving the forms already stored where they are.
 
@@ -45,11 +45,11 @@ The store would refuse it as a foreign-key failure.
 That reaches the reader as a crash and not as an answer.
 Every other link a draft carries is checked before it is written, and an inflection is no different.
 
-## `public void LEngineInflectionMove(long entryId, int position, int target)`
+## `internal void LEngineInflectionMove(long entryId, int position, int target)`
 
 Moves the inflection at `position` in the Entry's list to `target`, renumbering the list so the positions stay contiguous.
 
-## `public void LEngineInflectionDelete(long entryId, int position)`
+## `internal void LEngineInflectionDelete(long entryId, int position)`
 
 Deletes the inflection at `position` in the Entry's list with its features.
 It renumbers the forms after it so the list stays contiguous.

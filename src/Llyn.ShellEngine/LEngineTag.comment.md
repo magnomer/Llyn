@@ -19,15 +19,15 @@ A name carries three components after its prefix, and a method per side would ne
 A Tag hangs from a Meaning or a Collocation and from nothing else.
 So any other side is refused rather than guessed.
 
-## `public IReadOnlyList<LTag> LEngineTagRead()`
+## `internal IReadOnlyList<LTag> LEngineTagRead()`
 
 Reads every Tag the workspace holds, once each, in alphabetical order — what a Tag-based lookup lists.
 
-## `public IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)`
 
 Reads the Tags the Meaning or Collocation identified by `ownerId` carries, in the order that card holds them.
 
-## `public void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)`
+## `internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)`
 
 Writes that card's whole Tag line.
 Each Tag is resolved to its row by id, or by text when it carries none.
@@ -39,13 +39,13 @@ Makes a Tag reading `text` with no card carrying it yet, for the taxonomy panel'
 A Tag already reading the same is returned rather than doubled.
 The catalog is announced so every panel listing Tags shows the new row.
 
-## `public void LEngineTagChange(long tagId, string renamed)`
+## `internal void LEngineTagChange(long tagId, string renamed)`
 
 Renames the Tag `tagId` names, and every card linking it follows.
 When another Tag already reads `renamed`, the two fold into one.
 A card that carried both ends with one Tag rather than the same words twice.
 
-## `public void LEngineTagDelete(long tagId)`
+## `internal void LEngineTagDelete(long tagId)`
 
 Takes a Tag off every card that carries it and deletes its row.
 Nothing else goes: the cards stay exactly as they were, one label shorter.

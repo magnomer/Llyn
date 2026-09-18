@@ -27,7 +27,7 @@ public sealed partial class LEngine
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
-            return owner switch
+            IReadOnlyList<LUsage> rows = owner switch
             {
                 LOwner.LOwnerExample => new LExampleLink(_lEngineDatabase).LExampleUsageRead(id),
                 LOwner.LOwnerReference => new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead(id),
@@ -35,6 +35,21 @@ public sealed partial class LEngine
                 LOwner.LOwnerSituation => new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id),
                 _ => throw LEngineOwnerRaise(owner),
             };
+            return LEngineUsageResolve(rows);
         }
+    }
+
+    private static IReadOnlyList<LUsage> LEngineUsageResolve(IReadOnlyList<LUsage> rows)
+    {
+        List<LUsage> named = [.. rows];
+        int[] places = new int[rows.Count];
+        for (int index = 0; index < places.Length; index++)
+        {
+            places[index] = index;
+        }
+
+        LTwin.LTwinNameApply(places, place => rows[place].LUsageHeadword,
+            (place, name) => named[place] = rows[place] with { LUsageName = name });
+        return named;
     }
 }

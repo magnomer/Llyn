@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LMeaning LEngineMeaningCreate(LMeaning meaning)
+    internal LMeaning LEngineMeaningCreate(LMeaning meaning)
     {
         lock (_lEngineGate)
         {
@@ -39,7 +39,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineMeaningUpdate(LMeaning meaning)
+    internal void LEngineMeaningUpdate(LMeaning meaning)
     {
         lock (_lEngineGate)
         {
@@ -49,7 +49,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineMeaningMove(long id, int position)
+    internal void LEngineMeaningMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -58,7 +58,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineMeaningDelete(long id)
+    internal void LEngineMeaningDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -72,7 +72,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LCollocation LEngineCollocationCreate(LCollocation collocation)
+    internal LCollocation LEngineCollocationCreate(LCollocation collocation)
     {
         lock (_lEngineGate)
         {
@@ -83,7 +83,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -96,7 +96,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCollocationUpdate(LCollocation collocation)
+    internal void LEngineCollocationUpdate(LCollocation collocation)
     {
         lock (_lEngineGate)
         {
@@ -106,7 +106,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCollocationMove(long id, int position)
+    internal void LEngineCollocationMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -115,7 +115,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCollocationDelete(long id)
+    internal void LEngineCollocationDelete(long id)
     {
         lock (_lEngineGate)
         {

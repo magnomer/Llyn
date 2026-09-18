@@ -37,11 +37,6 @@ public partial class PSCustoms : Window
             dialog._psCustomsItem.Add(item);
         }
 
-        LTwin.LTwinNameApply(
-            dialog._psCustomsItem,
-            static item => item.PSCustomsItemHeadword,
-            static (item, name) => item.PSCustomsItemHeadword = name);
-
         dialog.PSCustomsAcceptUpdate();
         dialog.ShowDialog();
         if (!dialog._psCustomsAccepted)

@@ -32,7 +32,7 @@ Stores the Entry the right duplex side stands on, or nothing when that side is c
 
 Stores the name of the tab standing open.
 
-## `public void LEngineSplitSave(bool split)`
+## `internal void LEngineSplitSave(bool split)`
 
 Stores whether the open tab shows its editor rather than its read area.
 

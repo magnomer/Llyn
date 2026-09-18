@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,8 +8,9 @@ internal sealed class PIndexItem : INotifyPropertyChanged
 {
     private bool _pIndexItemChosen;
 
-    internal PIndexItem(long id, string headword, string language, string epithet = "")
+    internal PIndexItem(long id, string headword, string language, string epithet = "", bool chosen = false)
     {
+        _pIndexItemChosen = chosen;
         PIndexItemId = id;
         PIndexItemHeadword = headword;
         PIndexItemName = headword;
@@ -28,6 +30,20 @@ internal sealed class PIndexItem : INotifyPropertyChanged
     public string PIndexItemLanguage { get; }
 
     public ImageSource? PIndexItemFlag { get; }
+
+    internal static bool PIndexItemMatch(PIndexItem held, PIndexItem fresh)
+    {
+        return held.PIndexItemId == fresh.PIndexItemId
+            && string.Equals(held.PIndexItemHeadword, fresh.PIndexItemHeadword, StringComparison.Ordinal)
+            && string.Equals(held.PIndexItemEpithet, fresh.PIndexItemEpithet, StringComparison.Ordinal)
+            && string.Equals(held.PIndexItemName, fresh.PIndexItemName, StringComparison.Ordinal)
+            && string.Equals(held.PIndexItemLanguage, fresh.PIndexItemLanguage, StringComparison.Ordinal);
+    }
+
+    internal static void PIndexItemSync(PIndexItem held, PIndexItem fresh)
+    {
+        held.PIndexItemChosen = fresh.PIndexItemChosen;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

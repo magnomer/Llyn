@@ -119,6 +119,7 @@ The flags are loaded before any row is built, then the language menu is built fr
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The speakers, the citations and the catalog are then listed.
 The quotation vista is kept for the entry column and handed to the display, which reads its chosen entry.
+The quotation vista carries the entry search box, so its announcement refills the entry column alone.
 
 ### `private void PRankRestore()`
 

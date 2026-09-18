@@ -42,14 +42,20 @@ public sealed partial class LEngine
         return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
     }
 
-    public IReadOnlyList<LVariety> LEngineVarietyRead(string language)
+    internal IReadOnlyList<LVariety> LEngineVarietyRead(string language)
     {
         return LEngineLanguageLoad(language).LLanguageVarieties;
     }
 
-    public bool LEngineFlaggedCheck(string language)
+    internal bool LEngineFlaggedCheck(string language)
     {
         return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
+    }
+
+    public bool LEngineFlaggedCheck(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+        return draft.LEntryDraftLanguage.Length > 0 && LEngineFlaggedCheck(draft.LEntryDraftLanguage);
     }
 
     public bool LEngineTonalCheck(string language)

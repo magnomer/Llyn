@@ -38,7 +38,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LDraft? LEngineDraftRead(long id)
+    internal LDraft? LEngineDraftRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -48,7 +48,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LDraft> LEngineDraftScan()
+    internal IReadOnlyList<LDraft> LEngineDraftScan()
     {
         lock (_lEngineGate)
         {
@@ -130,7 +130,7 @@ public sealed partial class LEngine
         return !LEngineDraftMatch(origin, draft.LDraftContent);
     }
 
-    public void LEngineDraftSweep(long id)
+    internal void LEngineDraftSweep(long id)
     {
         LDraft saved;
         lock (_lEngineGate)
@@ -145,7 +145,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
     }
 
-    public LOutcome LEngineDraftCommit(long id)
+    internal LOutcome LEngineDraftCommit(long id)
     {
         LOutcome outcome;
         List<long> raised = [];

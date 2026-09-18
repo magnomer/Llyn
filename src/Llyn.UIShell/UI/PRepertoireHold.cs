@@ -109,12 +109,14 @@ public partial class PRepertoire
         {
             LTenure started = _lEngine.LEngineTenureStart(PScenarioOrigin, LSubject.LSubjectSituation, situation);
             _pScenarioTenure = started;
+            started.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PScenarioDraftRestore));
+            started.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PScenarioChangeUpdate));
             PScenario.IsEnabled = true;
             return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pScenarioTenure = null;
+            PScenarioDraftCancel();
             PScenario.IsEnabled = false;
             _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
             return null;

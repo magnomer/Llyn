@@ -121,6 +121,12 @@ internal static class PEnsign
         }
     }
 
+    internal static Task PEnsignVarietyLoad(LEngine engine, LTenure tenure)
+    {
+        return PEnsignVarietyLoad(engine, tenure.LTenureLanguageRead(),
+            tenure.LTenureVarietyRead().Select(variety => variety.LVarietyName));
+    }
+
     internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)
     {
         ArgumentNullException.ThrowIfNull(engine);

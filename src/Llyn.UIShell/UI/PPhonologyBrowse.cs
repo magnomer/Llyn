@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -80,37 +81,27 @@ public partial class PPhonology
         PLensMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PInventoryChosenApply()
-    {
-        long? chosen = _pPhonologyVista?.LVistaChosen;
-        foreach (PInventoryItem item in _pInventoryList)
-        {
-            item.PInventoryItemChosen = chosen is not null
-                && item.PInventoryItemId == chosen;
-        }
-    }
-
     private void PInventoryFind()
     {
-        _pInventoryList.Clear();
-        if (_pPhonologyVista is null)
+        List<PInventoryItem> fresh = [];
+        IReadOnlyList<LCatalogPronunciation> read =
+            _pPhonologyVista is null ? [] : _lEngine.LEnginePronunciationFind(_pPhonologyVista);
+        foreach (LCatalogPronunciation row in read)
         {
-            return;
-        }
-
-        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(_pPhonologyVista))
-        {
-            _pInventoryList.Add(new PInventoryItem(
+            fresh.Add(new PInventoryItem(
                 row.LCatalogPronunciationEntry.LEntryId,
                 row.LCatalogPronunciationEntry.LEntryHeadword,
                 row.LCatalogPronunciationEntry.LEntryLanguage,
                 row.LCatalogPronunciationSound,
-                row.LCatalogPronunciationEpithet ?? string.Empty)
+                row.LCatalogPronunciationEpithet ?? string.Empty,
+                row.LCatalogPronunciationChosen)
             {
                 PInventoryItemName = row.LCatalogPronunciationName,
-                PInventoryItemChosen = row.LCatalogPronunciationChosen,
             });
         }
+
+        PSplice.PSpliceApply(
+            _pInventoryList, fresh, PInventoryItem.PInventoryItemMatch, PInventoryItem.PInventoryItemSync);
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -135,7 +126,8 @@ public partial class PPhonology
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pPhonologyVista?.LVistaSelect(id);
+            draft = _pPhonologyVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -151,7 +143,7 @@ public partial class PPhonology
         }
 
         _pPhonologyVista?.LVistaSelect(id);
-        PInventoryChosenApply();
+        PInventoryFind();
         PPhonologyEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -173,15 +165,10 @@ public partial class PPhonology
 
     private void PPhonologyEntryUpdate(LBulletin bulletin)
     {
-        if (_pPhonologyVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pPhonologyVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -249,7 +236,7 @@ public partial class PPhonology
 
     private void PPhonologyScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pPhonologyVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -292,7 +279,7 @@ public partial class PPhonology
     private void PPhonologyClear()
     {
         _pPhonologyVista?.LVistaSelect(null);
-        PInventoryChosenApply();
+        PInventoryFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PPhonologyScribeShow(false);
@@ -307,11 +294,6 @@ public partial class PPhonology
 
     private void PPhonologyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pPhonologyVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pPhonologyHost.PWindowDeleteConfirm())
         {
             return;
@@ -319,7 +301,7 @@ public partial class PPhonology
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pPhonologyVista?.LVistaDelete();
         }
         catch (Exception exception)
         {

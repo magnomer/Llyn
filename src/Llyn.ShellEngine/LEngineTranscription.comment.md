@@ -1,4 +1,4 @@
-﻿# LEngineTranscription.cs
+# LEngineTranscription.cs
 
 ## `public sealed partial class LEngine`
 
@@ -12,7 +12,7 @@ So it lives beside the pronunciation rather than inside it, and neither points a
 The transcription schemes the pack of `language` declares, in the order the form shows them.
 An empty list means the language shows no transcription line.
 
-## `public Task LEngineTranscriptionFind(long session, string word, string language, string scheme, LReceiver receiver, CancellationToken cancellation)`
+## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, LReceiver receiver, CancellationToken cancellation)`
 
 The transcription counterpart of `LEnginePronunciationFind`, asked for one scheme at a time.
 The sources are the ones the pack declares under that scheme, so Pinyin and Bopomofo need not share a page.
@@ -26,12 +26,12 @@ The built sources of one scheme, made once per language and scheme and kept for 
 A scheme the pack does not declare yields no sources, so its lookup ends at once with nothing found.
 The glyph section is asked by its name too, so the glyph row looks its form up through this path.
 
-## `public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
+## `internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
 
 Reads the transcriptions the Entry identified by `entryId` keeps, in order.
 Empty when it keeps none.
 
-## `public IReadOnlyList<LTranscription> LEngineTranscriptionSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
+## `internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
 
 Makes `transcriptions` the whole list of the Entry, and returns the rows with their ids filled in.
 

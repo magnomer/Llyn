@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LReference LEngineReferenceCreate(LReference reference)
+    internal LReference LEngineReferenceCreate(LReference reference)
     {
         lock (_lEngineGate)
         {
@@ -38,7 +38,7 @@ public sealed partial class LEngine
         return stored;
     }
 
-    public LReference? LEngineReferenceRead(long id)
+    internal LReference? LEngineReferenceRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -46,7 +46,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LReference> LEngineReferenceRead()
+    internal IReadOnlyList<LReference> LEngineReferenceRead()
     {
         lock (_lEngineGate)
         {
@@ -89,10 +89,13 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogReference> found = LEngineReferenceFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogReference> rows = new(found.Count);
-        foreach (LCatalogReference row in found)
+        string[] names = LEngineTwinRead(found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
+        for (int index = 0; index < found.Count; index++)
         {
+            LCatalogReference row = found[index];
             rows.Add(row with
             {
+                LCatalogReferenceName = names[index],
                 LCatalogReferenceChosen = row.LCatalogReferenceStored.LReferenceId == vista.LVistaChosen,
             });
         }
@@ -100,7 +103,7 @@ public sealed partial class LEngine
         return rows;
     }
 
-    public IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)
+    internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -116,7 +119,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineReferenceUpdate(LReference reference)
+    internal void LEngineReferenceUpdate(LReference reference)
     {
         lock (_lEngineGate)
         {
@@ -124,7 +127,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)
+    internal void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -140,7 +143,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)
+    internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -156,7 +159,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineReferenceDelete(long id)
+    internal void LEngineReferenceDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -166,7 +169,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
-    public void LEngineReferenceDelete(long id, bool detach)
+    internal void LEngineReferenceDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {
@@ -176,7 +179,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
-    public LAuthor LEngineAuthorCreate(LAuthor author)
+    internal LAuthor LEngineAuthorCreate(LAuthor author)
     {
         LAuthor created;
         lock (_lEngineGate)
@@ -252,7 +255,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineAuthorUpdate(LAuthor author)
+    internal void LEngineAuthorUpdate(LAuthor author)
     {
         lock (_lEngineGate)
         {
@@ -262,7 +265,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
     }
 
-    public void LEngineAuthorAttach(long referenceId, long authorId, int position)
+    internal void LEngineAuthorAttach(long referenceId, long authorId, int position)
     {
         lock (_lEngineGate)
         {
@@ -272,7 +275,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
     }
 
-    public void LEngineAuthorDetach(long referenceId, long authorId)
+    internal void LEngineAuthorDetach(long referenceId, long authorId)
     {
         lock (_lEngineGate)
         {
@@ -282,7 +285,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
     }
 
-    public void LEngineAuthorDelete(long id)
+    internal void LEngineAuthorDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -292,7 +295,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
     }
 
-    public void LEngineAuthorDelete(long id, bool detach)
+    internal void LEngineAuthorDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {

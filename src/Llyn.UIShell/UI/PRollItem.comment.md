@@ -17,3 +17,12 @@ Builds the uncredited row, which stands for the Sources crediting nobody and car
 ## `public bool PRollItemChosen`
 
 Whether the row is the chosen one, raised so the row restyles itself.
+
+## `internal static bool PRollItemMatch(PRollItem held, PRollItem fresh)`
+
+Whether the two rows show the same values, the chosen mark left aside.
+`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+
+## `internal static void PRollItemSync(PRollItem held, PRollItem fresh)`
+
+Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.

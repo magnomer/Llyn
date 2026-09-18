@@ -6,7 +6,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
+    internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(label);

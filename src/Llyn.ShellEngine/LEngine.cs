@@ -80,7 +80,7 @@ public sealed partial class LEngine : IDisposable
         }
     }
 
-    public LRealm LEngineRealmRead()
+    internal LRealm LEngineRealmRead()
     {
         lock (_lEngineGate)
         {
@@ -128,7 +128,7 @@ public sealed partial class LEngine : IDisposable
         LWorkspaceRoot.LWorkspaceRootChange(LEngineWorkspaceRead());
     }
 
-    public void LEngineWorkspaceOpen(string path)
+    internal void LEngineWorkspaceOpen(string path)
     {
         if (!Path.IsPathFullyQualified(path))
         {

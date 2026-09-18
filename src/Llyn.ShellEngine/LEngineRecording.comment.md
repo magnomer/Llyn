@@ -20,7 +20,7 @@ The trove is never wrapped and keeps cleaned but un-respelled text.
 The switch is the phonetician's alone, picking which of the two forms each row shows.
 The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
 
-## `public Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
+## `internal Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
 
 Starts an audio-recording discovery for `word` in `language` and streams results to `listener`.
 The task completes when every source finishes.
@@ -63,7 +63,7 @@ The task is already complete, because nothing was awaited.
 The recording counterpart of `LEngineCandidatePublish`.
 The caller narrows the kept set to the opening row's variety first, as the harvest narrows a live stream.
 
-## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
+## `internal Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Downloads the chosen `recording` into the workspace and returns the saved path.
 The recording carries its own variety, and the workspace names the file by it.

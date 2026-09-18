@@ -47,7 +47,7 @@ public sealed partial class LEngine
             : LEngineCandidatePublish(held, receiver);
     }
 
-    public Task LEngineRecordingFind(
+    internal Task LEngineRecordingFind(
         long session,
         string word,
         string language,
@@ -167,7 +167,7 @@ public sealed partial class LEngine
         return Task.CompletedTask;
     }
 
-    public Task<string> LEngineRecordingSave(
+    internal Task<string> LEngineRecordingSave(
         LRecording recording, string word, string language, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);

@@ -92,7 +92,7 @@ public partial class PDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pDisplayVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {

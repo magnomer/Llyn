@@ -60,18 +60,18 @@ public partial class PTenor : UserControl
 
     private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pCohortVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pCohortVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTenorHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pTenorHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pCohortVista, _pTenorHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pCohortVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pCohortVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pTenorHost.PWindowPortraitExport(entry);
+            await _pTenorHost.PWindowPortraitExport(_pCohortVista);
         }
     }
 }

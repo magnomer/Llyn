@@ -52,12 +52,9 @@ public partial class PEditor : LListener
         try
         {
             string language = held.LTenureLanguageRead();
-            if (language.Length > 0 && _lEngine.LEngineFlaggedCheck(language))
+            if (held.LTenureFlaggedCheck())
             {
-                await PEnsign.PEnsignVarietyLoad(
-                    _lEngine,
-                    language,
-                    _lEngine.LEngineVarietyRead(language).Select(variety => variety.LVarietyName));
+                await PEnsign.PEnsignVarietyLoad(_lEngine, held);
                 if (!PClip.IsOpen)
                 {
                     return;

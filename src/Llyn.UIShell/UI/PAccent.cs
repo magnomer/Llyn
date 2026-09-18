@@ -111,7 +111,7 @@ public partial class PEditor
     private void PAccentShow(LEntryDraft draft)
     {
         string language = draft.LEntryDraftLanguage;
-        bool flagged = language.Length > 0 && _lEngine.LEngineFlaggedCheck(language);
+        bool flagged = _pEditorTenure?.LTenureFlaggedCheck() == true;
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;

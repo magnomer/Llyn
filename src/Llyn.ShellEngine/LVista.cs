@@ -14,7 +14,9 @@ public sealed class LVista : LObserver
 
     private readonly List<(LSubject, LObserver)> _lVistaChosenObservers = [];
 
-    internal LVista(LEngine engine, long id, string tab, LCatalogOrder order, LCatalogFilter filter, bool blank)
+    internal LVista(
+        LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter,
+        bool blank, bool editing)
     {
         _lEngine = engine;
         LVistaId = id;
@@ -22,11 +24,15 @@ public sealed class LVista : LObserver
         LVistaOrder = order;
         LVistaFilter = filter;
         LVistaBlank = blank;
+        LVistaEditing = editing;
+        LVistaSubject = subject;
     }
 
     public long LVistaId { get; }
 
     public string LVistaTab { get; }
+
+    public LSubject? LVistaSubject { get; }
 
     public bool LVistaBlank { get; }
 
@@ -37,6 +43,63 @@ public sealed class LVista : LObserver
     public string LVistaQuery { get; private set; } = string.Empty;
 
     public long? LVistaChosen { get; private set; }
+
+    public bool LVistaEditing { get; private set; }
+
+    public LDraft? LVistaLoad() => _lEngine.LEngineVistaLoad(this);
+
+    public LRevision? LVistaDelete()
+    {
+        if (LVistaChosen is not long id || id <= 0)
+        {
+            return null;
+        }
+
+        LRevision? revision;
+        switch (LVistaSubject)
+        {
+            case LSubject.LSubjectEntry:
+                revision = _lEngine.LEngineEntryDelete(id);
+                break;
+            case LSubject.LSubjectExample:
+                _lEngine.LEngineExampleDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectSituation:
+                _lEngine.LEngineSituationDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectReference:
+                _lEngine.LEngineReferenceDelete(id, true);
+                revision = null;
+                break;
+            case LSubject.LSubjectAuthor:
+                _lEngine.LEngineAuthorDelete(id, true);
+                revision = null;
+                break;
+            default:
+                return null;
+        }
+
+        if (LVistaChosen == id)
+        {
+            LVistaSelect(null);
+        }
+
+        return revision;
+    }
+
+    public void LVistaEditingSet(bool editing)
+    {
+        _lEngine.LEngineSplitSave(editing);
+        if (LVistaEditing == editing)
+        {
+            return;
+        }
+
+        LVistaEditing = editing;
+        _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+    }
 
     public void LVistaOrderSet(LCatalogOrder order)
     {

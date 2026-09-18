@@ -6,7 +6,7 @@ Assembles the likeness of one entry from what the workspace holds.
 The panel reads the same records through the same engine, so both see one entry the same way.
 The section builders live in `LEnginePortraitCrest.cs` and `LEnginePortraitCard.cs`.
 
-## `public LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)`
+## `internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)`
 
 Everything the display gathers is gathered here, in the display's own order.
 The reading rows go under the title: pronunciations, transcriptions, then reflexes.

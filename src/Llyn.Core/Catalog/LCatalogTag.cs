@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Llyn.Core;
 
-public static class LCatalogTag
+public sealed record LCatalogTag(LTag LCatalogTagStored, bool LCatalogTagChosen = false)
 {
     public static IReadOnlyList<LTag> LCatalogTagSort(IReadOnlyList<LTag> tags, LCatalogOrder order)
     {

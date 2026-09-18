@@ -19,7 +19,7 @@ A recovered draft names the same sentence it always did.
 An Example that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
-## `public LExample LEngineExampleCommit(long id)`
+## `internal LExample LEngineExampleCommit(long id)`
 
 Turns a held sentence into a stored Example and returns it.
 A draft naming no Example is a create, one naming an Example is a rewrite.

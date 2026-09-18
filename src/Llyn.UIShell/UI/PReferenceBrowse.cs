@@ -41,7 +41,7 @@ public partial class PReference
 
     private void PRummageHandle(object sender, TextChangedEventArgs e)
     {
-        PFootnoteFind();
+        _pFootnoteVista?.LVistaQuerySet(PRummage.Text);
     }
 
     private void PTrellisHandle(object sender, RoutedEventArgs e)
@@ -71,8 +71,6 @@ public partial class PReference
         _pReferenceVista = vista;
         _pFootnoteVista = footnote;
         vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PShelfFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectDraft, new PObserver(this, PImprint.PImprintDraftUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectTenure, new PObserver(this, PImprint.PImprintTenureUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PReferenceWorkspaceUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PImprint.PImprintAuthorUpdate));
         vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PShelfFind));
@@ -82,6 +80,7 @@ public partial class PReference
         vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PShelfFind));
         footnote.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PFootnoteEntryUpdate));
         footnote.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PReferenceEntryUpdate));
+        footnote.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PFootnoteFind));
         PDisplay.PDisplayVistaRestore(footnote);
         PGradeRestore();
         PTrellisRestore();
@@ -90,6 +89,7 @@ public partial class PReference
 
         PChoice.PChoiceFilterBuild(PTrellisList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PTrellisHandle);
         vista.LVistaQuerySet(PSurvey.Text ?? string.Empty);
+        footnote.LVistaQuerySet(PRummage.Text);
         PImprint.PAuthorFind();
         PShelfFind();
     }
@@ -118,16 +118,6 @@ public partial class PReference
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
     }
 
-    private void PShelfChosenApply()
-    {
-        long? chosen = _pReferenceVista?.LVistaChosen;
-        foreach (PShelfItem item in _pShelfList)
-        {
-            item.PShelfItemChosen = chosen is not null
-                && item.PShelfItemId == chosen;
-        }
-    }
-
     private void PShelfFind()
     {
         if (_pReferenceVista is null)
@@ -151,16 +141,16 @@ public partial class PReference
         string unknown = _pReferenceHost.PLocalizationTextRead("Display.Unknown");
         string unset = _pReferenceHost.PLocalizationTextRead("Source.Unset");
 
-        _pShelfList.Clear();
+        List<PShelfItem> fresh = [];
         bool kept = false;
         foreach (LCatalogReference row in read)
         {
             kept |= row.LCatalogReferenceChosen;
-            _pShelfList.Add(new PShelfItem(row, unknown, unset)
-            {
-                PShelfItemChosen = row.LCatalogReferenceChosen,
-            });
+            fresh.Add(new PShelfItem(row, unknown, unset, row.LCatalogReferenceChosen));
         }
+
+        PSplice.PSpliceApply(
+            _pShelfList, fresh, PShelfItem.PShelfItemMatch, PShelfItem.PShelfItemSync);
 
         PShelfEmpty.Visibility = _pShelfList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -195,7 +185,8 @@ public partial class PReference
         LReference? reference;
         try
         {
-            reference = _lEngine.LEngineReferenceRead(id);
+            _pReferenceVista?.LVistaSelect(id);
+            reference = _pReferenceVista?.LVistaLoad()?.LDraftReference;
         }
         catch (Exception exception)
         {
@@ -211,7 +202,7 @@ public partial class PReference
         }
 
         _pReferenceVista?.LVistaSelect(id);
-        PShelfChosenApply();
+        PShelfFind();
         PFootnoteEntryHide();
 
         PColophon.PColophonShow(reference, PShelfCreditRead(id), PReferenceTallyRead(id));
@@ -243,7 +234,7 @@ public partial class PReference
 
         try
         {
-            _lEngine.LEngineReferenceDelete(id, usage > 0);
+            _pReferenceVista.LVistaDelete();
         }
         catch (Exception exception)
         {
@@ -315,7 +306,7 @@ public partial class PReference
 
     internal void PReferenceScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pReferenceVista?.LVistaEditingSet(editing);
 
         PImprint.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PColophon.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -349,7 +340,7 @@ public partial class PReference
         PImprint.PImprintDraftCancel();
 
         _pReferenceVista?.LVistaSelect(null);
-        PShelfChosenApply();
+        PShelfFind();
         PFootnoteEntryHide();
         PFootnoteFind();
 

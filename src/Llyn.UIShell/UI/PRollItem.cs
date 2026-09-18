@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
@@ -9,17 +10,19 @@ internal sealed class PRollItem : INotifyPropertyChanged
 {
     private bool _pRollItemChosen;
 
-    internal PRollItem(LCatalogAuthor row, string work)
+    internal PRollItem(LCatalogAuthor row, string work, bool chosen)
     {
+        _pRollItemChosen = chosen;
         PRollItemId = row.LCatalogAuthorStored.LAuthorId;
-        PRollItemName = row.LCatalogAuthorStored.LAuthorName;
+        PRollItemName = row.LCatalogAuthorName;
         PRollItemWork = work;
         PRollItemCount = row.LCatalogAuthorUsage.ToString(CultureInfo.CurrentCulture);
         PRollItemMark = PIcon.PIconResolve("guild", 16);
     }
 
-    internal PRollItem(string name, string work, int usage)
+    internal PRollItem(string name, string work, int usage, bool chosen)
     {
+        _pRollItemChosen = chosen;
         PRollItemId = 0;
         PRollItemName = name;
         PRollItemWork = work;
@@ -36,6 +39,19 @@ internal sealed class PRollItem : INotifyPropertyChanged
     public string PRollItemCount { get; }
 
     public Geometry PRollItemMark { get; }
+
+    internal static bool PRollItemMatch(PRollItem held, PRollItem fresh)
+    {
+        return held.PRollItemId == fresh.PRollItemId
+            && string.Equals(held.PRollItemName, fresh.PRollItemName, StringComparison.Ordinal)
+            && string.Equals(held.PRollItemWork, fresh.PRollItemWork, StringComparison.Ordinal)
+            && string.Equals(held.PRollItemCount, fresh.PRollItemCount, StringComparison.Ordinal);
+    }
+
+    internal static void PRollItemSync(PRollItem held, PRollItem fresh)
+    {
+        held.PRollItemChosen = fresh.PRollItemChosen;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

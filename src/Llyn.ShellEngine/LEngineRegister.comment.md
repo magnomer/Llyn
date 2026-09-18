@@ -9,7 +9,7 @@ The seam resolves what a card holds into stored rows before any reference is wri
 A language's shipped Registers are written on the way in rather than at workspace creation.
 So a language pack added after a workspace was made still offers its Registers.
 
-## `public IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)`
+## `internal IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)`
 
 Reads the Registers a Meaning or Collocation is marked with, in that card's order.
 
@@ -36,13 +36,13 @@ Makes a written Register reading `name` with no card marked by it yet, for the t
 A row already reading the same is returned rather than doubled.
 The announcement is raised either way, so the panel lists and selects the row.
 
-## `public void LEngineRegisterChange(long registerId, string renamed)`
+## `internal void LEngineRegisterChange(long registerId, string renamed)`
 
 Renames a written Register, which every card marked with it then shows.
 A row a language pack ships is left as it stands, because the pack owns the wording.
 The announcement is raised whether or not the row moved, so a shown panel always re-reads.
 
-## `public void LEngineRegisterDelete(long registerId)`
+## `internal void LEngineRegisterDelete(long registerId)`
 
 Deletes a written Register and every mark on it, which is what the panel confirms before calling.
 A row a language pack ships is left whole, marks included.

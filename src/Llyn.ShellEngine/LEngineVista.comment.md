@@ -16,9 +16,10 @@ The ids handed out so far, so each vista's bulletin names one vista.
 
 The vista now standing for each tab, so a restart can detach the one it replaces.
 
-## `public LVista LEngineVistaStart(string tab, LCatalogOrder fallback, bool blank = false)`
+## `public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)`
 
 Starts a vista for `tab`, reading its order and filter from the stored layout.
+`subject` names the stored kind the tab lists, so the engine holds no table of panel names.
 A tab with no stored order lists by `fallback`, and one with no stored filter hides nothing.
 `blank` makes an empty query list nothing, which only the duplex wings ask for.
 Every start reads the layout afresh, so a switched workspace hands the panel its own choices.

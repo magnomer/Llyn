@@ -8,5 +8,7 @@ public sealed record LUsage(
     string LUsageLanguage,
     LStateValue LUsageTitle)
 {
+    public string LUsageName { get; init; } = LUsageHeadword;
+
     public LStateValue LUsageTitle { get; init; } = LUsageTitle ?? LStateValue.LStateValueUnspecified;
 }

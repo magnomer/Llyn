@@ -16,17 +16,10 @@ public partial class PRepertoire
 
     private void POccurrenceFind()
     {
-        IReadOnlyList<LEntry> read;
+        IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(
-                new LSituation(
-                    _pRepertoireVista?.LVistaChosen ?? 0,
-                    LStateValue.LStateValueUnspecified,
-                    LStateValue.LStateValueUnspecified,
-                    LStateValue.LStateValueUnspecified),
-                PSortie.Text ?? string.Empty,
-                _pRepertoireVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+            read = _lEngine.LEngineEntryFind(_pRepertoireVista, _pOccurrenceVista);
         }
         catch (Exception exception)
         {
@@ -34,38 +27,28 @@ public partial class PRepertoire
             return;
         }
 
-        _pOccurrenceList.Clear();
-        foreach (LEntry entry in read)
+        List<POccurrenceItem> fresh = [];
+        foreach (LVistaRow entry in read)
         {
-            _pOccurrenceList.Add(new POccurrenceItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            fresh.Add(new POccurrenceItem(
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
+                entry.LVistaRowEpithet ?? string.Empty,
+                entry.LVistaRowChosen)
+            {
+                POccurrenceItemName = entry.LVistaRowName,
+            });
         }
 
-        LTwin.LTwinNameApply(
-            _pOccurrenceList,
-            row => row.POccurrenceItemHeadword,
-            (row, name) => row.POccurrenceItemName = name,
-            row => row.POccurrenceItemId);
+        PSplice.PSpliceApply(
+            _pOccurrenceList, fresh, POccurrenceItem.POccurrenceItemMatch, POccurrenceItem.POccurrenceItemSync);
 
         POccurrenceEmpty.SetResourceReference(
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PSortie.Text) ? "Situation.Vacant" : "Situation.Unmatched");
         POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        POccurrenceChosenApply();
-    }
-
-    private void POccurrenceChosenApply()
-    {
-        long? chosen = _pOccurrenceVista?.LVistaChosen;
-        foreach (POccurrenceItem item in _pOccurrenceList)
-        {
-            item.POccurrenceItemChosen = chosen is not null
-                && item.POccurrenceItemId == chosen;
-        }
     }
 
     private void POccurrenceHandle(object sender, RoutedEventArgs e)
@@ -88,7 +71,8 @@ public partial class PRepertoire
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pOccurrenceVista?.LVistaSelect(id);
+            draft = _pOccurrenceVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -110,7 +94,7 @@ public partial class PRepertoire
         PVignette.Visibility = Visibility.Collapsed;
 
         _pOccurrenceVista?.LVistaSelect(id);
-        POccurrenceChosenApply();
+        POccurrenceFind();
         PDisplay.PDisplayShow(draft);
         PRepertoireMode.IsEnabled = true;
         PRepertoireBin.IsEnabled = false;
@@ -132,7 +116,7 @@ public partial class PRepertoire
         PVignette.Visibility = Visibility.Collapsed;
 
         _pOccurrenceVista?.LVistaSelect(null);
-        POccurrenceChosenApply();
+        POccurrenceFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PRepertoireMode.IsEnabled = true;
@@ -208,7 +192,7 @@ public partial class PRepertoire
 
     private void POccurrenceScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pOccurrenceVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -243,15 +227,10 @@ public partial class PRepertoire
 
     private void PRepertoireEntryUpdate()
     {
-        if (_pOccurrenceVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pOccurrenceVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -283,7 +262,7 @@ public partial class PRepertoire
         }
 
         _pOccurrenceVista?.LVistaSelect(null);
-        POccurrenceChosenApply();
+        POccurrenceFind();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;

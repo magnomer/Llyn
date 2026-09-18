@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,8 +8,10 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
 {
     private bool _pInventoryItemChosen;
 
-    internal PInventoryItem(long id, string headword, string language, string sound, string epithet = "")
+    internal PInventoryItem(
+        long id, string headword, string language, string sound, string epithet = "", bool chosen = false)
     {
+        _pInventoryItemChosen = chosen;
         PInventoryItemId = id;
         PInventoryItemHeadword = headword;
         PInventoryItemName = headword;
@@ -34,6 +37,21 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
     public string PInventoryItemPronunciation { get; }
 
     public ImageSource? PInventoryItemFlag { get; }
+
+    internal static bool PInventoryItemMatch(PInventoryItem held, PInventoryItem fresh)
+    {
+        return held.PInventoryItemId == fresh.PInventoryItemId
+            && string.Equals(held.PInventoryItemHeadword, fresh.PInventoryItemHeadword, StringComparison.Ordinal)
+            && string.Equals(held.PInventoryItemEpithet, fresh.PInventoryItemEpithet, StringComparison.Ordinal)
+            && string.Equals(held.PInventoryItemName, fresh.PInventoryItemName, StringComparison.Ordinal)
+            && string.Equals(held.PInventoryItemLanguage, fresh.PInventoryItemLanguage, StringComparison.Ordinal)
+            && string.Equals(held.PInventoryItemSound, fresh.PInventoryItemSound, StringComparison.Ordinal);
+    }
+
+    internal static void PInventoryItemSync(PInventoryItem held, PInventoryItem fresh)
+    {
+        held.PInventoryItemChosen = fresh.PInventoryItemChosen;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

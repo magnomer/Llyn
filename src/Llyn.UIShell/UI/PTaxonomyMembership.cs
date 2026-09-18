@@ -11,25 +11,12 @@ public partial class PTaxonomy
 {
     private LVista? _pMembershipVista;
 
-    private void PMembershipChosenApply()
-    {
-        long? id = _pMembershipVista?.LVistaChosen;
-        foreach (PMembershipItem item in _pMembershipList)
-        {
-            item.PMembershipItemChosen = id is not null
-                && item.PMembershipItemId == id;
-        }
-    }
-
     private void PMembershipFind()
     {
-        IReadOnlyList<LEntry> read;
+        IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(
-                new LTag(_pTaxonomyVista?.LVistaChosen ?? 0, string.Empty),
-                PScout.Text ?? string.Empty,
-                _pTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+            read = _lEngine.LEngineEntryFind(_pTaxonomyVista, _pMembershipVista);
         }
         catch (Exception exception)
         {
@@ -37,28 +24,28 @@ public partial class PTaxonomy
             return;
         }
 
-        _pMembershipList.Clear();
-        foreach (LEntry entry in read)
+        List<PMembershipItem> fresh = [];
+        foreach (LVistaRow entry in read)
         {
-            _pMembershipList.Add(new PMembershipItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            fresh.Add(new PMembershipItem(
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
+                entry.LVistaRowEpithet ?? string.Empty,
+                entry.LVistaRowChosen)
+            {
+                PMembershipItemName = entry.LVistaRowName,
+            });
         }
 
-        LTwin.LTwinNameApply(
-            _pMembershipList,
-            row => row.PMembershipItemHeadword,
-            (row, name) => row.PMembershipItemName = name,
-            row => row.PMembershipItemId);
+        PSplice.PSpliceApply(
+            _pMembershipList, fresh, PMembershipItem.PMembershipItemMatch, PMembershipItem.PMembershipItemSync);
 
         PMembershipEmpty.SetResourceReference(
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PScout.Text) ? "Tag.Vacant" : "Tag.Unmatched");
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PMembershipChosenApply();
     }
 
     private void PMembershipHandle(object sender, RoutedEventArgs e)
@@ -81,7 +68,8 @@ public partial class PTaxonomy
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pMembershipVista?.LVistaSelect(id);
+            draft = _pMembershipVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -97,7 +85,7 @@ public partial class PTaxonomy
         }
 
         _pMembershipVista?.LVistaSelect(id);
-        PMembershipChosenApply();
+        PMembershipFind();
         PTaxonomyBin.IsEnabled = true;
         PTaxonomyEntryShow(draft);
 
@@ -112,7 +100,7 @@ public partial class PTaxonomy
         if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pMembershipVista?.LVistaSelect(bulletin.LBulletinId);
-            PMembershipChosenApply();
+            PMembershipFind();
             PTaxonomyBin.IsEnabled = true;
         }
 
@@ -121,15 +109,10 @@ public partial class PTaxonomy
 
     private void PTaxonomyEntryUpdate()
     {
-        if (_pMembershipVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pMembershipVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {

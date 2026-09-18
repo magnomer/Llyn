@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -18,7 +19,7 @@ public partial class PWindow
             ("Export.Pdf", ".pdf", LPortraitFormat.LPortraitFormatPdf),
         ];
 
-    internal async Task PWindowPortraitExport(long id)
+    internal async Task PWindowPortraitExport(LVista? vista)
     {
         List<string> filters = new List<string>();
         foreach ((string key, string suffix, LPortraitFormat _) in PWindowPortraitKinds)
@@ -32,7 +33,7 @@ public partial class PWindow
             Filter = string.Join("|", filters),
             FilterIndex = 2,
             AddExtension = true,
-            FileName = PWindowHeadwordRead(id),
+            FileName = PWindowHeadwordRead(vista),
         };
 
         if (dialog.ShowDialog(this) != true)
@@ -45,7 +46,7 @@ public partial class PWindow
 
         try
         {
-            await _lEngine.LEnginePortraitExport(id, dialog.FileName, format, PWindowLabelRead());
+            await _lEngine.LEnginePortraitExport(vista, dialog.FileName, format, PWindowLabelRead());
         }
         catch (Exception exception)
         {
@@ -53,12 +54,12 @@ public partial class PWindow
         }
     }
 
-    private string PWindowHeadwordRead(long id)
+    private string PWindowHeadwordRead(LVista? vista)
     {
         string headword;
         try
         {
-            headword = _lEngine.LEngineEntryRead(id)?.LEntryHeadword ?? string.Empty;
+            headword = vista?.LVistaLoad()?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
         }
         catch (Exception)
         {

@@ -60,18 +60,18 @@ public partial class PTaxonomy : UserControl
 
     private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pMembershipVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pMembershipVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
             await _pTaxonomyHost.PWindowPressRun(
-                ticket => _lEngine.LEnginePortraitPrint(entry, _pTaxonomyHost.PWindowLabelRead(), ticket));
+                ticket => _lEngine.LEnginePortraitPrint(_pMembershipVista, _pTaxonomyHost.PWindowLabelRead(), ticket));
         }
     }
 
     private async void PTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pMembershipVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pMembershipVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
         {
-            await _pTaxonomyHost.PWindowPortraitExport(entry);
+            await _pTaxonomyHost.PWindowPortraitExport(_pMembershipVista);
         }
     }
 }

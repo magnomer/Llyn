@@ -16,7 +16,7 @@ With an Author the content is that Author read back, which is a rename.
 An Author that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
-## `public LAuthor LEngineAuthorCommit(long id)`
+## `internal LAuthor LEngineAuthorCommit(long id)`
 
 Turns a held Author into a stored one and returns it.
 A draft naming no Author is a create, one naming an Author is a rename.

@@ -24,7 +24,7 @@ A Reference that is gone is refused before a file is written, so no draft can po
 A claim naming this process is written beside the draft, as every other kind of draft does.
 The credits of a stored Reference are read into the draft, so the panel shows them from one place.
 
-## `public LReference LEngineReferenceCommit(long id)`
+## `internal LReference LEngineReferenceCommit(long id)`
 
 Turns a held Reference into a stored one and returns it.
 A draft naming no Reference is a create, one naming a Reference is a rewrite.

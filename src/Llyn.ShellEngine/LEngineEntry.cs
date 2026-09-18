@@ -8,7 +8,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
+    internal LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
     {
         lock (_lEngineGate)
         {
@@ -199,7 +199,7 @@ public sealed partial class LEngine
         return draft with { LEntryDraftPronunciations = spoken, LEntryDraftReflexes = reflexes };
     }
 
-    public LRevision LEngineEntryDelete(long id)
+    internal LRevision LEngineEntryDelete(long id)
     {
         LRevision recorded;
         lock (_lEngineGate)
@@ -228,7 +228,7 @@ public sealed partial class LEngine
         return recorded;
     }
 
-    public LTombstone? LEngineTombstoneRead(long entryId)
+    internal LTombstone? LEngineTombstoneRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -236,7 +236,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LRevision? LEngineRevisionRead()
+    internal LRevision? LEngineRevisionRead()
     {
         lock (_lEngineGate)
         {
@@ -245,7 +245,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)
+    internal IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)
     {
         lock (_lEngineGate)
         {

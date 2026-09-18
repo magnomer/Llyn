@@ -7,7 +7,7 @@ A chip naming a word the user has not stored is such a target.
 The row outlives neither end: committing settles it and cancelling drops it.
 The draft calls that open and end that work live in `LEngineDraftHold.cs`.
 
-## `public LCourt LEngineCourtSave(long ownerId, long targetId, string headword, string language)`
+## `internal LCourt LEngineCourtSave(long ownerId, long targetId, string headword, string language)`
 
 Writes one court row: a link from a held draft to a target that is not an entry yet.
 The headword and language travel with it, because the chip is shown long before the target is real.

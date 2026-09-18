@@ -39,7 +39,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LReference LEngineReferenceCommit(long id)
+    internal LReference LEngineReferenceCommit(long id)
     {
         LReference settled;
         lock (_lEngineGate)

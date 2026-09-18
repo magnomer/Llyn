@@ -97,7 +97,7 @@ public sealed partial class LEngine
         return false;
     }
 
-    public async Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
+    internal async Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
         string character, string language, CancellationToken cancellation)
     {
         (IReadOnlyList<LScriptImage> found, _) =

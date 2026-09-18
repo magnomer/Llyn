@@ -41,10 +41,13 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogAuthor> found = LEngineAuthorFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogAuthor> rows = new(found.Count);
-        foreach (LCatalogAuthor row in found)
+        string[] names = LEngineTwinRead(found, row => row.LCatalogAuthorName, row => row.LCatalogAuthorStored.LAuthorId);
+        for (int index = 0; index < found.Count; index++)
         {
+            LCatalogAuthor row = found[index];
             rows.Add(row with
             {
+                LCatalogAuthorName = names[index],
                 LCatalogAuthorChosen = row.LCatalogAuthorStored.LAuthorId == vista.LVistaChosen,
             });
         }
@@ -59,10 +62,13 @@ public sealed partial class LEngine
         IReadOnlyList<LCatalogReference> found = LEngineOeuvreFind(
             roll.LVistaChosen, oeuvre.LVistaQuery, roll.LVistaFilter, oeuvre.LVistaOrder);
         List<LCatalogReference> rows = new(found.Count);
-        foreach (LCatalogReference row in found)
+        string[] names = LEngineTwinRead(found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
+        for (int index = 0; index < found.Count; index++)
         {
+            LCatalogReference row = found[index];
             rows.Add(row with
             {
+                LCatalogReferenceName = names[index],
                 LCatalogReferenceChosen = row.LCatalogReferenceStored.LReferenceId == oeuvre.LVistaChosen,
             });
         }

@@ -6,7 +6,8 @@ namespace Llyn.Core;
 
 public sealed record LCatalogRegister(
     LRegister LCatalogRegisterStored,
-    int LCatalogRegisterUsage)
+    int LCatalogRegisterUsage,
+    bool LCatalogRegisterChosen = false)
 {
     public static LCatalogRegister LCatalogRegisterCreate(LRegister register, int usage)
     {

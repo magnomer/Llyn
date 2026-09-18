@@ -16,7 +16,7 @@ public sealed partial class LEngine
         return LEngineLanguageLoad(language).LLanguageSchemes.Select(static scheme => scheme.LSchemeName).ToList();
     }
 
-    public Task LEngineTranscriptionFind(
+    internal Task LEngineTranscriptionFind(
         long session,
         string word,
         string language,
@@ -78,7 +78,7 @@ public sealed partial class LEngine
         return sources;
     }
 
-    public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)
+    internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -86,7 +86,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LTranscription> LEngineTranscriptionSet(
+    internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(
         long entryId, IReadOnlyList<LTranscription> transcriptions)
     {
         lock (_lEngineGate)

@@ -11,7 +11,7 @@ No writer is reachable from the interface layer.
 The shell hands in the platform's printing surface at startup.
 Without it every format still works except PDF.
 
-## `public async Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
+## `internal async Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
 
 The formats are written from the entry's page likeness, so they show exactly what the panel shows.
 PDF is the rendered page printed, which is why it needs no layout of its own.
@@ -21,13 +21,13 @@ Markup does not pass through the portrait.
 It hands the one entry id to `LEngineMarkupExport`, which reads stored rows and writes the file.
 The label is not needed there, because markup carries states and never a display word for them.
 
-## `public async Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)`
+## `internal async Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)`
 
 Prints one entry on the printer the ticket names.
 The page is the same rendered sheet the PDF export prints, so paper and file agree.
 The shell only chose the printer: what is on the page was never read from the screen.
 
-## `public async Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
+## `internal async Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
 
 Prints one example, source or situation, whichever `owner` names.
 The page likeness is assembled from stored rows exactly as the entry's is, and the same sheet prints both.
@@ -36,3 +36,9 @@ The page likeness is assembled from stored rows exactly as the entry's is, and t
 
 The press the shell handed in, or an error saying none did.
 Both printing and the PDF export refuse the same way rather than writing nothing.
+
+## Vista overloads
+
+Print and export receive the vista so the shell need not extract its selected identity.
+Entry labels select entry portraits, while catalog legends use the subject recorded on the vista.
+An empty selection produces no print job or output file.

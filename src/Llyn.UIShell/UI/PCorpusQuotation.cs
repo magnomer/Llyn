@@ -16,17 +16,10 @@ public partial class PCorpus
 
     private void PQuotationFind()
     {
-        IReadOnlyList<LEntry> read;
+        IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(
-                new LExample(
-                    _pCorpusVista?.LVistaChosen ?? 0,
-                    string.Empty,
-                    LStateValue.LStateValueUnspecified,
-                    LStateAnchor.LStateAnchorUnspecified),
-                PDredge.Text ?? string.Empty,
-                _pCorpusVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+            read = _lEngine.LEngineEntryFind(_pCorpusVista, _pQuotationVista);
         }
         catch (Exception exception)
         {
@@ -34,38 +27,28 @@ public partial class PCorpus
             return;
         }
 
-        _pQuotationList.Clear();
-        foreach (LEntry entry in read)
+        List<PQuotationItem> fresh = [];
+        foreach (LVistaRow entry in read)
         {
-            _pQuotationList.Add(new PQuotationItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            fresh.Add(new PQuotationItem(
+                entry.LVistaRowId,
+                entry.LVistaRowHeadword,
+                entry.LVistaRowLanguage,
+                entry.LVistaRowEpithet ?? string.Empty,
+                entry.LVistaRowChosen)
+            {
+                PQuotationItemName = entry.LVistaRowName,
+            });
         }
 
-        LTwin.LTwinNameApply(
-            _pQuotationList,
-            row => row.PQuotationItemHeadword,
-            (row, name) => row.PQuotationItemName = name,
-            row => row.PQuotationItemId);
+        PSplice.PSpliceApply(
+            _pQuotationList, fresh, PQuotationItem.PQuotationItemMatch, PQuotationItem.PQuotationItemSync);
 
         PQuotationEmpty.SetResourceReference(
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PDredge.Text) ? "Example.Vacant" : "Example.Unmatched");
         PQuotationEmpty.Visibility = _pQuotationList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PQuotationChosenApply();
-    }
-
-    private void PQuotationChosenApply()
-    {
-        long? chosen = _pQuotationVista?.LVistaChosen;
-        foreach (PQuotationItem item in _pQuotationList)
-        {
-            item.PQuotationItemChosen = chosen is not null
-                && item.PQuotationItemId == chosen;
-        }
     }
 
     private void PQuotationHandle(object sender, RoutedEventArgs e)
@@ -88,7 +71,8 @@ public partial class PCorpus
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pQuotationVista?.LVistaSelect(id);
+            draft = _pQuotationVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -110,7 +94,7 @@ public partial class PCorpus
         PExcerpt.Visibility = Visibility.Collapsed;
 
         _pQuotationVista?.LVistaSelect(id);
-        PQuotationChosenApply();
+        PQuotationFind();
         PDisplay.PDisplayShow(draft);
         PCorpusMode.IsEnabled = true;
         PCorpusBin.IsEnabled = false;
@@ -132,7 +116,7 @@ public partial class PCorpus
         PExcerpt.Visibility = Visibility.Collapsed;
 
         _pQuotationVista?.LVistaSelect(null);
-        PQuotationChosenApply();
+        PQuotationFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PCorpusMode.IsEnabled = true;
@@ -208,7 +192,7 @@ public partial class PCorpus
 
     private void PQuotationScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pQuotationVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -233,15 +217,10 @@ public partial class PCorpus
 
     private void PCorpusEntryUpdate()
     {
-        if (_pQuotationVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pQuotationVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -273,7 +252,7 @@ public partial class PCorpus
         }
 
         _pQuotationVista?.LVistaSelect(null);
-        PQuotationChosenApply();
+        PQuotationFind();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;

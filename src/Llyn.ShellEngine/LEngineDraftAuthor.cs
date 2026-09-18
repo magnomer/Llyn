@@ -35,7 +35,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LAuthor LEngineAuthorCommit(long id)
+    internal LAuthor LEngineAuthorCommit(long id)
     {
         LAuthor settled;
         lock (_lEngineGate)

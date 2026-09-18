@@ -10,7 +10,7 @@ It is not a fact about the engine itself.
 The delete is also the shape every spanning operation here follows.
 That shape is several stores, one session, one decision.
 
-## `public LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
+## `internal LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
 
 Creates `entry` with `forms` and `speeches` as its ordered child rows.
 Returns the stored entry with its assigned id and timestamps.
@@ -109,7 +109,7 @@ A row that already carries one is left alone, since the user may have written it
 Every reflex row then has its anatomy cut under the entry's own pack rules, whatever it carried.
 It runs on the save and update seams, so the store always holds what the reading view will print.
 
-## `public LRevision LEngineEntryDelete(long id)`
+## `internal LRevision LEngineEntryDelete(long id)`
 
 Deletes the entry identified by `id` with everything it owns.
 It then writes the history the deletion leaves behind.
@@ -128,17 +128,17 @@ Either all land or none of them do.
 Without it a failure part-way would leave an entry deleted with no tombstone naming it.
 That is history that no longer describes the file.
 
-## `public LTombstone? LEngineTombstoneRead(long entryId)`
+## `internal LTombstone? LEngineTombstoneRead(long entryId)`
 
 Reads the tombstone left by deleting the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
 
-## `public LRevision? LEngineRevisionRead()`
+## `internal LRevision? LEngineRevisionRead()`
 
 Reads the revision the workspace row points at, or `null` when the workspace has none yet.
 The pointer is what every save and delete moves.
 The current revision is read from where it is recorded rather than guessed from the newest row.
 
-## `public IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)`
+## `internal IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)`
 
 Reads the changes recorded under `revisionId`, in the order recorded.
 

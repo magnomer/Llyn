@@ -28,13 +28,13 @@ public partial class PYunjing
         }
 
         string query = (PBeacon.Text ?? string.Empty).Trim();
-        _pXiaoyunList.Clear();
+        List<PXiaoyunItem> fresh = [];
         if (_pYunjingLanguage is string language && wanted.Count > 0)
         {
             IReadOnlyList<LVistaRow> rows;
             try
             {
-                rows = _lEngine.LEngineXiaoyunFind(language, wanted, query);
+                rows = _lEngine.LEngineXiaoyunFind(language, wanted, query, _pXiaoyunVista);
             }
             catch (Exception exception)
             {
@@ -44,9 +44,12 @@ public partial class PYunjing
 
             foreach (LVistaRow row in rows)
             {
-                _pXiaoyunList.Add(new PXiaoyunItem(row));
+                fresh.Add(new PXiaoyunItem(row, row.LVistaRowChosen));
             }
         }
+
+        PSplice.PSpliceApply(
+            _pXiaoyunList, fresh, PXiaoyunItem.PXiaoyunItemMatch, PXiaoyunItem.PXiaoyunItemSync);
 
         PXiaoyunEmpty.SetResourceReference(
             TextBlock.TextProperty,
@@ -54,16 +57,6 @@ public partial class PYunjing
             : query.Length == 0 ? "Yunjing.XiaoyunVacant"
             : "Yunjing.XiaoyunUnmatched");
         PXiaoyunEmpty.Visibility = _pXiaoyunList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        PXiaoyunChosenApply();
-    }
-
-    private void PXiaoyunChosenApply()
-    {
-        long? id = _pXiaoyunVista?.LVistaChosen;
-        foreach (PXiaoyunItem item in _pXiaoyunList)
-        {
-            item.PXiaoyunItemChosen = id is not null && item.PXiaoyunItemId == id;
-        }
     }
 
     private void PXiaoyunHandle(object sender, RoutedEventArgs e)
@@ -86,7 +79,8 @@ public partial class PYunjing
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            _pXiaoyunVista?.LVistaSelect(id);
+            draft = _pXiaoyunVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception exception)
         {
@@ -102,7 +96,7 @@ public partial class PYunjing
         }
 
         _pXiaoyunVista?.LVistaSelect(id);
-        PXiaoyunChosenApply();
+        PXiaoyunFind();
         PYunjingBin.IsEnabled = true;
         PYunjingEntryShow(draft);
 
@@ -117,7 +111,7 @@ public partial class PYunjing
         if (bulletin.LBulletinId > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pXiaoyunVista?.LVistaSelect(bulletin.LBulletinId);
-            PXiaoyunChosenApply();
+            PXiaoyunFind();
             PYunjingBin.IsEnabled = true;
         }
 
@@ -126,15 +120,10 @@ public partial class PYunjing
 
     private void PYunjingEntryUpdate()
     {
-        if (_pXiaoyunVista?.LVistaChosen is not long shown)
-        {
-            return;
-        }
-
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            draft = _pXiaoyunVista?.LVistaLoad()?.LDraftContent;
         }
         catch (Exception)
         {
@@ -161,7 +150,7 @@ public partial class PYunjing
     {
         PDiweiHide();
         _pXiaoyunVista?.LVistaSelect(null);
-        PXiaoyunChosenApply();
+        PXiaoyunFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PYunjingScribeShow(false);
@@ -188,11 +177,6 @@ public partial class PYunjing
 
     private void PYunjingBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pXiaoyunVista?.LVistaChosen is not long id)
-        {
-            return;
-        }
-
         if (!_pYunjingHost.PWindowDeleteConfirm())
         {
             return;
@@ -200,7 +184,7 @@ public partial class PYunjing
 
         try
         {
-            _lEngine.LEngineEntryDelete(id);
+            _pXiaoyunVista?.LVistaDelete();
         }
         catch (Exception exception)
         {
@@ -251,7 +235,7 @@ public partial class PYunjing
 
     private void PYunjingScribeShow(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        _pXiaoyunVista?.LVistaEditingSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
