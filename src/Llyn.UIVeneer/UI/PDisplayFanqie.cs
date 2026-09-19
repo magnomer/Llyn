@@ -20,16 +20,13 @@ public partial class PDisplay
     private void PDisplayFanqieShow(long id, string language)
     {
         IReadOnlyList<LFanqieGroup> groups;
-        bool pending;
         try
         {
             groups = _lEngine.LEngineFanqieDivide(id);
-            pending = _lEngine.LEngineFanqieCheck(id);
         }
         catch (Exception)
         {
             groups = [];
-            pending = false;
         }
 
         List<LFanqieRow> rows = [];
@@ -42,7 +39,7 @@ public partial class PDisplay
         PReflexAnchorApply(_pDisplayReflex, rows, PDisplayHeadword.Text);
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(groups);
-        PDisplayFanqie.PFanqiePending = pending;
+        PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
     }
 
@@ -50,7 +47,7 @@ public partial class PDisplay
     {
         _pDisplayFanqie = [];
         PDisplayFanqie.PFanqieItems = null;
-        PDisplayFanqie.PFanqiePending = false;
+        PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(null);
         PDisplayFanqie.PFanqieDiweiNotice = null;
     }
 }

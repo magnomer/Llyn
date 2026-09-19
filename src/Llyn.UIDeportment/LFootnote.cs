@@ -16,17 +16,35 @@ public sealed class LFootnote
 
     private int _lFootnoteCount;
 
-    public LFootnote(LEngine engine, Func<bool> changeSeam, Func<bool> shownSeam, Func<bool> leaveSeam)
+    public LFootnote(LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(editor);
 
         _lEngine = engine;
-        LFootnotePanel = new LPanel("List.LoadFailed", changeSeam, shownSeam, leaveSeam, static () => false);
+        LFootnoteEditor = editor;
+        LFootnotePanel = new LPanel(
+            "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, static () => false);
+        LFootnotePanel.LPanelCleared += LFootnoteEditorClear;
+        LFootnotePanel.LPanelEdited += LFootnoteEditorOpen;
+        LFootnoteCreated += editor.LEditorReferenceAdd;
     }
 
     public event Action<long>? LFootnoteCreated;
 
+    public LEditor LFootnoteEditor { get; }
+
     public LPanel LFootnotePanel { get; }
+
+    private void LFootnoteEditorClear()
+    {
+        LFootnoteEditor.LEditorOpen(null);
+    }
+
+    private void LFootnoteEditorOpen(long id)
+    {
+        LFootnoteEditor.LEditorOpen(id);
+    }
 
     public bool LFootnoteEmpty => _lFootnoteCount == 0;
 

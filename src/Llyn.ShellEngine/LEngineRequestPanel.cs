@@ -61,8 +61,13 @@ public sealed partial class LEngine
             ?? new LAuthor(LEngineIdentityCreate(), name);
         return LEngineAuthorApply(
             draft,
-            authors => LEngineListInsert(
-                authors, author, author.LAuthorId, request.LRequestPosition, static row => row.LAuthorId));
+            authors => LEngineListChange(
+                authors,
+                author,
+                author.LAuthorId,
+                request.LRequestPosition,
+                request.LRequestFormerId,
+                static row => row.LAuthorId));
     }
 
     private static LAuthor? LEngineAuthorMatch(IReadOnlyList<LAuthor> authors, string name)
@@ -91,8 +96,13 @@ public sealed partial class LEngine
 
         return LEngineAuthorApply(
             draft,
-            authors => LEngineListInsert(
-                authors, stored, stored.LAuthorId, request.LRequestPosition, static row => row.LAuthorId));
+            authors => LEngineListChange(
+                authors,
+                stored,
+                stored.LAuthorId,
+                request.LRequestPosition,
+                request.LRequestFormerId,
+                static row => row.LAuthorId));
     }
 
     private static LDraft LEngineAuthorRemove(LDraft draft, long authorId)

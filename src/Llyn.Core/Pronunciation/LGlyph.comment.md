@@ -24,6 +24,18 @@ The distinct Han characters of a text, in first-seen order, each as its own stri
 Runes are walked rather than chars, because ideographs beyond the basic plane take two chars.
 Kana, Latin letters, punctuation and repeats are dropped.
 
+## `public static bool LGlyphRowCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
+
+Whether a transcription row already stands under the glyph section's own scheme.
+
+## `public static bool LGlyphOtherCheck(LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)`
+
+Whether a row stands under any scheme but the glyph section's, or under any scheme when there is no section.
+
+## `public bool LGlyphSchemeCheck(string scheme)`
+
+Whether `scheme` is this section's own name, so a transcription under it is the glyph row.
+
 ## `public IReadOnlyList<LSourceSpec>? LGlyphSourceRead(string scheme)`
 
 The section's sources when `scheme` is its name, else null so the pack's scheme list alone decides.

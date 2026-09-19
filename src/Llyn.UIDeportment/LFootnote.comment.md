@@ -13,6 +13,11 @@ Its delete seam always refuses, because an entry is never deleted from this list
 A fresh entry was started under the chosen Source, named by that Source's id.
 The veneer hands the id to the editor as a citation, so the new entry starts already citing it.
 
+## `public LEditor LFootnoteEditor { get; }`
+
+The entry editor's deportment: its desk answers the leave and it opens the edited row.
+A source created here is cited into it.
+
 ## `public string LFootnoteEmptyKey`
 
 The key of the empty text: unmatched while the list is being searched, else vacant.

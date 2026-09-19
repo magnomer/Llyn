@@ -85,7 +85,7 @@ public sealed class TYunjingLanguage
 
     internal static LYunjing TYunjingPrepare(LEngine engine)
     {
-        LYunjing panel = TInterfaceDeportment.TYunjingCreate(engine, () => false, () => true);
+        LYunjing panel = TInterfaceDeportment.TYunjingCreate(engine, () => true);
         panel.TYunjingVistaRestore(
             engine.TEngineVistaStart("yunjing", LCatalogOrder.LCatalogOrderName),
             engine.TEngineVistaStart("yunmu", LCatalogOrder.LCatalogOrderName),

@@ -33,17 +33,17 @@ public partial class PYunjing : UserControl
         _lEngine = engine;
         _lYunjing = new LYunjing(
             engine,
-            PEditor.PEditorChangeCheck,
+            new LEditor(engine, host.PWindowUnreadableConfirm),
             PYunjingShownCheck,
             PYunjingLeaveConfirm,
             host.PWindowDeleteConfirm);
+        _lYunjing.LYunjingEditor.LEditorStateChanged += PYunjingStoreUpdate;
         _lYunjing.LYunjingChanged += PYunjingColumnUpdate;
         _lYunjing.LYunjingGlyphChosen += host.PWindowGlyphShow;
         _lYunjing.LYunjingPanel.LPanelChanged += PYunjingModeUpdate;
         _lYunjing.LYunjingPanel.LPanelRowsChanged += PXiaoyunUpdate;
         _lYunjing.LYunjingPanel.LPanelCleared += PYunjingClearUpdate;
         _lYunjing.LYunjingPanel.LPanelDraftChanged += PYunjingEntryUpdate;
-        _lYunjing.LYunjingPanel.LPanelEdited += PEditor.PEditorEntryShow;
         _lYunjing.LYunjingPanel.LPanelFailed += host.PWindowFailureShow;
 
         PShengmu.ItemsSource = _pShengmuList;
@@ -55,8 +55,12 @@ public partial class PYunjing : UserControl
         PYunjingDiwei.PDiweiEntryNotice = _lYunjing.LYunjingGlyphSelect;
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
 
-        PEditor.PEditorAttach(host, engine, "Yunjing", null);
-        PEditor.PEditorChangeNotice = changed => PYunjingStore.IsEnabled = changed;
+        PEditor.PEditorAttach(host, engine, _lYunjing.LYunjingEditor);
+    }
+
+    private void PYunjingStoreUpdate()
+    {
+        PYunjingStore.IsEnabled = _lYunjing.LYunjingEditor.LEditorStorable;
     }
 
     internal bool PYunjingCheck()
@@ -79,6 +83,7 @@ public partial class PYunjing : UserControl
         xiaoyun.LVistaChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
         PDisplay.PDisplayVistaRestore(xiaoyun);
+        PEditor.PEditorVistaRestore(xiaoyun);
         PChoice.PChoiceOrderApply(PLadderDropdown, shengmu.LVistaOrder);
         PChoice.PChoiceOrderApply(PStairDropdown, yunmu.LVistaOrder);
         _lYunjing.LYunjingPlumbSet(PPlumb.Text);
@@ -181,7 +186,6 @@ public partial class PYunjing : UserControl
     private void PYunjingClearUpdate()
     {
         PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
         PDiweiUpdate();
     }
 

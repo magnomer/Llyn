@@ -32,6 +32,13 @@ public sealed record LPronunciationDraft(
 
     public bool LPronunciationDraftNotated => LPronunciationDraftIpa.Length > 0;
 
+    public string LPronunciationDraftRead(bool respelled)
+    {
+        return respelled && LPronunciationDraftRespelling.Length > 0
+            ? LPronunciationDraftRespelling
+            : LPronunciationDraftIpa;
+    }
+
     public bool LPronunciationDraftMatch(string variety)
     {
         return string.Equals(LPronunciationDraftVariety, variety, StringComparison.Ordinal);

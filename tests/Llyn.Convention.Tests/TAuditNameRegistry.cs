@@ -144,6 +144,7 @@ internal static class TAuditNameRegistry
         "Marker",
         "Markup",
         "Meaning",
+        "Media",
         "Membership",
         "Mention",
         "Mesh",

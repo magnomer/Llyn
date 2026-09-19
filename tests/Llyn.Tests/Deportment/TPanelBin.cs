@@ -44,7 +44,7 @@ public sealed class TPanelBin
 
     private static LPhonology TPanelPrepare(LEngine engine, long id, Func<bool> deleteSeam)
     {
-        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine, () => false, () => true, deleteSeam);
+        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine, () => true, deleteSeam);
         panel.TPhonologyVistaRestore(engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword));
         panel.LPhonologyPanel.TPanelRowSelect(id);
         return panel;

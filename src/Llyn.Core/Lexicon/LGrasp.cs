@@ -11,6 +11,11 @@ public static class LGrasp
         return grasp is >= 0 and <= LGraspStep;
     }
 
+    public static string LGraspKeyRead(int grasp)
+    {
+        return "Grasp.Level" + grasp.ToString(CultureInfo.InvariantCulture);
+    }
+
     public static string LGraspFormat(int grasp)
     {
         return (grasp / 2.0).ToString("0.#", CultureInfo.InvariantCulture);

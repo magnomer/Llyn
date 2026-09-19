@@ -88,6 +88,7 @@
     "Input.SaveFailed": "항목을 저장할 수 없습니다.",
     "Input.UpdateFailed": "항목을 수정할 수 없습니다.",
     "Input.HoldFailed": "저장하지 않은 항목을 보관할 수 없습니다.",
+    "Input.LoadFailed": "항목을 읽지 못했습니다.",
     "Input.TranslationFailed": "번역을 연결할 수 없습니다.",
     "Input.Headword": "표제어",
     "Input.Pronunciation": "발음",

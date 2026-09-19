@@ -125,7 +125,7 @@ public partial class PRepertoire
 
         if (situation is long id)
         {
-            PEditor.PEditorSituationAdd(id);
+            _lEditor.LEditorSituationAdd(id);
         }
     }
 

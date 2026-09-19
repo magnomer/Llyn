@@ -150,6 +150,28 @@ public sealed partial class LEngine
         return LEngineListFind(items, id, key) < 0 ? LEngineListAdd(items, item, position) : items;
     }
 
+    private static IReadOnlyList<LEngineItem> LEngineListChange<LEngineItem>(
+        IReadOnlyList<LEngineItem> items,
+        LEngineItem item,
+        long id,
+        int position,
+        long former,
+        Func<LEngineItem, long> key)
+    {
+        if (id == former)
+        {
+            return items;
+        }
+
+        IReadOnlyList<LEngineItem> written = LEngineListInsert(items, item, id, position, key);
+        if (former == 0 || LEngineListFind(written, former, key) < 0)
+        {
+            return written;
+        }
+
+        return LEngineListRemove(written, former, key);
+    }
+
     private static IReadOnlyList<LEngineItem> LEngineListRemove<LEngineItem>(
         IReadOnlyList<LEngineItem> items, long id, Func<LEngineItem, long> key)
     {

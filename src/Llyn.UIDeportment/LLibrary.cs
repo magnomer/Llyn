@@ -15,17 +15,34 @@ public sealed class LLibrary
     private int _lLibraryCount;
 
     public LLibrary(
-        LEngine engine, Func<bool> changeSeam, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(editor);
 
         _lEngine = engine;
-        LLibraryPanel = new LPanel("List.LoadFailed", changeSeam, shownSeam, leaveSeam, deleteSeam);
+        LLibraryEditor = editor;
+        LLibraryPanel = new LPanel(
+            "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LLibraryPanel.LPanelCleared += LLibraryEditorClear;
+        LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
     }
 
     public event Action<string, Exception>? LLibraryFailed;
 
+    public LEditor LLibraryEditor { get; }
+
     public LPanel LLibraryPanel { get; }
+
+    private void LLibraryEditorClear()
+    {
+        LLibraryEditor.LEditorOpen(null);
+    }
+
+    private void LLibraryEditorOpen(long id)
+    {
+        LLibraryEditor.LEditorOpen(id);
+    }
 
     public bool LLibraryIndexEmpty => _lLibraryCount == 0;
 

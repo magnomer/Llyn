@@ -32,7 +32,7 @@
                 <Border Style="{StaticResource Theme.Video.Preview}">
                     <local:PScreen
                         PScreenFrom="{Binding PVideoFrom}"
-                        PScreenLocation="{Binding PVideoLocation, Converter={StaticResource Theme.State.Show}}"
+                        PScreenAddress="{Binding PVideoPreview}"
                         PScreenPlaying="{Binding PVideoPlaying, Mode=TwoWay}"
                         PScreenUntil="{Binding PVideoUntil}"
                         PScreenVolume="{Binding PVolumeCatalogLevel, Source={x:Static local:PVolumeCatalog.PVolumeCatalogCurrent}}" />

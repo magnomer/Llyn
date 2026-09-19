@@ -17,8 +17,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <local:PLinkConverter x:Key="Display.Card.Translation" />
-    <local:PImageConverter x:Key="Display.Card.Preview" />
-    <local:PVideoConverter x:Key="Display.Card.Reel" />
 
     <Style x:Key="Display.Card.Title" TargetType="TextBlock">
         <Setter Property="Margin" Value="0,0,34,0" />
@@ -105,11 +103,11 @@
             <ItemsControl ItemTemplate="{StaticResource Display.Card.TagChip}" ItemsSource="{Binding LCardDraftTag}" Style="{StaticResource Display.Card.Tag}" />
             <ItemsControl
                 ItemTemplate="{StaticResource Display.Card.PictureLine}"
-                ItemsSource="{Binding LCardDraftImage, Converter={StaticResource Display.Card.Preview}}"
+                ItemsSource="{Binding LCardDraftImage}"
                 Style="{StaticResource Display.Card.Picture}" />
             <ItemsControl
                 ItemTemplate="{StaticResource Display.Card.VideoLine}"
-                ItemsSource="{Binding LCardDraftVideo, Converter={StaticResource Display.Card.Reel}}"
+                ItemsSource="{Binding LCardDraftVideo}"
                 Style="{StaticResource Display.Card.Video}" />
         </StackPanel>
     </DataTemplate>

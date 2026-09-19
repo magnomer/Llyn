@@ -42,14 +42,14 @@ public partial class PRepertoire
             });
     }
 
-    private static PImage PScenarioImageCreate(LImageDraft draft)
+    private PImage PScenarioImageCreate(LImageDraft draft)
     {
-        return new PImage(draft);
+        return new PImage(_lEngine, draft);
     }
 
-    private static PVideo PScenarioVideoCreate(LVideoDraft draft)
+    private PVideo PScenarioVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(draft);
+        return new PVideo(_lEngine, draft);
     }
 
     private void PScenarioImageChange(object sender, TextChangedEventArgs e)
@@ -70,7 +70,7 @@ public partial class PRepertoire
 
         LStateWritten written = new(box.Text);
         PScenarioRequestDefer(
-            PEditor.PEditorFieldRead(box) == nameof(PVideo.PVideoLocation)
+            PField.PFieldPathRead(box) == nameof(PVideo.PVideoLocation)
                 ? new LRequestVideoLocation(PScenarioDraft, row.PVideoId, written)
                 : new LRequestVideoSpan(PScenarioDraft, row.PVideoId, written));
     }

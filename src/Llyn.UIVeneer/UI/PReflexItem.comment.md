@@ -29,6 +29,10 @@ It is read from the switch and the row's own language.
 So a Korean row stays plain while a Mandarin row is respelled.
 A change of that state rebuilds the row.
 
+## `internal bool PReflexItemMatch(bool respelled, bool phonemic, bool folded)`
+
+Whether the row was built under these three pack facts, so a changed pack rebuilds it rather than patching it.
+
 ## `public bool PReflexItemPhonemic { get; }`
 
 Whether the row's language is phonemic, fixed when the row is built, so its reading is drawn between slashes.

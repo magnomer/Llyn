@@ -19,39 +19,43 @@ public sealed class LShelf
 
     private int _lShelfCount;
 
-    private bool _lShelfImprintStorable;
-
-    private bool _lShelfEditorStorable;
-
     public LShelf(
         LEngine engine,
-        Func<bool> sourceChangeSeam,
-        Func<bool> entryChangeSeam,
+        LEditor editor,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
-        Func<int, bool> removalSeam)
+        Func<int, bool> removalSeam,
+        Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
 
         _lEngine = engine;
         _lShelfLeaveSeam = leaveSeam;
         _lShelfRemovalSeam = removalSeam;
-        LShelfPanel = new LPanel("Source.LoadFailed", sourceChangeSeam, shownSeam, leaveSeam, LShelfDeleteConfirm);
-        LShelfFootnote = new LFootnote(engine, entryChangeSeam, shownSeam, leaveSeam);
+        LShelfEditor = editor;
+        LShelfImprint = new LImprint(engine, unreadableSeam);
+        LShelfPanel = new LPanel("Source.LoadFailed", LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
+        LShelfFootnote = new LFootnote(engine, editor, shownSeam, leaveSeam);
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
+        LShelfPanel.LPanelCleared += LShelfImprint.LImprintCancel;
+        LShelfPanel.LPanelEdited += LShelfImprintOpen;
+        LShelfImprint.LImprintDesk.LDeskFinished += LShelfStoredShow;
+        LShelfImprint.LImprintDesk.LDeskStateChanged += LShelfStateUpdate;
+        LShelfEditor.LEditorStateChanged += LShelfStateUpdate;
     }
 
     public event Action? LShelfChanged;
 
-    public event Action? LShelfOpened;
-
-    public event Action? LShelfClosed;
+    public LEditor LShelfEditor { get; }
 
     public LPanel LShelfPanel { get; }
 
     public LFootnote LShelfFootnote { get; }
+
+    public LImprint LShelfImprint { get; }
 
     public bool LShelfEntrySide => LShelfFootnote.LFootnotePanel.LPanelModeEnabled;
 
@@ -74,7 +78,8 @@ public sealed class LShelf
 
     public bool LShelfBinEnabled => !LShelfEntrySide && LShelfPanel.LPanelBinEnabled;
 
-    public bool LShelfStoreEnabled => LShelfEntrySide ? _lShelfEditorStorable : _lShelfImprintStorable;
+    public bool LShelfStoreEnabled =>
+        LShelfEntrySide ? LShelfEditor.LEditorStorable : LShelfImprint.LImprintDesk.LDeskChangeCheck();
 
     public bool LShelfPressAllowed => LShelfFootnote.LFootnotePanel.LPanelPressAllowed || LShelfSourcePrintable;
 
@@ -98,6 +103,7 @@ public sealed class LShelf
         _lShelfVista = vista;
         LShelfPanel.LPanelVistaRestore(vista);
         LShelfFootnote.LFootnoteVistaRestore(vista, footnote);
+        LShelfImprint.LImprintVistaRestore(vista);
     }
 
     public IReadOnlyList<LCatalogReference> LShelfRowsRead()
@@ -196,6 +202,21 @@ public sealed class LShelf
         return LShelfPanel.LPanelChangeCheck() || LShelfFootnote.LFootnotePanel.LPanelChangeCheck();
     }
 
+    private bool LImprintChangeCheck()
+    {
+        return LShelfImprint.LImprintDesk.LDeskChangeCheck();
+    }
+
+    private void LShelfStateUpdate()
+    {
+        LShelfChanged?.Invoke();
+    }
+
+    private void LShelfImprintOpen(long id)
+    {
+        LShelfImprint.LImprintOpen(id);
+    }
+
     public bool LShelfLeaveConfirm()
     {
         if (!LShelfChangeCheck())
@@ -252,7 +273,7 @@ public sealed class LShelf
     private void LShelfSourceHide()
     {
         LShelfPanel.LPanelScribeShow(false);
-        LShelfClosed?.Invoke();
+        LShelfImprint.LImprintCancel();
     }
 
     public void LShelfEntrySelect(long? id)
@@ -304,7 +325,7 @@ public sealed class LShelf
 
         LShelfFootnote.LFootnotePanel.LPanelClear();
         LShelfPanel.LPanelFreshOpen();
-        LShelfOpened?.Invoke();
+        LShelfImprint.LImprintOpen(null);
     }
 
     public void LShelfScribeSet(bool editing)
@@ -318,7 +339,7 @@ public sealed class LShelf
         LShelfPanel.LPanelScribeSet(editing);
         if (!LShelfPanel.LPanelEditing)
         {
-            LShelfClosed?.Invoke();
+            LShelfImprint.LImprintCancel();
         }
     }
 
@@ -348,16 +369,49 @@ public sealed class LShelf
         LShelfPanel.LPanelDelete();
     }
 
-    public void LShelfEditorSet(bool storable)
+    public (bool LShelfBackward, bool LShelfForward) LShelfChronicleRead()
     {
-        _lShelfEditorStorable = storable;
-        LShelfChanged?.Invoke();
+        return LShelfEntrySide
+            ? LShelfEditor.LEditorDesk.LDeskChronicleRead()
+            : LShelfImprint.LImprintDesk.LDeskChronicleRead();
     }
 
-    public void LShelfImprintSet(bool storable)
+    public bool LShelfDraftFinish(bool store)
     {
-        _lShelfImprintStorable = storable;
-        LShelfChanged?.Invoke();
+        return LShelfEntrySide ? LShelfEditor.LEditorFinish(store) : LShelfImprint.LImprintDesk.LDeskFinish(store);
+    }
+
+    public void LShelfStoreRun()
+    {
+        if (LShelfEntrySide)
+        {
+            LShelfEditor.LEditorSave();
+            return;
+        }
+
+        LShelfImprint.LImprintSave();
+    }
+
+    public void LShelfUndo()
+    {
+        if (LShelfEntrySide)
+        {
+            LShelfEditor.LEditorDesk.LDeskUndo();
+            return;
+        }
+
+        LShelfImprint.LImprintDesk.LDeskUndo();
+    }
+
+    public void LShelfRedo()
+    {
+        if (LShelfEntrySide)
+        {
+            LShelfEditor.LEditorDesk.LDeskRedo();
+            return;
+        }
+
+        LShelfImprint.LImprintDesk.LDeskRedo();
     }
 
     public Task LShelfPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)

@@ -17,6 +17,40 @@ No Margin binding here: WPF already offsets the editable text by TextBox.Padding
 Binding the host's Margin to Padding too would apply it twice.
 The caret would be pushed right and down while the placeholder, padded once, stayed put.
 
+## `internal static CustomPopupPlacement[] PFieldPopupPlace(Size popup, Size target, Point offset)`
+
+Places a popup under its field, or above it when the screen ends, overlapping the shade the popup frame paints.
+
+## `internal static FrameworkElement? PFieldSurfaceFind(object? source)`
+
+The surface border of a field's template, which a popup lines up with, or the field itself without one.
+Anything but a field answers null, so a handler may pass an event source through unchecked.
+
+## `internal static void PFieldTextShow(TextBox box, string text)`
+
+Writes a fact into a box only when it differs.
+The caret of a box being typed into then stays put.
+The draft echoes each deferred request back, and an unchanged write would jump the caret to the start.
+
+## `internal static void PFieldNoteShow(TextBox box, string note)`
+
+The same guarded write for the note box, compared without the trailing line breaks the box may hold.
+
+## `internal static string PFieldNoteRead(TextBox box)`
+
+The note box's text without its trailing line breaks, which the engine never stores.
+
+## `internal static string PFieldPathRead(TextBox box)`
+
+The bound property name of a templated field, read from its text binding.
+A card learns from it which field changed.
+A combo box's inner editor reads the combo's own text binding.
+
+## `internal static void PFieldFocusDefer(ItemsControl host, object? item)`
+
+Puts the caret at the end of the field inside the row for `item`, once the row's container exists.
+The container is generated after layout, so the focus waits for the loaded pass.
+
 ## `private static readonly Thickness PFieldPlaceholderInset`
 
 The room a placeholder is held off the caret by.

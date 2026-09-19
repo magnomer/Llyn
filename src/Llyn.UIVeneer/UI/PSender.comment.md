@@ -29,3 +29,13 @@ The command parameter as text, or null when it is none.
 ## `internal static bool? PSenderFlagRead(ExecutedRoutedEventArgs e)`
 
 The command parameter as a flag, or null when it is none.
+
+## `internal static PSenderItem? PSenderFocusRead<PSenderItem>()`
+
+The item the focused element's data context holds, for a popup click that acts on the field behind it.
+The click tunnels through before the focus moves, so the field being typed into is still the focused one.
+
+## `internal static string PSenderKeyRead(KeyEventArgs e)`
+
+The name of a key a deportment answers to, or empty for any other key.
+The deportment may not name the framework's key type, so the four it acts on cross as words.

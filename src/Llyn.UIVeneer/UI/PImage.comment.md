@@ -57,14 +57,8 @@ The id is always taken.
 Asks the user for a picture file on this machine and answers its path, or null when they chose none.
 It lives on the row because every editor drawing the row offers the same chooser.
 
-## `internal static void PImageAttach(LEngine engine)`
+## `private readonly LEngine _lEngine;`
 
-Holds the engine every row asks about a location.
-A row is built by a converter with no engine at hand, so the window hands it over once.
-
-## `internal static Uri? PImageAddressRead(string location)`
-
-Turns what was typed into an address to load from, or `null` when it names no reachable place.
+The engine the row asks to turn what was typed into an address, handed in by whoever builds the row.
 The engine settles what may be reached, so a relative path means the same thing here as on import.
 A local file passes only when it exists, which the engine checks, so the row touches no disk.
-The Video row and the Screen read their own location the same way, so this is shared, not written twice.

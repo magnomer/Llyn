@@ -2,46 +2,54 @@
 
 ## `public partial class PEditor : UserControl`
 
-The shared editable entry view as a control: what it is made of, and when it starts and stops.
-Its behaviour is split across the files beside this one.
-Those are the card lists, the drag, the menus, and the form as a value.
-This file only assembles the parts.
-It takes the engine the window opened, and shuts the editor down.
+The shared editable entry view as a control: what it is made of, and how its spine reaches the deportment.
+Its card and sound behaviour is still split across the files beside this one until their own plans.
+This file assembles the parts, wires the editor deportment's notices to control writes, and forwards the rail.
 
 One control serves every panel that edits an entry.
-The input panel mounts it standing on no entry and never puts it on one.
-That is a form that only creates them.
-A browse-style panel mounts it over an entry it loaded.
-That is a form that modifies that one.
-What differs between them is not the editing structure.
-It is only which entry the form was opened on, which the editor already knows from its own draft.
-A store is announced by the engine, so no host is wired to hear about it here.
-A discard falls back on the entry the draft named.
-That is nothing at all for a form that creates one.
+The input panel's editor stands on no entry and never puts it on one.
+A browse-style panel's editor is opened on the entry its panel edits.
+Which is which is a fact of the deportment, read off the vista the tab restored.
 
-## `internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)`
+## `internal void PEditorAttach(PWindow host, LEngine engine, LEditor editor)`
 
-Puts the editor to work on `engine`, the workspace the window opened.
-`origin` names the surface this form sits on, and every draft it starts records it.
-Two panels editing at once are told apart by it, and a recovered draft says where it came from.
-It opens the form on `entry`, the entry the host wants edited.
-That is nothing at all for a form that creates one.
-The entry is shown before the language menu is built.
-So the language it carries is already the chosen one when that menu decides on a fallback.
-The workspace's volume is put on the grip last, once there is a form for it to sit on.
+Puts the editor to work on the deportment its tab built, and subscribes each notice to one control write.
+The language menu, the categories and the volume are loaded once here, since they do not follow the draft.
+
+## `internal void PEditorVistaRestore(LVista vista)`
+
+Hands the tab's entry vista to the deportment and opens a fresh draft over it.
+The command rail shows only for the editor that owns its entries, which is the input tab's.
 
 ## `internal void PEditorClose()`
 
 Stops the editor.
-Searches in flight are called off, playback is released, and the draft bulletins are no longer watched.
+The tenure is let go, searches in flight are called off, and playback is released.
+
+## `private void PEditorStartUpdate(LTenure held)`
+
+A tenure started, so the marshalling observers are attached to it and the card lists start empty.
+The entry sections are read again at once, since a bulletin comes only when they change.
+
+## `private void PEditorDraftUpdate(LDraft held)`
+
+Writes every spine control from the draft the desk announced, then the card and sound parts from it.
+The text boxes are written through the guarded writes, so a box being typed into keeps its caret.
+
+## `private void PEditorLanguageUpdate()`
+
+The writes that follow the language: its name and flag, the fonts, the tone contour, and the silent switch.
+
+## `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
+
+The one routed handler left, for the fields inside cards that come and go with them.
+The spine's own boxes report through their own handlers.
+
+## `private void PEditorStateUpdate()`
+
+The controls that follow the desk's state: whether the editor is live, and the store, reset and chronicle buttons.
 
 ## Inline notes
-
-### `private PWindow _pEditorHost = null!;`
-
-The window this editor sits in.
-An editor does not put up its own dialogs.
-A failure is the program speaking, so it is asked for through the window.
 
 ### `Resources.MergedDictionaries.Add(new PMeaningTemplate(this));`
 
@@ -72,20 +80,9 @@ What is offered is read as what will be taken.
 It carries no line around it, because the shadow already says where it ends.
 A line as well made it a second card.
 
-### `PMarkerLoad();`
+### `AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));`
 
-After the language is settled, because the presets on offer are that language's.
-
-### `AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));`
-
-Every text box in the editor reports through one handler, caught as the event bubbles.
-Cards and their rows come and go, and none of them has to be subscribed to by hand.
-Focus leaving any of them is caught the same way, so unsent typing goes before the focus does.
-
-### `_pEditorObserver = new PObserver(this, PEditorBulletinHandle);`
-
-The editor watches for its own draft's bulletins, which is how every answer reaches the form.
-The observer marshals onto this control's dispatcher, so an answer from any thread renders on the right one.
+Focus leaving any box is caught as the event bubbles, so unsent typing goes before the focus does.
 
 ### `<ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">`
 

@@ -55,7 +55,7 @@ public sealed class TPhonologyRows
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine, () => false, () => true, () => true);
+        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine, () => true, () => true);
         panel.TPhonologyVistaRestore(engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword));
         return panel;
     }

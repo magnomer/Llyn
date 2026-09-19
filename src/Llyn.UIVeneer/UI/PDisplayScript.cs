@@ -20,26 +20,23 @@ public partial class PDisplay
     private void PDisplayScriptShow(long id, string language)
     {
         IReadOnlyList<LScriptGroup> groups;
-        bool pending;
         try
         {
             groups = _lEngine.LEngineScriptDivide(id);
-            pending = _lEngine.LEngineScriptCheck(id);
         }
         catch (Exception)
         {
             groups = [];
-            pending = false;
         }
 
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayScript);
         PDisplayScript.PScriptItems = PScriptItem.PScriptItemScan(groups);
-        PDisplayScript.PScriptPending = pending;
+        PDisplayScript.PScriptPending = _lDisplay.LDisplayScriptCheck(id);
     }
 
     private void PDisplayScriptClear()
     {
         PDisplayScript.PScriptItems = null;
-        PDisplayScript.PScriptPending = false;
+        PDisplayScript.PScriptPending = _lDisplay.LDisplayScriptCheck(null);
     }
 }

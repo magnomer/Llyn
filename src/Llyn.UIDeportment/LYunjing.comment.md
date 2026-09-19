@@ -16,6 +16,10 @@ The columns or the page need re-reading, raised after any request that moves a c
 
 A character on the page was chosen, with the page's language, for the window to show as a glyph.
 
+## `public LEditor LYunjingEditor { get; }`
+
+The entry editor's deportment, whose desk answers whether the panel may leave and opens the row that is edited.
+
 ## `public bool LYunjingAllowed`
 
 Whether the tab may be shown at all: some loaded pack carries rime books.

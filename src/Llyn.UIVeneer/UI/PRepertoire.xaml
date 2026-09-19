@@ -14,8 +14,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PRepertoireScenario.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:PImageConverter x:Key="Display.Card.Preview" />
-            <local:PVideoConverter x:Key="Display.Card.Reel" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -304,12 +302,12 @@
                             <ItemsControl
                                 x:Name="PVignettePicture"
                                 ItemTemplate="{StaticResource Display.Card.PictureLine}"
-                                ItemsSource="{Binding LSituationImage, Converter={StaticResource Display.Card.Preview}}"
+                                ItemsSource="{Binding LSituationImage}"
                                 Style="{StaticResource Theme.Vignette.Picture}" />
                             <ItemsControl
                                 x:Name="PVignetteVideo"
                                 ItemTemplate="{StaticResource Display.Card.VideoLine}"
-                                ItemsSource="{Binding LSituationVideo, Converter={StaticResource Display.Card.Reel}}"
+                                ItemsSource="{Binding LSituationVideo}"
                                 Style="{StaticResource Theme.Vignette.Video}" />
                         </StackPanel>
                     </ScrollViewer>

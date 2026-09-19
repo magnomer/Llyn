@@ -10,8 +10,6 @@ namespace Llyn.UIVeneer;
 
 public partial class PDisplay
 {
-    private static bool _pReflexFoldOpened;
-
     private readonly ObservableCollection<PReflexItem> _pDisplayReflex = [];
 
     private IReadOnlyList<LFanqieRow> _pDisplayFanqie = [];
@@ -40,7 +38,7 @@ public partial class PDisplay
         }
 
         PReflexLeadApply(_pDisplayReflex);
-        PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold);
+        PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
         PReflexAnchorApply(_pDisplayReflex, _pDisplayFanqie, draft.LEntryDraftHeadword);
     }
 
@@ -80,7 +78,8 @@ public partial class PDisplay
 
     private void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        PReflexFoldToggle(_pDisplayReflex, PDisplayReflexFold);
+        _lDisplay.LDisplayFoldSet(PLook.PLookCheckedRead(PDisplayReflexFold.IsChecked));
+        PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
     }
 
     internal static PReflexItem PReflexItemCreate(
@@ -138,22 +137,16 @@ public partial class PDisplay
         }
     }
 
-    internal static void PReflexFoldToggle(IReadOnlyList<PReflexItem> rows, ToggleButton fold)
-    {
-        _pReflexFoldOpened = fold.IsChecked == true;
-        PReflexFoldApply(rows, fold);
-    }
-
-    internal static void PReflexFoldApply(IReadOnlyList<PReflexItem> rows, ToggleButton fold)
+    internal static void PReflexFoldApply(IReadOnlyList<PReflexItem> rows, ToggleButton fold, bool opened)
     {
         bool any = false;
         foreach (PReflexItem row in rows)
         {
             any |= row.PReflexItemFolded;
-            row.PReflexItemHidden = row.PReflexItemFolded && !_pReflexFoldOpened;
+            row.PReflexItemHidden = PLook.PLookFirstRead(opened, false, row.PReflexItemFolded);
         }
 
-        fold.IsChecked = _pReflexFoldOpened;
-        fold.Visibility = any ? Visibility.Visible : Visibility.Collapsed;
+        fold.IsChecked = PLook.PLookCheckedRead(opened);
+        fold.Visibility = PLook.PLookVisibleRead(any);
     }
 }

@@ -144,7 +144,7 @@ public partial class PTenor
 
         if (register is long id)
         {
-            PEditor.PEditorRegisterAdd(id);
+            _lEditor.LEditorRegisterAdd(id);
         }
     }
 }

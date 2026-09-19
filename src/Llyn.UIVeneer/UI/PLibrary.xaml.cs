@@ -30,24 +30,28 @@ public partial class PLibrary : UserControl
         _lEngine = engine;
         _lLibrary = new LLibrary(
             engine,
-            PEditor.PEditorChangeCheck,
+            new LEditor(engine, host.PWindowUnreadableConfirm),
             PLibraryShownCheck,
             PLibraryDiscardConfirm,
             host.PWindowDeleteConfirm);
         _lLibrary.LLibraryFailed += host.PWindowFailureShow;
+        _lLibrary.LLibraryEditor.LEditorStateChanged += PLibraryStoreUpdate;
         _lLibrary.LLibraryPanel.LPanelChanged += PLibraryModeUpdate;
         _lLibrary.LLibraryPanel.LPanelRowsChanged += PIndexUpdate;
         _lLibrary.LLibraryPanel.LPanelCleared += PLibraryClearUpdate;
         _lLibrary.LLibraryPanel.LPanelDraftChanged += PLibraryEntryUpdate;
-        _lLibrary.LLibraryPanel.LPanelEdited += PEditor.PEditorEntryShow;
         _lLibrary.LLibraryPanel.LPanelFailed += host.PWindowFailureShow;
 
         PIndex.ItemsSource = _pIndexList;
 
         PDisplay.PDisplayAttach(host, engine);
 
-        PEditor.PEditorAttach(host, engine, "Library", null);
-        PEditor.PEditorChangeNotice = changed => PLibraryStore.IsEnabled = changed;
+        PEditor.PEditorAttach(host, engine, _lLibrary.LLibraryEditor);
+    }
+
+    private void PLibraryStoreUpdate()
+    {
+        PLibraryStore.IsEnabled = _lLibrary.LLibraryEditor.LEditorStorable;
     }
 
     internal async void PLibraryVistaRestore(LVista vista)
@@ -65,6 +69,7 @@ public partial class PLibrary : UserControl
         vista.LVistaChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayVistaRestore(vista);
+        PEditor.PEditorVistaRestore(vista);
         PChoice.PChoiceOrderApply(POrderDropdown, vista.LVistaOrder);
         PSieveUpdate();
 
@@ -150,7 +155,6 @@ public partial class PLibrary : UserControl
     private void PLibraryClearUpdate()
     {
         PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
     }
 
     private void PLibraryEntryUpdate(LDraft draft)

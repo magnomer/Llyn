@@ -86,6 +86,18 @@ Reads the Authors whose name the typed text matches, by name.
 The Sources panel offers them under a credit field as the name is typed.
 The match is the catalog's own, so wildcards work here as they do in every search box.
 
+## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)`
+
+The byline rows a typed credit may already name, at most the limit asked.
+An unnamed Author and one the draft already credits are left out, since neither can be picked.
+The draft is read here by its id, so the editor never carries the credits it holds back down.
+No draft offers nothing.
+The names come trimmed, so the byline highlights what was typed without leading blanks.
+
+## `private static bool LEngineAuthorCheck(IReadOnlyList<LAuthor> credited, long id)`
+
+Whether the credits already hold the Author.
+
 ## `public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)`
 
 Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.

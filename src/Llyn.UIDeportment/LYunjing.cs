@@ -26,17 +26,34 @@ public sealed class LYunjing
     private int _lXiaoyunCount;
 
     public LYunjing(
-        LEngine engine, Func<bool> changeSeam, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(editor);
 
         _lEngine = engine;
-        LYunjingPanel = new LPanel("Yunjing.LoadFailed", changeSeam, shownSeam, leaveSeam, deleteSeam);
+        LYunjingEditor = editor;
+        LYunjingPanel = new LPanel(
+            "Yunjing.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LYunjingPanel.LPanelCleared += LYunjingEditorClear;
+        LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
+    }
+
+    private void LYunjingEditorClear()
+    {
+        LYunjingEditor.LEditorOpen(null);
+    }
+
+    private void LYunjingEditorOpen(long id)
+    {
+        LYunjingEditor.LEditorOpen(id);
     }
 
     public event Action? LYunjingChanged;
 
     public event Action<string, string>? LYunjingGlyphChosen;
+
+    public LEditor LYunjingEditor { get; }
 
     public LPanel LYunjingPanel { get; }
 

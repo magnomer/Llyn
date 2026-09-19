@@ -50,6 +50,10 @@ The drawing is made here rather than when a row asks, so a row never waits on a 
 The key a variety's flag is kept under, which is its language and its name joined by a slash.
 It is spelled here and in `LEnsign` alike, so a row asking for its flag hands no logic value down.
 
+## `internal static void PEnsignFlagShow(Image flag, UIElement globe, string language)`
+
+Shows the language's flag in the image, or the globe when the pack draws none.
+
 ## `internal static ImageSource? PEnsignFind(string language)`
 
 The drawing kept for `language`, or null when none was resolved for it.

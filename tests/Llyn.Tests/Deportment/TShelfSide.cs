@@ -54,12 +54,11 @@ public sealed class TShelfSide
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LShelf shelf = TShelfPrepare(engine);
-        int opened = 0;
-        shelf.LShelfOpened += () => opened++;
 
         shelf.TShelfFreshStart();
 
-        Assert.Equal(1, opened);
+        Assert.True(shelf.LShelfImprint.LImprintHeld);
+        Assert.False(shelf.LShelfImprint.LImprintDesk.LDeskStored);
         Assert.False(shelf.LShelfEntrySide);
         Assert.True(shelf.LShelfImprintShown);
         Assert.True(shelf.LShelfScribeChecked);
@@ -74,15 +73,13 @@ public sealed class TShelfSide
         LReference book = engine.TEngineCitationCreate("Book");
         LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        int closed = 0;
-        shelf.LShelfClosed += () => closed++;
         shelf.TShelfRowSelect(book.LReferenceId);
 
         shelf.TShelfEntrySelect(water.LEntryId);
 
         Assert.True(shelf.LShelfDisplayShown);
         Assert.False(shelf.LShelfBinEnabled);
-        Assert.Equal(1, closed);
+        Assert.False(shelf.LShelfImprint.LImprintHeld);
 
         shelf.TShelfScribeSet(true);
 
@@ -123,7 +120,7 @@ public sealed class TShelfSide
 
     private static LShelf TShelfPrepare(LEngine engine)
     {
-        LShelf shelf = TInterfaceDeportment.TShelfCreate(engine, () => false, () => false, () => true);
+        LShelf shelf = TInterfaceDeportment.TShelfCreate(engine, () => true);
         shelf.TShelfVistaRestore(
             engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName),
             engine.TEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword));

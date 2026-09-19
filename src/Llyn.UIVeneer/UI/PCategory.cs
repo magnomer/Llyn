@@ -17,7 +17,7 @@ public partial class PEditor
         IReadOnlyList<LSpeechValue> values;
         try
         {
-            values = _lEngine.LEngineSpeechRead(PSpeakerLanguageRead());
+            values = _lEngine.LEngineSpeechRead(_lEditor.LEditorLanguage);
         }
         catch (Exception)
         {
@@ -38,7 +38,7 @@ public partial class PEditor
         LSpeechValue? created;
         try
         {
-            created = _lEngine.LEngineSpeechAdd(PSpeakerLanguageRead(), name);
+            created = _lEngine.LEngineSpeechAdd(_lEditor.LEditorLanguage, name);
         }
         catch (Exception)
         {

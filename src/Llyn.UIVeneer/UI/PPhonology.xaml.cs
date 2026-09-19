@@ -29,25 +29,29 @@ public partial class PPhonology : UserControl
         _lEngine = engine;
         _lPhonology = new LPhonology(
             engine,
-            PEditor.PEditorChangeCheck,
+            new LEditor(engine, host.PWindowUnreadableConfirm),
             PPhonologyShownCheck,
             PPhonologyLeaveConfirm,
             host.PWindowDeleteConfirm);
+        _lPhonology.LPhonologyEditor.LEditorStateChanged += PPhonologyStoreUpdate;
         _lPhonology.LPhonologyPanel.LPanelChanged += PPhonologyModeUpdate;
         _lPhonology.LPhonologyPanel.LPanelRowsChanged += PInventoryUpdate;
         _lPhonology.LPhonologyPanel.LPanelCleared += PPhonologyClearUpdate;
         _lPhonology.LPhonologyPanel.LPanelDraftChanged += PPhonologyEntryUpdate;
-        _lPhonology.LPhonologyPanel.LPanelEdited += PEditor.PEditorEntryShow;
         _lPhonology.LPhonologyPanel.LPanelFailed += host.PWindowFailureShow;
 
         PInventory.ItemsSource = _pInventoryList;
 
         PDisplay.PDisplayAttach(host, engine);
 
-        PEditor.PEditorAttach(host, engine, "Phonology", null);
-        PEditor.PEditorChangeNotice = changed => PPhonologyStore.IsEnabled = changed;
+        PEditor.PEditorAttach(host, engine, _lPhonology.LPhonologyEditor);
 
         PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciationField);
+    }
+
+    private void PPhonologyStoreUpdate()
+    {
+        PPhonologyStore.IsEnabled = _lPhonology.LPhonologyEditor.LEditorStorable;
     }
 
     internal async void PPhonologyVistaRestore(LVista vista)
@@ -65,6 +69,7 @@ public partial class PPhonology : UserControl
         vista.LVistaChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
         PDisplay.PDisplayVistaRestore(vista);
+        PEditor.PEditorVistaRestore(vista);
         PChoice.PChoiceOrderApply(PSequenceDropdown, vista.LVistaOrder);
         PLensUpdate();
 
@@ -135,7 +140,6 @@ public partial class PPhonology : UserControl
     private void PPhonologyClearUpdate()
     {
         PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
     }
 
     private void PPhonologyEntryUpdate(LDraft draft)

@@ -23,8 +23,8 @@ internal sealed partial class PCard
             });
     }
 
-    private static PVideo PCardVideoCreate(LVideoDraft draft)
+    private PVideo PCardVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(draft);
+        return new PVideo(_pCardEngine, draft);
     }
 }

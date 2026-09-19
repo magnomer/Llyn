@@ -7,7 +7,9 @@ The base is Shelf rather than Reference because the Source record already holds 
 The tab stands on one side at a time.
 The entry side is in front while an entry is chosen or being written, else the source side.
 Each side has a read area and an edit area, and four verdicts say which one is in front.
-The two edit areas are still veneer holds, so their change and finish answers arrive through seams.
+The source edit area is the imprint deportment held here, so its draft answers are read directly.
+The entry edit area is still a veneer hold, so its change answer arrives through a seam.
+The unreadable seam is the window's sweep question, passed on to the imprint's desk.
 The leave seam is the window's discard dialog, asked once for the whole tab before any switch of side.
 The removal seam is the window's delete question, worded by how many rows still cite the Source.
 
@@ -15,18 +17,27 @@ The removal seam is the window's delete question, worded by how many rows still 
 
 A store flag moved, so the store button is read again.
 
-## `public event Action? LShelfOpened;`
+## `public LEditor LShelfEditor { get; }`
 
-A fresh Source draft was started, so the imprint opens on nothing.
+The entry editor's deportment on the entry side.
+Its state feeds the rail as the imprint's desk does on the source side.
 
-## `public event Action? LShelfClosed;`
+## `public (bool LShelfBackward, bool LShelfForward) LShelfChronicleRead()`
 
-The source edit area went out of front, so the imprint drops its held draft.
+The chronicle of the side in front, so the rail's undo and redo need no pick of their own.
 
-## `private bool _lShelfImprintStorable;`
+## `public bool LShelfDraftFinish(bool store)`
 
-What the imprint last announced about its draft, kept so the store button follows the side in front.
-The editor's flag beside it is kept the same way.
+The window's leave over the side in front.
+
+## `public void LShelfStoreRun()`
+
+The rail's save over the side in front.
+
+## `public LImprint LShelfImprint { get; }`
+
+The source editor's deportment, opened by an edited row or a fresh start and dropped when the area leaves.
+Its stored draft is shown again through the panel state, as the stored Source.
 
 ## `public bool LShelfEntrySide`
 
@@ -40,7 +51,7 @@ The rows cross as a parameter, so no local carries an engine answer into the cle
 ## `public string LShelfTallyRead(long? id)`
 
 The citation sentence for one Source, composed from the usage the engine counts.
-The imprint asks it by the id of the draft it holds, the page by the chosen row.
+The page asks it by the chosen row.
 
 ## `public LColophon LShelfColophonRead(LDraft draft)`
 
@@ -76,6 +87,10 @@ With nothing chosen, starts a Source draft in the imprint.
 The mode toggle of the side in front.
 Leaving a fresh entry with nothing chosen returns to the chosen Source in its read area.
 Leaving the imprint drops its held draft after the panel state has reloaded the Source.
+
+## `private void LShelfImprintOpen(long id)`
+
+The panel's edited notice, carried to the imprint as a nullable id.
 
 ## `public void LShelfDelete()`
 

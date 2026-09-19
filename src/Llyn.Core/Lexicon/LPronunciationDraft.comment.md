@@ -26,6 +26,10 @@ The variety label is kept even when the reading is blank, so a row being filled 
 Builds the draft from a reading and a recording alone.
 It gives back null when neither was given, because an empty pronunciation is no pronunciation.
 
+## `public string LPronunciationDraftRead(bool respelled)`
+
+The reading as the field shows it: the respelling when the switch is on and one exists, else the original.
+
 ## `public bool LPronunciationDraftEmpty`
 
 True when the draft carries nothing worth storing.

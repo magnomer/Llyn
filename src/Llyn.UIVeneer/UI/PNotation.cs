@@ -63,7 +63,7 @@ public partial class PEditor : LReceiver
             if (spelled is not null)
             {
                 spelled.PTranscriptionItemText = reading.PNotationReadingPhonetic;
-                PEditorChangeSave();
+                _lEditor.LEditorPersist();
             }
 
             return;
@@ -99,7 +99,7 @@ public partial class PEditor : LReceiver
 
     private LEntryDraft? PNotationDraftRead()
     {
-        return _pEditorTenure?.LTenureRead()?.LDraftContent;
+        return _lEditor.LEditorDraftRead();
     }
 
     private PNotationReading PNotationReadingCreate(LCandidate candidate)
@@ -138,7 +138,7 @@ public partial class PEditor : LReceiver
 
         string word = PHeadword.Text?.Trim() ?? string.Empty;
         _pNotationItem.Clear();
-        _pNotationSearching = word.Length > 0 && _pEditorTenure is not null;
+        _pNotationSearching = word.Length > 0;
         PNotationUpdate(scheme);
 
         if (word.Length == 0)
@@ -146,20 +146,14 @@ public partial class PEditor : LReceiver
             return;
         }
 
-        if (_pEditorTenure is not LTenure held)
-        {
-            return;
-        }
-
         try
         {
-            string language = held.LTenureLanguageRead();
-            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, language);
+            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, _lEditor.LEditorLanguage);
             if (scheme.Length == 0)
             {
-                if (held.LTenureFlaggedCheck())
+                if (_lEditor.LEditorFlagged)
                 {
-                    await PEnsign.PEnsignVarietyLoad(_lEngine, held);
+                    await PEnsign.PEnsignVarietyLoad(_lEngine, _lEditor);
                 }
 
                 if (!PNotation.IsOpen)
@@ -168,7 +162,7 @@ public partial class PEditor : LReceiver
                 }
             }
 
-            _pNotationForay = held.LTenureTranscriptionStart(word, target, scheme, this);
+            _pNotationForay = _lEditor.LEditorTranscriptionStart(word, target, scheme, this);
         }
         catch (Exception)
         {

@@ -41,9 +41,10 @@ The stage stands empty with its switch until the switch is pressed.
 Only then is a player chosen and given the address.
 Once a player stands, a changed address or span reaches it as before.
 
-## `public string PScreenLocation { get; set; }`
+## `public Uri? PScreenAddress { get; set; }`
 
-Where the film is read from, taken as the user is still typing it.
+Where the film is read from, as the row already resolved it through the engine.
+It is null while the location names no place.
 
 ## `public TimeSpan PScreenFrom { get; set; }`
 

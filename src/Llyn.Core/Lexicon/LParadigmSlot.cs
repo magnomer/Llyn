@@ -11,6 +11,7 @@ public sealed record LParadigmSlot(
 {
     public bool LParadigmSlotUncertain => LParadigmSlotState == LState.LStateUnknown;
 
+
     public bool LParadigmSlotMatch(LParadigmSlot other)
     {
         ArgumentNullException.ThrowIfNull(other);

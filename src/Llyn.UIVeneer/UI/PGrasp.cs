@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -90,6 +89,8 @@ public sealed class PGrasp : FrameworkElement
     }
 
     public int? PGraspHover => _pGraspHover;
+
+    public int PGraspPointed => _pGraspHover ?? PGraspStep;
 
     public int PGraspStep
     {
@@ -183,7 +184,7 @@ public sealed class PGrasp : FrameworkElement
 
     public static string PGraspLabelResolve(int step)
     {
-        return "Grasp.Level" + step.ToString(CultureInfo.InvariantCulture);
+        return LGrasp.LGraspKeyRead(step);
     }
 
     private void PGraspHoverChange(int? hovered)

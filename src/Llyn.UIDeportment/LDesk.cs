@@ -47,6 +47,15 @@ public sealed class LDesk
 
     public bool LDeskStored => LDeskRead()?.LDraftStored is not null;
 
+    public bool LDeskChanged => _lDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true };
+
+    public bool LDeskStorable =>
+        _lDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true, LTenureStateRefusal: null };
+
+    public bool LDeskHalted => _lDeskTenure?.LTenureStateRead() is { LTenureStateHalted: true };
+
+    internal LTenure? LDeskTenure => _lDeskTenure;
+
     public void LDeskVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
@@ -99,12 +108,23 @@ public sealed class LDesk
 
         try
         {
-            LDeskDraftShow(LDeskRead());
+            LDeskDraftShow(LDeskPrepare());
         }
         catch (Exception exception)
         {
             LDeskFailed?.Invoke(_lDeskScope + ".LoadFailed", exception);
         }
+    }
+
+    private LDraft? LDeskPrepare()
+    {
+        if (_lDeskTenure is not LTenure held)
+        {
+            return null;
+        }
+
+        held.LTenurePersist();
+        return held.LTenurePrepare();
     }
 
     private void LDeskDraftShow(LDraft? draft)
@@ -128,6 +148,16 @@ public sealed class LDesk
     public void LDeskStateUpdate()
     {
         LDeskStateChanged?.Invoke();
+    }
+
+    public void LDeskPersist()
+    {
+        if (LDeskFilling)
+        {
+            return;
+        }
+
+        _lDeskTenure?.LTenurePersist();
     }
 
     public void LDeskDefer(LRequest request)

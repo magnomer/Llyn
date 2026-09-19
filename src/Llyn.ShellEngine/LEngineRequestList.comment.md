@@ -40,6 +40,13 @@ Places a new item at the position asked for, clamped to the list.
 Places an existing item at the position asked for, unless the list already holds its id.
 A picked row is one thing however many times it is picked, so the second pick is nothing.
 
+## `private static IReadOnlyList<LEngineItem> LEngineListChange<LEngineItem>(`
+
+Places the item as an insert does, then drops the former item the field stood for.
+A former item the list does not hold is nothing to drop.
+An item that is its own former is left where it is, so an unchanged field sends nothing new.
+The insert lands at the former item's place, so the removal after it leaves the new item there.
+
 ## `private static IReadOnlyList<LEngineItem> LEngineListRemove<LEngineItem>(`
 
 Drops the item carrying the id, and refuses when none does.

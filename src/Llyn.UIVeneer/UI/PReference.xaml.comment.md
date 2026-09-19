@@ -8,16 +8,16 @@ The visible label is Source and the internal base is Reference, because Source a
 Every branch it once carried lives in `LShelf` and the two `LPanel` it holds.
 The panel news its deportment, forwards each handler to it, and writes its controls when a notice arrives.
 The shelf, the entry list, the read areas, the two edit areas and the shared rail are all wired here.
-The two edit areas are still veneer holds.
+The entry edit area is still a veneer hold, while the source edit area sits on the deportment's imprint.
 The panel picks the one in front by the deportment's side verdict.
 
 ## `internal void PReferenceAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine`, the workspace the window opened.
 It news the deportment with the seams the panel answers through and subscribes to the notices of both lists.
-The editor's and the imprint's change notices go to the deportment.
+The editor's change notice goes to the deportment, which reads the imprint's desk itself.
 It picks the one in front for the store button.
-Both areas' chronicle notices refresh the rail's undo and redo through the same side verdict.
+The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 
 ## `internal async void PReferenceVistaRestore(LVista vista, LVista footnote)`
 
@@ -33,14 +33,6 @@ Whether either edit area holds modifications that have not been stored, as the d
 
 Ends the draft of the area in front, committing it or discarding it.
 The side verdict picks the editor's or the imprint's finish, and its answer is passed back up.
-
-## `internal string PReferenceTallyRead(long? id)`
-
-The citation sentence for one Source, which the imprint asks for the draft it holds.
-
-## `internal void PReferenceShow(long id)`
-
-Puts the source side on one stored Source in its read area, for the imprint after a store.
 
 ## `private bool PReferenceDiscardConfirm()`
 

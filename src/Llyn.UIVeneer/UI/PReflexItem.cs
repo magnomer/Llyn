@@ -58,6 +58,11 @@ internal sealed class PReflexItem : INotifyPropertyChanged
 
     public bool PReflexItemRespelled { get; }
 
+    internal bool PReflexItemMatch(bool respelled, bool phonemic, bool folded)
+    {
+        return PReflexItemRespelled == respelled && PReflexItemPhonemic == phonemic && PReflexItemFolded == folded;
+    }
+
     public bool PReflexItemPhonemic { get; }
 
     public bool PReflexItemFolded { get; }

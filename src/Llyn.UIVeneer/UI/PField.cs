@@ -1,7 +1,10 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Llyn.UIVeneer;
 
@@ -24,6 +27,92 @@ internal static partial class PField
         resources[PFieldTemplateKey] = PFieldTemplateBuild();
         resources[PFieldBareKey] = PFieldBareBuild();
         resources[PFieldPlainKey] = PFieldPlainBuild();
+    }
+
+    private const double PFieldPopupShade = 10;
+    private const double PFieldPopupGap = 6;
+
+    internal static CustomPopupPlacement[] PFieldPopupPlace(Size popup, Size target, Point offset)
+    {
+        var pBelow = new Point(-PFieldPopupShade, target.Height + PFieldPopupGap - PFieldPopupShade);
+        var pAbove = new Point(-PFieldPopupShade, PFieldPopupShade - PFieldPopupGap - popup.Height);
+        return
+        [
+            new CustomPopupPlacement(pBelow, PopupPrimaryAxis.Vertical),
+            new CustomPopupPlacement(pAbove, PopupPrimaryAxis.Vertical),
+        ];
+    }
+
+    internal static FrameworkElement? PFieldSurfaceFind(object? source)
+    {
+        if (source is not TextBox box)
+        {
+            return null;
+        }
+
+        box.ApplyTemplate();
+        return box.Template?.FindName(PFieldSurfaceName, box) as FrameworkElement ?? box;
+    }
+
+    internal static void PFieldFocusDefer(ItemsControl host, object? item)
+    {
+        if (item is null)
+        {
+            return;
+        }
+
+        host.Dispatcher.BeginInvoke(
+            DispatcherPriority.Loaded,
+            () =>
+            {
+                if (host.ItemContainerGenerator.ContainerFromItem(item) is DependencyObject container
+                    && PEditor.PEditorCaretFind(container) is TextBox box)
+                {
+                    box.Focus();
+                    box.CaretIndex = box.Text.Length;
+                }
+            });
+    }
+
+    internal static void PFieldTextShow(TextBox box, string text)
+    {
+        if (string.Equals(box.Text, text, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        box.Text = text;
+    }
+
+    internal static void PFieldNoteShow(TextBox box, string note)
+    {
+        if (string.Equals(PFieldNoteRead(box), note, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        box.Text = note;
+    }
+
+    internal static string PFieldNoteRead(TextBox box)
+    {
+        return box.Text.TrimEnd('\r', '\n');
+    }
+
+    internal static string PFieldPathRead(TextBox box)
+    {
+        ArgumentNullException.ThrowIfNull(box);
+
+        BindingBase? bound = box.TemplatedParent is ComboBox choice
+            ? BindingOperations.GetBindingBase(choice, ComboBox.TextProperty)
+            : BindingOperations.GetBindingBase(box, TextBox.TextProperty);
+
+        return bound switch
+        {
+            Binding single => single.Path.Path,
+            MultiBinding { Bindings: [Binding first, ..] } => first.Path.Path,
+            _ => string.Empty,
+        };
     }
 
     internal static void PFieldPlaceholderShow(TextBlock block, bool placeholder)

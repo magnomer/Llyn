@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,6 +11,8 @@ public partial class PFavorite : UserControl
     private PWindow _pFavoriteHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     public PFavorite()
     {
@@ -25,8 +28,14 @@ public partial class PFavorite : UserControl
 
         PDisplay.PDisplayAttach(host, engine);
 
-        PEditor.PEditorAttach(host, engine, "Favorite", null);
-        PEditor.PEditorChangeNotice = changed => PFavoriteStore.IsEnabled = changed;
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
+        PEditor.PEditorAttach(host, engine, _lEditor);
+    }
+
+    private void PFavoriteStoreUpdate()
+    {
+        PFavoriteStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal void PFavoriteReset()

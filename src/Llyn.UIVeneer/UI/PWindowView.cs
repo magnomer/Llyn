@@ -8,6 +8,8 @@ public partial class PWindow
     {
         LSettings settings = _lEngine.LEngineSettingsRead();
 
+        PInput.PInputVistaRestore(
+            _lEngine.LEngineVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PLibrary.PLibraryVistaRestore(
             _lEngine.LEngineVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PPhonology.PPhonologyVistaRestore(

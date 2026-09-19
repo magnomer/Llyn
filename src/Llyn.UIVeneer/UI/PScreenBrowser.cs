@@ -12,8 +12,6 @@ public partial class PScreen
 {
     private const string PScreenHost = "https://llyn.video/screen";
 
-    private static Task<CoreWebView2Environment>? _pScreenSetting;
-
     private bool _pScreenReady;
 
     private WebView2CompositionControl? _pScreenBrowser;
@@ -32,22 +30,20 @@ public partial class PScreen
         string paper = _pScreenPaper;
         WebView2CompositionControl browser = _pScreenBrowser ??= PScreenBrowserCreate();
 
+        if (Window.GetWindow(this) is not PWindow host)
+        {
+            PScreenNoticeShow();
+            return;
+        }
+
         try
         {
-            _pScreenSetting ??= CoreWebView2Environment.CreateAsync(
-                null,
-                null,
-                new CoreWebView2EnvironmentOptions
-                {
-                    AdditionalBrowserArguments = "--autoplay-policy=no-user-gesture-required",
-                });
-
-            await browser.EnsureCoreWebView2Async(await _pScreenSetting.ConfigureAwait(true))
+            await browser.EnsureCoreWebView2Async(await host.PWindowScreen.PScreenSettingRead().ConfigureAwait(true))
                 .ConfigureAwait(true);
         }
         catch (Exception)
         {
-            _pScreenSetting = null;
+            host.PWindowScreen.PScreenSettingReset();
             PScreenNoticeShow();
             return;
         }

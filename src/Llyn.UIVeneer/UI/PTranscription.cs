@@ -144,22 +144,6 @@ public partial class PEditor
         return rows;
     }
 
-    private void PTranscriptionPrepare(LEntryDraft draft)
-    {
-        IReadOnlyList<string> schemes = _lEngine.LEngineSchemeRead(draft.LEntryDraftLanguage);
-        if (schemes.Count == 0)
-        {
-            return;
-        }
-
-        if (PTranscriptionScan(draft).Count > 0)
-        {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestTranscriptionAddition(PEditorDraft, schemes[0], 0, true));
-    }
-
     private PTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)
     {
         PTranscriptionItem row = PTranscriptionItem.PTranscriptionItemCreate(_pEditorHost, spelled);

@@ -3,11 +3,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
 internal sealed class PVideo : INotifyPropertyChanged
 {
+    private readonly LEngine _lEngine;
+
     private LStateValue _pVideoLocation = LStateValue.LStateValueUnspecified;
     private LStateValue _pVideoTimestamp = LStateValue.LStateValueUnspecified;
     private Uri? _pVideoPreview;
@@ -16,10 +19,12 @@ internal sealed class PVideo : INotifyPropertyChanged
     private bool _pVideoPlaying;
     private long _pVideoRow;
 
-    internal PVideo(LVideoDraft written)
+    internal PVideo(LEngine engine, LVideoDraft written)
     {
+        ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(written);
 
+        _lEngine = engine;
         _pVideoRow = written.LVideoDraftId;
 
         PVideoLocation = written.LVideoDraftLocation;
@@ -38,7 +43,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = PImage.PImageAddressRead(value.LStateValueShow());
+            PVideoPreview = _lEngine.LEngineLocationRead(value.LStateValueShow());
         }
     }
 

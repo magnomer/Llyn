@@ -33,6 +33,22 @@ The draft was stored under this id, raised after the tenure has been let go.
 
 Whether the held draft stands on a stored record rather than a fresh one.
 
+## `public bool LDeskChanged`
+
+Whether the held draft differs from what is stored, as the tenure last reported it, applying nothing first.
+
+## `public bool LDeskStorable`
+
+Whether the held draft has changed and nothing refuses its store.
+
+## `public bool LDeskHalted`
+
+Whether the tenure has stopped taking requests, so the edit area should go dead.
+
+## `internal LTenure? LDeskTenure`
+
+The held tenure, for the sibling deportments that start forays over it, until the sound deportment lands.
+
 ## `public void LDeskStart(long? id)`
 
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
@@ -46,9 +62,18 @@ The held draft after the deferred requests have been applied, or null while noth
 
 Reads the draft again and announces it, unless the announcement itself is what is running.
 
+## `private LDraft? LDeskPrepare()`
+
+The held draft after the deferred requests and the tenure's completion have run, or null while nothing is held.
+The completion runs inside the tenure's prepare turn, so the rows it adds raise no draft bulletin.
+
 ## `private void LDeskDraftShow(LDraft? draft)`
 
 Announces the draft with the filling flag raised, so the controls' echo is ignored.
+
+## `public void LDeskPersist()`
+
+Applies the deferred requests now, as a field is left, unless the controls are being filled.
 
 ## `public void LDeskDefer(LRequest request)`
 

@@ -24,6 +24,23 @@ public sealed record LReference(
 
     public LStateMark LReferenceAuthorState { get; init; } = LReferenceAuthorState ?? LStateMark.LStateMarkUnspecified;
 
+    public string LReferenceKindKey => LReferenceKindResolve(LReferenceKind);
+
+    public string LReferenceKindTag => LReferenceKindFormat(LReferenceKind);
+
+    public string LReferenceTitleHint => LReferenceHintRead(LReferenceTitle, "Source.Untitled");
+
+    public string LReferenceYearHint => LReferenceHintRead(LReferenceYear, "Source.Year");
+
+    public string LReferenceUrlHint => LReferenceHintRead(LReferenceUrl, "Source.Url");
+
+    public string LReferenceNoteHint => LReferenceHintRead(LReferenceNote, "Source.Note");
+
+    private static string LReferenceHintRead(LStateValue value, string key)
+    {
+        return value.LStateValueUncertain ? "Display.Unknown" : key;
+    }
+
     public LReference LReferenceNormalize()
     {
         return this with

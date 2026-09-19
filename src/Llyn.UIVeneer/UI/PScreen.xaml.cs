@@ -32,11 +32,11 @@ public partial class PScreen : UserControl
         Unloaded += PScreenDropHandle;
     }
 
-    public static readonly DependencyProperty PScreenLocationProperty = DependencyProperty.Register(
-        nameof(PScreenLocation),
-        typeof(string),
+    public static readonly DependencyProperty PScreenAddressProperty = DependencyProperty.Register(
+        nameof(PScreenAddress),
+        typeof(Uri),
         typeof(PScreen),
-        new PropertyMetadata(string.Empty, PScreenSourceHandle));
+        new PropertyMetadata(null, PScreenSourceHandle));
 
     public static readonly DependencyProperty PScreenFromProperty = DependencyProperty.Register(
         nameof(PScreenFrom),
@@ -63,10 +63,10 @@ public partial class PScreen : UserControl
         new FrameworkPropertyMetadata(
             false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PScreenPlayingHandle));
 
-    public string PScreenLocation
+    public Uri? PScreenAddress
     {
-        get => (string)GetValue(PScreenLocationProperty);
-        set => SetValue(PScreenLocationProperty, value);
+        get => (Uri?)GetValue(PScreenAddressProperty);
+        set => SetValue(PScreenAddressProperty, value);
     }
 
     public TimeSpan PScreenFrom
@@ -150,7 +150,7 @@ public partial class PScreen : UserControl
 
     private void PScreenOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (PScreenPlaying && PScreenLocation.Length != 0)
+        if (PScreenPlaying && PScreenAddress is not null)
         {
             _pScreenPending.Stop();
             _pScreenPending.Start();
@@ -179,8 +179,7 @@ public partial class PScreen : UserControl
     {
         PScreenStop();
 
-        Uri? address = PImage.PImageAddressRead(PScreenLocation);
-        if (address is null)
+        if (PScreenAddress is not Uri address)
         {
             return;
         }

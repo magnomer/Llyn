@@ -38,14 +38,82 @@ public sealed partial class LEngine
         }
     }
 
+    internal IReadOnlyList<LRequest> LEngineDraftPrepare(long id)
+    {
+        lock (_lEngineGate)
+        {
+            LEntryDraft draft = LEngineDraftLoad(id).LDraftContent;
+            List<LRequest> requests = [];
+            if (!draft.LEntryDraftDefined)
+            {
+                requests.Add(new LRequestCardAddition(id, LCardKind.LCardKindMeaning, 0, 0));
+            }
+
+            if (!draft.LEntryDraftCollocated)
+            {
+                requests.Add(new LRequestCardAddition(id, LCardKind.LCardKindCollocation, 0, 0));
+            }
+
+            foreach (LCardDraft card in draft.LEntryDraftMeanings)
+            {
+                LEngineSentencePrepare(id, card, requests);
+            }
+
+            foreach (LCardDraft card in draft.LEntryDraftCollocations)
+            {
+                LEngineSentencePrepare(id, card, requests);
+            }
+
+            LGlyph? glyph = LEngineGlyphRead(draft.LEntryDraftLanguage);
+            if (LEngineSchemeRead(draft.LEntryDraftLanguage) is [string scheme, ..]
+                && !LGlyph.LGlyphOtherCheck(glyph, draft.LEntryDraftTranscriptions))
+            {
+                requests.Add(new LRequestTranscriptionAddition(id, scheme, 0, true));
+            }
+
+            if (glyph is not null && !LGlyph.LGlyphRowCheck(glyph, draft.LEntryDraftTranscriptions))
+            {
+                requests.Add(new LRequestTranscriptionAddition(
+                    id, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
+            }
+
+            return requests;
+        }
+    }
+
+    private static void LEngineSentencePrepare(long id, LCardDraft card, List<LRequest> requests)
+    {
+        if (!card.LCardDraftExemplified)
+        {
+            requests.Add(new LRequestSentenceAddition(id, card.LCardDraftId, 0));
+        }
+    }
+
     internal LDraft? LEngineDraftRead(long id)
     {
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+            return LEngineCreditUpdate(LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id));
         }
+    }
+
+    private LDraft? LEngineCreditUpdate(LDraft? draft)
+    {
+        if (draft is null || draft.LDraftAuthor.Count == 0)
+        {
+            return draft;
+        }
+
+        LAuthorArchive archive = new(_lEngineDatabase);
+        List<LAuthor> named = new(draft.LDraftAuthor.Count);
+        foreach (LAuthor author in draft.LDraftAuthor)
+        {
+            named.Add(author.LAuthorStored ? archive.LAuthorRead(author.LAuthorId) ?? author : author);
+        }
+
+        return draft with { LDraftAuthor = named };
     }
 
     internal IReadOnlyList<LDraft> LEngineDraftScan()

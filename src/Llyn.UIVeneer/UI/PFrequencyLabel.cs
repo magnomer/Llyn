@@ -65,6 +65,24 @@ internal static class PFrequencyLabel
         band.Visibility = Visibility.Visible;
     }
 
+    internal static void PFrequencyChipShow(
+        UIElement section, FrameworkElement chip, TextBlock name, TextBlock band, IReadOnlyList<LFrequency> rows)
+    {
+        if (rows.Count == 0)
+        {
+            name.Text = string.Empty;
+            chip.ToolTip = null;
+            section.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        int count = PFrequencyBandResolve(rows);
+        PFrequencyLabelShow(
+            name, band, count, PLocalizationCatalog.PLocalizationTextRead(PFrequencyLabelResolve(count)));
+        chip.ToolTip = PFrequencySourceFormat(rows, PLocalizationCatalog.PLocalizationTextRead("Frequency.Once"));
+        section.Visibility = Visibility.Visible;
+    }
+
     internal static string PFrequencySourceFormat(IReadOnlyList<LFrequency> rows, string once)
     {
         StringBuilder lines = new();

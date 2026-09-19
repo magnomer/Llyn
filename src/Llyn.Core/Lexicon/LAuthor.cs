@@ -16,4 +16,10 @@ public sealed record LAuthor(
         return LAuthorId == id;
     }
 
+    public bool LAuthorNameMatch(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+
+        return string.Equals(LAuthorName, name, StringComparison.Ordinal);
+    }
 }

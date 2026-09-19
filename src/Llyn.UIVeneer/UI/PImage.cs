@@ -10,17 +10,19 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
-    private static LEngine? _pImageEngine;
+    private readonly LEngine _lEngine;
 
     private LStateValue _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
-    internal PImage(LImageDraft written)
+    internal PImage(LEngine engine, LImageDraft written)
     {
+        ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(written);
 
+        _lEngine = engine;
         _pImageRow = written.LImageDraftId;
         _pImageLocation = written.LImageDraftLocation;
     }
@@ -89,18 +91,6 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
-    internal static void PImageAttach(LEngine engine)
-    {
-        ArgumentNullException.ThrowIfNull(engine);
-
-        _pImageEngine = engine;
-    }
-
-    internal static Uri? PImageAddressRead(string location)
-    {
-        return _pImageEngine?.LEngineLocationRead(location);
-    }
-
     private void PImagePreviewUpdate()
     {
         if (!_pImageSeen)
@@ -108,7 +98,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = PImageAddressRead(_pImageLocation.LStateValueShow());
+        Uri? address = _lEngine.LEngineLocationRead(_pImageLocation.LStateValueShow());
         if (address is null)
         {
             PImagePreview = null;

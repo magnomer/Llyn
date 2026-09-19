@@ -76,6 +76,7 @@ public partial class PTenor
         cohort.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
         cohort.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PCohortFind));
         PDisplay.PDisplayVistaRestore(cohort);
+        PEditor.PEditorVistaRestore(cohort);
         PDegreeRestore();
         PGrilleRestore();
 

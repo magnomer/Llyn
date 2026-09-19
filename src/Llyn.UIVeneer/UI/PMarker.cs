@@ -42,12 +42,13 @@ public partial class PEditor
 
     private void PMarkerTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorFill)
+        if (_lEditor.LEditorDesk.LDeskFilling)
         {
             return;
         }
 
         PCategoryUpdate();
+        PEditorRequestDefer(new LRequestSpeech(PEditorDraft, PMarkerRead()));
 
         string typed = (PMarkerField.Text ?? string.Empty).Trim();
         PMarkerSwitch.IsChecked = typed.Length > 0 && _pCategoryItem.Count > 0;
@@ -128,20 +129,22 @@ public partial class PEditor
         return drafts;
     }
 
-    private void PMarkerShow(IReadOnlyList<LSpeechDraft>? speeches)
+    private void PMarkerShow(IReadOnlyList<LSpeechDraft> speeches)
     {
+        if (PMarkerMatch(speeches))
+        {
+            return;
+        }
+
         _pMarkerChip.Clear();
         PMarkerField.Text = string.Empty;
 
-        if (speeches is not null)
+        foreach (LSpeechDraft speech in speeches)
         {
-            foreach (LSpeechDraft speech in speeches)
+            string name = speech.LSpeechDraftName.Trim();
+            if (name.Length > 0 && !PMarkerFind(name))
             {
-                string name = speech.LSpeechDraftName.Trim();
-                if (name.Length > 0 && !PMarkerFind(name))
-                {
-                    _pMarkerChip.Add(new PMarkerChip(speech.LSpeechDraftValue, name));
-                }
+                _pMarkerChip.Add(new PMarkerChip(speech.LSpeechDraftValue, name));
             }
         }
 

@@ -13,12 +13,10 @@ The load itself is not waited on, because the surface must stay answerable while
 
 ## `private async Task PScreenPageLoad()`
 
-The browser environment is made once for the whole program and shared by every Screen.
-It is started with autoplay allowed.
-The user has already asked by the time play is called, and the page cannot see that.
-
-A machine without the browser runtime is told so rather than shown an empty box.
-The stored environment is dropped on that failure so a later attempt is a real attempt.
+The browser environment is the window's, made once and shared by every Screen under it.
+A Screen with no window above it is told so rather than shown an empty box.
+So is a machine without the browser runtime.
+The window drops its environment on that failure so a later attempt is a real attempt.
 
 A page that finished loading after the row moved on is discarded.
 The paper it was built for is compared, because typing quickly starts more loads than it finishes.

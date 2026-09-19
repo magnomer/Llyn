@@ -67,6 +67,7 @@ public partial class PRepertoire
         occurrence.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PRepertoireEntryUpdate));
         occurrence.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, POccurrenceFind));
         PDisplay.PDisplayVistaRestore(occurrence);
+        PEditor.PEditorVistaRestore(occurrence);
         PTierRestore();
         PMeshRestore();
 

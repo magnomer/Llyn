@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -25,6 +26,7 @@ internal sealed class PImageLazy : Decorator
         Loaded += PImageOpenHandle;
         Unloaded += PImageDropHandle;
         IsVisibleChanged += PImageVisibleHandle;
+        DataContextChanged += PImageContextHandle;
     }
 
     public PImagePending? PImageLazyRow
@@ -38,6 +40,25 @@ internal sealed class PImageLazy : Decorator
         if (holder is PImageLazy element && element.IsLoaded)
         {
             element.PImageLazyCheck();
+        }
+    }
+
+    private void PImageContextHandle(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        PImageLazyResolve();
+    }
+
+    private void PImageLazyResolve()
+    {
+        if (DataContext is not LImageDraft draft)
+        {
+            return;
+        }
+
+        Visibility = PLook.PLookVisibleRead(!draft.LImageDraftEmpty);
+        if (PMedia.PMediaRead(this) is PMedia media)
+        {
+            DataContext = media.PMediaImageCreate(draft);
         }
     }
 

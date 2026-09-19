@@ -70,6 +70,37 @@ public sealed partial class LTenure : LObserver
         }
     }
 
+    private const int LTenurePrepareRounds = 3;
+
+    public LDraft? LTenurePrepare()
+    {
+        return LTenurePrepare(LTenureDraftPrepare);
+    }
+
+    private void LTenureDraftPrepare()
+    {
+        if (_lTenureSubject != LSubject.LSubjectEntry)
+        {
+            return;
+        }
+
+        int rounds = 0;
+        while (rounds++ < LTenurePrepareRounds && LTenureDraftApply())
+        {
+        }
+    }
+
+    private bool LTenureDraftApply()
+    {
+        IReadOnlyList<LRequest> requests = _lEngine.LEngineDraftPrepare(LTenureId);
+        foreach (LRequest request in requests)
+        {
+            LTenureRequestApply(request);
+        }
+
+        return requests.Count > 0;
+    }
+
     public LDraft? LTenurePrepare(Action prepare)
     {
         ArgumentNullException.ThrowIfNull(prepare);

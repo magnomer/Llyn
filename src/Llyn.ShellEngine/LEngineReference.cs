@@ -229,6 +229,45 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)
+    {
+        if (draft == 0)
+        {
+            return [];
+        }
+
+        IReadOnlyList<LAuthor> credited = LEngineDraftRead(draft)?.LDraftAuthor ?? [];
+        List<LAuthor> offered = [];
+        foreach (LAuthor author in LEngineAuthorFind(query))
+        {
+            if (!author.LAuthorNamed || LEngineAuthorCheck(credited, author.LAuthorId))
+            {
+                continue;
+            }
+
+            offered.Add(author with { LAuthorName = author.LAuthorName.Trim() });
+            if (offered.Count == limit)
+            {
+                break;
+            }
+        }
+
+        return offered;
+    }
+
+    private static bool LEngineAuthorCheck(IReadOnlyList<LAuthor> credited, long id)
+    {
+        foreach (LAuthor author in credited)
+        {
+            if (author.LAuthorMatch(id))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)

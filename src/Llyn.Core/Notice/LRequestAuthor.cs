@@ -1,9 +1,17 @@
 namespace Llyn.Core;
 
-public sealed record LRequestAuthorAddition(long LRequestDraftId, string LRequestText, int LRequestPosition)
+public sealed record LRequestAuthorAddition(
+    long LRequestDraftId,
+    string LRequestText,
+    int LRequestPosition,
+    long LRequestFormerId = 0)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestAuthorPick(long LRequestDraftId, long LRequestAuthorId, int LRequestPosition)
+public sealed record LRequestAuthorPick(
+    long LRequestDraftId,
+    long LRequestAuthorId,
+    int LRequestPosition,
+    long LRequestFormerId = 0)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestAuthorRemoval(long LRequestDraftId, long LRequestAuthorId)

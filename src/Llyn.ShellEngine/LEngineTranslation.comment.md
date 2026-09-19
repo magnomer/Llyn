@@ -65,6 +65,10 @@ The headword and language behind each link id, in the order asked for.
 A card holds ids and shows words, so the two are joined once for the whole card.
 An id no Entry answers is passed over rather than raised.
 
+## `public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)`
+
+The held draft's targets keyed by id, so a card can find its own without a scan.
+
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
 
 The targets of `ids` as the draft `ownerId` sees them.

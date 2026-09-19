@@ -19,6 +19,12 @@ How far outside the viewport, in device-independent pixels, an element still cou
 
 The row the decorator reports to, bound from the template as the element's own data.
 
+## `private void PImageLazyResolve()`
+
+A reading view binds the draft's own picture rows, so a draft arriving as the element's data is wrapped here.
+The loading row becomes the element's data instead, so the picture below binds as it does in the editor.
+A draft naming no picture collapses the element, since there is nothing to show for it.
+
 ## `public PImageLazy()`
 
 Checks when the element enters the tree and stops watching when it leaves.

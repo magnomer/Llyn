@@ -45,6 +45,10 @@ A disabled row is dimmed rather than hidden, so the header keeps its shape on a 
 
 The half step under the pointer, or null while nothing hovers.
 
+## `public int PGraspPointed`
+
+The half step to word beside the stars: the hovered one, else the set one.
+
 ## `protected override Size MeasureOverride(Size availableSize)`
 
 Five stars and the four gaps between them, at a fixed size, plus a slack border on every side.
@@ -69,8 +73,7 @@ Left and Right move one half step, Home clears, End sets five stars.
 
 ## `public static string PGraspLabelResolve(int step)`
 
-The localization key wording a step, one key per half step from zero to ten.
-Both surfaces ask here, so a step is worded the same wherever it shows.
+The localization key wording a step, read from `LGrasp` so the deportment words it the same.
 
 ## `private void PGraspHoverChange(int? hovered)`
 

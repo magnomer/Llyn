@@ -52,7 +52,7 @@ public sealed class TLibraryVoyage
 
     private static LLibrary TLibraryPrepare(LEngine engine)
     {
-        LLibrary panel = TInterfaceDeportment.TLibraryCreate(engine, () => false, () => true, () => true);
+        LLibrary panel = TInterfaceDeportment.TLibraryCreate(engine, () => true, () => true);
         panel.TLibraryVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         return panel;
     }

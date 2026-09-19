@@ -43,10 +43,11 @@ public partial class PWindow : Window
 
     internal PLayout PWindowLayout => _pLayout;
 
+    internal PWindowScreen PWindowScreen { get; } = new();
+
     private void PWindowAttach(LEngine engine)
     {
         PEnsign.PEnsignAttach(engine);
-        PImage.PImageAttach(engine);
 
         engine.LEngineLeftoverSweep();
         engine.LEngineRecordingSweep();

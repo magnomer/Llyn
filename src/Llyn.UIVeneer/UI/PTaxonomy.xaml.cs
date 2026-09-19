@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,6 +11,8 @@ public partial class PTaxonomy : UserControl
     private PWindow _pTaxonomyHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     public PTaxonomy()
     {
@@ -26,8 +29,14 @@ public partial class PTaxonomy : UserControl
 
         PDisplay.PDisplayAttach(host, engine);
 
-        PEditor.PEditorAttach(host, engine, "Taxonomy", null);
-        PEditor.PEditorChangeNotice = changed => PTaxonomyStore.IsEnabled = changed;
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
+        PEditor.PEditorAttach(host, engine, _lEditor);
+    }
+
+    private void PTaxonomyStoreUpdate()
+    {
+        PTaxonomyStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal void PTaxonomyReset()

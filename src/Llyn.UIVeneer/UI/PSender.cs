@@ -37,4 +37,22 @@ internal static class PSender
     {
         return e.Parameter as bool?;
     }
+
+    internal static PSenderItem? PSenderFocusRead<PSenderItem>()
+        where PSenderItem : class
+    {
+        return Keyboard.FocusedElement is FrameworkElement { DataContext: PSenderItem item } ? item : null;
+    }
+
+    internal static string PSenderKeyRead(KeyEventArgs e)
+    {
+        return e.Key switch
+        {
+            Key.Enter => "Enter",
+            Key.Escape => "Escape",
+            Key.Down => "Down",
+            Key.Up => "Up",
+            _ => string.Empty,
+        };
+    }
 }

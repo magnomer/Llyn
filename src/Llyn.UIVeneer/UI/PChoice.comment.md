@@ -8,6 +8,10 @@ A filter dropdown opens with one row per loaded language, ticked unless the stor
 The row marked in the file is the one the user last clicked.
 A panel restoring a stored ordering therefore has to move the mark as well as reorder its list.
 
+## `private static readonly LReferenceKind[] PChoiceMenuOrder =`
+
+The order the kind chip menu lists the kinds in, with the unspecified row first and the unknown row last.
+
 ## `internal static void PChoiceOrderApply(Popup dropdown, LCatalogOrder order)`
 
 Marks the row of `dropdown` whose tag names `order`, and unmarks every other row.
@@ -24,6 +28,15 @@ The rows are built here so six panels share one row shape and one reading of a s
 
 Builds one ticked box per Source kind, its stored word as the tag and its localized name as the content.
 The kind's word is read twice rather than held, so no local carries it into the filter match.
+
+## `internal static void PChoiceMenuBuild(Panel list, RoutedEventHandler handler)`
+
+Builds one option row per Source kind for the imprint's kind chip, unknown last as the menu has always read.
+The stored word is the tag and the localized name the content, as the kind filter builds them.
+
+## `internal static void PChoiceMenuApply(Panel list, string tag)`
+
+Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu shows the held kind.
 
 ## `internal static LCatalogFilter PChoiceFilterRead(Panel list)`
 

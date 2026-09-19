@@ -39,6 +39,11 @@ The kind is read from the content rather than from a tag beside it, so the two c
 
 Never null, so a reader walks it without a check.
 
+## `public IReadOnlyList<LAuthorRow> LDraftCreditRead()`
+
+The credits as editor rows, each knowing its place and whether it can move.
+The source editor copies them and splices its own blank row in, so it never counts the credits itself.
+
 ## `public LDraft LDraftNormalize()`
 
 The same draft, whichever kind of record it holds with every unreadable value dropped to unspecified.

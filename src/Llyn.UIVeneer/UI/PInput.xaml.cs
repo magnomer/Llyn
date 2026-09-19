@@ -1,12 +1,15 @@
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PInput : UserControl
 {
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     private PObserver? _pInputObserver;
 
@@ -19,7 +22,8 @@ public partial class PInput : UserControl
     {
         _lEngine = engine;
 
-        PEditor.PEditorAttach(host, engine, "Input", null);
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        PEditor.PEditorAttach(host, engine, _lEditor);
 
         _pInputObserver = new PObserver(this, PInputBulletinHandle);
         engine.LEngineObserverAttach(_pInputObserver);
@@ -33,6 +37,11 @@ public partial class PInput : UserControl
         }
 
         PInputReset();
+    }
+
+    internal void PInputVistaRestore(LVista vista)
+    {
+        PEditor.PEditorVistaRestore(vista);
     }
 
     internal void PInputReset()

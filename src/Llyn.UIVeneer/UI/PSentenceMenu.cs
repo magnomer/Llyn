@@ -41,7 +41,7 @@ public partial class PEditor
 
     internal void PSentenceFrameLoad(string language)
     {
-        string chosen = string.IsNullOrWhiteSpace(language) ? PSpeakerLanguageRead() : language;
+        string chosen = string.IsNullOrWhiteSpace(language) ? _lEditor.LEditorLanguage : language;
 
         LSentenceOrder order = _lEngine.LEngineOrderRead(chosen);
         PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
@@ -135,7 +135,7 @@ public partial class PEditor
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
-            PSpeakerLanguageRead(),
+            _lEditor.LEditorLanguage,
             entryId => PEditorRequestSend(
                 new LRequestMentionAddition(PEditorDraft, cardId, rowId, offset, length, entryId, 0)));
     }
@@ -269,23 +269,6 @@ public partial class PEditor
             case nameof(PSentence.PSentenceCitation):
                 PCandidateCitationShow(card, row, box);
                 break;
-        }
-    }
-
-    private void PSentencePrepare(LEntryDraft draft)
-    {
-        PSentencePrepare(draft.LEntryDraftMeanings);
-        PSentencePrepare(draft.LEntryDraftCollocations);
-    }
-
-    private void PSentencePrepare(IReadOnlyList<LCardDraft> cards)
-    {
-        foreach (LCardDraft card in cards)
-        {
-            if (!card.LCardDraftExemplified)
-            {
-                PEditorRequestSend(new LRequestSentenceAddition(PEditorDraft, card.LCardDraftId, 0));
-            }
         }
     }
 

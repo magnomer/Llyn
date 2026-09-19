@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -53,6 +54,30 @@ public partial class PEditor
     {
         PVolume.Value = _lEngine.LEngineSettingsRead().LSettingsVolume;
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
+    }
+
+    private void PEditorRecordingShow(LEntryDraft draft)
+    {
+        if (string.Equals(_pRecording ?? string.Empty, draft.LEntryDraftAudio, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        PRecordingShow(draft.LEntryDraftAudio, draft.LEntryDraftPronunciation?.LPronunciationDraftSource);
+    }
+
+    private void PRecordingShow(string audio, string? source)
+    {
+        if (!_lEngine.LEngineRecordingExist(audio))
+        {
+            PRecordingClear();
+            return;
+        }
+
+        PRecordingClear();
+        _pRecording = audio;
+        _pRecordingSource = source;
+        PPlaybackAction.Visibility = Visibility.Visible;
     }
 
     private void PRecordingClear()

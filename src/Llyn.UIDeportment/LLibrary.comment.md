@@ -12,6 +12,10 @@ A vista read off the panel would be an engine answer to branch on.
 An import that failed, named by the key the window localizes and carrying the exception.
 The engine imports every entry or none, so nothing needs undoing before it is shown.
 
+## `public LEditor LLibraryEditor { get; }`
+
+The entry editor's deportment, whose desk answers whether the panel may leave and opens the row that is edited.
+
 ## `private int _lLibraryCount;`
 
 How many rows the last read returned, so the empty notice is a verdict rather than a veneer count.

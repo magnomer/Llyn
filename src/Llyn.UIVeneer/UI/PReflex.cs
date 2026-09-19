@@ -15,8 +15,6 @@ public partial class PEditor
 
     private HashSet<string> _pReflexFolded = [];
 
-    private IReadOnlyList<LFanqieRow> _pReflexFanqie = [];
-
     internal void PReflexAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
         PReflexItem? row = e.Parameter as PReflexItem;
@@ -43,7 +41,7 @@ public partial class PEditor
 
     internal void PReflexRebuildHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (PEditorEntryRead() is not long entry)
+        if (_lEditor.LEditorEntry is not long entry)
         {
             return;
         }
@@ -100,15 +98,11 @@ public partial class PEditor
 
     private void PReflexShow(LEntryDraft draft)
     {
-        if (_pEditorTenure is not LTenure held)
-        {
-            return;
-        }
-
         string language = draft.LEntryDraftLanguage;
-        PReflexBlock.Visibility = held.LTenureReflexCheck() ? Visibility.Visible : Visibility.Collapsed;
+        PReflexBlock.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorReflexShown);
 
         _pReflexFolded = PDisplay.PReflexFoldRead(_lEngine, language);
+
         PCard.PCardRowShow(
             _pReflexItem,
             draft.LEntryDraftReflexes,
@@ -118,20 +112,20 @@ public partial class PEditor
             PReflexUpdate);
 
         PDisplay.PReflexLeadApply(_pReflexItem);
-        PDisplay.PReflexFoldApply(_pReflexItem, PReflexFold);
+        PDisplay.PReflexFoldApply(_pReflexItem, PReflexFold, _lEditor.LEditorDisplay.LDisplayFoldOpened);
         PReflexAnchorShow();
         PReflexPendingShow();
     }
 
     internal void PReflexAnchorShow()
     {
-        PDisplay.PReflexAnchorApply(_pReflexItem, _pReflexFanqie, PHeadword.Text);
+        PDisplay.PReflexAnchorApply(_pReflexItem, _lEditor.LEditorAnchorRead(), PHeadword.Text);
     }
 
     internal void PReflexPendingShow()
     {
         bool pending = false;
-        if (PEditorEntryRead() is long entry)
+        if (_lEditor.LEditorEntry is long entry)
         {
             try
             {
@@ -154,7 +148,8 @@ public partial class PEditor
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        PDisplay.PReflexFoldToggle(_pReflexItem, PReflexFold);
+        _lEditor.LEditorDisplay.LDisplayFoldSet(PLook.PLookCheckedRead(PReflexFold.IsChecked));
+        PDisplay.PReflexFoldApply(_pReflexItem, PReflexFold, _lEditor.LEditorDisplay.LDisplayFoldOpened);
     }
 
     private void PReflexPrepare(LEntryDraft draft)
@@ -164,7 +159,7 @@ public partial class PEditor
             return;
         }
 
-        long? entry = PEditorEntryRead();
+        long? entry = _lEditor.LEditorEntry;
         if (entry is null)
         {
             return;
@@ -192,9 +187,8 @@ public partial class PEditor
     {
         string language = reflex.LReflexDraftLanguage.Trim();
         PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
-        if (respelling.PRespellingShown != row.PReflexItemRespelled
-            || _lEngine.LEnginePhonemicCheck(language) != row.PReflexItemPhonemic
-            || _pReflexFolded.Contains(language) != row.PReflexItemFolded)
+        if (!row.PReflexItemMatch(
+            respelling.PRespellingShown, _lEngine.LEnginePhonemicCheck(language), _pReflexFolded.Contains(language)))
         {
             row.PropertyChanged -= PReflexChangeHandle;
             return PReflexCreate(reflex);
@@ -222,7 +216,6 @@ public partial class PEditor
         }
 
         _pReflexItem.Clear();
-        _pReflexFanqie = [];
         PReflexFold.Visibility = Visibility.Collapsed;
         PReflexLoading.Visibility = Visibility.Collapsed;
         PReflexRenewal.Tag = false;

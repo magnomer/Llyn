@@ -19,6 +19,11 @@ internal static class PLook
         return chosen;
     }
 
+    internal static bool PLookCheckedRead(bool? shown)
+    {
+        return shown == true;
+    }
+
     internal static double PLookOpacityRead(bool active, double full, double faded)
     {
         return active ? full : faded;

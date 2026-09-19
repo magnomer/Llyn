@@ -41,7 +41,7 @@ public partial class PEditor : LListener
 
         string word = PHeadword.Text?.Trim() ?? string.Empty;
         _pClipItem.Clear();
-        _pClipSearching = word.Length > 0 && _pEditorTenure is not null;
+        _pClipSearching = word.Length > 0;
         PClipUpdate();
 
         if (word.Length == 0)
@@ -49,24 +49,18 @@ public partial class PEditor : LListener
             return;
         }
 
-        if (_pEditorTenure is not LTenure held)
-        {
-            return;
-        }
-
         try
         {
-            string language = held.LTenureLanguageRead();
-            if (held.LTenureFlaggedCheck())
+            if (_lEditor.LEditorFlagged)
             {
-                await PEnsign.PEnsignVarietyLoad(_lEngine, held);
+                await PEnsign.PEnsignVarietyLoad(_lEngine, _lEditor);
                 if (!PClip.IsOpen)
                 {
                     return;
                 }
             }
 
-            _pClipForay = held.LTenureRecordingStart(word, target, this);
+            _pClipForay = _lEditor.LEditorRecordingStart(word, target, this);
         }
         catch (Exception)
         {

@@ -26,6 +26,11 @@ public sealed record LDraft(
 
     public IReadOnlyList<LAuthor> LDraftAuthor { get; init; } = LDraftAuthor ?? [];
 
+    public IReadOnlyList<LAuthorRow> LDraftCreditRead()
+    {
+        return LAuthorRow.LAuthorRowCreate(LDraftAuthor);
+    }
+
     public LDraft LDraftNormalize()
     {
         return this with

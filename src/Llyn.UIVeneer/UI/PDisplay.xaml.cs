@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -18,6 +19,8 @@ public partial class PDisplay : UserControl
     private PWindow _pDisplayHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LDisplay _lDisplay = null!;
 
     private LVista? _pDisplayVista;
 
@@ -42,6 +45,8 @@ public partial class PDisplay : UserControl
     {
         _pDisplayHost = host;
         _lEngine = engine;
+        _lDisplay = new LDisplay(engine);
+        PMedia.PMediaAttach(this, engine);
 
         PVolumeLoad();
     }
@@ -170,23 +175,8 @@ public partial class PDisplay : UserControl
             frequency = [];
         }
 
-        if (frequency.Count == 0)
-        {
-            PDisplayFrequency.Text = string.Empty;
-            PDisplayFrequencyChip.ToolTip = null;
-            PDisplayFrequencySection.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        int count = PFrequencyLabel.PFrequencyBandResolve(frequency);
-        PFrequencyLabel.PFrequencyLabelShow(
-            PDisplayFrequency,
-            PDisplayFrequencyBand,
-            count,
-            PLocalizationCatalog.PLocalizationTextRead(PFrequencyLabel.PFrequencyLabelResolve(count)));
-        PDisplayFrequencyChip.ToolTip = PFrequencyLabel.PFrequencySourceFormat(
-            frequency, PLocalizationCatalog.PLocalizationTextRead("Frequency.Once"));
-        PDisplayFrequencySection.Visibility = Visibility.Visible;
+        PFrequencyLabel.PFrequencyChipShow(
+            PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand, frequency);
     }
 
     private static string PDisplayStampFormat(string? utc)

@@ -15,13 +15,15 @@
     </Style>
 
     <DataTemplate x:Key="Display.Card.VideoLine">
-        <Border HorizontalAlignment="Stretch" Style="{DynamicResource Theme.Card.Preview}">
-            <local:PScreen
-                PScreenFrom="{Binding PVideoFrom}"
-                PScreenLocation="{Binding PVideoLocation, Converter={StaticResource Display.Card.State}}"
-                PScreenPlaying="{Binding PVideoPlaying, Mode=TwoWay}"
-                PScreenUntil="{Binding PVideoUntil}"
-                PScreenVolume="{Binding PVolumeCatalogLevel, Source={x:Static local:PVolumeCatalog.PVolumeCatalogCurrent}}" />
-        </Border>
+        <local:PVideoFrame>
+            <Border HorizontalAlignment="Stretch" Style="{DynamicResource Theme.Card.Preview}">
+                <local:PScreen
+                    PScreenFrom="{Binding PVideoFrom}"
+                    PScreenAddress="{Binding PVideoPreview}"
+                    PScreenPlaying="{Binding PVideoPlaying, Mode=TwoWay}"
+                    PScreenUntil="{Binding PVideoUntil}"
+                    PScreenVolume="{Binding PVolumeCatalogLevel, Source={x:Static local:PVolumeCatalog.PVolumeCatalogCurrent}}" />
+            </Border>
+        </local:PVideoFrame>
     </DataTemplate>
 </ResourceDictionary>

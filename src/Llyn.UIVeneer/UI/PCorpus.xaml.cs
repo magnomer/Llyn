@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -11,6 +12,8 @@ public partial class PCorpus : UserControl, PChronicleHost
     private PWindow _pCorpusHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     public PCorpus()
     {
@@ -33,9 +36,15 @@ public partial class PCorpus : UserControl, PChronicleHost
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
         PDisplay.PDisplayAttach(host, engine);
-        PEditor.PEditorAttach(host, engine, PTranscriptOrigin, null);
-        PEditor.PEditorChangeNotice = changed => PCorpusStore.IsEnabled = changed;
-        PEditor.PEditorChronicleNotice = PChronicleUpdate;
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor.LEditorStateChanged += PCorpusStoreUpdate;
+        _lEditor.LEditorStateChanged += PChronicleUpdate;
+        PEditor.PEditorAttach(host, engine, _lEditor);
+    }
+
+    private void PCorpusStoreUpdate()
+    {
+        PCorpusStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal void PCorpusReset()

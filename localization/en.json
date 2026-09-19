@@ -88,6 +88,7 @@
     "Input.SaveFailed": "The entry could not be saved.",
     "Input.UpdateFailed": "The entry could not be updated.",
     "Input.HoldFailed": "The unsaved entry could not be held.",
+    "Input.LoadFailed": "The entry could not be read.",
     "Input.TranslationFailed": "The translation could not be linked.",
     "Input.Headword": "Headword",
     "Input.Pronunciation": "Pronunciation",

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;
@@ -89,19 +91,6 @@ public partial class PEditor
         card.PCardVideoShow(draft.LCardDraftVideo);
     }
 
-    private void PCardPrepare(LEntryDraft draft)
-    {
-        if (!draft.LEntryDraftDefined)
-        {
-            PEditorRequestSend(new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindMeaning, 0, 0));
-        }
-
-        if (!draft.LEntryDraftCollocated)
-        {
-            PEditorRequestSend(new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindCollocation, 0, 0));
-        }
-    }
-
     private static PCard? PCardFind(IReadOnlyList<PCard> cards, long id)
     {
         foreach (PCard card in cards)
@@ -128,5 +117,54 @@ public partial class PEditor
         }
 
         return found;
+    }
+
+    private void PEditorFieldHandle(TextBox box)
+    {
+        UIElement owner = box.TemplatedParent as ComboBox ?? (UIElement)box;
+        if (!owner.IsKeyboardFocusWithin)
+        {
+            return;
+        }
+
+        string field = PField.PFieldPathRead(box);
+        LStateWritten written = new(box.Text);
+        switch (box.DataContext)
+        {
+            case PCard card:
+                PCardChangeHandle(card, field, written);
+                break;
+            case PSentence row when PCardSentenceFind(row) is PCard card:
+                PSentenceChangeHandle(card, row, field, box);
+                break;
+            case PGloss gloss:
+                PGlossChangeHandle(gloss, written);
+                break;
+            case PImage row:
+                PEditorRequestDefer(new LRequestImageLocation(PEditorDraft, row.PImageId, written));
+                break;
+            case PVideo row when field == nameof(PVideo.PVideoLocation):
+                PEditorRequestDefer(new LRequestVideoLocation(PEditorDraft, row.PVideoId, written));
+                break;
+            case PVideo row:
+                PEditorRequestDefer(new LRequestVideoSpan(PEditorDraft, row.PVideoId, written));
+                break;
+        }
+    }
+
+    private void PCardChangeHandle(PCard card, string field, LStateWritten written)
+    {
+        switch (field)
+        {
+            case nameof(PCard.PTitle):
+                PEditorRequestDefer(new LRequestCardTitle(PEditorDraft, card.PCardId, written));
+                break;
+            case nameof(PCard.PCardExpression):
+                PEditorRequestDefer(new LRequestCardExpression(PEditorDraft, card.PCardId, written));
+                break;
+            case nameof(PCard.PCardDefinition):
+                PEditorRequestDefer(new LRequestCardMeaning(PEditorDraft, card.PCardId, written));
+                break;
+        }
     }
 }

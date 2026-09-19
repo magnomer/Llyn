@@ -65,6 +65,8 @@ public sealed class LVista : LObserver
 
     public bool LVistaLeft => string.Equals(LVistaTab, "left", StringComparison.Ordinal);
 
+    public bool LVistaInput => string.Equals(LVistaTab, "input", StringComparison.Ordinal);
+
     public LDraft? LVistaLoad()
     {
         LDraft? draft = _lEngine.LEngineVistaLoad(this);

@@ -37,6 +37,11 @@ The earned stars take the rung's brush and the rest the faint empty brush, so th
 The empty stars are the same glyph dimmed, since a hollow glyph beside a filled one reads as five stars.
 An unknown rung hides the star row and shows the name muted.
 
+## `internal static void PFrequencyChipShow(`
+
+Fills one whole frequency section from the engine's rows: the chip's name, star row and source tooltip.
+An empty row list collapses the section, so both surfaces hide it the same way.
+
 ## `internal static string PFrequencySourceFormat(IReadOnlyList<LFrequency> rows, string once)`
 
 One line per row, each naming its source, so the band is never the only thing said.

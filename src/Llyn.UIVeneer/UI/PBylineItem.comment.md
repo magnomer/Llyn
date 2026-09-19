@@ -13,3 +13,12 @@ The comparison is the culture's own and reports how long the match ran.
 A match under a culture's rules is not always as long as the text that found it.
 A name the typing does not appear in is held whole in the first piece.
 A row is never lost to a search that cannot point at itself.
+
+## `internal static long? PBylineItemRead(object? chosen)`
+
+The Author a lit row names, or null while no row is lit.
+The veneer thus passes a list's choice through unshaped.
+
+## `internal static IReadOnlyList<PBylineItem> PBylineItemBuild(IReadOnlyList<LAuthor> rows, string word)`
+
+One item per Author the engine offered, each split around the word typed.

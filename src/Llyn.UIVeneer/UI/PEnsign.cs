@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
 
@@ -73,9 +76,9 @@ internal static class PEnsign
         }
     }
 
-    internal static Task PEnsignVarietyLoad(LEngine engine, LTenure tenure)
+    internal static Task PEnsignVarietyLoad(LEngine engine, LEditor editor)
     {
-        return PEnsignVarietyLoad(engine, tenure.LTenureLanguageRead(), tenure.LTenureVarietyNames);
+        return PEnsignVarietyLoad(engine, editor.LEditorLanguage, editor.LEditorVarietyNames);
     }
 
     internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)
@@ -108,6 +111,14 @@ internal static class PEnsign
     internal static string PEnsignVarietyFormat(string language, string variety)
     {
         return string.Concat(language, "/", variety);
+    }
+
+    internal static void PEnsignFlagShow(Image flag, UIElement globe, string language)
+    {
+        ImageSource? found = PEnsignFind(language);
+        flag.Source = found;
+        flag.Visibility = PLook.PLookVisibleRead(found is not null);
+        globe.Visibility = PLook.PLookVisibleRead(found is null);
     }
 
     internal static ImageSource? PEnsignFind(string language)

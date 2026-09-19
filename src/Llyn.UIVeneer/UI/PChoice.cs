@@ -11,6 +11,20 @@ namespace Llyn.UIVeneer;
 
 internal static class PChoice
 {
+    private static readonly LReferenceKind[] PChoiceMenuOrder =
+    [
+        LReferenceKind.LReferenceKindUnspecified,
+        LReferenceKind.LReferenceKindBook,
+        LReferenceKind.LReferenceKindJournal,
+        LReferenceKind.LReferenceKindArticle,
+        LReferenceKind.LReferenceKindWeb,
+        LReferenceKind.LReferenceKindVideo,
+        LReferenceKind.LReferenceKindAudio,
+        LReferenceKind.LReferenceKindPicture,
+        LReferenceKind.LReferenceKindOther,
+        LReferenceKind.LReferenceKindUnknown,
+    ];
+
     internal static void PChoiceOrderApply(Popup dropdown, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(dropdown);
@@ -67,6 +81,39 @@ internal static class PChoice
             box.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
             box.Click += handler;
             list.Children.Add(box);
+        }
+    }
+
+    internal static void PChoiceMenuBuild(Panel list, RoutedEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        list.Children.Clear();
+        foreach (LReferenceKind kind in PChoiceMenuOrder)
+        {
+            RadioButton choice = new()
+            {
+                GroupName = nameof(PChoiceMenuBuild),
+                Tag = LReference.LReferenceKindFormat(kind),
+            };
+            choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
+            choice.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
+            choice.Click += handler;
+            list.Children.Add(choice);
+        }
+    }
+
+    internal static void PChoiceMenuApply(Panel list, string tag)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+
+        foreach (object child in list.Children)
+        {
+            if (child is RadioButton choice)
+            {
+                choice.IsChecked = string.Equals(choice.Tag as string, tag, StringComparison.Ordinal);
+            }
         }
     }
 

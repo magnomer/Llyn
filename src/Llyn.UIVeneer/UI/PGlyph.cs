@@ -56,26 +56,6 @@ public partial class PEditor
             PTranscriptionUpdate);
     }
 
-    private void PGlyphPrepare(LEntryDraft draft)
-    {
-        LGlyph? glyph = _lEngine.LEngineGlyphRead(draft.LEntryDraftLanguage);
-        if (glyph is null)
-        {
-            return;
-        }
-
-        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
-        {
-            if (PGlyphSchemeCheck(glyph, spelled.LTranscriptionDraftScheme))
-            {
-                return;
-            }
-        }
-
-        PEditorRequestSend(new LRequestTranscriptionAddition(
-            PEditorDraft, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
-    }
-
     private void PGlyphClear()
     {
         foreach (PTranscriptionItem row in _pGlyphItem)

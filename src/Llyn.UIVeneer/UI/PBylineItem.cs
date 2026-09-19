@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -39,4 +42,23 @@ internal sealed class PBylineItem
     public string PBylineItemMark { get; }
 
     public string PBylineItemTail { get; }
+
+    internal static long? PBylineItemRead(object? chosen)
+    {
+        return (chosen as PBylineItem)?.PBylineItemId;
+    }
+
+    internal static IReadOnlyList<PBylineItem> PBylineItemBuild(IReadOnlyList<LAuthor> rows, string word)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(word);
+
+        List<PBylineItem> built = new(rows.Count);
+        foreach (LAuthor author in rows)
+        {
+            built.Add(new PBylineItem(author.LAuthorId, author.LAuthorName, word));
+        }
+
+        return built;
+    }
 }

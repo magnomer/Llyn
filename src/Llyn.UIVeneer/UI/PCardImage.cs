@@ -23,8 +23,8 @@ internal sealed partial class PCard
             });
     }
 
-    private static PImage PCardImageCreate(LImageDraft draft)
+    private PImage PCardImageCreate(LImageDraft draft)
     {
-        return new PImage(draft);
+        return new PImage(_pCardEngine, draft);
     }
 }

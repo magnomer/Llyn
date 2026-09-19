@@ -45,11 +45,28 @@ An entry that is gone is refused before a file is written, so no draft can point
 A claim naming this process is written beside the draft.
 Another launch reading the folder then knows the work is live.
 
+## `internal IReadOnlyList<LRequest> LEngineDraftPrepare(long id)`
+
+The requests that give a held entry draft the rows the editor always shows.
+One meaning card and one collocation card, one sentence under each card, and the first transcription row.
+The glyph section's own row is added too when the language has one.
+The tenure applies them in its prepare turn and asks again, since a new card needs its sentence.
+
+## `private static void LEngineSentencePrepare(long id, LCardDraft card, List<LRequest> requests)`
+
+Adds the sentence request for one card that has none.
+
 ## `internal LDraft? LEngineDraftRead(long id)`
 
 Reads one held draft, or null when its file is gone or unknown.
 A missing file is an ordinary answer here, unlike the calls that go on to act on the draft.
 An id from a closed workspace is not a missing file and is refused rather than answered null.
+The credits come back under the names the database holds now, so a rename elsewhere shows on the next read.
+
+## `private LDraft? LEngineCreditUpdate(LDraft? draft)`
+
+The draft with each stored credit renamed as the database names it now.
+A minted Author is not stored yet, and one deleted meanwhile keeps the name the draft holds.
 
 ## `internal IReadOnlyList<LDraft> LEngineDraftScan()`
 

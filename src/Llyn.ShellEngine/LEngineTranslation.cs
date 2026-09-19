@@ -155,6 +155,17 @@ public sealed partial class LEngine
         return draft is null || !draft.LEntryDraftTargeted ? [] : LEngineTargetRead(ownerId, draft.LEntryDraftTargets);
     }
 
+    public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)
+    {
+        Dictionary<long, LTranslationTarget> targets = [];
+        foreach (LTranslationTarget target in LEngineTargetRead(ownerId))
+        {
+            targets[target.LTranslationTargetId] = target;
+        }
+
+        return targets;
+    }
+
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
     {
         lock (_lEngineGate)

@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -11,6 +12,8 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     private PWindow _pRepertoireHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     public PRepertoire()
     {
@@ -30,10 +33,17 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         PScenarioImage.ItemsSource = _pScenarioImage;
         PScenarioVideo.ItemsSource = _pScenarioVideo;
 
+        PMedia.PMediaAttach(this, engine);
         PDisplay.PDisplayAttach(host, engine);
-        PEditor.PEditorAttach(host, engine, PScenarioOrigin, null);
-        PEditor.PEditorChangeNotice = changed => PRepertoireStore.IsEnabled = changed;
-        PEditor.PEditorChronicleNotice = PChronicleUpdate;
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor.LEditorStateChanged += PRepertoireStoreUpdate;
+        _lEditor.LEditorStateChanged += PChronicleUpdate;
+        PEditor.PEditorAttach(host, engine, _lEditor);
+    }
+
+    private void PRepertoireStoreUpdate()
+    {
+        PRepertoireStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal void PRepertoireReset()

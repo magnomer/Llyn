@@ -15,6 +15,10 @@ The highest stored value, five stars counted in half steps.
 
 Whether a value lies within the stored range of zero to ten.
 
+## `public static string LGraspKeyRead(int grasp)`
+
+The localization key of the label for a half-step count, `Grasp.Level0` through `Grasp.Level10`.
+
 ## `public static string LGraspFormat(int grasp)`
 
 Renders a half-step count as a star figure such as `2.5`, in the invariant culture.

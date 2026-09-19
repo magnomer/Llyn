@@ -146,7 +146,7 @@ public partial class PEditor
         {
             link = _lEngine.LEngineCourtStart(
                 PEditorDraft,
-                _pEditorOrigin,
+                _lEditor.LEditorOrigin,
                 item.PProspectItemHeadword,
                 item.PProspectItemLanguage);
         }
@@ -180,7 +180,7 @@ public partial class PEditor
                 entry.LVistaRowEpithet ?? string.Empty, entry.LVistaRowName));
         }
 
-        long? self = PEditorEntryRead();
+        long? self = _lEditor.LEditorEntry;
         foreach (PProspectItem item in stored)
         {
             if (self is null || item.PProspectItemId != self)
@@ -216,13 +216,13 @@ public partial class PEditor
         List<string> languages = [];
         foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!string.Equals(item.PLanguageItemName, PSpeakerLanguageRead(), StringComparison.Ordinal))
+            if (!item.PLanguageItemMatch(_lEditor.LEditorLanguage))
             {
                 languages.Add(item.PLanguageItemName);
             }
         }
 
-        languages.Add(PSpeakerLanguageRead());
+        languages.Add(_lEditor.LEditorLanguage);
         return languages;
     }
 }

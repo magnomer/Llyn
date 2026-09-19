@@ -32,42 +32,31 @@ public partial class PReference : UserControl
         _lEngine = engine;
         _lShelf = new LShelf(
             engine,
-            PImprint.PImprintChangeCheck,
-            PEditor.PEditorChangeCheck,
+            new LEditor(engine, host.PWindowUnreadableConfirm),
             PReferenceShownCheck,
             PReferenceDiscardConfirm,
-            PReferenceRemovalConfirm);
+            PReferenceRemovalConfirm,
+            host.PWindowUnreadableConfirm);
         _lShelf.LShelfChanged += PReferenceModeUpdate;
-        _lShelf.LShelfOpened += PReferenceImprintStart;
-        _lShelf.LShelfClosed += PImprint.PImprintDraftCancel;
         _lShelf.LShelfPanel.LPanelChanged += PReferenceModeUpdate;
         _lShelf.LShelfPanel.LPanelRowsChanged += PShelfUpdate;
-        _lShelf.LShelfPanel.LPanelCleared += PImprint.PImprintDraftCancel;
         _lShelf.LShelfPanel.LPanelCleared += PImprint.PImprintClear;
         _lShelf.LShelfPanel.LPanelCleared += PColophon.PColophonClear;
         _lShelf.LShelfPanel.LPanelDraftChanged += PReferenceSourceUpdate;
-        _lShelf.LShelfPanel.LPanelEdited += PReferenceImprintOpen;
         _lShelf.LShelfPanel.LPanelFailed += host.PWindowFailureShow;
-        _lShelf.LShelfFootnote.LFootnoteCreated += PEditor.PEditorReferenceAdd;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelChanged += PReferenceModeUpdate;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsChanged += PFootnoteUpdate;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelCleared += PDisplay.PDisplayClear;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelCleared += PEditor.PEditorReset;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelDraftChanged += PReferenceEntryUpdate;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelEdited += PEditor.PEditorEntryShow;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelFailed += host.PWindowFailureShow;
 
         PShelf.ItemsSource = _pShelfList;
         PFootnote.ItemsSource = _pFootnoteList;
 
         PColophon.PColophonAttach(host);
-        PImprint.PImprintAttach(host, engine, this);
+        PImprint.PImprintAttach(host, _lShelf.LShelfImprint);
         PDisplay.PDisplayAttach(host, engine);
-        PEditor.PEditorAttach(host, engine, "Reference", null);
-        PEditor.PEditorChangeNotice = _lShelf.LShelfEditorSet;
-        PEditor.PEditorChronicleNotice = PReferenceChronicleUpdate;
-        PImprint.PImprintChangeNotice = _lShelf.LShelfImprintSet;
-        PImprint.PImprintChronicleNotice = PReferenceChronicleUpdate;
+        PEditor.PEditorAttach(host, engine, _lShelf.LShelfEditor);
     }
 
     internal async void PReferenceVistaRestore(LVista vista, LVista footnote)
@@ -75,11 +64,13 @@ public partial class PReference : UserControl
         _lShelf.LShelfVistaRestore(vista, footnote);
         vista.LVistaObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PReferenceWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PImprint.PImprintAuthorUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lShelf.LShelfClear));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectAuthor, new PObserver(this, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
         vista.LVistaObserverAttach(
             LSubject.LSubjectAuthor, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PShelfReferenceUpdate));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectReference, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         vista.LVistaObserverAttach(
             LSubject.LSubjectExample, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         vista.LVistaObserverAttach(
@@ -94,6 +85,7 @@ public partial class PReference : UserControl
         footnote.LVistaObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
         PDisplay.PDisplayVistaRestore(footnote);
+        PEditor.PEditorVistaRestore(footnote);
         PChoice.PChoiceOrderApply(PGradeDropdown, vista.LVistaOrder);
         PTrellisUpdate();
 
@@ -102,19 +94,6 @@ public partial class PReference : UserControl
         PChoice.PChoiceFilterBuild(PTrellisList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PTrellisHandle);
         _lShelf.LShelfQuerySet(PSurvey.Text);
         _lShelf.LShelfFootnote.LFootnoteQuerySet(PRummage.Text);
-        PImprint.PAuthorFind();
-        _lShelf.LShelfPanel.LPanelRowsUpdate();
-    }
-
-    private void PReferenceWorkspaceUpdate()
-    {
-        _lShelf.LShelfClear();
-        PImprint.PAuthorFind();
-    }
-
-    private void PShelfReferenceUpdate()
-    {
-        PImprint.PAuthorFind();
         _lShelf.LShelfPanel.LPanelRowsUpdate();
     }
 
@@ -125,18 +104,7 @@ public partial class PReference : UserControl
 
     internal bool PReferenceDraftFinish(bool store)
     {
-        return PLook.PLookFirstRead<Func<bool, bool>>(
-            _lShelf.LShelfEntrySide, PEditor.PEditorDraftFinish, PImprint.PImprintDraftFinish)(store);
-    }
-
-    internal string PReferenceTallyRead(long? id)
-    {
-        return _lShelf.LShelfTallyRead(id);
-    }
-
-    internal void PReferenceShow(long id)
-    {
-        _lShelf.LShelfStoredShow(id);
+        return _lShelf.LShelfDraftFinish(store);
     }
 
     internal void PReferenceScribeRestore(bool editing)
@@ -166,16 +134,6 @@ public partial class PReference : UserControl
     private bool PReferenceRemovalConfirm(int usage)
     {
         return _pReferenceHost.PWindowRemovalConfirm(usage, "Source");
-    }
-
-    private void PReferenceImprintStart()
-    {
-        PImprint.PImprintDraftOpen(null);
-    }
-
-    private void PReferenceImprintOpen(long id)
-    {
-        PImprint.PImprintDraftOpen(id);
     }
 
     private void PShelfUpdate()
@@ -217,8 +175,7 @@ public partial class PReference : UserControl
 
     private void PReferenceChronicleUpdate()
     {
-        (bool undo, bool redo) = PLook.PLookFirstRead(
-            _lShelf.LShelfEntrySide, PEditor.PEditorChronicleRead(), PImprint.PImprintChronicleRead());
+        (bool undo, bool redo) = _lShelf.LShelfChronicleRead();
         PReferenceBackward.IsEnabled = undo;
         PReferenceForward.IsEnabled = redo;
     }
@@ -282,17 +239,17 @@ public partial class PReference : UserControl
 
     private void PReferenceStoreHandle(object sender, RoutedEventArgs e)
     {
-        PLook.PLookFirstRead<Action>(_lShelf.LShelfEntrySide, PEditor.PEditorEntrySave, PImprint.PImprintStoreRun)();
+        _lShelf.LShelfStoreRun();
     }
 
     private void PReferenceUndoHandle(object sender, RoutedEventArgs e)
     {
-        PLook.PLookFirstRead<PChronicleHost>(_lShelf.LShelfEntrySide, PEditor, PImprint).PChronicleUndo();
+        PChronicle.PChronicleRun(_lShelf.LShelfUndo);
     }
 
     private void PReferenceRedoHandle(object sender, RoutedEventArgs e)
     {
-        PLook.PLookFirstRead<PChronicleHost>(_lShelf.LShelfEntrySide, PEditor, PImprint).PChronicleRedo();
+        PChronicle.PChronicleRun(_lShelf.LShelfRedo);
     }
 
     private void PReferenceBinHandle(object sender, RoutedEventArgs e)

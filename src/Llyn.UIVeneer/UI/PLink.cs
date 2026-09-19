@@ -217,7 +217,7 @@ public partial class PEditor
         IReadOnlyList<LVistaRow> found;
         try
         {
-            long? entry = PEditorEntryRead();
+            long? entry = _lEditor.LEditorEntry;
             single = _lEngine.LEngineTranslationResolve(word, entry);
             found = single is null || offered ? _lEngine.LEngineProspectFind(word) : [];
         }

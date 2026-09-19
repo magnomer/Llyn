@@ -60,6 +60,7 @@ public partial class PCorpus
         quotation.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PCorpusEntryUpdate));
         quotation.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PQuotationFind));
         PDisplay.PDisplayVistaRestore(quotation);
+        PEditor.PEditorVistaRestore(quotation);
         PRankRestore();
         PGauzeRestore();
 

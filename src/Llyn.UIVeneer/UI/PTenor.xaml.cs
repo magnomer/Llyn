@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,6 +11,8 @@ public partial class PTenor : UserControl
     private PWindow _pTenorHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LEditor _lEditor = null!;
 
     public PTenor()
     {
@@ -26,8 +29,14 @@ public partial class PTenor : UserControl
 
         PDisplay.PDisplayAttach(host, engine);
 
-        PEditor.PEditorAttach(host, engine, "Tenor", null);
-        PEditor.PEditorChangeNotice = changed => PTenorStore.IsEnabled = changed;
+        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor.LEditorStateChanged += PTenorStoreUpdate;
+        PEditor.PEditorAttach(host, engine, _lEditor);
+    }
+
+    private void PTenorStoreUpdate()
+    {
+        PTenorStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal void PTenorReset()

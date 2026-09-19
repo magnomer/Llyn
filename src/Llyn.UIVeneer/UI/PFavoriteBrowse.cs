@@ -74,6 +74,7 @@ public partial class PFavorite
         vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PRosterFind));
         vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PFavoriteEntryUpdate));
         PDisplay.PDisplayVistaRestore(vista);
+        PEditor.PEditorVistaRestore(vista);
         PSeriesRestore();
         PStrainerRestore();
 

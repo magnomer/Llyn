@@ -1,5 +1,9 @@
 # LParadigm.cs
 
+## `public static string LParadigmLanguageRead(IReadOnlyList<LParadigmSlot> slots)`
+
+The language the first slot's speech carries, or empty when there are no slots, for the section's font.
+
 ## `public sealed record LParadigm(`
 
 The forms one part of speech is expected to inflect into, as a language pack declares them.

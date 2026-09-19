@@ -37,6 +37,7 @@ The situation panel and the chips both route here through `LEngineSituationChang
 Credits the Author of the typed name at the place asked for.
 A name the draft already credits, or the store already holds, is that Author rather than a second one.
 Only a name nobody has is minted new, so two Sources by one person credit one Author.
+The credit the field stood for gives way to the new one, and stays when the name resolves to itself.
 The name is compared folded, as the catalog compares it, because case is not a different person.
 An Author already credited is left where it is, as picking one is.
 A blank name is an argument error, since the form never offers one.
@@ -49,6 +50,7 @@ The Author in the list whose folded name is the folded name given, or none.
 
 Credits the stored Author named, unless already credited.
 An id naming no stored Author is refused.
+The credit the field stood for gives way to the picked one, and stays when the pick is itself.
 
 ## `private static LDraft LEngineAuthorRemove(LDraft draft, long authorId)`
 

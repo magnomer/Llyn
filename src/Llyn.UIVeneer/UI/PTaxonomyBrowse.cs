@@ -74,6 +74,7 @@ public partial class PTaxonomy
         membership.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
         membership.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PMembershipFind));
         PDisplay.PDisplayVistaRestore(membership);
+        PEditor.PEditorVistaRestore(membership);
         PFunnelRestore();
         PLatticeRestore();
 

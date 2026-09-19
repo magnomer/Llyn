@@ -31,6 +31,24 @@ So a specified authorship may name one Author, several, or the specified Author 
 - `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors.
   It also says whether the stored word could be read.
 
+## `public string LReferenceKindKey`
+
+The localization key of the kind held, for a page that shows the kind it was given.
+
+## `public string LReferenceKindTag`
+
+The stored word of the kind held, which a menu row carries as its tag.
+
+## `public string LReferenceTitleHint`
+
+The placeholder key the title field shows while empty.
+It is the unknown mark while the title is unknown, else the field's own key.
+The year, url and note hints beside it read the same way.
+
+## `private static string LReferenceHintRead(LStateValue value, string key)`
+
+The unknown mark for an unknown value, else the key the field owns.
+
 ## `public string LReferenceNameRead()`
 
 The name the Reference is shown under, which is the first field it actually states.

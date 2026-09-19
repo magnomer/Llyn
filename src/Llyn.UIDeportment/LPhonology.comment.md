@@ -7,6 +7,10 @@ The panel state is held rather than inherited, because a shell type deriving fro
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
 
+## `public LEditor LPhonologyEditor { get; }`
+
+The entry editor's deportment, whose desk answers whether the panel may leave and opens the row that is edited.
+
 ## `private int _lPhonologyCount;`
 
 How many rows the last read returned, so the empty notice is a verdict rather than a veneer count.

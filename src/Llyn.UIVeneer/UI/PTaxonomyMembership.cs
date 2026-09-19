@@ -144,7 +144,7 @@ public partial class PTaxonomy
 
         if (tag != 0)
         {
-            PEditor.PEditorTagAdd(tag);
+            _lEditor.LEditorTagAdd(tag);
         }
     }
 }

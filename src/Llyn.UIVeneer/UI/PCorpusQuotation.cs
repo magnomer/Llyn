@@ -125,7 +125,7 @@ public partial class PCorpus
 
         if (example is long id)
         {
-            PEditor.PEditorExampleAdd(id);
+            _lEditor.LEditorExampleAdd(id);
         }
     }
 

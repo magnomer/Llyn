@@ -7,6 +7,15 @@ A Meaning card and a Collocation card are the same card, so one pair of paths se
 The panel owns this and not the card, because only the panel knows which list a card stands in.
 Nothing is read back from a card, because every edit reached the engine as a request.
 
+## `private void PEditorFieldHandle(TextBox box)`
+
+A field inside a card, sentence, gloss, picture or film row changed, so the request its binding names is deferred.
+Only a field with the keyboard in it reports, since a write from the draft echoes through the same event.
+
+## `private void PCardChangeHandle(PCard card, string field, LStateWritten written)`
+
+The card's own three fields, each deferred as its own request.
+
 ## Inline notes
 
 ### `private void PCardShow(`

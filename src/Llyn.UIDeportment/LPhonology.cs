@@ -15,15 +15,32 @@ public sealed class LPhonology
     private int _lPhonologyCount;
 
     public LPhonology(
-        LEngine engine, Func<bool> changeSeam, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(editor);
 
         _lEngine = engine;
-        LPhonologyPanel = new LPanel("Sound.LoadFailed", changeSeam, shownSeam, leaveSeam, deleteSeam);
+        LPhonologyEditor = editor;
+        LPhonologyPanel = new LPanel(
+            "Sound.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
+        LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
     }
 
+    public LEditor LPhonologyEditor { get; }
+
     public LPanel LPhonologyPanel { get; }
+
+    private void LPhonologyEditorClear()
+    {
+        LPhonologyEditor.LEditorOpen(null);
+    }
+
+    private void LPhonologyEditorOpen(long id)
+    {
+        LPhonologyEditor.LEditorOpen(id);
+    }
 
     public bool LPhonologyInventoryEmpty => _lPhonologyCount == 0;
 
