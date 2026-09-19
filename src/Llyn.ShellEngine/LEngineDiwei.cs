@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LDiweiArchive(_lEngineDatabase).LDiweiRead(language, kind);
+            return _lEngineDiweiVault.LDiweiRead(language, kind);
         }
     }
 
@@ -25,7 +24,7 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            return new LDiweiArchive(_lEngineDatabase).LDiweiRead(wanted);
+            return _lEngineDiweiVault.LDiweiRead(wanted);
         }
     }
 
@@ -58,7 +57,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LDiweiArchive(_lEngineDatabase).LDiweiFind(language, kind, key);
+            return _lEngineDiweiVault.LDiweiFind(language, kind, key);
         }
     }
 
@@ -92,7 +91,7 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            return new LDiweiArchive(_lEngineDatabase).LDiweiFanqieRead(diwei.LDiweiId);
+            return _lEngineDiweiVault.LDiweiFanqieRead(diwei.LDiweiId);
         }
     }
 
@@ -100,7 +99,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LDiweiArchive(_lEngineDatabase).LDiweiEntryScan(language, diweiIds);
+            return _lEngineDiweiVault.LDiweiEntryScan(language, diweiIds);
         }
     }
 
@@ -110,7 +109,7 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            IReadOnlyList<long> ids = new LDiweiArchive(_lEngineDatabase).LDiweiEntryScan(language, diweiIds);
+            IReadOnlyList<long> ids = _lEngineDiweiVault.LDiweiEntryScan(language, diweiIds);
             if (ids.Count == 0)
             {
                 return [];
@@ -156,11 +155,11 @@ public sealed partial class LEngine
 
     private void LEngineDiweiApply()
     {
-        foreach (string language in LLanguageLoader.LLanguageLoaderScan())
+        foreach (string language in _lEngineLanguageVault.LLanguageScan())
         {
             if (LEngineBookRead(language).Count > 0)
             {
-                new LDiweiArchive(_lEngineDatabase).LDiweiRebuild(language, LEngineHypothesisRead(language));
+                _lEngineDiweiVault.LDiweiRebuild(language, LEngineHypothesisRead(language));
             }
         }
     }

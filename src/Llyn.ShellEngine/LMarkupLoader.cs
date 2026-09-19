@@ -2,21 +2,38 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
 internal sealed class LMarkupLoader
 {
-    private readonly LDatabase _lMarkupLoaderDatabase;
     private readonly LEntryVault _lMarkupLoaderEntries;
+    private readonly LSpeechVault _lMarkupLoaderSpeeches;
+    private readonly LMorphologyVault _lMarkupLoaderMorphologies;
+    private readonly LMeaningVault _lMarkupLoaderMeanings;
+    private readonly LReferenceVault _lMarkupLoaderReferences;
+    private readonly LAuthorVault _lMarkupLoaderAuthors;
 
-    public LMarkupLoader(LDatabase database, LEntryVault entries)
+    public LMarkupLoader(
+        LEntryVault entries,
+        LSpeechVault speeches,
+        LMorphologyVault morphologies,
+        LMeaningVault meanings,
+        LReferenceVault references,
+        LAuthorVault authors)
     {
-        ArgumentNullException.ThrowIfNull(database);
         ArgumentNullException.ThrowIfNull(entries);
-        _lMarkupLoaderDatabase = database;
+        ArgumentNullException.ThrowIfNull(speeches);
+        ArgumentNullException.ThrowIfNull(morphologies);
+        ArgumentNullException.ThrowIfNull(meanings);
+        ArgumentNullException.ThrowIfNull(references);
+        ArgumentNullException.ThrowIfNull(authors);
         _lMarkupLoaderEntries = entries;
+        _lMarkupLoaderSpeeches = speeches;
+        _lMarkupLoaderMorphologies = morphologies;
+        _lMarkupLoaderMeanings = meanings;
+        _lMarkupLoaderReferences = references;
+        _lMarkupLoaderAuthors = authors;
     }
 
     public LMarkupEntry? LMarkupLoad(long id)
@@ -79,14 +96,13 @@ internal sealed class LMarkupLoader
     private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)
     {
         string speech = inflection.LInflectionSpeechId is long speechId
-            ? new LSpeechArchive(_lMarkupLoaderDatabase).LSpeechValueRead(speechId)?.LSpeechValueName ?? string.Empty
+            ? _lMarkupLoaderSpeeches.LSpeechValueRead(speechId)?.LSpeechValueName ?? string.Empty
             : string.Empty;
 
-        LMorphologyArchive morphologies = new(_lMarkupLoaderDatabase);
         List<string> names = new(inflection.LInflectionMorphology.Count);
         foreach (long morphologyId in inflection.LInflectionMorphology)
         {
-            if (morphologies.LMorphologyRead(morphologyId) is LMorphology morphology)
+            if (_lMarkupLoaderMorphologies.LMorphologyRead(morphologyId) is LMorphology morphology)
             {
                 names.Add(morphology.LMorphologyName);
             }
@@ -219,7 +235,7 @@ internal sealed class LMarkupLoader
         }
 
         Dictionary<long, LMeaning> meanings = [];
-        foreach (LMeaning meaning in new LMeaningArchive(_lMarkupLoaderDatabase).LMeaningRead(entryId))
+        foreach (LMeaning meaning in _lMarkupLoaderMeanings.LMeaningRead(entryId))
         {
             meanings[meaning.LMeaningId] = meaning;
         }
@@ -242,12 +258,12 @@ internal sealed class LMarkupLoader
             return null;
         }
 
-        if (new LReferenceArchive(_lMarkupLoaderDatabase).LReferenceRead(referenceId) is not LReference reference)
+        if (_lMarkupLoaderReferences.LReferenceRead(referenceId) is not LReference reference)
         {
             return null;
         }
 
-        IReadOnlyList<LAuthor> credited = new LAuthorArchive(_lMarkupLoaderDatabase).LAuthorReferenceRead(referenceId);
+        IReadOnlyList<LAuthor> credited = _lMarkupLoaderAuthors.LAuthorReferenceRead(referenceId);
         List<string> authors = new(credited.Count);
         foreach (LAuthor author in credited)
         {

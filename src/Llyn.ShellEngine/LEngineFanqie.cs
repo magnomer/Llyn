@@ -65,7 +65,7 @@ public sealed partial class LEngine
             IReadOnlyList<LFanqieRow> stored;
             lock (_lEngineGate)
             {
-                stored = new LFanqieArchive(_lEngineDatabase).LFanqieRead(entry.LEntryLanguage, character);
+                stored = _lEngineFanqieVault.LFanqieRead(entry.LEntryLanguage, character);
             }
 
             foreach (LFanqieRow row in stored)
@@ -112,7 +112,7 @@ public sealed partial class LEngine
             bool stored;
             lock (_lEngineGate)
             {
-                stored = new LFanqieArchive(_lEngineDatabase).LFanqieRead(entry.LEntryLanguage, character).Count > 0;
+                stored = _lEngineFanqieVault.LFanqieRead(entry.LEntryLanguage, character).Count > 0;
             }
 
             if (!stored)
@@ -270,8 +270,8 @@ public sealed partial class LEngine
                 raised = true;
                 if (found.Count > 0)
                 {
-                    new LFanqieArchive(_lEngineDatabase).LFanqieSave(language, character, found);
-                    new LDiweiArchive(_lEngineDatabase).LDiweiApply(
+                    _lEngineFanqieVault.LFanqieSave(language, character, found);
+                    _lEngineDiweiVault.LDiweiApply(
                         language, character, LEngineHypothesisRead(language));
                 }
                 else if (reached)

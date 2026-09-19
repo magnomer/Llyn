@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -14,15 +13,15 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(query);
             string written = query.Trim();
 
-            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+                _lEngineAuthors.LAuthorReferenceRead();
+            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
 
             Dictionary<long, List<LReference>> works = LEngineWorkRead(references, credits);
 
             List<LCatalogAuthor> rows = [];
-            foreach (LAuthor author in new LAuthorArchive(_lEngineDatabase).LAuthorAllRead())
+            foreach (LAuthor author in _lEngineAuthors.LAuthorAllRead())
             {
                 works.TryGetValue(author.LAuthorId, out List<LReference>? credited);
                 LCatalogAuthor row = LCatalogAuthor.LCatalogAuthorCreate(author, credited, usage);
@@ -40,16 +39,16 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LAuthor? author = new LAuthorArchive(_lEngineDatabase).LAuthorRead(id);
+            LAuthor? author = _lEngineAuthors.LAuthorRead(id);
             if (author is null)
             {
                 return null;
             }
 
-            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+                _lEngineAuthors.LAuthorReferenceRead();
+            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
             LEngineWorkRead(references, credits).TryGetValue(id, out List<LReference>? credited);
             return LCatalogAuthor.LCatalogAuthorCreate(author, credited, usage);
         }
@@ -154,10 +153,10 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(kind);
             string written = query.Trim();
 
-            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+                _lEngineAuthors.LAuthorReferenceRead();
+            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
 
             List<LCatalogReference> rows = [];
             foreach (LReference reference in references)
@@ -189,9 +188,9 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+                _lEngineAuthors.LAuthorReferenceRead();
 
             Dictionary<long, LFellow> shared = [];
             foreach (LReference reference in references)
@@ -231,7 +230,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LAuthorArchive(_lEngineDatabase).LAuthorAbsorb(kept, dropped);
+            _lEngineAuthors.LAuthorAbsorb(kept, dropped);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, dropped);

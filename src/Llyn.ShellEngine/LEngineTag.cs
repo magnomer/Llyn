@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LTagArchive(_lEngineDatabase).LTagCatalogRead();
+            return _lEngineTags.LTagCatalogRead();
         }
     }
 
@@ -23,7 +22,7 @@ public sealed partial class LEngine
             query = query.Trim();
 
             List<LTag> found = [];
-            foreach (LTag tag in new LTagArchive(_lEngineDatabase).LTagCatalogRead())
+            foreach (LTag tag in _lEngineTags.LTagCatalogRead())
             {
                 if (LCatalogTag.LCatalogTagMatch(tag, query))
                 {
@@ -59,7 +58,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LTagArchive tags = new(_lEngineDatabase);
+            LTagVault tags = _lEngineTags;
             return LEngineOwnerCheck(owner)
                 ? tags.LTagCollocationRead(ownerId)
                 : tags.LTagMeaningRead(ownerId);
@@ -72,7 +71,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(written);
 
-            LTagArchive tags = new(_lEngineDatabase);
+            LTagVault tags = _lEngineTags;
             bool collocation = LEngineOwnerCheck(owner);
             if (collocation)
             {
@@ -94,7 +93,7 @@ public sealed partial class LEngine
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(text);
 
-            LTagArchive tags = new(_lEngineDatabase);
+            LTagVault tags = _lEngineTags;
             long id = tags.LTagResolve(text);
             created = tags.LTagRead(id) ?? throw new LRefusal(LRefusal.LRefusalItem);
         }
@@ -107,7 +106,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LTagArchive(_lEngineDatabase).LTagChange(tagId, renamed);
+            _lEngineTags.LTagChange(tagId, renamed);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
@@ -117,7 +116,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LTagArchive(_lEngineDatabase).LTagDelete(tagId);
+            _lEngineTags.LTagDelete(tagId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectTag, tagId);

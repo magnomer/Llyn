@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -13,7 +12,7 @@ public sealed partial class LEngine
         List<LRevisionChange>? changes,
         Dictionary<long, long> identity)
     {
-        LPronunciationArchive pronunciations = new(_lEngineDatabase);
+        LPronunciationVault pronunciations = _lEnginePronunciations;
         Dictionary<long, LPronunciation> stored = [];
         foreach (LPronunciation row in pronunciations.LPronunciationRead(entryId))
         {
@@ -84,7 +83,7 @@ public sealed partial class LEngine
     }
 
     private static long LEnginePronunciationSave(
-        LPronunciationArchive pronunciations,
+        LPronunciationVault pronunciations,
         LPronunciation stored,
         LPronunciationDraft draft,
         List<LRevisionChange>? changes)
@@ -112,7 +111,7 @@ public sealed partial class LEngine
     }
 
     private static long LEnginePronunciationInsert(
-        LPronunciationArchive pronunciations,
+        LPronunciationVault pronunciations,
         long entryId,
         LPronunciationDraft draft,
         List<LRevisionChange>? changes,
@@ -134,7 +133,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineAudioSync(
-        LPronunciationArchive pronunciations,
+        LPronunciationVault pronunciations,
         long pronunciationId,
         LPronunciationDraft draft,
         List<LRevisionChange>? changes)

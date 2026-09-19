@@ -16,3 +16,8 @@ Stores `state` as the workspace state.
 ## `long LWorkspaceFloorAdjust();`
 
 Issues the next opaque id above the identity floor and raises the floor past it.
+
+## `long LWorkspaceSizeRead();`
+
+The bytes the workspace store occupies, or zero when nothing is stored yet.
+The establishment panel shows it, and only the adapter knows what file that is.

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -20,7 +19,7 @@ public sealed partial class LEngine
             }
             catch (Exception exception) when (exception is not OutOfMemoryException)
             {
-                LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
+                _lEngineAudit.LAuditRecord(exception);
             }
         }
 
@@ -29,7 +28,7 @@ public sealed partial class LEngine
 
     private void LEngineRespellingUpdate(LEntry entry)
     {
-        LPronunciationArchive pronunciations = new(_lEngineDatabase);
+        LPronunciationVault pronunciations = _lEnginePronunciations;
         foreach (LPronunciation row in pronunciations.LPronunciationRead(entry.LEntryId))
         {
             if (!string.IsNullOrEmpty(row.LPronunciationRespelling) || string.IsNullOrEmpty(row.LPronunciationIpa))
@@ -48,7 +47,7 @@ public sealed partial class LEngine
             }
         }
 
-        LReflexArchive reflexes = new(_lEngineDatabase);
+        LReflexVault reflexes = _lEngineReflexes;
         IReadOnlyList<LReflex> stored = reflexes.LReflexRead(entry.LEntryId);
         List<LReflex> spelled = new(stored.Count);
         bool changed = false;

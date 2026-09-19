@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LTranslationArchive translations = new(_lEngineDatabase);
+            LTranslationVault translations = _lEngineTranslations;
             return LEngineOwnerCheck(owner)
                 ? translations.LTranslationCollocationRead(ownerId)
                 : translations.LTranslationMeaningRead(ownerId);
@@ -136,7 +135,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(ids);
-            return new LTranslationArchive(_lEngineDatabase).LTranslationTargetRead(ids);
+            return _lEngineTranslations.LTranslationTargetRead(ids);
         }
     }
 
@@ -172,7 +171,7 @@ public sealed partial class LEngine
             ArgumentOutOfRangeException.ThrowIfZero(ownerId);
 
             List<LTranslationTarget> targets = new(
-                new LTranslationArchive(_lEngineDatabase).LTranslationTargetRead(ids));
+                _lEngineTranslations.LTranslationTargetRead(ids));
             HashSet<long> wanted = [.. ids];
             foreach (LTranslationTarget target in targets)
             {
@@ -197,7 +196,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return LEngineUsageResolve(
-                new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId),
+                _lEngineTranslations.LTranslationIncomingRead(entryId),
                 _lEngineEntries,
                 _lEngineSettings.LSettingsEpithet);
         }

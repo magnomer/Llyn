@@ -28,6 +28,10 @@ The tenure, vista and foray type names, wherever the veneer spells one.
 An archive, loader or database session constructed by the engine itself.
 Plans 06 to 08 move each construction into the infrastructure.
 
+## `private static readonly string[] TAuditRingDatabase`
+
+A member read off the engine's database field, which only the constructor and the workspace open may touch.
+
 ## `public void AuditRing_Projects_ReferenceInward()`
 
 Reads every `.csproj` under `src` and holds its edges to the ring table exactly.
@@ -49,6 +53,10 @@ The engine fields and the engine helpers in the veneer each stay within their ce
 ## `public void AuditRing_Engine_ConstructsNoAdapter()`
 
 The adapters the engine constructs stay within their ceiling.
+
+## `public void AuditRing_Engine_ReadsNoDatabase()`
+
+No engine part outside `LEngine.cs` reads the database field, so every row reaches the engine through a vault.
 
 ## `public void AuditRing_Ceiling_MatchesHits()`
 

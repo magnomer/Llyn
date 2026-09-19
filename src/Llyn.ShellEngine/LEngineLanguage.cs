@@ -16,7 +16,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineLanguageListed ??= LLanguageLoader.LLanguageLoaderScan();
+            return _lEngineLanguageListed ??= _lEngineLanguageVault.LLanguageScan();
         }
     }
 
@@ -180,7 +180,7 @@ public sealed partial class LEngine
         {
             if (!_lEngineLanguages.TryGetValue(language, out LLanguage? pack))
             {
-                pack = LLanguageLoader.LLanguageLoaderLoad(language);
+                pack = _lEngineLanguageVault.LLanguageRead(language);
                 _lEngineLanguages[language] = pack;
             }
 

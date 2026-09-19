@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -45,7 +44,7 @@ public sealed partial class LEngine
             if (draft.LEntryDraftInflections.Count > 0)
             {
                 LEngineInflectionValidate(draft.LEntryDraftInflections);
-                new LInflectionArchive(_lEngineDatabase).LInflectionSet(
+                _lEngineInflections.LInflectionSet(
                     entry.LEntryId, draft.LEntryDraftInflections);
             }
 
@@ -57,7 +56,7 @@ public sealed partial class LEngine
                 LEngineMeaningCreate(entry.LEntryId, null, card, draft.LEntryDraftLanguage, identity);
             }
 
-            LCollocationArchive collocations = new(_lEngineDatabase);
+            LCollocationVault collocations = _lEngineCollocations;
             foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftCollocations))
             {
                 LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
@@ -77,7 +76,7 @@ public sealed partial class LEngine
 
             if (note.Length > 0)
             {
-                new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, note));
+                _lEngineNotes.LNoteSave(new LNote(entry.LEntryId, note));
             }
 
             LEnginePronunciationSync(
@@ -130,7 +129,7 @@ public sealed partial class LEngine
     private void LEngineMeaningCreate(
         long entryId, long? parentId, LCardDraft card, string language, Dictionary<long, long> identity)
     {
-        LMeaning meaning = new LMeaningArchive(_lEngineDatabase).LMeaningCreate(new LMeaning(
+        LMeaning meaning = _lEngineMeanings.LMeaningCreate(new LMeaning(
                 0,
             entryId,
             parentId,
@@ -186,7 +185,7 @@ public sealed partial class LEngine
     }
 
     private static long LEngineSituationResolve(
-        LSituationArchive situations, LSituationDraft draft, Dictionary<long, long> identity)
+        LSituationVault situations, LSituationDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LSituationDraftId > 0)
         {
@@ -245,7 +244,7 @@ public sealed partial class LEngine
     }
 
     private static long LEngineImageResolve(
-        LImageArchive images, LImageDraft draft, Dictionary<long, long> identity)
+        LImageVault images, LImageDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LImageDraftId > 0)
         {
@@ -265,7 +264,7 @@ public sealed partial class LEngine
     }
 
     private static long LEngineVideoResolve(
-        LVideoArchive videos, LVideoDraft draft, Dictionary<long, long> identity)
+        LVideoVault videos, LVideoDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LVideoDraftId > 0)
         {

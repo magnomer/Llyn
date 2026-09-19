@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LLacunaArchive
+public sealed class LLacunaArchive : LLacunaVault
 {
     private readonly LDatabase _lLacunaArchiveDatabase;
 

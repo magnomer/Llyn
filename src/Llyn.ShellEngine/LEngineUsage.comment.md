@@ -30,6 +30,6 @@ An Author is traced rather than looked up, through Source, Example and card up t
 Nothing stores that trace, so no row can contradict the chain it is read from.
 `LUsage` is accepted by no write path, so a trace cannot come back as an input.
 
-## `private static IReadOnlyList<LUsage> LEngineUsageResolve(IReadOnlyList<LUsage> rows, LEntryArchive entries, bool epithet)`
+## `private static IReadOnlyList<LUsage> LEngineUsageResolve(IReadOnlyList<LUsage> rows, LEntryVault entries, bool epithet)`
 
 Twins the headwords and fills each row's epithet when the setting asks for it.

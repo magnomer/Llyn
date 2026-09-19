@@ -18,7 +18,9 @@ public partial class LBootstrap : System.Windows.Application
     {
         try
         {
-            PLocalizationCatalog.PLocalizationCatalogApply(Resources, LLocalization.LLocalizationDefault);
+            PLocalizationCatalog.PLocalizationCatalogApply(
+                Resources,
+                LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));
             PThemeLoader.PThemeLoaderApply(LThemeLoader.LThemeLoaderLoad(), Resources);
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
@@ -39,12 +41,12 @@ public partial class LBootstrap : System.Windows.Application
         LEngine engine;
         try
         {
-            workspace = LEngine.LEngineWorkspaceResolve();
+            workspace = LWorkspaceRoot.LWorkspaceRootRead();
             engine = new LEngine(workspace);
         }
         catch (Exception exception)
         {
-            string key = LEngine.LEngineBusyCheck(exception) ? "Workspace.Busy" : "Workspace.OpenFailed";
+            string key = LDoctor.LDoctorBusyCheck(exception) ? "Workspace.Busy" : "Workspace.OpenFailed";
             MessageBox.Show(
                 $"{LBootstrapTextRead(key)}\n\n{workspace}\n\n{exception.Message}",
                 LBootstrapTextRead("Terms.Product"),
@@ -78,7 +80,9 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             PLocalizationCatalog.PLocalizationCatalogApply(
-                Resources, LLocalization.LLocalizationNormalize(engine.LEngineSettingsRead().LSettingsLocalization));
+                Resources,
+                engine.LEngineLocalizationLoad(
+                    LLocalization.LLocalizationNormalize(engine.LEngineSettingsRead().LSettingsLocalization)));
         }
         catch (Exception exception)
         {

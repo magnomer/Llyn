@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LRegisterArchive registers = new(_lEngineDatabase);
+            LRegisterVault registers = _lEngineRegisters;
             return LEngineOwnerCheck(owner)
                 ? registers.LRegisterCollocationRead(ownerId)
                 : registers.LRegisterMeaningRead(ownerId);
@@ -28,7 +27,7 @@ public sealed partial class LEngine
 
             string written = query.Trim();
             List<LRegister> found = [];
-            foreach (LRegister register in new LRegisterArchive(_lEngineDatabase).LRegisterRead())
+            foreach (LRegister register in _lEngineRegisters.LRegisterRead())
             {
                 if (written.Length != 0
                     && !LCatalog.LCatalogTextMatch(register.LRegisterName.LStateValueShow(), written))
@@ -49,7 +48,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            LRegisterArchive archive = new(_lEngineDatabase);
+            LRegisterVault archive = _lEngineRegisters;
             IReadOnlyDictionary<long, int> counts = archive.LRegisterReferenceRead();
 
             string written = query.Trim();
@@ -96,7 +95,7 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
             created = LEngineRegisterResolve(name)
-                ?? new LRegisterArchive(_lEngineDatabase).LRegisterCreate(new LRegister(
+                ?? _lEngineRegisters.LRegisterCreate(new LRegister(
                     0,
                     LStateValue.LStateValueRead(name.Trim())));
         }
@@ -112,7 +111,7 @@ public sealed partial class LEngine
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
             ArgumentNullException.ThrowIfNull(renamed);
 
-            new LRegisterArchive(_lEngineDatabase).LRegisterNameUpdate(
+            _lEngineRegisters.LRegisterNameUpdate(
                 registerId, LStateValue.LStateValueRead(renamed.Trim()));
         }
 
@@ -124,7 +123,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
-            new LRegisterArchive(_lEngineDatabase).LRegisterDelete(registerId, true);
+            _lEngineRegisters.LRegisterDelete(registerId, true);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
@@ -137,8 +136,8 @@ public sealed partial class LEngine
             return;
         }
 
-        new LRegisterArchive(_lEngineDatabase).LRegisterDefaultCreate(
-            LRegisterLoader.LRegisterLoaderLoad(language));
+        _lEngineRegisters.LRegisterDefaultCreate(
+            _lEngineRegisters.LRegisterLoad(language));
     }
 
     private void LEngineRegisterSync(
@@ -150,7 +149,7 @@ public sealed partial class LEngine
     {
         LEngineRegisterPrepare(language);
 
-        LRegisterArchive registers = new(_lEngineDatabase);
+        LRegisterVault registers = _lEngineRegisters;
 
         LEngineFieldSync(
             LEngineRegisterRead(drafts),
@@ -211,7 +210,7 @@ public sealed partial class LEngine
     }
 
     private long LEngineRegisterResolve(
-        LRegisterArchive registers, LRegisterDraft draft, Dictionary<long, long> identity)
+        LRegisterVault registers, LRegisterDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LRegisterDraftId > 0)
         {
@@ -245,7 +244,7 @@ public sealed partial class LEngine
             return null;
         }
 
-        foreach (LRegister register in new LRegisterArchive(_lEngineDatabase).LRegisterRead())
+        foreach (LRegister register in _lEngineRegisters.LRegisterRead())
         {
             if (string.Equals(
                     LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),

@@ -1,6 +1,6 @@
 ﻿# LLanguageLoader.cs
 
-## `public static partial class LLanguageLoader`
+## `public sealed partial class LLanguageLoader : LLanguageVault`
 
 Loads a language pack from `languages//source.json`.
 It is resolved against the application's base directory, so packs are drop-in.
@@ -21,6 +21,18 @@ The reading of the rewrite rules and the transcription schemes sits in `LLanguag
 The `flag` value as a country code.
 A value ending in `.svg` reads instead as the full path of that file in the pack folder.
 A classical language has no country, so its pack ships its own emblem.
+
+## `public IReadOnlyList<string> LLanguageScan()`
+
+The port's listing, answered by `LLanguageLoaderScan`.
+
+## `public LLanguage LLanguageRead(string language)`
+
+The port's pack read, answered by `LLanguageLoaderLoad`.
+
+## `bool LLanguageVault.LLanguageNameValidate(string? language)`
+
+The port's name check, answered by the static `LLanguageNameValidate` the pack loaders share.
 
 ## `public static IReadOnlyList<string> LLanguageLoaderScan()`
 

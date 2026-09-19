@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -29,7 +28,7 @@ public sealed partial class LEngine
         }
 
         LLanguage pack = LEngineLanguageLoad(language);
-        sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageFrequencies, _lEngineClient);
+        sources = _lEngineSourceFactory.LSourceFactoryCreate(pack.LLanguageFrequencies);
         _lEngineFrequencySources[language] = sources;
         return sources;
     }
@@ -161,7 +160,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             entry = _lEngineEntries.LEntryRead(entryId);
-            stored = entry is null ? [] : new LFrequencyArchive(_lEngineDatabase).LFrequencyRead(entryId);
+            stored = entry is null ? [] : _lEngineFrequencies.LFrequencyRead(entryId);
             missed = _lEngineFrequencyMissed.Contains(entryId);
         }
 
@@ -188,7 +187,7 @@ public sealed partial class LEngine
             {
                 lock (_lEngineGate)
                 {
-                    new LFrequencyArchive(_lEngineDatabase)
+                    _lEngineFrequencies
                         .LFrequencyBandSet(entryId, row.LFrequencySource, resolved.LFrequencyBand);
                 }
             }
@@ -282,7 +281,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                new LFrequencyArchive(_lEngineDatabase).LFrequencySet(entry.LEntryId, found);
+                _lEngineFrequencies.LFrequencySet(entry.LEntryId, found);
                 raised = true;
             }
         }

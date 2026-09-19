@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using Llyn.Core;
 
 namespace Llyn.Application;
 
@@ -14,9 +16,29 @@ public static class LLocalization
     private static IReadOnlyDictionary<string, string> LLocalizationTexts =
         new Dictionary<string, string>(StringComparer.Ordinal);
 
+    private static IReadOnlyList<string> LLocalizationListed = [LLocalizationDefault];
+
+    public static void LLocalizationLanguageSet(IReadOnlyList<string> languages)
+    {
+        ArgumentNullException.ThrowIfNull(languages);
+
+        lock (LLocalizationGate)
+        {
+            LLocalizationListed = languages;
+        }
+    }
+
     public static string LLocalizationNormalize(string? language)
     {
-        return language is "en" or "ko" ? language : LLocalizationDefault;
+        return language is not null && LLocalizationListedCheck(language) ? language : LLocalizationDefault;
+    }
+
+    private static bool LLocalizationListedCheck(string language)
+    {
+        lock (LLocalizationGate)
+        {
+            return LLocalizationListed.Contains(language, StringComparer.Ordinal);
+        }
     }
 
     public static bool LLocalizationDefaultCheck(string? language)
@@ -26,15 +48,24 @@ public static class LLocalization
 
     public static CultureInfo LLocalizationCultureRead(string language)
     {
-        return language switch
-        {
-            "en" => CultureInfo.GetCultureInfo("en"),
-            "ko" => CultureInfo.GetCultureInfo("ko"),
-            _ => throw new ArgumentOutOfRangeException(
+        ArgumentNullException.ThrowIfNull(language);
+
+        return LLocalizationListedCheck(language)
+            ? CultureInfo.GetCultureInfo(language)
+            : throw new ArgumentOutOfRangeException(
                 nameof(language),
                 language,
-                "The selected language is not supported.")
-        };
+                "The selected language is not supported.");
+    }
+
+    public static IReadOnlyDictionary<string, string> LLocalizationLoad(LLocalizationVault vault, string language)
+    {
+        ArgumentNullException.ThrowIfNull(vault);
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        LLocalizationLanguageSet(vault.LLocalizationScan());
+        using TextReader reader = vault.LLocalizationOpen(language);
+        return LLocalizationLoad(reader, language);
     }
 
     public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)

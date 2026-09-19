@@ -1,30 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public const long LEngineMarkupCeiling = 64L * 1024 * 1024;
-
     public LMarkupCargo LEngineMarkupRead(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         IReadOnlyList<LMarkupEntry> parsed = LMarkup.LMarkupParse(
-            LEngineMarkupLoad(path), out IReadOnlyList<LMarkupOmission> skipped);
+            _lEngineMarkupVault.LMarkupRead(path), out IReadOnlyList<LMarkupOmission> skipped);
 
         List<LMarkupOmission> omissions = [.. skipped];
         List<LMarkupEntry> entries = new(parsed.Count);
         foreach (LMarkupEntry entry in parsed)
         {
             string language = entry.LMarkupEntryLanguage;
-            if (language.Length == 0 || LLanguageLoader.LLanguageNameValidate(language))
+            if (language.Length == 0 || _lEngineLanguageVault.LLanguageNameValidate(language))
             {
                 entries.Add(entry);
                 continue;
@@ -46,18 +41,6 @@ public sealed partial class LEngine
     public Task<LMarkupCargo> LEngineMarkupStart(string path)
     {
         return Task.Run(() => LEngineMarkupRead(path));
-    }
-
-    private static string LEngineMarkupLoad(string path)
-    {
-        using FileStream stream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-        if (stream.Length > LEngineMarkupCeiling)
-        {
-            throw new LRefusal(LRefusal.LRefusalMarkup);
-        }
-
-        using StreamReader reader = new(stream, Encoding.UTF8, true);
-        return reader.ReadToEnd();
     }
 
     public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)

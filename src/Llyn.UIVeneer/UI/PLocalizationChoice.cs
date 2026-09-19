@@ -16,7 +16,8 @@ public partial class PSettings
 
     private void PLocalizationApply(string language)
     {
-        PLocalizationCatalog.PLocalizationCatalogApply(System.Windows.Application.Current.Resources, language);
+        PLocalizationCatalog.PLocalizationCatalogApply(
+            System.Windows.Application.Current.Resources, _lEngine.LEngineLocalizationLoad(language));
         PLedgerTitleApply();
         PLedgerMetaApply();
     }

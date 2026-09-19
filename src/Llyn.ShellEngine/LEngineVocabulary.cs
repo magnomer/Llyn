@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(value);
-            return new LSpeechArchive(_lEngineDatabase).LSpeechValueCreate(value);
+            return _lEngineSpeeches.LSpeechValueCreate(value);
         }
     }
 
@@ -20,7 +19,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(id);
+            return _lEngineSpeeches.LSpeechValueRead(id);
         }
     }
 
@@ -28,7 +27,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language);
+            return _lEngineSpeeches.LSpeechValueRead(language);
         }
     }
 
@@ -42,7 +41,7 @@ public sealed partial class LEngine
             }
 
             string typed = name.Trim();
-            LSpeechArchive values = new(_lEngineDatabase);
+            LSpeechVault values = _lEngineSpeeches;
 
             LSpeechValue? held = values.LSpeechValueFind(language, typed);
             if (held is not null)
@@ -64,7 +63,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
+            return _lEngineSpeeches.LSpeechValueFind(language, name);
         }
     }
 
@@ -90,7 +89,7 @@ public sealed partial class LEngine
             return [];
         }
 
-        LSpeechArchive values = new(_lEngineDatabase);
+        LSpeechVault values = _lEngineSpeeches;
         List<LSpeech> speeches = [];
         foreach (LSpeechDraft draft in drafts)
         {
@@ -128,7 +127,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(feature);
-            return new LMorphologyArchive(_lEngineDatabase).LFeatureCreate(feature);
+            return _lEngineMorphologies.LFeatureCreate(feature);
         }
     }
 
@@ -137,7 +136,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(value);
-            return new LMorphologyArchive(_lEngineDatabase).LMorphologyCreate(value);
+            return _lEngineMorphologies.LMorphologyCreate(value);
         }
     }
 
@@ -147,7 +146,7 @@ public sealed partial class LEngine
         {
             return speechValueId <= 0
                 ? []
-                : new LMorphologyArchive(_lEngineDatabase).LFeatureRead(speechValueId);
+                : _lEngineMorphologies.LFeatureRead(speechValueId);
         }
     }
 
@@ -157,7 +156,7 @@ public sealed partial class LEngine
         {
             return speechValueId <= 0
                 ? null
-                : new LMorphologyArchive(_lEngineDatabase).LFeatureFind(speechValueId, name);
+                : _lEngineMorphologies.LFeatureFind(speechValueId, name);
         }
     }
 
@@ -165,7 +164,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LMorphologyArchive(_lEngineDatabase).LMorphologyRead(id);
+            return _lEngineMorphologies.LMorphologyRead(id);
         }
     }
 
@@ -175,7 +174,7 @@ public sealed partial class LEngine
         {
             return featureId <= 0
                 ? []
-                : new LMorphologyArchive(_lEngineDatabase).LMorphologyScan(featureId);
+                : _lEngineMorphologies.LMorphologyScan(featureId);
         }
     }
 
@@ -185,7 +184,7 @@ public sealed partial class LEngine
         {
             return featureId <= 0
                 ? null
-                : new LMorphologyArchive(_lEngineDatabase).LMorphologyFind(featureId, name);
+                : _lEngineMorphologies.LMorphologyFind(featureId, name);
         }
     }
 
@@ -193,7 +192,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return LSentenceLoader.LSentenceLoaderLoad(language);
+            return _lEngineSentences.LSentenceLoad(language);
         }
     }
 
@@ -203,7 +202,7 @@ public sealed partial class LEngine
         {
             return string.IsNullOrWhiteSpace(language)
                 ? []
-                : new LSentenceArchive(_lEngineDatabase).LSentenceParticleRead(language);
+                : _lEngineSentences.LSentenceParticleRead(language);
         }
     }
 
@@ -213,7 +212,7 @@ public sealed partial class LEngine
         {
             return string.IsNullOrWhiteSpace(language)
                 ? []
-                : new LSentenceArchive(_lEngineDatabase).LSentenceDependenceRead(language);
+                : _lEngineSentences.LSentenceDependenceRead(language);
         }
     }
 
@@ -221,11 +220,11 @@ public sealed partial class LEngine
     {
         using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
-        LSpeechArchive speeches = new(_lEngineDatabase);
-        LMorphologyArchive morphology = new(_lEngineDatabase);
-        foreach (string language in LLanguageLoader.LLanguageLoaderScan())
+        LSpeechVault speeches = _lEngineSpeeches;
+        LMorphologyVault morphology = _lEngineMorphologies;
+        foreach (string language in _lEngineLanguageVault.LLanguageScan())
         {
-            LSpeechPack pack = LSpeechLoader.LSpeechLoaderLoad(language);
+            LSpeechPack pack = _lEngineSpeeches.LSpeechLoad(language);
 
             Dictionary<long, long> speechIds = [];
             foreach (LSpeechValue value in pack.LSpeechPackValues)

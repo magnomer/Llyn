@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LScriptArchive
+public sealed class LScriptArchive : LScriptVault
 {
     private readonly LDatabase _lScriptArchiveDatabase;
 

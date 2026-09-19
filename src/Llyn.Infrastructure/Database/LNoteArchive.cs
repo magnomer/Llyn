@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LNoteArchive
+public sealed class LNoteArchive : LNoteVault
 {
     private readonly LDatabase _lNoteArchiveDatabase;
 

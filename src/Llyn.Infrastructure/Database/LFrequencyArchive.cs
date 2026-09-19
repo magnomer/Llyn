@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LFrequencyArchive
+public sealed class LFrequencyArchive : LFrequencyVault
 {
     private readonly LDatabase _lFrequencyArchiveDatabase;
 

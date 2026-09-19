@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LFanqieArchive
+public sealed class LFanqieArchive : LFanqieVault
 {
     private readonly LDatabase _lFanqieArchiveDatabase;
 

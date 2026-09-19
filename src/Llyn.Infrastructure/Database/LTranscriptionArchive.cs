@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LTranscriptionArchive
+public sealed class LTranscriptionArchive : LTranscriptionVault
 {
     private const long LTranscriptionArchiveShift = 1_000_000_000L;
 

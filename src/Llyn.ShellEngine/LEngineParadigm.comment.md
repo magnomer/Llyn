@@ -7,7 +7,7 @@ It answers which forms an entry is expected to have and which of them are stored
 A language pack declares the forms by code on a part of speech.
 The engine resolves those codes to the workspace's rows and pairs each with a stored inflection.
 A slot a reached source could not fill reads unknown, as the lacuna rows `LEngineInflectionFetch.cs` stores record it.
-The pack is read once per language through `LSpeechLoader` and kept beside the language packs.
+The pack is read once per language through the speech vault and kept beside the language packs.
 The cache is cleared with the workspace, as the language packs are.
 
 ## `internal IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)`
@@ -63,7 +63,7 @@ A slot with an inflection is specified.
 A slot without one is unknown when its morphology id is in `missed`, and unspecified otherwise.
 Each slot keeps the paradigm it came from, so the display seam can judge regularity without scanning again.
 
-## `private static LMorphology? LEngineMorphologyResolve(LSpeechPack pack, LMorphologyArchive morphologies, string language, long code)`
+## `private static LMorphology? LEngineMorphologyResolve(LSpeechPack pack, LMorphologyVault morphologies, string language, long code)`
 
 Resolves one morphology value code to the workspace row the pack seeded.
 The pack says which feature and which part the code belongs to.

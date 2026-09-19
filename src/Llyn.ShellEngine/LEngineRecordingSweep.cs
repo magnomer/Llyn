@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -21,7 +20,7 @@ public sealed partial class LEngine
             }
 
             HashSet<string> kept = new(StringComparer.OrdinalIgnoreCase);
-            foreach (string file in new LPronunciationArchive(_lEngineDatabase).LPronunciationAudioScan())
+            foreach (string file in _lEnginePronunciations.LPronunciationAudioScan())
             {
                 LEngineRecordingPlace(kept, file);
             }

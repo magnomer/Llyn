@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static partial class LLanguageLoader
+public sealed partial class LLanguageLoader : LLanguageVault
 {
     private const string LLanguageLoaderScript = "script";
     private const string LLanguageLoaderForm = "form";

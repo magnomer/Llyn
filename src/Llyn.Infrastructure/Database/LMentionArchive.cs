@@ -7,7 +7,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LMentionArchive
+public sealed class LMentionArchive : LMentionVault
 {
     private const long LMentionShelf = 1_000_000_000L;
 

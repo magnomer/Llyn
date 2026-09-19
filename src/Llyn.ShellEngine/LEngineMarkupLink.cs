@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -90,7 +89,7 @@ public sealed partial class LEngine
         IReadOnlyDictionary<(string, string), long> prepared,
         List<LMarkupOmission> omissions)
     {
-        LMentionArchive mentions = new(_lEngineDatabase);
+        LMentionVault mentions = _lEngineMentions;
         for (int index = 0; index < held.Count; index++)
         {
             if (!identity.TryGetValue(-(index + 1), out long mentionId))
@@ -128,7 +127,7 @@ public sealed partial class LEngine
 
     private long LEngineMarkupResolve(long entryId, string sense)
     {
-        IReadOnlyList<LMeaning> meanings = new LMeaningArchive(_lEngineDatabase).LMeaningRead(entryId);
+        IReadOnlyList<LMeaning> meanings = _lEngineMeanings.LMeaningRead(entryId);
         long? parent = null;
         long current = 0;
         foreach (string step in sense.Split('.'))
@@ -165,7 +164,7 @@ public sealed partial class LEngine
         string year = LCatalog.LCatalogTextNormalize(reference.LMarkupReferenceYear.LStateValueShow());
         string url = LCatalog.LCatalogTextNormalize(reference.LMarkupReferenceUrl.LStateValueShow());
 
-        LReferenceArchive references = new(_lEngineDatabase);
+        LReferenceVault references = _lEngineReferences;
         if (title.Length > 0 || url.Length > 0)
         {
             foreach (LReference stored in references.LReferenceAllRead())

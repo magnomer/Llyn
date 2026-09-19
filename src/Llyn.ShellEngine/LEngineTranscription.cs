@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -75,7 +74,7 @@ public sealed partial class LEngine
         IReadOnlyList<LSourceSpec> specs = declared?.LSchemeSources
             ?? pack.LLanguageGlyph?.LGlyphSourceRead(scheme)
             ?? [];
-        sources = LSourceFactory.LSourceFactoryCreate(specs, _lEngineClient);
+        sources = _lEngineSourceFactory.LSourceFactoryCreate(specs);
         _lEngineSchemeSources[(language, scheme)] = sources;
         return sources;
     }
@@ -84,7 +83,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LTranscriptionArchive(_lEngineDatabase).LTranscriptionRead(entryId);
+            return _lEngineTranscriptions.LTranscriptionRead(entryId);
         }
     }
 
@@ -95,7 +94,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(transcriptions);
             IReadOnlyList<LTranscription> saved =
-                new LTranscriptionArchive(_lEngineDatabase).LTranscriptionSet(entryId, transcriptions);
+                _lEngineTranscriptions.LTranscriptionSet(entryId, transcriptions);
             LEngineUpdatedSet(entryId);
             return saved;
         }
@@ -107,7 +106,7 @@ public sealed partial class LEngine
         List<LRevisionChange>? changes,
         Dictionary<long, long> identity)
     {
-        LTranscriptionArchive transcriptions = new(_lEngineDatabase);
+        LTranscriptionVault transcriptions = _lEngineTranscriptions;
         IReadOnlyList<LTranscription> stored = transcriptions.LTranscriptionRead(entryId);
         IReadOnlyList<LTranscriptionDraft> written = LEngineTranscriptionScan(drafts);
         IReadOnlyList<LTranscription> current = LEngineTranscriptionRead(entryId, written);

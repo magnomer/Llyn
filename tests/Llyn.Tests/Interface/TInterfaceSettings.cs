@@ -27,14 +27,14 @@ internal static partial class TInterface
         new(hidden);
 
     internal static bool TSettingsExist(string root) =>
-        LSettingsLoader.LSettingsLoaderExist(root);
+        new LSettingsLoader(root).LSettingsExist();
 
     internal static LSettings TSettingsLoad(string root) =>
-        LSettingsLoader.LSettingsLoaderLoad(root);
+        new LSettingsLoader(root).LSettingsRead();
 
     internal static void TSettingsSave(string root, LSettings settings)
     {
-        LSettingsLoader.LSettingsLoaderSave(root, settings);
+        new LSettingsLoader(root).LSettingsSave(settings);
     }
 
     internal static LWindowState TWindowStateCreate(

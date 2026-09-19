@@ -33,6 +33,11 @@ A name already present keeps its row id and gains the built in flag.
 So a name the user wrote before any pack named it becomes built in, and every mark on it stays.
 Seeding is therefore safe to run on every read of a language's shelf.
 
+## `public IReadOnlyList<LRegister> LRegisterLoad(string language)`
+
+The default registers the language pack declares, read through `LRegisterLoader`.
+They are unstored until `LRegisterDefaultCreate` writes them.
+
 ## `public LRegister? LRegisterRead(long id)`
 
 Reads the Register identified by `id`, or `null` when no such Register exists.

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -13,9 +12,9 @@ public sealed partial class LEngine
         {
             return owner switch
             {
-                LOwner.LOwnerExample => new LExampleArchive(_lEngineDatabase).LExampleReferenceRead(),
-                LOwner.LOwnerReference => new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead(),
-                LOwner.LOwnerSituation => new LSituationArchive(_lEngineDatabase).LSituationReferenceRead(),
+                LOwner.LOwnerExample => _lEngineExamples.LExampleReferenceRead(),
+                LOwner.LOwnerReference => _lEngineReferences.LReferenceUsageRead(),
+                LOwner.LOwnerSituation => _lEngineSituations.LSituationReferenceRead(),
                 _ => throw LEngineOwnerRaise(owner),
             };
         }
@@ -29,10 +28,10 @@ public sealed partial class LEngine
 
             IReadOnlyList<LUsage> rows = owner switch
             {
-                LOwner.LOwnerExample => new LExampleLink(_lEngineDatabase).LExampleUsageRead(id),
-                LOwner.LOwnerReference => new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead(id),
-                LOwner.LOwnerAuthor => new LAuthorUsage(_lEngineDatabase).LAuthorUsageRead(id),
-                LOwner.LOwnerSituation => new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id),
+                LOwner.LOwnerExample => _lEngineExamples.LExampleUsageRead(id),
+                LOwner.LOwnerReference => _lEngineReferences.LReferenceUsageRead(id),
+                LOwner.LOwnerAuthor => _lEngineAuthors.LAuthorUsageRead(id),
+                LOwner.LOwnerSituation => _lEngineSituations.LSituationUsageRead(id),
                 _ => throw LEngineOwnerRaise(owner),
             };
             return LEngineUsageResolve(rows, _lEngineEntries, _lEngineSettings.LSettingsEpithet);

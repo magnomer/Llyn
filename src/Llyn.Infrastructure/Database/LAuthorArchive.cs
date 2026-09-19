@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LAuthorArchive
+public sealed class LAuthorArchive : LAuthorVault
 {
     private const long LAuthorAbsorbShift = 2_000_000_000L;
 
@@ -84,6 +84,11 @@ public sealed class LAuthorArchive
         }
 
         return authors;
+    }
+
+    public IReadOnlyList<LUsage> LAuthorUsageRead(long id)
+    {
+        return new LAuthorUsage(_lAuthorArchiveDatabase).LAuthorUsageRead(id);
     }
 
     public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LAuthorReferenceRead()

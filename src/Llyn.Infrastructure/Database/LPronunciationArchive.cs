@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LPronunciationArchive
+public sealed class LPronunciationArchive : LPronunciationVault
 {
     private readonly LDatabase _lPronunciationArchiveDatabase;
 

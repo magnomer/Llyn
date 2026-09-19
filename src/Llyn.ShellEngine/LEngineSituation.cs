@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -14,7 +13,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(situation);
 
             using LVaultSession session = _lEngineVault.LVaultSessionStart();
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             LSituation stored = situations.LSituationCreate(situation);
             LEngineMediaSync(stored.LSituationId, situation);
             stored = situations.LSituationRead(stored.LSituationId) ?? stored;
@@ -27,7 +26,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSituationArchive(_lEngineDatabase).LSituationRead();
+            return _lEngineSituations.LSituationRead();
         }
     }
 
@@ -38,7 +37,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(query);
             query = query.Trim();
 
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             IReadOnlyList<LSituation> read = situations.LSituationRead();
             IReadOnlyDictionary<long, int> usage = situations.LSituationReferenceRead();
 
@@ -77,7 +76,7 @@ public sealed partial class LEngine
         return rows;
     }
 
-    private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)
+    private static LSituation? LEngineSituationResolve(LSituationVault situations, LStateValue title)
     {
         string written = LCatalog.LCatalogTextNormalize(title.LStateValueShow());
         if (written.Length == 0)
@@ -111,7 +110,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSituationArchive(_lEngineDatabase).LSituationRead(id);
+            return _lEngineSituations.LSituationRead(id);
         }
     }
 
@@ -119,7 +118,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             return LEngineOwnerCheck(owner)
                 ? situations.LSituationCollocationRead(ownerId)
                 : situations.LSituationMeaningRead(ownerId);
@@ -133,7 +132,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(situation);
 
             using LVaultSession session = _lEngineVault.LVaultSessionStart();
-            new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
+            _lEngineSituations.LSituationUpdate(situation);
             LEngineMediaSync(situation.LSituationId, situation);
             session.LVaultSessionCommit();
         }
@@ -143,7 +142,7 @@ public sealed partial class LEngine
     {
         Dictionary<long, long> identity = [];
 
-        LImageArchive images = new(_lEngineDatabase);
+        LImageVault images = _lEngineImages;
         LEngineFieldSync(
             LEngineImageRead(situation.LSituationImage),
             images.LImageSituationRead(situationId),
@@ -152,7 +151,7 @@ public sealed partial class LEngine
             rowId => images.LImageSituationDetach(situationId, rowId),
             (rowId, position) => images.LImageSituationAttach(situationId, rowId, position));
 
-        LVideoArchive videos = new(_lEngineDatabase);
+        LVideoVault videos = _lEngineVideos;
         LEngineFieldSync(
             LEngineVideoRead(situation.LSituationVideo),
             videos.LVideoSituationRead(situationId),
@@ -166,7 +165,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             if (LEngineOwnerCheck(owner))
             {
                 situations.LSituationCollocationAttach(ownerId, situationId, position);
@@ -181,7 +180,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             if (LEngineOwnerCheck(owner))
             {
                 situations.LSituationCollocationDetach(ownerId, situationId);
@@ -202,7 +201,7 @@ public sealed partial class LEngine
 
             LEngineSituationDetach(ownerId, situationId, owner);
 
-            LSituationArchive situations = new(_lEngineDatabase);
+            LSituationVault situations = _lEngineSituations;
             if (situations.LSituationReferenceRead(situationId) == 0)
             {
                 situations.LSituationDelete(situationId);
@@ -217,7 +216,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LSituationArchive(_lEngineDatabase).LSituationDelete(id);
+            _lEngineSituations.LSituationDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
@@ -227,7 +226,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LSituationArchive(_lEngineDatabase).LSituationDelete(id, detach);
+            _lEngineSituations.LSituationDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);

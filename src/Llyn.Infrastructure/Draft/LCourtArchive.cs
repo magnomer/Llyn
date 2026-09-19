@@ -7,8 +7,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LCourtArchive
+public sealed class LCourtArchive : LCourtVault
 {
+    private readonly string _lCourtArchiveRoot;
+
     private const string LCourtArchiveExtension = ".json";
     private const string LCourtArchivePending = ".json.tmp";
 
@@ -18,13 +20,18 @@ public static class LCourtArchive
 
     private static readonly JsonSerializerOptions LCourtArchiveIndent = new() { WriteIndented = true };
 
-    public static void LCourtArchiveSave(string root, LCourt link)
+    public LCourtArchive(string root)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        _lCourtArchiveRoot = root;
+    }
+
+    public void LCourtSave(LCourt link)
+    {
         ArgumentNullException.ThrowIfNull(link);
         ArgumentOutOfRangeException.ThrowIfZero(link.LCourtId);
 
-        string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot);
         string stem = link.LCourtId.ToString(CultureInfo.InvariantCulture);
         string pending = Path.Combine(folder, stem + LCourtArchivePending);
         string path = Path.Combine(folder, stem + LCourtArchiveExtension);
@@ -35,22 +42,19 @@ public static class LCourtArchive
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
-    public static LCourt? LCourtArchiveRead(string root, long id)
+    public LCourt? LCourtRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceCourtRead(root),
+            LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot),
             id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         return LCourtArchiveLoad(path);
     }
 
-    public static IReadOnlyList<LCourt> LCourtArchiveScan(string root)
+    public IReadOnlyList<LCourt> LCourtScan()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
-
-        string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot);
 
         string[] files;
         try
@@ -83,13 +87,12 @@ public static class LCourtArchive
         return links;
     }
 
-    public static void LCourtArchiveDelete(string root, long id)
+    public void LCourtDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceCourtRead(root),
+            LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot),
             id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         try
         {
@@ -103,31 +106,28 @@ public static class LCourtArchive
         }
     }
 
-    public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, long draftId)
+    public IReadOnlyList<LCourt> LCourtSettle(long draftId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         List<LCourt> settled = [];
-        foreach (LCourt link in LCourtArchiveScan(root))
+        foreach (LCourt link in LCourtScan())
         {
             if (link.LCourtTargetId != draftId)
             {
                 continue;
             }
 
-            LCourtArchiveDelete(root, link.LCourtId);
+            LCourtDelete(link.LCourtId);
             settled.Add(link);
         }
 
         return settled;
     }
 
-    public static void LCourtArchiveSweep(string root)
+    public void LCourtSweep()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
-
-        string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot);
 
         string[] pending;
         string[] files;

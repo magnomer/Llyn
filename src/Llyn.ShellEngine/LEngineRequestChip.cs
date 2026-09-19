@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     private LEntryDraft LEngineSituationAdd(LEntryDraft content, LRequestSituationAddition request)
     {
         LStateValue title = LEngineValueRead(request.LRequestValue);
-        LSituation? stored = LEngineSituationResolve(new LSituationArchive(_lEngineDatabase), title);
+        LSituation? stored = LEngineSituationResolve(_lEngineSituations, title);
         if (stored is not null)
         {
             LSituationDraft found = LEngineSituationRead(stored);
@@ -45,7 +44,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalSituation);
         }
 
-        LSituation stored = new LSituationArchive(_lEngineDatabase).LSituationRead(request.LRequestSituationId)
+        LSituation stored = _lEngineSituations.LSituationRead(request.LRequestSituationId)
             ?? throw new LRefusal(LRefusal.LRefusalSituation);
 
         LSituationDraft situation = LEngineSituationRead(stored);
@@ -165,7 +164,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LRegister stored = new LRegisterArchive(_lEngineDatabase).LRegisterRead(request.LRequestRegisterId)
+        LRegister stored = _lEngineRegisters.LRegisterRead(request.LRequestRegisterId)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         LRegisterDraft register = new(stored.LRegisterName, stored.LRegisterId);
@@ -236,7 +235,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LTag stored = new LTagArchive(_lEngineDatabase).LTagRead(request.LRequestTagId)
+        LTag stored = _lEngineTags.LTagRead(request.LRequestTagId)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         LTagDraft tag = new(stored.LTagId, stored.LTagText);

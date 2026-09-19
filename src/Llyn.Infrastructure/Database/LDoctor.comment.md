@@ -1,6 +1,6 @@
 # LDoctor.cs
 
-## `public static class LDoctor`
+## `public sealed class LDoctor : LDoctorVault`
 
 Gets the program to a database it can run against, whatever state the workspace was left in.
 The schema is still moving, and a rebuild from another version can still fail on a file it cannot read.
@@ -12,9 +12,13 @@ The old file stays in the workspace beside the new one, so a database is never l
 This is the recovery of last resort, not a substitute for migration.
 `LSchemaMigration` still carries a database forward whenever it can.
 
-## `public static LDoctorRescue LDoctorDatabaseCreate(LDatabase database)`
+## `public LDoctor(LDatabase database)`
 
-Initializes `database`, resetting it when it cannot be initialized.
+Binds the doctor to the workspace `database` it stands ready to rescue.
+
+## `public LDoctorRescue LDoctorDatabaseCreate()`
+
+Initializes the database, resetting it when it cannot be initialized.
 Returns what had to be done.
 The caller can then tell the user their old data is no longer in front of them.
 

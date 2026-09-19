@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LReflexArchive
+public sealed class LReflexArchive : LReflexVault
 {
     private readonly LDatabase _lReflexArchiveDatabase;
 

@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LReferenceArchive
+public sealed class LReferenceArchive : LReferenceVault
 {
     private readonly LDatabase _lReferenceArchiveDatabase;
 
@@ -112,6 +112,16 @@ public sealed class LReferenceArchive
         }
 
         return LReferenceSingleRead(connection, id);
+    }
+
+    public IReadOnlyDictionary<long, int> LReferenceUsageRead()
+    {
+        return new LReferenceUsage(_lReferenceArchiveDatabase).LReferenceUsageRead();
+    }
+
+    public IReadOnlyList<LUsage> LReferenceUsageRead(long id)
+    {
+        return new LReferenceUsage(_lReferenceArchiveDatabase).LReferenceUsageRead(id);
     }
 
     public void LReferenceUpdate(LReference reference)

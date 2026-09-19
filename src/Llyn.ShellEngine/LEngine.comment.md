@@ -28,11 +28,12 @@ A lock held across an await would stall the shell for a whole network call.
 The lookup and recording entry points, with the source caches they read, live in `LEngineRecording.cs`.
 A held draft is driven by an `LTenure`, made in `LEngineTenure.cs`, so no panel sequences the draft calls itself.
 
-This class is also the composition root.
-It owns the shared `HttpClient`.
-It loads each language pack on first use through `LLanguageLoader`, which `LEngineLanguage.cs` owns.
+This class is also the composition root, until the rig of plan 08 takes that over.
+It owns the shared `HttpClient` and the source factory port built over it.
+Every other port is a field set once per workspace in `LEngineVaultSet`, the one place an adapter is built.
+It loads each language pack on first use through the language port, which `LEngineLanguage.cs` owns.
 It keeps each loaded pack by language name, so the file is parsed once and not per lookup.
-It builds that language's transcription and recording sources separately through `LSourceFactory`.
+It builds that language's transcription and recording sources separately through the source factory.
 The two sets are cached apart.
 A lookup never reaches an audio source and a download never reaches a transcription one.
 The frequency sources of each language are cached in a third set, which `LEngineFrequency.cs` owns.
@@ -49,10 +50,6 @@ It holds no source- or language-specific facts of its own: everything language-s
 The flag cache `_lEngineEnsign` is built here over `_lEngineUsher`, the file usher, until the rig injects the port.
 The usher also answers `LEngineLocation.cs` whether a resolved file is present.
 
-## `public LEngine()`
-
-Binds the engine to the workspace the pointer file records, creating it on first run.
-
 ## `public LEngine(string workspace)`
 
 Binds the engine to `workspace` directly.
@@ -67,6 +64,18 @@ The constructor the public ones share, taking the client every source and downlo
 A null client builds the real one with its timeout and browser-like agent.
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
 
+## `internal LEngine(string workspace, HttpClient? client, LEntryVault? entries)`
+
+The constructor the tests reach to hand in an entry vault of their own.
+It replaces the archive after the set.
+
+## `private void LEngineVaultSet()`
+
+Builds every port adapter over the open workspace and its database, and nothing is newed anywhere else.
+Both constructors and `LEngineWorkspaceOpen` call it, so a workspace change swaps every port at once.
+The doctor, realm and settings ports are read right after it.
+The rescue needs the database it was built over.
+
 ## `private long LEngineIdentityCreate()`
 
 Issues the next temporary id for a draft row of the open workspace.
@@ -78,12 +87,6 @@ A chip the UI builds carries id zero until the next draft save names it.
 ## `internal LRealm LEngineRealmRead()`
 
 The realm of the open workspace, read once when the workspace opened.
-
-## `public static bool LEngineBusyCheck(Exception fault)`
-
-Whether a launch failed because another program holds the database.
-The shell asks so it can say so rather than report a generic failure.
-The shell knows no SQLite, so the doctor's answer passes through here.
 
 ## `public LDoctorRescue LEngineRescueRead()`
 
@@ -103,16 +106,11 @@ The workspace folder's own name, for the settings ledger, and the full path when
 
 ## `public string? LEngineAuditRecord(Exception exception)`
 
-Writes one unexpected fault into the open workspace's audit log and answers with the file it went to.
+Writes one unexpected fault into the open workspace's audit log through the audit port.
+It answers with the file the fault went to.
 The shell shows the user a plain sentence rather than a stack trace.
 The trace has to be kept somewhere it can still be read.
 It answers `null` when nothing could be written, and the shell then says only the plain sentence.
-
-## `public static string LEngineWorkspaceResolve()`
-
-The workspace folder the pointer file records, creating it on first run — the folder the parameterless constructor opens.
-The shell asks for it before building an engine.
-So a workspace that fails to open can still be named in the message the user sees.
 
 ## `public void LEngineWorkspaceChange(string path)`
 
@@ -124,7 +122,7 @@ The pointer lives outside the workspace, which is why the tests exercise the ope
 
 Opens the workspace at `path` without recording it as the next one to open.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
-The new database, its rescue, realm and identity are opened before anything here changes.
+The new database, its rescue, realm and settings are opened before anything here changes, through adapters of their own.
 A folder that cannot be opened therefore leaves the caches and the old database untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings, so a fresh folder starts as the user left the last.
@@ -143,7 +141,7 @@ A panel added later is current without that list being edited.
 
 ### `_lEngineDatabase = new LDatabase(_lEngineWorkspace);`
 
-Initialize the database once the workspace is known.
+Initialize the database once the workspace is known, and every port over it right after.
 So the store is ready before any UI request.
 The UI never opens the database itself.
 The doctor runs the initialization.
@@ -179,7 +177,7 @@ An unbounded one would fill memory.
 
 Cambridge (and some Wiktionary edge caches) reject requests without a browser-like agent.
 
-### `_lEngineDatabase = new LDatabase(_lEngineWorkspace);`
+### `LDatabase database = new(root);`
 
 The database follows the workspace: initialize one in the new folder.
 

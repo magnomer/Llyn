@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -8,9 +7,9 @@ public sealed partial class LEngine
 {
     private void LEngineMarkupDetach(long entryId, List<LMarkupOmission> omissions)
     {
-        LMentionArchive mentions = new(_lEngineDatabase);
+        LMentionVault mentions = _lEngineMentions;
         HashSet<long> affected = [];
-        foreach (LMeaning meaning in new LMeaningArchive(_lEngineDatabase).LMeaningRead(entryId))
+        foreach (LMeaning meaning in _lEngineMeanings.LMeaningRead(entryId))
         {
             foreach (long exampleId in mentions.LMentionSenseClear(meaning.LMeaningId))
             {

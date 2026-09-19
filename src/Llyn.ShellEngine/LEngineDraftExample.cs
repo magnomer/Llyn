@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -27,8 +26,7 @@ public sealed partial class LEngine
                 content);
 
             _lEngineDrafts.LDraftSave(draft);
-            LClaimArchive.LClaimArchiveSave(
-                _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
+            _lEngineClaims.LClaimSave(_lEngineClaims.LClaimCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
         }
@@ -70,7 +68,7 @@ public sealed partial class LEngine
                 draft with { LDraftEntryId = stored.LExampleId, LDraftExample = stored });
 
             _lEngineDraftHeld.Remove(id);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            _lEngineClaims.LClaimDelete(id);
             _lEngineDrafts.LDraftDelete(id);
             settled = stored;
         }

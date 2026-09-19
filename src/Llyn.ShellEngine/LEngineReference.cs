@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(reference);
-            return new LReferenceArchive(_lEngineDatabase).LReferenceCreate(reference);
+            return _lEngineReferences.LReferenceCreate(reference);
         }
     }
 
@@ -24,7 +23,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             LStateValue named = LEngineValueRead(new LStateWritten(title.Trim(), false));
-            stored = new LReferenceArchive(_lEngineDatabase).LReferenceCreate(new LReference(
+            stored = _lEngineReferences.LReferenceCreate(new LReference(
                 0,
                 named,
                 LStateValue.LStateValueUnspecified,
@@ -42,7 +41,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LReferenceArchive(_lEngineDatabase).LReferenceRead(id);
+            return _lEngineReferences.LReferenceRead(id);
         }
     }
 
@@ -50,7 +49,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            return _lEngineReferences.LReferenceAllRead();
         }
     }
 
@@ -61,11 +60,11 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(query);
             query = query.Trim();
 
-            IReadOnlyList<LReference> read = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyList<LReference> read = _lEngineReferences.LReferenceAllRead();
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+                _lEngineAuthors.LAuthorReferenceRead();
             IReadOnlyDictionary<long, int> usage =
-                new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+                _lEngineReferences.LReferenceUsageRead();
 
             List<LCatalogReference> rows = [];
             foreach (LReference reference in read)
@@ -107,7 +106,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LReferenceArchive references = new(_lEngineDatabase);
+            LReferenceVault references = _lEngineReferences;
             switch (owner)
             {
                 case LOwner.LOwnerExample:
@@ -123,7 +122,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LReferenceArchive(_lEngineDatabase).LReferenceUpdate(reference);
+            _lEngineReferences.LReferenceUpdate(reference);
         }
     }
 
@@ -131,7 +130,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LReferenceArchive references = new(_lEngineDatabase);
+            LReferenceVault references = _lEngineReferences;
             switch (owner)
             {
                 case LOwner.LOwnerExample:
@@ -147,7 +146,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LReferenceArchive references = new(_lEngineDatabase);
+            LReferenceVault references = _lEngineReferences;
             switch (owner)
             {
                 case LOwner.LOwnerExample:
@@ -163,7 +162,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id);
+            _lEngineReferences.LReferenceDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
@@ -173,7 +172,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id, detach);
+            _lEngineReferences.LReferenceDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
@@ -186,7 +185,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(author);
             ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorName);
-            created = new LAuthorArchive(_lEngineDatabase).LAuthorCreate(author);
+            created = _lEngineAuthors.LAuthorCreate(author);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
@@ -197,7 +196,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LAuthorArchive(_lEngineDatabase).LAuthorRead(id);
+            return _lEngineAuthors.LAuthorRead(id);
         }
     }
 
@@ -205,7 +204,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LAuthorArchive(_lEngineDatabase).LAuthorAllRead();
+            return _lEngineAuthors.LAuthorAllRead();
         }
     }
 
@@ -217,7 +216,7 @@ public sealed partial class LEngine
 
             string written = query.Trim();
             List<LAuthor> found = [];
-            foreach (LAuthor author in new LAuthorArchive(_lEngineDatabase).LAuthorAllRead())
+            foreach (LAuthor author in _lEngineAuthors.LAuthorAllRead())
             {
                 if (LCatalog.LCatalogTextMatch(author.LAuthorName, written))
                 {
@@ -277,7 +276,7 @@ public sealed partial class LEngine
                 throw LEngineOwnerRaise(owner);
             }
 
-            return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead(ownerId);
+            return _lEngineAuthors.LAuthorReferenceRead(ownerId);
         }
     }
 
@@ -290,7 +289,7 @@ public sealed partial class LEngine
                 throw LEngineOwnerRaise(owner);
             }
 
-            return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+            return _lEngineAuthors.LAuthorReferenceRead();
         }
     }
 
@@ -298,7 +297,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LAuthorArchive(_lEngineDatabase).LAuthorUpdate(author);
+            _lEngineAuthors.LAuthorUpdate(author);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
@@ -308,7 +307,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LReferenceArchive(_lEngineDatabase).LReferenceAuthorAttach(referenceId, authorId, position);
+            _lEngineReferences.LReferenceAuthorAttach(referenceId, authorId, position);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
@@ -318,7 +317,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LReferenceArchive(_lEngineDatabase).LReferenceAuthorDetach(referenceId, authorId);
+            _lEngineReferences.LReferenceAuthorDetach(referenceId, authorId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
@@ -328,7 +327,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id);
+            _lEngineAuthors.LAuthorDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
@@ -338,7 +337,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id, detach);
+            _lEngineAuthors.LAuthorDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, id);

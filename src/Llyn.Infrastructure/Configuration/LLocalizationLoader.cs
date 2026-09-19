@@ -1,13 +1,35 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LLocalizationLoader
+public sealed class LLocalizationLoader : LLocalizationVault
 {
-    public static TextReader LLocalizationLoaderOpen(string language)
+    private const string LLocalizationLoaderPrefix = "Llyn.Infrastructure.Localization.";
+    private const string LLocalizationLoaderSuffix = ".json";
+
+    public IReadOnlyList<string> LLocalizationScan()
     {
-        string resourceName = $"Llyn.Infrastructure.Localization.{language}.json";
+        List<string> languages = [];
+        foreach (string name in typeof(LLocalizationLoader).Assembly.GetManifestResourceNames())
+        {
+            if (name.StartsWith(LLocalizationLoaderPrefix, StringComparison.Ordinal)
+                && name.EndsWith(LLocalizationLoaderSuffix, StringComparison.Ordinal))
+            {
+                languages.Add(name[LLocalizationLoaderPrefix.Length..^LLocalizationLoaderSuffix.Length]);
+            }
+        }
+
+        languages.Sort(StringComparer.Ordinal);
+        return languages;
+    }
+
+    public TextReader LLocalizationOpen(string language)
+    {
+        string resourceName = LLocalizationLoaderPrefix + language + LLocalizationLoaderSuffix;
         Assembly assembly = typeof(LLocalizationLoader).Assembly;
         Stream stream = assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidDataException(

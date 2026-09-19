@@ -100,6 +100,10 @@ One statement answers for the whole table, rather than one per Example.
 How many rows reference each Example, counted across the three association tables at once.
 The browsing panel needs the figure for every row it lists, so one statement answers for all of them.
 
+## `public IReadOnlyList<LUsage> LExampleUsageRead(long id)`
+
+The cards quoting the Example, answered through `LExampleLink` so the port has one adapter.
+
 ## `public void LExampleDelete(long id, bool detach)`
 
 Deletes the Example, clearing every reference to it first when `detach` is set.

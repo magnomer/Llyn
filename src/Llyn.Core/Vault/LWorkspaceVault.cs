@@ -7,4 +7,6 @@ public interface LWorkspaceVault
     void LWorkspaceStateSave(LWorkspaceState state);
 
     long LWorkspaceFloorAdjust();
+
+    long LWorkspaceSizeRead();
 }

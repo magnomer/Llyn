@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LInflectionArchive(_lEngineDatabase).LInflectionRead(entryId);
+            return _lEngineInflections.LInflectionRead(entryId);
         }
     }
 
@@ -21,7 +20,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(inflections);
             LEngineInflectionValidate(inflections);
-            new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
+            _lEngineInflections.LInflectionSet(entryId, inflections);
             LEngineParadigmUpdate(entryId);
             LEngineInflectionReset(entryId);
             LEngineUpdatedSet(entryId);
@@ -34,15 +33,15 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(inflections);
             LEngineInflectionValidate(inflections);
-            new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entryId, inflections);
+            _lEngineInflections.LInflectionAppend(entryId, inflections);
             LEngineParadigmUpdate(entryId);
         }
     }
 
     private void LEngineInflectionValidate(IReadOnlyList<LInflection> inflections)
     {
-        LSpeechArchive speeches = new(_lEngineDatabase);
-        LMorphologyArchive morphologies = new(_lEngineDatabase);
+        LSpeechVault speeches = _lEngineSpeeches;
+        LMorphologyVault morphologies = _lEngineMorphologies;
         foreach (LInflection inflection in inflections)
         {
             if (inflection.LInflectionSpeechId is long speechId
@@ -65,7 +64,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LInflectionArchive(_lEngineDatabase).LInflectionMove(entryId, position, target);
+            _lEngineInflections.LInflectionMove(entryId, position, target);
             LEngineUpdatedSet(entryId);
         }
     }
@@ -74,7 +73,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LInflectionArchive(_lEngineDatabase).LInflectionDelete(entryId, position);
+            _lEngineInflections.LInflectionDelete(entryId, position);
             LEngineInflectionReset(entryId);
             LEngineUpdatedSet(entryId);
         }

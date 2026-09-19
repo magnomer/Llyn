@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LTagArchive
+public sealed class LTagArchive : LTagVault
 {
     private readonly LDatabase _lTagArchiveDatabase;
 

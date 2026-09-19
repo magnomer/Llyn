@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -14,7 +13,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(example);
-            return new LExampleArchive(_lEngineDatabase).LExampleCreate(example);
+            return _lEngineExamples.LExampleCreate(example);
         }
     }
 
@@ -22,7 +21,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LExampleArchive(_lEngineDatabase).LExampleRead(id);
+            return _lEngineExamples.LExampleRead(id);
         }
     }
 
@@ -30,7 +29,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LExampleArchive(_lEngineDatabase).LExampleRead();
+            return _lEngineExamples.LExampleRead();
         }
     }
 
@@ -41,9 +40,9 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(query);
             query = query.Trim();
 
-            IReadOnlyList<LExample> read = new LExampleArchive(_lEngineDatabase).LExampleRead();
+            IReadOnlyList<LExample> read = _lEngineExamples.LExampleRead();
             IReadOnlyDictionary<long, int> usage =
-                new LExampleArchive(_lEngineDatabase).LExampleReferenceRead();
+                _lEngineExamples.LExampleReferenceRead();
             IReadOnlyDictionary<long, string> cited = LEngineCitationRead();
 
             List<LCatalogExample> rows = [];
@@ -89,10 +88,10 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+                _lEngineAuthors.LAuthorReferenceRead();
 
             Dictionary<long, string> named = [];
-            foreach (LReference reference in new LReferenceArchive(_lEngineDatabase).LReferenceAllRead())
+            foreach (LReference reference in _lEngineReferences.LReferenceAllRead())
             {
                 credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited);
                 named[reference.LReferenceId] = reference.LReferenceBylineRead(credited ?? []);
@@ -134,7 +133,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LSentenceArchive(_lEngineDatabase).LSentenceMeaningRead(meaningId);
+            return _lEngineSentences.LSentenceMeaningRead(meaningId);
         }
     }
 
@@ -142,7 +141,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSentenceArchive sentences = new(_lEngineDatabase);
+            LSentenceVault sentences = _lEngineSentences;
             return owner switch
             {
                 LOwner.LOwnerMeaning => sentences.LSentenceMeaningRead(ownerId),
@@ -156,7 +155,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LExampleArchive(_lEngineDatabase).LExampleUpdate(example);
+            _lEngineExamples.LExampleUpdate(example);
         }
     }
 
@@ -164,7 +163,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LExampleArchive(_lEngineDatabase).LExampleSourceUpdate(exampleId, reference);
+            _lEngineExamples.LExampleSourceUpdate(exampleId, reference);
         }
     }
 
@@ -175,10 +174,10 @@ public sealed partial class LEngine
             switch (owner)
             {
                 case LOwner.LOwnerMeaning:
-                    new LSentenceArchive(_lEngineDatabase).LSentenceMeaningAttach(ownerId, exampleId, position);
+                    _lEngineSentences.LSentenceMeaningAttach(ownerId, exampleId, position);
                     return;
                 case LOwner.LOwnerCollocation:
-                    new LSentenceArchive(_lEngineDatabase).LSentenceCollocationAttach(ownerId, exampleId, position);
+                    _lEngineSentences.LSentenceCollocationAttach(ownerId, exampleId, position);
                     return;
                 default:
                     throw LEngineOwnerRaise(owner);
@@ -193,10 +192,10 @@ public sealed partial class LEngine
             switch (owner)
             {
                 case LOwner.LOwnerMeaning:
-                    new LSentenceArchive(_lEngineDatabase).LSentenceMeaningDetach(ownerId, exampleId);
+                    _lEngineSentences.LSentenceMeaningDetach(ownerId, exampleId);
                     return;
                 case LOwner.LOwnerCollocation:
-                    new LSentenceArchive(_lEngineDatabase).LSentenceCollocationDetach(ownerId, exampleId);
+                    _lEngineSentences.LSentenceCollocationDetach(ownerId, exampleId);
                     return;
                 default:
                     throw LEngineOwnerRaise(owner);
@@ -214,7 +213,7 @@ public sealed partial class LEngine
 
             LEngineExampleDetach(ownerId, exampleId, owner);
 
-            LExampleArchive examples = new(_lEngineDatabase);
+            LExampleVault examples = _lEngineExamples;
             if (examples.LExampleReferenceRead(exampleId) == 0)
             {
                 examples.LExampleDelete(exampleId);
@@ -229,7 +228,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LExampleArchive(_lEngineDatabase).LExampleDelete(id);
+            _lEngineExamples.LExampleDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
@@ -239,7 +238,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LExampleArchive(_lEngineDatabase).LExampleDelete(id, detach);
+            _lEngineExamples.LExampleDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);

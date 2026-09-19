@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -103,7 +102,7 @@ public sealed partial class LEngine
             return;
         }
 
-        LMeaning? sense = new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(senseId);
+        LMeaning? sense = _lEngineMeanings.LMeaningSingleRead(senseId);
         if (sense is null || sense.LMeaningEntryId != entryId)
         {
             throw new LRefusal(LRefusal.LRefusalLink);

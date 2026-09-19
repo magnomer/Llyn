@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -17,21 +16,21 @@ public sealed partial class LEngine
             switch (owner)
             {
                 case LOwner.LOwnerExample:
-                    LExampleArchive examples = new(_lEngineDatabase);
+                    LExampleVault examples = _lEngineExamples;
                     LExample example = examples.LExampleRead(id) ?? throw LEnginePageRaise();
                     LReference? cited = example.LExampleSource.LStateAnchorState == LState.LStateSpecified
-                        ? new LReferenceArchive(_lEngineDatabase)
+                        ? _lEngineReferences
                             .LReferenceRead(example.LExampleSource.LStateAnchorShow())
                         : null;
                     return LEnginePageRead(example, cited, examples.LExampleReferenceRead(id), legend);
                 case LOwner.LOwnerReference:
-                    LReference reference = new LReferenceArchive(_lEngineDatabase).LReferenceRead(id)
+                    LReference reference = _lEngineReferences.LReferenceRead(id)
                         ?? throw LEnginePageRaise();
-                    IReadOnlyList<LAuthor> credits = new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead(id);
-                    int cites = new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead(id).Count;
+                    IReadOnlyList<LAuthor> credits = _lEngineAuthors.LAuthorReferenceRead(id);
+                    int cites = _lEngineReferences.LReferenceUsageRead(id).Count;
                     return LEnginePageRead(reference, credits, cites, legend);
                 case LOwner.LOwnerSituation:
-                    LSituationArchive situations = new(_lEngineDatabase);
+                    LSituationVault situations = _lEngineSituations;
                     LSituation situation = situations.LSituationRead(id) ?? throw LEnginePageRaise();
                     return LEnginePageRead(situation, situations.LSituationReferenceRead(id), legend);
                 default:

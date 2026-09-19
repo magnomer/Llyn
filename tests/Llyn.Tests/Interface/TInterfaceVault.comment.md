@@ -14,3 +14,19 @@ The entry archive over `database`, handed out as the port the engine holds.
 ## `internal static LDraftVault TDraftVaultCreate(string root)`
 
 The draft archive over the workspace `root`, handed out as the port the engine holds.
+
+## `internal static LLanguageVault TLanguageVaultCreate()`
+
+The language loader over the packs the test build copies beside it, handed out as the port.
+
+## `internal static LSettingsVault TSettingsVaultCreate(string root)`
+
+The settings loader over the workspace `root`, handed out as the port.
+
+## `internal static LWorkspaceVault TWorkspaceVaultCreate(LDatabase database)`
+
+The workspace archive over `database`, handed out as the port the identity counts over.
+
+## `internal static LIdentity TIdentityCreate(LWorkspaceVault workspaces)`
+
+The identity issuer over a workspace port, as the engine builds it.

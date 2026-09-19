@@ -39,6 +39,10 @@ Another Reference crediting the same Authors may order them differently — the 
 Reads every Author the workspace holds, by name.
 The Sources panel offers them for crediting, so it asks for the whole shelf at once.
 
+## `public IReadOnlyList<LUsage> LAuthorUsageRead(long id)`
+
+The Sources crediting the Author, answered through `LAuthorUsage` so the port has one adapter.
+
 ## `public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LAuthorReferenceRead()`
 
 Reads the credits of every Reference at once, each in that Reference's own order.

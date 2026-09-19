@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LAuditWriter
+public sealed class LAuditWriter : LAuditVault
 {
     private const string LAuditWriterFile = "audit.log";
+
+    private readonly string _lAuditWriterRoot;
+
+    public LAuditWriter(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        _lAuditWriterRoot = root;
+    }
 
     public static string LAuditWriterRead(string root)
     {
@@ -14,10 +23,10 @@ public static class LAuditWriter
         return Path.Combine(root, LAuditWriterFile);
     }
 
-    public static string? LAuditWriterRecord(string root, Exception exception)
+    public string? LAuditRecord(Exception exception)
     {
         ArgumentNullException.ThrowIfNull(exception);
-        return LAuditWriterRecord(root, exception.ToString());
+        return LAuditWriterRecord(_lAuditWriterRoot, exception.ToString());
     }
 
     public static string? LAuditWriterRecord(string root, string note)

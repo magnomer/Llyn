@@ -30,7 +30,7 @@ public sealed class TMarkupCargo
         string path = Path.Combine(workspace.TWorkspaceFolder, "huge.llx");
         using (FileStream stream = File.Create(path))
         {
-            stream.SetLength(LEngine.LEngineMarkupCeiling + 1);
+            stream.SetLength(TInterface.TMarkupCeilingRead() + 1);
         }
 
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineMarkupRead(path));

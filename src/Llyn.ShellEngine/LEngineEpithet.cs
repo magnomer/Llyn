@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -33,7 +32,7 @@ public sealed partial class LEngine
 
         IReadOnlyList<LReflexRule> rules = LEngineReflexRead(entry.LEntryLanguage);
         string epithet = LEngineEpithetCheck(rules)
-            ? LEngineEpithetFormat(rules, new LReflexArchive(_lEngineDatabase).LReflexRead(entryId))
+            ? LEngineEpithetFormat(rules, _lEngineReflexes.LReflexRead(entryId))
             : string.Empty;
         _lEngineEntries.LEntryEpithetSave(entryId, epithet);
     }

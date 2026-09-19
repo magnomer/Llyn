@@ -14,14 +14,14 @@ Returns the user's persisted settings.
 
 ## `public LKeep LEngineKeepRead()`
 
-Hands out the keep port bound to the open workspace, built afresh on every call.
+Hands out the keep port bound to the open workspace, set with the other ports when the workspace opened.
 The shell persists its posture through it, so a switched workspace is followed without the shell knowing the disk.
 
-## `public static IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
+## `public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
 
-Opens the embedded catalog of a language through the infrastructure and makes it the current one.
+Opens the catalog of a language through the localization port and makes it the current one.
 The veneer copies the answer into its resources, so no ring above the engine opens a resource.
-It is static because the default catalog is applied before any engine is built.
+The default catalog is applied before any engine is built, so the bootstrap opens that one through the port itself.
 
 ## `public void LEngineLocalizationSave(string language)`
 
@@ -81,6 +81,6 @@ A settings control echoing the stored value back is therefore a no-op below the 
 
 ## `private void LEngineSettingsSave()`
 
-Writes the settings held here into the open workspace.
+Writes the settings held here into the open workspace through the settings port.
 A refused write is recorded in the audit log rather than thrown, so a locked file never ends the program.
 The record in memory stays current either way, and the next change tries the file again.

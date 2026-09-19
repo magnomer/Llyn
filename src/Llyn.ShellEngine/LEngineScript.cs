@@ -37,7 +37,7 @@ public sealed partial class LEngine
             IReadOnlyList<LScriptImage> stored;
             lock (_lEngineGate)
             {
-                stored = new LScriptArchive(_lEngineDatabase).LScriptRead(entry.LEntryLanguage, character);
+                stored = _lEngineScripts.LScriptRead(entry.LEntryLanguage, character);
             }
 
             images.AddRange(stored);
@@ -64,7 +64,7 @@ public sealed partial class LEngine
             bool stored;
             lock (_lEngineGate)
             {
-                stored = new LScriptArchive(_lEngineDatabase).LScriptRead(entry.LEntryLanguage, character).Count > 0;
+                stored = _lEngineScripts.LScriptRead(entry.LEntryLanguage, character).Count > 0;
             }
 
             if (!stored)
@@ -204,7 +204,7 @@ public sealed partial class LEngine
                 raised = true;
                 if (found.Count > 0)
                 {
-                    new LScriptArchive(_lEngineDatabase).LScriptSave(language, character, found);
+                    _lEngineScripts.LScriptSave(language, character, found);
                 }
                 else if (reached)
                 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 

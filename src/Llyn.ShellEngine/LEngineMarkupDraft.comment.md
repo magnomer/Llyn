@@ -18,12 +18,12 @@ The overloads below each settle one kind of link.
 
 ## Inline notes
 
-### `private static LSpeechValue? LEngineMarkupResolve(LSpeechArchive values, string language, string name, List<LMarkupOmission> omissions)`
+### `private static LSpeechValue? LEngineMarkupResolve(LSpeechVault values, string language, string name, List<LMarkupOmission> omissions)`
 
 A part of speech by name within the entry's language, or nothing with an omission.
 An inflection's speech goes through here, because a paradigm slot needs a pack value.
 
-### `private LInflection LEngineMarkupResolve(LSpeechArchive values, string language, LMarkupInflection inflection, int position, List<LMarkupOmission> omissions)`
+### `private LInflection LEngineMarkupResolve(LSpeechVault values, string language, LMarkupInflection inflection, int position, List<LMarkupOmission> omissions)`
 
 An inflection with its speech and morphology names turned into ids.
 A morphology is searched through every feature of the resolved speech.

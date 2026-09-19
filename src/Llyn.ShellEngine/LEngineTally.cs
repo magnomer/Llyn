@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -14,9 +13,9 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            IReadOnlyList<LFanqieRow> rows = new LDiweiArchive(_lEngineDatabase).LDiweiFanqieRead(diwei.LDiweiId);
+            IReadOnlyList<LFanqieRow> rows = _lEngineDiweiVault.LDiweiFanqieRead(diwei.LDiweiId);
             IReadOnlyDictionary<long, IReadOnlyList<LReflex>> anchored =
-                new LReflexArchive(_lEngineDatabase).LReflexAnchorScan(diwei.LDiweiId);
+                _lEngineReflexes.LReflexAnchorScan(diwei.LDiweiId);
             LHypothesis? hypothesis = LEngineHypothesisRead(diwei.LDiweiLanguage);
             Dictionary<string, List<string>> sections = new(StringComparer.Ordinal);
             List<string> order = [];

@@ -1,6 +1,5 @@
 ﻿using System;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -28,8 +27,7 @@ public sealed partial class LEngine
             };
 
             _lEngineDrafts.LDraftSave(draft);
-            LClaimArchive.LClaimArchiveSave(
-                _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
+            _lEngineClaims.LClaimSave(_lEngineClaims.LClaimCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
         }
@@ -51,7 +49,7 @@ public sealed partial class LEngine
             LAuthor stored;
             using (LVaultSession session = _lEngineVault.LVaultSessionStart())
             {
-                LAuthorArchive archive = new(_lEngineDatabase);
+                LAuthorVault archive = _lEngineAuthors;
                 bool fresh = draft.LDraftEntryId == 0 || archive.LAuthorRead(draft.LDraftEntryId) is null;
                 if (fresh)
                 {
@@ -72,7 +70,7 @@ public sealed partial class LEngine
 
             _lEngineDraftHeld.Remove(id);
             LEngineChronicleClear(id);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            _lEngineClaims.LClaimDelete(id);
             _lEngineDrafts.LDraftDelete(id);
             settled = stored;
         }

@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LSpeechArchive
+public sealed class LSpeechArchive : LSpeechVault
 {
     private readonly LDatabase _lSpeechArchiveDatabase;
 
@@ -114,6 +114,11 @@ public sealed class LSpeechArchive
 
         using SqliteDataReader reader = command.ExecuteReader();
         return reader.Read() ? LSpeechRowRead(reader) : null;
+    }
+
+    public LSpeechPack LSpeechLoad(string language)
+    {
+        return LSpeechLoader.LSpeechLoaderLoad(language);
     }
 
     private static long LSpeechCodeCreate(SqliteConnection connection, string language)

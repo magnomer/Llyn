@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -60,7 +59,7 @@ public sealed partial class LEngine
 
         draft = draft with { LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim() };
 
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+        using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
         LEntry stored = _lEngineEntries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
         LEntryDraft? origin = LEngineEntryLoad(id);
@@ -79,12 +78,11 @@ public sealed partial class LEngine
             !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal);
         if (renamed)
         {
-            new LFrequencyArchive(_lEngineDatabase).LFrequencyClear(id);
+            _lEngineFrequencies.LFrequencyClear(id);
             changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
         }
 
         LEngineCardUpdate(
-            session.LDatabaseSessionConnection,
             id,
             draft.LEntryDraftMeanings,
             draft.LEntryDraftLanguage,
@@ -92,7 +90,6 @@ public sealed partial class LEngine
             changes,
             identity);
         LEngineCardUpdate(
-            session.LDatabaseSessionConnection,
             id,
             draft.LEntryDraftCollocations,
             draft.LEntryDraftLanguage,
@@ -111,7 +108,7 @@ public sealed partial class LEngine
 
         LEntry updated = _lEngineEntries.LEntryRead(id) ?? stored;
         LEngineParadigmUpdate(updated);
-        session.LDatabaseSessionCommit();
+        session.LVaultSessionCommit();
         return updated;
     }
 
@@ -135,8 +132,8 @@ public sealed partial class LEngine
     private void LEngineUpdatedSet(long ownerId, bool collocation)
     {
         long? entryId = collocation
-            ? new LCollocationArchive(_lEngineDatabase).LCollocationHolderRead(ownerId)
-            : new LMeaningArchive(_lEngineDatabase).LMeaningHolderRead(ownerId);
+            ? _lEngineCollocations.LCollocationHolderRead(ownerId)
+            : _lEngineMeanings.LMeaningHolderRead(ownerId);
 
         if (entryId is long held)
         {
@@ -209,7 +206,7 @@ public sealed partial class LEngine
     private void LEngineInflectionUpdate(
         long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
-        LInflectionArchive inflections = new(_lEngineDatabase);
+        LInflectionVault inflections = _lEngineInflections;
         IReadOnlyList<LInflection> stored = inflections.LInflectionRead(entryId);
         IReadOnlyList<LInflection> current = draft.LEntryDraftInflections;
 
@@ -230,7 +227,7 @@ public sealed partial class LEngine
 
     private string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)
     {
-        LSpeechArchive values = new(_lEngineDatabase);
+        LSpeechVault values = _lEngineSpeeches;
         List<string> names = new(speeches.Count);
         foreach (LSpeech speech in speeches)
         {
@@ -263,7 +260,7 @@ public sealed partial class LEngine
 
     private void LEngineNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
-        LNoteArchive notes = new(_lEngineDatabase);
+        LNoteVault notes = _lEngineNotes;
         LNote? stored = notes.LNoteRead(entryId);
         string text = LMarkdown.LMarkdownNormalize(draft.LEntryDraftNote);
 

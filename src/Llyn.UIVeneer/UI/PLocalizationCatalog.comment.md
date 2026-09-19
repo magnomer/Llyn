@@ -15,9 +15,10 @@ The localized text under `key`, or the key itself when no locale declares it.
 The localized text under `key`, or null when no locale declares it.
 The plain read answers the key itself on a miss, which a caller cannot tell from a translation.
 
-## `internal static void PLocalizationCatalogApply(ResourceDictionary resources, string language)`
+## `internal static void PLocalizationCatalogApply(ResourceDictionary resources, IReadOnlyDictionary<string, string> texts)`
 
-Loads the language below the shell, copies every text into the resources and announces the change.
+Copies every text of a loaded catalog into the resources and announces the change.
+The caller loads the catalog, through the engine or, before one exists, through the localization port.
 
 ## Inline notes
 

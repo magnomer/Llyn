@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -66,7 +65,7 @@ public sealed partial class LEngine
 
     private void LEngineTranslationAppend(long ownerId, long entryId, bool collocation)
     {
-        LTranslationArchive translations = new(_lEngineDatabase);
+        LTranslationVault translations = _lEngineTranslations;
         List<long> ids = [];
         foreach (LTranslation held in collocation
             ? translations.LTranslationCollocationRead(ownerId)

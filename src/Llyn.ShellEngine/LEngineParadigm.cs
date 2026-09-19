@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -26,13 +25,13 @@ public sealed partial class LEngine
     {
         if (!_lEngineSpeechPacks.TryGetValue(entry.LEntryLanguage, out LSpeechPack? pack))
         {
-            pack = LSpeechLoader.LSpeechLoaderLoad(entry.LEntryLanguage);
+            pack = _lEngineSpeeches.LSpeechLoad(entry.LEntryLanguage);
             _lEngineSpeechPacks[entry.LEntryLanguage] = pack;
         }
 
-        IReadOnlyList<LInflection> stored = new LInflectionArchive(_lEngineDatabase).LInflectionRead(entry.LEntryId);
+        IReadOnlyList<LInflection> stored = _lEngineInflections.LInflectionRead(entry.LEntryId);
         HashSet<long> missed = [];
-        foreach (LLacuna lacuna in new LLacunaArchive(_lEngineDatabase).LLacunaRead(entry.LEntryId))
+        foreach (LLacuna lacuna in _lEngineLacunae.LLacunaRead(entry.LEntryId))
         {
             if (lacuna.LLacunaMorphologyId is long morphologyId)
             {
@@ -96,7 +95,7 @@ public sealed partial class LEngine
             return;
         }
 
-        LInflectionArchive inflections = new(_lEngineDatabase);
+        LInflectionVault inflections = _lEngineInflections;
         foreach (LParadigmSlot slot in LEngineParadigmRead(entry))
         {
             if (slot.LParadigmSlotInflection is not LInflection inflection)
@@ -160,13 +159,13 @@ public sealed partial class LEngine
             return [];
         }
 
-        LSpeechValue? value = new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(speechId);
+        LSpeechValue? value = _lEngineSpeeches.LSpeechValueRead(speechId);
         if (value is null)
         {
             return [];
         }
 
-        LMorphologyArchive morphologies = new(_lEngineDatabase);
+        LMorphologyVault morphologies = _lEngineMorphologies;
         HashSet<long> taken = [];
         List<LParadigmSlot> slots = [];
         foreach (LParadigm paradigm in LEngineParadigmScan(pack, value.LSpeechValueCode))
@@ -207,7 +206,7 @@ public sealed partial class LEngine
     }
 
     private static LMorphology? LEngineMorphologyResolve(
-        LSpeechPack pack, LMorphologyArchive morphologies, string language, long code)
+        LSpeechPack pack, LMorphologyVault morphologies, string language, long code)
     {
         LMorphology? declared = pack.LSpeechPackMorphology.FirstOrDefault(row => row.LMorphologyCode == code);
         if (declared is null)

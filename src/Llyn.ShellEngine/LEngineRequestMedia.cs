@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -64,7 +63,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LImage stored = new LImageArchive(_lEngineDatabase).LImageRead(id)
+        LImage stored = _lEngineImages.LImageRead(id)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         return new LImageDraft(stored.LImageLocation, stored.LImageId);
@@ -134,7 +133,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LVideo stored = new LVideoArchive(_lEngineDatabase).LVideoRead(id)
+        LVideo stored = _lEngineVideos.LVideoRead(id)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         return new LVideoDraft(stored.LVideoLocation, stored.LVideoSpan, stored.LVideoId);

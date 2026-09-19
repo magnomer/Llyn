@@ -28,7 +28,7 @@ public sealed partial class LEngine
             entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null
                 || LEngineReflexRead(entry.LEntryLanguage).Count == 0
-                || new LReflexArchive(_lEngineDatabase).LReflexRead(entryId).Count > 0)
+                || _lEngineReflexes.LReflexRead(entryId).Count > 0)
             {
                 return;
             }
@@ -57,7 +57,7 @@ public sealed partial class LEngine
             }
 
             _lEngineReflexMissed.Remove(entryId);
-            new LReflexArchive(_lEngineDatabase).LReflexSet(entryId, []);
+            _lEngineReflexes.LReflexSet(entryId, []);
             LEngineEpithetUpdate(entryId);
             cleared = LEngineReflexPropagate(entryId, [], true);
         }
@@ -210,7 +210,7 @@ public sealed partial class LEngine
                 }
 
                 LEntry? current = _lEngineEntries.LEntryRead(entry.LEntryId);
-                LReflexArchive reflexes = new(_lEngineDatabase);
+                LReflexVault reflexes = _lEngineReflexes;
                 if (current is null
                     || !string.Equals(current.LEntryHeadword, entry.LEntryHeadword, StringComparison.Ordinal)
                     || !string.Equals(current.LEntryLanguage, entry.LEntryLanguage, StringComparison.Ordinal)

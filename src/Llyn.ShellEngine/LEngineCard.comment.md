@@ -25,7 +25,7 @@ So clearing a card removes its row, exactly as adding text to a blank one adds o
 Deletions run first, so the creates that follow append onto a set already free of the going rows.
 The whole surviving set is renumbered afterwards in one pass.
 The unique (owner, position) index rejects a swap done row by row.
-That is what LDatabaseOrder exists for.
+That is what `LCollocationOrderSet` on the collocation vault exists for.
 
 A Meaning list is a tree and is reconciled in `LEngineMeaningCard.cs`.
 What stays here is the flat half, which is what a Collocation list is.

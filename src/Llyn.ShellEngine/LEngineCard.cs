@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
-using Microsoft.Data.Sqlite;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
     private void LEngineCardUpdate(
-        SqliteConnection connection,
         long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
@@ -21,11 +18,11 @@ public sealed partial class LEngine
 
         if (!collocation)
         {
-            LEngineMeaningUpdate(connection, entryId, cards, language, changes, identity);
+            LEngineMeaningUpdate(entryId, cards, language, changes, identity);
             return;
         }
 
-        LCollocationArchive collocations = new(_lEngineDatabase);
+        LCollocationVault collocations = _lEngineCollocations;
 
         Dictionary<long, LCollocation> stored = [];
         List<long> storedOrder = [];
@@ -119,8 +116,7 @@ public sealed partial class LEngine
             LEngineCardSync(rowId, card, language, true, identity);
         }
 
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "collocation", "entry_parent = $owner", entryId, "collocation_id", order);
+        collocations.LCollocationOrderSet(entryId, order);
     }
 
     private void LEngineCardSync(
@@ -133,7 +129,7 @@ public sealed partial class LEngine
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation, identity);
         LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
 
-        LImageArchive images = new(_lEngineDatabase);
+        LImageVault images = _lEngineImages;
         LEngineFieldSync(
             LEngineImageRead(card.LCardDraftImage),
             collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId),
@@ -160,7 +156,7 @@ public sealed partial class LEngine
                 images.LImageMeaningAttach(ownerId, rowId, position);
             });
 
-        LVideoArchive videos = new(_lEngineDatabase);
+        LVideoVault videos = _lEngineVideos;
         LEngineFieldSync(
             LEngineVideoRead(card.LCardDraftVideo),
             collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId),
@@ -195,7 +191,7 @@ public sealed partial class LEngine
         bool collocation,
         Dictionary<long, long> identity)
     {
-        LExampleArchive exampleRows = new(_lEngineDatabase);
+        LExampleVault exampleRows = _lEngineExamples;
 
         List<LSentence> rows = [];
         foreach (LSentenceDraft draft in LEngineSentenceRead(drafts))
@@ -209,7 +205,7 @@ public sealed partial class LEngine
                 draft.LSentenceDraftDependence));
         }
 
-        LSentenceArchive sentences = new(_lEngineDatabase);
+        LSentenceVault sentences = _lEngineSentences;
         IReadOnlyList<long> written = collocation
             ? sentences.LSentenceCollocationSave(ownerId, rows)
             : sentences.LSentenceMeaningSave(ownerId, rows);
@@ -223,7 +219,7 @@ public sealed partial class LEngine
     private void LEngineSituationSync(
         long ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {
-        LSituationArchive situations = new(_lEngineDatabase);
+        LSituationVault situations = _lEngineSituations;
 
         LEngineFieldSync(
             LEngineSituationRead(drafts),
@@ -261,7 +257,7 @@ public sealed partial class LEngine
             written.Add(new LTag(draft.LTagDraftId, draft.LTagDraftText));
         }
 
-        LTagArchive tags = new(_lEngineDatabase);
+        LTagVault tags = _lEngineTags;
         IReadOnlyList<long> resolved = collocation
             ? tags.LTagCollocationSave(ownerId, written)
             : tags.LTagMeaningSave(ownerId, written);
@@ -287,7 +283,7 @@ public sealed partial class LEngine
             }
         }
 
-        LTranslationArchive translations = new(_lEngineDatabase);
+        LTranslationVault translations = _lEngineTranslations;
         if (collocation)
         {
             translations.LTranslationCollocationSave(ownerId, written);

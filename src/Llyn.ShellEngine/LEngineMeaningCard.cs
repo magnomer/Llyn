@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
-using Microsoft.Data.Sqlite;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
     private void LEngineMeaningUpdate(
-        SqliteConnection connection,
         long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
         List<LRevisionChange> changes,
         Dictionary<long, long> identity)
     {
-        LMeaningArchive meanings = new(_lEngineDatabase);
+        LMeaningVault meanings = _lEngineMeanings;
 
         Dictionary<long, LMeaning> stored = [];
         List<long> storedOrder = [];
@@ -51,7 +48,6 @@ public sealed partial class LEngine
         }
 
         LEngineMeaningApply(
-            connection,
             entryId,
             null,
             cards,
@@ -65,13 +61,12 @@ public sealed partial class LEngine
     }
 
     private void LEngineMeaningApply(
-        SqliteConnection connection,
         long entryId,
         long? parentId,
         IReadOnlyList<LCardDraft> cards,
         string language,
         List<LRevisionChange> changes,
-        LMeaningArchive meanings,
+        LMeaningVault meanings,
         IReadOnlyDictionary<long, LMeaning> stored,
         ISet<long> gone,
         ISet<long> applied,
@@ -132,7 +127,6 @@ public sealed partial class LEngine
             order.Add(rowId);
             LEngineCardSync(rowId, card, language, false, identity);
             LEngineMeaningApply(
-                connection,
                 entryId,
                 rowId,
                 card.LCardDraftChild,
@@ -145,15 +139,7 @@ public sealed partial class LEngine
                 identity);
         }
 
-        if (parentId is null)
-        {
-            LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "sense", "entry_parent = $owner AND sense_parent IS NULL", entryId, "sense_id", order);
-            return;
-        }
-
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "sense", "sense_parent = $owner", parentId, "sense_id", order);
+        meanings.LMeaningOrderSet(entryId, parentId, order);
     }
 
     private static void LEngineMeaningScan(

@@ -8,6 +8,10 @@ An intake for the import is built here too.
 A test names an index and a mode and nothing more.
 An entry is built here as well, for a writer test that starts from a record rather than text.
 
+## `internal static long TMarkupCeilingRead()`
+
+The largest markup file the file adapter reads, so the oversize test builds one byte past it.
+
 ## `internal const string TMarkupPair`
 
 Two entries that each translate to the other, so both links resolve only through each other.

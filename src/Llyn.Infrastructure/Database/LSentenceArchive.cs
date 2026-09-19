@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LSentenceArchive
+public sealed class LSentenceArchive : LSentenceVault
 {
     private const long LSentenceShelf = 1_000_000_000L;
 
@@ -65,6 +65,11 @@ public sealed class LSentenceArchive
     public IReadOnlyList<string> LSentenceDependenceRead(string language)
     {
         return LSentenceFrameRead("dependence", language);
+    }
+
+    public LSentenceOrder LSentenceLoad(string language)
+    {
+        return LSentenceLoader.LSentenceLoaderLoad(language);
     }
 
     internal static void LSentenceExampleClear(SqliteConnection connection, long exampleId)

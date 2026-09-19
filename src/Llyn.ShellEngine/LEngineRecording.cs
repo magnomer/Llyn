@@ -199,7 +199,7 @@ public sealed partial class LEngine
         if (!_lEngineLookupSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
         {
             LLanguage pack = LEngineLanguageLoad(language);
-            sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageLookupSources, _lEngineClient);
+            sources = _lEngineSourceFactory.LSourceFactoryCreate(pack.LLanguageLookupSources);
             _lEngineLookupSources[language] = sources;
         }
 
@@ -211,7 +211,7 @@ public sealed partial class LEngine
         if (!_lEngineHarvestSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
         {
             LLanguage pack = LEngineLanguageLoad(language);
-            sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageHarvestSources, _lEngineClient);
+            sources = _lEngineSourceFactory.LSourceFactoryCreate(pack.LLanguageHarvestSources);
             _lEngineHarvestSources[language] = sources;
         }
 

@@ -94,7 +94,7 @@ $RECYCLE.BIN/
 /gitdownload.json
 
 # Build-lifecycle helper scripts
-/*.ps1
+/scripts
 
 # Ignore every JSON file
 /*.json

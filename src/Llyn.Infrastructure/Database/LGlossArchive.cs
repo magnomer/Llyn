@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LGlossArchive
+public sealed class LGlossArchive : LGlossVault
 {
     private const long LGlossShelf = 1_000_000_000L;
 

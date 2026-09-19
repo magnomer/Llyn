@@ -36,6 +36,11 @@ The message names the file that was kept, so the user can see nothing was thrown
 
 ## Inline notes
 
+### `LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));`
+
+The default catalog is applied before any engine exists, so the bootstrap opens it through the port itself.
+That load lists the embedded languages first, since it refuses a language the build does not embed.
+
 ### `MessageBox.Show(`
 
 The catalog is what would have translated this message, so this one stays inline.

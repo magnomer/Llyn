@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDiweiArchive
+public sealed class LDiweiArchive : LDiweiVault
 {
     private const string LDiweiArchiveTally =
         """

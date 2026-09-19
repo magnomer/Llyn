@@ -31,6 +31,11 @@ public sealed class TAuditRing
         @"\bLRequest\w*\b",
     ];
 
+    private static readonly string[] TAuditRingDatabase =
+    [
+        @"\b_lEngineDatabase\.",
+    ];
+
     [Fact]
     public void AuditRing_Projects_ReferenceInward()
     {
@@ -106,6 +111,19 @@ public sealed class TAuditRing
     {
         TAuditRingCheck(
             "AdapterEngine", "Llyn.ShellEngine", TAuditRingAdapter, "adapter(s) built by the engine");
+    }
+
+    [Fact]
+    public void AuditRing_Engine_ReadsNoDatabase()
+    {
+        Func<string, bool> engine = TAuditRoleSelect("Llyn.ShellEngine");
+        List<TViolation> hits = TAuditRingScan(
+            path => engine(path) && !path.EndsWith("/LEngine.cs", StringComparison.Ordinal),
+            TAuditRingDatabase);
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{hits.Count} database read(s) sit outside the engine and must go through a vault:\n" + string.Join(
+                '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
     }
 
     [Fact]

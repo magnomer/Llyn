@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -17,7 +16,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LReflexArchive(_lEngineDatabase).LReflexRead(entryId);
+            return _lEngineReflexes.LReflexRead(entryId);
         }
     }
 
@@ -26,7 +25,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(reflexes);
-            IReadOnlyList<LReflex> saved = new LReflexArchive(_lEngineDatabase).LReflexSet(entryId, reflexes);
+            IReadOnlyList<LReflex> saved = _lEngineReflexes.LReflexSet(entryId, reflexes);
             LEngineEpithetUpdate(entryId);
             LEngineUpdatedSet(entryId);
             return saved;
@@ -40,7 +39,7 @@ public sealed partial class LEngine
         List<LRevisionChange>? changes,
         Dictionary<long, long> identity)
     {
-        LReflexArchive reflexes = new(_lEngineDatabase);
+        LReflexVault reflexes = _lEngineReflexes;
         IReadOnlyList<LReflex> stored = reflexes.LReflexRead(entryId);
         IReadOnlyList<LReflexDraft> written = LEngineAnatomyScan(language, LEngineReflexScan(drafts));
         IReadOnlyList<LReflex> current = LEngineReflexRead(entryId, written);

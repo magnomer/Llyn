@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -58,7 +57,7 @@ public sealed partial class LEngine
 
         string name = request.LRequestText.Trim();
         LAuthor author = LEngineAuthorMatch(draft.LDraftAuthor, name)
-            ?? LEngineAuthorMatch(new LAuthorArchive(_lEngineDatabase).LAuthorAllRead(), name)
+            ?? LEngineAuthorMatch(_lEngineAuthors.LAuthorAllRead(), name)
             ?? new LAuthor(LEngineIdentityCreate(), name);
         return LEngineAuthorApply(
             draft,
@@ -92,7 +91,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LAuthor stored = new LAuthorArchive(_lEngineDatabase).LAuthorRead(request.LRequestAuthorId)
+        LAuthor stored = _lEngineAuthors.LAuthorRead(request.LRequestAuthorId)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
         return LEngineAuthorApply(

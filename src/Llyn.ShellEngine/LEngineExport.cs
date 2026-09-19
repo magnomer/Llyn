@@ -1,9 +1,6 @@
 using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -32,27 +29,13 @@ public sealed partial class LEngine
         }
 
         LPortraitPage portrait = LEnginePortraitRead(entryId, label);
-        LTheme theme = LThemeLoader.LThemeLoaderLoad();
-
-        switch (format)
+        if (format == LPortraitFormat.LPortraitFormatPdf)
         {
-            case LPortraitFormat.LPortraitFormatHtml:
-                File.WriteAllText(
-                    path, LSheet.LSheetFormat(portrait, theme), new UTF8Encoding(false));
-                return;
-            case LPortraitFormat.LPortraitFormatMarkdown:
-                File.WriteAllText(
-                    path, LOutline.LOutlineFormat(portrait), new UTF8Encoding(false));
-                return;
-            case LPortraitFormat.LPortraitFormatDocx:
-                LFolio.LFolioSave(portrait, theme, path);
-                return;
-            case LPortraitFormat.LPortraitFormatPdf:
-                await LEnginePressRead().LPressSave(LSheet.LSheetFormat(portrait, theme), path);
-                return;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(format));
+            await LEnginePressRead().LPressSave(_lEnginePortraitVault.LPortraitSheetFormat(portrait), path);
+            return;
         }
+
+        _lEnginePortraitVault.LPortraitSave(portrait, format, path);
     }
 
     internal async Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)
@@ -64,7 +47,7 @@ public sealed partial class LEngine
         LPress press = LEnginePressRead();
         LPortraitPage portrait = LEnginePortraitRead(entryId, label);
 
-        await press.LPressPrint(LSheet.LSheetFormat(portrait, LThemeLoader.LThemeLoaderLoad()), ticket);
+        await press.LPressPrint(_lEnginePortraitVault.LPortraitSheetFormat(portrait), ticket);
     }
 
     public Task LEnginePortraitExport(
@@ -108,7 +91,7 @@ public sealed partial class LEngine
         LPress press = LEnginePressRead();
         LPortraitPage page = LEnginePortraitRead(id, owner, legend);
 
-        await press.LPressPrint(LSheet.LSheetFormat(page, LThemeLoader.LThemeLoaderLoad()), ticket);
+        await press.LPressPrint(_lEnginePortraitVault.LPortraitSheetFormat(page), ticket);
     }
 
     private LPress LEnginePressRead()

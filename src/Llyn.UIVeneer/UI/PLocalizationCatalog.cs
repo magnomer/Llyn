@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -23,9 +22,10 @@ public sealed class PLocalizationCatalog : INotifyPropertyChanged
         return System.Windows.Application.Current?.TryFindResource(key) as string;
     }
 
-    internal static void PLocalizationCatalogApply(ResourceDictionary resources, string language)
+    internal static void PLocalizationCatalogApply(
+        ResourceDictionary resources, IReadOnlyDictionary<string, string> texts)
     {
-        foreach ((string key, string value) in LEngine.LEngineLocalizationLoad(language))
+        foreach ((string key, string value) in texts)
         {
             resources[key] = value;
         }

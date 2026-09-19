@@ -2,20 +2,24 @@ using System.IO;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
-using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    static TInterface()
+    {
+        LLocalization.LLocalizationLanguageSet(new LLocalizationLoader().LLocalizationScan());
+    }
+
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string json, string language) =>
         LLocalization.LLocalizationLoad(new StringReader(json), language);
 
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string language) =>
-        LEngine.LEngineLocalizationLoad(language);
+        LLocalization.LLocalizationLoad(new LLocalizationLoader(), language);
 
     internal static TextReader TLocalizationLoaderOpen(string language) =>
-        LLocalizationLoader.LLocalizationLoaderOpen(language);
+        new LLocalizationLoader().LLocalizationOpen(language);
 
     internal static string TLocalizationTextRead(string key) =>
         LLocalization.LLocalizationTextRead(key);

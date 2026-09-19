@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -23,7 +22,7 @@ public sealed partial class LEngine
         }
 
         LLanguage pack = LEngineLanguageLoad(language);
-        sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageMorphologies, _lEngineClient);
+        sources = _lEngineSourceFactory.LSourceFactoryCreate(pack.LLanguageMorphologies);
         _lEngineInflectionSources[language] = sources;
         return sources;
     }
@@ -84,7 +83,7 @@ public sealed partial class LEngine
                 return;
             }
 
-            foreach (LLacuna lacuna in new LLacunaArchive(_lEngineDatabase).LLacunaRead(entryId))
+            foreach (LLacuna lacuna in _lEngineLacunae.LLacunaRead(entryId))
             {
                 if (lacuna.LLacunaMorphologyId is null)
                 {
@@ -118,7 +117,7 @@ public sealed partial class LEngine
             held.Dispose();
         }
 
-        new LLacunaArchive(_lEngineDatabase).LLacunaDelete(entryId);
+        _lEngineLacunae.LLacunaDelete(entryId);
     }
 
     private void LEngineInflectionClear()
@@ -177,11 +176,11 @@ public sealed partial class LEngine
 
         if (appended.Count > 0)
         {
-            new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entry.LEntryId, appended);
+            _lEngineInflections.LInflectionAppend(entry.LEntryId, appended);
             LEngineParadigmUpdate(entry);
         }
 
-        new LLacunaArchive(_lEngineDatabase).LLacunaSave(entry.LEntryId, missed);
+        _lEngineLacunae.LLacunaSave(entry.LEntryId, missed);
     }
 
     private async Task LEngineInflectionRun(LEntry entry, CancellationTokenSource fetch)
@@ -214,7 +213,7 @@ public sealed partial class LEngine
                 }
                 else
                 {
-                    LLacunaArchive lacunae = new(_lEngineDatabase);
+                    LLacunaVault lacunae = _lEngineLacunae;
                     List<long?> kept = [];
                     foreach (LLacuna lacuna in lacunae.LLacunaRead(entry.LEntryId))
                     {

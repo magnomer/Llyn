@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -23,7 +22,7 @@ public sealed partial class LEngine
                 headword,
                 language ?? string.Empty);
 
-            LCourtArchive.LCourtArchiveSave(_lEngineWorkspace, link);
+            _lEngineCourts.LCourtSave(link);
             return link;
         }
     }
@@ -66,7 +65,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(linkId);
-            LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, linkId);
+            _lEngineCourts.LCourtDelete(linkId);
         }
     }
 
@@ -91,7 +90,7 @@ public sealed partial class LEngine
 
     private void LEngineCourtRemove(long id)
     {
-        IReadOnlyList<LCourt> court = LCourtArchive.LCourtArchiveScan(_lEngineWorkspace);
+        IReadOnlyList<LCourt> court = _lEngineCourts.LCourtScan();
 
         foreach (LCourt link in court)
         {
@@ -99,13 +98,13 @@ public sealed partial class LEngine
             {
                 if (_lEngineDrafts.LDraftRead(link.LCourtOwnerId) is null)
                 {
-                    LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtId);
+                    _lEngineCourts.LCourtDelete(link.LCourtId);
                 }
 
                 continue;
             }
 
-            LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtId);
+            _lEngineCourts.LCourtDelete(link.LCourtId);
 
             if (link.LCourtTargetId == id)
             {
@@ -131,7 +130,7 @@ public sealed partial class LEngine
             }
 
             _lEngineDraftHeld.Remove(link.LCourtTargetId);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, link.LCourtTargetId);
+            _lEngineClaims.LClaimDelete(link.LCourtTargetId);
             _lEngineDrafts.LDraftDelete(link.LCourtTargetId);
         }
     }
@@ -139,7 +138,7 @@ public sealed partial class LEngine
     private IReadOnlyList<LCourt> LEngineCourtScan(long ownerId)
     {
         List<LCourt> owned = [];
-        foreach (LCourt link in LCourtArchive.LCourtArchiveScan(_lEngineWorkspace))
+        foreach (LCourt link in _lEngineCourts.LCourtScan())
         {
             if (link.LCourtOwnerId == ownerId)
             {

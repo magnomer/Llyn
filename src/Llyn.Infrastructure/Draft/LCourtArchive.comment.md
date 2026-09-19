@@ -1,6 +1,6 @@
 ﻿# LCourtArchive.cs
 
-## `public static class LCourtArchive`
+## `public sealed class LCourtArchive : LCourtVault`
 
 Keeps the court as plain files in `drafts/court`, one file per tentative link named after its id.
 A translation may name an entry the user has not written yet, and that link cannot be a database row.
@@ -11,31 +11,35 @@ Nothing here reaches SQLite and nothing here edits a draft file.
 Two copies of the program may run against one workspace.
 Every operation touches a single named file and holds nothing open.
 
-## `public static void LCourtArchiveSave(string root, LCourt link)`
+## `public LCourtArchive(string root)`
+
+Binds the archive to the workspace `root` whose draft folder it keeps the files in.
+
+## `public void LCourtSave(LCourt link)`
 
 Writes `link` to `drafts/court/<LCourtId>.json`, replacing whatever was there.
 The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written link.
 A crash mid-write leaves the previous file intact.
 
-## `public static LCourt? LCourtArchiveRead(string root, long id)`
+## `public LCourt? LCourtRead(long id)`
 
 The link stored under `id`, or `null` when no readable file holds it.
 A missing file and an unknown one are the same answer to the caller.
 
-## `public static IReadOnlyList<LCourt> LCourtArchiveScan(string root)`
+## `public IReadOnlyList<LCourt> LCourtScan()`
 
 Every link the court holds.
 A file that fails to parse or cannot be opened is skipped rather than thrown.
 Recovery lists leftovers after a crash, which is exactly when a truncated file is likely.
 One bad file must not hide the rest.
 
-## `public static void LCourtArchiveDelete(string root, long id)`
+## `public void LCourtDelete(long id)`
 
 Removes the file for `id`, which is how one link leaves the court on its own.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, long draftId)`
+## `public IReadOnlyList<LCourt> LCourtSettle(long draftId)`
 
 Settles every link pointing at `draftId`, whether that draft became a real entry or was abandoned.
 The link files disappear and the links themselves are returned.
@@ -45,7 +49,7 @@ Resolution and cancellation were two names for this one deletion.
 The real id one of them demanded was never stored anywhere.
 The caller already knows what to put in place of the tentative id.
 
-## `public static void LCourtArchiveSweep(string root)`
+## `public void LCourtSweep()`
 
 Deletes every half-written `.json.tmp` in the court that is older than an hour.
 It also deletes every link file of another version, or of no readable shape, which a read already skips.

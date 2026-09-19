@@ -63,6 +63,10 @@ A store holding none returns none.
 
 Reads every role already saved under an Entry written in `language`, on the same terms as a marker.
 
+## `public LSentenceOrder LSentenceLoad(string language)`
+
+The example order the language pack declares, read through `LSentenceLoader`.
+
 ## `public void LSentenceMeaningDetach(long meaningId, long exampleId)`
 
 Removes a Meaning's hold on an Example.

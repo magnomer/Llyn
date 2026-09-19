@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             IReadOnlyList<long> dropped = _lEngineDrafts.LDraftSweep();
-            LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
+            _lEngineCourts.LCourtSweep();
 
             foreach (long id in dropped)
             {

@@ -38,6 +38,11 @@ Moves the collocation identified by `id` to `position` in its entry's card order
 It renumbers the whole set so positions stay `0 … n-1`.
 A position outside the set is clamped into it, and nothing moves when no collocation carries that id.
 
+## `public void LCollocationOrderSet(long entryId, IReadOnlyList<long> order)`
+
+Rewrites the positions of the entry's collocations so they follow `order`.
+The card update names the whole order because it has already applied every card and knows the ids.
+
 ## `public void LCollocationDelete(long id)`
 
 Deletes the collocation identified by `id`.

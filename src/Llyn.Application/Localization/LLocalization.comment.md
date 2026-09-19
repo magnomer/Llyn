@@ -15,6 +15,17 @@ The language every launch starts from before the settings are read.
 
 Guards the current dictionary, since a load and a read may run on different threads.
 
+## `private static IReadOnlyList<string> LLocalizationListed = [LLocalizationDefault];`
+
+The languages the build carries a catalog for, as the localization port lists them.
+Until the port is asked, only the default is listed.
+
+## `public static void LLocalizationLanguageSet(IReadOnlyList<string> languages)`
+
+Records the languages the build embeds, read off the localization port by whoever holds it.
+The bootstrap sets it before the first catalog is applied, and the engine sets it again on construction.
+No language is named in code, so a new catalog file is listed without an edit here.
+
 ## `public static string LLocalizationNormalize(string? language)`
 
 The stored language when it is one the catalog ships, else the default.
@@ -23,10 +34,20 @@ The stored language when it is one the catalog ships, else the default.
 
 True when the stored language needs no second load after the default.
 
+## `private static bool LLocalizationListedCheck(string language)`
+
+Whether the build embeds a catalog for `language`, under the gate the list is set under.
+
 ## `public static CultureInfo LLocalizationCultureRead(string language)`
 
-The culture a language's terms are cased under.
+The culture a language's terms are cased under, which is the culture of that name.
 A language the catalog does not ship is refused.
+
+## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(LLocalizationVault vault, string language)`
+
+Lists the languages the port carries, then opens the catalog of `language` through it as the current one.
+The bootstrap loads the default this way before any engine exists.
+The engine loads the chosen one the same way.
 
 ## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)`
 

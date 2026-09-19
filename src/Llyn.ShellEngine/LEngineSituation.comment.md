@@ -22,7 +22,7 @@ Creates `situation` and returns it with its assigned id and its media read back.
 Its title is not identity: the same words saved twice are two Situations.
 The row and its media are written in one session, so a failed picture leaves no half Situation.
 
-## `private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)`
+## `private static LSituation? LEngineSituationResolve(LSituationVault situations, LStateValue title)`
 
 The one stored Situation whose title reads as `title`, or `null` when none or several do.
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.

@@ -33,7 +33,8 @@ Writes one sibling group and then, for each card in it, the group nested under t
 A card naming a stored row updates that row and keeps its id.
 A card naming nothing, or naming a row already gone, creates one under this parent.
 The whole group is renumbered afterwards in one pass.
-The unique sibling index rejects a swap done row by row, which is what LDatabaseOrder exists for.
+The unique sibling index rejects a swap done row by row.
+That is what `LMeaningOrderSet` on the meaning vault exists for.
 
 ### `if (!string.Equals(row.LMeaningParentId, parentId, StringComparison.Ordinal))`
 

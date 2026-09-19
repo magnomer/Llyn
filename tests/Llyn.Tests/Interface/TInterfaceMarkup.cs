@@ -2,11 +2,15 @@
 using System.IO;
 using System.Text;
 using Llyn.Core;
+using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static long TMarkupCeilingRead() =>
+        LMarkupFile.LMarkupFileCeiling;
+
     internal static IReadOnlyList<LMarkupEntry> TMarkupParse(string text) =>
         LMarkup.LMarkupParse(text);
 

@@ -5,11 +5,12 @@
 Reads one stored entry into the markup record the writer formats.
 It is the sibling of `LEntryLoader`, which answers the same rows as a draft.
 Every id a stored row carries is translated into the words a reader could type.
-It sits beside the engine because it needs every archive and answers only the engine.
+It sits beside the engine because it needs six ports and answers only the engine.
 
-## `public LMarkupLoader(LDatabase database, LEntryVault entries)`
+## `public LMarkupLoader(LEntryVault entries, LSpeechVault speeches, LMorphologyVault morphologies, LMeaningVault meanings, LReferenceVault references, LAuthorVault authors)`
 
-Holds the database the remaining archives are opened over and the entry vault the engine already holds.
+Holds the six ports the translation reads through, the same instances the engine holds.
+It opens no database of its own, so a test can hand it in-memory ports.
 
 ## `public LMarkupEntry? LMarkupLoad(long id)`
 

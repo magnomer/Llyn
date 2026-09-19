@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed partial class LSituationArchive
+public sealed partial class LSituationArchive : LSituationVault
 {
     private readonly LDatabase _lSituationArchiveDatabase;
 

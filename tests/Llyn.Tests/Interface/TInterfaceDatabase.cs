@@ -20,7 +20,7 @@ internal static partial class TInterface
         database.LDatabaseSessionStart();
 
     internal static LDoctorRescue TDoctorDatabaseCreate(LDatabase database) =>
-        LDoctor.LDoctorDatabaseCreate(database);
+        new LDoctor(database).LDoctorDatabaseCreate();
 
     internal static bool TDoctorRescueCheck(Exception fault) =>
         LDoctor.LDoctorRescueCheck(fault);

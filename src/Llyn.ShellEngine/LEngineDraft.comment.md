@@ -81,7 +81,7 @@ The Example a sentence row names is resolved in `LEngineDraftSentence.cs`.
 The refusal names its reason with a key.
 The shell turns that into localized text, so no user-facing wording lives in the engine.
 
-### `LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(`
+### `LEntry entry = _lEngineEntries.LEntryCreate(`
 
 The entry's language is the language-pack name, which is the language speech_value rows are already written under.
 

@@ -37,6 +37,10 @@ The name arrives as the user typed it.
 Picking "Verb, transitive" from the dropdown and typing "verb, transitive" mean the same thing.
 Only text that names no value at all is stored as typed.
 
+## `public LSpeechPack LSpeechLoad(string language)`
+
+The parts of speech and features the language pack declares, read through `LSpeechLoader`.
+
 ## Inline notes
 
 ### `private static long LSpeechCodeCreate(SqliteConnection connection, string language)`

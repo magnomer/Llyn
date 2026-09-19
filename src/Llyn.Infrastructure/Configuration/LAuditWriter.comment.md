@@ -1,16 +1,20 @@
 ﻿# LAuditWriter.cs
 
-## `public static class LAuditWriter`
+## `public sealed class LAuditWriter : LAuditVault`
 
 The workspace's record of faults the program did not expect.
 It exists so the shell can say something plain to the user and still keep what a developer would need.
 It is written beside the database, because a fault belongs to the workspace it happened in.
 
+## `public LAuditWriter(string root)`
+
+Binds the writer to the workspace `root` whose `audit.log` it appends to.
+
 ## `public static string LAuditWriterRead(string root)`
 
 Where the log stands for the workspace at `root`.
 
-## `public static string? LAuditWriterRecord(string root, Exception exception)`
+## `public string? LAuditRecord(Exception exception)`
 
 Appends one fault as a note carrying the whole exception rather than its message alone.
 A fault is read later by someone who was not there.

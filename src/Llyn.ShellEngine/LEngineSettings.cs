@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -21,16 +20,15 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LKeepFile(_lEngineWorkspace);
+            return _lEngineKeep;
         }
     }
 
-    public static IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
+    public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
-        using TextReader reader = LLocalizationLoader.LLocalizationLoaderOpen(language);
-        return LLocalization.LLocalizationLoad(reader, language);
+        return LLocalization.LLocalizationLoad(_lEngineLocalization, language);
     }
 
     public void LEngineLocalizationSave(string language)
@@ -124,15 +122,15 @@ public sealed partial class LEngine
     {
         try
         {
-            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
+            _lEngineSettingsVault.LSettingsSave(_lEngineSettings);
         }
         catch (IOException exception)
         {
-            LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
+            _lEngineAudit.LAuditRecord(exception);
         }
         catch (UnauthorizedAccessException exception)
         {
-            LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
+            _lEngineAudit.LAuditRecord(exception);
         }
     }
 }

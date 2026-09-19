@@ -5,7 +5,7 @@
 The language-pack side of the engine boundary.
 Everything the shell asks about a language as such is answered here.
 That is the packs on disk, a pack's typography, its flag, and its regional varieties.
-Each pack is loaded once through `LLanguageLoader` and kept by name, so no lookup parses the file again.
+Each pack is read once through the language port and kept by name, so no lookup parses the file again.
 The cache is cleared with the workspace, since a pack's source lists belong to the folder it was read from.
 The shell never reaches into the `languages/` folder itself.
 

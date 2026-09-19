@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Llyn.Core;
-using Llyn.Infrastructure;
+﻿using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
@@ -21,10 +19,7 @@ public sealed partial class LEngine
 
             long entries = _lEngineEntries.LEntryCountRead();
 
-            FileInfo file = new(_lEngineDatabase.LDatabaseFile);
-            long size = file.Exists ? file.Length : 0;
-
-            return new LEstablishment(unsaved, entries, size);
+            return new LEstablishment(unsaved, entries, _lEngineWorkspaces.LWorkspaceSizeRead());
         }
     }
 }

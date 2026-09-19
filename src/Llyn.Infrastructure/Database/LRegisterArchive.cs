@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LRegisterArchive
+public sealed class LRegisterArchive : LRegisterVault
 {
     private readonly LDatabase _lRegisterArchiveDatabase;
 
@@ -64,6 +64,11 @@ public sealed class LRegisterArchive
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    public IReadOnlyList<LRegister> LRegisterLoad(string language)
+    {
+        return LRegisterLoader.LRegisterLoaderLoad(language);
     }
 
     public LRegister? LRegisterRead(long id)

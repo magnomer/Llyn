@@ -86,6 +86,6 @@ A silent or busy answer stores nothing and leaves the character to be asked agai
 A reached answer with nothing found marks the character missed.
 A fetch abandoned by a workspace change stores nothing and raises nothing.
 
-### `new LDiweiArchive(_lEngineDatabase).LDiweiApply(`
+### `_lEngineDiweiVault.LDiweiApply(`
 
 Stored rows are placed into their categories at once, so the links never lag the placements.

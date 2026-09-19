@@ -78,7 +78,7 @@ A broken file is skipped rather than thrown, so one bad draft never hides the re
 
 Removes one held draft with its claim, after the links that draft owns are settled.
 A dropped draft that kept its rows would leave links no call can reach again.
-`LCourtArchiveSettle` matches on target alone, so a row whose owner is gone answers no settlement.
+`LCourtSettle` matches on target alone, so a row whose owner is gone answers no settlement.
 The rows pointing at this draft are left, because the caller dropping a chip already took its own row back.
 Abandoning work is `LEngineDraftCancel`, which settles those rows too.
 A draft bulletin carrying id zero follows, because the held set shrank and the status bar counts that set.

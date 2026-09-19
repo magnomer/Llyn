@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LRealmArchive
+public sealed class LRealmArchive : LRealmVault
 {
     private readonly LDatabase _lRealmArchiveDatabase;
 

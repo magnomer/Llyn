@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LCollocationArchive
+public sealed class LCollocationArchive : LCollocationVault
 {
     private readonly LDatabase _lCollocationArchiveDatabase;
 
@@ -131,6 +131,22 @@ public sealed class LCollocationArchive
         LDatabaseOrder.LDatabaseOrderNormalize(
             connection, "collocation", "entry_parent = $owner", entryId, "collocation_id", order);
 
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LCollocationOrderSet(long entryId, IReadOnlyList<long> order)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(order);
+
+        using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            session.LDatabaseSessionConnection,
+            "collocation",
+            "entry_parent = $owner",
+            entryId,
+            "collocation_id",
+            order);
         session.LDatabaseSessionCommit();
     }
 

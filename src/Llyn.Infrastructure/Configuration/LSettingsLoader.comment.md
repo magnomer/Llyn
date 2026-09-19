@@ -1,6 +1,6 @@
 # LSettingsLoader.cs
 
-## `public static class LSettingsLoader`
+## `public sealed class LSettingsLoader : LSettingsVault`
 
 Loads and saves the user's `LSettings` as `settings.json` inside a workspace folder.
 The workspace folder is supplied by the caller, resolved through `LWorkspaceRoot`.
@@ -12,7 +12,11 @@ So a file written before the window posture moved out still loads.
 An unreadable file is copied aside as `settings.broken.json` first, so the next save does not destroy it.
 It is written under a pending name and moved into place, so a crash mid-write leaves the old file whole.
 
-## `public static bool LSettingsLoaderExist(string root)`
+## `public LSettingsLoader(string root)`
+
+Binds the loader to the workspace `root` whose `settings.json` it reads and writes.
+
+## `public bool LSettingsExist()`
 
 Reports whether the workspace already holds a settings file.
 The engine asks before moving onto a workspace, so one that has its own preferences keeps them.

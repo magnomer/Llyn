@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(pronunciation);
-            LPronunciation created = new LPronunciationArchive(_lEngineDatabase).LPronunciationCreate(pronunciation);
+            LPronunciation created = _lEnginePronunciations.LPronunciationCreate(pronunciation);
             LEngineUpdatedSet(created.LPronunciationEntryId);
             return created;
         }
@@ -22,7 +21,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LPronunciationArchive(_lEngineDatabase).LPronunciationRead(entryId);
+            return _lEnginePronunciations.LPronunciationRead(entryId);
         }
     }
 
@@ -30,7 +29,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            LPronunciationVault pronunciations = _lEnginePronunciations;
 
             List<LCatalogPronunciation> rows = [];
             foreach (LEntry entry in _lEngineEntries.LEntryFind(query))
@@ -90,7 +89,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(pronunciation);
-            new LPronunciationArchive(_lEngineDatabase).LPronunciationUpdate(pronunciation);
+            _lEnginePronunciations.LPronunciationUpdate(pronunciation);
             LEngineUpdatedSet(pronunciation.LPronunciationEntryId);
         }
     }
@@ -99,7 +98,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            LPronunciationVault pronunciations = _lEnginePronunciations;
             long? entryId = pronunciations.LPronunciationHolderRead(id);
             pronunciations.LPronunciationDelete(id);
             if (entryId is long held)
@@ -115,7 +114,7 @@ public sealed partial class LEngine
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(file);
 
-            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            LPronunciationVault pronunciations = _lEnginePronunciations;
             pronunciations.LPronunciationAudioSave(pronunciationId, LEngineRecordingFormat(file), source);
             if (pronunciations.LPronunciationHolderRead(pronunciationId) is long held)
             {
@@ -129,7 +128,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             LPronunciationAudio? audio =
-                new LPronunciationArchive(_lEngineDatabase).LPronunciationAudioRead(pronunciationId);
+                _lEnginePronunciations.LPronunciationAudioRead(pronunciationId);
             return audio is null
                 ? null
                 : audio with { LPronunciationAudioFile = LEngineRecordingResolve(audio.LPronunciationAudioFile) };
@@ -141,7 +140,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(note);
-            new LNoteArchive(_lEngineDatabase).LNoteSave(
+            _lEngineNotes.LNoteSave(
                 note with { LNoteText = LMarkdown.LMarkdownNormalize(note.LNoteText) });
             LEngineUpdatedSet(note.LNoteEntryId);
         }
@@ -151,7 +150,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LNoteArchive(_lEngineDatabase).LNoteRead(entryId);
+            return _lEngineNotes.LNoteRead(entryId);
         }
     }
 
@@ -159,7 +158,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LNoteArchive(_lEngineDatabase).LNoteDelete(entryId);
+            _lEngineNotes.LNoteDelete(entryId);
             LEngineUpdatedSet(entryId);
         }
     }

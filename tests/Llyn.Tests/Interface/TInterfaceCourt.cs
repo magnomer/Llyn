@@ -6,44 +6,44 @@ namespace Llyn.Tests;
 internal static partial class TInterface
 {
     internal static bool TClaimArchiveCheck(string root, long draftId) =>
-        LClaimArchive.LClaimArchiveCheck(root, draftId);
+        new LClaimArchive(root).LClaimCheck(draftId);
 
     internal static void TClaimArchiveDelete(string root, long draftId)
     {
-        LClaimArchive.LClaimArchiveDelete(root, draftId);
+        new LClaimArchive(root).LClaimDelete(draftId);
     }
 
     internal static LClaim? TClaimArchiveRead(string root, long draftId) =>
-        LClaimArchive.LClaimArchiveRead(root, draftId);
+        new LClaimArchive(root).LClaimRead(draftId);
 
     internal static void TClaimArchiveSave(string root, LClaim claim)
     {
-        LClaimArchive.LClaimArchiveSave(root, claim);
+        new LClaimArchive(root).LClaimSave(claim);
     }
 
     internal static IReadOnlyList<LClaim> TClaimArchiveScan(string root) =>
-        LClaimArchive.LClaimArchiveScan(root);
+        new LClaimArchive(root).LClaimScan();
 
     internal static LClaim TClaimCreate(long draftId, int process, DateTimeOffset moment) =>
         new(draftId, process, moment);
 
     internal static LCourt? TCourtArchiveRead(string root, long id) =>
-        LCourtArchive.LCourtArchiveRead(root, id);
+        new LCourtArchive(root).LCourtRead(id);
 
     internal static void TCourtArchiveSave(string root, LCourt link)
     {
-        LCourtArchive.LCourtArchiveSave(root, link);
+        new LCourtArchive(root).LCourtSave(link);
     }
 
     internal static IReadOnlyList<LCourt> TCourtArchiveScan(string root) =>
-        LCourtArchive.LCourtArchiveScan(root);
+        new LCourtArchive(root).LCourtScan();
 
     internal static IReadOnlyList<LCourt> TCourtArchiveSettle(string root, long draftId) =>
-        LCourtArchive.LCourtArchiveSettle(root, draftId);
+        new LCourtArchive(root).LCourtSettle(draftId);
 
     internal static void TCourtArchiveSweep(string root)
     {
-        LCourtArchive.LCourtArchiveSweep(root);
+        new LCourtArchive(root).LCourtSweep();
     }
 
     internal static void TDraftArchiveDelete(string root, long id)

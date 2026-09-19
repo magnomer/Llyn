@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -14,7 +13,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LExample stored = new LExampleArchive(_lEngineDatabase).LExampleRead(exampleId)
+            LExample stored = _lEngineExamples.LExampleRead(exampleId)
                 ?? throw new LRefusal(LRefusal.LRefusalExample);
 
             return LEngineMentionFind(
@@ -87,14 +86,14 @@ public sealed partial class LEngine
             Dictionary<long, string> headwords = [];
             if (entries.Count > 0)
             {
-                LTranslationArchive targets = new(_lEngineDatabase);
+                LTranslationVault targets = _lEngineTranslations;
                 foreach (LTranslationTarget target in targets.LTranslationTargetRead(entries))
                 {
                     headwords[target.LTranslationTargetId] = target.LTranslationTargetHeadword;
                 }
             }
 
-            LMeaningArchive meanings = new(_lEngineDatabase);
+            LMeaningVault meanings = _lEngineMeanings;
             Dictionary<long, string> senses = [];
             List<LMentionLabel> labels = new(mentions.Count);
             foreach (LMentionDraft mention in mentions)
@@ -124,7 +123,7 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineSenseRead(LMeaningArchive meanings, long sense)
+    private static string LEngineSenseRead(LMeaningVault meanings, long sense)
     {
         LMeaning? meaning = meanings.LMeaningSingleRead(sense);
         if (meaning is null)

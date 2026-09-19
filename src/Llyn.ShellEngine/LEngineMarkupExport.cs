@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -28,12 +25,19 @@ public sealed partial class LEngine
             text = LMarkup.LMarkupFormat(entries);
         }
 
-        File.WriteAllText(path, text, new UTF8Encoding(false));
+        _lEngineMarkupVault.LMarkupSave(path, text);
     }
 
     private LMarkupEntry LEngineMarkupCreate(long id)
     {
-        return new LMarkupLoader(_lEngineDatabase, _lEngineEntries).LMarkupLoad(id)
+        LMarkupLoader loader = new(
+            _lEngineEntries,
+            _lEngineSpeeches,
+            _lEngineMorphologies,
+            _lEngineMeanings,
+            _lEngineReferences,
+            _lEngineAuthors);
+        return loader.LMarkupLoad(id)
             ?? throw new LRefusal(LRefusal.LRefusalEntry);
     }
 }

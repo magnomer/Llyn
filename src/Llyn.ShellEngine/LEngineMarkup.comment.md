@@ -9,14 +9,10 @@ The Append merge stands in `LEngineMarkupAppend.cs` and the Replace detach in `L
 Every link by name, and the sense pass that follows the writes, stands in `LEngineMarkupLink.cs`.
 The turn from a parsed entry into the draft the update path takes stands in `LEngineMarkupDraft.cs`.
 
-## `public const long LEngineMarkupCeiling = 64L * 1024 * 1024;`
-
-The largest file the import reads, in bytes.
-A file is held whole in memory several times over while it is parsed, so the size must be bounded.
-
 ## `public LMarkupCargo LEngineMarkupRead(string path)`
 
-Reads and parses the file at `path` once, into the cargo the import later takes.
+Reads the file at `path` through the markup port and parses it once, into the cargo the import later takes.
+The port refuses a file past its ceiling before a byte is read, so an oversize file costs nothing.
 The shell shows what a file holds before it commits to it, and commits to what it showed.
 An entry language that could not name a pack folder is blanked and reported at the entry's line.
 Every loader refuses such a name too, but the file should not carry it into the store at all.
@@ -25,11 +21,6 @@ Every loader refuses such a name too, but the file should not carry it into the 
 
 The first stage of an import on a worker thread: the read, so the window stays live while parsing.
 The hop lives here because the shell starts no task of its own.
-
-## `private static string LEngineMarkupLoad(string path)`
-
-The text of the file, refused with `LRefusalMarkup` when the file is past the ceiling.
-The length is asked before any byte is read, so an oversize file costs nothing.
 
 ## `public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)`
 

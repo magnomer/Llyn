@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static partial class LLanguageLoader
+public sealed partial class LLanguageLoader : LLanguageVault
 {
     private const string LLanguageLoaderFolder = "languages";
     private const string LLanguageLoaderFile = "source.json";
@@ -35,6 +35,21 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderListed = "listed";
     private const string LLanguageLoaderGlyph = "glyph";
     private const string LLanguageLoaderEmblem = ".svg";
+
+    public IReadOnlyList<string> LLanguageScan()
+    {
+        return LLanguageLoaderScan();
+    }
+
+    public LLanguage LLanguageRead(string language)
+    {
+        return LLanguageLoaderLoad(language);
+    }
+
+    bool LLanguageVault.LLanguageNameValidate(string? language)
+    {
+        return LLanguageNameValidate(language);
+    }
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {

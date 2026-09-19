@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -32,8 +31,7 @@ public sealed partial class LEngine
                 DateTimeOffset.UtcNow);
 
             _lEngineDrafts.LDraftSave(draft);
-            LClaimArchive.LClaimArchiveSave(
-                _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
+            _lEngineClaims.LClaimSave(_lEngineClaims.LClaimCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
         }
@@ -107,7 +105,7 @@ public sealed partial class LEngine
             return draft;
         }
 
-        LAuthorArchive archive = new(_lEngineDatabase);
+        LAuthorVault archive = _lEngineAuthors;
         List<LAuthor> named = new(draft.LDraftAuthor.Count);
         foreach (LAuthor author in draft.LDraftAuthor)
         {
@@ -135,7 +133,7 @@ public sealed partial class LEngine
             _lEngineDraftHeld.Remove(id);
             LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            _lEngineClaims.LClaimDelete(id);
             _lEngineDrafts.LDraftDelete(id);
         }
 
@@ -245,7 +243,7 @@ public sealed partial class LEngine
             {
                 _lEngineDraftHeld.Remove(done);
                 LEngineChronicleClear(done);
-                LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, done);
+                _lEngineClaims.LClaimDelete(done);
                 _lEngineDrafts.LDraftDelete(done);
             }
 
@@ -331,7 +329,7 @@ public sealed partial class LEngine
         written.Add(() => _lEngineDrafts.LDraftSave(saved));
         written.Add(() =>
         {
-            foreach (LCourt link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+            foreach (LCourt link in _lEngineCourts.LCourtSettle(id))
             {
                 LEngineCourtUpdate(link, entryId);
             }
@@ -354,7 +352,7 @@ public sealed partial class LEngine
 
             LEngineCourtRemove(id);
 
-            foreach (LCourt link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+            foreach (LCourt link in _lEngineCourts.LCourtSettle(id))
             {
                 LEngineCourtUpdate(link, 0);
             }
@@ -362,7 +360,7 @@ public sealed partial class LEngine
             _lEngineDraftHeld.Remove(id);
             LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            _lEngineClaims.LClaimDelete(id);
             _lEngineDrafts.LDraftDelete(id);
         }
 
@@ -371,8 +369,8 @@ public sealed partial class LEngine
 
     private bool LEngineHoldCheck(long id)
     {
-        LClaim? claim = LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id)
-            ? LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id)
+        LClaim? claim = _lEngineClaims.LClaimCheck(id)
+            ? _lEngineClaims.LClaimRead(id)
             : null;
 
         return claim is not null
@@ -382,12 +380,12 @@ public sealed partial class LEngine
 
     private bool LEngineClaimCheck(long id)
     {
-        if (!LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id))
+        if (!_lEngineClaims.LClaimCheck(id))
         {
             return false;
         }
 
-        LClaim? claim = LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id);
+        LClaim? claim = _lEngineClaims.LClaimRead(id);
         return claim is not null && claim.LClaimProcess != Environment.ProcessId;
     }
 

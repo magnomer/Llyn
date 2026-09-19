@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -12,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(meaning);
-            LMeaning created = new LMeaningArchive(_lEngineDatabase).LMeaningCreate(meaning);
+            LMeaning created = _lEngineMeanings.LMeaningCreate(meaning);
             LEngineUpdatedSet(created.LMeaningEntryId);
             return created;
         }
@@ -22,7 +21,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(id);
+            return _lEngineMeanings.LMeaningSingleRead(id);
         }
     }
 
@@ -35,7 +34,7 @@ public sealed partial class LEngine
                 throw LEngineOwnerRaise(owner);
             }
 
-            return new LMeaningArchive(_lEngineDatabase).LMeaningRead(ownerId);
+            return _lEngineMeanings.LMeaningRead(ownerId);
         }
     }
 
@@ -44,7 +43,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(meaning);
-            new LMeaningArchive(_lEngineDatabase).LMeaningUpdate(meaning);
+            _lEngineMeanings.LMeaningUpdate(meaning);
             LEngineUpdatedSet(meaning.LMeaningEntryId);
         }
     }
@@ -53,7 +52,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LMeaningArchive(_lEngineDatabase).LMeaningMove(id, position);
+            _lEngineMeanings.LMeaningMove(id, position);
             LEngineUpdatedSet(id, false);
         }
     }
@@ -62,7 +61,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LMeaningArchive meanings = new(_lEngineDatabase);
+            LMeaningVault meanings = _lEngineMeanings;
             long? entryId = meanings.LMeaningHolderRead(id);
             meanings.LMeaningDelete(id);
             if (entryId is long held)
@@ -77,7 +76,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(collocation);
-            LCollocation created = new LCollocationArchive(_lEngineDatabase).LCollocationCreate(collocation);
+            LCollocation created = _lEngineCollocations.LCollocationCreate(collocation);
             LEngineUpdatedSet(created.LCollocationEntryId);
             return created;
         }
@@ -92,7 +91,7 @@ public sealed partial class LEngine
                 throw LEngineOwnerRaise(owner);
             }
 
-            return new LCollocationArchive(_lEngineDatabase).LCollocationRead(ownerId);
+            return _lEngineCollocations.LCollocationRead(ownerId);
         }
     }
 
@@ -101,7 +100,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(collocation);
-            new LCollocationArchive(_lEngineDatabase).LCollocationUpdate(collocation);
+            _lEngineCollocations.LCollocationUpdate(collocation);
             LEngineUpdatedSet(collocation.LCollocationEntryId);
         }
     }
@@ -110,7 +109,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LCollocationArchive(_lEngineDatabase).LCollocationMove(id, position);
+            _lEngineCollocations.LCollocationMove(id, position);
             LEngineUpdatedSet(id, true);
         }
     }
@@ -119,7 +118,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LCollocationArchive collocations = new(_lEngineDatabase);
+            LCollocationVault collocations = _lEngineCollocations;
             long? entryId = collocations.LCollocationHolderRead(id);
             collocations.LCollocationDelete(id);
             if (entryId is long held)

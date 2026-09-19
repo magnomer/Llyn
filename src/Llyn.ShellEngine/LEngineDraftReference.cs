@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -32,8 +31,7 @@ public sealed partial class LEngine
             };
 
             _lEngineDrafts.LDraftSave(draft);
-            LClaimArchive.LClaimArchiveSave(
-                _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
+            _lEngineClaims.LClaimSave(_lEngineClaims.LClaimCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
         }
@@ -79,7 +77,7 @@ public sealed partial class LEngine
                 draft with { LDraftEntryId = stored.LReferenceId, LDraftReference = stored });
 
             _lEngineDraftHeld.Remove(id);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            _lEngineClaims.LClaimDelete(id);
             _lEngineDrafts.LDraftDelete(id);
             settled = stored;
         }
@@ -101,13 +99,13 @@ public sealed partial class LEngine
 
     private IReadOnlyList<LAuthor> LEngineCreditRead(long referenceId)
     {
-        return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead(referenceId);
+        return _lEngineAuthors.LAuthorReferenceRead(referenceId);
     }
 
     private void LEngineCreditSave(long referenceId, IReadOnlyList<LAuthor> authors)
     {
-        LAuthorArchive archive = new(_lEngineDatabase);
-        LReferenceArchive references = new(_lEngineDatabase);
+        LAuthorVault archive = _lEngineAuthors;
+        LReferenceVault references = _lEngineReferences;
 
         List<long> kept = new(authors.Count);
         foreach (LAuthor author in authors)

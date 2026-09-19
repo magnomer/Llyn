@@ -41,7 +41,7 @@ So its id survives and every row referencing it keeps pointing at the same Meani
 A card naming nothing is created.
 A stored card the draft no longer names is deleted.
 A card gone entirely blank counts as dropped, as the save counts it as unwritten.
-The survivors are then renumbered to draft order in one pass through `LDatabaseOrder`.
+The survivors are then renumbered to draft order in one pass through the owning vault.
 The unique `(owner, position)` index makes moving one row at a time collide at once.
 
 A card's Examples, Situations and Tags are re-attached to match the draft.
@@ -87,7 +87,7 @@ The card's holder is looked up first, and a card nobody holds moves nothing.
 
 ## Inline notes
 
-### `private static void LEngineFormUpdate(LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+### `private static void LEngineFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 
 The forms of the entry as the draft holds them, replacing what stood before.
 Positions are rewritten by the archive, so a reordered list stores as the new order.

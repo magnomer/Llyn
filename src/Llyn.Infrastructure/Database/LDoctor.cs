@@ -7,25 +7,31 @@ using SQLitePCL;
 
 namespace Llyn.Infrastructure;
 
-public static class LDoctor
+public sealed class LDoctor : LDoctorVault
 {
     private const string LDoctorMark = "broken";
 
     private static readonly string[] LDoctorCompanion = ["", "-wal", "-shm"];
 
-    public static LDoctorRescue LDoctorDatabaseCreate(LDatabase database)
+    private readonly LDatabase _lDoctorDatabase;
+
+    public LDoctor(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
+        _lDoctorDatabase = database;
+    }
 
+    public LDoctorRescue LDoctorDatabaseCreate()
+    {
         try
         {
-            database.LDatabaseCreate();
+            _lDoctorDatabase.LDatabaseCreate();
             return LDoctorRescue.LDoctorRescueHealthy;
         }
         catch (SqliteException fault) when (LDoctorRescueCheck(fault))
         {
-            string backup = LDoctorDatabaseSave(database.LDatabaseFile);
-            database.LDatabaseCreate();
+            string backup = LDoctorDatabaseSave(_lDoctorDatabase.LDatabaseFile);
+            _lDoctorDatabase.LDatabaseCreate();
             return new LDoctorRescue(true, backup, fault.Message);
         }
     }

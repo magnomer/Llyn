@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LExampleArchive
+public sealed class LExampleArchive : LExampleVault
 {
     private readonly LDatabase _lExampleArchiveDatabase;
 
@@ -172,6 +172,11 @@ public sealed class LExampleArchive
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         return LExampleReferenceRead(session.LDatabaseSessionConnection, id);
+    }
+
+    public IReadOnlyList<LUsage> LExampleUsageRead(long id)
+    {
+        return new LExampleLink(_lExampleArchiveDatabase).LExampleUsageRead(id);
     }
 
     private static int LExampleReferenceRead(SqliteConnection connection, long id)

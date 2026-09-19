@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -19,7 +18,7 @@ public sealed partial class LEngine
     }
 
     private LExample? LEngineExampleResolve(
-        LExampleArchive examples,
+        LExampleVault examples,
         LSentenceDraft draft,
         string language,
         long ownerId,
@@ -36,7 +35,7 @@ public sealed partial class LEngine
     }
 
     private LExample LEngineExampleResolve(
-        LExampleArchive examples,
+        LExampleVault examples,
         LExampleDraft written,
         string language,
         long ownerId,
@@ -89,7 +88,7 @@ public sealed partial class LEngine
 
             if (!sameGloss)
             {
-                LGlossArchive rows = new(_lEngineDatabase);
+                LGlossVault rows = _lEngineGlosses;
                 rows.LGlossExampleSave(stored.LExampleId, glosses);
                 stored = stored with { LExampleGloss = rows.LGlossExampleRead(stored.LExampleId) };
                 LEngineGlossRecord(identity, written.LExampleDraftGloss, stored.LExampleGloss);
@@ -97,7 +96,7 @@ public sealed partial class LEngine
 
             if (!sameText || !sameMention)
             {
-                LMentionArchive rows = new(_lEngineDatabase);
+                LMentionVault rows = _lEngineMentions;
                 rows.LMentionExampleSave(stored.LExampleId, mentions);
                 stored = stored with { LExampleMention = rows.LMentionExampleRead(stored.LExampleId) };
                 LEngineMentionRecord(identity, drafts, stored.LExampleMention);
@@ -160,7 +159,7 @@ public sealed partial class LEngine
     private bool LEngineShareCheck(long exampleId, long ownerId, bool collocation)
     {
         LOwner owner = collocation ? LOwner.LOwnerCollocation : LOwner.LOwnerMeaning;
-        foreach (LUsage usage in new LExampleLink(_lEngineDatabase).LExampleUsageRead(exampleId))
+        foreach (LUsage usage in _lEngineExamples.LExampleUsageRead(exampleId))
         {
             if (usage.LUsageId != ownerId || usage.LUsageOwner != owner)
             {

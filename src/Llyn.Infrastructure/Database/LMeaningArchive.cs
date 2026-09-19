@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LMeaningArchive
+public sealed class LMeaningArchive : LMeaningVault
 {
     private readonly LDatabase _lMeaningArchiveDatabase;
 
@@ -179,6 +179,16 @@ public sealed class LMeaningArchive
         IReadOnlyList<long> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
         LMeaningSiblingNormalize(connection, entryId, parentId, moved);
 
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(order);
+
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
+        LMeaningSiblingNormalize(session.LDatabaseSessionConnection, entryId, parentId, order);
         session.LDatabaseSessionCommit();
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -113,6 +114,12 @@ public sealed class LWorkspaceArchive : LWorkspaceVault
 
         session.LDatabaseSessionCommit();
         return floor;
+    }
+
+    public long LWorkspaceSizeRead()
+    {
+        FileInfo file = new(_lWorkspaceArchiveDatabase.LDatabaseFile);
+        return file.Exists ? file.Length : 0;
     }
 
     private static long? LWorkspaceArchiveResolve(SqliteDataReader reader, int column)

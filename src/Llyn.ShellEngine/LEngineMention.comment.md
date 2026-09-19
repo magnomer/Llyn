@@ -34,7 +34,7 @@ The headwords are read in one batched call, each Meaning once however many Menti
 A Mention standing for nothing gets an empty name, for the line to substitute its own word.
 The offsets count code points, so the span is cut at the UTF-16 units the sentence maps them to.
 
-## `private static string LEngineSenseRead(LMeaningArchive meanings, long sense)`
+## `private static string LEngineSenseRead(LMeaningVault meanings, long sense)`
 
 The title of one Meaning, its definition when the title is empty, empty when the Meaning is gone.
 

@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LMorphologyArchive
+public sealed class LMorphologyArchive : LMorphologyVault
 {
     private readonly LDatabase _lMorphologyArchiveDatabase;
 

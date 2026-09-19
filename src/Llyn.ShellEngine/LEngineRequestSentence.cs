@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -46,7 +45,7 @@ public sealed partial class LEngine
             throw new LRefusal(LRefusal.LRefusalExample);
         }
 
-        LExample stored = new LExampleArchive(_lEngineDatabase).LExampleRead(request.LRequestExampleId)
+        LExample stored = _lEngineExamples.LExampleRead(request.LRequestExampleId)
             ?? throw new LRefusal(LRefusal.LRefusalExample);
 
         LExampleDraft example = LExampleDraft.LExampleDraftCreate(stored);

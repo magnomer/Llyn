@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -13,7 +12,7 @@ public sealed partial class LEngine
         List<(LMarkupMention, int)> held)
     {
         string language = entry.LMarkupEntryLanguage;
-        LSpeechArchive values = new(_lEngineDatabase);
+        LSpeechVault values = _lEngineSpeeches;
 
         List<LSpeechDraft> speeches = new(entry.LMarkupEntrySpeech.Count);
         foreach (string name in entry.LMarkupEntrySpeech)
@@ -53,7 +52,7 @@ public sealed partial class LEngine
     }
 
     private static LSpeechValue? LEngineMarkupResolve(
-        LSpeechArchive values, string language, string name, List<LMarkupOmission> omissions)
+        LSpeechVault values, string language, string name, List<LMarkupOmission> omissions)
     {
         LSpeechValue? value = string.IsNullOrWhiteSpace(language) ? null : values.LSpeechValueFind(language, name);
         if (value is null)
@@ -65,7 +64,7 @@ public sealed partial class LEngine
     }
 
     private LInflection LEngineMarkupResolve(
-        LSpeechArchive values,
+        LSpeechVault values,
         string language,
         LMarkupInflection inflection,
         int position,
@@ -75,7 +74,7 @@ public sealed partial class LEngine
             ? null
             : LEngineMarkupResolve(values, language, inflection.LMarkupInflectionSpeech, omissions);
 
-        LMorphologyArchive morphologies = new(_lEngineDatabase);
+        LMorphologyVault morphologies = _lEngineMorphologies;
         IReadOnlyList<LFeature> features = speech is null ? [] : morphologies.LFeatureRead(speech.LSpeechValueId);
 
         List<long> resolved = new(inflection.LMarkupInflectionMorphology.Count);

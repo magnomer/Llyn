@@ -57,6 +57,10 @@ Lowers the identity floor by one and returns the new floor.
 One statement lowers and reads, so two engines on one workspace never receive the same number.
 The row is created at minus one when the database has none yet.
 
+## `public long LWorkspaceSizeRead()`
+
+The length of the database file, or zero before it exists.
+
 ## `private static long? LWorkspaceArchiveResolve(SqliteDataReader reader, int column)`
 
 Reads one reference column, returning nothing for a side or revision that stands empty.

@@ -6,7 +6,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LSettingsLoader
+public sealed class LSettingsLoader : LSettingsVault
 {
     private const string LSettingsLoaderFile = "settings.json";
     private const string LSettingsLoaderPending = "settings.json.tmp";
@@ -19,17 +19,22 @@ public static class LSettingsLoader
     private const string LSettingsLoaderTally = "tally";
     private const string LSettingsLoaderDefault = "en";
 
-    public static bool LSettingsLoaderExist(string root)
+    private readonly string _lSettingsLoaderRoot;
+
+    public LSettingsLoader(string root)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        return File.Exists(Path.Combine(root, LSettingsLoaderFile));
+        _lSettingsLoaderRoot = root;
     }
 
-    public static LSettings LSettingsLoaderLoad(string root)
+    public bool LSettingsExist()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        return File.Exists(Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderFile));
+    }
 
-        string path = Path.Combine(root, LSettingsLoaderFile);
+    public LSettings LSettingsRead()
+    {
+        string path = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderFile);
         if (!File.Exists(path))
         {
             return new LSettings(LSettingsLoaderDefault);
@@ -75,7 +80,7 @@ public static class LSettingsLoader
         {
             try
             {
-                File.Copy(path, Path.Combine(root, LSettingsLoaderBroken), true);
+                File.Copy(path, Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderBroken), true);
             }
             catch (IOException)
             {
@@ -96,12 +101,11 @@ public static class LSettingsLoader
         }
     }
 
-    public static void LSettingsLoaderSave(string root, LSettings settings)
+    public void LSettingsSave(LSettings settings)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(settings);
 
-        Directory.CreateDirectory(root);
+        Directory.CreateDirectory(_lSettingsLoaderRoot);
 
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {
@@ -113,8 +117,8 @@ public static class LSettingsLoader
             [LSettingsLoaderTally] = settings.LSettingsTally
         };
 
-        string pending = Path.Combine(root, LSettingsLoaderPending);
-        string path = Path.Combine(root, LSettingsLoaderFile);
+        string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);
+        string path = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderFile);
         File.WriteAllText(
             pending, JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);

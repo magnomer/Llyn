@@ -14,7 +14,8 @@ Without it every format still works except PDF.
 ## `internal async Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
 
 The formats are written from the entry's page likeness, so they show exactly what the panel shows.
-PDF is the rendered page printed, which is why it needs no layout of its own.
+The file formats go to the portrait port, which loads the theme and writes the sheet, outline or folio.
+PDF is the rendered sheet printed by the press, which is why it needs no layout of its own.
 An unconfigured press is an error rather than a silent empty file.
 
 Markup does not pass through the portrait.

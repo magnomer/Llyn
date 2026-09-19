@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LInflectionArchive
+public sealed class LInflectionArchive : LInflectionVault
 {
     private readonly LDatabase _lInflectionArchiveDatabase;
 

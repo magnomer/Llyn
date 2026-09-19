@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LVideoArchive
+public sealed class LVideoArchive : LVideoVault
 {
     private readonly LDatabase _lVideoArchiveDatabase;
 

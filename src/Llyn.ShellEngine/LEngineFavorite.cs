@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -11,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LFavoriteArchive(_lEngineDatabase).LFavoriteFind(query);
+            return _lEngineFavorites.LFavoriteFind(query);
         }
     }
 
@@ -20,7 +19,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return LCatalogFavorite.LCatalogFavoriteSort(
-                new LFavoriteArchive(_lEngineDatabase).LFavoriteFind(query),
+                _lEngineFavorites.LFavoriteFind(query),
                 order);
         }
     }
@@ -55,7 +54,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            return new LFavoriteArchive(_lEngineDatabase).LFavoriteCheck(entryId);
+            return _lEngineFavorites.LFavoriteCheck(entryId);
         }
     }
 
@@ -64,7 +63,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            new LFavoriteArchive(_lEngineDatabase).LFavoriteSave(entryId);
+            _lEngineFavorites.LFavoriteSave(entryId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
@@ -75,7 +74,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            new LFavoriteArchive(_lEngineDatabase).LFavoriteDelete(entryId);
+            _lEngineFavorites.LFavoriteDelete(entryId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);

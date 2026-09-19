@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LTranslationArchive
+public sealed class LTranslationArchive : LTranslationVault
 {
     private readonly LDatabase _lTranslationArchiveDatabase;
 

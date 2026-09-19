@@ -59,6 +59,12 @@ It renumbers the whole group so positions stay `0 … n-1`.
 A position outside the group is clamped into it.
 Nothing moves when no meaning carries that id.
 
+## `public void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order)`
+
+Rewrites the positions of one sibling group of the entry so they follow `order`.
+The group is the top-level meanings when `parentId` is `null`, else the children of that parent.
+The card update names the group by owner because it has already applied every card and knows the ids.
+
 ## `public void LMeaningDelete(long id)`
 
 Deletes the meaning identified by `id` together with everything it owns.

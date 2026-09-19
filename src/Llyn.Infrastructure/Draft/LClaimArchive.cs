@@ -9,8 +9,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LClaimArchive
+public sealed class LClaimArchive : LClaimVault
 {
+    private readonly string _lClaimArchiveRoot;
+
     private const string LClaimArchiveExtension = ".json";
     private const string LClaimArchivePending = ".json.tmp";
 
@@ -18,7 +20,13 @@ public static class LClaimArchive
 
     private static readonly JsonSerializerOptions LClaimArchiveIndent = new() { WriteIndented = true };
 
-    public static LClaim LClaimArchiveCreate(long draftId)
+    public LClaimArchive(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        _lClaimArchiveRoot = root;
+    }
+
+    public LClaim LClaimCreate(long draftId)
     {
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
@@ -26,13 +34,12 @@ public static class LClaimArchive
         return new LClaim(draftId, running.Id, new DateTimeOffset(running.StartTime.ToUniversalTime()));
     }
 
-    public static void LClaimArchiveSave(string root, LClaim claim)
+    public void LClaimSave(LClaim claim)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(claim);
         ArgumentOutOfRangeException.ThrowIfZero(claim.LClaimDraft);
 
-        string folder = LWorkspaceRoot.LWorkspaceClaimRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceClaimRead(_lClaimArchiveRoot);
         string stem = claim.LClaimDraft.ToString(CultureInfo.InvariantCulture);
         string pending = Path.Combine(folder, stem + LClaimArchivePending);
         string path = Path.Combine(folder, stem + LClaimArchiveExtension);
@@ -41,21 +48,18 @@ public static class LClaimArchive
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
-    public static LClaim? LClaimArchiveRead(string root, long draftId)
+    public LClaim? LClaimRead(long draftId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + LClaimArchiveExtension);
+            LWorkspaceRoot.LWorkspaceClaimRead(_lClaimArchiveRoot), draftId + LClaimArchiveExtension);
         return LClaimArchiveLoad(path);
     }
 
-    public static IReadOnlyList<LClaim> LClaimArchiveScan(string root)
+    public IReadOnlyList<LClaim> LClaimScan()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
-
-        string folder = LWorkspaceRoot.LWorkspaceClaimRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceClaimRead(_lClaimArchiveRoot);
 
         string[] files;
         try
@@ -88,13 +92,12 @@ public static class LClaimArchive
         return claims;
     }
 
-    public static void LClaimArchiveDelete(string root, long draftId)
+    public void LClaimDelete(long draftId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + LClaimArchiveExtension);
+            LWorkspaceRoot.LWorkspaceClaimRead(_lClaimArchiveRoot), draftId + LClaimArchiveExtension);
         try
         {
             File.Delete(path);
@@ -107,12 +110,11 @@ public static class LClaimArchive
         }
     }
 
-    public static bool LClaimArchiveCheck(string root, long draftId)
+    public bool LClaimCheck(long draftId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
-        LClaim? claim = LClaimArchiveRead(root, draftId);
+        LClaim? claim = LClaimRead(draftId);
         if (claim is null)
         {
             return false;
@@ -123,7 +125,7 @@ public static class LClaimArchive
             return true;
         }
 
-        LClaimArchiveDelete(root, draftId);
+        LClaimDelete(draftId);
         return false;
     }
 

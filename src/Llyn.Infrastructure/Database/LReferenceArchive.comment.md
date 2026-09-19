@@ -43,6 +43,14 @@ Reads the Reference identified by `id`, or `null` when none exists.
 
 Reads the single Reference an Example cites, or `null` when the Example cites none or does not exist.
 
+## `public IReadOnlyDictionary<long, int> LReferenceUsageRead()`
+
+The citation count of every cited Reference, answered through `LReferenceUsage` so the port has one adapter.
+
+## `public IReadOnlyList<LUsage> LReferenceUsageRead(long id)`
+
+The cards citing the Reference, answered through `LReferenceUsage`.
+
 ## `public void LReferenceUpdate(LReference reference)`
 
 Rewrites every field of the Reference identified by `reference`'s id, states and values alike.
