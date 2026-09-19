@@ -88,7 +88,7 @@ The name is matched exactly, because it is the tag the pack's own readings carry
 ## `private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)`
 
 The shared tail of both flag entry points.
-A null or blank code answers null, any other is fetched through the workspace cache.
+A null or blank code answers null, any other is fetched through the language port's flag cache.
 A rooted path is a pack's own SVG and answers itself when the file exists, with no fetch.
 
 ## `private LLanguage LEngineLanguageLoad(string language)`

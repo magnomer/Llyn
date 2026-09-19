@@ -65,12 +65,13 @@ The caller narrows the kept set to the opening row's variety first, as the harve
 
 ## `internal Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
-Downloads the chosen `recording` into the workspace and returns the saved path.
-The recording carries its own variety, and the workspace names the file by it.
+Downloads the chosen `recording` into the workspace through the recording port and returns the saved path.
+The recording carries its own variety, and the archive names the file by it.
+The port is read under the gate and called outside it, so a rig swap mid-download changes nothing.
 
 ## `public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 
-Downloads the `recording` to a temporary file for playback and returns its path.
+Downloads the `recording` to a temporary file for playback through the recording port and returns its path.
 
 ## Inline notes
 

@@ -1,10 +1,15 @@
-# LReflexSource.cs
+# LReflexSourceHttp.cs
 
-## `public static class LReflexSource`
+## `public sealed class LReflexSourceHttp : LReflexSource`
 
+The adapter behind the `LReflexSource` port, bound to the shared `HttpClient` the rig builds it over.
 Asks one rule's site for one character and reads the readings it answers with.
 The page is matched by the rule's pattern, one reading per match, and each match becomes one draft row.
 Nothing here knows the site: the address, the form, the pattern and the format come from the pack.
+
+## `public LReflexSourceHttp(HttpClient client)`
+
+Binds the adapter to the `client` every fetch goes through.
 
 ## `private const string LReflexSourceToken = "{word}";`
 
@@ -31,7 +36,7 @@ A single bracket is literal, so `[{text}]` prints the reading in brackets.
 
 How long one pack regex may run over one page before the page counts as unreadable.
 
-## `public static async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(`
+## `public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(`
 
 Fetches the page for `character` and reads its rows.
 The second value says whether the site was reached and read.

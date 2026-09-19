@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.Infrastructure;
@@ -35,6 +38,20 @@ public sealed partial class LLanguageLoader : LLanguageVault
     private const string LLanguageLoaderListed = "listed";
     private const string LLanguageLoaderGlyph = "glyph";
     private const string LLanguageLoaderEmblem = ".svg";
+    private const string LLanguageLoaderFlags = "flags";
+    private const string LLanguageFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";
+
+    private readonly string _lLanguageLoaderRoot;
+
+    private readonly HttpClient _lLanguageLoaderClient;
+
+    public LLanguageLoader(string root, HttpClient client)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentNullException.ThrowIfNull(client);
+        _lLanguageLoaderRoot = root;
+        _lLanguageLoaderClient = client;
+    }
 
     public IReadOnlyList<string> LLanguageScan()
     {
@@ -49,6 +66,44 @@ public sealed partial class LLanguageLoader : LLanguageVault
     bool LLanguageVault.LLanguageNameValidate(string? language)
     {
         return LLanguageNameValidate(language);
+    }
+
+    public async Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(code);
+
+        string key = LLanguageFlagNormalize(code);
+        string directory = Path.Combine(_lLanguageLoaderRoot, LLanguageLoaderFlags);
+        Directory.CreateDirectory(directory);
+
+        string path = Path.Combine(directory, key + LLanguageLoaderEmblem);
+        if (File.Exists(path))
+        {
+            return path;
+        }
+
+        try
+        {
+            byte[] svg = await _lLanguageLoaderClient
+                .GetByteArrayAsync(LLanguageFlagHost + key + LLanguageLoaderEmblem, cancellation)
+                .ConfigureAwait(false);
+            await LWorkspaceRoot.LWorkspaceFileSave(path, svg, cancellation).ConfigureAwait(false);
+            return path;
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    private static string LLanguageFlagNormalize(string code)
+    {
+        foreach (char invalid in Path.GetInvalidFileNameChars())
+        {
+            code = code.Replace(invalid, '_');
+        }
+
+        return code.Trim().ToLowerInvariant();
     }
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
@@ -153,7 +208,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
 
     private static LLanguage LLanguageRead(string language, JsonElement root)
     {
-        string? flag = LLanguageFlagRead(language, root);
+        string? flag = LLanguageEmblemRead(language, root);
         IReadOnlyList<LVariety> varieties = LLanguageVarietyScan(root);
         bool scoped = varieties.Count > 0;
         IReadOnlyList<LRespellingRule> spelling = LLanguageSpellingScan(root);
@@ -193,7 +248,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
             || listed.ValueKind != JsonValueKind.False;
     }
 
-    private static string? LLanguageFlagRead(string language, JsonElement root)
+    private static string? LLanguageEmblemRead(string language, JsonElement root)
     {
         string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag")?.Trim() : null;
         if (string.IsNullOrEmpty(flag))

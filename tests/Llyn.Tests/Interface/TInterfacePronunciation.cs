@@ -245,14 +245,14 @@ internal static partial class TInterface
         string root,
         HttpClient client,
         CancellationToken cancellation) =>
-        LWorkspace.LWorkspaceRecordingSave(recording, word, language, root, client, cancellation);
+        new LRecordingArchive(root, client).LRecordingSave(recording, word, language, cancellation);
 
     internal static Task<string> TWorkspaceRecordingPrepare(
         LRecording recording,
         string root,
         HttpClient client,
         CancellationToken cancellation) =>
-        LWorkspace.LWorkspaceRecordingPrepare(recording, root, client, cancellation);
+        new LRecordingArchive(root, client).LRecordingPrepare(recording, cancellation);
 
     internal static Task TEngineRecordingFind(
         this LEngine engine,

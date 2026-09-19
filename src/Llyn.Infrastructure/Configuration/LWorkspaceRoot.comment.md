@@ -55,3 +55,9 @@ The move is retried a few times with a growing pause because Windows scanners ho
 That hold surfaces as an access-denied or sharing error on the very first move and clears within milliseconds.
 The last attempt lets the error through, since a path that stays locked is a real fault.
 Every draft, link and claim archive completes its save through this one place.
+
+## `public static async Task LWorkspaceFileSave(string path, byte[] content, CancellationToken cancellation)`
+
+Writes the bytes beside the target and moves them over it in one step.
+A kill mid-write leaves a `.tmp` file, never a truncated recording or flag that would be served forever.
+The recording archive and the language loader's flag cache both save through it.

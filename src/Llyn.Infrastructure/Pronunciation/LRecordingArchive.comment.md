@@ -1,21 +1,24 @@
-# LWorkspace.cs
+# LRecordingArchive.cs
 
-## `public static class LWorkspace`
+## `public sealed class LRecordingArchive : LRecordingVault`
 
-The user's workspace on disk.
-Downloads remote assets into the workspace and returns their local paths.
+The adapter behind the recording port: downloads remote recordings into the workspace and returns their local paths.
 A chosen recording's bytes are saved under a per-language folder.
-A language's flag image is fetched by country code and cached for reuse.
-The engine calls these once a source or language is chosen.
+A previewed recording's bytes are cached under the workspace's temp folder.
+The root and the client are fixed at construction, so the rig builds a fresh one per workspace.
 Nothing about which source or language is baked in here.
 
-## `public static async Task<string> LWorkspaceRecordingSave(`
+## `public LRecordingArchive(string root, HttpClient client)`
+
+Binds the archive to the workspace `root` every file lands under and the `client` every fetch goes through.
+
+## `public async Task<string> LRecordingSave(`
 
 Downloads a chosen recording into the workspace and returns the saved path.
 The file sits under `audio/<language>/` and is named by the headword, the recording's variety and its address.
 A recording carrying no variety leaves the variety part out, so a pack without varieties reads the same.
 
-## `private static async Task<byte[]> LWorkspaceRecordingRead(`
+## `private async Task<byte[]> LRecordingArchiveRead(string address, CancellationToken cancellation)`
 
 Fetches the bytes of one recording, the one read both saving and previewing go through.
 A host answering 429 is asked again after a pause, up to three tries in all.
@@ -23,12 +26,7 @@ The pause is the host's Retry-After when it is longer than five seconds and five
 Wikimedia's audio host answers 429 to a handful of quick fetches and names one second, which retries proved too short.
 Any other failing status raises, so the caller sees a refused fetch rather than an empty file.
 
-## `private static async Task LWorkspaceFileSave(string path, byte[] content, CancellationToken cancellation)`
-
-Writes the bytes beside the target and moves them over it in one step.
-A kill mid-write leaves a `.tmp` file, never a truncated recording or flag that would be served forever.
-
-## `private static string LWorkspaceStemRead(string word, string variety, string address)`
+## `private static string LRecordingStemRead(string word, string variety, string address)`
 
 The file stem a saved recording takes, before its extension.
 A tagged recording appends the variety after a dot, so `tomato.British` and `tomato.American` sit side by side.
@@ -38,11 +36,11 @@ The same digest keeps two homographs apart when their recordings differ.
 One recording fetched twice lands on one file.
 Both parts are normalized, so a variety name never carries a path character into the file name.
 
-## `private static string LWorkspaceDigestRead(string address)`
+## `private static string LRecordingDigestRead(string address)`
 
 The hex digest of an address, the identity every cached or saved file is named by.
 
-## `public static async Task<string> LWorkspaceRecordingPrepare(`
+## `public async Task<string> LRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 
 Downloads a recording to a temporary cache file for immediate playback and returns its path.
 Playing a local file is reliable, whereas streaming a remote, token-bearing URL through the media stack is not.
@@ -50,12 +48,12 @@ The file is named by a digest of the full address, so two sources' same-named fi
 A file already in the cache is returned as it stands, without another fetch.
 Rewriting it would fail anyway, since the player keeps the file it last played open.
 
-## `private static string LWorkspaceExtensionRead(string address)`
+## `private static string LRecordingExtensionRead(string address)`
 
 The extension the saved file takes, read from the address and kept only when it names an audio format.
 Anything else falls back to `.mp3`, so a source cannot name a file `.exe` or `.html` on disk.
 
-## `private static string LWorkspaceNormalize(string value)`
+## `private static string LRecordingArchiveNormalize(string value)`
 
 A value made safe as one file name segment.
 Path characters become underscores.
@@ -63,29 +61,12 @@ A name Windows reserves for a device, such as `con` or `nul`, is prefixed.
 The file could not be created otherwise.
 The reservation covers the part before the first dot, which is why the check reads only that far.
 
-## `public static async Task<string?> LWorkspaceFlagRead(`
-
-Returns the local path to the flag image for `code`, an ISO 3166-1 alpha-2 country code.
-It downloads it from the flag-icons set into the workspace cache on first use.
-It serves the cached copy thereafter.
-Returns `null` when the download fails, so a missing flag never blocks the UI.
-
 ## Inline notes
 
-### `private const string LWorkspaceFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";`
-
-The flag-icons set (github.com/lipis/flag-icons), served over jsDelivr's CDN of the repo.
-The 4x3 SVGs match the flag box's aspect.
-The leaf is the lowercased ISO 3166-1 alpha-2 code.
-
-### `string directory = Path.Combine(root, LWorkspaceBucket, LWorkspaceNormalize(language));`
+### `_lRecordingArchiveRoot, LRecordingArchiveBucket, LRecordingArchiveNormalize(language));`
 
 Saved audio is workspace data, so it lives under the chosen workspace root, never elsewhere.
 
-### `string directory = Path.Combine(root, LWorkspaceCache);`
+### `string directory = Path.Combine(_lRecordingArchiveRoot, LRecordingArchiveCache);`
 
 Temporary files also stay inside the workspace, under its own temp folder.
-
-### `return "audio" + LWorkspaceExtension;`
-
-Fall through to the default name below.

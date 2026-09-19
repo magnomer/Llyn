@@ -9,8 +9,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LScriptSource
+public sealed class LScriptSourceHttp : LScriptSource
 {
+    private readonly HttpClient _lScriptSourceClient;
+
     private const string LScriptSourceToken = "{word}";
 
     private static readonly Regex LScriptSourceTag = new("<[^>]+>", RegexOptions.CultureInvariant);
@@ -20,17 +22,21 @@ public static class LScriptSource
 
     private static readonly TimeSpan LScriptSourcePatience = TimeSpan.FromSeconds(2);
 
-    public static async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(
-        HttpClient client,
+    public LScriptSourceHttp(HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        _lScriptSourceClient = client;
+    }
+
+    public async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(
         LScriptStyle style,
         string character,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(style);
         ArgumentException.ThrowIfNullOrWhiteSpace(character);
 
-        string? body = await LScriptBodyRead(client, style, character, cancellation).ConfigureAwait(false);
+        string? body = await LScriptBodyRead(_lScriptSourceClient, style, character, cancellation).ConfigureAwait(false);
         if (body is null)
         {
             return ([], false);
@@ -51,7 +57,7 @@ public static class LScriptSource
         List<LScriptImage> images = [];
         foreach ((string address, string caption) in hits)
         {
-            byte[]? data = await LScriptDataRead(client, address, cancellation).ConfigureAwait(false);
+            byte[]? data = await LScriptDataRead(_lScriptSourceClient, address, cancellation).ConfigureAwait(false);
             if (data is not null)
             {
                 images.Add(new LScriptImage(character, style.LScriptStyleName, images.Count, caption, gloss, data));

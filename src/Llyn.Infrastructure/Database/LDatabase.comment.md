@@ -72,6 +72,10 @@ Nesting is how one operation composes several stores, and that only ever happens
 
 The port face of `LDatabaseSessionStart`, through which the engine opens a session without naming SQLite.
 
+## `bool LVault.LVaultMigrated => LDatabaseMigrated;`
+
+The port face of `LDatabaseMigrated`, so the engine learns of a rebuild without naming the database.
+
 ## `public void LDatabaseCreate()`
 
 Initializes the database on first use.

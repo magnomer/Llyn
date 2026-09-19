@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -110,8 +109,8 @@ public sealed partial class LEngine
                     await Task.Delay(left, cancellation).ConfigureAwait(false);
                 }
 
-                (IReadOnlyList<LReflexDraft> found, bool answered) = await LReflexSource
-                    .LReflexSourceFind(_lEngineClient, rule, character, cancellation)
+                (IReadOnlyList<LReflexDraft> found, bool answered) = await _lEngineReflexSource
+                    .LReflexSourceFind(rule, character, cancellation)
                     .ConfigureAwait(false);
                 DateTime next = DateTime.UtcNow + TimeSpan.FromSeconds(rule.LReflexRuleInterval);
                 if (next > _lEngineReflexStamp)

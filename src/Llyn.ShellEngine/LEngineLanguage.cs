@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -161,15 +160,13 @@ public sealed partial class LEngine
             return File.Exists(code) ? code : null;
         }
 
-        string workspace;
+        LLanguageVault languages;
         lock (_lEngineGate)
         {
-            workspace = _lEngineWorkspace;
+            languages = _lEngineLanguageVault;
         }
 
-        return await LWorkspace
-            .LWorkspaceFlagRead(code, workspace, _lEngineClient, cancellation)
-            .ConfigureAwait(false);
+        return await languages.LLanguageFlagRead(code, cancellation).ConfigureAwait(false);
     }
 
     private LLanguage LEngineLanguageLoad(string language)

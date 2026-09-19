@@ -16,11 +16,27 @@ The reading of the `reflex` list, one fetch rule per borrowing language, sits in
 The reading of the `hypothesis` file, the reconstruction tables, sits in `LLanguageLoaderHypothesis.cs`.
 The reading of the rewrite rules and the transcription schemes sits in `LLanguageLoaderRespelling.cs`.
 
-## `private static string? LLanguageFlagRead(string language, JsonElement root)`
+## `private static string? LLanguageEmblemRead(string language, JsonElement root)`
 
 The `flag` value as a country code.
 A value ending in `.svg` reads instead as the full path of that file in the pack folder.
 A classical language has no country, so its pack ships its own emblem.
+
+## `public LLanguageLoader(string root, HttpClient client)`
+
+Binds the loader to the workspace `root` its flag cache lives under and the `client` that fills it.
+The packs themselves are read beside the program, not under the root.
+
+## `public async Task<string?> LLanguageFlagRead(string code, CancellationToken cancellation)`
+
+Returns the local path to the flag image for `code`, an ISO 3166-1 alpha-2 country code.
+It downloads it from the flag-icons set into the workspace's `flags` folder on first use.
+It serves the cached copy thereafter.
+Returns `null` when the download fails, so a missing flag never blocks the UI.
+
+## `private static string LLanguageFlagNormalize(string code)`
+
+The code made safe as one lowercased file name segment, the leaf the flag set names its files by.
 
 ## `public IReadOnlyList<string> LLanguageScan()`
 
@@ -49,6 +65,12 @@ A language name comes from an entry, and an entry can come from an imported file
 Every loader that joins the name onto the `languages/` folder asks here first, so no name walks out of it.
 
 ## Inline notes
+
+### `private const string LLanguageFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";`
+
+The flag-icons set (github.com/lipis/flag-icons), served over jsDelivr's CDN of the repo.
+The 4x3 SVGs match the flag box's aspect.
+The leaf is the lowercased ISO 3166-1 alpha-2 code.
 
 ### `private static void LLanguageSort(List<string> names)`
 

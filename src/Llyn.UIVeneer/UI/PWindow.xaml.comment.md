@@ -7,7 +7,7 @@ Each panel is a control with its own markup and its own behaviour.
 This file only puts them to work on the workspace the engine opened.
 It stops them at the end.
 
-## `public PWindow(LEngine engine)`
+## `public PWindow(LEngine engine, Action<string> workspaceOpener)`
 
 Opens the window on `engine`, already built and bound to a workspace that opened.
 The engine is not constructed here.
@@ -15,6 +15,12 @@ Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
 `LBootstrap` builds it and hands it over.
 The window owns it from here and disposes it when it closes.
+`workspaceOpener` is the bootstrap's own workspace change, since only it may build a rig for a new folder.
+
+## `internal void PWindowWorkspaceChange(string path)`
+
+Moves the user onto the workspace at `path` through the bootstrap's delegate.
+The settings panel calls it, so no panel names the factory or the pointer.
 
 ## `internal int PWindowLeftover { get; private set; }`
 

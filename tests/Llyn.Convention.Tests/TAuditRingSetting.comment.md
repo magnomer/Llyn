@@ -10,7 +10,7 @@ No script writes this file.
 The hit count each kind may reach.
 `EngineField` counts the `LEngine _lEngine` fields in the veneer.
 `EngineHelper` counts the tenure, vista and foray type names in the veneer.
-`AdapterEngine` counts the archives, loaders and sessions the engine constructs itself.
+`AdapterEngine` counts the archives, loaders and sessions the engine constructs itself, none since plan 08.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a hit, never raise one to admit a new one.
 
@@ -18,14 +18,15 @@ Lower a ceiling when a ring sheds a hit, never raise one to admit a new one.
 
 Every `ProjectReference` under `src`, as project name to referenced project names.
 The fact holds the `.csproj` files to this table exactly, so a new edge is an edit here first.
-The engine's edge to the infrastructure stands until plan 08 removes it.
+The engine has no edge to the infrastructure since plan 08.
+The veneer holds that edge for the composition root alone.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditRingRoles`
 
 Every project under `src`, as project name to the namespaces its sources may not name.
 The core names no other project and neither the file system, reflection nor the network.
 The application adds only threading to what the core may name.
-The engine names the infrastructure through its waiver row until plan 08.
+The engine never names the infrastructure, since the rig hands it every adapter.
 The adapters name no other adapter and nothing above them.
 The deportment never names an adapter, and the veneer never names the infrastructure.
 
@@ -33,6 +34,11 @@ The deportment never names an adapter, and the veneer never names the infrastruc
 
 The `path:namespace` rows that stand for good.
 `App.xaml.cs` composes the application and so may name the infrastructure.
+
+## `public static readonly string[] TAuditRingRoot`
+
+The paths that may construct an adapter: the infrastructure itself and the composition root.
+`LRigFactory` builds every adapter of a rig, and `App.xaml.cs` opens the default catalog before any rig exists.
 
 ## `public static readonly string[] TAuditRingStream`
 
@@ -44,3 +50,4 @@ A file that names only `StringReader` or `TextReader` under `System.IO` reads te
 The `path:namespace` rows that break the rings today, one per break, each deleted by a later plan.
 A path ending in `/*` waives a whole project for one namespace.
 Every row must still match a source line, so a fixed break deletes its row.
+The table is empty since plan 08 cut the engine's edge to the infrastructure.

@@ -191,6 +191,7 @@ internal static class TAuditNameRegistry
         "Request",
         "Respelling",
         "Revision",
+        "Rig",
         "Right",
         "Roll",
         "Roof",

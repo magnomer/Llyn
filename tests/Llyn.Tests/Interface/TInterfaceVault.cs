@@ -1,3 +1,4 @@
+using System.Net;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -13,7 +14,8 @@ internal static partial class TInterface
         new LDraftArchive(root);
 
     internal static LLanguageVault TLanguageVaultCreate() =>
-        new LLanguageLoader();
+        new LLanguageLoader(
+            Path.GetTempPath(), TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound));
 
     internal static LSettingsVault TSettingsVaultCreate(string root) =>
         new LSettingsLoader(root);

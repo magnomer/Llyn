@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -137,8 +136,8 @@ public sealed partial class LEngine
         List<LScriptImage> images = [];
         foreach (LScriptStyle style in styles)
         {
-            (IReadOnlyList<LScriptImage> found, bool answered) = await LScriptSource
-                .LScriptSourceFind(_lEngineClient, style, character, cancellation)
+            (IReadOnlyList<LScriptImage> found, bool answered) = await _lEngineScriptSource
+                .LScriptSourceFind(style, character, cancellation)
                 .ConfigureAwait(false);
             reached |= answered;
             images.AddRange(found);

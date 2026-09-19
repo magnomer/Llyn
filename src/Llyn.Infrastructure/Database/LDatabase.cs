@@ -105,6 +105,8 @@ public sealed class LDatabase : LVault
         return LDatabaseSessionStart();
     }
 
+    bool LVault.LVaultMigrated => LDatabaseMigrated;
+
     public void LDatabaseCreate()
     {
         bool stale;

@@ -21,4 +21,13 @@
     <InformationalVersion>$(LlynVersion)</InformationalVersion>
   </PropertyGroup>
 
+  <!--
+    NuGet packages ship IntelliSense .xml beside their assemblies. The SDK copies
+    them as reference-related files, and single-file publish leaves them loose
+    next to the executable. Keep only .pdb so the install folder stays clean.
+  -->
+  <PropertyGroup>
+    <AllowedReferenceRelatedFileExtensions>.pdb</AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+
 </Project>

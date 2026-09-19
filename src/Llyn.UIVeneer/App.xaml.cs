@@ -42,7 +42,7 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             workspace = LWorkspaceRoot.LWorkspaceRootRead();
-            engine = new LEngine(workspace);
+            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, null));
         }
         catch (Exception exception)
         {
@@ -67,7 +67,13 @@ public partial class LBootstrap : System.Windows.Application
 
         base.OnStartup(e);
 
-        new PWindow(engine).Show();
+        new PWindow(engine, LBootstrapWorkspaceChange).Show();
+    }
+
+    private void LBootstrapWorkspaceChange(string path)
+    {
+        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, null));
+        LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 
     private void LBootstrapLocalizationApply(LEngine engine)

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -198,8 +197,8 @@ public sealed partial class LEngine
                 await Task.Delay(left, cancellation).ConfigureAwait(false);
             }
 
-            (IReadOnlyList<LFanqieRow> found, bool answered) = await LFanqieSource
-                .LFanqieSourceFind(_lEngineClient, book, character, cancellation)
+            (IReadOnlyList<LFanqieRow> found, bool answered) = await _lEngineFanqieSource
+                .LFanqieSourceFind(book, character, cancellation)
                 .ConfigureAwait(false);
             DateTime next = DateTime.UtcNow + TimeSpan.FromSeconds(book.LFanqieBookInterval);
             if (next > _lEngineFanqieStamp)

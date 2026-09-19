@@ -59,7 +59,7 @@ public partial class PSettings
 
         try
         {
-            _lEngine.LEngineWorkspaceChange(path);
+            _pSettingsHost.PWindowWorkspaceChange(path);
         }
         catch (Exception exception)
         {

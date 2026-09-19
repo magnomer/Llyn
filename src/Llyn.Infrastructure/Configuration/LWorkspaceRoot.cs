@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Llyn.Infrastructure;
 
@@ -13,6 +14,7 @@ public static class LWorkspaceRoot
     private const string LWorkspaceRootCourt = "court";
     private const string LWorkspaceRootClaim = "claim";
     private const string LWorkspaceRootBroken = "broken";
+    private const string LWorkspaceRootPending = ".tmp";
     private const int LWorkspacePendingAttempt = 5;
 
     private static readonly TimeSpan LWorkspacePendingDelay = TimeSpan.FromMilliseconds(20);
@@ -99,6 +101,16 @@ public static class LWorkspaceRoot
             Thread.Sleep(delay);
             delay += delay;
         }
+    }
+
+    public static async Task LWorkspaceFileSave(string path, byte[] content, CancellationToken cancellation)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(content);
+
+        string pending = path + LWorkspaceRootPending;
+        await File.WriteAllBytesAsync(pending, content, cancellation).ConfigureAwait(false);
+        LWorkspacePendingCommit(pending, path);
     }
 
     private static string LWorkspaceDefaultRead()

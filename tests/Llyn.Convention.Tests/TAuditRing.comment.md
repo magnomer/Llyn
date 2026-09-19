@@ -26,11 +26,16 @@ The tenure, vista and foray type names, wherever the veneer spells one.
 ## `private static readonly string[] TAuditRingAdapter`
 
 An archive, loader or database session constructed by the engine itself.
-Plans 06 to 08 move each construction into the infrastructure.
+Plans 06 to 08 moved each construction into the infrastructure, so the ceiling stands at zero.
 
 ## `private static readonly string[] TAuditRingDatabase`
 
-A member read off the engine's database field, which only the constructor and the workspace open may touch.
+The engine's database field, gone since plan 08 handed the engine a rig of ports.
+
+## `private static readonly string[] TAuditRingBuilt`
+
+An adapter constructed anywhere: an archive, a loader, a file or an HTTP fetcher.
+`LMarkupLoader` in the engine is an assembler over ports and is written `new(` so the pattern passes it.
 
 ## `public void AuditRing_Projects_ReferenceInward()`
 
@@ -56,7 +61,11 @@ The adapters the engine constructs stay within their ceiling.
 
 ## `public void AuditRing_Engine_ReadsNoDatabase()`
 
-No engine part outside `LEngine.cs` reads the database field, so every row reaches the engine through a vault.
+No engine part names a database field, so every row reaches the engine through a vault.
+
+## `public void AuditRing_Infrastructure_BuiltInOnePlace()`
+
+No adapter is constructed outside the infrastructure and the composition root, so the rig is the one wiring.
 
 ## `public void AuditRing_Ceiling_MatchesHits()`
 

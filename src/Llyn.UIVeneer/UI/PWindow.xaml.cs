@@ -15,11 +15,15 @@ public partial class PWindow : Window
 
     private readonly PLayout _pLayout;
 
-    public PWindow(LEngine engine)
+    private readonly Action<string> _pWindowWorkspaceOpener;
+
+    public PWindow(LEngine engine, Action<string> workspaceOpener)
     {
         ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(workspaceOpener);
 
         _lEngine = engine;
+        _pWindowWorkspaceOpener = workspaceOpener;
         _lPosture = new LPosture(engine);
         _pLayout = new PLayout(_lPosture);
 
@@ -49,6 +53,11 @@ public partial class PWindow : Window
     internal LPosture PWindowPosture => _lPosture;
 
     internal PWindowScreen PWindowScreen { get; } = new();
+
+    internal void PWindowWorkspaceChange(string path)
+    {
+        _pWindowWorkspaceOpener(path);
+    }
 
     private void PWindowAttach(LEngine engine)
     {

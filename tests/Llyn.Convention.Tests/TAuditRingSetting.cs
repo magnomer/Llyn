@@ -8,7 +8,7 @@ internal static class TAuditRingSetting
     {
         ["EngineField"] = 21,
         ["EngineHelper"] = 75,
-        ["AdapterEngine"] = 40,
+        ["AdapterEngine"] = 0,
     };
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditRingEdges = new Dictionary<string, string[]>
@@ -17,9 +17,9 @@ internal static class TAuditRingSetting
         ["Llyn.Application"] = ["Llyn.Core"],
         ["Llyn.Infrastructure"] = ["Llyn.Core"],
         ["Llyn.Media"] = ["Llyn.Core"],
-        ["Llyn.ShellEngine"] = ["Llyn.Core", "Llyn.Application", "Llyn.Infrastructure"],
+        ["Llyn.ShellEngine"] = ["Llyn.Core", "Llyn.Application"],
         ["Llyn.UIDeportment"] = ["Llyn.Core", "Llyn.Application", "Llyn.ShellEngine"],
-        ["Llyn.UIVeneer"] = ["Llyn.Core", "Llyn.Media", "Llyn.ShellEngine", "Llyn.UIDeportment"],
+        ["Llyn.UIVeneer"] = ["Llyn.Core", "Llyn.Infrastructure", "Llyn.Media", "Llyn.ShellEngine", "Llyn.UIDeportment"],
     };
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditRingRoles = new Dictionary<string, string[]>
@@ -46,6 +46,12 @@ internal static class TAuditRingSetting
         "src/Llyn.UIVeneer/App.xaml.cs:Llyn.Infrastructure",
     ];
 
+    public static readonly string[] TAuditRingRoot =
+    [
+        "src/Llyn.Infrastructure/",
+        "src/Llyn.UIVeneer/App.xaml.cs",
+    ];
+
     public static readonly string[] TAuditRingStream =
     [
         @"\b(File|Directory|Path|FileInfo|DirectoryInfo|FileSystemInfo|FileSystemWatcher)\b",
@@ -55,8 +61,5 @@ internal static class TAuditRingSetting
         @"\b(IOException|FileNotFoundException|DirectoryNotFoundException|PathTooLongException)\b",
     ];
 
-    public static readonly string[] TAuditRingWaiver =
-    [
-        "src/Llyn.ShellEngine/*:Llyn.Infrastructure",
-    ];
+    public static readonly string[] TAuditRingWaiver = [];
 }

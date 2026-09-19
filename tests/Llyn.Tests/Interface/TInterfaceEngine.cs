@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -127,6 +128,10 @@ internal static partial class TInterface
     internal static LEntry? TEngineEntryRead(this LEngine engine, long id) =>
         engine.LEngineEntryRead(id);
 
+    internal static LEntry TEngineEntryCreate(
+        this LEngine engine, LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches) =>
+        engine.LEngineEntryCreate(entry, forms, speeches);
+
     internal static LEntry TEngineEntrySave(this LEngine engine, LEntryDraft draft) =>
         engine.LEngineEntrySave(draft);
 
@@ -219,8 +224,17 @@ internal static partial class TInterface
 
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
-        engine.LEngineWorkspaceOpen(path);
+        engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(
+            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound)));
     }
+
+    internal static void TEngineRigApply(this LEngine engine, LRig rig)
+    {
+        engine.LEngineRigApply(rig);
+    }
+
+    internal static LDoctorRescue TEngineRescueRead(this LEngine engine) =>
+        engine.LEngineRescueRead();
 
     internal static LEstablishment TEngineEstablishmentRead(this LEngine engine) =>
         engine.LEngineEstablishmentRead();

@@ -1,11 +1,16 @@
-# LScriptSource.cs
+# LScriptSourceHttp.cs
 
-## `public static class LScriptSource`
+## `public sealed class LScriptSourceHttp : LScriptSource`
 
+The adapter behind the `LScriptSource` port, bound to the shared `HttpClient` the rig builds it over.
 Asks one web database for the glyph pictures of one character in one style.
 The database is reached by posting its own search form, since the site offers no query API.
 The answer is read by the pack's pattern, and every picture it names is fetched as bytes.
 Nothing here knows the site, only the shape an [LScriptStyle](../../Llyn.Core/Pronunciation/LScriptStyle.comment.md) declares.
+
+## `public LScriptSourceHttp(HttpClient client)`
+
+Binds the adapter to the `client` every fetch goes through.
 
 ## `private const string LScriptSourceToken`
 
@@ -23,7 +28,7 @@ A line break tag, turned into a space so a two-line caption reads as one line.
 
 How long one pack pattern may run over one answer before the answer counts as empty.
 
-## `public static async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(HttpClient client, LScriptStyle style, string character, CancellationToken cancellation)`
+## `public async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(`
 
 Posts the form, reads the pictures and captions the pattern names, and fetches each picture in turn.
 A picture that cannot be fetched is skipped, and the positions count only those kept.

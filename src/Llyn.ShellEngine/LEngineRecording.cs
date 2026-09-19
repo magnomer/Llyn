@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -172,26 +171,26 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(recording);
 
-        string workspace;
+        LRecordingVault recordings;
         lock (_lEngineGate)
         {
-            workspace = _lEngineWorkspace;
+            recordings = _lEngineRecordings;
         }
 
-        return LWorkspace.LWorkspaceRecordingSave(recording, word, language, workspace, _lEngineClient, cancellation);
+        return recordings.LRecordingSave(recording, word, language, cancellation);
     }
 
     public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
-        string workspace;
+        LRecordingVault recordings;
         lock (_lEngineGate)
         {
-            workspace = _lEngineWorkspace;
+            recordings = _lEngineRecordings;
         }
 
-        return LWorkspace.LWorkspaceRecordingPrepare(recording, workspace, _lEngineClient, cancellation);
+        return recordings.LRecordingPrepare(recording, cancellation);
     }
 
     private IReadOnlyList<LSource> LEngineLookupRead(string language)

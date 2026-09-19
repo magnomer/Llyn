@@ -42,11 +42,8 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 ## `public LEngine TWorkspaceEngineStart(HttpClient client)`
 
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
-
-## `public LEngine TWorkspaceEngineStart(LEntryVault entries)`
-
-Binds an engine whose entry vault is `entries` rather than the workspace database.
-A test can then prove a read never reaches SQLite.
+The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
+An engine over fakes instead starts from `TRigFake`.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 

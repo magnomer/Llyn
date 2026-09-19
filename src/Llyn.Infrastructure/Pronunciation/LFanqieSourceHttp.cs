@@ -9,8 +9,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LFanqieSource
+public sealed class LFanqieSourceHttp : LFanqieSource
 {
+    private readonly HttpClient _lFanqieSourceClient;
+
     private const string LFanqieSourceToken = "{word}";
 
     private const RegexOptions LFanqieSourceLoose =
@@ -32,17 +34,21 @@ public static class LFanqieSource
 
     private static readonly TimeSpan LFanqieSourcePatience = TimeSpan.FromSeconds(2);
 
-    public static async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(
-        HttpClient client,
+    public LFanqieSourceHttp(HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        _lFanqieSourceClient = client;
+    }
+
+    public async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(
         LFanqieBook book,
         string character,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(book);
         ArgumentException.ThrowIfNullOrWhiteSpace(character);
 
-        string? body = await LFanqieBodyRead(client, book, character, cancellation).ConfigureAwait(false);
+        string? body = await LFanqieBodyRead(_lFanqieSourceClient, book, character, cancellation).ConfigureAwait(false);
         if (body is null)
         {
             return ([], false);

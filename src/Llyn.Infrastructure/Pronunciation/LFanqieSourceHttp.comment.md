@@ -1,12 +1,17 @@
-# LFanqieSource.cs
+# LFanqieSourceHttp.cs
 
-## `public static class LFanqieSource`
+## `public sealed class LFanqieSourceHttp : LFanqieSource`
 
+The adapter behind the `LFanqieSource` port, bound to the shared `HttpClient` the rig builds it over.
 Asks one rime book's site for one character and reads the placements it answers with.
 A table site answers with the whole rime table the character sits in, one table per rime group.
 A cell there holds one group per 小韻, and only the groups carrying the marked character are read.
 A line site answers with plain text, one placement per match of the book's line pattern.
 Nothing here knows the site: the address, the form and every pattern come from the pack.
+
+## `public LFanqieSourceHttp(HttpClient client)`
+
+Binds the adapter to the `client` every fetch goes through.
 
 ## `private const string LFanqieSourceToken = "{word}";`
 
@@ -49,7 +54,7 @@ Any tag, dropped when a cell is read into text.
 
 How long the busy pattern may run over one answer before it is given up.
 
-## `public static async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(`
+## `public async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(`
 
 Fetches the answer and reads every placement of the character, in answer order.
 The table reader or the line reader is chosen by whether the book has a line pattern.

@@ -2,21 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Net.Http;
 using System.Threading;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine : IDisposable
 {
     private readonly object _lEngineGate = new();
-    private const long LEngineClientCeiling = 8L * 1024 * 1024;
-
-    private readonly HttpClient _lEngineClient;
-    private readonly LSourceFactory _lEngineSourceFactory;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
     private readonly Dictionary<(string LEngineLanguage, string LEngineScheme), IReadOnlyList<LSource>>
@@ -30,15 +24,19 @@ public sealed partial class LEngine : IDisposable
     private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
-    private readonly LUsher _lEngineUsher = new LUsherFile();
     private readonly LEnsign _lEngineEnsign;
-    private readonly LLanguageVault _lEngineLanguageVault = new LLanguageLoader();
-    private readonly LLocalizationVault _lEngineLocalization = new LLocalizationLoader();
-    private readonly LMarkupVault _lEngineMarkupVault = new LMarkupFile();
-    private readonly LPortraitVault _lEnginePortraitVault = new LPortraitFile();
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
-    private LDatabase _lEngineDatabase;
+    private LSourceFactory _lEngineSourceFactory;
+    private LFanqieSource _lEngineFanqieSource;
+    private LReflexSource _lEngineReflexSource;
+    private LScriptSource _lEngineScriptSource;
+    private LRecordingVault _lEngineRecordings;
+    private LUsher _lEngineUsher;
+    private LLanguageVault _lEngineLanguageVault;
+    private LLocalizationVault _lEngineLocalization;
+    private LMarkupVault _lEngineMarkupVault;
+    private LPortraitVault _lEnginePortraitVault;
     private LVault _lEngineVault;
     private LDoctorVault _lEngineDoctor;
     private LRealmVault _lEngineRealmVault;
@@ -83,52 +81,36 @@ public sealed partial class LEngine : IDisposable
     private LRealm _lEngineRealm;
     private LIdentity _lEngineIdentity;
 
-    public LEngine(string workspace)
-        : this(workspace, null)
+    public LEngine(LRig rig)
     {
-    }
+        ArgumentNullException.ThrowIfNull(rig);
 
-    internal LEngine(string workspace, HttpClient? client)
-        : this(workspace, client, null)
-    {
-    }
-
-    internal LEngine(string workspace, HttpClient? client, LEntryVault? entries)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
-
-        _lEngineWorkspace = workspace;
+        LEngineRigSet(rig);
         _lEngineEnsign = new LEnsign(_lEngineUsher);
-        _lEngineClient = client ?? new HttpClient
-        {
-            Timeout = TimeSpan.FromSeconds(10),
-            MaxResponseContentBufferSize = LEngineClientCeiling,
-        };
-        _lEngineClient.DefaultRequestHeaders.UserAgent.ParseAdd(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
-        _lEngineSourceFactory = new LSourceFactoryHttp(_lEngineClient);
-
-        _lEngineDatabase = new LDatabase(_lEngineWorkspace);
-        LEngineVaultSet();
         _lEngineSettings = _lEngineSettingsVault.LSettingsRead();
         _lEngineRescue = _lEngineDoctor.LDoctorDatabaseCreate();
         _lEngineRealm = _lEngineRealmVault.LRealmRead();
-        if (entries is not null)
-        {
-            _lEngineEntries = entries;
-        }
-
         _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
 
         LEngineLanguageImport();
         LEngineDiweiApply();
-        if (_lEngineDatabase.LDatabaseMigrated)
+        if (_lEngineVault.LVaultMigrated)
         {
             LEngineWorkspaceUpdate();
         }
     }
 
     [MemberNotNull(
+        nameof(_lEngineSourceFactory),
+        nameof(_lEngineFanqieSource),
+        nameof(_lEngineReflexSource),
+        nameof(_lEngineScriptSource),
+        nameof(_lEngineRecordings),
+        nameof(_lEngineUsher),
+        nameof(_lEngineLanguageVault),
+        nameof(_lEngineLocalization),
+        nameof(_lEngineMarkupVault),
+        nameof(_lEnginePortraitVault),
         nameof(_lEngineVault),
         nameof(_lEngineDoctor),
         nameof(_lEngineRealmVault),
@@ -168,49 +150,61 @@ public sealed partial class LEngine : IDisposable
         nameof(_lEngineTags),
         nameof(_lEngineTranscriptions),
         nameof(_lEngineTranslations),
-        nameof(_lEngineVideos))]
-    private void LEngineVaultSet()
+        nameof(_lEngineVideos),
+        nameof(_lEngineWorkspace))]
+    private void LEngineRigSet(LRig rig)
     {
-        _lEngineVault = _lEngineDatabase;
-        _lEngineDoctor = new LDoctor(_lEngineDatabase);
-        _lEngineRealmVault = new LRealmArchive(_lEngineDatabase);
-        _lEngineSettingsVault = new LSettingsLoader(_lEngineWorkspace);
-        _lEngineAudit = new LAuditWriter(_lEngineWorkspace);
-        _lEngineKeep = new LKeepFile(_lEngineWorkspace);
-        _lEngineEntries = new LEntryArchive(_lEngineDatabase);
-        _lEngineDrafts = new LDraftArchive(_lEngineWorkspace);
-        _lEngineClaims = new LClaimArchive(_lEngineWorkspace);
-        _lEngineCourts = new LCourtArchive(_lEngineWorkspace);
-        _lEngineRevisions = new LRevisionArchive(_lEngineDatabase);
-        _lEngineWorkspaces = new LWorkspaceArchive(_lEngineDatabase);
-        _lEngineTombstones = new LTombstoneArchive(_lEngineDatabase);
-        _lEngineAuthors = new LAuthorArchive(_lEngineDatabase);
-        _lEngineCollocations = new LCollocationArchive(_lEngineDatabase);
-        _lEngineDiweiVault = new LDiweiArchive(_lEngineDatabase);
-        _lEngineExamples = new LExampleArchive(_lEngineDatabase);
-        _lEngineFanqieVault = new LFanqieArchive(_lEngineDatabase);
-        _lEngineFavorites = new LFavoriteArchive(_lEngineDatabase);
-        _lEngineFrequencies = new LFrequencyArchive(_lEngineDatabase);
-        _lEngineGlosses = new LGlossArchive(_lEngineDatabase);
-        _lEngineImages = new LImageArchive(_lEngineDatabase);
-        _lEngineInflections = new LInflectionArchive(_lEngineDatabase);
-        _lEngineLacunae = new LLacunaArchive(_lEngineDatabase);
-        _lEngineMeanings = new LMeaningArchive(_lEngineDatabase);
-        _lEngineMentions = new LMentionArchive(_lEngineDatabase);
-        _lEngineMorphologies = new LMorphologyArchive(_lEngineDatabase);
-        _lEngineNotes = new LNoteArchive(_lEngineDatabase);
-        _lEnginePronunciations = new LPronunciationArchive(_lEngineDatabase);
-        _lEngineReferences = new LReferenceArchive(_lEngineDatabase);
-        _lEngineReflexes = new LReflexArchive(_lEngineDatabase);
-        _lEngineRegisters = new LRegisterArchive(_lEngineDatabase);
-        _lEngineScripts = new LScriptArchive(_lEngineDatabase);
-        _lEngineSentences = new LSentenceArchive(_lEngineDatabase);
-        _lEngineSituations = new LSituationArchive(_lEngineDatabase);
-        _lEngineSpeeches = new LSpeechArchive(_lEngineDatabase);
-        _lEngineTags = new LTagArchive(_lEngineDatabase);
-        _lEngineTranscriptions = new LTranscriptionArchive(_lEngineDatabase);
-        _lEngineTranslations = new LTranslationArchive(_lEngineDatabase);
-        _lEngineVideos = new LVideoArchive(_lEngineDatabase);
+        _lEngineSourceFactory = rig.LRigSources;
+        _lEngineFanqieSource = rig.LRigFanqieSource;
+        _lEngineReflexSource = rig.LRigReflexSource;
+        _lEngineScriptSource = rig.LRigScriptSource;
+        _lEngineRecordings = rig.LRigRecordings;
+        _lEngineUsher = rig.LRigUsher;
+        _lEngineLanguageVault = rig.LRigLanguages;
+        _lEngineLocalization = rig.LRigLocalization;
+        _lEngineMarkupVault = rig.LRigMarkup;
+        _lEnginePortraitVault = rig.LRigPortrait;
+        _lEngineVault = rig.LRigVault;
+        _lEngineDoctor = rig.LRigDoctor;
+        _lEngineRealmVault = rig.LRigRealm;
+        _lEngineSettingsVault = rig.LRigSettings;
+        _lEngineAudit = rig.LRigAudit;
+        _lEngineKeep = rig.LRigKeep;
+        _lEngineEntries = rig.LRigEntries;
+        _lEngineDrafts = rig.LRigDrafts;
+        _lEngineClaims = rig.LRigClaims;
+        _lEngineCourts = rig.LRigCourts;
+        _lEngineRevisions = rig.LRigRevisions;
+        _lEngineWorkspaces = rig.LRigWorkspaces;
+        _lEngineTombstones = rig.LRigTombstones;
+        _lEngineAuthors = rig.LRigAuthors;
+        _lEngineCollocations = rig.LRigCollocations;
+        _lEngineDiweiVault = rig.LRigDiwei;
+        _lEngineExamples = rig.LRigExamples;
+        _lEngineFanqieVault = rig.LRigFanqie;
+        _lEngineFavorites = rig.LRigFavorites;
+        _lEngineFrequencies = rig.LRigFrequencies;
+        _lEngineGlosses = rig.LRigGlosses;
+        _lEngineImages = rig.LRigImages;
+        _lEngineInflections = rig.LRigInflections;
+        _lEngineLacunae = rig.LRigLacunae;
+        _lEngineMeanings = rig.LRigMeanings;
+        _lEngineMentions = rig.LRigMentions;
+        _lEngineMorphologies = rig.LRigMorphologies;
+        _lEngineNotes = rig.LRigNotes;
+        _lEnginePronunciations = rig.LRigPronunciations;
+        _lEngineReferences = rig.LRigReferences;
+        _lEngineReflexes = rig.LRigReflexes;
+        _lEngineRegisters = rig.LRigRegisters;
+        _lEngineScripts = rig.LRigScripts;
+        _lEngineSentences = rig.LRigSentences;
+        _lEngineSituations = rig.LRigSituations;
+        _lEngineSpeeches = rig.LRigSpeeches;
+        _lEngineTags = rig.LRigTags;
+        _lEngineTranscriptions = rig.LRigTranscriptions;
+        _lEngineTranslations = rig.LRigTranslations;
+        _lEngineVideos = rig.LRigVideos;
+        _lEngineWorkspace = rig.LRigWorkspace;
     }
 
     private long LEngineIdentityCreate()
@@ -260,34 +254,17 @@ public sealed partial class LEngine : IDisposable
         }
     }
 
-    public void LEngineWorkspaceChange(string path)
+    public void LEngineRigApply(LRig rig)
     {
-        LEngineWorkspaceOpen(path);
-        LWorkspaceRoot.LWorkspaceRootChange(LEngineWorkspaceRead());
-    }
-
-    internal void LEngineWorkspaceOpen(string path)
-    {
-        if (!Path.IsPathFullyQualified(path))
-        {
-            throw new ArgumentException("The workspace path must be fully qualified.", nameof(path));
-        }
-
-        string root = Path.GetFullPath(path);
+        ArgumentNullException.ThrowIfNull(rig);
 
         lock (_lEngineGate)
         {
-            Directory.CreateDirectory(root);
-
-            LDatabase database = new(root);
-            LDoctorRescue rescue = new LDoctor(database).LDoctorDatabaseCreate();
-            LRealm realm = new LRealmArchive(database).LRealmRead();
-            LSettingsVault settingsVault = new LSettingsLoader(root);
-            LSettings settings = settingsVault.LSettingsExist()
-                ? settingsVault.LSettingsRead()
+            LDoctorRescue rescue = rig.LRigDoctor.LDoctorDatabaseCreate();
+            LRealm realm = rig.LRigRealm.LRealmRead();
+            LSettings settings = rig.LRigSettings.LSettingsExist()
+                ? rig.LRigSettings.LSettingsRead()
                 : _lEngineSettings;
-
-            _lEngineWorkspace = root;
 
             foreach (long held in _lEngineDraftHeld)
             {
@@ -311,15 +288,14 @@ public sealed partial class LEngine : IDisposable
             _lEngineTrove.LTroveClear();
 
             _lEngineSettings = settings;
-            _lEngineDatabase = database;
             _lEngineRescue = rescue;
             _lEngineRealm = realm;
-            LEngineVaultSet();
+            LEngineRigSet(rig);
             _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
             LEngineSettingsSave();
             LEngineLanguageImport();
             LEngineDiweiApply();
-            if (database.LDatabaseMigrated)
+            if (_lEngineVault.LVaultMigrated)
             {
                 LEngineWorkspaceUpdate();
             }
@@ -353,7 +329,6 @@ public sealed partial class LEngine : IDisposable
             LEngineScriptClear();
             LEngineFanqieClear();
             LEngineReflexClear();
-            _lEngineClient.Dispose();
         }
     }
 }

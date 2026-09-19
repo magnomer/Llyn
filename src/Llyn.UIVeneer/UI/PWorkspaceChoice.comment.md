@@ -51,7 +51,7 @@ Each panel ends on the new workspace's order rather than the old one's.
 That is all this handler does after the change.
 Emptying and re-reading is the engine's announcement, not a list kept here.
 
-### `_lEngine.LEngineWorkspaceChange(path);`
+### `_pSettingsHost.PWindowWorkspaceChange(path);`
 
 The new workspace has its own database.
 So everything on screen came from a database that is no longer open.

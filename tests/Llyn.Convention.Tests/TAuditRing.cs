@@ -33,7 +33,12 @@ public sealed class TAuditRing
 
     private static readonly string[] TAuditRingDatabase =
     [
-        @"\b_lEngineDatabase\.",
+        @"\b_lEngineDatabase\b",
+    ];
+
+    private static readonly string[] TAuditRingBuilt =
+    [
+        @"\bnew L\w+(Archive|Loader|File|Http)\(",
     ];
 
     [Fact]
@@ -116,13 +121,23 @@ public sealed class TAuditRing
     [Fact]
     public void AuditRing_Engine_ReadsNoDatabase()
     {
-        Func<string, bool> engine = TAuditRoleSelect("Llyn.ShellEngine");
-        List<TViolation> hits = TAuditRingScan(
-            path => engine(path) && !path.EndsWith("/LEngine.cs", StringComparison.Ordinal),
-            TAuditRingDatabase);
+        List<TViolation> hits = TAuditRingScan(TAuditRoleSelect("Llyn.ShellEngine"), TAuditRingDatabase);
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITRING",
-            $"{hits.Count} database read(s) sit outside the engine and must go through a vault:\n" + string.Join(
+            $"{hits.Count} database read(s) sit in the engine and must go through a vault:\n" + string.Join(
+                '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
+    }
+
+    [Fact]
+    public void AuditRing_Infrastructure_BuiltInOnePlace()
+    {
+        List<TViolation> hits = TAuditRingScan(
+            path => !TAuditRingSetting.TAuditRingRoot.Any(
+                root => path.StartsWith(root, StringComparison.Ordinal)),
+            TAuditRingBuilt);
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{hits.Count} adapter(s) built outside the infrastructure and the composition root:\n" + string.Join(
                 '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
     }
 

@@ -10,8 +10,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LReflexSource
+public sealed class LReflexSourceHttp : LReflexSource
 {
+    private readonly HttpClient _lReflexSourceClient;
+
     private const string LReflexSourceToken = "{word}";
 
     private const string LReflexSourceSuperscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -29,17 +31,21 @@ public static class LReflexSource
 
     private static readonly TimeSpan LReflexSourcePatience = TimeSpan.FromSeconds(2);
 
-    public static async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(
-        HttpClient client,
+    public LReflexSourceHttp(HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        _lReflexSourceClient = client;
+    }
+
+    public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(
         LReflexRule rule,
         string character,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(rule);
         ArgumentException.ThrowIfNullOrWhiteSpace(character);
 
-        string? body = await LReflexBodyRead(client, rule, character, cancellation).ConfigureAwait(false);
+        string? body = await LReflexBodyRead(_lReflexSourceClient, rule, character, cancellation).ConfigureAwait(false);
         if (body is null)
         {
             return ([], false);
