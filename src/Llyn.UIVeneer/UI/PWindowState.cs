@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
-using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -37,7 +37,7 @@ public partial class PWindow
 
     private void PWindowStateRestore()
     {
-        if (_lEngine.LEngineSettingsRead().LSettingsWindow is not LWindowState state)
+        if (_lPosture.LPostureRead().LPostureStateWindow is not LWindowState state)
         {
             Rect area = SystemParameters.WorkArea;
 
@@ -86,7 +86,7 @@ public partial class PWindow
             return;
         }
 
-        _lEngine.LEngineWindowSave(new LWindowState(
+        _lPosture.LPostureWindowSave(new LWindowState(
             bounds.Left,
             bounds.Top,
             bounds.Width,

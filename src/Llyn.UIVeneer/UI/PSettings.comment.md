@@ -12,7 +12,7 @@ The panel also listens for settings bulletins, which drive every redraw a saved 
 
 ## `internal void PSettingsSync()`
 
-Aligns every control of the panel to the settings and workspace the engine now holds.
+Aligns every control of the panel to the settings and workspace the engine now holds, and to the posture.
 It runs on attach and again after a workspace change, since the new workspace may carry other choices.
 Setting a control raises its change event, and the handler writes the value back to the engine.
 That write leaves the record equal, so the engine neither saves nor raises a bulletin.
@@ -23,7 +23,7 @@ A stored language the interface does not carry is shown as English, the language
 Redraws the panel after the engine reports a settings change.
 The language catalog is applied from the record, so the interface follows whatever the engine holds.
 The ledger summaries are rewritten, since every one of them prints a stored choice.
-While tabs are linked, every tab takes the most recently dragged tab's widths, so the link shows at once.
+The linked switch is no settings field, so its handler links the tabs itself.
 
 ## Inline notes
 

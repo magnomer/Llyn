@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -16,6 +17,22 @@ public sealed partial class LEngine
         }
     }
 
+    public LKeep LEngineKeepRead()
+    {
+        lock (_lEngineGate)
+        {
+            return new LKeepFile(_lEngineWorkspace);
+        }
+    }
+
+    public static IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        using TextReader reader = LLocalizationLoader.LLocalizationLoaderOpen(language);
+        return LLocalization.LLocalizationLoad(reader, language);
+    }
+
     public void LEngineLocalizationSave(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
@@ -23,18 +40,6 @@ public sealed partial class LEngine
         {
             LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
-    }
-
-    public void LEngineWindowSave(LWindowState window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        LEngineSettingsChange(settings => settings with { LSettingsWindow = window });
-    }
-
-    public void LEngineVolumeSave(double volume)
-    {
-        double level = Math.Clamp(volume, 0, 1);
-        LEngineSettingsChange(settings => settings with { LSettingsVolume = level });
     }
 
     public void LEngineRespellingSave(bool respelled)
@@ -94,60 +99,6 @@ public sealed partial class LEngine
         }
 
         if (changed)
-        {
-            LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
-        }
-    }
-
-    public void LEngineLayoutSave(IEnumerable<LLayout> layout)
-    {
-        ArgumentNullException.ThrowIfNull(layout);
-
-        lock (_lEngineGate)
-        {
-            Dictionary<string, LLayout> merged = new(StringComparer.Ordinal);
-
-            foreach (LLayout tab in _lEngineSettings.LSettingsLayout ?? [])
-            {
-                merged[tab.LLayoutTab] = tab;
-            }
-
-            foreach (LLayout tab in layout)
-            {
-                merged[tab.LLayoutTab] = merged.TryGetValue(tab.LLayoutTab, out LLayout? held)
-                    ? held with
-                    {
-                        LLayoutLeft = tab.LLayoutLeft ?? held.LLayoutLeft,
-                        LLayoutMiddle = tab.LLayoutMiddle ?? held.LLayoutMiddle,
-                        LLayoutOrder = tab.LLayoutOrder ?? held.LLayoutOrder,
-                        LLayoutFilter = tab.LLayoutFilter ?? held.LLayoutFilter,
-                    }
-                    : tab;
-            }
-
-            List<LLayout> list = [.. merged.Values];
-            LEngineSettingsChange(settings => settings with { LSettingsLayout = list });
-        }
-    }
-
-    public void LEngineLayoutReset()
-    {
-        lock (_lEngineGate)
-        {
-            List<LLayout> list = [];
-
-            foreach (LLayout tab in _lEngineSettings.LSettingsLayout ?? [])
-            {
-                list.Add(tab with { LLayoutLeft = null, LLayoutMiddle = null });
-            }
-
-            LEngineSettingsChange(settings => settings with { LSettingsLayout = list });
-        }
-    }
-
-    public void LEngineLinkedSave(bool linked)
-    {
-        if (LEngineSettingsChange(settings => settings with { LSettingsLinked = linked }))
         {
             LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }

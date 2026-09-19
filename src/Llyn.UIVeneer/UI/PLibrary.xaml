@@ -15,11 +15,6 @@
         </Style>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding CanExecute="PLibraryPressCheck" Command="ApplicationCommands.Print" Executed="PLibraryPressHandle" />
-        <CommandBinding CanExecute="PLibraryPressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PLibraryPortraitHandle" />
-    </UserControl.CommandBindings>
-
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

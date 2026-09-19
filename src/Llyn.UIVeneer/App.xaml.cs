@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Llyn.Application;
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.Media;
 using Llyn.ShellEngine;
 
@@ -18,7 +19,7 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             PLocalizationCatalog.PLocalizationCatalogApply(Resources, LLocalization.LLocalizationDefault);
-            PThemeLoader.PThemeLoaderApply(Resources);
+            PThemeLoader.PThemeLoaderApply(LThemeLoader.LThemeLoaderLoad(), Resources);
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
             PCaret.PCaretHook();

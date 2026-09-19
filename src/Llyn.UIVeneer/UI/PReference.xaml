@@ -32,11 +32,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding CanExecute="PReferencePressCheck" Command="ApplicationCommands.Print" Executed="PReferencePressHandle" />
-        <CommandBinding CanExecute="PReferencePortraitCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PReferencePortraitHandle" />
-    </UserControl.CommandBindings>
-
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

@@ -40,7 +40,7 @@ internal static class PEnsign
         }
     }
 
-    internal static DrawingImage? PEnsignResolve(string path)
+    internal static DrawingImage? PEnsignResolve(LEngine engine, string path)
     {
         try
         {
@@ -57,7 +57,7 @@ internal static class PEnsign
         }
         catch (Exception)
         {
-            LEnsign.LEnsignPathDelete(path);
+            engine.LEngineEnsignDelete(path);
             return null;
         }
     }
@@ -68,7 +68,7 @@ internal static class PEnsign
         try
         {
             IReadOnlyList<LEnsignRow> kept = await engine.LEngineEnsignLoad();
-            PEnsignStoreAdd(kept);
+            PEnsignStoreAdd(engine, kept);
         }
         finally
         {
@@ -89,7 +89,7 @@ internal static class PEnsign
         try
         {
             IReadOnlyList<LEnsignRow> kept = await engine.LEngineEnsignLoad(language, varieties);
-            PEnsignStoreAdd(kept);
+            PEnsignStoreAdd(engine, kept);
         }
         finally
         {
@@ -97,13 +97,13 @@ internal static class PEnsign
         }
     }
 
-    private static void PEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows)
+    private static void PEnsignStoreAdd(LEngine engine, IReadOnlyList<LEnsignRow> rows)
     {
         lock (PEnsignStore)
         {
             foreach (LEnsignRow row in rows)
             {
-                PEnsignStore[row.LEnsignRowKey] = PEnsignResolve(row.LEnsignRowPath);
+                PEnsignStore[row.LEnsignRowKey] = PEnsignResolve(engine, row.LEnsignRowPath);
             }
         }
     }

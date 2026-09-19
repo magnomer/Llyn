@@ -76,6 +76,7 @@ internal static partial class TAuditTruthSetting
         "LForay",
         "LTenure",
         "LVista",
+        "LPosture",
         "LListener",
         "LReceiver",
         "LObserver",
@@ -85,7 +86,7 @@ internal static partial class TAuditTruthSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
         ["Argument"] = 187,
-        ["Guard"] = 160,
+        ["Guard"] = 158,
         ["Fork"] = 35,
         ["Mirror"] = 32,
         ["Mutation"] = 18,

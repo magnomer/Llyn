@@ -47,6 +47,9 @@ public partial class PPhonology : UserControl
         PEditor.PEditorAttach(host, engine, _lPhonology.LPhonologyEditor);
 
         PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciationField);
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PPhonologyPressHandle, PPhonologyPressCheck));
+        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PPhonologyPortraitHandle, PPhonologyPressCheck));
     }
 
     private void PPhonologyStoreUpdate()

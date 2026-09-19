@@ -6,6 +6,8 @@ public partial class PSettings
 {
     private void PLayoutLinkedHandle(object sender, RoutedEventArgs e)
     {
-        _lEngine.LEngineLinkedSave(PLayoutLinked.IsChecked == true);
+        _pSettingsHost.PWindowPosture.LPostureLinkedSave(PLayoutLinked.IsChecked == true);
+        PLedgerMetaApply();
+        _pSettingsHost.PWindowLayout.PLayoutSync();
     }
 }

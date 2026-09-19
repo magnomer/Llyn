@@ -15,7 +15,7 @@ internal static partial class TInterface
         string location, string span, bool moving) =>
         new(location, span, moving);
 
-    internal static LTheme TThemeLoad() => LTheme.LThemeLoad();
+    internal static LTheme TThemeLoad() => LThemeLoader.LThemeLoaderLoad();
 
     internal static string TThemeRead(this LTheme theme, string name) => theme.LThemeRead(name);
 

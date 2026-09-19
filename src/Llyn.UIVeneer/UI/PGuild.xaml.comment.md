@@ -10,6 +10,7 @@ The roll, the oeuvre, the vita, the autograph and the colophon are all served fr
 ## `internal void PGuildAttach(PWindow host, LEngine engine)`
 
 News the deportment with the window's dialogs as seams, subscribes its notices, and wires the two lists.
+The print command binding is added last, so no can-execute query ever meets a deportment not yet built.
 
 ## `internal void PGuildVistaRestore(LVista vista, LVista oeuvre)`
 

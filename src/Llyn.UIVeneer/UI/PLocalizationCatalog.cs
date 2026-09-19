@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Llyn.Application;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -25,7 +25,7 @@ public sealed class PLocalizationCatalog : INotifyPropertyChanged
 
     internal static void PLocalizationCatalogApply(ResourceDictionary resources, string language)
     {
-        foreach ((string key, string value) in LLocalization.LLocalizationLoad(language))
+        foreach ((string key, string value) in LEngine.LEngineLocalizationLoad(language))
         {
             resources[key] = value;
         }

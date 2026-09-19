@@ -96,12 +96,15 @@ $RECYCLE.BIN/
 # Build-lifecycle helper scripts
 /*.ps1
 
+# Ignore every JSON file
+/*.json
+
+# Except this one
+!/auditnames.json
+!/auditnui.json
+!/version.json
+
 # Temporary gitignore
 /docs/
-# Local structure-audit configuration
-/auditstructure.json
 
-# Local line-audit configuration
-/auditlines.json
-/auditcomments.json
-/vestimate.json
+

@@ -20,10 +20,10 @@ The engine has already forgotten the paths before it announces, so a surface rel
 The surfaces reload on the same announcement, and this store is the first subscriber.
 It is empty before they ask.
 
-## `internal static DrawingImage? PEnsignResolve(string path)`
+## `internal static DrawingImage? PEnsignResolve(LEngine engine, string path)`
 
 Reads the flag at `path` as a drawing that is frozen and so may be shared across rows.
-A file that does not read, whatever the reader threw, is deleted through `LEnsign` and answered with nothing.
+A file that does not read, whatever the reader threw, is deleted through the engine and answered with nothing.
 The file is a cache the workspace can fetch again, and a truncated one would otherwise fail every launch.
 
 ## `internal static async Task PEnsignLoad(LEngine engine)`
@@ -40,7 +40,7 @@ The same fill for the named varieties of `language`, each drawn under `language/
 The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
 It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
 
-## `private static void PEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows)`
+## `private static void PEnsignStoreAdd(LEngine engine, IReadOnlyList<LEnsignRow> rows)`
 
 Draws every row the engine kept and stores the drawing under the row's key.
 The drawing is made here rather than when a row asks, so a row never waits on a file.

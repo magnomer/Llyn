@@ -3,7 +3,7 @@
 ## `public partial class PWindow`
 
 Where the window was and how big it was, carried from one run to the next.
-The workspace settings file holds it, so a workspace opens the way its owner left it.
+The window's posture holds it, so a workspace opens the way its owner left it.
 
 ## `private const double PWindowStateShare = 0.8;`
 
@@ -35,8 +35,8 @@ Setting the startup location to manual is required, since the designed default c
 
 Runs on closing, once the user has confirmed and the window is still up.
 Runs again whenever the window has come to rest after a move.
-The geometry alone is handed downstream, never the whole settings record.
-A language chosen during the same session therefore survives the close.
+The geometry alone is handed to the posture, never the whole record.
+A volume chosen during the same session therefore survives the close.
 The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.
 `RestoreBounds` supplies it whenever the window is maximized.
 A minimized window saves nothing, so the maximized flag it had before survives a close from the taskbar.

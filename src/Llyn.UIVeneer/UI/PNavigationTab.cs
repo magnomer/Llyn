@@ -82,22 +82,22 @@ public partial class PWindow
 
             if (isSelected)
             {
-                _lEngine.LEngineModeSave(mode);
+                _lPosture.LPostureModeSave(mode);
             }
         }
     }
 
-    internal void PNavigationRestore(LSettings settings)
+    internal void PNavigationRestore()
     {
         foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
-            if (!settings.LSettingsModeMatch(mode))
+            if (!_lPosture.LPostureModeMatch(mode))
             {
                 continue;
             }
 
             PNavigationHandle(button, new RoutedEventArgs());
-            scribe?.Invoke(settings.LSettingsSplit);
+            scribe?.Invoke(_lPosture.LPostureRead().LPostureStateSplit);
             return;
         }
     }

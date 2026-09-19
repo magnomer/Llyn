@@ -25,9 +25,9 @@ internal static class LLocalizationReader
         @"\{\d+\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    internal static IReadOnlyDictionary<string, string> LLocalizationRead(Stream stream, CultureInfo culture)
+    internal static IReadOnlyDictionary<string, string> LLocalizationRead(TextReader reader, CultureInfo culture)
     {
-        using JsonDocument document = JsonDocument.Parse(stream);
+        using JsonDocument document = JsonDocument.Parse(reader.ReadToEnd());
         JsonElement root = document.RootElement;
         if (root.ValueKind != JsonValueKind.Object)
         {

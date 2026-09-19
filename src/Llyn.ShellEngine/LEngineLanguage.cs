@@ -46,14 +46,14 @@ public sealed partial class LEngine
 
     public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()
     {
-        string[] missing = LEnsign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
+        string[] missing = _lEngineEnsign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
         if (missing.Length == 0)
         {
             return [];
         }
 
         string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(false);
-        return LEnsign.LEnsignPathAdd(age, missing, paths);
+        return _lEngineEnsign.LEnsignPathAdd(age, missing, paths);
     }
 
     public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)
@@ -67,7 +67,7 @@ public sealed partial class LEngine
             keyed[LEnsign.LEnsignKeyFormat(language, variety)] = variety;
         }
 
-        string[] missing = LEnsign.LEnsignMissingRead(keyed.Keys, out int age);
+        string[] missing = _lEngineEnsign.LEnsignMissingRead(keyed.Keys, out int age);
         if (missing.Length == 0)
         {
             return [];
@@ -76,7 +76,12 @@ public sealed partial class LEngine
         string?[] paths = await Task
             .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
             .ConfigureAwait(false);
-        return LEnsign.LEnsignPathAdd(age, missing, paths);
+        return _lEngineEnsign.LEnsignPathAdd(age, missing, paths);
+    }
+
+    public void LEngineEnsignDelete(string path)
+    {
+        _lEngineEnsign.LEnsignPathDelete(path);
     }
 
     private async Task<string?> LEngineEnsignRead(string language)
@@ -126,7 +131,7 @@ public sealed partial class LEngine
 
     public bool LEngineSilentCheck(string language)
     {
-        return LEngineLanguageLoad(language).LLanguageSilent;
+        return !string.IsNullOrWhiteSpace(language) && LEngineLanguageLoad(language).LLanguageSilent;
     }
 
     public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)

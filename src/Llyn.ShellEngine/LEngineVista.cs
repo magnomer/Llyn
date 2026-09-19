@@ -12,28 +12,11 @@ public sealed partial class LEngine
 
     private readonly Dictionary<string, LVista> _lEngineVistas = [];
 
-    public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
+    public LVista LEngineVistaStart(
+        string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool editing, bool blank = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
-
-        LCatalogOrder order = fallback;
-        LCatalogFilter filter = LCatalogFilter.LCatalogFilterEmpty;
-        bool editing;
-        lock (_lEngineGate)
-        {
-            editing = _lEngineSettings.LSettingsSplit;
-            foreach (LLayout record in _lEngineSettings.LSettingsLayout ?? [])
-            {
-                if (!string.Equals(record.LLayoutTab, tab, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                order = record.LLayoutOrder ?? fallback;
-                filter = record.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty;
-                break;
-            }
-        }
+        ArgumentNullException.ThrowIfNull(filter);
 
         LVista vista = new(
             this, Interlocked.Increment(ref _lEngineVistaCount), tab, subject, order, filter, blank, editing);
@@ -49,6 +32,22 @@ public sealed partial class LEngine
 
         LEngineObserverAttach(vista);
         return vista;
+    }
+
+    public LVista? LEngineVistaRead(long id)
+    {
+        lock (_lEngineGate)
+        {
+            foreach (LVista vista in _lEngineVistas.Values)
+            {
+                if (vista.LVistaId == id)
+                {
+                    return vista;
+                }
+            }
+
+            return null;
+        }
     }
 
     public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista vista)

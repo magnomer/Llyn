@@ -56,6 +56,9 @@ public partial class PYunjing : UserControl
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
 
         PEditor.PEditorAttach(host, engine, _lYunjing.LYunjingEditor);
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PYunjingPressHandle, PYunjingPressCheck));
+        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PYunjingPortraitHandle, PYunjingPressCheck));
     }
 
     private void PYunjingStoreUpdate()

@@ -37,7 +37,7 @@ public partial class PSettings : UserControl
         PSettingsEpithet.IsChecked = settings.LSettingsEpithet;
         PFrequency.IsChecked = settings.LSettingsFrequency;
         PMorphology.IsChecked = settings.LSettingsMorphology;
-        PLayoutLinked.IsChecked = settings.LSettingsLinked;
+        PLayoutLinked.IsChecked = _pSettingsHost.PWindowPosture.LPostureRead().LPostureStateLinked;
     }
 
     private void PSettingsBulletinHandle(LBulletin bulletin)
@@ -47,13 +47,7 @@ public partial class PSettings : UserControl
             return;
         }
 
-        LSettings settings = _lEngine.LEngineSettingsRead();
         PLocalizationApply(LLocalization.LLocalizationNormalize(_lEngine.LEngineSettingsRead().LSettingsLocalization));
         PLedgerMetaApply();
-
-        if (settings.LSettingsLinked)
-        {
-            _pSettingsHost.PWindowLayout.PLayoutSync();
-        }
     }
 }

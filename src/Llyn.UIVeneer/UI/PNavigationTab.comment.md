@@ -17,12 +17,12 @@ So it is asked about here.
 A tab that is switched away from keeps its editor.
 But the correction the user typed would sit out of sight until they came back.
 
-## `internal void PNavigationRestore(LSettings settings)`
+## `internal void PNavigationRestore()`
 
-Puts the window back on the tab `settings` names.
+Puts the window back on the tab the posture names.
 That tab goes back on the side it was left standing on.
 It goes through the ordinary tab switch, so the restored tab is selected exactly as a click selects it.
-A settings file naming no tab leaves the window on the tab it opens with.
+A posture naming no tab leaves the window on the tab it opens with.
 So does one naming a tab this build no longer offers.
 
 ## `private (string Mode, Button Button, FrameworkElement Panel, Action<bool>? Scribe)[] PNavigationTabRead()`

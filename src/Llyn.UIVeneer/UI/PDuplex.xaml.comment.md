@@ -5,13 +5,13 @@
 The duplex panel as a control: two wings and when they start and stop.
 Searching, picking and reading live in the wing, so this file only forwards to both.
 
-## `private LEngine _lEngine = null!;`
+## `private LPosture _lPosture = null!;`
 
-The engine the vistas are started from at each restore.
+The window's posture the vistas are started through at each restore.
 
 ## `internal void PDuplexAttach(PWindow host, LEngine engine)`
 
-Puts both wings to work on `engine`.
+Puts both wings to work on `engine` and takes the posture from `host`.
 Each wing subscribes for itself, so the panel subscribes to nothing.
 
 ## `internal void PDuplexRestore(LWorkspaceState state)`

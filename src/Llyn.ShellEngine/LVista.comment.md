@@ -19,6 +19,11 @@ A chosen observer is reached only for the row the panel stands on, or for a bull
 The setters run on the UI thread, while a bulletin may arrive on the thread that raised it.
 So the observer lists and the chosen row are read under a gate of their own.
 
+## `public event Action<bool>? LVistaEditingSaved;`
+
+The mode the panel asked for, told on every ask whether or not it changed the vista.
+The posture stores it as the split every tab opens on next time.
+
 ## `private readonly LEngine _lEngine;`
 
 The engine that saves the layout and raises the bulletin.
@@ -72,11 +77,11 @@ The id of the row the panel stands on, or null when none is chosen.
 
 ## `public void LVistaOrderSet(LCatalogOrder order)`
 
-Takes the ordering, saves it under the tab and announces the move.
+Takes the ordering and announces the move, which the posture stores under the tab.
 
 ## `public void LVistaFilterSet(LCatalogFilter filter)`
 
-Takes the filter, saves it under the tab and announces the move.
+Takes the filter and announces the move, which the posture stores under the tab.
 Two filters compare by the list they hold, so the same list built twice still announces.
 
 ## `public void LVistaQuerySet(string query)`
@@ -148,5 +153,6 @@ Each live vista owns its current mode while newly started vistas inherit the wor
 
 ## `public void LVistaEditingSet(bool editing)`
 
-Saves the shared preference before notifying observers of a changed local mode.
-An unchanged local mode still saves the preference, since another vista may have changed it.
+Tells the editing event the mode asked for, then notifies observers of a changed local mode.
+An unchanged local mode still tells the event, since another vista may have moved the shared split.
+The posture listens to the event and stores the split, so the engine holds no preference of its own.

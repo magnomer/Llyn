@@ -28,14 +28,6 @@ Stores the Entry the left duplex side stands on, or nothing when that side is cl
 
 Stores the Entry the right duplex side stands on, or nothing when that side is cleared.
 
-## `public void LEngineModeSave(string mode)`
-
-Stores the name of the tab standing open.
-
-## `internal void LEngineSplitSave(bool split)`
-
-Stores whether the open tab shows its editor rather than its read area.
-
 ## `private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)`
 
 Reads the stored state, applies `change` to it, and writes it back, all under the engine gate.

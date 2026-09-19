@@ -3,7 +3,7 @@
 ## `public sealed record LWindowState(`
 
 The window geometry carried between two runs of the program.
-It is part of the settings file, so it belongs to the workspace like every other preference.
+It is part of the posture the shell keeps, so it belongs to the workspace like every other preference.
 The stored rectangle is always the restored one, never the maximized one.
 A maximized window that is closed must come back maximized over the size it had before.
 

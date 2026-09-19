@@ -28,6 +28,8 @@ public sealed partial class LEngine : IDisposable
     private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
+    private readonly LUsher _lEngineUsher = new LUsherFile();
+    private readonly LEnsign _lEngineEnsign;
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
@@ -50,6 +52,7 @@ public sealed partial class LEngine : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
 
         _lEngineWorkspace = workspace;
+        _lEngineEnsign = new LEnsign(_lEngineUsher);
         _lEngineSettings = LSettingsLoader.LSettingsLoaderLoad(_lEngineWorkspace);
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);
@@ -176,7 +179,7 @@ public sealed partial class LEngine : IDisposable
             LEngineReflexClear();
             _lEngineLanguages.Clear();
             _lEngineLanguageListed = null;
-            LEnsign.LEnsignClear();
+            _lEngineEnsign.LEnsignClear();
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
 

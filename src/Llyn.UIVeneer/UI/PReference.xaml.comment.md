@@ -18,6 +18,7 @@ It news the deportment with the seams the panel answers through and subscribes t
 The editor's change notice goes to the deportment, which reads the imprint's desk itself.
 It picks the one in front for the store button.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
+The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
 
 ## `internal async void PReferenceVistaRestore(LVista vista, LVista footnote)`
 

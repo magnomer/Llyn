@@ -52,6 +52,8 @@ public partial class PGuild : UserControl
         POeuvre.ItemsSource = _pOeuvreList;
 
         PColophon.PColophonAttach(host);
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PGuildPressHandle, PGuildPressCheck));
     }
 
     internal void PGuildVistaRestore(LVista vista, LVista oeuvre)

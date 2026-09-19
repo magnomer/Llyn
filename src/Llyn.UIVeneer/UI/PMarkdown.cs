@@ -7,7 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using Llyn.Core;
-using Llyn.Infrastructure;
+using Llyn.Media;
 
 namespace Llyn.UIVeneer;
 
@@ -106,7 +106,7 @@ internal static class PMarkdown
 
     private static void PMarkdownLinkHandle(object sender, RequestNavigateEventArgs e)
     {
-        LUsher.LUsherLinkOpen(e.Uri.AbsoluteUri);
+        LUsherShell.LUsherShellOpen(e.Uri.AbsoluteUri);
         e.Handled = true;
     }
 

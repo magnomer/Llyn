@@ -37,6 +37,11 @@ The status bar attaches after every panel, so its first reading already sees the
 
 The keeper of panel widths, reached by the settings panel when the user links or unlinks the tabs.
 
+## `internal LPosture PWindowPosture => _lPosture;`
+
+How the window stands, reached by every panel that reads or writes the volume, the layout or the open tab.
+It is built before the layout keeper, since the keeper reads its widths from it.
+
 ## `private void PWindowLayoutAttach()`
 
 Registers the root grid of every tab that has a seam, under the name its widths are stored by.

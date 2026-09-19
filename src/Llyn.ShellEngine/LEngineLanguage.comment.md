@@ -1,4 +1,4 @@
-﻿# LEngineLanguage.cs
+# LEngineLanguage.cs
 
 ## `public sealed partial class LEngine`
 
@@ -53,6 +53,7 @@ It reads the cached pack as `LEngineVarietyRead` does.
 
 Reports whether the pack declares the language silent, so the input panel knows to hide its pronunciation rows.
 It reads the cached pack as `LEngineVarietyRead` does.
+A blank language has no pack and answers false, so an empty desk keeps its pronunciation rows.
 
 ## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()`
 
@@ -63,6 +64,11 @@ A fill that a workspace change outran records nothing and answers nothing.
 ## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)`
 
 The same fill for the named varieties of one language, keyed `language/variety`.
+
+## `public void LEngineEnsignDelete(string path)`
+
+Drops a cached SVG the veneer's renderer could not read, through the engine's flag cache and its usher.
+The veneer asks here rather than deleting itself, so no file work happens above the engine.
 
 ## `private async Task<string?> LEngineEnsignRead(string language)`
 

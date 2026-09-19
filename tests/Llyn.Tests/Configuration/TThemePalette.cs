@@ -1,3 +1,4 @@
+using Llyn.Core;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -22,7 +23,16 @@ public sealed class TThemePalette
     public void ThemeColorRead_MissingName_Throws()
     {
         Assert.Equal(TInterface.TThemeColorRead()["ink"], TInterface.TThemeColorRead("ink"));
-        Assert.Throws<InvalidDataException>(() => TInterface.TThemeColorRead("nowhere"));
+        Assert.Throws<KeyNotFoundException>(() => TInterface.TThemeColorRead("nowhere"));
+    }
+
+    [Fact]
+    public void ThemeRead_MissingName_YieldsTheSpare()
+    {
+        LTheme theme = TInterface.TThemeLoad();
+
+        Assert.Equal(TInterface.TThemeColorRead("ink"), theme.TThemeRead("ink"));
+        Assert.Equal("#000000", theme.TThemeRead("nowhere"));
     }
 
     [Fact]

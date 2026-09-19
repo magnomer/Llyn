@@ -42,11 +42,6 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding CanExecute="PYunjingPressCheck" Command="ApplicationCommands.Print" Executed="PYunjingPressHandle" />
-        <CommandBinding CanExecute="PYunjingPressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PYunjingPortraitHandle" />
-    </UserControl.CommandBindings>
-
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

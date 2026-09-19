@@ -10,6 +10,7 @@ The two columns, the entry list, the category page, the reader and the editor ar
 ## `internal void PYunjingAttach(PWindow host, LEngine engine)`
 
 News the deportment with the window's dialogs as seams, subscribes its notices, and wires the lists and the page.
+The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
 
 ## `internal bool PYunjingCheck()`
 

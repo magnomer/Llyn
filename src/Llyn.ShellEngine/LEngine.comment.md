@@ -46,6 +46,8 @@ The script fetches, pending and missed per character, sit in `LEngineScript.cs` 
 The fanqie fetches sit likewise in `LEngineFanqie.cs`, one at a time with an interval between posts.
 The reflex fills sit in `LEngineReflexFetch.cs`, and the rows they store are edited through `LEngineReflex.cs`.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
+The flag cache `_lEngineEnsign` is built here over `_lEngineUsher`, the file usher, until the rig injects the port.
+The usher also answers `LEngineLocation.cs` whether a resolved file is present.
 
 ## `public LEngine()`
 

@@ -34,14 +34,17 @@ public sealed class TVistaMode
         bool editing;
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
-            LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+            LVista vista = engine.TPostureStart().TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
             editing = !vista.LVistaEditing;
             vista.TVistaEditingSet(editing);
         }
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
-        Assert.Equal(editing, reopened.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword).LVistaEditing);
-        Assert.Equal(editing, reopened.TEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword).LVistaEditing);
+        LPosture posture = reopened.TPostureStart();
+        LVista library = posture.TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        LVista favorite = posture.TPostureVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword);
+        Assert.Equal(editing, library.LVistaEditing);
+        Assert.Equal(editing, favorite.LVistaEditing);
     }
 
     [Fact]
@@ -49,14 +52,15 @@ public sealed class TVistaMode
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LVista first = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
-        LVista second = engine.TEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword);
+        LPosture posture = engine.TPostureStart();
+        LVista first = posture.TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        LVista second = posture.TPostureVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword);
         bool initial = first.LVistaEditing;
 
         first.TVistaEditingSet(!initial);
         second.TVistaEditingSet(initial);
 
-        Assert.Equal(initial, engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText).LVistaEditing);
+        Assert.Equal(initial, posture.TPostureVistaStart("corpus", LCatalogOrder.LCatalogOrderText).LVistaEditing);
         Assert.Equal(!initial, first.LVistaEditing);
     }
 

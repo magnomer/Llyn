@@ -2,24 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
 public sealed class PLayout
 {
-    private readonly LEngine _lEngine;
+    private readonly LPosture _lPosture;
 
     private readonly List<(string PLayoutTab, Grid PLayoutHost, GridLength PLayoutLeft, GridLength PLayoutMiddle)>
         _pLayoutList = [];
 
     private Grid? _pLayoutRecent;
 
-    public PLayout(LEngine engine)
+    public PLayout(LPosture posture)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lEngine = engine;
+        ArgumentNullException.ThrowIfNull(posture);
+        _lPosture = posture;
     }
 
     internal void PLayoutAttach(Grid host, string tab)
@@ -45,8 +44,7 @@ public sealed class PLayout
 
     internal void PLayoutRestore()
     {
-        LSettings settings = _lEngine.LEngineSettingsRead();
-        IReadOnlyList<LLayout> layout = settings.LSettingsLayout ?? [];
+        IReadOnlyList<LLayout> layout = _lPosture.LPostureRead().LPostureStateLayout ?? [];
 
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
@@ -63,7 +61,7 @@ public sealed class PLayout
             }
         }
 
-        if (!settings.LSettingsLinked)
+        if (!_lPosture.LPostureRead().LPostureStateLinked)
         {
             return;
         }
@@ -92,7 +90,7 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        if (!_lEngine.LEngineSettingsRead().LSettingsLinked)
+        if (!_lPosture.LPostureRead().LPostureStateLinked)
         {
             return;
         }
@@ -125,7 +123,7 @@ public sealed class PLayout
         {
             if (!ReferenceEquals(host, source))
             {
-                if (!_lEngine.LEngineSettingsRead().LSettingsLinked)
+                if (!_lPosture.LPostureRead().LPostureStateLinked)
                 {
                     continue;
                 }
@@ -134,7 +132,7 @@ public sealed class PLayout
             list.Add(PLayoutRecordRead(tab, host));
         }
 
-        _lEngine.LEngineLayoutSave(list);
+        _lPosture.LPostureLayoutSave(list);
     }
 
     internal void PLayoutSync()

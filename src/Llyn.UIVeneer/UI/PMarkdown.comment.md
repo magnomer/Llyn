@@ -29,7 +29,7 @@ Only an absolute http or https target becomes a hyperlink, so a note cannot laun
 
 ## `private static void PMarkdownLinkHandle(object sender, RequestNavigateEventArgs e)`
 
-Opens the link in the system browser through `LUsher`, so the panel starts no process itself.
+Opens the link in the system browser through `LUsherShell`, so the panel starts no process itself.
 
 ## `private static TextBlock PMarkdownHeadingBuild(LMarkdownBlock block)`
 

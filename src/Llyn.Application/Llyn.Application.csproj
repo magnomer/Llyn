@@ -8,9 +8,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.Application.Localization.en.json" />
-    <EmbeddedResource Include="..\..\localization\ko.json" LogicalName="Llyn.Application.Localization.ko.json" />
-  </ItemGroup>
 </Project>

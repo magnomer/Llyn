@@ -6,7 +6,7 @@ internal static class TAuditRingSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditRingCeiling = new Dictionary<string, int>
     {
-        ["EngineField"] = 23,
+        ["EngineField"] = 21,
         ["EngineHelper"] = 75,
         ["AdapterEngine"] = 253,
     };
@@ -57,13 +57,6 @@ internal static class TAuditRingSetting
 
     public static readonly string[] TAuditRingWaiver =
     [
-        "src/Llyn.Application/Ensign/LEnsign.cs:System.IO",
-        "src/Llyn.Application/Localization/LLocalization.cs:System.IO",
-        "src/Llyn.Application/Localization/LLocalization.cs:System.Reflection",
-        "src/Llyn.Application/Localization/LLocalizationReader.cs:System.IO",
         "src/Llyn.ShellEngine/*:Llyn.Infrastructure",
-        "src/Llyn.UIVeneer/UI/PDial.cs:Llyn.Infrastructure",
-        "src/Llyn.UIVeneer/UI/PMarkdown.cs:Llyn.Infrastructure",
-        "src/Llyn.UIVeneer/UI/PThemeLoader.cs:Llyn.Infrastructure",
     ];
 }

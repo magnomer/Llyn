@@ -11,6 +11,8 @@ public partial class PWindow : Window
 {
     private readonly LEngine _lEngine;
 
+    private readonly LPosture _lPosture;
+
     private readonly PLayout _pLayout;
 
     public PWindow(LEngine engine)
@@ -18,7 +20,8 @@ public partial class PWindow : Window
         ArgumentNullException.ThrowIfNull(engine);
 
         _lEngine = engine;
-        _pLayout = new PLayout(engine);
+        _lPosture = new LPosture(engine);
+        _pLayout = new PLayout(_lPosture);
 
         InitializeComponent();
 
@@ -42,6 +45,8 @@ public partial class PWindow : Window
     internal int PWindowLeftover { get; private set; }
 
     internal PLayout PWindowLayout => _pLayout;
+
+    internal LPosture PWindowPosture => _lPosture;
 
     internal PWindowScreen PWindowScreen { get; } = new();
 

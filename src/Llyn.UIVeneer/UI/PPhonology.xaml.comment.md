@@ -13,6 +13,7 @@ Puts the panel to work on `engine`, the workspace the window opened.
 It news the deportment with the seams the panel answers through and subscribes to its notices.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
+The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
 
 ## `internal async void PPhonologyVistaRestore(LVista vista)`
 

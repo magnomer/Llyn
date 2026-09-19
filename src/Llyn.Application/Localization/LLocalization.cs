@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 
 namespace Llyn.Application;
 
@@ -38,22 +37,12 @@ public static class LLocalization
         };
     }
 
-    public static IReadOnlyDictionary<string, string> LLocalizationLoad(string language)
+    public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)
     {
-        string resourceName = $"Llyn.Application.Localization.{language}.json";
-        Assembly assembly = typeof(LLocalization).Assembly;
-        using Stream stream = assembly.GetManifestResourceStream(resourceName)
-            ?? throw new InvalidDataException(
-                $"The embedded localization file '{resourceName}' could not be found.");
-        return LLocalizationLoad(stream, language);
-    }
-
-    public static IReadOnlyDictionary<string, string> LLocalizationLoad(Stream stream, string language)
-    {
-        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(reader);
 
         IReadOnlyDictionary<string, string> texts =
-            LLocalizationReader.LLocalizationRead(stream, LLocalizationCultureRead(language));
+            LLocalizationReader.LLocalizationRead(reader, LLocalizationCultureRead(language));
         lock (LLocalizationGate)
         {
             LLocalizationTexts = texts;

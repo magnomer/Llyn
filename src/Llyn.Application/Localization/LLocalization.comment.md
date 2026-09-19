@@ -3,7 +3,7 @@
 ## `public static class LLocalization`
 
 The interface language catalog held below the shell.
-It loads one embedded language file and answers every text key from it.
+It keeps one parsed language file and answers every text key from it.
 The shell copies the loaded dictionary into its resources, so markup keeps binding by key.
 The engine reads it directly where a formatted answer needs a localized pattern.
 
@@ -28,13 +28,11 @@ True when the stored language needs no second load after the default.
 The culture a language's terms are cased under.
 A language the catalog does not ship is refused.
 
-## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(string language)`
+## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)`
 
-Loads the embedded file of the language and makes it the current catalog.
-
-## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(Stream stream, string language)`
-
-Loads a catalog from any stream, so a test can hand in its own file.
+Parses a catalog from the reader handed in and makes it the current one.
+The engine opens the embedded file through `LLocalizationLoader` in the infrastructure, and a test hands in its own text.
+The reader stays the caller's to dispose, so this ring opens and closes nothing.
 
 ## `public static string LLocalizationTextRead(string key)`
 

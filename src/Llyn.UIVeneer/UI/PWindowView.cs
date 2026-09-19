@@ -6,41 +6,39 @@ public partial class PWindow
 {
     internal void PWindowViewRestore(LWorkspaceState state)
     {
-        LSettings settings = _lEngine.LEngineSettingsRead();
-
         PInput.PInputVistaRestore(
-            _lEngine.LEngineVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PLibrary.PLibraryVistaRestore(
-            _lEngine.LEngineVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PPhonology.PPhonologyVistaRestore(
-            _lEngine.LEngineVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PFavorite.PFavoriteVistaRestore(
-            _lEngine.LEngineVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PTaxonomy.PTaxonomyVistaRestore(
-            _lEngine.LEngineVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PTenor.PTenorVistaRestore(
-            _lEngine.LEngineVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PRepertoire.PRepertoireVistaRestore(
-            _lEngine.LEngineVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PReference.PReferenceVistaRestore(
-            _lEngine.LEngineVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PCorpus.PCorpusVistaRestore(
-            _lEngine.LEngineVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
-            _lEngine.LEngineVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
+            _lPosture.LPostureVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
         PGuild.PGuildVistaRestore(
-            _lEngine.LEngineVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
+            _lPosture.LPostureVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
         PYunjing.PYunjingVistaRestore(
-            _lEngine.LEngineVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
-            _lEngine.LEngineVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            _lPosture.LPostureVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
+            _lPosture.LPostureVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
 
         PDuplex.PDuplexRestore(state);
 
-        PNavigationRestore(settings);
+        PNavigationRestore();
     }
 }

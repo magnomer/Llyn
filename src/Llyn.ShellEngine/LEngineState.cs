@@ -24,17 +24,6 @@ public sealed partial class LEngine
         LEngineStateChange(state => state with { LWorkspaceStateRight = id });
     }
 
-    public void LEngineModeSave(string mode)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(mode);
-        LEngineSettingsChange(settings => settings with { LSettingsMode = mode });
-    }
-
-    internal void LEngineSplitSave(bool split)
-    {
-        LEngineSettingsChange(settings => settings with { LSettingsSplit = split });
-    }
-
     private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)
     {
         lock (_lEngineGate)

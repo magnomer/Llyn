@@ -65,7 +65,9 @@ public partial class PSettings
 
             case "Layout":
                 return PLocalizationCatalog.PLocalizationTextRead(
-                    settings.LSettingsLinked ? "Layout.LinkedMeta" : "Layout.FreeMeta");
+                    _pSettingsHost.PWindowPosture.LPostureRead().LPostureStateLinked
+                        ? "Layout.LinkedMeta"
+                        : "Layout.FreeMeta");
 
             default:
                 return string.Empty;

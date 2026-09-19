@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.Infrastructure.Localization.en.json" />
+    <EmbeddedResource Include="..\..\localization\ko.json" LogicalName="Llyn.Infrastructure.Localization.ko.json" />
     <EmbeddedResource Include="..\..\themes\default.json" LogicalName="Llyn.Infrastructure.Themes.default.json" />
   </ItemGroup>
 </Project>

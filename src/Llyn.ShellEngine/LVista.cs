@@ -29,6 +29,8 @@ public sealed class LVista : LObserver
         LVistaSubject = subject;
     }
 
+    public event Action<bool>? LVistaEditingSaved;
+
     public long LVistaId { get; }
 
     public string LVistaTab { get; }
@@ -142,7 +144,7 @@ public sealed class LVista : LObserver
 
     public void LVistaEditingSet(bool editing)
     {
-        _lEngine.LEngineSplitSave(editing);
+        LVistaEditingSaved?.Invoke(editing);
         if (LVistaEditing == editing)
         {
             return;
@@ -160,7 +162,6 @@ public sealed class LVista : LObserver
         }
 
         LVistaOrder = order;
-        _lEngine.LEngineLayoutSave([new LLayout(LVistaTab, LLayoutOrder: order)]);
         _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
@@ -174,7 +175,6 @@ public sealed class LVista : LObserver
         }
 
         LVistaFilter = filter;
-        _lEngine.LEngineLayoutSave([new LLayout(LVistaTab, LLayoutFilter: filter)]);
         _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 

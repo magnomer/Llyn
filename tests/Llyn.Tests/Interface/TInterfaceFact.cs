@@ -1,18 +1,21 @@
 using System.IO;
-using System.Text;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
+using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string json, string language) =>
-        LLocalization.LLocalizationLoad(new MemoryStream(Encoding.UTF8.GetBytes(json)), language);
+        LLocalization.LLocalizationLoad(new StringReader(json), language);
 
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string language) =>
-        LLocalization.LLocalizationLoad(language);
+        LEngine.LEngineLocalizationLoad(language);
+
+    internal static TextReader TLocalizationLoaderOpen(string language) =>
+        LLocalizationLoader.LLocalizationLoaderOpen(language);
 
     internal static string TLocalizationTextRead(string key) =>
         LLocalization.LLocalizationTextRead(key);
@@ -27,30 +30,36 @@ internal static partial class TInterface
         LLocalization.LLocalizationDefaultCheck(language);
 
     internal static IReadOnlyDictionary<string, string> TThemeColorRead() =>
-        LTheme.LThemeLoad().LThemeColor;
+        LThemeLoader.LThemeLoaderLoad().LThemeColor;
 
     internal static string TThemeColorRead(string name) =>
-        LTheme.LThemeLoad().LThemeColorRead(name);
+        LThemeLoader.LThemeLoaderLoad().LThemeColorRead(name);
 
-    internal static bool TUsherPathExist(string? path) =>
-        LUsher.LUsherPathExist(path);
+    internal static LUsher TUsherFileCreate() =>
+        new LUsherFile();
 
-    internal static void TUsherFolderOpen(string path)
+    internal static bool TUsherPathExist(this LUsher usher, string? path) =>
+        usher.LUsherPathExist(path);
+
+    internal static void TUsherPathDelete(this LUsher usher, string path)
     {
-        LUsher.LUsherFolderOpen(path);
+        usher.LUsherPathDelete(path);
     }
 
-    internal static void TEnsignClear()
+    internal static LEnsign TEnsignCreate(LUsher usher) =>
+        new(usher);
+
+    internal static void TEnsignClear(this LEnsign ensign)
     {
-        LEnsign.LEnsignClear();
+        ensign.LEnsignClear();
     }
 
-    internal static string[] TEnsignMissingRead(IEnumerable<string> keys, out int age) =>
-        LEnsign.LEnsignMissingRead(keys, out age);
+    internal static string[] TEnsignMissingRead(this LEnsign ensign, IEnumerable<string> keys, out int age) =>
+        ensign.LEnsignMissingRead(keys, out age);
 
     internal static IReadOnlyList<LEnsignRow> TEnsignPathAdd(
-        int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths) =>
-        LEnsign.LEnsignPathAdd(age, keys, paths);
+        this LEnsign ensign, int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths) =>
+        ensign.LEnsignPathAdd(age, keys, paths);
 
     internal static LEnsignRow TEnsignRowCreate(string key, string path) =>
         new(key, path);
@@ -58,12 +67,12 @@ internal static partial class TInterface
     internal static string TEnsignKeyFormat(string language, string variety) =>
         LEnsign.LEnsignKeyFormat(language, variety);
 
-    internal static string? TEnsignPathRead(string key) =>
-        LEnsign.LEnsignPathRead(key);
+    internal static string? TEnsignPathRead(this LEnsign ensign, string key) =>
+        ensign.LEnsignPathRead(key);
 
-    internal static void TEnsignPathDelete(string path)
+    internal static void TEnsignPathDelete(this LEnsign ensign, string path)
     {
-        LEnsign.LEnsignPathDelete(path);
+        ensign.LEnsignPathDelete(path);
     }
 
     internal static LFanqieRow TFanqieRowCreate(

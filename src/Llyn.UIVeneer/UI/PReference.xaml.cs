@@ -57,6 +57,9 @@ public partial class PReference : UserControl
         PImprint.PImprintAttach(host, _lShelf.LShelfImprint);
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, _lShelf.LShelfEditor);
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PReferencePressHandle, PReferencePressCheck));
+        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PReferencePortraitHandle, PReferencePortraitCheck));
     }
 
     internal async void PReferenceVistaRestore(LVista vista, LVista footnote)

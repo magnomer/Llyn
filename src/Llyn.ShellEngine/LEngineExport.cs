@@ -32,7 +32,7 @@ public sealed partial class LEngine
         }
 
         LPortraitPage portrait = LEnginePortraitRead(entryId, label);
-        LTheme theme = LTheme.LThemeLoad();
+        LTheme theme = LThemeLoader.LThemeLoaderLoad();
 
         switch (format)
         {
@@ -64,7 +64,7 @@ public sealed partial class LEngine
         LPress press = LEnginePressRead();
         LPortraitPage portrait = LEnginePortraitRead(entryId, label);
 
-        await press.LPressPrint(LSheet.LSheetFormat(portrait, LTheme.LThemeLoad()), ticket);
+        await press.LPressPrint(LSheet.LSheetFormat(portrait, LThemeLoader.LThemeLoaderLoad()), ticket);
     }
 
     public Task LEnginePortraitExport(
@@ -108,7 +108,7 @@ public sealed partial class LEngine
         LPress press = LEnginePressRead();
         LPortraitPage page = LEnginePortraitRead(id, owner, legend);
 
-        await press.LPressPrint(LSheet.LSheetFormat(page, LTheme.LThemeLoad()), ticket);
+        await press.LPressPrint(LSheet.LSheetFormat(page, LThemeLoader.LThemeLoaderLoad()), ticket);
     }
 
     private LPress LEnginePressRead()

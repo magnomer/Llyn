@@ -1,52 +1,61 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Llyn.Core;
 
 namespace Llyn.Application;
 
-public static class LEnsign
+public sealed class LEnsign
 {
-    private static readonly Dictionary<string, string?> LEnsignStore = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string?> _lEnsignStore = new(StringComparer.Ordinal);
 
-    private static int _lEnsignAge;
+    private readonly LUsher _lEnsignUsher;
+
+    private int _lEnsignAge;
+
+    public LEnsign(LUsher usher)
+    {
+        ArgumentNullException.ThrowIfNull(usher);
+
+        _lEnsignUsher = usher;
+    }
 
     public static string LEnsignKeyFormat(string language, string variety)
     {
         return string.Concat(language, "/", variety);
     }
 
-    public static void LEnsignClear()
+    public void LEnsignClear()
     {
-        lock (LEnsignStore)
+        lock (_lEnsignStore)
         {
             _lEnsignAge++;
-            LEnsignStore.Clear();
+            _lEnsignStore.Clear();
         }
     }
 
-    public static string[] LEnsignMissingRead(IEnumerable<string> keys, out int age)
+    public string[] LEnsignMissingRead(IEnumerable<string> keys, out int age)
     {
         ArgumentNullException.ThrowIfNull(keys);
 
-        lock (LEnsignStore)
+        lock (_lEnsignStore)
         {
             age = _lEnsignAge;
             return keys
-                .Where(key => !LEnsignStore.ContainsKey(key))
+                .Where(key => !_lEnsignStore.ContainsKey(key))
                 .Distinct(StringComparer.Ordinal)
                 .ToArray();
         }
     }
 
-    public static IReadOnlyList<LEnsignRow> LEnsignPathAdd(
+    public IReadOnlyList<LEnsignRow> LEnsignPathAdd(
         int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths)
     {
         ArgumentNullException.ThrowIfNull(keys);
         ArgumentNullException.ThrowIfNull(paths);
 
         List<LEnsignRow> kept = [];
-        lock (LEnsignStore)
+        lock (_lEnsignStore)
         {
             if (age != _lEnsignAge)
             {
@@ -56,8 +65,8 @@ public static class LEnsign
             for (int index = 0; index < keys.Count; index++)
             {
                 string? path = paths[index];
-                bool present = path is not null && File.Exists(path);
-                LEnsignStore[keys[index]] = present ? path : null;
+                bool present = _lEnsignUsher.LUsherPathExist(path);
+                _lEnsignStore[keys[index]] = present ? path : null;
                 if (present)
                 {
                     kept.Add(new LEnsignRow(keys[index], path!));
@@ -68,25 +77,18 @@ public static class LEnsign
         return kept;
     }
 
-    public static string? LEnsignPathRead(string key)
+    public string? LEnsignPathRead(string key)
     {
-        lock (LEnsignStore)
+        lock (_lEnsignStore)
         {
-            return LEnsignStore.TryGetValue(key, out string? path) ? path : null;
+            return _lEnsignStore.TryGetValue(key, out string? path) ? path : null;
         }
     }
 
-    public static void LEnsignPathDelete(string path)
+    public void LEnsignPathDelete(string path)
     {
-        try
-        {
-            File.Delete(path);
-        }
-        catch (IOException)
-        {
-        }
-        catch (UnauthorizedAccessException)
-        {
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        _lEnsignUsher.LUsherPathDelete(path);
     }
 }

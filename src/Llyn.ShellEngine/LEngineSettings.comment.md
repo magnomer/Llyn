@@ -12,24 +12,22 @@ A workspace moved onto keeps its own settings, and only one without any inherits
 
 Returns the user's persisted settings.
 
+## `public LKeep LEngineKeepRead()`
+
+Hands out the keep port bound to the open workspace, built afresh on every call.
+The shell persists its posture through it, so a switched workspace is followed without the shell knowing the disk.
+
+## `public static IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
+
+Opens the embedded catalog of a language through the infrastructure and makes it the current one.
+The veneer copies the answer into its resources, so no ring above the engine opens a resource.
+It is static because the default catalog is applied before any engine is built.
+
 ## `public void LEngineLocalizationSave(string language)`
 
 Persists the chosen interface language and keeps it current.
-Only that field is written, so a window geometry saved by another part of the shell survives the change.
+Only that field is written, so a switch flipped by another part of the shell survives the change.
 A settings bulletin is raised when the language changed, so the shell applies the catalog from the record.
-
-## `public void LEngineWindowSave(LWindowState window)`
-
-Persists the window geometry of the run that is ending and keeps it current.
-Only that field is written, so an interface language chosen during the same session survives the change.
-
-## `public void LEngineVolumeSave(double volume)`
-
-Persists how loud a pronunciation is played and keeps it current.
-The level is clamped here as well as on the way in from the file.
-No caller can write a volume the player cannot take.
-Every view plays through the same level.
-A change made in one is the level the next one opens at.
 
 ## `public void LEngineRespellingSave(bool respelled)`
 
@@ -71,28 +69,6 @@ Turning the switch off cancels every fetch still in flight, so no form lands aft
 Forms already stored stay, because the switch governs asking, not keeping.
 A save that leaves the switch where it was cancels nothing and raises nothing.
 A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
-
-## `public void LEngineLayoutSave(IEnumerable<LLayout> layout)`
-
-Persists the panel widths, ordering and hidden languages of the tabs given and keeps them current.
-Each field a tab gives replaces that field of its own record.
-A field left empty keeps what the record had.
-Every tab not given keeps the record it had.
-A drag therefore never drops the ordering a panel chose, and an ordering never drops a dragged width.
-The merge runs under the gate, so one drag never drops what another tab wrote.
-A linked drag hands over every tab at once, so the file is written once, not once per tab.
-
-## `public void LEngineLayoutReset()`
-
-Drops the stored width of every tab and keeps the result current.
-Each tab's ordering and hidden languages stay, because the button promises widths and nothing more.
-A tab stripped of its width takes its markup width on the next start.
-
-## `public void LEngineLinkedSave(bool linked)`
-
-Persists whether dragging a panel in one tab sets the same width in every tab and keeps it current.
-The widths themselves are stored per tab either way, so a flip neither moves nor loses any panel.
-A settings bulletin is raised when the switch changed, and the shell links the tabs on it.
 
 ## `private bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
 

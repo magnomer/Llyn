@@ -14,12 +14,12 @@ public sealed class TEngineVista
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
-            engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
+            engine.TPostureStart().TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
                 .TVistaOrderSet(LCatalogOrder.LCatalogOrderReverse);
         }
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
-        LVista vista = reopened.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        LVista vista = reopened.TPostureStart().TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
 
         Assert.Equal(LCatalogOrder.LCatalogOrderReverse, vista.LVistaOrder);
     }
@@ -31,12 +31,12 @@ public sealed class TEngineVista
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
-            engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
+            engine.TPostureStart().TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
                 .TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean", "French"));
         }
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
-        LVista vista = reopened.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        LVista vista = reopened.TPostureStart().TPostureVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
 
         Assert.Equal(["Korean", "French"], vista.LVistaFilter.LCatalogFilterHidden);
     }
@@ -107,11 +107,12 @@ public sealed class TEngineVista
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        engine.TEngineVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true)
+        LPosture posture = engine.TPostureStart();
+        posture.TPostureVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true)
             .TVistaOrderSet(LCatalogOrder.LCatalogOrderRecent);
 
-        LVista left = engine.TEngineVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true);
-        LVista right = engine.TEngineVistaStart("right", LCatalogOrder.LCatalogOrderHeadword, true);
+        LVista left = posture.TPostureVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true);
+        LVista right = posture.TPostureVistaStart("right", LCatalogOrder.LCatalogOrderHeadword, true);
 
         Assert.Equal(LCatalogOrder.LCatalogOrderRecent, left.LVistaOrder);
         Assert.Equal(LCatalogOrder.LCatalogOrderHeadword, right.LVistaOrder);

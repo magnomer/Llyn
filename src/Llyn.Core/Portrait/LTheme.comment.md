@@ -2,9 +2,14 @@
 
 ## `public sealed class LTheme`
 
-The display's own colors, read where an export can reach them.
-`themes/default.json` is embedded here alone, and the shell reads its palette through this class.
+The display's colour table, held where every ring can read it.
+The infrastructure loads it from the embedded theme file.
+The exporters and the shell both draw from the one record.
 So an exported page cannot drift from the panel it copies.
+
+## `public LTheme(IReadOnlyDictionary<string, string> colors)`
+
+Takes the colours as read, empty when the loader found nothing.
 
 ## `public string LThemeFamily`
 
@@ -18,11 +23,6 @@ The example font stack, matching the serif the display uses for sentences.
 
 Every colour the theme file names, keyed by the file's own key.
 The shell walks it to fill its resources and refuses a palette that lacks a key it needs.
-
-## `public static LTheme LThemeLoad()`
-
-A missing or broken theme is not a failure worth stopping an export for.
-Every colour then falls back to the value shipped with the program.
 
 ## `public string LThemeColorRead(string name)`
 

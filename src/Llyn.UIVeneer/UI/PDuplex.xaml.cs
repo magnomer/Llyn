@@ -11,11 +11,11 @@ public partial class PDuplex : UserControl
         InitializeComponent();
     }
 
-    private LEngine _lEngine = null!;
+    private LPosture _lPosture = null!;
 
     internal void PDuplexAttach(PWindow host, LEngine engine)
     {
-        _lEngine = engine;
+        _lPosture = host.PWindowPosture;
         PLeftWing.PWingAttach(host, engine);
         PRightWing.PWingAttach(host, engine);
     }
@@ -23,10 +23,10 @@ public partial class PDuplex : UserControl
     internal void PDuplexRestore(LWorkspaceState state)
     {
         PLeftWing.PWingRestore(
-            _lEngine.LEngineVistaStart("left", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
+            _lPosture.LPostureVistaStart("left", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
             state.LWorkspaceStateLeft);
         PRightWing.PWingRestore(
-            _lEngine.LEngineVistaStart("right", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
+            _lPosture.LPostureVistaStart("right", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true),
             state.LWorkspaceStateRight);
     }
 

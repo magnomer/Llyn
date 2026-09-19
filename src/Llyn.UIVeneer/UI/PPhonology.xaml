@@ -17,11 +17,6 @@
         </Style>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding CanExecute="PPhonologyPressCheck" Command="ApplicationCommands.Print" Executed="PPhonologyPressHandle" />
-        <CommandBinding CanExecute="PPhonologyPressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PPhonologyPortraitHandle" />
-    </UserControl.CommandBindings>
-
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

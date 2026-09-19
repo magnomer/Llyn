@@ -1,7 +1,7 @@
 using System;
-using System.Text.Json.Serialization;
+using Llyn.Core;
 
-namespace Llyn.Core;
+namespace Llyn.ShellEngine;
 
 public sealed record LLayout(
     string LLayoutTab,

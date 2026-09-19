@@ -4,6 +4,7 @@
 
 The vista's promises, one fact per thing a browse panel relies on.
 Each fact starts a vista on a fresh workspace and drives it through the relays alone.
+A fact that must find an ordering or filter again starts its vistas through the posture, which stores them.
 
 ## `public void VistaOrderSet_WorkspaceReopened_KeepsOrder()`
 

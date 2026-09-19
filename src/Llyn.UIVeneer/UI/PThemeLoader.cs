@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Llyn.Infrastructure;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -49,9 +49,9 @@ internal static class PThemeLoader
             ["pending"] = "Theme.Pending.Color"
         };
 
-    internal static void PThemeLoaderApply(ResourceDictionary resources)
+    internal static void PThemeLoaderApply(LTheme theme, ResourceDictionary resources)
     {
-        LTheme theme = LTheme.LThemeLoad();
+        ArgumentNullException.ThrowIfNull(theme);
 
         foreach ((string jsonName, string resourceName) in PThemeLoaderColors)
         {

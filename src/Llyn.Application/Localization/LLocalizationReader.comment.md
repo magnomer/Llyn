@@ -19,7 +19,7 @@ A term reference inside a text, with its casing carried by the first letter.
 
 A numbered format slot, left alone when the text is checked for stray braces.
 
-## `internal static IReadOnlyDictionary<string, string> LLocalizationRead(Stream stream, CultureInfo culture)`
+## `internal static IReadOnlyDictionary<string, string> LLocalizationRead(TextReader reader, CultureInfo culture)`
 
 Reads the terms, then the texts, and refuses any file that breaks the order or repeats a key.
 

@@ -47,6 +47,9 @@ public partial class PLibrary : UserControl
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, _lLibrary.LLibraryEditor);
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PLibraryPressHandle, PLibraryPressCheck));
+        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PLibraryPortraitHandle, PLibraryPressCheck));
     }
 
     private void PLibraryStoreUpdate()

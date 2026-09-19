@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Infrastructure;
+using Llyn.Media;
 
 namespace Llyn.UIVeneer;
 
@@ -39,7 +39,7 @@ public partial class PSettings
     {
         try
         {
-            LUsher.LUsherFolderOpen(_lEngine.LEngineWorkspaceRead());
+            LUsherShell.LUsherShellOpen(_lEngine.LEngineWorkspaceRead());
         }
         catch (Exception exception)
         {
@@ -49,7 +49,7 @@ public partial class PSettings
 
     private void PDialWidthHandle(object sender, RoutedEventArgs e)
     {
-        _lEngine.LEngineLayoutReset();
+        _pSettingsHost.PWindowPosture.LPostureLayoutReset();
         _pSettingsHost.PWindowLayout.PLayoutReset();
     }
 }

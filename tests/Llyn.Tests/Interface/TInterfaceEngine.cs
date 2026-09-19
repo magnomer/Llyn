@@ -280,11 +280,6 @@ internal static partial class TInterface
         engine.LEngineLocalizationSave(language);
     }
 
-    internal static void TEngineWindowSave(this LEngine engine, LWindowState window)
-    {
-        engine.LEngineWindowSave(window);
-    }
-
     internal static void TEngineEpithetSave(this LEngine engine, bool epithet) =>
         engine.LEngineEpithetSave(epithet);
 
@@ -315,21 +310,6 @@ internal static partial class TInterface
     internal static void TEngineMorphologySave(this LEngine engine, bool morphology)
     {
         engine.LEngineMorphologySave(morphology);
-    }
-
-    internal static void TEngineLayoutSave(this LEngine engine, params LLayout[] layout)
-    {
-        engine.LEngineLayoutSave(layout);
-    }
-
-    internal static void TEngineLayoutReset(this LEngine engine)
-    {
-        engine.LEngineLayoutReset();
-    }
-
-    internal static void TEngineLinkedSave(this LEngine engine, bool linked)
-    {
-        engine.LEngineLinkedSave(linked);
     }
 
     internal static Task<IReadOnlyList<LFrequency>> TEngineFrequencyFind(

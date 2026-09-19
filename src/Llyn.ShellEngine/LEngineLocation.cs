@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
@@ -71,7 +70,9 @@ public sealed partial class LEngine
     public Uri? LEngineLocationRead(string? location)
     {
         Uri? address = LEngineLocationResolve(location);
-        return address is null || (address.IsFile && !LUsher.LUsherPathExist(address.LocalPath)) ? null : address;
+        return address is null || (address.IsFile && !_lEngineUsher.LUsherPathExist(address.LocalPath))
+            ? null
+            : address;
     }
 
     private string LEngineRecordingResolve(string file)

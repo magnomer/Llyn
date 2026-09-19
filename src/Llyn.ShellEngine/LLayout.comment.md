@@ -5,11 +5,11 @@
 The widths of one tab's side-by-side panels, carried between two runs of the program.
 With them ride the ordering the tab lists by and the languages it hides.
 Both are view state of the same tab.
-It is part of the settings file, so it belongs to the workspace like the window geometry.
+It is part of the posture the shell keeps, so it belongs to the workspace like the window geometry.
 Only the fixed columns are stored, because the last column takes whatever room the window leaves.
 A width left empty means the tab keeps the width it was designed with.
 An ordering or filter left empty means the tab opens as it was designed to.
-None of it is lexical data, so it lives in the settings file rather than the workspace database.
+None of it is lexical data, so it lives in the posture file rather than the workspace database.
 
 **Parameters**
 
