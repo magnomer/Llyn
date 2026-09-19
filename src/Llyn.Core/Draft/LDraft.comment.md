@@ -43,3 +43,7 @@ Never null, so a reader walks it without a check.
 
 The same draft, whichever kind of record it holds with every unreadable value dropped to unspecified.
 Called only after the user agreed to lose what the store could not read.
+
+## `public string LDraftAuthorName`
+
+The name of the held Author, or empty while the draft holds none, so a name field writes without branching.

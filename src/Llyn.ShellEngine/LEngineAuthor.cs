@@ -36,6 +36,72 @@ public sealed partial class LEngine
         }
     }
 
+    public LCatalogAuthor? LEngineAuthorFind(long id)
+    {
+        lock (_lEngineGate)
+        {
+            LAuthor? author = new LAuthorArchive(_lEngineDatabase).LAuthorRead(id);
+            if (author is null)
+            {
+                return null;
+            }
+
+            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
+                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+            IReadOnlyDictionary<long, int> usage = new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+            LEngineWorkRead(references, credits).TryGetValue(id, out List<LReference>? credited);
+            return LCatalogAuthor.LCatalogAuthorCreate(author, credited, usage);
+        }
+    }
+
+    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, long except, int limit)
+    {
+        List<LCatalogAuthor> rows = [];
+        foreach (LCatalogAuthor row in LEngineAuthorFind(query, LCatalogOrder.LCatalogOrderName))
+        {
+            if (row.LCatalogAuthorStored.LAuthorMatch(except))
+            {
+                continue;
+            }
+
+            rows.Add(row);
+            if (rows.Count == limit)
+            {
+                break;
+            }
+        }
+
+        return rows;
+    }
+
+    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        ArgumentNullException.ThrowIfNull(uncredited);
+
+        IReadOnlyList<LCatalogAuthor> rows = LEngineAuthorFind(vista);
+        if (vista.LVistaQueried)
+        {
+            return rows;
+        }
+
+        IReadOnlyList<LCatalogReference> orphan = LEngineOeuvreFind(
+            0, string.Empty, LCatalogFilter.LCatalogFilterEmpty, LCatalogOrder.LCatalogOrderName);
+        if (orphan.Count == 0)
+        {
+            return rows;
+        }
+
+        int cited = 0;
+        foreach (LCatalogReference row in orphan)
+        {
+            cited += row.LCatalogReferenceUsage;
+        }
+
+        return [new LCatalogAuthor(new LAuthor(0, uncredited), orphan.Count, cited, vista.LVistaMatch(0)), .. rows];
+    }
+
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);

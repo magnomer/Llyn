@@ -16,6 +16,44 @@ public sealed partial class LEngine
         }
     }
 
+    public LDiwei? LEngineDiweiRead(long? id)
+    {
+        if (id is not long wanted)
+        {
+            return null;
+        }
+
+        lock (_lEngineGate)
+        {
+            return new LDiweiArchive(_lEngineDatabase).LDiweiRead(wanted);
+        }
+    }
+
+    public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize)
+    {
+        ArgumentNullException.ThrowIfNull(localize);
+
+        LDiwei? diwei = LEngineDiweiRead(id);
+        if (diwei is null)
+        {
+            return LDiweiPage.LDiweiPageBlank;
+        }
+
+        bool switched = LEngineRespellingCheck(diwei.LDiweiLanguage);
+        return new LDiweiPage(
+            diwei.LDiweiLanguage,
+            diwei.LDiweiKey,
+            diwei.LDiweiFinal,
+            LDiweiSection.LDiweiSectionScan(
+                diwei.LDiweiKind,
+                LEngineFanqieRead(diwei),
+                LEngineHypothesisRead(diwei.LDiweiLanguage),
+                LEngineTallyRead(diwei),
+                switched,
+                switched && LEngineSettingsRead().LSettingsTally,
+                localize));
+    }
+
     public LDiwei? LEngineDiweiFind(string language, string kind, string key)
     {
         lock (_lEngineGate)
@@ -81,6 +119,31 @@ public sealed partial class LEngine
             IReadOnlyList<LEntry> entries = new LEntryArchive(_lEngineDatabase).LEntryScan(ids, query);
             return LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(onset);
+        ArgumentNullException.ThrowIfNull(rime);
+        ArgumentNullException.ThrowIfNull(vista);
+
+        List<long> wanted = [];
+        if (onset.LVistaChosen is long initial)
+        {
+            wanted.Add(initial);
+        }
+
+        if (rime.LVistaChosen is long final)
+        {
+            wanted.Add(final);
+        }
+
+        if (wanted.Count == 0)
+        {
+            return [];
+        }
+
+        return LEngineXiaoyunFind(language, wanted, vista.LVistaQuery.Trim(), vista);
     }
 
     internal void LEngineDiweiRebuild()

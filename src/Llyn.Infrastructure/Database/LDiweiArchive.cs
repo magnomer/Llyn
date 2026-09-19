@@ -95,6 +95,22 @@ public sealed class LDiweiArchive
         return rows;
     }
 
+    public LDiwei? LDiweiRead(long diweiId)
+    {
+        using LDatabaseSession session = _lDiweiArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            $"""
+            SELECT d.diwei_id, d.language, d.kind, d.key, {LDiweiArchiveTally}
+            FROM diwei d
+            WHERE d.diwei_id = $id;
+            """;
+        command.Parameters.AddWithValue("$id", diweiId);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? LDiweiRowRead(reader) : null;
+    }
+
     public LDiwei? LDiweiFind(string language, string kind, string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

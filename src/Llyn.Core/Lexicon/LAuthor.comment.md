@@ -20,3 +20,7 @@ Those are states on the Reference itself (`LReference.LReferenceAuthorState`).
 
 - `LAuthorId` — Opaque, program-generated stable id.
 - `LAuthorName` — The author's name, which is display text and never identity.
+
+## `public bool LAuthorStored`
+
+Whether the record stands for a stored Author, since the id zero names the uncredited row.

@@ -23,3 +23,8 @@ Read and written volatile, because a tenure's timer reads it off the UI thread.
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.
 Only an entry, example, situation, source or author can be held, so another subject is a caller's error.
 A missing stored record refuses as the underlying start does.
+
+## `public LTenure LEngineTenureStart(LVista vista, long? id)`
+
+Starts a tenure over the vista's tab and subject, so a deportment holds neither as a value of its own.
+A vista with no subject cannot name what to hold, so it is refused.

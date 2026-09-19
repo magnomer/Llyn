@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -29,6 +31,27 @@ internal sealed class PFootnoteItem : INotifyPropertyChanged
     public string PFootnoteItemLanguage { get; }
 
     public ImageSource? PFootnoteItemFlag { get; }
+
+    internal static IReadOnlyList<PFootnoteItem> PFootnoteItemBuild(IReadOnlyList<LVistaRow> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<PFootnoteItem> built = new(rows.Count);
+        foreach (LVistaRow row in rows)
+        {
+            built.Add(new PFootnoteItem(
+                row.LVistaRowId,
+                row.LVistaRowHeadword,
+                row.LVistaRowLanguage,
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
+            {
+                PFootnoteItemName = row.LVistaRowName,
+            });
+        }
+
+        return built;
+    }
 
     internal static bool PFootnoteItemMatch(PFootnoteItem held, PFootnoteItem fresh)
     {

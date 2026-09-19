@@ -9,6 +9,8 @@ public sealed record LAuthor(
 {
     public bool LAuthorNamed => LAuthorName.Trim().Length > 0;
 
+    public bool LAuthorStored => LAuthorId > 0;
+
     public bool LAuthorMatch(long id)
     {
         return LAuthorId == id;

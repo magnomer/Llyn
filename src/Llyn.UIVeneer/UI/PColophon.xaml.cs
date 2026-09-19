@@ -24,15 +24,31 @@ public partial class PColophon : UserControl
     internal void PColophonShow(LReference reference, IReadOnlyList<LAuthor> credits, string tally)
     {
         ArgumentNullException.ThrowIfNull(reference);
-        ArgumentNullException.ThrowIfNull(credits);
 
-        PColophonTitleShow(reference.LReferenceTitle);
-        PColophonKindShow(reference);
-        PColophonValueShow(PColophonYear, PColophonYearSection, reference.LReferenceYear);
-        PColophonValueShow(PColophonUrl, PColophonUrlSection, reference.LReferenceUrl);
-        PColophonValueShow(PColophonNote, PColophonNoteSection, reference.LReferenceNote);
-        PColophonAuthorShow(reference, credits);
-        PColophonTally.Text = tally;
+        PColophonShow(reference.LReferenceColophonRead(credits, tally, PLocalizationCatalog.PLocalizationTextRead));
+    }
+
+    internal void PColophonShow(LColophon sheet)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+
+        PColophonTitle.Text = sheet.LColophonTitle;
+        PField.PFieldPlaceholderShow(PColophonTitle, sheet.LColophonTitleFaint);
+        PColophonKind.Text = sheet.LColophonKind;
+        PColophonChip.Visibility = PLook.PLookVisibleRead(sheet.LColophonKindShown);
+        PColophonYear.Text = sheet.LColophonYear;
+        PField.PFieldPlaceholderShow(PColophonYear, sheet.LColophonYearFaint);
+        PColophonYearSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonYearShown);
+        PColophonUrl.Text = sheet.LColophonUrl;
+        PField.PFieldPlaceholderShow(PColophonUrl, sheet.LColophonUrlFaint);
+        PColophonUrlSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonUrlShown);
+        PColophonNote.Text = sheet.LColophonNote;
+        PField.PFieldPlaceholderShow(PColophonNote, sheet.LColophonNoteFaint);
+        PColophonNoteSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonNoteShown);
+        PColophonAuthor.Text = sheet.LColophonAuthor;
+        PField.PFieldPlaceholderShow(PColophonAuthor, sheet.LColophonAuthorFaint);
+        PColophonAuthorSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonAuthorShown);
+        PColophonTally.Text = sheet.LColophonTally;
 
         PColophonBody.Visibility = Visibility.Visible;
         PColophonUnselected.Visibility = Visibility.Collapsed;
@@ -47,56 +63,5 @@ public partial class PColophon : UserControl
     {
         PColophonBody.Visibility = Visibility.Collapsed;
         PColophonUnselected.Visibility = Visibility.Visible;
-    }
-
-    private string? PColophonTextRead(LStateValue value)
-    {
-        return value.LStateValueUncertain
-            ? PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")
-            : value.LStateValueShown;
-    }
-
-    private void PColophonTitleShow(LStateValue value)
-    {
-        string? text = PColophonTextRead(value);
-
-        PColophonTitle.Text = text ?? PLocalizationCatalog.PLocalizationTextRead("Source.Untitled");
-        PField.PFieldPlaceholderShow(PColophonTitle, text is null || value.LStateValueUncertain);
-    }
-
-    private void PColophonKindShow(LReference reference)
-    {
-        PColophonKind.Text = reference.LReferenceKindCheck()
-            ? PLocalizationCatalog.PLocalizationTextRead(PReference.PReferenceKindRead(reference.LReferenceKind))
-            : string.Empty;
-        PColophonChip.Visibility = reference.LReferenceKindCheck() ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PColophonValueShow(TextBlock field, StackPanel section, LStateValue value)
-    {
-        string? text = PColophonTextRead(value);
-
-        field.Text = text ?? string.Empty;
-        PField.PFieldPlaceholderShow(field, value.LStateValueUncertain);
-        section.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
-    }
-
-    private void PColophonAuthorShow(LReference reference, IReadOnlyList<LAuthor> credits)
-    {
-        PColophonAuthor.Text = reference.LReferenceAuthorCheck(credits)
-            ? PShelfItem.PShelfCreditRead(
-                reference,
-                credits,
-                PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-                string.Empty)
-            : string.Empty;
-        PField.PFieldPlaceholderShow(
-            PColophonAuthor,
-            reference.LReferenceCreditRead(credits) is null
-                ? reference.LReferenceAuthorState.LStateMarkUncertain
-                : false);
-        PColophonAuthorSection.Visibility = reference.LReferenceAuthorCheck(credits)
-            ? Visibility.Visible
-            : Visibility.Collapsed;
     }
 }

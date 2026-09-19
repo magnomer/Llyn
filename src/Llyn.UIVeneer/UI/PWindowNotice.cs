@@ -38,7 +38,7 @@ public partial class PWindow
         }
     }
 
-    private bool PWindowUnreadableConfirm()
+    internal bool PWindowUnreadableConfirm()
     {
         return MessageBox.Show(
             this,

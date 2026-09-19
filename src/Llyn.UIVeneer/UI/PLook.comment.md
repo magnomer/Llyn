@@ -22,6 +22,10 @@ The three-state value a toggle's `IsChecked` takes, never indeterminate.
 
 The full opacity when active, else the faded one the caller names.
 
+## `internal static PLookChoice PLookFirstRead<PLookChoice>(bool first, PLookChoice chosen, PLookChoice other)`
+
+One of two values by a verdict, so a tab with two edit areas picks the active one without branching.
+
 ## `internal static Thickness PLookThicknessRead(double left)`
 
 A margin that indents from the left alone.

@@ -18,6 +18,8 @@ public sealed record LDraft(
 {
     public long? LDraftStored => LDraftEntryId == 0 ? null : LDraftEntryId;
 
+    public string LDraftAuthorName => LDraftAuthorHeld?.LAuthorName ?? string.Empty;
+
     public LTag? LDraftTag { get; init; }
 
     public LRegister? LDraftRegister { get; init; }

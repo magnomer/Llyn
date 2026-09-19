@@ -5,6 +5,10 @@
 Presentation item for one co-author row of the vita: the Author's id, its name, and how many Sources credit both.
 The count is worded once here, so the row binds to text.
 
-## `internal PFellowItem(long id, string name, int shared)`
+## `internal PFellowItem(LFellow fellow)`
 
-Builds the row from the Author and the number of Sources it shares with the read one.
+Copies one fellow row: its id, its name and its shared source count as text.
+
+## `internal static IReadOnlyList<PFellowItem> PFellowItemBuild(IReadOnlyList<LFellow> fellows)`
+
+A plain copy loop over the fellows of one Author.

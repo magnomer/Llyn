@@ -35,13 +35,24 @@ public sealed partial class LEngine
                 LOwner.LOwnerSituation => new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id),
                 _ => throw LEngineOwnerRaise(owner),
             };
-            return LEngineUsageResolve(rows);
+            return LEngineUsageResolve(rows, new LEntryArchive(_lEngineDatabase), _lEngineSettings.LSettingsEpithet);
         }
     }
 
-    private static IReadOnlyList<LUsage> LEngineUsageResolve(IReadOnlyList<LUsage> rows)
+    private static IReadOnlyList<LUsage> LEngineUsageResolve(
+        IReadOnlyList<LUsage> rows, LEntryArchive entries, bool epithet)
     {
-        List<LUsage> named = [.. rows];
+        List<LUsage> named = new(rows.Count);
+        foreach (LUsage row in rows)
+        {
+            named.Add(row with
+            {
+                LUsageEpithet = epithet && row.LUsageEntry > 0
+                    ? entries.LEntryEpithetRead(row.LUsageEntry)
+                    : string.Empty,
+            });
+        }
+
         int[] places = new int[rows.Count];
         for (int index = 0; index < places.Length; index++)
         {
@@ -49,7 +60,7 @@ public sealed partial class LEngine
         }
 
         LTwin.LTwinNameApply(places, place => rows[place].LUsageHeadword,
-            (place, name) => named[place] = rows[place] with { LUsageName = name });
+            (place, name) => named[place] = named[place] with { LUsageName = name });
         return named;
     }
 }

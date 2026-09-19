@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
@@ -28,6 +29,19 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
     public string PXiaoyunItemName { get; }
 
     public ImageSource? PXiaoyunItemFlag { get; }
+
+    internal static IReadOnlyList<PXiaoyunItem> PXiaoyunItemBuild(IReadOnlyList<LVistaRow> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<PXiaoyunItem> built = new(rows.Count);
+        foreach (LVistaRow row in rows)
+        {
+            built.Add(new PXiaoyunItem(row, row.LVistaRowChosen));
+        }
+
+        return built;
+    }
 
     internal static bool PXiaoyunItemMatch(PXiaoyunItem held, PXiaoyunItem fresh)
     {

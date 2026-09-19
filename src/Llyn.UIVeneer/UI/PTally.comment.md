@@ -3,22 +3,13 @@
 ## `internal sealed class PTally`
 
 One printed line of a section's tally on the Diwei page: language, kind and the marks of the chosen set.
-It is built from the engine's [LTally](../../Llyn.Core/Pronunciation/LTally.comment.md) for the set the switch shows.
-
-## `public string PTallyLanguage { get; }`
-
-The borrowing language the line stands for.
-
-## `public string PTallyKind { get; }`
-
-The kind of reading, such as `Go-on`, printed after the language, or empty.
+It is copied from the engine's tally line, asking that line for the set the section shows.
 
 ## `public IReadOnlyList<LTallyMark> PTallyMarks { get; }`
 
 The marks of the chosen set, each drawn as the part text with its count raised after it.
 Each carries its characters, listed in the popup the part opens.
 
-## `internal static IReadOnlyList<PTally> PTallyScan(LTally? tally, bool respelled)`
+## `internal static IReadOnlyList<PTally> PTallyBuild(IReadOnlyList<LTallyLine> lines, bool respelled)`
 
-The lines of one section, the respelling set when `respelled`, else the IPA set.
-A line whose chosen set is empty prints nothing, and a missing tally prints none.
+A plain copy loop over the tally lines of one section, the respelling set when `respelled`.

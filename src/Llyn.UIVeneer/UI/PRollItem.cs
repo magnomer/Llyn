@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
@@ -17,17 +18,8 @@ internal sealed class PRollItem : INotifyPropertyChanged
         PRollItemName = row.LCatalogAuthorName;
         PRollItemWork = work;
         PRollItemCount = row.LCatalogAuthorUsage.ToString(CultureInfo.CurrentCulture);
-        PRollItemMark = PIcon.PIconResolve("guild", 16);
-    }
-
-    internal PRollItem(string name, string work, int usage, bool chosen)
-    {
-        _pRollItemChosen = chosen;
-        PRollItemId = 0;
-        PRollItemName = name;
-        PRollItemWork = work;
-        PRollItemCount = usage.ToString(CultureInfo.CurrentCulture);
-        PRollItemMark = PIcon.PIconResolve("unlink", 16);
+        PRollItemMark = PIcon.PIconResolve(
+            PLook.PLookFirstRead(row.LCatalogAuthorStored.LAuthorStored, "guild", "unlink"), 16);
     }
 
     public long PRollItemId { get; }
@@ -39,6 +31,22 @@ internal sealed class PRollItem : INotifyPropertyChanged
     public string PRollItemCount { get; }
 
     public Geometry PRollItemMark { get; }
+
+    internal static IReadOnlyList<PRollItem> PRollItemBuild(IReadOnlyList<LCatalogAuthor> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<PRollItem> built = new(rows.Count);
+        foreach (LCatalogAuthor row in rows)
+        {
+            built.Add(new PRollItem(
+                row,
+                LVita.LVitaWorkFormat(row.LCatalogAuthorWork, PLocalizationCatalog.PLocalizationTextRead),
+                row.LCatalogAuthorChosen));
+        }
+
+        return built;
+    }
 
     internal static bool PRollItemMatch(PRollItem held, PRollItem fresh)
     {

@@ -89,6 +89,10 @@ Makes the row of `id` the chosen one, or none for null.
 No bulletin follows, because a chosen row changes no list and the chooser marks it in place.
 The write is gated, since a bulletin on another thread reads the chosen row to pick its observers.
 
+## `public void LVistaToggle(long id)`
+
+Selects the row, or unselects it when it is the chosen one already.
+
 ## `public void LVistaObserverAttach(LSubject subject, LObserver observer)`
 
 Subscribes `observer` to every bulletin of `subject` that reaches this vista.

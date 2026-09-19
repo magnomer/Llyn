@@ -131,6 +131,11 @@ public sealed class LPanel
             return;
         }
 
+        LPanelFreshOpen();
+    }
+
+    public void LPanelFreshOpen()
+    {
         LPanelClear();
         LPanelScribeShow(true);
     }
@@ -198,7 +203,7 @@ public sealed class LPanel
         LPanelScribeShow(true);
     }
 
-    private void LPanelScribeShow(bool editing)
+    public void LPanelScribeShow(bool editing)
     {
         _lPanelVista?.LVistaEditingSet(editing);
         LPanelChanged?.Invoke();
@@ -216,6 +221,11 @@ public sealed class LPanel
             return;
         }
 
+        LPanelRowShow(id);
+    }
+
+    public void LPanelRowShow(long? id)
+    {
         _lPanelVista?.LVistaSelect(id);
         LPanelDraftShow();
     }

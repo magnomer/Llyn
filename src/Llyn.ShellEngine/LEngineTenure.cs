@@ -14,6 +14,15 @@ public sealed partial class LEngine
         set => Volatile.Write(ref _lEngineTenureDelay, value);
     }
 
+    public LTenure LEngineTenureStart(LVista vista, long? id)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        LSubject subject = vista.LVistaSubject
+            ?? throw new InvalidOperationException("The vista names no subject to hold.");
+        return LEngineTenureStart(vista.LVistaTab, subject, id);
+    }
+
     public LTenure LEngineTenureStart(string origin, LSubject subject, long? id)
     {
         LDraft started = subject switch

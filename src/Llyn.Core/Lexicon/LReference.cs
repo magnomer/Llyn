@@ -86,6 +86,43 @@ public sealed record LReference(
         return year is null ? head : $"{head} ({year})";
     }
 
+    public LColophon LReferenceColophonRead(
+        IReadOnlyList<LAuthor> credits,
+        string tally,
+        Func<string, string> localize)
+    {
+        return LColophon.LColophonCreate(this, credits, tally, localize);
+    }
+
+    public static string LReferenceUsageFormat(int count, Func<string, string> localize)
+    {
+        ArgumentNullException.ThrowIfNull(localize);
+
+        return count switch
+        {
+            0 => localize("Source.UsageNone"),
+            1 => localize("Source.UsageOne"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {localize("Source.UsageMany")}",
+        };
+    }
+
+    public static string LReferenceKindResolve(LReferenceKind kind)
+    {
+        return kind switch
+        {
+            LReferenceKind.LReferenceKindUnknown => "Source.KindUnknown",
+            LReferenceKind.LReferenceKindBook => "Source.KindBook",
+            LReferenceKind.LReferenceKindJournal => "Source.KindJournal",
+            LReferenceKind.LReferenceKindArticle => "Source.KindArticle",
+            LReferenceKind.LReferenceKindWeb => "Source.KindWeb",
+            LReferenceKind.LReferenceKindVideo => "Source.KindVideo",
+            LReferenceKind.LReferenceKindAudio => "Source.KindAudio",
+            LReferenceKind.LReferenceKindPicture => "Source.KindPicture",
+            LReferenceKind.LReferenceKindOther => "Source.KindOther",
+            _ => "Source.KindUnspecified",
+        };
+    }
+
     public static string LReferenceKindFormat(LReferenceKind kind)
     {
         return kind switch

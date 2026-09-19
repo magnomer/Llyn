@@ -27,6 +27,19 @@ public sealed partial class LEngine
         return LEngineBookRead(language).Count > 0;
     }
 
+    public string? LEngineBookFind()
+    {
+        foreach (string language in LEngineLanguageRead())
+        {
+            if (LEngineBookCheck(language))
+            {
+                return language;
+            }
+        }
+
+        return null;
+    }
+
     public LHypothesis? LEngineHypothesisRead(string language)
     {
         return string.IsNullOrWhiteSpace(language) ? null : LEngineLanguageLoad(language).LLanguageHypothesis;

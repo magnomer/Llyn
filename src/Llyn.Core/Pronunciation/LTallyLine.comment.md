@@ -13,6 +13,10 @@ Both sets are always carried, so the view's switch only picks which is printed.
 - `LTallyLineIpa` — The marks cut from the readings as fetched, most characters first, then by part text.
 - `LTallyLineRespelling` — The marks cut from the respellings, in the same order.
 
+## `public IReadOnlyList<LTallyMark> LTallyLineRead(bool respelled)`
+
+The marks of one set: the respelling marks when asked for, else the IPA marks.
+
 ## `public static IReadOnlyList<LTallyLine> LTallyLineScan(`
 
 The lines of one division: the reflex parts of every character gathered per language and kind, both sets apart.

@@ -20,6 +20,11 @@ Fills `list` with one ticked row per language in `languages`, unticking those `f
 Every row reports its click to `handler`, which is the panel's own filter handler.
 The rows are built here so six panels share one row shape and one reading of a stored filter.
 
+## `internal static void PChoiceKindBuild(Panel list, LCatalogFilter filter, RoutedEventHandler handler)`
+
+Builds one ticked box per Source kind, its stored word as the tag and its localized name as the content.
+The kind's word is read twice rather than held, so no local carries it into the filter match.
+
 ## `internal static LCatalogFilter PChoiceFilterRead(Panel list)`
 
 The filter the rows of `list` now stand for: every unticked language is hidden.

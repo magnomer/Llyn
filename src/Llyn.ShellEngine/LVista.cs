@@ -202,6 +202,11 @@ public sealed class LVista : LObserver
         }
     }
 
+    public void LVistaToggle(long id)
+    {
+        LVistaSelect(LVistaMatch(id) ? null : id);
+    }
+
     public void LVistaObserverAttach(LSubject subject, LObserver observer)
     {
         ArgumentNullException.ThrowIfNull(observer);

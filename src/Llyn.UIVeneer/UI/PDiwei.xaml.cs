@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -10,10 +8,6 @@ namespace Llyn.UIVeneer;
 
 public partial class PDiwei : UserControl
 {
-    private const string PDiweiKindInitial = "Yunjing.Shengmu";
-
-    private const string PDiweiKindRime = "Yunjing.Yunmu";
-
     private LEngine _lEngine = null!;
 
     public PDiwei()
@@ -21,53 +15,35 @@ public partial class PDiwei : UserControl
         InitializeComponent();
     }
 
-    internal Action<string>? PDiweiEntryNotice { get; set; }
+    internal Action<string?>? PDiweiEntryNotice { get; set; }
 
-    internal Action<bool>? PDiweiSwitchNotice { get; set; }
+    internal Action<bool?>? PDiweiSwitchNotice { get; set; }
 
     internal void PDiweiAttach(LEngine engine)
     {
         _lEngine = engine;
     }
 
-    internal void PDiweiApply(LDiwei diwei, IReadOnlyList<PDiweiItem> items)
+    internal void PDiweiShow(LDiweiPage page, string kind)
     {
-        ArgumentNullException.ThrowIfNull(diwei);
-        ArgumentNullException.ThrowIfNull(items);
-
-
-        PFont.PFontApply(_lEngine, diwei.LDiweiLanguage, PDiweiHeadword);
+        PFont.PFontApply(_lEngine, page.LDiweiPageLanguage, PDiweiHeadword);
         PFont.PFontPlace(PDiweiHeadword);
-        PFont.PFontApply(_lEngine, diwei.LDiweiLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
-        PDiweiHeadword.Text = diwei.LDiweiKey;
-        PDiweiKind.SetResourceReference(
-            TextBlock.TextProperty,
-            diwei.LDiweiFinal ? PDiweiKindRime : PDiweiKindInitial);
-        PDiweiLanguage.Text = diwei.LDiweiLanguage;
-        PDiweiFlag.Source = PEnsign.PEnsignFind(diwei.LDiweiLanguage);
-        PDiweiList.ItemsSource = items;
-        PDiweiEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    internal void PDiweiClear()
-    {
-        PDiweiList.ItemsSource = null;
-        PDiweiEmpty.Visibility = Visibility.Collapsed;
+        PFont.PFontApply(_lEngine, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
+        PDiweiHeadword.Text = page.LDiweiPageKey;
+        PDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
+        PDiweiLanguage.Text = page.LDiweiPageLanguage;
+        PDiweiFlag.Source = PEnsign.PEnsignFind(page.LDiweiPageLanguage);
+        PDiweiList.ItemsSource = PDiweiItem.PDiweiItemBuild(page.LDiweiPageSections);
+        PDiweiEmpty.Visibility = PLook.PLookVisibleRead(page.LDiweiPageEmpty);
     }
 
     private void PDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is bool respelled)
-        {
-            PDiweiSwitchNotice?.Invoke(respelled);
-        }
+        PDiweiSwitchNotice?.Invoke(PSender.PSenderFlagRead(e));
     }
 
     private void PDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is string character && character.Length > 0)
-        {
-            PDiweiEntryNotice?.Invoke(character);
-        }
+        PDiweiEntryNotice?.Invoke(PSender.PSenderTextRead(e));
     }
 }

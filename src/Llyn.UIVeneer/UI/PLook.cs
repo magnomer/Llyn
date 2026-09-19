@@ -24,6 +24,11 @@ internal static class PLook
         return active ? full : faded;
     }
 
+    internal static PLookChoice PLookFirstRead<PLookChoice>(bool first, PLookChoice chosen, PLookChoice other)
+    {
+        return first ? chosen : other;
+    }
+
     internal static Thickness PLookThicknessRead(double left)
     {
         return new Thickness(left, 0, 0, 0);

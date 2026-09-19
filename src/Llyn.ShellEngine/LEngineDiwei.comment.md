@@ -9,6 +9,16 @@ The categories are derived, never edited, so the engine only reads them and keep
 
 The categories of one kind with their entry counts.
 
+## `public LDiwei? LEngineDiweiRead(long? id)`
+
+One category by its id, or null for no id and for an id no longer stored.
+
+## `public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize)`
+
+The page of one category: its fanqie rows grouped and sorted, with the tally of the set the settings choose.
+The respelling set is shown only where the language has a respelling and the setting asks for it.
+The blank page stands for no category, so the caller never branches on null.
+
 ## `public LDiwei? LEngineDiweiFind(string language, string kind, string key)`
 
 The category a link in the reading view names, or `null` when nothing is placed there.
@@ -35,6 +45,11 @@ The cell's entry ids are scanned once, then the entries among them matching the 
 Only those ids are read, so a cell never costs the whole entry table.
 Rows keep id order and are built by the vista row builder, twins numbered and epithets read in one scan.
 No row is marked chosen, because the panel's shown entry is its own to mark.
+
+## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)`
+
+The entries at the cell the two column vistas stand on, narrowed by the entry vista's query.
+No chosen cell lists nothing, since a cell is what the list is about.
 
 ## `internal void LEngineDiweiRebuild()`
 

@@ -1,16 +1,25 @@
-﻿using System.Windows;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PReference : UserControl
 {
+    private readonly ObservableCollection<PShelfItem> _pShelfList = [];
+
+    private readonly ObservableCollection<PFootnoteItem> _pFootnoteList = [];
+
     private PWindow _pReferenceHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private LShelf _lShelf = null!;
 
     public PReference()
     {
@@ -21,6 +30,32 @@ public partial class PReference : UserControl
     {
         _pReferenceHost = host;
         _lEngine = engine;
+        _lShelf = new LShelf(
+            engine,
+            PImprint.PImprintChangeCheck,
+            PEditor.PEditorChangeCheck,
+            PReferenceShownCheck,
+            PReferenceDiscardConfirm,
+            PReferenceRemovalConfirm);
+        _lShelf.LShelfChanged += PReferenceModeUpdate;
+        _lShelf.LShelfOpened += PReferenceImprintStart;
+        _lShelf.LShelfClosed += PImprint.PImprintDraftCancel;
+        _lShelf.LShelfPanel.LPanelChanged += PReferenceModeUpdate;
+        _lShelf.LShelfPanel.LPanelRowsChanged += PShelfUpdate;
+        _lShelf.LShelfPanel.LPanelCleared += PImprint.PImprintDraftCancel;
+        _lShelf.LShelfPanel.LPanelCleared += PImprint.PImprintClear;
+        _lShelf.LShelfPanel.LPanelCleared += PColophon.PColophonClear;
+        _lShelf.LShelfPanel.LPanelDraftChanged += PReferenceSourceUpdate;
+        _lShelf.LShelfPanel.LPanelEdited += PReferenceImprintOpen;
+        _lShelf.LShelfPanel.LPanelFailed += host.PWindowFailureShow;
+        _lShelf.LShelfFootnote.LFootnoteCreated += PEditor.PEditorReferenceAdd;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelChanged += PReferenceModeUpdate;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsChanged += PFootnoteUpdate;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelCleared += PDisplay.PDisplayClear;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelCleared += PEditor.PEditorReset;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelDraftChanged += PReferenceEntryUpdate;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelEdited += PEditor.PEditorEntryShow;
+        _lShelf.LShelfFootnote.LFootnotePanel.LPanelFailed += host.PWindowFailureShow;
 
         PShelf.ItemsSource = _pShelfList;
         PFootnote.ItemsSource = _pFootnoteList;
@@ -29,53 +64,84 @@ public partial class PReference : UserControl
         PImprint.PImprintAttach(host, engine, this);
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, "Reference", null);
-        PEditor.PEditorChangeNotice = changed => PReferenceStore.IsEnabled = changed;
+        PEditor.PEditorChangeNotice = _lShelf.LShelfEditorSet;
         PEditor.PEditorChronicleNotice = PReferenceChronicleUpdate;
+        PImprint.PImprintChangeNotice = _lShelf.LShelfImprintSet;
         PImprint.PImprintChronicleNotice = PReferenceChronicleUpdate;
-        PImprint.PImprintChangeNotice = changed =>
-        {
-            if (PEditor.Visibility != Visibility.Visible)
-            {
-                PReferenceStore.IsEnabled = changed;
-            }
-        };
     }
 
-    internal static string PReferenceKindRead(LReferenceKind kind)
+    internal async void PReferenceVistaRestore(LVista vista, LVista footnote)
     {
-        return kind switch
-        {
-            LReferenceKind.LReferenceKindUnknown => "Source.KindUnknown",
-            LReferenceKind.LReferenceKindBook => "Source.KindBook",
-            LReferenceKind.LReferenceKindJournal => "Source.KindJournal",
-            LReferenceKind.LReferenceKindArticle => "Source.KindArticle",
-            LReferenceKind.LReferenceKindWeb => "Source.KindWeb",
-            LReferenceKind.LReferenceKindVideo => "Source.KindVideo",
-            LReferenceKind.LReferenceKindAudio => "Source.KindAudio",
-            LReferenceKind.LReferenceKindPicture => "Source.KindPicture",
-            LReferenceKind.LReferenceKindOther => "Source.KindOther",
-            _ => "Source.KindUnspecified",
-        };
+        _lShelf.LShelfVistaRestore(vista, footnote);
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PReferenceWorkspaceUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PImprint.PImprintAuthorUpdate));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectAuthor, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PShelfReferenceUpdate));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectExample, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectReflex, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        vista.LVistaObserverAttach(
+            LSubject.LSubjectSettings, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        footnote.LVistaObserverAttach(
+            LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelEntryHandle));
+        footnote.LVistaObserverAttach(
+            LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        footnote.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfEntryUpdate));
+        footnote.LVistaObserverAttach(
+            LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
+        PDisplay.PDisplayVistaRestore(footnote);
+        PChoice.PChoiceOrderApply(PGradeDropdown, vista.LVistaOrder);
+        PTrellisUpdate();
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PTrellisList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PTrellisHandle);
+        _lShelf.LShelfQuerySet(PSurvey.Text);
+        _lShelf.LShelfFootnote.LFootnoteQuerySet(PRummage.Text);
+        PImprint.PAuthorFind();
+        _lShelf.LShelfPanel.LPanelRowsUpdate();
     }
 
-    internal void PReferenceReset()
+    private void PReferenceWorkspaceUpdate()
     {
-        PReferenceClear();
-        PShelfFind();
+        _lShelf.LShelfClear();
+        PImprint.PAuthorFind();
+    }
+
+    private void PShelfReferenceUpdate()
+    {
+        PImprint.PAuthorFind();
+        _lShelf.LShelfPanel.LPanelRowsUpdate();
     }
 
     internal bool PReferenceChangeCheck()
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorChangeCheck()
-            : PImprint.PImprintChangeCheck();
+        return _lShelf.LShelfChangeCheck();
     }
 
     internal bool PReferenceDraftFinish(bool store)
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorDraftFinish(store)
-            : PImprint.PImprintDraftFinish(store);
+        return PLook.PLookFirstRead<Func<bool, bool>>(
+            _lShelf.LShelfEntrySide, PEditor.PEditorDraftFinish, PImprint.PImprintDraftFinish)(store);
+    }
+
+    internal string PReferenceTallyRead(long? id)
+    {
+        return _lShelf.LShelfTallyRead(id);
+    }
+
+    internal void PReferenceShow(long id)
+    {
+        _lShelf.LShelfStoredShow(id);
+    }
+
+    internal void PReferenceScribeRestore(bool editing)
+    {
+        _lShelf.LShelfScribeRestore(editing);
     }
 
     internal void PReferenceClose()
@@ -87,48 +153,172 @@ public partial class PReference : UserControl
         PTrellisDropdown.IsOpen = false;
     }
 
+    private bool PReferenceShownCheck()
+    {
+        return IsVisible;
+    }
+
+    private bool PReferenceDiscardConfirm()
+    {
+        return _pReferenceHost.PWindowDiscardConfirm(true, PReferenceDraftFinish);
+    }
+
+    private bool PReferenceRemovalConfirm(int usage)
+    {
+        return _pReferenceHost.PWindowRemovalConfirm(usage, "Source");
+    }
+
+    private void PReferenceImprintStart()
+    {
+        PImprint.PImprintDraftOpen(null);
+    }
+
+    private void PReferenceImprintOpen(long id)
+    {
+        PImprint.PImprintDraftOpen(id);
+    }
+
+    private void PShelfUpdate()
+    {
+        PSplice.PSpliceApply(
+            _pShelfList,
+            PShelfItem.PShelfItemBuild(_lShelf.LShelfRowsRead()),
+            PShelfItem.PShelfItemMatch,
+            PShelfItem.PShelfItemSync);
+        PShelfEmpty.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfEmpty);
+        PColophon.PColophonTallyShow(_lShelf.LShelfTallyRead());
+        PImprint.PImprintTallyShow();
+    }
+
+    private void PFootnoteUpdate()
+    {
+        PSplice.PSpliceApply(
+            _pFootnoteList,
+            PFootnoteItem.PFootnoteItemBuild(_lShelf.LShelfFootnote.LFootnoteRowsRead()),
+            PFootnoteItem.PFootnoteItemMatch,
+            PFootnoteItem.PFootnoteItemSync);
+        PFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _lShelf.LShelfFootnote.LFootnoteEmptyKey);
+        PFootnoteEmpty.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfFootnote.LFootnoteEmpty);
+    }
+
+    private void PReferenceModeUpdate()
+    {
+        PEditor.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfEditorShown);
+        PDisplay.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfDisplayShown);
+        PImprint.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfImprintShown);
+        PColophon.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfColophonShown);
+        PReferenceViewer.IsChecked = PLook.PLookCheckedRead(_lShelf.LShelfViewerChecked);
+        PReferenceScribe.IsChecked = PLook.PLookCheckedRead(_lShelf.LShelfScribeChecked);
+        PReferenceMode.IsEnabled = _lShelf.LShelfModeEnabled;
+        PReferenceBin.IsEnabled = _lShelf.LShelfBinEnabled;
+        PReferenceStore.IsEnabled = _lShelf.LShelfStoreEnabled;
+        PReferenceChronicleUpdate();
+    }
+
+    private void PReferenceChronicleUpdate()
+    {
+        (bool undo, bool redo) = PLook.PLookFirstRead(
+            _lShelf.LShelfEntrySide, PEditor.PEditorChronicleRead(), PImprint.PImprintChronicleRead());
+        PReferenceBackward.IsEnabled = undo;
+        PReferenceForward.IsEnabled = redo;
+    }
+
+    private void PReferenceSourceUpdate(LDraft draft)
+    {
+        PColophon.PColophonShow(_lShelf.LShelfColophonRead(draft));
+    }
+
+    private void PReferenceEntryUpdate(LDraft draft)
+    {
+        PDisplay.PDisplayShow(draft.LDraftContent);
+    }
+
+    private void PTrellisUpdate()
+    {
+        PTrellisMark.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfSieveActive);
+    }
+
+    private void PSurveyHandle(object sender, TextChangedEventArgs e)
+    {
+        _lShelf.LShelfQuerySet(PSurvey.Text);
+    }
+
+    private void PRummageHandle(object sender, TextChangedEventArgs e)
+    {
+        _lShelf.LShelfFootnote.LFootnoteQuerySet(PRummage.Text);
+    }
+
+    private void PTrellisHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfSieveSet(PChoice.PChoiceFilterRead(PTrellisList));
+        PTrellisUpdate();
+    }
+
+    private void PGradeHandle(object sender, RoutedEventArgs e)
+    {
+        PGradeDropper.IsChecked = false;
+        _lShelf.LShelfOrderSet(PSender.PSenderTagRead(sender));
+    }
+
+    private void PShelfHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfRowSelect(PSender.PSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
+    }
+
+    private void PFootnoteHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfEntrySelect(PSender.PSenderSourceRead<PFootnoteItem>(e)?.PFootnoteItemId);
+    }
+
+    private void PReferenceFreshHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfFreshStart();
+    }
+
+    private void PReferenceScribeHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfScribeSet(ReferenceEquals(sender, PReferenceScribe));
+    }
+
+    private void PReferenceStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PLook.PLookFirstRead<Action>(_lShelf.LShelfEntrySide, PEditor.PEditorEntrySave, PImprint.PImprintStoreRun)();
+    }
+
+    private void PReferenceUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PLook.PLookFirstRead<PChronicleHost>(_lShelf.LShelfEntrySide, PEditor, PImprint).PChronicleUndo();
+    }
+
+    private void PReferenceRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PLook.PLookFirstRead<PChronicleHost>(_lShelf.LShelfEntrySide, PEditor, PImprint).PChronicleRedo();
+    }
+
+    private void PReferenceBinHandle(object sender, RoutedEventArgs e)
+    {
+        _lShelf.LShelfDelete();
+    }
+
     private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_pFootnoteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_pReferenceVista?.LVistaChosen is not null && PColophon.Visibility == Visibility.Visible);
+        e.CanExecute = _lShelf.LShelfPressAllowed;
     }
 
     private async void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFootnoteVista?.LVistaChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pReferenceHost.PWindowPressRun(
-                    ticket => _lEngine.LEnginePortraitPrint(
-                        _pFootnoteVista, _pReferenceHost.PWindowLabelRead(), ticket));
-                return;
-            }
-        }
-
-        if (_pReferenceVista?.LVistaChosen is not null)
-        {
-            if (PColophon.Visibility == Visibility.Visible)
-            {
-                await _pReferenceHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                    _pReferenceVista, _pReferenceHost.PWindowLegendRead("Source"), ticket));
-            }
-        }
+        await _pReferenceHost.PWindowPressRun(
+            ticket => _lShelf.LShelfPortraitPrint(
+                _pReferenceHost.PWindowLabelRead(), _pReferenceHost.PWindowLegendRead("Source"), ticket));
     }
 
     private void PReferencePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pFootnoteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lShelf.LShelfPortraitAllowed;
     }
 
     private async void PReferencePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFootnoteVista?.LVistaChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pReferenceHost.PWindowPortraitExport(_pFootnoteVista);
-            }
-        }
+        await _pReferenceHost.PWindowPortraitExport(_lShelf.LShelfFootnote.LFootnotePanel.LPanelVista);
     }
 }

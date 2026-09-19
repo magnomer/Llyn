@@ -187,7 +187,10 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return LEngineUsageResolve(new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId));
+            return LEngineUsageResolve(
+                new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId),
+                new LEntryArchive(_lEngineDatabase),
+                _lEngineSettings.LSettingsEpithet);
         }
     }
 }

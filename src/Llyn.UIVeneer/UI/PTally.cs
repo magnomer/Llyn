@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -5,11 +6,11 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PTally
 {
-    private PTally(string language, string kind, IReadOnlyList<LTallyMark> marks)
+    private PTally(LTallyLine line, bool respelled)
     {
-        PTallyLanguage = language;
-        PTallyKind = kind;
-        PTallyMarks = marks;
+        PTallyLanguage = line.LTallyLineLanguage;
+        PTallyKind = line.LTallyLineKind;
+        PTallyMarks = line.LTallyLineRead(respelled);
     }
 
     public string PTallyLanguage { get; }
@@ -18,23 +19,16 @@ internal sealed class PTally
 
     public IReadOnlyList<LTallyMark> PTallyMarks { get; }
 
-    internal static IReadOnlyList<PTally> PTallyScan(LTally? tally, bool respelled)
+    internal static IReadOnlyList<PTally> PTallyBuild(IReadOnlyList<LTallyLine> lines, bool respelled)
     {
-        if (tally is null)
+        ArgumentNullException.ThrowIfNull(lines);
+
+        List<PTally> built = new(lines.Count);
+        foreach (LTallyLine line in lines)
         {
-            return [];
+            built.Add(new PTally(line, respelled));
         }
 
-        List<PTally> lines = new(tally.LTallyLines.Count);
-        foreach (LTallyLine line in tally.LTallyLines)
-        {
-            IReadOnlyList<LTallyMark> marks = respelled ? line.LTallyLineRespelling : line.LTallyLineIpa;
-            if (marks.Count > 0)
-            {
-                lines.Add(new PTally(line.LTallyLineLanguage, line.LTallyLineKind, marks));
-            }
-        }
-
-        return lines;
+        return built;
     }
 }

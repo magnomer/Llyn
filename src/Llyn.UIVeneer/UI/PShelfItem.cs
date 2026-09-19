@@ -32,6 +32,39 @@ internal sealed class PShelfItem : INotifyPropertyChanged
 
     public string PShelfItemCount { get; }
 
+    internal static IReadOnlyList<PShelfItem> PShelfItemBuild(IReadOnlyList<LCatalogReference> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
+        string unset = PLocalizationCatalog.PLocalizationTextRead("Source.Unset");
+
+        List<PShelfItem> built = new(rows.Count);
+        foreach (LCatalogReference row in rows)
+        {
+            built.Add(new PShelfItem(row, unknown, unset, row.LCatalogReferenceChosen));
+        }
+
+        return built;
+    }
+
+    internal static string PShelfKindRead(LReferenceKind kind)
+    {
+        return kind switch
+        {
+            LReferenceKind.LReferenceKindUnknown => "Source.KindUnknown",
+            LReferenceKind.LReferenceKindBook => "Source.KindBook",
+            LReferenceKind.LReferenceKindJournal => "Source.KindJournal",
+            LReferenceKind.LReferenceKindArticle => "Source.KindArticle",
+            LReferenceKind.LReferenceKindWeb => "Source.KindWeb",
+            LReferenceKind.LReferenceKindVideo => "Source.KindVideo",
+            LReferenceKind.LReferenceKindAudio => "Source.KindAudio",
+            LReferenceKind.LReferenceKindPicture => "Source.KindPicture",
+            LReferenceKind.LReferenceKindOther => "Source.KindOther",
+            _ => "Source.KindUnspecified",
+        };
+    }
+
     internal static string PShelfCreditRead(
         LReference reference,
         IReadOnlyList<LAuthor> credits,

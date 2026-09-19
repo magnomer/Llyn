@@ -29,3 +29,11 @@ A click reads it to decide whether the row leads to an Entry or to an Example.
 ## `public string PUsageItemEpithet { get; }`
 
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
+
+## `internal static IReadOnlyList<PUsageItem> PUsageItemBuild(IReadOnlyList<LUsage> usages)`
+
+A plain copy loop over the citing places, wording each owner and taking the epithet the row carries.
+
+## `internal void PUsageItemShow(PWindow host)`
+
+Leads to the place: the Example when the usage quotes one, else the Entry.

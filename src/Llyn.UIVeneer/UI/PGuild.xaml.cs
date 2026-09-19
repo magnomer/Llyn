@@ -1,16 +1,22 @@
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PGuild : UserControl
 {
+    private readonly ObservableCollection<PRollItem> _pRollList = [];
+
+    private readonly ObservableCollection<PShelfItem> _pOeuvreList = [];
+
     private PWindow _pGuildHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LGuild _lGuild = null!;
 
     public PGuild()
     {
@@ -20,42 +26,66 @@ public partial class PGuild : UserControl
     internal void PGuildAttach(PWindow host, LEngine engine)
     {
         _pGuildHost = host;
-        _lEngine = engine;
+        _lGuild = new LGuild(
+            engine,
+            PGuildShownCheck,
+            PGuildDiscardConfirm,
+            PGuildRemovalConfirm,
+            host.PWindowUnionConfirm,
+            host.PWindowUnreadableConfirm);
+        _lGuild.LGuildChanged += PGuildModeUpdate;
+        _lGuild.LGuildRefused += host.PWindowFailureShow;
+        _lGuild.LGuildFailed += host.PWindowFailureShow;
+        _lGuild.LGuildPanel.LPanelChanged += PGuildModeUpdate;
+        _lGuild.LGuildPanel.LPanelRowsChanged += PRollUpdate;
+        _lGuild.LGuildPanel.LPanelFailed += host.PWindowFailureShow;
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelChanged += PGuildModeUpdate;
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsChanged += POeuvreUpdate;
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelCleared += PColophon.PColophonClear;
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelDraftChanged += PGuildSourceUpdate;
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
+        _lGuild.LGuildAutograph.LDeskStarted += PAutographStartUpdate;
+        _lGuild.LGuildAutograph.LDeskDraftChanged += PAutographDraftUpdate;
+        _lGuild.LGuildAutograph.LDeskFailed += host.PWindowFailureShow;
 
         PRoll.ItemsSource = _pRollList;
         POeuvre.ItemsSource = _pOeuvreList;
-        PFellow.ItemsSource = _pFellowList;
-        PVitaCitation.ItemsSource = _pVitaCitation;
-        PAutographUnionList.ItemsSource = _pAutographUnion;
 
         PColophon.PColophonAttach(host);
     }
 
-    internal void PGuildReset()
+    internal void PGuildVistaRestore(LVista vista, LVista oeuvre)
     {
-        PGuildClear();
-        PRollFind();
+        _lGuild.LGuildVistaRestore(vista, oeuvre);
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
+        oeuvre.LVistaObserverAttach(
+            LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lGuild.LGuildReset));
+        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        PChoice.PChoiceOrderApply(PEchelonDropdown, vista.LVistaOrder);
+        PChoice.PChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
+        PLouverUpdate();
+        _lGuild.LGuildQuerySet(PMuster.Text);
+        _lGuild.LGuildOeuvre.LOeuvreQuerySet(PComb.Text);
+        _lGuild.LGuildPanel.LPanelRowsUpdate();
     }
 
     internal bool PGuildChangeCheck()
     {
-        return PAutograph.Visibility == Visibility.Visible && PAutographChangeCheck();
+        return _lGuild.LGuildChangeCheck();
     }
 
     internal bool PGuildDraftFinish(bool store)
     {
-        if (PAutograph.Visibility != Visibility.Visible)
-        {
-            return true;
-        }
+        return _lGuild.LGuildDraftFinish(store);
+    }
 
-        if (store)
-        {
-            return PAutographStoreRun();
-        }
-
-        PAutographCancel();
-        return true;
+    internal void PGuildScribeRestore(bool editing)
+    {
+        _lGuild.LGuildScribeRestore(editing);
     }
 
     internal void PGuildClose()
@@ -64,108 +94,185 @@ public partial class PGuild : UserControl
         PLouverDropdown.IsOpen = false;
     }
 
-    internal bool PGuildLeaveConfirm()
+    private bool PGuildShownCheck()
     {
-        return _pGuildHost.PWindowDiscardConfirm(PGuildChangeCheck(), PGuildDraftFinish);
+        return IsVisible;
     }
 
-    private void PGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)
+    private bool PGuildDiscardConfirm()
     {
-        e.CanExecute = _pOeuvreVista?.LVistaChosen is not null && PColophon.Visibility == Visibility.Visible;
+        return _pGuildHost.PWindowDiscardConfirm(true, PGuildDraftFinish);
     }
 
-    private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
+    private bool PGuildRemovalConfirm(int works)
     {
-        if (_pOeuvreVista?.LVistaChosen is not null)
-        {
-            if (PColophon.Visibility == Visibility.Visible)
-            {
-                await _pGuildHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                    _pOeuvreVista, _pGuildHost.PWindowLegendRead("Source"), ticket));
-            }
-        }
+        return _pGuildHost.PWindowRemovalConfirm(works, "Guild");
+    }
+
+    private void PRollUpdate()
+    {
+        PSplice.PSpliceApply(
+            _pRollList,
+            PRollItem.PRollItemBuild(_lGuild.LGuildRollRead()),
+            PRollItem.PRollItemMatch,
+            PRollItem.PRollItemSync);
+        PRollEmpty.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildEmpty);
+        PVitaUpdate();
+    }
+
+    private void PVitaUpdate()
+    {
+        LVita vita = _lGuild.LGuildVitaRead();
+        PVitaName.Text = vita.LVitaName;
+        PField.PFieldPlaceholderShow(PVitaName, !vita.LVitaNamed);
+        PVitaWork.Text = vita.LVitaWork;
+        PVitaTally.Text = vita.LVitaTally;
+        PAutographWork.Text = vita.LVitaWork;
+        PAutographTally.Text = vita.LVitaTally;
+        PFellow.ItemsSource = PFellowItem.PFellowItemBuild(vita.LVitaFellows);
+        PVitaCitation.ItemsSource = PUsageItem.PUsageItemBuild(vita.LVitaUsages);
+        PVitaFellowSection.Visibility = PLook.PLookVisibleRead(vita.LVitaFellowShown);
+        PVitaCitationSection.Visibility = PLook.PLookVisibleRead(vita.LVitaUsageShown);
+        PVitaBody.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildVitaHeld);
+        PVitaUnselected.Visibility = PLook.PLookVisibleRead(!_lGuild.LGuildVitaHeld);
+    }
+
+    private void POeuvreUpdate()
+    {
+        PSplice.PSpliceApply(
+            _pOeuvreList,
+            PShelfItem.PShelfItemBuild(_lGuild.LGuildOeuvre.LOeuvreRowsRead()),
+            PShelfItem.PShelfItemMatch,
+            PShelfItem.PShelfItemSync);
+        POeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _lGuild.LGuildOeuvre.LOeuvreEmptyKey);
+        POeuvreEmpty.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildOeuvre.LOeuvreEmpty);
+        PColophon.PColophonTallyShow(_lGuild.LGuildOeuvre.LOeuvreTallyRead());
+    }
+
+    private void PGuildSourceUpdate(LDraft draft)
+    {
+        PColophon.PColophonShow(_lGuild.LGuildOeuvre.LOeuvreColophonRead(draft));
+    }
+
+    private void PGuildModeUpdate()
+    {
+        PAutograph.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildAutographShown);
+        PVita.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildVitaShown);
+        PColophon.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildColophonShown);
+        PGuildViewer.IsChecked = PLook.PLookCheckedRead(_lGuild.LGuildViewerChecked);
+        PGuildScribe.IsChecked = PLook.PLookCheckedRead(_lGuild.LGuildScribeChecked);
+        PGuildMode.IsEnabled = _lGuild.LGuildModeEnabled;
+        PGuildBin.IsEnabled = _lGuild.LGuildBinEnabled;
+        PGuildStore.IsEnabled = _lGuild.LGuildStoreEnabled;
+        PAutographUnionBody.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildUnionShown);
+        PAutographUnionNotice.Visibility = PLook.PLookVisibleRead(!_lGuild.LGuildUnionShown);
+    }
+
+    private void PAutographStartUpdate(LTenure held)
+    {
+        held.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, _lGuild.LGuildAutograph.LDeskDraftUpdate));
+        held.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, _lGuild.LGuildAutograph.LDeskStateUpdate));
+        PAutographUnion.Text = string.Empty;
+        PAutographUnionList.ItemsSource = null;
+        PAutographName.Focus();
+    }
+
+    private void PAutographDraftUpdate(LDraft draft)
+    {
+        PAutographName.Text = draft.LDraftAuthorName;
+    }
+
+    private void PLouverUpdate()
+    {
+        PLouverMark.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildLouverActive);
+    }
+
+    private void PMusterHandle(object sender, TextChangedEventArgs e)
+    {
+        _lGuild.LGuildQuerySet(PMuster.Text);
+    }
+
+    private void PCombHandle(object sender, TextChangedEventArgs e)
+    {
+        _lGuild.LGuildOeuvre.LOeuvreQuerySet(PComb.Text);
+    }
+
+    private void PEchelonHandle(object sender, RoutedEventArgs e)
+    {
+        PEchelonDropper.IsChecked = false;
+        _lGuild.LGuildOrderSet(PSender.PSenderTagRead(sender));
+    }
+
+    private void PLouverHandle(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildLouverSet(PChoice.PChoiceFilterRead(PLouverList));
+        PLouverUpdate();
+    }
+
+    private void PRollHandle(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildRowSelect(PSender.PSenderSourceRead<PRollItem>(e)?.PRollItemId);
+    }
+
+    private void POeuvreHandle(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildSourceSelect(PSender.PSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
+    }
+
+    private void PFellowHandle(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildRowSelect(PSender.PSenderSourceRead<PFellowItem>(e)?.PFellowItemId);
+    }
+
+    private void PVitaCitationHandle(object sender, RoutedEventArgs e)
+    {
+        PSender.PSenderSourceRead<PUsageItem>(e)?.PUsageItemShow(_pGuildHost);
+    }
+
+    private void PAutographNameHandle(object sender, TextChangedEventArgs e)
+    {
+        _lGuild.LGuildAutograph.LDeskDefer(
+            new LRequestAuthorName(_lGuild.LGuildAutograph.LDeskId, PAutographName.Text));
+    }
+
+    private void PAutographUnionHandle(object sender, TextChangedEventArgs e)
+    {
+        PAutographUnionList.ItemsSource = PRollItem.PRollItemBuild(_lGuild.LGuildUnionRead(PAutographUnion.Text));
+    }
+
+    private void PAutographUnionSelect(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildUnionSelect(PSender.PSenderSourceRead<PRollItem>(e)?.PRollItemId);
+    }
+
+    private void PGuildFreshHandle(object sender, RoutedEventArgs e)
+    {
+        _lGuild.LGuildFreshStart();
     }
 
     private void PGuildScribeHandle(object sender, RoutedEventArgs e)
     {
-        bool editing = ReferenceEquals(sender, PGuildScribe);
-        if (editing == (PAutograph.Visibility == Visibility.Visible))
-        {
-            return;
-        }
-
-        if (!editing)
-        {
-            if (!PGuildLeaveConfirm())
-            {
-                PGuildScribeShow(true);
-                return;
-            }
-
-            PAutographCancel();
-            PGuildScribeShow(false);
-
-            if (_pGuildVista?.LVistaStored is long kept)
-            {
-                PVitaShow(kept);
-                return;
-            }
-
-            PGuildClear();
-            return;
-        }
-
-        if (_pGuildVista?.LVistaStored is not long author)
-        {
-            PGuildClear();
-            return;
-        }
-
-        PGuildScribeShow(true);
-        PAutographOpen(author);
+        _lGuild.LGuildScribeSet(ReferenceEquals(sender, PGuildScribe));
     }
 
-    internal void PGuildScribeShow(bool editing)
+    private void PGuildStoreHandle(object sender, RoutedEventArgs e)
     {
-        _pGuildVista?.LVistaEditingSet(editing);
-
-        PAutograph.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PVita.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PGuildViewer.IsChecked = !editing;
-        PGuildScribe.IsChecked = editing;
-        PAutographChangeUpdate();
+        _lGuild.LGuildSave();
     }
 
-    internal void PGuildScribeRestore(bool editing)
+    private void PGuildBinHandle(object sender, RoutedEventArgs e)
     {
-        if (!editing)
-        {
-            PGuildScribeShow(false);
-            return;
-        }
-
-        if (_pGuildVista?.LVistaStored is not long shown)
-        {
-            return;
-        }
-
-        PGuildScribeShow(true);
-        PGuildMode.IsEnabled = true;
-        PAutographOpen(shown);
+        _lGuild.LGuildDelete();
     }
 
-    internal void PGuildClear()
+    private void PGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        PAutographCancel();
+        e.CanExecute = _lGuild.LGuildPressAllowed;
+    }
 
-        _pGuildVista?.LVistaSelect(null);
-        PRollFind();
-        PColophonReferenceHide();
-        POeuvreFind();
-
-        PVitaClear();
-        PGuildScribeShow(false);
-        PGuildMode.IsEnabled = false;
-        PGuildBin.IsEnabled = false;
+    private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        await _pGuildHost.PWindowPressRun(
+            ticket => _lGuild.LGuildPortraitPrint(_pGuildHost.PWindowLegendRead("Source"), ticket));
     }
 }

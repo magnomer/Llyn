@@ -4,45 +4,49 @@
 
 The yunjing panel: the workspace browsed as a rime table, by onset and rime of the user's reconstruction.
 It is shown only while a loaded language pack carries rime books, since without them there is no table.
-It reads one language, the first pack with rime books, and owns a reader and an editor over one Entry.
+Every decision lives in [LYunjing](../../Llyn.UIDeportment/LYunjing.comment.md), and this file writes controls on notice.
+The two columns, the entry list, the category page, the reader and the editor are all served from one file.
 
 ## `internal void PYunjingAttach(PWindow host, LEngine engine)`
 
-Binds the panel to the window and the engine, starts listening for what the engine announces, and loads.
-The category page is attached with the reader.
+News the deportment with the window's dialogs as seams, subscribes its notices, and wires the lists and the page.
 
 ## `internal bool PYunjingCheck()`
 
 Whether any loaded language pack carries rime books, so the window knows to show the tab.
 
-## `internal void PYunjingReset()`
+## `internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)`
 
-Finds the language again, drops the choices, empties the reader and reloads, for a workspace that has just moved.
+Hands the vistas down, attaches the bulletins the panel follows, restores the order menus, and loads.
 
-## `internal bool PYunjingDraftFinish(bool store)`
+## `internal bool PYunjingLeaveConfirm()`
 
-Stores or discards a standing draft on the way out of the application.
+Asks the window whether an unsaved entry may be left, in the words every panel uses.
 
-## `internal bool PYunjingChangeCheck()`
+## `internal void PYunjingDiweiShow(string language, string kind, string key)`
 
-Whether the editor is the shown side and is holding a change, so leaving would lose work.
+A glyph link from another panel: empties both search fields, then opens the page on the cell.
 
-## `internal void PYunjingClose()`
+## `private void PYunjingColumnUpdate()`
 
-Closes the reader and the editor.
+Lists both columns afresh with their empty texts, then the page and the mode, which follow the chosen cell.
 
-## `private string? PYunjingLanguageFind()`
+## `private void PXiaoyunUpdate()`
 
-The first loaded language whose pack names rime books, or `null`.
+Lists the entries at the chosen cell afresh with the empty text the deportment names.
 
-## `private void PYunjingPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void PDiweiUpdate()`
 
-Whether the print and export buttons are live: exactly when an entry is read in the display.
+Hands the page its composed content, blank while it is hidden.
 
-## `private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PYunjingModeUpdate()`
 
-Prints the entry being read, as the engine portrays it.
+Writes every visibility and enablement off the deportment's verdicts.
 
-## `private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PYunjingClearUpdate()`
 
-Exports the entry being read, as the engine portrays it.
+The entry list was cleared: the reader empties, the editor resets, and the page is read again.
+
+## `private void PYunjingHandle(object sender, RoutedEventArgs e)`
+
+A click on either column hands the cell's id and side to the deportment.

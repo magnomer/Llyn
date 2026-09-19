@@ -165,14 +165,14 @@ public partial class PImprint
                     Tag = offered,
                 };
                 choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
-                choice.SetResourceReference(ContentControl.ContentProperty, PReference.PReferenceKindRead(offered));
+                choice.SetResourceReference(ContentControl.ContentProperty, PShelfItem.PShelfKindRead(offered));
                 choice.Click += PImprintKindHandle;
                 PImprintKindList.Children.Add(choice);
             }
         }
 
         _pImprintKind = kind;
-        PImprintKindName.SetResourceReference(TextBlock.TextProperty, PReference.PReferenceKindRead(kind));
+        PImprintKindName.SetResourceReference(TextBlock.TextProperty, PShelfItem.PShelfKindRead(kind));
 
         foreach (RadioButton choice in PImprintKindList.Children)
         {
@@ -245,7 +245,6 @@ public partial class PImprint
             return;
         }
 
-        _pImprintOwner.PReferenceScribeShow(false);
         _pImprintOwner.PReferenceShow(reference);
     }
 }

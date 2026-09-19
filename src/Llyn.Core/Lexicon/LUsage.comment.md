@@ -19,3 +19,7 @@ The Entry it carries is the way from the referring side to the panel holding it.
 - `LUsageTitle` — What names the referring side, and what is known about it.
   A Meaning is named by its title, and by its definition when it carries no title.
   A Collocation is named by its title, and by its expression when it carries no title.
+
+## `public string LUsageEpithet { get; init; }`
+
+The epithet of the cited Entry, filled by the engine when the setting asks for it, else empty.

@@ -43,6 +43,19 @@ Leaving the editor asks first, and a refusal re-shows the editor so the toggle r
 Leaving with a chosen row reloads it into the display, leaving with none clears the panel.
 Entering with a chosen row hands it to the editor, entering with none clears the panel.
 
+## `public void LPanelFreshOpen()`
+
+The fresh step without the leave question, for a deportment that already asked for the whole tab.
+
+## `public void LPanelScribeShow(bool editing)`
+
+Sets the mode on the vista and announces the change, asking nothing.
+Public so a two-list deportment can carry the mode from one list to the other.
+
+## `public void LPanelRowShow(long? id)`
+
+Selects and loads a row without the leave question, for a deportment that already asked.
+
 ## `private void LPanelDraftShow()`
 
 Loads the chosen row after a click or a return to the display.

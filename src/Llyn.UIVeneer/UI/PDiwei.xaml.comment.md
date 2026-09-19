@@ -2,25 +2,17 @@
 
 ## `public partial class PDiwei : UserControl`
 
-The category page as a control, handed a category and its grouped placements by the rime table panel.
-
-## `private const string PDiweiKindInitial = "Yunjing.Shengmu";`
-
-The localization key of the kind chip for an initial.
-
-## `private const string PDiweiKindRime = "Yunjing.Yunmu";`
-
-The localization key of the kind chip for a rime.
+The category page as a control, handed the composed page by the rime table panel.
 
 ## `private LEngine _lEngine = null!;`
 
 The engine, asked only for the language's fonts.
 
-## `internal Action<string>? PDiweiEntryNotice { get; set; }`
+## `internal Action<string?>? PDiweiEntryNotice { get; set; }`
 
 What a click on a character chip runs, handed the character.
 
-## `internal Action<bool>? PDiweiSwitchNotice { get; set; }`
+## `internal Action<bool?>? PDiweiSwitchNotice { get; set; }`
 
 What the IPA or respelling switch runs, handed true for respelling.
 
@@ -28,15 +20,12 @@ What the IPA or respelling switch runs, handed true for respelling.
 
 Keeps the engine for the fonts.
 
-## `internal void PDiweiApply(LDiwei diwei, IReadOnlyList<PDiweiItem> items)`
+## `internal void PDiweiShow(LDiweiPage page, string kind)`
 
-Draws the headword line for the category and lists the sections.
+Draws the headword line for the page and copies its sections into rows.
 The headword takes the language's headword font and the list its glyph font.
-An empty list shows the empty notice instead.
-
-## `internal void PDiweiClear()`
-
-Drops the sections, so a hidden page holds nothing.
+The kind chip reads the resource under the key the deportment names.
+An empty page shows the empty notice instead.
 
 ## `private void PDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)`
 

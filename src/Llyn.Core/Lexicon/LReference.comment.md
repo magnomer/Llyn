@@ -1,4 +1,4 @@
-# LReference.cs
+﻿# LReference.cs
 
 ## `public sealed record LReference(`
 
@@ -49,6 +49,16 @@ A Reference crediting nobody is written under its name instead, so the line is n
 The year follows in parentheses only when it is stated.
 The rule lives here because the example line, the citation field and its dropdown all write the same line.
 
+## `public LColophon LReferenceColophonRead(IReadOnlyList<LAuthor> credits, string tally, Func<string, string> localize)`
+
+The read sheet of this Source, composed on the record so the page passes the Source nowhere.
+A Source handed as an argument would be an engine answer the page carried into a request.
+
+## `public static string LReferenceKindResolve(LReferenceKind kind)`
+
+The localization key a kind is labelled by, so every place that names a kind reads the same word.
+The read sheet, the print legend and the kind filter all resolve it here.
+
 ## `public static string LReferenceKindFormat(LReferenceKind kind)`
 
 The word a kind is written as outside the program.
@@ -70,3 +80,8 @@ A workspace written by a later build must still open.
 
 The same Reference with every unreadable value dropped to unspecified.
 Called only after the user agreed to lose what the store could not read.
+
+## `public static string LReferenceUsageFormat(int count, Func<string, string> localize)`
+
+The sentence for how many places cite a Source, one of three forms by count.
+It serves the sources panel, the authors panel and the vita alike, so the wording lives once.

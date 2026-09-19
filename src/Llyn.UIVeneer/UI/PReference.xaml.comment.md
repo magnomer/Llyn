@@ -1,69 +1,80 @@
-﻿# PReference.xaml.cs
+# PReference.xaml.cs
 
 ## `public partial class PReference : UserControl`
 
-The Source panel: the view of the shelf of bibliographic Sources itself.
+The Source panel as a control: what it is made of, and what it forwards.
 A Source is independent data owned by nothing, so this panel is not a view of one citation of it.
 The visible label is Source and the internal base is Reference, because Source already names a pronunciation source.
-It holds the host and the engine the browsing side calls, and nothing else.
-The browsing lives in `PReferenceBrowse.cs`, and the editing in the `PImprint` control the panel holds.
+Every branch it once carried lives in `LShelf` and the two `LPanel` it holds.
+The panel news its deportment, forwards each handler to it, and writes its controls when a notice arrives.
+The shelf, the entry list, the read areas, the two edit areas and the shared rail are all wired here.
+The two edit areas are still veneer holds.
+The panel picks the one in front by the deportment's side verdict.
 
 ## `internal void PReferenceAttach(PWindow host, LEngine engine)`
 
-Binds the panel to the window it asks for confirmations and panel switches through.
-It binds its lists and subscribes to the engine, and reads nothing yet.
-It attaches the edit area to the same host and engine, and to itself.
-The area reads the shelf's answers through it.
-It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
-The editor's change notice drives `PReferenceStore`, as it drives the save button of the tenor panel.
-Both the editor and the edit area are lent `PReferenceBackward` and `PReferenceForward`.
-So the rail's undo and redo follow whichever is in front.
-The window fills the source shelf when it restores the stored ordering.
-Every change after that arrives as an announcement.
-The panel is current whether or not its tab is in front.
+Puts the panel to work on `engine`, the workspace the window opened.
+It news the deportment with the seams the panel answers through and subscribes to the notices of both lists.
+The editor's and the imprint's change notices go to the deportment.
+It picks the one in front for the store button.
+Both areas' chronicle notices refresh the rail's undo and redo through the same side verdict.
 
-## `internal void PReferenceReset()`
+## `internal async void PReferenceVistaRestore(LVista vista, LVista footnote)`
 
-Drops the selection and reads the shelf again, for when the workspace underneath changed.
+Hands both vistas to the deportment and attaches the observers that carry each announcement onto the dispatcher.
+A stored entry re-lists the shelf too, because the citation counts on its rows may have moved.
+The flags are loaded before the first rows are built, because an entry row reads its flag at construction.
 
 ## `internal bool PReferenceChangeCheck()`
 
-Whether the panel holds work nothing has saved yet.
-The window asks before anything can leave the panel.
-The engine answers it, so the panel decides nothing about what counts as a change.
-Credits are not compared, because they are written when they are made rather than on save.
-The entry editor answers while it is in front, and the edit area otherwise.
+Whether either edit area holds modifications that have not been stored, as the deportment reads it.
 
 ## `internal bool PReferenceDraftFinish(bool store)`
 
-Ends whichever draft is in front, committing it or discarding it.
-The entry editor finishes its own draft, and the edit area finishes the held Source.
-The window asks the panel, because the panel is what the window knows.
+Ends the draft of the area in front, committing it or discarding it.
+The side verdict picks the editor's or the imprint's finish, and its answer is passed back up.
 
-## `internal void PReferenceClose()`
+## `internal string PReferenceTallyRead(long? id)`
 
-Closes the popups the panel owns, so none outlives the window.
+The citation sentence for one Source, which the imprint asks for the draft it holds.
 
-## `private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `internal void PReferenceShow(long id)`
 
-Whether the print button is live: an entry is read, or a source is read.
-An editor on screen prints nothing, because what is printed is what is read.
-The button follows this answer on its own, so no panel state has to switch it.
+Puts the source side on one stored Source in its read area, for the imprint after a store.
 
-## `private async void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private bool PReferenceDiscardConfirm()`
+
+The discard seam: the window's leave dialog over the finish of the area in front.
+
+## `private bool PReferenceRemovalConfirm(int usage)`
+
+The removal seam: the window's delete question, worded by how many rows still cite the Source.
+
+## `private void PShelfUpdate()`
+
+Refills the shelf from the rows the deportment reads, spliced so the list keeps its scroll position.
+The citation chips of both source areas are rewritten, because a stored entry may have moved the count.
+
+## `private void PFootnoteUpdate()`
+
+Refills the entry list and picks its empty text by whether the list is being searched.
+
+## `private void PReferenceModeUpdate()`
+
+Writes which of the four areas is in front and the enablement the deportment holds into the rail.
+
+## `private void PReferenceChronicleUpdate()`
+
+Reads the chronicle of the area in front and writes the rail's undo and redo.
+
+## `private void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the source being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
-Nothing is read back from the screen.
+The window supplies both label sets, and the deportment picks the vista, so nothing is read back from the screen.
 
-## `private void PReferencePortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
+## Inline notes
 
-Whether the export button is live: exactly when an entry is read in the display.
-Print may also act on the other page this panel reads, but export acts on entries alone.
-The button follows this answer on its own, so no panel state has to switch it.
+### `PEditor.PEditorAttach(host, engine, "Reference", null);`
 
-## `private async void PReferencePortraitHandle(object sender, ExecutedRoutedEventArgs e)`
-
-Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
-Nothing is read back from the screen.
+The editor opens on no entry: this panel puts it on one when the reader asks to write.
+The origin names this panel, so its held work is told apart from the other panels'.

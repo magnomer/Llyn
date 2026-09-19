@@ -49,6 +49,27 @@ internal static class PChoice
         }
     }
 
+    internal static void PChoiceKindBuild(Panel list, LCatalogFilter filter, RoutedEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(filter);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        list.Children.Clear();
+        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
+        {
+            CheckBox box = new()
+            {
+                Style = (Style)list.FindResource("Theme.Choice.Filter"),
+                Tag = LReference.LReferenceKindFormat(kind),
+                IsChecked = filter.LCatalogFilterMatch(LReference.LReferenceKindFormat(kind)),
+            };
+            box.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
+            box.Click += handler;
+            list.Children.Add(box);
+        }
+    }
+
     internal static LCatalogFilter PChoiceFilterRead(Panel list)
     {
         ArgumentNullException.ThrowIfNull(list);

@@ -25,6 +25,10 @@ Run when the engine binds a workspace, since the tone classes depend on the hypo
 
 The categories of one kind with their entry counts, in the order they were first made.
 
+## `public LDiwei? LDiweiRead(long diweiId)`
+
+One category by its id, with its entry count, or null when none is stored under it.
+
 ## `public LDiwei? LDiweiFind(string language, string kind, string key)`
 
 The category with this key, with its count, or `null` when no placement carries it.

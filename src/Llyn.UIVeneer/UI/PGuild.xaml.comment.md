@@ -4,16 +4,16 @@
 
 The authors panel: the workspace browsed by the people its Sources credit.
 It is the sources panel's shape read through a different question, so it holds the same three columns.
-It owns a reader and an editor over one Author, and answers the engine rather than its own visibility.
-The roll, the oeuvre, the vita and the autograph each live in a partial file of their own.
+Every decision lives in [LGuild](../../Llyn.UIDeportment/LGuild.comment.md), and this file writes controls on notice.
+The roll, the oeuvre, the vita, the autograph and the colophon are all served from one file.
 
 ## `internal void PGuildAttach(PWindow host, LEngine engine)`
 
-Binds the panel to the window and the engine, wires every list to its rows, and starts listening for bulletins.
+News the deportment with the window's dialogs as seams, subscribes its notices, and wires the two lists.
 
-## `internal void PGuildReset()`
+## `internal void PGuildVistaRestore(LVista vista, LVista oeuvre)`
 
-Clears the panel and reads the roll again, for when the workspace itself changed.
+Hands the vistas down, attaches the bulletins the panel follows, restores the order and kind menus, and lists.
 
 ## `internal bool PGuildChangeCheck()`
 
@@ -22,38 +22,64 @@ Whether the edit area holds a name not yet saved.
 ## `internal bool PGuildDraftFinish(bool store)`
 
 Finishes the held edit before the panel is left, saving it or dropping it as asked.
-A failed save keeps the panel where it is, so the user can read why.
+
+## `internal void PGuildScribeRestore(bool editing)`
+
+Reopens the side the last session ended on.
 
 ## `internal void PGuildClose()`
 
 Closes the dropdowns, so nothing stays open over a window that is going.
 
-## `internal bool PGuildLeaveConfirm()`
+## `private bool PGuildDiscardConfirm()`
 
-Asks the window whether an unsaved name may be left, in the words every panel uses.
+The leave seam: the window's discard question over this panel's finish.
 
-## `private void PGuildPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private bool PGuildRemovalConfirm(int works)`
 
-Print is live only while a Source stands in the colophon, because an Author has no page to print.
+The removal seam: the window's delete question worded by how many Sources credit the Author.
+
+## `private void PRollUpdate()`
+
+Lists the roll afresh and reads the vita and the count chips, which follow the same Author.
+
+## `private void PVitaUpdate()`
+
+Writes the vita from its read sheet: name, counts, fellows and citing places, and shows or hides the body.
+The autograph's count chips are written from the same sheet.
+
+## `private void POeuvreUpdate()`
+
+Lists the oeuvre afresh with its empty text and refreshes the colophon's tally.
+
+## `private void PGuildSourceUpdate(LDraft draft)`
+
+A Source was loaded for the colophon, so its sheet is composed and shown.
+
+## `private void PGuildModeUpdate()`
+
+Writes every visibility and enablement off the deportment's verdicts.
+
+## `private void PAutographStartUpdate(LTenure held)`
+
+A tenure was started: its bulletins are marshalled to the desk, the union field is emptied, the name takes focus.
+
+## `private void PAutographDraftUpdate(LDraft draft)`
+
+The held draft was read again, so the name field shows its name.
+
+## `private void PAutographNameHandle(object sender, TextChangedEventArgs e)`
+
+Every keystroke in the name is deferred to the desk as a raw name request.
+
+## `private void PAutographUnionHandle(object sender, TextChangedEventArgs e)`
+
+Lists the Authors the typed name matches, for the user to fold this one into.
+
+## `private void PVitaCitationHandle(object sender, RoutedEventArgs e)`
+
+A citing place leads to its Example or its Entry, as the row knows.
 
 ## `private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the Source read in the colophon, through the window's press run.
-
-## `private void PGuildScribeHandle(object sender, RoutedEventArgs e)`
-
-The mode toggle, between reading and editing the chosen Author.
-Leaving the edit side asks about an unsaved name first, and stays on it when the user says no.
-Turning to the edit side with no Author chosen clears the panel, because there is nothing to edit.
-
-## `internal void PGuildScribeShow(bool editing)`
-
-Swaps the reading and the edit area, ticks the toggle to match, and remembers the side for the next session.
-
-## `internal void PGuildScribeRestore(bool editing)`
-
-Reopens the side the last session ended on, but only the reading side while no Author is chosen.
-
-## `internal void PGuildClear()`
-
-Returns the panel to nothing chosen: both vistas stand on nothing, every list read afresh, the reading side shown.

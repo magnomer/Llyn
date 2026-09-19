@@ -10,6 +10,8 @@ public sealed record LUsage(
 {
     public string LUsageName { get; init; } = LUsageHeadword;
 
+    public string LUsageEpithet { get; init; } = string.Empty;
+
     public LStateValue LUsageTitle { get; init; } = LUsageTitle ?? LStateValue.LStateValueUnspecified;
 
     public bool LUsageCollocated => LUsageOwner == LOwner.LOwnerCollocation;

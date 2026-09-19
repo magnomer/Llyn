@@ -17,6 +17,11 @@ public sealed record LTallyLine(
 
     public IReadOnlyList<LTallyMark> LTallyLineRespelling { get; init; } = LTallyLineRespelling ?? [];
 
+    public IReadOnlyList<LTallyMark> LTallyLineRead(bool respelled)
+    {
+        return respelled ? LTallyLineRespelling : LTallyLineIpa;
+    }
+
     public static IReadOnlyList<LTallyLine> LTallyLineScan(
         string kind,
         IReadOnlyList<string> characters,

@@ -14,6 +14,11 @@ The mark saying which row the reader stands on is the one thing that changes aft
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
 The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.
 
+## `internal static IReadOnlyList<PFootnoteItem> PFootnoteItemBuild(IReadOnlyList<LVistaRow> rows)`
+
+One item per engine row, in the order the engine returned them.
+A plain copy loop, so the panel that asks for it carries no loop of its own.
+
 ## `internal static bool PFootnoteItemMatch(PFootnoteItem held, PFootnoteItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.

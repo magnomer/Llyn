@@ -6,13 +6,14 @@ Presentation item for one roll row: the Author's name, its worded source count, 
 The mark is resolved once here, because the uncredited row wears a different one from every Author.
 The same row serves the union list of the edit area, because both list Authors with their source counts.
 
-## `internal PRollItem(LCatalogAuthor row, string work)`
+## `internal PRollItem(LCatalogAuthor row, string work, bool chosen)`
 
-Builds the row of one stored Author from its catalog row and the worded source count.
+Builds the row of one Author from its catalog row and the worded source count.
+The uncredited row arrives as a catalog row with the id zero, and wears the unlink mark for it.
 
-## `internal PRollItem(string name, string work, int usage)`
+## `internal static IReadOnlyList<PRollItem> PRollItemBuild(IReadOnlyList<LCatalogAuthor> rows)`
 
-Builds the uncredited row, which stands for the Sources crediting nobody and carries the id zero.
+A plain copy loop over the roll rows, wording each source count on the way.
 
 ## `public bool PRollItemChosen`
 

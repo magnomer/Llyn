@@ -6,17 +6,12 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PDiweiLine
 {
-    private readonly List<string> _pDiweiLineCharacters = [];
-
-    internal PDiweiLine(bool rime, LFanqieRow row, LHypothesis? hypothesis)
+    private PDiweiLine(LDiweiLine line)
     {
-        ArgumentNullException.ThrowIfNull(row);
-
-        string? part = rime ? hypothesis?.LHypothesisInitialFind(row) : hypothesis?.LHypothesisFinalFind(row);
-        PDiweiLineReading = part is null ? string.Empty : '/' + part + '/';
-        PDiweiLineLabel = rime ? row.LFanqieRowInitial : LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime);
-        PDiweiLineRounded = !rime && row.LFanqieRowRounded;
-        PDiweiLineRank = rime ? hypothesis?.LHypothesisRankRead(row.LFanqieRowInitial) ?? -1 : -1;
+        PDiweiLineReading = line.LDiweiLineReading;
+        PDiweiLineLabel = line.LDiweiLineLabel;
+        PDiweiLineRounded = line.LDiweiLineRounded;
+        PDiweiLineCharacters = line.LDiweiLineCharacters;
     }
 
     public string PDiweiLineReading { get; }
@@ -25,27 +20,18 @@ internal sealed class PDiweiLine
 
     public bool PDiweiLineRounded { get; }
 
-    public int PDiweiLineRank { get; }
+    public IReadOnlyList<string> PDiweiLineCharacters { get; }
 
-    public IReadOnlyList<string> PDiweiLineCharacters => _pDiweiLineCharacters;
-
-    internal static void PDiweiLineSort(List<PDiweiLine> lines)
+    internal static IReadOnlyList<PDiweiLine> PDiweiLineBuild(IReadOnlyList<LDiweiLine> lines)
     {
         ArgumentNullException.ThrowIfNull(lines);
 
-        lines.Sort((left, right) =>
+        List<PDiweiLine> built = new(lines.Count);
+        foreach (LDiweiLine line in lines)
         {
-            int order = LDiwei.LDiweiRankNormalize(left.PDiweiLineRank)
-                .CompareTo(LDiwei.LDiweiRankNormalize(right.PDiweiLineRank));
-            return order != 0 ? order : string.CompareOrdinal(left.PDiweiLineLabel, right.PDiweiLineLabel);
-        });
-    }
-
-    internal void PDiweiLineAdd(string character)
-    {
-        if (character.Length > 0 && !_pDiweiLineCharacters.Contains(character))
-        {
-            _pDiweiLineCharacters.Add(character);
+            built.Add(new PDiweiLine(line));
         }
+
+        return built;
     }
 }

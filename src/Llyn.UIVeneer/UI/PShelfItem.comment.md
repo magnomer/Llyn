@@ -16,6 +16,17 @@ The name, the credits and the citation count arrive with it, so nothing is deriv
 The two texts are handed in rather than read here.
 A row is built while the list is being filled.
 
+## `internal static IReadOnlyList<PShelfItem> PShelfItemBuild(IReadOnlyList<LCatalogReference> rows)`
+
+One item per engine row, in the order the engine returned them.
+The two placeholder texts are localized once for the whole list.
+A plain copy loop, so the panel that asks for it carries no loop of its own.
+
+## `internal static string PShelfKindRead(LReferenceKind kind)`
+
+The localization key a kind is labelled by, as a pure table the imprint may call without requesting.
+It repeats `LReferenceKindResolve` until the imprint takes its deportment and reads the label from below.
+
 ## `internal static string PShelfCreditRead(LReference reference, IReadOnlyList<LAuthor> credits, string unknown, string unset)`
 
 Names the credits in the Source's own order, or shows the author state where there are none.

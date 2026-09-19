@@ -27,6 +27,11 @@ A book without an interval, asked between two posts of a throttled one, leaves t
 
 The rime books the language's pack lists, empty for a blank language.
 
+## `public string? LEngineBookFind()`
+
+The first loaded language whose pack carries rime books, or null when none does.
+The yunjing panel reads it to know whether it may be shown and which table to open on.
+
 ## `public LHypothesis? LEngineHypothesisRead(string language)`
 
 The reconstruction the language's pack declares, or `null` for a blank language or a pack without one.

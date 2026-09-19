@@ -102,7 +102,7 @@ public partial class PWindow
         Dictionary<LReferenceKind, string> kinds = [];
         foreach (LReferenceKind kind in System.Enum.GetValues<LReferenceKind>())
         {
-            kinds[kind] = PLocalizationCatalog.PLocalizationTextRead(PReference.PReferenceKindRead(kind));
+            kinds[kind] = PLocalizationCatalog.PLocalizationTextRead(LReference.LReferenceKindResolve(kind));
         }
 
         return new LPortraitLegend(
