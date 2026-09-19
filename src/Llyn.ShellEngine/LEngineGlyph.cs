@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -19,7 +19,7 @@ public sealed partial class LEngine
         string headword = character.Trim();
         lock (_lEngineGate)
         {
-            foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(headword))
+            foreach (LEntry entry in _lEngineEntries.LEntryFind(headword))
             {
                 if (string.Equals(entry.LEntryHeadword, headword, StringComparison.Ordinal)
                     && string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))

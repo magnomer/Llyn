@@ -13,7 +13,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(entry);
-            return new LEntryArchive(_lEngineDatabase).LEntryCreate(entry, forms, speeches);
+            return _lEngineEntries.LEntryCreate(entry, forms, speeches);
         }
     }
 
@@ -21,7 +21,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LEntryArchive(_lEngineDatabase).LEntryRead(id);
+            return _lEngineEntries.LEntryRead(id);
         }
     }
 
@@ -29,7 +29,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LEntryArchive(_lEngineDatabase).LEntryFind(query);
+            return _lEngineEntries.LEntryFind(query);
         }
     }
 
@@ -38,7 +38,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return LCatalogEntry.LCatalogEntrySort(
-                new LEntryArchive(_lEngineDatabase).LEntryFind(query),
+                _lEngineEntries.LEntryFind(query),
                 order);
         }
     }
@@ -54,7 +54,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(tag);
-            return new LEntryArchive(_lEngineDatabase).LEntryTagFind(tag.LTagId);
+            return _lEngineEntries.LEntryTagFind(tag.LTagId);
         }
     }
 
@@ -75,7 +75,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(register);
-            return new LEntryArchive(_lEngineDatabase).LEntryRegisterFind(register.LRegisterId);
+            return _lEngineEntries.LEntryRegisterFind(register.LRegisterId);
         }
     }
 
@@ -96,7 +96,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(situation);
-            return new LEntryArchive(_lEngineDatabase).LEntrySituationFind(situation.LSituationId);
+            return _lEngineEntries.LEntrySituationFind(situation.LSituationId);
         }
     }
 
@@ -114,7 +114,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(example);
-            return new LEntryArchive(_lEngineDatabase).LEntryExampleFind(example.LExampleId);
+            return _lEngineEntries.LEntryExampleFind(example.LExampleId);
         }
     }
 
@@ -132,7 +132,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(reference);
-            return new LEntryArchive(_lEngineDatabase).LEntryReferenceFind(reference.LReferenceId);
+            return _lEngineEntries.LEntryReferenceFind(reference.LReferenceId);
         }
     }
 
@@ -157,7 +157,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LEntryDraft? draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(id);
+            LEntryDraft? draft = _lEngineEntries.LEntryLoad(id);
             if (draft is null)
             {
                 return null;
@@ -206,21 +206,18 @@ public sealed partial class LEngine
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
-            LEntryArchive entries = new(_lEngineDatabase);
-            LEntry? deleted = entries.LEntryRead(id);
-            entries.LEntryDelete(id);
+            LEntry? deleted = _lEngineEntries.LEntryRead(id);
+            _lEngineEntries.LEntryDelete(id);
 
             LRevisionChange change = new(0, id, "entry", "delete", deleted?.LEntryHeadword);
-            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
-            new LTombstoneArchive(_lEngineDatabase).LTombstoneRecord(id, revision.LRevisionId);
+            LRevision revision = _lEngineRevisions.LRevisionRecord([change]);
+            _lEngineTombstones.LTombstoneRecord(id, revision.LRevisionId);
+            LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+            _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
-            LWorkspaceArchive workspace = new(_lEngineDatabase);
-            LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
             recorded = revision;
         }
 
@@ -232,7 +229,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LTombstoneArchive(_lEngineDatabase).LTombstoneRead(entryId);
+            return _lEngineTombstones.LTombstoneRead(entryId);
         }
     }
 
@@ -240,8 +237,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            long? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevision;
-            return id is null ? null : new LRevisionArchive(_lEngineDatabase).LRevisionRead(id.Value);
+            long? id = _lEngineWorkspaces.LWorkspaceStateRead().LWorkspaceStateRevision;
+            return id is null ? null : _lEngineRevisions.LRevisionRead(id.Value);
         }
     }
 
@@ -249,7 +246,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LRevisionArchive(_lEngineDatabase).LRevisionChangeRead(revisionId);
+            return _lEngineRevisions.LRevisionChangeRead(revisionId);
         }
     }
 }

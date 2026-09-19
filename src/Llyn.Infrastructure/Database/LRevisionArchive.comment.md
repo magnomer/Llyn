@@ -1,6 +1,8 @@
-# LRevisionArchive.cs
+﻿# LRevisionArchive.cs
 
-## `public sealed class LRevisionArchive`
+## `public sealed class LRevisionArchive : LRevisionVault`
+
+It is the adapter of `LRevisionVault`, the port the engine holds.
 
 Persists revisions and the ordered changes recorded under them.
 A revision is written once, complete.

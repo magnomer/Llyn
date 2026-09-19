@@ -13,12 +13,12 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(situation);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
             LSituationArchive situations = new(_lEngineDatabase);
             LSituation stored = situations.LSituationCreate(situation);
             LEngineMediaSync(stored.LSituationId, situation);
             stored = situations.LSituationRead(stored.LSituationId) ?? stored;
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
             return stored;
         }
     }
@@ -132,10 +132,10 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(situation);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
             new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
             LEngineMediaSync(situation.LSituationId, situation);
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
         }
     }
 
@@ -198,7 +198,7 @@ public sealed partial class LEngine
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
             LEngineSituationDetach(ownerId, situationId, owner);
 
@@ -209,7 +209,7 @@ public sealed partial class LEngine
             }
 
             LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
         }
     }
 

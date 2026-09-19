@@ -42,7 +42,7 @@ public sealed partial class LEngine
 
             try
             {
-                LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, target with
+                _lEngineDrafts.LDraftSave(target with
                 {
                     LDraftContent = target.LDraftContent with
                     {
@@ -97,7 +97,7 @@ public sealed partial class LEngine
         {
             if (link.LCourtOwnerId != id)
             {
-                if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtOwnerId) is null)
+                if (_lEngineDrafts.LDraftRead(link.LCourtOwnerId) is null)
                 {
                     LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtId);
                 }
@@ -123,7 +123,7 @@ public sealed partial class LEngine
                 }
             }
 
-            LDraft? target = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId);
+            LDraft? target = _lEngineDrafts.LDraftRead(link.LCourtTargetId);
 
             if (claimed || target is null || !LEngineHoldCheck(link.LCourtTargetId))
             {
@@ -132,7 +132,7 @@ public sealed partial class LEngine
 
             _lEngineDraftHeld.Remove(link.LCourtTargetId);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, link.LCourtTargetId);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, link.LCourtTargetId);
+            _lEngineDrafts.LDraftDelete(link.LCourtTargetId);
         }
     }
 
@@ -152,7 +152,7 @@ public sealed partial class LEngine
 
     private void LEngineCourtUpdate(LCourt link, long realId)
     {
-        LDraft? owner = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtOwnerId);
+        LDraft? owner = _lEngineDrafts.LDraftRead(link.LCourtOwnerId);
         if (owner is null)
         {
             return;
@@ -167,7 +167,7 @@ public sealed partial class LEngine
         };
 
         LEngineChronicleClear(owner.LDraftId);
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, owner with { LDraftContent = content });
+        _lEngineDrafts.LDraftSave(owner with { LDraftContent = content });
     }
 
     private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(

@@ -1,7 +1,8 @@
 ﻿# LDraftArchive.cs
 
-## `public static class LDraftArchive`
+## `public sealed class LDraftArchive : LDraftVault`
 
+The adapter of `LDraftVault` for one workspace, whose root the constructor binds.
 Keeps tentative records as plain files in the workspace `drafts` folder, one file per draft named after its id.
 Nothing here reaches SQLite.
 A record the user has not committed must never appear in the database.
@@ -10,7 +11,11 @@ Two copies of the program may run against one workspace.
 Every operation touches a single named file and holds nothing open.
 The folder is never locked and a file this process did not write is never removed.
 
-## `public static void LDraftArchiveSave(string root, LDraft draft)`
+## `public LDraftArchive(string root)`
+
+Binds the store to the workspace `root` whose `drafts` folder it keeps.
+
+## `public void LDraftSave(LDraft draft)`
 
 Writes `draft` to `drafts/<LDraftId>.json`, replacing whatever was there.
 The text goes to a `.json.tmp` file first and is then moved over the target.
@@ -34,25 +39,25 @@ It moves whenever a draft-shaped record changes, so an older file is skipped rat
 Version two added the credited authors a source draft carries.
 Version three made the pronunciation a list and added the transcriptions beside it.
 
-## `public static LDraft? LDraftArchiveRead(string root, long id)`
+## `public LDraft? LDraftRead(long id)`
 
 The draft stored under `id`, or `null` when no readable file holds it.
 A missing file and an unknown one are the same answer to the caller.
 So is a file of another version, because a draft the current build did not write is not a draft.
 
-## `public static IReadOnlyList<LDraft> LDraftArchiveScan(string root)`
+## `public IReadOnlyList<LDraft> LDraftScan()`
 
 Every draft the folder holds.
 A file that fails to parse or cannot be opened is skipped rather than thrown.
 Recovery lists leftovers after a crash, which is exactly when a truncated file is likely.
 One bad file must not hide the rest.
 
-## `public static void LDraftArchiveDelete(string root, long id)`
+## `public void LDraftDelete(long id)`
 
 Removes the file for `id`, which is how a draft ends once its record is saved or abandoned.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static IReadOnlyList<long> LDraftArchiveSweep(string root)`
+## `public IReadOnlyList<long> LDraftSweep()`
 
 Deletes every half-written `.json.tmp` in the drafts folder that is older than an hour.
 It also sets aside every draft file of another version and returns the ids they carried.

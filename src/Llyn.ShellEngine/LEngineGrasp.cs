@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -11,7 +11,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            return new LEntryArchive(_lEngineDatabase).LEntryRead(entryId)?.LEntryGrasp ?? 0;
+            return _lEngineEntries.LEntryRead(entryId)?.LEntryGrasp ?? 0;
         }
     }
 
@@ -25,7 +25,7 @@ public sealed partial class LEngine
                 throw new ArgumentOutOfRangeException(nameof(grasp));
             }
 
-            new LEntryArchive(_lEngineDatabase).LEntryGraspSet(entryId, grasp);
+            _lEngineEntries.LEntryGraspSet(entryId, grasp);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);

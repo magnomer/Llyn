@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -19,7 +19,7 @@ public sealed partial class LEngine
                 }
             }
 
-            long entries = new LEntryArchive(_lEngineDatabase).LEntryCountRead();
+            long entries = _lEngineEntries.LEntryCountRead();
 
             FileInfo file = new(_lEngineDatabase.LDatabaseFile);
             long size = file.Exists ? file.Length : 0;

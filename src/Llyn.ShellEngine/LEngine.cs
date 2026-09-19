@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -33,6 +34,12 @@ public sealed partial class LEngine : IDisposable
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
+    private LVault _lEngineVault;
+    private LEntryVault _lEngineEntries;
+    private LDraftVault _lEngineDrafts;
+    private LRevisionVault _lEngineRevisions;
+    private LWorkspaceVault _lEngineWorkspaces;
+    private LTombstoneVault _lEngineTombstones;
     private LDoctorRescue _lEngineRescue;
     private LRealm _lEngineRealm;
     private LIdentity _lEngineIdentity;
@@ -48,6 +55,11 @@ public sealed partial class LEngine : IDisposable
     }
 
     internal LEngine(string workspace, HttpClient? client)
+        : this(workspace, client, null)
+    {
+    }
+
+    internal LEngine(string workspace, HttpClient? client, LEntryVault? entries)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
 
@@ -58,7 +70,13 @@ public sealed partial class LEngine : IDisposable
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);
         _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
         _lEngineRealm = new LRealmArchive(_lEngineDatabase).LRealmRead();
-        _lEngineIdentity = new LIdentity(_lEngineDatabase);
+        LEngineVaultSet();
+        if (entries is not null)
+        {
+            _lEngineEntries = entries;
+        }
+
+        _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
 
         LEngineLanguageImport();
         LEngineDiweiApply();
@@ -74,6 +92,23 @@ public sealed partial class LEngine : IDisposable
         };
         _lEngineClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
+    }
+
+    [MemberNotNull(
+        nameof(_lEngineVault),
+        nameof(_lEngineEntries),
+        nameof(_lEngineDrafts),
+        nameof(_lEngineRevisions),
+        nameof(_lEngineWorkspaces),
+        nameof(_lEngineTombstones))]
+    private void LEngineVaultSet()
+    {
+        _lEngineVault = _lEngineDatabase;
+        _lEngineEntries = new LEntryArchive(_lEngineDatabase);
+        _lEngineDrafts = new LDraftArchive(_lEngineWorkspace);
+        _lEngineRevisions = new LRevisionArchive(_lEngineDatabase);
+        _lEngineWorkspaces = new LWorkspaceArchive(_lEngineDatabase);
+        _lEngineTombstones = new LTombstoneArchive(_lEngineDatabase);
     }
 
     private long LEngineIdentityCreate()
@@ -155,7 +190,6 @@ public sealed partial class LEngine : IDisposable
             LDatabase database = new(root);
             LDoctorRescue rescue = LDoctor.LDoctorDatabaseCreate(database);
             LRealm realm = new LRealmArchive(database).LRealmRead();
-            LIdentity identity = new(database);
             LSettings settings = LSettingsLoader.LSettingsLoaderExist(root)
                 ? LSettingsLoader.LSettingsLoaderLoad(root)
                 : _lEngineSettings;
@@ -187,7 +221,8 @@ public sealed partial class LEngine : IDisposable
             _lEngineDatabase = database;
             _lEngineRescue = rescue;
             _lEngineRealm = realm;
-            _lEngineIdentity = identity;
+            LEngineVaultSet();
+            _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
             LEngineSettingsSave();
             LEngineLanguageImport();
             LEngineDiweiApply();

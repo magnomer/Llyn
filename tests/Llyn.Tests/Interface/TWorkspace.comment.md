@@ -1,4 +1,4 @@
-# TWorkspace.cs
+﻿# TWorkspace.cs
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -42,6 +42,11 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 ## `public LEngine TWorkspaceEngineStart(HttpClient client)`
 
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
+
+## `public LEngine TWorkspaceEngineStart(LEntryVault entries)`
+
+Binds an engine whose entry vault is `entries` rather than the workspace database.
+A test can then prove a read never reaches SQLite.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 

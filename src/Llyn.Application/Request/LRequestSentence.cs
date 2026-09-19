@@ -1,4 +1,6 @@
-namespace Llyn.Core;
+using Llyn.Core;
+
+namespace Llyn.Application;
 
 public sealed record LRequestSentenceAddition(long LRequestDraftId, long LRequestCardId, int LRequestPosition)
     : LRequest(LRequestDraftId);

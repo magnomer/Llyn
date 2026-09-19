@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -30,7 +31,7 @@ public sealed partial class LEngine
                 content,
                 DateTimeOffset.UtcNow);
 
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+            _lEngineDrafts.LDraftSave(draft);
             LClaimArchive.LClaimArchiveSave(
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
@@ -95,7 +96,7 @@ public sealed partial class LEngine
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            return LEngineCreditUpdate(LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id));
+            return LEngineCreditUpdate(_lEngineDrafts.LDraftRead(id));
         }
     }
 
@@ -120,7 +121,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return LDraftArchive.LDraftArchiveScan(_lEngineWorkspace);
+            return _lEngineDrafts.LDraftScan();
         }
     }
 
@@ -135,7 +136,7 @@ public sealed partial class LEngine
             LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+            _lEngineDrafts.LDraftDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
@@ -158,7 +159,7 @@ public sealed partial class LEngine
 
             LEngineDraftValidate(id);
 
-            LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+            LDraft? draft = _lEngineDrafts.LDraftRead(id);
             if (draft is null)
             {
                 return false;
@@ -207,7 +208,7 @@ public sealed partial class LEngine
             LEngineDraftValidate(id);
 
             saved = LEngineDraftLoad(id).LDraftNormalize();
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
+            _lEngineDrafts.LDraftSave(saved);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
@@ -228,11 +229,11 @@ public sealed partial class LEngine
             List<long> finished = [];
             List<Action> written = [];
 
-            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
+            using (LVaultSession session = _lEngineVault.LVaultSessionStart())
             {
                 outcome = LEngineDraftCommit(id, true, loaded, settled, deferred, finished, written);
                 LEngineCourtApply(loaded, settled, deferred);
-                session.LDatabaseSessionCommit();
+                session.LVaultSessionCommit();
             }
 
             foreach (Action step in written)
@@ -245,7 +246,7 @@ public sealed partial class LEngine
                 _lEngineDraftHeld.Remove(done);
                 LEngineChronicleClear(done);
                 LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, done);
-                LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, done);
+                _lEngineDrafts.LDraftDelete(done);
             }
 
             _lEngineTrove.LTroveClear(id);
@@ -294,7 +295,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId) is null)
+            if (_lEngineDrafts.LDraftRead(link.LCourtTargetId) is null)
             {
                 continue;
             }
@@ -327,7 +328,7 @@ public sealed partial class LEngine
         }
 
         long entryId = entry.LEntryId;
-        written.Add(() => LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved));
+        written.Add(() => _lEngineDrafts.LDraftSave(saved));
         written.Add(() =>
         {
             foreach (LCourt link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
@@ -362,7 +363,7 @@ public sealed partial class LEngine
             LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+            _lEngineDrafts.LDraftDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
@@ -420,7 +421,7 @@ public sealed partial class LEngine
     {
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id)
+        return _lEngineDrafts.LDraftRead(id)
             ?? throw new LRefusal(LRefusal.LRefusalDraft);
     }
 }

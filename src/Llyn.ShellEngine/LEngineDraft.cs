@@ -28,9 +28,9 @@ public sealed partial class LEngine
                 LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim(),
             });
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
-            LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
+            LEntry entry = _lEngineEntries.LEntryCreate(
                 new LEntry(
                     0,
                     draft.LEntryDraftHeadword,
@@ -93,13 +93,11 @@ public sealed partial class LEngine
             LEngineParadigmUpdate(entry);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
-            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+            LRevision revision = _lEngineRevisions.LRevisionRecord([change]);
+            LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+            _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
-            LWorkspaceArchive workspace = new(_lEngineDatabase);
-            LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
             LEngineFrequencyStart(entry.LEntryId);
             return entry;
         }

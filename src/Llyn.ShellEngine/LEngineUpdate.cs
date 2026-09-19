@@ -19,9 +19,9 @@ public sealed partial class LEngine
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             ArgumentNullException.ThrowIfNull(draft);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
-            LEntry stored = new LEntryArchive(_lEngineDatabase).LEntryRead(id)
+            LEntry stored = _lEngineEntries.LEntryRead(id)
                 ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
             List<LRevisionChange> changes = [];
@@ -29,14 +29,12 @@ public sealed partial class LEngine
 
             if (changes.Count > 0)
             {
-                LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
-
-                LWorkspaceArchive workspace = new(_lEngineDatabase);
-                LWorkspaceState state = workspace.LWorkspaceStateRead();
-                workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
+                LRevision revision = _lEngineRevisions.LRevisionRecord(changes);
+                LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+                _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
             }
 
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
             bool renamed =
                 !string.Equals(stored.LEntryHeadword, updated.LEntryHeadword, StringComparison.Ordinal) ||
                 !string.Equals(stored.LEntryLanguage, updated.LEntryLanguage, StringComparison.Ordinal);
@@ -64,13 +62,12 @@ public sealed partial class LEngine
 
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
-        LEntryArchive entries = new(_lEngineDatabase);
-        LEntry stored = entries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
+        LEntry stored = _lEngineEntries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
         LEntryDraft? origin = LEngineEntryLoad(id);
 
         if (origin is null || !LEngineDraftMatch(origin, draft))
         {
-            entries.LEntryUpdate(stored with
+            _lEngineEntries.LEntryUpdate(stored with
             {
                 LEntryHeadword = draft.LEntryDraftHeadword,
                 LEntryLanguage = draft.LEntryDraftLanguage,
@@ -103,8 +100,8 @@ public sealed partial class LEngine
             changes,
             identity);
 
-        LEngineSpeechUpdate(entries, id, draft, changes);
-        LEngineFormUpdate(entries, id, draft, changes);
+        LEngineSpeechUpdate(_lEngineEntries, id, draft, changes);
+        LEngineFormUpdate(_lEngineEntries, id, draft, changes);
         LEngineInflectionUpdate(id, draft, changes);
         LEngineInflectionReset(id);
         LEngineNoteUpdate(id, draft, changes);
@@ -112,7 +109,7 @@ public sealed partial class LEngine
         LEngineTranscriptionSync(id, draft.LEntryDraftTranscriptions, changes, identity);
         LEngineReflexSync(id, draft.LEntryDraftLanguage, draft.LEntryDraftReflexes, changes, identity);
 
-        LEntry updated = entries.LEntryRead(id) ?? stored;
+        LEntry updated = _lEngineEntries.LEntryRead(id) ?? stored;
         LEngineParadigmUpdate(updated);
         session.LDatabaseSessionCommit();
         return updated;
@@ -120,21 +117,19 @@ public sealed partial class LEngine
 
     private void LEngineRevisionRecord(long target, string subject, string kind, string? summary)
     {
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+        using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
         LRevisionChange change = new(0, target, subject, kind, summary);
-        LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+        LRevision revision = _lEngineRevisions.LRevisionRecord([change]);
+        LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+        _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
-        LWorkspaceArchive workspace = new(_lEngineDatabase);
-        LWorkspaceState state = workspace.LWorkspaceStateRead();
-        workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-        session.LDatabaseSessionCommit();
+        session.LVaultSessionCommit();
     }
 
     private void LEngineUpdatedSet(long entryId)
     {
-        new LEntryArchive(_lEngineDatabase).LEntryUpdatedSet(entryId);
+        _lEngineEntries.LEntryUpdatedSet(entryId);
     }
 
     private void LEngineUpdatedSet(long ownerId, bool collocation)
@@ -150,7 +145,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineSpeechUpdate(
-        LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         IReadOnlyList<LSpeech> stored = entries.LEntrySpeechRead(entryId);
         IReadOnlyList<LSpeech> current = LEngineSpeechResolve(
@@ -171,7 +166,7 @@ public sealed partial class LEngine
     }
 
     private static void LEngineFormUpdate(
-        LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         IReadOnlyList<LForm> stored = entries.LEntryFormRead(entryId);
         IReadOnlyList<LForm> current = draft.LEntryDraftForms;

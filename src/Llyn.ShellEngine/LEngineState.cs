@@ -10,7 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead();
+            return _lEngineWorkspaces.LWorkspaceStateRead();
         }
     }
 
@@ -28,8 +28,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LWorkspaceArchive workspace = new(_lEngineDatabase);
-            workspace.LWorkspaceStateSave(change(workspace.LWorkspaceStateRead()));
+            _lEngineWorkspaces.LWorkspaceStateSave(change(_lEngineWorkspaces.LWorkspaceStateRead()));
         }
     }
 }

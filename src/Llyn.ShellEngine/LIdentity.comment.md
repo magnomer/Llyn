@@ -24,9 +24,9 @@ Drafts, court links, and claims are files named by the id they were issued.
 A counter that restarted at zero with the process would name a new draft after a file still on disk.
 So the floor lives in the workspace database and every issue lowers it there before the id is used.
 
-## `public LIdentity(LDatabase database)`
+## `public LIdentity(LWorkspaceVault workspaces)`
 
-Binds the issuer to the workspace `database` whose floor it lowers.
+Binds the issuer to the workspace vault whose floor it lowers.
 
 ## `public long LIdentityFloor`
 

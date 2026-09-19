@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -219,7 +219,7 @@ public sealed partial class LEngine
 
     private void LEngineLanguageImport()
     {
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+        using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
         LSpeechArchive speeches = new(_lEngineDatabase);
         LMorphologyArchive morphology = new(_lEngineDatabase);
@@ -257,6 +257,6 @@ public sealed partial class LEngine
             }
         }
 
-        session.LDatabaseSessionCommit();
+        session.LVaultSessionCommit();
     }
 }

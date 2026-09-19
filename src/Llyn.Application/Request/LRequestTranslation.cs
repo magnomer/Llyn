@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestTranslationPick(
     long LRequestDraftId, long LRequestCardId, long LRequestEntryId, int LRequestPosition)

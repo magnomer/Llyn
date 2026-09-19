@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LTombstoneArchive
+public sealed class LTombstoneArchive : LTombstoneVault
 {
     private readonly LDatabase _lTombstoneArchiveDatabase;
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -9,8 +9,8 @@ public sealed partial class LEngine
 {
     private void LEngineWorkspaceUpdate()
     {
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(string.Empty))
+        using LVaultSession session = _lEngineVault.LVaultSessionStart();
+        foreach (LEntry entry in _lEngineEntries.LEntryFind(string.Empty))
         {
             try
             {
@@ -24,7 +24,7 @@ public sealed partial class LEngine
             }
         }
 
-        session.LDatabaseSessionCommit();
+        session.LVaultSessionCommit();
     }
 
     private void LEngineRespellingUpdate(LEntry entry)

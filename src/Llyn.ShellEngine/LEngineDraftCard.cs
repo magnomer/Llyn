@@ -76,7 +76,7 @@ public sealed partial class LEngine
 
         LDraft saved = draft with { LDraftContent = content };
         LEngineChronicleRecord(draft, saved, null);
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
+        _lEngineDrafts.LDraftSave(saved);
         return cards;
     }
 }

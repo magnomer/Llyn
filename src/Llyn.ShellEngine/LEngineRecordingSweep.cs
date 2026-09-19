@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
@@ -26,7 +26,7 @@ public sealed partial class LEngine
                 LEngineRecordingPlace(kept, file);
             }
 
-            foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+            foreach (LDraft draft in _lEngineDrafts.LDraftScan())
             {
                 foreach (LPronunciationDraft spoken in draft.LDraftContent.LEntryDraftPronunciations)
                 {

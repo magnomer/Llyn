@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -137,7 +138,7 @@ public sealed partial class LEngine
         }
 
         kept.Add(current);
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, restored);
+        _lEngineDrafts.LDraftSave(restored);
         return restored;
     }
 }

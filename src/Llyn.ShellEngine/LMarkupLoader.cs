@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -9,16 +9,19 @@ namespace Llyn.ShellEngine;
 internal sealed class LMarkupLoader
 {
     private readonly LDatabase _lMarkupLoaderDatabase;
+    private readonly LEntryVault _lMarkupLoaderEntries;
 
-    public LMarkupLoader(LDatabase database)
+    public LMarkupLoader(LDatabase database, LEntryVault entries)
     {
         ArgumentNullException.ThrowIfNull(database);
+        ArgumentNullException.ThrowIfNull(entries);
         _lMarkupLoaderDatabase = database;
+        _lMarkupLoaderEntries = entries;
     }
 
     public LMarkupEntry? LMarkupLoad(long id)
     {
-        LEntryDraft? draft = new LEntryLoader(_lMarkupLoaderDatabase).LEntryLoad(id);
+        LEntryDraft? draft = _lMarkupLoaderEntries.LEntryLoad(id);
         if (draft is null)
         {
             return null;
@@ -157,11 +160,10 @@ internal sealed class LMarkupLoader
 
     private IReadOnlyList<LMarkupTranslation> LMarkupTranslationCreate(IReadOnlyList<long> ids)
     {
-        LEntryArchive entries = new(_lMarkupLoaderDatabase);
         List<LMarkupTranslation> translations = new(ids.Count);
         foreach (long id in ids)
         {
-            if (entries.LEntryRead(id) is LEntry entry)
+            if (_lMarkupLoaderEntries.LEntryRead(id) is LEntry entry)
             {
                 translations.Add(new LMarkupTranslation(entry.LEntryHeadword, entry.LEntryLanguage));
             }
@@ -195,7 +197,7 @@ internal sealed class LMarkupLoader
     private LMarkupMention LMarkupMentionCreate(LMentionDraft mention)
     {
         if (mention.LMentionDraftEntry <= 0
-            || new LEntryArchive(_lMarkupLoaderDatabase).LEntryRead(mention.LMentionDraftEntry) is not LEntry entry)
+            || _lMarkupLoaderEntries.LEntryRead(mention.LMentionDraftEntry) is not LEntry entry)
         {
             return new LMarkupMention(
                 mention.LMentionDraftOffset, mention.LMentionDraftLength, string.Empty, string.Empty);

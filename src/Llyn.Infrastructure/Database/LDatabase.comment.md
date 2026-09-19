@@ -1,6 +1,6 @@
-# LDatabase.cs
+﻿# LDatabase.cs
 
-## `public sealed class LDatabase`
+## `public sealed class LDatabase : LVault`
 
 Owns the SQLite database that lives as `llyn.db` inside the user's workspace folder.
 That is the only place it ever lives (`LWorkspaceRoot.LWorkspaceDatabaseRead`).
@@ -67,6 +67,10 @@ Its commit and disposal do nothing.
 So the outermost session alone decides whether the work lands.
 A start from any other thread while one is open throws instead.
 Nesting is how one operation composes several stores, and that only ever happens on the thread running it.
+
+## `LVaultSession LVault.LVaultSessionStart()`
+
+The port face of `LDatabaseSessionStart`, through which the engine opens a session without naming SQLite.
 
 ## `public void LDatabaseCreate()`
 

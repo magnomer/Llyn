@@ -1,4 +1,6 @@
-namespace Llyn.Core;
+using Llyn.Core;
+
+namespace Llyn.Application;
 
 public sealed record LRequestCardAddition(
     long LRequestDraftId, LCardKind LRequestKind, long LRequestParentId, int LRequestPosition)

@@ -210,7 +210,7 @@ public sealed partial class LEngine
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
             LEngineExampleDetach(ownerId, exampleId, owner);
 
@@ -221,7 +221,7 @@ public sealed partial class LEngine
             }
 
             LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
         }
     }
 

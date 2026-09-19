@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestTagAddition(
     long LRequestDraftId, long LRequestCardId, string LRequestText, int LRequestPosition)

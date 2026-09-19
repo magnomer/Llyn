@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
@@ -10,7 +10,7 @@ public sealed partial class LEngine
 {
     private IReadOnlyList<LEntry> LEngineMarkupFind(string headword, string language)
     {
-        return new LEntryArchive(_lEngineDatabase).LEntryHeadwordFind(language.Trim(), headword.Trim());
+        return _lEngineEntries.LEntryHeadwordFind(language.Trim(), headword.Trim());
     }
 
     private LExampleDraft LEngineMarkupResolve(

@@ -8,7 +8,7 @@ internal static class TAuditRingSetting
     {
         ["EngineField"] = 21,
         ["EngineHelper"] = 75,
-        ["AdapterEngine"] = 253,
+        ["AdapterEngine"] = 177,
     };
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditRingEdges = new Dictionary<string, string[]>

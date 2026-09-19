@@ -278,11 +278,10 @@ public sealed partial class LEngine
     private void LEngineTranslationSave(
         long ownerId, IReadOnlyList<long> ids, bool collocation)
     {
-        LEntryArchive entries = new(_lEngineDatabase);
         List<LTranslation> written = new(ids.Count);
         foreach (long id in ids)
         {
-            if (id > 0 && entries.LEntryRead(id) is not null)
+            if (id > 0 && _lEngineEntries.LEntryRead(id) is not null)
             {
                 written.Add(new LTranslation(id, 0));
             }

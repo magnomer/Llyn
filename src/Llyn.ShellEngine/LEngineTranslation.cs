@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -38,7 +38,7 @@ public sealed partial class LEngine
             string written = LCatalog.LCatalogTextNormalize(query);
             List<LEntry> exact = [];
             List<LEntry> partial = [];
-            foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
+            foreach (LEntry entry in _lEngineEntries.LEntryFind(query))
             {
                 if (entryId > 0 && entry.LEntryId == entryId)
                 {
@@ -111,21 +111,19 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
             ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
-            entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
+            entry = _lEngineEntries.LEntryCreate(
                 new LEntry(0, headword.Trim(), language, 0, null, null),
                 forms: [],
                 speeches: []);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
-            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+            LRevision revision = _lEngineRevisions.LRevisionRecord([change]);
+            LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+            _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
-            LWorkspaceArchive workspace = new(_lEngineDatabase);
-            LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
             LEngineFrequencyStart(entry.LEntryId);
         }
 
@@ -200,7 +198,7 @@ public sealed partial class LEngine
         {
             return LEngineUsageResolve(
                 new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(entryId),
-                new LEntryArchive(_lEngineDatabase),
+                _lEngineEntries,
                 _lEngineSettings.LSettingsEpithet);
         }
     }

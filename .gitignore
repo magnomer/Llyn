@@ -100,8 +100,6 @@ $RECYCLE.BIN/
 /*.json
 
 # Except this one
-!/auditnames.json
-!/auditnui.json
 !/version.json
 
 # Temporary gitignore

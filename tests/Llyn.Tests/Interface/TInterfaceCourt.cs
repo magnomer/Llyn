@@ -48,22 +48,22 @@ internal static partial class TInterface
 
     internal static void TDraftArchiveDelete(string root, long id)
     {
-        LDraftArchive.LDraftArchiveDelete(root, id);
+        new LDraftArchive(root).LDraftDelete(id);
     }
 
     internal static LDraft? TDraftArchiveRead(string root, long id) =>
-        LDraftArchive.LDraftArchiveRead(root, id);
+        new LDraftArchive(root).LDraftRead(id);
 
     internal static void TDraftArchiveSave(string root, LDraft draft)
     {
-        LDraftArchive.LDraftArchiveSave(root, draft);
+        new LDraftArchive(root).LDraftSave(draft);
     }
 
     internal static IReadOnlyList<LDraft> TDraftArchiveScan(string root) =>
-        LDraftArchive.LDraftArchiveScan(root);
+        new LDraftArchive(root).LDraftScan();
 
     internal static void TDraftArchiveSweep(string root)
     {
-        LDraftArchive.LDraftArchiveSweep(root);
+        new LDraftArchive(root).LDraftSweep();
     }
 }

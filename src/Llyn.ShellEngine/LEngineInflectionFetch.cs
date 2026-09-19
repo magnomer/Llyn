@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -78,7 +78,7 @@ public sealed partial class LEngine
                 return;
             }
 
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null || LEngineInflectionLoad(entry.LEntryLanguage).Count == 0)
             {
                 return;
@@ -136,7 +136,7 @@ public sealed partial class LEngine
     {
         foreach (long held in _lEngineDraftHeld)
         {
-            LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, held);
+            LDraft? draft = _lEngineDrafts.LDraftRead(held);
             if (draft is not null && draft.LDraftEntryId == entryId)
             {
                 return draft;
@@ -199,7 +199,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                LEntry? current = new LEntryArchive(_lEngineDatabase).LEntryRead(entry.LEntryId);
+                LEntry? current = _lEngineEntries.LEntryRead(entry.LEntryId);
                 if (current is null
                     || !string.Equals(current.LEntryHeadword, entry.LEntryHeadword, StringComparison.Ordinal)
                     || !string.Equals(current.LEntryLanguage, entry.LEntryLanguage, StringComparison.Ordinal)

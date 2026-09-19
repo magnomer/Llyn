@@ -1,6 +1,8 @@
 ﻿# LEntryArchive.cs
 
-## `public sealed partial class LEntryArchive`
+## `public sealed partial class LEntryArchive : LEntryVault`
+
+It is the adapter of `LEntryVault`, the port the engine holds.
 
 Persists entries and their two owned child structures — written forms and parts of speech — in the workspace database.
 An entry's id and timestamps are assigned here on creation.
@@ -26,6 +28,10 @@ The whole write is one transaction.
 ## `public LEntry? LEntryRead(long id)`
 
 Reads the entry row for `id`, or `null` when no entry has that id.
+
+## `public LEntryDraft? LEntryLoad(long id)`
+
+Assembles the whole editable content of the entry through `LEntryLoader`, which stays this store's helper.
 
 ## `public IReadOnlyList<LForm> LEntryFormRead(long id)`
 

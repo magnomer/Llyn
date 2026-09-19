@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,7 +50,7 @@ public sealed partial class LEngine
         LEntry? entry;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
         }
 
         if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
@@ -88,7 +88,7 @@ public sealed partial class LEngine
         LEntry? entry;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
         }
 
         return LFanqieGroup.LFanqieGroupScan(rows, LEngineBookRead(entry?.LEntryLanguage ?? string.Empty));
@@ -99,7 +99,7 @@ public sealed partial class LEngine
         LEntry? entry;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
         }
 
         if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
@@ -127,7 +127,7 @@ public sealed partial class LEngine
         LEntry? entry;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
         }
 
         if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
@@ -151,7 +151,7 @@ public sealed partial class LEngine
         LEntry? entry;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null)
             {
                 return false;

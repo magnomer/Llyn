@@ -1,4 +1,4 @@
-# LMarkupLoader.cs
+﻿# LMarkupLoader.cs
 
 ## `internal sealed class LMarkupLoader`
 
@@ -7,9 +7,9 @@ It is the sibling of `LEntryLoader`, which answers the same rows as a draft.
 Every id a stored row carries is translated into the words a reader could type.
 It sits beside the engine because it needs every archive and answers only the engine.
 
-## `public LMarkupLoader(LDatabase database)`
+## `public LMarkupLoader(LDatabase database, LEntryVault entries)`
 
-Holds the database every archive is opened over.
+Holds the database the remaining archives are opened over and the entry vault the engine already holds.
 
 ## `public LMarkupEntry? LMarkupLoad(long id)`
 

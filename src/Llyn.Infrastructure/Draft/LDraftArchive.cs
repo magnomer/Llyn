@@ -7,8 +7,10 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LDraftArchive
+public sealed class LDraftArchive : LDraftVault
 {
+    private readonly string _lDraftArchiveRoot;
+
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
@@ -18,14 +20,19 @@ public static class LDraftArchive
 
     private static readonly JsonSerializerOptions LDraftArchiveIndent = new() { WriteIndented = true };
 
-    public static void LDraftArchiveSave(string root, LDraft draft)
+    public LDraftArchive(string root)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        _lDraftArchiveRoot = root;
+    }
+
+    public void LDraftSave(LDraft draft)
+    {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentOutOfRangeException.ThrowIfZero(draft.LDraftId);
         LDraftArchiveValidate(draft);
 
-        string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceDraftRead(_lDraftArchiveRoot);
         string stem = draft.LDraftId.ToString(CultureInfo.InvariantCulture);
         string pending = Path.Combine(folder, stem + LDraftArchivePending);
         string path = Path.Combine(folder, stem + LDraftArchiveExtension);
@@ -36,22 +43,19 @@ public static class LDraftArchive
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
-    public static LDraft? LDraftArchiveRead(string root, long id)
+    public LDraft? LDraftRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceDraftRead(root),
+            LWorkspaceRoot.LWorkspaceDraftRead(_lDraftArchiveRoot),
             id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         return LDraftArchiveLoad(path);
     }
 
-    public static IReadOnlyList<LDraft> LDraftArchiveScan(string root)
+    public IReadOnlyList<LDraft> LDraftScan()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
-
-        string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceDraftRead(_lDraftArchiveRoot);
 
         string[] files;
         try
@@ -84,13 +88,12 @@ public static class LDraftArchive
         return drafts;
     }
 
-    public static void LDraftArchiveDelete(string root, long id)
+    public void LDraftDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
         string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceDraftRead(root),
+            LWorkspaceRoot.LWorkspaceDraftRead(_lDraftArchiveRoot),
             id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         try
         {
@@ -104,11 +107,9 @@ public static class LDraftArchive
         }
     }
 
-    public static IReadOnlyList<long> LDraftArchiveSweep(string root)
+    public IReadOnlyList<long> LDraftSweep()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
-
-        string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
+        string folder = LWorkspaceRoot.LWorkspaceDraftRead(_lDraftArchiveRoot);
 
         string[] pending;
         string[] files;
@@ -179,7 +180,7 @@ public static class LDraftArchive
                 continue;
             }
 
-            if (!LDraftBrokenSave(root, file))
+            if (!LDraftBrokenSave(_lDraftArchiveRoot, file))
             {
                 continue;
             }

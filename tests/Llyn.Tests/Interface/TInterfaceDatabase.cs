@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 
@@ -32,36 +32,39 @@ internal static partial class TInterface
         new(database);
 
     internal static LEntry TEntryCreate(
-        this LEntryArchive entryArchive,
+        this LEntryVault entryVault,
         LEntry entry,
         IReadOnlyList<LForm> forms,
         IReadOnlyList<LSpeech> speeches) =>
-        entryArchive.LEntryCreate(entry, forms, speeches);
+        entryVault.LEntryCreate(entry, forms, speeches);
 
-    internal static void TEntryDelete(this LEntryArchive entryArchive, long id)
+    internal static void TEntryDelete(this LEntryVault entryVault, long id)
     {
-        entryArchive.LEntryDelete(id);
+        entryVault.LEntryDelete(id);
     }
 
-    internal static IReadOnlyList<LEntry> TEntryFind(this LEntryArchive entryArchive, string query) =>
-        entryArchive.LEntryFind(query);
+    internal static IReadOnlyList<LEntry> TEntryFind(this LEntryVault entryVault, string query) =>
+        entryVault.LEntryFind(query);
 
     internal static IReadOnlyList<LEntry> TEntryHeadwordFind(
-        this LEntryArchive entryArchive, string language, string headword) =>
-        entryArchive.LEntryHeadwordFind(language, headword);
+        this LEntryVault entryVault, string language, string headword) =>
+        entryVault.LEntryHeadwordFind(language, headword);
 
-    internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryArchive entryArchive, long id) =>
-        entryArchive.LEntryFormRead(id);
+    internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryVault entryVault, long id) =>
+        entryVault.LEntryFormRead(id);
 
-    internal static LEntry? TEntryRead(this LEntryArchive entryArchive, long id) =>
-        entryArchive.LEntryRead(id);
+    internal static LEntry? TEntryRead(this LEntryVault entryVault, long id) =>
+        entryVault.LEntryRead(id);
 
-    internal static IReadOnlyList<LSpeech> TEntrySpeechRead(this LEntryArchive entryArchive, long id) =>
-        entryArchive.LEntrySpeechRead(id);
+    internal static LEntryDraft? TEntryLoad(this LEntryVault entryVault, long id) =>
+        entryVault.LEntryLoad(id);
 
-    internal static void TEntryUpdate(this LEntryArchive entryArchive, LEntry entry)
+    internal static IReadOnlyList<LSpeech> TEntrySpeechRead(this LEntryVault entryVault, long id) =>
+        entryVault.LEntrySpeechRead(id);
+
+    internal static void TEntryUpdate(this LEntryVault entryVault, LEntry entry)
     {
-        entryArchive.LEntryUpdate(entry);
+        entryVault.LEntryUpdate(entry);
     }
 
     internal static LExampleArchive TExampleArchiveCreate(LDatabase database) =>
@@ -248,8 +251,8 @@ internal static partial class TInterface
         this LFanqieArchive fanqieArchive, string language, string character) =>
         fanqieArchive.LFanqieRead(language, character);
 
-    internal static string TEntryEpithetRead(this LEntryArchive entryArchive, long entryId) =>
-        entryArchive.LEntryEpithetRead(entryId);
+    internal static string TEntryEpithetRead(this LEntryVault entryVault, long entryId) =>
+        entryVault.LEntryEpithetRead(entryId);
 
     internal static LVideoArchive TVideoArchiveCreate(LDatabase database) =>
         new(database);

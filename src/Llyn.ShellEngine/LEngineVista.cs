@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using Llyn.Core;
@@ -166,6 +166,6 @@ public sealed partial class LEngine
             ids[index] = entries[index].LEntryId;
         }
 
-        return new LEntryArchive(_lEngineDatabase).LEntryEpithetScan(ids);
+        return _lEngineEntries.LEntryEpithetScan(ids);
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -27,7 +27,7 @@ public sealed partial class LEngine
                 LDraftAuthorHeld = content,
             };
 
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+            _lEngineDrafts.LDraftSave(draft);
             LClaimArchive.LClaimArchiveSave(
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
@@ -49,7 +49,7 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
             LAuthor stored;
-            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
+            using (LVaultSession session = _lEngineVault.LVaultSessionStart())
             {
                 LAuthorArchive archive = new(_lEngineDatabase);
                 bool fresh = draft.LDraftEntryId == 0 || archive.LAuthorRead(draft.LDraftEntryId) is null;
@@ -64,17 +64,16 @@ public sealed partial class LEngine
                 }
 
                 LEngineRevisionRecord(stored.LAuthorId, "author", fresh ? "create" : "update", stored.LAuthorName);
-                session.LDatabaseSessionCommit();
+                session.LVaultSessionCommit();
             }
 
-            LDraftArchive.LDraftArchiveSave(
-                _lEngineWorkspace,
+            _lEngineDrafts.LDraftSave(
                 draft with { LDraftEntryId = stored.LAuthorId, LDraftAuthorHeld = stored });
 
             _lEngineDraftHeld.Remove(id);
             LEngineChronicleClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+            _lEngineDrafts.LDraftDelete(id);
             settled = stored;
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -27,7 +27,7 @@ public sealed partial class LEngine
                 null,
                 content);
 
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+            _lEngineDrafts.LDraftSave(draft);
             LClaimArchive.LClaimArchiveSave(
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
@@ -48,7 +48,7 @@ public sealed partial class LEngine
                 draft.LDraftSituation ?? throw new LRefusal(LRefusal.LRefusalSituation));
 
             LSituation stored;
-            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
+            using (LVaultSession session = _lEngineVault.LVaultSessionStart())
             {
                 bool fresh = draft.LDraftEntryId == 0 || LEngineSituationRead(draft.LDraftEntryId) is null;
                 if (fresh)
@@ -67,16 +67,15 @@ public sealed partial class LEngine
                     "situation",
                     fresh ? "create" : "update",
                     stored.LSituationTitle.LStateValueShow());
-                session.LDatabaseSessionCommit();
+                session.LVaultSessionCommit();
             }
 
-            LDraftArchive.LDraftArchiveSave(
-                _lEngineWorkspace,
+            _lEngineDrafts.LDraftSave(
                 draft with { LDraftEntryId = stored.LSituationId, LDraftSituation = stored });
 
             _lEngineDraftHeld.Remove(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+            _lEngineDrafts.LDraftDelete(id);
             settled = stored;
         }
 

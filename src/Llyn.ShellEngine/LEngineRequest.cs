@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -30,7 +31,7 @@ public sealed partial class LEngine
             }
 
             LEngineChronicleRecord(held, saved, request);
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
+            _lEngineDrafts.LDraftSave(saved);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);

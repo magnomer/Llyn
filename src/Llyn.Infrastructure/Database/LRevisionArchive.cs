@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LRevisionArchive
+public sealed class LRevisionArchive : LRevisionVault
 {
     private readonly LDatabase _lRevisionArchiveDatabase;
 

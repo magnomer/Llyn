@@ -1,6 +1,8 @@
-# LWorkspaceArchive.cs
+﻿# LWorkspaceArchive.cs
 
-## `public sealed class LWorkspaceArchive`
+## `public sealed class LWorkspaceArchive : LWorkspaceVault`
+
+It is the adapter of `LWorkspaceVault`, the port the engine holds.
 
 Persists the workspace row — the operational state of the session, not lexical data.
 There is one such row per database, carried under id 1.

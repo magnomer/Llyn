@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDatabase
+public sealed class LDatabase : LVault
 {
     private readonly string _lDatabaseFile;
 
@@ -98,6 +98,11 @@ public sealed class LDatabase
             _lDatabaseThread = Environment.CurrentManagedThreadId;
             return session;
         }
+    }
+
+    LVaultSession LVault.LVaultSessionStart()
+    {
+        return LDatabaseSessionStart();
     }
 
     public void LDatabaseCreate()

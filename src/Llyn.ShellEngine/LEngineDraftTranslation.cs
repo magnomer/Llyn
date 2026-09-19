@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -97,7 +97,6 @@ public sealed partial class LEngine
     private IReadOnlyList<LCardDraft> LEngineTranslationSettle(
         IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, long> identity)
     {
-        LEntryArchive entries = new(_lEngineDatabase);
         List<LCardDraft> written = new(cards.Count);
         foreach (LCardDraft card in cards)
         {
@@ -105,7 +104,7 @@ public sealed partial class LEngine
             foreach (long held in card.LCardDraftTranslation)
             {
                 long translation = identity.TryGetValue(held, out long settled) ? settled : held;
-                if (translation > 0 && entries.LEntryRead(translation) is not null)
+                if (translation > 0 && _lEngineEntries.LEntryRead(translation) is not null)
                 {
                     translations.Add(translation);
                 }

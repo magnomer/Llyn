@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LWorkspaceArchive
+public sealed class LWorkspaceArchive : LWorkspaceVault
 {
     private const long LWorkspaceArchiveRow = 1;
 

@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed partial class LEntryArchive
+public sealed partial class LEntryArchive : LEntryVault
 {
     private readonly LDatabase _lEntryArchiveDatabase;
 
@@ -69,6 +69,11 @@ public sealed partial class LEntryArchive
 
         using SqliteDataReader reader = command.ExecuteReader();
         return reader.Read() ? LEntryRowRead(reader) : null;
+    }
+
+    public LEntryDraft? LEntryLoad(long id)
+    {
+        return new LEntryLoader(_lEntryArchiveDatabase).LEntryLoad(id);
     }
 
     public IReadOnlyList<LForm> LEntryFormRead(long id)

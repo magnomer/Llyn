@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
@@ -17,8 +17,7 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            LEntryArchive entries = new(_lEngineDatabase);
-            LEntry? entry = entries.LEntryRead(entryId);
+            LEntry? entry = _lEngineEntries.LEntryRead(entryId);
             return entry is null ? [] : LEngineParadigmRead(entry);
         }
     }
@@ -42,7 +41,7 @@ public sealed partial class LEngine
         }
 
         List<LParadigmSlot> slots = [];
-        foreach (LSpeech speech in new LEntryArchive(_lEngineDatabase).LEntrySpeechRead(entry.LEntryId))
+        foreach (LSpeech speech in _lEngineEntries.LEntrySpeechRead(entry.LEntryId))
         {
             slots.AddRange(LEngineParadigmResolve(speech, pack, stored, missed));
         }
@@ -59,7 +58,7 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            LEntry? entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            LEntry? entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null)
             {
                 return [];
@@ -83,7 +82,7 @@ public sealed partial class LEngine
 
     private void LEngineParadigmUpdate(long entryId)
     {
-        LEntry? entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        LEntry? entry = _lEngineEntries.LEntryRead(entryId);
         if (entry is not null)
         {
             LEngineParadigmUpdate(entry);

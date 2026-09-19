@@ -1,4 +1,6 @@
-namespace Llyn.Core;
+using Llyn.Core;
+
+namespace Llyn.Application;
 
 public sealed record LRequestVideoAddition(
     long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)

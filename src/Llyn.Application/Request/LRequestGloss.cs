@@ -1,4 +1,6 @@
-namespace Llyn.Core;
+using Llyn.Core;
+
+namespace Llyn.Application;
 
 public sealed record LRequestGlossAddition(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, string LRequestLanguage, int LRequestPosition)

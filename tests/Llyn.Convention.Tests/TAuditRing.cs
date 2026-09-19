@@ -26,6 +26,11 @@ public sealed class TAuditRing
         @"\bLDatabaseSessionStart\(",
     ];
 
+    private static readonly string[] TAuditRingRequest =
+    [
+        @"\bLRequest\w*\b",
+    ];
+
     [Fact]
     public void AuditRing_Projects_ReferenceInward()
     {
@@ -101,6 +106,16 @@ public sealed class TAuditRing
     {
         TAuditRingCheck(
             "AdapterEngine", "Llyn.ShellEngine", TAuditRingAdapter, "adapter(s) built by the engine");
+    }
+
+    [Fact]
+    public void AuditRing_Core_HoldsNoRequest()
+    {
+        List<TViolation> hits = TAuditRingScan(TAuditRoleSelect("Llyn.Core"), TAuditRingRequest);
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{hits.Count} request record(s) sit in Core and must live in Application:\n" + string.Join(
+                '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
     }
 
     [Fact]

@@ -252,6 +252,7 @@ internal static class TAuditNameRegistry
         "Usage",
         "Usher",
         "Variety",
+        "Vault",
         "Video",
         "Vignette",
         "Violation",

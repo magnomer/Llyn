@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestTranscriptionAddition(
     long LRequestDraftId, string LRequestScheme, int LRequestPosition, bool LRequestSeeded = false)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Llyn.Core;
 
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestHeadword(long LRequestDraftId, string LRequestText)
     : LRequest(LRequestDraftId);

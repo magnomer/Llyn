@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Llyn.Core;
@@ -19,14 +19,13 @@ public sealed partial class LEngine
                 return string.Empty;
             }
 
-            return new LEntryArchive(_lEngineDatabase).LEntryEpithetRead(entryId);
+            return _lEngineEntries.LEntryEpithetRead(entryId);
         }
     }
 
     private void LEngineEpithetUpdate(long entryId)
     {
-        LEntryArchive entries = new(_lEngineDatabase);
-        LEntry? entry = entries.LEntryRead(entryId);
+        LEntry? entry = _lEngineEntries.LEntryRead(entryId);
         if (entry is null)
         {
             return;
@@ -36,7 +35,7 @@ public sealed partial class LEngine
         string epithet = LEngineEpithetCheck(rules)
             ? LEngineEpithetFormat(rules, new LReflexArchive(_lEngineDatabase).LReflexRead(entryId))
             : string.Empty;
-        entries.LEntryEpithetSave(entryId, epithet);
+        _lEngineEntries.LEntryEpithetSave(entryId, epithet);
     }
 
     private static bool LEngineEpithetCheck(IReadOnlyList<LReflexRule> rules)

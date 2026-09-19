@@ -1,4 +1,6 @@
-namespace Llyn.Core;
+using Llyn.Core;
+
+namespace Llyn.Application;
 
 public sealed record LRequestExampleText(long LRequestDraftId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);

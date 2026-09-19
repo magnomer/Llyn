@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
@@ -40,13 +40,12 @@ public sealed partial class LEngine
                 }
             }
 
-            LEntryArchive entries = new(_lEngineDatabase);
             bool separated = language.Length == 0 || LEngineLanguageLoad(language).LLanguageSeparated;
             List<Rune> runes = LEngineRuneRead(text);
 
             (int start, int length) = separated
                 ? (offset, 0)
-                : LEngineMentionScan(entries, runes, language, offset);
+                : LEngineMentionScan(_lEngineEntries, runes, language, offset);
 
             if (length == 0)
             {
@@ -60,7 +59,7 @@ public sealed partial class LEngine
 
             string word = LEngineRuneFormat(runes, start, length);
             List<LTranslationTarget> found = [];
-            foreach (LEntry entry in entries.LEntryHeadwordFind(language, word))
+            foreach (LEntry entry in _lEngineEntries.LEntryHeadwordFind(language, word))
             {
                 found.Add(new LTranslationTarget(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
             }
@@ -138,7 +137,7 @@ public sealed partial class LEngine
     }
 
     private static (int LEngineMentionOffset, int LEngineMentionLength) LEngineMentionScan(
-        LEntryArchive entries, List<Rune> runes, string language, int offset)
+        LEntryVault entries, List<Rune> runes, string language, int offset)
     {
         if (offset >= runes.Count)
         {

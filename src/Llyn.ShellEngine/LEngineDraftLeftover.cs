@@ -11,7 +11,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            IReadOnlyList<long> dropped = LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
+            IReadOnlyList<long> dropped = _lEngineDrafts.LDraftSweep();
             LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
 
             foreach (long id in dropped)
@@ -19,7 +19,7 @@ public sealed partial class LEngine
                 LEngineDraftCancel(id);
             }
 
-            foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+            foreach (LDraft draft in _lEngineDrafts.LDraftScan())
             {
                 if (_lEngineDraftHeld.Contains(draft.LDraftId)
                     || LEngineClaimCheck(draft.LDraftId)
@@ -87,7 +87,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             List<LDraft> leftovers = [];
-            foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+            foreach (LDraft draft in _lEngineDrafts.LDraftScan())
             {
                 if (_lEngineDraftHeld.Contains(draft.LDraftId)
                     || !LEngineDraftCheck(draft.LDraftId)

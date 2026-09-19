@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestReflexAddition(
     long LRequestDraftId, string LRequestLanguage, string LRequestKind, int LRequestPosition)

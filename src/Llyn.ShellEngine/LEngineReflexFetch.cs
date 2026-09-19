@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ public sealed partial class LEngine
                 return;
             }
 
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null
                 || LEngineReflexRead(entry.LEntryLanguage).Count == 0
                 || new LReflexArchive(_lEngineDatabase).LReflexRead(entryId).Count > 0)
@@ -50,7 +50,7 @@ public sealed partial class LEngine
                 return;
             }
 
-            LEntry? entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            LEntry? entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null || LEngineReflexRead(entry.LEntryLanguage).Count == 0)
             {
                 return;
@@ -209,7 +209,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                LEntry? current = new LEntryArchive(_lEngineDatabase).LEntryRead(entry.LEntryId);
+                LEntry? current = _lEngineEntries.LEntryRead(entry.LEntryId);
                 LReflexArchive reflexes = new(_lEngineDatabase);
                 if (current is null
                     || !string.Equals(current.LEntryHeadword, entry.LEntryHeadword, StringComparison.Ordinal)
@@ -279,7 +279,7 @@ public sealed partial class LEngine
         List<long> filled = [];
         foreach (long id in _lEngineDraftHeld)
         {
-            LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+            LDraft? draft = _lEngineDrafts.LDraftRead(id);
             if (draft is null
                 || draft.LDraftEntryId != entryId
                 || draft.LDraftExample is not null
@@ -291,8 +291,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            LDraftArchive.LDraftArchiveSave(
-                _lEngineWorkspace,
+            _lEngineDrafts.LDraftSave(
                 draft with { LDraftContent = draft.LDraftContent with { LEntryDraftReflexes = rows } });
             filled.Add(id);
         }

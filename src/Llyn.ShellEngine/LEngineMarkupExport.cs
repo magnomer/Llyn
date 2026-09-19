@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -17,7 +17,7 @@ public sealed partial class LEngine
         string text;
         lock (_lEngineGate)
         {
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
             List<LMarkupEntry> entries = new(ids.Count);
             foreach (long id in ids)
@@ -33,7 +33,7 @@ public sealed partial class LEngine
 
     private LMarkupEntry LEngineMarkupCreate(long id)
     {
-        return new LMarkupLoader(_lEngineDatabase).LMarkupLoad(id)
+        return new LMarkupLoader(_lEngineDatabase, _lEngineEntries).LMarkupLoad(id)
             ?? throw new LRefusal(LRefusal.LRefusalEntry);
     }
 }

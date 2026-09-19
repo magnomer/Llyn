@@ -1,6 +1,6 @@
-# LDatabaseSession.cs
+﻿# LDatabaseSession.cs
 
-## `public sealed class LDatabaseSession : IDisposable`
+## `public sealed class LDatabaseSession : LVaultSession, IDisposable`
 
 One unit of work against the workspace database: a connection and the transaction every statement in the unit runs in.
 A store asks `LDatabase.LDatabaseSessionStart` for one.
@@ -33,6 +33,10 @@ Finalizes the unit of work.
 On the outermost session the transaction is committed.
 Everything written since it started becomes visible.
 On a nested session nothing happens, because the outermost session has not finished yet.
+
+## `void LVaultSession.LVaultSessionCommit()`
+
+The port face of `LDatabaseSessionCommit`, called by the engine on the session its vault opened.
 
 ## `public void Dispose()`
 

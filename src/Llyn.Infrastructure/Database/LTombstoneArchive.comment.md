@@ -1,6 +1,8 @@
-# LTombstoneArchive.cs
+﻿# LTombstoneArchive.cs
 
-## `public sealed class LTombstoneArchive`
+## `public sealed class LTombstoneArchive : LTombstoneVault`
+
+It is the adapter of `LTombstoneVault`, the port the engine holds.
 
 Persists the record that an Entry was deleted.
 A tombstone is written after the Entry row is gone and names it as recorded text.

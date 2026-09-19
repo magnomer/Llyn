@@ -1,9 +1,10 @@
-using System;
+﻿using System;
+using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDatabaseSession : IDisposable
+public sealed class LDatabaseSession : LVaultSession, IDisposable
 {
     private readonly LDatabase? _lDatabaseSessionOwner;
     private readonly SqliteConnection _lDatabaseSessionLink;
@@ -36,6 +37,11 @@ public sealed class LDatabaseSession : IDisposable
 
         _lDatabaseSessionScope.Commit();
         _lDatabaseSessionDone = true;
+    }
+
+    void LVaultSession.LVaultSessionCommit()
+    {
+        LDatabaseSessionCommit();
     }
 
     public void Dispose()

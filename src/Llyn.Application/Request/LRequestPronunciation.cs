@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+namespace Llyn.Application;
 
 public sealed record LRequestPronunciationAddition(long LRequestDraftId, string LRequestText, int LRequestPosition)
     : LRequest(LRequestDraftId);

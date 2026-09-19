@@ -33,7 +33,7 @@ public sealed partial class LEngine
             LPronunciationArchive pronunciations = new(_lEngineDatabase);
 
             List<LCatalogPronunciation> rows = [];
-            foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
+            foreach (LEntry entry in _lEngineEntries.LEntryFind(query))
             {
                 IReadOnlyList<LPronunciation> spoken = pronunciations.LPronunciationRead(entry.LEntryId);
                 rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(

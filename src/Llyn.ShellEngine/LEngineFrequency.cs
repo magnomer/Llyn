@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -160,7 +160,7 @@ public sealed partial class LEngine
         bool missed;
         lock (_lEngineGate)
         {
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
             stored = entry is null ? [] : new LFrequencyArchive(_lEngineDatabase).LFrequencyRead(entryId);
             missed = _lEngineFrequencyMissed.Contains(entryId);
         }
@@ -212,7 +212,7 @@ public sealed partial class LEngine
                 return;
             }
 
-            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            entry = _lEngineEntries.LEntryRead(entryId);
             if (entry is null || LEngineFrequencyLoad(entry.LEntryLanguage).Count == 0)
             {
                 return;
@@ -274,7 +274,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                LEntry? current = new LEntryArchive(_lEngineDatabase).LEntryRead(entry.LEntryId);
+                LEntry? current = _lEngineEntries.LEntryRead(entry.LEntryId);
                 if (current is null
                     || !string.Equals(current.LEntryHeadword, entry.LEntryHeadword, StringComparison.Ordinal)
                     || !string.Equals(current.LEntryLanguage, entry.LEntryLanguage, StringComparison.Ordinal))

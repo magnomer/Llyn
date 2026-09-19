@@ -1,22 +1,22 @@
-using System;
-using Llyn.Infrastructure;
+﻿using System;
+using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
 public sealed class LIdentity
 {
-    private readonly LWorkspaceArchive _lIdentityArchive;
+    private readonly LWorkspaceVault _lIdentityWorkspaces;
 
-    public LIdentity(LDatabase database)
+    public LIdentity(LWorkspaceVault workspaces)
     {
-        ArgumentNullException.ThrowIfNull(database);
-        _lIdentityArchive = new LWorkspaceArchive(database);
+        ArgumentNullException.ThrowIfNull(workspaces);
+        _lIdentityWorkspaces = workspaces;
     }
 
-    public long LIdentityFloor => _lIdentityArchive.LWorkspaceStateRead().LWorkspaceStateFloor;
+    public long LIdentityFloor => _lIdentityWorkspaces.LWorkspaceStateRead().LWorkspaceStateFloor;
 
     public long LIdentityCreate()
     {
-        return _lIdentityArchive.LWorkspaceFloorAdjust();
+        return _lIdentityWorkspaces.LWorkspaceFloorAdjust();
     }
 }

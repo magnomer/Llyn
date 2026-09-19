@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -103,7 +103,7 @@ public sealed partial class LEngine
         List<LEntry> stored = new(entries.Count);
         lock (_lEngineGate)
         {
-            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            using LVaultSession session = _lEngineVault.LVaultSessionStart();
 
             LEngineMarkupValidate(ordered!);
             IReadOnlyDictionary<int, long> prepared = LEngineMarkupPrepare(entries, ordered!);
@@ -117,7 +117,6 @@ public sealed partial class LEngine
                 named[key] = named.ContainsKey(key) ? 0 : prepared[index];
             }
 
-            LEntryArchive archive = new(_lEngineDatabase);
             List<LRevisionChange> changes = [];
             List<(LMarkupMention, int)> held = [];
             Dictionary<long, long> identity = [];
@@ -135,7 +134,7 @@ public sealed partial class LEngine
                 {
                     entry = entry with
                     {
-                        LMarkupEntryLanguage = archive.LEntryRead(id)?.LEntryLanguage ?? string.Empty,
+                        LMarkupEntryLanguage = _lEngineEntries.LEntryRead(id)?.LEntryLanguage ?? string.Empty,
                     };
                 }
 
@@ -160,13 +159,11 @@ public sealed partial class LEngine
 
             LEngineMarkupSettle(held, identity, named, omissions);
 
-            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
+            LRevision revision = _lEngineRevisions.LRevisionRecord(changes);
+            LWorkspaceState state = _lEngineWorkspaces.LWorkspaceStateRead();
+            _lEngineWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
-            LWorkspaceArchive workspace = new(_lEngineDatabase);
-            LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
-
-            session.LDatabaseSessionCommit();
+            session.LVaultSessionCommit();
         }
 
         foreach (LEntry entry in stored)
@@ -190,7 +187,6 @@ public sealed partial class LEngine
 
     private void LEngineMarkupValidate(IReadOnlyList<LMarkupIntake> intakes)
     {
-        LEntryArchive archive = new(_lEngineDatabase);
         IReadOnlyList<LDraft>? drafts = null;
         HashSet<long> targets = [];
         foreach (LMarkupIntake intake in intakes)
@@ -201,7 +197,7 @@ public sealed partial class LEngine
             }
 
             long target = intake.LMarkupIntakeTarget;
-            if (target <= 0 || archive.LEntryRead(target) is null)
+            if (target <= 0 || _lEngineEntries.LEntryRead(target) is null)
             {
                 throw new LRefusal(LRefusal.LRefusalEntry);
             }
@@ -211,7 +207,7 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalItem);
             }
 
-            drafts ??= LDraftArchive.LDraftArchiveScan(_lEngineWorkspace);
+            drafts ??= _lEngineDrafts.LDraftScan();
             foreach (LDraft draft in drafts)
             {
                 if (draft.LDraftEntryId == target
@@ -230,7 +226,6 @@ public sealed partial class LEngine
     private IReadOnlyDictionary<int, long> LEngineMarkupPrepare(
         IReadOnlyList<LMarkupEntry> entries, IReadOnlyList<LMarkupIntake> intakes)
     {
-        LEntryArchive archive = new(_lEngineDatabase);
         Dictionary<int, long> prepared = new(entries.Count);
         foreach (LMarkupIntake intake in intakes)
         {
@@ -246,7 +241,7 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalHeadword);
             }
 
-            LEntry created = archive.LEntryCreate(
+            LEntry created = _lEngineEntries.LEntryCreate(
                 new LEntry(0, entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage, 0, null, null),
                 [],
                 []);

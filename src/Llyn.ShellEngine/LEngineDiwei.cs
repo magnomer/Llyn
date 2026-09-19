@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
@@ -116,7 +116,7 @@ public sealed partial class LEngine
                 return [];
             }
 
-            IReadOnlyList<LEntry> entries = new LEntryArchive(_lEngineDatabase).LEntryScan(ids, query);
+            IReadOnlyList<LEntry> entries = _lEngineEntries.LEntryScan(ids, query);
             return LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }

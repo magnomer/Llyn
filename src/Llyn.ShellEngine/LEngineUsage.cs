@@ -35,12 +35,12 @@ public sealed partial class LEngine
                 LOwner.LOwnerSituation => new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id),
                 _ => throw LEngineOwnerRaise(owner),
             };
-            return LEngineUsageResolve(rows, new LEntryArchive(_lEngineDatabase), _lEngineSettings.LSettingsEpithet);
+            return LEngineUsageResolve(rows, _lEngineEntries, _lEngineSettings.LSettingsEpithet);
         }
     }
 
     private static IReadOnlyList<LUsage> LEngineUsageResolve(
-        IReadOnlyList<LUsage> rows, LEntryArchive entries, bool epithet)
+        IReadOnlyList<LUsage> rows, LEntryVault entries, bool epithet)
     {
         List<LUsage> named = new(rows.Count);
         foreach (LUsage row in rows)

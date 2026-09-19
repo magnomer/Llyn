@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -92,7 +93,7 @@ public sealed partial class LEngine
             return;
         }
 
-        if (new LEntryArchive(_lEngineDatabase).LEntryRead(entryId) is null)
+        if (_lEngineEntries.LEntryRead(entryId) is null)
         {
             throw new LRefusal(LRefusal.LRefusalLink);
         }
