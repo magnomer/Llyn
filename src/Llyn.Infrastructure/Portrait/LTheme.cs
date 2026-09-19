@@ -36,6 +36,8 @@ public sealed class LTheme
 
     public string LThemeSerif => "Georgia, \"Segoe UI\", serif";
 
+    public IReadOnlyDictionary<string, string> LThemeColor => _lThemeColor;
+
     public static LTheme LThemeLoad()
     {
         Dictionary<string, string> colors = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -72,6 +74,15 @@ public sealed class LTheme
         }
 
         return new LTheme(colors);
+    }
+
+    public string LThemeColorRead(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return _lThemeColor.TryGetValue(name, out string? found)
+            ? found
+            : throw new InvalidDataException($"The theme color '{name}' is missing.");
     }
 
     public string LThemeRead(string name)

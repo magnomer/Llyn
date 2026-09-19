@@ -22,6 +22,24 @@ public sealed class TVistaLoad
         Assert.NotNull(engine.TEngineEntryLoad(entry.LEntryId));
     }
 
+    [Fact]
+    public void FileRead_NoVista_ReturnsEntry()
+    {
+        Assert.Equal("entry", TInterface.TVistaFileRead(null));
+    }
+
+    [Fact]
+    public void FileRead_ChosenEntry_ReturnsCleanedHeadword()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("wa/ter", "English", "", "", [], []));
+        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
+        vista.TVistaSelect(entry.LEntryId);
+
+        Assert.Equal("wa_ter", TInterface.TVistaFileRead(vista));
+    }
+
     [Theory]
     [InlineData("library")]
     [InlineData("phonology")]

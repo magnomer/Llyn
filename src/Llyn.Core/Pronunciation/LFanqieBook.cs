@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -17,5 +18,10 @@ public sealed record LFanqieBook(
     string? LFanqieBookLine = null,
     string? LFanqieBookSpelling = null)
 {
+    public bool LFanqieBookMatch(string name)
+    {
+        return string.Equals(LFanqieBookName, name, StringComparison.Ordinal);
+    }
+
     public string LFanqieBookSource { get; init; } = LFanqieBookSource ?? LFanqieBookName;
 }

@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Llyn</AssemblyName>
+    <RootNamespace>Llyn.UIVeneer</RootNamespace>
+    <ApplicationIcon>..\..\assets\brand\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
+    <ProjectReference Include="..\Llyn.Media\Llyn.Media.csproj" />
+    <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
+    <ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
+
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Resource Include="..\..\assets\brand\icon.png" Link="brand\icon.png" />
+    <Resource Include="..\..\assets\brand\icon.ico" Link="brand\icon.ico" />
+  </ItemGroup>
+</Project>

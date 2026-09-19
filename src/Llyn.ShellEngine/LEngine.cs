@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -109,6 +110,13 @@ public sealed partial class LEngine : IDisposable
         }
     }
 
+    public string LEngineWorkspaceFormat()
+    {
+        string root = LEngineWorkspaceRead();
+        string name = Path.GetFileName(Path.TrimEndingDirectorySeparator(root));
+        return name.Length > 0 ? name : root;
+    }
+
     public string? LEngineAuditRecord(Exception exception)
     {
         lock (_lEngineGate)
@@ -168,6 +176,7 @@ public sealed partial class LEngine : IDisposable
             LEngineReflexClear();
             _lEngineLanguages.Clear();
             _lEngineLanguageListed = null;
+            LEnsign.LEnsignClear();
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
 

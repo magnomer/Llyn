@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -42,6 +44,65 @@ public sealed partial class LEngine
         return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
     }
 
+    public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()
+    {
+        string[] missing = LEnsign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
+        if (missing.Length == 0)
+        {
+            return [];
+        }
+
+        string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(false);
+        return LEnsign.LEnsignPathAdd(age, missing, paths);
+    }
+
+    public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+        ArgumentNullException.ThrowIfNull(varieties);
+
+        Dictionary<string, string> keyed = new(StringComparer.Ordinal);
+        foreach (string variety in varieties)
+        {
+            keyed[LEnsign.LEnsignKeyFormat(language, variety)] = variety;
+        }
+
+        string[] missing = LEnsign.LEnsignMissingRead(keyed.Keys, out int age);
+        if (missing.Length == 0)
+        {
+            return [];
+        }
+
+        string?[] paths = await Task
+            .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
+            .ConfigureAwait(false);
+        return LEnsign.LEnsignPathAdd(age, missing, paths);
+    }
+
+    private async Task<string?> LEngineEnsignRead(string language)
+    {
+        try
+        {
+            return await LEngineFlagRead(language, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private async Task<string?> LEngineEnsignResolve(string language, string variety)
+    {
+        try
+        {
+            return await LEngineVarietyResolve(language, variety, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
     internal IReadOnlyList<LVariety> LEngineVarietyRead(string language)
     {
         return LEngineLanguageLoad(language).LLanguageVarieties;
@@ -60,7 +121,7 @@ public sealed partial class LEngine
 
     public bool LEngineTonalCheck(string language)
     {
-        return LEngineLanguageLoad(language).LLanguageTonal;
+        return !string.IsNullOrWhiteSpace(language) && LEngineLanguageLoad(language).LLanguageTonal;
     }
 
     public bool LEngineSilentCheck(string language)

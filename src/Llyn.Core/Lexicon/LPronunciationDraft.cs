@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -27,6 +28,13 @@ public sealed record LPronunciationDraft(
     {
         LPronunciationDraft written = new(ipa, LPronunciationDraftAudio: audio, LPronunciationDraftSource: source);
         return written.LPronunciationDraftEmpty ? null : written;
+    }
+
+    public bool LPronunciationDraftNotated => LPronunciationDraftIpa.Length > 0;
+
+    public bool LPronunciationDraftMatch(string variety)
+    {
+        return string.Equals(LPronunciationDraftVariety, variety, StringComparison.Ordinal);
     }
 
     public bool LPronunciationDraftEmpty =>

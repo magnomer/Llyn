@@ -33,6 +33,8 @@ public sealed record LReflexDraft(
 
     public IReadOnlyList<long> LReflexDraftAnchors { get; init; } = LAnchor.LAnchorNormalize(LReflexDraftAnchors);
 
+    public bool LReflexDraftWritten => LReflexDraftText.Trim().Length > 0;
+
     public bool LReflexDraftEmpty =>
         LReflexDraftText.Trim().Length == 0
         && LReflexDraftLanguage.Trim().Length == 0

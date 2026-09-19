@@ -47,6 +47,38 @@ public sealed class TEngineLocation
     }
 
     [Fact]
+    public void LocationRead_MissingFile_ReturnsNull()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Null(engine.TEngineLocationRead("media\\x.png"));
+    }
+
+    [Fact]
+    public void LocationRead_PresentFile_ReturnsWorkspaceFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string path = Path.Combine(workspace.TWorkspaceFolder, "media", "x.png");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllBytes(path, [0]);
+
+        Uri? read = engine.TEngineLocationRead("media\\x.png");
+
+        Assert.Equal(path, Assert.IsType<Uri>(read).LocalPath);
+    }
+
+    [Fact]
+    public void LocationRead_WebAddress_ReturnsAsWritten()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Equal("https", Assert.IsType<Uri>(engine.TEngineLocationRead("https://example.test/x.png")).Scheme);
+    }
+
+    [Fact]
     public void LocationResolve_DriveAndWebAddress_ReturnsAsWritten()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

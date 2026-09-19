@@ -119,4 +119,30 @@ public sealed class TParadigm
             Directory.Delete(folder, true);
         }
     }
+
+    [Fact]
+    public void ParadigmRowScan_TwoPartsOfSpeech_LeadsEachPartOnce()
+    {
+        LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
+        LSpeechValue verb = TInterface.TSpeechValueCreate("English", 2, "verb", 1) with { LSpeechValueId = 2 };
+        LMorphology plural = TInterface.TMorphologyCreate(1, 1, "plural", 0);
+        LMorphology past = TInterface.TMorphologyCreate(2, 1, "past", 0);
+        LInflection wolves = TInterface.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
+        IReadOnlyList<LParadigmSlot> slots =
+        [
+            TInterface.TParadigmSlotCreate(noun, plural, wolves, LState.LStateSpecified),
+            TInterface.TParadigmSlotCreate(noun, past, wolves, LState.LStateSpecified),
+            TInterface.TParadigmSlotCreate(verb, past, null, LState.LStateUnknown),
+        ];
+
+        IReadOnlyList<LParadigmRow> rows = TInterface.TParadigmRowScan(slots);
+
+        Assert.Equal(2, rows.Count);
+        Assert.Equal("plural, past", rows[0].LParadigmRowName);
+        Assert.Equal("noun", rows[0].LParadigmRowPart);
+        Assert.True(rows[0].LParadigmRowLead);
+        Assert.True(rows[1].LParadigmRowLead);
+        Assert.True(rows[1].LParadigmRowFirst.LParadigmSlotUncertain);
+        Assert.Empty(TInterface.TParadigmRowScan([]));
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -35,11 +36,35 @@ public sealed record LReference(
         };
     }
 
+    public bool LReferenceKindMatch(LReferenceKind kind)
+    {
+        return LReferenceKind == kind;
+    }
+
+    public bool LReferenceKindCheck()
+    {
+        return LReferenceKind != LReferenceKind.LReferenceKindUnspecified;
+    }
+
     public string LReferenceNameRead()
     {
         return LReferenceTextRead(LReferenceTitle)
             ?? LReferenceTextRead(LReferenceUrl)
             ?? LReferenceId.ToString(CultureInfo.InvariantCulture);
+    }
+
+    public string? LReferenceCreditRead(IReadOnlyList<LAuthor> credits)
+    {
+        ArgumentNullException.ThrowIfNull(credits);
+
+        return credits.Count == 0 ? null : string.Join(", ", credits.Select(static author => author.LAuthorName));
+    }
+
+    public bool LReferenceAuthorCheck(IReadOnlyList<LAuthor> credits)
+    {
+        ArgumentNullException.ThrowIfNull(credits);
+
+        return credits.Count > 0 || LReferenceAuthorState.LStateMarkUncertain;
     }
 
     public string LReferenceBylineRead(IReadOnlyList<LAuthor> credits)

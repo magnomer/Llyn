@@ -25,6 +25,8 @@ public sealed record LMentionDraft(
             mention.LMentionSenseId);
     }
 
+    public bool LMentionDraftLinked => LMentionDraftEntry != 0;
+
     public LMention LMentionDraftResolve()
     {
         return new LMention(

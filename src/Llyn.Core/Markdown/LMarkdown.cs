@@ -73,6 +73,27 @@ public static class LMarkdown
             }
         }
 
+        return LMarkdownNumberApply(blocks);
+    }
+
+    private static List<LMarkdownBlock> LMarkdownNumberApply(List<LMarkdownBlock> blocks)
+    {
+        int count = 0;
+        int last = -1;
+        for (int place = 0; place < blocks.Count; place++)
+        {
+            LMarkdownBlock block = blocks[place];
+            if (!block.LMarkdownBlockNumbered)
+            {
+                last = -1;
+                continue;
+            }
+
+            count = block.LMarkdownBlockLevel == last ? count + 1 : 1;
+            last = block.LMarkdownBlockLevel;
+            blocks[place] = block with { LMarkdownBlockOrdinal = count };
+        }
+
         return blocks;
     }
 

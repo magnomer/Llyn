@@ -6,15 +6,18 @@ namespace Convention.Tests;
 
 public sealed class TAuditRatchet
 {
-    private const string TAuditTruthPath = "tests/Llyn.Convention.Tests/TAuditTruthSetting.cs";
+    private static readonly string TAuditSettingFolder =
+        $"tests/{TAuditNameSetting.TAuditProject}.Convention.Tests/";
 
-    private const string TAuditStrictPath = "tests/Llyn.Convention.Tests/TAuditStrictSetting.cs";
+    private static readonly string TAuditTruthPath = TAuditSettingFolder + "TAuditTruthSetting.cs";
+
+    private static readonly string TAuditStrictPath = TAuditSettingFolder + "TAuditStrictSetting.cs";
 
     private static readonly string[] TAuditWaiverPaths =
     [
-        "tests/Llyn.Convention.Tests/TAuditWaiverArgument.cs",
-        "tests/Llyn.Convention.Tests/TAuditWaiverGuard.cs",
-        "tests/Llyn.Convention.Tests/TAuditWaiverField.cs",
+        TAuditSettingFolder + "TAuditWaiverArgument.cs",
+        TAuditSettingFolder + "TAuditWaiverGuard.cs",
+        TAuditSettingFolder + "TAuditWaiverField.cs",
     ];
 
     private static readonly Regex TAuditCeilingPattern = new(@"\[""(\w+)""\] = (\d+),", RegexOptions.Compiled);

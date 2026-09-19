@@ -20,6 +20,8 @@ public sealed record LSpeechDraft(
         return new LSpeechDraft(valueId, null, name);
     }
 
+    public bool LSpeechDraftNamed => LSpeechDraftName.Length > 0;
+
     public bool LSpeechDraftEmpty =>
         LSpeechDraftValue <= 0 && string.IsNullOrWhiteSpace(LSpeechDraftCustom);
 }

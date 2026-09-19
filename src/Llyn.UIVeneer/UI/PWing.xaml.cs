@@ -1,0 +1,261 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using Llyn.Core;
+using Llyn.ShellEngine;
+
+namespace Llyn.UIVeneer;
+
+public partial class PWing : UserControl
+{
+    private readonly ObservableCollection<PIndexItem> _pWingIndex = [];
+
+    private PWindow _pWingHost = null!;
+
+    private LEngine _lEngine = null!;
+
+    private LVista? _pWingVista;
+
+    public PWing()
+    {
+        InitializeComponent();
+    }
+
+    internal void PWingAttach(PWindow host, LEngine engine)
+    {
+        _pWingHost = host;
+        _lEngine = engine;
+
+        PWingIndex.ItemsSource = _pWingIndex;
+
+        PWingDisplay.PDisplayAttach(host, engine);
+    }
+
+    internal async void PWingRestore(LVista vista, long? id)
+    {
+        _pWingVista = vista;
+        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PWingIndexFind));
+        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PWingIndexFind));
+        PWingDisplay.PDisplayVistaRestore(vista);
+        _pWingIndex.Clear();
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PWingOrderRestore();
+        PWingSieveRestore();
+        PChoice.PChoiceFilterBuild(
+            PWingSieveList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PWingSieveHandle);
+
+        PWingQuery.Text = string.Empty;
+        PWingDisplay.PDisplayClear();
+
+        if (id is long shown)
+        {
+            PWingEntryShow(shown);
+        }
+    }
+
+    internal void PWingClose()
+    {
+        PWingDisplay.PDisplayClose();
+    }
+
+    private void PWingOrderHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: string choice } || _pWingVista is null)
+        {
+            return;
+        }
+
+        PWingOrderDropper.IsChecked = false;
+        _pWingVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pWingVista.LVistaOrder));
+    }
+
+    private void PWingSieveHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pWingVista is null)
+        {
+            return;
+        }
+
+        _pWingVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PWingSieveList));
+        PWingSieveRestore();
+    }
+
+    private void PWingQueryHandle(object sender, TextChangedEventArgs e)
+    {
+        string query = PWingQuery.Text ?? string.Empty;
+        PWingIndex.Visibility = query.Trim().Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+        _pWingVista?.LVistaQuerySet(query);
+    }
+
+    private void PWingKeyHandle(object sender, KeyEventArgs e)
+    {
+        if (_pWingVista is null || PWingIndex.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            PWingIndex.Visibility = Visibility.Collapsed;
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Enter)
+        {
+            if (_pWingVista.LVistaChosen is long chosen)
+            {
+                if (_pWingIndex.Any(row => row.PIndexItemId == chosen))
+                {
+                    PWingIndex.Visibility = Visibility.Collapsed;
+                    PWingEntryShow(chosen);
+                    PWingEntrySave();
+                }
+            }
+
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key is not (Key.Down or Key.Up) || _pWingIndex.Count == 0)
+        {
+            return;
+        }
+
+        int place = -1;
+        for (int index = 0; index < _pWingIndex.Count; index++)
+        {
+            if (_pWingIndex[index].PIndexItemChosen)
+            {
+                place = index;
+                break;
+            }
+        }
+
+        place = e.Key == Key.Down
+            ? Math.Min(place + 1, _pWingIndex.Count - 1)
+            : Math.Max(place - 1, 0);
+        PIndexItem target = _pWingIndex[place];
+        _pWingVista.LVistaSelect(target.PIndexItemId);
+        PWingIndexFind();
+        if (PWingIndex.ItemContainerGenerator.ContainerFromItem(target) is FrameworkElement container)
+        {
+            container.BringIntoView();
+        }
+
+        e.Handled = true;
+    }
+
+    private void PWingLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (e.NewFocus is Visual target
+            && (ReferenceEquals(target, PWingQuery) || PWingIndex.IsAncestorOf(target)))
+        {
+            return;
+        }
+
+        PWingIndex.Visibility = Visibility.Collapsed;
+    }
+
+    private void PWingIndexHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PIndexItem item })
+        {
+            return;
+        }
+
+        PWingIndex.Visibility = Visibility.Collapsed;
+        PWingEntryShow(item.PIndexItemId);
+        PWingEntrySave();
+    }
+
+    private void PWingOrderRestore()
+    {
+        if (_pWingVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PWingOrderDropdown, _pWingVista.LVistaOrder);
+        }
+    }
+
+    private void PWingSieveRestore()
+    {
+        if (_pWingVista is not LVista vista)
+        {
+            PWingSieveMark.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        PWingSieveMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void PWingIndexFind()
+    {
+        List<PIndexItem> fresh = [];
+        IReadOnlyList<LVistaRow> read = _pWingVista is null ? [] : _lEngine.LEngineEntryFind(_pWingVista);
+        foreach (LVistaRow row in read)
+        {
+            fresh.Add(new PIndexItem(
+                row.LVistaRowId,
+                row.LVistaRowHeadword,
+                row.LVistaRowLanguage,
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
+            {
+                PIndexItemName = row.LVistaRowName,
+            });
+        }
+
+        PSplice.PSpliceApply(_pWingIndex, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
+        bool typed = _pWingVista?.LVistaQueried ?? false;
+        PWingEmpty.Visibility = typed && _pWingIndex.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void PWingEntryShow(long id)
+    {
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(id);
+        }
+        catch (Exception exception)
+        {
+            _pWingHost.PWindowFailureShow("Duplex.LoadFailed", exception);
+            return;
+        }
+
+        if (draft is null)
+        {
+            _pWingVista?.LVistaSelect(null);
+            PWingIndexFind();
+            PWingDisplay.PDisplayClear();
+            return;
+        }
+
+        _pWingVista?.LVistaSelect(id);
+        PWingIndexFind();
+        PWingDisplay.PDisplayShow(draft);
+    }
+
+    private void PWingEntrySave()
+    {
+        long? shown = _pWingVista?.LVistaChosen;
+        if (_pWingVista is LVista vista)
+        {
+            if (vista.LVistaLeft)
+            {
+                _lEngine.LEngineLeftSave(shown);
+                return;
+            }
+        }
+
+        _lEngine.LEngineRightSave(shown);
+    }
+}

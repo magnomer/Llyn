@@ -36,6 +36,10 @@ public sealed class LForay
 
     public bool LForayFlagged { get; }
 
+    public bool LForaySchemed => LForayScheme.Length > 0;
+
+    public bool LForayPrimary => LForayTarget == 0;
+
     public void LForayCancel()
     {
         lock (_lForayCancellation)

@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="Theme.Contour.Top" Color="{DynamicResource Theme.ContourTop.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.High" Color="{DynamicResource Theme.ContourHigh.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Mid" Color="{DynamicResource Theme.ContourMid.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Low" Color="{DynamicResource Theme.ContourLow.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Bottom" Color="{DynamicResource Theme.ContourBottom.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Guide" Color="{DynamicResource Theme.Line.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Axis" Color="{DynamicResource Theme.Muted.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Ink" Color="{DynamicResource Theme.Ink.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Frame" Color="{DynamicResource Theme.Surface.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Contour.Edge" Color="{DynamicResource Theme.Line.Color}" />
+
+    <Style x:Key="Theme.Contour.Box" TargetType="local:PContour">
+        <Setter Property="Margin" Value="0,6,0,2" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+</ResourceDictionary>

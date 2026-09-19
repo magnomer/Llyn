@@ -6,7 +6,7 @@ Hand-written and tracked: the truth-audit scope, the ceilings and the handle typ
 The waivers live in their own parts, one per kind of hit.
 No script writes this file.
 
-## `public const bool TAuditTruthEnforced = false;`
+## `public const bool TAuditTruthEnforced = true;`
 
 False makes every custody fact a warning that passes.
 True fails a fact on any hit that is not waived and on any kind above its ceiling.
@@ -19,6 +19,14 @@ Where the report lands, with the version in the name.
 ## `public const string TAuditStateSuffix = "State";`
 
 A field or property whose name ends in this is a state the engine should own.
+
+## `public const string TAuditBulletinType = "LBulletin";`
+
+The engine's notice type, so a handler taking one and never reading it is a deaf handler.
+
+## `public const string TAuditObserverType = "PObserver";`
+
+The shell's subscription type, so a lambda handed to one that ignores its bulletin is deaf too.
 
 ## `public static readonly string[] TAuditTruthInclude`
 

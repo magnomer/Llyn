@@ -13,7 +13,9 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
-        return LEngineLanguageLoad(language).LLanguageSchemes.Select(static scheme => scheme.LSchemeName).ToList();
+        return string.IsNullOrWhiteSpace(language)
+            ? []
+            : LEngineLanguageLoad(language).LLanguageSchemes.Select(static scheme => scheme.LSchemeName).ToList();
     }
 
     internal Task LEngineTranscriptionFind(

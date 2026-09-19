@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -9,6 +10,8 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    private const string LEngineFanqieTone = "Display.FanqieTone";
+
     private readonly SemaphoreSlim _lEngineFanqieGate = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lEngineFanqiePending = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lEngineFanqieMissed = new(StringComparer.Ordinal);
@@ -17,6 +20,11 @@ public sealed partial class LEngine
     public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)
     {
         return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageFanqieBooks;
+    }
+
+    public bool LEngineBookCheck(string language)
+    {
+        return LEngineBookRead(language).Count > 0;
     }
 
     public LHypothesis? LEngineHypothesisRead(string language)
@@ -37,6 +45,7 @@ public sealed partial class LEngine
             return [];
         }
 
+        string pattern = LLocalization.LLocalizationTextFind(LEngineFanqieTone) ?? string.Empty;
         List<LFanqieRow> rows = [];
         foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
         {
@@ -46,10 +55,30 @@ public sealed partial class LEngine
                 stored = new LFanqieArchive(_lEngineDatabase).LFanqieRead(entry.LEntryLanguage, character);
             }
 
-            rows.AddRange(stored);
+            foreach (LFanqieRow row in stored)
+            {
+                rows.Add(row.LFanqieRowFormat(pattern));
+            }
         }
 
         return rows;
+    }
+
+    public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)
+    {
+        IReadOnlyList<LFanqieRow> rows = LEngineFanqieRead(entryId);
+        if (rows.Count == 0)
+        {
+            return [];
+        }
+
+        LEntry? entry;
+        lock (_lEngineGate)
+        {
+            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        }
+
+        return LFanqieGroup.LFanqieGroupScan(rows, LEngineBookRead(entry?.LEntryLanguage ?? string.Empty));
     }
 
     public void LEngineFanqieStart(long entryId)

@@ -15,6 +15,8 @@ public sealed record LSituationDraft(
     public LStateValue LSituationDraftKind { get; init; } =
         LSituationDraftKind ?? LStateValue.LStateValueUnspecified;
 
+    public bool LSituationDraftStored => LSituationDraftId != 0;
+
     public LSituationDraft LSituationDraftNormalize()
     {
         return this with

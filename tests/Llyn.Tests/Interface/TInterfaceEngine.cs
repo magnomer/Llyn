@@ -1,4 +1,5 @@
 using System;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -244,6 +245,26 @@ internal static partial class TInterface
 
     internal static Uri? TEngineLocationResolve(this LEngine engine, string location) =>
         engine.LEngineLocationResolve(location);
+
+    internal static Uri? TEngineLocationRead(this LEngine engine, string location) =>
+        engine.LEngineLocationRead(location);
+
+    internal static Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(this LEngine engine) =>
+        engine.LEngineEnsignLoad();
+
+    internal static Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(
+        this LEngine engine, string language, IEnumerable<string> varieties) =>
+        engine.LEngineEnsignLoad(language, varieties);
+
+    internal static string TEngineWorkspaceFormat(this LEngine engine) =>
+        engine.LEngineWorkspaceFormat();
+
+    internal static Task<LMarkupCargo> TEngineMarkupStart(this LEngine engine, string path) =>
+        engine.LEngineMarkupStart(path);
+
+    internal static Task<LMarkupOutcome> TEngineMarkupStart(
+        this LEngine engine, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
+        engine.LEngineMarkupStart(cargo, intakes);
 
     internal static LRevision? TEngineRevisionRead(this LEngine engine) =>
         engine.LEngineRevisionRead();

@@ -1,0 +1,38 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PDiwei"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:PDiweiCommand.PDiweiCommandEntry}" Executed="PDiweiEntryHandle" />
+        <CommandBinding Command="{x:Static local:PDiweiCommand.PDiweiCommandSwitch}" Executed="PDiweiSwitchHandle" />
+    </UserControl.CommandBindings>
+    <ScrollViewer
+        Margin="30,18,0,0"
+        Padding="0,0,10,0"
+        HorizontalScrollBarVisibility="Disabled"
+        Style="{StaticResource Theme.Scroll.Gutter}"
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Grid MinHeight="56" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="PDiweiHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" />
+                <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
+                    <TextBlock x:Name="PDiweiKind" Style="{StaticResource Theme.Language.Name}" />
+                </Border>
+                <Border Grid.Column="2" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Chip}">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <Image x:Name="PDiweiFlag" Width="19" Height="14" VerticalAlignment="Center" Stretch="Uniform" />
+                        <TextBlock x:Name="PDiweiLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <TextBlock x:Name="PDiweiEmpty" Style="{StaticResource Theme.Diwei.Empty}" Text="{DynamicResource Yunjing.DiweiEmpty}" />
+            <ItemsControl x:Name="PDiweiList" Margin="0,25,0,24" ItemTemplate="{StaticResource Theme.Diwei.Section}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

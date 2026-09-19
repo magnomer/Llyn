@@ -10,6 +10,10 @@ public sealed record LMention(
     long LMentionEntryId,
     long LMentionSenseId = 0)
 {
+    public bool LMentionLinked => LMentionEntryId != 0;
+
+    public bool LMentionSensed => LMentionSenseId != 0;
+
     public static bool LMentionOverlapCheck(IReadOnlyList<LMention> mentions)
     {
         IReadOnlyList<LMention> sorted = LMentionSort(mentions);

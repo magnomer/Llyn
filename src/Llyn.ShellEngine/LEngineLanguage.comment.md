@@ -54,6 +54,25 @@ It reads the cached pack as `LEngineVarietyRead` does.
 Reports whether the pack declares the language silent, so the input panel knows to hide its pronunciation rows.
 It reads the cached pack as `LEngineVarietyRead` does.
 
+## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()`
+
+Fetches the flag of every language not yet asked of the cache, all at once, and records what came back.
+Answers the rows newly kept, so the shell draws only those and asks nothing about the rest.
+A fill that a workspace change outran records nothing and answers nothing.
+
+## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)`
+
+The same fill for the named varieties of one language, keyed `language/variety`.
+
+## `private async Task<string?> LEngineEnsignRead(string language)`
+
+One language's flag path, or null when the pack declares none or the fetch failed.
+One missing flag never stops the fill.
+
+## `private async Task<string?> LEngineEnsignResolve(string language, string variety)`
+
+One variety's flag path, or null on the same terms.
+
 ## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
 
 Returns the local path to the flag image of one named variety of the language.

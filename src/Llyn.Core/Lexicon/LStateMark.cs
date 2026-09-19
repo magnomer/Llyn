@@ -21,4 +21,6 @@ public sealed record LStateMark(
     }
 
     public bool LStateMarkEmpty => LStateMarkState == LState.LStateUnspecified;
+
+    public bool LStateMarkUncertain => LStateMarkState == LState.LStateUnknown;
 }

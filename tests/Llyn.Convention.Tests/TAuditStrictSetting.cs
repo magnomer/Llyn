@@ -8,17 +8,57 @@ internal static class TAuditStrictSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 128,
-        ["Flow"] = 927,
-        ["Treat"] = 405,
+        ["Storage"] = 126,
+        ["Flow"] = 897,
+        ["Treat"] = 95,
         ["Reach"] = 64,
-        ["Taint"] = 411,
+        ["Taint"] = 273,
     };
 
     public static readonly string[] TAuditReachInclude =
     [
         "src/Llyn.UIVeneer/*.xaml",
-        "src/Llyn.UIShell/*.xaml",
+    ];
+
+    public static readonly string[] TAuditVeneerInclude =
+    [
+        "src/Llyn.UIVeneer/*.cs",
+    ];
+
+    public static readonly string[] TAuditDeportmentInclude =
+    [
+        "src/Llyn.UIDeportment/*.cs",
+    ];
+
+    public static readonly string[] TAuditCatalogPatterns =
+    [
+        @"^\s*using\s+System\.IO\s*;",
+        @"^\s*using\s+System\.Text\.Json",
+        @"^\s*using\s+System\.Text\.RegularExpressions",
+        @"^\s*using\s+System\.Diagnostics\s*;",
+        @"\bJsonSerializer\b",
+        @"\bJsonDocument\b",
+        @"\bRegex\b",
+        @"\bProcess\.Start\b",
+        @"\bProcessStartInfo\b",
+        @"\bTask\.Run\b",
+        @"\bFile\.\w+\(",
+        @"\bDirectory\.\w+\(",
+        @"\bPath\.\w+\(",
+    ];
+
+    public static readonly string[] TAuditCatalogExempt =
+    [
+        "PIcon.cs",
+        "PScreenBrowser.cs",
+        "PScriptImage.cs",
+    ];
+
+    public static readonly string[] TAuditMarkupPatterns =
+    [
+        @"\bSystem\.Windows\b",
+        @"\bDispatcher\b",
+        @"\bSystem\.IO\b",
     ];
 
     public static readonly string[] TAuditReachNamespaces =

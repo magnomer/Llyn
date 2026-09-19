@@ -6,12 +6,13 @@ internal static partial class TAuditTruthSetting
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
+    public const string TAuditBulletinType = "LBulletin";
+    public const string TAuditObserverType = "PObserver";
 
     public static readonly string[] TAuditTruthInclude =
     [
         "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
-        "src/Llyn.UIShell/*.cs",
     ];
 
     public static readonly string[] TAuditOrderVerbs =
@@ -83,12 +84,12 @@ internal static partial class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 293,
-        ["Guard"] = 287,
+        ["Argument"] = 285,
+        ["Guard"] = 240,
         ["Fork"] = 37,
         ["Mirror"] = 45,
-        ["Mutation"] = 26,
-        ["Shape"] = 137,
+        ["Mutation"] = 24,
+        ["Shape"] = 131,
     };
 
     public static string[] TAuditTruthWaiver => [.. TAuditWaiverArgument, .. TAuditWaiverGuard, .. TAuditWaiverField];

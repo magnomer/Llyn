@@ -72,9 +72,17 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(vista);
         List<LCatalogRegister> rows = [];
+        bool kept = false;
         foreach (LCatalogRegister row in LEngineRegisterFind(vista.LVistaQuery, vista.LVistaOrder))
         {
-            rows.Add(row with { LCatalogRegisterChosen = row.LCatalogRegisterStored.LRegisterId == vista.LVistaChosen });
+            bool chosen = vista.LVistaMatch(row.LCatalogRegisterStored.LRegisterId);
+            kept |= chosen;
+            rows.Add(row with { LCatalogRegisterChosen = chosen });
+        }
+
+        if (!kept)
+        {
+            vista.LVistaSelect(null);
         }
 
         return rows;

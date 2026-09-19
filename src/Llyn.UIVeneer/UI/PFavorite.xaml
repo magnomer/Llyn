@@ -1,0 +1,223 @@
+﻿<UserControl
+    x:Class="Llyn.UIVeneer.PFavorite"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    >
+
+    <UserControl.Resources>
+        <Style x:Key="Theme.Roster.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PRosterItemChosen}" Value="True">
+                    <Setter Property="Tag" Value="Chosen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding CanExecute="PFavoritePressCheck" Command="ApplicationCommands.Print" Executed="PFavoritePressHandle" />
+        <CommandBinding CanExecute="PFavoritePressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PFavoritePortraitHandle" />
+    </UserControl.CommandBindings>
+
+    <Grid Margin="34,20,34,38">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Border
+            x:Name="PSeries"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="{StaticResource Theme.Catalog.HeaderMargin}"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="PSeriesDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Series.Title}">
+                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PRecall"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Favorite.Search}"
+                    TextChanged="PRecallHandle" />
+                <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
+                <ToggleButton
+                    x:Name="PStrainerDropper"
+                    Grid.Column="4"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Strainer.Title}">
+                    <Grid Width="24" Height="24">
+                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                        <Ellipse
+                            x:Name="PStrainerMark"
+                            Width="6"
+                            Height="6"
+                            Margin="0,2,1,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Fill="{StaticResource Theme.Accent}"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </ToggleButton>
+                <Popup
+                    x:Name="PSeriesDropdown"
+                    Width="252"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PSeriesDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PSeries}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Series.Title}" />
+
+                            <RadioButton
+                                GroupName="PSeriesChoice"
+                                IsChecked="True"
+                                Click="PSeriesHandle"
+                                Style="{StaticResource Theme.Choice.Order}"
+                                Tag="Headword"
+                                Content="{DynamicResource Series.Headword}" />
+                            <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Series.Reverse}" />
+                            <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Series.Language}" />
+                            <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Marked" Content="{DynamicResource Series.Marked}" />
+                            <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Grasp" Content="{DynamicResource Series.Grasp}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+                <Popup
+                    x:Name="PStrainerDropdown"
+                    Width="190"
+                    AllowsTransparency="True"
+                    HorizontalOffset="-151"
+                    IsOpen="{Binding IsChecked, ElementName=PStrainerDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PStrainerDropper}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel x:Name="PStrainerList" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PRoster">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PRosterHandle" Style="{StaticResource Theme.Roster.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PRosterItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PRosterItemName, Mode=OneWay}" /><Run
+                                        Style="{StaticResource Theme.Catalog.Epithet}"
+                                        Text="{Binding PRosterItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PRosterItemLanguage}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PRosterEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Favorite.Empty}" />
+        </Grid>
+
+        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PFavoriteStore"
+                        Click="PFavoriteStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
+                        Content="{DynamicResource Scribe.Export}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon export, 24}" />
+                    <Button
+                        Command="ApplicationCommands.Print"
+                        Content="{DynamicResource Scribe.Print}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon print, 24}" />
+                </StackPanel>
+            </Border>
+            <Border
+                x:Name="PFavoriteMode"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="PFavoriteViewer"
+                        Click="PFavoriteScribeHandle"
+                        Content="{DynamicResource Scribe.View}"
+                        GroupName="PFavoriteMode"
+                        IsChecked="True"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon view, 24}" />
+                    <RadioButton
+                        x:Name="PFavoriteScribe"
+                        Click="PFavoriteScribeHandle"
+                        Content="{DynamicResource Scribe.Edit}"
+                        GroupName="PFavoriteMode"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon edit, 24}" />
+                </StackPanel>
+            </Border>
+        </local:PRail>
+
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+            <Grid>
+                <local:PDisplay x:Name="PDisplay" />
+
+                <local:PEditor x:Name="PEditor" Grid.Row="1" Padding="30,18,30,30" Visibility="Collapsed" />
+
+                <Button
+                    x:Name="PFavoriteBin"
+                    Margin="0,17,26,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="PFavoriteBinHandle"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Input.Bin}"
+                    ToolTip="{DynamicResource Scribe.Delete}">
+                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

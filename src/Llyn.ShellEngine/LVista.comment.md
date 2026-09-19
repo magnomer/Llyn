@@ -123,6 +123,12 @@ Structural sound tables pass no subject and cannot load or delete records.
 
 Loads the selected subject into a read-only snapshot without opening an editing session.
 The snapshot carries its content in the matching draft member and has no draft identity.
+A stored choice that no longer loads is dropped here, so a panel never branches on the missing answer.
+
+## `public static string LVistaFileRead(LVista? vista)`
+
+The file name an export of the vista's entry is offered under: the headword with barred characters replaced.
+A vista that holds nothing, or fails to load, is offered as `entry`.
 A cleared selection or missing record returns null.
 
 ## `public LRevision? LVistaDelete()`

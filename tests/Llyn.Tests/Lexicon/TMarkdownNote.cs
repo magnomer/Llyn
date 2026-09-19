@@ -98,4 +98,24 @@ public sealed class TMarkdownNote
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
             []);
     }
+
+    [Fact]
+    public void MarkdownParse_NumberedRuns_NumbersEachRunFromOne()
+    {
+        IReadOnlyList<LMarkdownBlock> blocks = TInterface.TMarkdownParse("1. one\n2. two\n\nplain\n\n1. again");
+
+        Assert.Equal([1, 2, 0, 1], blocks.Select(block => block.LMarkdownBlockOrdinal));
+        Assert.Equal([true, true, false, true], blocks.Select(block => block.LMarkdownBlockNumbered));
+    }
+
+    [Fact]
+    public void MarkdownSpanAddress_WebAndLocalLinks_KeepsOnlyWebAddresses()
+    {
+        IReadOnlyList<LMarkdownSpan> spans = TInterface.TMarkdownParse(
+            "[web](https://example.org/a) and [file](file:///tmp/a) and plain")[0].LMarkdownBlockSpan;
+
+        Assert.Equal("https://example.org/a", spans[0].LMarkdownSpanAddress?.AbsoluteUri);
+        Assert.Null(spans[2].LMarkdownSpanAddress);
+        Assert.Null(spans[3].LMarkdownSpanAddress);
+    }
 }

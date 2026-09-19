@@ -230,7 +230,8 @@ internal static partial class TAuditTruthWalker
                         TAuditToggleCheck(field, scope, writers, violations);
                     }
 
-                    if (reference.Parent is AssignmentExpressionSyntax
+                    if (part is not CompilationUnitSyntax
+                        && reference.Parent is AssignmentExpressionSyntax
                         {
                             RawKind: (int)SyntaxKind.CoalesceAssignmentExpression
                         } cache

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -46,7 +47,55 @@ public sealed class LVista : LObserver
 
     public bool LVistaEditing { get; private set; }
 
-    public LDraft? LVistaLoad() => _lEngine.LEngineVistaLoad(this);
+    public long? LVistaStored => LVistaChosen is > 0 and long id ? id : null;
+
+    public bool LVistaMatch(long id)
+    {
+        return LVistaChosen == id;
+    }
+
+    public bool LVistaOrderMatch(LCatalogOrder order)
+    {
+        return LVistaOrder == order;
+    }
+
+    public bool LVistaFiltered => LVistaFilter.LCatalogFilterActive;
+
+    public bool LVistaQueried => LVistaQuery.Trim().Length > 0;
+
+    public bool LVistaLeft => string.Equals(LVistaTab, "left", StringComparison.Ordinal);
+
+    public LDraft? LVistaLoad()
+    {
+        LDraft? draft = _lEngine.LEngineVistaLoad(this);
+        if (draft is null && LVistaStored is not null)
+        {
+            LVistaSelect(null);
+        }
+
+        return draft;
+    }
+
+    public static string LVistaFileRead(LVista? vista)
+    {
+        string headword;
+        try
+        {
+            headword = vista?.LVistaLoad()?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
+        }
+        catch (Exception)
+        {
+            headword = string.Empty;
+        }
+
+        string trimmed = headword.Trim();
+        foreach (char barred in Path.GetInvalidFileNameChars())
+        {
+            trimmed = trimmed.Replace(barred, '_');
+        }
+
+        return trimmed.Length == 0 ? "entry" : trimmed;
+    }
 
     public LRevision? LVistaDelete()
     {

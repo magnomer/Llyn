@@ -39,9 +39,17 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(vista);
         List<LCatalogTag> rows = [];
+        bool kept = false;
         foreach (LTag tag in LEngineTagFind(vista.LVistaQuery, vista.LVistaOrder))
         {
-            rows.Add(new LCatalogTag(tag, tag.LTagId == vista.LVistaChosen));
+            bool chosen = vista.LVistaMatch(tag.LTagId);
+            kept |= chosen;
+            rows.Add(new LCatalogTag(tag, chosen));
+        }
+
+        if (!kept)
+        {
+            vista.LVistaSelect(null);
         }
 
         return rows;

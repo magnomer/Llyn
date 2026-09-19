@@ -65,6 +65,8 @@ internal static partial class TInterface
 
     internal static LDraft? TVistaLoad(this LVista vista) => vista.LVistaLoad();
 
+    internal static string TVistaFileRead(LVista? vista) => LVista.LVistaFileRead(vista);
+
     internal static LRevision? TVistaDelete(this LVista vista) => vista.LVistaDelete();
 
     internal static IReadOnlyList<LVistaRow> TEngineEntryFind(this LEngine engine, LVista parent, LVista child) =>

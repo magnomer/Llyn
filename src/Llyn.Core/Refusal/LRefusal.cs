@@ -43,4 +43,6 @@ public sealed class LRefusal : Exception
     }
 
     public string LRefusalReason { get; }
+
+    public bool LRefusalIllegible => string.Equals(LRefusalReason, LRefusalUnreadable, StringComparison.Ordinal);
 }

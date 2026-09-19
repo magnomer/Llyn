@@ -6,4 +6,8 @@ public sealed record LMarkdownBlock(
     LMarkdownKind LMarkdownBlockKind,
     int LMarkdownBlockLevel,
     IReadOnlyList<LMarkdownSpan> LMarkdownBlockSpan,
-    string LMarkdownBlockText);
+    string LMarkdownBlockText,
+    int LMarkdownBlockOrdinal = 0)
+{
+    public bool LMarkdownBlockNumbered => LMarkdownBlockKind == LMarkdownKind.LMarkdownKindNumber;
+}

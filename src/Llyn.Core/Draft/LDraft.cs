@@ -16,6 +16,8 @@ public sealed record LDraft(
     IReadOnlyList<LAuthor>? LDraftAuthor = null,
     LAuthor? LDraftAuthorHeld = null)
 {
+    public long? LDraftStored => LDraftEntryId == 0 ? null : LDraftEntryId;
+
     public LTag? LDraftTag { get; init; }
 
     public LRegister? LDraftRegister { get; init; }

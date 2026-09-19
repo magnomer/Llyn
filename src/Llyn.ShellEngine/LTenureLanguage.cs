@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -15,5 +16,19 @@ public sealed partial class LTenure
     {
         string language = LTenureLanguageRead();
         return language.Length == 0 ? [] : _lEngine.LEngineVarietyRead(language);
+    }
+
+    public IReadOnlyList<string> LTenureVarietyNames =>
+        LTenureVarietyRead().Select(static variety => variety.LVarietyName).ToList();
+
+    public bool LTenureReflexCheck()
+    {
+        return _lEngine.LEngineReflexRead(LTenureLanguageRead()).Count > 0
+            || LTenureRead()?.LDraftContent.LEntryDraftReflected == true;
+    }
+
+    public bool LTenureChangeCheck()
+    {
+        return LTenureStateRead().LTenureStateChanged;
     }
 }

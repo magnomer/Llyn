@@ -7,6 +7,8 @@ public sealed record LRegisterDraft(
     public LStateValue LRegisterDraftName { get; init; } =
         LRegisterDraftName ?? LStateValue.LStateValueUnspecified;
 
+    public bool LRegisterDraftStored => LRegisterDraftId != 0;
+
     public LRegisterDraft LRegisterDraftNormalize()
     {
         return this with { LRegisterDraftName = LRegisterDraftName.LStateValueNormalize() };

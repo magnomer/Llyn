@@ -8,8 +8,31 @@ public sealed record LDiwei(
     string LDiweiLanguage,
     string LDiweiKind,
     string LDiweiKey,
-    int LDiweiCount = 0)
+    int LDiweiCount = 0,
+    bool LDiweiChosen = false)
 {
+    public bool LDiweiFinal => string.Equals(LDiweiKind, LDiweiRime, StringComparison.Ordinal);
+
+    public bool LDiweiMatch(long id)
+    {
+        return LDiweiId == id;
+    }
+
+    public static LDiwei? LDiweiFind(IReadOnlyList<LDiwei> rows, long id)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        foreach (LDiwei row in rows)
+        {
+            if (row.LDiweiMatch(id))
+            {
+                return row;
+            }
+        }
+
+        return null;
+    }
+
     public const string LDiweiInitial = "initial";
 
     public const string LDiweiRime = "rime";

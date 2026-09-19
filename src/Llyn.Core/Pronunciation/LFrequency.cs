@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -17,6 +18,12 @@ public sealed record LFrequency(
     ];
 
     private const string LFrequencyRare = "Rare";
+
+    private static readonly string[] LFrequencyRanks = [LFrequencyRare, "Advanced", "Everyday", "Core"];
+
+    public int LFrequencyRank => LFrequencyBand is null ? 0 : Array.IndexOf(LFrequencyRanks, LFrequencyBand) + 1;
+
+    public string LFrequencyFigure => LFrequencyUnit is string unit ? unit + " " + LFrequencyRaw : LFrequencyRaw;
 
     public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)
     {

@@ -8,7 +8,7 @@ public sealed partial class LEngine
 {
     public LGlyph? LEngineGlyphRead(string language)
     {
-        return LEngineLanguageLoad(language).LLanguageGlyph;
+        return string.IsNullOrWhiteSpace(language) ? null : LEngineLanguageLoad(language).LLanguageGlyph;
     }
 
     public LEntry LEngineGlyphResolve(string character, string language)

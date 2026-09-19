@@ -1,0 +1,37 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    x:Class="Llyn.UIVeneer.PCategoryTemplate">
+
+    <BooleanToVisibilityConverter x:Key="Theme.Category.Fold" />
+
+    <DataTemplate x:Key="Theme.Category.Row">
+        <Button Click="PCategoryHandle" Style="{DynamicResource Theme.Category.Item}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource Theme.Ink}"
+                    Text="{Binding PCategoryItemName}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <Path
+                    Grid.Column="1"
+                    Width="12"
+                    Height="12"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Data="{local:PIcon check, 12}"
+                    Fill="{DynamicResource Theme.Accent}"
+                    Stretch="None"
+                    Visibility="{Binding PCategoryItemTaken, Converter={StaticResource Theme.Category.Fold}}" />
+            </Grid>
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

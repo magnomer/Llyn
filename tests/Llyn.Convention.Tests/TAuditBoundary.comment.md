@@ -29,7 +29,7 @@ The walkers parse without symbols, so a branch would be skipped, and reflection 
 
 ## `private static readonly string[] TAuditBoundaryLoader =`
 
-The three files that read embedded resources through the assembly, and so may name reflection.
+The two files that read embedded resources through the assembly, and so may name reflection.
 
 ## `private const string TAuditBoundaryReflection = @"\bSystem\.Reflection\b";`
 
@@ -41,13 +41,13 @@ The type a panel used to hold its own debounce timer in, before the tenure owned
 
 ## `public void AuditBoundary_ShellSources_BuildNoStateValue()`
 
-Scans every source under `src/Llyn.UIShell` for the calls that read text or an id into a state.
+Scans every shell source for the calls that read text or an id into a state.
 Any hit names the file and line.
 The request that should carry the raw field instead is easy to find.
 
-## `public void AuditBoundary_UIShell_ComparesNoState()`
+## `public void AuditBoundary_Veneer_ComparesNoState()`
 
-Scans every source and markup under `src/Llyn.UIShell` but the two converters for a state name.
+Scans every shell source and markup but the two converters for a state name.
 A panel that needs to know whether a value is unknown asks the converter rather than reading the state.
 
 ## `public void AuditBoundary_ShellSources_HideNothing()`
@@ -65,7 +65,7 @@ A source named like a generated file would otherwise never be walked.
 
 ## `public void AuditBoundary_LogicSources_HoldNoPanel()`
 
-Scans every source outside the shell for a `P` or `PS` type.
+Scans every source outside the shell roots for a `P` or `PS` type.
 A panel declared in another project would sit outside every shell audit.
 
 ## `public void AuditBoundary_HoldSources_KeepNoTimer()`
@@ -75,6 +75,12 @@ The tenure waits out the typing, so a second wait in the panel would write twice
 
 ## `private static List<string> TAuditBoundaryScan(Func<string, bool> chosen, IReadOnlyList<string> forbidden)`
 
-The one walk both facts share, over the shell sources the chooser admits.
+The one walk the facts share, over the shell sources and markup the chooser admits.
+The shell is whatever the truth and reach includes name, so a new shell assembly joins without an edit here.
+An empty enumeration fails rather than passing vacuously.
 Each hit is one line naming the file, the line and the pattern found.
 The chooser sees the file name and the patterns are regular expressions.
+
+## `private static IReadOnlyList<string> TAuditShellRead(string repoRoot)`
+
+The shell roots as full directory prefixes, read from the truth include patterns.

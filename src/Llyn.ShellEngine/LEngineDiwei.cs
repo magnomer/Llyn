@@ -31,7 +31,7 @@ public sealed partial class LEngine
         string wanted = vista.LVistaQuery.Trim();
         IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
             wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
-        return vista.LVistaOrder switch
+        IReadOnlyList<LDiwei> sorted = vista.LVistaOrder switch
         {
             LCatalogOrder.LCatalogOrderReverse => [.. kept
                 .OrderByDescending(row => row.LDiweiKey, StringComparer.Ordinal)],
@@ -40,6 +40,12 @@ public sealed partial class LEngine
                 .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal)],
             _ => [.. kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal)],
         };
+        if (vista.LVistaChosen is long chosen && LDiwei.LDiweiFind(sorted, chosen) is null)
+        {
+            vista.LVistaSelect(null);
+        }
+
+        return [.. sorted.Select(row => row with { LDiweiChosen = vista.LVistaMatch(row.LDiweiId) })];
     }
 
     public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)

@@ -23,6 +23,7 @@
     <ProjectReference Include="../../src/Llyn.Core/Llyn.Core.csproj" />
     <ProjectReference Include="../../src/Llyn.Infrastructure/Llyn.Infrastructure.csproj" />
     <ProjectReference Include="../../src/Llyn.ShellEngine/Llyn.ShellEngine.csproj" />
+    <ProjectReference Include="../../src/Llyn.UIDeportment/Llyn.UIDeportment.csproj" />
   </ItemGroup>
 
 </Project>

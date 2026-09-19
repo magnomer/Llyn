@@ -142,6 +142,19 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return LEngineTargetRead(draft.LEntryDraftTargets);
+    }
+
+    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)
+    {
+        LEntryDraft? draft = LEngineDraftRead(ownerId)?.LDraftContent;
+        return draft is null || !draft.LEntryDraftTargeted ? [] : LEngineTargetRead(ownerId, draft.LEntryDraftTargets);
+    }
+
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
     {
         lock (_lEngineGate)

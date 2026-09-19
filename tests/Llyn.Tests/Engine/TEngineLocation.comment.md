@@ -6,6 +6,7 @@ Covers the one rule for where a stored location may point.
 A path naming a host or a device is refused, whatever spelling it takes.
 A relative path resolves inside the workspace and is refused once it walks out.
 A drive path, a hostless `file` address and a web address pass as written.
+The read form answers a file address only when the file is on disk, and a web address as written.
 
 ## Inline notes
 

@@ -34,9 +34,9 @@ public sealed class TAuditBoundary
         @"\bdynamic\b",
         @"\bType\.GetType\s*\(",
         @"\bActivator\.",
-        @"\.GetMethod\s*\(",
-        @"\.GetProperty\s*\(",
-        @"\.GetField\s*\(",
+        @"\.GetMethods?\s*\(",
+        @"\.GetPropert(y|ies)\s*\(",
+        @"\.GetFields?\s*\(",
         @"<x:Code\b",
         @"\bEnum\.(Try)?Parse\b",
         @"^\s*(global\s+)?using\s+\w+\s*=",
@@ -46,7 +46,6 @@ public sealed class TAuditBoundary
     private static readonly string[] TAuditBoundaryLoader =
     [
         "PHeadquarter.cs",
-        "PLocalizationLoader.cs",
         "PThemeLoader.cs",
     ];
 
@@ -65,7 +64,7 @@ public sealed class TAuditBoundary
     }
 
     [Fact]
-    public void AuditBoundary_UIShell_ComparesNoState()
+    public void AuditBoundary_Veneer_ComparesNoState()
     {
         List<string> hits = TAuditBoundaryScan(
             static name => !TAuditBoundaryConverter.Contains(name, StringComparer.Ordinal),
@@ -125,11 +124,11 @@ public sealed class TAuditBoundary
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         TAuditScope scope = new([], ["src/*.cs"], TAuditNameSetting.TAuditExcludedSegments, [], [], []);
-        string shell = Path.Combine(repoRoot, "src", "Llyn.UIShell") + Path.DirectorySeparatorChar;
+        IReadOnlyList<string> shells = TAuditShellRead(repoRoot);
         List<string> hits = [];
         foreach (string path in TAuditSource.TAuditFileRead(repoRoot, scope))
         {
-            if (path.StartsWith(shell, StringComparison.OrdinalIgnoreCase))
+            if (shells.Any(shell => path.StartsWith(shell, StringComparison.OrdinalIgnoreCase)))
             {
                 continue;
             }
@@ -167,19 +166,19 @@ public sealed class TAuditBoundary
         string repoRoot = TAuditSource.TAuditRootRead();
         TAuditScope scope = new(
             [],
-            TAuditNameSetting.TAuditSourceInclude,
+            [.. TAuditTruthSetting.TAuditTruthInclude, .. TAuditStrictSetting.TAuditReachInclude],
             TAuditNameSetting.TAuditExcludedSegments,
             TAuditNameSetting.TAuditExcludedSuffixes,
             TAuditNameSetting.TAuditExcludedPrefixes,
             []);
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
-        string shell = Path.Combine(repoRoot, "src", "Llyn.UIShell") + Path.DirectorySeparatorChar;
+        Assert.True(sources.Count > 0, TAuditConvention.TAuditReportFormat(
+            "AUDITBOUNDARY", "No tracked shell file was enumerated; the audit would pass vacuously."));
 
         List<string> hits = [];
         foreach (string path in sources)
         {
-            if (!path.StartsWith(shell, StringComparison.OrdinalIgnoreCase)
-                || !chosen(Path.GetFileName(path)))
+            if (!chosen(Path.GetFileName(path)))
             {
                 continue;
             }
@@ -199,5 +198,15 @@ public sealed class TAuditBoundary
         }
 
         return hits;
+    }
+
+    private static IReadOnlyList<string> TAuditShellRead(string repoRoot)
+    {
+        return TAuditTruthSetting.TAuditTruthInclude
+            .Select(pattern => pattern[..pattern.IndexOf('*')].TrimEnd('/'))
+            .Distinct(StringComparer.Ordinal)
+            .Select(root => Path.Combine(repoRoot, root.Replace('/', Path.DirectorySeparatorChar))
+                            + Path.DirectorySeparatorChar)
+            .ToList();
     }
 }

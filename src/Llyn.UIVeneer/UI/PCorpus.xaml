@@ -1,0 +1,444 @@
+﻿<UserControl
+    x:Class="Llyn.UIVeneer.PCorpus"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PEditorPopup.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PCorpusExcerpt.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding CanExecute="PCorpusPressCheck" Command="ApplicationCommands.Print" Executed="PCorpusPressHandle" />
+        <CommandBinding CanExecute="PCorpusPortraitCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PCorpusPortraitHandle" />
+    </UserControl.CommandBindings>
+
+    <Grid Margin="34,20,34,38">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="380" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:PSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Border
+            x:Name="PRank"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="{StaticResource Theme.Catalog.HeaderMargin}"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="PRankDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Rank.Title}">
+                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PQuery"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Example.Search}"
+                    TextChanged="PQueryHandle" />
+                <Popup
+                    x:Name="PRankDropdown"
+                    Width="238"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PRankDropper, Mode=TwoWay}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PRank}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Rank.Title}" />
+                            <RadioButton GroupName="PRankChoice" IsChecked="True" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Text" Content="{DynamicResource Rank.Text}" />
+                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Rank.Language}" />
+                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Source" Content="{DynamicResource Rank.Source}" />
+                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Rank.Usage}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="PGauze"
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="-4,0,16,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="PDredge"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Dredge.Search}"
+                    TextChanged="PDredgeHandle" />
+                <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
+                <ToggleButton
+                    x:Name="PGauzeDropper"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Gauze.Title}">
+                    <Grid Width="24" Height="24">
+                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                        <Ellipse
+                            x:Name="PGauzeMark"
+                            Width="6"
+                            Height="6"
+                            Margin="0,2,1,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Fill="{StaticResource Theme.Accent}"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </ToggleButton>
+                <Popup
+                    x:Name="PGauzeDropdown"
+                    Width="190"
+                    AllowsTransparency="True"
+                    HorizontalOffset="-151"
+                    IsOpen="{Binding IsChecked, ElementName=PGauzeDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PGauzeDropper}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel x:Name="PGauzeList" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PCorpusBackward"
+                        Click="PCorpusUndoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon undo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PCorpusForward"
+                        Click="PCorpusRedoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon redo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        x:Name="PCorpusFresh"
+                        Click="PCorpusFreshHandle"
+                        Content="{DynamicResource Scribe.New}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon new, 24}" />
+                    <Button
+                        x:Name="PCorpusStore"
+                        Click="PCorpusStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
+                        Content="{DynamicResource Scribe.Export}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon export, 24}" />
+                    <Button
+                        Command="ApplicationCommands.Print"
+                        Content="{DynamicResource Scribe.Print}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon print, 24}" />
+                </StackPanel>
+            </Border>
+            <Border
+                x:Name="PCorpusMode"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="PCorpusViewer"
+                        Click="PCorpusScribeHandle"
+                        Content="{DynamicResource Scribe.View}"
+                        GroupName="PCorpusMode"
+                        IsChecked="True"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon view, 24}" />
+                    <RadioButton
+                        x:Name="PCorpusScribe"
+                        Click="PCorpusScribeHandle"
+                        Content="{DynamicResource Scribe.Edit}"
+                        GroupName="PCorpusMode"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon edit, 24}" />
+                </StackPanel>
+            </Border>
+        </local:PRail>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PAnthology">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PAnthologyHandle" Style="{StaticResource Theme.Anthology.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PAnthologyItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PAnthologyItemName}" />
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Anthology.Meta}" Text="{Binding PAnthologyItemLanguage}" />
+                                    <Border Grid.Column="3" Style="{StaticResource Theme.Catalog.Pellet}">
+                                        <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PAnthologyItemCount}" />
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PAnthologyEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Example.Empty}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PQuotation">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PQuotationHandle" Style="{StaticResource Theme.Quotation.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PQuotationItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PQuotationItemName, Mode=OneWay}" /><Run
+                                        Style="{StaticResource Theme.Catalog.Epithet}"
+                                        Text="{Binding PQuotationItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PQuotationItemLanguage}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PQuotationEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Example.Vacant}" />
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="2" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+            <Grid>
+                <local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />
+
+                <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
+
+                <Grid x:Name="PExcerpt">
+                    <ScrollViewer
+                        Margin="30,18,0,0"
+                        Focusable="False"
+                        Padding="0,0,10,0"
+                        HorizontalScrollBarVisibility="Disabled"
+                        Style="{StaticResource Theme.Scroll.Gutter}"
+                        VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="PExcerptBody" Margin="0,0,60,30" Visibility="Collapsed">
+                            <local:PMention
+                                x:Name="PExcerptText"
+                                FontFamily="{DynamicResource Theme.Font}"
+                                FontSize="28"
+                                FontWeight="SemiBold"
+                                PMentionClick="PExcerptMentionHandle"
+                                Style="{StaticResource Theme.Excerpt.Sentence}" />
+
+                            <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
+                                <Border Style="{StaticResource Theme.Excerpt.Chip}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image x:Name="PExcerptFlag" Style="{StaticResource Theme.Excerpt.Flag}" />
+                                        <TextBlock x:Name="PExcerptLanguage" Style="{StaticResource Theme.Speech.Name}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource Theme.Excerpt.Tally}">
+                                    <TextBlock x:Name="PExcerptTally" Style="{StaticResource Theme.Excerpt.Figure}" />
+                                </Border>
+                            </WrapPanel>
+
+                            <StackPanel x:Name="PExcerptGlossSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Theme.Excerpt.Heading}" Text="{DynamicResource Example.Translation}" />
+                                <ItemsControl x:Name="PExcerptGloss" Margin="2,0" ItemTemplate="{DynamicResource Theme.Gloss.Display}" />
+                            </StackPanel>
+
+                            <StackPanel x:Name="PExcerptCitationSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Theme.Excerpt.Heading}" Text="{DynamicResource Reference.Title}" />
+                                <TextBlock x:Name="PExcerptCitation" Margin="2,0" Style="{StaticResource Theme.Display.Value}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <TextBlock
+                        x:Name="PExcerptUnselected"
+                        Margin="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource Theme.Muted}"
+                        IsHitTestVisible="False"
+                        Text="{DynamicResource Example.Unselected}"
+                        TextWrapping="Wrap" />
+                </Grid>
+
+                <Grid x:Name="PTranscript" Margin="21,18,0,0" Visibility="Collapsed">
+                    <Grid.CommandBindings>
+                        <CommandBinding CanExecute="PTranscriptLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandLink}" Executed="PTranscriptLinkHandle" />
+                        <CommandBinding CanExecute="PTranscriptSenseCheck" Command="{x:Static local:PMentionCommand.PMentionCommandChoose}" Executed="PTranscriptSenseHandle" />
+                        <CommandBinding CanExecute="PTranscriptLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandSilence}" Executed="PTranscriptSilenceHandle" />
+                        <CommandBinding CanExecute="PTranscriptUnlinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}" Executed="PTranscriptUnlinkHandle" />
+                    </Grid.CommandBindings>
+
+                    <ScrollViewer Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="9,0,20,30">
+                            <TextBox
+                                x:Name="PTranscriptText"
+                                Margin="0,0,60,0"
+                                ContextMenu="{DynamicResource Theme.Mention.Menu}"
+                                Style="{DynamicResource Theme.Transcript.Sentence}"
+                                TextChanged="PTranscriptTextHandle" />
+                            <ItemsControl x:Name="PTranscriptMentionLine" ItemTemplate="{DynamicResource Theme.Mention.Chip}" Style="{DynamicResource Theme.Mention.Line}" />
+
+                            <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
+                                <Grid>
+                                    <ToggleButton x:Name="PSpeaker" Style="{DynamicResource Theme.Transcript.Speaker}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image x:Name="PSpeakerFlag" Style="{StaticResource Theme.Excerpt.Flag}" />
+                                            <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Speech.Name}" />
+                                            <Path
+                                                Width="12"
+                                                Height="12"
+                                                Margin="8,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Data="{local:PIcon expand, 12}"
+                                                Fill="{StaticResource Theme.Accent}"
+                                                Stretch="None" />
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup
+                                        x:Name="PLanguage"
+                                        Width="238"
+                                        AllowsTransparency="True"
+                                        IsOpen="{Binding IsChecked, ElementName=PSpeaker, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=PSpeaker}"
+                                        StaysOpen="False">
+                                        <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                                            <ItemsControl x:Name="PLanguageList" ItemTemplate="{DynamicResource Theme.Language.Choice}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                                <Border Style="{StaticResource Theme.Excerpt.Tally}">
+                                    <TextBlock x:Name="PTranscriptTally" Style="{StaticResource Theme.Excerpt.Figure}" />
+                                </Border>
+                            </WrapPanel>
+
+                            <StackPanel Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Theme.Excerpt.Heading}" Text="{DynamicResource Example.Translation}" />
+                                <ItemsControl x:Name="PTranscriptGlossLine" Margin="2,0,0,0" ItemTemplate="{DynamicResource Theme.Transcript.Line}" />
+                                <Border x:Name="PTranscriptSeed" Margin="2,5,0,0" Background="Transparent">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox
+                                            x:Name="PTranscriptSeedField"
+                                            Grid.Column="1"
+                                            Margin="0"
+                                            GotKeyboardFocus="PTranscriptSeedHandle"
+                                            Style="{DynamicResource Theme.Transcript.Gloss}"
+                                            Tag="{DynamicResource Example.Translation}" />
+                                        <StackPanel Grid.Column="2" Style="{DynamicResource Theme.Transcript.Control}">
+                                            <Button Click="PGlossAddHandle" Style="{DynamicResource Theme.Transcript.Addition}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Theme.Excerpt.Heading}" Text="{DynamicResource Reference.Title}" />
+                                <Grid HorizontalAlignment="Left">
+                                    <TextBox
+                                        x:Name="PCitationField"
+                                        PreviewKeyDown="PCitationKeyHandle"
+                                        LostKeyboardFocus="PCitationLeaveHandle"
+                                        Style="{DynamicResource Theme.Transcript.Citation}"
+                                        TextChanged="PCitationTextHandle" />
+                                    <Popup
+                                        x:Name="PCitationDrawer"
+                                        MaxWidth="320"
+                                        AllowsTransparency="True"
+                                        Placement="Custom"
+                                        StaysOpen="False">
+                                        <Border MinWidth="{Binding ElementName=PCitationDrawer, Path=PlacementTarget.ActualWidth}" Style="{StaticResource Editor.Popup.Frame}">
+                                            <ListBox
+                                                x:Name="PCitationList"
+                                                MaxHeight="232"
+                                                ItemContainerStyle="{StaticResource Editor.Popup.Caret}"
+                                                ItemTemplate="{DynamicResource Theme.Citation.Row}"
+                                                Style="{StaticResource Editor.Popup.List}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <Button
+                    x:Name="PCorpusBin"
+                    Margin="0,17,26,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="PCorpusBinHandle"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Input.Bin}"
+                    ToolTip="{DynamicResource Scribe.Delete}">
+                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

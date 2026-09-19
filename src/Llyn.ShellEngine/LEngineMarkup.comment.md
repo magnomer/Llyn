@@ -21,6 +21,11 @@ The shell shows what a file holds before it commits to it, and commits to what i
 An entry language that could not name a pack folder is blanked and reported at the entry's line.
 Every loader refuses such a name too, but the file should not carry it into the store at all.
 
+## `public Task<LMarkupCargo> LEngineMarkupStart(string path)`
+
+The first stage of an import on a worker thread: the read, so the window stays live while parsing.
+The hop lives here because the shell starts no task of its own.
+
 ## `private static string LEngineMarkupLoad(string path)`
 
 The text of the file, refused with `LRefusalMarkup` when the file is past the ceiling.
@@ -30,6 +35,11 @@ The length is asked before any byte is read, so an oversize file costs nothing.
 
 Every stored entry whose headword and language equal the parsed ones, letter case folded.
 Two answers mean the file cannot say which one it meant, and that is the caller's to settle.
+
+## `public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
+
+The second stage on a worker thread: the import under the intakes the customs window settled.
+One verb names both stages, since together they are the one staged procedure the shell begins.
 
 ## `public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 

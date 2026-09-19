@@ -1,0 +1,152 @@
+<Window
+    x:Class="Llyn.UIVeneer.PSCustoms"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:Llyn.Core;assembly=Llyn.Core"
+    Title="{DynamicResource Customs.Title}"
+    Width="820"
+    MaxHeight="640"
+    Icon="pack://application:,,,/brand/icon.ico"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    Style="{StaticResource {x:Type Window}}"
+    WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="28,24,28,20">
+        <Grid x:Name="PSCustomsDeclaration">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="180" />
+                    <ColumnDefinition Width="170" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Customs.Headword}" />
+                <TextBlock Grid.Column="3" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Customs.Mode}" />
+                <TextBlock Grid.Column="4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Customs.Target}" />
+            </Grid>
+
+            <ScrollViewer Grid.Row="1" MaxHeight="440" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PSCustomsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="170" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{StaticResource Theme.Muted}" Text="{Binding PSCustomsItemNumber}" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Text="{Binding PSCustomsItemHeadword}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource Theme.Muted}"
+                                    Text="{Binding PSCustomsItemLanguage}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <ComboBox
+                                    Grid.Column="3"
+                                    Margin="0,0,8,0"
+                                    SelectedValue="{Binding PSCustomsItemMode, Mode=TwoWay}"
+                                    SelectedValuePath="Tag"
+                                    SelectionChanged="PSCustomsModeHandle"
+                                    Style="{StaticResource Theme.Input.Choice}">
+                                    <ComboBoxItem Content="{DynamicResource Customs.Create}" Tag="{x:Static core:LMarkupMode.LMarkupModeNew}" />
+                                    <ComboBoxItem Content="{DynamicResource Customs.Append}" Tag="{x:Static core:LMarkupMode.LMarkupModeMerge}" />
+                                    <ComboBoxItem Content="{DynamicResource Customs.Replace}" Tag="{x:Static core:LMarkupMode.LMarkupModeReplace}" />
+                                </ComboBox>
+                                <ComboBox
+                                    Grid.Column="4"
+                                    Margin="0,0,8,0"
+                                    IsEnabled="{Binding PSCustomsItemTargeted}"
+                                    ItemsSource="{Binding PSCustomsItemCandidate}"
+                                    SelectedValue="{Binding PSCustomsItemTarget, Mode=TwoWay}"
+                                    SelectedValuePath="LEntryId"
+                                    SelectionChanged="PSCustomsTargetHandle"
+                                    Style="{StaticResource Theme.Input.Choice}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding LEntryHeadword}" />
+                                                <TextBlock Margin="8,0,0,0" Foreground="{StaticResource Theme.Muted}" Text="{Binding LEntryId, StringFormat=#{0}}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBlock Grid.Column="5" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PSCustomsItemLoss}" TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2" Margin="0,20,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="PSCustomsAdmit"
+                    MinWidth="88"
+                    Click="PSCustomsAcceptHandle"
+                    Content="{DynamicResource Customs.Accept}"
+                    IsDefault="True"
+                    Style="{StaticResource Theme.Command.Primary}" />
+                <Button
+                    x:Name="PSCustomsQuit"
+                    MinWidth="88"
+                    Margin="6,0,0,0"
+                    Click="PSCustomsCancelHandle"
+                    Content="{DynamicResource Customs.Cancel}"
+                    IsCancel="True"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="PSCustomsReport" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="14" Text="{DynamicResource Customs.Omission}" TextWrapping="Wrap" />
+
+            <ScrollViewer Grid.Row="1" MaxHeight="440" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PSCustomsOmission">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="56" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Foreground="{StaticResource Theme.Muted}" Text="{Binding LMarkupOmissionLine}" />
+                                <TextBlock Grid.Column="1" Text="{Binding LMarkupOmissionText}" TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2" Margin="0,20,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="PSCustomsDismiss"
+                    MinWidth="88"
+                    Click="PSCustomsCloseHandle"
+                    Content="{DynamicResource Customs.Close}"
+                    IsCancel="True"
+                    IsDefault="True"
+                    Style="{StaticResource Theme.Command.Primary}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

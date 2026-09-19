@@ -1,0 +1,63 @@
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using Llyn.Core;
+
+namespace Llyn.UIVeneer;
+
+public partial class PRepertoire
+{
+    private string? PVignetteTextRead(LStateValue value)
+    {
+        return value.LStateValueUncertain
+            ? PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")
+            : value.LStateValueShown;
+    }
+
+    private void PVignetteTitleShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PVignetteTitle.Text = text ?? PLocalizationCatalog.PLocalizationTextRead("Situation.Untitled");
+        PVignetteTitle.SetResourceReference(
+            TextBlock.ForegroundProperty,
+            text is null ? "Theme.Muted" : "Theme.Ink");
+    }
+
+    private void PVignetteKindShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PVignetteKind.Text = text ?? string.Empty;
+        PVignetteChip.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void PVignetteDescriptionShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PMarkdown.PMarkdownShow(PVignetteDescription, text);
+        PVignetteDescriptionSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void PVignetteMediaShow(LSituation? situation)
+    {
+        PVignettePicture.DataContext = situation;
+        PVignetteVideo.DataContext = situation;
+    }
+
+    private string PRepertoireTallyRead(long? id)
+    {
+        int count = id is long stored && _pAtlasCount.TryGetValue(stored, out int usage) ? usage : 0;
+
+        return count switch
+        {
+            0 => PLocalizationCatalog.PLocalizationTextRead("Situation.UsageNone"),
+            1 => PLocalizationCatalog.PLocalizationTextRead("Situation.UsageOne"),
+            _ => string.Concat(
+                count.ToString(CultureInfo.CurrentCulture),
+                " ",
+                PLocalizationCatalog.PLocalizationTextRead("Situation.UsageMany")),
+        };
+    }
+}

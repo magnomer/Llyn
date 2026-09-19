@@ -1,0 +1,71 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    x:Class="Llyn.UIVeneer.PLabelTemplate">
+
+    <DataTemplate x:Key="Theme.Label.Chip">
+        <Border Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Badge}">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLabelChipName}" />
+                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PLabelChipHandle">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <Path
+                                    Width="12"
+                                    Height="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Data="{local:PIcon close, 12}"
+                                    Fill="{DynamicResource Theme.Muted}"
+                                    Stretch="None" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Theme.Label.Entry">
+        <TextBox
+            MinWidth="96"
+            Margin="9,0,9,7"
+            Padding="0,4"
+            VerticalContentAlignment="Center"
+            FontSize="12"
+            Foreground="{DynamicResource Theme.Ink}"
+            PreviewKeyDown="PLabelCaretHandle"
+            LostKeyboardFocus="PLabelCloseHandle"
+            Style="{DynamicResource Theme.Input.Bare}"
+            Tag="{Binding PLabelCaretHint}"
+            Text="{Binding PLabelCaretText, UpdateSourceTrigger=PropertyChanged}" />
+    </DataTemplate>
+
+    <local:PLabelSelector
+        x:Key="Theme.Label.Item"
+        PLabelSelectorChip="{StaticResource Theme.Label.Chip}"
+        PLabelSelectorCaret="{StaticResource Theme.Label.Entry}" />
+
+    <Style x:Key="Theme.Label.Field" TargetType="ItemsControl">
+        <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Label.Item}" />
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.TagMargin}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ItemsControl">
+                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PLabelFocusHandle">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

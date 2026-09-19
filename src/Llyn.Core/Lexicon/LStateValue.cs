@@ -1,3 +1,5 @@
+using System;
+
 namespace Llyn.Core;
 
 public sealed record LStateValue(
@@ -25,6 +27,25 @@ public sealed record LStateValue(
             ? LStateValueText
             : string.Empty;
     }
+
+    public string? LStateValueShown => LStateValueShow() is { Length: > 0 } shown ? shown : null;
+
+    public bool LStateValueUncertain => LStateValueState == LState.LStateUnknown;
+
+    public bool LStateValueMatch(string text)
+    {
+        return string.Equals(LStateValueShow(), text, StringComparison.Ordinal);
+    }
+
+    public bool LStateValueMatch(LStateValue? other)
+    {
+        return Equals(other);
+    }
+
+    public bool LStateValueLegible => LStateValueState == LState.LStateSpecified || LStateValueUnreadable;
+
+    public bool LStateValueSound =>
+        LStateValueState == LState.LStateSpecified && !LStateValueUnreadable && LStateValueShown is not null;
 
     public static implicit operator LStateValue(string? text)
     {

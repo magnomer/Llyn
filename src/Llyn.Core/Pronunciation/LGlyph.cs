@@ -31,6 +31,13 @@ public sealed record LGlyph(
         return characters;
     }
 
+    public static bool LGlyphSingleCheck(string text)
+    {
+        return LGlyphScan(text).Count == 1;
+    }
+
+    public bool LGlyphSourced => LGlyphSources.Count > 0;
+
     public IReadOnlyList<LSourceSpec>? LGlyphSourceRead(string scheme)
     {
         return string.Equals(LGlyphName, scheme, StringComparison.Ordinal) ? LGlyphSources : null;

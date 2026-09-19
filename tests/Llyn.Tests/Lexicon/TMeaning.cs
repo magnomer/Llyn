@@ -110,4 +110,17 @@ public sealed class TMeaning
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
             [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
     }
+
+    [Fact]
+    public void MeaningName_TitleOrDefinition_PrefersTheTitle()
+    {
+        LStateValue blank = LStateValue.LStateValueUnspecified;
+
+        LStateValue first = TInterface.TStateValueCreate("first");
+        LStateValue second = TInterface.TStateValueCreate("second");
+
+        Assert.Equal("first", TInterface.TMeaningCreate(2, 9, 1, 0, first, blank).LMeaningName);
+        Assert.Equal("second", TInterface.TMeaningCreate(3, 9, 1, 1, blank, second).LMeaningName);
+        Assert.Equal(string.Empty, TInterface.TMeaningCreate(4, 9, 1, 2, blank, blank).LMeaningName);
+    }
 }

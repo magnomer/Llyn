@@ -95,4 +95,13 @@ public sealed class TContour
         Assert.True(engine.TEngineTonalCheck("Mandarin"));
         Assert.False(engine.TEngineTonalCheck("English"));
     }
+
+    [Fact]
+    public void ContourToned_MarkedAndBareSyllables_FlagsOnlyTheMarkedOne()
+    {
+        IReadOnlyList<LContour> syllables = TInterface.TContourParse("ma˧˥ ma");
+
+        Assert.True(syllables[0].LContourToned);
+        Assert.False(syllables[1].LContourToned);
+    }
 }

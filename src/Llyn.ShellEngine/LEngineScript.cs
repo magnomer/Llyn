@@ -74,6 +74,23 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
+    {
+        IReadOnlyList<LScriptImage> images = LEngineScriptRead(entryId);
+        if (images.Count == 0)
+        {
+            return [];
+        }
+
+        LEntry? entry;
+        lock (_lEngineGate)
+        {
+            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        }
+
+        return LScriptGroup.LScriptGroupScan(images, LEngineStyleRead(entry?.LEntryLanguage ?? string.Empty));
+    }
+
     public bool LEngineScriptCheck(long entryId)
     {
         LEntry? entry;

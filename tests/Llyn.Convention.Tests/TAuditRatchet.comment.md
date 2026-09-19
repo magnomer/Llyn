@@ -8,6 +8,10 @@ Only the user commits, so the diff that loosens a gate is always seen.
 The hold runs within one generation only.
 A new generation changes what the walk reports, so its ceilings and waivers are baselined afresh.
 
+## `private static readonly string TAuditSettingFolder`
+
+The test project folder, named from the project so this file is the same in every project.
+
 ## `private static readonly string[] TAuditWaiverPaths`
 
 The three parts the custody waivers are kept in.

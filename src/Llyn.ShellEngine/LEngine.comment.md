@@ -95,6 +95,10 @@ The answer is replaced when `LEngineWorkspaceChange` opens another workspace.
 
 Returns the current workspace folder — where the user's settings and database are stored.
 
+## `public string LEngineWorkspaceFormat()`
+
+The workspace folder's own name, for the settings ledger, and the full path when the root has none.
+
 ## `public string? LEngineAuditRecord(Exception exception)`
 
 Writes one unexpected fault into the open workspace's audit log and answers with the file it went to.
@@ -128,6 +132,7 @@ Each forgotten id is marked stale rather than simply dropped.
 A shell still holding one is refused instead of writing here.
 The cached source lists go too, because a language keeps whichever lists the workspace it was read from declared.
 The cached packs go with them, since the source lists were built from those packs.
+The flag cache is cleared here too, ahead of the announcement, so a surface reloading on it asks afresh.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
 One announcement replaces the list of panels the settings panel used to reset by name.
 A panel added later is current without that list being edited.

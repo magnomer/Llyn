@@ -11,4 +11,8 @@ public sealed record LUsage(
     public string LUsageName { get; init; } = LUsageHeadword;
 
     public LStateValue LUsageTitle { get; init; } = LUsageTitle ?? LStateValue.LStateValueUnspecified;
+
+    public bool LUsageCollocated => LUsageOwner == LOwner.LOwnerCollocation;
+
+    public bool LUsageQuoted => LUsageOwner == LOwner.LOwnerExample;
 }

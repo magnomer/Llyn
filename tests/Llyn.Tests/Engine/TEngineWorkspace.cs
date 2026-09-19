@@ -28,6 +28,15 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
+    public void WorkspaceFormat_OpenWorkspace_ReturnsFolderName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Equal(Path.GetFileName(workspace.TWorkspaceFolder), engine.TEngineWorkspaceFormat());
+    }
+
+    [Fact]
     public void WorkspaceOpen_TargetEmpty_InheritsCurrentSettings()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();

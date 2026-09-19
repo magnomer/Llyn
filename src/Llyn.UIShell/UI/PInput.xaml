@@ -1,8 +1,0 @@
-<UserControl
-    x:Class="Llyn.UIShell.PInput"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIShell">
-
-    <local:PEditor x:Name="PEditor" Padding="34,20,34,38" />
-</UserControl>

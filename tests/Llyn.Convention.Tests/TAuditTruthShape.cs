@@ -31,7 +31,7 @@ internal static partial class TAuditTruthWalker
                 MethodDeclarationSyntax handler when TAuditDeafRead(handler) is string bulletin
                     => (handler.Identifier.ValueText, $"handles the bulletin '{bulletin}' without reading it"),
                 LambdaExpressionSyntax deaf when TAuditLambdaCheck(deaf)
-                    => ("PObserver", "handles a bulletin without reading it"),
+                    => (TAuditTruthSetting.TAuditObserverType, "handles a bulletin without reading it"),
                 _ => null
             };
             if (hit is null)
@@ -92,7 +92,7 @@ internal static partial class TAuditTruthWalker
     private static bool TAuditLambdaCheck(LambdaExpressionSyntax lambda)
     {
         if (lambda.Parent is not ArgumentSyntax { Parent.Parent: ObjectCreationExpressionSyntax creation }
-            || TAuditNameRead(creation.Type) is not "PObserver")
+            || TAuditNameRead(creation.Type) != TAuditTruthSetting.TAuditObserverType)
         {
             return false;
         }
@@ -123,7 +123,7 @@ internal static partial class TAuditTruthWalker
     {
         foreach (ParameterSyntax parameter in handler.ParameterList.Parameters)
         {
-            if (parameter.Type is null || TAuditNameRead(parameter.Type) is not "LBulletin")
+            if (parameter.Type is null || TAuditNameRead(parameter.Type) != TAuditTruthSetting.TAuditBulletinType)
             {
                 continue;
             }

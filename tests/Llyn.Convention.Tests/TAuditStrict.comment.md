@@ -33,6 +33,22 @@ A veneer member containing a branch, a loop, an operator or a pattern.
 A shell line that compares, computes or queries over a logic value.
 A bare logic verdict deciding a branch is asking the engine and is not treatment.
 
+## `public void AuditStrict_DeportmentSources_ReachNoMarkup()`
+
+A deportment line that names WPF, the dispatcher or the file system.
+The deportment holds panel state for the veneer and must build without a window.
+
+## `public void AuditStrict_VeneerSources_HoldNoCatalog()`
+
+A veneer line that reads a file, parses JSON, runs a regex, starts a process or starts a task.
+Each of those is work the engine or `LUsher` does, and the veneer only asks for the answer.
+The files whose stream use is the framework's own are exempt by name.
+
+## `private static List<string> TAuditSourceScan(IReadOnlyList<string> include, IReadOnlyList<string> forbidden, IReadOnlyList<string> exempt)`
+
+Every line of every included source that matches a forbidden pattern, outside the exempt files.
+No hit count is kept for these, since both start at zero and stay there.
+
 ## `public void AuditStrict_ShellLocals_CarryNoLogic()`
 
 A shell line that computes over a carried logic value, or over the input of a control.

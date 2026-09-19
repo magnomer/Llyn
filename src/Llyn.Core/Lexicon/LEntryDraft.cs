@@ -41,6 +41,35 @@ public sealed record LEntryDraft(
     [JsonIgnore]
     public string LEntryDraftAudio => LEntryDraftPronunciation?.LPronunciationDraftAudio ?? string.Empty;
 
+    [JsonIgnore]
+    public IReadOnlyList<LPronunciationDraft> LEntryDraftAccents =>
+        LEntryDraftPronunciations.Count <= 1 ? [] : LEntryDraftPronunciations.Skip(1).ToList();
+
+    [JsonIgnore]
+    public bool LEntryDraftNoted => LEntryDraftNote.Length > 0;
+
+    [JsonIgnore]
+    public bool LEntryDraftMarked => LEntryDraftSpeeches.Count > 0;
+
+    [JsonIgnore]
+    public bool LEntryDraftDefined => LEntryDraftMeanings.Count > 0;
+
+    [JsonIgnore]
+    public bool LEntryDraftCollocated => LEntryDraftCollocations.Count > 0;
+
+    [JsonIgnore]
+    public bool LEntryDraftReflected => LEntryDraftReflexes.Count > 0;
+
+    [JsonIgnore]
+    public bool LEntryDraftTargeted => LEntryDraftTargets.Count > 0;
+
+    [JsonIgnore]
+    public IReadOnlyList<long> LEntryDraftTargets =>
+        LEntryDraftMeanings.Concat(LEntryDraftCollocations)
+            .SelectMany(static card => card.LCardDraftTranslation)
+            .Distinct()
+            .ToList();
+
     public LEntryDraft LEntryDraftNormalize()
     {
         return this with

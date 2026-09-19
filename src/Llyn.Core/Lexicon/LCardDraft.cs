@@ -45,6 +45,10 @@ public sealed record LCardDraft(
         };
     }
 
+    public bool LCardDraftExemplified => LCardDraftSentence.Count > 0;
+
+    public int LCardDraftTally => 1 + LCardDraftChild.Sum(static row => row.LCardDraftTally);
+
     public bool LCardDraftEmpty =>
         LCardDraftTitle.LStateValueEmpty
         && LCardDraftExpression.LStateValueEmpty

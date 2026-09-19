@@ -5,7 +5,7 @@
 Hand-written and tracked: the strict-audit switch, the report path and the classifiers live here.
 No script writes this file.
 
-## `public const bool TAuditStrictEnforced = false;`
+## `public const bool TAuditStrictEnforced = true;`
 
 False makes every strict fact a warning that passes.
 True fails a fact when a kind counts above its ceiling.
@@ -24,6 +24,27 @@ Lower a ceiling when the shell sheds a hit, never raise one to admit a new one.
 ## `public static readonly string[] TAuditReachInclude`
 
 The `git ls-files` patterns of the shell markup.
+
+## `public static readonly string[] TAuditVeneerInclude`
+
+The `git ls-files` patterns of the veneer sources, scanned for catalog, file and process work.
+
+## `public static readonly string[] TAuditDeportmentInclude`
+
+The `git ls-files` patterns of the deportment sources, scanned for a reach into the framework.
+
+## `public static readonly string[] TAuditCatalogPatterns`
+
+A line matching one of these does file, JSON, regex or process work, or starts a task, in the veneer.
+That work belongs below the shell, in the engine or in `LUsher`.
+
+## `public static readonly string[] TAuditCatalogExempt`
+
+The veneer files whose stream use is the framework's own: a resource stream, a bitmap decode, a browser page.
+
+## `public static readonly string[] TAuditMarkupPatterns`
+
+A deportment line matching one of these names WPF, the dispatcher or the file system.
 
 ## `public static readonly string[] TAuditReachNamespaces`
 

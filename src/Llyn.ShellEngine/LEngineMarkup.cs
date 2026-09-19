@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -42,6 +43,11 @@ public sealed partial class LEngine
         return new LMarkupCargo(entries, omissions);
     }
 
+    public Task<LMarkupCargo> LEngineMarkupStart(string path)
+    {
+        return Task.Run(() => LEngineMarkupRead(path));
+    }
+
     private static string LEngineMarkupLoad(string path)
     {
         using FileStream stream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -62,6 +68,11 @@ public sealed partial class LEngine
         {
             return LEngineMarkupFind(entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
         }
+    }
+
+    public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
+    {
+        return Task.Run(() => LEngineMarkupImport(cargo, intakes));
     }
 
     public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)

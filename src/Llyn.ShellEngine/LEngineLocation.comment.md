@@ -20,6 +20,11 @@ Windows sends the user's credentials to any host named that way, so an imported 
 The file half of the rule, once web and scheme forms are settled.
 A path the runtime cannot form is refused rather than thrown.
 
+## `public Uri? LEngineLocationRead(string? location)`
+
+The address a location names when something is there to show: a web address, or a file on disk.
+An image or video row previews through this, so a missing file shows no preview rather than a broken one.
+
 ## `private string LEngineRecordingResolve(string file)`
 
 The full path of a stored recording within the workspace in use now.
