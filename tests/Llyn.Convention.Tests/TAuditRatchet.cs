@@ -13,6 +13,8 @@ public sealed class TAuditRatchet
 
     private static readonly string TAuditStrictPath = TAuditSettingFolder + "TAuditStrictSetting.cs";
 
+    private static readonly string TAuditRingPath = TAuditSettingFolder + "TAuditRingSetting.cs";
+
     private static readonly string[] TAuditWaiverPaths =
     [
         TAuditSettingFolder + "TAuditWaiverArgument.cs",
@@ -23,6 +25,9 @@ public sealed class TAuditRatchet
     private static readonly Regex TAuditCeilingPattern = new(@"\[""(\w+)""\] = (\d+),", RegexOptions.Compiled);
 
     private static readonly Regex TAuditWaiverPattern = new(@"^\s*""([^""]+:[^""]+:\w+)"",", RegexOptions.Multiline);
+
+    private static readonly Regex TAuditRingPattern =
+        new(@"^\s*""([^"":]+:[\w.]+)"",", RegexOptions.Multiline);
 
     private static readonly Regex TAuditEnforcedPattern = new(@"Enforced = (true|false);", RegexOptions.Compiled);
 
@@ -38,6 +43,34 @@ public sealed class TAuditRatchet
     public void AuditRatchet_StrictCeiling_NeverRises()
     {
         TAuditCeilingCheck(TAuditStrictPath, TAuditStrictSetting.TAuditStrictCeiling);
+    }
+
+    [Fact]
+    public void AuditRatchet_RingCeiling_NeverRises()
+    {
+        TAuditCeilingCheck(TAuditRingPath, TAuditRingSetting.TAuditRingCeiling);
+    }
+
+    [Fact]
+    public void AuditRatchet_RingWaiver_NeverGrows()
+    {
+        string? committed = TAuditCommittedRead(TAuditRingPath);
+        if (committed is null || !TAuditGenerationCheck(committed))
+        {
+            return;
+        }
+
+        HashSet<string> known = TAuditRingPattern.Matches(committed)
+            .Select(match => match.Groups[1].Value)
+            .ToHashSet(StringComparer.Ordinal);
+        List<string> added = TAuditRingSetting.TAuditRingWaiver
+            .Where(waiver => !known.Contains(waiver))
+            .Select(waiver => $"  {waiver}")
+            .ToList();
+
+        Assert.True(added.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRATCHET",
+            $"{added.Count} ring waiver line(s) not in the committed settings.\n{string.Join('\n', added)}"));
     }
 
     [Fact]

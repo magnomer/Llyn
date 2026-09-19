@@ -24,6 +24,10 @@ A ceiling entry as it stands in a settings file.
 
 A waiver line as it stands in a settings file.
 
+## `private static readonly Regex TAuditRingPattern`
+
+A ring waiver line as it stands in the ring settings file, a path and a namespace.
+
 ## `private static readonly Regex TAuditEnforcedPattern`
 
 The enforcement switch as it stands in a settings file.
@@ -39,6 +43,14 @@ No custody ceiling stands above its committed value.
 ## `public void AuditRatchet_StrictCeiling_NeverRises()`
 
 No strict ceiling stands above its committed value.
+
+## `public void AuditRatchet_RingCeiling_NeverRises()`
+
+No ring ceiling stands above its committed value.
+
+## `public void AuditRatchet_RingWaiver_NeverGrows()`
+
+No ring waiver is missing from the committed list.
 
 ## `public void AuditRatchet_TruthWaiver_NeverGrows()`
 
