@@ -84,12 +84,12 @@ internal static partial class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 285,
-        ["Guard"] = 240,
+        ["Argument"] = 278,
+        ["Guard"] = 237,
         ["Fork"] = 37,
         ["Mirror"] = 45,
         ["Mutation"] = 24,
-        ["Shape"] = 131,
+        ["Shape"] = 125,
     };
 
     public static string[] TAuditTruthWaiver => [.. TAuditWaiverArgument, .. TAuditWaiverGuard, .. TAuditWaiverField];

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -30,6 +32,27 @@ internal sealed class PIndexItem : INotifyPropertyChanged
     public string PIndexItemLanguage { get; }
 
     public ImageSource? PIndexItemFlag { get; }
+
+    internal static IReadOnlyList<PIndexItem> PIndexItemBuild(IReadOnlyList<LVistaRow> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<PIndexItem> built = new(rows.Count);
+        foreach (LVistaRow row in rows)
+        {
+            built.Add(new PIndexItem(
+                row.LVistaRowId,
+                row.LVistaRowHeadword,
+                row.LVistaRowLanguage,
+                row.LVistaRowEpithet ?? string.Empty,
+                row.LVistaRowChosen)
+            {
+                PIndexItemName = row.LVistaRowName,
+            });
+        }
+
+        return built;
+    }
 
     internal static bool PIndexItemMatch(PIndexItem held, PIndexItem fresh)
     {

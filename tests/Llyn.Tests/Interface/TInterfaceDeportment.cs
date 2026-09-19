@@ -13,6 +13,17 @@ internal static class TInterfaceDeportment
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
+    internal static LLibrary TLibraryCreate(
+        LEngine engine, Func<bool> changeSeam, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
+        new(engine, changeSeam, () => true, leaveSeam, deleteSeam);
+
+    internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
+        panel.LLibraryVistaRestore(vista);
+
+    internal static IReadOnlyList<LVistaRow> TLibraryRowsRead(this LLibrary panel) => panel.LLibraryRowsRead();
+
+    internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
+
     internal static void TPanelRowSelect(this LPanel panel, long? id) => panel.LPanelRowSelect(id);
 
     internal static void TPanelScribeSet(this LPanel panel, bool editing) => panel.LPanelScribeSet(editing);

@@ -26,6 +26,11 @@ The engine numbers it on the row it returns, because a repeat is only visible ac
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
 The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.
 
+## `internal static IReadOnlyList<PIndexItem> PIndexItemBuild(IReadOnlyList<LVistaRow> rows)`
+
+One item per engine row, in the order the engine returned them.
+A plain copy loop, so the panel that asks for it carries no loop of its own.
+
 ## `internal static bool PIndexItemMatch(PIndexItem held, PIndexItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
