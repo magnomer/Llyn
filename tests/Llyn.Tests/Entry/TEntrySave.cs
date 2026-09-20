@@ -100,7 +100,7 @@ public sealed class TEntrySave
 
         Assert.Equal(
             "he said a word",
-            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleText);
+            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample!.LExampleText);
         Assert.Equal(
             "conversation",
             Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationTitle);
@@ -109,7 +109,7 @@ public sealed class TEntrySave
         Assert.Equal(
             "in a word, no",
             Assert.Single(examples.TSentenceCollocationRead(collocation.LCollocationId))
-                .LSentenceExample.LExampleText);
+                .LSentenceExample!.LExampleText);
         Assert.Equal(
             "summary",
             Assert.Single(situations.TSituationCollocationRead(collocation.LCollocationId)).LSituationTitle);
@@ -122,8 +122,8 @@ public sealed class TEntrySave
             TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
 
         Assert.NotEqual(
-            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleId,
-            Assert.Single(examples.TSentenceMeaningRead(other.LMeaningId)).LSentenceExample.LExampleId);
+            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample!.LExampleId,
+            Assert.Single(examples.TSentenceMeaningRead(other.LMeaningId)).LSentenceExample!.LExampleId);
         Assert.Equal(
             Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationId,
             Assert.Single(situations.TSituationMeaningRead(other.LMeaningId)).LSituationId);

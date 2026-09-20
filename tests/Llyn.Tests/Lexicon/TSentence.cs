@@ -23,7 +23,7 @@ public sealed class TSentence
             [TInterface.TSentenceCreate(0, meaningId, 0, stated, "for", "Patient")]);
 
         LSentence read = Assert.Single(sentences.TSentenceMeaningRead(meaningId));
-        Assert.Equal(stated.LExampleId, read.LSentenceExample.LExampleId);
+        Assert.Equal(stated.LExampleId, read.LSentenceExample!.LExampleId);
         Assert.Equal("for", read.LSentenceParticle.TStateValueShow());
         Assert.Equal("Patient", read.LSentenceDependence.TStateValueShow());
         Assert.NotEqual(0, read.LSentenceId);
@@ -119,7 +119,7 @@ public sealed class TSentence
         Assert.Equal(
             ["second", "first"],
             sentences.TSentenceMeaningRead(meaningId)
-                .Select(sentence => sentence.LSentenceExample.LExampleText.TStateValueShow()));
+                .Select(sentence => sentence.LSentenceExample!.LExampleText.TStateValueShow()));
         Assert.Equal(
             [0, 1],
             sentences.TSentenceMeaningRead(meaningId).Select(sentence => sentence.LSentencePosition));
@@ -174,7 +174,7 @@ public sealed class TSentence
             sentences.TSentenceMeaningAttach(meaningId, example.LExampleId, position);
         }
 
-        long middle = sentences.TSentenceMeaningRead(meaningId)[1].LSentenceExample.LExampleId;
+        long middle = sentences.TSentenceMeaningRead(meaningId)[1].LSentenceExample!.LExampleId;
         sentences.TSentenceMeaningDetach(meaningId, middle);
 
         Assert.Equal(
@@ -219,7 +219,7 @@ public sealed class TSentence
             [TInterface.TSentenceCreate(0, collocationId, 0, stated, "in", "Manner")]);
 
         LSentence read = Assert.Single(sentences.TSentenceCollocationRead(collocationId));
-        Assert.Equal(stated.LExampleId, read.LSentenceExample.LExampleId);
+        Assert.Equal(stated.LExampleId, read.LSentenceExample!.LExampleId);
         Assert.Equal("in", read.LSentenceParticle.TStateValueShow());
         Assert.Equal("Manner", read.LSentenceDependence.TStateValueShow());
         Assert.NotEqual(0, read.LSentenceId);
@@ -287,7 +287,7 @@ public sealed class TSentence
             sentences.TSentenceCollocationAttach(collocationId, example.LExampleId, position);
         }
 
-        long middle = sentences.TSentenceCollocationRead(collocationId)[1].LSentenceExample.LExampleId;
+        long middle = sentences.TSentenceCollocationRead(collocationId)[1].LSentenceExample!.LExampleId;
         sentences.TSentenceCollocationDetach(collocationId, middle);
 
         Assert.Equal(

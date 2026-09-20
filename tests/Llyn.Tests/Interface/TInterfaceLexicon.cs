@@ -43,10 +43,16 @@ internal static partial class TInterface
         long id,
         long entryId,
         int position,
-        LStateValue title,
-        LStateValue expression,
-        LStateValue meaning) =>
-        new(id, entryId, position, title, expression, meaning);
+        LStateValue? title,
+        LStateValue? expression,
+        LStateValue? meaning) =>
+        new(
+            id,
+            entryId,
+            position,
+            title ?? LStateValue.LStateValueUnspecified,
+            expression ?? LStateValue.LStateValueUnspecified,
+            meaning ?? LStateValue.LStateValueUnspecified);
 
     internal static LCourt TCourtLinkCreate(
         long id,
@@ -157,14 +163,14 @@ internal static partial class TInterface
     internal static LExample TExampleCreate(
         long id,
         string language,
-        LStateValue text,
+        LStateValue? text,
         LStateValue? translation,
-        LStateAnchor source) =>
+        LStateAnchor? source) =>
         new(
             id,
             language,
-            text,
-            source,
+            text ?? LStateValue.LStateValueUnspecified,
+            source ?? LStateAnchor.LStateAnchorUnspecified,
             translation is null || translation.LStateValueEmpty ? [] : [TGlossCreate(0, string.Empty, translation)]);
 
     internal static LGloss TGlossCreate(long id, string language, LStateValue text) =>
@@ -304,22 +310,35 @@ internal static partial class TInterface
 
     internal static LReference TReferenceCreate(
         long id,
-        LStateValue title,
-        LStateValue year,
+        LStateValue? title,
+        LStateValue? year,
         LReferenceKind kind,
-        LStateValue note,
-        LStateValue url,
+        LStateValue? note,
+        LStateValue? url,
         LStateMark authorState) =>
-        new(id, title, year, kind, note, url, authorState);
+        new(
+            id,
+            title ?? LStateValue.LStateValueUnspecified,
+            year ?? LStateValue.LStateValueUnspecified,
+            kind,
+            note ?? LStateValue.LStateValueUnspecified,
+            url ?? LStateValue.LStateValueUnspecified,
+            authorState);
 
     internal static LMeaning TMeaningCreate(
         long id,
         long entryId,
         long? parentId,
         int position,
-        LStateValue title,
-        LStateValue definition) =>
-        new(id, entryId, parentId, position, title, definition);
+        LStateValue? title,
+        LStateValue? definition) =>
+        new(
+            id,
+            entryId,
+            parentId,
+            position,
+            title ?? LStateValue.LStateValueUnspecified,
+            definition ?? LStateValue.LStateValueUnspecified);
 
     internal static LRegister TRegisterCreate(long id, string name) =>
         new(id, LStateValue.LStateValueRead(name));
@@ -332,10 +351,14 @@ internal static partial class TInterface
 
     internal static LSituation TSituationCreate(
         long id,
-        LStateValue title,
-        LStateValue description,
-        LStateValue kind) =>
-        new(id, title, description, kind);
+        LStateValue? title,
+        LStateValue? description,
+        LStateValue? kind) =>
+        new(
+            id,
+            title ?? LStateValue.LStateValueUnspecified,
+            description ?? LStateValue.LStateValueUnspecified,
+            kind ?? LStateValue.LStateValueUnspecified);
 
     internal static LSituationDraft TSituationDraftCreate(
         LStateValue text,

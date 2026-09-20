@@ -67,7 +67,7 @@ public sealed class TMarkupFormat
     [Fact]
     public void MarkupFormat_ControlCharacter_DropsIt()
     {
-        LMarkupEntry entry = TInterface.TMarkupEntryCreate("ember", "en", note: "anote");
+        LMarkupEntry entry = TInterface.TMarkupEntryCreate("em\u0001ber", "en", note: "a\fnote");
 
         string written = TInterface.TMarkupFormat([entry]);
         LMarkupEntry again = Assert.Single(TInterface.TMarkupParse(written));

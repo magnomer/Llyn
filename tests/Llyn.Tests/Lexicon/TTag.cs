@@ -246,7 +246,7 @@ public sealed class TTag
             ["formal", "spoken"],
             engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaningId));
-        Assert.Empty(engine.TEngineTagRead().Where(tag => tag.LTagText == "rare"));
+        Assert.DoesNotContain(engine.TEngineTagRead(), tag => tag.LTagText == "rare");
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
     }
 

@@ -39,8 +39,8 @@ public sealed class TEngineFanqie
     private const string TEngineFanqieWiki =
         """
         return {
-        	"知東三開 平陟弓",
-        	"見桓一合 去古玩"
+            "知東三開 平陟弓",
+            "見桓一合 去古玩"
         }
         """;
 

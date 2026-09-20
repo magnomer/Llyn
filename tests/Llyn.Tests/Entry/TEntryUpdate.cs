@@ -194,7 +194,7 @@ public sealed class TEntryUpdate
         Assert.Equal(
             ["two", "one"],
             examples.TSentenceMeaningRead(meaning.LMeaningId)
-                .Select(sentence => sentence.LSentenceExample.LExampleText));
+                .Select(sentence => sentence.LSentenceExample!.LExampleText));
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
 

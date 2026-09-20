@@ -12,7 +12,7 @@ public sealed record LCatalogReference(
     int LCatalogReferenceUsage,
     bool LCatalogReferenceChosen = false)
 {
-    private static readonly char[] LCatalogReferenceBreak = [' ', '	', '(', ')', ','];
+    private static readonly char[] LCatalogReferenceBreak = [' ', '\t', '(', ')', ','];
 
     public static LCatalogReference LCatalogReferenceCreate(
         LReference reference,
