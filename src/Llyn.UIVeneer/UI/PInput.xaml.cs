@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.UIDeportment;
@@ -10,7 +11,7 @@ public partial class PInput : UserControl
 
     private LEditor _lEditor = null!;
 
-    private PObserver? _pInputObserver;
+    private Action<LBulletin>? _pInputObserver;
 
     public PInput()
     {
@@ -24,7 +25,7 @@ public partial class PInput : UserControl
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PEditor.PEditorAttach(host, _lEditor);
 
-        _pInputObserver = new PObserver(this, PInputBulletinHandle);
+        _pInputObserver = PObserver.PObserverCreate(this, PInputBulletinHandle);
         host.PWindowDeportment.LWindowObserverAttach(_pInputObserver);
     }
 

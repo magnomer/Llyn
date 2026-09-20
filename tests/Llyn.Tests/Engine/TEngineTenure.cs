@@ -90,8 +90,14 @@ public sealed class TEngineTenure
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
-        TTenureObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<long> drafts = [];
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+            {
+                drafts.Add(bulletin.LBulletinId);
+            }
+        });
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestDefer(
@@ -100,7 +106,7 @@ public sealed class TEngineTenure
 
         Assert.False(tenure.TTenureStateRead().LTenureStateHalted);
         Assert.Equal("ember", tenure.TTenureRead()?.LDraftContent.LEntryDraftHeadword);
-        Assert.Contains(tenure.LTenureId, observer.TTenureObserverDrafts);
+        Assert.Contains(tenure.LTenureId, drafts);
         tenure.TTenureCancel();
     }
 
@@ -110,8 +116,14 @@ public sealed class TEngineTenure
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(TTenureHold);
-        TTenureObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<long> drafts = [];
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+            {
+                drafts.Add(bulletin.LBulletinId);
+            }
+        });
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         tenure.TTenureRequestDefer(
@@ -119,7 +131,7 @@ public sealed class TEngineTenure
 
         Assert.Null(tenure.TTenureFinish(false));
         Assert.Null(tenure.TTenureRead());
-        Assert.DoesNotContain(tenure.LTenureId, observer.TTenureObserverDrafts);
+        Assert.DoesNotContain(tenure.LTenureId, drafts);
     }
 
     [Fact]
@@ -277,18 +289,5 @@ public sealed class TEngineTenure
             .LCardDraftSentence[0].LSentenceDraftExample!.LExampleDraftGloss[0].LGlossDraftText.LStateValueEmpty);
         Assert.True(tenure.TTenureStateRead().LTenureStateForward);
         tenure.TTenureCancel();
-    }
-
-    private sealed class TTenureObserver : LObserver
-    {
-        internal List<long> TTenureObserverDrafts { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
-            {
-                TTenureObserverDrafts.Add(bulletin.LBulletinId);
-            }
-        }
     }
 }

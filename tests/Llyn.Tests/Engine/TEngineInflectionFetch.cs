@@ -25,7 +25,7 @@ public sealed class TEngineInflectionFetch
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TInflectionFetchBody, HttpStatusCode.OK));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -51,7 +51,7 @@ public sealed class TEngineInflectionFetch
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TInflectionFetchPast, HttpStatusCode.OK));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -72,7 +72,7 @@ public sealed class TEngineInflectionFetch
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("<p class=\"lang-en\">nothing</p>", HttpStatusCode.OK));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("must"));
 
@@ -93,7 +93,7 @@ public sealed class TEngineInflectionFetch
         TSourceHandler handler = new(string.Empty, HttpStatusCode.ServiceUnavailable);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -123,7 +123,7 @@ public sealed class TEngineInflectionFetch
         TSourceHandler handler = new(TInflectionFetchBody, HttpStatusCode.OK, gate.Task);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -166,7 +166,7 @@ public sealed class TEngineInflectionFetch
         TSourceHandler handler = new(TInflectionFetchBody, HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
         engine.TEngineInflectionStart(entry.LEntryId);
@@ -185,7 +185,7 @@ public sealed class TEngineInflectionFetch
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TInflectionFetchBody, gate.Task));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -209,7 +209,7 @@ public sealed class TEngineInflectionFetch
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TInflectionFetchPast, HttpStatusCode.OK));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
         engine.TEngineInflectionStart(entry.LEntryId);
@@ -287,7 +287,7 @@ public sealed class TEngineInflectionFetch
     {
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler, false));
         TInflectionObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TInflectionObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
@@ -320,7 +320,7 @@ public sealed class TEngineInflectionFetch
             ["Verb, transitive"]);
     }
 
-    private sealed class TInflectionObserver : LObserver
+    private sealed class TInflectionObserver
     {
         private readonly TaskCompletionSource<LBulletin> _tInflectionObserverRaised =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -331,7 +331,7 @@ public sealed class TEngineInflectionFetch
 
         internal int TInflectionObserverCount => Volatile.Read(ref _tInflectionObserverCount);
 
-        public void LObserverBulletinHandle(LBulletin bulletin)
+        internal void TInflectionObserverHandle(LBulletin bulletin)
         {
             if (bulletin.LBulletinSubject == LSubject.LSubjectInflection)
             {

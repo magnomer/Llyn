@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -7,5 +6,5 @@ public interface LLocalizationVault
 {
     IReadOnlyList<string> LLocalizationScan();
 
-    TextReader LLocalizationOpen(string language);
+    IReadOnlyDictionary<string, string> LLocalizationRead(string language);
 }

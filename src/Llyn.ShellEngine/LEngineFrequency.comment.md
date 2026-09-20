@@ -29,7 +29,7 @@ Returns an empty list when every source came up empty.
 The lookup behind the find, one source at a time in written order.
 Every source is asked, because each corpus is its own measure and the rows are kept side by side.
 The lookup runs literal with no variety fan-out and no cleanup, because a figure is not IPA.
-The receiver is a private no-op, since nothing streams the figures to a caller.
+The receiver is a relay over a delegate that drops every step, since nothing streams the figures to a caller.
 The second value says whether any source was reached at all.
 A word every source reached yet none knew is a miss, while sources that never answered are not.
 
@@ -101,8 +101,3 @@ Every exception is swallowed, since a missing figure is not an error the user ca
 The pending mark is dropped only when it is still this fill's own.
 So a newer fill is never unmarked by an older one.
 The bulletin is raised outside the gate after the write.
-
-## `private sealed class LReceiverFrequency : LReceiver`
-
-A receiver that ignores every callback.
-The lookup requires one, but the fill only wants the returned list.

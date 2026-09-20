@@ -1,7 +1,6 @@
 using System;
-using Llyn.Core;
 
-namespace Llyn.ShellEngine;
+namespace Llyn.Core;
 
 public sealed record LLayout(
     string LLayoutTab,

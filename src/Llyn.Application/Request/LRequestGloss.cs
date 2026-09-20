@@ -4,11 +4,17 @@ namespace Llyn.Application;
 
 public sealed record LRequestGlossAddition(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, string LRequestLanguage, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestGlossAddition);
+}
 
 public sealed record LRequestGlossRemoval(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestGlossRemoval);
+}
 
 public sealed record LRequestGlossText(
     long LRequestDraftId,

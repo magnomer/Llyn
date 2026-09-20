@@ -196,8 +196,14 @@ public sealed class TSettings
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSettings settings = engine.TEngineSettingsRead();
-        TSettingsObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        int count = 0;
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
+            {
+                count++;
+            }
+        });
 
         engine.TEngineLocalizationSave(settings.LSettingsLocalization);
         engine.TEngineRespellingSave(settings.LSettingsRespelled);
@@ -205,7 +211,7 @@ public sealed class TSettings
         engine.TEngineFrequencySave(settings.LSettingsFrequency);
         engine.TEngineMorphologySave(settings.LSettingsMorphology);
 
-        Assert.Equal(0, observer.TSettingsObserverCount);
+        Assert.Equal(0, count);
     }
 
     [Fact]
@@ -214,25 +220,18 @@ public sealed class TSettings
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSettings settings = engine.TEngineSettingsRead();
-        TSettingsObserver observer = new();
-        engine.TEngineObserverAttach(observer);
-
-        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
-        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
-
-        Assert.Equal(1, observer.TSettingsObserverCount);
-    }
-
-    private sealed class TSettingsObserver : LObserver
-    {
-        internal int TSettingsObserverCount { get; private set; }
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
+        int count = 0;
+        engine.TEngineObserverAttach(bulletin =>
         {
             if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
             {
-                TSettingsObserverCount++;
+                count++;
             }
-        }
+        });
+
+        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
+        engine.TEngineEpithetSave(!settings.LSettingsEpithet);
+
+        Assert.Equal(1, count);
     }
 }

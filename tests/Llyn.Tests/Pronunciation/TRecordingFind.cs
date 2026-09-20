@@ -36,7 +36,8 @@ public sealed class TRecordingFind
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
 
         await engine.TEngineRecordingFind(
-            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, listener, CancellationToken.None);
+            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, listener.TListenerStubHandle,
+            CancellationToken.None);
 
         Assert.Equal(
             [
@@ -62,7 +63,8 @@ public sealed class TRecordingFind
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
 
         await engine.TEngineRecordingFind(
-            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, listener, CancellationToken.None);
+            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, listener.TListenerStubHandle,
+            CancellationToken.None);
 
         Assert.Equal(
             [
@@ -89,12 +91,14 @@ public sealed class TRecordingFind
         long primary = answered.LDraftContent.LEntryDraftPronunciations[0].LPronunciationDraftId;
         TListenerStub first = TPronunciationHelper.TListenerCreate();
         await engine.TEngineRecordingFind(
-            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, first, CancellationToken.None);
+            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, first.TListenerStubHandle,
+            CancellationToken.None);
 
         engine.TEngineRequestApply(TInterface.TPronunciationVarietyCreate(started.LDraftId, primary, "British"));
         TListenerStub second = TPronunciationHelper.TListenerCreate();
         await engine.TEngineRecordingFind(
-            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, second, CancellationToken.None);
+            started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, second.TListenerStubHandle,
+            CancellationToken.None);
 
         Assert.Equal(4, first.TListenerStubRecordings.Count);
         Assert.Equal(

@@ -36,7 +36,8 @@ public sealed class LScriptSourceHttp : LScriptSource
         ArgumentNullException.ThrowIfNull(style);
         ArgumentException.ThrowIfNullOrWhiteSpace(character);
 
-        string? body = await LScriptBodyRead(_lScriptSourceClient, style, character, cancellation).ConfigureAwait(false);
+        string? body = await LScriptBodyRead(_lScriptSourceClient, style, character, cancellation)
+            .ConfigureAwait(false);
         if (body is null)
         {
             return ([], false);

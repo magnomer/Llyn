@@ -26,6 +26,8 @@ A member matches when its full name equals a row or sits under it.
 The file count each `kind:ring>target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a file, never raise one to admit a new one.
+Empty since every frame and ambient break moved behind a port.
+It stays declared so the next break has a row to fail.
 
 ## `public static readonly string[] TAuditFrameWaiver`
 

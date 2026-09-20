@@ -39,12 +39,12 @@ public sealed class LDisplay
         _lDisplayVista = vista;
     }
 
-    public void LDisplayChosenAttach(LSubject subject, LObserver observer)
+    public void LDisplayChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lDisplayVista?.LVistaChosenAttach(subject, observer);
     }
 
-    public void LDisplayObserverAttach(LSubject subject, LObserver observer)
+    public void LDisplayObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lDisplayVista?.LVistaObserverAttach(subject, observer);
     }

@@ -12,14 +12,22 @@ A workspace moved onto keeps its own settings, and only one without any inherits
 
 Returns the user's persisted settings.
 
-## `public LKeep LEngineKeepRead()`
+## `public LPostureVault LEnginePostureRead()`
 
-Hands out the keep port bound to the open workspace, set with the other ports when the workspace opened.
+Hands out the posture port bound to the open workspace, set with the other ports when the workspace opened.
 The shell persists its posture through it, so a switched workspace is followed without the shell knowing the disk.
+
+## `public LTrail LEngineTrailRead()`
+
+Hands out the trail port, so a vista can name a file without reading the path rules itself.
+
+## `internal LClock LEngineClockRead()`
+
+Hands out the clock port, so a test can find the frozen clock it built the rig over.
 
 ## `public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
 
-Opens the catalog of a language through the localization port and makes it the current one.
+Reads the catalog of a language through the localization port and makes it the current one.
 The veneer copies the answer into its resources, so no ring above the engine opens a resource.
 The default catalog is applied before any engine is built, so the bootstrap opens that one through the port itself.
 
@@ -82,5 +90,6 @@ A settings control echoing the stored value back is therefore a no-op below the 
 ## `private void LEngineSettingsSave()`
 
 Writes the settings held here into the open workspace through the settings port.
-A refused write is recorded in the audit log rather than thrown, so a locked file never ends the program.
+A refused write arrives as `LVaultFault` and is recorded in the audit log rather than thrown.
+So a locked file never ends the program.
 The record in memory stays current either way, and the next change tries the file again.

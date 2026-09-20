@@ -1,8 +1,8 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public interface LMarkupVault
 {
-    string LMarkupRead(string path);
+    LMarkupNode LMarkupRead(string path);
 
-    void LMarkupSave(string path, string text);
+    void LMarkupSave(string path, LMarkupNode root);
 }

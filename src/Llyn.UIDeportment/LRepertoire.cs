@@ -170,22 +170,22 @@ public sealed class LRepertoire
             posture.LPostureVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LRepertoireObserverAttach(LSubject subject, LObserver observer)
+    public void LRepertoireObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lRepertoireVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LRepertoireChosenAttach(LSubject subject, LObserver observer)
+    public void LRepertoireChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lRepertoireVista?.LVistaChosenAttach(subject, observer);
     }
 
-    public void LRepertoireOccurrenceAttach(LSubject subject, LObserver observer)
+    public void LRepertoireOccurrenceAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lRepertoireOccurrence?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LRepertoireEntryAttach(LSubject subject, LObserver observer)
+    public void LRepertoireEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lRepertoireOccurrence?.LVistaChosenAttach(subject, observer);
     }

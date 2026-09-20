@@ -1,32 +1,81 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text.Json;
 using Llyn.Core;
 
-namespace Llyn.ShellEngine;
+namespace Llyn.Infrastructure;
 
-public static class LPostureLoader
+public sealed class LPostureFile : LPostureVault
 {
-    private const string LPostureLoaderWindow = "window";
-    private const string LPostureLoaderVolume = "volume";
-    private const string LPostureLoaderLayout = "layout";
-    private const string LPostureLoaderLinked = "linked";
-    private const string LPostureLoaderMode = "mode";
-    private const string LPostureLoaderSplit = "split";
-    private const string LPostureLoaderEditor = "Editor";
-    private const string LPostureLoaderDisplay = "Display";
-    private const string LPostureLoaderLeft = "left";
-    private const string LPostureLoaderTop = "top";
-    private const string LPostureLoaderWidth = "width";
-    private const string LPostureLoaderHeight = "height";
-    private const string LPostureLoaderMaximized = "maximized";
-    private const string LPostureLoaderMiddle = "middle";
-    private const string LPostureLoaderOrder = "order";
-    private const string LPostureLoaderFilter = "filter";
-    private const double LPostureLoaderLoudest = 1;
+    private const string LPostureFileWindow = "window";
+    private const string LPostureFileVolume = "volume";
+    private const string LPostureFileLayout = "layout";
+    private const string LPostureFileLinked = "linked";
+    private const string LPostureFileMode = "mode";
+    private const string LPostureFileSplit = "split";
+    private const string LPostureFileEditor = "Editor";
+    private const string LPostureFileDisplay = "Display";
+    private const string LPostureFileLeft = "left";
+    private const string LPostureFileTop = "top";
+    private const string LPostureFileWidth = "width";
+    private const string LPostureFileHeight = "height";
+    private const string LPostureFileMaximized = "maximized";
+    private const string LPostureFileMiddle = "middle";
+    private const string LPostureFileOrder = "order";
+    private const string LPostureFileFilter = "filter";
+    private const double LPostureFileLoudest = 1;
 
-    public static LPostureState LPostureLoaderRead(string? text)
+    private readonly LKeep _lPostureFileKeep;
+
+    public LPostureFile(LKeep keep)
+    {
+        ArgumentNullException.ThrowIfNull(keep);
+        _lPostureFileKeep = keep;
+    }
+
+    public LPostureState? LPostureRead(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        string? text;
+        try
+        {
+            text = _lPostureFileKeep.LKeepRead(name);
+        }
+        catch (IOException exception)
+        {
+            throw new LVaultFault(exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            throw new LVaultFault(exception);
+        }
+
+        return text is null ? null : LPostureFileParse(text);
+    }
+
+    public void LPostureSave(string name, LPostureState state)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(state);
+
+        try
+        {
+            _lPostureFileKeep.LKeepSave(name, LPostureFileFormat(state));
+        }
+        catch (IOException exception)
+        {
+            throw new LVaultFault(exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            throw new LVaultFault(exception);
+        }
+    }
+
+    public static LPostureState LPostureFileParse(string? text)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -42,35 +91,35 @@ public static class LPostureLoader
                 return new LPostureState();
             }
 
-            LWindowState? window = root.TryGetProperty(LPostureLoaderWindow, out JsonElement block)
+            LWindowState? window = root.TryGetProperty(LPostureFileWindow, out JsonElement block)
                 ? LPostureWindowRead(block)
                 : null;
 
-            IReadOnlyList<LLayout>? layout = root.TryGetProperty(LPostureLoaderLayout, out JsonElement panels)
+            IReadOnlyList<LLayout>? layout = root.TryGetProperty(LPostureFileLayout, out JsonElement panels)
                 ? LPostureLayoutRead(panels)
                 : null;
 
             bool linked =
-                !root.TryGetProperty(LPostureLoaderLinked, out JsonElement share) ||
+                !root.TryGetProperty(LPostureFileLinked, out JsonElement share) ||
                 share.ValueKind != JsonValueKind.False;
 
             string? mode =
-                root.TryGetProperty(LPostureLoaderMode, out JsonElement tab) &&
+                root.TryGetProperty(LPostureFileMode, out JsonElement tab) &&
                 tab.ValueKind == JsonValueKind.String &&
                 !string.IsNullOrWhiteSpace(tab.GetString())
                     ? tab.GetString()
                     : null;
 
             bool split =
-                root.TryGetProperty(LPostureLoaderSplit, out JsonElement side) &&
+                root.TryGetProperty(LPostureFileSplit, out JsonElement side) &&
                 side.ValueKind == JsonValueKind.String &&
-                string.Equals(side.GetString(), LPostureLoaderEditor, StringComparison.Ordinal);
+                string.Equals(side.GetString(), LPostureFileEditor, StringComparison.Ordinal);
 
             double volume =
-                root.TryGetProperty(LPostureLoaderVolume, out JsonElement level) &&
+                root.TryGetProperty(LPostureFileVolume, out JsonElement level) &&
                 level.ValueKind == JsonValueKind.Number
-                    ? Math.Clamp(level.GetDouble(), 0, LPostureLoaderLoudest)
-                    : LPostureLoaderLoudest;
+                    ? Math.Clamp(level.GetDouble(), 0, LPostureFileLoudest)
+                    : LPostureFileLoudest;
 
             return new LPostureState(window, layout, linked, mode, split, volume);
         }
@@ -80,30 +129,30 @@ public static class LPostureLoader
         }
     }
 
-    public static string LPostureLoaderFormat(LPostureState state)
+    public static string LPostureFileFormat(LPostureState state)
     {
         ArgumentNullException.ThrowIfNull(state);
 
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {
-            [LPostureLoaderVolume] = Math.Clamp(state.LPostureStateVolume, 0, LPostureLoaderLoudest),
-            [LPostureLoaderLinked] = state.LPostureStateLinked,
-            [LPostureLoaderSplit] = state.LPostureStateSplit ? LPostureLoaderEditor : LPostureLoaderDisplay
+            [LPostureFileVolume] = Math.Clamp(state.LPostureStateVolume, 0, LPostureFileLoudest),
+            [LPostureFileLinked] = state.LPostureStateLinked,
+            [LPostureFileSplit] = state.LPostureStateSplit ? LPostureFileEditor : LPostureFileDisplay
         };
 
         if (!string.IsNullOrWhiteSpace(state.LPostureStateMode))
         {
-            payload[LPostureLoaderMode] = state.LPostureStateMode;
+            payload[LPostureFileMode] = state.LPostureStateMode;
         }
 
         if (state.LPostureStateLayout is { Count: > 0 } layout)
         {
-            payload[LPostureLoaderLayout] = LPostureLayoutCreate(layout);
+            payload[LPostureFileLayout] = LPostureLayoutCreate(layout);
         }
 
         if (state.LPostureStateWindow is LWindowState window)
         {
-            payload[LPostureLoaderWindow] = LPostureWindowCreate(window);
+            payload[LPostureFileWindow] = LPostureWindowCreate(window);
         }
 
         return JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
@@ -116,10 +165,10 @@ public static class LPostureLoader
             return null;
         }
 
-        double? left = LPostureEdgeResolve(window, LPostureLoaderLeft);
-        double? top = LPostureEdgeResolve(window, LPostureLoaderTop);
-        double? width = LPostureEdgeResolve(window, LPostureLoaderWidth);
-        double? height = LPostureEdgeResolve(window, LPostureLoaderHeight);
+        double? left = LPostureEdgeResolve(window, LPostureFileLeft);
+        double? top = LPostureEdgeResolve(window, LPostureFileTop);
+        double? width = LPostureEdgeResolve(window, LPostureFileWidth);
+        double? height = LPostureEdgeResolve(window, LPostureFileHeight);
 
         if (left is null || top is null || width is null || height is null)
         {
@@ -127,7 +176,7 @@ public static class LPostureLoader
         }
 
         bool maximized =
-            window.TryGetProperty(LPostureLoaderMaximized, out JsonElement flag) &&
+            window.TryGetProperty(LPostureFileMaximized, out JsonElement flag) &&
             flag.ValueKind == JsonValueKind.True;
 
         return new LWindowState(left.Value, top.Value, width.Value, height.Value, maximized);
@@ -137,11 +186,11 @@ public static class LPostureLoader
     {
         return new Dictionary<string, object>(StringComparer.Ordinal)
         {
-            [LPostureLoaderLeft] = window.LWindowStateLeft,
-            [LPostureLoaderTop] = window.LWindowStateTop,
-            [LPostureLoaderWidth] = window.LWindowStateWidth,
-            [LPostureLoaderHeight] = window.LWindowStateHeight,
-            [LPostureLoaderMaximized] = window.LWindowStateMaximized
+            [LPostureFileLeft] = window.LWindowStateLeft,
+            [LPostureFileTop] = window.LWindowStateTop,
+            [LPostureFileWidth] = window.LWindowStateWidth,
+            [LPostureFileHeight] = window.LWindowStateHeight,
+            [LPostureFileMaximized] = window.LWindowStateMaximized
         };
     }
 
@@ -161,8 +210,8 @@ public static class LPostureLoader
                 continue;
             }
 
-            double? left = LPostureWidthResolve(tab.Value, LPostureLoaderLeft);
-            double? middle = LPostureWidthResolve(tab.Value, LPostureLoaderMiddle);
+            double? left = LPostureWidthResolve(tab.Value, LPostureFileLeft);
+            double? middle = LPostureWidthResolve(tab.Value, LPostureFileMiddle);
             LCatalogOrder? order = LPostureOrderResolve(tab.Value);
             LCatalogFilter? filter = LPostureFilterResolve(tab.Value);
 
@@ -187,22 +236,22 @@ public static class LPostureLoader
 
             if (tab.LLayoutLeft is double left)
             {
-                widths[LPostureLoaderLeft] = left;
+                widths[LPostureFileLeft] = left;
             }
 
             if (tab.LLayoutMiddle is double middle)
             {
-                widths[LPostureLoaderMiddle] = middle;
+                widths[LPostureFileMiddle] = middle;
             }
 
             if (tab.LLayoutOrder is LCatalogOrder order)
             {
-                widths[LPostureLoaderOrder] = LCatalog.LCatalogOrderFormat(order);
+                widths[LPostureFileOrder] = LCatalog.LCatalogOrderFormat(order);
             }
 
             if (tab.LLayoutFilter is LCatalogFilter filter)
             {
-                widths[LPostureLoaderFilter] = LCatalog.LCatalogFilterFormat(filter);
+                widths[LPostureFileFilter] = LCatalog.LCatalogFilterFormat(filter);
             }
 
             if (widths.Count > 0)
@@ -249,7 +298,7 @@ public static class LPostureLoader
 
     private static LCatalogOrder? LPostureOrderResolve(JsonElement tab)
     {
-        if (!tab.TryGetProperty(LPostureLoaderOrder, out JsonElement value) || value.ValueKind != JsonValueKind.String)
+        if (!tab.TryGetProperty(LPostureFileOrder, out JsonElement value) || value.ValueKind != JsonValueKind.String)
         {
             return null;
         }
@@ -262,7 +311,7 @@ public static class LPostureLoader
 
     private static LCatalogFilter? LPostureFilterResolve(JsonElement tab)
     {
-        if (!tab.TryGetProperty(LPostureLoaderFilter, out JsonElement value) || value.ValueKind != JsonValueKind.String)
+        if (!tab.TryGetProperty(LPostureFileFilter, out JsonElement value) || value.ValueKind != JsonValueKind.String)
         {
             return null;
         }

@@ -27,7 +27,7 @@ True when the subscribed identifier is declared with one of the clock types.
 
 ## `private static bool TAuditLambdaCheck(LambdaExpressionSyntax lambda)`
 
-True for a lambda handed to a `PObserver` whose parameter is discarded or never read.
+True for a lambda handed to a `PObserver` wrap whose parameter is discarded or never read.
 
 ## `private static bool TAuditDriveCheck(ExpressionSyntax handler)`
 

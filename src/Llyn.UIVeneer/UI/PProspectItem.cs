@@ -4,7 +4,8 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PProspectItem
 {
-    internal PProspectItem(long id, string headword, string language, bool fresh, string epithet = "", string? name = null)
+    internal PProspectItem(
+        long id, string headword, string language, bool fresh, string epithet = "", string? name = null)
     {
         PProspectItemId = id;
         PProspectItemHeadword = headword;

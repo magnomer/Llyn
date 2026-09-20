@@ -20,7 +20,7 @@ public sealed class TEngineReflexStore
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
         TReflexObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TReflexObserverHandle);
         LEntry entry = engine.TEngineEntrySave(
             TReflexFixture.TReflexDraftCreate("弄", pack.TLanguageFixtureName));
 
@@ -72,7 +72,7 @@ public sealed class TEngineReflexStore
                 LEntryDraftReflexes = [TInterface.TReflexDraftCreate("Korean", "", "롱")],
             });
         TReflexObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TReflexObserverHandle);
 
         engine.TEngineReflexRebuild(entry.LEntryId);
 
@@ -148,7 +148,7 @@ public sealed class TEngineReflexStore
             TReflexFixture.TReflexDraftCreate("弄", pack.TLanguageFixtureName));
         LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
         TReflexObserver observer = new(started.LDraftId);
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TReflexObserverHandle);
 
         engine.TEngineReflexStart(entry.LEntryId);
         await observer.TReflexObserverRaised.WaitAsync(TReflexFixture.TReflexPatience);

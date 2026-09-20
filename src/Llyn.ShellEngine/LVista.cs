@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LVista : LObserver
+public sealed class LVista
 {
     private readonly LEngine _lEngine;
 
     private readonly object _lVistaGate = new();
 
-    private readonly List<(LSubject, LObserver)> _lVistaObservers = [];
+    private readonly List<(LSubject, Action<LBulletin>)> _lVistaObservers = [];
 
-    private readonly List<(LSubject, LObserver)> _lVistaChosenObservers = [];
+    private readonly List<(LSubject, Action<LBulletin>)> _lVistaChosenObservers = [];
 
     internal LVista(
         LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter,
@@ -93,12 +92,9 @@ public sealed class LVista : LObserver
         }
 
         string trimmed = headword.Trim();
-        foreach (char barred in Path.GetInvalidFileNameChars())
-        {
-            trimmed = trimmed.Replace(barred, '_');
-        }
-
-        return trimmed.Length == 0 ? "entry" : trimmed;
+        return trimmed.Length == 0 || vista is null
+            ? "entry"
+            : vista._lEngine.LEngineTrailRead().LTrailNameNormalize(trimmed);
     }
 
     public LRevision? LVistaDelete()
@@ -209,7 +205,7 @@ public sealed class LVista : LObserver
         LVistaSelect(LVistaMatch(id) ? null : id);
     }
 
-    public void LVistaObserverAttach(LSubject subject, LObserver observer)
+    public void LVistaObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -219,7 +215,7 @@ public sealed class LVista : LObserver
         }
     }
 
-    public void LVistaChosenAttach(LSubject subject, LObserver observer)
+    public void LVistaChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -229,43 +225,41 @@ public sealed class LVista : LObserver
         }
     }
 
-    public void LVistaObserverDetach(LObserver observer)
+    public void LVistaObserverDetach(Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
         lock (_lVistaGate)
         {
-            _lVistaObservers.RemoveAll(pair => ReferenceEquals(pair.Item2, observer));
-            _lVistaChosenObservers.RemoveAll(pair => ReferenceEquals(pair.Item2, observer));
+            _lVistaObservers.RemoveAll(pair => pair.Item2 == observer);
+            _lVistaChosenObservers.RemoveAll(pair => pair.Item2 == observer);
         }
     }
 
-    public void LObserverBulletinHandle(LBulletin bulletin)
+    internal void LVistaBulletinHandle(LBulletin bulletin)
     {
-        ArgumentNullException.ThrowIfNull(bulletin);
-
         if (bulletin.LBulletinSubject == LSubject.LSubjectVista && bulletin.LBulletinId != LVistaId)
         {
             return;
         }
 
-        (LSubject, LObserver)[] observers;
-        (LSubject, LObserver)[] chosenObservers;
+        (LSubject, Action<LBulletin>)[] observers;
+        (LSubject, Action<LBulletin>)[] chosenObservers;
         lock (_lVistaGate)
         {
             observers = [.. _lVistaObservers];
             chosenObservers = [.. _lVistaChosenObservers];
         }
 
-        foreach ((LSubject subject, LObserver observer) in observers)
+        foreach ((LSubject subject, Action<LBulletin> observer) in observers)
         {
             if (subject == bulletin.LBulletinSubject)
             {
-                observer.LObserverBulletinHandle(bulletin);
+                observer(bulletin);
             }
         }
 
-        foreach ((LSubject subject, LObserver observer) in chosenObservers)
+        foreach ((LSubject subject, Action<LBulletin> observer) in chosenObservers)
         {
             if (subject != bulletin.LBulletinSubject)
             {
@@ -280,7 +274,7 @@ public sealed class LVista : LObserver
 
             if (bulletin.LBulletinId <= 0 || bulletin.LBulletinId == chosen)
             {
-                observer.LObserverBulletinHandle(bulletin);
+                observer(bulletin);
             }
         }
     }

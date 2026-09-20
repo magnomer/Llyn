@@ -104,13 +104,13 @@ public sealed class TEngineWorkspace
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
         using LEngine engine = first.TWorkspaceEngineStart();
-        TWorkspaceObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> raised = [];
+        engine.TEngineObserverAttach(raised.Add);
 
         engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
 
-        Assert.Single(observer.TWorkspaceObserverRaised);
-        Assert.Equal(LSubject.LSubjectWorkspace, observer.TWorkspaceObserverRaised[0].LBulletinSubject);
+        Assert.Single(raised);
+        Assert.Equal(LSubject.LSubjectWorkspace, raised[0].LBulletinSubject);
     }
 
     [Fact]
@@ -129,17 +129,5 @@ public sealed class TEngineWorkspace
 
         Assert.Equal("ko", reopened.TEngineSettingsRead().LSettingsLocalization);
         Assert.Equal("en", TInterface.TSettingsLoad(first.TWorkspaceFolder).LSettingsLocalization);
-    }
-
-    private sealed class TWorkspaceObserver : LObserver
-    {
-        private readonly List<LBulletin> _tWorkspaceObserverRaised = [];
-
-        internal IReadOnlyList<LBulletin> TWorkspaceObserverRaised => _tWorkspaceObserverRaised;
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            _tWorkspaceObserverRaised.Add(bulletin);
-        }
     }
 }

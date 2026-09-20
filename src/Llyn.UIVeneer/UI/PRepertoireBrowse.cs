@@ -50,15 +50,18 @@ public partial class PRepertoire
     internal async void PRepertoireVistaRestore()
     {
         _lRepertoire.LRepertoireVistaRestore(_pRepertoireHost.PWindowPosture);
-        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PAtlasFind));
         _lRepertoire.LRepertoireObserverAttach(
-            LSubject.LSubjectWorkspace, new PObserver(this, PRepertoireWorkspaceUpdate));
-        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PAtlasFind));
-        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAtlasFind));
-        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAtlasFind));
-        _lRepertoire.LRepertoireOccurrenceAttach(LSubject.LSubjectEntry, new PObserver(this, POccurrenceEntryUpdate));
-        _lRepertoire.LRepertoireEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PRepertoireEntryUpdate));
-        _lRepertoire.LRepertoireOccurrenceAttach(LSubject.LSubjectVista, new PObserver(this, POccurrenceFind));
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PRepertoireWorkspaceUpdate));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSituation, PObserver.PObserverCreate(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PAtlasFind));
+        _lRepertoire.LRepertoireOccurrenceAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, POccurrenceEntryUpdate));
+        _lRepertoire.LRepertoireEntryAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PRepertoireEntryUpdate));
+        _lRepertoire.LRepertoireOccurrenceAttach(
+            LSubject.LSubjectVista, PObserver.PObserverCreate(this, POccurrenceFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PTierDropdown, _lRepertoire.LRepertoireOrder);

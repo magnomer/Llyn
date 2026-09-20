@@ -103,7 +103,8 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(
+        string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
     {
         ArgumentNullException.ThrowIfNull(query);
 

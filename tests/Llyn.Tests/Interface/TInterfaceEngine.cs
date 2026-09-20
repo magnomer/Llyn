@@ -38,7 +38,7 @@ internal static partial class TInterface
         engine.LEngineRedoCheck(id);
 
     internal static void TEngineClockSet(this LEngine engine, Func<DateTimeOffset> clock) =>
-        engine.LEngineChronicleClock = clock;
+        ((TClockFake)engine.LEngineClockRead()).TClockSet(clock);
 
     internal static long TEngineCardCreate(this LEngine engine) =>
         engine.LEngineCardCreate();
@@ -100,6 +100,9 @@ internal static partial class TInterface
 
     internal static LDraft TEngineDraftStart(this LEngine engine, string origin, long? entryId) =>
         engine.LEngineDraftStart(origin, entryId);
+
+    internal static LDraft TEngineAuthorStart(this LEngine engine, string origin, long? authorId) =>
+        engine.LEngineAuthorStart(origin, authorId);
 
     internal static LRevision TEngineEntryDelete(this LEngine engine, long id) =>
         engine.LEngineEntryDelete(id);
@@ -225,7 +228,8 @@ internal static partial class TInterface
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
         engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(
-            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound)));
+            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound))
+            with { LRigClock = new TClockFake() });
     }
 
     internal static void TEngineRigApply(this LEngine engine, LRig rig)
@@ -239,9 +243,14 @@ internal static partial class TInterface
     internal static LEstablishment TEngineEstablishmentRead(this LEngine engine) =>
         engine.LEngineEstablishmentRead();
 
-    internal static void TEngineObserverAttach(this LEngine engine, LObserver observer)
+    internal static void TEngineObserverAttach(this LEngine engine, Action<LBulletin> observer)
     {
         engine.LEngineObserverAttach(observer);
+    }
+
+    internal static void TEngineObserverDetach(this LEngine engine, Action<LBulletin> observer)
+    {
+        engine.LEngineObserverDetach(observer);
     }
 
     internal static LDraft TEngineRequestApply(this LEngine engine, LRequest request) =>

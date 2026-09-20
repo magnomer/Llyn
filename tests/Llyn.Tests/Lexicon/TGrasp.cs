@@ -34,8 +34,8 @@ public sealed class TGrasp
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TGraspEntryCreate(engine, "word");
-        TGraspObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> bulletins = [];
+        engine.TEngineObserverAttach(bulletins.Add);
 
         Assert.Equal(0, engine.TEngineGraspRead(entry.LEntryId));
 
@@ -43,7 +43,7 @@ public sealed class TGrasp
 
         Assert.Equal(7, engine.TEngineGraspRead(entry.LEntryId));
         Assert.Equal(7, engine.TEngineEntryRead(entry.LEntryId)!.LEntryGrasp);
-        LBulletin bulletin = Assert.Single(observer.TGraspObserverBulletins);
+        LBulletin bulletin = Assert.Single(bulletins);
         Assert.Equal(LSubject.LSubjectGrasp, bulletin.LBulletinSubject);
         Assert.Equal(entry.LEntryId, bulletin.LBulletinId);
     }
@@ -86,13 +86,13 @@ public sealed class TGrasp
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TGraspEntryCreate(engine, "word");
         engine.TEngineGraspSave(entry.LEntryId, 4);
-        TGraspObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> bulletins = [];
+        engine.TEngineObserverAttach(bulletins.Add);
 
         Assert.Throws<ArgumentOutOfRangeException>(() => engine.TEngineGraspSave(entry.LEntryId, grasp));
 
         Assert.Equal(4, engine.TEngineGraspRead(entry.LEntryId));
-        Assert.Empty(observer.TGraspObserverBulletins);
+        Assert.Empty(bulletins);
     }
 
     [Fact]
@@ -128,15 +128,5 @@ public sealed class TGrasp
             string.Empty,
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
             []));
-    }
-
-    private sealed class TGraspObserver : LObserver
-    {
-        internal List<LBulletin> TGraspObserverBulletins { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            TGraspObserverBulletins.Add(bulletin);
-        }
     }
 }

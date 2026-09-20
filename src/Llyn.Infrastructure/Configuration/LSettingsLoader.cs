@@ -105,8 +105,6 @@ public sealed class LSettingsLoader : LSettingsVault
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        Directory.CreateDirectory(_lSettingsLoaderRoot);
-
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {
             [LSettingsLoaderLocalization] = settings.LSettingsLocalization,
@@ -119,8 +117,20 @@ public sealed class LSettingsLoader : LSettingsVault
 
         string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);
         string path = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderFile);
-        File.WriteAllText(
-            pending, JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
-        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
+        try
+        {
+            Directory.CreateDirectory(_lSettingsLoaderRoot);
+            File.WriteAllText(
+                pending, JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
+            LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
+        }
+        catch (IOException exception)
+        {
+            throw new LVaultFault(exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            throw new LVaultFault(exception);
+        }
     }
 }

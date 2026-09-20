@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -38,7 +37,7 @@ public sealed partial class LEngine
 
         if (LEngineLocationResolve(file, _lEngineWorkspace) is { IsFile: true } resolved)
         {
-            kept.Add(Path.GetFullPath(resolved.LocalPath));
+            kept.Add(LEngineTrailRead().LTrailResolve(_lEngineWorkspace, resolved.LocalPath) ?? resolved.LocalPath);
         }
     }
 }

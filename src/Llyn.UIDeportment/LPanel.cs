@@ -80,12 +80,12 @@ public sealed class LPanel
         }
     }
 
-    public void LPanelObserverAttach(LSubject subject, LObserver observer)
+    public void LPanelObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lPanelVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LPanelChosenAttach(LSubject subject, LObserver observer)
+    public void LPanelChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lPanelVista?.LVistaChosenAttach(subject, observer);
     }

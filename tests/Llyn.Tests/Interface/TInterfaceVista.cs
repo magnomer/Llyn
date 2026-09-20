@@ -96,12 +96,15 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LVariety> TTenureVarietyRead(this LTenure tenure) => tenure.LTenureVarietyRead();
 
-    internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) => engine.LEngineFlaggedCheck(draft);
+    internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) =>
+        engine.LEngineFlaggedCheck(draft);
 
-    internal static Task TEnginePortraitPrint(this LEngine engine, LVista vista, LPortraitLabel label, LPressTicket ticket) =>
+    internal static Task TEnginePortraitPrint(
+        this LEngine engine, LVista vista, LPortraitLabel label, LPressTicket ticket) =>
         engine.LEnginePortraitPrint(vista, label, ticket);
 
-    internal static Task TEnginePortraitPrint(this LEngine engine, LVista vista, LPortraitLegend legend, LPressTicket ticket) =>
+    internal static Task TEnginePortraitPrint(
+        this LEngine engine, LVista vista, LPortraitLegend legend, LPressTicket ticket) =>
         engine.LEnginePortraitPrint(vista, legend, ticket);
 
     internal static Task TEnginePortraitExport(this LEngine engine, LVista vista, string path,

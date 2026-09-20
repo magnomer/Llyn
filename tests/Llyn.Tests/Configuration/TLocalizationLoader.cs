@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -6,18 +5,17 @@ namespace Llyn.Tests;
 public sealed class TLocalizationLoader
 {
     [Fact]
-    public void LocalizationLoaderOpen_EmbeddedEnglish_YieldsJsonObject()
+    public void LocalizationLoaderRead_EmbeddedEnglish_YieldsTermsAndTexts()
     {
-        using TextReader reader = TInterface.TLocalizationLoaderOpen("en");
+        IReadOnlyDictionary<string, string> pairs = TInterface.TLocalizationLoaderRead("en");
 
-        using JsonDocument document = JsonDocument.Parse(reader.ReadToEnd());
-
-        Assert.Equal(JsonValueKind.Object, document.RootElement.ValueKind);
+        Assert.Equal("Llyn", pairs["terms.product"]);
+        Assert.Contains(pairs.Keys, key => !key.StartsWith("terms.", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void LocalizationLoaderOpen_UnknownLanguage_Throws()
+    public void LocalizationLoaderRead_UnknownLanguage_Throws()
     {
-        Assert.Throws<InvalidDataException>(() => TInterface.TLocalizationLoaderOpen("fr"));
+        Assert.Throws<InvalidDataException>(() => TInterface.TLocalizationLoaderRead("fr"));
     }
 }

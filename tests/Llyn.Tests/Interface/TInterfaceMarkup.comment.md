@@ -4,9 +4,26 @@
 
 The relay for the markup reader and writer.
 A test hands text in and reads entries and omissions back through here alone.
+Text becomes the node tree through `LMarkupFile`, the same adapter the engine's rig carries.
 An intake for the import is built here too.
 A test names an index and a mode and nothing more.
 An entry is built here as well, for a writer test that starts from a record rather than text.
+
+## `internal static LMarkupNode TMarkupNodeCreate(string name, string text)`
+
+A leaf node, for a test that builds a tree by hand.
+
+## `internal static LMarkupNode TMarkupNodeCreate(string name, IReadOnlyList<LMarkupNode> children)`
+
+A branch node, for the same.
+
+## `internal static LMarkupNode TMarkupNodeParse(string text)`
+
+The node tree the adapter reads off `text`, for a test that inspects the tree itself.
+
+## `internal static string TMarkupNodeFormat(LMarkupNode root)`
+
+The text the adapter writes for a tree, for a round trip that starts and ends in text.
 
 ## `internal static long TMarkupCeilingRead()`
 

@@ -12,7 +12,7 @@ public partial class PEstablishment : UserControl
 
     private PWindow _pEstablishmentHost = null!;
 
-    private PObserver? _pEstablishmentObserver;
+    private Action<LBulletin>? _pEstablishmentObserver;
 
     public PEstablishment()
     {
@@ -23,7 +23,7 @@ public partial class PEstablishment : UserControl
     {
         _pEstablishmentHost = host;
 
-        _pEstablishmentObserver = new PObserver(this, PEstablishmentBulletinHandle);
+        _pEstablishmentObserver = PObserver.PObserverCreate(this, PEstablishmentBulletinHandle);
         host.PWindowDeportment.LWindowObserverAttach(_pEstablishmentObserver);
 
         PEstablishmentUpdate();

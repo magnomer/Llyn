@@ -15,7 +15,7 @@ public sealed partial class LEngine
                 return null;
             }
 
-            LDraft draft = new(0, vista.LVistaTab, id, LEngineDraftBlank, DateTimeOffset.UtcNow);
+            LDraft draft = new(0, vista.LVistaTab, id, LEngineDraftBlank, LEngineClockRead().LClockRead());
             return vista.LVistaSubject switch
             {
                 LSubject.LSubjectEntry => LEngineEntryLoad(id) is LEntryDraft entry

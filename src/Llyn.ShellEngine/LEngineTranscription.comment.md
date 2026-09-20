@@ -12,9 +12,10 @@ So it lives beside the pronunciation rather than inside it, and neither points a
 The transcription schemes the pack of `language` declares, in the order the form shows them.
 An empty list means the language shows no transcription line.
 
-## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, LReceiver receiver, CancellationToken cancellation)`
+## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
 
 The transcription counterpart of `LEnginePronunciationFind`, asked for one scheme at a time.
+A relay over the sink is the receiver the lookup drives.
 The sources are the ones the pack declares under that scheme, so Pinyin and Bopomofo need not share a page.
 What the draft already found for that scheme is replayed instead of searched again.
 The lookup runs literal: a transcription keeps its spaces and takes no IPA cleanup, because it is not IPA.

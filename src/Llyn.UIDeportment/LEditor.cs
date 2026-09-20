@@ -174,14 +174,14 @@ public sealed class LEditor
         LEditorDesk.LDeskCancel();
     }
 
-    public void LEditorClipStart(string word, long target, LListener listener)
+    public void LEditorClipStart(string word, long target, Action<LHarvestStep> sink)
     {
-        LEditorClip.LClipForaySet(LEditorDesk.LDeskRecordingStart(word, target, listener));
+        LEditorClip.LClipForaySet(LEditorDesk.LDeskRecordingStart(word, target, sink));
     }
 
-    public void LEditorNotationStart(string word, long target, string scheme, LReceiver receiver)
+    public void LEditorNotationStart(string word, long target, string scheme, Action<LLookupStep> sink)
     {
-        LEditorNotation.LNotationForaySet(LEditorDesk.LDeskTranscriptionStart(word, target, scheme, receiver));
+        LEditorNotation.LNotationForaySet(LEditorDesk.LDeskTranscriptionStart(word, target, scheme, sink));
     }
 
     public LEntryDraft? LEditorDraftRead()

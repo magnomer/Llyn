@@ -141,22 +141,22 @@ public sealed class LTaxonomy
             posture.LPostureVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LTaxonomyObserverAttach(LSubject subject, LObserver observer)
+    public void LTaxonomyObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LTaxonomyChosenAttach(LSubject subject, LObserver observer)
+    public void LTaxonomyChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyVista?.LVistaChosenAttach(subject, observer);
     }
 
-    public void LTaxonomyMembershipAttach(LSubject subject, LObserver observer)
+    public void LTaxonomyMembershipAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyMembership?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LTaxonomyEntryAttach(LSubject subject, LObserver observer)
+    public void LTaxonomyEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyMembership?.LVistaChosenAttach(subject, observer);
     }

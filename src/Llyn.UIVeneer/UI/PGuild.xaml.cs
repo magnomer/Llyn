@@ -60,18 +60,20 @@ public partial class PGuild : UserControl
     {
         _lGuild.LGuildVistaRestore(_pGuildHost.PWindowPosture);
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
-        _lGuild.LGuildPanel.LPanelObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lGuild.LGuildReset));
+            LSubject.LSubjectVista,
+            PObserver.PObserverCreate(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, _lGuild.LGuildReset));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectReference, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectExample, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectReference, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectExample, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         PChoice.PChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
         PChoice.PChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
         PLouverUpdate();
@@ -182,8 +184,8 @@ public partial class PGuild : UserControl
 
     private void PAutographObserverAttach(LDesk desk)
     {
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, new PObserver(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, new PObserver(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, PObserver.PObserverCreate(this, desk.LDeskStateUpdate));
     }
 
     private void PAutographStartUpdate()

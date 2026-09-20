@@ -46,7 +46,7 @@ The recording menu deportment, holding the foray the menu searches recordings th
 
 The pronunciation menu deportment, holding the foray the menu searches readings through.
 
-## `public void LEditorClipStart(string word, long target, LListener listener)`
+## `public void LEditorClipStart(string word, long target, Action<LHarvestStep> sink)`
 
 Starts a recording search over the desk's tenure and hands the foray to the clip deportment.
 `LEditorNotationStart` does the same for a reading search and the notation deportment.

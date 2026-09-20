@@ -44,7 +44,8 @@ public partial class PLibrary : UserControl
         PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PLibraryPressHandle, PLibraryPressCheck));
-        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PLibraryPortraitHandle, PLibraryPressCheck));
+        CommandBindings.Add(
+            new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PLibraryPortraitHandle, PLibraryPressCheck));
     }
 
     private void PLibraryStoreUpdate()
@@ -56,17 +57,17 @@ public partial class PLibrary : UserControl
     {
         _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowPosture);
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, new PObserver(this, PLibraryWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PLibraryWorkspaceUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);

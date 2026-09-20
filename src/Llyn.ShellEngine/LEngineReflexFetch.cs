@@ -11,7 +11,7 @@ public sealed partial class LEngine
     private readonly SemaphoreSlim _lEngineReflexGate = new(2, 2);
     private readonly Dictionary<long, CancellationTokenSource> _lEngineReflexPending = [];
     private readonly HashSet<long> _lEngineReflexMissed = [];
-    private DateTime _lEngineReflexStamp = DateTime.MinValue;
+    private DateTimeOffset _lEngineReflexStamp = DateTimeOffset.MinValue;
 
     public void LEngineReflexStart(long entryId)
     {
@@ -103,7 +103,7 @@ public sealed partial class LEngine
         {
             foreach (string character in characters)
             {
-                TimeSpan left = _lEngineReflexStamp - DateTime.UtcNow;
+                TimeSpan left = _lEngineReflexStamp - LEngineClockRead().LClockRead();
                 if (left > TimeSpan.Zero)
                 {
                     await Task.Delay(left, cancellation).ConfigureAwait(false);
@@ -112,7 +112,7 @@ public sealed partial class LEngine
                 (IReadOnlyList<LReflexDraft> found, bool answered) = await _lEngineReflexSource
                     .LReflexSourceFind(rule, character, cancellation)
                     .ConfigureAwait(false);
-                DateTime next = DateTime.UtcNow + TimeSpan.FromSeconds(rule.LReflexRuleInterval);
+                DateTimeOffset next = LEngineClockRead().LClockRead() + TimeSpan.FromSeconds(rule.LReflexRuleInterval);
                 if (next > _lEngineReflexStamp)
                 {
                     _lEngineReflexStamp = next;

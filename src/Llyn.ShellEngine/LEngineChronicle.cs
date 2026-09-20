@@ -17,13 +17,6 @@ public sealed partial class LEngine
 
     private (long, Type, DateTimeOffset)? _lEngineChronicleLast;
 
-    private Func<DateTimeOffset> _lEngineChronicleClock = static () => DateTimeOffset.UtcNow;
-
-    internal Func<DateTimeOffset> LEngineChronicleClock
-    {
-        set => _lEngineChronicleClock = value;
-    }
-
     internal LDraft? LEngineChronicleUndo(long id)
     {
         LDraft? restored;
@@ -81,7 +74,7 @@ public sealed partial class LEngine
             return;
         }
 
-        DateTimeOffset now = _lEngineChronicleClock();
+        DateTimeOffset now = LEngineClockRead().LClockRead();
         if (request is not null
             && _lEngineChronicleLast is (long draft, Type type, DateTimeOffset moment)
             && draft == held.LDraftId

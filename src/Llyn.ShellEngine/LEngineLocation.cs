@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 
 namespace Llyn.ShellEngine;
 
@@ -39,29 +38,18 @@ public sealed partial class LEngine
         return LEngineLocationResolve(path, workspace);
     }
 
-    private static Uri? LEngineLocationResolve(string path, string workspace)
+    private Uri? LEngineLocationResolve(string path, string workspace)
     {
+        if (LEngineTrailRead().LTrailResolve(workspace, path) is not string full || full.StartsWith('\\'))
+        {
+            return null;
+        }
+
         try
         {
-            string full;
-            if (Path.IsPathFullyQualified(path))
-            {
-                full = Path.GetFullPath(path);
-            }
-            else
-            {
-                string root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(workspace))
-                    + Path.DirectorySeparatorChar;
-                full = Path.GetFullPath(Path.Combine(root, path));
-                if (!full.StartsWith(root, StringComparison.OrdinalIgnoreCase))
-                {
-                    return null;
-                }
-            }
-
-            return full.StartsWith('\\') ? null : new Uri(full, UriKind.Absolute);
+            return new Uri(full, UriKind.Absolute);
         }
-        catch (Exception exception) when (exception is ArgumentException or UriFormatException or IOException)
+        catch (Exception exception) when (exception is ArgumentException or UriFormatException)
         {
             return null;
         }

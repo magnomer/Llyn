@@ -12,14 +12,26 @@ internal static partial class TInterface
         LMarkupFile.LMarkupFileCeiling;
 
     internal static IReadOnlyList<LMarkupEntry> TMarkupParse(string text) =>
-        LMarkup.LMarkupParse(text);
+        LMarkup.LMarkupParse(LMarkupFile.LMarkupFileParse(text), out _);
 
     internal static IReadOnlyList<LMarkupEntry> TMarkupParse(
         string text, out IReadOnlyList<LMarkupOmission> omissions) =>
-        LMarkup.LMarkupParse(text, out omissions);
+        LMarkup.LMarkupParse(LMarkupFile.LMarkupFileParse(text), out omissions);
 
     internal static string TMarkupFormat(IReadOnlyList<LMarkupEntry> entries) =>
-        LMarkup.LMarkupFormat(entries);
+        LMarkupFile.LMarkupFileFormat(LMarkup.LMarkupFormat(entries));
+
+    internal static LMarkupNode TMarkupNodeCreate(string name, string text) =>
+        LMarkupNode.LMarkupNodeCreate(name, text);
+
+    internal static LMarkupNode TMarkupNodeCreate(string name, IReadOnlyList<LMarkupNode> children) =>
+        LMarkupNode.LMarkupNodeCreate(name, children);
+
+    internal static LMarkupNode TMarkupNodeParse(string text) =>
+        LMarkupFile.LMarkupFileParse(text);
+
+    internal static string TMarkupNodeFormat(LMarkupNode root) =>
+        LMarkupFile.LMarkupFileFormat(root);
 
     internal static LMarkupIntake TMarkupIntakeCreate(int index, LMarkupMode mode, long target = 0) =>
         new(index, mode, target);

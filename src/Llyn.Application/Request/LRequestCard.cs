@@ -4,14 +4,23 @@ namespace Llyn.Application;
 
 public sealed record LRequestCardAddition(
     long LRequestDraftId, LCardKind LRequestKind, long LRequestParentId, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestCardAddition);
+}
 
 public sealed record LRequestCardRemoval(long LRequestDraftId, long LRequestCardId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestCardRemoval);
+}
 
 public sealed record LRequestCardShift(
     long LRequestDraftId, long LRequestCardId, long LRequestParentId, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestCardShift);
+}
 
 public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId)

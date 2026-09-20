@@ -14,10 +14,11 @@ The families live beside this file: the entry-level fields and the card requests
 - `LRequestDraftId` — The held draft the edit is for.
   The engine refuses a request for a draft it does not hold.
 
-## `public virtual string LRequestKey => GetType().Name;`
+## `public abstract string LRequestKey { get; }`
 
 The field this request writes, so a tenure waiting to flush keeps only the latest request per field.
-The base keys by type alone, which suits the entry-level fields, of which there is one each.
+Every record spells its own key with `nameof`, so no request reads its type at run time.
+The plain fields key by type name alone, which suits the entry-level fields, of which there is one each.
 A request on one row of a list adds the row's id, so two rows never replace each other.
 The structural requests keep the type key and are applied at once rather than deferred.
 Two deferred additions would collapse into one, which is why nothing defers them.

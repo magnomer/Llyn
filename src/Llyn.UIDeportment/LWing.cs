@@ -82,7 +82,7 @@ public sealed class LWing
             posture.LPostureVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
     }
 
-    public void LWingObserverAttach(LSubject subject, LObserver observer)
+    public void LWingObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lWingVista?.LVistaObserverAttach(subject, observer);
     }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Llyn.ShellEngine;
+namespace Llyn.Core;
 
 public sealed record LPostureState(
     LWindowState? LPostureStateWindow = null,

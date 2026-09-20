@@ -2,10 +2,16 @@ namespace Llyn.Application;
 
 public sealed record LRequestReflexAddition(
     long LRequestDraftId, string LRequestLanguage, string LRequestKind, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestReflexAddition);
+}
 
 public sealed record LRequestReflexRemoval(long LRequestDraftId, long LRequestReflexId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestReflexRemoval);
+}
 
 public sealed record LRequestReflexLanguage(long LRequestDraftId, long LRequestReflexId, string LRequestText)
     : LRequest(LRequestDraftId)

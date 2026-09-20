@@ -15,8 +15,10 @@ public partial class PCorpus
     private void PTranscriptDeskAttach()
     {
         PTranscriptDesk.LDeskStarted += PTranscriptStartUpdate;
-        PTranscriptDesk.LDeskDraftAttach(LSubject.LSubjectDraft, new PObserver(this, PTranscriptDraftRestore));
-        PTranscriptDesk.LDeskDraftAttach(LSubject.LSubjectTenure, new PObserver(this, PTranscriptChangeUpdate));
+        PTranscriptDesk.LDeskDraftAttach(
+            LSubject.LSubjectDraft, PObserver.PObserverCreate(this, PTranscriptDraftRestore));
+        PTranscriptDesk.LDeskDraftAttach(
+            LSubject.LSubjectTenure, PObserver.PObserverCreate(this, PTranscriptChangeUpdate));
         PTranscriptDesk.LDeskFailed += PTranscriptFailureShow;
         PTranscriptDesk.LDeskFinished += PTranscriptStoredShow;
     }

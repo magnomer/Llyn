@@ -43,6 +43,7 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
+Only the clock is swapped for a `TClockFake`, so a test can freeze time through `TEngineClockSet`.
 An engine over fakes instead starts from `TRigFake`.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`

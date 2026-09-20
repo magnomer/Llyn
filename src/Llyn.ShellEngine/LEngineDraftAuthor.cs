@@ -21,7 +21,7 @@ public sealed partial class LEngine
                 origin,
                 author,
                 LEngineDraftBlank,
-                DateTimeOffset.UtcNow)
+                LEngineClockRead().LClockRead())
             {
                 LDraftAuthorHeld = content,
             };

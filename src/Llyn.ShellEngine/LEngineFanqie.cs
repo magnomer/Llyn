@@ -14,7 +14,7 @@ public sealed partial class LEngine
     private readonly SemaphoreSlim _lEngineFanqieGate = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lEngineFanqiePending = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lEngineFanqieMissed = new(StringComparer.Ordinal);
-    private DateTime _lEngineFanqieStamp = DateTime.MinValue;
+    private DateTimeOffset _lEngineFanqieStamp = DateTimeOffset.MinValue;
 
     public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)
     {
@@ -191,7 +191,7 @@ public sealed partial class LEngine
         List<LFanqieRow> rows = [];
         foreach (LFanqieBook book in books)
         {
-            TimeSpan left = _lEngineFanqieStamp - DateTime.UtcNow;
+            TimeSpan left = _lEngineFanqieStamp - LEngineClockRead().LClockRead();
             if (left > TimeSpan.Zero)
             {
                 await Task.Delay(left, cancellation).ConfigureAwait(false);
@@ -200,7 +200,7 @@ public sealed partial class LEngine
             (IReadOnlyList<LFanqieRow> found, bool answered) = await _lEngineFanqieSource
                 .LFanqieSourceFind(book, character, cancellation)
                 .ConfigureAwait(false);
-            DateTime next = DateTime.UtcNow + TimeSpan.FromSeconds(book.LFanqieBookInterval);
+            DateTimeOffset next = LEngineClockRead().LClockRead() + TimeSpan.FromSeconds(book.LFanqieBookInterval);
             if (next > _lEngineFanqieStamp)
             {
                 _lEngineFanqieStamp = next;

@@ -46,15 +46,16 @@ It does not consult the listed languages, so a reader can be loaded before any v
 
 ## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(LLocalizationVault vault, string language)`
 
-Lists the languages the port carries, then opens the catalog of `language` through it as the current one.
+Lists the languages the port carries, then reads the catalog of `language` through it as the current one.
 The bootstrap loads the default this way before any engine exists.
 The engine loads the chosen one the same way.
 
-## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)`
+## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(IReadOnlyDictionary<string, string> raw, string language)`
 
-Parses a catalog from the reader handed in and makes it the current one.
-The engine opens the embedded file through `LLocalizationLoader` in the infrastructure, and a test hands in its own text.
-The reader stays the caller's to dispose, so this ring opens and closes nothing.
+Resolves the raw catalog pairs handed in and makes the result the current one.
+The engine reads the embedded file through `LLocalizationLoader` in the infrastructure.
+A test hands in pairs it parsed the same way.
+The JSON never reaches this ring, so it opens, parses and closes nothing.
 
 ## `public static string LLocalizationTextRead(string key)`
 

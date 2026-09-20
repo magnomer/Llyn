@@ -57,14 +57,16 @@ public partial class PTaxonomy
     internal async void PTaxonomyVistaRestore()
     {
         _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowPosture);
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, new PObserver(this, PDirectoryFind));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTaxonomyWorkspaceUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, new PObserver(this, PTaxonomyTagUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PDirectoryFind));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDirectoryFind));
-        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectEntry, new PObserver(this, PMembershipEntryUpdate));
-        _lTaxonomy.LTaxonomyEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
-        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectVista, new PObserver(this, PMembershipFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTaxonomyWorkspaceUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, PObserver.PObserverCreate(this, PTaxonomyTagUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyMembershipAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PMembershipEntryUpdate));
+        _lTaxonomy.LTaxonomyEntryAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PTaxonomyEntryUpdate));
+        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PMembershipFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);

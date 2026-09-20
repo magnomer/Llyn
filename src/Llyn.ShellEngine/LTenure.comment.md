@@ -60,6 +60,7 @@ The state last announced, so the bulletin is raised only when the state moved.
 ## `internal LTenure(LEngine engine, LSubject subject, long id)`
 
 Made by the engine alone, once the draft is started and on disk.
+It subscribes its own bulletin handler to the engine here, so the engine names no tenure member to reach it.
 
 ## `public long LTenureId { get; }`
 

@@ -12,6 +12,11 @@ A saved draft comes back field for field, nested content included.
 The record holds lists and state values.
 A shallow round trip would pass while losing the part the user typed.
 
+### `public void DraftArchiveSave_DerivedProperties_LeavesThemOutOfTheFile()`
+
+The file carries the stored fields and none of the derived ones.
+The adapter's serializer option does that, and this pins it so the option is not lost.
+
 ## `public void DraftArchiveSave_SituationWithMedia_ReadsBackBothLists()`
 
 A Situation draft keeps its pictures and clips through the file, so a crash loses no picture.

@@ -57,12 +57,16 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "")
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(
+        LVista vista, string unknown = "", string untitled = "")
     {
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogSituation> found = LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogSituation> rows = new(found.Count);
-        string[] names = LEngineTwinRead(found, row => LEngineNameRead(row.LCatalogSituationStored.LSituationTitle, unknown, untitled), row => row.LCatalogSituationStored.LSituationId);
+        string[] names = LEngineTwinRead(
+            found,
+            row => LEngineNameRead(row.LCatalogSituationStored.LSituationTitle, unknown, untitled),
+            row => row.LCatalogSituationStored.LSituationId);
         for (int index = 0; index < found.Count; index++)
         {
             LCatalogSituation row = found[index];

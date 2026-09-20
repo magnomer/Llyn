@@ -1,6 +1,6 @@
 # LVista.cs
 
-## `public sealed class LVista : LObserver`
+## `public sealed class LVista`
 
 The engine's view state for one catalog tab: order, language filter, query, chosen row and editing mode.
 A panel holds one vista and its controls, and keeps no copy of these values.
@@ -32,11 +32,11 @@ The engine that saves the layout and raises the bulletin.
 
 Guards the observer lists and the chosen row against a bulletin raised on a worker thread.
 
-## `private readonly List<(LSubject, LObserver)> _lVistaObservers = [];`
+## `private readonly List<(LSubject, Action<LBulletin>)> _lVistaObservers = [];`
 
 The observers reached for every bulletin of their subject, in the order they were attached.
 
-## `private readonly List<(LSubject, LObserver)> _lVistaChosenObservers = [];`
+## `private readonly List<(LSubject, Action<LBulletin>)> _lVistaChosenObservers = [];`
 
 The observers reached only when the bulletin names the chosen row or no row at all.
 
@@ -98,27 +98,30 @@ The write is gated, since a bulletin on another thread reads the chosen row to p
 
 Selects the row, or unselects it when it is the chosen one already.
 
-## `public void LVistaObserverAttach(LSubject subject, LObserver observer)`
+## `public void LVistaObserverAttach(LSubject subject, Action<LBulletin> observer)`
 
 Subscribes `observer` to every bulletin of `subject` that reaches this vista.
+An observer is a delegate over a bulletin, so a surface hands a method and implements no contract.
 A vista bulletin reaches it only when it carries this vista's id.
 Observers are reached in the order attached, so an earlier one may move the chosen row for a later one.
 
-## `public void LVistaChosenAttach(LSubject subject, LObserver observer)`
+## `public void LVistaChosenAttach(LSubject subject, Action<LBulletin> observer)`
 
 Subscribes `observer` to the bulletins of `subject` that name the chosen row or no row at all.
 The display attaches its per-record redraws here, so another entry's favorite mark never redraws its heart.
 A bulletin with an id of zero or less names every record, so it is delivered whatever row is chosen.
 The chosen observers are reached after every plain observer, so a plain one that selects the stored row is honoured.
 
-## `public void LVistaObserverDetach(LObserver observer)`
+## `public void LVistaObserverDetach(Action<LBulletin> observer)`
 
 Stops reaching `observer` from either list.
+Delegate equality is target plus method, so the delegate that was attached is the one found.
 A panel detaches its observers before it takes a replacement vista, so the old one falls silent.
 
-## `public void LObserverBulletinHandle(LBulletin bulletin)`
+## `internal void LVistaBulletinHandle(LBulletin bulletin)`
 
 The engine's announcement, forwarded to the observers whose subject it names.
+Internal, because the engine attaches this method group at the start and detaches it when the tab is replaced.
 A vista bulletin for another vista is dropped at the door.
 Both lists are copied under the gate and the calls are made outside it, as the engine does.
 The chosen row is read afresh before each chosen observer, so a selection made a moment ago counts.
@@ -137,6 +140,7 @@ A stored choice that no longer loads is dropped here, so a panel never branches 
 ## `public static string LVistaFileRead(LVista? vista)`
 
 The file name an export of the vista's entry is offered under: the headword with barred characters replaced.
+The trail port of the vista's engine says which characters are barred, so the vista reads no file rule itself.
 A vista that holds nothing, or fails to load, is offered as `entry`.
 A cleared selection or missing record returns null.
 

@@ -243,13 +243,19 @@ public sealed class TEngineVista
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TVistaObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<long> raised = [];
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+            {
+                raised.Add(bulletin.LBulletinId);
+            }
+        });
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
 
         vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderRecent);
 
-        Assert.Equal([vista.LVistaId], observer.TVistaObserverRaised);
+        Assert.Equal([vista.LVistaId], raised);
     }
 
     [Fact]
@@ -257,15 +263,21 @@ public sealed class TEngineVista
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TVistaObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<long> raised = [];
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+            {
+                raised.Add(bulletin.LBulletinId);
+            }
+        });
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
 
         vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderHeadword);
         vista.TVistaQuerySet(string.Empty);
         vista.TVistaSelect(null);
 
-        Assert.Empty(observer.TVistaObserverRaised);
+        Assert.Empty(raised);
     }
 
     private static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)
@@ -311,18 +323,5 @@ public sealed class TEngineVista
             engine.TEngineReflexRead(entry.LEntryId)
                 .Select(reflex => reflex with { LReflexAnchors = anchors })
                 .ToList());
-    }
-
-    private sealed class TVistaObserver : LObserver
-    {
-        internal List<long> TVistaObserverRaised { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
-            {
-                TVistaObserverRaised.Add(bulletin.LBulletinId);
-            }
-        }
     }
 }

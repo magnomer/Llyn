@@ -2,12 +2,14 @@
 
 ## `public static class LMarkup`
 
-The `.llx` reader and writer, the one door between markup text and markup records.
+The `.llx` reader and writer, the one door between the markup tree and markup records.
 The format is real XML with a `llyn` root and one `entry` element per entry.
 It carries no id of any kind.
 A file written by the program, a person or an AI reads the same.
 Element names are an external contract and stay plain lowercase English.
 The element tree mirrors `LMarkupEntry` one to one.
+Core sees the tree as `LMarkupNode` values and never the XML.
+`LMarkupFile` in Infrastructure parses the text into the tree and formats the tree back.
 
 ## `internal const string LMarkupRoot = "llyn";`
 
@@ -25,48 +27,43 @@ The one value the state attribute takes.
 
 The deepest element a file may nest, counting the root as one.
 A real entry never nears it, since only `meaning` nests at all.
+The adapter enforces it while streaming the text, before any tree is built.
 
 ## `public const int LMarkupOmissionCeiling = 1000;`
 
 The most omissions one read reports before it stops counting.
 
-## `public static IReadOnlyList<LMarkupEntry> LMarkupParse(string text)`
+## `private static readonly IReadOnlyDictionary<string, string> LMarkupUnknownMark`
 
-Reads `text` into entries, dropping what the format does not know without reporting it.
+The one attribute set the writer ever emits, `state="unknown"`.
 
-## `public static IReadOnlyList<LMarkupEntry> LMarkupParse(string text, out IReadOnlyList<LMarkupOmission> omissions)`
+## `public static IReadOnlyList<LMarkupEntry> LMarkupParse(LMarkupNode root, out IReadOnlyList<LMarkupOmission> omissions)`
 
-Reads `text` into entries in file order and reports what was skipped.
-Malformed XML, a root that is not `llyn`, or nesting past the depth ceiling refuses with `LRefusal.LRefusalMarkup`.
+Reads the tree under `root` into entries in file order and reports what was skipped.
+A root that is not `llyn` refuses with `LRefusal.LRefusalMarkup`.
+Malformed XML and nesting past the depth ceiling are refused by the adapter before the tree exists.
 An unknown element is skipped with its whole subtree and named in the omissions with its line.
 Any attribute other than `state="unknown"` is skipped and named the same way, so an `id` never enters.
 
-## `public static string LMarkupFormat(IReadOnlyList<LMarkupEntry> entries)`
+## `public static LMarkupNode LMarkupFormat(IReadOnlyList<LMarkupEntry> entries)`
 
-Writes `entries` as indented markup text with no XML declaration.
-Line ends are `\n` and the indent is two spaces, so the text is the same on every platform.
+Writes `entries` as a tree under one `llyn` root.
 An unspecified value writes nothing and an unknown value writes an empty element marked unknown.
 
-## `internal static LStateValue LMarkupValueParse(XElement? element)`
+## `internal static LStateValue LMarkupValueParse(LMarkupNode? element)`
 
 Reads one stated value off an element.
 No element or a blank one is unspecified, `state="unknown"` is unknown, and text is specified.
 
-## `internal static void LMarkupValueFormat(XElement parent, string name, LStateValue value)`
+## `internal static void LMarkupValueFormat(List<LMarkupNode> parent, string name, LStateValue value)`
 
-Writes one stated value under `parent` as the element `name`.
+Writes one stated value into `parent` as the element `name`.
 Unspecified writes nothing, unknown writes an empty element with the state attribute, and specified writes its text.
 
-## `internal static string LMarkupTextParse(XElement? element)`
+## `internal static string LMarkupTextParse(LMarkupNode? element)`
 
 Reads a plain text field, empty when the element is absent.
 
-## `internal static void LMarkupTextFormat(XElement parent, string name, string? text)`
+## `internal static void LMarkupTextFormat(List<LMarkupNode> parent, string name, string? text)`
 
-Writes a plain text field under `parent`, and nothing at all when the text is empty.
-
-## `internal static string LMarkupTextNormalize(string text)`
-
-The text with every character XML 1.0 cannot carry removed.
-A control character pasted into a note would otherwise make the writer throw and the export fail.
-The input is returned as is when nothing has to go, so the common case allocates nothing.
+Writes a plain text field into `parent`, and nothing at all when the text is empty.

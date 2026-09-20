@@ -28,7 +28,7 @@ public sealed partial class LEngine
                 origin,
                 entry,
                 content,
-                DateTimeOffset.UtcNow);
+                LEngineClockRead().LClockRead());
 
             _lEngineDrafts.LDraftSave(draft);
             _lEngineClaims.LClaimSave(_lEngineClaims.LClaimCreate(draft.LDraftId));
@@ -374,7 +374,7 @@ public sealed partial class LEngine
             : null;
 
         return claim is not null
-            && claim.LClaimProcess == Environment.ProcessId
+            && claim.LClaimProcess == _lEngineProcess
             && _lEngineDraftHeld.Contains(id);
     }
 
@@ -386,7 +386,7 @@ public sealed partial class LEngine
         }
 
         LClaim? claim = _lEngineClaims.LClaimRead(id);
-        return claim is not null && claim.LClaimProcess != Environment.ProcessId;
+        return claim is not null && claim.LClaimProcess != _lEngineProcess;
     }
 
     private static LEntryDraft LEngineDraftBlank =>

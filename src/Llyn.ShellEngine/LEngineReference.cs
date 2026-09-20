@@ -88,7 +88,8 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogReference> found = LEngineReferenceFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogReference> rows = new(found.Count);
-        string[] names = LEngineTwinRead(found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
+        string[] names = LEngineTwinRead(
+            found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
         for (int index = 0; index < found.Count; index++)
         {
             LCatalogReference row = found[index];

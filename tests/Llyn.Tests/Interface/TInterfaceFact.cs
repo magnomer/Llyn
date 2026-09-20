@@ -1,4 +1,3 @@
-using System.IO;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -13,13 +12,13 @@ internal static partial class TInterface
     }
 
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string json, string language) =>
-        LLocalization.LLocalizationLoad(new StringReader(json), language);
+        LLocalization.LLocalizationLoad(LLocalizationLoader.LLocalizationLoaderParse(json), language);
 
     internal static IReadOnlyDictionary<string, string> TLocalizationLoad(string language) =>
         LLocalization.LLocalizationLoad(new LLocalizationLoader(), language);
 
-    internal static TextReader TLocalizationLoaderOpen(string language) =>
-        new LLocalizationLoader().LLocalizationOpen(language);
+    internal static IReadOnlyDictionary<string, string> TLocalizationLoaderRead(string language) =>
+        new LLocalizationLoader().LLocalizationRead(language);
 
     internal static string TLocalizationTextRead(string key) =>
         LLocalization.LLocalizationTextRead(key);

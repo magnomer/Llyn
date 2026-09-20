@@ -84,11 +84,9 @@ internal static partial class TAuditTruthSetting
         "LVista",
         "LPosture",
         "LWindow",
-        "List<(LSubject LDeskSubject, LObserver LDeskObserver)>",
-        "LListener",
-        "LReceiver",
-        "LObserver",
-        "PObserver",
+        "List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)>",
+        "Action<LBulletin>",
+        "Action<LBulletin>?",
     ];
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
@@ -96,7 +94,7 @@ internal static partial class TAuditTruthSetting
         ["Argument"] = 182,
         ["Guard"] = 153,
         ["Fork"] = 35,
-        ["Mirror"] = 32,
+        ["Mirror"] = 31,
         ["Mutation"] = 18,
         ["Shape"] = 91,
     };

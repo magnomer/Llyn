@@ -1,3 +1,4 @@
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.Tests;
@@ -33,5 +34,21 @@ internal sealed class TListenerStub : LListener
     public void LListenerFinish()
     {
         Interlocked.Increment(ref _tListenerStubFinished);
+    }
+
+    internal void TListenerStubHandle(LHarvestStep step)
+    {
+        switch (step.LHarvestStepKind)
+        {
+            case LHarvestKind.LHarvestKindSource:
+                LListenerSourceStart(step.LHarvestStepSource, step.LHarvestStepOrder);
+                break;
+            case LHarvestKind.LHarvestKindRecording when step.LHarvestStepRecording is LRecording recording:
+                LListenerRecordingAdd(recording);
+                break;
+            case LHarvestKind.LHarvestKindEnd:
+                LListenerFinish();
+                break;
+        }
     }
 }

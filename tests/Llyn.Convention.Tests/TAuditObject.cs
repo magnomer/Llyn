@@ -130,14 +130,16 @@ public sealed class TAuditObject
         text.AppendLine($"- Hub: {rows.Sum(row => row.TAuditObjectHubs.Count)}");
         text.AppendLine();
         text.AppendLine("A monolith has at least "
-            + $"{TAuditObjectSetting.TAuditPartFloor} parts and {TAuditObjectSetting.TAuditLineFloor} lines, and either "
+            + $"{TAuditObjectSetting.TAuditPartFloor} parts and {TAuditObjectSetting.TAuditLineFloor} lines, "
+            + "and either "
             + $"its largest member component still spans {TAuditObjectSetting.TAuditWeaveFloor:0.00} of the parts once "
             + $"hub state is removed or it carries {TAuditObjectSetting.TAuditDensityFloor:0.00} cross references per "
             + $"member. A hub is a state slot reached from {TAuditObjectSetting.TAuditHubReach} or more parts.");
         text.AppendLine();
         text.AppendLine("## Split types");
         text.AppendLine();
-        text.AppendLine("| Type | Parts | Lines | Members | State | Hubs | Cross | Weave | Free | Density | Monolith |");
+        text.AppendLine(
+            "| Type | Parts | Lines | Members | State | Hubs | Cross | Weave | Free | Density | Monolith |");
         text.AppendLine("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|");
         foreach (TAuditObjectRow row in split)
         {

@@ -14,14 +14,17 @@ The recording search in flight, or null before the first one.
 
 The pronunciation or transcription lookup in flight, or null before the first one.
 
-## `public LForay LTenureRecordingStart(string word, long target, LListener listener)`
+## `public LForay LTenureRecordingStart(string word, long target, Action<LHarvestStep> sink)`
 
-Starts a recording search for `word` on the row `target`, streaming to `listener`, and answers the foray.
+Starts a recording search for `word` on the row `target`, streaming each step to `sink`, and answers the foray.
+The shell hands a delegate and implements no listener, and the engine streams every step to it.
+A relay over the sink is built here only to give the foray its end step when the search faults.
 The language is the draft's at this moment, and the foray keeps it for the pick to check against.
 
-## `public LForay LTenureTranscriptionStart(string word, long target, string scheme, LReceiver receiver)`
+## `public LForay LTenureTranscriptionStart(string word, long target, string scheme, Action<LLookupStep> sink)`
 
-Starts a lookup for `word` on the row `target`, streaming to `receiver`, and answers the foray.
+Starts a lookup for `word` on the row `target`, streaming each step to `sink`, and answers the foray.
+The shell hands a delegate and implements no receiver, and a relay here gives the foray its end step.
 A named scheme runs that scheme's transcription sources, and an empty one runs the IPA lookup.
 The one menu opens both, so the one start serves both.
 

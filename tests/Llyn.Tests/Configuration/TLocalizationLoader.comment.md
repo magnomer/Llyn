@@ -2,4 +2,4 @@
 
 ## `public sealed class TLocalizationLoader`
 
-The embedded catalog files: a shipped language opens as JSON, and one the build lacks is refused.
+The embedded catalog files: a shipped language reads as raw pairs, and one the build lacks is refused.

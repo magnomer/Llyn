@@ -1,3 +1,4 @@
+using System;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -6,6 +7,12 @@ namespace Llyn.UIDeportment;
 public sealed class LNotation
 {
     private LForay? _lNotationForay;
+
+    public event Action<string, int>? LNotationSourceStarted;
+
+    public event Action<LCandidate>? LNotationCandidateAdded;
+
+    public event Action? LNotationFinished;
 
     public bool LNotationHeld => _lNotationForay is not null;
 
@@ -25,6 +32,25 @@ public sealed class LNotation
     {
         LNotationCancel();
         _lNotationForay = foray;
+    }
+
+    public void LNotationStepHandle(LLookupStep step)
+    {
+        ArgumentNullException.ThrowIfNull(step);
+
+        if (step.LLookupStepCandidate is LCandidate candidate)
+        {
+            LNotationCandidateAdded?.Invoke(candidate);
+            return;
+        }
+
+        if (step.LLookupStepEnded)
+        {
+            LNotationFinished?.Invoke();
+            return;
+        }
+
+        LNotationSourceStarted?.Invoke(step.LLookupStepSource, step.LLookupStepOrder);
     }
 
     public void LNotationCancel()

@@ -3,14 +3,23 @@ using Llyn.Core;
 namespace Llyn.Application;
 
 public sealed record LRequestSentenceAddition(long LRequestDraftId, long LRequestCardId, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestSentenceAddition);
+}
 
 public sealed record LRequestSentenceRemoval(long LRequestDraftId, long LRequestCardId, long LRequestSentenceId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestSentenceRemoval);
+}
 
 public sealed record LRequestSentenceShift(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestSentenceShift);
+}
 
 public sealed record LRequestSentenceExample(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestExampleId)

@@ -30,7 +30,7 @@ public sealed class TForay
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
 
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener);
+        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener.TListenerStubHandle);
         foray.TForayCancel();
         gate.SetResult();
         await Task.Delay(200);
@@ -54,7 +54,8 @@ public sealed class TForay
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, TPronunciationHelper.TListenerCreate());
+        LForay foray = tenure.TTenureRecordingStart(
+            "tomato", 0, TPronunciationHelper.TListenerCreate().TListenerStubHandle);
         LRecording recording = TInterface.TRecordingCreate(
             "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
 
@@ -75,7 +76,8 @@ public sealed class TForay
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, "English"));
         tenure.TTenureRequestApply(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "tomato"));
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, TPronunciationHelper.TListenerCreate());
+        LForay foray = tenure.TTenureRecordingStart(
+            "tomato", 0, TPronunciationHelper.TListenerCreate().TListenerStubHandle);
         LRecording recording = TInterface.TRecordingCreate(
             "Oxford", "https://example.test/tomato.mp3", 0, true, "British");
 
@@ -99,7 +101,7 @@ public sealed class TForay
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         tenure.TTenureRequestApply(TInterface.TRequestLanguageCreate(tenure.LTenureId, pack.TLanguageFixtureName));
         TListenerStub listener = TPronunciationHelper.TListenerCreate();
-        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener);
+        LForay foray = tenure.TTenureRecordingStart("tomato", 0, listener.TListenerStubHandle);
 
         tenure.TTenureCancel();
         gate.SetResult();

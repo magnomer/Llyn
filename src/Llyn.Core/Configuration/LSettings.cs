@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Llyn.Core;
 
 public sealed record LSettings(
@@ -10,6 +8,5 @@ public sealed record LSettings(
     bool LSettingsEpithet = true,
     bool LSettingsTally = false)
 {
-    [JsonIgnore]
     public int LSettingsOnline => (LSettingsFrequency ? 1 : 0) + (LSettingsMorphology ? 1 : 0);
 }

@@ -10,4 +10,7 @@ There is no identity port: the engine builds `LIdentity` over `LRigWorkspaces` i
 `LEnsign` is likewise built engine-side over `LRigUsher`, since it is a cache and not an adapter.
 Every property is named `LRig{Base}`, the base being the port's own, so a port and its slot read alike.
 The four fetch ports follow the port's whole name, since `LRigFanqie` already names the fanqie vault.
+`LRigTrail` and `LRigClock` are the two ambient facts the engine may not read itself, the path rules and the time.
+`LRigProcess` is the id of the process the rig was built in.
+A claim on a draft is compared against it.
 `LRigWorkspace` is the root every root-bound adapter above was built over, kept so the engine can say where it stands.

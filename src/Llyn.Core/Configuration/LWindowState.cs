@@ -1,4 +1,4 @@
-namespace Llyn.ShellEngine;
+namespace Llyn.Core;
 
 public sealed record LWindowState(
     double LWindowStateLeft,

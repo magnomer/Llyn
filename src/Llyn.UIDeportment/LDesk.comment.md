@@ -18,9 +18,10 @@ It is read through its verdict and never branched on by name, so the walker sees
 A tenure was started, handed out so the veneer can attach its marshalling observers to it.
 The observers the veneer registered are already on the new tenure when this fires.
 
-## `public void LDeskDraftAttach(LSubject subject, LObserver observer)`
+## `public void LDeskDraftAttach(LSubject subject, Action<LBulletin> observer)`
 
 Registers an observer the desk puts on every tenure it starts, for the draft-level subjects.
+An observer is a delegate over a bulletin, forwarded as it came, so the desk holds no contract.
 The veneer registers once at attach time and never sees the tenure, which is what re-attaches per start.
 A tenure already held gets the observer at once.
 `LDeskObserverAttach` and `LDeskEntryAttach` do the same for the tenure-wide and entry-level subjects.
@@ -67,9 +68,10 @@ A refused start is announced under the scope's load key and leaves the desk empt
 The same start for a desk that holds no vista, naming the origin and the subject itself.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 
-## `public LForay? LDeskRecordingStart(string word, long target, LListener listener)`
+## `public LForay? LDeskRecordingStart(string word, long target, Action<LHarvestStep> sink)`
 
 Starts a recording search over the held tenure, or nothing while none is held.
+The sink is the veneer's delegate over each step, handed through untouched.
 `LDeskTranscriptionStart` starts a reading search the same way, under one scheme.
 
 ## `public LDraft? LDeskRead()`

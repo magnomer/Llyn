@@ -69,7 +69,10 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogExample> found = LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogExample> rows = new(found.Count);
-        string[] names = LEngineTwinRead(found, row => LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten), row => row.LCatalogExampleStored.LExampleId);
+        string[] names = LEngineTwinRead(
+            found,
+            row => LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
+            row => row.LCatalogExampleStored.LExampleId);
         for (int index = 0; index < found.Count; index++)
         {
             LCatalogExample row = found[index];

@@ -23,7 +23,7 @@ internal static class PEnsign
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        window.LWindowObserverAttach(new PObserver(PEnsignBulletinHandle));
+        window.LWindowObserverAttach(PEnsignBulletinHandle);
     }
 
     private static void PEnsignBulletinHandle(LBulletin bulletin)

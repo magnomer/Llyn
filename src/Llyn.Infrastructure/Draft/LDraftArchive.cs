@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Llyn.Core;
 
 namespace Llyn.Infrastructure;
@@ -18,7 +19,11 @@ public sealed class LDraftArchive : LDraftVault
 
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 
-    private static readonly JsonSerializerOptions LDraftArchiveIndent = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions LDraftArchiveIndent = new()
+    {
+        WriteIndented = true,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { LDraftArchiveNormalize } },
+    };
 
     public LDraftArchive(string root)
     {
@@ -337,6 +342,22 @@ public sealed class LDraftArchive : LDraftVault
         catch (UnauthorizedAccessException)
         {
             return null;
+        }
+    }
+
+    private static void LDraftArchiveNormalize(JsonTypeInfo info)
+    {
+        if (info.Kind != JsonTypeInfoKind.Object)
+        {
+            return;
+        }
+
+        for (int index = info.Properties.Count - 1; index >= 0; index--)
+        {
+            if (info.Properties[index].Set is null)
+            {
+                info.Properties.RemoveAt(index);
+            }
         }
     }
 

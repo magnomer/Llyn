@@ -1,21 +1,37 @@
-# LPostureLoader.cs
+# LPostureFile.cs
 
-## `public static class LPostureLoader`
+## `public sealed class LPostureFile : LPostureVault`
 
-Turns the posture text kept under the workspace into a state record and back.
-It never touches the disk, since the keep port carries the text either way.
+The adapter behind the posture port, keeping the posture as JSON under the workspace root.
+It reads and writes through the keep it is built over, so the file is the one the keep names.
+The JSON shape is this adapter's alone.
+The two conversions are public so a test can run them on text.
 The keys are the ones the settings file carried before the posture moved out, so an old file reads as-is.
 A window block holds the restored edges.
 A layout block holds one object per tab under its lowercase name.
 
-## `public static LPostureState LPostureLoaderRead(string? text)`
+## `public LPostureFile(LKeep keep)`
+
+Binds the keep the posture is read from and written to.
+
+## `public LPostureState? LPostureRead(string name)`
+
+The posture kept under the name, or nothing while the keep holds no such document.
+A keep that cannot be read raises `LVaultFault` around the file system's own exception.
+
+## `public void LPostureSave(string name, LPostureState state)`
+
+Replaces the posture kept under the name whole.
+A keep that cannot be written raises `LVaultFault` around the file system's own exception.
+
+## `public static LPostureState LPostureFileParse(string? text)`
 
 Nothing, a blank, or text that is not JSON reads as the default posture, so the window always opens.
 Only an explicit `false` unlinks the panels, and only the editor word opens a split.
 A volume outside the range is clamped, so a hand-edited number never reaches the player.
 A missing number means full, so a workspace written before the setting existed plays as it did.
 
-## `public static string LPostureLoaderFormat(LPostureState state)`
+## `public static string LPostureFileFormat(LPostureState state)`
 
 Persisted keys are a data contract, so they stay lowercase and independent of member names.
 The split is written as one of two words rather than a boolean.

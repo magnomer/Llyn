@@ -22,7 +22,7 @@ public sealed partial class LEngine
                 origin,
                 reference,
                 LEngineDraftBlank,
-                DateTimeOffset.UtcNow,
+                LEngineClockRead().LClockRead(),
                 null,
                 null,
                 content)

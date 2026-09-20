@@ -3,7 +3,7 @@ using Llyn.Core;
 
 namespace Llyn.Tests;
 
-internal sealed class TReflexObserver : LObserver
+internal sealed class TReflexObserver
 {
     private readonly long _tReflexObserverDraft;
 
@@ -17,7 +17,7 @@ internal sealed class TReflexObserver : LObserver
 
     internal Task<LBulletin> TReflexObserverRaised => _tReflexObserverRaised.Task;
 
-    public void LObserverBulletinHandle(LBulletin bulletin)
+    internal void TReflexObserverHandle(LBulletin bulletin)
     {
         bool wanted = _tReflexObserverDraft == 0
             ? bulletin.LBulletinSubject == LSubject.LSubjectReflex

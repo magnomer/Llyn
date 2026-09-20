@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -11,9 +12,9 @@ public interface LDraftPort
 
     void LEngineDraftDelete(long id);
 
-    void LEngineObserverAttach(LObserver observer);
+    void LEngineObserverAttach(Action<LBulletin> observer);
 
-    void LEngineObserverDetach(LObserver observer);
+    void LEngineObserverDetach(Action<LBulletin> observer);
 
     IReadOnlyList<LDraft> LEngineLeftoverRead();
 

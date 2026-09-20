@@ -36,6 +36,21 @@ public sealed class TDraftArchive
     }
 
     [Fact]
+    public void DraftArchiveSave_DerivedProperties_LeavesThemOutOfTheFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
+
+        TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, draft);
+        string text = File.ReadAllText(
+            Path.Combine(workspace.TWorkspaceFolder, "drafts", draft.LDraftId + ".json"));
+
+        Assert.DoesNotContain("\"LEntryDraftIpa\"", text);
+        Assert.DoesNotContain("\"LEntryDraftTargets\"", text);
+        Assert.Contains("\"LEntryDraftHeadword\"", text);
+    }
+
+    [Fact]
     public void DraftArchiveSave_SituationWithMedia_ReadsBackBothLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

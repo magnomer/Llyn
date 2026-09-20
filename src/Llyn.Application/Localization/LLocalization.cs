@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using Llyn.Core;
 
@@ -67,16 +66,16 @@ public static class LLocalization
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
         LLocalizationLanguageSet(vault.LLocalizationScan());
-        using TextReader reader = vault.LLocalizationOpen(language);
-        return LLocalizationLoad(reader, language);
+        return LLocalizationLoad(vault.LLocalizationRead(language), language);
     }
 
-    public static IReadOnlyDictionary<string, string> LLocalizationLoad(TextReader reader, string language)
+    public static IReadOnlyDictionary<string, string> LLocalizationLoad(
+        IReadOnlyDictionary<string, string> raw, string language)
     {
-        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(raw);
 
         IReadOnlyDictionary<string, string> texts =
-            LLocalizationReader.LLocalizationRead(reader, LLocalizationCultureRead(language));
+            LLocalizationReader.LLocalizationRead(raw, LLocalizationCultureRead(language));
         lock (LLocalizationGate)
         {
             LLocalizationTexts = texts;

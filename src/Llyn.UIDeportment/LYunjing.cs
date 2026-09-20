@@ -336,12 +336,12 @@ public sealed class LYunjing
             posture.LPostureVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LYunjingShengmuAttach(LSubject subject, LObserver observer)
+    public void LYunjingShengmuAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lShengmuVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LYunjingYunmuAttach(LSubject subject, LObserver observer)
+    public void LYunjingYunmuAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lYunmuVista?.LVistaObserverAttach(subject, observer);
     }

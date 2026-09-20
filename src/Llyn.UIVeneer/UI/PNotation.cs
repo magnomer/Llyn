@@ -9,7 +9,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
-public partial class PEditor : LReceiver
+public partial class PEditor
 {
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
     private bool _pNotationSearching;
@@ -163,7 +163,11 @@ public partial class PEditor : LReceiver
                 }
             }
 
-            _lEditor.LEditorNotationStart(word, target, scheme, this);
+            _lEditor.LEditorNotationStart(
+                word,
+                target,
+                scheme,
+                PObserver.PObserverCreate<LLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
         }
         catch (Exception)
         {
@@ -221,34 +225,25 @@ public partial class PEditor : LReceiver
         PNotationNotice.Visibility = Visibility.Visible;
     }
 
-    void LReceiver.LReceiverSourceStart(string source, int order)
+    private void PNotationSourceHandle(string source, int order)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            PNotationPlace(source, order);
-            PNotationUpdate();
-        });
+        PNotationPlace(source, order);
+        PNotationUpdate();
     }
 
-    void LReceiver.LReceiverCandidateAdd(LCandidate candidate)
+    private void PNotationCandidateHandle(LCandidate candidate)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
-                candidate,
-                PNotationReadingCreate(candidate),
-                PLocalizationCatalog.PLocalizationTextRead("Phonetician.Missing"),
-                PLocalizationCatalog.PLocalizationTextRead("Phonetician.Broken"));
-            PNotationUpdate();
-        });
+        PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
+            candidate,
+            PNotationReadingCreate(candidate),
+            PLocalizationCatalog.PLocalizationTextRead("Phonetician.Missing"),
+            PLocalizationCatalog.PLocalizationTextRead("Phonetician.Broken"));
+        PNotationUpdate();
     }
 
-    void LReceiver.LReceiverLookupFinish()
+    private void PNotationFinishHandle()
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            _pNotationSearching = false;
-            PNotationUpdate();
-        });
+        _pNotationSearching = false;
+        PNotationUpdate();
     }
 }

@@ -40,14 +40,7 @@ The snapshots an undo left, per draft id, that a redo can step forward to again.
 The last recorded step: its draft id, its request type and the moment it was last continued.
 Null after any undo, redo or clear, so typing after one starts a new step.
 Null too after a card edit, which never merges.
-
-## `private Func<DateTimeOffset> _lEngineChronicleClock = static () => DateTimeOffset.UtcNow;`
-
-Where the record reads the moment, so a test can hold or advance it.
-
-## `internal Func<DateTimeOffset> LEngineChronicleClock`
-
-The seam a test sets the clock through.
+The moment is read from the rig's clock port, so a test holds or advances it through the rig.
 
 ## `internal LDraft? LEngineChronicleUndo(long id)`
 

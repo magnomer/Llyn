@@ -29,7 +29,7 @@ public static class LRigFactory
             new LRealmArchive(database),
             new LSettingsLoader(root),
             new LAuditWriter(root),
-            new LKeepFile(root),
+            new LPostureFile(new LKeepFile(root)),
             new LEntryArchive(database),
             new LDraftArchive(root),
             new LClaimArchive(root),
@@ -74,6 +74,9 @@ public static class LRigFactory
             new LMarkupFile(),
             new LPortraitFile(LThemeLoader.LThemeLoaderLoad()),
             new LUsherFile(),
+            new LTrailSystem(),
+            new LClockSystem(),
+            Environment.ProcessId,
             root);
     }
 

@@ -77,7 +77,8 @@ public sealed class TVistaLoad
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue text = TInterface.TStateValueCreate("water");
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
+        LExample example = engine.TEngineExampleCreate(
+            TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
         LReference reference = engine.TEngineCitationCreate("Source");
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Writer"));
@@ -118,7 +119,8 @@ public sealed class TVistaLoad
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue text = TInterface.TStateValueCreate("water");
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
+        LExample example = engine.TEngineExampleCreate(
+            TInterface.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
         LReference reference = engine.TEngineCitationCreate("Source");
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Writer"));

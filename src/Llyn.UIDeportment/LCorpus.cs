@@ -190,22 +190,22 @@ public sealed class LCorpus
             posture.LPostureVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LCorpusObserverAttach(LSubject subject, LObserver observer)
+    public void LCorpusObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lCorpusVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LCorpusChosenAttach(LSubject subject, LObserver observer)
+    public void LCorpusChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lCorpusVista?.LVistaChosenAttach(subject, observer);
     }
 
-    public void LCorpusQuotationAttach(LSubject subject, LObserver observer)
+    public void LCorpusQuotationAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lCorpusQuotation?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LCorpusEntryAttach(LSubject subject, LObserver observer)
+    public void LCorpusEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lCorpusQuotation?.LVistaChosenAttach(subject, observer);
     }

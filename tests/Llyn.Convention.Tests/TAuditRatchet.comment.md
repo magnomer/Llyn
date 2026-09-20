@@ -1,4 +1,4 @@
-# TAuditRatchet.cs
+﻿# TAuditRatchet.cs
 
 ## `public sealed class TAuditRatchet`
 
@@ -64,6 +64,10 @@ No chain ceiling stands above its committed value.
 ## `public void AuditRatchet_FrameCeiling_NeverRises()`
 
 No frame ceiling stands above its committed value.
+
+## `public void AuditRatchet_LineCeiling_NeverRises()`
+
+No line ceiling stands above its committed value.
 
 ## `public void AuditRatchet_ChainWaiver_NeverGrows()`
 

@@ -18,11 +18,11 @@ public sealed class LDesk
 
     private LTenure? _lDeskTenure;
 
-    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskTenureObservers = [];
+    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskTenureObservers = [];
 
-    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskDraftObservers = [];
+    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskDraftObservers = [];
 
-    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskEntryObservers = [];
+    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskEntryObservers = [];
 
     private bool _lDeskFilling;
 
@@ -110,7 +110,7 @@ public sealed class LDesk
         LDeskStateChanged?.Invoke();
     }
 
-    public void LDeskObserverAttach(LSubject subject, LObserver observer)
+    public void LDeskObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -118,7 +118,7 @@ public sealed class LDesk
         _lDeskTenure?.LTenureObserverAttach(subject, observer);
     }
 
-    public void LDeskDraftAttach(LSubject subject, LObserver observer)
+    public void LDeskDraftAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -126,7 +126,7 @@ public sealed class LDesk
         _lDeskTenure?.LTenureDraftAttach(subject, observer);
     }
 
-    public void LDeskEntryAttach(LSubject subject, LObserver observer)
+    public void LDeskEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -136,30 +136,30 @@ public sealed class LDesk
 
     private void LDeskObserverApply(LTenure started)
     {
-        foreach ((LSubject subject, LObserver observer) in _lDeskTenureObservers)
+        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskTenureObservers)
         {
             started.LTenureObserverAttach(subject, observer);
         }
 
-        foreach ((LSubject subject, LObserver observer) in _lDeskDraftObservers)
+        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskDraftObservers)
         {
             started.LTenureDraftAttach(subject, observer);
         }
 
-        foreach ((LSubject subject, LObserver observer) in _lDeskEntryObservers)
+        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskEntryObservers)
         {
             started.LTenureEntryAttach(subject, observer);
         }
     }
 
-    public LForay? LDeskRecordingStart(string word, long target, LListener listener)
+    public LForay? LDeskRecordingStart(string word, long target, Action<LHarvestStep> sink)
     {
-        return _lDeskTenure?.LTenureRecordingStart(word, target, listener);
+        return _lDeskTenure?.LTenureRecordingStart(word, target, sink);
     }
 
-    public LForay? LDeskTranscriptionStart(string word, long target, string scheme, LReceiver receiver)
+    public LForay? LDeskTranscriptionStart(string word, long target, string scheme, Action<LLookupStep> sink)
     {
-        return _lDeskTenure?.LTenureTranscriptionStart(word, target, scheme, receiver);
+        return _lDeskTenure?.LTenureTranscriptionStart(word, target, scheme, sink);
     }
 
     public LDraft? LDeskRead()

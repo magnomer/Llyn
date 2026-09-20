@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -25,6 +26,7 @@ internal static class TExemplar
     {
         WriteIndented = true,
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { TExemplarNormalize } },
     };
 
     internal static readonly string[] TExemplarHidden =
@@ -277,6 +279,22 @@ internal static class TExemplar
         TExemplarTextAdd(texts, draft.LEntryDraftMeanings);
         TExemplarTextAdd(texts, draft.LEntryDraftCollocations);
         return texts;
+    }
+
+    private static void TExemplarNormalize(JsonTypeInfo info)
+    {
+        if (info.Kind != JsonTypeInfoKind.Object)
+        {
+            return;
+        }
+
+        for (int index = info.Properties.Count - 1; index >= 0; index--)
+        {
+            if (info.Properties[index].Set is null)
+            {
+                info.Properties.RemoveAt(index);
+            }
+        }
     }
 
     internal static string TExemplarShapeRead(LEntryDraft draft)

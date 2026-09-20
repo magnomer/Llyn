@@ -141,22 +141,22 @@ public sealed class LTenor
             posture.LPostureVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LTenorObserverAttach(LSubject subject, LObserver observer)
+    public void LTenorObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LTenorChosenAttach(LSubject subject, LObserver observer)
+    public void LTenorChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorVista?.LVistaChosenAttach(subject, observer);
     }
 
-    public void LTenorCohortAttach(LSubject subject, LObserver observer)
+    public void LTenorCohortAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorCohort?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LTenorEntryAttach(LSubject subject, LObserver observer)
+    public void LTenorEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorCohort?.LVistaChosenAttach(subject, observer);
     }

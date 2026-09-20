@@ -51,11 +51,11 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["outward:Llyn.UIVeneer>Llyn.Media"] = 2,
-        ["reach:Llyn.ShellEngine>Llyn.Core"] = 74,
+        ["reach:Llyn.ShellEngine>Llyn.Core"] = 70,
         ["reach:Llyn.UIDeportment>Llyn.Application"] = 7,
-        ["reach:Llyn.UIDeportment>Llyn.Core"] = 16,
+        ["reach:Llyn.UIDeportment>Llyn.Core"] = 13,
         ["reach:Llyn.UIVeneer>Llyn.Application"] = 1,
-        ["reach:Llyn.UIVeneer>Llyn.Core"] = 15,
+        ["reach:Llyn.UIVeneer>Llyn.Core"] = 12,
         ["reach:Llyn.UIVeneer>Llyn.ShellEngine"] = 11,
     };
 

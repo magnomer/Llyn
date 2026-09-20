@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -16,11 +15,27 @@ public sealed partial class LEngine
         }
     }
 
-    public LKeep LEngineKeepRead()
+    public LPostureVault LEnginePostureRead()
     {
         lock (_lEngineGate)
         {
-            return _lEngineKeep;
+            return _lEnginePosture;
+        }
+    }
+
+    public LTrail LEngineTrailRead()
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineTrail;
+        }
+    }
+
+    internal LClock LEngineClockRead()
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineClock;
         }
     }
 
@@ -124,11 +139,7 @@ public sealed partial class LEngine
         {
             _lEngineSettingsVault.LSettingsSave(_lEngineSettings);
         }
-        catch (IOException exception)
-        {
-            _lEngineAudit.LAuditRecord(exception);
-        }
-        catch (UnauthorizedAccessException exception)
+        catch (LVaultFault exception)
         {
             _lEngineAudit.LAuditRecord(exception);
         }

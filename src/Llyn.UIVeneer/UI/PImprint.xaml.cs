@@ -33,9 +33,9 @@ public partial class PImprint : UserControl, PChronicleHost
         _lImprint.LImprintReverted += PAuthorRestore;
         _lImprint.LBylineChanged += PBylineUpdate;
         _lImprint.LImprintDesk.LDeskDraftAttach(
-            LSubject.LSubjectDraft, new PObserver(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
+            LSubject.LSubjectDraft, PObserver.PObserverCreate(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
         _lImprint.LImprintDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, new PObserver(this, _lImprint.LImprintDesk.LDeskStateUpdate));
+            LSubject.LSubjectTenure, PObserver.PObserverCreate(this, _lImprint.LImprintDesk.LDeskStateUpdate));
         _lImprint.LImprintDesk.LDeskDraftChanged += PImprintDraftUpdate;
         _lImprint.LImprintDesk.LDeskFailed += host.PWindowFailureShow;
     }

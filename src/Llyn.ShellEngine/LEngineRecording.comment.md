@@ -7,9 +7,11 @@ Each takes what it needs under the gate, then runs the fetch outside it.
 What a search found is kept in the trove under the asking draft, so reopening the menu replays it.
 The transcription and recording sources of each language are built once here and cached apart.
 
-## `public Task LEnginePronunciationFind(long session, string word, string language, LReceiver receiver, CancellationToken cancellation)`
+## `public Task LEnginePronunciationFind(long session, string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)`
 
-Starts a pronunciation lookup for `word` in `language` and streams results to `receiver`.
+Starts a pronunciation lookup for `word` in `language` and streams each step to `sink`.
+The sink is a delegate over a step record, so the shell implements no receiver.
+A relay over the sink is the receiver the lookup drives, built here before any wrapping.
 The task completes when every source finishes.
 `session` is the draft the asking editor holds, and it names the trove the answer is kept in.
 A lookup already answered under that draft is replayed instead of searched again.
@@ -20,9 +22,10 @@ The trove is never wrapped and keeps cleaned but un-respelled text.
 The switch is the phonetician's alone, picking which of the two forms each row shows.
 The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
 
-## `internal Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
+## `internal Task LEngineRecordingFind(long session, string word, string language, long target, Action<LHarvestStep> sink, CancellationToken cancellation)`
 
-Starts an audio-recording discovery for `word` in `language` and streams results to `listener`.
+Starts an audio-recording discovery for `word` in `language` and streams each step to `sink`.
+A relay over the sink is the listener the discovery drives.
 The task completes when every source finishes.
 `target` is the pronunciation row the menu was opened from, and `0` names the primary row.
 The row's variety is read from the draft here, so the shell never decides which case applies.
@@ -79,6 +82,7 @@ Downloads the `recording` to a temporary file for playback through the recording
 
 The workspace-relative form of a downloaded recording's path, which is how it is stored.
 A path outside the workspace has no relative form and is stored as it stands.
+The trail port answers the relative form, so the engine reads no path rule itself.
 
 ### `private IReadOnlyList<LSource> LEngineLookupRead(string language)`
 

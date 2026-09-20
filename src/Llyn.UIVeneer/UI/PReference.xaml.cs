@@ -54,35 +54,41 @@ public partial class PReference : UserControl
         PEditor.PEditorAttach(host, _lShelf.LShelfEditor);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PReferencePressHandle, PReferencePressCheck));
-        CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PReferencePortraitHandle, PReferencePortraitCheck));
+        CommandBindings.Add(
+            new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PReferencePortraitHandle,
+            PReferencePortraitCheck));
     }
 
     internal async void PReferenceVistaRestore()
     {
         _lShelf.LShelfVistaRestore(_pReferenceHost.PWindowPosture);
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
-        _lShelf.LShelfPanel.LPanelObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lShelf.LShelfClear));
+            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, new PObserver(this, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, _lShelf.LShelfClear));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectAuthor,
+            PObserver.PObserverCreate(this, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectReference, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectExample, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReference, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectExample, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+        _lShelf.LShelfPanel.LPanelObserverAttach(
+            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelEntryHandle));
+            LSubject.LSubjectEntry,
+            PObserver.PObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelEntryHandle));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, new PObserver(this, _lShelf.LShelfEntryUpdate));
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lShelf.LShelfEntryUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, new PObserver(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista,
+            PObserver.PObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);

@@ -21,6 +21,11 @@ Binds the loader to the workspace `root` whose `settings.json` it reads and writ
 Reports whether the workspace already holds a settings file.
 The engine asks before moving onto a workspace, so one that has its own preferences keeps them.
 
+## `public void LSettingsSave(LSettings settings)`
+
+Writes the settings as JSON through a pending file, so a crash mid-write leaves the old file whole.
+A folder that cannot be created or a file that cannot be written raises `LVaultFault` around the system's exception.
+
 ## Inline notes
 
 ### `Dictionary<string, object> payload = new(StringComparer.Ordinal)`

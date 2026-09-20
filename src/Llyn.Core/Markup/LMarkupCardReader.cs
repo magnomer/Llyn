@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Xml.Linq;
 
 namespace Llyn.Core;
 
 internal static class LMarkupCardReader
 {
-    internal static LMarkupCard LMarkupCardParse(XElement element, bool nested, List<LMarkupOmission> omissions)
+    internal static LMarkupCard LMarkupCardParse(LMarkupNode element, bool nested, List<LMarkupOmission> omissions)
     {
         LStateValue title = LStateValue.LStateValueUnspecified;
         LStateValue expression = LStateValue.LStateValueUnspecified;
@@ -19,9 +18,9 @@ internal static class LMarkupCardReader
         List<LVideoDraft> videos = [];
         List<LMarkupCard> children = [];
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "title":
                     title = LMarkup.LMarkupValueParse(child);
@@ -76,15 +75,15 @@ internal static class LMarkupCardReader
             children);
     }
 
-    private static LMarkupSentence LMarkupSentenceParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupSentence LMarkupSentenceParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LMarkupExample? example = null;
         LStateValue particle = LStateValue.LStateValueUnspecified;
         LStateValue dependence = LStateValue.LStateValueUnspecified;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "particle":
                     particle = LMarkup.LMarkupValueParse(child);
@@ -104,7 +103,7 @@ internal static class LMarkupCardReader
         return new LMarkupSentence(example, particle, dependence);
     }
 
-    private static LMarkupExample LMarkupExampleParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupExample LMarkupExampleParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LStateValue text = LStateValue.LStateValueUnspecified;
         string language = string.Empty;
@@ -112,9 +111,9 @@ internal static class LMarkupCardReader
         List<LMarkupMention> mentions = [];
         LMarkupReference? reference = null;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "text":
                     text = LMarkup.LMarkupValueParse(child);
@@ -140,14 +139,14 @@ internal static class LMarkupCardReader
         return new LMarkupExample(text, language, glosses, mentions, reference);
     }
 
-    private static LGlossDraft LMarkupGlossParse(XElement element, List<LMarkupOmission> omissions)
+    private static LGlossDraft LMarkupGlossParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string language = string.Empty;
         LStateValue text = LStateValue.LStateValueUnspecified;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "language":
                     language = LMarkup.LMarkupTextParse(child);
@@ -164,7 +163,7 @@ internal static class LMarkupCardReader
         return new LGlossDraft(0, language, text);
     }
 
-    private static LMarkupMention LMarkupMentionParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupMention LMarkupMentionParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         int offset = -1;
         int length = 0;
@@ -172,9 +171,9 @@ internal static class LMarkupCardReader
         string language = string.Empty;
         string sense = string.Empty;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "offset":
                     offset = LMarkupReader.LMarkupNumberParse(child) ?? -1;
@@ -200,7 +199,7 @@ internal static class LMarkupCardReader
         return new LMarkupMention(offset, length, headword, language, sense);
     }
 
-    private static LMarkupReference LMarkupReferenceParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupReference LMarkupReferenceParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LStateValue title = LStateValue.LStateValueUnspecified;
         LStateValue year = LStateValue.LStateValueUnspecified;
@@ -209,9 +208,9 @@ internal static class LMarkupCardReader
         LStateValue note = LStateValue.LStateValueUnspecified;
         List<string> authors = [];
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "title":
                     title = LMarkup.LMarkupValueParse(child);
@@ -240,7 +239,7 @@ internal static class LMarkupCardReader
         return new LMarkupReference(title, year, kind, url, note, authors);
     }
 
-    private static LReferenceKind LMarkupKindParse(XElement element)
+    private static LReferenceKind LMarkupKindParse(LMarkupNode element)
     {
         LStateValue value = LMarkup.LMarkupValueParse(element);
         return value.LStateValueState switch
@@ -251,14 +250,14 @@ internal static class LMarkupCardReader
         };
     }
 
-    private static LMarkupTranslation LMarkupTranslationParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupTranslation LMarkupTranslationParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string headword = string.Empty;
         string language = string.Empty;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "headword":
                     headword = LMarkup.LMarkupTextParse(child);
@@ -275,15 +274,15 @@ internal static class LMarkupCardReader
         return new LMarkupTranslation(headword, language);
     }
 
-    private static LSituationDraft LMarkupSituationParse(XElement element, List<LMarkupOmission> omissions)
+    private static LSituationDraft LMarkupSituationParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LStateValue title = LStateValue.LStateValueUnspecified;
         LStateValue description = LStateValue.LStateValueUnspecified;
         LStateValue kind = LStateValue.LStateValueUnspecified;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "title":
                     title = LMarkup.LMarkupValueParse(child);
@@ -303,13 +302,13 @@ internal static class LMarkupCardReader
         return new LSituationDraft(title, 0, description, kind);
     }
 
-    private static LImageDraft LMarkupImageParse(XElement element, List<LMarkupOmission> omissions)
+    private static LImageDraft LMarkupImageParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LStateValue location = LStateValue.LStateValueUnspecified;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            if (child.Name.LocalName == "location")
+            if (child.LMarkupNodeName == "location")
             {
                 location = LMarkup.LMarkupValueParse(child);
             }
@@ -322,14 +321,14 @@ internal static class LMarkupCardReader
         return new LImageDraft(location);
     }
 
-    private static LVideoDraft LMarkupVideoParse(XElement element, List<LMarkupOmission> omissions)
+    private static LVideoDraft LMarkupVideoParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         LStateValue location = LStateValue.LStateValueUnspecified;
         LStateValue span = LStateValue.LStateValueUnspecified;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "location":
                     location = LMarkup.LMarkupValueParse(child);

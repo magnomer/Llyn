@@ -1,5 +1,6 @@
 using System.Reflection;
 using Llyn.Core;
+using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
 
@@ -17,7 +18,7 @@ internal static class TRigFake
             new TRigFakeRealm(),
             new TRigFakeSettings(),
             TRigStubCreate<LAuditVault>(),
-            TRigStubCreate<LKeep>(),
+            new TPostureFake(),
             entries,
             TRigStubCreate<LDraftVault>(),
             TRigStubCreate<LClaimVault>(),
@@ -62,6 +63,9 @@ internal static class TRigFake
             TRigStubCreate<LMarkupVault>(),
             TRigStubCreate<LPortraitVault>(),
             TRigStubCreate<LUsher>(),
+            new LTrailSystem(),
+            new TClockFake(),
+            1,
             workspace);
     }
 

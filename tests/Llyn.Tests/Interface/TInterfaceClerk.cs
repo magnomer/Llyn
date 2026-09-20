@@ -22,7 +22,10 @@ internal static partial class TInterface
 
     internal static LRequest TRequestStrayCreate(long draftId) => new TRequestStray(draftId);
 
-    private sealed record TRequestStray(long LRequestDraftId) : LRequest(LRequestDraftId);
+    private sealed record TRequestStray(long LRequestDraftId) : LRequest(LRequestDraftId)
+    {
+        public override string LRequestKey => nameof(TRequestStray);
+    }
 
     internal static LEntryClerk TEntryClerkCreate(LRig rig) => new(rig);
 

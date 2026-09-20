@@ -53,14 +53,15 @@ public partial class PFavorite
     internal async void PFavoriteVistaRestore()
     {
         _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowPosture);
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectVista, new PObserver(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PFavoriteWorkspaceUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectGrasp, new PObserver(this, PSeriesGraspUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PRosterEntryUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectFavorite, new PObserver(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PRosterFind));
-        _lFavorite.LFavoriteChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PFavoriteEntryUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PFavoriteWorkspaceUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PSeriesGraspUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PRosterEntryUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectFavorite, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoriteChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PFavoriteEntryUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);

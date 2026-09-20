@@ -24,13 +24,13 @@ public sealed partial class LEngine
         {
             if (_lEngineVistas.TryGetValue(tab, out LVista? former))
             {
-                LEngineObserverDetach(former);
+                LEngineObserverDetach(former.LVistaBulletinHandle);
             }
 
             _lEngineVistas[tab] = vista;
         }
 
-        LEngineObserverAttach(vista);
+        LEngineObserverAttach(vista.LVistaBulletinHandle);
         return vista;
     }
 
@@ -83,7 +83,9 @@ public sealed partial class LEngine
                 LSubject.LSubjectExample => LEngineEntryFind(new LExample(id, string.Empty,
                     LStateValue.LStateValueUnspecified, LStateAnchor.LStateAnchorUnspecified)),
                 LSubject.LSubjectSituation => LEngineEntryFind(new LSituation(id,
-                    LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)),
+                    LStateValue.LStateValueUnspecified,
+                    LStateValue.LStateValueUnspecified,
+                    LStateValue.LStateValueUnspecified)),
                 LSubject.LSubjectReference => LEngineEntryFind(LEngineReferenceBlank with { LReferenceId = id }),
                 _ => [],
             };
@@ -132,7 +134,8 @@ public sealed partial class LEngine
         return names;
     }
 
-    private static string[] LEngineTwinRead<LEngineRow>(IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
+    private static string[] LEngineTwinRead<LEngineRow>(
+        IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
     {
         string[] names = new string[rows.Count];
         int[] places = new int[rows.Count];

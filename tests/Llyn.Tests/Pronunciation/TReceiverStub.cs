@@ -34,4 +34,20 @@ internal sealed class TReceiverStub : LReceiver
     {
         Interlocked.Increment(ref _tReceiverStubFinished);
     }
+
+    internal void TReceiverStubHandle(LLookupStep step)
+    {
+        switch (step.LLookupStepKind)
+        {
+            case LLookupKind.LLookupKindSource:
+                LReceiverSourceStart(step.LLookupStepSource, step.LLookupStepOrder);
+                break;
+            case LLookupKind.LLookupKindCandidate when step.LLookupStepCandidate is LCandidate candidate:
+                LReceiverCandidateAdd(candidate);
+                break;
+            case LLookupKind.LLookupKindEnd:
+                LReceiverLookupFinish();
+                break;
+        }
+    }
 }

@@ -54,9 +54,32 @@ internal static partial class TInterface
         double volume = 1) =>
         new(window, layout, linked, mode, split, volume);
 
-    internal static LPostureState TPostureLoaderRead(string? text) => LPostureLoader.LPostureLoaderRead(text);
+    internal static LPostureFile TPostureFileCreate(string root) => new(new LKeepFile(root));
 
-    internal static string TPostureLoaderFormat(LPostureState state) => LPostureLoader.LPostureLoaderFormat(state);
+    internal static LPostureState? TPostureFileRead(this LPostureFile file, string name) => file.LPostureRead(name);
+
+    internal static void TPostureFileSave(this LPostureFile file, string name, LPostureState state)
+    {
+        file.LPostureSave(name, state);
+    }
+
+    internal static LTrail TTrailCreate() => new LTrailSystem();
+
+    internal static string? TTrailResolve(this LTrail trail, string root, string path) =>
+        trail.LTrailResolve(root, path);
+
+    internal static string? TTrailRelativeResolve(this LTrail trail, string root, string path) =>
+        trail.LTrailRelativeResolve(root, path);
+
+    internal static string TTrailNameRead(this LTrail trail, string path) => trail.LTrailNameRead(path);
+
+    internal static bool TTrailRootCheck(this LTrail trail, string path) => trail.LTrailRootCheck(path);
+
+    internal static string TTrailNameNormalize(this LTrail trail, string name) => trail.LTrailNameNormalize(name);
+
+    internal static LPostureState TPostureLoaderRead(string? text) => LPostureFile.LPostureFileParse(text);
+
+    internal static string TPostureLoaderFormat(LPostureState state) => LPostureFile.LPostureFileFormat(state);
 
     internal static LPosture TPostureStart(this LEngine engine) => new(engine);
 

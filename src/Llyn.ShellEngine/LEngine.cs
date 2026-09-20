@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Threading;
 using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhonologyPort, LSettingsPort, LMediaPort, LPortraitPort
+public sealed partial class LEngine
+    : IDisposable, LDraftPort, LEntryPort, LPhonologyPort, LSettingsPort, LMediaPort, LPortraitPort
 {
     private readonly object _lEngineGate = new();
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
@@ -41,7 +41,10 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
     private LRealmVault _lEngineRealmVault;
     private LSettingsVault _lEngineSettingsVault;
     private LAuditVault _lEngineAudit;
-    private LKeep _lEngineKeep;
+    private LPostureVault _lEnginePosture;
+    private LTrail _lEngineTrail;
+    private LClock _lEngineClock;
+    private int _lEngineProcess;
     private LEntryVault _lEngineEntries;
     private LDraftVault _lEngineDrafts;
     private LClaimVault _lEngineClaims;
@@ -116,7 +119,9 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         nameof(_lEngineRealmVault),
         nameof(_lEngineSettingsVault),
         nameof(_lEngineAudit),
-        nameof(_lEngineKeep),
+        nameof(_lEnginePosture),
+        nameof(_lEngineTrail),
+        nameof(_lEngineClock),
         nameof(_lEngineEntries),
         nameof(_lEngineDrafts),
         nameof(_lEngineClaims),
@@ -174,7 +179,10 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         _lEngineRealmVault = rig.LRigRealm;
         _lEngineSettingsVault = rig.LRigSettings;
         _lEngineAudit = rig.LRigAudit;
-        _lEngineKeep = rig.LRigKeep;
+        _lEnginePosture = rig.LRigPosture;
+        _lEngineTrail = rig.LRigTrail;
+        _lEngineClock = rig.LRigClock;
+        _lEngineProcess = rig.LRigProcess;
         _lEngineEntries = rig.LRigEntries;
         _lEngineDrafts = rig.LRigDrafts;
         _lEngineClaims = rig.LRigClaims;
@@ -252,7 +260,7 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
     public string LEngineWorkspaceFormat()
     {
         string root = LEngineWorkspaceRead();
-        string name = Path.GetFileName(Path.TrimEndingDirectorySeparator(root));
+        string name = _lEngineTrail.LTrailNameRead(root);
         return name.Length > 0 ? name : root;
     }
 

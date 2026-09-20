@@ -54,7 +54,7 @@ public sealed partial class LEngine
 
         bool reached = false;
         List<LFrequency> rows = [];
-        LReceiverFrequency receiver = new();
+        LReceiverRelay receiver = new(static _ => { });
         foreach (LSource source in sources)
         {
             IReadOnlyList<LCandidate> found =
@@ -309,21 +309,6 @@ public sealed partial class LEngine
         if (raised)
         {
             LEngineBulletinRaise(LSubject.LSubjectFrequency, entry.LEntryId);
-        }
-    }
-
-    private sealed class LReceiverFrequency : LReceiver
-    {
-        public void LReceiverSourceStart(string source, int order)
-        {
-        }
-
-        public void LReceiverCandidateAdd(LCandidate candidate)
-        {
-        }
-
-        public void LReceiverLookupFinish()
-        {
         }
     }
 }

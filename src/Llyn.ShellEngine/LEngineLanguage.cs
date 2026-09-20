@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -155,7 +154,7 @@ public sealed partial class LEngine
             return null;
         }
 
-        if (Path.IsPathRooted(code))
+        if (LEngineTrailRead().LTrailRootCheck(code))
         {
             return _lEngineUsher.LUsherPathExist(code) ? code : null;
         }

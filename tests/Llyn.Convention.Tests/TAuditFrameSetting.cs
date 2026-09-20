@@ -45,22 +45,7 @@ internal static class TAuditFrameSetting
         "System.Diagnostics.Stopwatch",
     ];
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditFrameCeiling = new Dictionary<string, int>
-    {
-        ["frame:Llyn.Application>System.IO"] = 2,
-        ["frame:Llyn.Application>System.Reflection"] = 1,
-        ["frame:Llyn.Application>System.Text.Json"] = 1,
-        ["frame:Llyn.Core>System.IO"] = 2,
-        ["frame:Llyn.Core>System.Text.Json.Serialization"] = 2,
-        ["frame:Llyn.Core>System.Xml"] = 2,
-        ["frame:Llyn.Core>System.Xml.Linq"] = 5,
-        ["frame:Llyn.ShellEngine>System.IO"] = 8,
-        ["frame:Llyn.ShellEngine>System.Text.Json"] = 1,
-        ["ambient:Llyn.ShellEngine>System.DateTime.UtcNow"] = 2,
-        ["ambient:Llyn.ShellEngine>System.DateTimeOffset.UtcNow"] = 7,
-        ["ambient:Llyn.ShellEngine>System.Environment"] = 1,
-        ["ambient:Llyn.ShellEngine>System.IO.Path"] = 6,
-    };
+    public static readonly IReadOnlyDictionary<string, int> TAuditFrameCeiling = new Dictionary<string, int>();
 
     public static readonly string[] TAuditFrameWaiver = [];
 }

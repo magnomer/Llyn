@@ -8,11 +8,17 @@ public sealed record LRequestMentionAddition(
     int LRequestLength,
     long LRequestEntryId,
     long LRequestSenseId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestMentionAddition);
+}
 
 public sealed record LRequestMentionRemoval(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestMentionId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestMentionRemoval);
+}
 
 public sealed record LRequestMentionSense(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestMentionId, long LRequestSenseId)

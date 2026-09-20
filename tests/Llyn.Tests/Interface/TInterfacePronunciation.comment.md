@@ -26,6 +26,11 @@ The cleanups default to none too, so a test without a pack sees only the built-i
 Returns the respelling wrapper as the receiver interface, so a test drives it as the engine would.
 The three receiver relays below it let a test push one callback at a time through that interface.
 
+## `internal static LReceiver TReceiverRelayCreate(Action<LLookupStep> sink)`
+
+Returns the step relay as the receiver interface, so a test can check each callback becomes one step.
+`TListenerRelayCreate` is the listener counterpart over harvest steps.
+
 ## `internal static IReadOnlyList<LReading> TReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
 
 Relays the static fan-out so it can be checked without a source, receiver, or listener.
@@ -43,7 +48,7 @@ Relays the static narrowing, so a test can check a kept set narrowed to one row'
 
 Relays the preview download into the workspace cache.
 
-## `internal static Task TEngineRecordingFind(this LEngine engine, long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
+## `internal static Task TEngineRecordingFind(this LEngine engine, long session, string word, string language, long target, Action<LHarvestStep> sink, CancellationToken cancellation)`
 
 Relays the engine-level discovery, so a test can see the draft's row variety narrow the search.
 

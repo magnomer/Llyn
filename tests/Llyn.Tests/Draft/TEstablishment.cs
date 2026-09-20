@@ -60,24 +60,14 @@ public sealed class TEstablishment
 
         LDraft started = engine.TEngineDraftStart("Input", null);
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindle"));
-        TEstablishmentObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> bulletins = [];
+        engine.TEngineObserverAttach(bulletins.Add);
 
         engine.TEngineDraftCancel(started.LDraftId);
 
-        LBulletin bulletin = Assert.Single(observer.TEstablishmentObserverBulletins);
+        LBulletin bulletin = Assert.Single(bulletins);
         Assert.Equal(LSubject.LSubjectDraft, bulletin.LBulletinSubject);
         Assert.Equal(0, bulletin.LBulletinId);
         Assert.Equal(0, engine.TEngineEstablishmentRead().LEstablishmentUnsaved);
-    }
-
-    private sealed class TEstablishmentObserver : LObserver
-    {
-        internal List<LBulletin> TEstablishmentObserverBulletins { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            TEstablishmentObserverBulletins.Add(bulletin);
-        }
     }
 }

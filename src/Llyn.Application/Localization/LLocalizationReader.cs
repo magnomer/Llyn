@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Llyn.Application;
 
 internal static class LLocalizationReader
 {
-    private const string LLocalizationReaderTerms = "terms";
-
-    private const string LLocalizationReaderTexts = "texts";
+    private const string LLocalizationReaderTerms = "terms.";
 
     private static readonly Regex LLocalizationReaderKey = new(
         @"^terms\.[a-z][A-Za-z0-9]*$",
@@ -25,49 +21,24 @@ internal static class LLocalizationReader
         @"\{\d+\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    internal static IReadOnlyDictionary<string, string> LLocalizationRead(TextReader reader, CultureInfo culture)
+    internal static IReadOnlyDictionary<string, string> LLocalizationRead(
+        IReadOnlyDictionary<string, string> raw, CultureInfo culture)
     {
-        using JsonDocument document = JsonDocument.Parse(reader.ReadToEnd());
-        JsonElement root = document.RootElement;
-        if (root.ValueKind != JsonValueKind.Object)
-        {
-            throw new InvalidDataException("The localization file must contain a JSON object.");
-        }
-
         Dictionary<string, string> terms = new(StringComparer.Ordinal);
-        JsonElement textsElement = default;
-        bool foundTexts = false;
-        foreach (JsonProperty property in root.EnumerateObject())
+        foreach ((string key, string value) in raw)
         {
-            if (foundTexts)
+            if (key.StartsWith(LLocalizationReaderTerms, StringComparison.Ordinal))
             {
-                throw new InvalidDataException(
-                    $"No localization entries are allowed after '{LLocalizationReaderTexts}'.");
+                LLocalizationTermAdd(key, value, terms);
             }
-
-            if (property.Name == LLocalizationReaderTexts)
-            {
-                if (terms.Count == 0)
-                {
-                    throw new InvalidDataException(
-                        $"The localization file must start with '{LLocalizationReaderTerms}.*' definitions.");
-                }
-
-                textsElement = property.Value;
-                foundTexts = true;
-                continue;
-            }
-
-            LLocalizationTermAdd(property, terms);
         }
 
-        if (!foundTexts)
+        if (terms.Count == 0)
         {
-            throw new InvalidDataException(
-                $"The term definitions must be followed by a '{LLocalizationReaderTexts}' object.");
+            throw new FormatException("The localization file must start with 'terms.*' definitions.");
         }
 
-        Dictionary<string, string> texts = LLocalizationTextScan(textsElement, terms, culture);
+        Dictionary<string, string> texts = LLocalizationTextScan(raw, terms, culture);
         foreach ((string termKey, string termValue) in terms)
         {
             texts.Add(LLocalizationTermFormat(termKey), LCase.LCaseUpperChange(termValue, culture));
@@ -76,49 +47,38 @@ internal static class LLocalizationReader
         return texts;
     }
 
-    private static void LLocalizationTermAdd(JsonProperty property, IDictionary<string, string> terms)
+    private static void LLocalizationTermAdd(string key, string value, IDictionary<string, string> terms)
     {
-        if (!LLocalizationReaderKey.IsMatch(property.Name))
+        if (!LLocalizationReaderKey.IsMatch(key))
         {
-            throw new InvalidDataException(
-                $"'{property.Name}' is not a valid term key. Term keys must use 'terms.name'.");
+            throw new FormatException(
+                $"'{key}' is not a valid term key. Term keys must use 'terms.name'.");
         }
 
-        if (property.Value.ValueKind != JsonValueKind.String)
+        if (!terms.TryAdd(key, value))
         {
-            throw new InvalidDataException($"The term '{property.Name}' must be a string.");
-        }
-
-        if (!terms.TryAdd(property.Name, property.Value.GetString()!))
-        {
-            throw new InvalidDataException($"The term '{property.Name}' is duplicated.");
+            throw new FormatException($"The term '{key}' is duplicated.");
         }
     }
 
     private static Dictionary<string, string> LLocalizationTextScan(
-        JsonElement element,
+        IReadOnlyDictionary<string, string> raw,
         IReadOnlyDictionary<string, string> terms,
         CultureInfo culture)
     {
-        if (element.ValueKind != JsonValueKind.Object)
-        {
-            throw new InvalidDataException($"'{LLocalizationReaderTexts}' must be a JSON object.");
-        }
-
         Dictionary<string, string> texts = new(StringComparer.Ordinal);
-        foreach (JsonProperty property in element.EnumerateObject())
+        foreach ((string key, string value) in raw)
         {
-            if (property.Value.ValueKind != JsonValueKind.String)
+            if (key.StartsWith(LLocalizationReaderTerms, StringComparison.Ordinal))
             {
-                throw new InvalidDataException(
-                    $"The localization text '{property.Name}' must be a string.");
+                continue;
             }
 
-            string resolved = LLocalizationTextResolve(property.Value.GetString()!, property.Name, terms, culture);
-            if (!texts.TryAdd(property.Name, resolved))
+            string resolved = LLocalizationTextResolve(value, key, terms, culture);
+            if (!texts.TryAdd(key, resolved))
             {
-                throw new InvalidDataException(
-                    $"The localization text '{property.Name}' is duplicated.");
+                throw new FormatException(
+                    $"The localization text '{key}' is duplicated.");
             }
         }
 
@@ -138,7 +98,7 @@ internal static class LLocalizationReader
             string termKey = LCase.LCaseLowerChange(requestedKey, CultureInfo.InvariantCulture);
             if (!terms.TryGetValue(termKey, out string? termValue))
             {
-                throw new InvalidDataException(
+                throw new FormatException(
                     $"The localization text '{textKey}' references the undefined term '{termKey}'.");
             }
 
@@ -150,7 +110,7 @@ internal static class LLocalizationReader
         string bare = LLocalizationReaderSlot.Replace(resolved, string.Empty);
         if (bare.Contains('{', StringComparison.Ordinal) || bare.Contains('}', StringComparison.Ordinal))
         {
-            throw new InvalidDataException(
+            throw new FormatException(
                 $"The localization text '{textKey}' contains a malformed term reference.");
         }
 

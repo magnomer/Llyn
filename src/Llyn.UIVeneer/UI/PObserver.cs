@@ -4,46 +4,35 @@ using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
-internal sealed class PObserver : LObserver
+internal static class PObserver
 {
-    private readonly Dispatcher? _pObserverDispatcher;
+    internal static Action<LBulletin> PObserverCreate(DispatcherObject surface, Action<LBulletin> target)
+    {
+        return PObserverCreate<LBulletin>(surface, target);
+    }
 
-    private readonly Action<LBulletin> _pObserverTarget;
+    internal static Action<LBulletin> PObserverCreate(DispatcherObject surface, Action target)
+    {
+        ArgumentNullException.ThrowIfNull(target);
 
-    internal PObserver(DispatcherObject surface, Action<LBulletin> target)
+        return PObserverCreate<LBulletin>(surface, _ => target());
+    }
+
+    internal static Action<PStep> PObserverCreate<PStep>(DispatcherObject surface, Action<PStep> target)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(target);
 
-        _pObserverDispatcher = surface.Dispatcher;
-        _pObserverTarget = target;
-    }
-
-    internal PObserver(DispatcherObject surface, Action target)
-    {
-        ArgumentNullException.ThrowIfNull(surface);
-        ArgumentNullException.ThrowIfNull(target);
-
-        _pObserverDispatcher = surface.Dispatcher;
-        _pObserverTarget = _ => target();
-    }
-
-    internal PObserver(Action<LBulletin> target)
-    {
-        ArgumentNullException.ThrowIfNull(target);
-
-        _pObserverDispatcher = null;
-        _pObserverTarget = target;
-    }
-
-    public void LObserverBulletinHandle(LBulletin bulletin)
-    {
-        if (_pObserverDispatcher is null || _pObserverDispatcher.CheckAccess())
+        Dispatcher dispatcher = surface.Dispatcher;
+        return step =>
         {
-            _pObserverTarget(bulletin);
-            return;
-        }
+            if (dispatcher.CheckAccess())
+            {
+                target(step);
+                return;
+            }
 
-        _pObserverDispatcher.BeginInvoke(_pObserverTarget, bulletin);
+            dispatcher.BeginInvoke(target, step);
+        };
     }
 }

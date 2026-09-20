@@ -15,10 +15,11 @@ The shell resolves the same way, so a relative path means the same thing on view
 A UNC path, a `file` address with a host, a device path and every other scheme are refused.
 Windows sends the user's credentials to any host named that way, so an imported file must not name one.
 
-## `private static Uri? LEngineLocationResolve(string path, string workspace)`
+## `private Uri? LEngineLocationResolve(string path, string workspace)`
 
 The file half of the rule, once web and scheme forms are settled.
-A path the runtime cannot form is refused rather than thrown.
+The trail port resolves the text under the workspace and answers nothing for a path the system cannot form.
+An address the runtime cannot form from the resolved path is refused rather than thrown.
 
 ## `public Uri? LEngineLocationRead(string? location)`
 

@@ -14,10 +14,12 @@ public sealed class TPortraitVista
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
         string path = Path.Combine(workspace.TWorkspaceFolder, "portrait.html");
-        await engine.TEnginePortraitExport(vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
+        await engine.TEnginePortraitExport(
+            vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
         Assert.False(File.Exists(path));
         vista.TVistaSelect(entry.LEntryId);
-        await engine.TEnginePortraitExport(vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
+        await engine.TEnginePortraitExport(
+            vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
         Assert.Contains("water", File.ReadAllText(path));
     }
 
@@ -46,10 +48,12 @@ public sealed class TPortraitVista
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TPress press = new();
         engine.TEnginePressApply(press);
-        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
+        LExample example = engine.TEngineExampleCreate(
+            TInterface.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         vista.TVistaSelect(example.LExampleId);
-        await engine.TEnginePortraitPrint(vista, TInterface.TPortraitLegendRead(), TInterface.TPressTicketCreate("Printer", false, 1));
+        await engine.TEnginePortraitPrint(
+            vista, TInterface.TPortraitLegendRead(), TInterface.TPressTicketCreate("Printer", false, 1));
         Assert.Contains("Water flows.", press.TPressHtml);
     }
 }

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LPosture : LObserver, IDisposable
+public sealed class LPosture : IDisposable
 {
     private const string LPostureName = "posture";
     private const string LPostureLegacy = "settings";
@@ -26,7 +25,7 @@ public sealed class LPosture : LObserver, IDisposable
 
         _lEngine = engine;
         LPostureLoad();
-        _lEngine.LEngineObserverAttach(this);
+        _lEngine.LEngineObserverAttach(LPostureBulletinHandle);
     }
 
     public LPostureState LPostureRead()
@@ -156,7 +155,7 @@ public sealed class LPosture : LObserver, IDisposable
 
     public void Dispose()
     {
-        _lEngine.LEngineObserverDetach(this);
+        _lEngine.LEngineObserverDetach(LPostureBulletinHandle);
         lock (_lPostureGate)
         {
             foreach (LVista vista in _lPostureWatched)
@@ -169,10 +168,8 @@ public sealed class LPosture : LObserver, IDisposable
         }
     }
 
-    public void LObserverBulletinHandle(LBulletin bulletin)
+    private void LPostureBulletinHandle(LBulletin bulletin)
     {
-        ArgumentNullException.ThrowIfNull(bulletin);
-
         if (bulletin.LBulletinMatch(LSubject.LSubjectWorkspace))
         {
             LPostureLoad();
@@ -232,38 +229,32 @@ public sealed class LPosture : LObserver, IDisposable
     {
         lock (_lPostureGate)
         {
-            LKeep keep = _lEngine.LEngineKeepRead();
-            string? text;
-            string? legacy;
+            LPostureVault vault = _lEngine.LEnginePostureRead();
+            LPostureState? kept;
+            LPostureState? legacy;
             try
             {
-                text = keep.LKeepRead(LPostureName);
-                legacy = text is null ? keep.LKeepRead(LPostureLegacy) : null;
+                kept = vault.LPostureRead(LPostureName);
+                legacy = kept is null ? vault.LPostureRead(LPostureLegacy) : null;
             }
-            catch (IOException exception)
-            {
-                _lEngine.LEngineAuditRecord(exception);
-                return;
-            }
-            catch (UnauthorizedAccessException exception)
+            catch (LVaultFault exception)
             {
                 _lEngine.LEngineAuditRecord(exception);
                 return;
             }
 
-            if (text is not null)
+            if (kept is not null)
             {
-                _lPostureState = LPostureLoader.LPostureLoaderRead(text);
+                _lPostureState = kept;
                 return;
             }
 
-            LPostureState inherited = LPostureLoader.LPostureLoaderRead(legacy);
-            if (inherited != new LPostureState())
+            if (legacy is not null && legacy != new LPostureState())
             {
-                _lPostureState = inherited;
+                _lPostureState = legacy;
             }
 
-            LPostureSave(keep);
+            LPostureSave(vault);
         }
     }
 
@@ -278,22 +269,18 @@ public sealed class LPosture : LObserver, IDisposable
             }
 
             _lPostureState = changed;
-            LPostureSave(_lEngine.LEngineKeepRead());
+            LPostureSave(_lEngine.LEnginePostureRead());
             return true;
         }
     }
 
-    private void LPostureSave(LKeep keep)
+    private void LPostureSave(LPostureVault vault)
     {
         try
         {
-            keep.LKeepSave(LPostureName, LPostureLoader.LPostureLoaderFormat(_lPostureState));
+            vault.LPostureSave(LPostureName, _lPostureState);
         }
-        catch (IOException exception)
-        {
-            _lEngine.LEngineAuditRecord(exception);
-        }
-        catch (UnauthorizedAccessException exception)
+        catch (LVaultFault exception)
         {
             _lEngine.LEngineAuditRecord(exception);
         }

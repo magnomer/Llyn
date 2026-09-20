@@ -6,7 +6,7 @@ public sealed record LRig(
     LRealmVault LRigRealm,
     LSettingsVault LRigSettings,
     LAuditVault LRigAudit,
-    LKeep LRigKeep,
+    LPostureVault LRigPosture,
     LEntryVault LRigEntries,
     LDraftVault LRigDrafts,
     LClaimVault LRigClaims,
@@ -51,4 +51,7 @@ public sealed record LRig(
     LMarkupVault LRigMarkup,
     LPortraitVault LRigPortrait,
     LUsher LRigUsher,
+    LTrail LRigTrail,
+    LClock LRigClock,
+    int LRigProcess,
     string LRigWorkspace);

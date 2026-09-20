@@ -120,12 +120,12 @@ public sealed class LWindow
         return new LYunjing(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
     }
 
-    public void LWindowObserverAttach(LObserver observer)
+    public void LWindowObserverAttach(Action<LBulletin> observer)
     {
         _lDraftPort.LEngineObserverAttach(observer);
     }
 
-    public void LWindowObserverDetach(LObserver observer)
+    public void LWindowObserverDetach(Action<LBulletin> observer)
     {
         _lDraftPort.LEngineObserverDetach(observer);
     }

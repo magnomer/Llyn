@@ -12,7 +12,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(ids);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-        string text;
+        LMarkupNode root;
         lock (_lEngineGate)
         {
             using LVaultSession session = _lEngineVault.LVaultSessionStart();
@@ -23,10 +23,10 @@ public sealed partial class LEngine
                 entries.Add(LEngineMarkupCreate(id));
             }
 
-            text = LMarkup.LMarkupFormat(entries);
+            root = LMarkup.LMarkupFormat(entries);
         }
 
-        _lEngineMarkupVault.LMarkupSave(path, text);
+        _lEngineMarkupVault.LMarkupSave(path, root);
     }
 
     private LMarkupEntry LEngineMarkupCreate(long id)

@@ -37,10 +37,10 @@ public partial class PWing : UserControl
     internal async void PWingRestore(string tab, long? id)
     {
         _lWing.LWingVistaRestore(_pWingHost.PWindowPosture, tab);
-        _lWing.LWingObserverAttach(LSubject.LSubjectVista, new PObserver(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PWingIndexFind));
         PWingDisplay.PDisplayObserverAttach();
         _pWingIndex.Clear();
         await PEnsign.PEnsignLoad(_pWingHost.PWindowDeportment);

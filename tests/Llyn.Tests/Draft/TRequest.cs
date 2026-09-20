@@ -28,8 +28,8 @@ public sealed class TRequest
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineDraftStart("Input", null);
-        TRequestObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> bulletins = [];
+        engine.TEngineObserverAttach(bulletins.Add);
 
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TRequestAdditionCreate(started.LDraftId, LCardKind.LCardKindMeaning, 0, 0));
@@ -37,7 +37,7 @@ public sealed class TRequest
         LCardDraft card = Assert.Single(answered.LDraftContent.LEntryDraftMeanings);
         Assert.True(card.LCardDraftId < 0);
         Assert.Equal(1, card.LCardDraftPosition);
-        LBulletin bulletin = Assert.Single(observer.TRequestObserverBulletins);
+        LBulletin bulletin = Assert.Single(bulletins);
         Assert.Equal(LSubject.LSubjectDraft, bulletin.LBulletinSubject);
         Assert.Equal(started.LDraftId, bulletin.LBulletinId);
     }
@@ -287,8 +287,8 @@ public sealed class TRequest
             LStateValue.LStateValueUnspecified,
             LStateAnchor.LStateAnchorUnspecified);
         LDraft changed = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
-        TRequestObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> bulletins = [];
+        engine.TEngineObserverAttach(bulletins.Add);
 
         LDraft answered = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
 
@@ -296,7 +296,7 @@ public sealed class TRequest
         Assert.Equal(changed.LDraftExample, answered.LDraftExample);
         Assert.Equal(started.LDraftExample!.LExampleId, answered.LDraftExample!.LExampleId);
         Assert.Equal("a line", answered.LDraftExample.LExampleText.TStateValueShow());
-        Assert.Empty(observer.TRequestObserverBulletins);
+        Assert.Empty(bulletins);
     }
 
     [Fact]
@@ -318,15 +318,5 @@ public sealed class TRequest
         Assert.Equal("around a hearth", answered.LDraftSituation.LSituationTitle.TStateValueShow());
         Assert.Equal("a fireside", answered.LDraftSituation.LSituationDescription.TStateValueShow());
         Assert.Equal("place", answered.LDraftSituation.LSituationKind.TStateValueShow());
-    }
-
-    private sealed class TRequestObserver : LObserver
-    {
-        internal List<LBulletin> TRequestObserverBulletins { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            TRequestObserverBulletins.Add(bulletin);
-        }
     }
 }

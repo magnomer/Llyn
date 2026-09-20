@@ -114,12 +114,12 @@ public sealed class LFavorite
             posture.LPostureVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LFavoriteObserverAttach(LSubject subject, LObserver observer)
+    public void LFavoriteObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lFavoriteVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public void LFavoriteChosenAttach(LSubject subject, LObserver observer)
+    public void LFavoriteChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lFavoriteVista?.LVistaChosenAttach(subject, observer);
     }

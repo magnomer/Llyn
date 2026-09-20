@@ -11,6 +11,13 @@ Two copies of the program may run against one workspace.
 Every operation touches a single named file and holds nothing open.
 The folder is never locked and a file this process did not write is never removed.
 
+## `private static readonly JsonSerializerOptions LDraftArchiveIndent`
+
+The one option set both directions share, indented on write.
+Its resolver drops every property without a setter.
+So a derived value such as the draft's IPA never lands in the file.
+The records in Core carry no serializer attribute for that, since the serializer is this adapter's alone.
+
 ## `public LDraftArchive(string root)`
 
 Binds the store to the workspace `root` whose `drafts` folder it keeps.
@@ -78,6 +85,11 @@ A missing folder is not an error, and neither is a file that vanishes mid-sweep.
 Moves one unreadable or foreign-version draft file under `drafts/broken` and reports whether it moved.
 A name already taken there gets the moment appended, so an earlier copy is never overwritten.
 A file that cannot be moved stays and is reported as kept, so its id is not dropped.
+
+## `private static void LDraftArchiveNormalize(JsonTypeInfo info)`
+
+Removes the properties with no setter from an object's contract, so only stored fields are written.
+The serializer's own read-only switch keeps get-only collections, which is why the contract is trimmed by hand.
 
 ## `private static LDraft? LDraftArchiveParse(string text, bool checking)`
 

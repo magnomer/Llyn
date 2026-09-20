@@ -2,10 +2,14 @@
 
 ## `internal static class LLocalizationReader`
 
-Parses one localization file into a flat dictionary of texts.
-A file opens with `terms.*` entries and closes with one `texts` object.
+Resolves one parsed localization catalog into a flat dictionary of texts.
+The catalog arrives as raw pairs, `terms.*` entries beside the texts, already lifted off the JSON by the adapter.
 Each text may cite a term as `{terms.name}`, cased by the capital of the reference.
 Every term is also published under its capitalized key, so markup can bind a bare term.
+
+## `private const string LLocalizationReaderTerms = "terms.";`
+
+The prefix that tells a term pair from a text pair in the raw map.
 
 ## `private static readonly Regex LLocalizationReaderKey`
 
@@ -19,17 +23,18 @@ A term reference inside a text, with its casing carried by the first letter.
 
 A numbered format slot, left alone when the text is checked for stray braces.
 
-## `internal static IReadOnlyDictionary<string, string> LLocalizationRead(TextReader reader, CultureInfo culture)`
+## `internal static IReadOnlyDictionary<string, string> LLocalizationRead(IReadOnlyDictionary<string, string> raw, CultureInfo culture)`
 
-Reads the terms, then the texts, and refuses any file that breaks the order or repeats a key.
+Gathers the terms, then resolves the texts, and refuses a catalog with no term or a repeated key.
+A refusal is a `FormatException`, the one exception a pure ring may raise for bad data.
 
-## `private static void LLocalizationTermAdd(JsonProperty property, IDictionary<string, string> terms)`
+## `private static void LLocalizationTermAdd(string key, string value, IDictionary<string, string> terms)`
 
-Keeps one term after checking its key shape and its string value.
+Keeps one term after checking its key shape.
 
 ## `private static Dictionary<string, string> LLocalizationTextScan(`
 
-Resolves every text of the `texts` object against the terms read before it.
+Resolves every text pair of the raw map against the terms gathered before it.
 
 ## `private static string LLocalizationTextResolve(`
 

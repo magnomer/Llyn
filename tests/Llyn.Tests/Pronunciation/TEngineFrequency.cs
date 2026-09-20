@@ -158,7 +158,7 @@ public sealed class TEngineFrequency
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("a=7", HttpStatusCode.OK));
         TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
         engine.TEngineFrequencySave(false);
 
         LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
@@ -178,7 +178,7 @@ public sealed class TEngineFrequency
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
         TFrequencyStoredSet(workspace, entry.LEntryId, "First", "5", "Everyday");
@@ -208,7 +208,7 @@ public sealed class TEngineFrequency
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
 
         LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
         engine.TEngineEntryDelete(entry.LEntryId);
@@ -229,7 +229,7 @@ public sealed class TEngineFrequency
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("a=7", HttpStatusCode.OK));
         TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
         engine.TEngineFrequencySave(false);
         LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
         workspace.TWorkspaceScriptRun($"UPDATE entry SET language = '' WHERE entry_id = {entry.LEntryId};");
@@ -269,7 +269,7 @@ public sealed class TEngineFrequency
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
 
         LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName));
         LEntryDraft loaded = engine.TEngineEntryLoad(entry.LEntryId)!;
@@ -369,14 +369,14 @@ public sealed class TEngineFrequency
         return workspace.TWorkspaceCountRead($"SELECT COUNT(*) FROM frequency WHERE entry_parent = {entryId};");
     }
 
-    private sealed class TFrequencyObserver : LObserver
+    private sealed class TFrequencyObserver
     {
         private readonly TaskCompletionSource<LBulletin> _tFrequencyObserverRaised =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         internal Task<LBulletin> TFrequencyObserverRaised => _tFrequencyObserverRaised.Task;
 
-        public void LObserverBulletinHandle(LBulletin bulletin)
+        internal void TFrequencyObserverHandle(LBulletin bulletin)
         {
             if (bulletin.LBulletinSubject == LSubject.LSubjectFrequency)
             {

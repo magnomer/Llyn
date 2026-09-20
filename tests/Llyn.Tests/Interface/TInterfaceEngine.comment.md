@@ -13,6 +13,7 @@ The entry and page likeness reads, both prints and the press hand-in are relayed
 The workspace open builds a rig for the path through the real factory and applies it, as the bootstrap does.
 The status bar read is relayed here too.
 The chronicle undo and redo with their two checks are relayed here as well.
-The chronicle clock seam is relayed here too.
+The author draft start is relayed here beside the entry draft start.
+The clock is set here through the `TClockFake` every test rig carries, so time freezes engine-wide.
 The recording sweep is relayed here beside the leftover sweep.
 Each relay is transparent and carries no test logic of its own.

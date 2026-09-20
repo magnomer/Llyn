@@ -90,7 +90,7 @@ public sealed class TEngineScript
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TEngineScriptPages));
         TScriptObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TScriptObserverHandle);
         LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整齊", pack.TLanguageFixtureName));
 
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
@@ -115,7 +115,7 @@ public sealed class TEngineScript
         TSourceHandler handler = new("nothing here", HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         TScriptObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TScriptObserverHandle);
         LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
 
         engine.TEngineScriptStart(entry.LEntryId);
@@ -189,14 +189,14 @@ public sealed class TEngineScript
             []);
     }
 
-    private sealed class TScriptObserver : LObserver
+    private sealed class TScriptObserver
     {
         private readonly TaskCompletionSource<LBulletin> _tScriptObserverRaised =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         internal Task<LBulletin> TScriptObserverRaised => _tScriptObserverRaised.Task;
 
-        public void LObserverBulletinHandle(LBulletin bulletin)
+        internal void TScriptObserverHandle(LBulletin bulletin)
         {
             if (bulletin.LBulletinSubject == LSubject.LSubjectScript)
             {

@@ -18,4 +18,4 @@ The stored settings, or the defaults when none are stored or the stored ones are
 ## `void LSettingsSave(LSettings settings);`
 
 Stores `settings`, replacing whatever was there.
-A store that cannot be written raises `IOException` or `UnauthorizedAccessException`.
+A store that cannot be written raises `LVaultFault`.

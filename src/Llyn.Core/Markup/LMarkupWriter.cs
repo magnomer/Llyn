@@ -1,19 +1,19 @@
+using System.Collections.Generic;
 using System.Globalization;
-using System.Xml.Linq;
 
 namespace Llyn.Core;
 
 internal static class LMarkupWriter
 {
-    internal static XElement LMarkupEntryFormat(LMarkupEntry entry)
+    internal static LMarkupNode LMarkupEntryFormat(LMarkupEntry entry)
     {
-        XElement element = new("entry");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "headword", entry.LMarkupEntryHeadword);
         LMarkup.LMarkupTextFormat(element, "language", entry.LMarkupEntryLanguage);
 
         foreach (string speech in entry.LMarkupEntrySpeech)
         {
-            element.Add(new XElement("speech", LMarkup.LMarkupTextNormalize(speech)));
+            element.Add(LMarkupNode.LMarkupNodeCreate("speech", speech));
         }
 
         foreach (LForm form in entry.LMarkupEntryForm)
@@ -52,44 +52,44 @@ internal static class LMarkupWriter
         }
 
         LMarkup.LMarkupTextFormat(element, "note", entry.LMarkupEntryNote);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("entry", element);
     }
 
-    private static XElement LMarkupFormFormat(LForm form)
+    private static LMarkupNode LMarkupFormFormat(LForm form)
     {
-        XElement element = new("form");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "text", form.LFormText);
         LMarkupLocalFormat(element, form.LFormLocal);
         LMarkup.LMarkupTextFormat(element, "role", form.LFormRole);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("form", element);
     }
 
-    private static void LMarkupLocalFormat(XElement parent, string? local)
+    private static void LMarkupLocalFormat(List<LMarkupNode> parent, string? local)
     {
         if (local is not null)
         {
-            parent.Add(new XElement("local", LMarkup.LMarkupTextNormalize(local)));
+            parent.Add(LMarkupNode.LMarkupNodeCreate("local", local));
         }
     }
 
-    private static XElement LMarkupInflectionFormat(LMarkupInflection inflection)
+    private static LMarkupNode LMarkupInflectionFormat(LMarkupInflection inflection)
     {
-        XElement element = new("inflection");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "text", inflection.LMarkupInflectionText);
         LMarkupLocalFormat(element, inflection.LMarkupInflectionLocal);
         LMarkup.LMarkupTextFormat(element, "speech", inflection.LMarkupInflectionSpeech);
 
         foreach (string morphology in inflection.LMarkupInflectionMorphology)
         {
-            element.Add(new XElement("morphology", LMarkup.LMarkupTextNormalize(morphology)));
+            element.Add(LMarkupNode.LMarkupNodeCreate("morphology", morphology));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("inflection", element);
     }
 
-    private static XElement LMarkupPronunciationFormat(LPronunciationDraft pronunciation)
+    private static LMarkupNode LMarkupPronunciationFormat(LPronunciationDraft pronunciation)
     {
-        XElement element = new("pronunciation");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "ipa", pronunciation.LPronunciationDraftIpa);
         LMarkup.LMarkupTextFormat(element, "respelling", pronunciation.LPronunciationDraftRespelling);
         LMarkup.LMarkupTextFormat(element, "variety", pronunciation.LPronunciationDraftVariety);
@@ -101,12 +101,12 @@ internal static class LMarkupWriter
 
         LMarkup.LMarkupTextFormat(element, "audio", pronunciation.LPronunciationDraftAudio);
         LMarkup.LMarkupTextFormat(element, "source", pronunciation.LPronunciationDraftSource);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("pronunciation", element);
     }
 
-    private static XElement LMarkupSyllableFormat(LSyllable syllable)
+    private static LMarkupNode LMarkupSyllableFormat(LSyllable syllable)
     {
-        XElement element = new("syllable");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "onset", syllable.LSyllableOnset);
         LMarkup.LMarkupTextFormat(element, "medial", syllable.LSyllableMedial);
         LMarkup.LMarkupTextFormat(element, "nucleus", syllable.LSyllableNucleus);
@@ -114,24 +114,24 @@ internal static class LMarkupWriter
 
         if (syllable.LSyllableToneNumber is int tone)
         {
-            element.Add(new XElement("tone", tone.ToString(CultureInfo.InvariantCulture)));
+            element.Add(LMarkupNode.LMarkupNodeCreate("tone", tone.ToString(CultureInfo.InvariantCulture)));
         }
 
         LMarkup.LMarkupTextFormat(element, "points", syllable.LSyllableTonePoints);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("syllable", element);
     }
 
-    private static XElement LMarkupTranscriptionFormat(LTranscriptionDraft transcription)
+    private static LMarkupNode LMarkupTranscriptionFormat(LTranscriptionDraft transcription)
     {
-        XElement element = new("transcription");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "scheme", transcription.LTranscriptionDraftScheme);
         LMarkup.LMarkupTextFormat(element, "text", transcription.LTranscriptionDraftText);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("transcription", element);
     }
 
-    private static XElement LMarkupReflexFormat(LReflexDraft reflex)
+    private static LMarkupNode LMarkupReflexFormat(LReflexDraft reflex)
     {
-        XElement element = new("reflex");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "language", reflex.LReflexDraftLanguage);
         LMarkup.LMarkupTextFormat(element, "kind", reflex.LReflexDraftKind);
         LMarkup.LMarkupTextFormat(element, "text", reflex.LReflexDraftText);
@@ -141,9 +141,9 @@ internal static class LMarkupWriter
         LMarkup.LMarkupTextFormat(element, "remark", reflex.LReflexDraftRemark);
         if (reflex.LReflexDraftMain)
         {
-            element.Add(new XElement("main"));
+            element.Add(LMarkupNode.LMarkupNodeCreate("main"));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("reflex", element);
     }
 }

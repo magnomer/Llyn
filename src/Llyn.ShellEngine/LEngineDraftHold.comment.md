@@ -43,6 +43,7 @@ With an entry the content is that entry loaded back into form shape, which is an
 An entry that is gone is refused before a file is written, so no draft can point at nothing.
 `origin` records which surface opened the work, so a recovered draft can say where it came from.
 A claim naming this process is written beside the draft.
+This process is the one the rig names, so a test may pose as another process without starting one.
 Another launch reading the folder then knows the work is live.
 
 ## `internal IReadOnlyList<LRequest> LEngineDraftPrepare(long id)`

@@ -13,8 +13,8 @@ public sealed class TVistaMode
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
         LVista other = engine.TEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderHeadword);
-        TVistaObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LBulletin> notices = [];
+        engine.TEngineObserverAttach(notices.Add);
         bool initial = vista.LVistaEditing;
 
         vista.TVistaEditingSet(!initial);
@@ -22,7 +22,7 @@ public sealed class TVistaMode
 
         Assert.Equal(!initial, vista.LVistaEditing);
         Assert.Equal(initial, other.LVistaEditing);
-        LBulletin notice = Assert.Single(observer.TVistaNotices);
+        LBulletin notice = Assert.Single(notices);
         Assert.Equal(LSubject.LSubjectVista, notice.LBulletinSubject);
         Assert.Equal(vista.LVistaId, notice.LBulletinId);
     }
@@ -62,12 +62,5 @@ public sealed class TVistaMode
 
         Assert.Equal(initial, posture.TPostureVistaStart("corpus", LCatalogOrder.LCatalogOrderText).LVistaEditing);
         Assert.Equal(!initial, first.LVistaEditing);
-    }
-
-    private sealed class TVistaObserver : LObserver
-    {
-        internal List<LBulletin> TVistaNotices { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin) => TVistaNotices.Add(bulletin);
     }
 }

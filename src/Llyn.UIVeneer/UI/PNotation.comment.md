@@ -1,6 +1,6 @@
 ﻿# PNotation.cs
 
-## `public partial class PEditor : LReceiver`
+## `public partial class PEditor`
 
 Pronunciation and transcription lookup as the editor shows it.
 Every pronunciation row and every transcription row carries its own lookup button, and the menu opens under the one pressed.
@@ -11,9 +11,10 @@ The search is a foray the tenure starts, and the menu keeps only that handle.
 The word, language, target row, scheme and flag mode are read off the foray, never copied.
 Candidates stream in from the engine and fill the list, one reading per variety a source returned.
 Picking one writes it into the row that opened the menu and stores its variety on that row.
-This is the shell side of `LReceiver`.
-The engine calls back on a worker thread.
-So every arrival is marshalled onto the dispatcher here.
+The engine streams each step of the lookup to a delegate the menu hands it.
+The menu hands the notation deportment's own step handler, wrapped so every arrival lands on the dispatcher.
+The deportment splits a step into its source, candidate and end notices, and the menu writes a control on each.
+So the menu implements no contract and decides nothing about a step.
 
 ## `private PNotationItem PNotationPlace(string source, int order)`
 
@@ -35,13 +36,12 @@ A transcription search returns untagged readings, so no flag would ever be drawn
 A reading's flag is then ready the moment the reading lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorNotationStart(word, target, scheme, this);`
+### `_lEditor.LEditorNotationStart(`
 
-The tenure starts the search and the menu listens.
+The tenure starts the search and the menu listens through the wrapped delegate.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
 Whether a search runs at all is the engine's answer, not the menu's.
-The search is over when the receiver is told it is, never when the start returns.
-The engine reports the end through LReceiverLookupFinish.
+The search is over when the finish step arrives, never when the start returns.
 
 ### `catch (Exception)`
 
@@ -90,7 +90,7 @@ It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing.
 The scheme names which empty notice, and comes from the opening before a foray exists and from the foray after.
 
-### `void LReceiver.LReceiverCandidateAdd(LCandidate candidate)`
+### `private void PNotationCandidateHandle(LCandidate candidate)`
 
 Each source answers exactly once here, whether it found a reading or not.
 The row is resolved in place rather than replaced, so it never jumps under the pointer.

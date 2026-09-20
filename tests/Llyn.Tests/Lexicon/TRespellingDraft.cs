@@ -206,22 +206,12 @@ public sealed class TRespellingDraft
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TRespellingObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        List<LSubject> raised = [];
+        engine.TEngineObserverAttach(bulletin => raised.Add(bulletin.LBulletinSubject));
 
         engine.TEngineRespellingSave(true);
 
-        Assert.Contains(observer.TRespellingObserverRaised, subject => subject == LSubject.LSubjectSettings);
-    }
-
-    private sealed class TRespellingObserver : LObserver
-    {
-        internal List<LSubject> TRespellingObserverRaised { get; } = [];
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            TRespellingObserverRaised.Add(bulletin.LBulletinSubject);
-        }
+        Assert.Contains(raised, subject => subject == LSubject.LSubjectSettings);
     }
 
     private static LEntryDraft TRespellingDraftCreate(IReadOnlyList<LPronunciationDraft> pronunciations)

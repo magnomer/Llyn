@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -6,9 +6,9 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private readonly List<LObserver> _lEngineObservers = [];
+    private readonly List<Action<LBulletin>> _lEngineObservers = [];
 
-    public void LEngineObserverAttach(LObserver observer)
+    public void LEngineObserverAttach(Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -21,7 +21,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineObserverDetach(LObserver observer)
+    public void LEngineObserverDetach(Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
@@ -33,7 +33,7 @@ public sealed partial class LEngine
 
     internal void LEngineBulletinRaise(LSubject subject, long id)
     {
-        LObserver[] observers;
+        Action<LBulletin>[] observers;
         lock (_lEngineGate)
         {
             if (_lEngineObservers.Count == 0)
@@ -45,9 +45,9 @@ public sealed partial class LEngine
         }
 
         LBulletin bulletin = new(subject, id);
-        foreach (LObserver observer in observers)
+        foreach (Action<LBulletin> observer in observers)
         {
-            observer.LObserverBulletinHandle(bulletin);
+            observer(bulletin);
         }
     }
 }

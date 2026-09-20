@@ -35,6 +35,12 @@ A situation's description and kind belong to its own page, and an image is a pic
 The draft as indented JSON with every id zeroed, so two workspaces' drafts compare as one shape.
 Ids, link ids, sense ids, pack value ids and the id lists are zeroed in place, their counts kept.
 The pronunciation with no syllables keeps its empty list, so a syllable dropped on import still shows.
+Derived properties are left out the way the draft archive leaves them out.
+So a derived id never enters the shape.
+
+## `private static void TExemplarNormalize(JsonTypeInfo info)`
+
+Drops every property without a setter from the contract, the same trim the draft archive applies.
 
 ## `internal static IReadOnlyList<string> TExemplarTextRead(LEntryDraft draft)`
 

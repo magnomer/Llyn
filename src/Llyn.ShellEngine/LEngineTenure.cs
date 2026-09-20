@@ -36,8 +36,6 @@ public sealed partial class LEngine
                 nameof(subject), subject, "A tenure holds only an entry, example, situation, reference or author."),
         };
 
-        LTenure tenure = new(this, subject, started.LDraftId);
-        LEngineObserverAttach(tenure);
-        return tenure;
+        return new LTenure(this, subject, started.LDraftId);
     }
 }

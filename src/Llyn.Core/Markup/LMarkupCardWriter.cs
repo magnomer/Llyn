@@ -1,13 +1,13 @@
+using System.Collections.Generic;
 using System.Globalization;
-using System.Xml.Linq;
 
 namespace Llyn.Core;
 
 internal static class LMarkupCardWriter
 {
-    internal static XElement LMarkupCardFormat(LMarkupCard card, string name)
+    internal static LMarkupNode LMarkupCardFormat(LMarkupCard card, string name)
     {
-        XElement element = new(name);
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupValueFormat(element, "title", card.LMarkupCardTitle);
         LMarkup.LMarkupValueFormat(element, "expression", card.LMarkupCardExpression);
         LMarkup.LMarkupValueFormat(element, "definition", card.LMarkupCardMeaning);
@@ -34,22 +34,22 @@ internal static class LMarkupCardWriter
 
         foreach (LTagDraft tag in card.LMarkupCardTag)
         {
-            element.Add(new XElement("tag", LMarkup.LMarkupTextNormalize(tag.LTagDraftText)));
+            element.Add(LMarkupNode.LMarkupNodeCreate("tag", tag.LTagDraftText));
         }
 
         foreach (LImageDraft image in card.LMarkupCardImage)
         {
-            XElement written = new("image");
+            List<LMarkupNode> written = [];
             LMarkup.LMarkupValueFormat(written, "location", image.LImageDraftLocation);
-            element.Add(written);
+            element.Add(LMarkupNode.LMarkupNodeCreate("image", written));
         }
 
         foreach (LVideoDraft video in card.LMarkupCardVideo)
         {
-            XElement written = new("video");
+            List<LMarkupNode> written = [];
             LMarkup.LMarkupValueFormat(written, "location", video.LVideoDraftLocation);
             LMarkup.LMarkupValueFormat(written, "span", video.LVideoDraftSpan);
-            element.Add(written);
+            element.Add(LMarkupNode.LMarkupNodeCreate("video", written));
         }
 
         foreach (LMarkupCard child in card.LMarkupCardChild)
@@ -57,12 +57,12 @@ internal static class LMarkupCardWriter
             element.Add(LMarkupCardFormat(child, "meaning"));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate(name, element);
     }
 
-    private static XElement LMarkupSentenceFormat(LMarkupSentence sentence)
+    private static LMarkupNode LMarkupSentenceFormat(LMarkupSentence sentence)
     {
-        XElement element = new("sentence");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupValueFormat(element, "particle", sentence.LMarkupSentenceParticle);
         LMarkup.LMarkupValueFormat(element, "dependence", sentence.LMarkupSentenceDependence);
 
@@ -71,21 +71,21 @@ internal static class LMarkupCardWriter
             element.Add(LMarkupExampleFormat(example));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("sentence", element);
     }
 
-    private static XElement LMarkupExampleFormat(LMarkupExample example)
+    private static LMarkupNode LMarkupExampleFormat(LMarkupExample example)
     {
-        XElement element = new("example");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupValueFormat(element, "text", example.LMarkupExampleText);
         LMarkup.LMarkupTextFormat(element, "language", example.LMarkupExampleLanguage);
 
         foreach (LGlossDraft gloss in example.LMarkupExampleGloss)
         {
-            XElement written = new("gloss");
+            List<LMarkupNode> written = [];
             LMarkup.LMarkupTextFormat(written, "language", gloss.LGlossDraftLanguage);
             LMarkup.LMarkupValueFormat(written, "text", gloss.LGlossDraftText);
-            element.Add(written);
+            element.Add(LMarkupNode.LMarkupNodeCreate("gloss", written));
         }
 
         foreach (LMarkupMention mention in example.LMarkupExampleMention)
@@ -98,23 +98,25 @@ internal static class LMarkupCardWriter
             element.Add(LMarkupReferenceFormat(reference));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("example", element);
     }
 
-    private static XElement LMarkupMentionFormat(LMarkupMention mention)
+    private static LMarkupNode LMarkupMentionFormat(LMarkupMention mention)
     {
-        XElement element = new("mention");
-        element.Add(new XElement("offset", mention.LMarkupMentionOffset.ToString(CultureInfo.InvariantCulture)));
-        element.Add(new XElement("length", mention.LMarkupMentionLength.ToString(CultureInfo.InvariantCulture)));
+        List<LMarkupNode> element = [];
+        string offset = mention.LMarkupMentionOffset.ToString(CultureInfo.InvariantCulture);
+        element.Add(LMarkupNode.LMarkupNodeCreate("offset", offset));
+        string length = mention.LMarkupMentionLength.ToString(CultureInfo.InvariantCulture);
+        element.Add(LMarkupNode.LMarkupNodeCreate("length", length));
         LMarkup.LMarkupTextFormat(element, "headword", mention.LMarkupMentionHeadword);
         LMarkup.LMarkupTextFormat(element, "language", mention.LMarkupMentionLanguage);
         LMarkup.LMarkupTextFormat(element, "sense", mention.LMarkupMentionSense);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("mention", element);
     }
 
-    private static XElement LMarkupReferenceFormat(LMarkupReference reference)
+    private static LMarkupNode LMarkupReferenceFormat(LMarkupReference reference)
     {
-        XElement element = new("reference");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupValueFormat(element, "title", reference.LMarkupReferenceTitle);
         LMarkup.LMarkupValueFormat(element, "year", reference.LMarkupReferenceYear);
         LMarkup.LMarkupValueFormat(element, "kind", LReference.LReferenceKindShow(reference.LMarkupReferenceKind));
@@ -123,26 +125,26 @@ internal static class LMarkupCardWriter
 
         foreach (string author in reference.LMarkupReferenceAuthor)
         {
-            element.Add(new XElement("author", LMarkup.LMarkupTextNormalize(author)));
+            element.Add(LMarkupNode.LMarkupNodeCreate("author", author));
         }
 
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("reference", element);
     }
 
-    private static XElement LMarkupTranslationFormat(LMarkupTranslation translation)
+    private static LMarkupNode LMarkupTranslationFormat(LMarkupTranslation translation)
     {
-        XElement element = new("translation");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupTextFormat(element, "headword", translation.LMarkupTranslationHeadword);
         LMarkup.LMarkupTextFormat(element, "language", translation.LMarkupTranslationLanguage);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("translation", element);
     }
 
-    private static XElement LMarkupSituationFormat(LSituationDraft situation)
+    private static LMarkupNode LMarkupSituationFormat(LSituationDraft situation)
     {
-        XElement element = new("situation");
+        List<LMarkupNode> element = [];
         LMarkup.LMarkupValueFormat(element, "title", situation.LSituationDraftTitle);
         LMarkup.LMarkupValueFormat(element, "description", situation.LSituationDraftDescription);
         LMarkup.LMarkupValueFormat(element, "kind", situation.LSituationDraftKind);
-        return element;
+        return LMarkupNode.LMarkupNodeCreate("situation", element);
     }
 }

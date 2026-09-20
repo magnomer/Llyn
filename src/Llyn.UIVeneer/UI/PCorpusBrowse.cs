@@ -45,17 +45,18 @@ public partial class PCorpus
     internal async void PCorpusVistaRestore()
     {
         _lCorpus.LCorpusVistaRestore(_pCorpusHost.PWindowPosture);
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAnthologyFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PCorpusWorkspaceUpdate));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, new PObserver(this, PCitationFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, new PObserver(this, PAnthologyFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, new PObserver(this, PCitationFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, new PObserver(this, PAnthologyFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAnthologyFind));
-        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAnthologyFind));
-        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectEntry, new PObserver(this, PQuotationEntryUpdate));
-        _lCorpus.LCorpusEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PCorpusEntryUpdate));
-        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectVista, new PObserver(this, PQuotationFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PCorpusWorkspaceUpdate));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, PObserver.PObserverCreate(this, PCitationFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, PObserver.PObserverCreate(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, PObserver.PObserverCreate(this, PCitationFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, PObserver.PObserverCreate(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PAnthologyFind));
+        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PQuotationEntryUpdate));
+        _lCorpus.LCorpusEntryAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PCorpusEntryUpdate));
+        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PQuotationFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PRankDropdown, _lCorpus.LCorpusOrder);

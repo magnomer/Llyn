@@ -5,23 +5,23 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed partial class LTenure : LObserver
+public sealed partial class LTenure
 {
-    private readonly List<(LSubject, LObserver, long?)> _lTenureObservers = [];
+    private readonly List<(LSubject, Action<LBulletin>, long?)> _lTenureObservers = [];
 
     private int _lTenurePreparing;
 
-    public void LTenureObserverAttach(LSubject subject, LObserver observer)
+    public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         LTenureObserverInsert(subject, observer, null);
     }
 
-    public void LTenureDraftAttach(LSubject subject, LObserver observer)
+    public void LTenureDraftAttach(LSubject subject, Action<LBulletin> observer)
     {
         LTenureObserverInsert(subject, observer, LTenureId);
     }
 
-    public void LTenureEntryAttach(LSubject subject, LObserver observer)
+    public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
         if (LTenureRead()?.LDraftEntryId is > 0 and var id)
@@ -30,7 +30,7 @@ public sealed partial class LTenure : LObserver
         }
     }
 
-    private void LTenureObserverInsert(LSubject subject, LObserver observer, long? id)
+    private void LTenureObserverInsert(LSubject subject, Action<LBulletin> observer, long? id)
     {
         ArgumentNullException.ThrowIfNull(observer);
         lock (_lTenureGate)
@@ -42,10 +42,9 @@ public sealed partial class LTenure : LObserver
         }
     }
 
-    public void LObserverBulletinHandle(LBulletin bulletin)
+    private void LTenureBulletinHandle(LBulletin bulletin)
     {
-        ArgumentNullException.ThrowIfNull(bulletin);
-        (LSubject, LObserver, long?)[] observers;
+        (LSubject, Action<LBulletin>, long?)[] observers;
         lock (_lTenureGate)
         {
             if (_lTenureEnded)
@@ -62,11 +61,11 @@ public sealed partial class LTenure : LObserver
             observers = [.. _lTenureObservers];
         }
 
-        foreach ((LSubject subject, LObserver observer, long? id) in observers)
+        foreach ((LSubject subject, Action<LBulletin> observer, long? id) in observers)
         {
             if (subject == bulletin.LBulletinSubject && (id is null || id == bulletin.LBulletinId))
             {
-                observer.LObserverBulletinHandle(bulletin);
+                observer(bulletin);
             }
         }
     }
@@ -134,7 +133,7 @@ public sealed partial class LTenure : LObserver
 
     private void LTenureObserverClear()
     {
-        _lEngine.LEngineObserverDetach(this);
+        _lEngine.LEngineObserverDetach(LTenureBulletinHandle);
         lock (_lTenureGate)
         {
             _lTenureObservers.Clear();

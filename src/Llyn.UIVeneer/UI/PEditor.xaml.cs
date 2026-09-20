@@ -89,6 +89,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _lEditor.LEditorGraspChanged += PEditorGraspUpdate;
         _lEditor.LEditorFanqieChanged += PEditorFanqieUpdate;
         _lEditor.LEditorFailed += host.PWindowFailureShow;
+        _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
+        _lEditor.LEditorClip.LClipRecordingAdded += PClipRecordingHandle;
+        _lEditor.LEditorClip.LClipFinished += PClipFinishHandle;
+        _lEditor.LEditorNotation.LNotationSourceStarted += PNotationSourceHandle;
+        _lEditor.LEditorNotation.LNotationCandidateAdded += PNotationCandidateHandle;
+        _lEditor.LEditorNotation.LNotationFinished += PNotationFinishHandle;
 
         PSentenceLoad();
         PSpeakerLoad();
@@ -173,16 +179,16 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorObserverAttach(LDesk desk)
     {
-        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, new PObserver(this, PEditorFrequencyUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, new PObserver(this, PEditorGraspUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectInflection, new PObserver(this, PEditorParadigmUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectReflex, new PObserver(this, PReflexPendingShow));
-        desk.LDeskObserverAttach(LSubject.LSubjectScript, new PObserver(this, PEditorScriptUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PEditorFanqieUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectReference, new PObserver(this, PSentenceLoad));
-        desk.LDeskObserverAttach(LSubject.LSubjectSettings, new PObserver(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, new PObserver(this, desk.LDeskStateUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, new PObserver(this, desk.LDeskDraftUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, PObserver.PObserverCreate(this, PEditorFrequencyUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PEditorGraspUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectInflection, PObserver.PObserverCreate(this, PEditorParadigmUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PReflexPendingShow));
+        desk.LDeskObserverAttach(LSubject.LSubjectScript, PObserver.PObserverCreate(this, PEditorScriptUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, PObserver.PObserverCreate(this, PEditorFanqieUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectReference, PObserver.PObserverCreate(this, PSentenceLoad));
+        desk.LDeskObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, PObserver.PObserverCreate(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
     }
 
     private void PEditorStartUpdate()

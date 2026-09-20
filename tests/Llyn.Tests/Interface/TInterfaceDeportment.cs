@@ -31,6 +31,13 @@ internal static class TInterfaceDeportment
 
     internal static LEntryDraft? TEditorDraftRead(this LEditor editor) => editor.LEditorDraftRead();
 
+    internal static LClip TClipCreate() => new();
+
+    internal static void TClipStepHandle(this LClip clip, LHarvestStep step) => clip.LClipStepHandle(step);
+
+    internal static void TEditorClipStart(this LEditor editor, string word, long target, Action<LHarvestStep> sink) =>
+        editor.LEditorClipStart(word, target, sink);
+
     internal static string TEditorGraspFormat(this LEditor editor, int step) => editor.LEditorGraspFormat(step);
 
     internal static void TEditorGraspSet(this LEditor editor, int step) => editor.LEditorGraspSet(step);

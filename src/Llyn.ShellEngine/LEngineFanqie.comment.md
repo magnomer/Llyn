@@ -18,9 +18,10 @@ The fetches under way, keyed by language and character, each with the token that
 
 The characters every book answered for yet none placed, asked once per session.
 
-## `private DateTime _lEngineFanqieStamp = DateTime.MinValue;`
+## `private DateTimeOffset _lEngineFanqieStamp = DateTimeOffset.MinValue;`
 
 The moment the next post may go out, pushed forward by each post's interval and never pulled back.
+The moment is read from the rig's clock port.
 A book without an interval, asked between two posts of a throttled one, leaves that one's wait standing.
 
 ## `public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)`

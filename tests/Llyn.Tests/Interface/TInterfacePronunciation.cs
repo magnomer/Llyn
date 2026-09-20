@@ -115,6 +115,16 @@ internal static partial class TInterface
     internal static LReceiver TReceiverRespellingCreate(LReceiver inner, IReadOnlyList<LRespelling> groups) =>
         new LReceiverRespelling(inner, groups);
 
+    internal static LReceiver TReceiverRelayCreate(Action<LLookupStep> sink) =>
+        new LReceiverRelay(sink);
+
+    internal static LListener TListenerRelayCreate(Action<LHarvestStep> sink) =>
+        new LListenerRelay(sink);
+
+    internal static LHarvestStep THarvestStepCreate(
+        LHarvestKind kind, string source, int order, LRecording? recording) =>
+        new(kind, source, order, recording);
+
     internal static void TReceiverSourceStart(this LReceiver receiver, string source, int order)
     {
         receiver.LReceiverSourceStart(source, order);
@@ -260,9 +270,9 @@ internal static partial class TInterface
         string word,
         string language,
         long target,
-        LListener listener,
+        Action<LHarvestStep> sink,
         CancellationToken cancellation) =>
-        engine.LEngineRecordingFind(session, word, language, target, listener, cancellation);
+        engine.LEngineRecordingFind(session, word, language, target, sink, cancellation);
 
     internal static Task TEngineTranscriptionFind(
         this LEngine engine,
@@ -270,9 +280,9 @@ internal static partial class TInterface
         string word,
         string language,
         string scheme,
-        LReceiver receiver,
+        Action<LLookupStep> sink,
         CancellationToken cancellation) =>
-        engine.LEngineTranscriptionFind(session, word, language, scheme, receiver, cancellation);
+        engine.LEngineTranscriptionFind(session, word, language, scheme, sink, cancellation);
 
     internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
         engine.LEngineVarietyRead(language);

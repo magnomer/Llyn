@@ -224,7 +224,7 @@ public sealed class TEngineFanqie
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TEngineFanqiePages));
         TFanqieObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFanqieObserverHandle);
         LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳越", pack.TLanguageFixtureName));
 
         Assert.Empty(engine.TEngineFanqieRead(entry.LEntryId));
@@ -250,7 +250,7 @@ public sealed class TEngineFanqie
         TSourceHandler handler = new("<div>Too fast</div>", HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         TFanqieObserver observer = new();
-        engine.TEngineObserverAttach(observer);
+        engine.TEngineObserverAttach(observer.TFanqieObserverHandle);
         LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate("吳", pack.TLanguageFixtureName));
 
         engine.TEngineFanqieStart(entry.LEntryId);
@@ -341,14 +341,14 @@ public sealed class TEngineFanqie
             []);
     }
 
-    private sealed class TFanqieObserver : LObserver
+    private sealed class TFanqieObserver
     {
         private readonly TaskCompletionSource<LBulletin> _tFanqieObserverRaised =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         internal Task<LBulletin> TFanqieObserverRaised => _tFanqieObserverRaised.Task;
 
-        public void LObserverBulletinHandle(LBulletin bulletin)
+        internal void TFanqieObserverHandle(LBulletin bulletin)
         {
             if (bulletin.LBulletinSubject == LSubject.LSubjectFanqie)
             {

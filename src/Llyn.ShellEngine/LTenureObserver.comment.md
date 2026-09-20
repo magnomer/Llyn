@@ -1,6 +1,8 @@
 # LTenureObserver.cs
 
 A tenure subscribes to the engine for its lifetime and owns the shell's subject-specific observers.
+An observer is a delegate over a bulletin, so the shell hands a method and implements no contract.
+The tenure's own handler is a private method attached as a method group and detached by the same group.
 General observers receive every notice of their subject, while draft observers require the held draft identity.
 Entry observers require a stored entry identity, because frequency and related notices do not name the draft.
 Preparation drops the held draft's own notices, because the caller reads the newest draft from the return value.

@@ -9,7 +9,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
-public partial class PEditor : LListener
+public partial class PEditor
 {
     private readonly ObservableCollection<PClipItem> _pClipItem = [];
     private bool _pClipSearching;
@@ -59,7 +59,8 @@ public partial class PEditor : LListener
                 }
             }
 
-            _lEditor.LEditorClipStart(word, target, this);
+            _lEditor.LEditorClipStart(
+                word, target, PObserver.PObserverCreate<LHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
         }
         catch (Exception)
         {
@@ -213,34 +214,25 @@ public partial class PEditor : LListener
         }
     }
 
-    void LListener.LListenerSourceStart(string source, int order)
+    private void PClipSourceHandle(string source, int order)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            PClipPlace(source, order);
-            PClipUpdate();
-        });
+        PClipPlace(source, order);
+        PClipUpdate();
     }
 
-    void LListener.LListenerRecordingAdd(LRecording recording)
+    private void PClipRecordingHandle(LRecording recording)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
-                recording,
-                recording.LRecordingAddressed ? PClipReadingCreate(recording) : null,
-                PLocalizationCatalog.PLocalizationTextRead("Downloader.Missing"),
-                PLocalizationCatalog.PLocalizationTextRead("Downloader.Broken"));
-            PClipUpdate();
-        });
+        PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
+            recording,
+            recording.LRecordingAddressed ? PClipReadingCreate(recording) : null,
+            PLocalizationCatalog.PLocalizationTextRead("Downloader.Missing"),
+            PLocalizationCatalog.PLocalizationTextRead("Downloader.Broken"));
+        PClipUpdate();
     }
 
-    void LListener.LListenerFinish()
+    private void PClipFinishHandle()
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            _pClipSearching = false;
-            PClipUpdate();
-        });
+        _pClipSearching = false;
+        PClipUpdate();
     }
 }

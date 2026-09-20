@@ -38,6 +38,7 @@ public sealed partial class LTenure
         _lTenureSubject = subject;
         LTenureId = id;
         _lTenureLast = LTenureStateRead();
+        _lEngine.LEngineObserverAttach(LTenureBulletinHandle);
     }
 
     public long LTenureId { get; }

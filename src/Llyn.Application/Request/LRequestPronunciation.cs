@@ -1,14 +1,23 @@
 namespace Llyn.Application;
 
 public sealed record LRequestPronunciationAddition(long LRequestDraftId, string LRequestText, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestPronunciationAddition);
+}
 
 public sealed record LRequestPronunciationRemoval(long LRequestDraftId, long LRequestPronunciationId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestPronunciationRemoval);
+}
 
 public sealed record LRequestPronunciationShift(
     long LRequestDraftId, long LRequestPronunciationId, int LRequestPosition)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestPronunciationShift);
+}
 
 public sealed record LRequestPronunciationIpa(long LRequestDraftId, long LRequestPronunciationId, string LRequestText)
     : LRequest(LRequestDraftId)

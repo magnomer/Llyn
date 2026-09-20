@@ -10,7 +10,8 @@ The engine and the bootstrap read a catalog through it and never learn where it 
 
 The languages the build carries a catalog for, in ordinal order.
 
-## `TextReader LLocalizationOpen(string language);`
+## `IReadOnlyDictionary<string, string> LLocalizationRead(string language);`
 
-A reader over the catalog of `language`, which the caller disposes.
-A language the build carries no catalog for raises `InvalidDataException`.
+The raw pairs of the catalog of `language`, `terms.*` keys beside the text keys, references still unresolved.
+The adapter owns the file format, so the ring above resolves the pairs and never sees the JSON.
+A language the build carries no catalog for raises an exception of the adapter's own.

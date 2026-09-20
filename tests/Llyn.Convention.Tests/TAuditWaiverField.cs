@@ -51,7 +51,6 @@ internal static partial class TAuditTruthSetting
         "PNotation.cs:PTranscriptionItemText:Fork",
         "PNotation.cs:_pNotationItem:Mutation",
         "PNotationItem.cs:PNotationItemNotice:Fork",
-        "PObserver.cs:_pObserverTarget:Mirror",
         "PReflexItem.cs:PReflexItemLanguage:Fork",
         "PRepertoireEditor.cs:_pScenarioDescriptionUnknown:Fork",
         "PRepertoireEditor.cs:_pScenarioKindUnknown:Fork",

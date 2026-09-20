@@ -10,15 +10,17 @@ A subscriber therefore never learns of a change by being named and told.
 Before this, the shell wired a panel's method into a sibling panel, one method per pair.
 A tenth panel meant a tenth wire, and a panel nobody wired stayed stale until it was shown again.
 
-## `public void LEngineObserverAttach(LObserver observer)`
+## `public void LEngineObserverAttach(Action<LBulletin> observer)`
 
 Subscribes `observer` to every announcement from here on.
-A subscriber already attached is not added twice, so a surface re-attached keeps one voice.
+A subscriber is a delegate, so a bulletin crosses any depth as data and no ring implements a contract.
+A delegate already attached is not added twice, so a surface re-attached keeps one voice.
+Delegate equality is target plus method, so a method group attached twice is one subscriber.
 
-## `public void LEngineObserverDetach(LObserver observer)`
+## `public void LEngineObserverDetach(Action<LBulletin> observer)`
 
 Stops announcing to `observer`.
-A surface that is closing detaches, so a dead control is never called.
+A surface that is closing detaches the same delegate it attached, so a dead control is never called.
 
 ## `internal void LEngineBulletinRaise(LSubject subject, long id)`
 

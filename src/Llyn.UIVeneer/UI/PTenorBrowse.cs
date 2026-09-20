@@ -59,14 +59,15 @@ public partial class PTenor
     internal async void PTenorVistaRestore()
     {
         _lTenor.LTenorVistaRestore(_pTenorHost.PWindowPosture);
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, new PObserver(this, PGamutFind));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTenorWorkspaceUpdate));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PTenorRegisterUpdate));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PGamutFind));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PGamutFind));
-        _lTenor.LTenorCohortAttach(LSubject.LSubjectEntry, new PObserver(this, PCohortEntryUpdate));
-        _lTenor.LTenorEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
-        _lTenor.LTenorCohortAttach(LSubject.LSubjectVista, new PObserver(this, PCohortFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(
+            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTenorWorkspaceUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, PObserver.PObserverCreate(this, PTenorRegisterUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PGamutFind));
+        _lTenor.LTenorCohortAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PCohortEntryUpdate));
+        _lTenor.LTenorEntryAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PTenorEntryUpdate));
+        _lTenor.LTenorCohortAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PCohortFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);

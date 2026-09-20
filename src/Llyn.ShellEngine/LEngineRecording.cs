@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -12,21 +11,19 @@ public sealed partial class LEngine
 {
     private string LEngineRecordingFormat(string path)
     {
-        string relative = Path.GetRelativePath(_lEngineWorkspace, path);
-        return Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal)
-            ? path
-            : relative;
+        return LEngineTrailRead().LTrailRelativeResolve(_lEngineWorkspace, path) ?? path;
     }
 
     public Task LEnginePronunciationFind(
         long session,
         string word,
         string language,
-        LReceiver receiver,
+        Action<LLookupStep> sink,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(receiver);
+        ArgumentNullException.ThrowIfNull(sink);
 
+        LReceiver receiver = new LReceiverRelay(sink);
         IReadOnlyList<LCandidate>? held;
         IReadOnlyList<LSource> sources;
         LLanguage pack;
@@ -51,11 +48,12 @@ public sealed partial class LEngine
         string word,
         string language,
         long target,
-        LListener listener,
+        Action<LHarvestStep> sink,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(listener);
+        ArgumentNullException.ThrowIfNull(sink);
 
+        LListenerRelay listener = new(sink);
         IReadOnlyList<LRecording>? held;
         IReadOnlyList<LSource> sources;
         LLanguage pack;

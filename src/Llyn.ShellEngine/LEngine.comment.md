@@ -4,8 +4,8 @@
 
 The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
-It subscribes through an `LReceiver` for pronunciation or an `LListener` for audio.
-It subscribes through an `LObserver` to learn that stored data changed, which `LEngineObserver.cs` owns.
+It hands a delegate over `LLookupStep` for pronunciation or over `LHarvestStep` for audio.
+It subscribes a delegate over `LBulletin` to learn that stored data changed, which `LEngineObserver.cs` owns.
 The first two stream one answer to the caller that asked.
 The third announces a change to everyone.
 All logic lives behind this engine.

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 
 namespace Llyn.Core;
 
@@ -31,39 +30,28 @@ public sealed record LEntryDraft(
 
     public IReadOnlyList<LInflection> LEntryDraftInflections { get; init; } = LEntryDraftInflections ?? [];
 
-    [JsonIgnore]
     public LPronunciationDraft? LEntryDraftPronunciation =>
         LEntryDraftPronunciations.Count == 0 ? null : LEntryDraftPronunciations[0];
 
-    [JsonIgnore]
     public string LEntryDraftIpa => LEntryDraftPronunciation?.LPronunciationDraftIpa ?? string.Empty;
 
-    [JsonIgnore]
     public string LEntryDraftAudio => LEntryDraftPronunciation?.LPronunciationDraftAudio ?? string.Empty;
 
-    [JsonIgnore]
     public IReadOnlyList<LPronunciationDraft> LEntryDraftAccents =>
         LEntryDraftPronunciations.Count <= 1 ? [] : LEntryDraftPronunciations.Skip(1).ToList();
 
-    [JsonIgnore]
     public bool LEntryDraftNoted => LEntryDraftNote.Length > 0;
 
-    [JsonIgnore]
     public bool LEntryDraftMarked => LEntryDraftSpeeches.Count > 0;
 
-    [JsonIgnore]
     public bool LEntryDraftDefined => LEntryDraftMeanings.Count > 0;
 
-    [JsonIgnore]
     public bool LEntryDraftCollocated => LEntryDraftCollocations.Count > 0;
 
-    [JsonIgnore]
     public bool LEntryDraftReflected => LEntryDraftReflexes.Count > 0;
 
-    [JsonIgnore]
     public bool LEntryDraftTargeted => LEntryDraftTargets.Count > 0;
 
-    [JsonIgnore]
     public IReadOnlyList<long> LEntryDraftTargets =>
         LEntryDraftMeanings.Concat(LEntryDraftCollocations)
             .SelectMany(static card => card.LCardDraftTranslation)

@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace Llyn.Core;
 
@@ -18,29 +15,15 @@ public static class LMarkup
 
     public const int LMarkupOmissionCeiling = 1000;
 
-    public static IReadOnlyList<LMarkupEntry> LMarkupParse(string text)
+    private static readonly IReadOnlyDictionary<string, string> LMarkupUnknownMark =
+        new Dictionary<string, string> { [LMarkupState] = LMarkupUnknown };
+
+    public static IReadOnlyList<LMarkupEntry> LMarkupParse(
+        LMarkupNode root, out IReadOnlyList<LMarkupOmission> omissions)
     {
-        return LMarkupParse(text, out _);
-    }
+        ArgumentNullException.ThrowIfNull(root);
 
-    public static IReadOnlyList<LMarkupEntry> LMarkupParse(string text, out IReadOnlyList<LMarkupOmission> omissions)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LMarkupReader.LMarkupDepthValidate(text);
-
-        XDocument document;
-        try
-        {
-            document = XDocument.Parse(text, LoadOptions.SetLineInfo);
-        }
-        catch (XmlException)
-        {
-            throw new LRefusal(LRefusal.LRefusalMarkup);
-        }
-
-        XElement? root = document.Root;
-        if (root is null || root.Name.LocalName != LMarkupRoot)
+        if (root.LMarkupNodeName != LMarkupRoot)
         {
             throw new LRefusal(LRefusal.LRefusalMarkup);
         }
@@ -49,9 +32,9 @@ public static class LMarkup
         LMarkupReader.LMarkupAttributeScan(root, found);
 
         List<LMarkupEntry> entries = [];
-        foreach (XElement child in root.Elements())
+        foreach (LMarkupNode child in root.LMarkupNodeChild)
         {
-            if (child.Name.LocalName == "entry")
+            if (child.LMarkupNodeName == "entry")
             {
                 entries.Add(LMarkupReader.LMarkupEntryParse(child, found));
             }
@@ -65,102 +48,59 @@ public static class LMarkup
         return entries;
     }
 
-    public static string LMarkupFormat(IReadOnlyList<LMarkupEntry> entries)
+    public static LMarkupNode LMarkupFormat(IReadOnlyList<LMarkupEntry> entries)
     {
         ArgumentNullException.ThrowIfNull(entries);
 
-        XElement root = new(LMarkupRoot);
+        List<LMarkupNode> children = new(entries.Count);
         foreach (LMarkupEntry entry in entries)
         {
-            root.Add(LMarkupWriter.LMarkupEntryFormat(entry));
+            children.Add(LMarkupWriter.LMarkupEntryFormat(entry));
         }
 
-        XmlWriterSettings settings = new()
-        {
-            Indent = true,
-            IndentChars = "  ",
-            NewLineChars = "\n",
-            OmitXmlDeclaration = true,
-            Encoding = new UTF8Encoding(false),
-        };
-
-        StringBuilder builder = new();
-        using (XmlWriter writer = XmlWriter.Create(builder, settings))
-        {
-            root.Save(writer);
-        }
-
-        return builder.ToString();
+        return LMarkupNode.LMarkupNodeCreate(LMarkupRoot, children);
     }
 
-    internal static LStateValue LMarkupValueParse(XElement? element)
+    internal static LStateValue LMarkupValueParse(LMarkupNode? element)
     {
         if (element is null)
         {
             return LStateValue.LStateValueUnspecified;
         }
 
-        if (element.Attribute(LMarkupState)?.Value == LMarkupUnknown)
+        if (element.LMarkupNodeAttribute.TryGetValue(LMarkupState, out string? state) && state == LMarkupUnknown)
         {
             return LStateValue.LStateValueUnknown;
         }
 
-        return LStateValue.LStateValueRead(element.Value);
+        return LStateValue.LStateValueRead(element.LMarkupNodeText);
     }
 
-    internal static void LMarkupValueFormat(XElement parent, string name, LStateValue value)
+    internal static void LMarkupValueFormat(List<LMarkupNode> parent, string name, LStateValue value)
     {
         switch (value.LStateValueState)
         {
             case LState.LStateUnknown:
-                parent.Add(new XElement(name, new XAttribute(LMarkupState, LMarkupUnknown)));
+                parent.Add(new LMarkupNode(name, LMarkupUnknownMark, [], string.Empty, 0));
                 break;
             case LState.LStateSpecified:
-                parent.Add(new XElement(name, LMarkupTextNormalize(value.LStateValueText ?? string.Empty)));
+                parent.Add(LMarkupNode.LMarkupNodeCreate(name, value.LStateValueText ?? string.Empty));
                 break;
             default:
                 break;
         }
     }
 
-    internal static string LMarkupTextParse(XElement? element)
+    internal static string LMarkupTextParse(LMarkupNode? element)
     {
-        return element?.Value ?? string.Empty;
+        return element?.LMarkupNodeText ?? string.Empty;
     }
 
-    internal static void LMarkupTextFormat(XElement parent, string name, string? text)
+    internal static void LMarkupTextFormat(List<LMarkupNode> parent, string name, string? text)
     {
         if (!string.IsNullOrEmpty(text))
         {
-            parent.Add(new XElement(name, LMarkupTextNormalize(text)));
+            parent.Add(LMarkupNode.LMarkupNodeCreate(name, text));
         }
-    }
-
-    internal static string LMarkupTextNormalize(string text)
-    {
-        StringBuilder? builder = null;
-        for (int index = 0; index < text.Length; index++)
-        {
-            char current = text[index];
-            bool pair = char.IsHighSurrogate(current)
-                && index + 1 < text.Length
-                && XmlConvert.IsXmlSurrogatePair(text[index + 1], current);
-            if (pair)
-            {
-                builder?.Append(current).Append(text[index + 1]);
-                index++;
-                continue;
-            }
-
-            if (XmlConvert.IsXmlChar(current))
-            {
-                builder?.Append(current);
-                continue;
-            }
-
-            builder ??= new StringBuilder(text, 0, index, text.Length);
-        }
-
-        return builder?.ToString() ?? text;
     }
 }

@@ -220,7 +220,7 @@ public sealed class TTranscription
         TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
 
         await engine.TEngineTranscriptionFind(
-            0, "你好", pack.TLanguageFixtureName, "Pinyin", receiver, CancellationToken.None);
+            0, "你好", pack.TLanguageFixtureName, "Pinyin", receiver.TReceiverStubHandle, CancellationToken.None);
 
         LCandidate candidate = Assert.Single(receiver.TReceiverStubCandidates);
         Assert.Equal(
@@ -239,7 +239,7 @@ public sealed class TTranscription
         TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
 
         await engine.TEngineTranscriptionFind(
-            0, "你好", pack.TLanguageFixtureName, "Bopomofo", receiver, CancellationToken.None);
+            0, "你好", pack.TLanguageFixtureName, "Bopomofo", receiver.TReceiverStubHandle, CancellationToken.None);
 
         Assert.Empty(receiver.TReceiverStubCandidates);
         Assert.Equal(1, receiver.TReceiverStubFinished);

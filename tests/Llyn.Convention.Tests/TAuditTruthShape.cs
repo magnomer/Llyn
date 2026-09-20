@@ -91,8 +91,14 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditLambdaCheck(LambdaExpressionSyntax lambda)
     {
-        if (lambda.Parent is not ArgumentSyntax { Parent.Parent: ObjectCreationExpressionSyntax creation }
-            || TAuditNameRead(creation.Type) != TAuditTruthSetting.TAuditObserverType)
+        if (lambda.Parent is not ArgumentSyntax
+            {
+                Parent.Parent: InvocationExpressionSyntax
+                {
+                    Expression: MemberAccessExpressionSyntax { Expression: IdentifierNameSyntax owner }
+                }
+            }
+            || owner.Identifier.ValueText != TAuditTruthSetting.TAuditObserverType)
         {
             return false;
         }

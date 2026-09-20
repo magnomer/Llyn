@@ -22,12 +22,13 @@ public sealed partial class LEngine
         string word,
         string language,
         string scheme,
-        LReceiver receiver,
+        Action<LLookupStep> sink,
         CancellationToken cancellation)
     {
-        ArgumentNullException.ThrowIfNull(receiver);
+        ArgumentNullException.ThrowIfNull(sink);
         ArgumentException.ThrowIfNullOrWhiteSpace(scheme);
 
+        LReceiverRelay receiver = new(sink);
         IReadOnlyList<LCandidate>? held;
         IReadOnlyList<LSource> sources;
         lock (_lEngineGate)

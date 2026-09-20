@@ -1,58 +1,29 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace Llyn.Core;
 
 internal static class LMarkupReader
 {
-    internal static void LMarkupDepthValidate(string text)
+    internal static void LMarkupAttributeScan(LMarkupNode element, List<LMarkupOmission> omissions)
     {
-        XmlReaderSettings settings = new()
+        foreach ((string name, string value) in element.LMarkupNodeAttribute)
         {
-            DtdProcessing = DtdProcessing.Prohibit,
-            XmlResolver = null,
-        };
-
-        try
-        {
-            using XmlReader reader = XmlReader.Create(new StringReader(text), settings);
-            while (reader.Read())
+            if (name != LMarkup.LMarkupState || value != LMarkup.LMarkupUnknown)
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.Depth >= LMarkup.LMarkupDepthCeiling)
-                {
-                    throw new LRefusal(LRefusal.LRefusalMarkup);
-                }
+                LMarkupOmissionAdd(omissions, element.LMarkupNodeLine, $"{name}=\"{value}\"");
             }
         }
-        catch (XmlException)
+
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            throw new LRefusal(LRefusal.LRefusalMarkup);
+            LMarkupAttributeScan(child, omissions);
         }
     }
 
-    internal static void LMarkupAttributeScan(XElement root, List<LMarkupOmission> omissions)
+    internal static void LMarkupOmissionAdd(List<LMarkupOmission> omissions, LMarkupNode element)
     {
-        foreach (XElement element in root.DescendantsAndSelf())
-        {
-            foreach (XAttribute attribute in element.Attributes())
-            {
-                if (attribute.Name.LocalName != LMarkup.LMarkupState || attribute.Value != LMarkup.LMarkupUnknown)
-                {
-                    LMarkupOmissionAdd(
-                        omissions,
-                        LMarkupLineRead(element),
-                        $"{attribute.Name.LocalName}=\"{attribute.Value}\"");
-                }
-            }
-        }
-    }
-
-    internal static void LMarkupOmissionAdd(List<LMarkupOmission> omissions, XElement element)
-    {
-        LMarkupOmissionAdd(omissions, LMarkupLineRead(element), $"<{element.Name.LocalName}>");
+        LMarkupOmissionAdd(omissions, element.LMarkupNodeLine, $"<{element.LMarkupNodeName}>");
     }
 
     private static void LMarkupOmissionAdd(List<LMarkupOmission> omissions, int line, string text)
@@ -67,20 +38,15 @@ internal static class LMarkupReader
         }
     }
 
-    internal static int LMarkupLineRead(XElement element)
+    internal static int? LMarkupNumberParse(LMarkupNode element)
     {
-        IXmlLineInfo info = element;
-        return info.HasLineInfo() ? info.LineNumber : 0;
-    }
-
-    internal static int? LMarkupNumberParse(XElement element)
-    {
-        return int.TryParse(element.Value.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int number)
+        return int.TryParse(
+            element.LMarkupNodeText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int number)
             ? number
             : null;
     }
 
-    internal static LMarkupEntry LMarkupEntryParse(XElement element, List<LMarkupOmission> omissions)
+    internal static LMarkupEntry LMarkupEntryParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string headword = string.Empty;
         string language = string.Empty;
@@ -94,9 +60,9 @@ internal static class LMarkupReader
         List<LMarkupCard> meanings = [];
         List<LMarkupCard> collocations = [];
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "headword":
                     headword = LMarkup.LMarkupTextParse(child);
@@ -149,18 +115,18 @@ internal static class LMarkupReader
             meanings,
             collocations,
             note,
-            LMarkupLineRead(element));
+            element.LMarkupNodeLine);
     }
 
-    private static LForm LMarkupFormParse(XElement element, int position, List<LMarkupOmission> omissions)
+    private static LForm LMarkupFormParse(LMarkupNode element, int position, List<LMarkupOmission> omissions)
     {
         string text = string.Empty;
         string? local = null;
         string role = string.Empty;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "text":
                     text = LMarkup.LMarkupTextParse(child);
@@ -180,16 +146,16 @@ internal static class LMarkupReader
         return new LForm(0, position, text, local, role);
     }
 
-    private static LMarkupInflection LMarkupInflectionParse(XElement element, List<LMarkupOmission> omissions)
+    private static LMarkupInflection LMarkupInflectionParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string text = string.Empty;
         string? local = null;
         string speech = string.Empty;
         List<string> morphologies = [];
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "text":
                     text = LMarkup.LMarkupTextParse(child);
@@ -212,7 +178,7 @@ internal static class LMarkupReader
         return new LMarkupInflection(text, local, speech, morphologies);
     }
 
-    private static LPronunciationDraft LMarkupPronunciationParse(XElement element, List<LMarkupOmission> omissions)
+    private static LPronunciationDraft LMarkupPronunciationParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string ipa = string.Empty;
         string respelling = string.Empty;
@@ -221,9 +187,9 @@ internal static class LMarkupReader
         string? source = null;
         List<LSyllable> syllables = [];
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "ipa":
                     ipa = LMarkup.LMarkupTextParse(child);
@@ -259,7 +225,7 @@ internal static class LMarkupReader
             LPronunciationDraftRespelling: respelling);
     }
 
-    private static LSyllable LMarkupSyllableParse(XElement element, int position, List<LMarkupOmission> omissions)
+    private static LSyllable LMarkupSyllableParse(LMarkupNode element, int position, List<LMarkupOmission> omissions)
     {
         string? onset = null;
         string? medial = null;
@@ -268,9 +234,9 @@ internal static class LMarkupReader
         int? tone = null;
         string? points = null;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "onset":
                     onset = LMarkup.LMarkupTextParse(child);
@@ -299,14 +265,14 @@ internal static class LMarkupReader
         return new LSyllable(0, position, onset, medial, nucleus, coda, tone, points);
     }
 
-    private static LTranscriptionDraft LMarkupTranscriptionParse(XElement element, List<LMarkupOmission> omissions)
+    private static LTranscriptionDraft LMarkupTranscriptionParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string scheme = string.Empty;
         string text = string.Empty;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "scheme":
                     scheme = LMarkup.LMarkupTextParse(child);
@@ -323,7 +289,7 @@ internal static class LMarkupReader
         return new LTranscriptionDraft(scheme, text);
     }
 
-    private static LReflexDraft LMarkupReflexParse(XElement element, List<LMarkupOmission> omissions)
+    private static LReflexDraft LMarkupReflexParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
         string language = string.Empty;
         string kind = string.Empty;
@@ -334,9 +300,9 @@ internal static class LMarkupReader
         string remark = string.Empty;
         bool main = false;
 
-        foreach (XElement child in element.Elements())
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
-            switch (child.Name.LocalName)
+            switch (child.LMarkupNodeName)
             {
                 case "language":
                     language = LMarkup.LMarkupTextParse(child);

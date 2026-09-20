@@ -1,6 +1,6 @@
 ﻿# PClip.cs
 
-## `public partial class PEditor : LListener`
+## `public partial class PEditor`
 
 Audio download as the editor shows it.
 Every pronunciation row carries its own download button, and the menu opens under the one pressed.
@@ -13,9 +13,10 @@ The engine already narrowed them to the variety of the row that opened the menu.
 Each recording can be previewed.
 Taking one has the foray download and attach it to that row, then tags the row with its variety.
 The form refills from the draft bulletin that attach raises.
-This is the shell side of `LListener`.
-The engine calls back on a worker thread.
-So every arrival is marshalled onto the dispatcher here.
+The engine streams each step of the search to a delegate the menu hands it.
+The menu hands the clip deportment's own step handler, wrapped so every arrival lands on the dispatcher.
+The deportment splits a step into its source, recording and end notices, and the menu writes a control on each.
+So the menu implements no contract and decides nothing about a step.
 
 ## Inline notes
 
@@ -25,12 +26,12 @@ In flag mode every declared variety's flag is resolved before the search starts.
 A recording's flag is then ready the moment the recording lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorClipStart(word, target, this);`
+### `_lEditor.LEditorClipStart(`
 
-The tenure starts the search and the menu listens.
+The tenure starts the search and the menu listens through the wrapped delegate.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
 The search is over when the listener is told it is, never when the start returns.
-The engine reports the end through LListenerFinish.
+The engine reports the end with a finish step.
 
 ### `catch (Exception)`
 
@@ -129,7 +130,7 @@ Taking a recording closes the menu, the way taking a pronunciation candidate doe
 
 A failed download leaves the row offering another try.
 
-### `void LListener.LListenerRecordingAdd(LRecording recording)`
+### `private void PClipRecordingHandle(LRecording recording)`
 
 Handled the same way as lookup: each answer resolved into the row its source owns.
 A source may answer once per variety, and each answer with an address becomes one more recording on the row.
