@@ -15,6 +15,8 @@ public sealed class TAuditRatchet
 
     private static readonly string TAuditRingPath = TAuditSettingFolder + "TAuditRingSetting.cs";
 
+    private static readonly string TAuditObjectPath = TAuditSettingFolder + "TAuditObjectSetting.cs";
+
     private static readonly string[] TAuditWaiverPaths =
     [
         TAuditSettingFolder + "TAuditWaiverArgument.cs",
@@ -49,6 +51,12 @@ public sealed class TAuditRatchet
     public void AuditRatchet_RingCeiling_NeverRises()
     {
         TAuditCeilingCheck(TAuditRingPath, TAuditRingSetting.TAuditRingCeiling);
+    }
+
+    [Fact]
+    public void AuditRatchet_ObjectCeiling_NeverRises()
+    {
+        TAuditCeilingCheck(TAuditObjectPath, TAuditObjectSetting.TAuditObjectCeiling);
     }
 
     [Fact]
@@ -110,6 +118,7 @@ public sealed class TAuditRatchet
                  {
                      (TAuditTruthPath, TAuditTruthSetting.TAuditTruthEnforced),
                      (TAuditStrictPath, TAuditStrictSetting.TAuditStrictEnforced),
+                     (TAuditObjectPath, TAuditObjectSetting.TAuditObjectEnforced),
                  })
         {
             string? committed = TAuditCommittedRead(path);

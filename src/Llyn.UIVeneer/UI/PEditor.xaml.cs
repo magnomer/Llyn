@@ -17,8 +17,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private PWindow _pEditorHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private LEditor _lEditor = null!;
 
     public PEditor()
@@ -77,12 +75,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private long PEditorDraft => _lEditor.LEditorDesk.LDeskId;
 
-    internal void PEditorAttach(PWindow host, LEngine engine, LEditor editor)
+    internal void PEditorAttach(PWindow host, LEditor editor)
     {
         _pEditorHost = host;
-        _lEngine = engine;
         _lEditor = editor;
         _lEditor.LEditorDesk.LDeskStarted += PEditorStartUpdate;
+        PEditorObserverAttach(_lEditor.LEditorDesk);
         _lEditor.LEditorDesk.LDeskDraftChanged += PEditorDraftUpdate;
         _lEditor.LEditorDesk.LDeskFailed += host.PWindowFailureShow;
         _lEditor.LEditorStateChanged += PEditorStateUpdate;
@@ -98,9 +96,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PVolumeLoad();
     }
 
-    internal void PEditorVistaRestore(LVista vista)
+    internal void PEditorVistaRestore()
     {
-        _lEditor.LEditorVistaRestore(vista);
         PEditorCommand.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorOwned);
         _lEditor.LEditorOpen(null);
     }
@@ -174,21 +171,24 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PEditorRequestSend(new LRequestSpeech(PEditorDraft, PMarkerRead()));
     }
 
-    private void PEditorStartUpdate(LTenure held)
+    private void PEditorObserverAttach(LDesk desk)
+    {
+        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, new PObserver(this, PEditorFrequencyUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, new PObserver(this, PEditorGraspUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectInflection, new PObserver(this, PEditorParadigmUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectReflex, new PObserver(this, PReflexPendingShow));
+        desk.LDeskObserverAttach(LSubject.LSubjectScript, new PObserver(this, PEditorScriptUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PEditorFanqieUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectReference, new PObserver(this, PSentenceLoad));
+        desk.LDeskObserverAttach(LSubject.LSubjectSettings, new PObserver(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, new PObserver(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, new PObserver(this, desk.LDeskDraftUpdate));
+    }
+
+    private void PEditorStartUpdate()
     {
         _pMeaningList.Clear();
         _pCollocationList.Clear();
-        held.LTenureEntryAttach(LSubject.LSubjectFrequency, new PObserver(this, PEditorFrequencyUpdate));
-        held.LTenureEntryAttach(LSubject.LSubjectGrasp, new PObserver(this, PEditorGraspUpdate));
-        held.LTenureEntryAttach(LSubject.LSubjectInflection, new PObserver(this, PEditorParadigmUpdate));
-        held.LTenureEntryAttach(LSubject.LSubjectReflex, new PObserver(this, PReflexPendingShow));
-        held.LTenureObserverAttach(LSubject.LSubjectScript, new PObserver(this, PEditorScriptUpdate));
-        held.LTenureObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PEditorFanqieUpdate));
-        held.LTenureObserverAttach(LSubject.LSubjectReference, new PObserver(this, PSentenceLoad));
-        held.LTenureObserverAttach(
-            LSubject.LSubjectSettings, new PObserver(this, _lEditor.LEditorDesk.LDeskDraftUpdate));
-        held.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, _lEditor.LEditorDesk.LDeskStateUpdate));
-        held.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, _lEditor.LEditorDesk.LDeskDraftUpdate));
         PEditorFavoriteUpdate();
         PEditorGraspUpdate();
         PEditorFrequencyUpdate();
@@ -229,9 +229,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     {
         PSpeakerName.Text = _lEditor.LEditorLanguage;
         PSpeakerFlagUpdate();
-        PFont.PFontApply(_lEngine, _lEditor.LEditorLanguage, PHeadword, PHeadwordHint, PHeadwordGhost);
+        PFont.PFontApply(
+            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordHint, PHeadwordGhost);
         PFont.PFontPlace(PHeadword, PHeadwordHint, PHeadwordGhost);
-        PFont.PFontExampleApply(Resources, _lEngine, _lEditor.LEditorLanguage);
+        PFont.PFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTonal;
         PPronunciation.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
         PAccent.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
@@ -241,8 +242,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     internal async void PSpeakerLoad()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
-        PLanguageItem.PLanguageItemReset(_pLanguageItem, _lEngine.LEngineLanguageRead());
+        await PEnsign.PEnsignLoad(_pEditorHost.PWindowDeportment);
+        PLanguageItem.PLanguageItemReset(_pLanguageItem, _pEditorHost.PWindowDeportment.LWindowLanguageRead());
         PEditorLanguageUpdate();
         PLinkFlagUpdate();
     }
@@ -255,7 +256,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private async void PSpeakerFlagUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pEditorHost.PWindowDeportment);
         PEnsign.PEnsignFlagShow(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
     }
 
@@ -362,14 +363,15 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorParadigmUpdate()
     {
-        PFont.PFontApply(_lEngine, _lEditor.LEditorParadigmLanguage, PEditorParadigm);
+        PFont.PFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorParadigmLanguage, PEditorParadigm);
         PEditorParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
             _lEditor.LEditorParadigmRead(), _lEditor.LEditorParadigmPending, _lEditor.LEditorMorphology, true);
     }
 
     private void PEditorScriptUpdate()
     {
-        PFont.PFontApply(_lEngine, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorScript);
+        PFont.PFontApply(
+            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorScript);
         PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
         PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
     }
@@ -377,7 +379,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     private void PEditorFanqieUpdate()
     {
         PReflexAnchorShow();
-        PFont.PFontApply(_lEngine, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorFanqie);
+        PFont.PFontApply(
+            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorFanqie);
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
         PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;
         PEditorFanqie.PFanqieRebuildNotice =

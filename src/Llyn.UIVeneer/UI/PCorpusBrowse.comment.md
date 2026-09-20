@@ -16,10 +16,11 @@ The panel answers two questions rather than one: what this sentence is, and wher
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-### `private LVista? _pCorpusVista;`
+### `private LCorpus _lCorpus = null!;`
 
-The engine's view state for the corpus tab: order, query, and the languages hidden from the entry column.
-The panel keeps no copy of any of the three and reads each from the vista where it needs it.
+The panel's deportment, holding the example vista, the Quotation vista and the desk the window restored.
+The vista carries the order, the query, and the languages hidden from the entry column.
+The panel keeps no copy of any of the three and asks the deportment for each where it needs it.
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
@@ -103,8 +104,9 @@ The held draft goes first, because nothing may write into a draft the panel no l
 The mode toggle and the bin are disabled with it.
 There is nothing to edit or delete while nothing is selected.
 
-### `internal async void PCorpusVistaRestore(LVista vista, LVista quotation)`
+### `internal async void PCorpusVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel re-reads the workspace through the vistas whenever the engine announces a change, wherever it was made.
 Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
@@ -120,10 +122,6 @@ Search text still standing in the box is handed to the vista, so a switched work
 The speakers, the citations and the catalog are then listed.
 The quotation vista is kept for the entry column and handed to the display, which reads its chosen entry.
 The quotation vista carries the entry search box, so its announcement refills the entry column alone.
-
-### `private void PRankRestore()`
-
-Moves the dropdown mark onto the ordering the vista holds.
 
 ### `private void PGauzeRestore()`
 

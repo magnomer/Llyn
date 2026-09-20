@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Windows;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -16,26 +15,6 @@ public partial class PWindow
             PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
-    }
-
-    internal long? PWindowCommitRun(LTenure held, bool store)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-
-        try
-        {
-            return held.LTenureFinish(store);
-        }
-        catch (LRefusal refusal) when (refusal.LRefusalIllegible)
-        {
-            if (!PWindowUnreadableConfirm())
-            {
-                throw;
-            }
-
-            held.LTenureSweep();
-            return held.LTenureFinish(store);
-        }
     }
 
     internal bool PWindowUnreadableConfirm()
@@ -66,7 +45,7 @@ public partial class PWindow
         }
 
         string unexpected = PLocalizationCatalog.PLocalizationTextRead("Notice.Unexpected");
-        string? recorded = _lEngine.LEngineAuditRecord(exception);
+        string? recorded = _lWindow.LWindowAuditRecord(exception);
 
         return recorded is null
             ? unexpected

@@ -15,8 +15,6 @@ public partial class PLibrary : UserControl
 
     private PWindow _pLibraryHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private LLibrary _lLibrary = null!;
 
     public PLibrary()
@@ -27,10 +25,9 @@ public partial class PLibrary : UserControl
     internal void PLibraryAttach(PWindow host, LEngine engine)
     {
         _pLibraryHost = host;
-        _lEngine = engine;
         _lLibrary = new LLibrary(
-            engine,
-            new LEditor(engine, host.PWindowUnreadableConfirm),
+            engine, engine,
+            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
             PLibraryShownCheck,
             PLibraryDiscardConfirm,
             host.PWindowDeleteConfirm);
@@ -44,9 +41,9 @@ public partial class PLibrary : UserControl
 
         PIndex.ItemsSource = _pIndexList;
 
-        PDisplay.PDisplayAttach(host, engine);
+        PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorDisplay);
 
-        PEditor.PEditorAttach(host, engine, _lLibrary.LLibraryEditor);
+        PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PLibraryPressHandle, PLibraryPressCheck));
         CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PLibraryPortraitHandle, PLibraryPressCheck));
@@ -57,35 +54,40 @@ public partial class PLibrary : UserControl
         PLibraryStore.IsEnabled = _lLibrary.LLibraryEditor.LEditorStorable;
     }
 
-    internal async void PLibraryVistaRestore(LVista vista)
+    internal async void PLibraryVistaRestore()
     {
-        _lLibrary.LLibraryVistaRestore(vista);
-        vista.LVistaObserverAttach(
+        _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowPosture);
+        _lLibrary.LLibraryPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PLibraryWorkspaceUpdate));
-        vista.LVistaObserverAttach(
+        _lLibrary.LLibraryPanel.LPanelObserverAttach(
+            LSubject.LSubjectWorkspace, new PObserver(this, PLibraryWorkspaceUpdate));
+        _lLibrary.LLibraryPanel.LPanelObserverAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
-        vista.LVistaObserverAttach(
+        _lLibrary.LLibraryPanel.LPanelObserverAttach(
             LSubject.LSubjectReflex, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(
+        _lLibrary.LLibraryPanel.LPanelObserverAttach(
             LSubject.LSubjectSettings, new PObserver(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        vista.LVistaChosenAttach(
+        _lLibrary.LLibraryPanel.LPanelChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
-        PDisplay.PDisplayVistaRestore(vista);
-        PEditor.PEditorVistaRestore(vista);
-        PChoice.PChoiceOrderApply(POrderDropdown, vista.LVistaOrder);
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
         PSieveUpdate();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PSieveList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PSieveHandle);
+        PChoice.PChoiceFilterBuild(
+            PSieveList,
+            _pLibraryHost.PWindowDeportment.LWindowLanguageRead(),
+            _lLibrary.LLibraryPanel.LPanelFilter,
+            PSieveHandle);
         _lLibrary.LLibraryInquirySet(PInquiry.Text);
         _lLibrary.LLibraryPanel.LPanelRowsUpdate();
     }
 
     private async void PLibraryWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
         _lLibrary.LLibraryPanel.LPanelReset();
     }
 
@@ -177,7 +179,7 @@ public partial class PLibrary : UserControl
 
     private IReadOnlyList<LMarkupIntake>? PLibraryCustomsShow(LMarkupCargo cargo)
     {
-        return PSCustoms.PSCustomsShow(_pLibraryHost, _lEngine, cargo.LMarkupCargoEntry);
+        return PSCustoms.PSCustomsShow(_pLibraryHost, _pLibraryHost.PWindowDeportment, cargo.LMarkupCargoEntry);
     }
 
     private void PLibraryOmissionShow(IReadOnlyList<LMarkupOmission> omissions)
@@ -245,6 +247,6 @@ public partial class PLibrary : UserControl
 
     private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pLibraryHost.PWindowPortraitExport(_lLibrary.LLibraryPanel.LPanelVista);
+        await _pLibraryHost.PWindowPortraitExport(_lLibrary.LLibraryFileRead(), _lLibrary.LLibraryPortraitExport);
     }
 }

@@ -51,7 +51,7 @@ public partial class PEditor
         PReflexTable.MinHeight = PReflexTable.ActualHeight;
         try
         {
-            _lEngine.LEngineReflexRebuild(entry);
+            _lEditor.LEditorDisplay.LDisplayReflexRebuild(entry);
         }
         catch (Exception)
         {
@@ -102,7 +102,7 @@ public partial class PEditor
         string language = draft.LEntryDraftLanguage;
         PReflexBlock.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorReflexShown);
 
-        _pReflexFolded = PDisplay.PReflexFoldRead(_lEngine, language);
+        _pReflexFolded = PDisplay.PReflexFoldRead(_pEditorHost.PWindowDeportment, language);
 
         PCard.PCardRowShow(
             _pReflexItem,
@@ -130,7 +130,7 @@ public partial class PEditor
         {
             try
             {
-                pending = _lEngine.LEngineReflexCheck(entry);
+                pending = _lEditor.LEditorDisplay.LDisplayReflexCheck(entry);
             }
             catch (Exception)
             {
@@ -168,7 +168,7 @@ public partial class PEditor
 
         try
         {
-            _lEngine.LEngineReflexStart(entry.Value);
+            _lEditor.LEditorDisplay.LDisplayReflexStart(entry.Value);
         }
         catch (Exception)
         {
@@ -179,7 +179,7 @@ public partial class PEditor
 
     private PReflexItem PReflexCreate(LReflexDraft reflex)
     {
-        PReflexItem row = PDisplay.PReflexItemCreate(_pEditorHost, _lEngine, reflex, _pReflexFolded);
+        PReflexItem row = PDisplay.PReflexItemCreate(_pEditorHost, reflex, _pReflexFolded);
         row.PropertyChanged += PReflexChangeHandle;
         return row;
     }
@@ -187,9 +187,11 @@ public partial class PEditor
     private PReflexItem PReflexUpdate(PReflexItem row, LReflexDraft reflex)
     {
         string language = reflex.LReflexDraftLanguage.Trim();
-        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
+        PRespelling respelling = PRespelling.PRespellingRead(_pEditorHost.PWindowDeportment, language);
         if (!row.PReflexItemMatch(
-            respelling.PRespellingShown, _lEngine.LEnginePhonemicCheck(language), _pReflexFolded.Contains(language)))
+            respelling.PRespellingShown,
+            _pEditorHost.PWindowDeportment.LWindowPhonemicCheck(language),
+            _pReflexFolded.Contains(language)))
         {
             row.PropertyChanged -= PReflexChangeHandle;
             return PReflexCreate(reflex);

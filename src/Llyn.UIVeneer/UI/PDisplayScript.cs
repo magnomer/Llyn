@@ -10,7 +10,7 @@ public partial class PDisplay
     {
         try
         {
-            _lEngine.LEngineScriptStart(id);
+            _lDisplay.LDisplayScriptStart(id);
         }
         catch (Exception)
         {
@@ -22,14 +22,14 @@ public partial class PDisplay
         IReadOnlyList<LScriptGroup> groups;
         try
         {
-            groups = _lEngine.LEngineScriptDivide(id);
+            groups = _lDisplay.LDisplayScriptDivide(id);
         }
         catch (Exception)
         {
             groups = [];
         }
 
-        PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayScript);
+        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayScript);
         PDisplayScript.PScriptItems = PScriptItem.PScriptItemScan(groups);
         PDisplayScript.PScriptPending = _lDisplay.LDisplayScriptCheck(id);
     }

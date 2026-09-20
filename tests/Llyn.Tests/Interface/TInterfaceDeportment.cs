@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -7,7 +8,7 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceDeportment
 {
-    internal static LEditor TEditorCreate(LEngine engine) => new(engine, static () => false);
+    internal static LEditor TEditorCreate(LEngine engine) => new(engine, engine, engine, engine, static () => false);
 
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
@@ -47,13 +48,13 @@ internal static class TInterfaceDeportment
     internal static void TEditorReferenceAdd(this LEditor editor, long id) => editor.LEditorReferenceAdd(id);
 
     internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
+        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
 
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
     internal static LLibrary TLibraryCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
+        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
 
     internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
         panel.LLibraryVistaRestore(vista);
@@ -63,7 +64,7 @@ internal static class TInterfaceDeportment
     internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
 
     internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, TEditorCreate(engine), () => true, leaveSeam, _ => true, () => false);
+        new(engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, _ => true, () => false);
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
         shelf.LShelfVistaRestore(vista, footnote);
@@ -154,7 +155,7 @@ internal static class TInterfaceDeportment
 
     internal static LGuild TGuildCreate(
         LEngine engine, Func<bool> leaveSeam, Func<int, bool> removalSeam, Func<string, string, bool> unionSeam) =>
-        new(engine, () => true, leaveSeam, removalSeam, unionSeam, () => false);
+        new(engine, engine, engine, () => true, leaveSeam, removalSeam, unionSeam, () => false);
 
     internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
         guild.LGuildVistaRestore(vista, oeuvre);
@@ -190,7 +191,7 @@ internal static class TInterfaceDeportment
         oeuvre.LOeuvreColophonRead(draft);
 
     internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, TEditorCreate(engine), () => true, leaveSeam, () => true);
+        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, () => true);
 
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
         panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
@@ -211,4 +212,32 @@ internal static class TInterfaceDeportment
         panel.LYunjingDiweiShow(language, kind, key);
 
     internal static void TYunjingTallySet(this LYunjing panel, bool? respelled) => panel.LYunjingTallySet(respelled);
+    internal static LWindow TWindowCreate(LSettingsPort settings) =>
+        new(
+            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            TEngineFake.TEngineStubCreate<LEntryPort>(),
+            settings,
+            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            TEngineFake.TEngineStubCreate<LPortraitPort>());
+
+    internal static LFont TFontCreate(string family, double size) => new(family, size);
+
+    internal static LFont TWindowFontRead(this LWindow window, string language, LFontRole role) =>
+        window.LWindowFontRead(language, role);
+
+    internal static string TWindowLocalizationRead(this LWindow window) => window.LWindowLocalizationRead();
+
+    internal static void TWindowEpithetSave(this LWindow window, bool epithet) => window.LWindowEpithetSave(epithet);
+
+    internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings) =>
+        new(entries, TEngineFake.TEngineStubCreate<LPortraitPort>(), settings);
+
+    internal static IReadOnlyList<LCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
+
+    internal static IReadOnlyList<LVistaRow> TTenorCohortRead(this LTenor tenor) => tenor.LTenorCohortRead();
+
+    internal static LRegister TTenorRegisterCreate(this LTenor tenor, string name) => tenor.LTenorRegisterCreate(name);
+
+    internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
 }

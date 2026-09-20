@@ -8,7 +8,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class LOeuvre
 {
-    private readonly LEngine _lEngine;
+    private readonly LEntryPort _lEntryPort;
 
     private LVista? _lOeuvreRoll;
 
@@ -16,11 +16,11 @@ public sealed class LOeuvre
 
     private int _lOeuvreCount;
 
-    public LOeuvre(LEngine engine, Func<bool> shownSeam)
+    public LOeuvre(LEntryPort entries, Func<bool> shownSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(entries);
 
-        _lEngine = engine;
+        _lEntryPort = entries;
         LOeuvrePanel = new LPanel(
             "Source.LoadFailed", static () => false, shownSeam, static () => true, static () => false);
     }
@@ -68,7 +68,7 @@ public sealed class LOeuvre
             return [];
         }
 
-        return _lEngine.LEngineOeuvreFind(roll, vista);
+        return _lEntryPort.LEngineOeuvreFind(roll, vista);
     }
 
     private IReadOnlyList<LCatalogReference> LOeuvreRowsApply(IReadOnlyList<LCatalogReference> rows)
@@ -113,7 +113,7 @@ public sealed class LOeuvre
 
     private int LOeuvreUsageRead(long? id)
     {
-        return id is long stored ? _lEngine.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
+        return id is long stored ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
     }
 
     public LColophon LOeuvreColophonRead(LDraft draft)

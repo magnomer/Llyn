@@ -13,10 +13,11 @@ The panel never writes, so there is no editor and nothing to discard.
 The matches this side's query found, held per side because the sides are peers.
 Changing one side leaves the other where it was.
 
-### `private LVista? _pWingVista;`
+### `private LWing _lWing = null!;`
 
-The engine's view state for this side's tab: order, filter, query and the Entry the side stands on.
-The wing keeps no copy of any of the four and reads each from the vista where it needs it.
+The wing's deportment, holding the vista of this side's tab and the reading view's deportment.
+The vista carries the order, filter, query and the Entry the side stands on.
+The wing keeps no copy of any of the four and asks the deportment for each where it needs it.
 The tab is `left` or `right`, and the vista is blank, so nothing typed lists nothing.
 
 ### `internal void PWingAttach(PWindow host, LEngine engine)`
@@ -26,9 +27,9 @@ It binds the match list, subscribes to the engine and attaches the display.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.
 
-### `internal async void PWingRestore(LVista vista, long? id)`
+### `internal async void PWingRestore(string tab, long? id)`
 
-Puts the side back on the workspace open now, with its vista, standing on the Entry `id` names.
+Puts the side back on the workspace open now, on the vista of `tab`, standing on the Entry `id` names.
 A switched workspace hands a fresh vista, so the order and filter are the new workspace's own.
 The side answers the engine through the vista, one subject per observer.
 A vista announcement re-lists the matches, since order, filter or query moved.
@@ -79,10 +80,6 @@ Focus moving between the two is not a leave, since a clicked row takes focus bef
 ### `private void PWingIndexHandle(object sender, RoutedEventArgs e)`
 
 A clicked row hides the list, shows its Entry and saves the side's standing.
-
-### `private void PWingOrderRestore()`
-
-Moves the dropdown mark onto the ordering the vista holds.
 
 ### `private void PWingSieveRestore()`
 

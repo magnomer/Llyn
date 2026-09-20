@@ -22,15 +22,6 @@ Creates `situation` and returns it with its assigned id and its media read back.
 Its title is not identity: the same words saved twice are two Situations.
 The row and its media are written in one session, so a failed picture leaves no half Situation.
 
-## `private static LSituation? LEngineSituationResolve(LSituationVault situations, LStateValue title)`
-
-The one stored Situation whose title reads as `title`, or `null` when none or several do.
-Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
-Several rows sharing a title are a question the engine cannot answer.
-A new row is made rather than one guessed.
-The engine holds this rule.
-The form, a commit and any other client therefore all get one row for one wording.
-
 ## `internal LSituation? LEngineSituationRead(long id)`
 
 Reads the Situation for `id`, or `null` when none has that id.

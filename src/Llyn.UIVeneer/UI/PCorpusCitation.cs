@@ -27,7 +27,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogReference> read;
         try
         {
-            read = _lEngine.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
+            read = _lCorpus.LCorpusReferenceFind();
         }
         catch (Exception exception)
         {
@@ -193,7 +193,7 @@ public partial class PCorpus
         LReference stored;
         try
         {
-            stored = _lEngine.LEngineCitationCreate(typed);
+            stored = _lCorpus.LCorpusCitationCreate(typed);
         }
         catch (Exception exception)
         {
@@ -219,7 +219,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogReference> found;
         try
         {
-            found = _lEngine.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
+            found = _lCorpus.LCorpusReferenceFind(word);
         }
         catch (Exception)
         {

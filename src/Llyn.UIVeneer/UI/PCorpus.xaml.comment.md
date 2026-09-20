@@ -11,6 +11,7 @@ The linking gesture over the transcript lives in `PCorpusMention.cs`.
 
 ## `internal void PCorpusAttach(PWindow host, LEngine engine)`
 
+Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.

@@ -38,7 +38,9 @@ public partial class PEditor
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<string> classes = LAnatomyTone.LAnatomyToneScan(
-            _lEngine.LEngineToneRead(_lEditor.LEditorLanguage), row.PReflexItemLanguage, row.PReflexItemTone);
+            _pEditorHost.PWindowDeportment.LWindowToneRead(_lEditor.LEditorLanguage),
+            row.PReflexItemLanguage,
+            row.PReflexItemTone);
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
             _lEditor.LEditorAnchorRead(), row.PReflexItemAnchors, classes);
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

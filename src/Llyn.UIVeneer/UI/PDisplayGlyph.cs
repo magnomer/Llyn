@@ -17,7 +17,7 @@ public partial class PDisplay
         _pDisplayGlyph.Clear();
 
         string language = draft.LEntryDraftLanguage;
-        _pDisplayGlyphSection = _lEngine.LEngineGlyphRead(language);
+        _pDisplayGlyphSection = _lDisplay.LDisplayGlyphRead(language);
         if (_pDisplayGlyphSection is null)
         {
             PDisplayGlyphClear();
@@ -50,7 +50,7 @@ public partial class PDisplay
 
         PDisplayGlyphLabel.Text = PTranscriptionItem.PTranscriptionLabelFormat(
             _pDisplayHost, _pDisplayGlyphSection.LGlyphName);
-        PFont.PFontGlyphApply(PDisplayGlyph.Resources, _lEngine, language);
+        PFont.PFontGlyphApply(PDisplayGlyph.Resources, _pDisplayHost.PWindowDeportment, language);
         PDisplayGlyphSection.Visibility = _pDisplayGlyph.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
         PDisplayGlyphLead.SharedSizeGroup = _pDisplayGlyph.Count == 0 ? null : "PReadingLabel";
     }

@@ -5,9 +5,10 @@
 The reading view's answer to the engine's announcements.
 It redraws only what the announcement touched, and leaves the rest of the page as drawn.
 
-## `private void PDisplayObserverAttach(LVista vista)`
+## `internal void PDisplayObserverAttach()`
 
-Attaches one observer per subject to the vista the view reads, so no handler sorts announcements.
+The owner calls it once its deportment has restored the display's vista.
+Attaches one observer per subject through the deportment to the vista it holds, so no handler sorts announcements.
 The subjects that name an entry are attached to the chosen row, so another entry's announcement never arrives.
 An announcement about any other record is answered whatever its id.
 A card embeds Situations, Registers, Tags, Examples and Sources by reference.

@@ -18,10 +18,10 @@ public sealed class TFavorite
 
         Assert.True(engine.TEngineFavoriteCheck(entry.LEntryId));
 
-        LFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
-        Assert.Equal(entry.LEntryId, favorite.LFavoriteEntry.LEntryId);
-        Assert.Equal("word", favorite.LFavoriteEntry.LEntryHeadword);
-        Assert.NotEqual(string.Empty, favorite.LFavoriteMarkedUtc);
+        LCatalogFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
+        Assert.Equal(entry.LEntryId, favorite.LCatalogFavoriteEntry.LEntryId);
+        Assert.Equal("word", favorite.LCatalogFavoriteEntry.LEntryHeadword);
+        Assert.NotEqual(string.Empty, favorite.LCatalogFavoriteMarked);
     }
 
     [Fact]
@@ -33,11 +33,11 @@ public sealed class TFavorite
         LEntry entry = TFavoriteEntryCreate(engine, "word");
 
         engine.TEngineFavoriteSave(entry.LEntryId);
-        string first = Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LFavoriteMarkedUtc;
+        string first = Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LCatalogFavoriteMarked;
 
         engine.TEngineFavoriteSave(entry.LEntryId);
 
-        Assert.Equal(first, Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LFavoriteMarkedUtc);
+        Assert.Equal(first, Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LCatalogFavoriteMarked);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class TFavorite
 
         Assert.Equal(
             ["water"],
-            engine.TEngineFavoriteFind("wat").Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+            engine.TEngineFavoriteFind("wat").Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     [Fact]

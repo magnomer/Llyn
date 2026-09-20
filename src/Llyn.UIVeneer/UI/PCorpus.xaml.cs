@@ -11,7 +11,7 @@ public partial class PCorpus : UserControl, PChronicleHost
 {
     private PWindow _pCorpusHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LCorpus _lCorpus = null!;
 
     private LEditor _lEditor = null!;
 
@@ -24,7 +24,8 @@ public partial class PCorpus : UserControl, PChronicleHost
     internal void PCorpusAttach(PWindow host, LEngine engine)
     {
         _pCorpusHost = host;
-        _lEngine = engine;
+        _lCorpus = new LCorpus(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PTranscriptDeskAttach();
 
         PAnthology.ItemsSource = _pAnthologyList;
         PQuotation.ItemsSource = _pQuotationList;
@@ -35,11 +36,11 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
-        PDisplay.PDisplayAttach(host, engine);
-        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PCorpusStoreUpdate;
         _lEditor.LEditorStateChanged += PChronicleUpdate;
-        PEditor.PEditorAttach(host, engine, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor);
     }
 
     private void PCorpusStoreUpdate()
@@ -79,44 +80,44 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private void PCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_pQuotationVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_pCorpusVista?.LVistaChosen is not null && PExcerpt.Visibility == Visibility.Visible);
+        e.CanExecute = (_lCorpus.LCorpusQuotationChosen is not null && PDisplay.Visibility == Visibility.Visible)
+            || (_lCorpus.LCorpusChosen is not null && PExcerpt.Visibility == Visibility.Visible);
     }
 
     private async void PCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pQuotationVista?.LVistaChosen is not null)
+        if (_lCorpus.LCorpusQuotationChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
                 await _pCorpusHost.PWindowPressRun(
-                    ticket => _lEngine.LEnginePortraitPrint(_pQuotationVista, _pCorpusHost.PWindowLabelRead(), ticket));
+                    ticket => _lCorpus.LCorpusPortraitPrint(_pCorpusHost.PWindowLabelRead(), ticket));
                 return;
             }
         }
 
-        if (_pCorpusVista?.LVistaChosen is not null)
+        if (_lCorpus.LCorpusChosen is not null)
         {
             if (PExcerpt.Visibility == Visibility.Visible)
             {
-                await _pCorpusHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                    _pCorpusVista, _pCorpusHost.PWindowLegendRead("Example"), ticket));
+                await _pCorpusHost.PWindowPressRun(
+                    ticket => _lCorpus.LCorpusPortraitPrint(_pCorpusHost.PWindowLegendRead("Example"), ticket));
             }
         }
     }
 
     private void PCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pQuotationVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lCorpus.LCorpusQuotationChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pQuotationVista?.LVistaChosen is not null)
+        if (_lCorpus.LCorpusQuotationChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pCorpusHost.PWindowPortraitExport(_pQuotationVista);
+                await _pCorpusHost.PWindowPortraitExport(_lCorpus.LCorpusFileRead(), _lCorpus.LCorpusPortraitExport);
             }
         }
     }

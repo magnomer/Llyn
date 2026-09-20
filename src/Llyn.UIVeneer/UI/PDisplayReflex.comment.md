@@ -47,7 +47,7 @@ A row for one draft reflex, asking the engine for its language's respelling stat
 The row is folded when its language is in `folded`.
 Shared with the editor, whose rows are built by the same rule.
 
-## `internal static HashSet<string> PReflexFoldRead(LEngine engine, string language)`
+## `internal static HashSet<string> PReflexFoldRead(LWindow window, string language)`
 
 The languages the pack of `language` folds away, read from its reflex rules.
 Empty for a blank language or a pack without rules.

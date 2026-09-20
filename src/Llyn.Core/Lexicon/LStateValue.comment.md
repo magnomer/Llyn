@@ -44,6 +44,11 @@ The value stating `text`.
 Reads plain text as a value.
 Text that is blank stands for nothing recorded.
 Any other text stands for the value it states.
+
+## `public static LStateValue LStateValueRead(LStateWritten? written)`
+
+The value a form wrote, or the unspecified one where the form sent nothing.
+So a request can never leave a null where the draft holds a value.
 Nothing read this way is ever unknown.
 Only the user can mark a value as not known, so plain text never turns into one.
 It is never something a form produces by leaving a box empty.

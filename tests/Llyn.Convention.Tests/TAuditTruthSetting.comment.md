@@ -62,6 +62,9 @@ The members of a control that carry what the user typed or chose.
 
 Types a shell field may hold as a handle to the engine rather than as a value.
 A handle is called on and passed back, so the argument and guard rules skip it.
+The six `L*Port` interfaces are the slices of the engine a deportment holds in its place.
+`LWindow` is the window deportment, a stateless forwarder over those ports that the veneer helpers take.
+The desk keeps the observers it puts on each tenure it starts, in a list of subject and observer pairs.
 `PObserver` is the shell's subscription and is attached and detached by the engine.
 `LListener`, `LReceiver` and `LObserver` are the contracts a panel derives from to be called back.
 

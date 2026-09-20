@@ -19,9 +19,9 @@ An empty result is shown rather than hidden, and its text says whether nothing r
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
 
-### `private LVista? _pOccurrenceVista;`
+### Occurrence vista
 
-The child vista whose chosen entry the right-hand side stands on, while it shows an Entry and not a Situation.
+The deportment's child vista, whose chosen entry the right-hand side stands on while it shows an Entry.
 The right-hand side shows one or the other and never both.
 An Entry row swaps the Situation reading for the entry display in place, and a Situation row swaps it back.
 The chosen Situation keeps its mark meanwhile, because it still narrows the middle column.

@@ -36,7 +36,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            LPronunciationDraft spoken = LEngineRespellingResolve(
+            LPronunciationDraft spoken = _lEngineLanguageCache.LLanguageRespellingResolve(
                 entry.LEntryLanguage,
                 new LPronunciationDraft(
                     row.LPronunciationIpa, LPronunciationDraftVariety: row.LPronunciationVariety ?? string.Empty));
@@ -55,11 +55,11 @@ public sealed partial class LEngine
         {
             string respelling = row.LReflexRespelling.Length > 0 || row.LReflexText.Length == 0
                 ? row.LReflexRespelling
-                : LEngineRespellingResolve(new LReflexDraft(row.LReflexLanguage, LReflexDraftText: row.LReflexText))
-                    .LReflexDraftRespelling;
+                : _lEngineLanguageCache.LLanguageRespellingResolve(
+                    new LReflexDraft(row.LReflexLanguage, LReflexDraftText: row.LReflexText)).LReflexDraftRespelling;
             LAnatomy anatomy = row.LReflexText.Length == 0
                 ? row.LReflexAnatomy
-                : LEngineAnatomyResolve(
+                : _lEngineLanguageCache.LLanguageAnatomyResolve(
                     entry.LEntryLanguage,
                     new LReflexDraft(
                         row.LReflexLanguage,

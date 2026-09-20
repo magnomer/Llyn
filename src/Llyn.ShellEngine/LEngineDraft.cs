@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -22,7 +23,7 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalHeadword);
             }
 
-            draft = LEngineRespellingUpdate(LEngineDraftNormalize(draft) with
+            draft = _lEngineLanguageCache.LLanguageRespellingUpdate(LEngineDraftNormalize(draft) with
             {
                 LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim(),
             });
@@ -206,7 +207,7 @@ public sealed partial class LEngine
             return stored.LSituationId;
         }
 
-        LSituation? found = LEngineSituationResolve(situations, draft.LSituationDraftTitle);
+        LSituation? found = LDraftClerkChip.LSituationResolve(situations, draft.LSituationDraftTitle);
         if (found is not null)
         {
             return found.LSituationId;

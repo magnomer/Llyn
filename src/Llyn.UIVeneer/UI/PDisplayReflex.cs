@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -18,7 +19,7 @@ public partial class PDisplay
     {
         try
         {
-            _lEngine.LEngineReflexStart(id);
+            _lDisplay.LDisplayReflexStart(id);
         }
         catch (Exception)
         {
@@ -28,12 +29,12 @@ public partial class PDisplay
     private void PDisplayReflexShow(LEntryDraft draft)
     {
         _pDisplayReflex.Clear();
-        HashSet<string> folded = PReflexFoldRead(_lEngine, draft.LEntryDraftLanguage);
+        HashSet<string> folded = PReflexFoldRead(_pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
         foreach (LReflexDraft reflex in draft.LEntryDraftReflexes)
         {
             if (reflex.LReflexDraftWritten)
             {
-                _pDisplayReflex.Add(PReflexItemCreate(_pDisplayHost, _lEngine, reflex, folded));
+                _pDisplayReflex.Add(PReflexItemCreate(_pDisplayHost, reflex, folded));
             }
         }
 
@@ -46,7 +47,7 @@ public partial class PDisplay
     {
         try
         {
-            PDisplayReflexLoading.Visibility = _lEngine.LEngineReflexCheck(id)
+            PDisplayReflexLoading.Visibility = _lDisplay.LDisplayReflexCheck(id)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
@@ -61,7 +62,7 @@ public partial class PDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lDisplay.LDisplayEntryLoad(id);
         }
         catch (Exception)
         {
@@ -83,18 +84,18 @@ public partial class PDisplay
     }
 
     internal static PReflexItem PReflexItemCreate(
-        PWindow host, LEngine engine, LReflexDraft reflex, HashSet<string> folded)
+        PWindow host, LReflexDraft reflex, HashSet<string> folded)
     {
         string language = reflex.LReflexDraftLanguage.Trim();
         return PReflexItem.PReflexItemCreate(
             host,
             reflex,
-            PRespelling.PRespellingRead(engine, language),
-            engine.LEnginePhonemicCheck(language),
+            PRespelling.PRespellingRead(host.PWindowDeportment, language),
+            host.PWindowDeportment.LWindowPhonemicCheck(language),
             folded.Contains(language));
     }
 
-    internal static HashSet<string> PReflexFoldRead(LEngine engine, string language)
+    internal static HashSet<string> PReflexFoldRead(LWindow window, string language)
     {
         HashSet<string> folded = new(StringComparer.Ordinal);
         if (language.Trim().Length == 0)
@@ -102,7 +103,7 @@ public partial class PDisplay
             return folded;
         }
 
-        foreach (LReflexRule rule in engine.LEngineReflexRead(language))
+        foreach (LReflexRule rule in window.LWindowReflexRead(language))
         {
             if (rule.LReflexRuleFolded)
             {

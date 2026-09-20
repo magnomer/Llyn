@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -43,8 +44,8 @@ public sealed partial class LEngine
         Dictionary<long, long> identity)
     {
         IReadOnlyList<LMentionDraft> drafts = LEngineMentionResolve(written);
-        IReadOnlyList<LMention> mentions = LEngineMentionRead(drafts);
-        IReadOnlyList<LGloss> glosses = LEngineGlossRead(written.LExampleDraftGloss);
+        IReadOnlyList<LMention> mentions = LDraftClerkMention.LMentionRead(drafts);
+        IReadOnlyList<LGloss> glosses = LDraftClerkGloss.LGlossRead(written.LExampleDraftGloss);
 
         if (written.LExampleDraftId > 0)
         {
@@ -168,5 +169,17 @@ public sealed partial class LEngine
         }
 
         return false;
+    }
+
+    private static void LEngineGlossRecord(
+        Dictionary<long, long> identity, IReadOnlyList<LGlossDraft> drafts, IReadOnlyList<LGloss> stored)
+    {
+        for (int index = 0; index < drafts.Count && index < stored.Count; index++)
+        {
+            if (drafts[index].LGlossDraftId < 0)
+            {
+                LEngineIdentityRecord(identity, drafts[index].LGlossDraftId, stored[index].LGlossId);
+            }
+        }
     }
 }

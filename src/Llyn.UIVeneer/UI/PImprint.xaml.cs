@@ -32,7 +32,10 @@ public partial class PImprint : UserControl, PChronicleHost
         _lImprint.LImprintFocused += PAuthorFocusDefer;
         _lImprint.LImprintReverted += PAuthorRestore;
         _lImprint.LBylineChanged += PBylineUpdate;
-        _lImprint.LImprintDesk.LDeskStarted += PImprintStartUpdate;
+        _lImprint.LImprintDesk.LDeskDraftAttach(
+            LSubject.LSubjectDraft, new PObserver(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
+        _lImprint.LImprintDesk.LDeskDraftAttach(
+            LSubject.LSubjectTenure, new PObserver(this, _lImprint.LImprintDesk.LDeskStateUpdate));
         _lImprint.LImprintDesk.LDeskDraftChanged += PImprintDraftUpdate;
         _lImprint.LImprintDesk.LDeskFailed += host.PWindowFailureShow;
     }
@@ -77,12 +80,6 @@ public partial class PImprint : UserControl, PChronicleHost
     public void PChronicleUpdate()
     {
         _lImprint.LImprintDesk.LDeskStateUpdate();
-    }
-
-    private void PImprintStartUpdate(LTenure held)
-    {
-        held.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
-        held.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, _lImprint.LImprintDesk.LDeskStateUpdate));
     }
 
     private void PImprintDraftUpdate(LDraft draft)

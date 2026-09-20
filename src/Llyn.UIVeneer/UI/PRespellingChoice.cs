@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PRespellingHandle(object sender, RoutedEventArgs e)
     {
-        _lEngine.LEngineRespellingSave(PRespelling.IsChecked == true);
+        PSettingsWindow.LWindowRespellingSave(PRespelling.IsChecked == true);
     }
 }

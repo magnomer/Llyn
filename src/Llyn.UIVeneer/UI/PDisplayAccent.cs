@@ -18,11 +18,11 @@ public partial class PDisplay
     private void PDisplayAccentShow(LEntryDraft draft)
     {
         string language = draft.LEntryDraftLanguage;
-        bool flagged = _lEngine.LEngineFlaggedCheck(draft);
+        bool flagged = _lDisplay.LDisplayFlaggedCheck(draft);
         _pDisplayAccentLanguage = language;
         _pDisplayAccentFlagged = flagged;
         _pDisplayAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
-        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
+        PRespelling respelling = PRespelling.PRespellingRead(_pDisplayHost.PWindowDeportment, language);
 
         _pDisplayAccent.Clear();
         foreach (LPronunciationDraft spoken in draft.LEntryDraftAccents)
@@ -45,7 +45,7 @@ public partial class PDisplay
             return;
         }
 
-        if (!_lEngine.LEngineRecordingExist(row.PAccentItemAudio))
+        if (!_pDisplayHost.PWindowDeportment.LWindowRecordingExist(row.PAccentItemAudio))
         {
             return;
         }
@@ -76,7 +76,7 @@ public partial class PDisplay
         try
         {
             await PEnsign.PEnsignVarietyLoad(
-                _lEngine, language, varieties.Where(static variety => variety.Length > 0));
+                _pDisplayHost.PWindowDeportment, language, varieties.Where(static variety => variety.Length > 0));
         }
         catch (Exception)
         {

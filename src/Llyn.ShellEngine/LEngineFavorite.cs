@@ -6,7 +6,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query)
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)
     {
         lock (_lEngineGate)
         {
@@ -14,7 +14,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
     {
         lock (_lEngineGate)
         {
@@ -24,11 +24,11 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
         return filter.LCatalogFilterApply(
-            LEngineFavoriteFind(query, order), favorite => favorite.LFavoriteEntry.LEntryLanguage);
+            LEngineFavoriteFind(query, order), favorite => favorite.LCatalogFavoriteEntry.LEntryLanguage);
     }
 
     public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)
@@ -37,12 +37,12 @@ public sealed partial class LEngine
 
         lock (_lEngineGate)
         {
-            IReadOnlyList<LFavorite> favorites = LEngineFavoriteFind(
+            IReadOnlyList<LCatalogFavorite> favorites = LEngineFavoriteFind(
                 vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
             List<LEntry> entries = new(favorites.Count);
-            foreach (LFavorite favorite in favorites)
+            foreach (LCatalogFavorite favorite in favorites)
             {
-                entries.Add(favorite.LFavoriteEntry);
+                entries.Add(favorite.LCatalogFavoriteEntry);
             }
 
             return LEngineVistaBuild(entries, vista.LVistaChosen);

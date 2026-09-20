@@ -13,9 +13,17 @@ The only question it asks is whether an unreadable draft may be swept, through a
 Raised while the draft is being written into the controls, so the echo of that writing defers nothing.
 It is read through its verdict and never branched on by name, so the walker sees a verdict.
 
-## `public event Action<LTenure>? LDeskStarted;`
+## `public event Action? LDeskStarted;`
 
 A tenure was started, handed out so the veneer can attach its marshalling observers to it.
+The observers the veneer registered are already on the new tenure when this fires.
+
+## `public void LDeskDraftAttach(LSubject subject, LObserver observer)`
+
+Registers an observer the desk puts on every tenure it starts, for the draft-level subjects.
+The veneer registers once at attach time and never sees the tenure, which is what re-attaches per start.
+A tenure already held gets the observer at once.
+`LDeskObserverAttach` and `LDeskEntryAttach` do the same for the tenure-wide and entry-level subjects.
 
 ## `public event Action<LDraft>? LDeskDraftChanged;`
 
@@ -47,12 +55,22 @@ Whether the tenure has stopped taking requests, so the edit area should go dead.
 
 ## `internal LTenure? LDeskTenure`
 
-The held tenure, for the sibling deportments that start forays over it, until the sound deportment lands.
+The held tenure, for the clip and notation deportments that start forays over it.
 
 ## `public void LDeskStart(long? id)`
 
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
 A refused start is announced under the scope's load key and leaves the desk empty.
+
+## `public void LDeskStart(string origin, LSubject subject, long? id)`
+
+The same start for a desk that holds no vista, naming the origin and the subject itself.
+The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
+
+## `public LForay? LDeskRecordingStart(string word, long target, LListener listener)`
+
+Starts a recording search over the held tenure, or nothing while none is held.
+`LDeskTranscriptionStart` starts a reading search the same way, under one scheme.
 
 ## `public LDraft? LDeskRead()`
 

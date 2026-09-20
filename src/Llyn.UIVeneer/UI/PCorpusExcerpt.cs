@@ -36,7 +36,7 @@ public partial class PCorpus
 
     private void PExcerptMentionHandle(object? sender, PMentionArgument e)
     {
-        if (_pCorpusVista?.LVistaChosen is not long id)
+        if (_lCorpus.LCorpusChosen is not long id)
         {
             return;
         }
@@ -49,7 +49,7 @@ public partial class PCorpus
         LMentionResult result;
         try
         {
-            result = _lEngine.LEngineMentionFind(id, e.PMentionArgumentOffset);
+            result = _lCorpus.LCorpusMentionFind(id, e.PMentionArgumentOffset);
         }
         catch (Exception exception)
         {

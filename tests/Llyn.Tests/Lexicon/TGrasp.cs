@@ -114,9 +114,9 @@ public sealed class TGrasp
         engine.TEngineFavoriteSave(entry.LEntryId);
         engine.TEngineGraspSave(entry.LEntryId, 5);
 
-        LFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
+        LCatalogFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
 
-        Assert.Equal(5, favorite.LFavoriteEntry.LEntryGrasp);
+        Assert.Equal(5, favorite.LCatalogFavoriteEntry.LEntryGrasp);
     }
 
     private static LEntry TGraspEntryCreate(LEngine engine, string headword)

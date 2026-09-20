@@ -11,7 +11,7 @@ internal static partial class TInterface
         LCatalogOrder order) =>
         engine.LEngineEntryFind(query, order);
 
-    internal static IReadOnlyList<LFavorite> TEngineFavoriteFind(
+    internal static IReadOnlyList<LCatalogFavorite> TEngineFavoriteFind(
         this LEngine engine,
         string query,
         LCatalogOrder order) =>

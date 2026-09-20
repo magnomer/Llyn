@@ -8,7 +8,7 @@ A chosen row swaps the Example reading for the entry display in place, without l
 
 ## Inline notes
 
-### `private LVista? _pQuotationVista;`
+### Quotation vista
 
 The child vista whose chosen entry the right-hand side stands on, while it shows an Entry and not an Example.
 The right-hand side shows one or the other and never both.

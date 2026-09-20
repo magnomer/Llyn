@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -13,8 +12,6 @@ public partial class PEstablishment : UserControl
 
     private PWindow _pEstablishmentHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private PObserver? _pEstablishmentObserver;
 
     public PEstablishment()
@@ -22,13 +19,12 @@ public partial class PEstablishment : UserControl
         InitializeComponent();
     }
 
-    internal void PEstablishmentAttach(PWindow host, LEngine engine)
+    internal void PEstablishmentAttach(PWindow host)
     {
         _pEstablishmentHost = host;
-        _lEngine = engine;
 
         _pEstablishmentObserver = new PObserver(this, PEstablishmentBulletinHandle);
-        engine.LEngineObserverAttach(_pEstablishmentObserver);
+        host.PWindowDeportment.LWindowObserverAttach(_pEstablishmentObserver);
 
         PEstablishmentUpdate();
     }
@@ -37,7 +33,7 @@ public partial class PEstablishment : UserControl
     {
         if (_pEstablishmentObserver is not null)
         {
-            _lEngine.LEngineObserverDetach(_pEstablishmentObserver);
+            _pEstablishmentHost.PWindowDeportment.LWindowObserverDetach(_pEstablishmentObserver);
             _pEstablishmentObserver = null;
         }
     }
@@ -52,7 +48,7 @@ public partial class PEstablishment : UserControl
         LEstablishment establishment;
         try
         {
-            establishment = _lEngine.LEngineEstablishmentRead();
+            establishment = _pEstablishmentHost.PWindowDeportment.LWindowEstablishmentRead();
         }
         catch (Exception)
         {

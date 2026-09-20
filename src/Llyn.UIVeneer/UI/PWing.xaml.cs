@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -17,9 +18,7 @@ public partial class PWing : UserControl
 
     private PWindow _pWingHost = null!;
 
-    private LEngine _lEngine = null!;
-
-    private LVista? _pWingVista;
+    private LWing _lWing = null!;
 
     public PWing()
     {
@@ -29,28 +28,28 @@ public partial class PWing : UserControl
     internal void PWingAttach(PWindow host, LEngine engine)
     {
         _pWingHost = host;
-        _lEngine = engine;
+        _lWing = new LWing(engine, engine, engine);
 
         PWingIndex.ItemsSource = _pWingIndex;
 
-        PWingDisplay.PDisplayAttach(host, engine);
+        PWingDisplay.PDisplayAttach(host, _lWing.LWingDisplay);
     }
 
-    internal async void PWingRestore(LVista vista, long? id)
+    internal async void PWingRestore(string tab, long? id)
     {
-        _pWingVista = vista;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PWingIndexFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PWingIndexFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PWingIndexFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PWingIndexFind));
-        PWingDisplay.PDisplayVistaRestore(vista);
+        _lWing.LWingVistaRestore(_pWingHost.PWindowPosture, tab);
+        _lWing.LWingObserverAttach(LSubject.LSubjectVista, new PObserver(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PWingIndexFind));
+        PWingDisplay.PDisplayObserverAttach();
         _pWingIndex.Clear();
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pWingHost.PWindowDeportment);
 
-        PWingOrderRestore();
+        PChoice.PChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);
         PWingSieveRestore();
         PChoice.PChoiceFilterBuild(
-            PWingSieveList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PWingSieveHandle);
+            PWingSieveList, _lWing.LWingLanguageRead(), _lWing.LWingFilter, PWingSieveHandle);
 
         PWingQuery.Text = string.Empty;
         PWingDisplay.PDisplayClear();
@@ -68,23 +67,18 @@ public partial class PWing : UserControl
 
     private void PWingOrderHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pWingVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PWingOrderDropper.IsChecked = false;
-        _pWingVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pWingVista.LVistaOrder));
+        _lWing.LWingOrderSet(choice);
     }
 
     private void PWingSieveHandle(object sender, RoutedEventArgs e)
     {
-        if (_pWingVista is null)
-        {
-            return;
-        }
-
-        _pWingVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PWingSieveList));
+        _lWing.LWingSieveSet(PChoice.PChoiceFilterRead(PWingSieveList));
         PWingSieveRestore();
     }
 
@@ -92,12 +86,12 @@ public partial class PWing : UserControl
     {
         string query = PWingQuery.Text ?? string.Empty;
         PWingIndex.Visibility = query.Trim().Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        _pWingVista?.LVistaQuerySet(query);
+        _lWing.LWingQuerySet(query);
     }
 
     private void PWingKeyHandle(object sender, KeyEventArgs e)
     {
-        if (_pWingVista is null || PWingIndex.Visibility != Visibility.Visible)
+        if (PWingIndex.Visibility != Visibility.Visible)
         {
             return;
         }
@@ -111,7 +105,7 @@ public partial class PWing : UserControl
 
         if (e.Key == Key.Enter)
         {
-            if (_pWingVista.LVistaChosen is long chosen)
+            if (_lWing.LWingChosen is long chosen)
             {
                 if (_pWingIndex.Any(row => row.PIndexItemId == chosen))
                 {
@@ -144,7 +138,7 @@ public partial class PWing : UserControl
             ? Math.Min(place + 1, _pWingIndex.Count - 1)
             : Math.Max(place - 1, 0);
         PIndexItem target = _pWingIndex[place];
-        _pWingVista.LVistaSelect(target.PIndexItemId);
+        _lWing.LWingSelect(target.PIndexItemId);
         PWingIndexFind();
         if (PWingIndex.ItemContainerGenerator.ContainerFromItem(target) is FrameworkElement container)
         {
@@ -177,29 +171,15 @@ public partial class PWing : UserControl
         PWingEntrySave();
     }
 
-    private void PWingOrderRestore()
-    {
-        if (_pWingVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PWingOrderDropdown, _pWingVista.LVistaOrder);
-        }
-    }
-
     private void PWingSieveRestore()
     {
-        if (_pWingVista is not LVista vista)
-        {
-            PWingSieveMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PWingSieveMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PWingSieveMark.Visibility = _lWing.LWingFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PWingIndexFind()
     {
         List<PIndexItem> fresh = [];
-        IReadOnlyList<LVistaRow> read = _pWingVista is null ? [] : _lEngine.LEngineEntryFind(_pWingVista);
+        IReadOnlyList<LVistaRow> read = _lWing.LWingRowsRead();
         foreach (LVistaRow row in read)
         {
             fresh.Add(new PIndexItem(
@@ -214,7 +194,7 @@ public partial class PWing : UserControl
         }
 
         PSplice.PSpliceApply(_pWingIndex, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
-        bool typed = _pWingVista?.LVistaQueried ?? false;
+        bool typed = _lWing.LWingQueried;
         PWingEmpty.Visibility = typed && _pWingIndex.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -223,7 +203,7 @@ public partial class PWing : UserControl
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lWing.LWingEntryLoad(id);
         }
         catch (Exception exception)
         {
@@ -233,29 +213,19 @@ public partial class PWing : UserControl
 
         if (draft is null)
         {
-            _pWingVista?.LVistaSelect(null);
+            _lWing.LWingSelect(null);
             PWingIndexFind();
             PWingDisplay.PDisplayClear();
             return;
         }
 
-        _pWingVista?.LVistaSelect(id);
+        _lWing.LWingSelect(id);
         PWingIndexFind();
         PWingDisplay.PDisplayShow(draft);
     }
 
     private void PWingEntrySave()
     {
-        long? shown = _pWingVista?.LVistaChosen;
-        if (_pWingVista is LVista vista)
-        {
-            if (vista.LVistaLeft)
-            {
-                _lEngine.LEngineLeftSave(shown);
-                return;
-            }
-        }
-
-        _lEngine.LEngineRightSave(shown);
+        _lWing.LWingEntrySave();
     }
 }

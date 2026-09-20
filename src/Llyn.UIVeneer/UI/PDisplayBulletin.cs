@@ -1,34 +1,33 @@
 ﻿using System;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
 public partial class PDisplay
 {
-    private void PDisplayObserverAttach(LVista vista)
+    internal void PDisplayObserverAttach()
     {
-        vista.LVistaChosenAttach(LSubject.LSubjectFavorite, new PObserver(this, PDisplayFavoriteUpdate));
-        vista.LVistaChosenAttach(LSubject.LSubjectGrasp, new PObserver(this, PDisplayGraspUpdate));
-        vista.LVistaChosenAttach(LSubject.LSubjectFrequency, new PObserver(this, PDisplayFrequencyUpdate));
-        vista.LVistaChosenAttach(LSubject.LSubjectInflection, new PObserver(this, PDisplayParadigmUpdate));
-        vista.LVistaChosenAttach(LSubject.LSubjectReflex, new PObserver(this, PDisplayReflexUpdate));
-        vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectScript, new PObserver(this, PDisplayScriptUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PDisplayFanqieUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PDisplayClear));
-        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectTag, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PDisplayEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectFavorite, new PObserver(this, PDisplayFavoriteUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectGrasp, new PObserver(this, PDisplayGraspUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectFrequency, new PObserver(this, PDisplayFrequencyUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectInflection, new PObserver(this, PDisplayParadigmUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectReflex, new PObserver(this, PDisplayReflexUpdate));
+        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectScript, new PObserver(this, PDisplayScriptUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, PDisplayFanqieUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PDisplayClear));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectExample, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectReference, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectTag, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PDisplayEntryUpdate));
+        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDisplayEntryUpdate));
     }
 
     private void PDisplayFavoriteUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayFavoriteShow(shown);
         }
@@ -36,7 +35,7 @@ public partial class PDisplay
 
     private void PDisplayGraspUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayGraspShow(shown);
         }
@@ -44,7 +43,7 @@ public partial class PDisplay
 
     private void PDisplayFrequencyUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayFrequencyShow(shown);
         }
@@ -52,7 +51,7 @@ public partial class PDisplay
 
     private void PDisplayParadigmUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayParadigmShow(shown);
         }
@@ -60,7 +59,7 @@ public partial class PDisplay
 
     private void PDisplayReflexUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayReflexLoad(shown);
         }
@@ -68,7 +67,7 @@ public partial class PDisplay
 
     private void PDisplayScriptUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayScriptShow(shown, PDisplayLanguage.Text);
         }
@@ -76,7 +75,7 @@ public partial class PDisplay
 
     private void PDisplayFanqieUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is long shown)
+        if (_lDisplay.LDisplayChosen is long shown)
         {
             PDisplayFanqieShow(shown, PDisplayLanguage.Text);
         }
@@ -84,7 +83,7 @@ public partial class PDisplay
 
     private void PDisplayEntryUpdate()
     {
-        if (_pDisplayVista?.LVistaChosen is not long shown)
+        if (_lDisplay.LDisplayChosen is not long shown)
         {
             return;
         }
@@ -92,7 +91,7 @@ public partial class PDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _pDisplayVista?.LVistaLoad()?.LDraftContent;
+            draft = _lDisplay.LDisplayDraftLoad();
         }
         catch (Exception)
         {

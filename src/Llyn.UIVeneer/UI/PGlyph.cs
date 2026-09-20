@@ -33,10 +33,10 @@ public partial class PEditor
     private void PGlyphShow(LEntryDraft draft)
     {
         string language = draft.LEntryDraftLanguage;
-        _pGlyph = _lEngine.LEngineGlyphRead(language);
+        _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph?.LGlyphSourced ?? false;
-        PFont.PFontGlyphApply(PGlyph.Resources, _lEngine, language);
+        PFont.PFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
 
         List<LTranscriptionDraft> rows = [];
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)

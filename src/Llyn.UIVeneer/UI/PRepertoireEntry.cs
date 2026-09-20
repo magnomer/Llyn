@@ -12,14 +12,12 @@ public partial class PRepertoire
 {
     private readonly ObservableCollection<POccurrenceItem> _pOccurrenceList = [];
 
-    private LVista? _pOccurrenceVista;
-
     private void POccurrenceFind()
     {
         IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(_pRepertoireVista, _pOccurrenceVista);
+            read = _lRepertoire.LRepertoireOccurrenceRead();
         }
         catch (Exception exception)
         {
@@ -71,8 +69,8 @@ public partial class PRepertoire
         LEntryDraft? draft;
         try
         {
-            _pOccurrenceVista?.LVistaSelect(id);
-            draft = _pOccurrenceVista?.LVistaLoad()?.LDraftContent;
+            _lRepertoire.LRepertoireOccurrenceSelect(id);
+            draft = _lRepertoire.LRepertoireOccurrenceLoad();
         }
         catch (Exception exception)
         {
@@ -93,7 +91,7 @@ public partial class PRepertoire
         PScenario.Visibility = Visibility.Collapsed;
         PVignette.Visibility = Visibility.Collapsed;
 
-        _pOccurrenceVista?.LVistaSelect(id);
+        _lRepertoire.LRepertoireOccurrenceSelect(id);
         POccurrenceFind();
         PDisplay.PDisplayShow(draft);
         PRepertoireMode.IsEnabled = true;
@@ -109,13 +107,13 @@ public partial class PRepertoire
 
     private void POccurrenceEntryCreate()
     {
-        long? situation = _pRepertoireVista?.LVistaChosen;
+        long? situation = _lRepertoire.LRepertoireChosen;
 
         PScenarioDraftCancel();
         PScenario.Visibility = Visibility.Collapsed;
         PVignette.Visibility = Visibility.Collapsed;
 
-        _pOccurrenceVista?.LVistaSelect(null);
+        _lRepertoire.LRepertoireOccurrenceSelect(null);
         POccurrenceFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
@@ -131,7 +129,7 @@ public partial class PRepertoire
 
     private void POccurrenceScribeHandle(bool editing)
     {
-        if (_pOccurrenceVista?.LVistaChosen is not long id)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is not long id)
         {
             if (!editing)
             {
@@ -173,7 +171,7 @@ public partial class PRepertoire
 
         POccurrenceScribeShow(false);
 
-        if (_pOccurrenceVista?.LVistaChosen is long stored)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is long stored)
         {
             POccurrenceEntryShow(stored);
             return;
@@ -181,7 +179,7 @@ public partial class PRepertoire
 
         PEditor.PEditorReset();
 
-        if (_pRepertoireVista?.LVistaChosen is long kept)
+        if (_lRepertoire.LRepertoireChosen is long kept)
         {
             PRepertoireShow(kept);
             return;
@@ -192,7 +190,7 @@ public partial class PRepertoire
 
     private void POccurrenceScribeShow(bool editing)
     {
-        _pOccurrenceVista?.LVistaEditingSet(editing);
+        _lRepertoire.LRepertoireEditorSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -215,11 +213,11 @@ public partial class PRepertoire
     private void POccurrenceEntryUpdate(LBulletin bulletin)
     {
         if (bulletin.LBulletinStored
-            && _pOccurrenceVista?.LVistaChosen is null
+            && _lRepertoire.LRepertoireOccurrenceChosen is null
             && IsVisible
             && PEditor.Visibility == Visibility.Visible)
         {
-            _pOccurrenceVista?.LVistaSelect(bulletin.LBulletinId);
+            _lRepertoire.LRepertoireOccurrenceSelect(bulletin.LBulletinId);
         }
 
         PAtlasFind();
@@ -230,7 +228,7 @@ public partial class PRepertoire
         LEntryDraft? draft;
         try
         {
-            draft = _pOccurrenceVista?.LVistaLoad()?.LDraftContent;
+            draft = _lRepertoire.LRepertoireOccurrenceLoad();
         }
         catch (Exception)
         {
@@ -239,7 +237,7 @@ public partial class PRepertoire
 
         if (draft is null)
         {
-            if (_pRepertoireVista?.LVistaChosen is long kept)
+            if (_lRepertoire.LRepertoireChosen is long kept)
             {
                 PRepertoireShow(kept);
                 return;
@@ -261,14 +259,14 @@ public partial class PRepertoire
             PEditor.PEditorReset();
         }
 
-        _pOccurrenceVista?.LVistaSelect(null);
+        _lRepertoire.LRepertoireOccurrenceSelect(null);
         POccurrenceFind();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
         PRepertoireScribeShow(editing);
-        PRepertoireMode.IsEnabled = _pRepertoireVista?.LVistaChosen is not null;
-        PRepertoireBin.IsEnabled = _pRepertoireVista?.LVistaChosen is not null;
+        PRepertoireMode.IsEnabled = _lRepertoire.LRepertoireChosen is not null;
+        PRepertoireBin.IsEnabled = _lRepertoire.LRepertoireChosen is not null;
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
@@ -278,7 +276,7 @@ public partial class PRepertoire
             return;
         }
 
-        if (_pRepertoireVista?.LVistaChosen is not null || _pOccurrenceVista?.LVistaChosen is not null)
+        if (_lRepertoire.LRepertoireChosen is not null || _lRepertoire.LRepertoireOccurrenceChosen is not null)
         {
             POccurrenceEntryCreate();
             return;

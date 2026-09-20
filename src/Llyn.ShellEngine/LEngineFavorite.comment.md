@@ -1,6 +1,6 @@
 # LEngineFavorite.cs
 
-## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query)`
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)`
 
 Finds the marked entries whose headword carries the query.
 An empty query returns every marked entry.
@@ -20,12 +20,12 @@ Marking changes no lexical data and keeps the entry's identity.
 Unmarks the entry.
 The entry stands, still reachable through the entry catalog.
 
-## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)`
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)`
 
 The marked entries answering `query`, in `order`.
 The mark carries its own stamp, so ordering by the mark is not ordering by the entry.
 
-## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The same list with the marked entries in a hidden language left out.
 

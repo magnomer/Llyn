@@ -20,8 +20,9 @@ It picks the one in front for the store button.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
 
-## `internal async void PReferenceVistaRestore(LVista vista, LVista footnote)`
+## `internal async void PReferenceVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Hands both vistas to the deportment and attaches the observers that carry each announcement onto the dispatcher.
 A stored entry re-lists the shelf too, because the citation counts on its rows may have moved.
 The flags are loaded before the first rows are built, because an entry row reads its flag at construction.

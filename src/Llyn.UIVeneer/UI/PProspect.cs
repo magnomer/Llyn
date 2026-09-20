@@ -69,7 +69,7 @@ public partial class PEditor
         IReadOnlyList<LVistaRow> found;
         try
         {
-            found = _lEngine.LEngineProspectFind(word);
+            found = _lEditor.LEditorCard.LCardProspectFind(word);
         }
         catch (Exception exception)
         {
@@ -144,7 +144,7 @@ public partial class PEditor
         LCourt link;
         try
         {
-            link = _lEngine.LEngineCourtStart(
+            link = _lEditor.LEditorCard.LCardCourtStart(
                 PEditorDraft,
                 _lEditor.LEditorOrigin,
                 item.PProspectItemHeadword,

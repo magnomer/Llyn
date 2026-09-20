@@ -1,5 +1,5 @@
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -11,10 +11,10 @@ internal sealed record PRespelling(bool PRespellingShown, bool PRespellingSlashe
 
     internal string PRespellingCloser => PRespellingSlashed ? "/" : "]";
 
-    internal static PRespelling PRespellingRead(LEngine engine, string language)
+    internal static PRespelling PRespellingRead(LWindow window, string language)
     {
-        bool shown = engine.LEngineRespellingCheck(language);
-        return new PRespelling(shown, shown && engine.LEnginePhonemicCheck(language));
+        bool shown = window.LWindowRespellingCheck(language);
+        return new PRespelling(shown, shown && window.LWindowPhonemicCheck(language));
     }
 
     internal string PRespellingTextRead(LPronunciationDraft spoken)

@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PMorphologyHandle(object sender, RoutedEventArgs e)
     {
-        _lEngine.LEngineMorphologySave(PMorphology.IsChecked == true);
+        PSettingsWindow.LWindowMorphologySave(PMorphology.IsChecked == true);
     }
 }

@@ -41,6 +41,16 @@ public sealed class TAuditRing
         @"\bnew L\w+(Archive|Loader|File|Http)\(",
     ];
 
+    private static readonly Regex TAuditRingDeclared = new(
+        @"^\s*(?:public|internal)\s+(?:sealed\s+|static\s+|abstract\s+|partial\s+)*"
+        + @"(?:class|record|interface|enum)\s+(?<name>L\w+)",
+        RegexOptions.Compiled | RegexOptions.Multiline);
+
+    private static readonly string[] TAuditRingPart =
+    [
+        @"\bpartial class LEngine\b",
+    ];
+
     [Fact]
     public void AuditRing_Projects_ReferenceInward()
     {
@@ -112,6 +122,44 @@ public sealed class TAuditRing
     }
 
     [Fact]
+    public void AuditRing_Engine_HoldsPartsWithinCeiling()
+    {
+        TAuditRingCheck("EnginePart", "Llyn.ShellEngine", TAuditRingPart, "partial part(s) of the engine");
+    }
+
+    [Fact]
+    public void AuditRing_Deportment_HoldsOnlyHandles()
+    {
+        string[] patterns = TAuditDeclaredRead("Llyn.ShellEngine")
+            .Where(name => !TAuditRingSetting.TAuditRingHandles.Contains(name, StringComparer.Ordinal))
+            .Select(name => $@"\b{name}\b")
+            .ToArray();
+        List<TViolation> hits = TAuditRingScan(TAuditRoleSelect("Llyn.UIDeportment"), patterns);
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{hits.Count} engine type(s) sit in the deportment and must be a port or a handle:\n" + string.Join(
+                '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
+    }
+
+    [Fact]
+    public void AuditRing_Application_HoldsUseCases()
+    {
+        string repoRoot = TAuditSource.TAuditRootRead();
+        TAuditScope scope = new(
+            [],
+            [TAuditRingSource + "Llyn.Application/*.cs"],
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            []);
+        int count = TAuditSource.TAuditFileRead(repoRoot, scope).Count;
+        Assert.True(count >= TAuditRingSetting.TAuditRingFloor, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{count} source file(s) in the application ring, below the floor of "
+            + $"{TAuditRingSetting.TAuditRingFloor}."));
+    }
+
+    [Fact]
     public void AuditRing_Engine_ConstructsNoAdapter()
     {
         TAuditRingCheck(
@@ -160,6 +208,7 @@ public sealed class TAuditRing
                      ("EngineField", "Llyn.UIVeneer", TAuditRingField),
                      ("EngineHelper", "Llyn.UIVeneer", TAuditRingHelper),
                      ("AdapterEngine", "Llyn.ShellEngine", TAuditRingAdapter),
+                     ("EnginePart", "Llyn.ShellEngine", TAuditRingPart),
                  })
         {
             int count = TAuditRingScan(TAuditRoleSelect(role), patterns).Count;
@@ -244,6 +293,28 @@ public sealed class TAuditRing
     {
         string prefix = $"{TAuditRingSource}{role}/";
         return path => path.StartsWith(prefix, StringComparison.Ordinal);
+    }
+
+    private static IReadOnlyList<string> TAuditDeclaredRead(string role)
+    {
+        string repoRoot = TAuditSource.TAuditRootRead();
+        TAuditScope scope = new(
+            [],
+            [TAuditRingSource + role + "/*.cs"],
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            []);
+        HashSet<string> names = new(StringComparer.Ordinal);
+        foreach (string path in TAuditSource.TAuditFileRead(repoRoot, scope))
+        {
+            foreach (Match match in TAuditRingDeclared.Matches(File.ReadAllText(path)))
+            {
+                names.Add(match.Groups["name"].Value);
+            }
+        }
+
+        return [.. names];
     }
 
     private static List<TViolation> TAuditRingScan(Func<string, bool> chosen, IReadOnlyList<string> patterns)

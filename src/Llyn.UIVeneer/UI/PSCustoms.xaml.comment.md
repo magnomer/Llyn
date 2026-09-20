@@ -6,11 +6,11 @@ The customs window's behavior: the rows it declares, the answer Accept builds fr
 Whether Accept was pressed is remembered separately from the dialog result.
 Closing the window any other way declares nothing, so a dismissed window imports nothing.
 
-## `private PSCustoms(Window owner, LEngine? engine)`
+## `private PSCustoms(Window owner, LWindow? window)`
 
-The engine is null on the omission face, which reads nothing back from the workspace.
+The window deportment is null on the omission face, which reads nothing back from the workspace.
 
-## `internal static IReadOnlyList<LMarkupIntake>? PSCustomsShow(Window owner, LEngine engine, IReadOnlyList<LMarkupEntry> entries)`
+## `internal static IReadOnlyList<LMarkupIntake>? PSCustomsShow(Window owner, LWindow window, IReadOnlyList<LMarkupEntry> entries)`
 
 Shows the declaration over its owner and waits for the answer.
 Each entry's candidates are looked up before the window opens, so the rows arrive already defaulted.

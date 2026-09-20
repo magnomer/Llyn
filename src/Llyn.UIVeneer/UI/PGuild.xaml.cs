@@ -28,7 +28,7 @@ public partial class PGuild : UserControl
     {
         _pGuildHost = host;
         _lGuild = new LGuild(
-            engine,
+            engine, engine, engine,
             PGuildShownCheck,
             PGuildDiscardConfirm,
             PGuildRemovalConfirm,
@@ -46,6 +46,7 @@ public partial class PGuild : UserControl
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelDraftChanged += PGuildSourceUpdate;
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
         _lGuild.LGuildAutograph.LDeskStarted += PAutographStartUpdate;
+        PGuildObserverAttach();
         _lGuild.LGuildAutograph.LDeskDraftChanged += PAutographDraftUpdate;
         _lGuild.LGuildAutograph.LDeskFailed += host.PWindowFailureShow;
 
@@ -57,18 +58,23 @@ public partial class PGuild : UserControl
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PGuildPressHandle, PGuildPressCheck));
     }
 
-    internal void PGuildVistaRestore(LVista vista, LVista oeuvre)
+    internal void PGuildVistaRestore()
     {
-        _lGuild.LGuildVistaRestore(vista, oeuvre);
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
-        oeuvre.LVistaObserverAttach(
+        _lGuild.LGuildVistaRestore(_pGuildHost.PWindowPosture);
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
+        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lGuild.LGuildReset));
-        vista.LVistaObserverAttach(LSubject.LSubjectAuthor, new PObserver(this, _lGuild.LGuildCatalogUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, _lGuild.LGuildCatalogUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, _lGuild.LGuildCatalogUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, _lGuild.LGuildCatalogUpdate));
-        PChoice.PChoiceOrderApply(PEchelonDropdown, vista.LVistaOrder);
+        _lGuild.LGuildPanel.LPanelObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, _lGuild.LGuildReset));
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectAuthor, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectReference, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectExample, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, new PObserver(this, _lGuild.LGuildCatalogUpdate));
+        PChoice.PChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
         PChoice.PChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
         PLouverUpdate();
         _lGuild.LGuildQuerySet(PMuster.Text);
@@ -171,10 +177,19 @@ public partial class PGuild : UserControl
         PAutographUnionNotice.Visibility = PLook.PLookVisibleRead(!_lGuild.LGuildUnionShown);
     }
 
-    private void PAutographStartUpdate(LTenure held)
+    private void PGuildObserverAttach()
     {
-        held.LTenureDraftAttach(LSubject.LSubjectDraft, new PObserver(this, _lGuild.LGuildAutograph.LDeskDraftUpdate));
-        held.LTenureDraftAttach(LSubject.LSubjectTenure, new PObserver(this, _lGuild.LGuildAutograph.LDeskStateUpdate));
+        PAutographObserverAttach(_lGuild.LGuildAutograph);
+    }
+
+    private void PAutographObserverAttach(LDesk desk)
+    {
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, new PObserver(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, new PObserver(this, desk.LDeskStateUpdate));
+    }
+
+    private void PAutographStartUpdate()
+    {
         PAutographUnion.Text = string.Empty;
         PAutographUnionList.ItemsSource = null;
         PAutographName.Focus();

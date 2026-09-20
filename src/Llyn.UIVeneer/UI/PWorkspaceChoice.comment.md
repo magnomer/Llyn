@@ -35,14 +35,14 @@ The widths are reset before restoring, so a workspace without stored widths open
 Changing the workspace throws the form away with it.
 The user must say so before it happens.
 
-### `PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();`
+### `PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();`
 
 An unusable path leaves the previous workspace in place.
 Permission and invalid characters are such faults.
 Restore the field so it keeps showing the folder actually in use.
 The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
 
-### `_pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());`
+### `_pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowStateRead());`
 
 The new workspace carries its own view state.
 The shell is put onto it as well as onto its database.

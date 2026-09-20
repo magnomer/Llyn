@@ -3,13 +3,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 internal sealed partial class PCard : INotifyPropertyChanged
 {
-    private readonly LEngine _pCardEngine;
+    private readonly LWindow _pCardWindow;
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<PCitationItem> _pCardCitation;
     private readonly ObservableCollection<string> _pCardParticle;
@@ -23,7 +23,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private LStateValue _pCardExpression = LStateValue.LStateValueUnspecified;
 
     internal PCard(
-        LEngine engine,
+        LWindow window,
         string prefix,
         int position,
         ObservableCollection<PCitationItem> catalog,
@@ -31,9 +31,9 @@ internal sealed partial class PCard : INotifyPropertyChanged
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
 
-        _pCardEngine = engine;
+        _pCardWindow = window;
         _pCardPrefix = prefix;
         _pCardPosition = position;
         _pCardPositionText = position.ToString(CultureInfo.InvariantCulture);

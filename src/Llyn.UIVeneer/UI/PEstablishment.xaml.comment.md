@@ -6,7 +6,7 @@ The status bar along the foot of the window.
 Its left says whether the window holds unsaved work, and its right says how big the workspace is.
 It holds nothing of its own and prints what the engine answers.
 
-## `internal void PEstablishmentAttach(PWindow host, LEngine engine)`
+## `internal void PEstablishmentAttach(PWindow host)`
 
 Puts the bar to work on the one engine and prints the first reading at once.
 The bar subscribes like a panel, so a change made anywhere reaches it without any panel telling it.

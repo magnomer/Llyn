@@ -13,14 +13,14 @@ public partial class PDisplay
         bool pending;
         try
         {
-            slots = _lEngine.LEngineParadigmShow(id);
-            enabled = _lEngine.LEngineSettingsRead().LSettingsMorphology;
+            slots = _lDisplay.LDisplayParadigmShow(id);
+            enabled = _lDisplay.LDisplayMorphologyRead();
             if (enabled)
             {
-                _lEngine.LEngineInflectionStart(id);
+                _lDisplay.LDisplayInflectionStart(id);
             }
 
-            pending = _lEngine.LEngineInflectionCheck(id);
+            pending = _lDisplay.LDisplayInflectionCheck(id);
         }
         catch (Exception)
         {
@@ -35,7 +35,8 @@ public partial class PDisplay
             return;
         }
 
-        PFont.PFontApply(_lEngine, slots[0].LParadigmSlotSpeech.LSpeechValueLanguage, PDisplayParadigm);
+        PFont.PFontApply(
+            _pDisplayHost.PWindowDeportment, slots[0].LParadigmSlotSpeech.LSpeechValueLanguage, PDisplayParadigm);
         PDisplayParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(slots, pending, enabled, false);
     }
 }

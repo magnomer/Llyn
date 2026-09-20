@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -7,7 +8,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class LDesk
 {
-    private readonly LEngine _lEngine;
+    private readonly LDraftPort _lDraftPort;
 
     private readonly string _lDeskScope;
 
@@ -17,20 +18,26 @@ public sealed class LDesk
 
     private LTenure? _lDeskTenure;
 
+    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskTenureObservers = [];
+
+    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskDraftObservers = [];
+
+    private readonly List<(LSubject LDeskSubject, LObserver LDeskObserver)> _lDeskEntryObservers = [];
+
     private bool _lDeskFilling;
 
-    public LDesk(LEngine engine, string scope, Func<bool> unreadableSeam)
+    public LDesk(LDraftPort drafts, string scope, Func<bool> unreadableSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(drafts);
         ArgumentException.ThrowIfNullOrWhiteSpace(scope);
         ArgumentNullException.ThrowIfNull(unreadableSeam);
 
-        _lEngine = engine;
+        _lDraftPort = drafts;
         _lDeskScope = scope;
         _lDeskUnreadableSeam = unreadableSeam;
     }
 
-    public event Action<LTenure>? LDeskStarted;
+    public event Action? LDeskStarted;
 
     public event Action<LDraft>? LDeskDraftChanged;
 
@@ -72,11 +79,25 @@ public sealed class LDesk
             return;
         }
 
+        LDeskStartRun(() => _lDraftPort.LEngineTenureStart(vista, id));
+    }
+
+    public void LDeskStart(string origin, LSubject subject, long? id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(origin);
+
+        LDeskCancel();
+        LDeskStartRun(() => _lDraftPort.LEngineTenureStart(origin, subject, id));
+    }
+
+    private void LDeskStartRun(Func<LTenure> start)
+    {
         try
         {
-            LTenure started = _lEngine.LEngineTenureStart(vista, id);
+            LTenure started = start();
             _lDeskTenure = started;
-            LDeskStarted?.Invoke(started);
+            LDeskObserverApply(started);
+            LDeskStarted?.Invoke();
         }
         catch (Exception exception)
         {
@@ -87,6 +108,58 @@ public sealed class LDesk
 
         LDeskDraftUpdate();
         LDeskStateChanged?.Invoke();
+    }
+
+    public void LDeskObserverAttach(LSubject subject, LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lDeskTenureObservers.Add((subject, observer));
+        _lDeskTenure?.LTenureObserverAttach(subject, observer);
+    }
+
+    public void LDeskDraftAttach(LSubject subject, LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lDeskDraftObservers.Add((subject, observer));
+        _lDeskTenure?.LTenureDraftAttach(subject, observer);
+    }
+
+    public void LDeskEntryAttach(LSubject subject, LObserver observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lDeskEntryObservers.Add((subject, observer));
+        _lDeskTenure?.LTenureEntryAttach(subject, observer);
+    }
+
+    private void LDeskObserverApply(LTenure started)
+    {
+        foreach ((LSubject subject, LObserver observer) in _lDeskTenureObservers)
+        {
+            started.LTenureObserverAttach(subject, observer);
+        }
+
+        foreach ((LSubject subject, LObserver observer) in _lDeskDraftObservers)
+        {
+            started.LTenureDraftAttach(subject, observer);
+        }
+
+        foreach ((LSubject subject, LObserver observer) in _lDeskEntryObservers)
+        {
+            started.LTenureEntryAttach(subject, observer);
+        }
+    }
+
+    public LForay? LDeskRecordingStart(string word, long target, LListener listener)
+    {
+        return _lDeskTenure?.LTenureRecordingStart(word, target, listener);
+    }
+
+    public LForay? LDeskTranscriptionStart(string word, long target, string scheme, LReceiver receiver)
+    {
+        return _lDeskTenure?.LTenureTranscriptionStart(word, target, scheme, receiver);
     }
 
     public LDraft? LDeskRead()

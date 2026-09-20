@@ -2,8 +2,11 @@
 
 ## `public sealed class LDisplay`
 
-The reading view's deportment: the reflex fold toggle, and whether the fetched sections are still pending.
-The rest of the reading view stays in the veneer until its own plan.
+The reading view deportment.
+It keeps the reflex fold toggle and answers whether the fetched sections are still pending.
+Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
+The veneer still catches a refused read on its side and shows the section empty.
+That is what it did over the engine.
 
 ## `private bool _lDisplayOpened;`
 

@@ -79,11 +79,3 @@ The card would otherwise be bound to a row the user never chose.
 A row carrying a negative id is looked up by its wording first.
 A name the shelf already holds is shared rather than doubled.
 Only then is a new written Register created, recorded in the map under that id.
-
-## `private LRegister? LEngineRegisterResolve(string name)`
-
-The stored Register whose name reads as `name`, or `null` when none does.
-Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
-The whole shelf is searched, because a name is one Register whichever pack or card named it.
-The engine holds this rule.
-The form, a commit and any other client therefore all get one row for one wording.

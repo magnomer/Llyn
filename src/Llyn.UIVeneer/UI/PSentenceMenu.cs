@@ -24,7 +24,7 @@ public partial class PEditor
         IReadOnlyList<LCatalogReference> references;
         try
         {
-            references = _lEngine.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
+            references = _lEditor.LEditorCard.LCardReferenceFind();
         }
         catch (Exception exception)
         {
@@ -44,7 +44,7 @@ public partial class PEditor
     {
         string chosen = string.IsNullOrWhiteSpace(language) ? _lEditor.LEditorLanguage : language;
 
-        LSentenceOrder order = _lEngine.LEngineOrderRead(chosen);
+        LSentenceOrder order = _lEditor.LEditorCard.LCardOrderRead(chosen);
         PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
         PSentenceFrameShow(_pEditorDependence, PSentenceDependenceRead(chosen));
 
@@ -63,7 +63,7 @@ public partial class PEditor
     {
         try
         {
-            return _lEngine.LEngineParticleRead(language);
+            return _lEditor.LEditorCard.LCardParticleRead(language);
         }
         catch (Exception)
         {
@@ -75,7 +75,7 @@ public partial class PEditor
     {
         try
         {
-            return _lEngine.LEngineDependenceRead(language);
+            return _lEditor.LEditorCard.LCardDependenceRead(language);
         }
         catch (Exception)
         {
@@ -227,7 +227,7 @@ public partial class PEditor
         {
             try
             {
-                row.PSentenceMentionShow(_lEngine, silent);
+                row.PSentenceMentionShow(_pEditorHost.PWindowDeportment, silent);
             }
             catch (Exception exception)
             {

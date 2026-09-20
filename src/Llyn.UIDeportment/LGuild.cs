@@ -11,7 +11,9 @@ public sealed class LGuild
 {
     private const int LGuildUnionLimit = 8;
 
-    private readonly LEngine _lEngine;
+    private readonly LEntryPort _lEntryPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private readonly Func<bool> _lGuildLeaveSeam;
 
@@ -24,25 +26,28 @@ public sealed class LGuild
     private int _lGuildCount;
 
     public LGuild(
-        LEngine engine,
+        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
         Func<string, string, bool> unionSeam,
         Func<bool> unreadableSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
         ArgumentNullException.ThrowIfNull(unionSeam);
 
-        _lEngine = engine;
+        _lEntryPort = entries;
+        _lPortraitPort = portraits;
         _lGuildLeaveSeam = leaveSeam;
         _lGuildRemovalSeam = removalSeam;
         _lGuildUnionSeam = unionSeam;
-        LGuildAutograph = new LDesk(engine, "Guild", unreadableSeam);
+        LGuildAutograph = new LDesk(drafts, "Guild", unreadableSeam);
         LGuildPanel = new LPanel("Guild.LoadFailed", LAutographChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
-        LGuildOeuvre = new LOeuvre(engine, shownSeam);
+        LGuildOeuvre = new LOeuvre(entries, shownSeam);
         LGuildPanel.LPanelRowsChanged += LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate;
         LGuildPanel.LPanelCleared += LGuildAutograph.LDeskCancel;
         LGuildPanel.LPanelEdited += LGuildDraftStart;
@@ -122,7 +127,7 @@ public sealed class LGuild
             return [];
         }
 
-        return _lEngine.LEngineAuthorFind(vista, LLocalization.LLocalizationTextRead("Guild.Uncredited"));
+        return _lEntryPort.LEngineAuthorFind(vista, LLocalization.LLocalizationTextRead("Guild.Uncredited"));
     }
 
     private IReadOnlyList<LCatalogAuthor> LGuildRollApply(IReadOnlyList<LCatalogAuthor> rows)
@@ -162,9 +167,9 @@ public sealed class LGuild
         }
 
         return LVita.LVitaCreate(
-            _lEngine.LEngineAuthorFind(LGuildAuthorId),
-            _lEngine.LEngineFellowFind(LGuildAuthorId),
-            _lEngine.LEngineUsageRead(LGuildAuthorId, LOwner.LOwnerAuthor),
+            _lEntryPort.LEngineAuthorFind(LGuildAuthorId),
+            _lEntryPort.LEngineFellowFind(LGuildAuthorId),
+            _lEntryPort.LEngineUsageRead(LGuildAuthorId, LOwner.LOwnerAuthor),
             LLocalization.LLocalizationTextRead);
     }
 
@@ -182,7 +187,7 @@ public sealed class LGuild
             return [];
         }
 
-        return _lEngine.LEngineAuthorFind(typed, LGuildAuthorId, LGuildUnionLimit);
+        return _lEntryPort.LEngineAuthorFind(typed, LGuildAuthorId, LGuildUnionLimit);
     }
 
     public void LGuildQuerySet(string query)
@@ -241,7 +246,7 @@ public sealed class LGuild
 
     private bool LGuildDeleteConfirm()
     {
-        return _lGuildRemovalSeam(LGuildWorkRead(_lEngine.LEngineAuthorFind(LGuildAuthorId)));
+        return _lGuildRemovalSeam(LGuildWorkRead(_lEntryPort.LEngineAuthorFind(LGuildAuthorId)));
     }
 
     private static int LGuildWorkRead(LCatalogAuthor? row)
@@ -432,7 +437,7 @@ public sealed class LGuild
 
         try
         {
-            _lEngine.LEngineAuthorAbsorb(kept, LGuildAuthorId);
+            _lEntryPort.LEngineAuthorAbsorb(kept, LGuildAuthorId);
         }
         catch (Exception exception)
         {
@@ -447,7 +452,7 @@ public sealed class LGuild
     {
         return _lGuildUnionSeam(
             LGuildAutograph.LDeskRead()?.LDraftAuthorName ?? string.Empty,
-            _lEngine.LEngineAuthorFind(kept)?.LCatalogAuthorName ?? string.Empty);
+            _lEntryPort.LEngineAuthorFind(kept)?.LCatalogAuthorName ?? string.Empty);
     }
 
     public void LGuildDelete()
@@ -467,6 +472,15 @@ public sealed class LGuild
             return Task.CompletedTask;
         }
 
-        return _lEngine.LEnginePortraitPrint(LGuildOeuvre.LOeuvrePanel.LPanelVista, legend, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(LGuildOeuvre.LOeuvrePanel.LPanelVista, legend, ticket);
+    }
+
+    public void LGuildVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LGuildVistaRestore(
+            posture.LPostureVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
+            posture.LPostureVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
     }
 }

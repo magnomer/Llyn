@@ -15,11 +15,9 @@ public partial class PTaxonomy
 
     private readonly ObservableCollection<PMembershipItem> _pMembershipList = [];
 
-    private LVista? _pTaxonomyVista;
-
     private async void PTaxonomyWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pTaxonomyHost.PWindowDeportment);
         PTaxonomyReset();
     }
 
@@ -31,96 +29,72 @@ public partial class PTaxonomy
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
     {
-        _pTaxonomyVista?.LVistaQuerySet(PExploration.Text ?? string.Empty);
+        _lTaxonomy.LTaxonomyExplorationSet(PExploration.Text ?? string.Empty);
     }
 
     private void PScoutHandle(object sender, TextChangedEventArgs e)
     {
-        _pMembershipVista?.LVistaQuerySet(PScout.Text);
+        _lTaxonomy.LTaxonomyScoutSet(PScout.Text);
     }
 
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pTaxonomyVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PFunnelDropper.IsChecked = false;
-        _pTaxonomyVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pTaxonomyVista.LVistaOrder));
+        _lTaxonomy.LTaxonomyFunnelSet(choice);
     }
 
     private void PLatticeHandle(object sender, RoutedEventArgs e)
     {
-        if (_pTaxonomyVista is null)
-        {
-            return;
-        }
-
-        _pTaxonomyVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PLatticeList));
+        _lTaxonomy.LTaxonomyLatticeSet(PChoice.PChoiceFilterRead(PLatticeList));
         PLatticeRestore();
     }
 
-    internal async void PTaxonomyVistaRestore(LVista vista, LVista membership)
+    internal async void PTaxonomyVistaRestore()
     {
-        _pTaxonomyVista = vista;
-        _pMembershipVista = membership;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PDirectoryFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTaxonomyWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectTag, new PObserver(this, PTaxonomyTagUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PDirectoryFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDirectoryFind));
-        membership.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PMembershipEntryUpdate));
-        membership.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
-        membership.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PMembershipFind));
-        PDisplay.PDisplayVistaRestore(membership);
-        PEditor.PEditorVistaRestore(membership);
-        PFunnelRestore();
+        _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowPosture);
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, new PObserver(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTaxonomyWorkspaceUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, new PObserver(this, PTaxonomyTagUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectEntry, new PObserver(this, PMembershipEntryUpdate));
+        _lTaxonomy.LTaxonomyEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PTaxonomyEntryUpdate));
+        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectVista, new PObserver(this, PMembershipFind));
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         PLatticeRestore();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pTaxonomyHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PLatticeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PLatticeHandle);
-        vista.LVistaQuerySet(PExploration.Text ?? string.Empty);
-        membership.LVistaQuerySet(PScout.Text);
+        PChoice.PChoiceFilterBuild(
+            PLatticeList, _lTaxonomy.LTaxonomyLanguageRead(), _lTaxonomy.LTaxonomyFilter, PLatticeHandle);
+        _lTaxonomy.LTaxonomyExplorationSet(PExploration.Text ?? string.Empty);
+        _lTaxonomy.LTaxonomyScoutSet(PScout.Text);
         PDirectoryFind();
-    }
-
-    private void PFunnelRestore()
-    {
-        if (_pTaxonomyVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PFunnelDropdown, _pTaxonomyVista.LVistaOrder);
-        }
     }
 
     private void PLatticeRestore()
     {
-        if (_pTaxonomyVista is not LVista vista)
-        {
-            PLatticeMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PLatticeMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PLatticeMark.Visibility = _lTaxonomy.LTaxonomyFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PDirectoryReset()
     {
-        _pTaxonomyVista?.LVistaSelect(null);
+        _lTaxonomy.LTaxonomySelect(null);
     }
 
     private void PDirectoryFind()
     {
-        if (_pTaxonomyVista is null)
-        {
-            return;
-        }
-
         IReadOnlyList<LCatalogTag> read;
         try
         {
-            read = _lEngine.LEngineTagFind(_pTaxonomyVista);
+            read = _lTaxonomy.LTaxonomyRowsRead();
         }
         catch (Exception exception)
         {
@@ -131,7 +105,8 @@ public partial class PTaxonomy
         _pDirectoryList.Clear();
         foreach (LCatalogTag row in read)
         {
-            _pDirectoryList.Add(new PDirectoryItem(row.LCatalogTagStored.LTagId, row.LCatalogTagStored.LTagText, row.LCatalogTagChosen));
+            _pDirectoryList.Add(new PDirectoryItem(
+                row.LCatalogTagStored.LTagId, row.LCatalogTagStored.LTagText, row.LCatalogTagChosen));
         }
 
         PDirectoryEmpty.Visibility = _pDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -150,12 +125,7 @@ public partial class PTaxonomy
 
     private void PDirectorySelect(long? id)
     {
-        if (_pTaxonomyVista is null)
-        {
-            return;
-        }
-
-        _pTaxonomyVista.LVistaSelect(id);
+        _lTaxonomy.LTaxonomySelect(id);
         PDirectoryFind();
     }
 
@@ -163,7 +133,7 @@ public partial class PTaxonomy
     {
         PExploration.Text = string.Empty;
         PScout.Text = string.Empty;
-        _pTaxonomyVista?.LVistaSelect(id);
+        _lTaxonomy.LTaxonomySelect(id);
         PDirectoryFind();
     }
 
@@ -174,9 +144,9 @@ public partial class PTaxonomy
             return;
         }
 
-        if (_pTaxonomyVista?.LVistaChosen is null)
+        if (_lTaxonomy.LTaxonomyChosen is null)
         {
-            if (_pMembershipVista?.LVistaChosen is null)
+            if (_lTaxonomy.LTaxonomyMembershipChosen is null)
             {
                 PDirectoryTagCreate();
                 return;
@@ -196,7 +166,7 @@ public partial class PTaxonomy
         LTag created;
         try
         {
-            created = _lEngine.LEngineTagCreate(text);
+            created = _lTaxonomy.LTaxonomyTagCreate(text);
         }
         catch (Exception exception)
         {
@@ -226,7 +196,7 @@ public partial class PTaxonomy
 
             PTaxonomyScribeShow(false);
 
-            if (_pMembershipVista?.LVistaChosen is long shown)
+            if (_lTaxonomy.LTaxonomyMembershipChosen is long shown)
             {
                 PMembershipEntryShow(shown);
                 return;
@@ -236,7 +206,7 @@ public partial class PTaxonomy
             return;
         }
 
-        if (_pMembershipVista?.LVistaChosen is not long edited)
+        if (_lTaxonomy.LTaxonomyMembershipChosen is not long edited)
         {
             PTaxonomyClear();
             return;
@@ -248,7 +218,7 @@ public partial class PTaxonomy
 
     private void PTaxonomyScribeShow(bool editing)
     {
-        _pMembershipVista?.LVistaEditingSet(editing);
+        _lTaxonomy.LTaxonomyScribeSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -260,7 +230,7 @@ public partial class PTaxonomy
     {
         if (editing)
         {
-            if (_pMembershipVista?.LVistaChosen is null)
+            if (_lTaxonomy.LTaxonomyMembershipChosen is null)
             {
                 return;
             }
@@ -281,7 +251,7 @@ public partial class PTaxonomy
 
     internal long PTaxonomyVoyageRead()
     {
-        return _pTaxonomyVista?.LVistaChosen ?? 0;
+        return _lTaxonomy.LTaxonomyChosen ?? 0;
     }
 
     private void PTaxonomyEntryShow(LEntryDraft draft)
@@ -292,7 +262,7 @@ public partial class PTaxonomy
 
     private void PTaxonomyClear()
     {
-        _pMembershipVista?.LVistaSelect(null);
+        _lTaxonomy.LTaxonomyMembershipSelect(null);
         PMembershipFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
@@ -315,7 +285,7 @@ public partial class PTaxonomy
 
         try
         {
-            _pMembershipVista?.LVistaDelete();
+            _lTaxonomy.LTaxonomyMembershipDelete();
         }
         catch (Exception exception)
         {

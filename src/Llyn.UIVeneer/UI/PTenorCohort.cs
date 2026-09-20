@@ -9,14 +9,12 @@ namespace Llyn.UIVeneer;
 
 public partial class PTenor
 {
-    private LVista? _pCohortVista;
-
     private void PCohortFind()
     {
         IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(_pTenorVista, _pCohortVista);
+            read = _lTenor.LTenorCohortRead();
         }
         catch (Exception exception)
         {
@@ -68,8 +66,8 @@ public partial class PTenor
         LEntryDraft? draft;
         try
         {
-            _pCohortVista?.LVistaSelect(id);
-            draft = _pCohortVista?.LVistaLoad()?.LDraftContent;
+            _lTenor.LTenorCohortSelect(id);
+            draft = _lTenor.LTenorCohortLoad();
         }
         catch (Exception exception)
         {
@@ -84,7 +82,7 @@ public partial class PTenor
             return;
         }
 
-        _pCohortVista?.LVistaSelect(id);
+        _lTenor.LTenorCohortSelect(id);
         PCohortFind();
         PTenorBin.IsEnabled = true;
         PTenorEntryShow(draft);
@@ -103,7 +101,7 @@ public partial class PTenor
             {
                 if (PEditor.Visibility == Visibility.Visible)
                 {
-                    _pCohortVista?.LVistaSelect(bulletin.LBulletinId);
+                    _lTenor.LTenorCohortSelect(bulletin.LBulletinId);
                     PCohortFind();
                     PTenorBin.IsEnabled = true;
                 }
@@ -118,7 +116,7 @@ public partial class PTenor
         LEntryDraft? draft;
         try
         {
-            draft = _pCohortVista?.LVistaLoad()?.LDraftContent;
+            draft = _lTenor.LTenorCohortLoad();
         }
         catch (Exception)
         {
@@ -136,7 +134,7 @@ public partial class PTenor
 
     private void PCohortEntryCreate()
     {
-        long? register = _pTenorVista?.LVistaChosen;
+        long? register = _lTenor.LTenorChosen;
 
         PTenorClear();
         PTenorMode.IsEnabled = true;

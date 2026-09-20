@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Llyn.Core;
 
-public static class LCatalogFavorite
+public sealed record LCatalogFavorite(LEntry LCatalogFavoriteEntry, string LCatalogFavoriteMarked)
 {
-    public static IReadOnlyList<LFavorite> LCatalogFavoriteSort(
-        IReadOnlyList<LFavorite> favorites,
+    public static IReadOnlyList<LCatalogFavorite> LCatalogFavoriteSort(
+        IReadOnlyList<LCatalogFavorite> favorites,
         LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(favorites);
@@ -16,22 +16,22 @@ public static class LCatalogFavorite
         {
             LCatalogOrder.LCatalogOrderReverse => [.. favorites
                 .OrderByDescending(
-                    favorite => favorite.LFavoriteEntry.LEntryHeadword,
+                    favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword,
                     StringComparer.CurrentCultureIgnoreCase)],
             LCatalogOrder.LCatalogOrderLanguage => [.. favorites
                 .OrderBy(
-                    favorite => favorite.LFavoriteEntry.LEntryLanguage,
+                    favorite => favorite.LCatalogFavoriteEntry.LEntryLanguage,
                     StringComparer.CurrentCultureIgnoreCase)],
             LCatalogOrder.LCatalogOrderMarked => [.. favorites
-                .OrderByDescending(favorite => favorite.LFavoriteMarkedUtc, StringComparer.Ordinal)],
+                .OrderByDescending(favorite => favorite.LCatalogFavoriteMarked, StringComparer.Ordinal)],
             LCatalogOrder.LCatalogOrderGrasp => [.. favorites
-                .OrderByDescending(favorite => favorite.LFavoriteEntry.LEntryGrasp)
+                .OrderByDescending(favorite => favorite.LCatalogFavoriteEntry.LEntryGrasp)
                 .ThenBy(
-                    favorite => favorite.LFavoriteEntry.LEntryHeadword,
+                    favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword,
                     StringComparer.CurrentCultureIgnoreCase)],
             _ => [.. favorites
                 .OrderBy(
-                    favorite => favorite.LFavoriteEntry.LEntryHeadword,
+                    favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword,
                     StringComparer.CurrentCultureIgnoreCase)],
         };
     }

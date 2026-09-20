@@ -5,10 +5,11 @@
 Browsing the marked entries: the search, the ordering, the roster, and the switch between reading and editing.
 The panel shell lives in the file beside this one.
 
-## `private LVista? _pFavoriteVista;`
+## `private LFavorite _lFavorite = null!;`
 
-The engine's view state for the favorite tab: order, filter and query.
-The panel keeps no copy of any of the three and reads each from the vista where it needs it.
+The panel's deportment, holding the vista the window restored.
+The vista carries the order, the filter and the query.
+The panel keeps no copy of any of the three and asks the deportment for each where it needs it.
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
@@ -104,8 +105,9 @@ Returns the panel to nothing selected, reading, and no editor open.
 Reads the roster again when a grasp changed under the grasp ordering, and does nothing otherwise.
 Under any other ordering the grasp is not shown, so the rows stay where they are.
 
-## `internal async void PFavoriteVistaRestore(LVista vista)`
+## `internal async void PFavoriteVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel re-reads the roster through the vista whenever the engine announces a change, wherever it was made.
 Each subject the panel cares about is attached once, so no handler sorts announcements by subject.
@@ -119,10 +121,6 @@ The flags are loaded before any row is built, then the language menu is built fr
 Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
 The roster is then listed from the vista.
 The same vista is handed to the display, which reads its chosen entry from it.
-
-## `private void PSeriesRestore()`
-
-Moves the dropdown mark onto the ordering the vista holds.
 
 ## `private void PStrainerRestore()`
 

@@ -171,17 +171,12 @@ public sealed partial class LEngine
 
     private LLanguage LEngineLanguageLoad(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
+        LLanguageCache languages;
         lock (_lEngineGate)
         {
-            if (!_lEngineLanguages.TryGetValue(language, out LLanguage? pack))
-            {
-                pack = _lEngineLanguageVault.LLanguageRead(language);
-                _lEngineLanguages[language] = pack;
-            }
-
-            return pack;
+            languages = _lEngineLanguageCache;
         }
+
+        return languages.LLanguageCacheRead(language);
     }
 }

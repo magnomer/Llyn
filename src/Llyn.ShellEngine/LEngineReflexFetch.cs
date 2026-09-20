@@ -127,7 +127,8 @@ public sealed partial class LEngine
         List<LReflexDraft> spelled = new(merged.Count);
         foreach (LReflexDraft row in merged)
         {
-            spelled.Add(LEngineAnatomyResolve(language, LEngineRespellingResolve(row)));
+            spelled.Add(_lEngineLanguageCache.LLanguageAnatomyResolve(
+                language, _lEngineLanguageCache.LLanguageRespellingResolve(row)));
         }
 
         return (spelled, reached);

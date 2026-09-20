@@ -5,18 +5,14 @@
 The engine owns the draft.
 A form sends one edit at a time as an `LRequest`, and the engine applies it, saves, and announces.
 The form never assembles an `LEntryDraft` from its controls, so the engine's file is the only truth.
-Each request kind is applied by a pure function, one per kind, returning a new draft or new content.
-Cards and the rows inside them are addressed by id wherever they nest, never by place.
-So a form and the engine cannot disagree about which item is meant.
-The entry-level fields and the card body are applied here.
-The lists inside a card are applied in `LEngineRequestList.cs` and the files beside it.
-The pronunciation and transcription lists of the entry are applied in `LEngineRequestReading.cs`.
-The sentence, situation and source panels are applied in `LEngineRequestPanel.cs` and `LEngineRequestChip.cs`.
+The applying itself is `LDraftClerk`'s, over the ports of the rig.
+The engine keeps what is engine-wide: the gate, the held set, the chronicle, the file and the bulletin.
 
 ## `internal LDraft LEngineRequestApply(LRequest request)`
 
 Applies one request to the held draft it names and returns the draft as saved.
 The draft must be held by this engine, so a request for a leftover or another copy's draft is refused.
+The clerk applies the request, and a headword or language change then drops the recordings that no longer fit.
 The content is normalized after the change, so anything the change left unnamed is named before the write.
 The draft being replaced is recorded in the chronicle first, so the edit can be undone.
 A request that changes nothing records nothing, since there is nothing to step back from.
@@ -27,57 +23,13 @@ The bulletin is raised outside the gate, after the file is written.
 So a subscriber that re-reads on the bulletin reads what was announced, and never deadlocks on the gate.
 The saved draft is returned as well, so a caller can read a minted id without waiting for the bulletin.
 
-## Inline notes
+## `private LDraft LEngineAudioClear(LDraft held, LDraft draft)`
 
-### `private LDraft LEngineRequestApply(LDraft draft, LRequest request)`
-
-The switch over the kinds that reach past the entry content.
-The example and source panels edit their own field of the draft, and the credits edit its author list.
-The authors panel renames the one Author its draft holds.
-The body records lay every field of a panel over the held one, so the engine decides what changed.
-A situation field request may mean the panel's situation or a chip, so it is routed by id.
-A situation body on a draft holding a Situation lands on that Situation, whatever id it carries.
-So the panel need not read the draft back to learn the id before every keystroke.
-A media request on a draft holding a Situation lands on that Situation's lists before the switch runs.
-The card id such a request carries is ignored there, because a Situation draft holds no card.
-Everything else is a change to the entry content and falls through to the content switch.
-A headword or language request goes through `LEngineAudioClear`, which reads the stored entry the draft edits.
-A new language drops every recording, and a new spelling drops the ones fetched this draft.
-
-### `private LEntryDraft LEngineRequestApply(LEntryDraft content, LRequest request)`
-
-One switch over the entry and card kinds, ending in the list switch.
-A kind no switch knows is a programming error, not a refusal, since no form can send one.
-A null text or value is read as empty.
-So a request can never leave a null where the draft holds text.
-
-### `private static LStateValue LEngineValueRead(LStateValue? value)`
-
-The value sent, or the unspecified one where the form sent null.
-
-### `private LEntryDraft LEngineCardInsert(LEntryDraft content, LRequestCardAddition request)`
-
-Mints the id of the new card here rather than leaving it to the normalize.
-The answer must name the card, and a card named at birth cannot be confused with one named later.
-
-### `private static LEntryDraft LEngineCardInsert(`
-
-A collocation takes no parent, because only a meaning names a parent in the store.
-A parent the meanings do not hold is a missing card, and is refused as one.
-
-### `private static LEntryDraft LEngineCardMove(LEntryDraft content, LRequestCardShift request)`
-
-The card is taken out of wherever it sits, then put back under the parent named.
-Its kind is remembered from where it was found, so a card never changes list by moving.
-A parent inside the card being moved is gone by the time it is looked for.
-So the move refuses rather than loops.
-
-### `private static LEntryDraft LEngineCardChange(LEntryDraft content, long id, Func<LCardDraft, LCardDraft> change)`
-
-Applies one change to the card named, wherever it nests, and refuses when no card carries the id.
-Every list request inside a card comes through here, so the card check is written once.
-
-### `private static IReadOnlyList<LCardDraft> LEnginePositionUpdate(List<LCardDraft> cards)`
-
-Renumbers one list from one, which every insert, removal and move leaves to do.
-A card already carrying its number is kept as it is, so an untouched card stays the same reference.
+Drops the recordings a headword or language change made wrong, comparing the applied draft with the held one.
+A recording is audio of one word in one language.
+A new language makes every recording on the entry audio in the wrong language, so all of them go.
+A new spelling drops only a recording fetched this draft, since a stored one is the entry's own.
+So a typo corrected in a stored headword keeps the entry's audio.
+A request that leaves the field as it was drops nothing, so a form may send it on every pause.
+The stored entry is read through the draft's entry id, and a draft started on nothing has none.
+This stays in the engine because only the engine can load the stored entry with its recordings resolved.

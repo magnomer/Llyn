@@ -24,7 +24,7 @@ The bracket drawn before the reading, a slash for a phonemic respelling and a sq
 
 The bracket drawn after the reading, a slash for a phonemic respelling and a square bracket otherwise.
 
-## `internal static PRespelling PRespellingRead(LEngine engine, string language)`
+## `internal static PRespelling PRespellingRead(LWindow window, string language)`
 
 Reads the state for `language` from the engine, plain for a blank language.
 

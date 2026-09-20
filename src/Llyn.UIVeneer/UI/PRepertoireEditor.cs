@@ -132,35 +132,17 @@ public partial class PRepertoire
 
     private void PScenarioStoreRun()
     {
-        if (_pScenarioTenure is not LTenure held)
+        if (!PScenarioDesk.LDeskChangeCheck())
         {
             return;
         }
 
-        held.LTenurePersist();
-        if (!held.LTenureStateRead().LTenureStateChanged)
-        {
-            return;
-        }
+        PScenarioDesk.LDeskFinish(true);
+    }
 
-        long? stored;
-        try
-        {
-            stored = _pRepertoireHost.PWindowCommitRun(held, true);
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("Situation.SaveFailed", exception);
-            return;
-        }
-
-        _pScenarioTenure = null;
-        if (stored is not long situation)
-        {
-            return;
-        }
-
-        _pRepertoireVista?.LVistaSelect(situation);
+    private void PScenarioStoredShow(long situation)
+    {
+        _lRepertoire.LRepertoireSelect(situation);
 
         PAtlasFind();
         PRepertoireScribeShow(false);

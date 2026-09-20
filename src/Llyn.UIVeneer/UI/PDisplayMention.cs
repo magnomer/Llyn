@@ -21,7 +21,7 @@ public partial class PDisplay
         LMentionResult result;
         try
         {
-            result = _lEngine.LEngineMentionFind(
+            result = _lDisplay.LDisplayMentionFind(
                 shown.PMentionText, language, e.PMentionArgumentOffset, shown.PMentionMention ?? []);
         }
         catch (Exception exception)

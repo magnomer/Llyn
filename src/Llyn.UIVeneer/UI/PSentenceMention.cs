@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -12,8 +12,8 @@ internal sealed partial class PSentence
 
     internal IReadOnlyList<LMentionDraft> PSentenceMention => _pSentenceMention;
 
-    internal void PSentenceMentionShow(LEngine engine, string silent)
+    internal void PSentenceMentionShow(LWindow window, string silent)
     {
-        PSentenceChip.PMentionLineShow(engine, _pSentenceText.LStateValueShow(), _pSentenceMention, silent);
+        PSentenceChip.PMentionLineShow(window, _pSentenceText.LStateValueShow(), _pSentenceMention, silent);
     }
 }

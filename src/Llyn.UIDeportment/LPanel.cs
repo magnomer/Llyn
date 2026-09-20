@@ -80,6 +80,20 @@ public sealed class LPanel
         }
     }
 
+    public void LPanelObserverAttach(LSubject subject, LObserver observer)
+    {
+        _lPanelVista?.LVistaObserverAttach(subject, observer);
+    }
+
+    public void LPanelChosenAttach(LSubject subject, LObserver observer)
+    {
+        _lPanelVista?.LVistaChosenAttach(subject, observer);
+    }
+
+    public LCatalogOrder LPanelOrder => _lPanelVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+
+    public LCatalogFilter LPanelFilter => _lPanelVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+
     public bool LPanelChangeCheck()
     {
         if (!LPanelEditing)

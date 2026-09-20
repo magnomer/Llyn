@@ -5,7 +5,7 @@
 The entry editor's spine as a deportment: the desk it sits at, and every entry-level fact and command.
 It opens an entry or a fresh draft, stores, resets, and forwards the headword, reading, note and language.
 The favourite mark, the grasp, the frequency, and the read-only sections are read from it as facts.
-The card and sound concerns stay in the veneer until their own plans and reach the engine through the desk.
+The card lookups go through the card deportment, and the sound rows ask the window deportment for pack facts.
 The origin of a draft is the tab of the vista handed in, so the deportment holds no origin string.
 
 ## `private bool _lEditorFresh;`
@@ -32,6 +32,24 @@ A favourite, grasp or rime-book write was refused, announced under its own notic
 ## `public LDisplay LEditorDisplay { get; }`
 
 The reflex fold of the editor's own reflex block, kept the way the reading view keeps its own.
+The editor's reflex rows also start, check and rebuild their fetch through it, as the reading view does.
+
+## `public LCard LEditorCard { get; }`
+
+The card deportment the editor owns, handed to the card views for the lookups their fields make.
+
+## `public LClip LEditorClip { get; }`
+
+The recording menu deportment, holding the foray the menu searches recordings through.
+
+## `public LNotation LEditorNotation { get; }`
+
+The pronunciation menu deportment, holding the foray the menu searches readings through.
+
+## `public void LEditorClipStart(string word, long target, LListener listener)`
+
+Starts a recording search over the desk's tenure and hands the foray to the clip deportment.
+`LEditorNotationStart` does the same for a reading search and the notation deportment.
 
 ## `public bool LEditorOwned`
 

@@ -32,7 +32,7 @@ public partial class PEditor
         IReadOnlyList<LVistaRow> found;
         try
         {
-            found = _lEngine.LEngineProspectFind(word);
+            found = _lEditor.LEditorCard.LCardProspectFind(word);
         }
         catch (Exception)
         {
@@ -192,14 +192,14 @@ public partial class PEditor
 
         try
         {
-            LCourt? link = _lEngine.LEngineCourtFind(PEditorDraft, id);
+            LCourt? link = _lEditor.LEditorCard.LCardCourtFind(PEditorDraft, id);
             if (link is null)
             {
                 return;
             }
 
-            _lEngine.LEngineCourtDelete(link.LCourtId);
-            _lEngine.LEngineDraftDelete(id);
+            _lEditor.LEditorCard.LCardCourtDelete(link.LCourtId);
+            _lEditor.LEditorCard.LCardDraftDelete(id);
         }
         catch (Exception)
         {
@@ -219,8 +219,8 @@ public partial class PEditor
         try
         {
             long? entry = _lEditor.LEditorEntry;
-            single = _lEngine.LEngineTranslationResolve(word, entry);
-            found = single is null || offered ? _lEngine.LEngineProspectFind(word) : [];
+            single = _lEditor.LEditorCard.LCardTranslationResolve(word, entry);
+            found = single is null || offered ? _lEditor.LEditorCard.LCardProspectFind(word) : [];
         }
         catch (Exception exception)
         {

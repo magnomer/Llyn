@@ -12,7 +12,6 @@ namespace Llyn.UIVeneer;
 public partial class PEditor : LListener
 {
     private readonly ObservableCollection<PClipItem> _pClipItem = [];
-    private LForay? _pClipForay;
     private bool _pClipSearching;
     private PClipReading? _pClipPreview;
 
@@ -53,14 +52,14 @@ public partial class PEditor : LListener
         {
             if (_lEditor.LEditorFlagged)
             {
-                await PEnsign.PEnsignVarietyLoad(_lEngine, _lEditor);
+                await PEnsign.PEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
                 if (!PClip.IsOpen)
                 {
                     return;
                 }
             }
 
-            _pClipForay = _lEditor.LEditorRecordingStart(word, target, this);
+            _lEditor.LEditorClipStart(word, target, this);
         }
         catch (Exception)
         {
@@ -71,8 +70,7 @@ public partial class PEditor : LListener
 
     private void PClipCancel()
     {
-        _pClipForay?.LForayCancel();
-        _pClipForay = null;
+        _lEditor.LEditorClip.LClipCancel();
     }
 
     private PClipItem PClipPlace(string source, int order)
@@ -107,7 +105,7 @@ public partial class PEditor : LListener
             recording,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
             PAccentItem.PAccentFlagFind(
-                _pClipForay?.LForayLanguage ?? string.Empty, _pClipForay?.LForayFlagged ?? false, variety),
+                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety),
             action);
     }
 
@@ -143,7 +141,8 @@ public partial class PEditor : LListener
 
         try
         {
-            string path = await _lEngine.LEngineRecordingPrepare(reading.PClipReadingModel, CancellationToken.None);
+            string path = await _pEditorHost.PWindowDeportment.LWindowRecordingPrepare(
+                reading.PClipReadingModel, CancellationToken.None);
             if (_pClipPreview != reading)
             {
                 return;
@@ -182,7 +181,7 @@ public partial class PEditor : LListener
     {
         if (sender is not FrameworkElement { DataContext: PClipReading reading }
             || !reading.PClipReadingReady
-            || _pClipForay is not LForay foray)
+            || !_lEditor.LEditorClip.LClipHeld)
         {
             return;
         }
@@ -192,7 +191,7 @@ public partial class PEditor : LListener
 
         try
         {
-            bool attached = await foray.LForayRecordingSave(reading.PClipReadingModel);
+            bool attached = await _lEditor.LEditorClip.LClipRecordingSave(reading.PClipReadingModel);
             reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Saved");
 
             if (!attached)
@@ -200,9 +199,9 @@ public partial class PEditor : LListener
                 return;
             }
 
-            long id = foray.LForayPrimary
+            long id = _lEditor.LEditorClip.LClipPrimary
                 ? PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0
-                : foray.LForayTarget;
+                : _lEditor.LEditorClip.LClipTarget;
 
             PNotationVarietySend(id, reading.PClipReadingVariety);
             PClip.IsOpen = false;

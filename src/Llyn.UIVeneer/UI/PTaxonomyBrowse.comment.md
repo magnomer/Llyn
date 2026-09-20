@@ -12,10 +12,11 @@ The entry list itself lives in [PTaxonomyMembership.cs](PTaxonomyMembership.comm
 
 ## Inline notes
 
-### `private LVista? _pTaxonomyVista;`
+### `private LTaxonomy _lTaxonomy = null!;`
 
-The engine's view state for the taxonomy tab: order, query, the chosen tag, and the languages hidden from its entries.
-The panel keeps no copy of any of the four and reads each from the vista where it needs it.
+The panel's deportment, holding the tag vista and the Membership vista the window restored.
+The vista carries the order, the query, the chosen Tag, and the languages hidden from its entries.
+The panel keeps no copy of any of the four and asks the deportment for each where it needs it.
 The chosen tag is null when none is chosen, which is the whole workspace, not an absence to be corrected.
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
@@ -44,8 +45,9 @@ The vista saves it and announces it, and the announcement rebuilds the catalog.
 The ticked languages are read off the menu and handed to the vista, which saves and announces them.
 The mark on the button is redrawn from the vista at once.
 
-### `internal async void PTaxonomyVistaRestore(LVista vista, LVista membership)`
+### `internal async void PTaxonomyVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel answers the engine through the vistas rather than its own visibility.
 So a tag written in the input panel is in the catalog at once, with no tab switch needed.
@@ -61,10 +63,6 @@ Search text still standing in the box is handed to the vista, so a switched work
 The catalog is then listed from the vista.
 The membership vista is kept for the entry column and handed to the display, which reads its chosen entry.
 The membership vista carries the entry search box, so its announcement refills the entry column alone.
-
-### `private void PFunnelRestore()`
-
-Moves the dropdown mark onto the ordering the vista holds.
 
 ### `private void PLatticeRestore()`
 

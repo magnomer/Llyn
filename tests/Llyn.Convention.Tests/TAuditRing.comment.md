@@ -32,6 +32,10 @@ Plans 06 to 08 moved each construction into the infrastructure, so the ceiling s
 
 The engine's database field, gone since plan 08 handed the engine a rig of ports.
 
+## `private static readonly Regex TAuditRingDeclared`
+
+A type declaration in an engine source, capturing the name the deportment must not reach for.
+
 ## `private static readonly string[] TAuditRingBuilt`
 
 An adapter constructed anywhere: an archive, a loader, a file or an HTTP fetcher.
@@ -54,6 +58,22 @@ Every waiver row still matches a break, so a fixed break deletes its row.
 ## `public void AuditRing_Veneer_HoldsEngineWithinCeiling()`
 
 The engine fields and the engine helpers in the veneer each stay within their ceiling.
+
+## `public void AuditRing_Engine_HoldsPartsWithinCeiling()`
+
+The files declaring a part of `LEngine` stay within their ceiling.
+Plan 09 set the direction: the parts go down, lifted into clerks, and a new part is never added.
+
+## `public void AuditRing_Deportment_HoldsOnlyHandles()`
+
+No deportment source names an engine type outside the ports and handles the settings list.
+Plan 10 gave each deportment only the `L*Port` slices it calls.
+The concrete engine stays in the veneer window and the bootstrap.
+
+## `public void AuditRing_Application_HoldsUseCases()`
+
+The application ring holds at least the floor of source files.
+The ring emptied once when its records were mistaken for Core's, and a floor stops that repeating silently.
 
 ## `public void AuditRing_Engine_ConstructsNoAdapter()`
 
@@ -91,6 +111,10 @@ True when the file names a file system type, read once per file.
 ## `private static Func<string, bool> TAuditRoleSelect(string role)`
 
 A chooser admitting the sources under one project folder.
+
+## `private static IReadOnlyList<string> TAuditDeclaredRead(string role)`
+
+The names of every type one ring declares, read off its sources with the declaration regex.
 
 ## `private static List<TViolation> TAuditRingScan(Func<string, bool> chosen, IReadOnlyList<string> patterns)`
 

@@ -17,11 +17,9 @@ public partial class PTenor
 
     private readonly ObservableCollection<PCohortItem> _pCohortList = [];
 
-    private LVista? _pTenorVista;
-
     private async void PTenorWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pTenorHost.PWindowDeportment);
         PTenorReset();
     }
 
@@ -33,96 +31,71 @@ public partial class PTenor
 
     private void PSoundingHandle(object sender, TextChangedEventArgs e)
     {
-        _pTenorVista?.LVistaQuerySet(PSounding.Text ?? string.Empty);
+        _lTenor.LTenorSoundingSet(PSounding.Text ?? string.Empty);
     }
 
     private void PDegreeHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pTenorVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PDegreeDropper.IsChecked = false;
-        _pTenorVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pTenorVista.LVistaOrder));
+        _lTenor.LTenorDegreeSet(choice);
     }
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
     {
-        _pCohortVista?.LVistaQuerySet(PQuest.Text);
+        _lTenor.LTenorQuestSet(PQuest.Text);
     }
 
     private void PGrilleHandle(object sender, RoutedEventArgs e)
     {
-        if (_pTenorVista is null)
-        {
-            return;
-        }
-
-        _pTenorVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PGrilleList));
+        _lTenor.LTenorGrilleSet(PChoice.PChoiceFilterRead(PGrilleList));
         PGrilleRestore();
     }
 
-    internal async void PTenorVistaRestore(LVista vista, LVista cohort)
+    internal async void PTenorVistaRestore()
     {
-        _pTenorVista = vista;
-        _pCohortVista = cohort;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PGamutFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTenorWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PTenorRegisterUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PGamutFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PGamutFind));
-        cohort.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PCohortEntryUpdate));
-        cohort.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
-        cohort.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PCohortFind));
-        PDisplay.PDisplayVistaRestore(cohort);
-        PEditor.PEditorVistaRestore(cohort);
-        PDegreeRestore();
+        _lTenor.LTenorVistaRestore(_pTenorHost.PWindowPosture);
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, new PObserver(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PTenorWorkspaceUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, new PObserver(this, PTenorRegisterUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PGamutFind));
+        _lTenor.LTenorCohortAttach(LSubject.LSubjectEntry, new PObserver(this, PCohortEntryUpdate));
+        _lTenor.LTenorEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PTenorEntryUpdate));
+        _lTenor.LTenorCohortAttach(LSubject.LSubjectVista, new PObserver(this, PCohortFind));
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
         PGrilleRestore();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pTenorHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PGrilleList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGrilleHandle);
-        vista.LVistaQuerySet(PSounding.Text ?? string.Empty);
-        cohort.LVistaQuerySet(PQuest.Text);
+        PChoice.PChoiceFilterBuild(PGrilleList, _lTenor.LTenorLanguageRead(), _lTenor.LTenorFilter, PGrilleHandle);
+        _lTenor.LTenorSoundingSet(PSounding.Text ?? string.Empty);
+        _lTenor.LTenorQuestSet(PQuest.Text);
         PGamutFind();
-    }
-
-    private void PDegreeRestore()
-    {
-        if (_pTenorVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PDegreeDropdown, _pTenorVista.LVistaOrder);
-        }
     }
 
     private void PGrilleRestore()
     {
-        if (_pTenorVista is not LVista vista)
-        {
-            PGrilleMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PGrilleMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PGrilleMark.Visibility = _lTenor.LTenorFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PGamutReset()
     {
-        _pTenorVista?.LVistaSelect(null);
+        _lTenor.LTenorSelect(null);
     }
 
     private void PGamutFind()
     {
-        if (_pTenorVista is null)
-        {
-            return;
-        }
-
         IReadOnlyList<LCatalogRegister> read;
         try
         {
-            read = _lEngine.LEngineRegisterFind(_pTenorVista);
+            read = _lTenor.LTenorRowsRead();
         }
         catch (Exception exception)
         {
@@ -157,12 +130,7 @@ public partial class PTenor
 
     private void PGamutSelect(long? id)
     {
-        if (_pTenorVista is null)
-        {
-            return;
-        }
-
-        _pTenorVista.LVistaSelect(id);
+        _lTenor.LTenorSelect(id);
         PGamutFind();
     }
 
@@ -170,7 +138,7 @@ public partial class PTenor
     {
         PSounding.Text = string.Empty;
         PQuest.Text = string.Empty;
-        _pTenorVista?.LVistaSelect(id);
+        _lTenor.LTenorSelect(id);
         PGamutFind();
     }
 
@@ -181,9 +149,9 @@ public partial class PTenor
             return;
         }
 
-        if (_pTenorVista?.LVistaChosen is null)
+        if (_lTenor.LTenorChosen is null)
         {
-            if (_pCohortVista?.LVistaChosen is null)
+            if (_lTenor.LTenorCohortChosen is null)
             {
                 PGamutRegisterCreate();
                 return;
@@ -203,7 +171,7 @@ public partial class PTenor
         LRegister created;
         try
         {
-            created = _lEngine.LEngineRegisterCreate(name);
+            created = _lTenor.LTenorRegisterCreate(name);
         }
         catch (Exception exception)
         {
@@ -233,7 +201,7 @@ public partial class PTenor
 
             PTenorScribeShow(false);
 
-            if (_pCohortVista?.LVistaChosen is long shown)
+            if (_lTenor.LTenorCohortChosen is long shown)
             {
                 PCohortEntryShow(shown);
                 return;
@@ -243,7 +211,7 @@ public partial class PTenor
             return;
         }
 
-        if (_pCohortVista?.LVistaChosen is not long edited)
+        if (_lTenor.LTenorCohortChosen is not long edited)
         {
             PTenorClear();
             return;
@@ -255,7 +223,7 @@ public partial class PTenor
 
     private void PTenorScribeShow(bool editing)
     {
-        _pCohortVista?.LVistaEditingSet(editing);
+        _lTenor.LTenorScribeSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -267,7 +235,7 @@ public partial class PTenor
     {
         if (editing)
         {
-            if (_pCohortVista?.LVistaChosen is null)
+            if (_lTenor.LTenorCohortChosen is null)
             {
                 return;
             }
@@ -288,7 +256,7 @@ public partial class PTenor
 
     internal long PTenorVoyageRead()
     {
-        return _pTenorVista?.LVistaChosen ?? 0;
+        return _lTenor.LTenorChosen ?? 0;
     }
 
     private void PTenorEntryShow(LEntryDraft draft)
@@ -299,7 +267,7 @@ public partial class PTenor
 
     private void PTenorClear()
     {
-        _pCohortVista?.LVistaSelect(null);
+        _lTenor.LTenorCohortSelect(null);
         PCohortFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
@@ -322,7 +290,7 @@ public partial class PTenor
 
         try
         {
-            _pCohortVista?.LVistaDelete();
+            _lTenor.LTenorCohortDelete();
         }
         catch (Exception exception)
         {

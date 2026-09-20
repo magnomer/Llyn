@@ -17,9 +17,12 @@ A sentence draft is measured the same way, against the Example it names rather t
 A situation draft is measured against the Situation it names.
 A source draft is measured against the Reference it names.
 An author draft is measured against the Author it names by name alone.
-A draft naming no entry, or an entry since deleted, is left for recovery to offer back.
+A draft naming no entry is dropped when it still reads as blank.
+Every panel opens one at launch and recovery never offers a blank one back, so they would pile up forever.
+A draft naming no entry but carrying text, or an entry since deleted, is left for recovery to offer back.
 So is one whose content differs from the entry it names, which is work the user would lose.
 A draft this engine holds, or another running copy claims, is passed over untouched.
+A claim whose draft file is gone goes too, since nothing will ever ask about that draft again.
 The half-written pending files both archives leave behind go too.
 Only files older than an hour, so a save in flight in the other copy is never taken.
 A draft file of another version goes with its claim and its court rows, as a cancel would take them.

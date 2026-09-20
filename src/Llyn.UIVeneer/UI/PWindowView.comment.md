@@ -10,8 +10,8 @@ Everything that names only panels comes from the posture, one layout record per 
 ## `internal void PWindowViewRestore(LWorkspaceState state)`
 
 Applies `state` and the posture's layout records across the shell.
-Every browse panel takes a vista started through the posture, which hands it the tab's stored order and filter.
-Each panel's designed ordering is named at the call, since the record holds nothing before a choice.
+Every browse panel restores its deportment, which starts its vistas through the posture with the stored order and filter.
+Each panel's designed ordering is named by its deportment, since the record holds nothing before a choice.
 The yunjing panel takes two, since its two columns keep two orderings under two records.
 A tab whose middle column lists entries under a chosen record takes a child vista for that column as well.
 The child vista carries the chosen entry, which the display reads.

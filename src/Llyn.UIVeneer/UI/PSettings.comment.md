@@ -5,9 +5,9 @@
 The settings panel as a control: what it is made of, and the stored choices it opens on.
 What each choice costs — a catalog swap, a whole different workspace — lives in the files beside this one.
 
-## `internal void PSettingsAttach(PWindow host, LEngine engine)`
+## `internal void PSettingsAttach(PWindow host)`
 
-Puts the panel to work on `engine` and shows the choices already stored in it.
+Puts the panel to work on the window deportment and shows the choices already stored.
 The panel also listens for settings bulletins, which drive every redraw a saved choice needs.
 
 ## `internal void PSettingsSync()`

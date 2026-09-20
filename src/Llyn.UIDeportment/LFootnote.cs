@@ -8,7 +8,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class LFootnote
 {
-    private readonly LEngine _lEngine;
+    private readonly LEntryPort _lEntryPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private LVista? _lFootnoteParent;
 
@@ -16,12 +18,15 @@ public sealed class LFootnote
 
     private int _lFootnoteCount;
 
-    public LFootnote(LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam)
+    public LFootnote(
+        LEntryPort entries, LPortraitPort portraits, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
 
-        _lEngine = engine;
+        _lEntryPort = entries;
+        _lPortraitPort = portraits;
         LFootnoteEditor = editor;
         LFootnotePanel = new LPanel(
             "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, static () => false);
@@ -64,7 +69,7 @@ public sealed class LFootnote
 
     public IReadOnlyList<LVistaRow> LFootnoteRowsRead()
     {
-        IReadOnlyList<LVistaRow> rows = _lEngine.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista);
+        IReadOnlyList<LVistaRow> rows = _lEntryPort.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista);
         _lFootnoteCount = rows.Count;
         return rows;
     }
@@ -87,6 +92,6 @@ public sealed class LFootnote
 
     public Task LFootnotePortraitPrint(LPortraitLabel label, LPressTicket ticket)
     {
-        return _lEngine.LEnginePortraitPrint(_lFootnoteVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(_lFootnoteVista, label, ticket);
     }
 }

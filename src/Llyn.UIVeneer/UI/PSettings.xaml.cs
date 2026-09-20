@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -9,18 +9,17 @@ public partial class PSettings : UserControl
 {
     private PWindow _pSettingsHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LWindow PSettingsWindow => _pSettingsHost.PWindowDeportment;
 
     public PSettings()
     {
         InitializeComponent();
     }
 
-    internal void PSettingsAttach(PWindow host, LEngine engine)
+    internal void PSettingsAttach(PWindow host)
     {
         _pSettingsHost = host;
-        _lEngine = engine;
-        _lEngine.LEngineObserverAttach(new PObserver(this, PSettingsBulletinHandle));
+        PSettingsWindow.LWindowObserverAttach(new PObserver(this, PSettingsBulletinHandle));
 
         PSettingsSync();
         PLedgerBuild();
@@ -29,10 +28,10 @@ public partial class PSettings : UserControl
 
     internal void PSettingsSync()
     {
-        LSettings settings = _lEngine.LEngineSettingsRead();
-        PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+        LSettings settings = PSettingsWindow.LWindowSettingsRead();
+        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
         PLocalization.SelectedValue =
-            LLocalization.LLocalizationNormalize(_lEngine.LEngineSettingsRead().LSettingsLocalization);
+            PSettingsWindow.LWindowLocalizationRead();
         PRespelling.IsChecked = settings.LSettingsRespelled;
         PSettingsEpithet.IsChecked = settings.LSettingsEpithet;
         PFrequency.IsChecked = settings.LSettingsFrequency;
@@ -47,7 +46,7 @@ public partial class PSettings : UserControl
             return;
         }
 
-        PLocalizationApply(LLocalization.LLocalizationNormalize(_lEngine.LEngineSettingsRead().LSettingsLocalization));
+        PLocalizationApply(PSettingsWindow.LWindowLocalizationRead());
         PLedgerMetaApply();
     }
 }

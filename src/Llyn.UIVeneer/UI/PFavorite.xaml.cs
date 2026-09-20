@@ -10,7 +10,7 @@ public partial class PFavorite : UserControl
 {
     private PWindow _pFavoriteHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LFavorite _lFavorite = null!;
 
     private LEditor _lEditor = null!;
 
@@ -22,15 +22,14 @@ public partial class PFavorite : UserControl
     internal void PFavoriteAttach(PWindow host, LEngine engine)
     {
         _pFavoriteHost = host;
-        _lEngine = engine;
+        _lFavorite = new LFavorite(engine, engine, engine);
 
         PRoster.ItemsSource = _pRosterList;
 
-        PDisplay.PDisplayAttach(host, engine);
-
-        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
-        PEditor.PEditorAttach(host, engine, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor);
     }
 
     private void PFavoriteStoreUpdate()
@@ -62,29 +61,29 @@ public partial class PFavorite : UserControl
 
     private void PFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pFavoriteVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lFavorite.LFavoriteChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFavoriteVista?.LVistaChosen is not null)
+        if (_lFavorite.LFavoriteChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
                 await _pFavoriteHost.PWindowPressRun(
-                    ticket => _lEngine.LEnginePortraitPrint(
-                        _pFavoriteVista, _pFavoriteHost.PWindowLabelRead(), ticket));
+                    ticket => _lFavorite.LFavoritePortraitPrint(_pFavoriteHost.PWindowLabelRead(), ticket));
             }
         }
     }
 
     private async void PFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pFavoriteVista?.LVistaChosen is not null)
+        if (_lFavorite.LFavoriteChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pFavoriteHost.PWindowPortraitExport(_pFavoriteVista);
+                await _pFavoriteHost.PWindowPortraitExport(
+                    _lFavorite.LFavoriteFileRead(), _lFavorite.LFavoritePortraitExport);
             }
         }
     }

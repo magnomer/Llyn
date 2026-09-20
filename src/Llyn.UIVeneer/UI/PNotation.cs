@@ -12,7 +12,6 @@ namespace Llyn.UIVeneer;
 public partial class PEditor : LReceiver
 {
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
-    private LForay? _pNotationForay;
     private bool _pNotationSearching;
     private PRespelling _pNotationRespelling = PRespelling.PRespellingPlain;
 
@@ -52,13 +51,13 @@ public partial class PEditor : LReceiver
 
     private void PNotationApply(PNotationReading reading)
     {
-        if (_pNotationForay is not LForay foray)
+        if (!_lEditor.LEditorNotation.LNotationHeld)
         {
             return;
         }
 
-        long id = foray.LForayTarget;
-        if (foray.LForaySchemed)
+        long id = _lEditor.LEditorNotation.LNotationTarget;
+        if (_lEditor.LEditorNotation.LNotationSchemed)
         {
             PTranscriptionItem? spelled = PTranscriptionFind(id);
             if (spelled is not null)
@@ -70,7 +69,7 @@ public partial class PEditor : LReceiver
             return;
         }
 
-        if (foray.LForayPrimary)
+        if (_lEditor.LEditorNotation.LNotationPrimary)
         {
             PEditorRequestSend(new LRequestIpa(PEditorDraft, reading.PNotationReadingPhonetic));
             id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
@@ -110,11 +109,11 @@ public partial class PEditor : LReceiver
         string text = _pNotationRespelling.PRespellingTextRead(phonetic, candidate.LCandidateRespelling);
         string opener = _pNotationRespelling.PRespellingOpener;
         string closer = _pNotationRespelling.PRespellingCloser;
-        if (_pNotationForay is LForay foray)
+        if (_lEditor.LEditorNotation.LNotationSchemed)
         {
-            text = foray.LForaySchemed ? phonetic : text;
-            opener = foray.LForaySchemed ? string.Empty : opener;
-            closer = foray.LForaySchemed ? string.Empty : closer;
+            text = phonetic;
+            opener = string.Empty;
+            closer = string.Empty;
         }
 
         if (!candidate.LCandidateRegional)
@@ -126,7 +125,7 @@ public partial class PEditor : LReceiver
             variety,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
             PAccentItem.PAccentFlagFind(
-                _pNotationForay?.LForayLanguage ?? string.Empty, _pNotationForay?.LForayFlagged ?? false, variety),
+                _lEditor.LEditorNotation.LNotationLanguage, _lEditor.LEditorNotation.LNotationFlagged, variety),
             phonetic,
             text,
             opener,
@@ -149,12 +148,13 @@ public partial class PEditor : LReceiver
 
         try
         {
-            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, _lEditor.LEditorLanguage);
+            _pNotationRespelling = PRespelling.PRespellingRead(
+                _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
             if (scheme.Length == 0)
             {
                 if (_lEditor.LEditorFlagged)
                 {
-                    await PEnsign.PEnsignVarietyLoad(_lEngine, _lEditor);
+                    await PEnsign.PEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
                 }
 
                 if (!PNotation.IsOpen)
@@ -163,7 +163,7 @@ public partial class PEditor : LReceiver
                 }
             }
 
-            _pNotationForay = _lEditor.LEditorTranscriptionStart(word, target, scheme, this);
+            _lEditor.LEditorNotationStart(word, target, scheme, this);
         }
         catch (Exception)
         {
@@ -174,8 +174,7 @@ public partial class PEditor : LReceiver
 
     private void PNotationCancel()
     {
-        _pNotationForay?.LForayCancel();
-        _pNotationForay = null;
+        _lEditor.LEditorNotation.LNotationCancel();
     }
 
     private PNotationItem PNotationPlace(string source, int order)
@@ -199,7 +198,7 @@ public partial class PEditor : LReceiver
 
     private void PNotationUpdate()
     {
-        PNotationUpdate(_pNotationForay?.LForayScheme ?? string.Empty);
+        PNotationUpdate(_lEditor.LEditorNotation.LNotationScheme);
     }
 
     private void PNotationUpdate(string scheme)

@@ -9,14 +9,12 @@ namespace Llyn.UIVeneer;
 
 public partial class PTaxonomy
 {
-    private LVista? _pMembershipVista;
-
     private void PMembershipFind()
     {
         IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(_pTaxonomyVista, _pMembershipVista);
+            read = _lTaxonomy.LTaxonomyMembershipRead();
         }
         catch (Exception exception)
         {
@@ -68,8 +66,8 @@ public partial class PTaxonomy
         LEntryDraft? draft;
         try
         {
-            _pMembershipVista?.LVistaSelect(id);
-            draft = _pMembershipVista?.LVistaLoad()?.LDraftContent;
+            _lTaxonomy.LTaxonomyMembershipSelect(id);
+            draft = _lTaxonomy.LTaxonomyMembershipLoad();
         }
         catch (Exception exception)
         {
@@ -84,7 +82,7 @@ public partial class PTaxonomy
             return;
         }
 
-        _pMembershipVista?.LVistaSelect(id);
+        _lTaxonomy.LTaxonomyMembershipSelect(id);
         PMembershipFind();
         PTaxonomyBin.IsEnabled = true;
         PTaxonomyEntryShow(draft);
@@ -103,7 +101,7 @@ public partial class PTaxonomy
             {
                 if (PEditor.Visibility == Visibility.Visible)
                 {
-                    _pMembershipVista?.LVistaSelect(bulletin.LBulletinId);
+                    _lTaxonomy.LTaxonomyMembershipSelect(bulletin.LBulletinId);
                     PMembershipFind();
                     PTaxonomyBin.IsEnabled = true;
                 }
@@ -118,7 +116,7 @@ public partial class PTaxonomy
         LEntryDraft? draft;
         try
         {
-            draft = _pMembershipVista?.LVistaLoad()?.LDraftContent;
+            draft = _lTaxonomy.LTaxonomyMembershipLoad();
         }
         catch (Exception)
         {
@@ -136,15 +134,15 @@ public partial class PTaxonomy
 
     private void PMembershipEntryCreate()
     {
-        long tag = _pTaxonomyVista?.LVistaChosen ?? 0;
+        long? tag = _lTaxonomy.LTaxonomyChosen;
 
         PTaxonomyClear();
         PTaxonomyMode.IsEnabled = true;
         PTaxonomyScribeShow(true);
 
-        if (tag != 0)
+        if (tag is long id)
         {
-            _lEditor.LEditorTagAdd(tag);
+            _lEditor.LEditorTagAdd(id);
         }
     }
 }

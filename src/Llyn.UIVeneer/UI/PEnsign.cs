@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
@@ -20,11 +19,11 @@ internal static class PEnsign
 
     private static readonly SemaphoreSlim PEnsignGate = new(1, 1);
 
-    internal static void PEnsignAttach(LEngine engine)
+    internal static void PEnsignAttach(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
 
-        engine.LEngineObserverAttach(new PObserver(PEnsignBulletinHandle));
+        window.LWindowObserverAttach(new PObserver(PEnsignBulletinHandle));
     }
 
     private static void PEnsignBulletinHandle(LBulletin bulletin)
@@ -40,7 +39,7 @@ internal static class PEnsign
         }
     }
 
-    internal static DrawingImage? PEnsignResolve(LEngine engine, string path)
+    internal static DrawingImage? PEnsignResolve(LWindow window, string path)
     {
         try
         {
@@ -57,18 +56,18 @@ internal static class PEnsign
         }
         catch (Exception)
         {
-            engine.LEngineEnsignDelete(path);
+            window.LWindowEnsignDelete(path);
             return null;
         }
     }
 
-    internal static async Task PEnsignLoad(LEngine engine)
+    internal static async Task PEnsignLoad(LWindow window)
     {
         await PEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            IReadOnlyList<LEnsignRow> kept = await engine.LEngineEnsignLoad();
-            PEnsignStoreAdd(engine, kept);
+            IReadOnlyList<LEnsignRow> kept = await window.LWindowEnsignLoad();
+            PEnsignStoreAdd(window, kept);
         }
         finally
         {
@@ -76,20 +75,20 @@ internal static class PEnsign
         }
     }
 
-    internal static Task PEnsignVarietyLoad(LEngine engine, LEditor editor)
+    internal static Task PEnsignVarietyLoad(LWindow window, LEditor editor)
     {
-        return PEnsignVarietyLoad(engine, editor.LEditorLanguage, editor.LEditorVarietyNames);
+        return PEnsignVarietyLoad(window, editor.LEditorLanguage, editor.LEditorVarietyNames);
     }
 
-    internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)
+    internal static async Task PEnsignVarietyLoad(LWindow window, string language, IEnumerable<string> varieties)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
 
         await PEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            IReadOnlyList<LEnsignRow> kept = await engine.LEngineEnsignLoad(language, varieties);
-            PEnsignStoreAdd(engine, kept);
+            IReadOnlyList<LEnsignRow> kept = await window.LWindowEnsignLoad(language, varieties);
+            PEnsignStoreAdd(window, kept);
         }
         finally
         {
@@ -97,13 +96,13 @@ internal static class PEnsign
         }
     }
 
-    private static void PEnsignStoreAdd(LEngine engine, IReadOnlyList<LEnsignRow> rows)
+    private static void PEnsignStoreAdd(LWindow window, IReadOnlyList<LEnsignRow> rows)
     {
         lock (PEnsignStore)
         {
             foreach (LEnsignRow row in rows)
             {
-                PEnsignStore[row.LEnsignRowKey] = PEnsignResolve(engine, row.LEnsignRowPath);
+                PEnsignStore[row.LEnsignRowKey] = PEnsignResolve(window, row.LEnsignRowPath);
             }
         }
     }

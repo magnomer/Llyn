@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -18,7 +17,8 @@ public partial class PWindow
             ("Export.Pdf", ".pdf", LPortraitFormat.LPortraitFormatPdf),
         ];
 
-    internal async Task PWindowPortraitExport(LVista? vista)
+    internal async Task PWindowPortraitExport(
+        string file, Func<string, LPortraitFormat, LPortraitLabel, Task> export)
     {
         List<string> filters = new List<string>();
         foreach ((string key, string suffix, LPortraitFormat _) in PWindowPortraitKinds)
@@ -32,7 +32,7 @@ public partial class PWindow
             Filter = string.Join("|", filters),
             FilterIndex = 2,
             AddExtension = true,
-            FileName = LVista.LVistaFileRead(vista),
+            FileName = file,
         };
 
         if (dialog.ShowDialog(this) != true)
@@ -45,7 +45,7 @@ public partial class PWindow
 
         try
         {
-            await _lEngine.LEnginePortraitExport(vista, dialog.FileName, format, PWindowLabelRead());
+            await export(dialog.FileName, format, PWindowLabelRead());
         }
         catch (Exception exception)
         {

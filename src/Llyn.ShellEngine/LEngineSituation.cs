@@ -76,36 +76,6 @@ public sealed partial class LEngine
         return rows;
     }
 
-    private static LSituation? LEngineSituationResolve(LSituationVault situations, LStateValue title)
-    {
-        string written = LCatalog.LCatalogTextNormalize(title.LStateValueShow());
-        if (written.Length == 0)
-        {
-            return null;
-        }
-
-        LSituation? found = null;
-        foreach (LSituation situation in situations.LSituationRead())
-        {
-            if (!string.Equals(
-                    LCatalog.LCatalogTextNormalize(situation.LSituationTitle.LStateValueShow()),
-                    written,
-                    StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            if (found is not null)
-            {
-                return null;
-            }
-
-            found = situation;
-        }
-
-        return found;
-    }
-
     internal LSituation? LEngineSituationRead(long id)
     {
         lock (_lEngineGate)

@@ -14,7 +14,7 @@ public partial class PDisplay
         IReadOnlyList<LUsage> incoming;
         try
         {
-            incoming = _lEngine.LEngineIncomingRead(id);
+            incoming = _lDisplay.LDisplayIncomingRead(id);
         }
         catch (Exception)
         {
@@ -32,7 +32,7 @@ public partial class PDisplay
                 usage.LUsageCollocated ? collocation : meaning,
                 unknown,
                 string.Empty,
-                _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
+                _lDisplay.LDisplayEpithetRead(usage.LUsageEntry)));
         }
 
         PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0

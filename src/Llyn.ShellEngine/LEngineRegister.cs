@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -94,7 +95,7 @@ public sealed partial class LEngine
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-            created = LEngineRegisterResolve(name)
+            created = LDraftClerkChip.LRegisterResolve(_lEngineRegisters, name)
                 ?? _lEngineRegisters.LRegisterCreate(new LRegister(
                     0,
                     LStateValue.LStateValueRead(name.Trim())));
@@ -224,7 +225,7 @@ public sealed partial class LEngine
             return stored.LRegisterId;
         }
 
-        LRegister? found = LEngineRegisterResolve(draft.LRegisterDraftName.LStateValueShow());
+        LRegister? found = LDraftClerkChip.LRegisterResolve(registers, draft.LRegisterDraftName.LStateValueShow());
         if (found is not null)
         {
             LEngineIdentityRecord(identity, draft.LRegisterDraftId, found.LRegisterId);
@@ -234,27 +235,5 @@ public sealed partial class LEngine
         long created = registers.LRegisterCreate(new LRegister(0, draft.LRegisterDraftName)).LRegisterId;
         LEngineIdentityRecord(identity, draft.LRegisterDraftId, created);
         return created;
-    }
-
-    private LRegister? LEngineRegisterResolve(string name)
-    {
-        string written = LCatalog.LCatalogTextNormalize(name);
-        if (written.Length == 0)
-        {
-            return null;
-        }
-
-        foreach (LRegister register in _lEngineRegisters.LRegisterRead())
-        {
-            if (string.Equals(
-                    LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),
-                    written,
-                    StringComparison.Ordinal))
-            {
-                return register;
-            }
-        }
-
-        return null;
     }
 }

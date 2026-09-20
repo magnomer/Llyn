@@ -114,7 +114,7 @@ public partial class PEditor
 
     private void PTranscriptionShow(LEntryDraft draft)
     {
-        _pTranscriptionSchemes = _lEngine.LEngineSchemeRead(draft.LEntryDraftLanguage);
+        _pTranscriptionSchemes = _pEditorHost.PWindowDeportment.LWindowSchemeRead(draft.LEntryDraftLanguage);
         PTranscription.Visibility = _pTranscriptionSchemes.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         PCard.PCardRowShow(

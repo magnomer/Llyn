@@ -1,6 +1,6 @@
 ﻿# LEngine.cs
 
-## `public sealed partial class LEngine : IDisposable`
+## `public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhonologyPort, LSettingsPort, LMediaPort, LPortraitPort`
 
 The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
@@ -11,6 +11,10 @@ The third announces a change to everyone.
 All logic lives behind this engine.
 That is loading language packs, source fan-out, fetching, parsing, and saving.
 So none of it sits in the UI shell.
+
+The deportment never holds the engine itself.
+It holds the six `L*Port` slices under `Port/`, cut by concern so each later clerk implements one.
+The engine implements all six, and the veneer window hands it in as each port.
 
 The engine is serialised behind one gate.
 Every public entry point holds a single lock for the whole of its work.
@@ -31,8 +35,11 @@ A held draft is driven by an `LTenure`, made in `LEngineTenure.cs`, so no panel 
 The engine builds no adapter: every port arrives in one `LRig` and is copied into a field by `LEngineRigSet`.
 The composition root, `App.xaml.cs`, builds the rig through `LRigFactory`, and a test builds one from fakes.
 The engine never names the infrastructure and needs no SQLite to start.
-It loads each language pack on first use through the language port, which `LEngineLanguage.cs` owns.
-It keeps each loaded pack by language name, so the file is parsed once and not per lookup.
+It loads each language pack on first use through an `LLanguageCache` over the language port.
+The cache is shared with the draft clerk, so the file is parsed once and not per lookup.
+The use cases that have left the engine sit in `Llyn.Application` as clerks over the same rig.
+`LDraftClerk` applies a request to a draft and `LEntryClerk` reads, finds and deletes an entry.
+The engine keeps the gate, the observers, the held set and the caches, and calls a clerk under the gate.
 It builds that language's transcription and recording sources separately through the source factory.
 The two sets are cached apart.
 A lookup never reaches an audio source and a download never reaches a transcription one.
@@ -64,6 +71,8 @@ A database this build can no longer read costs the user a launch rather than the
 
 Copies every port of `rig` into its field, the one place the fields are assigned.
 The constructor and `LEngineRigApply` both call it, so a workspace change swaps every port at once.
+The identity issuer, the language cache and the two clerks are rebuilt here over the same rig.
+A clerk built over the old rig would keep the old ports, so none survives a rig apply.
 
 ## `private long LEngineIdentityCreate()`
 

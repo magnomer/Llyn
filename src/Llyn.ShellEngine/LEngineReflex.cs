@@ -41,7 +41,7 @@ public sealed partial class LEngine
     {
         LReflexVault reflexes = _lEngineReflexes;
         IReadOnlyList<LReflex> stored = reflexes.LReflexRead(entryId);
-        IReadOnlyList<LReflexDraft> written = LEngineAnatomyScan(language, LEngineReflexScan(drafts));
+        IReadOnlyList<LReflexDraft> written = _lEngineLanguageCache.LLanguageAnatomyScan(language, LEngineReflexScan(drafts));
         IReadOnlyList<LReflex> current = LEngineReflexRead(entryId, written);
 
         if (LEngineReflexMatch(stored, current))

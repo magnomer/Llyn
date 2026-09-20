@@ -22,7 +22,7 @@ public sealed partial class LEngine
         LReference stored;
         lock (_lEngineGate)
         {
-            LStateValue named = LEngineValueRead(new LStateWritten(title.Trim(), false));
+            LStateValue named = LStateValue.LStateValueRead(new LStateWritten(title.Trim(), false));
             stored = _lEngineReferences.LReferenceCreate(new LReference(
                 0,
                 named,

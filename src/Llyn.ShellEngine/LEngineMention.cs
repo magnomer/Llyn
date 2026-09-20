@@ -194,4 +194,15 @@ public sealed partial class LEngine
 
         return text.ToString();
     }
+
+    private static List<Rune> LEngineRuneRead(string text)
+    {
+        List<Rune> runes = [];
+        foreach (Rune rune in text.EnumerateRunes())
+        {
+            runes.Add(rune);
+        }
+
+        return runes;
+    }
 }

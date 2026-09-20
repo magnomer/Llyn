@@ -14,8 +14,6 @@ public partial class PPhonology : UserControl
 
     private PWindow _pPhonologyHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private LPhonology _lPhonology = null!;
 
     public PPhonology()
@@ -26,10 +24,9 @@ public partial class PPhonology : UserControl
     internal void PPhonologyAttach(PWindow host, LEngine engine)
     {
         _pPhonologyHost = host;
-        _lEngine = engine;
         _lPhonology = new LPhonology(
-            engine,
-            new LEditor(engine, host.PWindowUnreadableConfirm),
+            engine, engine,
+            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
             PPhonologyShownCheck,
             PPhonologyLeaveConfirm,
             host.PWindowDeleteConfirm);
@@ -42,9 +39,9 @@ public partial class PPhonology : UserControl
 
         PInventory.ItemsSource = _pInventoryList;
 
-        PDisplay.PDisplayAttach(host, engine);
+        PDisplay.PDisplayAttach(host, _lPhonology.LPhonologyEditor.LEditorDisplay);
 
-        PEditor.PEditorAttach(host, engine, _lPhonology.LPhonologyEditor);
+        PEditor.PEditorAttach(host, _lPhonology.LPhonologyEditor);
 
         PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciationField);
 
@@ -57,35 +54,40 @@ public partial class PPhonology : UserControl
         PPhonologyStore.IsEnabled = _lPhonology.LPhonologyEditor.LEditorStorable;
     }
 
-    internal async void PPhonologyVistaRestore(LVista vista)
+    internal async void PPhonologyVistaRestore()
     {
-        _lPhonology.LPhonologyVistaRestore(vista);
-        vista.LVistaObserverAttach(
+        _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowPosture);
+        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PPhonologyWorkspaceUpdate));
-        vista.LVistaObserverAttach(
+        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
+            LSubject.LSubjectWorkspace, new PObserver(this, PPhonologyWorkspaceUpdate));
+        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelEntryHandle));
-        vista.LVistaObserverAttach(
+        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
             LSubject.LSubjectReflex, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        vista.LVistaObserverAttach(
+        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
             LSubject.LSubjectSettings, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        vista.LVistaChosenAttach(
+        _lPhonology.LPhonologyPanel.LPanelChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
-        PDisplay.PDisplayVistaRestore(vista);
-        PEditor.PEditorVistaRestore(vista);
-        PChoice.PChoiceOrderApply(PSequenceDropdown, vista.LVistaOrder);
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         PLensUpdate();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pPhonologyHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PLensList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PLensHandle);
+        PChoice.PChoiceFilterBuild(
+            PLensList,
+            _pPhonologyHost.PWindowDeportment.LWindowLanguageRead(),
+            _lPhonology.LPhonologyPanel.LPanelFilter,
+            PLensHandle);
         _lPhonology.LPhonologyQuerySet(PProbe.Text);
         _lPhonology.LPhonologyPanel.LPanelRowsUpdate();
     }
 
     private async void PPhonologyWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pPhonologyHost.PWindowDeportment);
         _lPhonology.LPhonologyPanel.LPanelReset();
     }
 
@@ -211,6 +213,7 @@ public partial class PPhonology : UserControl
 
     private async void PPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pPhonologyHost.PWindowPortraitExport(_lPhonology.LPhonologyPanel.LPanelVista);
+        await _pPhonologyHost.PWindowPortraitExport(
+            _lPhonology.LPhonologyFileRead(), _lPhonology.LPhonologyPortraitExport);
     }
 }

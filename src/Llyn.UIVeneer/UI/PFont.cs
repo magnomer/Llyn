@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -25,17 +25,17 @@ internal static class PFont
         }
     }
 
-    internal static void PFontApply(LEngine engine, string language, params DependencyObject[] surfaces)
+    internal static void PFontApply(LWindow window, string language, params DependencyObject[] surfaces)
     {
-        PFontApply(engine, language, LFontRole.LFontRoleHeadword, surfaces);
+        PFontApply(window, language, LFontRole.LFontRoleHeadword, surfaces);
     }
 
-    internal static void PFontApply(LEngine engine, string language, LFontRole role, params DependencyObject[] surfaces)
+    internal static void PFontApply(LWindow window, string language, LFontRole role, params DependencyObject[] surfaces)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(surfaces);
 
-        LFont font = PFontRoleRead(engine, language, role);
+        LFont font = PFontRoleRead(window, language, role);
         FontFamily? family = font.LFontFamily is string named ? new FontFamily(named) : null;
 
         foreach (DependencyObject surface in surfaces)
@@ -45,35 +45,35 @@ internal static class PFont
         }
     }
 
-    internal static void PFontGlyphApply(ResourceDictionary resources, LEngine engine, string language)
+    internal static void PFontGlyphApply(ResourceDictionary resources, LWindow window, string language)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
 
-        LFont glyph = PFontRoleRead(engine, language, LFontRole.LFontRoleGlyph);
+        LFont glyph = PFontRoleRead(window, language, LFontRole.LFontRoleGlyph);
         PFontResourceSet(
             resources, "Theme.Glyph.Family", glyph.LFontFamily is string named ? new FontFamily(named) : null);
         PFontResourceSet(resources, "Theme.Glyph.Size", glyph.LFontSized);
     }
 
-    internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)
+    internal static void PFontExampleApply(ResourceDictionary resources, LWindow window, string language)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
 
-        LFont example = PFontRoleRead(engine, language, LFontRole.LFontRoleExample);
+        LFont example = PFontRoleRead(window, language, LFontRole.LFontRoleExample);
         PFontResourceSet(
             resources, "Theme.Card.ExampleFamily", example.LFontFamily is string named ? new FontFamily(named) : null);
         PFontResourceSet(resources, "Theme.Card.ExampleSize", example.LFontSized);
 
-        LFont gloss = PFontRoleRead(engine, language, LFontRole.LFontRoleGloss);
+        LFont gloss = PFontRoleRead(window, language, LFontRole.LFontRoleGloss);
         PFontResourceSet(
             resources, "Theme.Card.GlossFamily", gloss.LFontFamily is string glossed ? new FontFamily(glossed) : null);
         PFontResourceSet(resources, "Theme.Card.GlossSize", gloss.LFontSized);
         PFontResourceSet(resources, "Theme.Card.GlossStyle", PFontStyleRead(gloss.LFontStyle));
     }
 
-    private static LFont PFontRoleRead(LEngine engine, string language, LFontRole role)
+    private static LFont PFontRoleRead(LWindow window, string language, LFontRole role)
     {
         if (string.IsNullOrWhiteSpace(language))
         {
@@ -82,7 +82,7 @@ internal static class PFont
 
         try
         {
-            return engine.LEngineFontRead(language, role);
+            return window.LWindowFontRead(language, role);
         }
         catch (Exception)
         {

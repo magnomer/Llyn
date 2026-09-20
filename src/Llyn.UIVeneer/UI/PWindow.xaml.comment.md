@@ -48,6 +48,12 @@ The keeper of panel widths, reached by the settings panel when the user links or
 How the window stands, reached by every panel that reads or writes the volume, the layout or the open tab.
 It is built before the layout keeper, since the keeper reads its widths from it.
 
+## `internal LWindow PWindowDeportment => _lWindow;`
+
+The window deportment, reached by every panel.
+A panel asks it for a font, a flag, a respelling switch or a media address.
+The static veneer helpers take it, so no panel needs an engine to call them.
+
 ## `private void PWindowLayoutAttach()`
 
 Registers the root grid of every tab that has a seam, under the name its widths are stored by.

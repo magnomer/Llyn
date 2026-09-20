@@ -8,7 +8,13 @@ namespace Llyn.UIDeportment;
 
 public sealed class LEditor
 {
-    private readonly LEngine _lEngine;
+    private readonly LDraftPort _lDraftPort;
+
+    private readonly LEntryPort _lEntryPort;
+
+    private readonly LPhonologyPort _lPhonologyPort;
+
+    private readonly LSettingsPort _lSettingsPort;
 
     private LVista? _lEditorVista;
 
@@ -16,13 +22,27 @@ public sealed class LEditor
 
     private bool _lEditorHalted;
 
-    public LEditor(LEngine engine, Func<bool> unreadableSeam)
+    public LEditor(
+        LDraftPort drafts,
+        LEntryPort entries,
+        LPhonologyPort phonology,
+        LSettingsPort settings,
+        Func<bool> unreadableSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(settings);
 
-        _lEngine = engine;
-        LEditorDesk = new LDesk(engine, "Input", unreadableSeam);
-        LEditorDisplay = new LDisplay(engine);
+        _lDraftPort = drafts;
+        _lEntryPort = entries;
+        _lPhonologyPort = phonology;
+        _lSettingsPort = settings;
+        LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
+        LEditorDisplay = new LDisplay(entries, phonology, settings);
+        LEditorCard = new LCard(drafts, entries, phonology);
+        LEditorClip = new LClip();
+        LEditorNotation = new LNotation();
         LEditorDesk.LDeskStateChanged += LEditorStateUpdate;
         LEditorDesk.LDeskFinished += LEditorStoredShow;
     }
@@ -42,6 +62,12 @@ public sealed class LEditor
     public LDesk LEditorDesk { get; }
 
     public LDisplay LEditorDisplay { get; }
+
+    public LCard LEditorCard { get; }
+
+    public LClip LEditorClip { get; }
+
+    public LNotation LEditorNotation { get; }
 
     public bool LEditorOwned => _lEditorVista?.LVistaInput ?? false;
 
@@ -82,32 +108,29 @@ public sealed class LEditor
 
     public IReadOnlyList<string> LEditorVarietyNames => LEditorDesk.LDeskTenure?.LTenureVarietyNames ?? [];
 
-    public bool LEditorTonal => _lEngine.LEngineTonalCheck(LEditorLanguage);
+    public bool LEditorTonal => _lPhonologyPort.LEngineTonalCheck(LEditorLanguage);
 
-    public bool LEditorSilent => _lEngine.LEngineSilentCheck(LEditorLanguage);
+    public bool LEditorSilent => _lPhonologyPort.LEngineSilentCheck(LEditorLanguage);
 
     public bool LEditorSpoken => !LEditorSilent;
 
-    public bool LEditorRespelled => _lEngine.LEngineRespellingCheck(LEditorLanguage);
+    public bool LEditorRespelled => _lPhonologyPort.LEngineRespellingCheck(LEditorLanguage);
 
-    public bool LEditorPhonemic => LEditorRespelled && _lEngine.LEnginePhonemicCheck(LEditorLanguage);
+    public bool LEditorPhonemic => LEditorRespelled && _lPhonologyPort.LEnginePhonemicCheck(LEditorLanguage);
 
-    public bool LEditorRebuildable => LEditorEntry is not null && _lEngine.LEngineBookCheck(LEditorLanguage);
+    public bool LEditorRebuildable => LEditorEntry is not null && _lPhonologyPort.LEngineBookCheck(LEditorLanguage);
 
-    public bool LEditorMorphology => _lEngine.LEngineSettingsRead().LSettingsMorphology;
+    public bool LEditorMorphology => _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
 
     public bool LEditorFavorite => LEditorEntry is long id && LEditorFavoriteRead(id);
 
     public int LEditorGrasp => LEditorEntry is long id ? LEditorGraspRead(id) : 0;
 
-    public bool LEditorFanqiePending =>
-        LEditorEntry is long id && LEditorPendingRead(_lEngine.LEngineFanqieCheck, id);
+    public bool LEditorFanqiePending => LEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
 
-    public bool LEditorScriptPending =>
-        LEditorEntry is long id && LEditorPendingRead(_lEngine.LEngineScriptCheck, id);
+    public bool LEditorScriptPending => LEditorDisplay.LDisplayScriptCheck(LEditorEntry);
 
-    public bool LEditorParadigmPending =>
-        LEditorEntry is long id && LEditorPendingRead(_lEngine.LEngineInflectionCheck, id);
+    public bool LEditorParadigmPending => LEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
 
     public string LEditorParadigmLanguage => LParadigm.LParadigmLanguageRead(LEditorParadigmRead());
 
@@ -121,6 +144,15 @@ public sealed class LEditor
 
         _lEditorVista = vista;
         LEditorDesk.LDeskVistaRestore(vista);
+        LEditorDisplay.LDisplayVistaRestore(vista);
+    }
+
+    public void LEditorVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LEditorVistaRestore(
+            posture.LPostureVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LEditorOpen(long? id)
@@ -142,14 +174,14 @@ public sealed class LEditor
         LEditorDesk.LDeskCancel();
     }
 
-    public LForay? LEditorRecordingStart(string word, long target, LListener listener)
+    public void LEditorClipStart(string word, long target, LListener listener)
     {
-        return LEditorDesk.LDeskTenure?.LTenureRecordingStart(word, target, listener);
+        LEditorClip.LClipForaySet(LEditorDesk.LDeskRecordingStart(word, target, listener));
     }
 
-    public LForay? LEditorTranscriptionStart(string word, long target, string scheme, LReceiver receiver)
+    public void LEditorNotationStart(string word, long target, string scheme, LReceiver receiver)
     {
-        return LEditorDesk.LDeskTenure?.LTenureTranscriptionStart(word, target, scheme, receiver);
+        LEditorNotation.LNotationForaySet(LEditorDesk.LDeskTranscriptionStart(word, target, scheme, receiver));
     }
 
     public LEntryDraft? LEditorDraftRead()
@@ -292,18 +324,18 @@ public sealed class LEditor
     {
         if (marked)
         {
-            _lEngine.LEngineFavoriteSave(id);
+            _lEntryPort.LEngineFavoriteSave(id);
             return;
         }
 
-        _lEngine.LEngineFavoriteDelete(id);
+        _lEntryPort.LEngineFavoriteDelete(id);
     }
 
     private bool LEditorFavoriteRead(long id)
     {
         try
         {
-            return _lEngine.LEngineFavoriteCheck(id);
+            return _lEntryPort.LEngineFavoriteCheck(id);
         }
         catch (Exception)
         {
@@ -321,7 +353,7 @@ public sealed class LEditor
 
         try
         {
-            _lEngine.LEngineGraspSave(id, step);
+            _lEntryPort.LEngineGraspSave(id, step);
         }
         catch (Exception exception)
         {
@@ -334,7 +366,7 @@ public sealed class LEditor
     {
         try
         {
-            return _lEngine.LEngineGraspRead(id);
+            return _lEntryPort.LEngineGraspRead(id);
         }
         catch (Exception)
         {
@@ -358,7 +390,7 @@ public sealed class LEditor
 
         try
         {
-            return _lEngine.LEngineFrequencyRead(id);
+            return _lEntryPort.LEngineFrequencyRead(id);
         }
         catch (Exception)
         {
@@ -370,7 +402,7 @@ public sealed class LEditor
     {
         try
         {
-            return _lEngine.LEngineTargetFind(LEditorDesk.LDeskId);
+            return _lDraftPort.LEngineTargetFind(LEditorDesk.LDeskId);
         }
         catch (Exception)
         {
@@ -387,8 +419,8 @@ public sealed class LEditor
 
         try
         {
-            _lEngine.LEngineFanqieStart(id);
-            return _lEngine.LEngineFanqieDivide(id);
+            _lPhonologyPort.LEngineFanqieStart(id);
+            return _lPhonologyPort.LEngineFanqieDivide(id);
         }
         catch (Exception)
         {
@@ -416,7 +448,7 @@ public sealed class LEditor
 
         try
         {
-            _lEngine.LEngineFanqieRebuild(id);
+            _lPhonologyPort.LEngineFanqieRebuild(id);
         }
         catch (Exception exception)
         {
@@ -436,8 +468,8 @@ public sealed class LEditor
 
         try
         {
-            _lEngine.LEngineScriptStart(id);
-            return _lEngine.LEngineScriptDivide(id);
+            _lPhonologyPort.LEngineScriptStart(id);
+            return _lPhonologyPort.LEngineScriptDivide(id);
         }
         catch (Exception)
         {
@@ -454,23 +486,11 @@ public sealed class LEditor
 
         try
         {
-            return _lEngine.LEngineParadigmShow(id);
+            return _lPhonologyPort.LEngineParadigmShow(id);
         }
         catch (Exception)
         {
             return [];
-        }
-    }
-
-    private static bool LEditorPendingRead(Func<long, bool> check, long id)
-    {
-        try
-        {
-            return check(id);
-        }
-        catch (Exception)
-        {
-            return false;
         }
     }
 }

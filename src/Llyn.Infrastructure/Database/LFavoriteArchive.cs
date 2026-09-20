@@ -63,7 +63,7 @@ public sealed class LFavoriteArchive : LFavoriteVault
         return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture) > 0;
     }
 
-    public IReadOnlyList<LFavorite> LFavoriteFind(string query)
+    public IReadOnlyList<LCatalogFavorite> LFavoriteFind(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
         query = query.Trim();
@@ -81,11 +81,11 @@ public sealed class LFavoriteArchive : LFavoriteVault
             """;
         command.Parameters.AddWithValue("$query", query);
 
-        List<LFavorite> favorites = [];
+        List<LCatalogFavorite> favorites = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            favorites.Add(new LFavorite(
+            favorites.Add(new LCatalogFavorite(
                 new LEntry(
                     reader.GetInt64(0),
                     reader.GetString(1),

@@ -10,7 +10,7 @@ public partial class PWindow
         LEntry entry;
         try
         {
-            entry = _lEngine.LEngineGlyphResolve(character, language);
+            entry = _lWindow.LWindowGlyphResolve(character, language);
         }
         catch (Exception exception)
         {

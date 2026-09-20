@@ -10,5 +10,5 @@ public interface LFavoriteVault
 
     bool LFavoriteCheck(long entryId);
 
-    IReadOnlyList<LFavorite> LFavoriteFind(string query);
+    IReadOnlyList<LCatalogFavorite> LFavoriteFind(string query);
 }

@@ -9,7 +9,7 @@ public partial class PDisplay
     {
         try
         {
-            PDisplayGrasp.PGraspStep = _lEngine.LEngineGraspRead(id);
+            PDisplayGrasp.PGraspStep = _lDisplay.LDisplayGraspRead(id);
         }
         catch (Exception)
         {
@@ -21,7 +21,7 @@ public partial class PDisplay
 
     private string PDisplayGraspFormat(int step)
     {
-        return _pDisplayVista?.LVistaChosen is null
+        return _lDisplay.LDisplayChosen is null
             ? string.Empty
             : PLocalizationCatalog.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
     }
@@ -33,7 +33,7 @@ public partial class PDisplay
 
     private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayVista?.LVistaChosen is not long shown)
+        if (_lDisplay.LDisplayChosen is not long shown)
         {
             PDisplayGrasp.PGraspStep = 0;
             return;
@@ -41,7 +41,7 @@ public partial class PDisplay
 
         try
         {
-            _lEngine.LEngineGraspSave(shown, PDisplayGrasp.PGraspStep);
+            _lDisplay.LDisplayGraspSave(shown, PDisplayGrasp.PGraspStep);
         }
         catch (Exception exception)
         {

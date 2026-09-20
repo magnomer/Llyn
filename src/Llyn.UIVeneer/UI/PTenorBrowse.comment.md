@@ -11,10 +11,11 @@ The entry list itself lives in [PTenorCohort.cs](PTenorCohort.comment.md).
 
 ## Inline notes
 
-### `private LVista? _pTenorVista;`
+### `private LTenor _lTenor = null!;`
 
-The engine's view state for the tenor tab: order, query, the chosen Register, and the languages hidden from its Entries.
-The panel keeps no copy of any of the four and reads each from the vista where it needs it.
+The panel's deportment, holding the register vista and the Cohort vista the window restored.
+The vista carries the order, the query, the chosen Register, and the languages hidden from its entries.
+The panel keeps no copy of any of the four and asks the deportment for each where it needs it.
 The Register is held by its id rather than its name, since a name may be rewritten under the panel.
 A null Register is not an absence to be corrected.
 It is the whole workspace, which is what the panel shows first.
@@ -45,8 +46,9 @@ The vista saves it and announces it, and the announcement rebuilds the catalog.
 The ticked languages are read off the menu and handed to the vista, which saves and announces them.
 The mark on the button is redrawn from the vista at once.
 
-### `internal async void PTenorVistaRestore(LVista vista, LVista cohort)`
+### `internal async void PTenorVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel answers the engine through the vistas rather than its own visibility.
 So a Register written in the input panel is in the catalog at once, with no tab switch needed.
@@ -62,10 +64,6 @@ Search text still standing in the box is handed to the vista, so a switched work
 The catalog is then listed from the vista.
 The cohort vista is kept for the entry column and handed to the display, which reads its chosen entry.
 The cohort vista carries the entry search box, so its announcement refills the entry column alone.
-
-### `private void PDegreeRestore()`
-
-Moves the dropdown mark onto the ordering the vista holds.
 
 ### `private void PGrilleRestore()`
 

@@ -12,14 +12,12 @@ public partial class PCorpus
 {
     private readonly ObservableCollection<PQuotationItem> _pQuotationList = [];
 
-    private LVista? _pQuotationVista;
-
     private void PQuotationFind()
     {
         IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(_pCorpusVista, _pQuotationVista);
+            read = _lCorpus.LCorpusQuotationRead();
         }
         catch (Exception exception)
         {
@@ -71,8 +69,8 @@ public partial class PCorpus
         LEntryDraft? draft;
         try
         {
-            _pQuotationVista?.LVistaSelect(id);
-            draft = _pQuotationVista?.LVistaLoad()?.LDraftContent;
+            _lCorpus.LCorpusQuotationSelect(id);
+            draft = _lCorpus.LCorpusQuotationLoad();
         }
         catch (Exception exception)
         {
@@ -93,7 +91,7 @@ public partial class PCorpus
         PTranscript.Visibility = Visibility.Collapsed;
         PExcerpt.Visibility = Visibility.Collapsed;
 
-        _pQuotationVista?.LVistaSelect(id);
+        _lCorpus.LCorpusQuotationSelect(id);
         PQuotationFind();
         PDisplay.PDisplayShow(draft);
         PCorpusMode.IsEnabled = true;
@@ -109,13 +107,13 @@ public partial class PCorpus
 
     private void PQuotationEntryCreate()
     {
-        long? example = _pCorpusVista?.LVistaChosen;
+        long? example = _lCorpus.LCorpusChosen;
 
         PTranscriptDraftCancel();
         PTranscript.Visibility = Visibility.Collapsed;
         PExcerpt.Visibility = Visibility.Collapsed;
 
-        _pQuotationVista?.LVistaSelect(null);
+        _lCorpus.LCorpusQuotationSelect(null);
         PQuotationFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
@@ -131,7 +129,7 @@ public partial class PCorpus
 
     private void PQuotationScribeHandle(bool editing)
     {
-        if (_pQuotationVista?.LVistaChosen is not long id)
+        if (_lCorpus.LCorpusQuotationChosen is not long id)
         {
             if (!editing)
             {
@@ -173,7 +171,7 @@ public partial class PCorpus
 
         PQuotationScribeShow(false);
 
-        if (_pQuotationVista?.LVistaChosen is long stored)
+        if (_lCorpus.LCorpusQuotationChosen is long stored)
         {
             PQuotationEntryShow(stored);
             return;
@@ -181,7 +179,7 @@ public partial class PCorpus
 
         PEditor.PEditorReset();
 
-        if (_pCorpusVista?.LVistaChosen is long kept)
+        if (_lCorpus.LCorpusChosen is long kept)
         {
             PAnthologyExampleShow(kept);
             return;
@@ -192,7 +190,7 @@ public partial class PCorpus
 
     private void PQuotationScribeShow(bool editing)
     {
-        _pQuotationVista?.LVistaEditingSet(editing);
+        _lCorpus.LCorpusEditorSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -204,11 +202,11 @@ public partial class PCorpus
     private void PQuotationEntryUpdate(LBulletin bulletin)
     {
         if (bulletin.LBulletinStored
-            && _pQuotationVista?.LVistaChosen is null
+            && _lCorpus.LCorpusQuotationChosen is null
             && IsVisible
             && PEditor.Visibility == Visibility.Visible)
         {
-            _pQuotationVista?.LVistaSelect(bulletin.LBulletinId);
+            _lCorpus.LCorpusQuotationSelect(bulletin.LBulletinId);
         }
 
         PCitationFind();
@@ -220,7 +218,7 @@ public partial class PCorpus
         LEntryDraft? draft;
         try
         {
-            draft = _pQuotationVista?.LVistaLoad()?.LDraftContent;
+            draft = _lCorpus.LCorpusQuotationLoad();
         }
         catch (Exception)
         {
@@ -229,7 +227,7 @@ public partial class PCorpus
 
         if (draft is null)
         {
-            if (_pCorpusVista?.LVistaChosen is long kept)
+            if (_lCorpus.LCorpusChosen is long kept)
             {
                 PAnthologyExampleShow(kept);
                 return;
@@ -251,13 +249,13 @@ public partial class PCorpus
             PEditor.PEditorReset();
         }
 
-        _pQuotationVista?.LVistaSelect(null);
+        _lCorpus.LCorpusQuotationSelect(null);
         PQuotationFind();
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
         PCorpusScribeShow(editing);
-        PCorpusMode.IsEnabled = _pCorpusVista?.LVistaChosen is not null;
-        PCorpusBin.IsEnabled = _pCorpusVista?.LVistaChosen is not null;
+        PCorpusMode.IsEnabled = _lCorpus.LCorpusChosen is not null;
+        PCorpusBin.IsEnabled = _lCorpus.LCorpusChosen is not null;
     }
 }

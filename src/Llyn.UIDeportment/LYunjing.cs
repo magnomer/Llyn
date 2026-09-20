@@ -9,7 +9,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class LYunjing
 {
-    private readonly LEngine _lEngine;
+    private readonly LPhonologyPort _lPhonologyPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private LVista? _lShengmuVista;
 
@@ -26,12 +28,19 @@ public sealed class LYunjing
     private int _lXiaoyunCount;
 
     public LYunjing(
-        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LPhonologyPort phonology,
+        LPortraitPort portraits,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
 
-        _lEngine = engine;
+        _lPhonologyPort = phonology;
+        _lPortraitPort = portraits;
         LYunjingEditor = editor;
         LYunjingPanel = new LPanel(
             "Yunjing.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
@@ -57,7 +66,7 @@ public sealed class LYunjing
 
     public LPanel LYunjingPanel { get; }
 
-    public bool LYunjingAllowed => _lEngine.LEngineBookFind() is not null;
+    public bool LYunjingAllowed => _lPhonologyPort.LEngineBookFind() is not null;
 
     public bool LYunjingDiweiShown => LYunjingDiweiChosen && !LYunjingPanel.LPanelModeEnabled;
 
@@ -93,8 +102,8 @@ public sealed class LYunjing
     private LVista? LYunjingSideVista => _lYunjingFinalSide ? _lYunmuVista : _lShengmuVista;
 
     private string LYunjingLanguage =>
-        _lEngine.LEngineDiweiRead(LYunjingSideVista?.LVistaChosen)?.LDiweiLanguage
-        ?? _lEngine.LEngineBookFind()
+        _lPhonologyPort.LEngineDiweiRead(LYunjingSideVista?.LVistaChosen)?.LDiweiLanguage
+        ?? _lPhonologyPort.LEngineBookFind()
         ?? string.Empty;
 
     public void LYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)
@@ -135,7 +144,7 @@ public sealed class LYunjing
             return [];
         }
 
-        return _lEngine.LEngineDiweiFind(vista, LYunjingLanguage, kind);
+        return _lPhonologyPort.LEngineDiweiFind(vista, LYunjingLanguage, kind);
     }
 
     public IReadOnlyList<LVistaRow> LYunjingXiaoyunRead()
@@ -162,7 +171,7 @@ public sealed class LYunjing
             return [];
         }
 
-        return _lEngine.LEngineXiaoyunFind(LYunjingLanguage, onset, rime, vista);
+        return _lPhonologyPort.LEngineXiaoyunFind(LYunjingLanguage, onset, rime, vista);
     }
 
     public LDiweiPage LYunjingDiweiRead()
@@ -172,7 +181,8 @@ public sealed class LYunjing
             return LDiweiPage.LDiweiPageBlank;
         }
 
-        return _lEngine.LEngineDiweiResolve(LYunjingSideVista?.LVistaChosen, LLocalization.LLocalizationTextFind);
+        return _lPhonologyPort.LEngineDiweiResolve(
+            LYunjingSideVista?.LVistaChosen, LLocalization.LLocalizationTextFind);
     }
 
     public void LYunjingPlumbSet(string query)
@@ -260,7 +270,7 @@ public sealed class LYunjing
         ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(key);
 
-        LYunjingDiweiOpen(_lEngine.LEngineDiweiFind(language, kind, key));
+        LYunjingDiweiOpen(_lPhonologyPort.LEngineDiweiFind(language, kind, key));
     }
 
     private void LYunjingDiweiOpen(LDiwei? found)
@@ -282,7 +292,7 @@ public sealed class LYunjing
             return;
         }
 
-        _lEngine.LEngineTallySave(chosen);
+        _lPhonologyPort.LEngineTallySave(chosen);
         LYunjingChanged?.Invoke();
     }
 
@@ -313,6 +323,40 @@ public sealed class LYunjing
             return Task.CompletedTask;
         }
 
-        return _lEngine.LEnginePortraitPrint(LYunjingPanel.LPanelVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(LYunjingPanel.LPanelVista, label, ticket);
+    }
+
+    public void LYunjingVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LYunjingVistaRestore(
+            posture.LPostureVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
+            posture.LPostureVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
+            posture.LPostureVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+    }
+
+    public void LYunjingShengmuAttach(LSubject subject, LObserver observer)
+    {
+        _lShengmuVista?.LVistaObserverAttach(subject, observer);
+    }
+
+    public void LYunjingYunmuAttach(LSubject subject, LObserver observer)
+    {
+        _lYunmuVista?.LVistaObserverAttach(subject, observer);
+    }
+
+    public LCatalogOrder LYunjingLadder => _lShengmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName;
+
+    public LCatalogOrder LYunjingStair => _lYunmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName;
+
+    public string LYunjingFileRead()
+    {
+        return LVista.LVistaFileRead(LYunjingPanel.LPanelVista);
+    }
+
+    public Task LYunjingPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    {
+        return _lPortraitPort.LEnginePortraitExport(LYunjingPanel.LPanelVista, path, format, label);
     }
 }

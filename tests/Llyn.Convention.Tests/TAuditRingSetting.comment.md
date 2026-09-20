@@ -11,6 +11,7 @@ The hit count each kind may reach.
 `EngineField` counts the `LEngine _lEngine` fields in the veneer.
 `EngineHelper` counts the tenure, vista and foray type names in the veneer.
 `AdapterEngine` counts the archives, loaders and sessions the engine constructs itself, none since plan 08.
+`EnginePart` counts the files declaring `partial class LEngine`, 72 after plan 09 lifted the draft clerk.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a hit, never raise one to admit a new one.
 
@@ -51,3 +52,13 @@ The `path:namespace` rows that break the rings today, one per break, each delete
 A path ending in `/*` waives a whole project for one namespace.
 Every row must still match a source line, so a fixed break deletes its row.
 The table is empty since plan 08 cut the engine's edge to the infrastructure.
+
+## `public static readonly string[] TAuditRingHandles`
+
+The engine types a deportment source may name: the six ports and the four handles.
+Every other type declared in the engine ring is a helper the deportment may not reach.
+
+## `public const int TAuditRingFloor = 40;`
+
+The fewest source files the application ring may hold.
+Raise it when a plan lifts another clerk in, never lower it.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -86,7 +87,7 @@ public sealed partial class LEngine
                 LSubject.LSubjectReference => LEngineEntryFind(LEngineReferenceBlank with { LReferenceId = id }),
                 _ => [],
             };
-            entries = LEngineEntryMatch(parent.LVistaFilter.LCatalogFilterApply(entries,
+            entries = LEntryClerk.LEntryClerkMatch(parent.LVistaFilter.LCatalogFilterApply(entries,
                 entry => entry.LEntryLanguage), child.LVistaQuery);
             return LEngineVistaBuild(entries, child.LVistaChosen);
         }

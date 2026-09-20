@@ -15,7 +15,7 @@ The chip line under the sentence field.
 
 The Mentions as the engine last sent them, taken on every show.
 
-## `internal void PSentenceMentionShow(LEngine engine, string silent)`
+## `internal void PSentenceMentionShow(LWindow window, string silent)`
 
 Redraws the chip line from the held Mentions over the sentence as the row shows it.
 The editor calls it after each redraw, because the row holds no engine to read headwords from.

@@ -21,6 +21,11 @@ public sealed record LStateValue(
         return string.IsNullOrWhiteSpace(text) ? LStateValueUnspecified : LStateValueCreate(text);
     }
 
+    public static LStateValue LStateValueRead(LStateWritten? written)
+    {
+        return written?.LStateWrittenResolve() ?? LStateValueUnspecified;
+    }
+
     public string LStateValueShow()
     {
         return LStateValueText is not null && (LStateValueState == LState.LStateSpecified || LStateValueUnreadable)

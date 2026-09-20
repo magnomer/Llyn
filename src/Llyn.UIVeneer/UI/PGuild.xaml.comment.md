@@ -12,8 +12,9 @@ The roll, the oeuvre, the vita, the autograph and the colophon are all served fr
 News the deportment with the window's dialogs as seams, subscribes its notices, and wires the two lists.
 The print command binding is added last, so no can-execute query ever meets a deportment not yet built.
 
-## `internal void PGuildVistaRestore(LVista vista, LVista oeuvre)`
+## `internal void PGuildVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Hands the vistas down, attaches the bulletins the panel follows, restores the order and kind menus, and lists.
 
 ## `internal bool PGuildChangeCheck()`
@@ -61,9 +62,18 @@ A Source was loaded for the colophon, so its sheet is composed and shown.
 
 Writes every visibility and enablement off the deportment's verdicts.
 
-## `private void PAutographStartUpdate(LTenure held)`
+## `private void PGuildObserverAttach()`
 
-A tenure was started: its bulletins are marshalled to the desk, the union field is emptied, the name takes focus.
+Hands the autograph desk to the registration below, from a method that only reads the deportment.
+
+## `private void PAutographObserverAttach(LDesk desk)`
+
+Registers the desk's own draft and state updates on it, marshalled to the window's thread.
+
+## `private void PAutographStartUpdate()`
+
+A tenure was started: the union field is emptied and the name takes focus.
+The desk's bulletins were registered on the desk at attach time, so nothing is attached here.
 
 ## `private void PAutographDraftUpdate(LDraft draft)`
 

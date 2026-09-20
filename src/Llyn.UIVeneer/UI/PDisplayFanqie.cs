@@ -10,7 +10,7 @@ public partial class PDisplay
     {
         try
         {
-            _lEngine.LEngineFanqieStart(id);
+            _lDisplay.LDisplayFanqieStart(id);
         }
         catch (Exception)
         {
@@ -22,7 +22,7 @@ public partial class PDisplay
         IReadOnlyList<LFanqieGroup> groups;
         try
         {
-            groups = _lEngine.LEngineFanqieDivide(id);
+            groups = _lDisplay.LDisplayFanqieDivide(id);
         }
         catch (Exception)
         {
@@ -37,7 +37,7 @@ public partial class PDisplay
 
         _pDisplayFanqie = rows;
         PReflexAnchorApply(_pDisplayReflex, rows, PDisplayHeadword.Text);
-        PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
+        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(groups);
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);

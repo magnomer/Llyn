@@ -180,7 +180,7 @@ public partial class PWindow
         IReadOnlyList<LMeaning> meanings;
         try
         {
-            meanings = _lEngine.LEngineMeaningRead(entryId, LOwner.LOwnerEntry);
+            meanings = _lWindow.LWindowMeaningRead(entryId);
         }
         catch (Exception exception)
         {

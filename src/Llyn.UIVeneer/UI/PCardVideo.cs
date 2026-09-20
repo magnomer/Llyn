@@ -25,6 +25,6 @@ internal sealed partial class PCard
 
     private PVideo PCardVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(_pCardEngine, draft);
+        return new PVideo(_pCardWindow, draft);
     }
 }

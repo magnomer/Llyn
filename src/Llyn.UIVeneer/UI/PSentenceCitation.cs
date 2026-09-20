@@ -87,7 +87,7 @@ public partial class PEditor
         LReference stored;
         try
         {
-            stored = _lEngine.LEngineCitationCreate(typed);
+            stored = _lEditor.LEditorCard.LCardCitationCreate(typed);
         }
         catch (Exception exception)
         {

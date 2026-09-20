@@ -14,104 +14,79 @@ public partial class PRepertoire
 
     private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<long, int>();
 
-    private LVista? _pRepertoireVista;
-
     private async void PRepertoireWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pRepertoireHost.PWindowDeportment);
         PRepertoireReset();
     }
 
     private void PInquestHandle(object sender, TextChangedEventArgs e)
     {
-        _pRepertoireVista?.LVistaQuerySet(PInquest.Text ?? string.Empty);
+        _lRepertoire.LRepertoireInquestSet(PInquest.Text ?? string.Empty);
     }
 
     private void PSortieHandle(object sender, TextChangedEventArgs e)
     {
-        _pOccurrenceVista?.LVistaQuerySet(PSortie.Text);
+        _lRepertoire.LRepertoireSortieSet(PSortie.Text);
     }
 
     private void PMeshHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRepertoireVista is null)
-        {
-            return;
-        }
-
-        _pRepertoireVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PMeshList));
+        _lRepertoire.LRepertoireMeshSet(PChoice.PChoiceFilterRead(PMeshList));
         PMeshRestore();
     }
 
     private void PTierHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pRepertoireVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PTierDropper.IsChecked = false;
-        _pRepertoireVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pRepertoireVista.LVistaOrder));
+        _lRepertoire.LRepertoireTierSet(choice);
     }
 
-    internal async void PRepertoireVistaRestore(LVista vista, LVista occurrence)
+    internal async void PRepertoireVistaRestore()
     {
-        _pRepertoireVista = vista;
-        _pOccurrenceVista = occurrence;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAtlasFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PRepertoireWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PAtlasFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAtlasFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAtlasFind));
-        occurrence.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, POccurrenceEntryUpdate));
-        occurrence.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PRepertoireEntryUpdate));
-        occurrence.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, POccurrenceFind));
-        PDisplay.PDisplayVistaRestore(occurrence);
-        PEditor.PEditorVistaRestore(occurrence);
-        PTierRestore();
+        _lRepertoire.LRepertoireVistaRestore(_pRepertoireHost.PWindowPosture);
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(
+            LSubject.LSubjectWorkspace, new PObserver(this, PRepertoireWorkspaceUpdate));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSituation, new PObserver(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAtlasFind));
+        _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAtlasFind));
+        _lRepertoire.LRepertoireOccurrenceAttach(LSubject.LSubjectEntry, new PObserver(this, POccurrenceEntryUpdate));
+        _lRepertoire.LRepertoireEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PRepertoireEntryUpdate));
+        _lRepertoire.LRepertoireOccurrenceAttach(LSubject.LSubjectVista, new PObserver(this, POccurrenceFind));
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PTierDropdown, _lRepertoire.LRepertoireOrder);
         PMeshRestore();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pRepertoireHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PMeshList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PMeshHandle);
-        vista.LVistaQuerySet(PInquest.Text ?? string.Empty);
-        occurrence.LVistaQuerySet(PSortie.Text);
+        PChoice.PChoiceFilterBuild(
+            PMeshList, _lRepertoire.LRepertoireLanguageRead(), _lRepertoire.LRepertoireFilter, PMeshHandle);
+        _lRepertoire.LRepertoireInquestSet(PInquest.Text ?? string.Empty);
+        _lRepertoire.LRepertoireSortieSet(PSortie.Text);
         PAtlasFind();
-    }
-
-    private void PTierRestore()
-    {
-        if (_pRepertoireVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PTierDropdown, _pRepertoireVista.LVistaOrder);
-        }
     }
 
     private void PMeshRestore()
     {
-        if (_pRepertoireVista is not LVista vista)
-        {
-            PMeshMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PMeshMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PMeshMark.Visibility = _lRepertoire.LRepertoireFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PAtlasFind()
     {
-        if (_pRepertoireVista is null)
-        {
-            return;
-        }
-
         IReadOnlyList<LCatalogSituation> read;
         try
         {
-            read = _lEngine.LEngineSituationFind(_pRepertoireVista,
+            read = _lRepertoire.LRepertoireRowsRead(
                 PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
                 PLocalizationCatalog.PLocalizationTextRead("Situation.Untitled"));
-            _pAtlasCount = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
+            _pAtlasCount = _lRepertoire.LRepertoireUsageRead();
         }
         catch (Exception exception)
         {
@@ -143,12 +118,12 @@ public partial class PRepertoire
 
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PVignetteTally.Text = PRepertoireTallyRead(_pRepertoireVista?.LVistaChosen);
+        PVignetteTally.Text = PRepertoireTallyRead(_lRepertoire.LRepertoireChosen);
         PScenarioTally.Text = PRepertoireTallyRead(PScenarioSituationRead());
 
         if (!kept)
         {
-            if (_pRepertoireVista?.LVistaChosen is not null)
+            if (_lRepertoire.LRepertoireChosen is not null)
             {
                 if (PScenario.Visibility != Visibility.Visible)
                 {
@@ -185,8 +160,8 @@ public partial class PRepertoire
         LSituation? situation;
         try
         {
-            _pRepertoireVista?.LVistaSelect(id);
-            situation = _pRepertoireVista?.LVistaLoad()?.LDraftSituation;
+            _lRepertoire.LRepertoireSelect(id);
+            situation = _lRepertoire.LRepertoireLoad();
         }
         catch (Exception exception)
         {
@@ -201,7 +176,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pRepertoireVista?.LVistaSelect(id);
+        _lRepertoire.LRepertoireSelect(id);
         PAtlasFind();
         POccurrenceEntryHide();
 
@@ -225,12 +200,12 @@ public partial class PRepertoire
 
     private void PRepertoireBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pOccurrenceVista?.LVistaChosen is not null)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is not null)
         {
             return;
         }
 
-        if (_pRepertoireVista?.LVistaChosen is not long id)
+        if (_lRepertoire.LRepertoireChosen is not long id)
         {
             return;
         }
@@ -244,7 +219,7 @@ public partial class PRepertoire
 
         try
         {
-            _pRepertoireVista.LVistaDelete();
+            _lRepertoire.LRepertoireDelete();
         }
         catch (Exception exception)
         {
@@ -260,7 +235,7 @@ public partial class PRepertoire
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PRepertoireScribe);
-        if (_pOccurrenceVista?.LVistaChosen is not null || PEditor.Visibility == Visibility.Visible)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is not null || PEditor.Visibility == Visibility.Visible)
         {
             POccurrenceScribeHandle(editing);
             return;
@@ -282,7 +257,7 @@ public partial class PRepertoire
             PScenarioDraftCancel();
             PRepertoireScribeShow(false);
 
-            if (_pRepertoireVista?.LVistaChosen is long chosen)
+            if (_lRepertoire.LRepertoireChosen is long chosen)
             {
                 PRepertoireShow(chosen);
                 return;
@@ -292,7 +267,7 @@ public partial class PRepertoire
             return;
         }
 
-        if (_pRepertoireVista?.LVistaChosen is not long shown)
+        if (_lRepertoire.LRepertoireChosen is not long shown)
         {
             PRepertoireClear();
             return;
@@ -304,7 +279,7 @@ public partial class PRepertoire
 
     private void PRepertoireScribeShow(bool editing)
     {
-        _pRepertoireVista?.LVistaEditingSet(editing);
+        _lRepertoire.LRepertoireScenarioSet(editing);
 
         PScenario.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PVignette.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -317,7 +292,7 @@ public partial class PRepertoire
     {
         if (editing)
         {
-            if (_pRepertoireVista?.LVistaChosen is null)
+            if (_lRepertoire.LRepertoireChosen is null)
             {
                 return;
             }
@@ -338,14 +313,14 @@ public partial class PRepertoire
 
     internal long PRepertoireVoyageRead()
     {
-        return _pRepertoireVista?.LVistaChosen ?? 0;
+        return _lRepertoire.LRepertoireChosen ?? 0;
     }
 
     private void PRepertoireClear()
     {
         PScenarioDraftCancel();
 
-        _pRepertoireVista?.LVistaSelect(null);
+        _lRepertoire.LRepertoireSelect(null);
         PAtlasFind();
         POccurrenceEntryHide();
         POccurrenceFind();

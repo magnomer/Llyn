@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed partial class LEngine : IDisposable
+public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhonologyPort, LSettingsPort, LMediaPort, LPortraitPort
 {
     private readonly object _lEngineGate = new();
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
@@ -20,7 +20,6 @@ public sealed partial class LEngine : IDisposable
     private readonly HashSet<long> _lEngineFrequencyMissed = [];
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineInflectionSources = new(StringComparer.Ordinal);
     private readonly Dictionary<long, CancellationTokenSource> _lEngineInflectionPending = [];
-    private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
     private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
@@ -80,6 +79,9 @@ public sealed partial class LEngine : IDisposable
     private LDoctorRescue _lEngineRescue;
     private LRealm _lEngineRealm;
     private LIdentity _lEngineIdentity;
+    private LLanguageCache _lEngineLanguageCache;
+    private LDraftClerk _lEngineDraftClerk;
+    private LEntryClerk _lEngineEntryClerk;
 
     public LEngine(LRig rig)
     {
@@ -90,7 +92,6 @@ public sealed partial class LEngine : IDisposable
         _lEngineSettings = _lEngineSettingsVault.LSettingsRead();
         _lEngineRescue = _lEngineDoctor.LDoctorDatabaseCreate();
         _lEngineRealm = _lEngineRealmVault.LRealmRead();
-        _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
 
         LEngineLanguageImport();
         LEngineDiweiApply();
@@ -151,7 +152,11 @@ public sealed partial class LEngine : IDisposable
         nameof(_lEngineTranscriptions),
         nameof(_lEngineTranslations),
         nameof(_lEngineVideos),
-        nameof(_lEngineWorkspace))]
+        nameof(_lEngineWorkspace),
+        nameof(_lEngineIdentity),
+        nameof(_lEngineLanguageCache),
+        nameof(_lEngineDraftClerk),
+        nameof(_lEngineEntryClerk))]
     private void LEngineRigSet(LRig rig)
     {
         _lEngineSourceFactory = rig.LRigSources;
@@ -205,6 +210,10 @@ public sealed partial class LEngine : IDisposable
         _lEngineTranslations = rig.LRigTranslations;
         _lEngineVideos = rig.LRigVideos;
         _lEngineWorkspace = rig.LRigWorkspace;
+        _lEngineIdentity = new LIdentity(rig.LRigWorkspaces);
+        _lEngineLanguageCache = new LLanguageCache(rig.LRigLanguages);
+        _lEngineDraftClerk = new LDraftClerk(rig, _lEngineIdentity, _lEngineLanguageCache);
+        _lEngineEntryClerk = new LEntryClerk(rig);
     }
 
     private long LEngineIdentityCreate()
@@ -281,7 +290,6 @@ public sealed partial class LEngine : IDisposable
             LEngineScriptClear();
             LEngineFanqieClear();
             LEngineReflexClear();
-            _lEngineLanguages.Clear();
             _lEngineLanguageListed = null;
             _lEngineEnsign.LEnsignClear();
             _lEngineSpeechPacks.Clear();
@@ -291,7 +299,6 @@ public sealed partial class LEngine : IDisposable
             _lEngineRescue = rescue;
             _lEngineRealm = realm;
             LEngineRigSet(rig);
-            _lEngineIdentity = new LIdentity(_lEngineWorkspaces);
             LEngineSettingsSave();
             LEngineLanguageImport();
             LEngineDiweiApply();

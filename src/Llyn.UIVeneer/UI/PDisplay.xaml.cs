@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -18,11 +17,7 @@ public partial class PDisplay : UserControl
 
     private PWindow _pDisplayHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private LDisplay _lDisplay = null!;
-
-    private LVista? _pDisplayVista;
 
     public PDisplay()
     {
@@ -41,20 +36,13 @@ public partial class PDisplay : UserControl
         PCompassAttach();
     }
 
-    internal void PDisplayAttach(PWindow host, LEngine engine)
+    internal void PDisplayAttach(PWindow host, LDisplay display)
     {
         _pDisplayHost = host;
-        _lEngine = engine;
-        _lDisplay = new LDisplay(engine);
-        PMedia.PMediaAttach(this, engine);
+        _lDisplay = display;
+        PMedia.PMediaAttach(this, host.PWindowDeportment);
 
         PVolumeLoad();
-    }
-
-    internal void PDisplayVistaRestore(LVista vista)
-    {
-        _pDisplayVista = vista;
-        PDisplayObserverAttach(vista);
     }
 
     private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)
@@ -75,7 +63,7 @@ public partial class PDisplay : UserControl
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        if (_pDisplayVista?.LVistaChosen is not long id)
+        if (_lDisplay.LDisplayChosen is not long id)
         {
             PDisplayClear();
             return;
@@ -85,7 +73,7 @@ public partial class PDisplay : UserControl
         PDisplayFavoriteShow(id);
         PDisplayGraspShow(id);
 
-        _pDisplayRecording = _lEngine.LEngineRecordingExist(draft.LEntryDraftAudio)
+        _pDisplayRecording = _pDisplayHost.PWindowDeportment.LWindowRecordingExist(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
             : null;
         PPlaybackAction.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
@@ -96,13 +84,14 @@ public partial class PDisplay : UserControl
         PDisplayReflexStart(id);
         PDisplayReflexShow(draft);
         PReflexPendingShow(id);
-        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, draft.LEntryDraftLanguage);
+        PRespelling respelling = PRespelling.PRespellingRead(
+            _pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
         PDisplayPronunciation.Text = draft.LEntryDraftPronunciation is LPronunciationDraft primary
             ? respelling.PRespellingTextRead(primary)
             : string.Empty;
         PDisplayPronunciationOpener.Text = respelling.PRespellingOpener;
         PDisplayPronunciationCloser.Text = respelling.PRespellingCloser;
-        PDisplayContour.PContourTonal = _lEngine.LEngineTonalCheck(draft.LEntryDraftLanguage);
+        PDisplayContour.PContourTonal = _lDisplay.LDisplayTonalCheck(draft.LEntryDraftLanguage);
         PDisplayPronunciationSurface.Visibility = PDisplayPronunciation.Text.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
@@ -149,7 +138,7 @@ public partial class PDisplay : UserControl
         LEntry? entry;
         try
         {
-            entry = _lEngine.LEngineEntryRead(id);
+            entry = _lDisplay.LDisplayEntryRead(id);
         }
         catch (Exception)
         {
@@ -168,7 +157,7 @@ public partial class PDisplay : UserControl
         IReadOnlyList<LFrequency> frequency;
         try
         {
-            frequency = _lEngine.LEngineFrequencyRead(id);
+            frequency = _lDisplay.LDisplayFrequencyRead(id);
         }
         catch (Exception)
         {
@@ -245,7 +234,7 @@ public partial class PDisplay : UserControl
         PLinkConverter converter = PDisplayTranslationRead();
         try
         {
-            converter.PLinkConverterShow(_lEngine.LEngineTargetRead(draft));
+            converter.PLinkConverterShow(_lDisplay.LDisplayTargetRead(draft));
         }
         catch (Exception)
         {
@@ -276,7 +265,7 @@ public partial class PDisplay : UserControl
         LSentenceOrder order;
         try
         {
-            order = _lEngine.LEngineOrderRead(language);
+            order = _pDisplayHost.PWindowDeportment.LWindowOrderRead(language);
         }
         catch (Exception)
         {
@@ -288,7 +277,7 @@ public partial class PDisplay : UserControl
 
     private void PDisplayExampleShow(string language)
     {
-        PFont.PFontExampleApply(Resources, _lEngine, language);
+        PFont.PFontExampleApply(Resources, _pDisplayHost.PWindowDeportment, language);
     }
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
@@ -323,10 +312,10 @@ public partial class PDisplay : UserControl
     {
         PDisplayLanguage.Text = language;
         PDisplayLanguageFlag.Source = null;
-        PFont.PFontApply(_lEngine, language, PDisplayHeadword);
+        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);
         PFont.PFontPlace(PDisplayHeadword);
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pDisplayHost.PWindowDeportment);
 
         if (!string.Equals(PDisplayLanguage.Text, language, StringComparison.Ordinal))
         {

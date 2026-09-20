@@ -17,7 +17,7 @@ public partial class PEditor
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRecording is null || !_lEngine.LEngineRecordingExist(_pRecording))
+        if (_pRecording is null || !_pEditorHost.PWindowDeportment.LWindowRecordingExist(_pRecording))
         {
             PRecordingClear();
             return;
@@ -68,7 +68,7 @@ public partial class PEditor
 
     private void PRecordingShow(string audio, string? source)
     {
-        if (!_lEngine.LEngineRecordingExist(audio))
+        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(audio))
         {
             PRecordingClear();
             return;

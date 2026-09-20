@@ -35,7 +35,7 @@ A transcription search returns untagged readings, so no flag would ever be drawn
 A reading's flag is then ready the moment the reading lands.
 A menu closed while the flags loaded starts no search.
 
-### `_pNotationForay = held.LTenureTranscriptionStart(word, target, scheme, this);`
+### `_lEditor.LEditorNotationStart(word, target, scheme, this);`
 
 The tenure starts the search and the menu listens.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.

@@ -8,19 +8,28 @@ namespace Llyn.UIDeportment;
 
 public sealed class LPhonology
 {
-    private readonly LEngine _lEngine;
+    private readonly LPhonologyPort _lPhonologyPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private LVista? _lPhonologyVista;
 
     private int _lPhonologyCount;
 
     public LPhonology(
-        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LPhonologyPort phonology,
+        LPortraitPort portraits,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
 
-        _lEngine = engine;
+        _lPhonologyPort = phonology;
+        _lPortraitPort = portraits;
         LPhonologyEditor = editor;
         LPhonologyPanel = new LPanel(
             "Sound.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
@@ -55,7 +64,7 @@ public sealed class LPhonology
     public IReadOnlyList<LCatalogPronunciation> LPhonologyRowsRead()
     {
         IReadOnlyList<LCatalogPronunciation> rows =
-            _lPhonologyVista is LVista vista ? _lEngine.LEnginePronunciationFind(vista) : [];
+            _lPhonologyVista is LVista vista ? _lPhonologyPort.LEnginePronunciationFind(vista) : [];
         _lPhonologyCount = rows.Count;
         return rows;
     }
@@ -96,6 +105,24 @@ public sealed class LPhonology
             return Task.CompletedTask;
         }
 
-        return _lEngine.LEnginePortraitPrint(vista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
+    }
+
+    public void LPhonologyVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LPhonologyVistaRestore(
+            posture.LPostureVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+    }
+
+    public string LPhonologyFileRead()
+    {
+        return LVista.LVistaFileRead(LPhonologyPanel.LPanelVista);
+    }
+
+    public Task LPhonologyPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    {
+        return _lPortraitPort.LEnginePortraitExport(LPhonologyPanel.LPanelVista, path, format, label);
     }
 }

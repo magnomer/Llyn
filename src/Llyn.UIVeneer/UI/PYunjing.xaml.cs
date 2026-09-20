@@ -18,8 +18,6 @@ public partial class PYunjing : UserControl
 
     private PWindow _pYunjingHost = null!;
 
-    private LEngine _lEngine = null!;
-
     private LYunjing _lYunjing = null!;
 
     public PYunjing()
@@ -30,10 +28,9 @@ public partial class PYunjing : UserControl
     internal void PYunjingAttach(PWindow host, LEngine engine)
     {
         _pYunjingHost = host;
-        _lEngine = engine;
         _lYunjing = new LYunjing(
-            engine,
-            new LEditor(engine, host.PWindowUnreadableConfirm),
+            engine, engine,
+            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
             PYunjingShownCheck,
             PYunjingLeaveConfirm,
             host.PWindowDeleteConfirm);
@@ -50,12 +47,12 @@ public partial class PYunjing : UserControl
         PYunmu.ItemsSource = _pYunmuList;
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
-        PDisplay.PDisplayAttach(host, engine);
-        PYunjingDiwei.PDiweiAttach(engine);
+        PDisplay.PDisplayAttach(host, _lYunjing.LYunjingEditor.LEditorDisplay);
+        PYunjingDiwei.PDiweiAttach(host.PWindowDeportment);
         PYunjingDiwei.PDiweiEntryNotice = _lYunjing.LYunjingGlyphSelect;
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
 
-        PEditor.PEditorAttach(host, engine, _lYunjing.LYunjingEditor);
+        PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PYunjingPressHandle, PYunjingPressCheck));
         CommandBindings.Add(new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PYunjingPortraitHandle, PYunjingPressCheck));
@@ -71,24 +68,25 @@ public partial class PYunjing : UserControl
         return _lYunjing.LYunjingAllowed;
     }
 
-    internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)
+    internal void PYunjingVistaRestore()
     {
-        _lYunjing.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
-        shengmu.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
-        yunmu.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
-        shengmu.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PYunjingWorkspaceUpdate));
-        shengmu.LVistaObserverAttach(LSubject.LSubjectFanqie, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
-        shengmu.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
-        shengmu.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
-        xiaoyun.LVistaObserverAttach(
+        _lYunjing.LYunjingVistaRestore(_pYunjingHost.PWindowPosture);
+        _lYunjing.LYunjingShengmuAttach(LSubject.LSubjectVista, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
+        _lYunjing.LYunjingYunmuAttach(LSubject.LSubjectVista, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
+        _lYunjing.LYunjingShengmuAttach(LSubject.LSubjectWorkspace, new PObserver(this, PYunjingWorkspaceUpdate));
+        _lYunjing.LYunjingShengmuAttach(LSubject.LSubjectFanqie, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
+        _lYunjing.LYunjingShengmuAttach(LSubject.LSubjectSettings, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
+        _lYunjing.LYunjingShengmuAttach(LSubject.LSubjectReflex, new PObserver(this, _lYunjing.LYunjingRowsUpdate));
+        _lYunjing.LYunjingPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, new PObserver(this, _lYunjing.LYunjingPanel.LPanelRowsUpdate));
-        xiaoyun.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, _lYunjing.LYunjingEntryHandle));
-        xiaoyun.LVistaChosenAttach(
+        _lYunjing.LYunjingPanel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, new PObserver(this, _lYunjing.LYunjingEntryHandle));
+        _lYunjing.LYunjingPanel.LPanelChosenAttach(
             LSubject.LSubjectEntry, new PObserver(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
-        PDisplay.PDisplayVistaRestore(xiaoyun);
-        PEditor.PEditorVistaRestore(xiaoyun);
-        PChoice.PChoiceOrderApply(PLadderDropdown, shengmu.LVistaOrder);
-        PChoice.PChoiceOrderApply(PStairDropdown, yunmu.LVistaOrder);
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PLadderDropdown, _lYunjing.LYunjingLadder);
+        PChoice.PChoiceOrderApply(PStairDropdown, _lYunjing.LYunjingStair);
         _lYunjing.LYunjingPlumbSet(PPlumb.Text);
         _lYunjing.LYunjingFathomSet(PFathom.Text);
         _lYunjing.LYunjingBeaconSet(PBeacon.Text);
@@ -97,7 +95,7 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pYunjingHost.PWindowDeportment);
         _lYunjing.LYunjingReset();
     }
 
@@ -269,6 +267,6 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pYunjingHost.PWindowPortraitExport(_lYunjing.LYunjingPanel.LPanelVista);
+        await _pYunjingHost.PWindowPortraitExport(_lYunjing.LYunjingFileRead(), _lYunjing.LYunjingPortraitExport);
     }
 }

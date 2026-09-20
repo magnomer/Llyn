@@ -123,7 +123,7 @@ public partial class PEditor
         IReadOnlyList<LRegister> found;
         try
         {
-            found = _lEngine.LEngineRegisterFind(word, _lEditor.LEditorLanguage);
+            found = _lEditor.LEditorCard.LCardRegisterFind(word, _lEditor.LEditorLanguage);
         }
         catch (Exception)
         {
@@ -175,7 +175,7 @@ public partial class PEditor
         IReadOnlyList<LCatalogSituation> found;
         try
         {
-            found = _lEngine.LEngineSituationFind(word, LCatalogOrder.LCatalogOrderUsage);
+            found = _lEditor.LEditorCard.LCardSituationFind(word);
         }
         catch (Exception)
         {
@@ -230,7 +230,7 @@ public partial class PEditor
         IReadOnlyList<LCatalogReference> found;
         try
         {
-            found = _lEngine.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
+            found = _lEditor.LEditorCard.LCardReferenceFind(word);
         }
         catch (Exception)
         {

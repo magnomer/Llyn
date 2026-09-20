@@ -11,7 +11,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 {
     private PWindow _pRepertoireHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LRepertoire _lRepertoire = null!;
 
     private LEditor _lEditor = null!;
 
@@ -26,19 +26,20 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     internal void PRepertoireAttach(PWindow host, LEngine engine)
     {
         _pRepertoireHost = host;
-        _lEngine = engine;
+        _lRepertoire = new LRepertoire(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PScenarioDeskAttach();
 
         PAtlas.ItemsSource = _pAtlasList;
         POccurrence.ItemsSource = _pOccurrenceList;
         PScenarioImage.ItemsSource = _pScenarioImage;
         PScenarioVideo.ItemsSource = _pScenarioVideo;
 
-        PMedia.PMediaAttach(this, engine);
-        PDisplay.PDisplayAttach(host, engine);
-        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        PMedia.PMediaAttach(this, host.PWindowDeportment);
+        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PRepertoireStoreUpdate;
         _lEditor.LEditorStateChanged += PChronicleUpdate;
-        PEditor.PEditorAttach(host, engine, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor);
     }
 
     private void PRepertoireStoreUpdate()
@@ -76,45 +77,48 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private void PRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_pOccurrenceVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_pRepertoireVista?.LVistaChosen is not null && PVignette.Visibility == Visibility.Visible);
+        e.CanExecute = (_lRepertoire.LRepertoireOccurrenceChosen is not null
+                        && PDisplay.Visibility == Visibility.Visible)
+            || (_lRepertoire.LRepertoireChosen is not null && PVignette.Visibility == Visibility.Visible);
     }
 
     private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pOccurrenceVista?.LVistaChosen is not null)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
                 await _pRepertoireHost.PWindowPressRun(
-                    ticket => _lEngine.LEnginePortraitPrint(
-                        _pOccurrenceVista, _pRepertoireHost.PWindowLabelRead(), ticket));
+                    ticket => _lRepertoire.LRepertoirePortraitPrint(_pRepertoireHost.PWindowLabelRead(), ticket));
                 return;
             }
         }
 
-        if (_pRepertoireVista?.LVistaChosen is not null)
+        if (_lRepertoire.LRepertoireChosen is not null)
         {
             if (PVignette.Visibility == Visibility.Visible)
             {
-                await _pRepertoireHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
-                    _pRepertoireVista, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
+                await _pRepertoireHost.PWindowPressRun(
+                    ticket => _lRepertoire.LRepertoirePortraitPrint(
+                        _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
             }
         }
     }
 
     private void PRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pOccurrenceVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lRepertoire.LRepertoireOccurrenceChosen is not null
+                       && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pOccurrenceVista?.LVistaChosen is not null)
+        if (_lRepertoire.LRepertoireOccurrenceChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pRepertoireHost.PWindowPortraitExport(_pOccurrenceVista);
+                await _pRepertoireHost.PWindowPortraitExport(
+                    _lRepertoire.LRepertoireFileRead(), _lRepertoire.LRepertoirePortraitExport);
             }
         }
     }

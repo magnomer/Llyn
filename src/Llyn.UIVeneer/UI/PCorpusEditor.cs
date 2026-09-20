@@ -23,7 +23,7 @@ public partial class PCorpus
         IReadOnlyList<string> languages;
         try
         {
-            languages = _lEngine.LEngineLanguageRead();
+            languages = _lCorpus.LCorpusLanguageRead();
         }
         catch (Exception)
         {
@@ -158,7 +158,7 @@ public partial class PCorpus
             return;
         }
 
-        if (_pCorpusVista?.LVistaChosen is not null || _pQuotationVista?.LVistaChosen is not null)
+        if (_lCorpus.LCorpusChosen is not null || _lCorpus.LCorpusQuotationChosen is not null)
         {
             PQuotationEntryCreate();
             return;
@@ -172,35 +172,17 @@ public partial class PCorpus
 
     private void PTranscriptStoreRun()
     {
-        if (_pTranscriptTenure is not LTenure held)
+        if (!PTranscriptDesk.LDeskChangeCheck())
         {
             return;
         }
 
-        held.LTenurePersist();
-        if (!held.LTenureStateRead().LTenureStateChanged)
-        {
-            return;
-        }
+        PTranscriptDesk.LDeskFinish(true);
+    }
 
-        long? stored;
-        try
-        {
-            stored = _pCorpusHost.PWindowCommitRun(held, true);
-        }
-        catch (Exception exception)
-        {
-            _pCorpusHost.PWindowFailureShow("Example.SaveFailed", exception);
-            return;
-        }
-
-        _pTranscriptTenure = null;
-        if (stored is not long example)
-        {
-            return;
-        }
-
-        _pCorpusVista?.LVistaSelect(example);
+    private void PTranscriptStoredShow(long example)
+    {
+        _lCorpus.LCorpusSelect(example);
 
         PAnthologyFind();
         PCorpusScribeShow(false);

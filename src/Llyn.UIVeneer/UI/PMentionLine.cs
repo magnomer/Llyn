@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,14 +10,14 @@ internal sealed class PMentionLine
 {
     public ObservableCollection<PMentionChip> PMentionLineChip { get; } = [];
 
-    internal void PMentionLineShow(LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions, string silent)
+    internal void PMentionLineShow(LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(mentions);
 
         List<PMentionChip> wanted = new(mentions.Count);
-        foreach (LMentionLabel label in engine.LEngineMentionResolve(text, mentions))
+        foreach (LMentionLabel label in window.LWindowMentionResolve(text, mentions))
         {
             wanted.Add(new PMentionChip(
                 label.LMentionLabelId,

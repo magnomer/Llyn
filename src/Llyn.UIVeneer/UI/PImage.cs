@@ -4,25 +4,25 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
-    private readonly LEngine _lEngine;
+    private readonly LWindow _lWindow;
 
     private LStateValue _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
-    internal PImage(LEngine engine, LImageDraft written)
+    internal PImage(LWindow window, LImageDraft written)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(written);
 
-        _lEngine = engine;
+        _lWindow = window;
         _pImageRow = written.LImageDraftId;
         _pImageLocation = written.LImageDraftLocation;
     }
@@ -98,7 +98,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = _lEngine.LEngineLocationRead(_pImageLocation.LStateValueShow());
+        Uri? address = _lWindow.LWindowLocationRead(_pImageLocation.LStateValueShow());
         if (address is null)
         {
             PImagePreview = null;

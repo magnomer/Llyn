@@ -8,9 +8,9 @@ It subscribes to the engine for one announcement only, the workspace moving, and
 The editor's language picker, the read-only entry display, and every catalog row use it.
 A malformed or unknown flag becomes no image, which lets each surface show its neutral globe fallback.
 
-## `internal static void PEnsignAttach(LEngine engine)`
+## `internal static void PEnsignAttach(LWindow window)`
 
-Subscribes the flag store to `engine`, once, for the whole program.
+Subscribes the flag store through `window`, once, for the whole program.
 It owns no control, so its answer runs on the thread that announced rather than on the shell's.
 
 ## `private static void PEnsignBulletinHandle(LBulletin bulletin)`
@@ -20,13 +20,13 @@ The engine has already forgotten the paths before it announces, so a surface rel
 The surfaces reload on the same announcement, and this store is the first subscriber.
 It is empty before they ask.
 
-## `internal static DrawingImage? PEnsignResolve(LEngine engine, string path)`
+## `internal static DrawingImage? PEnsignResolve(LWindow window, string path)`
 
 Reads the flag at `path` as a drawing that is frozen and so may be shared across rows.
 A file that does not read, whatever the reader threw, is deleted through the engine and answered with nothing.
 The file is a cache the workspace can fetch again, and a truncated one would otherwise fail every launch.
 
-## `internal static async Task PEnsignLoad(LEngine engine)`
+## `internal static async Task PEnsignLoad(LWindow window)`
 
 Asks the engine to fill the flag of every language it offers, and draws each row that came back new.
 A language already asked comes back in no row, so a warm call draws nothing.
@@ -34,13 +34,13 @@ A catalog row must be built the moment its list is filled, so it cannot wait for
 Every surface that shows a flag awaits this first, and then reads without waiting.
 A pack installed while the program runs is picked up by the next call.
 
-## `internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)`
+## `internal static async Task PEnsignVarietyLoad(LWindow window, string language, IEnumerable<string> varieties)`
 
 The same fill for the named varieties of `language`, each drawn under `language/variety`.
 The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
 It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
 
-## `private static void PEnsignStoreAdd(LEngine engine, IReadOnlyList<LEnsignRow> rows)`
+## `private static void PEnsignStoreAdd(LWindow window, IReadOnlyList<LEnsignRow> rows)`
 
 Draws every row the engine kept and stores the drawing under the row's key.
 The drawing is made here rather than when a row asks, so a row never waits on a file.

@@ -20,6 +20,18 @@ Such a draft is what a kill just after a commit leaves, and nothing else ever co
 It is not reported as a leftover either, because the file it was is gone.
 A draft holding work the entry does not have survives the sweep and is still offered back.
 
+## `public void LeftoverSweep_BlankDraftNamingNoEntry_SweepsIt()`
+
+A blank draft naming no entry is deleted by the sweep, claim and all.
+Every panel starts one at launch, and a kill leaves ten such files behind each time.
+Recovery never offers a blank one back, so nothing else would ever collect them.
+A draft naming no entry but holding text survives and is still offered back.
+
+## `public void LeftoverSweep_ClaimWithoutDraftFile_DropsIt()`
+
+A claim file whose draft is gone is deleted by the sweep.
+A claim is only examined when its draft is asked about, and nothing asks about a draft that is gone.
+
 ## `public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()`
 
 A draft file stamped with another version is not read.

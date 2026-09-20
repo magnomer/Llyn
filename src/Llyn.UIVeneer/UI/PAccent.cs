@@ -70,7 +70,7 @@ public partial class PEditor
             return;
         }
 
-        if (!_lEngine.LEngineRecordingExist(row.PAccentItemAudio))
+        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(row.PAccentItemAudio))
         {
             PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.PAccentItemId, string.Empty, null));
             return;
@@ -117,7 +117,7 @@ public partial class PEditor
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
         _pAccentPrimaryId = draft.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
-        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
+        PRespelling respelling = PRespelling.PRespellingRead(_pEditorHost.PWindowDeportment, language);
         if (respelling != _pAccentRespelling)
         {
             _pAccentRespelling = respelling;
@@ -179,7 +179,7 @@ public partial class PEditor
         try
         {
             await PEnsign.PEnsignVarietyLoad(
-                _lEngine, language, varieties.Where(static variety => variety.Length > 0));
+                _pEditorHost.PWindowDeportment, language, varieties.Where(static variety => variety.Length > 0));
         }
         catch (Exception)
         {

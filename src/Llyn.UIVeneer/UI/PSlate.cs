@@ -95,7 +95,7 @@ public partial class PEditor
         IReadOnlyList<LTag> found;
         try
         {
-            found = _lEngine.LEngineTagFind(word, LCatalogOrder.LCatalogOrderUsage);
+            found = _lEditor.LEditorCard.LCardTagFind(word);
         }
         catch (Exception)
         {

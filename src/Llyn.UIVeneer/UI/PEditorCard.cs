@@ -60,7 +60,7 @@ public partial class PEditor
     private PCard PCardCreate(string prefix, LCardDraft draft)
     {
         PCard card = new(
-            _lEngine,
+            _pEditorHost.PWindowDeportment,
             prefix,
             draft.LCardDraftPosition,
             _pEditorCitation,

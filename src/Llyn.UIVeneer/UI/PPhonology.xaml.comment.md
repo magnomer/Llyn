@@ -15,8 +15,9 @@ The window fills it when it restores the stored ordering, and every change after
 So the panel is current whether or not its tab is the one in front.
 The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
 
-## `internal async void PPhonologyVistaRestore(LVista vista)`
+## `internal async void PPhonologyVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Hands the vista to the deportment and attaches the observers that carry each announcement onto the dispatcher.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 

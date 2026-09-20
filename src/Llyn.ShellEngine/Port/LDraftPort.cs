@@ -1,0 +1,35 @@
+using System.Collections.Generic;
+using Llyn.Core;
+
+namespace Llyn.ShellEngine;
+
+public interface LDraftPort
+{
+    LTenure LEngineTenureStart(LVista vista, long? id);
+
+    LTenure LEngineTenureStart(string origin, LSubject subject, long? id);
+
+    void LEngineDraftDelete(long id);
+
+    void LEngineObserverAttach(LObserver observer);
+
+    void LEngineObserverDetach(LObserver observer);
+
+    IReadOnlyList<LDraft> LEngineLeftoverRead();
+
+    void LEngineLeftoverSweep();
+
+    LCourt LEngineCourtStart(long ownerId, string origin, string headword, string language);
+
+    LCourt? LEngineCourtFind(long ownerId, long targetId);
+
+    void LEngineCourtDelete(long linkId);
+
+    IReadOnlyList<LVistaRow> LEngineProspectFind(string query);
+
+    IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit);
+
+    IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId);
+
+    LEntry? LEngineTranslationResolve(string word, long? entryId);
+}

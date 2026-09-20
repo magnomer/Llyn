@@ -8,19 +8,12 @@ It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
 Playback, heart, star row, paradigm box, announcements and incoming links each sit in a part of their own.
 
-## `internal void PDisplayAttach(PWindow host, LEngine engine)`
+## `internal void PDisplayAttach(PWindow host, LDisplay display)`
 
-Puts the view on `engine`, the workspace the window opened.
-The engine is read for the flag beside the language, the linked headwords and the incoming cards.
+Puts the view on `display`, the deportment its owner built over the ports.
+The deportment is asked for the linked headwords, the incoming cards and every fetched section.
+The window deportment is asked for the flag beside the language and the fonts.
 The window is held because an incoming row opens the entry it names.
-
-## `internal void PDisplayVistaRestore(LVista vista)`
-
-Takes the vista whose chosen entry this display reads.
-A tab listing entries hands its own vista, and any other tab hands the child vista of its entry column.
-The display holds no id of its own, so what it shows is always what the vista has chosen.
-The view's observers are attached to the vista here, since the vista is what carries bulletins to it.
-A vista replaced by a switched workspace was detached by the engine, so its observers fall silent.
 
 ## `private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
 
@@ -102,7 +95,7 @@ The flag comes from `PEnsign`, which every tab holding a display reads too.
 The first call may await a fetch, so a later entry may be shown before it arrives.
 The language shown now is compared before the image is set.
 
-### `PFont.PFontApply(_lEngine, language, PDisplayHeadword);`
+### `PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);`
 
 The reading view draws a headword exactly as the editor does.
 Both ask the same pack, so the two views never differ in family or size.

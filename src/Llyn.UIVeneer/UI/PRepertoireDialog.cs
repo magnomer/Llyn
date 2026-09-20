@@ -45,12 +45,12 @@ public partial class PRepertoire
 
     private PImage PScenarioImageCreate(LImageDraft draft)
     {
-        return new PImage(_lEngine, draft);
+        return new PImage(_pRepertoireHost.PWindowDeportment, draft);
     }
 
     private PVideo PScenarioVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(_lEngine, draft);
+        return new PVideo(_pRepertoireHost.PWindowDeportment, draft);
     }
 
     private void PScenarioImageChange(object sender, TextChangedEventArgs e)

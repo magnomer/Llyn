@@ -5,11 +5,6 @@
 The entry list of the taxonomy panel: the entries carrying the chosen tag, and the one the reader stands on.
 Choosing a row loads it back from the workspace into the reader, or the editor when that side is open.
 
-## `private LVista? _pMembershipVista;`
-
-The child vista of the entry column, handed to the display so it reads the chosen entry from it.
-It is the only holder of the shown entry, so every reader here asks it.
-
 ## `private void PMembershipHandle(object sender, RoutedEventArgs e)`
 
 A clicked row is shown once the leave check has settled any unsaved draft.

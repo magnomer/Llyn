@@ -8,19 +8,28 @@ namespace Llyn.UIDeportment;
 
 public sealed class LLibrary
 {
-    private readonly LEngine _lEngine;
+    private readonly LEntryPort _lEntryPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private LVista? _lLibraryVista;
 
     private int _lLibraryCount;
 
     public LLibrary(
-        LEngine engine, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEntryPort entries,
+        LPortraitPort portraits,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
 
-        _lEngine = engine;
+        _lEntryPort = entries;
+        _lPortraitPort = portraits;
         LLibraryEditor = editor;
         LLibraryPanel = new LPanel(
             "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
@@ -56,7 +65,7 @@ public sealed class LLibrary
 
     public IReadOnlyList<LVistaRow> LLibraryRowsRead()
     {
-        IReadOnlyList<LVistaRow> rows = _lLibraryVista is LVista vista ? _lEngine.LEngineEntryFind(vista) : [];
+        IReadOnlyList<LVistaRow> rows = _lLibraryVista is LVista vista ? _lEntryPort.LEngineEntryFind(vista) : [];
         _lLibraryCount = rows.Count;
         return rows;
     }
@@ -102,7 +111,7 @@ public sealed class LLibrary
             return Task.CompletedTask;
         }
 
-        return _lEngine.LEnginePortraitPrint(vista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
     }
 
     public async Task LLibraryMarkupStart(
@@ -121,7 +130,7 @@ public sealed class LLibrary
 
         try
         {
-            await LLibraryMarkupImport(await _lEngine.LEngineMarkupStart(path), customsSeam, omissionSeam);
+            await LLibraryMarkupImport(await _lPortraitPort.LEngineMarkupStart(path), customsSeam, omissionSeam);
         }
         catch (Exception exception)
         {
@@ -139,9 +148,27 @@ public sealed class LLibrary
             return;
         }
 
-        LMarkupOutcome outcome = await _lEngine.LEngineMarkupStart(cargo, intakes);
+        LMarkupOutcome outcome = await _lPortraitPort.LEngineMarkupStart(cargo, intakes);
 
         LLibraryPanel.LPanelRowsUpdate();
         omissionSeam(outcome.LMarkupOutcomeOmission);
+    }
+
+    public void LLibraryVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LLibraryVistaRestore(
+            posture.LPostureVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+    }
+
+    public string LLibraryFileRead()
+    {
+        return LVista.LVistaFileRead(LLibraryPanel.LPanelVista);
+    }
+
+    public Task LLibraryPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    {
+        return _lPortraitPort.LEnginePortraitExport(LLibraryPanel.LPanelVista, path, format, label);
     }
 }

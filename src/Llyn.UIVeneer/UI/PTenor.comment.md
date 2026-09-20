@@ -8,7 +8,7 @@ It owns a reader and an editor over one Entry, and answers the engine rather tha
 
 ## `internal void PTenorAttach(PWindow host, LEngine engine)`
 
-Binds the panel to the window and the engine, and starts listening for what the engine announces.
+Binds the panel to the window, builds its deportment and its editor over the engine's ports, and wires their notices.
 
 ## `internal void PTenorReset()`
 

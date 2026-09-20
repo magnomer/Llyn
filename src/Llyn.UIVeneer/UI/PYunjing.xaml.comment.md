@@ -16,8 +16,9 @@ The print and portrait command bindings are added last, so no can-execute query 
 
 Whether any loaded language pack carries rime books, so the window knows to show the tab.
 
-## `internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)`
+## `internal void PYunjingVistaRestore()`
 
+The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Hands the vistas down, attaches the bulletins the panel follows, restores the order menus, and loads.
 
 ## `internal bool PYunjingLeaveConfirm()`

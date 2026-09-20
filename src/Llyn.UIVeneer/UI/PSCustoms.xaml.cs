@@ -5,34 +5,34 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PSCustoms : Window
 {
-    private readonly LEngine? _lEngine;
+    private readonly LWindow? _lWindow;
     private readonly ObservableCollection<PSCustomsItem> _psCustomsItem = [];
     private bool _psCustomsAccepted;
 
-    private PSCustoms(Window owner, LEngine? engine)
+    private PSCustoms(Window owner, LWindow? window)
     {
         InitializeComponent();
         Owner = owner;
-        _lEngine = engine;
+        _lWindow = window;
         PSCustomsList.ItemsSource = _psCustomsItem;
     }
 
     internal static IReadOnlyList<LMarkupIntake>? PSCustomsShow(
-        Window owner, LEngine engine, IReadOnlyList<LMarkupEntry> entries)
+        Window owner, LWindow window, IReadOnlyList<LMarkupEntry> entries)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(entries);
 
-        PSCustoms dialog = new(owner, engine);
+        PSCustoms dialog = new(owner, window);
         for (int index = 0; index < entries.Count; index++)
         {
-            PSCustomsItem item = new(index, entries[index], engine.LEngineMarkupFind(entries[index]));
+            PSCustomsItem item = new(index, entries[index], window.LWindowMarkupFind(entries[index]));
             item.PSCustomsItemLoss = dialog.PSCustomsLossFormat(item);
             dialog._psCustomsItem.Add(item);
         }
@@ -124,14 +124,14 @@ public partial class PSCustoms : Window
 
     private string PSCustomsLossFormat(PSCustomsItem item)
     {
-        if (_lEngine is null
+        if (_lWindow is null
             || item.PSCustomsItemMode != LMarkupMode.LMarkupModeReplace
             || item.PSCustomsItemTarget <= 0)
         {
             return string.Empty;
         }
 
-        LEntryDraft? stored = _lEngine.LEngineEntryLoad(item.PSCustomsItemTarget);
+        LEntryDraft? stored = _lWindow.LWindowEntryLoad(item.PSCustomsItemTarget);
         if (stored is null)
         {
             return string.Empty;

@@ -10,7 +10,9 @@ public sealed class LImprint
 {
     private const int LBylineLimit = 8;
 
-    private readonly LEngine _lEngine;
+    private readonly LDraftPort _lDraftPort;
+
+    private readonly LEntryPort _lEntryPort;
 
     private int _lImprintBlankAt = -1;
 
@@ -22,12 +24,14 @@ public sealed class LImprint
 
     private string _lBylineWord = string.Empty;
 
-    public LImprint(LEngine engine, Func<bool> unreadableSeam)
+    public LImprint(LDraftPort drafts, LEntryPort entries, Func<bool> unreadableSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(entries);
 
-        _lEngine = engine;
-        LImprintDesk = new LDesk(engine, "Source", unreadableSeam);
+        _lDraftPort = drafts;
+        _lEntryPort = entries;
+        LImprintDesk = new LDesk(drafts, "Source", unreadableSeam);
         LImprintDesk.LDeskDraftChanged += LImprintDraftUpdate;
     }
 
@@ -102,7 +106,7 @@ public sealed class LImprint
     private int LImprintUsageRead()
     {
         return LImprintDesk.LDeskRead()?.LDraftStored is long stored
-            ? _lEngine.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored)
+            ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored)
             : 0;
     }
 
@@ -351,7 +355,7 @@ public sealed class LImprint
 
         try
         {
-            return _lEngine.LEngineBylineFind(LImprintDesk.LDeskId, LBylineWord, LBylineLimit);
+            return _lDraftPort.LEngineBylineFind(LImprintDesk.LDeskId, LBylineWord, LBylineLimit);
         }
         catch (Exception)
         {

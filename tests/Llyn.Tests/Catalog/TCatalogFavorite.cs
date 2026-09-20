@@ -18,7 +18,7 @@ public sealed class TCatalogFavorite
         Assert.Equal(
             ["apple", "stone"],
             engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderHeadword)
-                .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public sealed class TCatalogFavorite
         Assert.Equal(
             ["stone", "apple"],
             engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderReverse)
-                .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public sealed class TCatalogFavorite
         Assert.Equal(
             ["English", "Korean"],
             engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderLanguage)
-                .Select(favorite => favorite.LFavoriteEntry.LEntryLanguage));
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryLanguage));
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public sealed class TCatalogFavorite
         Assert.Equal(
             ["stone", "apple"],
             engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderMarked)
-                .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     [Fact]
@@ -76,13 +76,13 @@ public sealed class TCatalogFavorite
         TCatalogFavoriteSave(engine, "stone", "English");
         TCatalogFavoriteSave(engine, "river", "English");
 
-        LFavorite stone = engine.TEngineFavoriteFind("stone").Single();
-        engine.TEngineGraspSave(stone.LFavoriteEntry.LEntryId, 7);
+        LCatalogFavorite stone = engine.TEngineFavoriteFind("stone").Single();
+        engine.TEngineGraspSave(stone.LCatalogFavoriteEntry.LEntryId, 7);
 
         Assert.Equal(
             ["stone", "apple", "river"],
             engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderGrasp)
-                .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+                .Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     private static void TCatalogFavoriteSave(LEngine engine, string headword, string language)

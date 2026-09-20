@@ -14,15 +14,6 @@ Presents a request that failed with nothing further to say about why.
 A disagreement the program noticed itself carries no refusal and no fault.
 The headline alone is the whole answer, and an empty detail line under it would read as a missing message.
 
-### `internal long? PWindowCommitRun(LTenure held, bool store)`
-
-Finishes one tenure, and handles the one refusal the user can answer.
-The tenure commits itself and answers the stored id, or null for a cancel.
-When the engine refuses because a stored value cannot be read, a yes-or-no dialog asks whether to drop such values.
-Yes has the tenure sweep them and finishes once more.
-No, and every other failure, rethrows so the caller reports it as before.
-Every leave and store path of the four editors goes through here, so the question is asked in one voice.
-
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 
 Presents a request that failed, under the localized headline the given key names.

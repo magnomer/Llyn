@@ -39,7 +39,7 @@ public partial class PSettings
     {
         try
         {
-            LUsherShell.LUsherShellOpen(_lEngine.LEngineWorkspaceRead());
+            LUsherShell.LUsherShellOpen(PSettingsWindow.LWindowWorkspaceRead());
         }
         catch (Exception exception)
         {

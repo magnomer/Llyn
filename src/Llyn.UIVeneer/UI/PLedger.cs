@@ -34,12 +34,12 @@ public partial class PSettings
 
     private string PLedgerMetaRead(string child)
     {
-        LSettings settings = _lEngine.LEngineSettingsRead();
+        LSettings settings = PSettingsWindow.LWindowSettingsRead();
 
         switch (child)
         {
             case "Workspace":
-                return _lEngine.LEngineWorkspaceFormat();
+                return PSettingsWindow.LWindowWorkspaceFormat();
 
             case "Language":
                 return PLocalization.Items

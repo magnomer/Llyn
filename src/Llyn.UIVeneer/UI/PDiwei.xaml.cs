@@ -2,13 +2,13 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PDiwei : UserControl
 {
-    private LEngine _lEngine = null!;
+    private LWindow _lWindow = null!;
 
     public PDiwei()
     {
@@ -19,16 +19,16 @@ public partial class PDiwei : UserControl
 
     internal Action<bool?>? PDiweiSwitchNotice { get; set; }
 
-    internal void PDiweiAttach(LEngine engine)
+    internal void PDiweiAttach(LWindow window)
     {
-        _lEngine = engine;
+        _lWindow = window;
     }
 
     internal void PDiweiShow(LDiweiPage page, string kind)
     {
-        PFont.PFontApply(_lEngine, page.LDiweiPageLanguage, PDiweiHeadword);
+        PFont.PFontApply(_lWindow, page.LDiweiPageLanguage, PDiweiHeadword);
         PFont.PFontPlace(PDiweiHeadword);
-        PFont.PFontApply(_lEngine, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
+        PFont.PFontApply(_lWindow, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
         PDiweiHeadword.Text = page.LDiweiPageKey;
         PDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         PDiweiLanguage.Text = page.LDiweiPageLanguage;

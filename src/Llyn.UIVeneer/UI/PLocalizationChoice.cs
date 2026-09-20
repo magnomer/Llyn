@@ -11,13 +11,13 @@ public partial class PSettings
             return;
         }
 
-        _lEngine.LEngineLocalizationSave(language);
+        PSettingsWindow.LWindowLocalizationSave(language);
     }
 
     private void PLocalizationApply(string language)
     {
         PLocalizationCatalog.PLocalizationCatalogApply(
-            System.Windows.Application.Current.Resources, _lEngine.LEngineLocalizationLoad(language));
+            System.Windows.Application.Current.Resources, PSettingsWindow.LWindowLocalizationLoad(language));
         PLedgerTitleApply();
         PLedgerMetaApply();
     }

@@ -12,7 +12,7 @@ public partial class PSettings
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
             Title = PLocalizationCatalog.PLocalizationTextRead("Settings.Workspace"),
-            InitialDirectory = _lEngine.LEngineWorkspaceRead()
+            InitialDirectory = PSettingsWindow.LWindowWorkspaceRead()
         };
 
         if (dialog.ShowDialog(_pSettingsHost) == true)
@@ -33,27 +33,27 @@ public partial class PSettings
         if (e.Key == Key.Escape)
         {
             e.Handled = true;
-            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
         }
     }
 
     private void PWorkspaceFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
     }
 
     private void PWorkspaceApply(string chosen)
     {
         string path = chosen.Trim();
-        if (path.Length == 0 || string.Equals(path, _lEngine.LEngineWorkspaceRead(), StringComparison.Ordinal))
+        if (path.Length == 0 || string.Equals(path, PSettingsWindow.LWindowWorkspaceRead(), StringComparison.Ordinal))
         {
-            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
             return;
         }
 
         if (!_pSettingsHost.PWindowDiscardConfirm())
         {
-            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
             return;
         }
 
@@ -63,16 +63,15 @@ public partial class PSettings
         }
         catch (Exception exception)
         {
-            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
             _pSettingsHost.PWindowFailureShow("Workspace.OpenFailed", exception);
             return;
         }
 
         PSettingsSync();
-        PLocalizationApply(LLocalization.LLocalizationNormalize(
-            _lEngine.LEngineSettingsRead().LSettingsLocalization));
+        PLocalizationApply(PSettingsWindow.LWindowLocalizationRead());
         _pSettingsHost.PWindowLayout.PLayoutReset();
         _pSettingsHost.PWindowLayout.PLayoutRestore();
-        _pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());
+        _pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowStateRead());
     }
 }

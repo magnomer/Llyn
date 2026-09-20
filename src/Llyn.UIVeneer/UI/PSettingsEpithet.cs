@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PSettingsEpithetHandle(object sender, RoutedEventArgs e)
     {
-        _lEngine.LEngineEpithetSave(PSettingsEpithet.IsChecked == true);
+        PSettingsWindow.LWindowEpithetSave(PSettingsEpithet.IsChecked == true);
     }
 }

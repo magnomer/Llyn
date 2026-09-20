@@ -52,3 +52,7 @@ Whether the headword sits in the text at `start`, letter case folded.
 ## `private static string LEngineRuneFormat(List<Rune> runes, int start, int length)`
 
 The code points from `start` as a string, clipped at the end of the text.
+
+## `private static List<Rune> LEngineRuneRead(string text)`
+
+The text as a list of code points, so offsets count what the store counts.

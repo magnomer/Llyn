@@ -19,110 +19,83 @@ public partial class PCorpus
 
     private IReadOnlyDictionary<long, int> _pAnthologyCount = new Dictionary<long, int>();
 
-    private LVista? _pCorpusVista;
-
     private async void PCorpusWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pCorpusHost.PWindowDeportment);
         PSpeakerLoad();
         PCorpusReset();
     }
 
     private void PQueryHandle(object sender, TextChangedEventArgs e)
     {
-        _pCorpusVista?.LVistaQuerySet(PQuery.Text ?? string.Empty);
+        _lCorpus.LCorpusQuerySet(PQuery.Text ?? string.Empty);
     }
 
     private void PRankHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pCorpusVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PRankDropper.IsChecked = false;
-        _pCorpusVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pCorpusVista.LVistaOrder));
+        _lCorpus.LCorpusRankSet(choice);
     }
 
-    internal async void PCorpusVistaRestore(LVista vista, LVista quotation)
+    internal async void PCorpusVistaRestore()
     {
-        _pCorpusVista = vista;
-        _pQuotationVista = quotation;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAnthologyFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PCorpusWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PCitationFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectExample, new PObserver(this, PAnthologyFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PCitationFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReference, new PObserver(this, PAnthologyFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAnthologyFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAnthologyFind));
-        quotation.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PQuotationEntryUpdate));
-        quotation.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PCorpusEntryUpdate));
-        quotation.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PQuotationFind));
-        PDisplay.PDisplayVistaRestore(quotation);
-        PEditor.PEditorVistaRestore(quotation);
-        PRankRestore();
+        _lCorpus.LCorpusVistaRestore(_pCorpusHost.PWindowPosture);
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectVista, new PObserver(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PCorpusWorkspaceUpdate));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, new PObserver(this, PCitationFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectExample, new PObserver(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, new PObserver(this, PCitationFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReference, new PObserver(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PAnthologyFind));
+        _lCorpus.LCorpusObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PAnthologyFind));
+        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectEntry, new PObserver(this, PQuotationEntryUpdate));
+        _lCorpus.LCorpusEntryAttach(LSubject.LSubjectEntry, new PObserver(this, PCorpusEntryUpdate));
+        _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectVista, new PObserver(this, PQuotationFind));
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PRankDropdown, _lCorpus.LCorpusOrder);
         PGauzeRestore();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pCorpusHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PGauzeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGauzeHandle);
-        vista.LVistaQuerySet(PQuery.Text ?? string.Empty);
-        quotation.LVistaQuerySet(PDredge.Text);
+        PChoice.PChoiceFilterBuild(PGauzeList, _lCorpus.LCorpusLanguageRead(), _lCorpus.LCorpusFilter, PGauzeHandle);
+        _lCorpus.LCorpusQuerySet(PQuery.Text ?? string.Empty);
+        _lCorpus.LCorpusDredgeSet(PDredge.Text);
         PSpeakerLoad();
         PCitationFind();
         PAnthologyFind();
     }
 
-    private void PRankRestore()
-    {
-        if (_pCorpusVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PRankDropdown, _pCorpusVista.LVistaOrder);
-        }
-    }
-
     private void PGauzeRestore()
     {
-        if (_pCorpusVista is not LVista vista)
-        {
-            PGauzeMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PGauzeMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PGauzeMark.Visibility = _lCorpus.LCorpusFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PDredgeHandle(object sender, TextChangedEventArgs e)
     {
-        _pQuotationVista?.LVistaQuerySet(PDredge.Text);
+        _lCorpus.LCorpusDredgeSet(PDredge.Text);
     }
 
     private void PGauzeHandle(object sender, RoutedEventArgs e)
     {
-        if (_pCorpusVista is null)
-        {
-            return;
-        }
-
-        _pCorpusVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PGauzeList));
+        _lCorpus.LCorpusGauzeSet(PChoice.PChoiceFilterRead(PGauzeList));
         PGauzeRestore();
     }
 
     private void PAnthologyFind()
     {
-        if (_pCorpusVista is null)
-        {
-            return;
-        }
-
         IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleFind(_pCorpusVista,
+            read = _lCorpus.LCorpusRowsRead(
                 PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
                 PLocalizationCatalog.PLocalizationTextRead("Example.Unwritten"));
-            _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
+            _pAnthologyCount = _lCorpus.LCorpusUsageRead();
         }
         catch (Exception exception)
         {
@@ -154,12 +127,12 @@ public partial class PCorpus
 
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        PExcerptTally.Text = PCorpusTallyRead(_pCorpusVista?.LVistaChosen);
+        PExcerptTally.Text = PCorpusTallyRead(_lCorpus.LCorpusChosen);
         PTranscriptTally.Text = PCorpusTallyRead(PTranscriptExampleRead());
 
         if (!kept)
         {
-            if (_pCorpusVista?.LVistaChosen is not null)
+            if (_lCorpus.LCorpusChosen is not null)
             {
                 if (PTranscript.Visibility != Visibility.Visible)
                 {
@@ -191,8 +164,8 @@ public partial class PCorpus
         LExample? example;
         try
         {
-            _pCorpusVista?.LVistaSelect(id);
-            example = _pCorpusVista?.LVistaLoad()?.LDraftExample;
+            _lCorpus.LCorpusSelect(id);
+            example = _lCorpus.LCorpusLoad();
         }
         catch (Exception exception)
         {
@@ -207,7 +180,7 @@ public partial class PCorpus
             return;
         }
 
-        _pCorpusVista?.LVistaSelect(id);
+        _lCorpus.LCorpusSelect(id);
         PAnthologyFind();
         PQuotationEntryHide();
 
@@ -233,12 +206,12 @@ public partial class PCorpus
 
     private void PCorpusBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pQuotationVista?.LVistaChosen is not null)
+        if (_lCorpus.LCorpusQuotationChosen is not null)
         {
             return;
         }
 
-        if (_pCorpusVista?.LVistaChosen is not long id)
+        if (_lCorpus.LCorpusChosen is not long id)
         {
             return;
         }
@@ -252,7 +225,7 @@ public partial class PCorpus
 
         try
         {
-            _pCorpusVista.LVistaDelete();
+            _lCorpus.LCorpusDelete();
         }
         catch (Exception exception)
         {
@@ -294,7 +267,7 @@ public partial class PCorpus
     private void PCorpusScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PCorpusScribe);
-        if (_pQuotationVista?.LVistaChosen is not null || PEditor.Visibility == Visibility.Visible)
+        if (_lCorpus.LCorpusQuotationChosen is not null || PEditor.Visibility == Visibility.Visible)
         {
             PQuotationScribeHandle(editing);
             return;
@@ -316,7 +289,7 @@ public partial class PCorpus
             PTranscriptDraftCancel();
             PCorpusScribeShow(false);
 
-            if (_pCorpusVista?.LVistaChosen is long chosen)
+            if (_lCorpus.LCorpusChosen is long chosen)
             {
                 PAnthologyExampleShow(chosen);
                 return;
@@ -326,7 +299,7 @@ public partial class PCorpus
             return;
         }
 
-        if (_pCorpusVista?.LVistaChosen is not long shown)
+        if (_lCorpus.LCorpusChosen is not long shown)
         {
             PCorpusClear();
             return;
@@ -338,7 +311,7 @@ public partial class PCorpus
 
     private void PCorpusScribeShow(bool editing)
     {
-        _pCorpusVista?.LVistaEditingSet(editing);
+        _lCorpus.LCorpusTranscriptSet(editing);
 
         PTranscript.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -351,7 +324,7 @@ public partial class PCorpus
     {
         if (editing)
         {
-            if (_pCorpusVista?.LVistaChosen is null)
+            if (_lCorpus.LCorpusChosen is null)
             {
                 return;
             }
@@ -372,14 +345,14 @@ public partial class PCorpus
 
     internal long PCorpusVoyageRead()
     {
-        return _pCorpusVista?.LVistaChosen ?? 0;
+        return _lCorpus.LCorpusChosen ?? 0;
     }
 
     private void PCorpusClear()
     {
         PTranscriptDraftCancel();
 
-        _pCorpusVista?.LVistaSelect(null);
+        _lCorpus.LCorpusSelect(null);
         PAnthologyFind();
         PQuotationEntryHide();
         PQuotationFind();

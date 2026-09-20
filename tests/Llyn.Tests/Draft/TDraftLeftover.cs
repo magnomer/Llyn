@@ -107,6 +107,57 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
+    public void LeftoverSweep_BlankDraftNamingNoEntry_SweepsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        long blank;
+        long typed;
+
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            blank = engine.TEngineDraftStart("Input", null).LDraftId;
+            LDraft edited = engine.TEngineDraftStart("Library", null);
+            typed = edited.LDraftId;
+
+            engine.TRequestContentApply(
+                edited.LDraftId,
+                TInterface.TDraftNestedCreate("Library", "ember").LDraftContent with
+                {
+                    LEntryDraftMeanings = [TInterface.TDraftCardCreate("a glowing coal")],
+                });
+        }
+
+        using LEngine launched = workspace.TWorkspaceEngineStart();
+
+        launched.TEngineLeftoverSweep();
+
+        Assert.Null(launched.TEngineDraftRead(blank));
+        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, blank));
+        Assert.NotNull(launched.TEngineDraftRead(typed));
+
+        IReadOnlyList<LDraft> leftovers = launched.TEngineLeftoverRead();
+
+        Assert.Single(leftovers);
+        Assert.Equal(typed, leftovers[0].LDraftId);
+    }
+
+    [Fact]
+    public void LeftoverSweep_ClaimWithoutDraftFile_DropsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TInterface.TClaimArchiveSave(
+            workspace.TWorkspaceFolder, TInterface.TClaimCreate(-9, 1, DateTimeOffset.UtcNow));
+
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLeftoverSweep();
+
+        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -9));
+        Assert.Empty(TInterface.TClaimArchiveScan(workspace.TWorkspaceFolder));
+    }
+
+    [Fact]
     public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

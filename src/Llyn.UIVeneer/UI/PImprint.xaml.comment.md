@@ -25,10 +25,6 @@ Blanks every field and restores each placeholder, for the moment no draft is hel
 
 Asks the desk to raise its state again, so the rail reads the chronicle after a step.
 
-## `private void PImprintStartUpdate(LTenure held)`
-
-Attaches the desk's own updates to the tenure the desk just started, on the window's thread.
-
 ## `private void PImprintDraftUpdate(LDraft draft)`
 
 Writes the four fields, their placeholders, the kind chip and the tally from the Source in the notice.

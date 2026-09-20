@@ -25,7 +25,7 @@ In flag mode every declared variety's flag is resolved before the search starts.
 A recording's flag is then ready the moment the recording lands.
 A menu closed while the flags loaded starts no search.
 
-### `_pClipForay = held.LTenureRecordingStart(word, target, this);`
+### `_lEditor.LEditorClipStart(word, target, this);`
 
 The tenure starts the search and the menu listens.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
@@ -75,7 +75,7 @@ The notice is the one line the menu says while it has no rows to show.
 It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing — a row reports its own download itself.
 
-### `string path = await _lEngine.LEngineRecordingPrepare(reading.PClipReadingModel, CancellationToken.None);`
+### `string path = await _pEditorHost.PWindowDeportment.LWindowRecordingPrepare(reading.PClipReadingModel, CancellationToken.None);`
 
 Streaming the remote, token-bearing URL through the media stack is unreliable.
 Fetch it to a local temp file first, then play that.
@@ -111,7 +111,7 @@ The draft moved on while the bytes came down, and the foray attached nothing.
 The file stays in the workspace.
 But it is audio of a word the form no longer holds.
 
-### `long id = foray.LForayTarget == 0`
+### `long id = _lEditor.LEditorClip.LClipPrimary`
 
 The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
 The primary row's id is read back after the audio is attached, since the engine mints that row late.

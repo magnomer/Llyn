@@ -93,9 +93,9 @@ A rooted path is a pack's own SVG and answers itself when the file exists, with 
 
 ## `private LLanguage LEngineLanguageLoad(string language)`
 
-The one place a language pack is read, kept by name after the first read.
-Every reader of a pack's declarations goes through here, so no path parses the file twice.
-It takes the gate itself, and a caller already holding it re-enters without harm.
+The pack named, read through the `LLanguageCache` the rig's language port stands behind.
+Every reader of a pack's declarations in the engine goes through here, so the cache alone parses the file.
+The gate is taken only to read the cache field, which a rig apply replaces.
 
 ## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
 

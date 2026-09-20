@@ -43,7 +43,7 @@ internal sealed partial class PCard
     private PSentence PCardSentenceCreate(LSentenceDraft draft, string language)
     {
         PSentence row = new(_pCardCitation, _pCardParticle, _pCardDependence, _pCardLanguage, draft);
-        row.PSentenceOrderApply(_pCardEngine.LEngineOrderRead(language));
+        row.PSentenceOrderApply(_pCardWindow.LWindowOrderRead(language));
         row.PropertyChanged += PCardSentenceChange;
         return row;
     }

@@ -18,12 +18,29 @@ public sealed partial class LEngine
                 LEngineDraftCancel(id);
             }
 
+            foreach (LClaim claim in _lEngineClaims.LClaimScan())
+            {
+                if (_lEngineDrafts.LDraftRead(claim.LClaimDraft) is null)
+                {
+                    _lEngineClaims.LClaimDelete(claim.LClaimDraft);
+                }
+            }
+
             foreach (LDraft draft in _lEngineDrafts.LDraftScan())
             {
                 if (_lEngineDraftHeld.Contains(draft.LDraftId)
-                    || LEngineClaimCheck(draft.LDraftId)
-                    || draft.LDraftEntryId <= 0)
+                    || LEngineClaimCheck(draft.LDraftId))
                 {
+                    continue;
+                }
+
+                if (draft.LDraftEntryId <= 0)
+                {
+                    if (!LEngineDraftCheck(draft))
+                    {
+                        LEngineDraftCancel(draft.LDraftId);
+                    }
+
                     continue;
                 }
 

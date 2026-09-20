@@ -6,9 +6,10 @@ internal static class TAuditRingSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditRingCeiling = new Dictionary<string, int>
     {
-        ["EngineField"] = 21,
-        ["EngineHelper"] = 75,
+        ["EngineField"] = 1,
+        ["EngineHelper"] = 0,
         ["AdapterEngine"] = 0,
+        ["EnginePart"] = 72,
     };
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditRingEdges = new Dictionary<string, string[]>
@@ -60,6 +61,22 @@ internal static class TAuditRingSetting
         @"\b(FileMode|FileAccess|FileShare|FileOptions|FileAttributes|SearchOption)\b",
         @"\b(IOException|FileNotFoundException|DirectoryNotFoundException|PathTooLongException)\b",
     ];
+
+    public static readonly string[] TAuditRingHandles =
+    [
+        "LDraftPort",
+        "LEntryPort",
+        "LPhonologyPort",
+        "LSettingsPort",
+        "LMediaPort",
+        "LPortraitPort",
+        "LTenure",
+        "LVista",
+        "LForay",
+        "LPosture",
+    ];
+
+    public const int TAuditRingFloor = 40;
 
     public static readonly string[] TAuditRingWaiver = [];
 }

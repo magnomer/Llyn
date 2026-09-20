@@ -146,7 +146,7 @@ internal static partial class TInterface
         engine.LEngineFavoriteDelete(entryId);
     }
 
-    internal static IReadOnlyList<LFavorite> TEngineFavoriteFind(this LEngine engine, string query) =>
+    internal static IReadOnlyList<LCatalogFavorite> TEngineFavoriteFind(this LEngine engine, string query) =>
         engine.LEngineFavoriteFind(query);
 
     internal static void TEngineFavoriteSave(this LEngine engine, long entryId)

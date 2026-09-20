@@ -73,10 +73,18 @@ internal static partial class TAuditTruthSetting
     public static readonly string[] TAuditTruthHandles =
     [
         "LEngine",
+        "LDraftPort",
+        "LEntryPort",
+        "LPhonologyPort",
+        "LSettingsPort",
+        "LMediaPort",
+        "LPortraitPort",
         "LForay",
         "LTenure",
         "LVista",
         "LPosture",
+        "LWindow",
+        "List<(LSubject LDeskSubject, LObserver LDeskObserver)>",
         "LListener",
         "LReceiver",
         "LObserver",
@@ -85,8 +93,8 @@ internal static partial class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 187,
-        ["Guard"] = 158,
+        ["Argument"] = 182,
+        ["Guard"] = 153,
         ["Fork"] = 35,
         ["Mirror"] = 32,
         ["Mutation"] = 18,

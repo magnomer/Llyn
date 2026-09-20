@@ -9,7 +9,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class LShelf
 {
-    private readonly LEngine _lEngine;
+    private readonly LEntryPort _lEntryPort;
+
+    private readonly LPortraitPort _lPortraitPort;
 
     private readonly Func<bool> _lShelfLeaveSeam;
 
@@ -20,25 +22,28 @@ public sealed class LShelf
     private int _lShelfCount;
 
     public LShelf(
-        LEngine engine,
+        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits,
         LEditor editor,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
         Func<bool> unreadableSeam)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(drafts);
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
 
-        _lEngine = engine;
+        _lEntryPort = entries;
+        _lPortraitPort = portraits;
         _lShelfLeaveSeam = leaveSeam;
         _lShelfRemovalSeam = removalSeam;
         LShelfEditor = editor;
-        LShelfImprint = new LImprint(engine, unreadableSeam);
+        LShelfImprint = new LImprint(drafts, entries, unreadableSeam);
         LShelfPanel = new LPanel("Source.LoadFailed", LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
-        LShelfFootnote = new LFootnote(engine, editor, shownSeam, leaveSeam);
+        LShelfFootnote = new LFootnote(entries, portraits, editor, shownSeam, leaveSeam);
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
         LShelfPanel.LPanelCleared += LShelfImprint.LImprintCancel;
         LShelfPanel.LPanelEdited += LShelfImprintOpen;
@@ -108,7 +113,7 @@ public sealed class LShelf
 
     public IReadOnlyList<LCatalogReference> LShelfRowsRead()
     {
-        return LShelfRowsApply(_lShelfVista is LVista vista ? _lEngine.LEngineReferenceFind(vista) : []);
+        return LShelfRowsApply(_lShelfVista is LVista vista ? _lEntryPort.LEngineReferenceFind(vista) : []);
     }
 
     private IReadOnlyList<LCatalogReference> LShelfRowsApply(IReadOnlyList<LCatalogReference> rows)
@@ -179,7 +184,7 @@ public sealed class LShelf
 
     private int LShelfUsageRead(long? id)
     {
-        return id is long stored ? _lEngine.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
+        return id is long stored ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
     }
 
     private static string LShelfTallyFormat(int count)
@@ -423,9 +428,28 @@ public sealed class LShelf
 
         if (LShelfSourcePrintable)
         {
-            return _lEngine.LEnginePortraitPrint(_lShelfVista, legend, ticket);
+            return _lPortraitPort.LEnginePortraitPrint(_lShelfVista, legend, ticket);
         }
 
         return Task.CompletedTask;
+    }
+
+    public void LShelfVistaRestore(LPosture posture)
+    {
+        ArgumentNullException.ThrowIfNull(posture);
+
+        LShelfVistaRestore(
+            posture.LPostureVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
+            posture.LPostureVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+    }
+
+    public string LShelfFileRead()
+    {
+        return LVista.LVistaFileRead(LShelfFootnote.LFootnotePanel.LPanelVista);
+    }
+
+    public Task LShelfPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    {
+        return _lPortraitPort.LEnginePortraitExport(LShelfFootnote.LFootnotePanel.LPanelVista, path, format, label);
     }
 }

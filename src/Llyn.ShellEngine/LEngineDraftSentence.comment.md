@@ -55,3 +55,8 @@ Records every negative Mention id under the stored id at the same offset.
 
 Whether any card other than `ownerId` quotes the Example.
 The owner side matters, because a Meaning and a Collocation can carry one id each.
+
+## `private static void LEngineGlossRecord(`
+
+Records the stored id each new draft row received, matched by position after a save.
+The identity map lets a later request that still names the negative id reach the stored row.

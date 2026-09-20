@@ -10,7 +10,7 @@ public partial class PTaxonomy : UserControl
 {
     private PWindow _pTaxonomyHost = null!;
 
-    private LEngine _lEngine = null!;
+    private LTaxonomy _lTaxonomy = null!;
 
     private LEditor _lEditor = null!;
 
@@ -22,16 +22,15 @@ public partial class PTaxonomy : UserControl
     internal void PTaxonomyAttach(PWindow host, LEngine engine)
     {
         _pTaxonomyHost = host;
-        _lEngine = engine;
+        _lTaxonomy = new LTaxonomy(engine, engine, engine);
 
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
 
-        PDisplay.PDisplayAttach(host, engine);
-
-        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
+        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
-        PEditor.PEditorAttach(host, engine, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor);
     }
 
     private void PTaxonomyStoreUpdate()
@@ -64,29 +63,29 @@ public partial class PTaxonomy : UserControl
 
     private void PTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pMembershipVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lTaxonomy.LTaxonomyMembershipChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pMembershipVista?.LVistaChosen is not null)
+        if (_lTaxonomy.LTaxonomyMembershipChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
                 await _pTaxonomyHost.PWindowPressRun(
-                    ticket => _lEngine.LEnginePortraitPrint(
-                        _pMembershipVista, _pTaxonomyHost.PWindowLabelRead(), ticket));
+                    ticket => _lTaxonomy.LTaxonomyPortraitPrint(_pTaxonomyHost.PWindowLabelRead(), ticket));
             }
         }
     }
 
     private async void PTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pMembershipVista?.LVistaChosen is not null)
+        if (_lTaxonomy.LTaxonomyMembershipChosen is not null)
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pTaxonomyHost.PWindowPortraitExport(_pMembershipVista);
+                await _pTaxonomyHost.PWindowPortraitExport(
+                    _lTaxonomy.LTaxonomyFileRead(), _lTaxonomy.LTaxonomyPortraitExport);
             }
         }
     }

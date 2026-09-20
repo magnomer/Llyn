@@ -1,6 +1,6 @@
 using System.Windows;
 using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -12,16 +12,16 @@ internal sealed class PMedia
         typeof(PMedia),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-    private readonly LEngine _lEngine;
+    private readonly LWindow _lWindow;
 
-    private PMedia(LEngine engine)
+    private PMedia(LWindow window)
     {
-        _lEngine = engine;
+        _lWindow = window;
     }
 
-    internal static void PMediaAttach(DependencyObject root, LEngine engine)
+    internal static void PMediaAttach(DependencyObject root, LWindow window)
     {
-        root.SetValue(PMediaProperty, new PMedia(engine));
+        root.SetValue(PMediaProperty, new PMedia(window));
     }
 
     internal static PMedia? PMediaRead(DependencyObject element)
@@ -31,11 +31,11 @@ internal sealed class PMedia
 
     internal PImage PMediaImageCreate(LImageDraft draft)
     {
-        return new PImage(_lEngine, draft);
+        return new PImage(_lWindow, draft);
     }
 
     internal PVideo PMediaVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(_lEngine, draft);
+        return new PVideo(_lWindow, draft);
     }
 }

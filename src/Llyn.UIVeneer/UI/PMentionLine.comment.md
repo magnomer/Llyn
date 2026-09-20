@@ -10,7 +10,7 @@ It holds the chips alone and reads their words from the engine on every show.
 
 The chips in Mention order, bound by the line's items control.
 
-## `internal void PMentionLineShow(LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions, string silent)`
+## `internal void PMentionLineShow(LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)`
 
 Redraws the chips from the draft's Mentions over the given text.
 The engine resolves every Mention in one call, and a Mention standing for nothing shows `silent` as its name.

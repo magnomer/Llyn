@@ -5,6 +5,7 @@
 An in-memory entry vault backed by a dictionary.
 It counts every read so a test can prove the engine went through it.
 The operations the test never drives throw, so a stray call is a failure rather than a silent pass.
+A delete drops the row, so the entry clerk can be proved to leave a tombstone behind one.
 The finders answer empty, since the engine sweeps them at start and must find nothing.
 `TRigFake` seats it as the entry port of a rig built from fakes.
 

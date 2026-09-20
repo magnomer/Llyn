@@ -12,38 +12,31 @@ public partial class PFavorite
 {
     private readonly ObservableCollection<PRosterItem> _pRosterList = [];
 
-    private LVista? _pFavoriteVista;
-
     private async void PFavoriteWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pFavoriteHost.PWindowDeportment);
         PFavoriteReset();
     }
 
     private void PRecallHandle(object sender, TextChangedEventArgs e)
     {
-        _pFavoriteVista?.LVistaQuerySet(PRecall.Text ?? string.Empty);
+        _lFavorite.LFavoriteRecallSet(PRecall.Text ?? string.Empty);
     }
 
     private void PSeriesHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice } || _pFavoriteVista is null)
+        if (sender is not FrameworkElement { Tag: string choice })
         {
             return;
         }
 
         PSeriesDropper.IsChecked = false;
-        _pFavoriteVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pFavoriteVista.LVistaOrder));
+        _lFavorite.LFavoriteSeriesSet(choice);
     }
 
     private void PSeriesGraspUpdate()
     {
-        if (_pFavoriteVista is not LVista vista)
-        {
-            return;
-        }
-
-        if (!vista.LVistaOrderMatch(LCatalogOrder.LCatalogOrderGrasp))
+        if (!_lFavorite.LFavoriteGraspOrdered)
         {
             return;
         }
@@ -53,55 +46,37 @@ public partial class PFavorite
 
     private void PStrainerHandle(object sender, RoutedEventArgs e)
     {
-        if (_pFavoriteVista is null)
-        {
-            return;
-        }
-
-        _pFavoriteVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PStrainerList));
+        _lFavorite.LFavoriteStrainerSet(PChoice.PChoiceFilterRead(PStrainerList));
         PStrainerRestore();
     }
 
-    internal async void PFavoriteVistaRestore(LVista vista)
+    internal async void PFavoriteVistaRestore()
     {
-        _pFavoriteVista = vista;
-        vista.LVistaObserverAttach(LSubject.LSubjectVista, new PObserver(this, PRosterFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PFavoriteWorkspaceUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectGrasp, new PObserver(this, PSeriesGraspUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PRosterEntryUpdate));
-        vista.LVistaObserverAttach(LSubject.LSubjectFavorite, new PObserver(this, PRosterFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PRosterFind));
-        vista.LVistaObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PRosterFind));
-        vista.LVistaChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PFavoriteEntryUpdate));
-        PDisplay.PDisplayVistaRestore(vista);
-        PEditor.PEditorVistaRestore(vista);
-        PSeriesRestore();
+        _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowPosture);
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectVista, new PObserver(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectWorkspace, new PObserver(this, PFavoriteWorkspaceUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectGrasp, new PObserver(this, PSeriesGraspUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectEntry, new PObserver(this, PRosterEntryUpdate));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectFavorite, new PObserver(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectReflex, new PObserver(this, PRosterFind));
+        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectSettings, new PObserver(this, PRosterFind));
+        _lFavorite.LFavoriteChosenAttach(LSubject.LSubjectEntry, new PObserver(this, PFavoriteEntryUpdate));
+        PDisplay.PDisplayObserverAttach();
+        PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
         PStrainerRestore();
 
-        await PEnsign.PEnsignLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_pFavoriteHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PStrainerList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PStrainerHandle);
-        vista.LVistaQuerySet(PRecall.Text ?? string.Empty);
+        PChoice.PChoiceFilterBuild(
+            PStrainerList, _lFavorite.LFavoriteLanguageRead(), _lFavorite.LFavoriteFilter, PStrainerHandle);
+        _lFavorite.LFavoriteRecallSet(PRecall.Text ?? string.Empty);
         PRosterFind();
-    }
-
-    private void PSeriesRestore()
-    {
-        if (_pFavoriteVista is not null)
-        {
-            PChoice.PChoiceOrderApply(PSeriesDropdown, _pFavoriteVista.LVistaOrder);
-        }
     }
 
     private void PStrainerRestore()
     {
-        if (_pFavoriteVista is not LVista vista)
-        {
-            PStrainerMark.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        PStrainerMark.Visibility = vista.LVistaFiltered ? Visibility.Visible : Visibility.Collapsed;
+        PStrainerMark.Visibility = _lFavorite.LFavoriteFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PRosterFind()
@@ -109,7 +84,7 @@ public partial class PFavorite
         IReadOnlyList<LVistaRow> favorites;
         try
         {
-            favorites = _pFavoriteVista is null ? [] : _lEngine.LEngineFavoriteFind(_pFavoriteVista);
+            favorites = _lFavorite.LFavoriteRowsRead();
         }
         catch (Exception exception)
         {
@@ -157,8 +132,8 @@ public partial class PFavorite
         LEntryDraft? draft;
         try
         {
-            _pFavoriteVista?.LVistaSelect(id);
-            draft = _pFavoriteVista?.LVistaLoad()?.LDraftContent;
+            _lFavorite.LFavoriteSelect(id);
+            draft = _lFavorite.LFavoriteLoad();
         }
         catch (Exception exception)
         {
@@ -173,7 +148,7 @@ public partial class PFavorite
             return;
         }
 
-        _pFavoriteVista?.LVistaSelect(id);
+        _lFavorite.LFavoriteSelect(id);
         PRosterFind();
         PFavoriteEntryShow(draft);
 
@@ -191,7 +166,7 @@ public partial class PFavorite
             {
                 if (PEditor.Visibility == Visibility.Visible)
                 {
-                    _pFavoriteVista?.LVistaSelect(bulletin.LBulletinId);
+                    _lFavorite.LFavoriteSelect(bulletin.LBulletinId);
                 }
             }
         }
@@ -205,7 +180,7 @@ public partial class PFavorite
         LEntryDraft? draft;
         try
         {
-            draft = _pFavoriteVista?.LVistaLoad()?.LDraftContent;
+            draft = _lFavorite.LFavoriteLoad();
         }
         catch (Exception)
         {
@@ -239,7 +214,7 @@ public partial class PFavorite
 
             PFavoriteScribeShow(false);
 
-            if (_pFavoriteVista?.LVistaChosen is long chosen)
+            if (_lFavorite.LFavoriteChosen is long chosen)
             {
                 PRosterEntryShow(chosen);
                 return;
@@ -249,7 +224,7 @@ public partial class PFavorite
             return;
         }
 
-        if (_pFavoriteVista?.LVistaChosen is not long shown)
+        if (_lFavorite.LFavoriteChosen is not long shown)
         {
             PFavoriteClear();
             return;
@@ -261,7 +236,7 @@ public partial class PFavorite
 
     private void PFavoriteScribeShow(bool editing)
     {
-        _pFavoriteVista?.LVistaEditingSet(editing);
+        _lFavorite.LFavoriteScribeSet(editing);
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
@@ -273,7 +248,7 @@ public partial class PFavorite
     {
         if (editing)
         {
-            if (_pFavoriteVista?.LVistaChosen is null)
+            if (_lFavorite.LFavoriteChosen is null)
             {
                 return;
             }
@@ -301,12 +276,12 @@ public partial class PFavorite
 
     private void PFavoriteCommandApply()
     {
-        PFavoriteBin.IsEnabled = _pFavoriteVista?.LVistaChosen is not null;
+        PFavoriteBin.IsEnabled = _lFavorite.LFavoriteChosen is not null;
     }
 
     private void PFavoriteClear()
     {
-        _pFavoriteVista?.LVistaSelect(null);
+        _lFavorite.LFavoriteSelect(null);
         PRosterFind();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
@@ -329,7 +304,7 @@ public partial class PFavorite
 
         try
         {
-            _pFavoriteVista?.LVistaDelete();
+            _lFavorite.LFavoriteDelete();
         }
         catch (Exception exception)
         {

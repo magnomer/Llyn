@@ -11,14 +11,15 @@ The input panel's editor stands on no entry and never puts it on one.
 A browse-style panel's editor is opened on the entry its panel edits.
 Which is which is a fact of the deportment, read off the vista the tab restored.
 
-## `internal void PEditorAttach(PWindow host, LEngine engine, LEditor editor)`
+## `internal void PEditorAttach(PWindow host, LEditor editor)`
 
 Puts the editor to work on the deportment its tab built, and subscribes each notice to one control write.
 The language menu, the categories and the volume are loaded once here, since they do not follow the draft.
+The card fields ask the card deportment the editor owns, and the sound rows ask the window deportment.
 
-## `internal void PEditorVistaRestore(LVista vista)`
+## `internal void PEditorVistaRestore()`
 
-Hands the tab's entry vista to the deportment and opens a fresh draft over it.
+Opens a fresh draft over the entry vista the owner's deportment restored.
 The command rail shows only for the editor that owns its entries, which is the input tab's.
 
 ## `internal void PEditorClose()`
@@ -26,9 +27,14 @@ The command rail shows only for the editor that owns its entries, which is the i
 Stops the editor.
 The tenure is let go, searches in flight are called off, and playback is released.
 
-## `private void PEditorStartUpdate(LTenure held)`
+## `private void PEditorObserverAttach(LDesk desk)`
 
-A tenure started, so the marshalling observers are attached to it and the card lists start empty.
+Registers the marshalling observers on the desk once, which puts them on every tenure it starts.
+The desk's own draft and state updates ride the same observers, so they run on the window's thread.
+
+## `private void PEditorStartUpdate()`
+
+A tenure started, so the card lists start empty.
 The entry sections are read again at once, since a bulletin comes only when they change.
 
 ## `private void PEditorDraftUpdate(LDraft held)`

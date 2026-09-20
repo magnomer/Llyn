@@ -7,7 +7,7 @@ namespace Llyn.UIVeneer;
 
 public partial class PInput : UserControl
 {
-    private LEngine _lEngine = null!;
+    private PWindow _pInputHost = null!;
 
     private LEditor _lEditor = null!;
 
@@ -20,13 +20,13 @@ public partial class PInput : UserControl
 
     internal void PInputAttach(PWindow host, LEngine engine)
     {
-        _lEngine = engine;
+        _pInputHost = host;
 
-        _lEditor = new LEditor(engine, host.PWindowUnreadableConfirm);
-        PEditor.PEditorAttach(host, engine, _lEditor);
+        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        PEditor.PEditorAttach(host, _lEditor);
 
         _pInputObserver = new PObserver(this, PInputBulletinHandle);
-        engine.LEngineObserverAttach(_pInputObserver);
+        host.PWindowDeportment.LWindowObserverAttach(_pInputObserver);
     }
 
     private void PInputBulletinHandle(LBulletin bulletin)
@@ -39,9 +39,10 @@ public partial class PInput : UserControl
         PInputReset();
     }
 
-    internal void PInputVistaRestore(LVista vista)
+    internal void PInputVistaRestore()
     {
-        PEditor.PEditorVistaRestore(vista);
+        _lEditor.LEditorVistaRestore(_pInputHost.PWindowPosture);
+        PEditor.PEditorVistaRestore();
     }
 
     internal void PInputReset()
@@ -63,7 +64,7 @@ public partial class PInput : UserControl
     {
         if (_pInputObserver is not null)
         {
-            _lEngine.LEngineObserverDetach(_pInputObserver);
+            _pInputHost.PWindowDeportment.LWindowObserverDetach(_pInputObserver);
             _pInputObserver = null;
         }
 

@@ -46,7 +46,7 @@ internal sealed class TVaultFake : LEntryVault
 
     public void LEntryGraspSet(long entryId, int grasp) => throw new NotSupportedException();
 
-    public void LEntryDelete(long id) => throw new NotSupportedException();
+    public void LEntryDelete(long id) => _tVaultFakeRows.Remove(id);
 
     public IReadOnlyList<LEntry> LEntryFind(string query) => [.. _tVaultFakeRows.Values];
 

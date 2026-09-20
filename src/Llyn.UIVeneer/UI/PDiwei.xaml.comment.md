@@ -4,9 +4,9 @@
 
 The category page as a control, handed the composed page by the rime table panel.
 
-## `private LEngine _lEngine = null!;`
+## `private LWindow _lWindow = null!;`
 
-The engine, asked only for the language's fonts.
+The window deportment, asked only for the language fonts.
 
 ## `internal Action<string?>? PDiweiEntryNotice { get; set; }`
 
@@ -16,9 +16,9 @@ What a click on a character chip runs, handed the character.
 
 What the IPA or respelling switch runs, handed true for respelling.
 
-## `internal void PDiweiAttach(LEngine engine)`
+## `internal void PDiweiAttach(LWindow window)`
 
-Keeps the engine for the fonts.
+Keeps the window deportment for the fonts.
 
 ## `internal void PDiweiShow(LDiweiPage page, string kind)`
 

@@ -8,8 +8,8 @@ That is the search, the ordering, the roster, the read-only display and the edit
 
 ## `internal void PFavoriteAttach(PWindow host, LEngine engine)`
 
-Puts the panel to work on `engine`, the workspace the window opened.
-It binds its lists and subscribes to the engine, and reads nothing yet.
+Puts the panel to work on `engine`, the workspace the window opened, through its deportment and its editor.
+It binds its lists and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 

@@ -20,7 +20,7 @@ The entry itself stands untouched.
 
 Reports whether the entry is marked.
 
-## `IReadOnlyList<LFavorite> LFavoriteFind(string query);`
+## `IReadOnlyList<LCatalogFavorite> LFavoriteFind(string query);`
 
 Finds the marked entries whose headword carries the query, folded for case and accent.
 An empty query returns every marked entry.

@@ -48,6 +48,10 @@ No strict ceiling stands above its committed value.
 
 No ring ceiling stands above its committed value.
 
+## `public void AuditRatchet_ObjectCeiling_NeverRises()`
+
+No object ceiling stands above its committed value.
+
 ## `public void AuditRatchet_RingWaiver_NeverGrows()`
 
 No ring waiver is missing from the committed list.

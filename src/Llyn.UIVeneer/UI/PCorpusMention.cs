@@ -120,7 +120,7 @@ public partial class PCorpus
         try
         {
             _pTranscriptChip.PMentionLineShow(
-                _lEngine,
+                _pCorpusHost.PWindowDeportment,
                 example.LExampleText.LStateValueShow(),
                 mentions,
                 PLocalizationCatalog.PLocalizationTextRead("Mention.Silent"));

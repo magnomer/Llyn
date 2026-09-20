@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -12,6 +13,8 @@ public partial class PWindow : Window
     private readonly LEngine _lEngine;
 
     private readonly LPosture _lPosture;
+
+    private readonly LWindow _lWindow;
 
     private readonly PLayout _pLayout;
 
@@ -25,6 +28,7 @@ public partial class PWindow : Window
         _lEngine = engine;
         _pWindowWorkspaceOpener = workspaceOpener;
         _lPosture = new LPosture(engine);
+        _lWindow = new LWindow(engine, engine, engine, engine, engine, engine);
         _pLayout = new PLayout(_lPosture);
 
         InitializeComponent();
@@ -52,6 +56,8 @@ public partial class PWindow : Window
 
     internal LPosture PWindowPosture => _lPosture;
 
+    internal LWindow PWindowDeportment => _lWindow;
+
     internal PWindowScreen PWindowScreen { get; } = new();
 
     internal void PWindowWorkspaceChange(string path)
@@ -61,13 +67,13 @@ public partial class PWindow : Window
 
     private void PWindowAttach(LEngine engine)
     {
-        PEnsign.PEnsignAttach(engine);
+        PEnsign.PEnsignAttach(_lWindow);
 
-        engine.LEngineLeftoverSweep();
-        engine.LEngineRecordingSweep();
-        PWindowLeftover = engine.LEngineLeftoverRead().Count;
+        _lWindow.LWindowLeftoverSweep();
+        _lWindow.LWindowRecordingSweep();
+        PWindowLeftover = _lWindow.LWindowLeftoverRead().Count;
 
-        LWorkspaceState state = engine.LEngineStateRead();
+        LWorkspaceState state = _lWindow.LWindowStateRead();
 
         PInput.PInputAttach(this, engine);
         PLibrary.PLibraryAttach(this, engine);
@@ -82,8 +88,8 @@ public partial class PWindow : Window
         PGuild.PGuildAttach(this, engine);
         PFavorite.PFavoriteAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
-        PSettings.PSettingsAttach(this, engine);
-        PEstablishment.PEstablishmentAttach(this, engine);
+        PSettings.PSettingsAttach(this);
+        PEstablishment.PEstablishmentAttach(this);
 
         PWindowLayoutAttach();
 
@@ -131,7 +137,7 @@ public partial class PWindow : Window
         PFavorite.PFavoriteClose();
         PDuplex.PDuplexClose();
         PEstablishment.PEstablishmentClose();
-        _lEngine.LEngineLeftoverSweep();
+        _lWindow.LWindowLeftoverSweep();
         _lEngine.Dispose();
     }
 }

@@ -39,7 +39,7 @@ The body names no situation id, since the engine lands it on the Situation the d
 
 ## `private void PScenarioStoreRun()`
 
-Finishes the tenure over the held Situation, for the rail's save button.
+Finishes the desk over the held Situation, for the rail's save button.
 It stores over the selected one or creates one nothing references yet.
 Typing still waiting to be written is written first, so the commit carries the last keystroke.
 An unchanged draft is not committed, since storing what matches its Situation would rewrite it for nothing.
@@ -47,3 +47,8 @@ Whether this is a create or a rewrite is the engine's reading of the draft, not 
 Saving does not change the id, what references it, or the order it takes for any referrer.
 A halted tenure refuses to finish, so a draft missing the edits a failed flush dropped stores nothing.
 
+
+## `private void PScenarioStoredShow(long situation)`
+
+Selects and shows the Situation the desk just stored, back in the reading side.
+The desk announces the id on every finish that stored, the rail's save and the window's leave alike.

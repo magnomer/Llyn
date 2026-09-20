@@ -25,6 +25,6 @@ internal sealed partial class PCard
 
     private PImage PCardImageCreate(LImageDraft draft)
     {
-        return new PImage(_pCardEngine, draft);
+        return new PImage(_pCardWindow, draft);
     }
 }
