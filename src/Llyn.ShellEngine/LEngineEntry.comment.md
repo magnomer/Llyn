@@ -23,11 +23,8 @@ Every other `LEngineEntryFind` overload is the same relay for the clerk's overlo
 
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 
-The stored entry as the input form would have handed it over.
-Every recording comes out of the store relative to the workspace and leaves here as a full path.
-The shell deals in full paths, and only the engine knows which folder the workspace stands in.
-A pronunciation row carrying no recording is handed back untouched.
-The respelling was derived when the entry was saved, so a load runs no rule.
+The entry as a draft, or null when it no longer stands.
+The entry clerk resolves its recordings to absolute paths.
 
 ## `internal LRevision LEngineEntryDelete(long id)`
 
@@ -56,13 +53,13 @@ The entry `character` stands for in `language`, made when none exists yet.
 Only an exact headword in that language counts, so a Mandarin entry of the same character is never taken.
 Creation goes through `LEngineTranslationCreate`, so the revision is recorded and the frequency fetch starts.
 
-## `public int LEngineGraspStep => LGrasp.LGraspStep;`
+## `public int LEngineGraspStep => LEntryClerk.LEntryGraspStep;`
 
 The last grasp step, handed out so the shells draw the stars without naming the Core constant.
 
 ## `public string LEngineGraspFormat(int step)`
 
-The localized wording of a grasp step.
+The localized label of one grasp step, through the entry clerk.
 
 ## `public int LEngineGraspRead(long entryId)`
 

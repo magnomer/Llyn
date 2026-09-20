@@ -86,7 +86,8 @@ public sealed partial class LEngine
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified)),
-                LSubject.LSubjectReference => LEngineEntryFind(LEngineReferenceBlank with { LReferenceId = id }),
+                LSubject.LSubjectReference =>
+                    LEngineEntryFind(LReferenceClerk.LReferenceClerkBlank with { LReferenceId = id }),
                 _ => [],
             };
             entries = LEntryClerk.LEntryClerkMatch(parent.LVistaFilter.LCatalogFilterApply(entries,
@@ -151,5 +152,75 @@ public sealed partial class LEngine
         }
 
         return _lEngineEntryClerk.LEntryEpithetScan(ids);
+    }
+
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineFavoriteClerk.LFavoriteClerkFind(query);
+        }
+    }
+
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineFavoriteClerk.LFavoriteClerkFind(query, order);
+        }
+    }
+
+    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineFavoriteClerk.LFavoriteClerkFind(query, order, filter);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LCatalogFavorite> favorites = LEngineFavoriteFind(
+                vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
+            List<LEntry> entries = new(favorites.Count);
+            foreach (LCatalogFavorite favorite in favorites)
+            {
+                entries.Add(favorite.LCatalogFavoriteEntry);
+            }
+
+            return LEngineVistaBuild(entries, vista.LVistaChosen);
+        }
+    }
+
+    public bool LEngineFavoriteCheck(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineFavoriteClerk.LFavoriteClerkCheck(entryId);
+        }
+    }
+
+    public void LEngineFavoriteSave(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineFavoriteClerk.LFavoriteClerkSave(entryId);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
+    }
+
+    public void LEngineFavoriteDelete(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineFavoriteClerk.LFavoriteClerkDelete(entryId);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
     }
 }

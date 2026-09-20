@@ -5,9 +5,10 @@
 The language-pack side of the engine boundary.
 Everything the shell asks about a language as such is answered here.
 That is the packs on disk, a pack's typography, its flag, and its regional varieties.
-Each pack is read once through the language port and kept by name, so no lookup parses the file again.
-The cache is cleared with the workspace, since a pack's source lists belong to the folder it was read from.
+Each pack is read once through the language clerk's cache, so no lookup parses the file again.
+The clerk is rebuilt with the workspace, since a pack's source lists belong to the folder it was read from.
 The shell never reaches into the `languages/` folder itself.
+The script facades sit here too, since a script style is a fact of the pack.
 
 ## `public LFont LEngineFontRead(string language)`
 
@@ -25,7 +26,7 @@ Returns the names of the languages that have a pack on disk, for the UI to offer
 The scan opens and parses every pack once, and the engine keeps the list until the workspace changes.
 Every panel asks for it on each entry switch, so a fresh scan each time stalled the UI thread.
 
-## `public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
+## `public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 
 Returns the local path to the given language's flag image, for the UI to display beside it.
 It returns `null` when the pack declares no flag or the download fails.
@@ -79,23 +80,41 @@ One missing flag never stops the fill.
 
 One variety's flag path, or null on the same terms.
 
-## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
+## `public Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
 
 Returns the local path to the flag image of one named variety of the language.
 It returns `null` when the pack does not declare that variety, declares no flag for it, or the download fails.
 The name is matched exactly, because it is the tag the pack's own readings carry.
 
-## `private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)`
-
-The shared tail of both flag entry points.
-A null or blank code answers null, any other is fetched through the language port's flag cache.
-A rooted path is a pack's own SVG and answers itself when the file exists, with no fetch.
-
 ## `private LLanguage LEngineLanguageLoad(string language)`
 
-The pack named, read through the `LLanguageCache` the rig's language port stands behind.
+The pack named, read through the language clerk.
 Every reader of a pack's declarations in the engine goes through here, so the cache alone parses the file.
-The gate is taken only to read the cache field, which a rig apply replaces.
+The gate is taken only to read the clerk field, which a rig apply replaces.
+
+## `public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)`
+
+The script styles of a language.
+
+## `public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)`
+
+The stored script images of every character of an entry.
+
+## `public void LEngineScriptStart(long entryId)`
+
+Starts the fetch of every character that has no images.
+
+## `public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)`
+
+The images grouped by style.
+
+## `public bool LEngineScriptCheck(long entryId)`
+
+Whether a fetch is pending for any character of the entry.
+
+## `internal Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(string character, string language, CancellationToken cancellation)`
+
+The images of one character fetched now.
 
 ## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
 

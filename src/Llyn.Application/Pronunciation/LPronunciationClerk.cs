@@ -6,6 +6,8 @@ namespace Llyn.Application;
 
 public sealed class LPronunciationClerk
 {
+    private readonly LEntryVault _lPronunciationClerkEntries;
+    private readonly LNoteVault _lPronunciationClerkNotes;
     private readonly LPronunciationVault _lPronunciationClerkPronunciations;
     private readonly LTrail _lPronunciationClerkTrail;
     private readonly string _lPronunciationClerkWorkspace;
@@ -13,9 +15,94 @@ public sealed class LPronunciationClerk
     public LPronunciationClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
+        _lPronunciationClerkEntries = rig.LRigEntries;
+        _lPronunciationClerkNotes = rig.LRigNotes;
         _lPronunciationClerkPronunciations = rig.LRigPronunciations;
         _lPronunciationClerkTrail = rig.LRigTrail;
         _lPronunciationClerkWorkspace = rig.LRigWorkspace;
+    }
+
+    public LPronunciation LPronunciationClerkCreate(LPronunciation pronunciation)
+    {
+        ArgumentNullException.ThrowIfNull(pronunciation);
+        LPronunciation created = _lPronunciationClerkPronunciations.LPronunciationCreate(pronunciation);
+        _lPronunciationClerkEntries.LEntryUpdatedSet(created.LPronunciationEntryId);
+        return created;
+    }
+
+    public IReadOnlyList<LPronunciation> LPronunciationClerkRead(long entryId)
+    {
+        return _lPronunciationClerkPronunciations.LPronunciationRead(entryId);
+    }
+
+    public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        LPronunciationVault pronunciations = _lPronunciationClerkPronunciations;
+        List<LCatalogPronunciation> rows = [];
+        foreach (LEntry entry in _lPronunciationClerkEntries.LEntryFind(query))
+        {
+            IReadOnlyList<LPronunciation> spoken = pronunciations.LPronunciationRead(entry.LEntryId);
+            rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(
+                entry,
+                spoken.Count == 0 ? null : spoken[0].LPronunciationIpa));
+        }
+
+        return LCatalogPronunciation.LCatalogPronunciationSort(rows, order);
+    }
+
+    public void LPronunciationClerkUpdate(LPronunciation pronunciation)
+    {
+        ArgumentNullException.ThrowIfNull(pronunciation);
+        _lPronunciationClerkPronunciations.LPronunciationUpdate(pronunciation);
+        _lPronunciationClerkEntries.LEntryUpdatedSet(pronunciation.LPronunciationEntryId);
+    }
+
+    public void LPronunciationClerkDelete(long id)
+    {
+        LPronunciationVault pronunciations = _lPronunciationClerkPronunciations;
+        long? entryId = pronunciations.LPronunciationHolderRead(id);
+        pronunciations.LPronunciationDelete(id);
+        if (entryId is long held)
+        {
+            _lPronunciationClerkEntries.LEntryUpdatedSet(held);
+        }
+    }
+
+    public void LAudioSave(long pronunciationId, string file, string? source)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+
+        LPronunciationVault pronunciations = _lPronunciationClerkPronunciations;
+        pronunciations.LPronunciationAudioSave(pronunciationId, LRecordingFormat(file), source);
+        if (pronunciations.LPronunciationHolderRead(pronunciationId) is long held)
+        {
+            _lPronunciationClerkEntries.LEntryUpdatedSet(held);
+        }
+    }
+
+    public LPronunciationAudio? LAudioRead(long pronunciationId)
+    {
+        return _lPronunciationClerkPronunciations.LPronunciationAudioRead(pronunciationId);
+    }
+
+    public void LNoteSave(LNote note)
+    {
+        ArgumentNullException.ThrowIfNull(note);
+        _lPronunciationClerkNotes.LNoteSave(note with { LNoteText = LMarkdown.LMarkdownNormalize(note.LNoteText) });
+        _lPronunciationClerkEntries.LEntryUpdatedSet(note.LNoteEntryId);
+    }
+
+    public LNote? LNoteRead(long entryId)
+    {
+        return _lPronunciationClerkNotes.LNoteRead(entryId);
+    }
+
+    public void LNoteDelete(long entryId)
+    {
+        _lPronunciationClerkNotes.LNoteDelete(entryId);
+        _lPronunciationClerkEntries.LEntryUpdatedSet(entryId);
     }
 
     public void LPronunciationClerkSync(

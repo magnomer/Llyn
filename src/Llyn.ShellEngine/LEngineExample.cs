@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -12,8 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(example);
-            return _lEngineExamples.LExampleCreate(example);
+            return _lEngineExampleClerk.LExampleClerkCreate(example);
         }
     }
 
@@ -21,7 +18,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineExamples.LExampleRead(id);
+            return _lEngineExampleClerk.LExampleClerkRead(id);
         }
     }
 
@@ -29,7 +26,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineExamples.LExampleRead();
+            return _lEngineExampleClerk.LExampleClerkRead();
         }
     }
 
@@ -37,30 +34,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(query);
-            query = query.Trim();
-
-            IReadOnlyList<LExample> read = _lEngineExamples.LExampleRead();
-            IReadOnlyDictionary<long, int> usage =
-                _lEngineExamples.LExampleReferenceRead();
-            IReadOnlyDictionary<long, string> cited = LEngineCitationRead();
-
-            List<LCatalogExample> rows = [];
-            foreach (LExample example in read)
-            {
-                usage.TryGetValue(example.LExampleId, out int counted);
-
-                LCatalogExample row = LCatalogExample.LCatalogExampleCreate(
-                    example,
-                    LEngineCitationRead(cited, example.LExampleSource),
-                    counted);
-                if (row.LCatalogExampleMatch(query))
-                {
-                    rows.Add(row);
-                }
-            }
-
-            return LCatalogExample.LCatalogExampleSort(rows, order);
+            return _lEngineExampleClerk.LExampleClerkFind(query, order);
         }
     }
 
@@ -86,49 +60,11 @@ public sealed partial class LEngine
         return rows;
     }
 
-    public IReadOnlyDictionary<long, string> LEngineCitationRead()
-    {
-        lock (_lEngineGate)
-        {
-            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                _lEngineAuthors.LAuthorReferenceRead();
-
-            Dictionary<long, string> named = [];
-            foreach (LReference reference in _lEngineReferences.LReferenceAllRead())
-            {
-                credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited);
-                named[reference.LReferenceId] = reference.LReferenceBylineRead(credited ?? []);
-            }
-
-            return named;
-        }
-    }
-
-    private static string LEngineCitationRead(IReadOnlyDictionary<long, string> named, LStateAnchor source)
-    {
-        long id = source.LStateAnchorShow();
-        if (id == 0)
-        {
-            return string.Empty;
-        }
-
-        return named.TryGetValue(id, out string? name)
-            ? name
-            : id.ToString(CultureInfo.InvariantCulture);
-    }
-
     internal IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
-            return owner switch
-            {
-                LOwner.LOwnerMeaning or LOwner.LOwnerCollocation =>
-                    [.. LEngineSentenceRead(ownerId, owner)
-                        .Select(sentence => sentence.LSentenceExample)
-                        .OfType<LExample>()],
-                _ => throw LEngineOwnerRaise(owner),
-            };
+            return _lEngineExampleClerk.LExampleClerkRead(ownerId, owner);
         }
     }
 
@@ -136,7 +72,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSentences.LSentenceMeaningRead(meaningId);
+            return _lEngineExampleClerk.LSentenceRead(meaningId);
         }
     }
 
@@ -144,13 +80,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSentenceVault sentences = _lEngineSentences;
-            return owner switch
-            {
-                LOwner.LOwnerMeaning => sentences.LSentenceMeaningRead(ownerId),
-                LOwner.LOwnerCollocation => sentences.LSentenceCollocationRead(ownerId),
-                _ => throw LEngineOwnerRaise(owner),
-            };
+            return _lEngineExampleClerk.LSentenceRead(ownerId, owner);
         }
     }
 
@@ -158,7 +88,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineExamples.LExampleUpdate(example);
+            _lEngineExampleClerk.LExampleClerkUpdate(example);
         }
     }
 
@@ -166,7 +96,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineExamples.LExampleSourceUpdate(exampleId, reference);
+            _lEngineExampleClerk.LExampleClerkUpdate(exampleId, reference);
         }
     }
 
@@ -174,17 +104,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            switch (owner)
-            {
-                case LOwner.LOwnerMeaning:
-                    _lEngineSentences.LSentenceMeaningAttach(ownerId, exampleId, position);
-                    return;
-                case LOwner.LOwnerCollocation:
-                    _lEngineSentences.LSentenceCollocationAttach(ownerId, exampleId, position);
-                    return;
-                default:
-                    throw LEngineOwnerRaise(owner);
-            }
+            _lEngineExampleClerk.LExampleClerkAttach(ownerId, exampleId, position, owner);
         }
     }
 
@@ -192,17 +112,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            switch (owner)
-            {
-                case LOwner.LOwnerMeaning:
-                    _lEngineSentences.LSentenceMeaningDetach(ownerId, exampleId);
-                    return;
-                case LOwner.LOwnerCollocation:
-                    _lEngineSentences.LSentenceCollocationDetach(ownerId, exampleId);
-                    return;
-                default:
-                    throw LEngineOwnerRaise(owner);
-            }
+            _lEngineExampleClerk.LExampleClerkDetach(ownerId, exampleId, owner);
         }
     }
 
@@ -210,20 +120,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
-
-            using LVaultSession session = _lEngineVault.LVaultSessionStart();
-
-            LEngineExampleDetach(ownerId, exampleId, owner);
-
-            LExampleVault examples = _lEngineExamples;
-            if (examples.LExampleReferenceRead(exampleId) == 0)
-            {
-                examples.LExampleDelete(exampleId);
-            }
-
-            LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
-            session.LVaultSessionCommit();
+            _lEngineCardClerk.LExampleRemove(ownerId, exampleId, owner);
         }
     }
 
@@ -231,7 +128,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineExamples.LExampleDelete(id);
+            _lEngineExampleClerk.LExampleClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
@@ -241,9 +138,32 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineExamples.LExampleDelete(id, detach);
+            _lEngineExampleClerk.LExampleClerkDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
+    }
+
+    internal LDraft LEngineExampleStart(string origin, long? exampleId)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(origin);
+            return _lEngineCitationClerk.LExampleStart(origin, exampleId);
+        }
+    }
+
+    internal LExample LEngineExampleCommit(long id)
+    {
+        LExample settled;
+        lock (_lEngineGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(id);
+            LEngineDraftValidate(id);
+            settled = _lEngineCitationClerk.LExampleCommit(id);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);
+        return settled;
     }
 }

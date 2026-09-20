@@ -94,19 +94,16 @@ Two filters compare by the text the catalog writes them in, since the record com
 
 ## `private void LPostureLoad()`
 
-Reads the `posture` document through the port, or the legacy `settings` one once when no posture was ever written.
-The legacy file carried the same keys, so the same adapter reads it.
-A legacy file that reads as the default posture carried none of them, so the posture held is kept instead.
-A workspace with neither inherits the posture held.
-The posture is written at once, so the next start finds it.
-A store that will not read raises `LVaultFault`, which is recorded in the audit.
-The posture held then stays and is not written, so a passing failure never replaces the file.
+Reads the stored posture through the engine, then the legacy settings key when none is stored.
+A vault fault on either read leaves the posture as it stands, so a broken file never resets the window.
+A legacy posture that differs from the default is adopted and written under the current key.
 
 ## `private bool LPostureChange(Func<LPostureState, LPostureState> change)`
 
 Applies `change` under the gate and writes the result out, saying whether anything moved.
 An equal record is not written again.
 
-## `private void LPostureSave(LPostureVault vault)`
+## `private void LPostureSave()`
 
-A file that cannot be written is recorded in the audit and the posture stays current in memory.
+Writes the posture through the engine, which records and swallows a vault fault.
+

@@ -46,13 +46,13 @@ The read never starts a fetch, because the caller decides when to ask the web.
 
 The clerk's display read under the gate, the regular forms dropped.
 
-## `private IReadOnlyList<LParadigmSlot> LEngineParadigmRead(LEntry entry)`
+## `public bool LEngineInflectionCheck(long entryId)`
 
-The same read for an entry already in hand, for the fetch that runs under the gate already.
+Whether an inflection fetch is pending for the entry, through the lacuna clerk.
 
-## `private void LEngineParadigmUpdate(LEntry entry)`
+## `public void LEngineInflectionStart(long entryId)`
 
-The clerk judges every stored form of the entry, for the fetch and the workspace update.
+Starts the inflection fetch of an entry through the lacuna clerk.
 
 ## `internal static bool LEngineParadigmMatch(LParadigm paradigm, string headword, string form)`
 

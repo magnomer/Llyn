@@ -1,24 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private const string LEngineFanqieTone = "Display.FanqieTone";
-
-    private readonly SemaphoreSlim _lEngineFanqieGate = new(1, 1);
-    private readonly Dictionary<string, CancellationTokenSource> _lEngineFanqiePending = new(StringComparer.Ordinal);
-    private readonly HashSet<string> _lEngineFanqieMissed = new(StringComparer.Ordinal);
-    private DateTimeOffset _lEngineFanqieStamp = DateTimeOffset.MinValue;
-
     public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)
     {
-        return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageFanqieBooks;
+        lock (_lEngineGate)
+        {
+            return _lEngineFanqieClerk.LFanqieBookRead(language);
+        }
     }
 
     public bool LEngineBookCheck(string language)
@@ -41,268 +37,175 @@ public sealed partial class LEngine
 
     public LHypothesis? LEngineHypothesisRead(string language)
     {
-        return string.IsNullOrWhiteSpace(language) ? null : LEngineLanguageLoad(language).LLanguageHypothesis;
+        lock (_lEngineGate)
+        {
+            return _lEngineFanqieClerk.LHypothesisRead(language);
+        }
     }
 
     public IReadOnlyList<LFanqieRow> LEngineFanqieRead(long entryId)
     {
-        LEntry? entry;
-        lock (_lEngineGate)
-        {
-            entry = _lEngineEntries.LEntryRead(entryId);
-        }
-
-        if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
-        {
-            return [];
-        }
-
-        string pattern = LLocalization.LLocalizationTextFind(LEngineFanqieTone) ?? string.Empty;
-        List<LFanqieRow> rows = [];
-        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
-        {
-            IReadOnlyList<LFanqieRow> stored;
-            lock (_lEngineGate)
-            {
-                stored = _lEngineFanqieVault.LFanqieRead(entry.LEntryLanguage, character);
-            }
-
-            foreach (LFanqieRow row in stored)
-            {
-                rows.Add(row.LFanqieRowFormat(pattern));
-            }
-        }
-
-        return rows;
+        return _lEngineFanqieClerk.LFanqieClerkRead(entryId);
     }
 
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)
     {
-        IReadOnlyList<LFanqieRow> rows = LEngineFanqieRead(entryId);
-        if (rows.Count == 0)
-        {
-            return [];
-        }
-
-        LEntry? entry;
-        lock (_lEngineGate)
-        {
-            entry = _lEngineEntries.LEntryRead(entryId);
-        }
-
-        return LFanqieGroup.LFanqieGroupScan(rows, LEngineBookRead(entry?.LEntryLanguage ?? string.Empty));
+        return _lEngineFanqieClerk.LFanqieClerkDivide(entryId);
     }
 
     public void LEngineFanqieStart(long entryId)
     {
-        LEntry? entry;
-        lock (_lEngineGate)
-        {
-            entry = _lEngineEntries.LEntryRead(entryId);
-        }
-
-        if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
-        {
-            return;
-        }
-
-        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
-        {
-            bool stored;
-            lock (_lEngineGate)
-            {
-                stored = _lEngineFanqieVault.LFanqieRead(entry.LEntryLanguage, character).Count > 0;
-            }
-
-            if (!stored)
-            {
-                LEngineFanqieStart(entryId, entry.LEntryLanguage, character);
-            }
-        }
+        _lEngineFanqieClerk.LFanqieClerkStart(entryId);
     }
 
     public void LEngineFanqieRebuild(long entryId)
     {
-        LEntry? entry;
-        lock (_lEngineGate)
-        {
-            entry = _lEngineEntries.LEntryRead(entryId);
-        }
-
-        if (entry is null || LEngineBookRead(entry.LEntryLanguage).Count == 0)
-        {
-            return;
-        }
-
-        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
-        {
-            lock (_lEngineGate)
-            {
-                _lEngineFanqieMissed.Remove(LFanqieKeyFormat(entry.LEntryLanguage, character));
-            }
-
-            LEngineFanqieStart(entryId, entry.LEntryLanguage, character);
-        }
+        _lEngineFanqieClerk.LFanqieClerkRebuild(entryId);
     }
 
     public bool LEngineFanqieCheck(long entryId)
     {
-        LEntry? entry;
-        lock (_lEngineGate)
-        {
-            entry = _lEngineEntries.LEntryRead(entryId);
-            if (entry is null)
-            {
-                return false;
-            }
-
-            foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
-            {
-                if (_lEngineFanqiePending.ContainsKey(LFanqieKeyFormat(entry.LEntryLanguage, character)))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return _lEngineFanqieClerk.LFanqieClerkCheck(entryId);
     }
 
-    internal async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
+    internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
         string character, string language, CancellationToken cancellation)
     {
-        (IReadOnlyList<LFanqieRow> found, _) =
-            await LEngineFanqieScan(character, language, cancellation).ConfigureAwait(false);
-        return found;
+        return _lEngineFanqieClerk.LFanqieClerkFind(character, language, cancellation);
     }
 
-    private async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LEngineFanqieScan(
-        string character, string language, CancellationToken cancellation)
+    internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(character);
-
-        IReadOnlyList<LFanqieBook> books;
         lock (_lEngineGate)
         {
-            books = LEngineBookRead(language);
+            return _lEngineDiweiClerk.LDiweiClerkRead(language, kind);
         }
-
-        bool reached = false;
-        List<LFanqieRow> rows = [];
-        foreach (LFanqieBook book in books)
-        {
-            TimeSpan left = _lEngineFanqieStamp - LEngineClockRead().LClockRead();
-            if (left > TimeSpan.Zero)
-            {
-                await Task.Delay(left, cancellation).ConfigureAwait(false);
-            }
-
-            (IReadOnlyList<LFanqieRow> found, bool answered) = await _lEngineFanqieSource
-                .LFanqieSourceFind(book, character, cancellation)
-                .ConfigureAwait(false);
-            DateTimeOffset next = LEngineClockRead().LClockRead() + TimeSpan.FromSeconds(book.LFanqieBookInterval);
-            if (next > _lEngineFanqieStamp)
-            {
-                _lEngineFanqieStamp = next;
-            }
-            reached |= answered;
-            rows.AddRange(found);
-        }
-
-        return (rows, reached);
     }
 
-    private static string LFanqieKeyFormat(string language, string character)
+    public LDiwei? LEngineDiweiRead(long? id)
     {
-        return language + '\n' + character;
-    }
-
-    private void LEngineFanqieStart(long entryId, string language, string character)
-    {
-        string key = LFanqieKeyFormat(language, character);
-        CancellationTokenSource fetch;
         lock (_lEngineGate)
         {
-            if (_lEngineFanqieMissed.Contains(key) || _lEngineFanqiePending.ContainsKey(key))
-            {
-                return;
-            }
-
-            fetch = new CancellationTokenSource();
-            _lEngineFanqiePending[key] = fetch;
+            return _lEngineDiweiClerk.LDiweiClerkRead(id);
         }
-
-        _ = LEngineFanqieRun(entryId, language, character, key, fetch);
     }
 
-    private void LEngineFanqieClear()
+    public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize)
     {
-        foreach (CancellationTokenSource held in _lEngineFanqiePending.Values)
-        {
-            held.Cancel();
-            held.Dispose();
-        }
+        ArgumentNullException.ThrowIfNull(localize);
 
-        _lEngineFanqiePending.Clear();
-        _lEngineFanqieMissed.Clear();
+        lock (_lEngineGate)
+        {
+            LDiwei? diwei = _lEngineDiweiClerk.LDiweiClerkRead(id);
+            if (diwei is null)
+            {
+                return LDiweiPage.LDiweiPageBlank;
+            }
+
+            return _lEngineDiweiClerk.LDiweiPageRead(
+                diwei,
+                LEngineRespellingCheck(diwei.LDiweiLanguage),
+                _lEngineSettings.LSettingsTally,
+                localize);
+        }
     }
 
-    private async Task LEngineFanqieRun(
-        long entryId, string language, string character, string key, CancellationTokenSource fetch)
+    public LDiwei? LEngineDiweiFind(string language, string kind, string key)
     {
-        bool raised = false;
-        bool admitted = false;
-        try
+        lock (_lEngineGate)
         {
-            await _lEngineFanqieGate.WaitAsync(fetch.Token).ConfigureAwait(false);
-            admitted = true;
-            (IReadOnlyList<LFanqieRow> found, bool reached) =
-                await LEngineFanqieScan(character, language, fetch.Token).ConfigureAwait(false);
-
-            lock (_lEngineGate)
-            {
-                if (fetch.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                raised = true;
-                if (found.Count > 0)
-                {
-                    _lEngineFanqieVault.LFanqieSave(language, character, found);
-                    _lEngineDiweiVault.LDiweiApply(
-                        language, character, LEngineHypothesisRead(language));
-                }
-                else if (reached)
-                {
-                    _lEngineFanqieMissed.Add(key);
-                }
-            }
+            return _lEngineDiweiClerk.LDiweiClerkFind(language, kind, key);
         }
-        catch (Exception)
-        {
-            raised = !fetch.IsCancellationRequested;
-        }
-        finally
-        {
-            if (admitted)
-            {
-                _lEngineFanqieGate.Release();
-            }
+    }
 
-            lock (_lEngineGate)
-            {
-                if (_lEngineFanqiePending.TryGetValue(key, out CancellationTokenSource? held) && held == fetch)
-                {
-                    _lEngineFanqiePending.Remove(key);
-                    fetch.Dispose();
-                }
-            }
+    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        string wanted = vista.LVistaQuery.Trim();
+        IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
+            wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
+        IReadOnlyList<LDiwei> sorted = vista.LVistaOrder switch
+        {
+            LCatalogOrder.LCatalogOrderReverse => [.. kept
+                .OrderByDescending(row => row.LDiweiKey, StringComparer.Ordinal)],
+            LCatalogOrder.LCatalogOrderUsage => [.. kept
+                .OrderByDescending(row => row.LDiweiCount)
+                .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal)],
+            _ => [.. kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal)],
+        };
+        if (vista.LVistaChosen is long chosen && LDiwei.LDiweiFind(sorted, chosen) is null)
+        {
+            vista.LVistaSelect(null);
         }
 
-        if (raised)
+        return [.. sorted.Select(row => row with { LDiweiChosen = vista.LVistaMatch(row.LDiweiId) })];
+    }
+
+    public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)
+    {
+        lock (_lEngineGate)
         {
-            LEngineBulletinRaise(LSubject.LSubjectFanqie, entryId);
+            return _lEngineDiweiClerk.LDiweiFanqieRead(diwei);
+        }
+    }
+
+    internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineDiweiClerk.LDiweiClerkScan(language, diweiIds);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(
+        string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
+    {
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LEntry> entries = _lEngineDiweiClerk.LDiweiEntryScan(language, diweiIds, query);
+            return entries.Count == 0 ? [] : LEngineVistaBuild(entries, vista?.LVistaChosen);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(onset);
+        ArgumentNullException.ThrowIfNull(rime);
+        ArgumentNullException.ThrowIfNull(vista);
+
+        List<long> wanted = [];
+        if (onset.LVistaChosen is long initial)
+        {
+            wanted.Add(initial);
+        }
+
+        if (rime.LVistaChosen is long final)
+        {
+            wanted.Add(final);
+        }
+
+        if (wanted.Count == 0)
+        {
+            return [];
+        }
+
+        return LEngineXiaoyunFind(language, wanted, vista.LVistaQuery.Trim(), vista);
+    }
+
+    internal void LEngineDiweiRebuild()
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineFanqieClerk.LDiweiApply();
+        }
+    }
+
+    public IReadOnlyList<LTally> LEngineTallyRead(LDiwei diwei)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineDiweiClerk.LTallyRead(diwei);
         }
     }
 }

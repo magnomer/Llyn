@@ -18,6 +18,8 @@ public partial class LBootstrap : System.Windows.Application
 
     private readonly LUsher _lBootstrapUsher = new LUsherShell(new LUsherFile());
 
+    private readonly LPress _lBootstrapPress = new LPressBrowser();
+
     private LEngine? _lBootstrapEngine;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -48,7 +50,8 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             workspace = LWorkspaceRoot.LWorkspaceRootRead();
-            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient, _lBootstrapUsher));
+            engine = new LEngine(
+                LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress));
         }
         catch (Exception exception)
         {
@@ -65,8 +68,6 @@ public partial class LBootstrap : System.Windows.Application
         _lBootstrapEngine = engine;
         DispatcherUnhandledException += LBootstrapFaultHandle;
         TaskScheduler.UnobservedTaskException += LBootstrapStrayHandle;
-
-        engine.LEnginePressApply(new LPressBrowser());
 
         LBootstrapLocalizationApply(engine);
         LBootstrapRescueShow(engine.LEngineRescueRead());
@@ -86,7 +87,8 @@ public partial class LBootstrap : System.Windows.Application
 
     private void LBootstrapWorkspaceChange(string path)
     {
-        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, _lBootstrapClient, _lBootstrapUsher));
+        _lBootstrapEngine?.LEngineRigApply(
+            LRigFactory.LRigFactoryBuild(path, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress));
         LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 

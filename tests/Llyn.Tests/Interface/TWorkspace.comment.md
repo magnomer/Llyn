@@ -20,6 +20,18 @@ The database bound to this workspace folder.
 
 The folder itself, for a test that has to reach the file directly.
 
+## `public TClockFake TWorkspaceClock { get; }`
+
+The frozen clock every rig of this workspace carries.
+
+## `public TPress TWorkspacePress { get; }`
+
+The fake press every rig of this workspace carries, holding the last sheet and ticket it received.
+
+## `public void TWorkspaceClockSet(Func<DateTimeOffset> clock)`
+
+Freezes the clock on `clock`, for every engine and clerk built over this workspace.
+
 ## `public static TWorkspace TWorkspaceCreate()`
 
 Creates an empty workspace folder whose database has not been initialized yet.
@@ -43,8 +55,17 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
-Only the clock is swapped for a `TClockFake`, so a test can freeze time through `TEngineClockSet`.
+Only the clock is swapped for the workspace's `TClockFake`, so a test can freeze time through `TWorkspaceClockSet`.
+The rig carries the workspace's `TPress`, so a print test reads what reached it from the workspace.
 An engine over fakes instead starts from `TRigFake`.
+
+## `public LRig TWorkspaceRigCreate()`
+
+A rig over the workspace with a client that answers nothing, for a clerk test.
+
+## `public LRig TWorkspaceRigCreate(HttpClient client)`
+
+A rig over the workspace with `client` as its web, the workspace's clock and press in place.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 

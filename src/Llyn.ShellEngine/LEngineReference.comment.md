@@ -4,41 +4,45 @@
 
 The bibliographic half of the engine.
 A Reference is the work an Example is drawn from.
-The Authors credited on it belong here too.
-Both are independent shared data.
-Several Entries may cite one Reference, and several References may credit one Author.
-So a citation and a credit are references to a row, never ownership of it.
-
-The two sides of a citation differ in shape, which is why `LOwner` says which is meant.
-An Example cites at most one Reference, and an Entry reaches one only through the Examples its cards quote.
-An Example cites at most one, a single column with nothing to order.
-So attaching there replaces whatever it cited before.
-
-Nothing here deletes a row on the strength of a reference going.
-A Reference no Example cites and an Author no Reference credits are both deliberate data.
-Unlike a card's Examples and Tags, they are not created as a side effect of typing.
-So they go only when something says to delete them.
+A citation is a reference to a row, never ownership of it.
+Every read and write goes through the reference clerk under the gate, and every change is announced here.
+The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
+The source draft starts and commits here too, through the citation clerk.
 
 ## `internal LReference LEngineReferenceCreate(LReference reference)`
 
 Creates `reference` and returns it with its assigned id.
-Its fields carry the three-state distinction the model gives them: unspecified, deliberately unknown, or a value.
 
 ## `public LReference LEngineCitationCreate(string title)`
 
 Creates a Reference carrying nothing but `title`, for a citation typed where no stored Source answered.
-The typed line is resolved like any written value, and a blank line is refused as an argument.
-The caller then cites the returned id the way it cites any picked row.
 Observers hear of the new Reference at once, because every open citation catalogue must list it.
 
 ## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.
 
+## `internal IReadOnlyList<LReference> LEngineReferenceRead()`
+
+Every Reference the workspace holds.
+
+## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)`
+
+The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
+
+## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)`
+
+The Sources the sources panel's vista lists, with the query and order read off the vista.
+Each row carries its chosen mark, true where its id is the one the vista stands on.
+
+## `private static IReadOnlyList<LCatalogReference> LEngineReferenceRead(IReadOnlyList<LCatalogReference> found, long? chosen)`
+
+The found rows with their twin names numbered and the chosen one marked.
+The sources panel and the oeuvre list share it.
+
 ## `internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)`
 
 Reads the single Reference the Example identified by `ownerId` cites, as a list of one or none.
-An Example cites at most one, so its list holds either that one or nothing.
 
 ## `internal void LEngineReferenceUpdate(LReference reference)`
 
@@ -48,105 +52,29 @@ Rewrites the fields of the Reference `reference` identifies.
 
 Cites the Reference identified by `referenceId` from the Example identified by `ownerId`.
 An Example holds one citation, so `position` orders nothing.
-An Example holds one citation, so the position is not used.
-Whatever it cited before is replaced.
 
 ## `internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)`
 
 Clears the citation the Example identified by `ownerId` holds.
-The Reference and its other citations survive.
 
 ## `internal void LEngineReferenceDelete(long id)`
 
-Deletes the Reference identified by `id` together with the author credits it owns.
-Refused while any Example still cites it — clear those citations first.
-The Authors it credited survive.
-Only the credits between them and this Reference go.
-
-## `internal LAuthor LEngineAuthorCreate(LAuthor author)`
-
-Creates `author` and returns it with its assigned id.
-
-A blank name is refused here rather than in the archive.
-This is the door the shell knocks on, and a name left empty there is a slip.
-An import writes through the archive instead, where a nameless author is a row the format allows.
-
-## `public LAuthor? LEngineAuthorRead(long id)`
-
-Reads the Author for `id`, or `null` when none has that id.
-
-## `public IReadOnlyList<LAuthor> LEngineAuthorRead()`
-
-Reads every Author the workspace holds, by name.
-The Sources panel offers the whole shelf for crediting, so it asks for it once.
-
-## `public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)`
-
-Reads the Authors whose name the typed text matches, by name.
-The Sources panel offers them under a credit field as the name is typed.
-The match is the catalog's own, so wildcards work here as they do in every search box.
-
-## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)`
-
-The byline rows a typed credit may already name, at most the limit asked.
-An unnamed Author and one the draft already credits are left out, since neither can be picked.
-The draft is read here by its id, so the editor never carries the credits it holds back down.
-No draft offers nothing.
-The names come trimmed, so the byline highlights what was typed without leading blanks.
-
-## `private static bool LEngineAuthorCheck(IReadOnlyList<LAuthor> credited, long id)`
-
-Whether the credits already hold the Author.
-
-## `public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)`
-
-Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.
-
-## `public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)`
-
-Reads the credits of every Reference at once, each in that Reference's own order.
-`LOwner` names the kind being asked about, as the usage seam does, and only a Reference has credits.
-
-## `internal void LEngineAuthorUpdate(LAuthor author)`
-
-Renames the Author `author` identifies.
-Every credit reads the new name.
-
-## `internal void LEngineAuthorAttach(long referenceId, long authorId, int position)`
-
-Credits the Author identified by `authorId` on the Reference identified by `referenceId` at `position` in that Reference's author order.
-The Author row stays available to every other Reference.
-
-## `internal void LEngineAuthorDetach(long referenceId, long authorId)`
-
-Removes one Reference's credit for an Author.
-The Author and its other credits survive.
-An Author is deliberate data, so losing a credit is not a reason to delete the person.
+Deletes the Reference identified by `id`, refused while any Example still cites it, and announces it.
 
 ## `internal void LEngineReferenceDelete(long id, bool detach)`
 
 The same delete, with `detach` clearing every citation first.
-The detaching, the count, and the delete stand in one store session.
 
-## `internal void LEngineAuthorDelete(long id, bool detach)`
+## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
 
-The same delete, with `detach` dropping every credit first.
-Deleting an Author never deletes a Reference.
+The `Author (Year)` line every stored Source is cited under, by id.
 
-## `internal void LEngineAuthorDelete(long id)`
+## `internal LDraft LEngineReferenceStart(string origin, long? referenceId)`
 
-Deletes the Author identified by `id`.
-Refused while any Reference still credits the Author — detach every credit first.
-Deleting an Author never deletes a Reference.
+Mints a draft id, writes the first file, and returns the held Reference with its credits.
+A Reference that is gone is refused before a file is written, so no draft can point at nothing.
 
-## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)`
+## `internal LReference LEngineReferenceCommit(long id)`
 
-The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
-The credits and the counts are read whole rather than one Source at a time.
-Both are needed to order and to match, so the browsing panel decides neither.
-
-## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)`
-
-The Sources the sources panel's vista lists, with the query and order read off the vista.
-The vista's filter hides languages from the entries citing the chosen Source, so it is not applied here.
-Each row carries its chosen mark, true where its id is the one the vista stands on.
+Turns a held Reference into a stored one, announces it and returns it.
+An id from a closed workspace is refused before anything is written.

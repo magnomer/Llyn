@@ -122,8 +122,7 @@ public sealed class TPortraitPage
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TPress press = new();
-        engine.TEnginePressApply(press);
+        TPress press = workspace.TWorkspacePress;
 
         LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
             0, "English", "The fire kindled.", null, TInterface.TStateAnchorRead(null)));
@@ -141,22 +140,6 @@ public sealed class TPortraitPage
         Assert.Equal(LPressPaper.LPressPaperMetric, press.TPressTicket?.LPressTicketPaper);
         Assert.Equal(LPressSide.LPressSideLong, press.TPressTicket?.LPressTicketSide);
         Assert.Equal(LPressInk.LPressInkGray, press.TPressTicket?.LPressTicketInk);
-    }
-
-    [Fact]
-    public async Task PortraitPrint_NoPress_Throws()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LSituation situation = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(0, "at the hearth", null, null));
-
-        await Assert.ThrowsAsync<InvalidOperationException>(() => engine.TEnginePortraitPrint(
-            situation.LSituationId,
-            LOwner.LOwnerSituation,
-            TInterface.TPortraitLegendRead(),
-            TInterface.TPressTicketCreate("Paper Printer", false, 1)));
     }
 
     private static LReference TPortraitSourceCreate(LEngine engine, string title)

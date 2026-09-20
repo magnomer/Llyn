@@ -20,6 +20,9 @@ public sealed class LEntryClerk
     private readonly LInflectionClerk _lEntryClerkInflections;
     private readonly LParadigmClerk _lEntryClerkParadigms;
     private readonly LPronunciationClerk _lEntryClerkPronunciations;
+    private readonly LTranscriptionClerk _lEntryClerkTranscriptions;
+    private readonly LReflexClerk _lEntryClerkReflexes;
+    private readonly LRecordingClerk _lEntryClerkRecordings;
 
     public LEntryClerk(
         LRig rig,
@@ -28,7 +31,10 @@ public sealed class LEntryClerk
         LVocabularyClerk vocabulary,
         LInflectionClerk inflections,
         LParadigmClerk paradigms,
-        LPronunciationClerk pronunciations)
+        LPronunciationClerk pronunciations,
+        LTranscriptionClerk transcriptions,
+        LReflexClerk reflexes,
+        LRecordingClerk recordings)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(cards);
@@ -37,6 +43,9 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(inflections);
         ArgumentNullException.ThrowIfNull(paradigms);
         ArgumentNullException.ThrowIfNull(pronunciations);
+        ArgumentNullException.ThrowIfNull(transcriptions);
+        ArgumentNullException.ThrowIfNull(reflexes);
+        ArgumentNullException.ThrowIfNull(recordings);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
         _lEntryClerkFrequencies = rig.LRigFrequencies;
@@ -50,6 +59,9 @@ public sealed class LEntryClerk
         _lEntryClerkInflections = inflections;
         _lEntryClerkParadigms = paradigms;
         _lEntryClerkPronunciations = pronunciations;
+        _lEntryClerkTranscriptions = transcriptions;
+        _lEntryClerkReflexes = reflexes;
+        _lEntryClerkRecordings = recordings;
     }
 
     public LEntry LEntryClerkCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
@@ -65,12 +77,20 @@ public sealed class LEntryClerk
 
     public LEntryDraft? LEntryClerkLoad(long id)
     {
-        return _lEntryClerkEntries.LEntryLoad(id);
+        LEntryDraft? draft = _lEntryClerkEntries.LEntryLoad(id);
+        return draft is null ? null : _lEntryClerkRecordings.LRecordingClerkResolve(draft);
     }
 
     public IReadOnlyList<LEntry> LEntryClerkFind(string query)
     {
         return _lEntryClerkEntries.LEntryFind(query);
+    }
+
+    public IReadOnlyList<LEntry> LEntryHeadwordFind(string headword, string language)
+    {
+        ArgumentNullException.ThrowIfNull(headword);
+        ArgumentNullException.ThrowIfNull(language);
+        return _lEntryClerkEntries.LEntryHeadwordFind(language.Trim(), headword.Trim());
     }
 
     public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order)
@@ -195,6 +215,13 @@ public sealed class LEntryClerk
         return revision;
     }
 
+    public static int LEntryGraspStep => LGrasp.LGraspStep;
+
+    public static string LEntryGraspFormat(int step)
+    {
+        return LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+    }
+
     public void LEntryGraspSet(long entryId, int grasp)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
@@ -252,6 +279,7 @@ public sealed class LEntryClerk
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(identity);
+        LHeadwordValidate(draft);
 
         using LVaultSession session = _lEntryClerkVault.LVaultSessionStart();
 
@@ -288,7 +316,14 @@ public sealed class LEntryClerk
         }
 
         _lEntryClerkPronunciations.LPronunciationClerkSync(
-            entry.LEntryId, LPronunciationReset(draft.LEntryDraftPronunciations), null, identity);
+            entry.LEntryId, LEntryClerkField.LPronunciationReset(draft.LEntryDraftPronunciations), null, identity);
+        _lEntryClerkTranscriptions.LTranscriptionClerkSync(
+            entry.LEntryId,
+            LTranscriptionClerk.LTranscriptionClerkReset(draft.LEntryDraftTranscriptions),
+            null,
+            identity);
+        _lEntryClerkReflexes.LReflexClerkSync(
+            entry.LEntryId, language, LReflexClerk.LReflexClerkReset(draft.LEntryDraftReflexes), null, identity);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
         LRevisionRecord([new LRevisionChange(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
@@ -297,17 +332,41 @@ public sealed class LEntryClerk
         return entry;
     }
 
+    public LEntry LEntryClerkUpdate(long id, LEntryDraft draft, Dictionary<long, long> identity)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(identity);
+
+        using LVaultSession session = _lEntryClerkVault.LVaultSessionStart();
+
+        List<LRevisionChange> changes = [];
+        LEntry updated = LEntryClerkSave(id, draft, identity, changes);
+        if (changes.Count > 0)
+        {
+            LRevisionRecord(changes);
+        }
+
+        session.LVaultSessionCommit();
+        return updated;
+    }
+
     public LEntry LEntryClerkSave(
-        long id, LEntryDraft draft, bool changed, Dictionary<long, long> identity, List<LRevisionChange> changes)
+        long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionChange> changes)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(changes);
+        LHeadwordValidate(draft);
+
+        draft = draft with { LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim() };
 
         using LVaultSession session = _lEntryClerkVault.LVaultSessionStart();
 
         LEntry stored = _lEntryClerkEntries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
+        LEntryDraft? origin = LEntryClerkLoad(id);
+        bool changed = origin is null || !LDraftClerkEquality.LDraftMatch(origin, draft);
         string language = draft.LEntryDraftLanguage;
 
         if (changed)
@@ -332,11 +391,13 @@ public sealed class LEntryClerk
         _lEntryClerkCards.LCollocationSave(id, draft.LEntryDraftCollocations, language, changes, identity);
 
         _lEntryClerkVocabulary.LSpeechUpdate(id, draft, changes);
-        LFormUpdate(_lEntryClerkEntries, id, draft, changes);
+        LEntryClerkField.LFormUpdate(_lEntryClerkEntries, id, draft, changes);
         _lEntryClerkInflections.LInflectionClerkUpdate(id, draft, changes);
         _lEntryClerkInflections.LInflectionClerkReset(id);
-        LNoteUpdate(id, draft, changes);
+        LEntryClerkField.LNoteUpdate(_lEntryClerkNotes, id, draft, changes);
         _lEntryClerkPronunciations.LPronunciationClerkSync(id, draft.LEntryDraftPronunciations, changes, identity);
+        _lEntryClerkTranscriptions.LTranscriptionClerkSync(id, draft.LEntryDraftTranscriptions, changes, identity);
+        _lEntryClerkReflexes.LReflexClerkSync(id, language, draft.LEntryDraftReflexes, changes, identity);
 
         LEntry updated = _lEntryClerkEntries.LEntryRead(id) ?? stored;
         _lEntryClerkParadigms.LParadigmClerkUpdate(updated);
@@ -363,82 +424,11 @@ public sealed class LEntryClerk
         _lEntryClerkEntries.LEntryUpdatedSet(entryId);
     }
 
-    private static IReadOnlyList<LPronunciationDraft> LPronunciationReset(IReadOnlyList<LPronunciationDraft> drafts)
+    private static void LHeadwordValidate(LEntryDraft draft)
     {
-        List<LPronunciationDraft> renewed = new(drafts.Count);
-        foreach (LPronunciationDraft draft in drafts)
+        if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
         {
-            renewed.Add(draft.LPronunciationDraftId > 0 ? draft with { LPronunciationDraftId = 0 } : draft);
+            throw new LRefusal(LRefusal.LRefusalHeadword);
         }
-
-        return renewed;
-    }
-
-    private static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
-    {
-        IReadOnlyList<LForm> stored = entries.LEntryFormRead(entryId);
-        IReadOnlyList<LForm> current = draft.LEntryDraftForms;
-
-        if (LFormMatch(stored, current))
-        {
-            return;
-        }
-
-        entries.LEntryFormSet(entryId, current);
-        changes.Add(new LRevisionChange(
-            0,
-            entryId,
-            "form",
-            current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
-            null));
-    }
-
-    public static bool LFormMatch(IReadOnlyList<LForm> stored, IReadOnlyList<LForm> current)
-    {
-        ArgumentNullException.ThrowIfNull(stored);
-        ArgumentNullException.ThrowIfNull(current);
-
-        if (stored.Count != current.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < stored.Count; index++)
-        {
-            if (!string.Equals(stored[index].LFormText, current[index].LFormText, StringComparison.Ordinal)
-                || !string.Equals(stored[index].LFormRole, current[index].LFormRole, StringComparison.Ordinal)
-                || !string.Equals(stored[index].LFormLocal, current[index].LFormLocal, StringComparison.Ordinal))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void LNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)
-    {
-        LNoteVault notes = _lEntryClerkNotes;
-        LNote? stored = notes.LNoteRead(entryId);
-        string text = LMarkdown.LMarkdownNormalize(draft.LEntryDraftNote);
-
-        if (text.Length == 0)
-        {
-            if (stored is not null)
-            {
-                notes.LNoteDelete(entryId);
-                changes.Add(new LRevisionChange(0, entryId, "note", "delete", null));
-            }
-
-            return;
-        }
-
-        if (string.Equals(stored?.LNoteText, text, StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        notes.LNoteSave(new LNote(entryId, text));
-        changes.Add(new LRevisionChange(0, entryId, "note", stored is null ? "create" : "update", null));
     }
 }

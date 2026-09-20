@@ -28,8 +28,7 @@ public sealed class TPortraitVista
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TPress press = new();
-        engine.TEnginePressApply(press);
+        TPress press = workspace.TWorkspacePress;
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
         LPressTicket ticket = TInterface.TPressTicketCreate("Printer", false, 1);
@@ -46,8 +45,7 @@ public sealed class TPortraitVista
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TPress press = new();
-        engine.TEnginePressApply(press);
+        TPress press = workspace.TWorkspacePress;
         LExample example = engine.TEngineExampleCreate(
             TInterface.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);

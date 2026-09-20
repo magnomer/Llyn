@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using Llyn.Application;
+using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -9,137 +8,96 @@ public sealed partial class LEngine
 {
     internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
     {
+        lock (_lEngineGate)
+        {
+            return _lEnginePortraitClerk.LPortraitClerkRead(entryId, label);
+        }
+    }
+
+    internal LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        ArgumentNullException.ThrowIfNull(legend);
+
+        lock (_lEngineGate)
+        {
+            LPortraitPage? page = owner switch
+            {
+                LOwner.LOwnerExample => _lEngineExampleClerk.LExampleClerkRead(id, legend),
+                LOwner.LOwnerReference => _lEngineReferenceClerk.LReferenceClerkRead(id, legend),
+                LOwner.LOwnerSituation => _lEngineSituationClerk.LSituationClerkRead(id, legend),
+                _ => throw LEngineOwnerRaise(owner),
+            };
+
+            return page ?? throw new InvalidOperationException("The page no longer stands in the workspace.");
+        }
+    }
+
+    internal Task LEnginePortraitExport(
+        long entryId, string path, LPortraitFormat format, LPortraitLabel label)
+    {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentNullException.ThrowIfNull(label);
 
-        LEntryDraft draft = LEngineEntryLoad(entryId)
-            ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
-
-        LSentenceOrder order = LEngineFrameRead(draft.LEntryDraftLanguage);
-
-        List<long> ids = [];
-        LPortraitLink.LPortraitLinkRead(draft.LEntryDraftMeanings, ids);
-        LPortraitLink.LPortraitLinkRead(draft.LEntryDraftCollocations, ids);
-
-        IReadOnlyDictionary<long, LPortraitLink> targets = LEngineTargetScan(ids);
-        IReadOnlyDictionary<long, string> sources = LEngineSourceScan();
-
-        bool favorite;
-        try
+        if (format == LPortraitFormat.LPortraitFormatMarkup)
         {
-            favorite = LEngineFavoriteCheck(entryId);
-        }
-        catch (Exception)
-        {
-            favorite = false;
-        }
-
-        IReadOnlyList<LFanqieRow> fanqie = LEngineFanqieScan(entryId, draft.LEntryDraftLanguage);
-
-        List<LPortraitSection> sections = [];
-        LEngineGlyphAdd(sections, draft, label);
-        LEngineFrequencyAdd(sections, entryId, label);
-        LEngineFormAdd(sections, draft, label);
-        LEngineParadigmAdd(sections, entryId, label);
-        LEngineFanqieAdd(sections, fanqie, label);
-        LEngineBandAdd(
-            sections,
-            label.LPortraitLabelMeanings,
-            LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftMeanings,
-                label.LPortraitLabelMeaning,
-                order,
-                draft.LEntryDraftLanguage,
-                label,
-                targets,
-                sources));
-        LEngineBandAdd(
-            sections,
-            label.LPortraitLabelCollocations,
-            LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftCollocations,
-                label.LPortraitLabelCollocation,
-                order,
-                draft.LEntryDraftLanguage,
-                label,
-                targets,
-                sources));
-        LEngineIncomingAdd(sections, entryId, label);
-        LEngineNoteAdd(sections, draft, label);
-        LEngineScriptAdd(sections, entryId, draft.LEntryDraftLanguage, label);
-
-        return new LPortraitPage(
-            draft.LEntryDraftHeadword,
-            draft.LEntryDraftLanguage,
-            LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches),
-            sections,
-            favorite,
-            [
-                .. LPortraitReading.LPortraitReadingCreate(
-                    draft.LEntryDraftPronunciations,
-                    LEngineRespellingCheck(draft.LEntryDraftLanguage),
-                    LEnginePhonemicCheck(draft.LEntryDraftLanguage)),
-                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
-                .. LPortraitReading.LPortraitReadingCreate(
-                    draft.LEntryDraftReflexes, LEngineRespellingCheck, LEnginePhonemicCheck, fanqie),
-            ]);
-    }
-
-    private IReadOnlyDictionary<long, LPortraitLink> LEngineTargetScan(IReadOnlyList<long> ids)
-    {
-        Dictionary<long, LPortraitLink> targets = [];
-
-        try
-        {
-            foreach (LTranslationTarget target in LEngineTargetRead(ids))
+            lock (_lEngineGate)
             {
-                targets[target.LTranslationTargetId] = new LPortraitLink(
-                    target.LTranslationTargetId,
-                    target.LTranslationTargetHeadword,
-                    target.LTranslationTargetLanguage);
+                _lEnginePortraitClerk.LPortraitMarkupExport(entryId, path);
             }
-        }
-        catch (Exception)
-        {
-            targets.Clear();
+
+            return Task.CompletedTask;
         }
 
-        return targets;
+        return _lEnginePortraitClerk.LPortraitClerkExport(LEnginePortraitRead(entryId, label), path, format);
     }
 
-    private IReadOnlyDictionary<long, string> LEngineSourceScan()
+    internal Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)
     {
-        try
-        {
-            return LEngineCitationRead();
-        }
-        catch (Exception)
-        {
-            return new Dictionary<long, string>();
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(label);
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        return _lEnginePortraitClerk.LPortraitClerkPrint(LEnginePortraitRead(entryId, label), ticket);
     }
 
-    private IReadOnlyList<LFanqieRow> LEngineFanqieScan(long entryId, string language)
+    public Task LEnginePortraitExport(
+        LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)
     {
-        try
-        {
-            return LEngineBookRead(language).Count == 0 ? [] : LEngineFanqieRead(entryId);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return vista?.LVistaSubject == LSubject.LSubjectEntry && vista.LVistaChosen is long id
+            ? LEnginePortraitExport(id, path, format, label)
+            : Task.CompletedTask;
     }
 
-    private LSentenceOrder LEngineFrameRead(string language)
+    public Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket)
     {
-        try
+        return vista?.LVistaSubject == LSubject.LSubjectEntry && vista.LVistaChosen is long id
+            ? LEnginePortraitPrint(id, label, ticket)
+            : Task.CompletedTask;
+    }
+
+    public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket)
+    {
+        if (vista?.LVistaChosen is not long id)
         {
-            return LEngineOrderRead(language);
+            return Task.CompletedTask;
         }
-        catch (Exception)
+
+        LOwner owner = vista.LVistaSubject switch
         {
-            return LSentenceOrder.LSentenceOrderDefault;
-        }
+            LSubject.LSubjectExample => LOwner.LOwnerExample,
+            LSubject.LSubjectSituation => LOwner.LOwnerSituation,
+            LSubject.LSubjectReference => LOwner.LOwnerReference,
+            _ => throw new ArgumentException("The vista does not hold a printable catalog subject.", nameof(vista)),
+        };
+        return LEnginePortraitPrint(id, owner, legend, ticket);
+    }
+
+    internal Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)
+    {
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        return _lEnginePortraitClerk.LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
     }
 }

@@ -158,4 +158,43 @@ public static class LDraftClerkList
 
         return written ?? cards;
     }
+
+    public static IReadOnlyList<LDraftItem> LDraftListNormalize<LDraftItem>(
+        IReadOnlyList<LDraftItem> items,
+        Func<LDraftItem, bool> blank,
+        Func<LDraftItem, LDraftItem> name)
+        where LDraftItem : class
+    {
+        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(blank);
+        ArgumentNullException.ThrowIfNull(name);
+
+        List<LDraftItem>? named = null;
+        for (int index = 0; index < items.Count; index++)
+        {
+            LDraftItem item = items[index];
+            LDraftItem? written = blank(item) ? null : name(item);
+            if (ReferenceEquals(written, item))
+            {
+                named?.Add(item);
+                continue;
+            }
+
+            if (named is null)
+            {
+                named = new List<LDraftItem>(items.Count);
+                for (int earlier = 0; earlier < index; earlier++)
+                {
+                    named.Add(items[earlier]);
+                }
+            }
+
+            if (written is not null)
+            {
+                named.Add(written);
+            }
+        }
+
+        return named ?? items;
+    }
 }

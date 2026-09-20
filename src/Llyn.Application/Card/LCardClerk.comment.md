@@ -12,10 +12,23 @@ Which stored row each card is comes from `LCardDraft.LCardDraftId`, never from i
 A card naming a stored row updates that row in place, so its id survives.
 A card naming nothing is created, and a stored row the draft no longer names is deleted.
 
-## `public LCardClerk(LRig rig, LTagClerk tags, LRegisterClerk registers, LTranslationClerk translations, LExampleClerk examples)`
+## `public LCardClerk(LRig rig, LTagClerk tags, LRegisterClerk registers, LTranslationClerk translations, LExampleClerk examples, LSituationClerk situations)`
 
 Reads the entry, collocation, meaning, image, video, sentence and situation ports out of `rig`.
 The four clerks handed in write the lines a card carries.
+
+## `public static bool LCardOwnerCheck(LOwner owner)`
+
+Which of the two card sides an owner id names, true for the collocation side.
+Any other side is a caller mistake and throws, since no user can correct it.
+
+## `public void LExampleRemove(long ownerId, long exampleId, LOwner owner)`
+
+Detaches an example from its card and marks the owning entry updated, in one session.
+
+## `public void LSituationRemove(long ownerId, long situationId, LOwner owner)`
+
+Detaches a situation from its card and marks the owning entry updated, in one session.
 
 ## `public LCollocation LCollocationCreate(LCollocation collocation)`
 

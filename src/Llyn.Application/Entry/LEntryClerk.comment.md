@@ -14,11 +14,12 @@ The transcriptions and the reflexes are still reconciled by the engine after the
 Their sync reads the source factory, which no clerk holds until plan 16 gives it a clerk.
 The engine holds the outer session across both halves, so a commit is still whole or nothing.
 
-## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations)`
+## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings)`
 
 Reads the ports the lifecycle touches out of `rig`.
 Those are the root, the entries, the frequencies, the notes, the revisions, the tombstones and the workspace row.
-The six clerks handed in write the parts of an entry a commit spans.
+The eight clerks handed in write the parts of an entry a commit spans.
+The recording clerk resolves the recording paths of a loaded draft.
 
 ## `public LEntry LEntryClerkCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
 
@@ -31,9 +32,8 @@ Reads the entry for `id`, or `null` when no entry has that id.
 
 ## `public LEntryDraft? LEntryClerkLoad(long id)`
 
-The stored entry as the input form would have handed it over, or `null` when no entry has that id.
-Every string comes out as stored, and nothing is derived on the way out.
-A recording comes out relative to the workspace, and the engine resolves it, since only it knows the folder.
+The entry as a draft, or `null` when no entry has that id.
+Every recording path is made absolute, so a form can play it and a draft match compares like with like.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(string query)`
 
@@ -41,6 +41,10 @@ Returns the entries whose headword contains `query`, ordered by headword.
 It returns every entry when `query` is empty or all whitespace.
 Matching is a contains whose case is folded over the whole of Unicode.
 So an accented headword is found typed in either case.
+
+## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string headword, string language)`
+
+The stored entries with the headword in the language, both trimmed, for the markup import and its find.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(string query, LCatalogOrder order)`
 
@@ -171,6 +175,14 @@ The current revision is read from where it is recorded rather than guessed from 
 
 Reads the changes recorded under `revisionId`, in the order recorded.
 
+## `public static int LEntryGraspStep`
+
+The number of grasp steps, for the shell to draw.
+
+## `public static string LEntryGraspFormat(int step)`
+
+The localized label of one grasp step.
+
 ## `public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)`
 
 Saves the whole input form as one new entry.
@@ -179,7 +191,8 @@ It is also its note, its inflections and its pronunciations when they carry anyt
 The note is stored as Markdown normalized by `LMarkdown`.
 It is also the revision recording the create, and the workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.
-The engine normalizes the draft and trims the headword before handing it over.
+A blank headword is refused before any session opens.
+The outcome clerk normalizes the draft and trims the headword before handing it over.
 
 Everything runs inside one session, which makes a half-written entry impossible.
 A failure at any write rolls back every write before it, leaving no entry row behind.
@@ -192,26 +205,31 @@ The part of speech is written with the entry rather than after it, as its owned 
 Text naming a preset the entry's language declares is stored as that preset's stable id.
 Text naming no preset is stored as typed, because the field is editable.
 
-A positive pronunciation id the draft still holds names a row of an entry since deleted.
+A positive pronunciation, transcription or reflex id the draft still holds names a row of an entry since deleted.
 It is reset to zero first, so the commit writes the row anew instead of refusing it.
 A negative id is kept, because the identity map records what it became.
 
-## `public LEntry LEntryClerkSave(long id, LEntryDraft draft, bool changed, Dictionary<long, long> identity, List<LRevisionChange> changes)`
+## `public LEntry LEntryClerkUpdate(long id, LEntryDraft draft, Dictionary<long, long> identity)`
+
+The save of `draft` onto entry `id` with its revision recorded, in one session.
+A save that changed nothing records no revision.
+
+## `public LEntry LEntryClerkSave(long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionChange> changes)`
 
 Applies `draft` to the entry identified by `id` and returns the stored entry as it now stands.
+A blank headword is refused before any session opens, and the headword is trimmed.
 The entry keeps its opaque id and its `added_utc`.
-Only `updated_utc` moves, and only when `changed` says the draft differs from the entry as loaded.
-The engine judges that with its draft match, since only it can load the entry as the form saw it.
+Only `updated_utc` moves, and only when the draft differs from the entry as loaded with its recordings resolved.
 A changed headword or language clears the stored frequency, so a stale figure never shows under the new headword.
 An id no entry carries is refused before anything is written.
 
 Every change is appended to `changes` and no revision is recorded here.
-The engine records the revision once the parts it still reconciles have added theirs.
-The markup import fills many entries under one revision through the same seam.
+The update records the revision once, and the markup import fills many entries under one revision through the same seam.
 
 Which stored card a draft card is comes from `LCardDraft.LCardDraftId`, never from its place in the list.
 The meaning clerk reconciles the tree and the card clerk the flat list.
-Forms, parts of speech, inflections, the note and the pronunciations are each compared before they are written.
+Every part is compared before it is written.
+That is the forms, the parts of speech, the inflections, the note, the pronunciations, the transcriptions and the reflexes.
 A field that did not change writes no row and records no revision change.
 The lacuna rows go, because a hand edit is a reason to ask the web again.
 The regular flags are judged last, since the judgement reads the headword, the parts and the forms.
@@ -227,23 +245,7 @@ Moves the entry's `updated_utc` to now.
 Every seam that changes one part of an entry outside the draft path calls this.
 Otherwise the stamp would say the entry stood still while a card or a pronunciation moved.
 
-## `private static IReadOnlyList<LPronunciationDraft> LPronunciationReset(IReadOnlyList<LPronunciationDraft> drafts)`
+## `private static void LHeadwordValidate(LEntryDraft draft)`
 
-Every pronunciation row of the draft as a row still to be created.
+Refuses a draft whose headword is blank, the one refusal both saves share.
 
-## `private static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
-
-The forms of the entry as the draft holds them, replacing what stood before.
-Positions are rewritten by the archive, so a reordered list stores as the new order.
-
-## `public static bool LFormMatch(IReadOnlyList<LForm> stored, IReadOnlyList<LForm> current)`
-
-Whether two form lists hold the same text, role and label in the same order.
-Those three are what a form is.
-The engine's draft match compares a held draft to its origin through it.
-
-## `private void LNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
-
-The entry's note reconciled to the draft.
-The text is normalized Markdown, brought to canonical form by `LMarkdown` before it is compared or stored.
-A note the user cleared is deleted rather than left standing as their last words.

@@ -27,6 +27,11 @@ A position above zero numbers a card, and zero leaves a section unnumbered.
 
 A section holding one unlabelled line.
 
+## `public static void LPortraitSectionAdd(List<LPortraitSection> sections, string heading, LStateValue value, string mark)`
+
+Appends a headed section for a state only when that state shows text.
+A page hides a field that is unwritten and marks one that is unknown.
+
 ## `public static LPortraitSection LPortraitSectionCreate(string heading, IReadOnlyList<LPortraitLine> lines)`
 
 A section holding labelled lines and nothing else.

@@ -14,7 +14,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineLanguageListed ??= _lEngineLanguageVault.LLanguageScan();
+            return _lEngineLanguageClerk.LLanguageClerkRead();
         }
     }
 
@@ -36,10 +36,15 @@ public sealed partial class LEngine
         };
     }
 
-    public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
+    public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
     {
-        string? code = LEngineLanguageLoad(language).LLanguageFlag;
-        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
+        LLanguageClerk languages;
+        lock (_lEngineGate)
+        {
+            languages = _lEngineLanguageClerk;
+        }
+
+        return languages.LLanguageFlagRead(language, cancellation);
     }
 
     public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()
@@ -132,50 +137,59 @@ public sealed partial class LEngine
         return !string.IsNullOrWhiteSpace(language) && LEngineLanguageLoad(language).LLanguageSilent;
     }
 
-    public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
+    public Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
     {
-        string? code = null;
-        foreach (LVariety declared in LEngineLanguageLoad(language).LLanguageVarieties)
-        {
-            if (string.Equals(declared.LVarietyName, variety, StringComparison.Ordinal))
-            {
-                code = declared.LVarietyFlag;
-                break;
-            }
-        }
-
-        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
-    }
-
-    private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)
-    {
-        if (string.IsNullOrWhiteSpace(code))
-        {
-            return null;
-        }
-
-        if (LEngineTrailRead().LTrailRootCheck(code))
-        {
-            return _lEngineUsher.LUsherPathExist(code) ? code : null;
-        }
-
-        LLanguageVault languages;
+        LLanguageClerk languages;
         lock (_lEngineGate)
         {
-            languages = _lEngineLanguageVault;
+            languages = _lEngineLanguageClerk;
         }
 
-        return await languages.LLanguageFlagRead(code, cancellation).ConfigureAwait(false);
+        return languages.LVarietyFlagRead(language, variety, cancellation);
     }
 
     private LLanguage LEngineLanguageLoad(string language)
     {
-        LLanguageCache languages;
+        LLanguageClerk languages;
         lock (_lEngineGate)
         {
-            languages = _lEngineLanguageCache;
+            languages = _lEngineLanguageClerk;
         }
 
-        return languages.LLanguageCacheRead(language);
+        return languages.LLanguageClerkLoad(language);
+    }
+
+    public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineScriptClerk.LScriptStyleRead(language);
+        }
+    }
+
+    public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)
+    {
+        return _lEngineScriptClerk.LScriptClerkRead(entryId);
+    }
+
+    public void LEngineScriptStart(long entryId)
+    {
+        _lEngineScriptClerk.LScriptClerkStart(entryId);
+    }
+
+    public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
+    {
+        return _lEngineScriptClerk.LScriptClerkDivide(entryId);
+    }
+
+    public bool LEngineScriptCheck(long entryId)
+    {
+        return _lEngineScriptClerk.LScriptClerkCheck(entryId);
+    }
+
+    internal Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
+        string character, string language, CancellationToken cancellation)
+    {
+        return _lEngineScriptClerk.LScriptClerkFind(character, language, cancellation);
     }
 }

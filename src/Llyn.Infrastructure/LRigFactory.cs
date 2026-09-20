@@ -9,11 +9,12 @@ public static class LRigFactory
 {
     private const long LRigFactoryCeiling = 8L * 1024 * 1024;
 
-    public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher)
+    public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher, LPress press)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(usher);
+        ArgumentNullException.ThrowIfNull(press);
         if (!Path.IsPathFullyQualified(workspace))
         {
             throw new ArgumentException("The workspace path must be fully qualified.", nameof(workspace));
@@ -74,6 +75,7 @@ public static class LRigFactory
             new LLocalizationLoader(),
             new LMarkupFile(),
             new LPortraitFile(LThemeLoader.LThemeLoaderLoad()),
+            press,
             usher,
             new LTrailSystem(),
             new LClockSystem(),

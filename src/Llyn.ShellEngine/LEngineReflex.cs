@@ -1,6 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -9,24 +10,27 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
     {
-        return LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
+        return LReflexClerk.LReflexAnchorToggle(anchors, fanqieId, anchored);
     }
 
     public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
-        return LAnchor.LAnchorMatch(one, other);
+        return LReflexClerk.LReflexAnchorMatch(one, other);
     }
 
     public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)
     {
-        return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageReflexRules;
+        lock (_lEngineGate)
+        {
+            return _lEngineReflexClerk.LReflexRuleRead(language);
+        }
     }
 
     public IReadOnlyList<LReflex> LEngineReflexRead(long entryId)
     {
         lock (_lEngineGate)
         {
-            return _lEngineReflexes.LReflexRead(entryId);
+            return _lEngineReflexClerk.LReflexClerkRead(entryId);
         }
     }
 
@@ -34,181 +38,33 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(reflexes);
-            IReadOnlyList<LReflex> saved = _lEngineReflexes.LReflexSet(entryId, reflexes);
-            LEngineEpithetUpdate(entryId);
-            LEngineUpdatedSet(entryId);
-            return saved;
+            return _lEngineReflexClerk.LReflexClerkSet(entryId, reflexes);
         }
     }
 
-    private void LEngineReflexSync(
-        long entryId,
-        string language,
-        IReadOnlyList<LReflexDraft> drafts,
-        List<LRevisionChange>? changes,
-        Dictionary<long, long> identity)
+    public void LEngineReflexStart(long entryId)
     {
-        LReflexVault reflexes = _lEngineReflexes;
-        IReadOnlyList<LReflex> stored = reflexes.LReflexRead(entryId);
-        IReadOnlyList<LReflexDraft> written = _lEngineLanguageCache.LLanguageAnatomyScan(
-            language, LEngineReflexScan(drafts));
-        IReadOnlyList<LReflex> current = LEngineReflexRead(entryId, written);
-
-        if (LEngineReflexMatch(stored, current))
-        {
-            return;
-        }
-
-        foreach (LReflex row in current)
-        {
-            if (row.LReflexId > 0 && !stored.Any(kept => kept.LReflexId == row.LReflexId))
-            {
-                throw new LRefusal(LRefusal.LRefusalLink);
-            }
-        }
-
-        IReadOnlyList<LReflex> saved = reflexes.LReflexSet(entryId, current);
-        LEngineEpithetUpdate(entryId);
-        for (int index = 0; index < saved.Count; index++)
-        {
-            LEngineIdentityRecord(identity, written[index].LReflexDraftId, saved[index].LReflexId);
-        }
-
-        if (LEngineReflexMatch(LEngineAnatomyClear(stored), LEngineAnatomyClear(current)))
-        {
-            return;
-        }
-
-        changes?.Add(new LRevisionChange(
-            0,
-            entryId,
-            "reflex",
-            current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
-            LEngineReflexFormat(current)));
+        _lEngineReflexClerk.LReflexClerkStart(entryId);
     }
 
-    private static IReadOnlyList<LReflexDraft> LEngineReflexScan(IReadOnlyList<LReflexDraft> drafts)
+    public void LEngineReflexRebuild(long entryId)
     {
-        List<LReflexDraft> filled = [];
-        foreach (LReflexDraft draft in drafts)
-        {
-            if (!draft.LReflexDraftEmpty)
-            {
-                filled.Add(draft);
-            }
-        }
-
-        return filled;
+        _lEngineReflexClerk.LReflexClerkRebuild(entryId);
     }
 
-    private static IReadOnlyList<LReflex> LEngineReflexRead(long entryId, IReadOnlyList<LReflexDraft> drafts)
+    public bool LEngineReflexCheck(long entryId)
     {
-        List<LReflex> rows = [];
-        foreach (LReflexDraft draft in drafts)
-        {
-            rows.Add(new LReflex(
-                Math.Max(draft.LReflexDraftId, 0),
-                entryId,
-                rows.Count,
-                draft.LReflexDraftLanguage.Trim(),
-                draft.LReflexDraftKind.Trim(),
-                draft.LReflexDraftText.Trim(),
-                draft.LReflexDraftMain,
-                draft.LReflexDraftNote.Trim(),
-                draft.LReflexDraftRespelling.Trim(),
-                draft.LReflexDraftRegion.Trim(),
-                draft.LReflexDraftRemark.Trim(),
-                draft.LReflexDraftAnatomy,
-                draft.LReflexDraftAnchors));
-        }
-
-        return rows;
+        return _lEngineReflexClerk.LReflexClerkCheck(entryId);
     }
 
-    private static bool LEngineReflexMatch(IReadOnlyList<LReflex> stored, IReadOnlyList<LReflex> current)
+    internal Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(
+        string headword, string language, CancellationToken cancellation)
     {
-        if (stored.Count != current.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < stored.Count; index++)
-        {
-            if (!LAnchor.LAnchorMatch(stored[index].LReflexAnchors, current[index].LReflexAnchors)
-                || stored[index] with { LReflexAnchors = [] } != current[index] with { LReflexAnchors = [] })
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return _lEngineReflexClerk.LReflexClerkFind(headword, language, cancellation);
     }
 
-    private static bool LEngineReflexMatch(IReadOnlyList<LReflexDraft> one, IReadOnlyList<LReflexDraft> other)
+    public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)
     {
-        one = [.. LEngineReflexScan(one)];
-        other = [.. LEngineReflexScan(other)];
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (!LAnchor.LAnchorMatch(one[index].LReflexDraftAnchors, other[index].LReflexDraftAnchors)
-                || one[index] with { LReflexDraftAnchors = [] } != other[index] with { LReflexDraftAnchors = [] })
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static IReadOnlyList<LReflexDraft> LEngineReflexReset(IReadOnlyList<LReflexDraft> drafts)
-    {
-        List<LReflexDraft> renewed = new(drafts.Count);
-        foreach (LReflexDraft draft in drafts)
-        {
-            renewed.Add(draft.LReflexDraftId > 0 ? draft with { LReflexDraftId = 0 } : draft);
-        }
-
-        return renewed;
-    }
-
-    private IReadOnlyList<LReflexDraft> LEngineReflexNormalize(IReadOnlyList<LReflexDraft> drafts)
-    {
-        return LEngineListNormalize(
-            drafts,
-            static draft => draft.LReflexDraftId == 0 && draft.LReflexDraftEmpty,
-            draft => draft.LReflexDraftId == 0 ? draft with { LReflexDraftId = LEngineIdentityCreate() } : draft);
-    }
-
-    private static string LEngineReflexFormat(IReadOnlyList<LReflex> reflexes)
-    {
-        List<string> lines = new(reflexes.Count);
-        foreach (LReflex reflex in reflexes)
-        {
-            lines.Add(string.Join(' ', LReflexPartScan(reflex)));
-        }
-
-        return string.Join(", ", lines);
-    }
-
-    private static IEnumerable<string> LReflexPartScan(LReflex reflex)
-    {
-        string[] parts =
-        [
-            reflex.LReflexLanguage, reflex.LReflexRegion, reflex.LReflexKind, reflex.LReflexText, reflex.LReflexNote,
-            reflex.LReflexRemark,
-        ];
-        foreach (string part in parts)
-        {
-            if (part.Length > 0)
-            {
-                yield return part;
-            }
-        }
+        return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageAnatomyTones;
     }
 }

@@ -50,6 +50,7 @@ public sealed record LRig(
     LLocalizationVault LRigLocalization,
     LMarkupVault LRigMarkup,
     LPortraitVault LRigPortrait,
+    LPress LRigPress,
     LUsher LRigUsher,
     LTrail LRigTrail,
     LClock LRigClock,

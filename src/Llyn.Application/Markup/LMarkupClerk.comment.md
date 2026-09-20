@@ -2,15 +2,23 @@
 
 ## `public sealed class LMarkupClerk`
 
-Reads one stored entry into the markup record the writer formats.
-It is the sibling of `LEntryLoader`, which answers the same rows as a draft.
-Every id a stored row carries is translated into the words a reader could type.
-It is an application clerk: six ports through its constructor, no engine, no partial part.
+An entry translated to and from markup: the cargo read, the per-entry load and the export.
+The import lives in `LMarkupClerkIntake`, since it composes the entry clerk and its own resolvers.
 
-## `public LMarkupClerk(LEntryVault entries, LSpeechVault speeches, LMorphologyVault morphologies, LMeaningVault meanings, LReferenceVault references, LAuthorVault authors)`
+## `public LMarkupClerk(LRig rig)`
 
-Holds the six ports the translation reads through, the same instances the engine holds.
+Reads the six ports the translation reads through out of `rig`, the same instances the engine holds.
 It opens no database of its own, so a test can hand it in-memory ports.
+
+## `public LMarkupCargo LMarkupClerkRead(string path)`
+
+The file at `path` parsed, entries in a language the workspace cannot load losing it with an omission.
+Twin names are applied so two entries with one headword are told apart in the intake list.
+
+## `public void LMarkupClerkExport(IReadOnlyList<long> ids, string path)`
+
+The entries loaded in one session, formatted as one tree and written through the markup port.
+An id no entry carries refuses the export.
 
 ## `public LMarkupEntry? LMarkupLoad(long id)`
 

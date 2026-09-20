@@ -12,7 +12,7 @@ public sealed class TEngineClock
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         DateTimeOffset moment = new(2026, 3, 4, 5, 6, 7, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineDraftStart("editor", null);
 
@@ -26,7 +26,7 @@ public sealed class TEngineClock
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         DateTimeOffset moment = new(2026, 3, 4, 5, 6, 7, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineAuthorStart("editor", null);
 

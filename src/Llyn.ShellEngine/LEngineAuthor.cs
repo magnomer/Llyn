@@ -10,28 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(query);
-            string written = query.Trim();
-
-            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
-            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                _lEngineAuthors.LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
-
-            Dictionary<long, List<LReference>> works = LEngineWorkRead(references, credits);
-
-            List<LCatalogAuthor> rows = [];
-            foreach (LAuthor author in _lEngineAuthors.LAuthorAllRead())
-            {
-                works.TryGetValue(author.LAuthorId, out List<LReference>? credited);
-                LCatalogAuthor row = LCatalogAuthor.LCatalogAuthorCreate(author, credited, usage);
-                if (row.LCatalogAuthorMatch(written))
-                {
-                    rows.Add(row);
-                }
-            }
-
-            return LCatalogAuthor.LCatalogAuthorSort(rows, order);
+            return _lEngineAuthorClerk.LAuthorClerkFind(query, order);
         }
     }
 
@@ -39,39 +18,16 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LAuthor? author = _lEngineAuthors.LAuthorRead(id);
-            if (author is null)
-            {
-                return null;
-            }
-
-            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
-            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                _lEngineAuthors.LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
-            LEngineWorkRead(references, credits).TryGetValue(id, out List<LReference>? credited);
-            return LCatalogAuthor.LCatalogAuthorCreate(author, credited, usage);
+            return _lEngineAuthorClerk.LAuthorClerkFind(id);
         }
     }
 
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, long except, int limit)
     {
-        List<LCatalogAuthor> rows = [];
-        foreach (LCatalogAuthor row in LEngineAuthorFind(query, LCatalogOrder.LCatalogOrderName))
+        lock (_lEngineGate)
         {
-            if (row.LCatalogAuthorStored.LAuthorMatch(except))
-            {
-                continue;
-            }
-
-            rows.Add(row);
-            if (rows.Count == limit)
-            {
-                break;
-            }
+            return _lEngineAuthorClerk.LAuthorClerkFind(query, except, limit);
         }
-
-        return rows;
     }
 
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited)
@@ -127,20 +83,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(oeuvre);
         IReadOnlyList<LCatalogReference> found = LEngineOeuvreFind(
             roll.LVistaChosen, oeuvre.LVistaQuery, roll.LVistaFilter, oeuvre.LVistaOrder);
-        List<LCatalogReference> rows = new(found.Count);
-        string[] names = LEngineTwinRead(
-            found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
-        for (int index = 0; index < found.Count; index++)
-        {
-            LCatalogReference row = found[index];
-            rows.Add(row with
-            {
-                LCatalogReferenceName = names[index],
-                LCatalogReferenceChosen = row.LCatalogReferenceStored.LReferenceId == oeuvre.LVistaChosen,
-            });
-        }
-
-        return rows;
+        return LEngineReferenceRead(found, oeuvre.LVistaChosen);
     }
 
     public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(
@@ -151,38 +94,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(query);
-            ArgumentNullException.ThrowIfNull(kind);
-            string written = query.Trim();
-
-            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
-            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                _lEngineAuthors.LAuthorReferenceRead();
-            IReadOnlyDictionary<long, int> usage = _lEngineReferences.LReferenceUsageRead();
-
-            List<LCatalogReference> rows = [];
-            foreach (LReference reference in references)
-            {
-                credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited);
-                if (!LEngineOeuvreMatch(author, credited))
-                {
-                    continue;
-                }
-
-                if (!kind.LCatalogFilterMatch(LReference.LReferenceKindFormat(reference.LReferenceKind)))
-                {
-                    continue;
-                }
-
-                usage.TryGetValue(reference.LReferenceId, out int counted);
-                LCatalogReference row = LCatalogReference.LCatalogReferenceCreate(reference, credited, counted);
-                if (row.LCatalogReferenceMatch(written))
-                {
-                    rows.Add(row);
-                }
-            }
-
-            return LCatalogReference.LCatalogReferenceSort(rows, order);
+            return _lEngineReferenceClerk.LReferenceOeuvreFind(author, query, kind, order);
         }
     }
 
@@ -190,41 +102,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            IReadOnlyList<LReference> references = _lEngineReferences.LReferenceAllRead();
-            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
-                _lEngineAuthors.LAuthorReferenceRead();
-
-            Dictionary<long, LFellow> shared = [];
-            foreach (LReference reference in references)
-            {
-                if (!credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited)
-                    || !LEngineOeuvreMatch(authorId, credited))
-                {
-                    continue;
-                }
-
-                foreach (LAuthor credit in credited)
-                {
-                    if (credit.LAuthorId == authorId)
-                    {
-                        continue;
-                    }
-
-                    shared[credit.LAuthorId] = shared.TryGetValue(credit.LAuthorId, out LFellow? held)
-                        ? held with { LFellowShared = held.LFellowShared + 1 }
-                        : new LFellow(credit.LAuthorId, credit.LAuthorName, 1);
-                }
-            }
-
-            List<LFellow> fellows = [.. shared.Values];
-            fellows.Sort((left, right) =>
-            {
-                int order = right.LFellowShared.CompareTo(left.LFellowShared);
-                return order != 0
-                    ? order
-                    : string.Compare(left.LFellowName, right.LFellowName, StringComparison.CurrentCultureIgnoreCase);
-            });
-            return fellows;
+            return _lEngineAuthorClerk.LFellowFind(authorId);
         }
     }
 
@@ -232,65 +110,149 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineAuthors.LAuthorAbsorb(kept, dropped);
+            _lEngineAuthorClerk.LAuthorClerkAbsorb(kept, dropped);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectAuthor, dropped);
         LEngineBulletinRaise(LSubject.LSubjectAuthor, kept);
     }
 
-    private static bool LEngineOeuvreMatch(long? author, IReadOnlyList<LAuthor>? credited)
+    internal LAuthor LEngineAuthorCreate(LAuthor author)
     {
-        if (author is not long wanted)
+        LAuthor created;
+        lock (_lEngineGate)
         {
-            return true;
+            created = _lEngineAuthorClerk.LAuthorClerkCreate(author);
         }
 
-        if (wanted <= 0)
-        {
-            return credited is null || credited.Count == 0;
-        }
-
-        if (credited is null)
-        {
-            return false;
-        }
-
-        foreach (LAuthor credit in credited)
-        {
-            if (credit.LAuthorId == wanted)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
+        return created;
     }
 
-    private static Dictionary<long, List<LReference>> LEngineWorkRead(
-        IReadOnlyList<LReference> references,
-        IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits)
+    public LAuthor? LEngineAuthorRead(long id)
     {
-        Dictionary<long, List<LReference>> works = [];
-        foreach (LReference reference in references)
+        lock (_lEngineGate)
         {
-            if (!credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited))
-            {
-                continue;
-            }
+            return _lEngineAuthorClerk.LAuthorClerkRead(id);
+        }
+    }
 
-            foreach (LAuthor author in credited)
-            {
-                if (!works.TryGetValue(author.LAuthorId, out List<LReference>? held))
-                {
-                    held = [];
-                    works[author.LAuthorId] = held;
-                }
+    public IReadOnlyList<LAuthor> LEngineAuthorRead()
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineAuthorClerk.LAuthorClerkRead();
+        }
+    }
 
-                held.Add(reference);
-            }
+    public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineAuthorClerk.LAuthorClerkFind(query);
+        }
+    }
+
+    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)
+    {
+        if (draft == 0)
+        {
+            return [];
         }
 
-        return works;
+        IReadOnlyList<LAuthor> credited = LEngineDraftRead(draft)?.LDraftAuthor ?? [];
+        lock (_lEngineGate)
+        {
+            return _lEngineAuthorClerk.LBylineFind(credited, query, limit);
+        }
+    }
+
+    public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineAuthorClerk.LAuthorClerkRead(ownerId, owner);
+        }
+    }
+
+    public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineAuthorClerk.LAuthorClerkRead(owner);
+        }
+    }
+
+    internal void LEngineAuthorUpdate(LAuthor author)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineAuthorClerk.LAuthorClerkUpdate(author);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
+    }
+
+    internal void LEngineAuthorAttach(long referenceId, long authorId, int position)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineAuthorClerk.LAuthorClerkAttach(referenceId, authorId, position);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
+    }
+
+    internal void LEngineAuthorDetach(long referenceId, long authorId)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineAuthorClerk.LAuthorClerkDetach(referenceId, authorId);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
+    }
+
+    internal void LEngineAuthorDelete(long id)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineAuthorClerk.LAuthorClerkDelete(id);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
+    }
+
+    internal void LEngineAuthorDelete(long id, bool detach)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineAuthorClerk.LAuthorClerkDelete(id, detach);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
+    }
+
+    internal LDraft LEngineAuthorStart(string origin, long? authorId)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(origin);
+            return _lEngineCitationClerk.LAuthorStart(origin, authorId);
+        }
+    }
+
+    internal LAuthor LEngineAuthorCommit(long id)
+    {
+        LAuthor settled;
+        lock (_lEngineGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(id);
+            LEngineDraftValidate(id);
+            settled = _lEngineCitationClerk.LAuthorCommit(id);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, settled.LAuthorId);
+        return settled;
     }
 }

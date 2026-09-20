@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -211,7 +212,7 @@ public sealed class LPosture : IDisposable
 
     private static (LCatalogOrder LPostureOrder, string LPostureFilter) LPostureVistaRead(LVista vista)
     {
-        return (vista.LVistaOrder, LCatalog.LCatalogFilterFormat(vista.LVistaFilter));
+        return (vista.LVistaOrder, LCatalogClerk.LCatalogClerkFormat(vista.LVistaFilter));
     }
 
     private static bool LPostureLayoutMatch(LLayout held, LLayout next)
@@ -220,8 +221,8 @@ public sealed class LPosture : IDisposable
             && held.LLayoutMiddle == next.LLayoutMiddle
             && held.LLayoutOrder == next.LLayoutOrder
             && string.Equals(
-                LCatalog.LCatalogFilterFormat(held.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty),
-                LCatalog.LCatalogFilterFormat(next.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty),
+                LCatalogClerk.LCatalogClerkFormat(held.LLayoutFilter),
+                LCatalogClerk.LCatalogClerkFormat(next.LLayoutFilter),
                 StringComparison.Ordinal);
     }
 
@@ -229,17 +230,8 @@ public sealed class LPosture : IDisposable
     {
         lock (_lPostureGate)
         {
-            LPostureVault vault = _lEngine.LEnginePostureRead();
-            LPostureState? kept;
-            LPostureState? legacy;
-            try
+            if (!_lEngine.LEnginePostureLoad(LPostureName, out LPostureState? kept))
             {
-                kept = vault.LPostureRead(LPostureName);
-                legacy = kept is null ? vault.LPostureRead(LPostureLegacy) : null;
-            }
-            catch (LVaultFault exception)
-            {
-                _lEngine.LEngineAuditRecord(exception);
                 return;
             }
 
@@ -249,12 +241,17 @@ public sealed class LPosture : IDisposable
                 return;
             }
 
+            if (!_lEngine.LEnginePostureLoad(LPostureLegacy, out LPostureState? legacy))
+            {
+                return;
+            }
+
             if (legacy is not null && legacy != new LPostureState())
             {
                 _lPostureState = legacy;
             }
 
-            LPostureSave(vault);
+            LPostureSave();
         }
     }
 
@@ -269,20 +266,13 @@ public sealed class LPosture : IDisposable
             }
 
             _lPostureState = changed;
-            LPostureSave(_lEngine.LEnginePostureRead());
+            LPostureSave();
             return true;
         }
     }
 
-    private void LPostureSave(LPostureVault vault)
+    private void LPostureSave()
     {
-        try
-        {
-            vault.LPostureSave(LPostureName, _lPostureState);
-        }
-        catch (LVaultFault exception)
-        {
-            _lEngine.LEngineAuditRecord(exception);
-        }
+        _lEngine.LEnginePostureSave(LPostureName, _lPostureState);
     }
 }

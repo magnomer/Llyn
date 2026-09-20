@@ -21,6 +21,10 @@ Seats the concern classes over the ports of `rig` and the two shared services.
 `languages` answers the pack of a language, cached, for respelling and anatomy.
 Neither is a port, so the engine hands them in beside the rig.
 
+## `public LEntryDraft LDraftClerkNormalize(LEntryDraft content)`
+
+The content with every blank row dropped and every unidentified row given an id, through the mint.
+
 ## `public LDraft LDraftClerkApply(LDraft draft, LRequest request)`
 
 The switch over the kinds that reach past the entry content.

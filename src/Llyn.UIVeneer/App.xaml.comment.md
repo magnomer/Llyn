@@ -5,6 +5,11 @@
 The usher the rig is built over, composed here because the media ring is the root's to name.
 The file usher answers path facts and the shell usher adds the launch of a folder or a link.
 
+## `private readonly LPress _lBootstrapPress = new LPressBrowser();`
+
+The press the rig is built over, composed here for the same reason as the usher.
+The engine prints through the rig, so no press is applied after construction.
+
 ## `protected override void OnExit(ExitEventArgs e)`
 
 Disposes the engine the window ran over, then the one client every rig of the session was built over.

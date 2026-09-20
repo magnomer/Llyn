@@ -141,7 +141,7 @@ public sealed class TEngineTenure
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(TTenureHold);
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectExample, null);
         tenure.TTenureRequestApply(
@@ -260,7 +260,7 @@ public sealed class TEngineTenure
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(TTenureHold);
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
         long draft = tenure.LTenureId;

@@ -12,24 +12,26 @@ A workspace moved onto keeps its own settings, and only one without any inherits
 
 Returns the user's persisted settings.
 
-## `public LPostureVault LEnginePostureRead()`
+## `internal bool LEnginePostureLoad(string name, out LPostureState? state)`
 
-Hands out the posture port bound to the open workspace, set with the other ports when the workspace opened.
-The shell persists its posture through it, so a switched workspace is followed without the shell knowing the disk.
+The posture stored under `name`, read through the workspace clerk.
+False means a vault fault, recorded, and the caller keeps what it has.
 
-## `public LTrail LEngineTrailRead()`
+## `internal void LEnginePostureSave(string name, LPostureState state)`
 
-Hands out the trail port, so a vista can name a file without reading the path rules itself.
+The posture written under `name` through the workspace clerk, a vault fault recorded and swallowed.
 
-## `internal LClock LEngineClockRead()`
+## `internal DateTimeOffset LEngineStampRead()`
 
-Hands out the clock port, so a test can find the frozen clock it built the rig over.
+The moment now, through the workspace clerk's clock, for a blank draft's stamp.
+
+## `internal string LEngineTrailNormalize(string name)`
+
+A file name made safe for the file system, through the trail clerk, for a vista's export name.
 
 ## `public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
 
-Reads the catalog of a language through the localization port and makes it the current one.
-The veneer copies the answer into its resources, so no ring above the engine opens a resource.
-The default catalog is applied before any engine is built, so the bootstrap opens that one through the port itself.
+The localization table of `language`, through the workspace clerk.
 
 ## `public string LEngineLocalizationRead()`
 
@@ -57,14 +59,11 @@ A settings bulletin is raised when the switch changed, so every open reading re-
 
 ## `public bool LEngineRespellingCheck(string language)`
 
-Whether readings of `language` are shown and edited as respellings right now.
-True only while the switch is on and the pack declares respelling groups, since otherwise no respelling is ever stored.
-A blank language has no pack and answers false.
+Whether respellings show for `language`: the setting is on and the pack declares respelling groups.
 
 ## `public bool LEnginePhonemicCheck(string language)`
 
-Whether the pack of `language` declares its respelling phonemic, so a respelled reading stands between slashes.
-A blank language has no pack and answers false.
+Whether the pack of `language` is phonemic, through the language clerk.
 
 ## `public void LEngineEpithetSave(bool epithet)`
 
@@ -84,24 +83,11 @@ A settings bulletin is raised when the switch changed, so the settings panel rew
 
 ## `public void LEngineMorphologySave(bool morphology)`
 
-Persists whether an entry's inflected forms are looked up on the web and keeps it current.
-Turning the switch off cancels every fetch still in flight, so no form lands after the user said no.
-Forms already stored stay, because the switch governs asking, not keeping.
-A save that leaves the switch where it was cancels nothing and raises nothing.
-A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
+Turns the morphology fetch on or off.
+Turning it off cancels every pending inflection fetch through the lacuna clerk.
 
 ## `private bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
-Applies `change` to the settings held here and writes the result out, under the engine gate.
-The read and the write are one step, so one writer never overwrites what another wrote between them.
-The shell therefore never reads settings, changes a field and hands the whole record back.
-A change that leaves the record equal writes nothing, so a window resting where it was costs no file write.
-Returns whether the record changed, so a caller raises its bulletin only for a real change.
-A settings control echoing the stored value back is therefore a no-op below the boundary.
+Applies one change to the settings snapshot under the gate and writes it through the workspace clerk.
+An unchanged snapshot writes nothing and answers false.
 
-## `private void LEngineSettingsSave()`
-
-Writes the settings held here into the open workspace through the settings port.
-A refused write arrives as `LVaultFault` and is recorded in the audit log rather than thrown.
-So a locked file never ends the program.
-The record in memory stays current either way, and the next change tries the file again.

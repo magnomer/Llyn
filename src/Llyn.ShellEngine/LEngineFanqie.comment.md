@@ -2,91 +2,91 @@
 
 ## `public sealed partial class LEngine`
 
-The fanqie side of the engine: the rime-book placements of the characters an entry is written with.
-A character is fetched once, when a display asks for what is not stored, and kept in the workspace database.
-The fetch runs one character at a time, because the site refuses posts that follow each other closely.
-
-## `private readonly SemaphoreSlim _lEngineFanqieGate = new(1, 1);`
-
-Admits one character's fetch at a time, so the interval between posts holds across characters.
-
-## `private readonly Dictionary<string, CancellationTokenSource> _lEngineFanqiePending = new(StringComparer.Ordinal);`
-
-The fetches under way, keyed by language and character, each with the token that abandons it.
-
-## `private readonly HashSet<string> _lEngineFanqieMissed = new(StringComparer.Ordinal);`
-
-The characters every book answered for yet none placed, asked once per session.
-
-## `private DateTimeOffset _lEngineFanqieStamp = DateTimeOffset.MinValue;`
-
-The moment the next post may go out, pushed forward by each post's interval and never pulled back.
-The moment is read from the rig's clock port.
-A book without an interval, asked between two posts of a throttled one, leaves that one's wait standing.
+The fanqie, diwei and tally facades over the fanqie and diwei clerks.
+The vista-shaped finds stay here, since a vista is an engine handle.
 
 ## `public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)`
 
-The rime books the language's pack lists, empty for a blank language.
+The fanqie books of a language.
+
+## `public bool LEngineBookCheck(string language)`
+
+Whether the language declares any book.
 
 ## `public string? LEngineBookFind()`
 
-The first loaded language whose pack carries rime books, or null when none does.
-The yunjing panel reads it to know whether it may be shown and which table to open on.
+The first listed language that declares a book, or null.
 
 ## `public LHypothesis? LEngineHypothesisRead(string language)`
 
-The reconstruction the language's pack declares, or `null` for a blank language or a pack without one.
+The reconstruction hypothesis of a language, or null.
 
 ## `public IReadOnlyList<LFanqieRow> LEngineFanqieRead(long entryId)`
 
-Every stored row of every character of the entry's headword, in headword order.
-A language whose pack lists no book reads empty.
+The stored fanqie rows of every character of an entry.
+
+## `public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)`
+
+The rows grouped by book.
 
 ## `public void LEngineFanqieStart(long entryId)`
 
-Starts a fetch for every character of the entry's headword that has nothing stored.
-A language whose pack lists no book starts nothing.
+Starts the fetch of every character that has no rows.
 
 ## `public void LEngineFanqieRebuild(long entryId)`
 
-Fetches every character of the entry again, on the user's request.
-The stored rows stand until the fetch lands, and the save rewrites them under their ids.
-So the anchors reflex rows hold on them survive the rebuild.
-A character the sites once answered nothing for is asked again too.
+Fetches every character of the entry again.
 
 ## `public bool LEngineFanqieCheck(long entryId)`
 
-Whether a fetch runs for any character of the entry.
+Whether a fetch is pending for any character of the entry.
 
-## `internal async Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(`
+## `internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(string character, string language, CancellationToken cancellation)`
 
-Fetches the character's rows from every book without storing them, for a caller that wants the answer itself.
+The rows of one character fetched now.
 
-## `private async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LEngineFanqieScan(`
+## `internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)`
 
-Posts each book in pack order, waiting out the interval before each post, and gathers the rows.
-Reached is true when any book answered, and false when every book was silent or busy.
+The diwei of one kind in one language.
 
-## `private static string LFanqieKeyFormat(string language, string character)`
+## `public LDiwei? LEngineDiweiRead(long? id)`
 
-The pending and missed key of one character in one language.
+One diwei by id, or null for no id.
 
-## `private void LEngineFanqieStart(long entryId, string language, string character)`
+## `public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize)`
 
-Starts a fetch for the character unless one runs or the character was already missed this session.
+The page of one diwei, blank for no id.
+Respellings show under the respelling setting for the diwei's language, and the tally under its own setting.
 
-## `private void LEngineFanqieClear()`
+## `public LDiwei? LEngineDiweiFind(string language, string kind, string key)`
 
-Abandons every fetch under way and forgets the missed characters, on workspace change and disposal.
+The diwei of one kind with the given key.
 
-## `private async Task LEngineFanqieRun(`
+## `public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)`
 
-The fetch itself: waits for the gate, scans the books, stores what was found and raises the fanqie bulletin.
-The bulletin is raised whether or not anything was found, so a display waiting on it can stop waiting.
-A silent or busy answer stores nothing and leaves the character to be asked again.
-A reached answer with nothing found marks the character missed.
-A fetch abandoned by a workspace change stores nothing and raises nothing.
+The diwei of one kind filtered by the vista's query and sorted by its order, the chosen one marked.
+A chosen id no longer listed clears the choice.
 
-### `_lEngineDiweiVault.LDiweiApply(`
+## `public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)`
 
-Stored rows are placed into their categories at once, so the links never lag the placements.
+The fanqie rows filed under a diwei.
+
+## `internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)`
+
+The entry ids filed under all of the diwei.
+
+## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)`
+
+The entries filed under all of the diwei that match `query`, built as vista rows.
+
+## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)`
+
+The entries under the chosen onset and rime, none when neither is chosen.
+
+## `internal void LEngineDiweiRebuild()`
+
+Rebuilds the diwei of every language that declares books.
+
+## `public IReadOnlyList<LTally> LEngineTallyRead(LDiwei diwei)`
+
+The reflexes anchored to the diwei's rows, tallied.

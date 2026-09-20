@@ -6,41 +6,74 @@ namespace Llyn.Application;
 
 public sealed class LCardClerk
 {
+    private readonly LVault _lCardClerkVault;
     private readonly LEntryVault _lCardClerkEntries;
     private readonly LCollocationVault _lCardClerkCollocations;
     private readonly LMeaningVault _lCardClerkMeanings;
     private readonly LImageVault _lCardClerkImages;
     private readonly LVideoVault _lCardClerkVideos;
     private readonly LSentenceVault _lCardClerkSentences;
-    private readonly LSituationVault _lCardClerkSituations;
+    private readonly LSituationVault _lCardClerkContexts;
     private readonly LTagClerk _lCardClerkTags;
     private readonly LRegisterClerk _lCardClerkRegisters;
     private readonly LTranslationClerk _lCardClerkTranslations;
     private readonly LExampleClerk _lCardClerkExamples;
+    private readonly LSituationClerk _lCardClerkSituations;
 
     public LCardClerk(
         LRig rig,
         LTagClerk tags,
         LRegisterClerk registers,
         LTranslationClerk translations,
-        LExampleClerk examples)
+        LExampleClerk examples,
+        LSituationClerk situations)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(tags);
         ArgumentNullException.ThrowIfNull(registers);
         ArgumentNullException.ThrowIfNull(translations);
         ArgumentNullException.ThrowIfNull(examples);
+        ArgumentNullException.ThrowIfNull(situations);
+        _lCardClerkVault = rig.LRigVault;
         _lCardClerkEntries = rig.LRigEntries;
         _lCardClerkCollocations = rig.LRigCollocations;
         _lCardClerkMeanings = rig.LRigMeanings;
         _lCardClerkImages = rig.LRigImages;
         _lCardClerkVideos = rig.LRigVideos;
         _lCardClerkSentences = rig.LRigSentences;
-        _lCardClerkSituations = rig.LRigSituations;
+        _lCardClerkContexts = rig.LRigSituations;
         _lCardClerkTags = tags;
         _lCardClerkRegisters = registers;
         _lCardClerkTranslations = translations;
         _lCardClerkExamples = examples;
+        _lCardClerkSituations = situations;
+    }
+
+    public static bool LCardOwnerCheck(LOwner owner)
+    {
+        return owner switch
+        {
+            LOwner.LOwnerMeaning => false,
+            LOwner.LOwnerCollocation => true,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(owner), owner, "This entity has no reference from that kind of row."),
+        };
+    }
+
+    public void LExampleRemove(long ownerId, long exampleId, LOwner owner)
+    {
+        using LVaultSession session = _lCardClerkVault.LVaultSessionStart();
+        _lCardClerkExamples.LExampleClerkRemove(ownerId, exampleId, owner);
+        LCardUpdatedSet(ownerId, LCardOwnerCheck(owner));
+        session.LVaultSessionCommit();
+    }
+
+    public void LSituationRemove(long ownerId, long situationId, LOwner owner)
+    {
+        using LVaultSession session = _lCardClerkVault.LVaultSessionStart();
+        _lCardClerkSituations.LSituationClerkRemove(ownerId, situationId, owner);
+        LCardUpdatedSet(ownerId, LCardOwnerCheck(owner));
+        session.LVaultSessionCommit();
     }
 
     public LCollocation LCollocationCreate(LCollocation collocation)
@@ -311,7 +344,7 @@ public sealed class LCardClerk
     private void LSituationSync(
         long ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {
-        LSituationVault situations = _lCardClerkSituations;
+        LSituationVault situations = _lCardClerkContexts;
 
         LCardClerkField.LCardFieldSync(
             LCardClerkField.LSituationRead(drafts),

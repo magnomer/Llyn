@@ -362,7 +362,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationTargetRead(ownerId, ids, LEngineCourtScan(ownerId));
+            return _lEngineTranslationClerk.LTranslationTargetRead(
+                ownerId, ids, _lEngineCourtClerk.LCourtClerkScan(ownerId));
         }
     }
 

@@ -13,6 +13,7 @@ The rig over `entries` as its entry port, standing on the root named `workspace`
 The root is a bare label, since no fake here touches disk.
 Two rigs built with two labels let a test prove a rig apply moved the engine.
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
+The press is a `TPress`, which records what it is handed and touches no printer.
 The process id is one, so a claim from another process is any claim not naming one.
 
 ## `private static TRigFakePort TRigStubCreate<TRigFakePort>() where TRigFakePort : class =>`

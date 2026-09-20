@@ -7,6 +7,9 @@ namespace Llyn.Application;
 
 public sealed class LMarkupClerk
 {
+    private readonly LVault _lMarkupClerkVault;
+    private readonly LMarkupVault _lMarkupClerkMarkup;
+    private readonly LLanguageVault _lMarkupClerkLanguages;
     private readonly LEntryVault _lMarkupClerkEntries;
     private readonly LSpeechVault _lMarkupClerkSpeeches;
     private readonly LMorphologyVault _lMarkupClerkMorphologies;
@@ -14,26 +17,70 @@ public sealed class LMarkupClerk
     private readonly LReferenceVault _lMarkupClerkReferences;
     private readonly LAuthorVault _lMarkupClerkAuthors;
 
-    public LMarkupClerk(
-        LEntryVault entries,
-        LSpeechVault speeches,
-        LMorphologyVault morphologies,
-        LMeaningVault meanings,
-        LReferenceVault references,
-        LAuthorVault authors)
+    public LMarkupClerk(LRig rig)
     {
-        ArgumentNullException.ThrowIfNull(entries);
-        ArgumentNullException.ThrowIfNull(speeches);
-        ArgumentNullException.ThrowIfNull(morphologies);
-        ArgumentNullException.ThrowIfNull(meanings);
-        ArgumentNullException.ThrowIfNull(references);
-        ArgumentNullException.ThrowIfNull(authors);
-        _lMarkupClerkEntries = entries;
-        _lMarkupClerkSpeeches = speeches;
-        _lMarkupClerkMorphologies = morphologies;
-        _lMarkupClerkMeanings = meanings;
-        _lMarkupClerkReferences = references;
-        _lMarkupClerkAuthors = authors;
+        ArgumentNullException.ThrowIfNull(rig);
+        _lMarkupClerkVault = rig.LRigVault;
+        _lMarkupClerkMarkup = rig.LRigMarkup;
+        _lMarkupClerkLanguages = rig.LRigLanguages;
+        _lMarkupClerkEntries = rig.LRigEntries;
+        _lMarkupClerkSpeeches = rig.LRigSpeeches;
+        _lMarkupClerkMorphologies = rig.LRigMorphologies;
+        _lMarkupClerkMeanings = rig.LRigMeanings;
+        _lMarkupClerkReferences = rig.LRigReferences;
+        _lMarkupClerkAuthors = rig.LRigAuthors;
+    }
+
+    public LMarkupCargo LMarkupClerkRead(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        IReadOnlyList<LMarkupEntry> parsed = LMarkup.LMarkupParse(
+            _lMarkupClerkMarkup.LMarkupRead(path), out IReadOnlyList<LMarkupOmission> skipped);
+
+        List<LMarkupOmission> omissions = [.. skipped];
+        List<LMarkupEntry> entries = new(parsed.Count);
+        foreach (LMarkupEntry entry in parsed)
+        {
+            string language = entry.LMarkupEntryLanguage;
+            if (language.Length == 0 || _lMarkupClerkLanguages.LLanguageNameValidate(language))
+            {
+                entries.Add(entry);
+                continue;
+            }
+
+            omissions.Add(new LMarkupOmission(entry.LMarkupEntryLine, $"language \"{language}\""));
+            entries.Add(entry with { LMarkupEntryLanguage = string.Empty });
+        }
+
+        string[] names = LEntryClerkTwin.LTwinRead(
+            entries, entry => entry.LMarkupEntryHeadword, entry => entry.LMarkupEntryLine);
+        for (int index = 0; index < entries.Count; index++)
+        {
+            entries[index] = entries[index] with { LMarkupEntryName = names[index] };
+        }
+
+        return new LMarkupCargo(entries, omissions);
+    }
+
+    public void LMarkupClerkExport(IReadOnlyList<long> ids, string path)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        LMarkupNode root;
+        using (LVaultSession session = _lMarkupClerkVault.LVaultSessionStart())
+        {
+            List<LMarkupEntry> entries = new(ids.Count);
+            foreach (long id in ids)
+            {
+                entries.Add(LMarkupLoad(id) ?? throw new LRefusal(LRefusal.LRefusalEntry));
+            }
+
+            root = LMarkup.LMarkupFormat(entries);
+        }
+
+        _lMarkupClerkMarkup.LMarkupSave(path, root);
     }
 
     public LMarkupEntry? LMarkupLoad(long id)

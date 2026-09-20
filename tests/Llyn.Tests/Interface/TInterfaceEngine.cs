@@ -37,9 +37,6 @@ internal static partial class TInterface
     internal static bool TEngineRedoCheck(this LEngine engine, long id) =>
         engine.LEngineRedoCheck(id);
 
-    internal static void TEngineClockSet(this LEngine engine, Func<DateTimeOffset> clock) =>
-        ((TClockFake)engine.LEngineClockRead()).TClockSet(clock);
-
     internal static long TEngineCardCreate(this LEngine engine) =>
         engine.LEngineCardCreate();
 
@@ -204,11 +201,6 @@ internal static partial class TInterface
         this LEngine engine, long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket) =>
         engine.LEnginePortraitPrint(id, owner, legend, ticket);
 
-    internal static void TEnginePressApply(this LEngine engine, LPress press)
-    {
-        engine.LEnginePressApply(press);
-    }
-
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine) =>
         engine.LEngineLeftoverRead();
 
@@ -228,7 +220,10 @@ internal static partial class TInterface
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
         engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(
-            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound), new LUsherFile())
+            path,
+            TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound),
+            new LUsherFile(),
+            new TPress())
             with { LRigClock = new TClockFake() });
     }
 

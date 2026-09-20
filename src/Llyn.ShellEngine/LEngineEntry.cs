@@ -147,24 +147,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LEntryDraft? draft = _lEngineEntryClerk.LEntryClerkLoad(id);
-            if (draft is null)
-            {
-                return null;
-            }
-
-            List<LPronunciationDraft> resolved = new(draft.LEntryDraftPronunciations.Count);
-            foreach (LPronunciationDraft spoken in draft.LEntryDraftPronunciations)
-            {
-                resolved.Add(spoken.LPronunciationDraftAudio.Length == 0
-                    ? spoken
-                    : spoken with
-                    {
-                        LPronunciationDraftAudio = LEngineRecordingResolve(spoken.LPronunciationDraftAudio),
-                    });
-            }
-
-            return draft with { LEntryDraftPronunciations = resolved };
+            return _lEngineEntryClerk.LEntryClerkLoad(id);
         }
     }
 
@@ -229,11 +212,11 @@ public sealed partial class LEngine
         }
     }
 
-    public int LEngineGraspStep => LGrasp.LGraspStep;
+    public int LEngineGraspStep => LEntryClerk.LEntryGraspStep;
 
     public string LEngineGraspFormat(int step)
     {
-        return LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+        return LEntryClerk.LEntryGraspFormat(step);
     }
 
     public int LEngineGraspRead(long entryId)
@@ -268,7 +251,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             int unsaved = 0;
-            foreach (long id in _lEngineDraftHeld)
+            foreach (long id in _lEngineClaimClerk.LClaimClerkHeld)
             {
                 if (LEngineDraftCheck(id))
                 {

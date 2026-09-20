@@ -15,6 +15,7 @@ public sealed class LDraftClerk
     private readonly LDraftClerkReading _lDraftClerkReading;
     private readonly LDraftClerkReflex _lDraftClerkReflex;
     private readonly LDraftClerkSentence _lDraftClerkSentence;
+    private readonly LDraftClerkMint _lDraftClerkMint;
 
     public LDraftClerk(LRig rig, LIdentity identity, LLanguageCache languages)
     {
@@ -31,6 +32,12 @@ public sealed class LDraftClerk
         _lDraftClerkReading = new LDraftClerkReading(languages, identity);
         _lDraftClerkReflex = new LDraftClerkReflex(languages, identity);
         _lDraftClerkSentence = new LDraftClerkSentence(rig.LRigExamples, identity);
+        _lDraftClerkMint = new LDraftClerkMint(identity);
+    }
+
+    public LEntryDraft LDraftClerkNormalize(LEntryDraft content)
+    {
+        return _lDraftClerkMint.LDraftNormalize(content);
     }
 
     public LDraft LDraftClerkApply(LDraft draft, LRequest request)

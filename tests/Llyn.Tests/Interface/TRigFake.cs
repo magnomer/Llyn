@@ -62,6 +62,7 @@ internal static class TRigFake
             TRigStubCreate<LLocalizationVault>(),
             TRigStubCreate<LMarkupVault>(),
             TRigStubCreate<LPortraitVault>(),
+            new TPress(),
             TRigStubCreate<LUsher>(),
             new LTrailSystem(),
             new TClockFake(),

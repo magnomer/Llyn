@@ -143,7 +143,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LEngineInflectionReset(entryId);
+            _lEngineLacunaClerk.LLacunaClerkCancel(entryId);
             _lEngineInflectionClerk.LInflectionClerkSet(entryId, inflections);
         }
     }
@@ -168,7 +168,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LEngineInflectionReset(entryId);
+            _lEngineLacunaClerk.LLacunaClerkCancel(entryId);
             _lEngineInflectionClerk.LInflectionClerkDelete(entryId, position);
         }
     }
@@ -189,14 +189,14 @@ public sealed partial class LEngine
         }
     }
 
-    private IReadOnlyList<LParadigmSlot> LEngineParadigmRead(LEntry entry)
+    public bool LEngineInflectionCheck(long entryId)
     {
-        return _lEngineParadigmClerk.LParadigmClerkRead(entry);
+        return _lEngineLacunaClerk.LLacunaClerkCheck(entryId);
     }
 
-    private void LEngineParadigmUpdate(LEntry entry)
+    public void LEngineInflectionStart(long entryId)
     {
-        _lEngineParadigmClerk.LParadigmClerkUpdate(entry);
+        _lEngineLacunaClerk.LLacunaClerkStart(entryId);
     }
 
     internal static bool LEngineParadigmMatch(LParadigm paradigm, string headword, string form)

@@ -10,7 +10,47 @@ The row-level seams the phonology panel uses still sit in the engine and join th
 
 ## `public LPronunciationClerk(LRig rig)`
 
-Reads the pronunciation port, the trail and the workspace root out of `rig`.
+Reads the entry, note and pronunciation ports, the trail and the workspace root out of `rig`.
+
+## `public LPronunciation LPronunciationClerkCreate(LPronunciation pronunciation)`
+
+One row created and its entry marked updated.
+
+## `public IReadOnlyList<LPronunciation> LPronunciationClerkRead(long entryId)`
+
+The stored rows of an entry.
+
+## `public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order)`
+
+The pronunciation catalog: every entry matching `query` with its first reading, sorted.
+
+## `public void LPronunciationClerkUpdate(LPronunciation pronunciation)`
+
+One row rewritten and its entry marked updated.
+
+## `public void LPronunciationClerkDelete(long id)`
+
+One row deleted and its entry, when it still stands, marked updated.
+
+## `public void LAudioSave(long pronunciationId, string file, string? source)`
+
+The recording of one row saved workspace-relative and its entry marked updated.
+
+## `public LPronunciationAudio? LAudioRead(long pronunciationId)`
+
+The recording of one row as stored, the path still workspace-relative.
+
+## `public void LNoteSave(LNote note)`
+
+The note of an entry saved as normalised Markdown and the entry marked updated.
+
+## `public LNote? LNoteRead(long entryId)`
+
+The note of an entry.
+
+## `public void LNoteDelete(long entryId)`
+
+The note of an entry deleted and the entry marked updated.
 
 ## `public void LPronunciationClerkSync(long entryId, IReadOnlyList<LPronunciationDraft> drafts, List<LRevisionChange>? changes, Dictionary<long, long> identity)`
 

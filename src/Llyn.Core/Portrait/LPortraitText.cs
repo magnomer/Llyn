@@ -21,6 +21,14 @@ public static class LPortraitText
         };
     }
 
+    public static string LPortraitTitleRead(LStateValue value, string vacant, string mark)
+    {
+        ArgumentNullException.ThrowIfNull(vacant);
+
+        string text = LPortraitTextRead(value, mark);
+        return text.Length > 0 ? text : vacant;
+    }
+
     public static IReadOnlyList<string> LPortraitTextRead(LPortraitPage page)
     {
         ArgumentNullException.ThrowIfNull(page);

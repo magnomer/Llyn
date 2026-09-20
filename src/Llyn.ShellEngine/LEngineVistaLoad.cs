@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -15,7 +16,7 @@ public sealed partial class LEngine
                 return null;
             }
 
-            LDraft draft = new(0, vista.LVistaTab, id, LEngineDraftBlank, LEngineClockRead().LClockRead());
+            LDraft draft = new(0, vista.LVistaTab, id, LClaimClerk.LDraftBlank, LEngineStampRead());
             return vista.LVistaSubject switch
             {
                 LSubject.LSubjectEntry => LEngineEntryLoad(id) is LEntryDraft entry
@@ -25,7 +26,12 @@ public sealed partial class LEngine
                 LSubject.LSubjectSituation => LEngineSituationRead(id) is LSituation situation
                     ? draft with { LDraftSituation = situation } : null,
                 LSubject.LSubjectReference => LEngineReferenceRead(id) is LReference reference
-                    ? draft with { LDraftReference = reference, LDraftAuthor = LEngineCreditRead(id) } : null,
+                    ? draft with
+                    {
+                        LDraftReference = reference,
+                        LDraftAuthor = LEngineAuthorRead(id, LOwner.LOwnerReference),
+                    }
+                    : null,
                 LSubject.LSubjectAuthor => LEngineAuthorRead(id) is LAuthor author
                     ? draft with { LDraftAuthorHeld = author } : null,
                 LSubject.LSubjectTag => LEngineTagRead().FirstOrDefault(row => row.LTagId == id) is LTag tag

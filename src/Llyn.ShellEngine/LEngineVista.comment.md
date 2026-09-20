@@ -59,3 +59,37 @@ The generic overload and the name read forward the same way for the catalog part
 
 The epithet of every listed entry that has one, keyed by id, or nothing while the workspace hides epithets.
 Called under the lock.
+
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)`
+
+Finds the marked entries whose headword carries the query, through the favorite clerk.
+An empty query returns every marked entry.
+
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)`
+
+The marked entries answering `query`, in `order`.
+The mark carries its own stamp, so ordering by the mark is not ordering by the entry.
+
+## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+
+The same list with the marked entries in a hidden language left out.
+
+## `public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)`
+
+The rows the favorites panel's vista lists, with the query, order and filter read off the vista.
+They come back as vista rows, twins numbered and epithets read in one scan, so the panel only copies them.
+The row of the entry the vista stands on comes back marked chosen, so the panel keeps no choice.
+
+## `public bool LEngineFavoriteCheck(long entryId)`
+
+Whether the entry is marked.
+
+## `public void LEngineFavoriteSave(long entryId)`
+
+Marks the entry a favorite and announces the mark.
+Marking changes no lexical data and keeps the entry's identity.
+
+## `public void LEngineFavoriteDelete(long entryId)`
+
+Unmarks the entry and announces it.
+The entry stands, still reachable through the entry catalog.

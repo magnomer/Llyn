@@ -33,6 +33,3 @@ Title, chip row, labelled lines and the note, with reader text escaped.
 
 The press receives the rendered page and the reader's printer choice, and nothing else decides them.
 
-## `public async Task PortraitPrint_NoPress_Throws()`
-
-Printing without a press is refused the same way the PDF export is.

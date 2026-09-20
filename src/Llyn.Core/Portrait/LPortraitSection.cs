@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -23,6 +24,18 @@ public sealed record LPortraitSection(
     public static LPortraitSection LPortraitSectionCreate(string heading, string text)
     {
         return new LPortraitSection(heading, [new LPortraitLine(string.Empty, text)], string.Empty, [], []);
+    }
+
+    public static void LPortraitSectionAdd(
+        List<LPortraitSection> sections, string heading, LStateValue value, string mark)
+    {
+        ArgumentNullException.ThrowIfNull(sections);
+
+        string text = LPortraitText.LPortraitTextRead(value, mark);
+        if (text.Length > 0)
+        {
+            sections.Add(LPortraitSectionCreate(heading, text));
+        }
     }
 
     public static LPortraitSection LPortraitSectionCreate(string heading, IReadOnlyList<LPortraitLine> lines)

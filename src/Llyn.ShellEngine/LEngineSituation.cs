@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -11,15 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(situation);
-
-            using LVaultSession session = _lEngineVault.LVaultSessionStart();
-            LSituationVault situations = _lEngineSituations;
-            LSituation stored = situations.LSituationCreate(situation);
-            LEngineMediaSync(stored.LSituationId, situation);
-            stored = situations.LSituationRead(stored.LSituationId) ?? stored;
-            session.LVaultSessionCommit();
-            return stored;
+            return _lEngineSituationClerk.LSituationClerkCreate(situation);
         }
     }
 
@@ -27,7 +18,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSituations.LSituationRead();
+            return _lEngineSituationClerk.LSituationClerkRead();
         }
     }
 
@@ -35,26 +26,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(query);
-            query = query.Trim();
-
-            LSituationVault situations = _lEngineSituations;
-            IReadOnlyList<LSituation> read = situations.LSituationRead();
-            IReadOnlyDictionary<long, int> usage = situations.LSituationReferenceRead();
-
-            List<LCatalogSituation> rows = [];
-            foreach (LSituation situation in read)
-            {
-                usage.TryGetValue(situation.LSituationId, out int counted);
-
-                LCatalogSituation row = LCatalogSituation.LCatalogSituationCreate(situation, counted);
-                if (row.LCatalogSituationMatch(query))
-                {
-                    rows.Add(row);
-                }
-            }
-
-            return LCatalogSituation.LCatalogSituationSort(rows, order);
+            return _lEngineSituationClerk.LSituationClerkFind(query, order);
         }
     }
 
@@ -85,7 +57,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSituations.LSituationRead(id);
+            return _lEngineSituationClerk.LSituationClerkRead(id);
         }
     }
 
@@ -93,10 +65,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSituationVault situations = _lEngineSituations;
-            return LEngineOwnerCheck(owner)
-                ? situations.LSituationCollocationRead(ownerId)
-                : situations.LSituationMeaningRead(ownerId);
+            return _lEngineSituationClerk.LSituationClerkRead(ownerId, owner);
         }
     }
 
@@ -104,50 +73,15 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(situation);
-
-            using LVaultSession session = _lEngineVault.LVaultSessionStart();
-            _lEngineSituations.LSituationUpdate(situation);
-            LEngineMediaSync(situation.LSituationId, situation);
-            session.LVaultSessionCommit();
+            _lEngineSituationClerk.LSituationClerkUpdate(situation);
         }
-    }
-
-    private void LEngineMediaSync(long situationId, LSituation situation)
-    {
-        Dictionary<long, long> identity = [];
-
-        LImageVault images = _lEngineImages;
-        LEngineFieldSync(
-            LCardClerkField.LImageRead(situation.LSituationImage),
-            images.LImageSituationRead(situationId),
-            row => row.LImageId,
-            written => LCardClerkField.LImageResolve(images, written, identity),
-            rowId => images.LImageSituationDetach(situationId, rowId),
-            (rowId, position) => images.LImageSituationAttach(situationId, rowId, position));
-
-        LVideoVault videos = _lEngineVideos;
-        LEngineFieldSync(
-            LCardClerkField.LVideoRead(situation.LSituationVideo),
-            videos.LVideoSituationRead(situationId),
-            row => row.LVideoId,
-            written => LCardClerkField.LVideoResolve(videos, written, identity),
-            rowId => videos.LVideoSituationDetach(situationId, rowId),
-            (rowId, position) => videos.LVideoSituationAttach(situationId, rowId, position));
     }
 
     internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
-            LSituationVault situations = _lEngineSituations;
-            if (LEngineOwnerCheck(owner))
-            {
-                situations.LSituationCollocationAttach(ownerId, situationId, position);
-                return;
-            }
-
-            situations.LSituationMeaningAttach(ownerId, situationId, position);
+            _lEngineSituationClerk.LSituationClerkAttach(ownerId, situationId, position, owner);
         }
     }
 
@@ -155,14 +89,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LSituationVault situations = _lEngineSituations;
-            if (LEngineOwnerCheck(owner))
-            {
-                situations.LSituationCollocationDetach(ownerId, situationId);
-                return;
-            }
-
-            situations.LSituationMeaningDetach(ownerId, situationId);
+            _lEngineSituationClerk.LSituationClerkDetach(ownerId, situationId, owner);
         }
     }
 
@@ -170,20 +97,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
-
-            using LVaultSession session = _lEngineVault.LVaultSessionStart();
-
-            LEngineSituationDetach(ownerId, situationId, owner);
-
-            LSituationVault situations = _lEngineSituations;
-            if (situations.LSituationReferenceRead(situationId) == 0)
-            {
-                situations.LSituationDelete(situationId);
-            }
-
-            LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
-            session.LVaultSessionCommit();
+            _lEngineCardClerk.LSituationRemove(ownerId, situationId, owner);
         }
     }
 
@@ -191,7 +105,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineSituations.LSituationDelete(id);
+            _lEngineSituationClerk.LSituationClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
@@ -201,9 +115,32 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineSituations.LSituationDelete(id, detach);
+            _lEngineSituationClerk.LSituationClerkDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
+    }
+
+    internal LDraft LEngineSituationStart(string origin, long? situationId)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(origin);
+            return _lEngineCitationClerk.LSituationStart(origin, situationId);
+        }
+    }
+
+    internal LSituation LEngineSituationCommit(long id)
+    {
+        LSituation settled;
+        lock (_lEngineGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(id);
+            LEngineDraftValidate(id);
+            settled = _lEngineCitationClerk.LSituationCommit(id);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);
+        return settled;
     }
 }

@@ -111,7 +111,7 @@ public sealed class TChronicle
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "em"));
@@ -136,7 +136,7 @@ public sealed class TChronicle
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "ember"));
@@ -155,7 +155,7 @@ public sealed class TChronicle
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "ember"));
@@ -240,7 +240,7 @@ public sealed class TChronicle
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         DateTimeOffset moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        engine.TEngineClockSet(() => moment);
+        workspace.TWorkspaceClockSet(() => moment);
 
         LDraft started = engine.TEngineDraftStart("editor", null);
         for (int step = 1; step <= 101; step++)

@@ -94,7 +94,7 @@ public sealed class LVista
         string trimmed = headword.Trim();
         return trimmed.Length == 0 || vista is null
             ? "entry"
-            : vista._lEngine.LEngineTrailRead().LTrailNameNormalize(trimmed);
+            : vista._lEngine.LEngineTrailNormalize(trimmed);
     }
 
     public LRevision? LVistaDelete()

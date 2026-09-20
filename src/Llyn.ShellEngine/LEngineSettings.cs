@@ -15,35 +15,44 @@ public sealed partial class LEngine
         }
     }
 
-    public LPostureVault LEnginePostureRead()
+    internal bool LEnginePostureLoad(string name, out LPostureState? state)
     {
         lock (_lEngineGate)
         {
-            return _lEnginePosture;
+            return _lEngineWorkspaceClerk.LWorkspacePostureRead(name, out state);
         }
     }
 
-    public LTrail LEngineTrailRead()
+    internal void LEnginePostureSave(string name, LPostureState state)
     {
         lock (_lEngineGate)
         {
-            return _lEngineTrail;
+            _lEngineWorkspaceClerk.LWorkspacePostureSave(name, state);
         }
     }
 
-    internal LClock LEngineClockRead()
+    internal DateTimeOffset LEngineStampRead()
     {
         lock (_lEngineGate)
         {
-            return _lEngineClock;
+            return _lEngineWorkspaceClerk.LWorkspaceClockRead();
+        }
+    }
+
+    internal string LEngineTrailNormalize(string name)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineTrailClerk.LTrailNameNormalize(name);
         }
     }
 
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        return LLocalization.LLocalizationLoad(_lEngineLocalization, language);
+        lock (_lEngineGate)
+        {
+            return _lEngineWorkspaceClerk.LWorkspaceLocalizationLoad(language);
+        }
     }
 
     public string LEngineLocalizationRead()
@@ -82,15 +91,16 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSettings.LSettingsRespelled
-                && language.Trim().Length > 0
-                && LEngineLanguageLoad(language).LLanguageRespellings.Count > 0;
+            return _lEngineLanguageClerk.LLanguageRespellingCheck(language, _lEngineSettings.LSettingsRespelled);
         }
     }
 
     public bool LEnginePhonemicCheck(string language)
     {
-        return language.Trim().Length > 0 && LEngineLanguageLoad(language).LLanguagePhonemic;
+        lock (_lEngineGate)
+        {
+            return _lEngineLanguageClerk.LLanguagePhonemicCheck(language);
+        }
     }
 
     public void LEngineEpithetSave(bool epithet)
@@ -122,7 +132,7 @@ public sealed partial class LEngine
             changed = LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
             if (changed && !morphology)
             {
-                LEngineInflectionClear();
+                _lEngineLacunaClerk.LLacunaClerkClear();
             }
         }
 
@@ -143,20 +153,8 @@ public sealed partial class LEngine
             }
 
             _lEngineSettings = changed;
-            LEngineSettingsSave();
+            _lEngineWorkspaceClerk.LWorkspaceSettingsSave(_lEngineSettings);
             return true;
-        }
-    }
-
-    private void LEngineSettingsSave()
-    {
-        try
-        {
-            _lEngineSettingsVault.LSettingsSave(_lEngineSettings);
-        }
-        catch (LVaultFault exception)
-        {
-            _lEngineAudit.LAuditRecord(exception);
         }
     }
 }

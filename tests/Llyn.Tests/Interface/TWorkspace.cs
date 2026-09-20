@@ -25,6 +25,15 @@ internal sealed class TWorkspace : IDisposable
 
     public string TWorkspaceFolder => _tWorkspaceRoot;
 
+    public TClockFake TWorkspaceClock { get; } = new();
+
+    public TPress TWorkspacePress { get; } = new();
+
+    public void TWorkspaceClockSet(Func<DateTimeOffset> clock)
+    {
+        TWorkspaceClock.TClockSet(clock);
+    }
+
     public static TWorkspace TWorkspaceCreate()
     {
         string root = Path.Combine(Path.GetTempPath(), "llyn-test-" + Guid.NewGuid().ToString("n"));
@@ -53,8 +62,18 @@ internal sealed class TWorkspace : IDisposable
 
     public LEngine TWorkspaceEngineStart(HttpClient client)
     {
-        LRig rig = LRigFactory.LRigFactoryBuild(_tWorkspaceRoot, client, new LUsherFile());
-        return new LEngine(rig with { LRigClock = new TClockFake() });
+        return new LEngine(TWorkspaceRigCreate(client));
+    }
+
+    public LRig TWorkspaceRigCreate()
+    {
+        return TWorkspaceRigCreate(TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound));
+    }
+
+    public LRig TWorkspaceRigCreate(HttpClient client)
+    {
+        LRig rig = LRigFactory.LRigFactoryBuild(_tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress);
+        return rig with { LRigClock = TWorkspaceClock };
     }
 
     public SqliteConnection TWorkspaceConnectionRead()

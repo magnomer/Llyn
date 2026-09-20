@@ -1,26 +1,31 @@
-# LEngineSituation.cs
+﻿# LEngineSituation.cs
 
 ## `public sealed partial class LEngine`
 
 The Situation half of the engine.
-It is the context a Meaning or Collocation is used in.
-It is created, read, rewritten, referenced and let go of.
-A Situation is independent data on the same terms as a Tag.
-It is owned by nothing and referenced by any number of cards, each holding its own order.
-So the seams mirror the Tag ones exactly.
-That includes the two ways of parting a card from one.
-
-Rewriting a Situation is a single seam.
-It is not a read the caller edits and writes back.
-Title, description and kind are one row.
-Every card referencing it sees the new wording at once.
-A reference points at the row and never at a copy of its text.
+A Situation is independent data owned by nothing and referenced by any number of cards.
+Every read and write goes through the situation clerk under the gate, and every change is announced here.
+The vista overload stays here, because a vista is the shell's and the twin names are numbered per panel.
+The situation draft starts and commits here too, through the citation clerk.
 
 ## `internal LSituation LEngineSituationCreate(LSituation situation)`
 
 Creates `situation` and returns it with its assigned id and its media read back.
-Its title is not identity: the same words saved twice are two Situations.
-The row and its media are written in one session, so a failed picture leaves no half Situation.
+
+## `internal IReadOnlyList<LSituation> LEngineSituationRead()`
+
+Every Situation in the workspace, for the panel that browses the shelf itself.
+
+## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
+
+The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
+
+## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista, string unknown = "", string untitled = "")`
+
+The Situations the repertoire panel's vista lists, with the query and order read off the vista.
+Each row carries its chosen mark, true where its id is the one the vista stands on.
+The twin names are read from the title.
+The panel hands in the words shown for an unknown or untitled one.
 
 ## `internal LSituation? LEngineSituationRead(long id)`
 
@@ -34,60 +39,33 @@ Reads the Situations the Meaning or Collocation identified by `ownerId` referenc
 
 Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
 
-## `private void LEngineMediaSync(long situationId, LSituation situation)`
-
-Settles the Situation's Images and Videos against what is attached, through the same `LEngineFieldSync` a card uses.
-A row with an id is that record, its location or span rewritten when it changed.
-One without becomes a fresh record.
-What the list no longer names is detached and keeps its record.
-An Image is independent data another referrer may show.
-Living beside the card sync keeps one rule for how a draft row becomes a stored one.
-
 ## `internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
 
-References the Situation identified by `situationId` from the side identified by `ownerId`.
-That side is a Meaning or a Collocation, and the reference goes in at `position`.
-The set is renumbered around it.
+References the Situation from the Meaning or Collocation identified by `ownerId`, at `position`.
 
 ## `internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)`
 
-Removes one side's reference to a Situation.
-The Situation and its other references survive — the rule a card edit follows.
+Removes one side's reference to a Situation, leaving the Situation and its other references.
 
 ## `internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)`
 
 Removes one side's reference to a Situation and deletes the Situation when that was its last reference.
-Detach, count and delete share one session.
-So the row is judged against the references as they stand at that moment.
-No caller can compose the steps itself.
+The detach, the count, the delete and the owner's stamp share one session.
 
 ## `internal void LEngineSituationDelete(long id)`
 
-Deletes the Situation identified by `id`.
-Refused while any Meaning or Collocation still references it.
-`LEngineSituationRemove` is the seam that deletes one as its last reference goes.
-
-## `internal IReadOnlyList<LSituation> LEngineSituationRead()`
-
-Every Situation in the workspace, for the panel that browses the shelf itself rather than one card's references.
+Deletes the Situation identified by `id`, refused while any card still references it, and announces it.
 
 ## `internal void LEngineSituationDelete(long id, bool detach)`
 
 Deletes the Situation, dropping every reference to it first when the user asked for that.
-Without `detach` it is the refusing delete above.
-With it the detaching and the delete are one operation rather than a sequence a caller composes.
 
-The usage seams that once stood here now live in `LEngineUsage.cs`.
-An Example is browsed the same way a Situation is.
-The two share one seam rather than each carrying its own.
+## `internal LDraft LEngineSituationStart(string origin, long? situationId)`
 
-## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
+Mints a draft id, writes the first file, and returns the held Situation.
+A Situation that is gone is refused before a file is written, so no draft can point at nothing.
 
-The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
-A Situation is matched over its title, its description and its kind.
+## `internal LSituation LEngineSituationCommit(long id)`
 
-## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista)`
-
-The Situations the repertoire panel's vista lists, with the query and order read off the vista.
-The vista's filter hides languages from the entries referencing the chosen Situation, so it is not applied here.
-Each row carries its chosen mark, true where its id is the one the vista stands on.
+Turns a held Situation into a stored one, announces it and returns it.
+An id from a closed workspace is refused before anything is written.

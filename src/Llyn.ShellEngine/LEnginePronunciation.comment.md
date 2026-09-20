@@ -2,84 +2,125 @@
 
 ## `public sealed partial class LEngine`
 
-The pronunciation half of the engine as stored data.
-That is the rows an Entry keeps, their syllables, and their audio files.
-This is the stored side.
-Finding a pronunciation or a recording on the web is the lookup side.
-The two meet only where a chosen recording is downloaded and then saved here.
-
-An Entry keeps an ordered list of pronunciations, the first being the primary one.
-They are read by the Entry they belong to, and a save of the Entry's draft places them.
-The audio row hangs off one pronunciation rather than the Entry.
-So a recording saved with no typed IPA still needs a pronunciation to hang from.
-
-A file is stored workspace-relative and handed out full.
-That is the same way a loaded draft's audio is handled.
-The shell plays a path and never has to know the workspace folder.
-An entry opened from a moved workspace still resolves to a file that is there.
-A path outside the workspace has no relative form and is kept as it stands.
+The pronunciation facades: rows, notes, recordings, lookups, transcriptions and frequencies.
+Each takes the gate and calls the pronunciation, recording, transcription or frequency clerk.
+The session trove that remembers a lookup or harvest stays here, since a session is an engine fact.
 
 ## `internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)`
 
-Creates `pronunciation` after the Entry's others, with its syllables as its ordered child rows.
-Returns it with its assigned id and position.
+One pronunciation row created through the clerk.
 
 ## `internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)`
 
-Reads the pronunciations the Entry identified by `entryId` keeps, in order, each with its syllables.
-Empty when it keeps none.
-
-## `internal void LEnginePronunciationUpdate(LPronunciation pronunciation)`
-
-Rewrites the variety, the IPA and the syllables of the pronunciation `pronunciation` identifies.
-The audio hanging from it and its place in the list are untouched.
-Its id does not change, so the recording stays attached across an edit of the IPA.
-
-## `internal void LEnginePronunciationDelete(long id)`
-
-Deletes the pronunciation identified by `id` with its syllables and audio row.
-The file on disk is not removed.
-The workspace owns it, and another entry may have been given the same recording.
-
-## `internal void LEngineAudioSave(long pronunciationId, string file, string? source)`
-
-Saves `file` as the audio of the pronunciation identified by `pronunciationId`.
-It replaces whatever it played before.
-It records the `source` the recording came from.
-The path is stored relative to the workspace when it lies inside it, so a moved workspace keeps its audio.
-
-## `internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
-
-Reads the audio of the pronunciation identified by `pronunciationId`.
-Its file is resolved to a full path in the workspace in use now.
-It returns `null` when it has none.
-
-## `internal void LEngineNoteSave(LNote note)`
-
-Saves `note` as the note of its Entry, replacing the one there.
-The text is Markdown and is normalized by `LMarkdown` before it is written.
-An Entry keeps at most one note, keyed by the Entry itself.
-So a save is a create or a rewrite, and the caller need not know which.
-
-## `internal LNote? LEngineNoteRead(long entryId)`
-
-Reads the note the Entry identified by `entryId` keeps, or `null` when it keeps none.
-
-## `internal void LEngineNoteDelete(long entryId)`
-
-Deletes the note of the Entry identified by `entryId`, if it has one.
+The stored pronunciation rows of an entry.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)`
 
-The entries answering `query`, in `order`, each already carrying the primary pronunciation stored for it.
-The sound is read here because the phonology catalog orders by it and shows it.
+The pronunciation catalog rows matching `query`, sorted.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
-The same rows with the entries in a hidden language left out.
+The same rows with the language filter applied.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)`
 
-The rows the phonology panel's vista lists, with the query, order and filter read off the vista.
-Each row carries its twin name, epithet and chosen mark, filled from the vista row builder in one scan.
-The panel hands over its vista and copies rows, so no choice is kept on the panel side.
+The rows of a vista, twinned names and the chosen mark applied through the vista build.
+
+## `internal void LEnginePronunciationUpdate(LPronunciation pronunciation)`
+
+One row rewritten through the clerk.
+
+## `internal void LEnginePronunciationDelete(long id)`
+
+One row deleted through the clerk.
+
+## `internal void LEngineAudioSave(long pronunciationId, string file, string? source)`
+
+The recording of one row saved, stored workspace-relative.
+
+## `internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
+
+The recording of one row with its path made absolute through the recording clerk.
+
+## `internal void LEngineNoteSave(LNote note)`
+
+The note of an entry saved, normalised.
+
+## `internal LNote? LEngineNoteRead(long entryId)`
+
+The note of an entry.
+
+## `internal void LEngineNoteDelete(long entryId)`
+
+The note of an entry deleted.
+
+## `public Task LEnginePronunciationFind(long session, string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)`
+
+The pronunciation lookup of `word`, its steps sent to `sink`.
+A session that already looked the word up is replayed from the trove instead.
+The lookup is started under the gate and awaited outside it.
+
+## `private async Task LEngineTroveSave(Task<IReadOnlyList<LCandidate>> scan, long session, string word, string language, string? scheme)`
+
+Remembers the candidates a finished lookup found under the session, plain or per scheme.
+
+## `internal Task LEngineRecordingFind(long session, string word, string language, long target, Action<LHarvestStep> sink, CancellationToken cancellation)`
+
+The recording harvest of `word`, filtered to the variety of the draft row `target` names.
+A session that already harvested the word is replayed from the trove instead.
+
+## `private async Task LEngineTroveSave(Task<IReadOnlyList<LRecording>> scan, long session, string word, string language)`
+
+Remembers the recordings a finished harvest found under the session.
+
+## `private string LEngineVarietyResolve(long session, long target)`
+
+The variety of the draft row `target` names, the first row's for zero, empty outside a session.
+
+## `internal Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
+
+Stores a harvested recording under the workspace and answers its path.
+
+## `public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
+
+Fetches a recording to a playable local file without storing it.
+
+## `public void LEngineRecordingSweep()`
+
+Deletes every stored recording no row and no draft names.
+
+## `public bool LEngineRecordingExist(string? file)`
+
+Whether the recording resolves to a file that exists.
+
+## `public IReadOnlyList<string> LEngineSchemeRead(string language)`
+
+The scheme names of a language.
+
+## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
+
+The lookup of `word` under one scheme, replayed from the trove when the session already asked.
+
+## `internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
+
+The stored transcription rows of an entry.
+
+## `internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
+
+The rows of an entry replaced.
+
+## `internal Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
+
+The frequencies of `word` fetched now.
+
+## `internal string? LEngineBandResolve(string language, string source, string raw)`
+
+The band of a raw figure under the source's declaration.
+
+## `public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)`
+
+The stored frequency rows of an entry, regraded, a fetch started when there are none.
+
+## `internal void LEngineFrequencyStart(long entryId)`
+
+Starts the frequency fetch of an entry.

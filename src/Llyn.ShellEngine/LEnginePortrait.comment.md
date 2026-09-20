@@ -2,39 +2,41 @@
 
 ## `public sealed partial class LEngine`
 
-Assembles the likeness of one entry from what the workspace holds.
-The panel reads the same records through the same engine, so both see one entry the same way.
-The section builders live in `LEnginePortraitCrest.cs` and `LEnginePortraitCard.cs`.
+The portrait facades: the entry page and the kind pages, their export and their print.
+The entry page is composed by the portrait clerk, the kind pages by the example, reference and situation clerks.
 
 ## `internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)`
 
-Everything the display gathers is gathered here, in the display's own order.
-The reading rows go under the title: pronunciations, transcriptions, then reflexes.
-A pronunciation prints its respelling in place of its IPA only where the display would, per language setting.
-The speech names are the page chips, drawn in the crest as the panel draws them.
-The sections follow: glyph, frequency, forms, paradigm, rime books, meanings, collocations, links here, note, character forms.
-The rime rows are read once and serve both the rime band and the anchors on the reflex lines.
-A section that has nothing to show is left out, as the panel collapses it.
-The value ids the entry is filed under stay in the draft.
-A writer that needs them can find them there.
-A missing entry is an error, because a caller asked to portray one that no longer stands.
-Translations, sources, incoming links, the favourite mark and the bracket choice are read defensively.
-None of them is the entry itself, and none is worth refusing an export over.
+The page of one entry, composed by the portrait clerk under the gate.
 
-## `private IReadOnlyDictionary<long, LPortraitLink> LEngineTargetScan(IReadOnlyList<long> ids)`
+## `internal LPortraitPage LEnginePortraitRead(long id, LOwner owner, LPortraitLegend legend)`
 
-The linked entries by id, read in one query.
-A failed read yields no links rather than no export.
+The likeness of one example, source or situation, composed by the clerk of the realm `owner` names.
+Each realm is read under the engine's lock, so screen and page show one thing.
+A missing row is an error, because a caller asked to portray one that no longer stands.
+## `internal Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
 
-## `private IReadOnlyDictionary<long, string> LEngineSourceScan()`
+Markup is written through the markup clerk under the gate.
+Every other format composes the page and hands it to the portrait clerk, which prints a PDF through the press.
 
-Every source by id, each as the byline the display cites under an example.
-A failed read yields no source lines rather than no export.
+## `internal Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)`
 
-## `private IReadOnlyList<LFanqieRow> LEngineFanqieScan(long entryId, string language)`
+The entry page handed to the press with the ticket.
 
-The rime rows of the entry, empty for a language without a rime book or when the read fails.
+## `public Task LEnginePortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)`
 
-## `private LSentenceOrder LEngineFrameRead(string language)`
+The export of the entry a vista has chosen, nothing when the vista holds no entry.
 
-An unknown or unknown language falls back to the default order, exactly as the panel does.
+## `public Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket)`
+
+The print of the entry a vista has chosen, nothing when the vista holds no entry.
+
+## `public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket)`
+
+The print of the example, situation or reference a catalog vista has chosen.
+Any other subject is a caller mistake and throws.
+
+## `internal Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
+
+One kind page handed to the press with the ticket.
+

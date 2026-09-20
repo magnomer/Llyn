@@ -65,6 +65,7 @@ internal static class TAuditDraftSetting
     public static readonly string[] TAuditDraftPortrait =
     [
         "src/Llyn.Core/Portrait/*.cs",
+        "src/Llyn.Application/Portrait/*.cs",
         "src/Llyn.ShellEngine/LEnginePortrait*.cs",
     ];
 
