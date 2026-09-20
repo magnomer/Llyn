@@ -1,0 +1,117 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeAccent.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeTranscription.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <BooleanToVisibilityConverter x:Key="Theme.Glyph.Sourced" />
+
+    <FontFamily x:Key="Theme.Glyph.Family">Segoe UI, Arial</FontFamily>
+    <sys:Double x:Key="Theme.Glyph.Size">19</sys:Double>
+
+    <Style x:Key="Theme.Glyph.Phonetician" TargetType="Button" BasedOn="{StaticResource Theme.Transcription.Phonetician}">
+        <Setter Property="ToolTip" Value="{DynamicResource Glyph.Title}" />
+        <Setter Property="Command" Value="{x:Static local:PGlyphCommand.PGlyphCommandNotation}" />
+        <Setter Property="Visibility" Value="{Binding Tag, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource Theme.Glyph.Sourced}}" />
+    </Style>
+
+    <Style x:Key="Theme.Glyph.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Pronunciation.Field}">
+        <Setter Property="FontFamily" Value="{DynamicResource Theme.Glyph.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Theme.Glyph.Size}" />
+    </Style>
+
+    <Style x:Key="Theme.Glyph.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
+        <Setter Property="FontFamily" Value="{DynamicResource Theme.Glyph.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Theme.Glyph.Size}" />
+        <Setter Property="Text" Value="{Binding PTranscriptionItemText}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PTranscriptionItemText}" Value="">
+                <Setter Property="Text" Value="{DynamicResource Input.Glyph}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Glyph.Chip" TargetType="Button">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontFamily" Value="{DynamicResource Theme.Glyph.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Theme.Glyph.Size}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Command" Value="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+        <Setter Property="ToolTip" Value="{DynamicResource Glyph.Entry}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="Transparent" SnapsToDevicePixels="True">
+                        <TextBlock x:Name="PGlyphCharacter" VerticalAlignment="Center" Text="{Binding PGlyphItemText}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PGlyphCharacter" Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PGlyphCharacter" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PGlyphItemLanguage}" Value="">
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Cursor" Value="Arrow" />
+                <Setter Property="ToolTip" Value="{x:Null}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate x:Key="Theme.Glyph.Display">
+        <Button Style="{StaticResource Theme.Glyph.Chip}" />
+    </DataTemplate>
+
+    <Style x:Key="Theme.Glyph.Line" TargetType="ItemsControl">
+        <Setter Property="Margin" Value="0,-3,0,3" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ItemTemplate" Value="{StaticResource Theme.Glyph.Display}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="Theme.Glyph.Row">
+        <Border Style="{StaticResource Theme.Pronunciation.Surface}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                    <TextBlock Style="{StaticResource Theme.Transcription.Label}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                    <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
+                        <TextBlock Style="{StaticResource Theme.Glyph.Measure}" />
+                        <TextBox Style="{StaticResource Theme.Glyph.Field}" Tag="{DynamicResource Input.Glyph}" Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                    <Button Style="{StaticResource Theme.Glyph.Phonetician}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>

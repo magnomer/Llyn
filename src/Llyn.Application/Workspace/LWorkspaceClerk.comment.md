@@ -44,6 +44,16 @@ Records `exception` in the audit and answers the file it went to.
 
 The refusal reason inside `exception`, walking the inner exceptions, or null.
 
+## `public static bool LWorkspaceIllegibleCheck(Exception exception)`
+
+Whether `exception` is a refusal over an unreadable value, so the shell can offer to sweep the draft.
+Only the exception itself is read, since a wrapped refusal is not the commit's own answer.
+
+## `public static bool LWorkspaceRefusedCheck(Exception exception)`
+
+Whether `exception` is a refused edit rather than a lost draft, which the shell skips and goes on.
+A refusal saying the draft is gone is left out, since that is a lost hold and halts the tenure.
+
 ## `public IReadOnlyDictionary<string, string> LWorkspaceLocalizationLoad(string language)`
 
 The localization table of `language` through the localization port.

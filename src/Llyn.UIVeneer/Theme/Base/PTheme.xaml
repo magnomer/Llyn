@@ -1,0 +1,43 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeDefault.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeScroll.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeCaption.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeNavigation.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeInput.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePopup.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeCard.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeChoice.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeAccent.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeContour.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeTranscription.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeGlyph.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflex.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflexEditor.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemePlayback.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeVolume.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeSpeech.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeFrequency.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeMarker.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeCategory.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeLanguage.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeFavorite.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeGrasp.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePanel.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeCommand.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeSearch.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeCatalog.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeMention.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeGloss.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeParadigm.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeScript.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeFanqie.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeDiwei.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

@@ -98,6 +98,20 @@ public sealed class LWorkspaceClerk
             : exception.InnerException is null ? null : LWorkspaceNoticeRead(exception.InnerException);
     }
 
+    public static bool LWorkspaceIllegibleCheck(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return exception is LRefusal refusal && refusal.LRefusalIllegible;
+    }
+
+    public static bool LWorkspaceRefusedCheck(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return exception is LRefusal refusal && refusal.LRefusalReason != LRefusal.LRefusalDraft;
+    }
+
     public IReadOnlyDictionary<string, string> LWorkspaceLocalizationLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

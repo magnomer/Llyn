@@ -1,0 +1,89 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PColophon"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeSpeech.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Colophon.Title" TargetType="TextBlock" BasedOn="{StaticResource Theme.Page.Title}" />
+
+            <Style x:Key="Colophon.Heading" TargetType="TextBlock">
+                <Setter Property="Height" Value="34" />
+                <Setter Property="Margin" Value="2,0,2,12" />
+                <Setter Property="Padding" Value="0,5,0,0" />
+                <Setter Property="FontSize" Value="19" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+
+            <Style x:Key="Colophon.Value" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+
+            <Style x:Key="Colophon.Chip" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="BorderBrush" Value="{DynamicResource Theme.AccentEdge}" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
+
+            <Style x:Key="Colophon.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="Background" Value="{DynamicResource Theme.SurfaceRaised}" />
+            </Style>
+
+            <Style x:Key="Colophon.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
+                <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer Margin="30,18,0,0" Focusable="False" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="PColophonBody" Margin="0,0,60,30" Visibility="Collapsed">
+                <TextBlock x:Name="PColophonTitle" Style="{StaticResource Colophon.Title}" />
+
+                <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
+                    <Border x:Name="PColophonChip" Style="{StaticResource Colophon.Chip}">
+                        <TextBlock x:Name="PColophonKind" Style="{StaticResource Theme.Speech.Name}" />
+                    </Border>
+                    <Border Style="{StaticResource Colophon.Tally}">
+                        <TextBlock x:Name="PColophonTally" Style="{StaticResource Colophon.Figure}" />
+                    </Border>
+                </WrapPanel>
+
+                <StackPanel x:Name="PColophonAuthorSection" Margin="0,28,0,0">
+                    <TextBlock Style="{StaticResource Colophon.Heading}" Text="{DynamicResource Source.Author}" />
+                    <TextBlock x:Name="PColophonAuthor" Margin="2,0" Style="{StaticResource Colophon.Value}" />
+                </StackPanel>
+
+                <StackPanel x:Name="PColophonYearSection" Margin="0,28,0,0">
+                    <TextBlock Style="{StaticResource Colophon.Heading}" Text="{DynamicResource Source.Year}" />
+                    <TextBlock x:Name="PColophonYear" Margin="2,0" Style="{StaticResource Colophon.Value}" />
+                </StackPanel>
+
+                <StackPanel x:Name="PColophonUrlSection" Margin="0,28,0,0">
+                    <TextBlock Style="{StaticResource Colophon.Heading}" Text="{DynamicResource Source.Url}" />
+                    <TextBlock x:Name="PColophonUrl" Margin="2,0" Style="{StaticResource Colophon.Value}" />
+                </StackPanel>
+
+                <StackPanel x:Name="PColophonNoteSection" Margin="0,28,0,0">
+                    <TextBlock Style="{StaticResource Colophon.Heading}" Text="{DynamicResource Source.Note}" />
+                    <TextBlock x:Name="PColophonNote" Margin="2,0" Style="{StaticResource Colophon.Value}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <TextBlock
+            x:Name="PColophonUnselected"
+            Margin="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="{StaticResource Theme.Muted}"
+            IsHitTestVisible="False"
+            Text="{DynamicResource Source.Unselected}"
+            TextWrapping="Wrap" />
+    </Grid>
+</UserControl>

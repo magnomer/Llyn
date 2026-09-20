@@ -267,7 +267,16 @@ internal static class TInterfaceDeportment
         window.LWindowAnchorToggle(anchors, fanqieId, anchored);
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings) =>
-        new(entries, TEngineFake.TEngineStubCreate<LPortraitPort>(), settings);
+        new(
+            entries,
+            TEngineFake.TEngineStubCreate<LPortraitPort>(),
+            settings,
+            new LEditor(
+                TEngineFake.TEngineStubCreate<LDraftPort>(),
+                entries,
+                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+                settings,
+                static () => false));
 
     internal static IReadOnlyList<LCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
 

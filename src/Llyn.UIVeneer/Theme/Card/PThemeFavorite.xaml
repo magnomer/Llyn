@@ -1,0 +1,60 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="clr-namespace:Llyn.UIVeneer">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <sys:Double x:Key="Theme.Favorite.Size">42</sys:Double>
+
+    <Style x:Key="Theme.Favorite.Row" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Height" Value="{StaticResource Theme.Favorite.Size}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="Theme.Favorite.Icon" TargetType="Path">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Stretch" Value="None" />
+        <Setter Property="Fill" Value="{StaticResource Theme.Favorite}" />
+        <Setter Property="Data" Value="{local:PIcon favorite, 24}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
+                <Setter Property="Data" Value="{local:PIcon favorite-marked, 24}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Favorite.Mark" TargetType="ToggleButton">
+        <Setter Property="Width" Value="{StaticResource Theme.Favorite.Size}" />
+        <Setter Property="Height" Value="{StaticResource Theme.Favorite.Size}" />
+        <Setter Property="Margin" Value="12,0,0,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="PSurface" Background="Transparent">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
