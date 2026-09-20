@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -19,15 +18,15 @@ public partial class PTaxonomy : UserControl
         InitializeComponent();
     }
 
-    internal void PTaxonomyAttach(PWindow host, LEngine engine)
+    internal void PTaxonomyAttach(PWindow host)
     {
         _pTaxonomyHost = host;
-        _lTaxonomy = new LTaxonomy(engine, engine, engine);
+        _lTaxonomy = host.PWindowDeportment.LWindowTaxonomyCreate();
 
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
 
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);

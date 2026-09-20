@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -24,11 +23,10 @@ public partial class PGuild : UserControl
         InitializeComponent();
     }
 
-    internal void PGuildAttach(PWindow host, LEngine engine)
+    internal void PGuildAttach(PWindow host)
     {
         _pGuildHost = host;
-        _lGuild = new LGuild(
-            engine, engine, engine,
+        _lGuild = host.PWindowDeportment.LWindowGuildCreate(
             PGuildShownCheck,
             PGuildDiscardConfirm,
             PGuildRemovalConfirm,

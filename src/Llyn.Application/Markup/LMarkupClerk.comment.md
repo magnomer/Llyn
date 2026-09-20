@@ -1,13 +1,13 @@
-﻿# LMarkupLoader.cs
+﻿# LMarkupClerk.cs
 
-## `internal sealed class LMarkupLoader`
+## `public sealed class LMarkupClerk`
 
 Reads one stored entry into the markup record the writer formats.
 It is the sibling of `LEntryLoader`, which answers the same rows as a draft.
 Every id a stored row carries is translated into the words a reader could type.
-It sits beside the engine because it needs six ports and answers only the engine.
+It is an application clerk: six ports through its constructor, no engine, no partial part.
 
-## `public LMarkupLoader(LEntryVault entries, LSpeechVault speeches, LMorphologyVault morphologies, LMeaningVault meanings, LReferenceVault references, LAuthorVault authors)`
+## `public LMarkupClerk(LEntryVault entries, LSpeechVault speeches, LMorphologyVault morphologies, LMeaningVault meanings, LReferenceVault references, LAuthorVault authors)`
 
 Holds the six ports the translation reads through, the same instances the engine holds.
 It opens no database of its own, so a test can hand it in-memory ports.

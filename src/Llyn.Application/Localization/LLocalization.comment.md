@@ -40,8 +40,9 @@ Whether the build embeds a catalog for `language`, under the gate the list is se
 
 ## `public static CultureInfo LLocalizationCultureRead(string language)`
 
-The culture a language's terms are cased under, which is the culture of that name.
-A language the catalog does not ship is refused.
+The culture a language's terms are cased under, which is the predefined culture of that name.
+A name no culture answers to is refused.
+It does not consult the listed languages, so a reader can be loaded before any vault was scanned.
 
 ## `public static IReadOnlyDictionary<string, string> LLocalizationLoad(LLocalizationVault vault, string language)`
 

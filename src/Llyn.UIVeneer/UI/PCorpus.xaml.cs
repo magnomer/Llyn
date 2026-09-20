@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -21,10 +20,10 @@ public partial class PCorpus : UserControl, PChronicleHost
         Resources.MergedDictionaries.Add(new PCorpusTranscript(this));
     }
 
-    internal void PCorpusAttach(PWindow host, LEngine engine)
+    internal void PCorpusAttach(PWindow host)
     {
         _pCorpusHost = host;
-        _lCorpus = new LCorpus(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lCorpus = host.PWindowDeportment.LWindowCorpusCreate(host.PWindowUnreadableConfirm);
         PTranscriptDeskAttach();
 
         PAnthology.ItemsSource = _pAnthologyList;
@@ -36,7 +35,7 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PCorpusStoreUpdate;
         _lEditor.LEditorStateChanged += PChronicleUpdate;

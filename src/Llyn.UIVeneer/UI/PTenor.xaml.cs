@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -19,15 +18,15 @@ public partial class PTenor : UserControl
         InitializeComponent();
     }
 
-    internal void PTenorAttach(PWindow host, LEngine engine)
+    internal void PTenorAttach(PWindow host)
     {
         _pTenorHost = host;
-        _lTenor = new LTenor(engine, engine, engine);
+        _lTenor = host.PWindowDeportment.LWindowTenorCreate();
 
         PGamut.ItemsSource = _pGamutList;
         PCohort.ItemsSource = _pCohortList;
 
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PTenorStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);

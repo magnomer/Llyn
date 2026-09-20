@@ -27,18 +27,7 @@ public sealed class LKeepFile : LKeep
             return null;
         }
 
-        try
-        {
-            return File.ReadAllText(path);
-        }
-        catch (IOException)
-        {
-            return null;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return null;
-        }
+        return File.ReadAllText(path);
     }
 
     public void LKeepSave(string name, string text)

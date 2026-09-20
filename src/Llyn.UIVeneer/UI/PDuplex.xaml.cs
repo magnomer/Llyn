@@ -13,11 +13,11 @@ public partial class PDuplex : UserControl
 
     private LPosture _lPosture = null!;
 
-    internal void PDuplexAttach(PWindow host, LEngine engine)
+    internal void PDuplexAttach(PWindow host)
     {
         _lPosture = host.PWindowPosture;
-        PLeftWing.PWingAttach(host, engine);
-        PRightWing.PWingAttach(host, engine);
+        PLeftWing.PWingAttach(host);
+        PRightWing.PWingAttach(host);
     }
 
     internal void PDuplexRestore(LWorkspaceState state)

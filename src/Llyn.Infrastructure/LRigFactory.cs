@@ -9,11 +9,10 @@ public static class LRigFactory
 {
     private const long LRigFactoryCeiling = 8L * 1024 * 1024;
 
-    private static HttpClient? _lRigFactoryClient;
-
-    public static LRig LRigFactoryBuild(string workspace, HttpClient? client)
+    public static LRig LRigFactoryBuild(string workspace, HttpClient client)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
+        ArgumentNullException.ThrowIfNull(client);
         if (!Path.IsPathFullyQualified(workspace))
         {
             throw new ArgumentException("The workspace path must be fully qualified.", nameof(workspace));
@@ -22,7 +21,6 @@ public static class LRigFactory
         string root = Path.GetFullPath(workspace);
         Directory.CreateDirectory(root);
 
-        HttpClient shared = client ?? LRigClientCreate();
         LDatabase database = new(root);
 
         return new LRig(
@@ -66,26 +64,21 @@ public static class LRigFactory
             new LTranscriptionArchive(database),
             new LTranslationArchive(database),
             new LVideoArchive(database),
-            new LSourceFactoryHttp(shared),
-            new LFanqieSourceHttp(shared),
-            new LReflexSourceHttp(shared),
-            new LScriptSourceHttp(shared),
-            new LRecordingArchive(root, shared),
-            new LLanguageLoader(root, shared),
+            new LSourceFactoryHttp(client),
+            new LFanqieSourceHttp(client),
+            new LReflexSourceHttp(client),
+            new LScriptSourceHttp(client),
+            new LRecordingArchive(root, client),
+            new LLanguageLoader(root, client),
             new LLocalizationLoader(),
             new LMarkupFile(),
-            new LPortraitFile(),
+            new LPortraitFile(LThemeLoader.LThemeLoaderLoad()),
             new LUsherFile(),
             root);
     }
 
-    private static HttpClient LRigClientCreate()
+    public static HttpClient LRigClientCreate()
     {
-        if (_lRigFactoryClient is not null)
-        {
-            return _lRigFactoryClient;
-        }
-
         HttpClient client = new()
         {
             Timeout = TimeSpan.FromSeconds(10),
@@ -93,7 +86,6 @@ public static class LRigFactory
         };
         client.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
-        _lRigFactoryClient = client;
         return client;
     }
 }

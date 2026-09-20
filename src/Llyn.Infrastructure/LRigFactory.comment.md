@@ -6,21 +6,22 @@ The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are
 The composition root calls it once at start and once per workspace change, and hands the rig to the engine.
 The engine itself contains the use cases and builds none of the adapters they run on.
 
-## `public static LRig LRigFactoryBuild(string workspace, HttpClient? client)`
+## `public static LRig LRigFactoryBuild(string workspace, HttpClient client)`
 
 Builds every adapter over the workspace at `workspace` and bundles them as one rig.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
 The folder is created when missing, so a fresh workspace opens as an empty one.
-One database stands behind every archive, and one client behind every fetcher and download.
-A null client builds the shared one with its timeout and browser-like agent.
+One database stands behind every archive, and the client handed in behind every fetcher and download.
+The caller owns the client and disposes it, so the factory holds nothing across builds.
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
 Nothing here is opened or read: the engine runs the doctor, realm and settings reads on the rig it receives.
 A folder that cannot be opened therefore fails in the engine, before the old rig is let go.
 
-## `private static HttpClient LRigClientCreate()`
+## `public static HttpClient LRigClientCreate()`
 
-The one client of the process, built on first use and shared by every rig built after.
-A client per rig would leak one socket pool per workspace change, and the defaults are process-wide anyway.
+Builds the client the composition root hands to every rig, with the timeout and browser-like agent the sources need.
+The root builds it once and passes the same one to each rig.
+A workspace change therefore leaks no socket pool.
 
 ## Inline notes
 

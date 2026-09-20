@@ -7,6 +7,7 @@ internal static class TAuditRingSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditRingCeiling = new Dictionary<string, int>
     {
         ["EngineField"] = 1,
+        ["EngineName"] = 5,
         ["EngineHelper"] = 0,
         ["AdapterEngine"] = 0,
         ["EnginePart"] = 72,

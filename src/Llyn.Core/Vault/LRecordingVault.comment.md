@@ -13,3 +13,8 @@ Saves the recording under the language's audio folder and answers with the file 
 ## `Task<string> LRecordingPrepare(LRecording recording, CancellationToken cancellation);`
 
 Caches the recording for immediate playback and answers with the cached file.
+
+## `void LRecordingSweep(IReadOnlySet<string> kept);`
+
+Deletes every file under the audio folder whose full path is not in `kept`.
+The engine computes `kept` from stored and drafted pronunciations and never walks the folder itself.

@@ -274,6 +274,48 @@ public sealed class TPosture
     }
 
     [Fact]
+    public void WorkspaceOpen_TargetLegacySettingsOnly_MigratesTargetPosture()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(
+            Path.Combine(second.TWorkspaceFolder, "settings.json"),
+            "{ \"localization\": \"en\", \"window\": { \"left\": 1, \"top\": 2, \"width\": 700, \"height\": 500 }, "
+            + "\"mode\": \"Corpus\", \"volume\": 0.5 }");
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LPosture posture = engine.TPostureStart();
+        posture.TPostureModeSave("Tenor");
+
+        engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+
+        LPostureState state = posture.TPostureRead();
+        Assert.Equal("Corpus", state.LPostureStateMode);
+        Assert.Equal(700, state.LPostureStateWindow?.LWindowStateWidth);
+        Assert.Equal(0.5, state.LPostureStateVolume);
+        Assert.True(File.Exists(Path.Combine(second.TWorkspaceFolder, "posture.json")));
+    }
+
+    [Fact]
+    public void WorkspaceOpen_TargetPostureUnreadable_KeepsHeldPostureAndFile()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        string path = Path.Combine(second.TWorkspaceFolder, "posture.json");
+        File.WriteAllText(path, "{ \"mode\": \"Corpus\" }");
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LPosture posture = engine.TPostureStart();
+        posture.TPostureModeSave("Tenor");
+
+        using (new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+        }
+
+        Assert.Equal("Tenor", posture.TPostureRead().LPostureStateMode);
+        Assert.Equal("{ \"mode\": \"Corpus\" }", File.ReadAllText(path));
+    }
+
+    [Fact]
     public void PostureLoader_OrderAndFilter_RoundTripsByName()
     {
         LLayout[] layout =

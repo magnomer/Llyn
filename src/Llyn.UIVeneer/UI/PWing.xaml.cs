@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -25,10 +24,10 @@ public partial class PWing : UserControl
         InitializeComponent();
     }
 
-    internal void PWingAttach(PWindow host, LEngine engine)
+    internal void PWingAttach(PWindow host)
     {
         _pWingHost = host;
-        _lWing = new LWing(engine, engine, engine);
+        _lWing = host.PWindowDeportment.LWindowWingCreate();
 
         PWingIndex.ItemsSource = _pWingIndex;
 

@@ -157,7 +157,7 @@ public sealed partial class LEngine
 
         if (Path.IsPathRooted(code))
         {
-            return File.Exists(code) ? code : null;
+            return _lEngineUsher.LUsherPathExist(code) ? code : null;
         }
 
         LLanguageVault languages;

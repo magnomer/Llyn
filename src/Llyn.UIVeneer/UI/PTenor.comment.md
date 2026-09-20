@@ -6,7 +6,7 @@ The tenor panel: the workspace browsed by the Registers its cards carry.
 It is the taxonomy panel's shape read through a different question, so it holds the same three columns.
 It owns a reader and an editor over one Entry, and answers the engine rather than its own visibility.
 
-## `internal void PTenorAttach(PWindow host, LEngine engine)`
+## `internal void PTenorAttach(PWindow host)`
 
 Binds the panel to the window, builds its deportment and its editor over the engine's ports, and wires their notices.
 

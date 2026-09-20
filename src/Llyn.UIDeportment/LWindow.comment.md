@@ -9,5 +9,7 @@ It also answers the pack facts the editor rows ask: schemes, tones, parts of spe
 The settings panel and the window itself read and save the settings, the workspace and its state through it.
 The leftover and recording sweeps, the audit record and the portrait export run through it as well.
 The static veneer helpers take it instead of the engine, so no panel holds an engine for them.
+It builds every panel's deportment over the ports it holds, so no panel names the engine or a port.
+A panel hands in only its own seams and the editor it shares, and receives its deportment built.
 It keeps no state of its own.
 Panel state stays on each panel's deportment, and window geometry stays on the posture.

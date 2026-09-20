@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LPosture : LObserver
+public sealed class LPosture : LObserver, IDisposable
 {
     private const string LPostureName = "posture";
     private const string LPostureLegacy = "settings";
@@ -15,6 +15,8 @@ public sealed class LPosture : LObserver
     private readonly object _lPostureGate = new();
 
     private readonly Dictionary<long, (LCatalogOrder LPostureOrder, string LPostureFilter)> _lPostureVistas = [];
+
+    private readonly List<LVista> _lPostureWatched = [];
 
     private LPostureState _lPostureState = new();
 
@@ -69,6 +71,7 @@ public sealed class LPosture : LObserver
         lock (_lPostureGate)
         {
             _lPostureVistas[vista.LVistaId] = LPostureVistaRead(vista);
+            _lPostureWatched.Add(vista);
         }
 
         return vista;
@@ -151,6 +154,21 @@ public sealed class LPosture : LObserver
         }
     }
 
+    public void Dispose()
+    {
+        _lEngine.LEngineObserverDetach(this);
+        lock (_lPostureGate)
+        {
+            foreach (LVista vista in _lPostureWatched)
+            {
+                vista.LVistaEditingSaved -= LPostureSplitSave;
+            }
+
+            _lPostureWatched.Clear();
+            _lPostureVistas.Clear();
+        }
+    }
+
     public void LObserverBulletinHandle(LBulletin bulletin)
     {
         ArgumentNullException.ThrowIfNull(bulletin);
@@ -215,17 +233,34 @@ public sealed class LPosture : LObserver
         lock (_lPostureGate)
         {
             LKeep keep = _lEngine.LEngineKeepRead();
-            string? text = keep.LKeepRead(LPostureName);
+            string? text;
+            string? legacy;
+            try
+            {
+                text = keep.LKeepRead(LPostureName);
+                legacy = text is null ? keep.LKeepRead(LPostureLegacy) : null;
+            }
+            catch (IOException exception)
+            {
+                _lEngine.LEngineAuditRecord(exception);
+                return;
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                _lEngine.LEngineAuditRecord(exception);
+                return;
+            }
+
             if (text is not null)
             {
                 _lPostureState = LPostureLoader.LPostureLoaderRead(text);
                 return;
             }
 
-            LPostureState legacy = LPostureLoader.LPostureLoaderRead(keep.LKeepRead(LPostureLegacy));
-            if (legacy != new LPostureState())
+            LPostureState inherited = LPostureLoader.LPostureLoaderRead(legacy);
+            if (inherited != new LPostureState())
             {
-                _lPostureState = legacy;
+                _lPostureState = inherited;
             }
 
             LPostureSave(keep);

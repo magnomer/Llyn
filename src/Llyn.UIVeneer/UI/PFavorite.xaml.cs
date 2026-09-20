@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -19,14 +18,14 @@ public partial class PFavorite : UserControl
         InitializeComponent();
     }
 
-    internal void PFavoriteAttach(PWindow host, LEngine engine)
+    internal void PFavoriteAttach(PWindow host)
     {
         _pFavoriteHost = host;
-        _lFavorite = new LFavorite(engine, engine, engine);
+        _lFavorite = host.PWindowDeportment.LWindowFavoriteCreate();
 
         PRoster.ItemsSource = _pRosterList;
 
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);

@@ -94,7 +94,7 @@ internal static class TAuditDraftSetting
     public static readonly string[] TAuditDraftMarkup =
     [
         "src/Llyn.Core/Markup/*.cs",
-        "src/Llyn.ShellEngine/LMarkupLoader.cs",
+        "src/Llyn.Application/Markup/LMarkupClerk.cs",
     ];
 
     public static readonly string[] TAuditMarkupWaiver =

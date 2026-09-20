@@ -6,9 +6,10 @@ The favorites panel as a control: what it is made of, and when it starts and sto
 Browsing itself lives in the file beside this one.
 That is the search, the ordering, the roster, the read-only display and the editor beside it.
 
-## `internal void PFavoriteAttach(PWindow host, LEngine engine)`
+## `internal void PFavoriteAttach(PWindow host)`
 
-Puts the panel to work on `engine`, the workspace the window opened, through its deportment and its editor.
+Puts the panel to work through its deportment and its editor.
+The window deportment builds both over the engine's ports.
 It binds its lists and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

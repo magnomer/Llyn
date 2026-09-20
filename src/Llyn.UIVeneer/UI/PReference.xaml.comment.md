@@ -11,9 +11,9 @@ The shelf, the entry list, the read areas, the two edit areas and the shared rai
 The entry edit area is still a veneer hold, while the source edit area sits on the deportment's imprint.
 The panel picks the one in front by the deportment's side verdict.
 
-## `internal void PReferenceAttach(PWindow host, LEngine engine)`
+## `internal void PReferenceAttach(PWindow host)`
 
-Puts the panel to work on `engine`, the workspace the window opened.
+Puts the panel to work on the window deportment, which builds its deportment over the engine's ports.
 It news the deportment with the seams the panel answers through and subscribes to the notices of both lists.
 The editor's change notice goes to the deportment, which reads the imprint's desk itself.
 It picks the one in front for the store button.

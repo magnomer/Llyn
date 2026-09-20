@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -24,12 +23,11 @@ public partial class PReference : UserControl
         InitializeComponent();
     }
 
-    internal void PReferenceAttach(PWindow host, LEngine engine)
+    internal void PReferenceAttach(PWindow host)
     {
         _pReferenceHost = host;
-        _lShelf = new LShelf(
-            engine, engine, engine,
-            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
+        _lShelf = host.PWindowDeportment.LWindowShelfCreate(
+            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
             PReferenceShownCheck,
             PReferenceDiscardConfirm,
             PReferenceRemovalConfirm,

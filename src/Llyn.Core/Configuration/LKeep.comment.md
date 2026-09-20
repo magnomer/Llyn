@@ -10,6 +10,7 @@ The engine hands the port out, so an outer ring persists beside the engine rathe
 ## `string? LKeepRead(string name)`
 
 The text kept under the name, or nothing while none was ever written.
+A document that exists but cannot be read raises the adapter's exception rather than reading as nothing.
 
 ## `void LKeepSave(string name, string text)`
 

@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -22,12 +21,11 @@ public partial class PLibrary : UserControl
         InitializeComponent();
     }
 
-    internal void PLibraryAttach(PWindow host, LEngine engine)
+    internal void PLibraryAttach(PWindow host)
     {
         _pLibraryHost = host;
-        _lLibrary = new LLibrary(
-            engine, engine,
-            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
+        _lLibrary = host.PWindowDeportment.LWindowLibraryCreate(
+            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
             PLibraryShownCheck,
             PLibraryDiscardConfirm,
             host.PWindowDeleteConfirm);

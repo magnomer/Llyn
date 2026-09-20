@@ -7,6 +7,14 @@ namespace Llyn.Infrastructure;
 
 public sealed class LPortraitFile : LPortraitVault
 {
+    private readonly LTheme _lPortraitFileTheme;
+
+    public LPortraitFile(LTheme theme)
+    {
+        ArgumentNullException.ThrowIfNull(theme);
+        _lPortraitFileTheme = theme;
+    }
+
     public void LPortraitSave(LPortraitPage page, LPortraitFormat format, string path)
     {
         ArgumentNullException.ThrowIfNull(page);
@@ -21,7 +29,7 @@ public sealed class LPortraitFile : LPortraitVault
                 File.WriteAllText(path, LOutline.LOutlineFormat(page), new UTF8Encoding(false));
                 return;
             case LPortraitFormat.LPortraitFormatDocx:
-                LFolio.LFolioSave(page, LThemeLoader.LThemeLoaderLoad(), path);
+                LFolio.LFolioSave(page, _lPortraitFileTheme, path);
                 return;
             default:
                 throw new ArgumentOutOfRangeException(nameof(format), format, "This format is not written as a file.");
@@ -32,6 +40,6 @@ public sealed class LPortraitFile : LPortraitVault
     {
         ArgumentNullException.ThrowIfNull(page);
 
-        return LSheet.LSheetFormat(page, LThemeLoader.LThemeLoaderLoad());
+        return LSheet.LSheetFormat(page, _lPortraitFileTheme);
     }
 }

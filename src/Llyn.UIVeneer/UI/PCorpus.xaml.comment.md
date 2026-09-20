@@ -9,7 +9,7 @@ The browsing behavior lives in `PCorpusBrowse.cs` and the editing in `PCorpusEdi
 The held draft the editor writes into lives in `PCorpusHold.cs`, apart from the controls it reads.
 The linking gesture over the transcript lives in `PCorpusMention.cs`.
 
-## `internal void PCorpusAttach(PWindow host, LEngine engine)`
+## `internal void PCorpusAttach(PWindow host)`
 
 Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
 Binds the panel to the window it asks for confirmations and panel switches through.

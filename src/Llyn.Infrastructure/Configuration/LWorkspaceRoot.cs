@@ -32,8 +32,9 @@ public static class LWorkspaceRoot
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-        Directory.CreateDirectory(path);
-        LWorkspacePointerSave(path);
+        string root = Path.GetFullPath(path);
+        Directory.CreateDirectory(root);
+        LWorkspacePointerSave(root);
     }
 
     public static string LWorkspaceDatabaseRead(string root)

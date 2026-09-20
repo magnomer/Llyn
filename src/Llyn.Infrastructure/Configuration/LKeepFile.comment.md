@@ -9,4 +9,6 @@ That is the same move the settings loader makes, so both files survive a crash t
 
 ## `public string? LKeepRead(string name)`
 
-A missing or unreadable file reads as nothing, so the owner falls back to its defaults and starts.
+A missing file reads as nothing, so the owner falls back to its defaults and starts.
+A file that exists but will not read throws.
+The owner then keeps what it holds and does not write over the file.

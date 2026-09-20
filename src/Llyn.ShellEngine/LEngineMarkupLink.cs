@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -215,7 +214,7 @@ public sealed partial class LEngine
             return false;
         }
 
-        if (resolved.IsFile && !File.Exists(resolved.LocalPath))
+        if (resolved.IsFile && !_lEngineUsher.LUsherPathExist(resolved.LocalPath))
         {
             omissions.Add(new LMarkupOmission(0, $"file \"{location}\""));
         }

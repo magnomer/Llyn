@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,4 +9,6 @@ public interface LRecordingVault
     Task<string> LRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation);
 
     Task<string> LRecordingPrepare(LRecording recording, CancellationToken cancellation);
+
+    void LRecordingSweep(IReadOnlySet<string> kept);
 }

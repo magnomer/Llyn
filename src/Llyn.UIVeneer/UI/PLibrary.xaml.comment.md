@@ -7,9 +7,9 @@ Every branch it once carried lives in `LLibrary` and the `LPanel` it holds.
 The panel news its deportment, forwards each handler to it, and writes its controls when a notice arrives.
 The search, the ordering, the index, the read-only display, the editor and the import are all wired here.
 
-## `internal void PLibraryAttach(PWindow host, LEngine engine)`
+## `internal void PLibraryAttach(PWindow host)`
 
-Puts the panel to work on `engine`, the workspace the window opened.
+Puts the panel to work on the window deportment, which builds its deportment over the engine's ports.
 It news the deportment with the seams the panel answers through and subscribes to its notices.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

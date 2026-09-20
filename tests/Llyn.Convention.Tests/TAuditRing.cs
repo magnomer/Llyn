@@ -15,6 +15,11 @@ public sealed class TAuditRing
         @"\bLEngine\??\s+_lEngine\b",
     ];
 
+    private static readonly string[] TAuditRingName =
+    [
+        @"\bLEngine\??\s+\w+",
+    ];
+
     private static readonly string[] TAuditRingHelper =
     [
         @"\b(LTenure|LVista|LForay)\b",
@@ -23,6 +28,7 @@ public sealed class TAuditRing
     private static readonly string[] TAuditRingAdapter =
     [
         @"\bnew L\w+(Archive|Loader)\(",
+        @"\bL\w+(Archive|Loader)\??\s+\w+\s*=\s*new\(",
         @"\bLDatabaseSessionStart\(",
     ];
 
@@ -39,6 +45,13 @@ public sealed class TAuditRing
     private static readonly string[] TAuditRingBuilt =
     [
         @"\bnew L\w+(Archive|Loader|File|Http)\(",
+        @"\bL\w+(Archive|Loader|File|Http)\??\s+\w+\s*=\s*new\(",
+    ];
+
+    private static readonly string[] TAuditRingDisk =
+    [
+        @"\b(File|Directory|FileInfo|DirectoryInfo)\.",
+        @"\bnew (FileStream|StreamReader|StreamWriter|FileInfo|DirectoryInfo)\(",
     ];
 
     private static readonly Regex TAuditRingDeclared = new(
@@ -118,7 +131,20 @@ public sealed class TAuditRing
     public void AuditRing_Veneer_HoldsEngineWithinCeiling()
     {
         TAuditRingCheck("EngineField", "Llyn.UIVeneer", TAuditRingField, "engine field(s) in the veneer");
+        TAuditRingCheck("EngineName", "Llyn.UIVeneer", TAuditRingName, "engine name(s) in the veneer");
         TAuditRingCheck("EngineHelper", "Llyn.UIVeneer", TAuditRingHelper, "engine helper(s) in the veneer");
+    }
+
+    [Fact]
+    public void AuditRing_Engine_TouchesNoDisk()
+    {
+        List<TViolation> hits = TAuditRingScan(
+            path => TAuditRoleSelect("Llyn.ShellEngine")(path) || TAuditRoleSelect("Llyn.UIDeportment")(path),
+            TAuditRingDisk);
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRING",
+            $"{hits.Count} disk touch(es) sit above the adapters and must go through a port:\n" + string.Join(
+                '\n', hits.Select(hit => $"  {hit.TViolationPath}:{hit.TViolationLine} {hit.TViolationName}"))));
     }
 
     [Fact]
@@ -206,6 +232,7 @@ public sealed class TAuditRing
         foreach ((string kind, string role, string[] patterns) in new[]
                  {
                      ("EngineField", "Llyn.UIVeneer", TAuditRingField),
+                     ("EngineName", "Llyn.UIVeneer", TAuditRingName),
                      ("EngineHelper", "Llyn.UIVeneer", TAuditRingHelper),
                      ("AdapterEngine", "Llyn.ShellEngine", TAuditRingAdapter),
                      ("EnginePart", "Llyn.ShellEngine", TAuditRingPart),

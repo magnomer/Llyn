@@ -1,6 +1,6 @@
 # LPosture.cs
 
-## `public sealed class LPosture : LObserver`
+## `public sealed class LPosture : LObserver, IDisposable`
 
 How the main window stands: its geometry, tab layout, linked panels, open tab, split and volume.
 It is owned by the window, since none of it belongs to one tab.
@@ -10,6 +10,7 @@ The core ring no longer holds any of this, so it knows nothing of how wide a pan
 It listens to the engine as an observer.
 A vista bulletin stores the order and filter that vista now holds.
 A workspace bulletin reloads the posture of the workspace moved onto.
+The window disposes it on exit, which detaches it and lets go of every vista it watched.
 
 ## `public LPostureState LPostureRead()`
 
@@ -29,6 +30,7 @@ Starts the tab's vista on the order and filter stored under it, and on the store
 A tab with no stored order lists by `fallback`, and one with no stored filter hides nothing.
 The vista's starting order and filter are marked, so the first bulletin stores only what moved since.
 The vista's editing event is taken here, since only a vista started through the posture is the window's.
+The vista is remembered so the event can be given back on dispose.
 
 ## `public void LPostureWindowSave(LWindowState window)`
 
@@ -64,6 +66,10 @@ Nothing is written while no tab's record moved, so a bulletin that changed nothi
 Drops the stored width of every tab.
 Each tab's ordering and hidden languages stay, because the button promises widths and nothing more.
 
+## `public void Dispose()`
+
+Detaches from the engine and drops the editing event of every vista started here.
+
 ## `public void LObserverBulletinHandle(LBulletin bulletin)`
 
 A workspace bulletin reloads the posture, since the workspace moved onto carries its own.
@@ -90,6 +96,8 @@ The legacy file carried the same keys, so the same reader takes it.
 A legacy file that reads as the default posture carried none of them, so the posture held is kept instead.
 A workspace with neither inherits the posture held.
 The posture is written at once, so the next start finds it.
+A keep that will not read is recorded in the fault log.
+The posture held then stays and is not written, so a passing failure never replaces the file.
 
 ## `private bool LPostureChange(Func<LPostureState, LPostureState> change)`
 

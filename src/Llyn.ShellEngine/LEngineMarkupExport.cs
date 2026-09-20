@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -30,14 +31,14 @@ public sealed partial class LEngine
 
     private LMarkupEntry LEngineMarkupCreate(long id)
     {
-        LMarkupLoader loader = new(
+        LMarkupClerk clerk = new LMarkupClerk(
             _lEngineEntries,
             _lEngineSpeeches,
             _lEngineMorphologies,
             _lEngineMeanings,
             _lEngineReferences,
             _lEngineAuthors);
-        return loader.LMarkupLoad(id)
+        return clerk.LMarkupLoad(id)
             ?? throw new LRefusal(LRefusal.LRefusalEntry);
     }
 }

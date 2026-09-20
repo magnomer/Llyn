@@ -44,7 +44,7 @@ public partial class PWindow : Window
         PWindowStateRestore();
         PWindowStateAttach();
 
-        PWindowAttach(engine);
+        PWindowAttach();
 
         Closing += PWindowClosingHandle;
         Closed += PWindowExitHandle;
@@ -65,7 +65,7 @@ public partial class PWindow : Window
         _pWindowWorkspaceOpener(path);
     }
 
-    private void PWindowAttach(LEngine engine)
+    private void PWindowAttach()
     {
         PEnsign.PEnsignAttach(_lWindow);
 
@@ -75,19 +75,19 @@ public partial class PWindow : Window
 
         LWorkspaceState state = _lWindow.LWindowStateRead();
 
-        PInput.PInputAttach(this, engine);
-        PLibrary.PLibraryAttach(this, engine);
-        PPhonology.PPhonologyAttach(this, engine);
-        PYunjing.PYunjingAttach(this, engine);
+        PInput.PInputAttach(this);
+        PLibrary.PLibraryAttach(this);
+        PPhonology.PPhonologyAttach(this);
+        PYunjing.PYunjingAttach(this);
         PNavigationYunjing.Visibility = PYunjing.PYunjingCheck() ? Visibility.Visible : Visibility.Collapsed;
-        PTaxonomy.PTaxonomyAttach(this, engine);
-        PTenor.PTenorAttach(this, engine);
-        PRepertoire.PRepertoireAttach(this, engine);
-        PCorpus.PCorpusAttach(this, engine);
-        PReference.PReferenceAttach(this, engine);
-        PGuild.PGuildAttach(this, engine);
-        PFavorite.PFavoriteAttach(this, engine);
-        PDuplex.PDuplexAttach(this, engine);
+        PTaxonomy.PTaxonomyAttach(this);
+        PTenor.PTenorAttach(this);
+        PRepertoire.PRepertoireAttach(this);
+        PCorpus.PCorpusAttach(this);
+        PReference.PReferenceAttach(this);
+        PGuild.PGuildAttach(this);
+        PFavorite.PFavoriteAttach(this);
+        PDuplex.PDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         PEstablishment.PEstablishmentAttach(this);
 
@@ -138,6 +138,7 @@ public partial class PWindow : Window
         PDuplex.PDuplexClose();
         PEstablishment.PEstablishmentClose();
         _lWindow.LWindowLeftoverSweep();
+        _lPosture.Dispose();
         _lEngine.Dispose();
     }
 }

@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -23,10 +22,10 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         Resources.MergedDictionaries.Add(new PVideoTemplate(this));
     }
 
-    internal void PRepertoireAttach(PWindow host, LEngine engine)
+    internal void PRepertoireAttach(PWindow host)
     {
         _pRepertoireHost = host;
-        _lRepertoire = new LRepertoire(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lRepertoire = host.PWindowDeportment.LWindowRepertoireCreate(host.PWindowUnreadableConfirm);
         PScenarioDeskAttach();
 
         PAtlas.ItemsSource = _pAtlasList;
@@ -35,7 +34,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         PScenarioVideo.ItemsSource = _pScenarioVideo;
 
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PRepertoireStoreUpdate;
         _lEditor.LEditorStateChanged += PChronicleUpdate;

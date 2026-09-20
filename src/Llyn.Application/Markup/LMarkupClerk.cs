@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
 
-namespace Llyn.ShellEngine;
+namespace Llyn.Application;
 
-internal sealed class LMarkupLoader
+public sealed class LMarkupClerk
 {
-    private readonly LEntryVault _lMarkupLoaderEntries;
-    private readonly LSpeechVault _lMarkupLoaderSpeeches;
-    private readonly LMorphologyVault _lMarkupLoaderMorphologies;
-    private readonly LMeaningVault _lMarkupLoaderMeanings;
-    private readonly LReferenceVault _lMarkupLoaderReferences;
-    private readonly LAuthorVault _lMarkupLoaderAuthors;
+    private readonly LEntryVault _lMarkupClerkEntries;
+    private readonly LSpeechVault _lMarkupClerkSpeeches;
+    private readonly LMorphologyVault _lMarkupClerkMorphologies;
+    private readonly LMeaningVault _lMarkupClerkMeanings;
+    private readonly LReferenceVault _lMarkupClerkReferences;
+    private readonly LAuthorVault _lMarkupClerkAuthors;
 
-    public LMarkupLoader(
+    public LMarkupClerk(
         LEntryVault entries,
         LSpeechVault speeches,
         LMorphologyVault morphologies,
@@ -28,17 +28,17 @@ internal sealed class LMarkupLoader
         ArgumentNullException.ThrowIfNull(meanings);
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(authors);
-        _lMarkupLoaderEntries = entries;
-        _lMarkupLoaderSpeeches = speeches;
-        _lMarkupLoaderMorphologies = morphologies;
-        _lMarkupLoaderMeanings = meanings;
-        _lMarkupLoaderReferences = references;
-        _lMarkupLoaderAuthors = authors;
+        _lMarkupClerkEntries = entries;
+        _lMarkupClerkSpeeches = speeches;
+        _lMarkupClerkMorphologies = morphologies;
+        _lMarkupClerkMeanings = meanings;
+        _lMarkupClerkReferences = references;
+        _lMarkupClerkAuthors = authors;
     }
 
     public LMarkupEntry? LMarkupLoad(long id)
     {
-        LEntryDraft? draft = _lMarkupLoaderEntries.LEntryLoad(id);
+        LEntryDraft? draft = _lMarkupClerkEntries.LEntryLoad(id);
         if (draft is null)
         {
             return null;
@@ -96,13 +96,13 @@ internal sealed class LMarkupLoader
     private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)
     {
         string speech = inflection.LInflectionSpeechId is long speechId
-            ? _lMarkupLoaderSpeeches.LSpeechValueRead(speechId)?.LSpeechValueName ?? string.Empty
+            ? _lMarkupClerkSpeeches.LSpeechValueRead(speechId)?.LSpeechValueName ?? string.Empty
             : string.Empty;
 
         List<string> names = new(inflection.LInflectionMorphology.Count);
         foreach (long morphologyId in inflection.LInflectionMorphology)
         {
-            if (_lMarkupLoaderMorphologies.LMorphologyRead(morphologyId) is LMorphology morphology)
+            if (_lMarkupClerkMorphologies.LMorphologyRead(morphologyId) is LMorphology morphology)
             {
                 names.Add(morphology.LMorphologyName);
             }
@@ -179,7 +179,7 @@ internal sealed class LMarkupLoader
         List<LMarkupTranslation> translations = new(ids.Count);
         foreach (long id in ids)
         {
-            if (_lMarkupLoaderEntries.LEntryRead(id) is LEntry entry)
+            if (_lMarkupClerkEntries.LEntryRead(id) is LEntry entry)
             {
                 translations.Add(new LMarkupTranslation(entry.LEntryHeadword, entry.LEntryLanguage));
             }
@@ -213,7 +213,7 @@ internal sealed class LMarkupLoader
     private LMarkupMention LMarkupMentionCreate(LMentionDraft mention)
     {
         if (mention.LMentionDraftEntry <= 0
-            || _lMarkupLoaderEntries.LEntryRead(mention.LMentionDraftEntry) is not LEntry entry)
+            || _lMarkupClerkEntries.LEntryRead(mention.LMentionDraftEntry) is not LEntry entry)
         {
             return new LMarkupMention(
                 mention.LMentionDraftOffset, mention.LMentionDraftLength, string.Empty, string.Empty);
@@ -235,7 +235,7 @@ internal sealed class LMarkupLoader
         }
 
         Dictionary<long, LMeaning> meanings = [];
-        foreach (LMeaning meaning in _lMarkupLoaderMeanings.LMeaningRead(entryId))
+        foreach (LMeaning meaning in _lMarkupClerkMeanings.LMeaningRead(entryId))
         {
             meanings[meaning.LMeaningId] = meaning;
         }
@@ -258,12 +258,12 @@ internal sealed class LMarkupLoader
             return null;
         }
 
-        if (_lMarkupLoaderReferences.LReferenceRead(referenceId) is not LReference reference)
+        if (_lMarkupClerkReferences.LReferenceRead(referenceId) is not LReference reference)
         {
             return null;
         }
 
-        IReadOnlyList<LAuthor> credited = _lMarkupLoaderAuthors.LAuthorReferenceRead(referenceId);
+        IReadOnlyList<LAuthor> credited = _lMarkupClerkAuthors.LAuthorReferenceRead(referenceId);
         List<string> authors = new(credited.Count);
         foreach (LAuthor author in credited)
         {

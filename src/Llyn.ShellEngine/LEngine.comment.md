@@ -54,7 +54,7 @@ The script fetches, pending and missed per character, sit in `LEngineScript.cs` 
 The fanqie fetches sit likewise in `LEngineFanqie.cs`, one at a time with an interval between posts.
 The reflex fills sit in `LEngineReflexFetch.cs`, and the rows they store are edited through `LEngineReflex.cs`.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
-The flag cache `_lEngineEnsign` is built here over `_lEngineUsher`, the usher the rig hands in.
+The flag cache `_lEngineEnsign` is built in `LEngineRigSet` over the usher the rig hands in.
 The usher also answers `LEngineLocation.cs` whether a resolved file is present.
 
 ## `public LEngine(LRig rig)`
@@ -71,7 +71,7 @@ A database this build can no longer read costs the user a launch rather than the
 
 Copies every port of `rig` into its field, the one place the fields are assigned.
 The constructor and `LEngineRigApply` both call it, so a workspace change swaps every port at once.
-The identity issuer, the language cache and the two clerks are rebuilt here over the same rig.
+The identity issuer, the language cache, the two clerks and the flag cache are rebuilt here over the same rig.
 A clerk built over the old rig would keep the old ports, so none survives a rig apply.
 
 ## `private long LEngineIdentityCreate()`
@@ -118,7 +118,10 @@ A folder that fails to open is therefore never pointed at.
 The new rig's rescue, realm and settings are read before anything here changes.
 A folder that cannot be opened therefore leaves the caches and the old ports untouched.
 A workspace that already holds a settings file is opened on its own settings.
-One without any receives the current settings, so a fresh folder starts as the user left the last.
+One without any receives the current settings and has them written.
+A fresh folder therefore starts as the user left the last.
+A settings file that exists is not rewritten here.
+The posture still reads its legacy window keys from it on the announcement.
 The drafts this engine claimed are forgotten with the old folder.
 A claim only means something against the folder the file sits in.
 Each forgotten id is marked stale rather than simply dropped.

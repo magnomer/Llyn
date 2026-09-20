@@ -7,7 +7,7 @@ It is the sources panel's shape read through a different question, so it holds t
 Every decision lives in [LGuild](../../Llyn.UIDeportment/LGuild.comment.md), and this file writes controls on notice.
 The roll, the oeuvre, the vita, the autograph and the colophon are all served from one file.
 
-## `internal void PGuildAttach(PWindow host, LEngine engine)`
+## `internal void PGuildAttach(PWindow host)`
 
 News the deportment with the window's dialogs as seams, subscribes its notices, and wires the two lists.
 The print command binding is added last, so no can-execute query ever meets a deportment not yet built.

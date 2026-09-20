@@ -29,9 +29,9 @@ It is read once as the window attaches, before any panel starts a draft of its o
 Reading it later would count this session's own work, which no one needs offering back.
 The count is held and nothing is shown yet, because the recovery dialog is not built.
 
-## `private void PWindowAttach(LEngine engine)`
+## `private void PWindowAttach()`
 
-Puts every panel to work on the one engine.
+Puts every panel to work on the window deportment, which builds each panel's deportment over the one engine.
 The workspace is swept first, so nothing already saved is counted as lost work.
 The recordings are swept next, while no draft is held, so a file no draft or entry names goes.
 The leftovers are counted next, so the number describes the workspace as it was found.
@@ -63,7 +63,7 @@ The stored widths are applied right after, before any tab is shown, so nothing j
 
 ## `private void PWindowExitHandle(object? sender, EventArgs e)`
 
-Closes every panel, sweeps the workspace once more, and lets the engine go.
+Closes every panel, sweeps the workspace once more, lets the posture go, and lets the engine go.
 Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
 A copy of the program left open for days would otherwise collect nothing it wrote after it started.
 

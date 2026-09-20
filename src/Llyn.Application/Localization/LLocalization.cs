@@ -50,12 +50,15 @@ public static class LLocalization
     {
         ArgumentNullException.ThrowIfNull(language);
 
-        return LLocalizationListedCheck(language)
-            ? CultureInfo.GetCultureInfo(language)
-            : throw new ArgumentOutOfRangeException(
-                nameof(language),
-                language,
-                "The selected language is not supported.");
+        try
+        {
+            return CultureInfo.GetCultureInfo(language, predefinedOnly: true);
+        }
+        catch (CultureNotFoundException)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(language), language, "The selected language is not supported.");
+        }
     }
 
     public static IReadOnlyDictionary<string, string> LLocalizationLoad(LLocalizationVault vault, string language)

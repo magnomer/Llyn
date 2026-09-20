@@ -7,18 +7,10 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private const string LEngineRecordingBucket = "audio";
-
     public void LEngineRecordingSweep()
     {
         lock (_lEngineGate)
         {
-            string folder = Path.Combine(_lEngineWorkspace, LEngineRecordingBucket);
-            if (!Directory.Exists(folder))
-            {
-                return;
-            }
-
             HashSet<string> kept = new(StringComparer.OrdinalIgnoreCase);
             foreach (string file in _lEnginePronunciations.LPronunciationAudioScan())
             {
@@ -33,24 +25,7 @@ public sealed partial class LEngine
                 }
             }
 
-            foreach (string file in Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories))
-            {
-                if (kept.Contains(Path.GetFullPath(file)))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (IOException)
-                {
-                }
-                catch (UnauthorizedAccessException)
-                {
-                }
-            }
+            _lEngineRecordings.LRecordingSweep(kept);
         }
     }
 

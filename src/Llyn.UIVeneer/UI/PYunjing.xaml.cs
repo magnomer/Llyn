@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -25,12 +24,11 @@ public partial class PYunjing : UserControl
         InitializeComponent();
     }
 
-    internal void PYunjingAttach(PWindow host, LEngine engine)
+    internal void PYunjingAttach(PWindow host)
     {
         _pYunjingHost = host;
-        _lYunjing = new LYunjing(
-            engine, engine,
-            new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm),
+        _lYunjing = host.PWindowDeportment.LWindowYunjingCreate(
+            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
             PYunjingShownCheck,
             PYunjingLeaveConfirm,
             host.PWindowDeleteConfirm);

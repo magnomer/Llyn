@@ -45,6 +45,81 @@ public sealed class LWindow
         _lPortraitPort = portraits;
     }
 
+    public LEditor LWindowEditorCreate(Func<bool> unreadableSeam)
+    {
+        return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, unreadableSeam);
+    }
+
+    public LCorpus LWindowCorpusCreate(Func<bool> unreadableSeam)
+    {
+        return new LCorpus(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, unreadableSeam);
+    }
+
+    public LFavorite LWindowFavoriteCreate()
+    {
+        return new LFavorite(_lEntryPort, _lPortraitPort, _lSettingsPort);
+    }
+
+    public LGuild LWindowGuildCreate(
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<int, bool> removalSeam,
+        Func<string, string, bool> unionSeam,
+        Func<bool> unreadableSeam)
+    {
+        return new LGuild(
+            _lDraftPort, _lEntryPort, _lPortraitPort, shownSeam, leaveSeam, removalSeam, unionSeam, unreadableSeam);
+    }
+
+    public LLibrary LWindowLibraryCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        return new LLibrary(_lEntryPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+    }
+
+    public LPhonology LWindowPhonologyCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        return new LPhonology(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+    }
+
+    public LShelf LWindowShelfCreate(
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<int, bool> removalSeam,
+        Func<bool> unreadableSeam)
+    {
+        return new LShelf(
+            _lDraftPort, _lEntryPort, _lPortraitPort, editor, shownSeam, leaveSeam, removalSeam, unreadableSeam);
+    }
+
+    public LRepertoire LWindowRepertoireCreate(Func<bool> unreadableSeam)
+    {
+        return new LRepertoire(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, unreadableSeam);
+    }
+
+    public LTaxonomy LWindowTaxonomyCreate()
+    {
+        return new LTaxonomy(_lEntryPort, _lPortraitPort, _lSettingsPort);
+    }
+
+    public LTenor LWindowTenorCreate()
+    {
+        return new LTenor(_lEntryPort, _lPortraitPort, _lSettingsPort);
+    }
+
+    public LWing LWindowWingCreate()
+    {
+        return new LWing(_lEntryPort, _lPhonologyPort, _lSettingsPort);
+    }
+
+    public LYunjing LWindowYunjingCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        return new LYunjing(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+    }
+
     public void LWindowObserverAttach(LObserver observer)
     {
         _lDraftPort.LEngineObserverAttach(observer);

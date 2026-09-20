@@ -7,9 +7,10 @@ Browsing itself lives in the file beside this one.
 That is the tag search, the tag ordering, the tag catalog and the entries under a tag.
 The reader and editor stand beside them.
 
-## `internal void PTaxonomyAttach(PWindow host, LEngine engine)`
+## `internal void PTaxonomyAttach(PWindow host)`
 
-Puts the panel to work on `engine`, the workspace the window opened, through its deportment and its editor.
+Puts the panel to work through its deportment and its editor.
+The window deportment builds both over the engine's ports.
 It binds its lists and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

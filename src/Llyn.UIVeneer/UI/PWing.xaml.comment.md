@@ -20,9 +20,9 @@ The vista carries the order, filter, query and the Entry the side stands on.
 The wing keeps no copy of any of the four and asks the deportment for each where it needs it.
 The tab is `left` or `right`, and the vista is blank, so nothing typed lists nothing.
 
-### `internal void PWingAttach(PWindow host, LEngine engine)`
+### `internal void PWingAttach(PWindow host)`
 
-Puts the side to work on `engine`.
+Puts the side to work on the window deportment, which builds the wing over the engine's ports.
 It binds the match list, subscribes to the engine and attaches the display.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.

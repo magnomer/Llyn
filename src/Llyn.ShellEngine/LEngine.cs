@@ -23,7 +23,7 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
     private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
-    private readonly LEnsign _lEngineEnsign;
+    private LEnsign _lEngineEnsign;
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LSourceFactory _lEngineSourceFactory;
@@ -88,7 +88,6 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         ArgumentNullException.ThrowIfNull(rig);
 
         LEngineRigSet(rig);
-        _lEngineEnsign = new LEnsign(_lEngineUsher);
         _lEngineSettings = _lEngineSettingsVault.LSettingsRead();
         _lEngineRescue = _lEngineDoctor.LDoctorDatabaseCreate();
         _lEngineRealm = _lEngineRealmVault.LRealmRead();
@@ -156,7 +155,8 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         nameof(_lEngineIdentity),
         nameof(_lEngineLanguageCache),
         nameof(_lEngineDraftClerk),
-        nameof(_lEngineEntryClerk))]
+        nameof(_lEngineEntryClerk),
+        nameof(_lEngineEnsign))]
     private void LEngineRigSet(LRig rig)
     {
         _lEngineSourceFactory = rig.LRigSources;
@@ -214,6 +214,7 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         _lEngineLanguageCache = new LLanguageCache(rig.LRigLanguages);
         _lEngineDraftClerk = new LDraftClerk(rig, _lEngineIdentity, _lEngineLanguageCache);
         _lEngineEntryClerk = new LEntryClerk(rig);
+        _lEngineEnsign = new LEnsign(rig.LRigUsher);
     }
 
     private long LEngineIdentityCreate()
@@ -271,9 +272,8 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
         {
             LDoctorRescue rescue = rig.LRigDoctor.LDoctorDatabaseCreate();
             LRealm realm = rig.LRigRealm.LRealmRead();
-            LSettings settings = rig.LRigSettings.LSettingsExist()
-                ? rig.LRigSettings.LSettingsRead()
-                : _lEngineSettings;
+            bool settled = rig.LRigSettings.LSettingsExist();
+            LSettings settings = settled ? rig.LRigSettings.LSettingsRead() : _lEngineSettings;
 
             foreach (long held in _lEngineDraftHeld)
             {
@@ -299,7 +299,11 @@ public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhon
             _lEngineRescue = rescue;
             _lEngineRealm = realm;
             LEngineRigSet(rig);
-            LEngineSettingsSave();
+            if (!settled)
+            {
+                LEngineSettingsSave();
+            }
+
             LEngineLanguageImport();
             LEngineDiweiApply();
             if (_lEngineVault.LVaultMigrated)

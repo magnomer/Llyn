@@ -1,6 +1,5 @@
 using System.Windows.Controls;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
@@ -18,11 +17,11 @@ public partial class PInput : UserControl
         InitializeComponent();
     }
 
-    internal void PInputAttach(PWindow host, LEngine engine)
+    internal void PInputAttach(PWindow host)
     {
         _pInputHost = host;
 
-        _lEditor = new LEditor(engine, engine, engine, engine, host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
         PEditor.PEditorAttach(host, _lEditor);
 
         _pInputObserver = new PObserver(this, PInputBulletinHandle);

@@ -26,7 +26,15 @@ A waiver line as it stands in a settings file.
 
 ## `private static readonly Regex TAuditRingPattern`
 
-A ring waiver line as it stands in the ring settings file, a path and a namespace.
+A ring waiver or exempt line as it stands in the ring settings file, a path and a namespace.
+
+## `private static readonly Regex TAuditRolePattern`
+
+One role row of the ring table: the assembly and the namespaces it may not name.
+
+## `private static readonly Regex TAuditQuotedPattern`
+
+A quoted string, used to read the names of a role row.
 
 ## `private static readonly Regex TAuditEnforcedPattern`
 
@@ -54,7 +62,18 @@ No object ceiling stands above its committed value.
 
 ## `public void AuditRatchet_RingWaiver_NeverGrows()`
 
-No ring waiver is missing from the committed list.
+No ring waiver is missing from the committed waiver list.
+Only the waiver block is read, so an exempt row does not stand in for a waiver.
+
+## `public void AuditRatchet_RingExempt_NeverGrows()`
+
+No ring exempt row is missing from the committed exempt list.
+An exempt row bypasses the ring guard outright, so one never appears without a commit that shows it.
+
+## `public void AuditRatchet_RingRoles_NeverShrink()`
+
+Every namespace a role was forbidden at the commit is still forbidden.
+A role may gain a forbidden namespace, never lose one.
 
 ## `public void AuditRatchet_TruthWaiver_NeverGrows()`
 
@@ -69,6 +88,10 @@ A switch committed as true is still true.
 
 Reads the committed ceilings and lists every kind whose current value is higher.
 A file not yet committed has nothing to hold against and passes.
+
+## `private static string TAuditBlockRead(string committed, string name)`
+
+The text of one setting from its name to the end of its initializer.
 
 ## `private static bool TAuditGenerationCheck(string committed)`
 

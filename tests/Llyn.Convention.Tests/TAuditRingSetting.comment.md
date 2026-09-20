@@ -9,6 +9,8 @@ No script writes this file.
 
 The hit count each kind may reach.
 `EngineField` counts the `LEngine _lEngine` fields in the veneer.
+`EngineName` counts every declaration typed `LEngine` in the veneer.
+Those are the window's field and constructor, and the root's field, local and apply parameter.
 `EngineHelper` counts the tenure, vista and foray type names in the veneer.
 `AdapterEngine` counts the archives, loaders and sessions the engine constructs itself, none since plan 08.
 `EnginePart` counts the files declaring `partial class LEngine`, 72 after plan 09 lifted the draft clerk.

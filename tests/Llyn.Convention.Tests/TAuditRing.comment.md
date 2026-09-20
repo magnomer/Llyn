@@ -19,6 +19,11 @@ A `ProjectReference` as it stands in a `.csproj`, with the referenced project na
 A veneer field holding the engine.
 Plans 09 and 10 leave one in `PWindow.xaml.cs` and one in `App.xaml.cs`.
 
+## `private static readonly string[] TAuditRingName`
+
+Any declaration typed `LEngine` in the veneer: a field, a parameter or a local.
+The field count alone let thirteen panels keep taking the engine as an attach parameter.
+
 ## `private static readonly string[] TAuditRingHelper`
 
 The tenure, vista and foray type names, wherever the veneer spells one.
@@ -26,6 +31,7 @@ The tenure, vista and foray type names, wherever the veneer spells one.
 ## `private static readonly string[] TAuditRingAdapter`
 
 An archive, loader or database session constructed by the engine itself.
+Both the `new T(` and the `T x = new(` spelling are caught.
 Plans 06 to 08 moved each construction into the infrastructure, so the ceiling stands at zero.
 
 ## `private static readonly string[] TAuditRingDatabase`
@@ -39,7 +45,12 @@ A type declaration in an engine source, capturing the name the deportment must n
 ## `private static readonly string[] TAuditRingBuilt`
 
 An adapter constructed anywhere: an archive, a loader, a file or an HTTP fetcher.
-`LMarkupLoader` in the engine is an assembler over ports and is written `new(` so the pattern passes it.
+The second row catches the target-typed `T x = new(` spelling, which the first would let through.
+
+## `private static readonly string[] TAuditRingDisk`
+
+A file or folder touched directly: a static call on `File` or `Directory`, or a stream or info object built.
+`Path` is string work and an `IOException` catch is handling an adapter's failure, so neither is listed.
 
 ## `public void AuditRing_Projects_ReferenceInward()`
 
@@ -58,6 +69,11 @@ Every waiver row still matches a break, so a fixed break deletes its row.
 ## `public void AuditRing_Veneer_HoldsEngineWithinCeiling()`
 
 The engine fields and the engine helpers in the veneer each stay within their ceiling.
+
+## `public void AuditRing_Engine_TouchesNoDisk()`
+
+No source of the engine or the deportment touches a file or a folder.
+The usher and the vaults do that.
 
 ## `public void AuditRing_Engine_HoldsPartsWithinCeiling()`
 

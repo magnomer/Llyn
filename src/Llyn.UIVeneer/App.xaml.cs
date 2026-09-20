@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -12,6 +13,8 @@ namespace Llyn.UIVeneer;
 
 public partial class LBootstrap : System.Windows.Application
 {
+    private readonly HttpClient _lBootstrapClient = LRigFactory.LRigClientCreate();
+
     private LEngine? _lBootstrapEngine;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -42,7 +45,7 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             workspace = LWorkspaceRoot.LWorkspaceRootRead();
-            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, null));
+            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient));
         }
         catch (Exception exception)
         {
@@ -70,9 +73,15 @@ public partial class LBootstrap : System.Windows.Application
         new PWindow(engine, LBootstrapWorkspaceChange).Show();
     }
 
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _lBootstrapClient.Dispose();
+        base.OnExit(e);
+    }
+
     private void LBootstrapWorkspaceChange(string path)
     {
-        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, null));
+        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, _lBootstrapClient));
         LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 

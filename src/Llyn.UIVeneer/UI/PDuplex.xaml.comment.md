@@ -9,9 +9,9 @@ Searching, picking and reading live in the wing, so this file only forwards to b
 
 The window's posture the vistas are started through at each restore.
 
-## `internal void PDuplexAttach(PWindow host, LEngine engine)`
+## `internal void PDuplexAttach(PWindow host)`
 
-Puts both wings to work on `engine` and takes the posture from `host`.
+Puts both wings to work on the window deportment and takes the posture from `host`.
 Each wing subscribes for itself, so the panel subscribes to nothing.
 
 ## `internal void PDuplexRestore(LWorkspaceState state)`

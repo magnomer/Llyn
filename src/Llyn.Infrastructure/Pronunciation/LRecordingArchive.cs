@@ -84,6 +84,36 @@ public sealed class LRecordingArchive : LRecordingVault
         return path;
     }
 
+    public void LRecordingSweep(IReadOnlySet<string> kept)
+    {
+        ArgumentNullException.ThrowIfNull(kept);
+
+        string folder = Path.Combine(_lRecordingArchiveRoot, LRecordingArchiveBucket);
+        if (!Directory.Exists(folder))
+        {
+            return;
+        }
+
+        foreach (string file in Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories))
+        {
+            if (kept.Contains(Path.GetFullPath(file)))
+            {
+                continue;
+            }
+
+            try
+            {
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
+    }
+
     private async Task<byte[]> LRecordingArchiveRead(string address, CancellationToken cancellation)
     {
         for (int attempt = 1; ; attempt++)

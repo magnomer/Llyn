@@ -18,6 +18,12 @@ Downloads a chosen recording into the workspace and returns the saved path.
 The file sits under `audio/<language>/` and is named by the headword, the recording's variety and its address.
 A recording carrying no variety leaves the variety part out, so a pack without varieties reads the same.
 
+## `public void LRecordingSweep(IReadOnlySet<string> kept)`
+
+Walks the `audio` folder and deletes every file whose full path is not in `kept`.
+A missing folder sweeps nothing.
+A file that will not delete is left for the next sweep.
+
 ## `private async Task<byte[]> LRecordingArchiveRead(string address, CancellationToken cancellation)`
 
 Fetches the bytes of one recording, the one read both saving and previewing go through.

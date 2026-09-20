@@ -16,7 +16,8 @@ It is recorded so later runs are stable.
 
 ## `public static void LWorkspaceRootChange(string path)`
 
-Records `path` as the workspace folder and creates it.
+Records `path` as the workspace folder, resolved to its full form, and creates it.
+The pointer then reads the same as the rig's root, whatever the user typed.
 Subsequent settings and database access resolve against this folder.
 
 ## `public static string LWorkspaceDatabaseRead(string root)`

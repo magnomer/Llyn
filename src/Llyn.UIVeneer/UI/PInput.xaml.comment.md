@@ -10,9 +10,9 @@ It never opens on a stored entry.
 So a store here always writes a new one and leaves the form empty for the next.
 Correcting an entry that exists is the browse-style panels' work.
 
-## `internal void PInputAttach(PWindow host, LEngine engine)`
+## `internal void PInputAttach(PWindow host)`
 
-Puts the panel to work on `engine`, the workspace the window opened, and opens the form empty.
+Puts the panel to work on the editor the window deportment builds, and opens the form empty.
 
 ## `internal void PInputReset()`
 

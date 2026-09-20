@@ -1,5 +1,9 @@
 ﻿# App.xaml.cs
 
+## `protected override void OnExit(ExitEventArgs e)`
+
+Disposes the one client every rig of the session was built over.
+
 ## `private void LBootstrapWorkspaceChange(string path)`
 
 The composition root's half of a workspace change, handed to the window as a delegate.
@@ -7,6 +11,7 @@ The rig for the new folder is built here, since only this file may name the fact
 The engine takes it whole and refuses it whole.
 A folder that fails to open leaves the old rig standing.
 The pointer is written last, so a folder that fails to open is never pointed at.
+The pointer resolves the path to its full form itself, so it reads as the rig's root.
 The rig passes straight from the factory into the engine.
 The shell may hold no engine answer of its own.
 
@@ -66,10 +71,11 @@ A corrupt database or a file from a newer build no longer stops the launch.
 A database another program holds is not set aside, and the message says so.
 Closing that program is the cure.
 
-### `engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, null));`
+### `engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient));`
 
 This file is the composition root: the one place above Infrastructure that builds a rig.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
+The client is the root's field, built once and handed to every rig, and disposed in `OnExit`.
 
 ### `new PWindow(engine, LBootstrapWorkspaceChange).Show();`
 

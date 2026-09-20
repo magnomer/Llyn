@@ -12,4 +12,7 @@ An equal geometry saved twice writes the file once.
 A workspace with only the legacy settings file is read once and its posture written beside it.
 A posture file standing beside the legacy one wins.
 A workspace moved onto keeps its own posture, and one without any inherits the posture held.
+One moved onto with only the legacy settings file yields its window, mode and volume.
+The settings file is not rewritten before the posture reads it.
+A posture file that will not read leaves the posture held and the file as it was.
 The loader round-trips an ordering by its stored name, and reads nothing, junk and unusable keys as defaults.

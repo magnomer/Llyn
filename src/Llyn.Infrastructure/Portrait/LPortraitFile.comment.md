@@ -3,7 +3,12 @@
 ## `public sealed class LPortraitFile : LPortraitVault`
 
 The adapter behind the portrait port, writing a Portrait as an HTML, Markdown, or Word file.
-It loads the theme the rendered page wears, so the engine names neither the theme loader nor a writer.
+It is built over the theme the rendered page wears.
+The engine therefore names neither the theme loader nor a writer.
+
+## `public LPortraitFile(LTheme theme)`
+
+Takes the theme once, so no export re-reads the embedded resource.
 
 ## `public void LPortraitSave(LPortraitPage page, LPortraitFormat format, string path)`
 

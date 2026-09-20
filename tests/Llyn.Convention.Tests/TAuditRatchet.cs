@@ -31,6 +31,11 @@ public sealed class TAuditRatchet
     private static readonly Regex TAuditRingPattern =
         new(@"^\s*""([^"":]+:[\w.]+)"",", RegexOptions.Multiline);
 
+    private static readonly Regex TAuditRolePattern =
+        new(@"\[""(?<role>Llyn\.\w+)""\]\s*=\s*\[(?<names>[^\]]*)\]", RegexOptions.Singleline);
+
+    private static readonly Regex TAuditQuotedPattern = new(@"""([^""]+)""", RegexOptions.Compiled);
+
     private static readonly Regex TAuditEnforcedPattern = new(@"Enforced = (true|false);", RegexOptions.Compiled);
 
     private static readonly Regex TAuditGenerationPattern = new(@"TAuditGeneration = (\d+);", RegexOptions.Compiled);
@@ -68,7 +73,7 @@ public sealed class TAuditRatchet
             return;
         }
 
-        HashSet<string> known = TAuditRingPattern.Matches(committed)
+        HashSet<string> known = TAuditRingPattern.Matches(TAuditBlockRead(committed, "TAuditRingWaiver"))
             .Select(match => match.Groups[1].Value)
             .ToHashSet(StringComparer.Ordinal);
         List<string> added = TAuditRingSetting.TAuditRingWaiver
@@ -79,6 +84,56 @@ public sealed class TAuditRatchet
         Assert.True(added.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITRATCHET",
             $"{added.Count} ring waiver line(s) not in the committed settings.\n{string.Join('\n', added)}"));
+    }
+
+    [Fact]
+    public void AuditRatchet_RingExempt_NeverGrows()
+    {
+        string? committed = TAuditCommittedRead(TAuditRingPath);
+        if (committed is null || !TAuditGenerationCheck(committed))
+        {
+            return;
+        }
+
+        HashSet<string> known = TAuditRingPattern.Matches(TAuditBlockRead(committed, "TAuditRingExempt"))
+            .Select(match => match.Groups[1].Value)
+            .ToHashSet(StringComparer.Ordinal);
+        List<string> added = TAuditRingSetting.TAuditRingExempt
+            .Where(exempt => !known.Contains(exempt))
+            .Select(exempt => $"  {exempt}")
+            .ToList();
+
+        Assert.True(added.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRATCHET",
+            $"{added.Count} ring exempt line(s) not in the committed settings.\n{string.Join('\n', added)}"));
+    }
+
+    [Fact]
+    public void AuditRatchet_RingRoles_NeverShrink()
+    {
+        string? committed = TAuditCommittedRead(TAuditRingPath);
+        if (committed is null || !TAuditGenerationCheck(committed))
+        {
+            return;
+        }
+
+        List<string> loosened = [];
+        foreach (Match match in TAuditRolePattern.Matches(TAuditBlockRead(committed, "TAuditRingRoles")))
+        {
+            string role = match.Groups["role"].Value;
+            string[] now = TAuditRingSetting.TAuditRingRoles.GetValueOrDefault(role, []);
+            foreach (Match name in TAuditQuotedPattern.Matches(match.Groups["names"].Value))
+            {
+                if (!now.Contains(name.Groups[1].Value, StringComparer.Ordinal))
+                {
+                    loosened.Add($"  {role} may now name {name.Groups[1].Value}");
+                }
+            }
+        }
+
+        Assert.True(loosened.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITRATCHET",
+            $"{loosened.Count} ring role(s) dropped a forbidden namespace.\n{string.Join('\n', loosened)}"));
     }
 
     [Fact]
@@ -158,6 +213,24 @@ public sealed class TAuditRatchet
         Assert.True(raised.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITRATCHET",
             $"{raised.Count} ceiling(s) raised above the committed value.\n{string.Join('\n', raised)}"));
+    }
+
+    private static string TAuditBlockRead(string committed, string name)
+    {
+        int start = committed.IndexOf(name + " =", StringComparison.Ordinal);
+        if (start < 0)
+        {
+            return string.Empty;
+        }
+
+        int end = committed.IndexOf("};", start, StringComparison.Ordinal);
+        int close = committed.IndexOf("];", start, StringComparison.Ordinal);
+        if (close >= 0 && (end < 0 || close < end))
+        {
+            end = close;
+        }
+
+        return end < 0 ? committed[start..] : committed[start..end];
     }
 
     private static bool TAuditGenerationCheck(string committed)

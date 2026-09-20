@@ -82,6 +82,7 @@ public sealed partial class LEngine
 
     public bool LEngineRecordingExist(string? file)
     {
-        return LEngineLocationResolve(file) is { IsFile: true } resolved && File.Exists(resolved.LocalPath);
+        return LEngineLocationResolve(file) is { IsFile: true } resolved
+            && _lEngineUsher.LUsherPathExist(resolved.LocalPath);
     }
 }
