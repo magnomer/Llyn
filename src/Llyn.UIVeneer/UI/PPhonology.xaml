@@ -99,29 +99,8 @@
                         StaysOpen="False"
                         VerticalOffset="6">
                         <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                            <StackPanel>
+                            <StackPanel x:Name="PSequenceList">
                                 <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Sequence.Title}" />
-
-                                <RadioButton
-                                    GroupName="PSequenceChoice"
-                                    IsChecked="True"
-                                    Click="PSequenceHandle"
-                                    Style="{StaticResource Theme.Choice.Order}"
-                                    Tag="Headword"
-                                    Content="{DynamicResource Sequence.Headword}" />
-                                <RadioButton
-                                    GroupName="PSequenceChoice"
-                                    Click="PSequenceHandle"
-                                    Style="{StaticResource Theme.Choice.Order}"
-                                    Tag="Reverse"
-                                    Content="{DynamicResource Sequence.Reverse}" />
-                                <RadioButton GroupName="PSequenceChoice" Click="PSequenceHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Sound" Content="{DynamicResource Sequence.Sound}" />
-                                <RadioButton
-                                    GroupName="PSequenceChoice"
-                                    Click="PSequenceHandle"
-                                    Style="{StaticResource Theme.Choice.Order}"
-                                    Tag="Pending"
-                                    Content="{DynamicResource Sequence.Pending}" />
                             </StackPanel>
                         </Border>
                     </Popup>

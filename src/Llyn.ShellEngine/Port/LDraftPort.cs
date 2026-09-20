@@ -33,4 +33,14 @@ public interface LDraftPort
     IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId);
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);
+
+    IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions);
+
+    int LEngineUnitRead(string text, int offset);
+
+    int LEngineOffsetRead(string text, int unit);
+
+    IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored);
+
+    bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other);
 }

@@ -95,17 +95,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PLadderList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Ladder.Title}" />
-                            <RadioButton
-                                GroupName="PLadderChoice"
-                                IsChecked="True"
-                                Click="PLadderHandle"
-                                Style="{StaticResource Theme.Choice.Order}"
-                                Tag="Name"
-                                Content="{DynamicResource Ladder.Name}" />
-                            <RadioButton GroupName="PLadderChoice" Click="PLadderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Ladder.Reverse}" />
-                            <RadioButton GroupName="PLadderChoice" Click="PLadderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Ladder.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>
@@ -158,17 +149,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PStairList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Stair.Title}" />
-                            <RadioButton
-                                GroupName="PStairChoice"
-                                IsChecked="True"
-                                Click="PStairHandle"
-                                Style="{StaticResource Theme.Choice.Order}"
-                                Tag="Name"
-                                Content="{DynamicResource Stair.Name}" />
-                            <RadioButton GroupName="PStairChoice" Click="PStairHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Stair.Reverse}" />
-                            <RadioButton GroupName="PStairChoice" Click="PStairHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Stair.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>

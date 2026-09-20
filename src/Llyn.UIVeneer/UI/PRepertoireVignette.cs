@@ -36,7 +36,7 @@ public partial class PRepertoire
     {
         string? text = PVignetteTextRead(value);
 
-        PMarkdown.PMarkdownShow(PVignetteDescription, text);
+        PMarkdown.PMarkdownShow(PVignetteDescription, text, _pRepertoireHost.PWindowDeportment);
         PVignetteDescriptionSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 

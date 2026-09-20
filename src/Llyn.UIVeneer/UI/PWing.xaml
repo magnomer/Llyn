@@ -79,19 +79,8 @@
                     StaysOpen="False"
                     VerticalOffset="12">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PWingOrderList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
-
-                            <RadioButton
-                                GroupName="PWingOrderChoice"
-                                IsChecked="True"
-                                Click="PWingOrderHandle"
-                                Style="{StaticResource Theme.Choice.Order}"
-                                Tag="Headword"
-                                Content="{DynamicResource Order.Headword}" />
-                            <RadioButton GroupName="PWingOrderChoice" Click="PWingOrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Order.Reverse}" />
-                            <RadioButton GroupName="PWingOrderChoice" Click="PWingOrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Recent" Content="{DynamicResource Order.Recent}" />
-                            <RadioButton GroupName="PWingOrderChoice" Click="PWingOrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Earliest" Content="{DynamicResource Order.Earliest}" />
                         </StackPanel>
                     </Border>
                 </Popup>

@@ -47,19 +47,14 @@ public sealed class LWing
         _lWingVista?.LVistaQuerySet(query);
     }
 
-    public void LWingOrderSet(string? choice)
+    public void LWingOrderSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lWingVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LWingSieveSet(LCatalogFilter filter)
@@ -74,12 +69,12 @@ public sealed class LWing
         _lWingVista?.LVistaSelect(id);
     }
 
-    public void LWingVistaRestore(LPosture posture, string tab)
+    public void LWingVistaRestore(LWindow window, string tab)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LWingVistaRestore(
-            posture.LPostureVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
+            window.LWindowVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
     }
 
     public void LWingObserverAttach(LSubject subject, Action<LBulletin> observer)

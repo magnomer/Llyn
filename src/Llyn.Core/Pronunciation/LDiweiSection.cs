@@ -4,7 +4,13 @@ using System.Globalization;
 
 namespace Llyn.Core;
 
-public sealed class LDiweiSection
+public sealed record LDiweiSection(
+    string LDiweiSectionHeading,
+    string LDiweiSectionLabel,
+    IReadOnlyList<LDiweiLine> LDiweiSectionLines,
+    IReadOnlyList<LTallyLine> LDiweiSectionTallies,
+    bool LDiweiSectionSwitched,
+    bool LDiweiSectionRespelled)
 {
     private const string LDiweiSectionKey = "Yunjing.Division";
 
@@ -13,30 +19,6 @@ public sealed class LDiweiSection
     private const string LDiweiSectionPrefix = "Yunjing.Place";
 
     private const string LDiweiSectionUnplaced = "Yunjing.PlaceNone";
-
-    private readonly List<LDiweiLine> _lDiweiSectionLines = [];
-
-    private LDiweiSection(
-        string heading, string label, IReadOnlyList<LTallyLine> tallies, bool switched, bool respelled)
-    {
-        LDiweiSectionHeading = heading;
-        LDiweiSectionLabel = label;
-        LDiweiSectionTallies = tallies;
-        LDiweiSectionSwitched = switched;
-        LDiweiSectionRespelled = respelled;
-    }
-
-    public string LDiweiSectionHeading { get; }
-
-    public string LDiweiSectionLabel { get; }
-
-    public IReadOnlyList<LDiweiLine> LDiweiSectionLines => _lDiweiSectionLines;
-
-    public IReadOnlyList<LTallyLine> LDiweiSectionTallies { get; }
-
-    public bool LDiweiSectionSwitched { get; }
-
-    public bool LDiweiSectionRespelled { get; }
 
     public static IReadOnlyList<LDiweiSection> LDiweiSectionScan(
         string kind,
@@ -53,47 +35,80 @@ public sealed class LDiweiSection
         ArgumentNullException.ThrowIfNull(localize);
 
         bool rime = string.Equals(kind, LDiwei.LDiweiRime, StringComparison.Ordinal);
-        Dictionary<string, LDiweiSection> sections = new(StringComparer.Ordinal);
-        Dictionary<(string, string, bool), LDiweiLine> lines = [];
+        Dictionary<string, List<LDiweiLine>> sections = new(StringComparer.Ordinal);
+        Dictionary<(string, string, bool), List<string>> lines = [];
         foreach (LFanqieRow row in rows)
         {
             string heading = rime
                 ? hypothesis?.LHypothesisPlaceFind(row.LFanqieRowInitial)?.LHypothesisPlaceName ?? string.Empty
                 : row.LFanqieRowDivision;
-            if (!sections.TryGetValue(heading, out LDiweiSection? section))
+            if (!sections.TryGetValue(heading, out List<LDiweiLine>? placed))
             {
-                section = new LDiweiSection(
-                    heading,
-                    rime ? LDiweiPlaceFormat(heading, localize) : LDiweiLabelFormat(heading, localize),
-                    LDiweiTallyScan(tallies, heading, respelled),
-                    switched,
-                    respelled);
-                sections[heading] = section;
+                placed = [];
+                sections[heading] = placed;
             }
 
             (string, string, bool) key = rime
                 ? (heading, row.LFanqieRowInitial, false)
                 : (heading, LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime), row.LFanqieRowRounded);
-            if (!lines.TryGetValue(key, out LDiweiLine? line))
+            if (!lines.TryGetValue(key, out List<string>? characters))
             {
-                line = new LDiweiLine(rime, row, hypothesis);
-                lines[key] = line;
-                section._lDiweiSectionLines.Add(line);
+                characters = [];
+                lines[key] = characters;
+                placed.Add(LDiweiLineCreate(rime, row, hypothesis, characters));
             }
 
-            line.LDiweiLineAdd(row.LFanqieRowCharacter);
+            LDiweiCharacterAdd(characters, row.LFanqieRowCharacter);
         }
 
-        List<LDiweiSection> built = [.. sections.Values];
-        built.Sort((left, right) =>
-            LDiwei.LDiweiRankRead(kind, left.LDiweiSectionHeading, hypothesis)
-                .CompareTo(LDiwei.LDiweiRankRead(kind, right.LDiweiSectionHeading, hypothesis)));
-        foreach (LDiweiSection section in built)
+        List<string> headings = [.. sections.Keys];
+        headings.Sort((left, right) =>
+            LDiwei.LDiweiRankRead(kind, left, hypothesis).CompareTo(LDiwei.LDiweiRankRead(kind, right, hypothesis)));
+        List<LDiweiSection> built = new(headings.Count);
+        foreach (string heading in headings)
         {
-            LDiweiLine.LDiweiLineSort(section._lDiweiSectionLines);
+            List<LDiweiLine> placed = sections[heading];
+            LDiweiLineSort(placed);
+            built.Add(new LDiweiSection(
+                heading,
+                rime ? LDiweiPlaceFormat(heading, localize) : LDiweiLabelFormat(heading, localize),
+                placed,
+                LDiweiTallyScan(tallies, heading, respelled),
+                switched,
+                respelled));
         }
 
         return built;
+    }
+
+    private static LDiweiLine LDiweiLineCreate(
+        bool rime, LFanqieRow row, LHypothesis? hypothesis, List<string> characters)
+    {
+        string? part = rime ? hypothesis?.LHypothesisInitialFind(row) : hypothesis?.LHypothesisFinalFind(row);
+        return new LDiweiLine(
+            part is null ? string.Empty : '/' + part + '/',
+            rime ? row.LFanqieRowInitial : LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime),
+            !rime && row.LFanqieRowRounded,
+            rime ? hypothesis?.LHypothesisRankRead(row.LFanqieRowInitial) ?? -1 : -1,
+            characters);
+    }
+
+    private static void LDiweiCharacterAdd(List<string> characters, string character)
+    {
+        if (character.Length > 0 && !characters.Contains(character))
+        {
+            characters.Add(character);
+        }
+    }
+
+    private static void LDiweiLineSort(List<LDiweiLine> lines)
+    {
+        lines.Sort((left, right) =>
+        {
+            int order = LDiwei.LDiweiRankNormalize(left.LDiweiLineRank)
+                .CompareTo(LDiwei.LDiweiRankNormalize(right.LDiweiLineRank));
+            return order != 0 ? order : string.CompareOrdinal(left.LDiweiLineLabel, right.LDiweiLineLabel);
+        });
     }
 
     private static IReadOnlyList<LTallyLine> LDiweiTallyScan(

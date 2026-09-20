@@ -36,7 +36,7 @@ public partial class PSettings : UserControl
         PSettingsEpithet.IsChecked = settings.LSettingsEpithet;
         PFrequency.IsChecked = settings.LSettingsFrequency;
         PMorphology.IsChecked = settings.LSettingsMorphology;
-        PLayoutLinked.IsChecked = _pSettingsHost.PWindowPosture.LPostureRead().LPostureStateLinked;
+        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPostureRead().LPostureStateLinked;
     }
 
     private void PSettingsBulletinHandle(LBulletin bulletin)

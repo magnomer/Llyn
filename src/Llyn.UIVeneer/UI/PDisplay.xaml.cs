@@ -40,6 +40,7 @@ public partial class PDisplay : UserControl
     {
         _pDisplayHost = host;
         _lDisplay = display;
+        PDisplayGrasp.PGraspLimit = display.LDisplayGraspStep;
         PMedia.PMediaAttach(this, host.PWindowDeportment);
 
         PVolumeLoad();
@@ -122,7 +123,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Visible
             : Visibility.Collapsed;
 
-        PMarkdown.PMarkdownShow(PDisplayNote, draft.LEntryDraftNote);
+        PMarkdown.PMarkdownShow(PDisplayNote, draft.LEntryDraftNote, _pDisplayHost.PWindowDeportment);
         PDisplayNoteSection.Visibility = draft.LEntryDraftNoted ? Visibility.Visible : Visibility.Collapsed;
 
         PDisplayStampShow(id);

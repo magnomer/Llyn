@@ -36,13 +36,8 @@ public partial class PTenor
 
     private void PDegreeHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PDegreeDropper.IsChecked = false;
-        _lTenor.LTenorDegreeSet(choice);
+        _lTenor.LTenorDegreeSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
@@ -58,7 +53,7 @@ public partial class PTenor
 
     internal async void PTenorVistaRestore()
     {
-        _lTenor.LTenorVistaRestore(_pTenorHost.PWindowPosture);
+        _lTenor.LTenorVistaRestore(_pTenorHost.PWindowDeportment);
         _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PGamutFind));
         _lTenor.LTenorObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTenorWorkspaceUpdate));
@@ -70,6 +65,15 @@ public partial class PTenor
         _lTenor.LTenorCohortAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PCohortFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PDegreeList,
+            "Degree",
+            PDegreeHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
         PGrilleRestore();
 

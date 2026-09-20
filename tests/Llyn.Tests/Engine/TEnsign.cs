@@ -98,5 +98,7 @@ public sealed class TEnsign
         public bool LUsherPathExist(string? path) => path is not null && TUsherPresent.Contains(path);
 
         public void LUsherPathDelete(string path) => TUsherDeleted.Add(path);
+
+        public void LUsherOpen(string target) => throw new NotSupportedException();
     }
 }

@@ -4,7 +4,8 @@
 
 The slice of the engine the window and the settings panel see.
 It reads and saves the settings, the workspace path, the workspace state and the interface language.
-It also reads the rescue report, records an audit line, and loads fonts and flags.
+It also reads the rescue report, records an audit line, words a refusal, and loads fonts and flags.
+The interface texts are read through it, so a deportment names no localization.
 Nothing here touches an entry or a draft.
 `LEngine` implements it today, and a settings clerk takes it over when the parts are dismantled.
 

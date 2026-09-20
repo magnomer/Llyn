@@ -8,6 +8,9 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static IReadOnlyList<long> TAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
+        LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
+
     internal static LReading TReadingCreate(string variety, string phonetic) =>
         new LReading(variety, phonetic);
 

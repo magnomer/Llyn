@@ -1,10 +1,18 @@
 ﻿using System;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    public int LEngineGraspStep => LGrasp.LGraspStep;
+
+    public string LEngineGraspFormat(int step)
+    {
+        return LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+    }
+
     public int LEngineGraspRead(long entryId)
     {
         lock (_lEngineGate)

@@ -4,6 +4,7 @@
 
 The slice of the engine a deportment sees when it holds or links a draft.
 It starts a tenure, drops a draft, attaches an observer, and answers the link lookups a card edit asks.
+It also divides a sentence around its Mentions, converts text offsets, and toggles or matches anchors.
 `LEngine` implements it today, and the draft clerk takes it over when the parts are dismantled.
 Member names keep the engine's `LEngine*` form until that hand-over renames them once.
 

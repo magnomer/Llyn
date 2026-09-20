@@ -33,18 +33,13 @@ public partial class PCorpus
 
     private void PRankHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PRankDropper.IsChecked = false;
-        _lCorpus.LCorpusRankSet(choice);
+        _lCorpus.LCorpusRankSet(PSender.PSenderOrderRead(sender));
     }
 
     internal async void PCorpusVistaRestore()
     {
-        _lCorpus.LCorpusVistaRestore(_pCorpusHost.PWindowPosture);
+        _lCorpus.LCorpusVistaRestore(_pCorpusHost.PWindowDeportment);
         _lCorpus.LCorpusObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PAnthologyFind));
         _lCorpus.LCorpusObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PCorpusWorkspaceUpdate));
@@ -59,6 +54,16 @@ public partial class PCorpus
         _lCorpus.LCorpusQuotationAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PQuotationFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PRankList,
+            "Rank",
+            PRankHandle,
+            [
+                LCatalogOrder.LCatalogOrderText,
+                LCatalogOrder.LCatalogOrderLanguage,
+                LCatalogOrder.LCatalogOrderSource,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PRankDropdown, _lCorpus.LCorpusOrder);
         PGauzeRestore();
 

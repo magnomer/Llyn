@@ -31,6 +31,18 @@ Reads the catalog of a language through the localization port and makes it the c
 The veneer copies the answer into its resources, so no ring above the engine opens a resource.
 The default catalog is applied before any engine is built, so the bootstrap opens that one through the port itself.
 
+## `public string LEngineLocalizationRead()`
+
+The stored interface language normalised to a listed one, so a deportment never names the localization.
+
+## `public string LEngineTextRead(string key)`
+
+The interface text under a key, or the key itself when none is loaded.
+
+## `public string? LEngineTextFind(string key)`
+
+The interface text under a key, or null when none is loaded.
+
 ## `public void LEngineLocalizationSave(string language)`
 
 Persists the chosen interface language and keeps it current.

@@ -111,10 +111,7 @@ Whether the held draft differs from what is stored, after the deferred requests 
 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.
 A refused store is announced under the scope's save key and keeps the tenure, so the user can read why.
-
-## `private long? LDeskCommitRun(LTenure held, bool store)`
-
-The finish itself, retried once after a sweep when the draft is unreadable and the seam allows it.
+The unreadable seam travels into the finish, so the tenure asks before it sweeps and the desk decides nothing.
 
 ## `public void LDeskCancel()`
 

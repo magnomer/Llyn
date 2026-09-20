@@ -53,7 +53,8 @@ internal sealed class TWorkspace : IDisposable
 
     public LEngine TWorkspaceEngineStart(HttpClient client)
     {
-        return new LEngine(LRigFactory.LRigFactoryBuild(_tWorkspaceRoot, client) with { LRigClock = new TClockFake() });
+        LRig rig = LRigFactory.LRigFactoryBuild(_tWorkspaceRoot, client, new LUsherFile());
+        return new LEngine(rig with { LRigClock = new TClockFake() });
     }
 
     public SqliteConnection TWorkspaceConnectionRead()

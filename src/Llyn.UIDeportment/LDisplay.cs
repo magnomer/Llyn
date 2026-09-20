@@ -99,6 +99,20 @@ public sealed class LDisplay
         _lEntryPort.LEngineFavoriteDelete(id);
     }
 
+    public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
+
+    public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)
+    {
+        return _lEntryPort.LEngineNameResolve(labels);
+    }
+
+    public string LDisplayGraspFormat(int step)
+    {
+        return LDisplayChosen is null
+            ? string.Empty
+            : _lEntryPort.LEngineGraspFormat(step);
+    }
+
     public int LDisplayGraspRead(long id)
     {
         return _lEntryPort.LEngineGraspRead(id);

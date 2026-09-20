@@ -67,6 +67,21 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)
+    {
+        return LMentionSpan.LMentionSpanDivide(text, mentions);
+    }
+
+    public int LEngineUnitRead(string text, int offset)
+    {
+        return LMentionSpan.LMentionUnitRead(text, offset);
+    }
+
+    public int LEngineOffsetRead(string text, int unit)
+    {
+        return LMentionSpan.LMentionOffsetRead(text, unit);
+    }
+
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
         ArgumentNullException.ThrowIfNull(text);

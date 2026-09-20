@@ -49,19 +49,14 @@ public sealed class LFavorite
         _lFavoriteVista?.LVistaQuerySet(query);
     }
 
-    public void LFavoriteSeriesSet(string? choice)
+    public void LFavoriteSeriesSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lFavoriteVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LFavoriteStrainerSet(LCatalogFilter filter)
@@ -106,12 +101,12 @@ public sealed class LFavorite
         return _lPortraitPort.LEnginePortraitPrint(_lFavoriteVista, label, ticket);
     }
 
-    public void LFavoriteVistaRestore(LPosture posture)
+    public void LFavoriteVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LFavoriteVistaRestore(
-            posture.LPostureVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LFavoriteObserverAttach(LSubject subject, Action<LBulletin> observer)

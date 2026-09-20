@@ -124,7 +124,7 @@ public partial class PEditor
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
         if (length == 0)
         {
             return;
@@ -172,7 +172,7 @@ public partial class PEditor
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
         if (length == 0)
         {
             return;
@@ -205,7 +205,7 @@ public partial class PEditor
     internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && PMentionSelection.PMentionSelectionRead(box).PMentionSelectionLength > 0;
+            && PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment).PMentionSelectionLength > 0;
     }
 
     internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -237,9 +237,9 @@ public partial class PEditor
         }
     }
 
-    private static LMentionDraft? PSentenceMentionFind(TextBox box, PSentence row)
+    private LMentionDraft? PSentenceMentionFind(TextBox box, PSentence row)
     {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
         return PMentionSelection.PMentionSelectionFind(row.PSentenceMention, offset, length);
     }
 

@@ -19,10 +19,11 @@ How many rows the last read returned, so the empty notice is a verdict rather th
 
 The rows the engine returns for the vista, already filtered, sorted, twinned and marked.
 
-## `public void LPhonologyOrderSet(string? choice)`
+## `public void LPhonologyOrderSet(LCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
-A sender without a tag names no ordering and is ignored.
+The veneer hands the enum its row carries, so no ordering is spelled or parsed.
+A sender that is no order row hands null, which keeps the ordering it has.
 
 ## `public Task LPhonologyPortraitPrint(LPortraitLabel label, LPressTicket ticket)`
 

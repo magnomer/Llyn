@@ -8,12 +8,15 @@ using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.Media;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class LBootstrap : System.Windows.Application
 {
     private readonly HttpClient _lBootstrapClient = LRigFactory.LRigClientCreate();
+
+    private readonly LUsher _lBootstrapUsher = new LUsherShell(new LUsherFile());
 
     private LEngine? _lBootstrapEngine;
 
@@ -24,7 +27,7 @@ public partial class LBootstrap : System.Windows.Application
             PLocalizationCatalog.PLocalizationCatalogApply(
                 Resources,
                 LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));
-            PThemeLoader.PThemeLoaderApply(LThemeLoader.LThemeLoaderLoad(), Resources);
+            PThemeLoader.PThemeLoaderApply(LThemeLoader.LThemeLoaderLoad().LThemeColorRead, Resources);
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
             PCaret.PCaretHook();
@@ -45,7 +48,7 @@ public partial class LBootstrap : System.Windows.Application
         try
         {
             workspace = LWorkspaceRoot.LWorkspaceRootRead();
-            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient));
+            engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient, _lBootstrapUsher));
         }
         catch (Exception exception)
         {
@@ -70,18 +73,20 @@ public partial class LBootstrap : System.Windows.Application
 
         base.OnStartup(e);
 
-        new PWindow(engine, LBootstrapWorkspaceChange).Show();
+        LWindow window = new(new LPosture(engine), engine, engine, engine, engine, engine, engine);
+        new PWindow(window, LBootstrapWorkspaceChange).Show();
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _lBootstrapEngine?.Dispose();
         _lBootstrapClient.Dispose();
         base.OnExit(e);
     }
 
     private void LBootstrapWorkspaceChange(string path)
     {
-        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, _lBootstrapClient));
+        _lBootstrapEngine?.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, _lBootstrapClient, _lBootstrapUsher));
         LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 

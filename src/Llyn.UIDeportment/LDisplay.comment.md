@@ -12,6 +12,18 @@ That is what it did over the engine.
 
 Whether the folded reflexes are shown, flipped by the fold toggle alone and read through its verdict.
 
+## `public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;`
+
+The last grasp step, which the display's star control takes as its limit.
+
+## `public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
+
+The compass labels made distinct, numbered in order where two sections share a name.
+
+## `public string LDisplayGraspFormat(int step)`
+
+The wording of a grasp step, or empty while no entry is shown.
+
 ## `public bool LDisplayFanqieCheck(long? id)`
 
 Whether the entry's rime-book rows are still being fetched, false for no entry or when the engine refuses to say.

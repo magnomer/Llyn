@@ -39,13 +39,8 @@ public partial class PTaxonomy
 
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PFunnelDropper.IsChecked = false;
-        _lTaxonomy.LTaxonomyFunnelSet(choice);
+        _lTaxonomy.LTaxonomyFunnelSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PLatticeHandle(object sender, RoutedEventArgs e)
@@ -56,7 +51,7 @@ public partial class PTaxonomy
 
     internal async void PTaxonomyVistaRestore()
     {
-        _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowPosture);
+        _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowDeportment);
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PDirectoryFind));
         _lTaxonomy.LTaxonomyObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTaxonomyWorkspaceUpdate));
@@ -69,6 +64,14 @@ public partial class PTaxonomy
         _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PMembershipFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PFunnelList,
+            "Funnel",
+            PFunnelHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderReverse,
+            ]);
         PChoice.PChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         PLatticeRestore();
 

@@ -187,8 +187,10 @@ public sealed partial class LTenure
         LTenureStateRaise();
     }
 
-    public long? LTenureFinish(bool store)
+    public long? LTenureFinish(bool store, Func<bool> unreadableSeam)
     {
+        ArgumentNullException.ThrowIfNull(unreadableSeam);
+
         lock (_lTenureTurn)
         {
             lock (_lTenureGate)
@@ -224,7 +226,16 @@ public sealed partial class LTenure
                 return null;
             }
 
-            long stored = LTenureCommit();
+            long stored;
+            try
+            {
+                stored = LTenureCommit();
+            }
+            catch (LRefusal refusal) when (refusal.LRefusalIllegible && unreadableSeam())
+            {
+                LTenureSweep();
+                return LTenureFinish(store, static () => false);
+            }
             lock (_lTenureGate)
             {
                 LTenureForayStop();

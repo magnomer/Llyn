@@ -15,7 +15,8 @@ public partial class PCorpus
 
     private void PTranscriptLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(
+            PTranscriptText, _pCorpusHost.PWindowDeportment);
         if (length == 0 || PTranscriptDraft == 0)
         {
             return;
@@ -57,7 +58,8 @@ public partial class PCorpus
 
     private void PTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(
+            PTranscriptText, _pCorpusHost.PWindowDeportment);
         if (length == 0 || PTranscriptDraft == 0)
         {
             return;
@@ -82,7 +84,7 @@ public partial class PCorpus
     private void PTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && PMentionSelection.PMentionSelectionRead(box).PMentionSelectionLength > 0;
+            && PMentionSelection.PMentionSelectionRead(box, _pCorpusHost.PWindowDeportment).PMentionSelectionLength > 0;
     }
 
     private void PTranscriptSenseCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -97,7 +99,8 @@ public partial class PCorpus
 
     private LMentionDraft? PTranscriptMentionFind()
     {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(
+            PTranscriptText, _pCorpusHost.PWindowDeportment);
         return PMentionSelection.PMentionSelectionFind(_pTranscriptMention, offset, length);
     }
 

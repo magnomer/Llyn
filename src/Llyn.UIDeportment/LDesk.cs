@@ -306,7 +306,7 @@ public sealed class LDesk
         long? stored;
         try
         {
-            stored = LDeskCommitRun(held, store);
+            stored = held.LTenureFinish(store, LDeskUnreadableConfirm);
         }
         catch (Exception exception)
         {
@@ -322,24 +322,6 @@ public sealed class LDesk
         }
 
         return true;
-    }
-
-    private long? LDeskCommitRun(LTenure held, bool store)
-    {
-        try
-        {
-            return held.LTenureFinish(store);
-        }
-        catch (LRefusal refusal) when (refusal.LRefusalIllegible)
-        {
-            if (!LDeskUnreadableConfirm())
-            {
-                throw;
-            }
-
-            held.LTenureSweep();
-            return held.LTenureFinish(store);
-        }
     }
 
     private bool LDeskUnreadableConfirm()

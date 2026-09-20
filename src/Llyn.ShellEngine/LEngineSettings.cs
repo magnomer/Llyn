@@ -46,6 +46,21 @@ public sealed partial class LEngine
         return LLocalization.LLocalizationLoad(_lEngineLocalization, language);
     }
 
+    public string LEngineLocalizationRead()
+    {
+        return LLocalization.LLocalizationNormalize(LEngineSettingsRead().LSettingsLocalization);
+    }
+
+    public string LEngineTextRead(string key)
+    {
+        return LLocalization.LLocalizationTextRead(key);
+    }
+
+    public string? LEngineTextFind(string key)
+    {
+        return LLocalization.LLocalizationTextFind(key);
+    }
+
     public void LEngineLocalizationSave(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

@@ -6,9 +6,10 @@ The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are
 The composition root calls it once at start and once per workspace change, and hands the rig to the engine.
 The engine itself contains the use cases and builds none of the adapters they run on.
 
-## `public static LRig LRigFactoryBuild(string workspace, HttpClient client)`
+## `public static LRig LRigFactoryBuild(string workspace, HttpClient client, LUsher usher)`
 
 Builds every adapter over the workspace at `workspace` and bundles them as one rig.
+The usher is handed in, since the one that opens folders lives in the media ring this project never references.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
 The folder is created when missing, so a fresh workspace opens as an empty one.
 One database stands behind every archive, and the client handed in behind every fetcher and download.

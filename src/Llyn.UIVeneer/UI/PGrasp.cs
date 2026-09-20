@@ -2,14 +2,10 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Llyn.Core;
-
 namespace Llyn.UIVeneer;
 
 public sealed class PGrasp : FrameworkElement
 {
-    private const int PGraspStarCount = LGrasp.LGraspStep / 2;
-
     private const double PGraspStarSize = 16;
 
     private const double PGraspStarGap = 3;
@@ -20,12 +16,22 @@ public sealed class PGrasp : FrameworkElement
 
     private static readonly Geometry PGraspStarGeometry = PGraspStarBuild();
 
+    public static readonly DependencyProperty PGraspLimitProperty = DependencyProperty.Register(
+        nameof(PGraspLimit),
+        typeof(int),
+        typeof(PGrasp),
+        new FrameworkPropertyMetadata(
+            0,
+            FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender,
+            PGraspLimitHandle),
+        value => (int)value >= 0);
+
     public static readonly DependencyProperty PGraspStepProperty = DependencyProperty.Register(
         nameof(PGraspStep),
         typeof(int),
         typeof(PGrasp),
-        new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender),
-        value => LGrasp.LGraspCheck((int)value));
+        new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender, null, PGraspStepClamp),
+        value => (int)value >= 0);
 
     public static readonly DependencyProperty PGraspFillProperty = DependencyProperty.Register(
         nameof(PGraspFill),
@@ -92,11 +98,19 @@ public sealed class PGrasp : FrameworkElement
 
     public int PGraspPointed => _pGraspHover ?? PGraspStep;
 
+    public int PGraspLimit
+    {
+        get => (int)GetValue(PGraspLimitProperty);
+        set => SetValue(PGraspLimitProperty, value);
+    }
+
     public int PGraspStep
     {
         get => (int)GetValue(PGraspStepProperty);
         set => SetValue(PGraspStepProperty, value);
     }
+
+    private int PGraspStarCount => PGraspLimit / 2;
 
     public Brush PGraspFill
     {
@@ -169,9 +183,9 @@ public sealed class PGrasp : FrameworkElement
         int? next = e.Key switch
         {
             Key.Left => Math.Max(0, PGraspStep - 1),
-            Key.Right => Math.Min(LGrasp.LGraspStep, PGraspStep + 1),
+            Key.Right => Math.Min(PGraspLimit, PGraspStep + 1),
             Key.Home => 0,
-            Key.End => LGrasp.LGraspStep,
+            Key.End => PGraspLimit,
             _ => null,
         };
 
@@ -182,9 +196,14 @@ public sealed class PGrasp : FrameworkElement
         }
     }
 
-    public static string PGraspLabelResolve(int step)
+    private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
-        return LGrasp.LGraspKeyRead(step);
+        sender.CoerceValue(PGraspStepProperty);
+    }
+
+    private static object PGraspStepClamp(DependencyObject sender, object value)
+    {
+        return Math.Min((int)value, ((PGrasp)sender).PGraspLimit);
     }
 
     private void PGraspHoverChange(int? hovered)
@@ -205,7 +224,7 @@ public sealed class PGrasp : FrameworkElement
         RaiseEvent(new RoutedEventArgs(PGraspChangedEvent, this));
     }
 
-    private static int PGraspStepResolve(Point point)
+    private int PGraspStepResolve(Point point)
     {
         double pitch = PGraspStarSize + PGraspStarGap;
         double x = point.X - PGraspHitSlack + PGraspStarGap / 2;

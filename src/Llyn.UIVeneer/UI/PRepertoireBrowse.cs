@@ -38,18 +38,13 @@ public partial class PRepertoire
 
     private void PTierHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PTierDropper.IsChecked = false;
-        _lRepertoire.LRepertoireTierSet(choice);
+        _lRepertoire.LRepertoireTierSet(PSender.PSenderOrderRead(sender));
     }
 
     internal async void PRepertoireVistaRestore()
     {
-        _lRepertoire.LRepertoireVistaRestore(_pRepertoireHost.PWindowPosture);
+        _lRepertoire.LRepertoireVistaRestore(_pRepertoireHost.PWindowDeportment);
         _lRepertoire.LRepertoireObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PAtlasFind));
         _lRepertoire.LRepertoireObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PRepertoireWorkspaceUpdate));
@@ -64,6 +59,15 @@ public partial class PRepertoire
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, POccurrenceFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PTierList,
+            "Tier",
+            PTierHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderKind,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PTierDropdown, _lRepertoire.LRepertoireOrder);
         PMeshRestore();
 

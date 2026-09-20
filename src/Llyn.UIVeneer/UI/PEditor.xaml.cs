@@ -87,6 +87,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _lEditor.LEditorStopped += PEditorStopUpdate;
         _lEditor.LEditorFavoriteChanged += PEditorFavoriteUpdate;
         _lEditor.LEditorGraspChanged += PEditorGraspUpdate;
+        PEditorGrasp.PGraspLimit = _lEditor.LEditorGraspStep;
         _lEditor.LEditorFanqieChanged += PEditorFanqieUpdate;
         _lEditor.LEditorFailed += host.PWindowFailureShow;
         _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;

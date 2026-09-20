@@ -38,7 +38,7 @@ public partial class PWindow
 
     private void PWindowStateRestore()
     {
-        if (_lPosture.LPostureRead().LPostureStateWindow is not LWindowState state)
+        if (_lWindow.LWindowPostureRead().LPostureStateWindow is not LWindowState state)
         {
             Rect area = SystemParameters.WorkArea;
 
@@ -87,7 +87,7 @@ public partial class PWindow
             return;
         }
 
-        _lPosture.LPostureWindowSave(new LWindowState(
+        _lWindow.LWindowStateSave(new LWindowState(
             bounds.Left,
             bounds.Top,
             bounds.Width,

@@ -79,17 +79,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PFunnelList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Funnel.Title}" />
-
-                            <RadioButton
-                                GroupName="PFunnelChoice"
-                                IsChecked="True"
-                                Click="PFunnelHandle"
-                                Style="{StaticResource Theme.Choice.Order}"
-                                Tag="Name"
-                                Content="{DynamicResource Funnel.Name}" />
-                            <RadioButton GroupName="PFunnelChoice" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Funnel.Reverse}" />
                         </StackPanel>
                     </Border>
                 </Popup>

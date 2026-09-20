@@ -27,6 +27,18 @@ In a language without separators the longest stored headword of that language co
 Only when no headword matches, or the language separates words, does the letter run of [LMentionSpan](../Llyn.Core/Lexicon/LMentionSpan.comment.md) decide.
 The candidates are every Entry of the language whose headword is that word, case folded, in headword order.
 
+## `public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)`
+
+The pieces a sentence falls into around its Mentions, as `LMentionSpan` divides them.
+
+## `public int LEngineUnitRead(string text, int offset)`
+
+The UTF-16 index of a code-point offset in the text.
+
+## `public int LEngineOffsetRead(string text, int unit)`
+
+The code-point offset of a UTF-16 index in the text.
+
 ## `public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)`
 
 Reads the span text, headword and sense of every Mention in one pass, in the order given.

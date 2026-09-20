@@ -134,6 +134,21 @@ public sealed partial class LEngine
         return names;
     }
 
+    public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels)
+    {
+        ArgumentNullException.ThrowIfNull(labels);
+
+        string[] names = new string[labels.Count];
+        int[] places = new int[labels.Count];
+        for (int index = 0; index < places.Length; index++)
+        {
+            places[index] = index;
+        }
+
+        LTwin.LTwinNameApply(places, place => labels[place], (place, name) => names[place] = name);
+        return names;
+    }
+
     private static string[] LEngineTwinRead<LEngineRow>(
         IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
     {

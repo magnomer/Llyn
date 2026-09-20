@@ -14,6 +14,8 @@ public sealed class LImprint
 
     private readonly LEntryPort _lEntryPort;
 
+    private readonly LSettingsPort _lSettingsPort;
+
     private int _lImprintBlankAt = -1;
 
     private int _lImprintCount;
@@ -24,13 +26,15 @@ public sealed class LImprint
 
     private string _lBylineWord = string.Empty;
 
-    public LImprint(LDraftPort drafts, LEntryPort entries, Func<bool> unreadableSeam)
+    public LImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _lDraftPort = drafts;
         _lEntryPort = entries;
+        _lSettingsPort = settings;
         LImprintDesk = new LDesk(drafts, "Source", unreadableSeam);
         LImprintDesk.LDeskDraftChanged += LImprintDraftUpdate;
     }
@@ -100,7 +104,7 @@ public sealed class LImprint
 
     public string LImprintTallyRead()
     {
-        return LReference.LReferenceUsageFormat(LImprintUsageRead(), LLocalization.LLocalizationTextRead);
+        return LReference.LReferenceUsageFormat(LImprintUsageRead(), _lSettingsPort.LEngineTextRead);
     }
 
     private int LImprintUsageRead()

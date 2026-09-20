@@ -2,14 +2,21 @@
 
 ## `public sealed class PGrasp : FrameworkElement`
 
-A row of five stars the user clicks to say how well they know an entry.
+A row of stars the user clicks to say how well they know an entry, half a star per step.
 It draws itself, so there is no child element per star and no template to keep in step.
-The step it holds is a count of half stars from zero to ten, the same unit the store keeps.
+The step it holds is a count of half stars from zero to the limit, in the store's own unit.
+The limit comes from the deportment through `PGraspLimit`, so the row names no Core constant.
 The row only maps a click to a step and raises it, and never decides what the store holds.
+
+## `public static readonly DependencyProperty PGraspLimitProperty`
+
+The last step, set once by the host from its deportment before any step is shown.
+It measures the row, since the star count is half of it.
 
 ## `public static readonly DependencyProperty PGraspStepProperty`
 
-The shown step, validated against `LGraspCheck` so no surface can set a value the store would refuse.
+The shown step, never negative and clamped to the limit.
+So no surface can set a value the store would refuse.
 
 ## `public static readonly DependencyProperty PGraspFillProperty`
 
@@ -69,11 +76,16 @@ Clicking the half that already equals the step clears to zero, so one click unra
 
 ## `protected override void OnKeyDown(KeyEventArgs e)`
 
-Left and Right move one half step, Home clears, End sets five stars.
+Left and Right move one half step, Home clears, End sets the limit.
 
-## `public static string PGraspLabelResolve(int step)`
+## `private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
-The localization key wording a step, read from `LGrasp` so the deportment words it the same.
+A new limit clamps the step already held.
+So a limit set after the step never leaves it out of range.
+
+## `private static object PGraspStepClamp(DependencyObject sender, object value)`
+
+Holds the step at or under the limit, since a step past the last star has nothing to draw.
 
 ## `private void PGraspHoverChange(int? hovered)`
 

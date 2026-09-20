@@ -29,10 +29,11 @@ The rows the engine returns for the vista, already filtered, sorted, numbered an
 The entry the panel shows, as the station the window records before a jump away.
 Zero says no entry is shown, so there is no place to come back to.
 
-## `public void LLibraryOrderSet(string? choice)`
+## `public void LLibraryOrderSet(LCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
-A sender without a tag names no ordering and is ignored.
+The veneer hands the enum its row carries, so no ordering is spelled or parsed.
+A sender that is no order row hands null, which keeps the ordering it has.
 
 ## `public Task LLibraryPortraitPrint(LPortraitLabel label, LPressTicket ticket)`
 

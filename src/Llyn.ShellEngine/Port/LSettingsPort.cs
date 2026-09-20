@@ -22,6 +22,12 @@ public interface LSettingsPort
 
     IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);
 
+    string LEngineLocalizationRead();
+
+    string LEngineTextRead(string key);
+
+    string? LEngineTextFind(string key);
+
     void LEngineLocalizationSave(string language);
 
     void LEngineEpithetSave(bool epithet);
@@ -35,6 +41,8 @@ public interface LSettingsPort
     LDoctorRescue LEngineRescueRead();
 
     string? LEngineAuditRecord(Exception exception);
+
+    string? LEngineNoticeRead(Exception exception);
 
     LFont LEngineFontRead(string language, LFontRole role);
 

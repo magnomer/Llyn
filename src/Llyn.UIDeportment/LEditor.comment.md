@@ -110,9 +110,14 @@ Marks or clears the favourite on the stored entry, announcing a refusal and a re
 
 Writes the grasp step on the stored entry, announcing a refusal and a re-read on failure.
 
+## `public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;`
+
+The last grasp step, which the star control takes as its limit so it names no Core constant.
+
 ## `public string LEditorGraspFormat(int step)`
 
 The wording of a grasp step, or empty for a fresh draft that has no grasp to word.
+The engine words it, so the deportment names no localization and no grasp key.
 
 ## `public IReadOnlyList<LFanqieGroup> LEditorFanqieRead()`
 

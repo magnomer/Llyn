@@ -15,7 +15,7 @@ Marking the row here rather than in the click keeps the first page, shown on att
 ## `private void PDialFolderHandle(object sender, RoutedEventArgs e)`
 
 Opens the workspace folder in the shell's file browser.
-The path is handed to `LUsherShell` as is, so the user's default browser for folders is what opens.
+The path is handed to the window deportment as is, so the user's default browser for folders is what opens.
 A folder the shell cannot open is reported as a notice, since the folder may have been moved away meanwhile.
 
 ## `private void PDialWidthHandle(object sender, RoutedEventArgs e)`

@@ -272,6 +272,15 @@ public sealed partial class LEngine
         }
     }
 
+    public string? LEngineNoticeRead(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return exception is LRefusal refusal
+            ? refusal.LRefusalReason
+            : exception.InnerException is null ? null : LEngineNoticeRead(exception.InnerException);
+    }
+
     public void LEngineRigApply(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);

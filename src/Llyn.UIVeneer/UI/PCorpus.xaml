@@ -70,12 +70,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PRankList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Rank.Title}" />
-                            <RadioButton GroupName="PRankChoice" IsChecked="True" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Text" Content="{DynamicResource Rank.Text}" />
-                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Rank.Language}" />
-                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Source" Content="{DynamicResource Rank.Source}" />
-                            <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Rank.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>

@@ -9,6 +9,11 @@ It is the inverse of `LEntryLoader`.
 So it lives on its own rather than among the engine's lookup and workspace calls.
 Everything it writes shares one session, so an entry is written whole or not at all.
 
+## `public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)`
+
+The blocks of a note, parsed for the veneer that draws them.
+It sits beside the note normalisation this part already runs.
+
 ## `internal LEntry LEngineEntrySave(LEntryDraft draft)`
 
 Saves the whole input form as one new entry.

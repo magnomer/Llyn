@@ -71,7 +71,7 @@ internal static class TInterfaceDeportment
     internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
 
     internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, _ => true, () => false);
+        new(engine, engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, _ => true, () => false);
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
         shelf.LShelfVistaRestore(vista, footnote);
@@ -162,7 +162,7 @@ internal static class TInterfaceDeportment
 
     internal static LGuild TGuildCreate(
         LEngine engine, Func<bool> leaveSeam, Func<int, bool> removalSeam, Func<string, string, bool> unionSeam) =>
-        new(engine, engine, engine, () => true, leaveSeam, removalSeam, unionSeam, () => false);
+        new(engine, engine, engine, engine, () => true, leaveSeam, removalSeam, unionSeam, () => false);
 
     internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
         guild.LGuildVistaRestore(vista, oeuvre);
@@ -176,7 +176,7 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildQuerySet(this LGuild guild, string query) => guild.LGuildQuerySet(query);
 
-    internal static void TGuildOrderSet(this LGuild guild, string? choice) => guild.LGuildOrderSet(choice);
+    internal static void TGuildOrderSet(this LGuild guild, LCatalogOrder? order) => guild.LGuildOrderSet(order);
 
     internal static void TGuildRowSelect(this LGuild guild, long? id) => guild.LGuildRowSelect(id);
 
@@ -198,7 +198,7 @@ internal static class TInterfaceDeportment
         oeuvre.LOeuvreColophonRead(draft);
 
     internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, () => true);
+        new(engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, () => true);
 
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
         panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
@@ -220,13 +220,23 @@ internal static class TInterfaceDeportment
 
     internal static void TYunjingTallySet(this LYunjing panel, bool? respelled) => panel.LYunjingTallySet(respelled);
     internal static LWindow TWindowCreate(LSettingsPort settings) =>
+        TWindowCreate(TEngineFake.TEngineStubCreate<LDraftPort>(), settings);
+
+    internal static LWindow TWindowCreate(LDraftPort drafts) =>
+        TWindowCreate(drafts, TEngineFake.TEngineStubCreate<LSettingsPort>());
+
+    internal static LWindow TWindowCreate(LDraftPort drafts, LSettingsPort settings) =>
         new(
-            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            new LPosture(new LEngine(TRigFake.TRigFakeBuild())),
+            drafts,
             TEngineFake.TEngineStubCreate<LEntryPort>(),
             settings,
             TEngineFake.TEngineStubCreate<LPhonologyPort>(),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             TEngineFake.TEngineStubCreate<LPortraitPort>());
+
+    internal static LWindow TWindowCreate(LEngine engine) =>
+        new(new LPosture(engine), engine, engine, engine, engine, engine, engine);
 
     internal static LFont TFontCreate(string family, double size) => new(family, size);
 
@@ -236,6 +246,25 @@ internal static class TInterfaceDeportment
     internal static string TWindowLocalizationRead(this LWindow window) => window.LWindowLocalizationRead();
 
     internal static void TWindowEpithetSave(this LWindow window, bool epithet) => window.LWindowEpithetSave(epithet);
+
+    internal static LPostureState TWindowPostureRead(this LWindow window) => window.LWindowPostureRead();
+
+    internal static void TWindowLayoutSave(this LWindow window, params LLayout[] layout) =>
+        window.LWindowLayoutSave(layout);
+
+    internal static void TWindowLayoutReset(this LWindow window) => window.LWindowLayoutReset();
+
+    internal static void TWindowModeSave(this LWindow window, string mode) => window.LWindowModeSave(mode);
+
+    internal static bool TWindowModeMatch(this LWindow window, string mode) => window.LWindowModeMatch(mode);
+
+    internal static IReadOnlyList<LMentionPiece> TWindowMentionDivide(
+        this LWindow window, string text, IReadOnlyList<LMention> mentions) =>
+        window.LWindowMentionDivide(text, mentions);
+
+    internal static IReadOnlyList<long> TWindowAnchorToggle(
+        this LWindow window, IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
+        window.LWindowAnchorToggle(anchors, fanqieId, anchored);
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings) =>
         new(entries, TEngineFake.TEngineStubCreate<LPortraitPort>(), settings);

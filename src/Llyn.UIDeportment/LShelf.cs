@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -13,6 +12,8 @@ public sealed class LShelf
 
     private readonly LPortraitPort _lPortraitPort;
 
+    private readonly LSettingsPort _lSettingsPort;
+
     private readonly Func<bool> _lShelfLeaveSeam;
 
     private readonly Func<int, bool> _lShelfRemovalSeam;
@@ -22,7 +23,7 @@ public sealed class LShelf
     private int _lShelfCount;
 
     public LShelf(
-        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits,
+        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         LEditor editor,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
@@ -32,16 +33,18 @@ public sealed class LShelf
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
+        _lSettingsPort = settings;
         _lShelfLeaveSeam = leaveSeam;
         _lShelfRemovalSeam = removalSeam;
         LShelfEditor = editor;
-        LShelfImprint = new LImprint(drafts, entries, unreadableSeam);
+        LShelfImprint = new LImprint(drafts, entries, settings, unreadableSeam);
         LShelfPanel = new LPanel("Source.LoadFailed", LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
         LShelfFootnote = new LFootnote(entries, portraits, editor, shownSeam, leaveSeam);
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
@@ -150,19 +153,14 @@ public sealed class LShelf
         _lShelfVista?.LVistaQuerySet(query);
     }
 
-    public void LShelfOrderSet(string? choice)
+    public void LShelfOrderSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lShelfVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LShelfSieveSet(LCatalogFilter filter)
@@ -187,9 +185,9 @@ public sealed class LShelf
         return id is long stored ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
     }
 
-    private static string LShelfTallyFormat(int count)
+    private string LShelfTallyFormat(int count)
     {
-        return LReference.LReferenceUsageFormat(count, LLocalization.LLocalizationTextRead);
+        return LReference.LReferenceUsageFormat(count, _lSettingsPort.LEngineTextRead);
     }
 
     public LColophon LShelfColophonRead(LDraft draft)
@@ -199,7 +197,7 @@ public sealed class LShelf
         LReference reference = draft.LDraftReference
             ?? throw new InvalidOperationException("The shelf draft holds no reference.");
         return reference.LReferenceColophonRead(
-            draft.LDraftAuthor, LShelfTallyRead(), LLocalization.LLocalizationTextRead);
+            draft.LDraftAuthor, LShelfTallyRead(), _lSettingsPort.LEngineTextRead);
     }
 
     public bool LShelfChangeCheck()
@@ -434,13 +432,13 @@ public sealed class LShelf
         return Task.CompletedTask;
     }
 
-    public void LShelfVistaRestore(LPosture posture)
+    public void LShelfVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LShelfVistaRestore(
-            posture.LPostureVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public string LShelfFileRead()

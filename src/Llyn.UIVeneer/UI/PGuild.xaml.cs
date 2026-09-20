@@ -58,7 +58,7 @@ public partial class PGuild : UserControl
 
     internal void PGuildVistaRestore()
     {
-        _lGuild.LGuildVistaRestore(_pGuildHost.PWindowPosture);
+        _lGuild.LGuildVistaRestore(_pGuildHost.PWindowDeportment);
         _lGuild.LGuildPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
@@ -74,6 +74,16 @@ public partial class PGuild : UserControl
             LSubject.LSubjectExample, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
             LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+        PChoice.PChoiceOrderBuild(
+            PEchelonList,
+            "Echelon",
+            PEchelonHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderWork,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
         PChoice.PChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
         PLouverUpdate();
@@ -218,7 +228,7 @@ public partial class PGuild : UserControl
     private void PEchelonHandle(object sender, RoutedEventArgs e)
     {
         PEchelonDropper.IsChecked = false;
-        _lGuild.LGuildOrderSet(PSender.PSenderTagRead(sender));
+        _lGuild.LGuildOrderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PLouverHandle(object sender, RoutedEventArgs e)

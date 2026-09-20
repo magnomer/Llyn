@@ -33,6 +33,7 @@ The rows are written in place rather than rebuilt, so a narrowed catalog keeps i
 
 Narrows the catalog to the rows whose words contain the search text.
 A row is matched on its title, its purpose, and the card labels and helpers read from the localization.
+Both sides are lowered whole in the current culture, so the match ignores case anywhere in the label.
 The card keys come from the Dial table, so a card added there is searched without editing this file.
 The match is lowercased in the current culture, so the case of the typed text does not matter.
 Hidden rows leave the items source rather than collapsing, so the frame keeps its sibling spacing.

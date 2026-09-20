@@ -67,19 +67,14 @@ public sealed class LCorpus
         _lCorpusVista?.LVistaQuerySet(query);
     }
 
-    public void LCorpusRankSet(string? choice)
+    public void LCorpusRankSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lCorpusVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LCorpusGauzeSet(LCatalogFilter filter)
@@ -181,13 +176,13 @@ public sealed class LCorpus
         return _lPortraitPort.LEnginePortraitPrint(_lCorpusVista, legend, ticket);
     }
 
-    public void LCorpusVistaRestore(LPosture posture)
+    public void LCorpusVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LCorpusVistaRestore(
-            posture.LPostureVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
-            posture.LPostureVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
+            window.LWindowVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LCorpusObserverAttach(LSubject subject, Action<LBulletin> observer)

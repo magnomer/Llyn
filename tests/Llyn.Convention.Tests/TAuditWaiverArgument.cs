@@ -15,8 +15,6 @@ internal static partial class TAuditTruthSetting
         "PCardDrag.cs:_pCardDragCard:Argument",
         "PCardDrag.cs:_pCardDragGrab:Argument",
         "PClip.cs:PClipSelectorHandle.id:Argument",
-        "PCompass.cs:PCompassRowCreate.name:Argument",
-        "PCompass.cs:PCompassRowCreate.row:Argument",
         "PCompass.cs:_pCompassRows:Argument",
         "PContour.cs:PContourIpa:Argument",
         "PContour.cs:PContourUpdate._pContourSyllables:Argument",

@@ -18,6 +18,11 @@ The rows are built one dispatcher turn after the entry is shown.
 A card row points at the container the list generated for it.
 Containers do not exist until the layout pass has run.
 
+### `private void PCompassNameApply()`
+
+Hands the row labels to the display deportment and writes back the names it made distinct.
+Two sections that share a label come back numbered, so the compass never shows two rows the same.
+
 ### `private void PCompassCardAdd(ItemsControl cards, string kind, string unknown)`
 
 A card is named by its own title.

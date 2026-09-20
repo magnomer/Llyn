@@ -56,7 +56,7 @@ public partial class PPhonology : UserControl
 
     internal async void PPhonologyVistaRestore()
     {
-        _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowPosture);
+        _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowDeportment);
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
@@ -71,6 +71,16 @@ public partial class PPhonology : UserControl
             LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PSequenceList,
+            "Sequence",
+            PSequenceHandle,
+            [
+                LCatalogOrder.LCatalogOrderHeadword,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderSound,
+                LCatalogOrder.LCatalogOrderPending,
+            ]);
         PChoice.PChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         PLensUpdate();
 
@@ -165,7 +175,7 @@ public partial class PPhonology : UserControl
     private void PSequenceHandle(object sender, RoutedEventArgs e)
     {
         PSequenceDropper.IsChecked = false;
-        _lPhonology.LPhonologyOrderSet(PSender.PSenderTagRead(sender));
+        _lPhonology.LPhonologyOrderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PLensHandle(object sender, RoutedEventArgs e)

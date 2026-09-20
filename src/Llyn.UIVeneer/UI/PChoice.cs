@@ -25,15 +25,59 @@ internal static class PChoice
         LReferenceKind.LReferenceKindUnknown,
     ];
 
+    private static readonly IReadOnlyDictionary<LCatalogOrder, string> PChoiceOrderName =
+        new Dictionary<LCatalogOrder, string>
+    {
+        [LCatalogOrder.LCatalogOrderName] = "Name",
+        [LCatalogOrder.LCatalogOrderHeadword] = "Headword",
+        [LCatalogOrder.LCatalogOrderReverse] = "Reverse",
+        [LCatalogOrder.LCatalogOrderRecent] = "Recent",
+        [LCatalogOrder.LCatalogOrderEarliest] = "Earliest",
+        [LCatalogOrder.LCatalogOrderYear] = "Year",
+        [LCatalogOrder.LCatalogOrderAuthor] = "Author",
+        [LCatalogOrder.LCatalogOrderUsage] = "Usage",
+        [LCatalogOrder.LCatalogOrderLanguage] = "Language",
+        [LCatalogOrder.LCatalogOrderMarked] = "Marked",
+        [LCatalogOrder.LCatalogOrderText] = "Text",
+        [LCatalogOrder.LCatalogOrderSource] = "Source",
+        [LCatalogOrder.LCatalogOrderKind] = "Kind",
+        [LCatalogOrder.LCatalogOrderSound] = "Sound",
+        [LCatalogOrder.LCatalogOrderPending] = "Pending",
+        [LCatalogOrder.LCatalogOrderWork] = "Work",
+        [LCatalogOrder.LCatalogOrderGrasp] = "Grasp",
+    };
+
+    internal static void PChoiceOrderBuild(
+        Panel list, string prefix, RoutedEventHandler handler, IReadOnlyList<LCatalogOrder> orders)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(prefix);
+        ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(orders);
+
+        list.Children.Clear();
+        foreach (LCatalogOrder order in orders)
+        {
+            RadioButton choice = new()
+            {
+                GroupName = list.Name,
+                Tag = order,
+            };
+            choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
+            string name = PChoiceOrderName[order];
+            choice.SetResourceReference(ContentControl.ContentProperty, prefix + "." + name);
+            choice.Click += handler;
+            list.Children.Add(choice);
+        }
+    }
+
     internal static void PChoiceOrderApply(Popup dropdown, LCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(dropdown);
 
-        string tag = LCatalog.LCatalogOrderFormat(order);
-
         foreach (RadioButton button in PChoiceButtonScan(dropdown.Child))
         {
-            button.IsChecked = string.Equals(button.Tag as string, tag, StringComparison.Ordinal);
+            button.IsChecked = order.Equals(button.Tag);
         }
     }
 

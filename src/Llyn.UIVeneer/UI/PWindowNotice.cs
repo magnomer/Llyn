@@ -39,9 +39,9 @@ public partial class PWindow
 
     private string PWindowDetailRead(Exception exception)
     {
-        if (PWindowRefusalRead(exception) is string refused)
+        if (_lWindow.LWindowNoticeRead(exception) is string reason)
         {
-            return refused;
+            return PLocalizationCatalog.PLocalizationTextRead(reason);
         }
 
         string unexpected = PLocalizationCatalog.PLocalizationTextRead("Notice.Unexpected");
@@ -50,16 +50,6 @@ public partial class PWindow
         return recorded is null
             ? unexpected
             : $"{unexpected}\n\n{PLocalizationCatalog.PLocalizationTextRead("Notice.Recorded")}\n{recorded}";
-    }
-
-    private string? PWindowRefusalRead(Exception exception)
-    {
-        if (exception is LRefusal refusal)
-        {
-            return PLocalizationCatalog.PLocalizationTextRead(refusal.LRefusalReason);
-        }
-
-        return exception.InnerException is null ? null : PWindowRefusalRead(exception.InnerException);
     }
 
     private (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] PWindowEditorRead()

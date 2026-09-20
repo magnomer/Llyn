@@ -228,7 +228,7 @@ internal static partial class TInterface
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
         engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(
-            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound))
+            path, TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound), new LUsherFile())
             with { LRigClock = new TClockFake() });
     }
 
@@ -297,6 +297,8 @@ internal static partial class TInterface
 
     internal static LSettings TEngineSettingsRead(this LEngine engine) =>
         engine.LEngineSettingsRead();
+
+    internal static string TEngineLocalizationRead(this LEngine engine) => engine.LEngineLocalizationRead();
 
     internal static void TEngineLocalizationSave(this LEngine engine, string language)
     {

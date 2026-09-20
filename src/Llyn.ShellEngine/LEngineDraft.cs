@@ -7,6 +7,11 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)
+    {
+        return LMarkdown.LMarkdownParse(text);
+    }
+
     internal LEntry LEngineEntrySave(LEntryDraft draft)
     {
         return LEngineEntrySave(draft, []);

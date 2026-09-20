@@ -13,3 +13,8 @@ True when a file is present at the path, false for a null path.
 ## `void LUsherPathDelete(string path);`
 
 Removes the file at the path, and stays quiet when the file is already gone or locked.
+
+## `void LUsherOpen(string target);`
+
+Opens a folder or a web address for the user.
+A launch that fails throws, and the caller shows the failure.

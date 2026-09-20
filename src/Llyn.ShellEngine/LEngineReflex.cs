@@ -7,6 +7,16 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
+    {
+        return LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
+    }
+
+    public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
+    {
+        return LAnchor.LAnchorMatch(one, other);
+    }
+
     public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)
     {
         return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageReflexRules;

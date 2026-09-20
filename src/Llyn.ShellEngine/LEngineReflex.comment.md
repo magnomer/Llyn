@@ -7,6 +7,14 @@ It covers the ordered rows an Entry keeps, the readings of its characters in the
 The rows are edited like transcriptions and stored with the entry, so a fetched reading can be corrected.
 The fetch that fills an empty entry sits in `LEngineReflexFetch.cs`.
 
+## `public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)`
+
+The anchor list with one fanqie added or removed, kept sorted and without repeats.
+
+## `public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
+
+Whether two anchor lists name the same fanqie rows.
+
 ## `public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)`
 
 The fetch rules the pack of `language` declares, in written order.

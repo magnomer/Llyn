@@ -46,17 +46,17 @@ public partial class PDisplay
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayHost.PWindowPosture.LPostureVolumeMatch(PVolume.Value))
+        if (_pDisplayHost.PWindowDeportment.LWindowVolumeMatch(PVolume.Value))
         {
             return;
         }
 
-        _pDisplayHost.PWindowPosture.LPostureVolumeSave(PVolume.Value);
+        _pDisplayHost.PWindowDeportment.LWindowVolumeSave(PVolume.Value);
     }
 
     private void PVolumeLoad()
     {
-        PVolume.Value = _pDisplayHost.PWindowPosture.LPostureRead().LPostureStateVolume;
+        PVolume.Value = _pDisplayHost.PWindowDeportment.LWindowPostureRead().LPostureStateVolume;
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 }

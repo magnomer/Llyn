@@ -8,7 +8,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
-public sealed class LWindow
+public sealed class LWindow : IDisposable
 {
     private readonly LDraftPort _lDraftPort;
 
@@ -22,7 +22,10 @@ public sealed class LWindow
 
     private readonly LPortraitPort _lPortraitPort;
 
+    private readonly LPosture _lPosture;
+
     public LWindow(
+        LPosture posture,
         LDraftPort drafts,
         LEntryPort entries,
         LSettingsPort settings,
@@ -30,6 +33,7 @@ public sealed class LWindow
         LMediaPort media,
         LPortraitPort portraits)
     {
+        ArgumentNullException.ThrowIfNull(posture);
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(settings);
@@ -37,6 +41,7 @@ public sealed class LWindow
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(portraits);
 
+        _lPosture = posture;
         _lDraftPort = drafts;
         _lEntryPort = entries;
         _lSettingsPort = settings;
@@ -68,7 +73,8 @@ public sealed class LWindow
         Func<bool> unreadableSeam)
     {
         return new LGuild(
-            _lDraftPort, _lEntryPort, _lPortraitPort, shownSeam, leaveSeam, removalSeam, unionSeam, unreadableSeam);
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort,
+            shownSeam, leaveSeam, removalSeam, unionSeam, unreadableSeam);
     }
 
     public LLibrary LWindowLibraryCreate(
@@ -91,7 +97,8 @@ public sealed class LWindow
         Func<bool> unreadableSeam)
     {
         return new LShelf(
-            _lDraftPort, _lEntryPort, _lPortraitPort, editor, shownSeam, leaveSeam, removalSeam, unreadableSeam);
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort,
+            editor, shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LRepertoire LWindowRepertoireCreate(Func<bool> unreadableSeam)
@@ -117,7 +124,63 @@ public sealed class LWindow
     public LYunjing LWindowYunjingCreate(
         LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LYunjing(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+        return new LYunjing(
+            _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
+    }
+
+    public LPostureState LWindowPostureRead()
+    {
+        return _lPosture.LPostureRead();
+    }
+
+    public bool LWindowModeMatch(string? mode)
+    {
+        return _lPosture.LPostureModeMatch(mode);
+    }
+
+    public bool LWindowVolumeMatch(double volume)
+    {
+        return _lPosture.LPostureVolumeMatch(volume);
+    }
+
+    public LVista LWindowVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
+    {
+        return _lPosture.LPostureVistaStart(tab, subject, fallback, blank);
+    }
+
+    public void LWindowStateSave(LWindowState window)
+    {
+        _lPosture.LPostureWindowSave(window);
+    }
+
+    public void LWindowVolumeSave(double volume)
+    {
+        _lPosture.LPostureVolumeSave(volume);
+    }
+
+    public void LWindowModeSave(string mode)
+    {
+        _lPosture.LPostureModeSave(mode);
+    }
+
+    public bool LWindowLinkedSave(bool linked)
+    {
+        return _lPosture.LPostureLinkedSave(linked);
+    }
+
+    public void LWindowLayoutSave(IEnumerable<LLayout> layout)
+    {
+        _lPosture.LPostureLayoutSave(layout);
+    }
+
+    public void LWindowLayoutReset()
+    {
+        _lPosture.LPostureLayoutReset();
+    }
+
+    public void Dispose()
+    {
+        _lPosture.Dispose();
     }
 
     public void LWindowObserverAttach(Action<LBulletin> observer)
@@ -183,6 +246,41 @@ public sealed class LWindow
     public IReadOnlyList<LMentionLabel> LWindowMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
         return _lEntryPort.LEngineMentionResolve(text, mentions);
+    }
+
+    public IReadOnlyList<LMentionPiece> LWindowMentionDivide(string text, IReadOnlyList<LMention> mentions)
+    {
+        return _lDraftPort.LEngineMentionDivide(text, mentions);
+    }
+
+    public int LWindowUnitRead(string text, int offset)
+    {
+        return _lDraftPort.LEngineUnitRead(text, offset);
+    }
+
+    public int LWindowOffsetRead(string text, int unit)
+    {
+        return _lDraftPort.LEngineOffsetRead(text, unit);
+    }
+
+    public IReadOnlyList<long> LWindowAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
+    {
+        return _lDraftPort.LEngineAnchorToggle(anchors, fanqieId, anchored);
+    }
+
+    public bool LWindowAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
+    {
+        return _lDraftPort.LEngineAnchorMatch(one, other);
+    }
+
+    public IReadOnlyList<LMarkdownBlock> LWindowMarkdownParse(string? text)
+    {
+        return _lEntryPort.LEngineMarkdownParse(text);
+    }
+
+    public void LWindowLocationOpen(string target)
+    {
+        _lMediaPort.LEngineLocationOpen(target);
     }
 
     public IReadOnlyList<string> LWindowLanguageRead()
@@ -252,7 +350,7 @@ public sealed class LWindow
 
     public string LWindowLocalizationRead()
     {
-        return LLocalization.LLocalizationNormalize(_lSettingsPort.LEngineSettingsRead().LSettingsLocalization);
+        return _lSettingsPort.LEngineLocalizationRead();
     }
 
     public IReadOnlyDictionary<string, string> LWindowLocalizationLoad(string language)
@@ -293,6 +391,11 @@ public sealed class LWindow
     public string? LWindowAuditRecord(Exception exception)
     {
         return _lSettingsPort.LEngineAuditRecord(exception);
+    }
+
+    public string? LWindowNoticeRead(Exception exception)
+    {
+        return _lSettingsPort.LEngineNoticeRead(exception);
     }
 
     public IReadOnlyList<LDraft> LWindowLeftoverRead()

@@ -91,7 +91,7 @@ internal static partial class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 182,
+        ["Argument"] = 181,
         ["Guard"] = 153,
         ["Fork"] = 35,
         ["Mirror"] = 31,

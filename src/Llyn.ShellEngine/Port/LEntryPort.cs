@@ -21,6 +21,10 @@ public interface LEntryPort
 
     void LEngineFavoriteDelete(long entryId);
 
+    int LEngineGraspStep { get; }
+
+    string LEngineGraspFormat(int step);
+
     int LEngineGraspRead(long entryId);
 
     void LEngineGraspSave(long entryId, int grasp);
@@ -88,4 +92,8 @@ public interface LEntryPort
     IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner);
 
     IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry);
+
+    IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);
+
+    IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text);
 }

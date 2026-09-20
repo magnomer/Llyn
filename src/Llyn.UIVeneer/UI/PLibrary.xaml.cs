@@ -55,7 +55,7 @@ public partial class PLibrary : UserControl
 
     internal async void PLibraryVistaRestore()
     {
-        _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowPosture);
+        _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowDeportment);
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
@@ -70,6 +70,16 @@ public partial class PLibrary : UserControl
             LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            POrderList,
+            "Order",
+            POrderHandle,
+            [
+                LCatalogOrder.LCatalogOrderHeadword,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderRecent,
+                LCatalogOrder.LCatalogOrderEarliest,
+            ]);
         PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
         PSieveUpdate();
 
@@ -194,7 +204,7 @@ public partial class PLibrary : UserControl
     private void POrderHandle(object sender, RoutedEventArgs e)
     {
         POrderDropper.IsChecked = false;
-        _lLibrary.LLibraryOrderSet(PSender.PSenderTagRead(sender));
+        _lLibrary.LLibraryOrderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PSieveHandle(object sender, RoutedEventArgs e)

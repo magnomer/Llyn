@@ -11,11 +11,6 @@ The words beside it name the step under the pointer, and the stored one when the
 Reads the shown entry's grasp and sets the star row to match.
 A failed read leaves the row empty rather than claiming a rating.
 
-## `private string PDisplayGraspFormat(int step)`
-
-The words a step is shown as beside the stars, empty while no entry is shown.
-The key is resolved by the row itself, so both surfaces word a step the same way.
-
 ## `private void PDisplayHoverHandle(object sender, RoutedEventArgs e)`
 
 Re-words the label as the pointer moves across the stars, and back to the stored step when it leaves.

@@ -61,7 +61,7 @@ public partial class PReference : UserControl
 
     internal async void PReferenceVistaRestore()
     {
-        _lShelf.LShelfVistaRestore(_pReferenceHost.PWindowPosture);
+        _lShelf.LShelfVistaRestore(_pReferenceHost.PWindowDeportment);
         _lShelf.LShelfPanel.LPanelObserverAttach(
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
@@ -91,6 +91,16 @@ public partial class PReference : UserControl
             PObserver.PObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PGradeList,
+            "Grade",
+            PGradeHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderYear,
+                LCatalogOrder.LCatalogOrderAuthor,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
         PTrellisUpdate();
 
@@ -223,7 +233,7 @@ public partial class PReference : UserControl
     private void PGradeHandle(object sender, RoutedEventArgs e)
     {
         PGradeDropper.IsChecked = false;
-        _lShelf.LShelfOrderSet(PSender.PSenderTagRead(sender));
+        _lShelf.LShelfOrderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PShelfHandle(object sender, RoutedEventArgs e)

@@ -7,14 +7,15 @@ Each panel is a control with its own markup and its own behaviour.
 This file only puts them to work on the workspace the engine opened.
 It stops them at the end.
 
-## `public PWindow(LEngine engine, Action<string> workspaceOpener)`
+## `public PWindow(LWindow window, Action<string> workspaceOpener)`
 
-Opens the window on `engine`, already built and bound to a workspace that opened.
-The engine is not constructed here.
+Opens the window on its deportment, already built over an engine bound to a workspace that opened.
+No engine and no posture is constructed or named here.
 Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
-`LBootstrap` builds it and hands it over.
-The window owns it from here and disposes it when it closes.
+`LBootstrap` builds the engine, the posture and the deportment, and hands the deportment over.
+The window disposes the deportment when it closes, and the bootstrap disposes the engine on exit.
+The deportment is set as the mention attached property on the window, so every mention block below inherits it.
 `workspaceOpener` is the bootstrap's own workspace change, since only it may build a rig for a new folder.
 
 ## `internal void PWindowWorkspaceChange(string path)`
@@ -43,15 +44,11 @@ The status bar attaches after every panel, so its first reading already sees the
 
 The keeper of panel widths, reached by the settings panel when the user links or unlinks the tabs.
 
-## `internal LPosture PWindowPosture => _lPosture;`
-
-How the window stands, reached by every panel that reads or writes the volume, the layout or the open tab.
-It is built before the layout keeper, since the keeper reads its widths from it.
-
 ## `internal LWindow PWindowDeportment => _lWindow;`
 
 The window deportment, reached by every panel.
 A panel asks it for a font, a flag, a respelling switch or a media address.
+It also answers the posture: the volume, the layout, the open tab and the window bounds.
 The static veneer helpers take it, so no panel needs an engine to call them.
 
 ## `private void PWindowLayoutAttach()`

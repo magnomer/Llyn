@@ -82,7 +82,7 @@ public partial class PWindow
 
             if (isSelected)
             {
-                _lPosture.LPostureModeSave(mode);
+                _lWindow.LWindowModeSave(mode);
             }
         }
     }
@@ -91,13 +91,13 @@ public partial class PWindow
     {
         foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
-            if (!_lPosture.LPostureModeMatch(mode))
+            if (!_lWindow.LWindowModeMatch(mode))
             {
                 continue;
             }
 
             PNavigationHandle(button, new RoutedEventArgs());
-            scribe?.Invoke(_lPosture.LPostureRead().LPostureStateSplit);
+            scribe?.Invoke(_lWindow.LWindowPostureRead().LPostureStateSplit);
             return;
         }
     }

@@ -35,12 +35,12 @@ public partial class PEditor
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
     {
-        if (_pEditorHost.PWindowPosture.LPostureVolumeMatch(PVolume.Value))
+        if (_pEditorHost.PWindowDeportment.LWindowVolumeMatch(PVolume.Value))
         {
             return;
         }
 
-        _pEditorHost.PWindowPosture.LPostureVolumeSave(PVolume.Value);
+        _pEditorHost.PWindowDeportment.LWindowVolumeSave(PVolume.Value);
     }
 
     internal void PVolumeAttach()
@@ -52,7 +52,7 @@ public partial class PEditor
 
     internal void PVolumeLoad()
     {
-        PVolume.Value = _pEditorHost.PWindowPosture.LPostureRead().LPostureStateVolume;
+        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowPostureRead().LPostureStateVolume;
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 

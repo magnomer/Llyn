@@ -5,11 +5,18 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public sealed class PMention : TextBlock
 {
+    public static readonly DependencyProperty PMentionWindowProperty = DependencyProperty.RegisterAttached(
+        "PMentionWindow",
+        typeof(LWindow),
+        typeof(PMention),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, PMentionChangeHandle));
+
     public static readonly DependencyProperty PMentionTextProperty = DependencyProperty.Register(
         nameof(PMentionText),
         typeof(string),
@@ -112,6 +119,11 @@ public sealed class PMention : TextBlock
 
     internal Rect PMentionPieceRead(int offset)
     {
+        if (PMentionWindow is not LWindow window)
+        {
+            return new Rect(0, ActualHeight, 0, 0);
+        }
+
         foreach (Inline inline in Inlines)
         {
             if (inline is not Run run)
@@ -129,7 +141,7 @@ public sealed class PMention : TextBlock
                 continue;
             }
 
-            int unit = LMentionSpan.LMentionUnitRead(run.Text, offset - piece.LMentionPieceOffset);
+            int unit = window.LWindowUnitRead(run.Text, offset - piece.LMentionPieceOffset);
             TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
             if (!found.IsEmpty)
@@ -143,19 +155,29 @@ public sealed class PMention : TextBlock
 
     private static void PMentionChangeHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
-        ((PMention)sender).PMentionShow();
+        if (sender is PMention mention)
+        {
+            mention.PMentionShow();
+        }
     }
+
+    private LWindow? PMentionWindow => (LWindow?)GetValue(PMentionWindowProperty);
 
     private void PMentionShow()
     {
         string text = PMentionText;
-        _pMentionPiece = LMentionSpan.LMentionSpanDivide(text, PMentionMention ?? []);
-
         Inlines.Clear();
+        if (PMentionWindow is not LWindow window)
+        {
+            Inlines.Add(new Run(text));
+            return;
+        }
+
+        _pMentionPiece = window.LWindowMentionDivide(text, PMentionMention ?? []);
         foreach (LMentionPiece piece in _pMentionPiece)
         {
-            int start = LMentionSpan.LMentionUnitRead(text, piece.LMentionPieceOffset);
-            int end = LMentionSpan.LMentionUnitRead(text, piece.LMentionPieceEnd);
+            int start = window.LWindowUnitRead(text, piece.LMentionPieceOffset);
+            int end = window.LWindowUnitRead(text, piece.LMentionPieceEnd);
             Run run = new(text[start..end]) { Tag = piece };
 
             if (piece.LMentionPieceStored is LMention stored)
@@ -191,8 +213,13 @@ public sealed class PMention : TextBlock
             return null;
         }
 
+        if (PMentionWindow is not LWindow window)
+        {
+            return null;
+        }
+
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
-        return piece.LMentionPieceOffset + LMentionSpan.LMentionOffsetRead(run.Text, unit);
+        return piece.LMentionPieceOffset + window.LWindowOffsetRead(run.Text, unit);
     }
 
     private LMentionPiece? PMentionPieceFind(int offset)

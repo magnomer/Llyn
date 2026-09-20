@@ -50,5 +50,5 @@ internal static partial class TInterface
     }
 
     internal static long? TTenureFinish(this LTenure tenure, bool store) =>
-        tenure.LTenureFinish(store);
+        tenure.LTenureFinish(store, static () => false);
 }

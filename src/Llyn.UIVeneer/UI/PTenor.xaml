@@ -80,18 +80,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PDegreeList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Degree.Title}" />
-
-                            <RadioButton
-                                GroupName="PDegreeChoice"
-                                IsChecked="True"
-                                Click="PDegreeHandle"
-                                Style="{StaticResource Theme.Choice.Order}"
-                                Tag="Name"
-                                Content="{DynamicResource Degree.Name}" />
-                            <RadioButton GroupName="PDegreeChoice" Click="PDegreeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Degree.Reverse}" />
-                            <RadioButton GroupName="PDegreeChoice" Click="PDegreeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Degree.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>

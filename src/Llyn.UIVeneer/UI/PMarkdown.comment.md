@@ -6,9 +6,10 @@ Draws a Markdown note as WPF elements, one per block `LMarkdown` reads.
 It holds no rule about the dialect, only how each block looks on screen.
 Colors come from the theme brushes, so a theme change recolors a drawn note.
 
-## `internal static void PMarkdownShow(Panel target, string? markdown)`
+## `internal static void PMarkdownShow(Panel target, string? markdown, LWindow window)`
 
 Empties `target` and fills it with the note's blocks in reading order.
+The window deportment parses the text and opens a link, so the helper names no parser and no shell.
 A list item is a grid with its bullet or number in a fixed lead column.
 It is indented one step per level.
 Numbers count up while consecutive items stay on one level and restart otherwise.

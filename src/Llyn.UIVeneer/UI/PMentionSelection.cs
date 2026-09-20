@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 internal static class PMentionSelection
 {
-    internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(TextBox box)
+    internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(
+        TextBox box, LWindow window)
     {
         string text = box.Text;
         int start = box.SelectionStart;
@@ -23,8 +25,8 @@ internal static class PMentionSelection
             end--;
         }
 
-        int offset = LMentionSpan.LMentionOffsetRead(text, start);
-        return (offset, LMentionSpan.LMentionOffsetRead(text, end) - offset);
+        int offset = window.LWindowOffsetRead(text, start);
+        return (offset, window.LWindowOffsetRead(text, end) - offset);
     }
 
     internal static LMentionDraft? PMentionSelectionFind(IReadOnlyList<LMentionDraft> mentions, int offset, int length)

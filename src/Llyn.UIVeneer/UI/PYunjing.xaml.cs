@@ -69,7 +69,7 @@ public partial class PYunjing : UserControl
 
     internal void PYunjingVistaRestore()
     {
-        _lYunjing.LYunjingVistaRestore(_pYunjingHost.PWindowPosture);
+        _lYunjing.LYunjingVistaRestore(_pYunjingHost.PWindowDeportment);
         _lYunjing.LYunjingShengmuAttach(
             LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingYunmuAttach(
@@ -90,7 +90,25 @@ public partial class PYunjing : UserControl
             LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PLadderList,
+            "Ladder",
+            PLadderHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PLadderDropdown, _lYunjing.LYunjingLadder);
+        PChoice.PChoiceOrderBuild(
+            PStairList,
+            "Stair",
+            PStairHandle,
+            [
+                LCatalogOrder.LCatalogOrderName,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderUsage,
+            ]);
         PChoice.PChoiceOrderApply(PStairDropdown, _lYunjing.LYunjingStair);
         _lYunjing.LYunjingPlumbSet(PPlumb.Text);
         _lYunjing.LYunjingFathomSet(PFathom.Text);
@@ -218,13 +236,13 @@ public partial class PYunjing : UserControl
     private void PLadderHandle(object sender, RoutedEventArgs e)
     {
         PLadderDropper.IsChecked = false;
-        _lYunjing.LYunjingLadderSet(PSender.PSenderTagRead(sender));
+        _lYunjing.LYunjingLadderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PStairHandle(object sender, RoutedEventArgs e)
     {
         PStairDropper.IsChecked = false;
-        _lYunjing.LYunjingStairSet(PSender.PSenderTagRead(sender));
+        _lYunjing.LYunjingStairSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PYunjingHandle(object sender, RoutedEventArgs e)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -12,6 +11,8 @@ public sealed class LYunjing
     private readonly LPhonologyPort _lPhonologyPort;
 
     private readonly LPortraitPort _lPortraitPort;
+
+    private readonly LSettingsPort _lSettingsPort;
 
     private LVista? _lShengmuVista;
 
@@ -30,6 +31,7 @@ public sealed class LYunjing
     public LYunjing(
         LPhonologyPort phonology,
         LPortraitPort portraits,
+        LSettingsPort settings,
         LEditor editor,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
@@ -37,10 +39,12 @@ public sealed class LYunjing
     {
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
 
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
+        _lSettingsPort = settings;
         LYunjingEditor = editor;
         LYunjingPanel = new LPanel(
             "Yunjing.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
@@ -182,7 +186,7 @@ public sealed class LYunjing
         }
 
         return _lPhonologyPort.LEngineDiweiResolve(
-            LYunjingSideVista?.LVistaChosen, LLocalization.LLocalizationTextFind);
+            LYunjingSideVista?.LVistaChosen, _lSettingsPort.LEngineTextFind);
     }
 
     public void LYunjingPlumbSet(string query)
@@ -206,24 +210,24 @@ public sealed class LYunjing
         _lXiaoyunVista?.LVistaQuerySet(query);
     }
 
-    public void LYunjingLadderSet(string? choice)
+    public void LYunjingLadderSet(LCatalogOrder? order)
     {
-        LYunjingOrderSet(_lShengmuVista, choice);
+        LYunjingOrderSet(_lShengmuVista, order);
     }
 
-    public void LYunjingStairSet(string? choice)
+    public void LYunjingStairSet(LCatalogOrder? order)
     {
-        LYunjingOrderSet(_lYunmuVista, choice);
+        LYunjingOrderSet(_lYunmuVista, order);
     }
 
-    private static void LYunjingOrderSet(LVista? vista, string? choice)
+    private static void LYunjingOrderSet(LVista? vista, LCatalogOrder? order)
     {
-        if (choice is null)
+        if (vista is null)
         {
             return;
         }
 
-        vista?.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LYunjingReset()
@@ -326,14 +330,14 @@ public sealed class LYunjing
         return _lPortraitPort.LEnginePortraitPrint(LYunjingPanel.LPanelVista, label, ticket);
     }
 
-    public void LYunjingVistaRestore(LPosture posture)
+    public void LYunjingVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LYunjingVistaRestore(
-            posture.LPostureVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LYunjingShengmuAttach(LSubject subject, Action<LBulletin> observer)

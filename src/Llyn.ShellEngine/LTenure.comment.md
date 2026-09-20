@@ -118,9 +118,12 @@ Discards the draft and ends the tenure, cancelling any search still in flight fo
 The tenure is marked ended before the engine is asked, so a failing discard cannot leave it writing.
 A failure here is swallowed, because the caller is already leaving the work behind.
 
-## `public long? LTenureFinish(bool store)`
+## `public long? LTenureFinish(bool store, Func<bool> unreadableSeam)`
 
 Ends the tenure, committing the draft or discarding it, and answers the stored record's id.
+An unreadable value refuses the commit, and the seam asks the user whether to drop it.
+A yes sweeps the draft and finishes once more, and a no lets the refusal out to the desk.
+The retry asks nothing, so a draft still unreadable after the sweep refuses for good.
 Not storing cancels at once, so nothing waiting is written into a draft about to be dropped.
 Otherwise what was waiting is written first, and nothing changed cancels and answers null.
 A halted tenure rethrows the failure that halted it, so the panel shows why and stays open.

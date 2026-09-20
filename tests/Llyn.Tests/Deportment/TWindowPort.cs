@@ -31,16 +31,16 @@ public sealed class TWindowPort
     }
 
     [Fact]
-    public void WindowLocalizationRead_UnlistedLanguage_FallsToDefault()
+    public void WindowLocalizationRead_FakePort_ForwardsTheNormalisedName()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(
             new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["LEngineSettingsRead"] = _ => TInterface.TSettingsCreate("xx-Unlisted"),
+            ["LEngineLocalizationRead"] = _ => "ko",
         });
         LWindow window = TInterfaceDeportment.TWindowCreate(settings);
 
-        Assert.Equal(TInterface.TLocalizationNormalize(null), window.TWindowLocalizationRead());
+        Assert.Equal("ko", window.TWindowLocalizationRead());
     }
 
     [Fact]

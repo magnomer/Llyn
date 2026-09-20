@@ -39,7 +39,7 @@ public partial class PSettings
     {
         try
         {
-            LUsherShell.LUsherShellOpen(PSettingsWindow.LWindowWorkspaceRead());
+            PSettingsWindow.LWindowLocationOpen(PSettingsWindow.LWindowWorkspaceRead());
         }
         catch (Exception exception)
         {
@@ -49,7 +49,7 @@ public partial class PSettings
 
     private void PDialWidthHandle(object sender, RoutedEventArgs e)
     {
-        _pSettingsHost.PWindowPosture.LPostureLayoutReset();
+        PSettingsWindow.LWindowLayoutReset();
         _pSettingsHost.PWindowLayout.PLayoutReset();
     }
 }

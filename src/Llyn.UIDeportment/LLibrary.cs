@@ -82,19 +82,14 @@ public sealed class LLibrary
         _lLibraryVista?.LVistaQuerySet(query);
     }
 
-    public void LLibraryOrderSet(string? choice)
+    public void LLibraryOrderSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lLibraryVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LLibrarySieveSet(LCatalogFilter filter)
@@ -154,12 +149,12 @@ public sealed class LLibrary
         omissionSeam(outcome.LMarkupOutcomeOmission);
     }
 
-    public void LLibraryVistaRestore(LPosture posture)
+    public void LLibraryVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LLibraryVistaRestore(
-            posture.LPostureVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public string LLibraryFileRead()

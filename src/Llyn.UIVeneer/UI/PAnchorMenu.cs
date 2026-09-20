@@ -82,7 +82,8 @@ public partial class PEditor
         }
 
         bool anchored = box.IsChecked == true;
-        row.PReflexItemAnchors = LAnchor.LAnchorToggle(row.PReflexItemAnchors, fanqieId, anchored);
+        row.PReflexItemAnchors = _pEditorHost.PWindowDeportment.LWindowAnchorToggle(
+            row.PReflexItemAnchors, fanqieId, anchored);
         PReflexAnchorShow();
         PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.PReflexItemId, fanqieId, anchored));
     }

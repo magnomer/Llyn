@@ -12,10 +12,22 @@ A panel restoring a stored ordering therefore has to move the mark as well as re
 
 The order the kind chip menu lists the kinds in, with the unspecified row first and the unknown row last.
 
+## `private static readonly IReadOnlyDictionary<LCatalogOrder, string> PChoiceOrderName =`
+
+The resource word of each ordering, joined to a panel's prefix to name the row's label.
+The words are the veneer's own resource keys, so no panel spells an ordering in markup.
+
+## `internal static void PChoiceOrderBuild(Panel list, string prefix, RoutedEventHandler handler, IReadOnlyList<LCatalogOrder> orders)`
+
+Fills `list` with one row per ordering in `orders`, tagged with the ordering itself.
+Each row's label is the resource `prefix` names joined to the ordering's word.
+Every row reports its click to `handler`, which is the panel's own order handler.
+The rows are built here so eleven panels share one row shape.
+Each hands the deportment the enum, not a word.
+
 ## `internal static void PChoiceOrderApply(Popup dropdown, LCatalogOrder order)`
 
-Marks the row of `dropdown` whose tag names `order`, and unmarks every other row.
-The tag is the stored word for the ordering, so the dropdown and the workspace file agree on one spelling.
+Marks the row of `dropdown` whose tag is `order`, and unmarks every other row.
 Nothing is marked when no row offers that ordering.
 
 ## `internal static void PChoiceFilterBuild(Panel list, IReadOnlyList<string> languages, LCatalogFilter filter, RoutedEventHandler handler)`

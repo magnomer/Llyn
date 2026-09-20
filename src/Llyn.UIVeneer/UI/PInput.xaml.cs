@@ -41,7 +41,7 @@ public partial class PInput : UserControl
 
     internal void PInputVistaRestore()
     {
-        _lEditor.LEditorVistaRestore(_pInputHost.PWindowPosture);
+        _lEditor.LEditorVistaRestore(_pInputHost.PWindowDeportment);
         PEditor.PEditorVistaRestore();
     }
 

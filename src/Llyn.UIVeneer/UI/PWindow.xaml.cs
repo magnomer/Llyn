@@ -3,33 +3,27 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
-using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PWindow : Window
 {
-    private readonly LEngine _lEngine;
-
-    private readonly LPosture _lPosture;
-
     private readonly LWindow _lWindow;
 
     private readonly PLayout _pLayout;
 
     private readonly Action<string> _pWindowWorkspaceOpener;
 
-    public PWindow(LEngine engine, Action<string> workspaceOpener)
+    public PWindow(LWindow window, Action<string> workspaceOpener)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(workspaceOpener);
 
-        _lEngine = engine;
+        _lWindow = window;
         _pWindowWorkspaceOpener = workspaceOpener;
-        _lPosture = new LPosture(engine);
-        _lWindow = new LWindow(engine, engine, engine, engine, engine, engine);
-        _pLayout = new PLayout(_lPosture);
+        _pLayout = new PLayout(window);
+        SetValue(PMention.PMentionWindowProperty, _lWindow);
 
         InitializeComponent();
 
@@ -53,8 +47,6 @@ public partial class PWindow : Window
     internal int PWindowLeftover { get; private set; }
 
     internal PLayout PWindowLayout => _pLayout;
-
-    internal LPosture PWindowPosture => _lPosture;
 
     internal LWindow PWindowDeportment => _lWindow;
 
@@ -138,7 +130,6 @@ public partial class PWindow : Window
         PDuplex.PDuplexClose();
         PEstablishment.PEstablishmentClose();
         _lWindow.LWindowLeftoverSweep();
-        _lPosture.Dispose();
-        _lEngine.Dispose();
+        _lWindow.Dispose();
     }
 }

@@ -63,6 +63,11 @@ public sealed partial class LEngine
             : address;
     }
 
+    public void LEngineLocationOpen(string target)
+    {
+        _lEngineUsher.LUsherOpen(target);
+    }
+
     private string LEngineRecordingResolve(string file)
     {
         return LEngineLocationResolve(file) is { IsFile: true } resolved ? resolved.LocalPath : file;

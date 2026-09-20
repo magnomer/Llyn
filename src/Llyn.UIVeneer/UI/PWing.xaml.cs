@@ -36,7 +36,7 @@ public partial class PWing : UserControl
 
     internal async void PWingRestore(string tab, long? id)
     {
-        _lWing.LWingVistaRestore(_pWingHost.PWindowPosture, tab);
+        _lWing.LWingVistaRestore(_pWingHost.PWindowDeportment, tab);
         _lWing.LWingObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PWingIndexFind));
         _lWing.LWingObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PWingIndexFind));
         _lWing.LWingObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PWingIndexFind));
@@ -45,6 +45,16 @@ public partial class PWing : UserControl
         _pWingIndex.Clear();
         await PEnsign.PEnsignLoad(_pWingHost.PWindowDeportment);
 
+        PChoice.PChoiceOrderBuild(
+            PWingOrderList,
+            "Order",
+            PWingOrderHandle,
+            [
+                LCatalogOrder.LCatalogOrderHeadword,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderRecent,
+                LCatalogOrder.LCatalogOrderEarliest,
+            ]);
         PChoice.PChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);
         PWingSieveRestore();
         PChoice.PChoiceFilterBuild(
@@ -66,13 +76,8 @@ public partial class PWing : UserControl
 
     private void PWingOrderHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PWingOrderDropper.IsChecked = false;
-        _lWing.LWingOrderSet(choice);
+        _lWing.LWingOrderSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PWingSieveHandle(object sender, RoutedEventArgs e)

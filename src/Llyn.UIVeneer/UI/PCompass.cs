@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
@@ -66,11 +67,25 @@ public partial class PDisplay
         PCompassSectionAdd(PDisplayIncomingSection, PLocalizationCatalog.PLocalizationTextRead("Display.Translated"));
         PCompassSectionAdd(PDisplayNoteSection, PLocalizationCatalog.PLocalizationTextRead("Display.Note"));
 
-        LTwin.LTwinNameApply(
-            _pCompassRows, row => row.PCompassItemLabel, (row, name) => row.PCompassItemName = name);
+        PCompassNameApply();
 
         PCompassPlace();
         PCompassSync();
+    }
+
+    private void PCompassNameApply()
+    {
+        List<string> labels = new(_pCompassRows.Count);
+        foreach (PCompassItem row in _pCompassRows)
+        {
+            labels.Add(row.PCompassItemLabel);
+        }
+
+        IReadOnlyList<string> names = _lDisplay.LDisplayNameResolve(labels);
+        for (int index = 0; index < names.Count; index++)
+        {
+            _pCompassRows[index].PCompassItemName = names[index];
+        }
     }
 
     private bool PCompassSectionAdd(FrameworkElement section, string label)

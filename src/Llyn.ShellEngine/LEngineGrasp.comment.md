@@ -1,5 +1,13 @@
 # LEngineGrasp.cs
 
+## `public int LEngineGraspStep => LGrasp.LGraspStep;`
+
+The last grasp step, handed out so the shells draw the stars without naming the Core constant.
+
+## `public string LEngineGraspFormat(int step)`
+
+The localized wording of a grasp step.
+
 ## `public int LEngineGraspRead(long entryId)`
 
 Reads the half-step grasp stored on the entry.

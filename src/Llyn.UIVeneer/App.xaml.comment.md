@@ -1,8 +1,14 @@
 ﻿# App.xaml.cs
 
+## `private readonly LUsher _lBootstrapUsher = new LUsherShell(new LUsherFile());`
+
+The usher the rig is built over, composed here because the media ring is the root's to name.
+The file usher answers path facts and the shell usher adds the launch of a folder or a link.
+
 ## `protected override void OnExit(ExitEventArgs e)`
 
-Disposes the one client every rig of the session was built over.
+Disposes the engine the window ran over, then the one client every rig of the session was built over.
+The window disposes its own deportment and posture when it closes, so nothing waits on the exit for them.
 
 ## `private void LBootstrapWorkspaceChange(string path)`
 

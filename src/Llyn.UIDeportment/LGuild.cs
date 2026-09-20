@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -15,6 +14,8 @@ public sealed class LGuild
 
     private readonly LPortraitPort _lPortraitPort;
 
+    private readonly LSettingsPort _lSettingsPort;
+
     private readonly Func<bool> _lGuildLeaveSeam;
 
     private readonly Func<int, bool> _lGuildRemovalSeam;
@@ -26,7 +27,7 @@ public sealed class LGuild
     private int _lGuildCount;
 
     public LGuild(
-        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits,
+        LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
@@ -36,18 +37,20 @@ public sealed class LGuild
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
         ArgumentNullException.ThrowIfNull(unionSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
+        _lSettingsPort = settings;
         _lGuildLeaveSeam = leaveSeam;
         _lGuildRemovalSeam = removalSeam;
         _lGuildUnionSeam = unionSeam;
         LGuildAutograph = new LDesk(drafts, "Guild", unreadableSeam);
         LGuildPanel = new LPanel("Guild.LoadFailed", LAutographChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
-        LGuildOeuvre = new LOeuvre(entries, shownSeam);
+        LGuildOeuvre = new LOeuvre(entries, settings, shownSeam);
         LGuildPanel.LPanelRowsChanged += LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate;
         LGuildPanel.LPanelCleared += LGuildAutograph.LDeskCancel;
         LGuildPanel.LPanelEdited += LGuildDraftStart;
@@ -127,7 +130,7 @@ public sealed class LGuild
             return [];
         }
 
-        return _lEntryPort.LEngineAuthorFind(vista, LLocalization.LLocalizationTextRead("Guild.Uncredited"));
+        return _lEntryPort.LEngineAuthorFind(vista, _lSettingsPort.LEngineTextRead("Guild.Uncredited"));
     }
 
     private IReadOnlyList<LCatalogAuthor> LGuildRollApply(IReadOnlyList<LCatalogAuthor> rows)
@@ -163,14 +166,14 @@ public sealed class LGuild
     {
         if (!LGuildAuthorHeld)
         {
-            return LVita.LVitaCreate(null, [], [], LLocalization.LLocalizationTextRead);
+            return LVita.LVitaCreate(null, [], [], _lSettingsPort.LEngineTextRead);
         }
 
         return LVita.LVitaCreate(
             _lEntryPort.LEngineAuthorFind(LGuildAuthorId),
             _lEntryPort.LEngineFellowFind(LGuildAuthorId),
             _lEntryPort.LEngineUsageRead(LGuildAuthorId, LOwner.LOwnerAuthor),
-            LLocalization.LLocalizationTextRead);
+            _lSettingsPort.LEngineTextRead);
     }
 
     public IReadOnlyList<LCatalogAuthor> LGuildUnionRead(string typed)
@@ -197,19 +200,14 @@ public sealed class LGuild
         _lGuildVista?.LVistaQuerySet(query);
     }
 
-    public void LGuildOrderSet(string? choice)
+    public void LGuildOrderSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lGuildVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public LCatalogFilter LGuildLouverRead()
@@ -475,12 +473,12 @@ public sealed class LGuild
         return _lPortraitPort.LEnginePortraitPrint(LGuildOeuvre.LOeuvrePanel.LPanelVista, legend, ticket);
     }
 
-    public void LGuildVistaRestore(LPosture posture)
+    public void LGuildVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LGuildVistaRestore(
-            posture.LPostureVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
+            window.LWindowVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
     }
 }

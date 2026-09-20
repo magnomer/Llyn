@@ -76,19 +76,14 @@ public sealed class LPhonology
         _lPhonologyVista?.LVistaQuerySet(query);
     }
 
-    public void LPhonologyOrderSet(string? choice)
+    public void LPhonologyOrderSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lPhonologyVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LPhonologyFilterSet(LCatalogFilter filter)
@@ -108,12 +103,12 @@ public sealed class LPhonology
         return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
     }
 
-    public void LPhonologyVistaRestore(LPosture posture)
+    public void LPhonologyVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LPhonologyVistaRestore(
-            posture.LPostureVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public string LPhonologyFileRead()

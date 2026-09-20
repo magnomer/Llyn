@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;
@@ -65,7 +64,7 @@ public partial class PSettings
 
             case "Layout":
                 return PLocalizationCatalog.PLocalizationTextRead(
-                    _pSettingsHost.PWindowPosture.LPostureRead().LPostureStateLinked
+                    PSettingsWindow.LWindowPostureRead().LPostureStateLinked
                         ? "Layout.LinkedMeta"
                         : "Layout.FreeMeta");
 
@@ -92,7 +91,8 @@ public partial class PSettings
 
     private void PLedgerFind(string text)
     {
-        string wanted = LCase.LCaseLowerChange(text.Trim(), CultureInfo.CurrentCulture);
+        TextInfo casing = CultureInfo.CurrentCulture.TextInfo;
+        string wanted = casing.ToLower(text.Trim());
         Dictionary<string, string[]> keys = PDialTableRead()
             .ToDictionary(row => row.PDialChild, row => row.PDialKeys, StringComparer.Ordinal);
 
@@ -100,8 +100,7 @@ public partial class PSettings
             .Where(item => wanted.Length == 0 || keys[item.PLedgerItemChild]
                 .Prepend("Settings." + item.PLedgerItemChild + "Helper")
                 .Prepend("Settings." + item.PLedgerItemChild)
-                .Select(key => LCase.LCaseLowerChange(
-                    PLocalizationCatalog.PLocalizationTextRead(key), CultureInfo.CurrentCulture))
+                .Select(key => casing.ToLower(PLocalizationCatalog.PLocalizationTextRead(key)))
                 .Any(label => label.Contains(wanted, StringComparison.Ordinal)))
             .ToList();
 

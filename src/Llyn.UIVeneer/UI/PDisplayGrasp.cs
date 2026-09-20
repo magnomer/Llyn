@@ -16,19 +16,12 @@ public partial class PDisplay
             PDisplayGrasp.PGraspStep = 0;
         }
 
-        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspStep);
-    }
-
-    private string PDisplayGraspFormat(int step)
-    {
-        return _lDisplay.LDisplayChosen is null
-            ? string.Empty
-            : PLocalizationCatalog.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
+        PDisplayGraspLabel.Text = _lDisplay.LDisplayGraspFormat(PDisplayGrasp.PGraspStep);
     }
 
     private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
     {
-        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
+        PDisplayGraspLabel.Text = _lDisplay.LDisplayGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
     }
 
     private void PDisplayGraspHandle(object sender, RoutedEventArgs e)

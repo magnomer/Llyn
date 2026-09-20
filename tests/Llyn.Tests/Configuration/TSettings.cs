@@ -191,6 +191,18 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void LocalizationRead_UnlistedLanguageSaved_FallsToDefault()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLocalizationSave("xx-Unlisted");
+
+        Assert.Equal("xx-Unlisted", engine.TEngineSettingsRead().LSettingsLocalization);
+        Assert.Equal(TInterface.TLocalizationNormalize(null), engine.TEngineLocalizationRead());
+    }
+
+    [Fact]
     public void SettingsChange_Echo_RaisesNoBulletin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

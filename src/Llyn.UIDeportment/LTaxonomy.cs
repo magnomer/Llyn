@@ -53,19 +53,14 @@ public sealed class LTaxonomy
         _lTaxonomyVista?.LVistaQuerySet(query);
     }
 
-    public void LTaxonomyFunnelSet(string? choice)
+    public void LTaxonomyFunnelSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lTaxonomyVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LTaxonomyLatticeSet(LCatalogFilter filter)
@@ -132,13 +127,13 @@ public sealed class LTaxonomy
         return _lPortraitPort.LEnginePortraitPrint(_lTaxonomyMembership, label, ticket);
     }
 
-    public void LTaxonomyVistaRestore(LPosture posture)
+    public void LTaxonomyVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LTaxonomyVistaRestore(
-            posture.LPostureVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LTaxonomyObserverAttach(LSubject subject, Action<LBulletin> observer)

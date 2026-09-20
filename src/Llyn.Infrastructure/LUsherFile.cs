@@ -24,4 +24,9 @@ public sealed class LUsherFile : LUsher
         {
         }
     }
+
+    public void LUsherOpen(string target)
+    {
+        throw new NotSupportedException("A file usher opens no folder or address.");
+    }
 }

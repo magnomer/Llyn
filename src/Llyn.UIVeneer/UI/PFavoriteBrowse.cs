@@ -25,13 +25,8 @@ public partial class PFavorite
 
     private void PSeriesHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
-        {
-            return;
-        }
-
         PSeriesDropper.IsChecked = false;
-        _lFavorite.LFavoriteSeriesSet(choice);
+        _lFavorite.LFavoriteSeriesSet(PSender.PSenderOrderRead(sender));
     }
 
     private void PSeriesGraspUpdate()
@@ -52,7 +47,7 @@ public partial class PFavorite
 
     internal async void PFavoriteVistaRestore()
     {
-        _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowPosture);
+        _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowDeportment);
         _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PRosterFind));
         _lFavorite.LFavoriteObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PFavoriteWorkspaceUpdate));
@@ -64,6 +59,17 @@ public partial class PFavorite
         _lFavorite.LFavoriteChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PFavoriteEntryUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
+        PChoice.PChoiceOrderBuild(
+            PSeriesList,
+            "Series",
+            PSeriesHandle,
+            [
+                LCatalogOrder.LCatalogOrderHeadword,
+                LCatalogOrder.LCatalogOrderReverse,
+                LCatalogOrder.LCatalogOrderLanguage,
+                LCatalogOrder.LCatalogOrderMarked,
+                LCatalogOrder.LCatalogOrderGrasp,
+            ]);
         PChoice.PChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
         PStrainerRestore();
 

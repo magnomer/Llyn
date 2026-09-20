@@ -24,18 +24,13 @@ A deliberate refusal carries a reason key and resolves through the same catalog 
 Reads the detail line out of a failure.
 
 A refusal is a position the user can act on, so its reason is what they are shown.
+The engine reads the reason through `LWindow.LWindowNoticeRead`, since the refusal type is its own.
 Anything else is a fault.
 A fault's own message is written for whoever fixes the program, not for whoever uses it.
 A column name and an ordinal tell the user nothing they can act on.
 The box says plainly that something unexpected went wrong.
 The fault itself is written to the workspace's audit log and the box names the file.
 So nothing diagnosable is lost, and nobody is handed a stack trace they did not ask for.
-
-### `private string? PWindowRefusalRead(Exception exception)`
-
-Whether a refusal stands anywhere inside the failure, and the reason it names.
-A refusal is often wrapped by the step that was running when it was raised.
-Reading only the outermost exception would turn a stated position into an unexplained fault.
 
 ### `private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()`
 

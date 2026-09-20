@@ -46,6 +46,10 @@ The chosen row is the one whose id equals `chosen`.
 Every catalog of entries builds its rows here, so no panel numbers twins or reads epithets itself.
 Called under the lock.
 
+## `public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels)`
+
+The labels made distinct in their given order, numbered where two share a name, for the compass rows.
+
 ## `private static string[] LEngineTwinRead(IReadOnlyList<LEntry> entries)`
 
 The twin name of each entry, by position, numbered by entry id.

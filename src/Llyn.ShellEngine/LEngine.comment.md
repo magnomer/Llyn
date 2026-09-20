@@ -102,6 +102,13 @@ Returns the current workspace folder — where the user's settings and database 
 
 The workspace folder's own name, for the settings ledger, and the full path when the root has none.
 
+## `public string? LEngineNoticeRead(Exception exception)`
+
+The reason key of a refusal standing anywhere inside the failure, or null for a fault.
+A refusal is often wrapped by the step that was running when it was raised.
+So the inner chain is walked.
+The engine reads it because the refusal type is its own, and the shells name no exception type.
+
 ## `public string? LEngineAuditRecord(Exception exception)`
 
 Writes one unexpected fault into the open workspace's audit log through the audit port.

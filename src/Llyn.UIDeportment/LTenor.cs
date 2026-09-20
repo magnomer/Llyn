@@ -53,19 +53,14 @@ public sealed class LTenor
         _lTenorVista?.LVistaQuerySet(query);
     }
 
-    public void LTenorDegreeSet(string? choice)
+    public void LTenorDegreeSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lTenorVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LTenorGrilleSet(LCatalogFilter filter)
@@ -132,13 +127,13 @@ public sealed class LTenor
         return _lPortraitPort.LEnginePortraitPrint(_lTenorCohort, label, ticket);
     }
 
-    public void LTenorVistaRestore(LPosture posture)
+    public void LTenorVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LTenorVistaRestore(
-            posture.LPostureVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LTenorObserverAttach(LSubject subject, Action<LBulletin> observer)

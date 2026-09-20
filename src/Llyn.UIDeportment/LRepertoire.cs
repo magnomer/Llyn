@@ -67,19 +67,14 @@ public sealed class LRepertoire
         _lRepertoireVista?.LVistaQuerySet(query);
     }
 
-    public void LRepertoireTierSet(string? choice)
+    public void LRepertoireTierSet(LCatalogOrder? order)
     {
-        if (choice is null)
-        {
-            return;
-        }
-
         if (_lRepertoireVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, vista.LVistaOrder));
+        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
     public void LRepertoireMeshSet(LCatalogFilter filter)
@@ -161,13 +156,13 @@ public sealed class LRepertoire
         return _lPortraitPort.LEnginePortraitPrint(_lRepertoireVista, legend, ticket);
     }
 
-    public void LRepertoireVistaRestore(LPosture posture)
+    public void LRepertoireVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LRepertoireVistaRestore(
-            posture.LPostureVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
-            posture.LPostureVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
+            window.LWindowVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LRepertoireObserverAttach(LSubject subject, Action<LBulletin> observer)

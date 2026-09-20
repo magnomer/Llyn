@@ -126,6 +126,8 @@ public sealed class LEditor
 
     public int LEditorGrasp => LEditorEntry is long id ? LEditorGraspRead(id) : 0;
 
+    public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;
+
     public bool LEditorFanqiePending => LEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
 
     public bool LEditorScriptPending => LEditorDisplay.LDisplayScriptCheck(LEditorEntry);
@@ -147,12 +149,12 @@ public sealed class LEditor
         LEditorDisplay.LDisplayVistaRestore(vista);
     }
 
-    public void LEditorVistaRestore(LPosture posture)
+    public void LEditorVistaRestore(LWindow window)
     {
-        ArgumentNullException.ThrowIfNull(posture);
+        ArgumentNullException.ThrowIfNull(window);
 
         LEditorVistaRestore(
-            posture.LPostureVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
     public void LEditorOpen(long? id)
@@ -378,7 +380,7 @@ public sealed class LEditor
     {
         return LEditorEntry is null
             ? string.Empty
-            : LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+            : _lEntryPort.LEngineGraspFormat(step);
     }
 
     public IReadOnlyList<LFrequency> LEditorFrequencyRead()

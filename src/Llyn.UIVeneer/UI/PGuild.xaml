@@ -120,13 +120,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PEchelonList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Echelon.Title}" />
-                            <RadioButton GroupName="PEchelonChoice" IsChecked="True" Click="PEchelonHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name"
-                                Content="{DynamicResource Echelon.Name}" />
-                            <RadioButton GroupName="PEchelonChoice" Click="PEchelonHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Echelon.Reverse}" />
-                            <RadioButton GroupName="PEchelonChoice" Click="PEchelonHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Work" Content="{DynamicResource Echelon.Work}" />
-                            <RadioButton GroupName="PEchelonChoice" Click="PEchelonHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Echelon.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>

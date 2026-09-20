@@ -185,7 +185,7 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         set
         {
             IReadOnlyList<long> anchors = value ?? [];
-            if (LAnchor.LAnchorMatch(_pReflexItemAnchors, anchors))
+            if (_pReflexItemHost.PWindowDeportment.LWindowAnchorMatch(_pReflexItemAnchors, anchors))
             {
                 return;
             }

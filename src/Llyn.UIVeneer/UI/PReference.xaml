@@ -83,12 +83,8 @@
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel>
+                        <StackPanel x:Name="PGradeList">
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Grade.Title}" />
-                            <RadioButton GroupName="PGradeChoice" IsChecked="True" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Grade.Name}" />
-                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Year" Content="{DynamicResource Grade.Year}" />
-                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Author" Content="{DynamicResource Grade.Author}" />
-                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Grade.Usage}" />
                         </StackPanel>
                     </Border>
                 </Popup>

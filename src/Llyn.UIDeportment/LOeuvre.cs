@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -10,17 +9,21 @@ public sealed class LOeuvre
 {
     private readonly LEntryPort _lEntryPort;
 
+    private readonly LSettingsPort _lSettingsPort;
+
     private LVista? _lOeuvreRoll;
 
     private LVista? _lOeuvreVista;
 
     private int _lOeuvreCount;
 
-    public LOeuvre(LEntryPort entries, Func<bool> shownSeam)
+    public LOeuvre(LEntryPort entries, LSettingsPort settings, Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(settings);
 
         _lEntryPort = entries;
+        _lSettingsPort = settings;
         LOeuvrePanel = new LPanel(
             "Source.LoadFailed", static () => false, shownSeam, static () => true, static () => false);
     }
@@ -108,7 +111,7 @@ public sealed class LOeuvre
     public string LOeuvreTallyRead()
     {
         return LReference.LReferenceUsageFormat(
-            LOeuvreUsageRead(_lOeuvreVista?.LVistaChosen), LLocalization.LLocalizationTextRead);
+            LOeuvreUsageRead(_lOeuvreVista?.LVistaChosen), _lSettingsPort.LEngineTextRead);
     }
 
     private int LOeuvreUsageRead(long? id)
@@ -123,6 +126,6 @@ public sealed class LOeuvre
         LReference reference = draft.LDraftReference
             ?? throw new InvalidOperationException("The oeuvre draft holds no reference.");
         return reference.LReferenceColophonRead(
-            draft.LDraftAuthor, LOeuvreTallyRead(), LLocalization.LLocalizationTextRead);
+            draft.LDraftAuthor, LOeuvreTallyRead(), _lSettingsPort.LEngineTextRead);
     }
 }
