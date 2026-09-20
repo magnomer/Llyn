@@ -6,11 +6,6 @@ namespace Convention.Tests;
 
 internal static class TAuditStrictWalker
 {
-    private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
-        languageVersion: LanguageVersion.Preview,
-        documentationMode: DocumentationMode.None,
-        kind: SourceCodeKind.Regular);
-
     private static readonly SyntaxKind[] TAuditFlowKinds =
     [
         SyntaxKind.IfStatement,
@@ -40,19 +35,21 @@ internal static class TAuditStrictWalker
         SyntaxKind.LocalFunctionStatement,
     ];
 
-    public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> sourcePaths, out List<string> veneers)
+    public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, out List<string> veneers)
     {
         List<TViolation> violations = [];
-        Dictionary<string, List<ClassDeclarationSyntax>> parts = new(StringComparer.Ordinal);
-        foreach (string path in sourcePaths)
+        Dictionary<INamedTypeSymbol, List<ClassDeclarationSyntax>> parts = new(SymbolEqualityComparer.Default);
+        foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths).Where(TAuditBinder.TAuditWalkCheck))
         {
-            SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path);
-            SyntaxNode root = tree.GetRoot();
             TAuditTreatScan(root, violations);
             TAuditGlyphScan(root, violations);
             foreach (ClassDeclarationSyntax type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
-                string key = type.Identifier.ValueText;
+                if (TAuditBinder.TAuditSymbolRead(type) is not INamedTypeSymbol key)
+                {
+                    continue;
+                }
+
                 if (!parts.TryGetValue(key, out List<ClassDeclarationSyntax>? list))
                 {
                     list = [];
@@ -64,12 +61,12 @@ internal static class TAuditStrictWalker
         }
 
         veneers = [];
-        foreach ((string name, List<ClassDeclarationSyntax> type) in parts)
+        foreach ((INamedTypeSymbol symbol, List<ClassDeclarationSyntax> type) in parts)
         {
-            bool veneer = type.Any(TAuditVeneerCheck);
+            bool veneer = TAuditVeneerCheck(symbol, type);
             if (veneer)
             {
-                veneers.Add(name);
+                veneers.Add(symbol.Name);
             }
 
             foreach (ClassDeclarationSyntax part in type)
@@ -85,17 +82,20 @@ internal static class TAuditStrictWalker
         return violations;
     }
 
-    private static bool TAuditVeneerCheck(ClassDeclarationSyntax type)
+    private static bool TAuditVeneerCheck(INamedTypeSymbol symbol, IReadOnlyList<ClassDeclarationSyntax> type)
     {
-        string path = type.SyntaxTree.FilePath;
-        if (path.EndsWith(".xaml.cs", StringComparison.OrdinalIgnoreCase) && File.Exists(path[..^3]))
+        if (TAuditBinder.TAuditControlCheck(symbol))
         {
             return true;
         }
 
-        return type.BaseList?.Types.Any(baseType =>
-            TAuditTypeRead(baseType.Type) is string name
-            && TAuditStrictSetting.TAuditVeneerBases.Contains(name, StringComparer.Ordinal)) == true;
+        string repoRoot = TAuditSource.TAuditRootRead();
+        IReadOnlyList<string> roots = TAuditBinder.TAuditRootRead(TAuditStrictSetting.TAuditVeneerInclude);
+        return type.Any(part =>
+        {
+            string relative = Path.GetRelativePath(repoRoot, part.SyntaxTree.FilePath).Replace('\\', '/');
+            return roots.Any(root => relative.StartsWith(root + "/", StringComparison.OrdinalIgnoreCase));
+        });
     }
 
     private static void TAuditStorageScan(ClassDeclarationSyntax part, bool veneer, List<TViolation> violations)
@@ -184,11 +184,11 @@ internal static class TAuditStrictWalker
                     when TAuditStrictSetting.TAuditTreatVerbs.Contains(
                              access.Name.Identifier.ValueText, StringComparer.Ordinal)
                          && (TAuditDataCheck(access.Expression)
-                             || query.ArgumentList.Arguments.Any(argument => TAuditDataCheck(argument)))
+                             || query.ArgumentList.Arguments.Any(argument => TAuditDataCheck(argument.Expression)))
                     => $"logic value queried by {access.Name.Identifier.ValueText}",
                 CastExpressionSyntax cast when TAuditDataCheck(cast.Expression)
                     => $"logic value cast to {cast.Type}",
-                TypeOfExpressionSyntax reflected when TAuditDataCheck(reflected.Type)
+                TypeOfExpressionSyntax reflected when TAuditBinder.TAuditLogicCheck(reflected.Type)
                     => "logic type taken by typeof",
                 AttributeArgumentSyntax argument when TAuditDataCheck(argument.Expression)
                     => "logic value in an attribute",
@@ -234,7 +234,7 @@ internal static class TAuditStrictWalker
         return !TAuditVerdictCheck(condition) && TAuditDataCheck(condition);
     }
 
-    private static bool TAuditVerdictCheck(ExpressionSyntax condition)
+    public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)
     {
         ExpressionSyntax core = condition;
         while (true)
@@ -248,23 +248,19 @@ internal static class TAuditStrictWalker
             };
             if (core is not (ParenthesizedExpressionSyntax or PrefixUnaryExpressionSyntax))
             {
-                break;
+                return core;
             }
         }
-
-        string? name = core switch
-        {
-            InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access }
-                => access.Name.Identifier.ValueText,
-            InvocationExpressionSyntax { Expression: IdentifierNameSyntax callee } => callee.Identifier.ValueText,
-            MemberAccessExpressionSyntax access => access.Name.Identifier.ValueText,
-            IdentifierNameSyntax bare => bare.Identifier.ValueText,
-            _ => null
-        };
-        return name is not null && TAuditLogicCheck(name);
     }
 
-    private static bool TAuditPatternCheck(PatternSyntax pattern)
+    private static bool TAuditVerdictCheck(ExpressionSyntax condition)
+    {
+        ExpressionSyntax core = TAuditCoreRead(condition);
+        return core is InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax
+               && TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(core));
+    }
+
+    public static bool TAuditPatternCheck(PatternSyntax pattern)
     {
         return pattern switch
         {
@@ -273,24 +269,25 @@ internal static class TAuditStrictWalker
             DeclarationPatternSyntax => true,
             VarPatternSyntax => true,
             TypePatternSyntax => true,
+            RecursivePatternSyntax { PositionalPatternClause: null } shape
+                => shape.PropertyPatternClause?.Subpatterns.Count is null or 0,
             _ => false
         };
     }
 
-    private static bool TAuditNullCheck(ExpressionSyntax expression)
+    public static bool TAuditNullCheck(ExpressionSyntax expression)
     {
         return expression.IsKind(SyntaxKind.NullLiteralExpression)
                || expression.IsKind(SyntaxKind.DefaultLiteralExpression);
     }
 
-    private static bool TAuditDataCheck(SyntaxNode node)
+    public static bool TAuditDataCheck(SyntaxNode node)
     {
         foreach (SyntaxNode child in node.DescendantNodesAndSelf())
         {
             bool logic = child switch
             {
-                IdentifierNameSyntax name => TAuditLogicCheck(name.Identifier.ValueText),
-                MemberBindingExpressionSyntax binding => TAuditLogicCheck(binding.Name.Identifier.ValueText),
+                IdentifierNameSyntax or MemberBindingExpressionSyntax => TAuditBinder.TAuditLogicCheck(child),
                 _ => false
             };
             if (logic)
@@ -329,16 +326,6 @@ internal static class TAuditStrictWalker
         };
     }
 
-    private static string? TAuditTypeRead(TypeSyntax type)
-    {
-        return type switch
-        {
-            SimpleNameSyntax simple => simple.Identifier.ValueText,
-            QualifiedNameSyntax qualified => qualified.Right.Identifier.ValueText,
-            _ => null
-        };
-    }
-
     private static string TAuditMemberRead(MemberDeclarationSyntax member)
     {
         return member switch
@@ -351,11 +338,6 @@ internal static class TAuditStrictWalker
             OperatorDeclarationSyntax op => op.OperatorToken.ValueText,
             _ => member.Kind().ToString()
         };
-    }
-
-    private static bool TAuditLogicCheck(string name)
-    {
-        return name.Length >= 2 && name[0] == 'L' && char.IsUpper(name[1]);
     }
 
     private static int TAuditLineRead(SyntaxNode node)

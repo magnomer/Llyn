@@ -33,7 +33,7 @@ internal static partial class TAuditTruthWalker
 
             if (assignment.Parent is InitializerExpressionSyntax { Parent: WithExpressionSyntax }
                 && assignment.Left is IdentifierNameSyntax field
-                && TAuditLogicCheck(field.Identifier.ValueText))
+                && TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(field)))
             {
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
@@ -45,8 +45,7 @@ internal static partial class TAuditTruthWalker
             }
 
             if (assignment.Left is ElementAccessExpressionSyntax { Expression: var rows }
-                && TAuditNameRead(rows) is string held
-                && TAuditStoreCheck(held, assignment))
+                && TAuditStoreCheck(rows))
             {
                 violations.Add(new TViolation(
                     root.SyntaxTree.FilePath,
@@ -59,7 +58,7 @@ internal static partial class TAuditTruthWalker
 
             if (assignment.Parent is InitializerExpressionSyntax
                 || assignment.Left is not MemberAccessExpressionSyntax target
-                || !TAuditLogicCheck(target.Name.Identifier.ValueText))
+                || !TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(target)))
             {
                 continue;
             }
@@ -77,8 +76,7 @@ internal static partial class TAuditTruthWalker
             if (call.Expression is not MemberAccessExpressionSyntax access
                 || !TAuditTruthSetting.TAuditOrderVerbs.Contains(
                     access.Name.Identifier.ValueText, StringComparer.Ordinal)
-                || TAuditNameRead(access.Expression) is not string rows
-                || !TAuditStoreCheck(rows, call))
+                || !TAuditStoreCheck(access.Expression))
             {
                 continue;
             }
@@ -92,38 +90,22 @@ internal static partial class TAuditTruthWalker
         }
     }
 
-    private static bool TAuditStoreCheck(string name, SyntaxNode site)
+    private static bool TAuditStoreCheck(ExpressionSyntax rows)
     {
-        foreach (SyntaxNode ancestor in site.Ancestors())
+        ITypeSymbol? type = TAuditBinder.TAuditTypeRead(rows);
+        if (type is null || type.TypeKind == TypeKind.Error)
         {
-            TypeSyntax? declared = ancestor.DescendantNodes().Select(node => node switch
-            {
-                VariableDeclarationSyntax declaration
-                    when declaration.Variables.Any(variable =>
-                        string.Equals(variable.Identifier.ValueText, name, StringComparison.Ordinal))
-                    => declaration.Type,
-                ParameterSyntax parameter
-                    when string.Equals(parameter.Identifier.ValueText, name, StringComparison.Ordinal)
-                    => parameter.Type,
-                PropertyDeclarationSyntax property
-                    when string.Equals(property.Identifier.ValueText, name, StringComparison.Ordinal)
-                    => property.Type,
-                _ => null
-            }).FirstOrDefault(type => type is not null);
-            if (declared is null)
-            {
-                continue;
-            }
-
-            string[] names = TAuditTypeRead(declared).Split(TAuditTypeBreaks, StringSplitOptions.RemoveEmptyEntries);
-            return names.Skip(1).Any(part => TAuditLogicCheck(part) || TAuditShellCheck(part) || part == "object");
+            return true;
         }
 
-        return true;
-    }
-
-    private static bool TAuditShellCheck(string name)
-    {
-        return name.Length >= 2 && name[0] == 'P' && char.IsUpper(name[1]);
+        IEnumerable<ITypeSymbol> held = type switch
+        {
+            IArrayTypeSymbol array => [array.ElementType],
+            INamedTypeSymbol named => named.TypeArguments,
+            _ => []
+        };
+        return held.Any(part => TAuditBinder.TAuditLogicCheck(part)
+                                || TAuditBinder.TAuditShellCheck(part)
+                                || part.SpecialType == SpecialType.System_Object);
     }
 }

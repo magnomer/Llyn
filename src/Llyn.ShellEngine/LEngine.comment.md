@@ -38,7 +38,11 @@ The engine never names the infrastructure and needs no SQLite to start.
 It loads each language pack on first use through an `LLanguageCache` over the language port.
 The cache is shared with the draft clerk, so the file is parsed once and not per lookup.
 The use cases that have left the engine sit in `Llyn.Application` as clerks over the same rig.
-`LDraftClerk` applies a request to a draft and `LEntryClerk` reads, finds and deletes an entry.
+`LDraftClerk` applies a request to a draft and `LEntryClerk` creates, saves, finds and deletes an entry.
+The card, meaning, tag, register, translation, example and mention clerks own the rows a card carries.
+The vocabulary, inflection, paradigm, pronunciation and usage clerks own the rest an entry is made of.
+Each is newed by `LEngineRigSet`, so a switched workspace gets fresh clerks over the new rig.
+The vault fields that stay on the engine are the ones its remaining parts still read.
 The engine keeps the gate, the observers, the held set and the caches, and calls a clerk under the gate.
 It builds that language's transcription and recording sources separately through the source factory.
 The two sets are cached apart.

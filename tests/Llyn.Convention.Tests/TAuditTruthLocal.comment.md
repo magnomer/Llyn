@@ -11,14 +11,14 @@ A call to a method writing the field counts as a write, so a hold split into rel
 A fill of a collection is a refresh rather than a hold and does not count.
 The hit lands on the last write and names the relay it went through.
 
-## `private static HashSet<string> TAuditWriterRead(TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type)`
+## `private static HashSet<ISymbol> TAuditWriterRead(TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type)`
 
 The methods of the class that write this field and request nothing themselves.
 A method that requests is a relay and is audited on its own.
 
 ## `private static void TAuditBaseCheck(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 
-A shell type deriving from a logic type that is not a handle holds logic by inheritance.
+A shell type deriving from a logic type holds logic by inheritance.
 
 ## `private static void TAuditLocalScan(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 
@@ -27,12 +27,12 @@ A member read off the answer is followed as the answer itself, so an id lifted f
 An answer carried into the next request, or deciding one, is a value the engine should have kept.
 A hit is reported once per line, local and kind, and named by member and local.
 
-## `private static HashSet<string> TAuditAnsweredRead(MemberDeclarationSyntax scope)`
+## `private static HashSet<ISymbol> TAuditAnsweredRead(MemberDeclarationSyntax scope)`
 
 The locals a member fills from an engine answer, by whatever syntax.
 An initialiser, an assignment, a deconstruction, a loop variable, a pattern, an `out` and a lambda parameter all count.
 
-## `private static void TAuditDesignationAdd(SyntaxNode node, HashSet<string> answered)`
+## `private static void TAuditDesignationAdd(SyntaxNode node, HashSet<ISymbol> answered)`
 
 Every name a designation or a tuple on the left side introduces.
 

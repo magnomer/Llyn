@@ -29,7 +29,7 @@ public sealed class TAuditLine
             .Select(row => $"  {row.TAuditLineCount,5}  {row.TAuditLinePath}")
             .ToList();
 
-        TAuditLineWarn(
+        TAuditWarningRecord(
             warnings,
             $"file(s) sit within {TAuditLineSetting.TAuditLineLimit - TAuditLineSetting.TAuditLineWarning} lines "
             + $"of the {TAuditLineSetting.TAuditLineLimit}-line limit",
@@ -56,7 +56,7 @@ public sealed class TAuditLine
             }
         }
 
-        TAuditLineWarn(
+        TAuditWarningRecord(
             warnings,
             $"line(s) sit within {TAuditLineSetting.TAuditWidthBand} columns of their width limit",
             TAuditWidthAdvice);
@@ -98,7 +98,7 @@ public sealed class TAuditLine
         };
     }
 
-    private void TAuditLineWarn(List<string> warnings, string summary, string advice)
+    private void TAuditWarningRecord(List<string> warnings, string summary, string advice)
     {
         if (warnings.Count == 0)
         {

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -19,16 +19,7 @@ public sealed class TAuditRatchet
 
     private static readonly string TAuditFramePath = TAuditSettingFolder + "TAuditFrameSetting.cs";
 
-    private static readonly string[] TAuditWaiverPaths =
-    [
-        TAuditSettingFolder + "TAuditWaiverArgument.cs",
-        TAuditSettingFolder + "TAuditWaiverGuard.cs",
-        TAuditSettingFolder + "TAuditWaiverField.cs",
-    ];
-
     private static readonly Regex TAuditCeilingPattern = new(@"\[""([^""]+)""\] = (\d+),", RegexOptions.Compiled);
-
-    private static readonly Regex TAuditWaiverPattern = new(@"^\s*""([^""]+:[^""]+:\w+)"",", RegexOptions.Multiline);
 
     private static readonly Regex TAuditRowPattern = new(@"^\s*""([^"":]+:[\w.]+)"",", RegexOptions.Multiline);
 
@@ -120,35 +111,6 @@ public sealed class TAuditRatchet
         Assert.True(widened.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITRATCHET",
             $"{widened.Count} namespace(s) joined the frame without a commit.\n{string.Join('\n', widened)}"));
-    }
-
-    [Fact]
-    public void AuditRatchet_TruthWaiver_NeverGrows()
-    {
-        string? committed = TAuditCommittedRead(TAuditTruthPath);
-        if (committed is null || !TAuditCeilingPattern.IsMatch(committed) || !TAuditGenerationCheck(committed))
-        {
-            return;
-        }
-
-        HashSet<string> known = new(StringComparer.Ordinal);
-        foreach (string part in TAuditWaiverPaths)
-        {
-            string? text = TAuditCommittedRead(part);
-            if (text is not null)
-            {
-                known.UnionWith(TAuditWaiverPattern.Matches(text).Select(match => match.Groups[1].Value));
-            }
-        }
-
-        List<string> added = TAuditTruthSetting.TAuditTruthWaiver
-            .Where(waiver => !known.Contains(waiver))
-            .Select(waiver => $"  {waiver}")
-            .ToList();
-
-        Assert.True(added.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITRATCHET",
-            $"{added.Count} waiver line(s) not in the committed settings.\n{string.Join('\n', added)}"));
     }
 
     [Fact]

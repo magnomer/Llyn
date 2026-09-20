@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -200,6 +201,99 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return _lEngineEntryClerk.LRevisionChangeRead(revisionId);
+        }
+    }
+    public LGlyph? LEngineGlyphRead(string language)
+    {
+        return string.IsNullOrWhiteSpace(language) ? null : LEngineLanguageLoad(language).LLanguageGlyph;
+    }
+
+    public LEntry LEngineGlyphResolve(string character, string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(character);
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        string headword = character.Trim();
+        lock (_lEngineGate)
+        {
+            foreach (LEntry entry in _lEngineEntryClerk.LEntryClerkFind(headword))
+            {
+                if (string.Equals(entry.LEntryHeadword, headword, StringComparison.Ordinal)
+                    && string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
+                {
+                    return entry;
+                }
+            }
+
+            return LEngineTranslationCreate(headword, language);
+        }
+    }
+
+    public int LEngineGraspStep => LGrasp.LGraspStep;
+
+    public string LEngineGraspFormat(int step)
+    {
+        return LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+    }
+
+    public int LEngineGraspRead(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+            return _lEngineEntryClerk.LEntryClerkRead(entryId)?.LEntryGrasp ?? 0;
+        }
+    }
+
+    public void LEngineGraspSave(long entryId, int grasp)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineEntryClerk.LEntryGraspSet(entryId, grasp);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
+    }
+
+    public string LEngineEpithetRead(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineSettings.LSettingsEpithet ? _lEngineEntryClerk.LEntryEpithetRead(entryId) : string.Empty;
+        }
+    }
+
+    public LEstablishment LEngineEstablishmentRead()
+    {
+        lock (_lEngineGate)
+        {
+            int unsaved = 0;
+            foreach (long id in _lEngineDraftHeld)
+            {
+                if (LEngineDraftCheck(id))
+                {
+                    unsaved++;
+                }
+            }
+
+            return new LEstablishment(
+                unsaved, _lEngineEntryClerk.LEntryCountRead(), _lEngineEntryClerk.LWorkspaceSizeRead());
+        }
+    }
+
+    public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineUsageClerk.LUsageClerkRead(owner);
+        }
+    }
+
+    public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineUsageClerk.LUsageClerkRead(id, owner, _lEngineSettings.LSettingsEpithet);
         }
     }
 }

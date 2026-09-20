@@ -1,4 +1,4 @@
-﻿# TAuditNameWalker.cs
+# TAuditNameWalker.cs
 
 ## Generation
 

@@ -5,11 +5,11 @@
 The sequence half of the truth walker: one shell member may not dictate a run of requests.
 A gesture is one request, and the order of several is an engine decision.
 
-## `private static HashSet<string> TAuditSendNames = [];`
+## `private static HashSet<ISymbol> TAuditSendNames`
 
 The members that send a request directly, read before the walk.
 
-## `private static HashSet<string> TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)`
+## `private static void TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)`
 
 Every method or property that reaches a send root or builds a request record.
 One hop only, so a member that merely shows or fills is not a sender.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -48,8 +49,8 @@ public sealed partial class LEngine
                 LMarkdown.LMarkdownNormalize(other.LEntryDraftNote),
                 StringComparison.Ordinal)
             && LEngineSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
-            && LEngineFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
-            && LEngineInflectionMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)
+            && LEntryClerk.LFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
+            && LInflectionClerk.LInflectionClerkMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)
             && LEngineCardMatch(one.LEntryDraftMeanings, other.LEntryDraftMeanings)
             && LEngineCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
     }
@@ -57,8 +58,8 @@ public sealed partial class LEngine
     private static bool LEngineSoundMatch(
         IReadOnlyList<LPronunciationDraft> one, IReadOnlyList<LPronunciationDraft> other)
     {
-        one = [.. LEnginePronunciationScan(one)];
-        other = [.. LEnginePronunciationScan(other)];
+        one = [.. LPronunciationClerk.LPronunciationClerkScan(one)];
+        other = [.. LPronunciationClerk.LPronunciationClerkScan(other)];
         if (one.Count != other.Count)
         {
             return false;
@@ -164,7 +165,7 @@ public sealed partial class LEngine
                 || written.LCardDraftId != held.LCardDraftId
                 || !LEngineSentenceMatch(written.LCardDraftSentence, held.LCardDraftSentence)
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
-                || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
+                || !LRegisterClerk.LRegisterClerkMatch(written.LCardDraftRegister, held.LCardDraftRegister)
                 || !LEngineLinkMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
                 || !LEngineTagMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LEngineImageMatch(written.LCardDraftImage, held.LCardDraftImage)
@@ -180,8 +181,8 @@ public sealed partial class LEngine
 
     private static bool LEngineVideoMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)
     {
-        one = [.. LEngineVideoRead(one)];
-        other = [.. LEngineVideoRead(other)];
+        one = [.. LCardClerkField.LVideoRead(one)];
+        other = [.. LCardClerkField.LVideoRead(other)];
         if (one.Count != other.Count)
         {
             return false;
@@ -230,8 +231,8 @@ public sealed partial class LEngine
     private static bool LEngineSentenceMatch(
         IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)
     {
-        one = [.. LEngineSentenceRead(one)];
-        other = [.. LEngineSentenceRead(other)];
+        one = [.. LCardClerkField.LSentenceRead(one)];
+        other = [.. LCardClerkField.LSentenceRead(other)];
         if (one.Count != other.Count)
         {
             return false;
@@ -292,8 +293,8 @@ public sealed partial class LEngine
 
     private static bool LEngineImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)
     {
-        one = [.. LEngineImageRead(one)];
-        other = [.. LEngineImageRead(other)];
+        one = [.. LCardClerkField.LImageRead(one)];
+        other = [.. LCardClerkField.LImageRead(other)];
         if (one.Count != other.Count)
         {
             return false;

@@ -1,6 +1,6 @@
 namespace Convention.Tests;
 
-internal static partial class TAuditTruthSetting
+internal static class TAuditTruthSetting
 {
     public const int TAuditGeneration = 10;
     public const bool TAuditTruthEnforced = true;
@@ -8,11 +8,31 @@ internal static partial class TAuditTruthSetting
     public const string TAuditStateSuffix = "State";
     public const string TAuditBulletinType = "LBulletin";
     public const string TAuditObserverType = "PObserver";
+    public const string TAuditConfiguration = "Debug";
+    public const string TAuditReferenceRoot = "src/Llyn.UIVeneer";
+
+    public static readonly string[] TAuditShellInclude =
+    [
+        "src/Llyn.UIVeneer/*.cs",
+        "src/Llyn.UIDeportment/*.cs",
+    ];
 
     public static readonly string[] TAuditTruthInclude =
     [
         "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
+    ];
+
+    public static readonly string[] TAuditFrameworkPacks =
+    [
+        "Microsoft.NETCore.App",
+        "Microsoft.WindowsDesktop.App",
+    ];
+
+    public static readonly string[] TAuditControlBases =
+    [
+        "System.Windows.FrameworkElement",
+        "System.Windows.FrameworkContentElement",
     ];
 
     public static readonly string[] TAuditOrderVerbs =
@@ -86,18 +106,15 @@ internal static partial class TAuditTruthSetting
         "LWindow",
         "List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)>",
         "Action<LBulletin>",
-        "Action<LBulletin>?",
     ];
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 181,
-        ["Guard"] = 153,
-        ["Fork"] = 35,
+        ["Argument"] = 128,
+        ["Guard"] = 145,
+        ["Fork"] = 24,
         ["Mirror"] = 31,
-        ["Mutation"] = 18,
-        ["Shape"] = 91,
+        ["Mutation"] = 14,
+        ["Shape"] = 112,
     };
-
-    public static string[] TAuditTruthWaiver => [.. TAuditWaiverArgument, .. TAuditWaiverGuard, .. TAuditWaiverField];
 }

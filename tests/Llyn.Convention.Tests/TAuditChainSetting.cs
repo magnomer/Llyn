@@ -40,7 +40,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainFloor = new Dictionary<string, int>
     {
-        ["Llyn.Application"] = 40,
+        ["Llyn.Application"] = 58,
     };
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainStray = new Dictionary<string, string[]>
@@ -50,7 +50,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["reach:Llyn.ShellEngine>Llyn.Core"] = 70,
+        ["reach:Llyn.ShellEngine>Llyn.Core"] = 54,
     };
 
     public static readonly string[] TAuditChainWaiver = [];

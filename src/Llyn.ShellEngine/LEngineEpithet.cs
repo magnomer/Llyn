@@ -9,22 +9,9 @@ public sealed partial class LEngine
 {
     private static readonly TimeSpan LEngineEpithetPatience = TimeSpan.FromSeconds(1);
 
-    public string LEngineEpithetRead(long entryId)
-    {
-        lock (_lEngineGate)
-        {
-            if (!_lEngineSettings.LSettingsEpithet || entryId <= 0)
-            {
-                return string.Empty;
-            }
-
-            return _lEngineEntries.LEntryEpithetRead(entryId);
-        }
-    }
-
     private void LEngineEpithetUpdate(long entryId)
     {
-        LEntry? entry = _lEngineEntries.LEntryRead(entryId);
+        LEntry? entry = _lEngineEntryClerk.LEntryClerkRead(entryId);
         if (entry is null)
         {
             return;
@@ -34,7 +21,7 @@ public sealed partial class LEngine
         string epithet = LEngineEpithetCheck(rules)
             ? LEngineEpithetFormat(rules, _lEngineReflexes.LReflexRead(entryId))
             : string.Empty;
-        _lEngineEntries.LEntryEpithetSave(entryId, epithet);
+        _lEngineEntryClerk.LEntryEpithetSave(entryId, epithet);
     }
 
     private static bool LEngineEpithetCheck(IReadOnlyList<LReflexRule> rules)

@@ -40,3 +40,9 @@ Lowers the floor in the database and returns the new floor, in one statement.
 The write commits before the id is handed out.
 A crash after the call therefore cannot bring the id round again.
 Two engines open on one workspace lower the same row, so neither can issue what the other already holds.
+
+## `public static void LIdentityRecord(Dictionary<long, long> identity, long draftId, long rowId)`
+
+Records under `draftId` the real `rowId` a store just gave a draft row.
+A `draftId` that is not negative names a stored row already and is not recorded.
+The map is what the commit hands back so the held draft can be renumbered onto real ids.

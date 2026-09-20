@@ -20,13 +20,13 @@ internal static partial class TAuditTruthWalker
                 case MemberDeclarationSyntax:
                     return null;
                 case ArgumentSyntax { Parent.Parent: ExpressionSyntax call } argument
-                    when TAuditCallRead(call) is string callee && TAuditHotCheck(callee, argument):
-                    return ("Argument", $"passed to {callee}");
+                    when TAuditCallRead(call) is { } callee && TAuditHotCheck(callee, argument):
+                    return ("Argument", $"passed to {callee.Name}");
                 case InitializerExpressionSyntax { Parent: WithExpressionSyntax }:
                     return ("Argument", "written into a record copy");
                 case InitializerExpressionSyntax { Parent: BaseObjectCreationExpressionSyntax creation }
-                    when TAuditCallRead(creation) is string built:
-                    return ("Argument", $"written into new {built}");
+                    when TAuditCallRead(creation) is { } built:
+                    return ("Argument", $"written into new {built.ContainingType?.Name ?? built.Name}");
                 case IfStatementSyntax branch
                     when branch.Condition.Span.Contains(reference.Span) && TAuditGuardCheck(branch):
                     return ("Guard", "decides a request in an if");
@@ -68,9 +68,9 @@ internal static partial class TAuditTruthWalker
             && TAuditCallRead(call) is not null);
     }
 
-    private static bool TAuditHotCheck(string callee, ArgumentSyntax argument)
+    private static bool TAuditHotCheck(ISymbol callee, ArgumentSyntax argument)
     {
-        if (TAuditLogicCheck(callee))
+        if (TAuditBinder.TAuditLogicCheck(callee))
         {
             return true;
         }
@@ -84,27 +84,14 @@ internal static partial class TAuditTruthWalker
                && hot.Contains(list.Arguments.IndexOf(argument));
     }
 
-    private static string? TAuditCallRead(ExpressionSyntax call)
+    private static ISymbol? TAuditCallRead(ExpressionSyntax call)
     {
-        string? name = call switch
+        if (call is not (InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax)
+            || TAuditBinder.TAuditSymbolRead(call) is not { } callee)
         {
-            InvocationExpressionSyntax invocation => TAuditNameRead(invocation.Expression),
-            ObjectCreationExpressionSyntax creation => TAuditNameRead(creation.Type),
-            _ => null
-        };
-        return name is not null && (TAuditLogicCheck(name) || TAuditRelayNames.Contains(name)) ? name : null;
-    }
+            return null;
+        }
 
-    private static string? TAuditNameRead(ExpressionSyntax expression)
-    {
-        return expression switch
-        {
-            SimpleNameSyntax simple => simple.Identifier.ValueText,
-            MemberAccessExpressionSyntax access => access.Name.Identifier.ValueText,
-            MemberBindingExpressionSyntax binding => binding.Name.Identifier.ValueText,
-            QualifiedNameSyntax qualified => qualified.Right.Identifier.ValueText,
-            NullableTypeSyntax nullable => TAuditNameRead(nullable.ElementType),
-            _ => null
-        };
+        return TAuditBinder.TAuditLogicCheck(callee) || TAuditRelayNames.Contains(callee) ? callee : null;
     }
 }

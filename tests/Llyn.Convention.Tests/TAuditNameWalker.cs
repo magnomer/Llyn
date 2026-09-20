@@ -93,7 +93,7 @@ internal static class TAuditNameWalker
                              method.Modifiers, method.ExplicitInterfaceSpecifier, method.AttributeLists) &&
                          !TAuditNameFilter.TAuditContractCheck(method, method.Identifier.ValueText)
                     => (method.Identifier,
-                        TAuditNameFilter.TAuditAnyAttributeCheck(
+                        TAuditNameFilter.TAuditAttributesCheck(
                             method.AttributeLists, TAuditNameSetting.TAuditTestAttributes)
                             ? "TestMethod"
                             : "Method"),
@@ -171,7 +171,7 @@ internal static class TAuditNameWalker
         }
 
         string stem = method.Identifier.ValueText;
-        string asyncSuffix = TAuditNameSetting.TAuditCommandAsyncSuffix;
+        string asyncSuffix = TAuditNameSetting.TAuditAsyncSuffix;
         if (stem.EndsWith(asyncSuffix, StringComparison.Ordinal) && stem.Length > asyncSuffix.Length)
         {
             stem = stem[..^asyncSuffix.Length];
@@ -181,11 +181,11 @@ internal static class TAuditNameWalker
 
         foreach (AttributeArgumentSyntax argument in relayCommand.ArgumentList?.Arguments ?? default)
         {
-            if (argument.NameEquals?.Name.Identifier.ValueText == TAuditNameSetting.TAuditCommandCancelArgument &&
+            if (argument.NameEquals?.Name.Identifier.ValueText == TAuditNameSetting.TAuditCancelArgument &&
                 argument.Expression.IsKind(SyntaxKind.TrueLiteralExpression))
             {
                 candidates.Add(new TSpecimen(
-                    path, line, stem + TAuditNameSetting.TAuditCommandCancelSuffix, "GeneratedCommand"));
+                    path, line, stem + TAuditNameSetting.TAuditCancelSuffix, "GeneratedCommand"));
             }
         }
     }

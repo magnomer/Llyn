@@ -5,28 +5,26 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthWalker
 {
-    private static HashSet<string> TAuditSendNames = [];
+    private static HashSet<ISymbol> TAuditSendNames = new(SymbolEqualityComparer.Default);
 
-    private static HashSet<string> TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)
+    private static void TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)
     {
-        TAuditSendNames = new HashSet<string>(StringComparer.Ordinal);
+        TAuditSendNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
         foreach (MemberDeclarationSyntax member in parts
                      .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
                      .SelectMany(part => part.Members))
         {
-            string? name = member switch
+            if (member is not (MethodDeclarationSyntax or PropertyDeclarationSyntax)
+                || TAuditBinder.TAuditSymbolRead(member) is not { } symbol)
             {
-                MethodDeclarationSyntax method => method.Identifier.ValueText,
-                PropertyDeclarationSyntax property => property.Identifier.ValueText,
-                _ => null
-            };
-            if (name is not null && TAuditSendRead(member, true).Count > 0)
+                continue;
+            }
+
+            if (TAuditSendRead(member, true).Count > 0)
             {
-                TAuditSendNames.Add(name);
+                TAuditSendNames.Add(symbol);
             }
         }
-
-        return TAuditSendNames;
     }
 
     private static List<SyntaxNode> TAuditSendRead(SyntaxNode scope, bool direct)
@@ -38,13 +36,13 @@ internal static partial class TAuditTruthWalker
             {
                 InvocationExpressionSyntax call => TAuditSendCheck(call, direct),
                 ObjectCreationExpressionSyntax creation
-                    => TAuditNameRead(creation.Type) is string built
-                       && built.StartsWith(TAuditTruthSetting.TAuditRequestPrefix, StringComparison.Ordinal),
+                    => TAuditBinder.TAuditTypeRead(creation.Type) is { } built
+                       && TAuditBinder.TAuditLogicCheck(built)
+                       && built.Name.StartsWith(TAuditTruthSetting.TAuditRequestPrefix, StringComparison.Ordinal),
                 _ => false
             };
-            bool sent = node.Ancestors().OfType<InvocationExpressionSyntax>()
-                .Any(call => TAuditSendCheck(call, direct));
-            if (send && sent)
+            if (send
+                && node.Ancestors().OfType<InvocationExpressionSyntax>().Any(call => TAuditSendCheck(call, direct)))
             {
                 continue;
             }
@@ -60,13 +58,13 @@ internal static partial class TAuditTruthWalker
 
     private static bool TAuditSendCheck(InvocationExpressionSyntax call, bool direct)
     {
-        string? callee = TAuditNameRead(call.Expression);
-        if (callee is null)
+        if (TAuditBinder.TAuditSymbolRead(call) is not { } callee)
         {
             return false;
         }
 
-        return TAuditTruthSetting.TAuditSendRoots.Contains(callee, StringComparer.Ordinal)
+        return (TAuditBinder.TAuditLogicCheck(callee)
+                && TAuditTruthSetting.TAuditSendRoots.Contains(callee.Name, StringComparer.Ordinal))
                || (!direct && TAuditSendNames.Contains(callee));
     }
 

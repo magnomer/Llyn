@@ -13,12 +13,8 @@ A `with` copy that sets a logic member rewrites logic the engine handed over.
 A slot assignment on a store of rows overwrites what the engine ordered.
 Also every order verb on a store of rows, since the engine alone owns an order.
 
-## `private static bool TAuditStoreCheck(string name, SyntaxNode site)`
+## `private static bool TAuditStoreCheck(ExpressionSyntax rows)`
 
-True when the named collection is declared to hold logic, shell rows or untyped objects.
-The declaration is sought from the site outward, whether local, parameter, field or property.
-A name with no declaration in sight is taken as a store, since the walk cannot clear it.
+True when the collection's type holds logic, shell rows or untyped objects.
+An expression the compiler cannot type is taken as a store, since the walk cannot clear it.
 
-## `private static bool TAuditShellCheck(string name)`
-
-True for a name that starts with `P` followed by a capital.

@@ -12,6 +12,7 @@ internal static partial class TInterface
             LRigWorkspaces = new TVaultFakeWorkspace(),
             LRigRevisions = new TVaultFakeRevision(),
             LRigTombstones = new TVaultFakeTombstone(),
+            LRigPronunciations = new TVaultFakePronunciation(),
         };
 
     internal static LDraftClerk TDraftClerkCreate(LRig rig) =>
@@ -27,7 +28,34 @@ internal static partial class TInterface
         public override string LRequestKey => nameof(TRequestStray);
     }
 
-    internal static LEntryClerk TEntryClerkCreate(LRig rig) => new(rig);
+    internal static LEntryClerk TEntryClerkCreate(LRig rig)
+    {
+        LTagClerk tags = new(rig);
+        LRegisterClerk registers = new(rig);
+        LTranslationClerk translations = new(rig);
+        LCardClerk cards = new(rig, tags, registers, translations, new LExampleClerk(rig));
+        LParadigmClerk paradigms = new(rig);
+        return new LEntryClerk(
+            rig,
+            cards,
+            new LMeaningClerk(rig, cards),
+            new LVocabularyClerk(rig),
+            new LInflectionClerk(rig, paradigms),
+            paradigms,
+            new LPronunciationClerk(rig));
+    }
+
+    internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft) =>
+        clerk.LEntryClerkSave(draft, []);
+
+    internal static LTranslationClerk TTranslationClerkCreate(LRig rig) => new(rig);
+
+    internal static IReadOnlyList<LEntry> TTranslationClerkFind(
+        this LTranslationClerk clerk, string query, long? entryId) =>
+        clerk.LTranslationClerkFind(query, entryId);
+
+    internal static LEntry? TTranslationClerkResolve(this LTranslationClerk clerk, string word, long? entryId) =>
+        clerk.LTranslationClerkResolve(word, entryId);
 
     internal static LEntry TEntryClerkAdd(this LEntryClerk clerk, LEntry entry) =>
         clerk.LEntryClerkCreate(entry, [], []);

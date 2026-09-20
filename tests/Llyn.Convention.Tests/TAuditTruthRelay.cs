@@ -5,74 +5,67 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthWalker
 {
-    private static HashSet<string> TAuditRelayNames = [];
+    private static HashSet<ISymbol> TAuditRelayNames = new(SymbolEqualityComparer.Default);
 
-    private static HashSet<string> TAuditReaderNames = [];
+    private static HashSet<ISymbol> TAuditReaderNames = new(SymbolEqualityComparer.Default);
 
-    private static Dictionary<string, HashSet<int>> TAuditHotNames = [];
+    private static Dictionary<ISymbol, HashSet<int>> TAuditHotNames = new(SymbolEqualityComparer.Default);
 
-    private static HashSet<string> TAuditRelayRead(IReadOnlyList<TypeDeclarationSyntax> type)
+    private static void TAuditRelayRead(IReadOnlyList<TypeDeclarationSyntax> type)
     {
-        TAuditRelayNames = new HashSet<string>(StringComparer.Ordinal);
-        TAuditReaderNames = new HashSet<string>(StringComparer.Ordinal);
-        TAuditHotNames = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
-        List<MemberDeclarationSyntax> members = type
+        TAuditRelayNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+        TAuditReaderNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+        TAuditHotNames = new Dictionary<ISymbol, HashSet<int>>(SymbolEqualityComparer.Default);
+        List<(ISymbol TAuditRelaySymbol, MemberDeclarationSyntax TAuditRelayMember)> members = type
             .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
             .SelectMany(part => part.Members)
+            .Where(member => member is MethodDeclarationSyntax or PropertyDeclarationSyntax)
+            .Select(member => (TAuditBinder.TAuditSymbolRead(member), member))
+            .Where(pair => pair.Item1 is not null)
+            .Select(pair => (pair.Item1!, pair.member))
             .ToList();
         bool grown = true;
         while (grown)
         {
             grown = false;
-            foreach (MemberDeclarationSyntax member in members)
+            foreach ((ISymbol symbol, MemberDeclarationSyntax member) in members)
             {
-                string? name = member switch
+                if (!TAuditRelayNames.Contains(symbol) && TAuditRequestCheck(member))
                 {
-                    MethodDeclarationSyntax method => method.Identifier.ValueText,
-                    PropertyDeclarationSyntax property => property.Identifier.ValueText,
-                    _ => null
-                };
-                if (name is null)
-                {
-                    continue;
-                }
-
-                if (!TAuditRelayNames.Contains(name) && TAuditRequestCheck(member))
-                {
-                    TAuditRelayNames.Add(name);
+                    TAuditRelayNames.Add(symbol);
                     grown = true;
                 }
 
-                if (!TAuditReaderNames.Contains(name) && (TAuditReadCheck(member) || TAuditRequestCheck(member)))
+                if (!TAuditReaderNames.Contains(symbol) && (TAuditReadCheck(member) || TAuditRequestCheck(member)))
                 {
-                    TAuditReaderNames.Add(name);
+                    TAuditReaderNames.Add(symbol);
                     grown = true;
                 }
 
-                if (member is MethodDeclarationSyntax hot && TAuditHotRead(name, hot))
+                if (member is MethodDeclarationSyntax hot && TAuditHotRead(symbol, hot))
                 {
                     grown = true;
                 }
             }
         }
-
-        return TAuditRelayNames;
     }
 
-    private static bool TAuditHotRead(string name, MethodDeclarationSyntax method)
+    private static bool TAuditHotRead(ISymbol symbol, MethodDeclarationSyntax method)
     {
-        if (!TAuditHotNames.TryGetValue(name, out HashSet<int>? hot))
+        if (!TAuditHotNames.TryGetValue(symbol, out HashSet<int>? hot))
         {
             hot = [];
-            TAuditHotNames[name] = hot;
+            TAuditHotNames[symbol] = hot;
         }
 
-        List<string> parameters = method.ParameterList.Parameters.Select(p => p.Identifier.ValueText).ToList();
+        List<ISymbol?> parameters = method.ParameterList.Parameters
+            .Select(parameter => TAuditBinder.TAuditSymbolRead(parameter))
+            .ToList();
         bool grown = false;
         foreach (ArgumentSyntax argument in method.DescendantNodes().OfType<ArgumentSyntax>())
         {
             if (argument.Parent?.Parent is not ExpressionSyntax call
-                || TAuditCallRead(call) is not string callee
+                || TAuditCallRead(call) is not { } callee
                 || !TAuditHotCheck(callee, argument))
             {
                 continue;
@@ -81,7 +74,10 @@ internal static partial class TAuditTruthWalker
             foreach (IdentifierNameSyntax used in argument.Expression.DescendantNodesAndSelf()
                          .OfType<IdentifierNameSyntax>())
             {
-                int index = parameters.IndexOf(used.Identifier.ValueText);
+                ISymbol? usedSymbol = TAuditBinder.TAuditSymbolRead(used);
+                int index = usedSymbol is null
+                    ? -1
+                    : parameters.FindIndex(parameter => SymbolEqualityComparer.Default.Equals(parameter, usedSymbol));
                 if (index >= 0 && hot.Add(index))
                 {
                     grown = true;
@@ -96,10 +92,10 @@ internal static partial class TAuditTruthWalker
     {
         return member.DescendantNodes().Any(node => node switch
         {
-            MemberAccessExpressionSyntax access => TAuditLogicCheck(access.Name.Identifier.ValueText),
-            MemberBindingExpressionSyntax binding => TAuditLogicCheck(binding.Name.Identifier.ValueText),
+            MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
+                => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
             InvocationExpressionSyntax call
-                => TAuditNameRead(call.Expression) is string callee && TAuditReaderNames.Contains(callee),
+                => TAuditBinder.TAuditSymbolRead(call) is { } callee && TAuditReaderNames.Contains(callee),
             _ => false
         });
     }

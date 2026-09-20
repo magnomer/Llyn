@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -18,7 +19,7 @@ public sealed partial class LEngine
         List<LMarkupOmission> omissions,
         List<(LMarkupMention, int)> held)
     {
-        int length = LEngineRuneRead(example.LMarkupExampleText.LStateValueShow()).Count;
+        int length = LMentionClerk.LMentionRuneRead(example.LMarkupExampleText.LStateValueShow()).Count;
         List<LMentionDraft> mentions = new(example.LMarkupExampleMention.Count);
         foreach (LMarkupMention mention in example.LMarkupExampleMention)
         {

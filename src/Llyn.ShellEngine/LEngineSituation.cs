@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -118,19 +119,19 @@ public sealed partial class LEngine
 
         LImageVault images = _lEngineImages;
         LEngineFieldSync(
-            LEngineImageRead(situation.LSituationImage),
+            LCardClerkField.LImageRead(situation.LSituationImage),
             images.LImageSituationRead(situationId),
             row => row.LImageId,
-            written => LEngineImageResolve(images, written, identity),
+            written => LCardClerkField.LImageResolve(images, written, identity),
             rowId => images.LImageSituationDetach(situationId, rowId),
             (rowId, position) => images.LImageSituationAttach(situationId, rowId, position));
 
         LVideoVault videos = _lEngineVideos;
         LEngineFieldSync(
-            LEngineVideoRead(situation.LSituationVideo),
+            LCardClerkField.LVideoRead(situation.LSituationVideo),
             videos.LVideoSituationRead(situationId),
             row => row.LVideoId,
-            written => LEngineVideoResolve(videos, written, identity),
+            written => LCardClerkField.LVideoResolve(videos, written, identity),
             rowId => videos.LVideoSituationDetach(situationId, rowId),
             (rowId, position) => videos.LVideoSituationAttach(situationId, rowId, position));
     }

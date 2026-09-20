@@ -118,57 +118,23 @@ public sealed partial class LEngine
 
     private static string[] LEngineTwinRead(IReadOnlyList<LEntry> entries)
     {
-        string[] names = new string[entries.Count];
-        int[] places = new int[entries.Count];
-        for (int index = 0; index < places.Length; index++)
-        {
-            places[index] = index;
-        }
-
-        LTwin.LTwinNameApply(
-            places,
-            place => entries[place].LEntryHeadword,
-            (place, name) => names[place] = name,
-            place => entries[place].LEntryId);
-
-        return names;
+        return LEntryClerkTwin.LTwinRead(entries);
     }
 
     public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels)
     {
-        ArgumentNullException.ThrowIfNull(labels);
-
-        string[] names = new string[labels.Count];
-        int[] places = new int[labels.Count];
-        for (int index = 0; index < places.Length; index++)
-        {
-            places[index] = index;
-        }
-
-        LTwin.LTwinNameApply(places, place => labels[place], (place, name) => names[place] = name);
-        return names;
+        return LEntryClerkTwin.LTwinNameResolve(labels);
     }
 
     private static string[] LEngineTwinRead<LEngineRow>(
         IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)
     {
-        string[] names = new string[rows.Count];
-        int[] places = new int[rows.Count];
-        for (int index = 0; index < places.Length; index++)
-        {
-            places[index] = index;
-        }
-
-        LTwin.LTwinNameApply(places, place => name(rows[place]),
-            (place, twinned) => names[place] = twinned, place => id(rows[place]));
-        return names;
+        return LEntryClerkTwin.LTwinRead(rows, name, id);
     }
 
     private static string LEngineNameRead(LStateValue value, string unknown, string fallback)
     {
-        return value.LStateValueState == LState.LStateUnknown
-            ? unknown
-            : value.LStateValueShow() is { Length: > 0 } text ? text : fallback;
+        return LEntryClerkTwin.LTwinNameRead(value, unknown, fallback);
     }
 
     private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)
@@ -184,6 +150,6 @@ public sealed partial class LEngine
             ids[index] = entries[index].LEntryId;
         }
 
-        return _lEngineEntries.LEntryEpithetScan(ids);
+        return _lEngineEntryClerk.LEntryEpithetScan(ids);
     }
 }

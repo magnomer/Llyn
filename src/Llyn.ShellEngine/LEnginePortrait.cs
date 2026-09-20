@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -70,7 +71,7 @@ public sealed partial class LEngine
         return new LPortraitPage(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
-            LEngineSpeechShow(draft.LEntryDraftSpeeches),
+            LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches),
             sections,
             favorite,
             [

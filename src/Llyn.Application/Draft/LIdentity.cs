@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -18,5 +19,15 @@ public sealed class LIdentity
     public long LIdentityCreate()
     {
         return _lIdentityWorkspaces.LWorkspaceFloorAdjust();
+    }
+
+    public static void LIdentityRecord(Dictionary<long, long> identity, long draftId, long rowId)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+
+        if (draftId < 0)
+        {
+            identity[draftId] = rowId;
+        }
     }
 }

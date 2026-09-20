@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -13,6 +14,10 @@ public sealed class TAuditStrict
     private static readonly Lazy<string> TAuditStrictWritten = new(TAuditReportSave);
 
     private static readonly string[] TAuditStrictKinds = ["Storage", "Flow", "Treat", "Reach", "Taint"];
+
+    private static readonly Regex TAuditLiteralPattern = new(
+        @"@?""(?:[^""\\]|\\.)*""|//.*$",
+        RegexOptions.Compiled);
 
     private readonly ITestOutputHelper _tAuditOutput;
 
@@ -55,7 +60,9 @@ public sealed class TAuditStrict
     public void AuditStrict_DeportmentSources_ReachNoMarkup()
     {
         List<string> hits = TAuditSourceScan(
-            TAuditStrictSetting.TAuditDeportmentInclude, TAuditStrictSetting.TAuditMarkupPatterns, []);
+            TAuditStrictSetting.TAuditDeportmentInclude,
+            TAuditStrictSetting.TAuditMarkupPatterns,
+            TAuditStrictSetting.TAuditMarkupExempt);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITSTRICT",
@@ -131,9 +138,10 @@ public sealed class TAuditStrict
             string[] lines = File.ReadAllLines(path);
             for (int index = 0; index < lines.Length; index++)
             {
+                string bare = TAuditLiteralPattern.Replace(lines[index], string.Empty);
                 foreach (string pattern in forbidden)
                 {
-                    if (Regex.IsMatch(lines[index], pattern))
+                    if (Regex.IsMatch(bare, pattern))
                     {
                         string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
                         hits.Add($"  {relative}:{index + 1} {pattern}");
@@ -150,7 +158,7 @@ public sealed class TAuditStrict
         string repoRoot = TAuditSource.TAuditRootRead();
         TAuditScope scope = new(
             [],
-            TAuditTruthSetting.TAuditTruthInclude,
+            TAuditTruthSetting.TAuditShellInclude,
             TAuditNameSetting.TAuditExcludedSegments,
             TAuditNameSetting.TAuditExcludedSuffixes,
             TAuditNameSetting.TAuditExcludedPrefixes,
@@ -164,11 +172,10 @@ public sealed class TAuditStrict
             TAuditNameSetting.TAuditExcludedPrefixes,
             []);
         IReadOnlyList<string> markups = TAuditSource.TAuditFileRead(repoRoot, markup);
-        IReadOnlySet<string> readers = TAuditTruthWalker.TAuditReaderRead(sources);
-        HashSet<string> controls = new(TAuditReachWalker.TAuditControlRead(markups), StringComparer.Ordinal);
+        IReadOnlySet<ISymbol> readers = TAuditTruthWalker.TAuditReaderRead(sources);
         IReadOnlyList<TViolation> hits = TAuditStrictWalker.TAuditRun(sources, out List<string> veneers)
             .Concat(TAuditReachWalker.TAuditRun(markups))
-            .Concat(TAuditTaintWalker.TAuditRun(sources, readers, controls))
+            .Concat(TAuditTaintWalker.TAuditRun(sources, readers))
             .Select(hit => hit with
             {
                 TViolationPath = Path.GetRelativePath(repoRoot, hit.TViolationPath).Replace('\\', '/')

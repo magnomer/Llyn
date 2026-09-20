@@ -20,15 +20,12 @@ True when a branch requests, or when the branch jumps out and the member request
 
 True when the node contains a logic call or a logic construction.
 
-## `private static bool TAuditHotCheck(string callee, ArgumentSyntax argument)`
+## `private static bool TAuditHotCheck(ISymbol callee, ArgumentSyntax argument)`
 
 True for any argument of a logic call, and for a relay argument standing at a hot position.
 A named argument is never matched by position and is left alone.
 
-## `private static string? TAuditCallRead(ExpressionSyntax call)`
+## `private static ISymbol? TAuditCallRead(ExpressionSyntax call)`
 
-The logic or relay name a call or construction invokes, else null.
+The logic or relay symbol a call or construction invokes, else null.
 
-## `private static string? TAuditNameRead(ExpressionSyntax expression)`
-
-The rightmost identifier of a name, member access, binding or nullable type.

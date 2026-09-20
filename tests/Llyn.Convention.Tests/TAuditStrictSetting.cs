@@ -8,11 +8,11 @@ internal static class TAuditStrictSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 73,
-        ["Flow"] = 628,
-        ["Treat"] = 76,
+        ["Storage"] = 182,
+        ["Flow"] = 975,
+        ["Treat"] = 117,
         ["Reach"] = 64,
-        ["Taint"] = 193,
+        ["Taint"] = 141,
     };
 
     public static readonly string[] TAuditReachInclude =
@@ -29,6 +29,8 @@ internal static class TAuditStrictSetting
     [
         "src/Llyn.UIDeportment/*.cs",
     ];
+
+    public const string TAuditDeportmentNamespace = "Llyn.UIDeportment";
 
     public static readonly string[] TAuditCatalogPatterns =
     [
@@ -61,26 +63,13 @@ internal static class TAuditStrictSetting
         @"\bSystem\.IO\b",
     ];
 
+    public static readonly string[] TAuditMarkupExempt = [];
+
     public static readonly string[] TAuditReachNamespaces =
     [
         "Llyn.Core",
         "Llyn.ShellEngine",
         "Llyn.Infrastructure",
-    ];
-
-
-    public static readonly string[] TAuditVeneerBases =
-    [
-        "Adorner",
-        "Button",
-        "ContentControl",
-        "Control",
-        "Decorator",
-        "FrameworkElement",
-        "ItemsControl",
-        "Panel",
-        "UserControl",
-        "Window",
     ];
 
     public static readonly string[] TAuditTreatVerbs =

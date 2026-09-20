@@ -33,6 +33,10 @@ The `git ls-files` patterns of the veneer sources, scanned for catalog, file and
 
 The `git ls-files` patterns of the deportment sources, scanned for a reach into the framework.
 
+## `public const string TAuditDeportmentNamespace = "Llyn.UIDeportment";`
+
+The namespace whose types and members a markup binding may name, since Deportment is shell state, not logic.
+
 ## `public static readonly string[] TAuditCatalogPatterns`
 
 A line matching one of these does file, JSON, regex or process work, or starts a task, in the veneer.
@@ -46,13 +50,14 @@ The veneer files whose stream use is the framework's own: a resource stream, a b
 
 A deportment line matching one of these names WPF, the dispatcher or the file system.
 
+## `public static readonly string[] TAuditMarkupExempt`
+
+The deportment files exempt from the framework scan by name.
+Empty: no deportment file names the framework.
+
 ## `public static readonly string[] TAuditReachNamespaces`
 
 Namespaces a markup file may not map, since mapping one lets a binding reach logic.
-
-## `public static readonly string[] TAuditVeneerBases`
-
-A class deriving from one of these is a veneer, as is any class with a `.xaml` beside it.
 
 ## `public static readonly string[] TAuditTreatVerbs`
 

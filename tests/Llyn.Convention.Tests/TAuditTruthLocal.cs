@@ -7,12 +7,13 @@ namespace Convention.Tests;
 internal static partial class TAuditTruthWalker
 {
     private static void TAuditToggleCheck(
-        TAuditTruthField field, MemberDeclarationSyntax scope, HashSet<string> writers, List<TViolation> violations)
+        TAuditTruthField field, MemberDeclarationSyntax scope, HashSet<ISymbol> writers, List<TViolation> violations)
     {
         List<SyntaxNode> writes = scope.DescendantNodes().OfType<IdentifierNameSyntax>()
-            .Where(identifier => TAuditNameCheck(identifier, field.TFieldName)
-                                 || (writers.Contains(identifier.Identifier.ValueText)
-                                     && identifier.Parent is InvocationExpressionSyntax))
+            .Where(identifier => TAuditFieldCheck(identifier, field.TFieldSymbols)
+                                 || (identifier.Parent is InvocationExpressionSyntax
+                                     && TAuditBinder.TAuditSymbolRead(identifier) is { } callee
+                                     && writers.Contains(callee)))
             .Select(TAuditReferenceRead)
             .Where(reference => reference.Parent is not MemberAccessExpressionSyntax)
             .Where(reference => TAuditWriteCheck(reference, out _) || reference.Parent is InvocationExpressionSyntax)
@@ -42,9 +43,9 @@ internal static partial class TAuditTruthWalker
         }
     }
 
-    private static HashSet<string> TAuditWriterRead(TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type)
+    private static HashSet<ISymbol> TAuditWriterRead(TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type)
     {
-        HashSet<string> writers = new(StringComparer.Ordinal);
+        HashSet<ISymbol> writers = new(SymbolEqualityComparer.Default);
         foreach (MethodDeclarationSyntax method in type.SelectMany(part =>
                      part.DescendantNodes().OfType<MethodDeclarationSyntax>()))
         {
@@ -53,14 +54,14 @@ internal static partial class TAuditTruthWalker
                 continue;
             }
 
-            bool writes = body.DescendantNodes().OfType<IdentifierNameSyntax>()
-                .Where(identifier => TAuditNameCheck(identifier, field.TFieldName))
+            bool writes = TAuditUseRead(field.TFieldSymbols)
+                .Where(identifier => identifier.SyntaxTree == body.SyntaxTree && body.Span.Contains(identifier.Span))
                 .Select(TAuditReferenceRead)
                 .Where(reference => reference.Parent is not MemberAccessExpressionSyntax)
                 .Any(reference => TAuditWriteCheck(reference, out _));
-            if (writes)
+            if (writes && TAuditBinder.TAuditSymbolRead(method) is { } symbol)
             {
-                writers.Add(method.Identifier.ValueText);
+                writers.Add(symbol);
             }
         }
 
@@ -73,10 +74,8 @@ internal static partial class TAuditTruthWalker
         {
             foreach (BaseTypeSyntax baseType in part.BaseList?.Types ?? [])
             {
-                string? name = TAuditNameRead(baseType.Type);
-                if (name is null
-                    || !TAuditLogicCheck(name)
-                    || TAuditTruthSetting.TAuditTruthHandles.Contains(name, StringComparer.Ordinal))
+                ITypeSymbol? symbol = TAuditBinder.TAuditTypeRead(baseType.Type);
+                if (symbol is null || !TAuditBinder.TAuditLogicCheck(symbol))
                 {
                     continue;
                 }
@@ -86,7 +85,7 @@ internal static partial class TAuditTruthWalker
                     TAuditLineRead(baseType),
                     part.Identifier.ValueText,
                     "Mirror",
-                    $"derives from {name}"));
+                    $"derives from {symbol.Name}"));
             }
         }
     }
@@ -100,7 +99,7 @@ internal static partial class TAuditTruthWalker
                 continue;
             }
 
-            HashSet<string> answered = TAuditAnsweredRead(scope);
+            HashSet<ISymbol> answered = TAuditAnsweredRead(scope);
             if (answered.Count == 0)
             {
                 continue;
@@ -111,8 +110,7 @@ internal static partial class TAuditTruthWalker
             HashSet<string> seen = new(StringComparer.Ordinal);
             foreach (IdentifierNameSyntax identifier in scope.DescendantNodes().OfType<IdentifierNameSyntax>())
             {
-                string name = identifier.Identifier.ValueText;
-                if (!answered.Contains(name) || TAuditWriteCheck(identifier, out _))
+                if (!TAuditFieldCheck(identifier, answered) || TAuditWriteCheck(identifier, out _))
                 {
                     continue;
                 }
@@ -130,6 +128,7 @@ internal static partial class TAuditTruthWalker
                     continue;
                 }
 
+                string name = identifier.Identifier.ValueText;
                 int line = TAuditLineRead(identifier);
                 if (seen.Add($"{line}:{name}:{sink.Value.TViolationKind}"))
                 {
@@ -144,26 +143,26 @@ internal static partial class TAuditTruthWalker
         }
     }
 
-    private static HashSet<string> TAuditAnsweredRead(MemberDeclarationSyntax scope)
+    private static HashSet<ISymbol> TAuditAnsweredRead(MemberDeclarationSyntax scope)
     {
-        HashSet<string> answered = new(StringComparer.Ordinal);
+        HashSet<ISymbol> answered = new(SymbolEqualityComparer.Default);
         foreach (SyntaxNode node in scope.DescendantNodes())
         {
             switch (node)
             {
                 case VariableDeclaratorSyntax { Initializer.Value: var value } declarator
                     when TAuditAnswerCheck(value):
-                    answered.Add(declarator.Identifier.ValueText);
+                    TAuditSymbolAdd(declarator, answered);
                     break;
                 case AssignmentExpressionSyntax { Left: IdentifierNameSyntax local } assignment
-                    when TAuditAnswerCheck(assignment.Right):
-                    answered.Add(local.Identifier.ValueText);
+                    when TAuditBinder.TAuditSymbolRead(local) is ILocalSymbol && TAuditAnswerCheck(assignment.Right):
+                    TAuditSymbolAdd(local, answered);
                     break;
                 case AssignmentExpressionSyntax assignment when TAuditAnswerCheck(assignment.Right):
                     TAuditDesignationAdd(assignment.Left, answered);
                     break;
                 case ForEachStatementSyntax loop when TAuditAnswerCheck(loop.Expression):
-                    answered.Add(loop.Identifier.ValueText);
+                    TAuditSymbolAdd(loop, answered);
                     break;
                 case ForEachVariableStatementSyntax loop when TAuditAnswerCheck(loop.Expression):
                     TAuditDesignationAdd(loop.Variable, answered);
@@ -186,7 +185,7 @@ internal static partial class TAuditTruthWalker
                                      _ => (IEnumerable<ParameterSyntax>)[]
                                  })
                         {
-                            answered.Add(parameter.Identifier.ValueText);
+                            TAuditSymbolAdd(parameter, answered);
                         }
                     }
 
@@ -197,19 +196,20 @@ internal static partial class TAuditTruthWalker
         return answered;
     }
 
-    private static void TAuditDesignationAdd(SyntaxNode node, HashSet<string> answered)
+    private static void TAuditDesignationAdd(SyntaxNode node, HashSet<ISymbol> answered)
     {
         foreach (SingleVariableDesignationSyntax designation in
                  node.DescendantNodesAndSelf().OfType<SingleVariableDesignationSyntax>())
         {
-            answered.Add(designation.Identifier.ValueText);
+            TAuditSymbolAdd(designation, answered);
         }
 
         foreach (IdentifierNameSyntax name in node.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>())
         {
-            if (name.Parent is TupleExpressionSyntax or ArgumentSyntax { Parent: TupleExpressionSyntax })
+            if (name.Parent is TupleExpressionSyntax or ArgumentSyntax { Parent: TupleExpressionSyntax }
+                && TAuditBinder.TAuditSymbolRead(name) is ILocalSymbol local)
             {
-                answered.Add(name.Identifier.ValueText);
+                answered.Add(local);
             }
         }
     }
@@ -232,8 +232,8 @@ internal static partial class TAuditTruthWalker
         {
             InvocationExpressionSyntax or BaseObjectCreationExpressionSyntax
                 => TAuditCallRead((ExpressionSyntax)node) is not null,
-            MemberAccessExpressionSyntax access => TAuditLogicCheck(access.Name.Identifier.ValueText),
-            MemberBindingExpressionSyntax binding => TAuditLogicCheck(binding.Name.Identifier.ValueText),
+            MemberAccessExpressionSyntax or MemberBindingExpressionSyntax
+                => TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(node)),
             _ => false
         });
     }

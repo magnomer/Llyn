@@ -45,7 +45,7 @@ Width is a sign of depth, chaining or a long path, and the code is reconsidered 
 
 The hit count of each kind, for the ceiling fact.
 
-## `private void TAuditLineWarn(List<string> warnings, string summary, string advice)`
+## `private void TAuditWarningRecord(List<string> warnings, string summary, string advice)`
 
 Prints the warnings with their advice, and nothing when there are none.
 

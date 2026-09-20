@@ -1,5 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -10,8 +10,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(value);
-            return _lEngineSpeeches.LSpeechValueCreate(value);
+            return _lEngineVocabularyClerk.LSpeechCreate(value);
         }
     }
 
@@ -19,7 +18,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSpeeches.LSpeechValueRead(id);
+            return _lEngineVocabularyClerk.LSpeechRead(id);
         }
     }
 
@@ -27,7 +26,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSpeeches.LSpeechValueRead(language);
+            return _lEngineVocabularyClerk.LSpeechRead(language);
         }
     }
 
@@ -35,27 +34,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            if (string.IsNullOrWhiteSpace(language) || string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
-
-            string typed = name.Trim();
-            LSpeechVault values = _lEngineSpeeches;
-
-            LSpeechValue? held = values.LSpeechValueFind(language, typed);
-            if (held is not null)
-            {
-                return held;
-            }
-
-            int position = 0;
-            foreach (LSpeechValue stored in values.LSpeechValueRead(language))
-            {
-                position = Math.Max(position, stored.LSpeechValuePosition + 1);
-            }
-
-            return values.LSpeechValueCreate(new LSpeechValue(0, language, 0, typed, position));
+            return _lEngineVocabularyClerk.LSpeechAdd(language, name);
         }
     }
 
@@ -63,71 +42,15 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSpeeches.LSpeechValueFind(language, name);
+            return _lEngineVocabularyClerk.LSpeechFind(language, name);
         }
-    }
-
-    private static IReadOnlyList<string> LEngineSpeechShow(IReadOnlyList<LSpeechDraft> drafts)
-    {
-        List<string> named = new(drafts.Count);
-        foreach (LSpeechDraft draft in drafts)
-        {
-            if (draft.LSpeechDraftName.Length > 0)
-            {
-                named.Add(draft.LSpeechDraftName);
-            }
-        }
-
-        return named;
-    }
-
-    private IReadOnlyList<LSpeech> LEngineSpeechResolve(
-        long entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)
-    {
-        if (drafts is null || drafts.Count == 0)
-        {
-            return [];
-        }
-
-        LSpeechVault values = _lEngineSpeeches;
-        List<LSpeech> speeches = [];
-        foreach (LSpeechDraft draft in drafts)
-        {
-            if (draft.LSpeechDraftValue > 0)
-            {
-                if (values.LSpeechValueRead(draft.LSpeechDraftValue) is null)
-                {
-                    throw new LRefusal(LRefusal.LRefusalLink);
-                }
-
-                speeches.Add(new LSpeech(entryId, speeches.Count, draft.LSpeechDraftValue));
-                continue;
-            }
-
-            if (string.IsNullOrWhiteSpace(draft.LSpeechDraftCustom))
-            {
-                continue;
-            }
-
-            string typed = draft.LSpeechDraftCustom.Trim();
-            LSpeechValue? value = string.IsNullOrWhiteSpace(language)
-                ? null
-                : values.LSpeechValueFind(language, typed);
-
-            speeches.Add(value is null
-                ? new LSpeech(entryId, speeches.Count, null, typed)
-                : new LSpeech(entryId, speeches.Count, value.LSpeechValueId));
-        }
-
-        return speeches;
     }
 
     internal LFeature LEngineFeatureCreate(LFeature feature)
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(feature);
-            return _lEngineMorphologies.LFeatureCreate(feature);
+            return _lEngineVocabularyClerk.LFeatureCreate(feature);
         }
     }
 
@@ -135,8 +58,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(value);
-            return _lEngineMorphologies.LMorphologyCreate(value);
+            return _lEngineVocabularyClerk.LMorphologyCreate(value);
         }
     }
 
@@ -144,9 +66,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return speechValueId <= 0
-                ? []
-                : _lEngineMorphologies.LFeatureRead(speechValueId);
+            return _lEngineVocabularyClerk.LFeatureRead(speechValueId);
         }
     }
 
@@ -154,9 +74,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return speechValueId <= 0
-                ? null
-                : _lEngineMorphologies.LFeatureFind(speechValueId, name);
+            return _lEngineVocabularyClerk.LFeatureFind(speechValueId, name);
         }
     }
 
@@ -164,7 +82,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineMorphologies.LMorphologyRead(id);
+            return _lEngineVocabularyClerk.LMorphologyRead(id);
         }
     }
 
@@ -172,9 +90,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return featureId <= 0
-                ? []
-                : _lEngineMorphologies.LMorphologyScan(featureId);
+            return _lEngineVocabularyClerk.LMorphologyScan(featureId);
         }
     }
 
@@ -182,9 +98,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return featureId <= 0
-                ? null
-                : _lEngineMorphologies.LMorphologyFind(featureId, name);
+            return _lEngineVocabularyClerk.LMorphologyFind(featureId, name);
         }
     }
 
@@ -192,7 +106,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return _lEngineSentences.LSentenceLoad(language);
+            return _lEngineVocabularyClerk.LSentenceOrderRead(language);
         }
     }
 
@@ -200,9 +114,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return string.IsNullOrWhiteSpace(language)
-                ? []
-                : _lEngineSentences.LSentenceParticleRead(language);
+            return _lEngineVocabularyClerk.LSentenceParticleRead(language);
         }
     }
 
@@ -210,52 +122,85 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return string.IsNullOrWhiteSpace(language)
-                ? []
-                : _lEngineSentences.LSentenceDependenceRead(language);
+            return _lEngineVocabularyClerk.LSentenceDependenceRead(language);
         }
     }
 
     private void LEngineLanguageImport()
     {
-        using LVaultSession session = _lEngineVault.LVaultSessionStart();
+        _lEngineVocabularyClerk.LLanguageImport();
+    }
 
-        LSpeechVault speeches = _lEngineSpeeches;
-        LMorphologyVault morphology = _lEngineMorphologies;
-        foreach (string language in _lEngineLanguageVault.LLanguageScan())
+    internal IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)
+    {
+        lock (_lEngineGate)
         {
-            LSpeechPack pack = _lEngineSpeeches.LSpeechLoad(language);
-
-            Dictionary<long, long> speechIds = [];
-            foreach (LSpeechValue value in pack.LSpeechPackValues)
-            {
-                speechIds[value.LSpeechValueCode] = speeches.LSpeechValueCreate(value).LSpeechValueId;
-            }
-
-            Dictionary<long, long> featureIds = [];
-            foreach (LFeature feature in pack.LSpeechPackFeatures)
-            {
-                if (!speechIds.TryGetValue(feature.LFeatureSpeechId, out long speechId))
-                {
-                    continue;
-                }
-
-                featureIds[feature.LFeatureCode] = morphology
-                    .LFeatureCreate(feature with { LFeatureSpeechId = speechId })
-                    .LFeatureId;
-            }
-
-            foreach (LMorphology value in pack.LSpeechPackMorphology)
-            {
-                if (!featureIds.TryGetValue(value.LMorphologyFeatureId, out long featureId))
-                {
-                    continue;
-                }
-
-                morphology.LMorphologyCreate(value with { LMorphologyFeatureId = featureId });
-            }
+            return _lEngineInflectionClerk.LInflectionClerkRead(entryId);
         }
+    }
 
-        session.LVaultSessionCommit();
+    internal void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)
+    {
+        lock (_lEngineGate)
+        {
+            LEngineInflectionReset(entryId);
+            _lEngineInflectionClerk.LInflectionClerkSet(entryId, inflections);
+        }
+    }
+
+    internal void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineInflectionClerk.LInflectionClerkAppend(entryId, inflections);
+        }
+    }
+
+    internal void LEngineInflectionMove(long entryId, int position, int target)
+    {
+        lock (_lEngineGate)
+        {
+            _lEngineInflectionClerk.LInflectionClerkMove(entryId, position, target);
+        }
+    }
+
+    internal void LEngineInflectionDelete(long entryId, int position)
+    {
+        lock (_lEngineGate)
+        {
+            LEngineInflectionReset(entryId);
+            _lEngineInflectionClerk.LInflectionClerkDelete(entryId, position);
+        }
+    }
+
+    internal IReadOnlyList<LParadigmSlot> LEngineParadigmRead(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineParadigmClerk.LParadigmClerkRead(entryId);
+        }
+    }
+
+    public IReadOnlyList<LParadigmSlot> LEngineParadigmShow(long entryId)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineParadigmClerk.LParadigmClerkShow(entryId);
+        }
+    }
+
+    private IReadOnlyList<LParadigmSlot> LEngineParadigmRead(LEntry entry)
+    {
+        return _lEngineParadigmClerk.LParadigmClerkRead(entry);
+    }
+
+    private void LEngineParadigmUpdate(LEntry entry)
+    {
+        _lEngineParadigmClerk.LParadigmClerkUpdate(entry);
+    }
+
+    internal static bool LEngineParadigmMatch(LParadigm paradigm, string headword, string form)
+    {
+        return LParadigmClerk.LParadigmClerkMatch(paradigm, headword, form);
     }
 }

@@ -2,22 +2,22 @@
 
 ## `internal static class TAuditStrictWalker`
 
-Parses the shell sources with Roslyn and applies the strict rules.
-No semantic model is built: a name that starts with `L` and a capital is a logic name.
-Partial classes are joined by class name, and one veneer part makes the whole class a veneer.
+Compiles the shell sources and applies the strict rules by symbol.
+Logic is what `TAuditBinder` says is logic, and a class is a veneer by its folder or its base type.
+Partial classes are joined by type symbol, and one veneer part makes the whole class a veneer.
 
 ## `private static readonly SyntaxKind[] TAuditFlowKinds =`
 
 The syntax a veneer member may not contain: branches, loops, operators, patterns and local functions.
 
-## `public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> sourcePaths, out List<string> veneers)`
+## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, out List<string> veneers)`
 
-Parses every file, scans it for treatment, groups the classes, then scans storage and flow per class.
+Compiles every file, scans the walked ones for treatment, groups the classes, then scans storage and flow per class.
 The veneer class names come back for the report.
 
-## `private static bool TAuditVeneerCheck(ClassDeclarationSyntax type)`
+## `private static bool TAuditVeneerCheck(INamedTypeSymbol symbol, IReadOnlyList<ClassDeclarationSyntax> type)`
 
-True when the file has a `.xaml` beside it or the class derives from a listed veneer base.
+True when the class derives from a control base or any part of it lives under a veneer root.
 
 ## `private static void TAuditStorageScan(ClassDeclarationSyntax part, bool veneer, List<TViolation> violations)`
 
@@ -37,23 +37,26 @@ Null checks, coalescing and the logical connectives are not treatment.
 
 True when the condition treats a logic value, and false for a null check or a bare verdict.
 
+## `public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)`
+
+The condition unwrapped from parentheses and negation.
+
 ## `private static bool TAuditVerdictCheck(ExpressionSyntax condition)`
 
-True when the condition, once unwrapped from parentheses and negation, is one logic call, member or name.
+True when the unwrapped condition is one logic call, member or name.
 Asking the engine a question is not treating its data.
 
-## `private static bool TAuditPatternCheck(PatternSyntax pattern)`
+## `public static bool TAuditPatternCheck(PatternSyntax pattern)`
 
-True for a null constant, its negation, or a declaration that only names the value.
+True for a null constant, its negation, an empty property pattern, or a declaration that only names the value.
 
-## `private static bool TAuditNullCheck(ExpressionSyntax expression)`
+## `public static bool TAuditNullCheck(ExpressionSyntax expression)`
 
 True for the `null` or `default` literal.
 
-## `private static bool TAuditDataCheck(SyntaxNode node)`
+## `public static bool TAuditDataCheck(SyntaxNode node)`
 
-True when the node contains a logic name, whether bare, as a member access or as a call.
-A bare name covers a value brought in by `using static`.
+True when any name inside the node resolves to logic, whether by its symbol or by its type.
 
 ## `private static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)`
 
@@ -64,17 +67,9 @@ A look-alike glyph would let a name pass every prefix rule while reading as anot
 
 True for a field initialised to `null!`.
 
-## `private static string? TAuditTypeRead(TypeSyntax type)`
-
-The rightmost identifier of a type name.
-
 ## `private static string TAuditMemberRead(MemberDeclarationSyntax member)`
 
 A short label for a member, for the report.
-
-## `private static bool TAuditLogicCheck(string name)`
-
-True for a name that starts with `L` followed by a capital.
 
 ## `private static int TAuditLineRead(SyntaxNode node)`
 

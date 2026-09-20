@@ -1,9 +1,9 @@
-﻿# TAuditRatchet.cs
+# TAuditRatchet.cs
 
 ## `public sealed class TAuditRatchet`
 
 Holds the audit settings against the committed copy, so a gate can only tighten inside a working tree.
-A ceiling raised, a waiver added or an enforcement switched off fails until the user commits it.
+A ceiling raised, a waiver row added or an enforcement switched off fails until the user commits it.
 Only the user commits, so the diff that loosens a gate is always seen.
 The hold runs within one generation only.
 A new generation changes what the walk reports, so its ceilings and waivers are baselined afresh.
@@ -12,18 +12,10 @@ A new generation changes what the walk reports, so its ceilings and waivers are 
 
 The test project folder, named from the project so this file is the same in every project.
 
-## `private static readonly string[] TAuditWaiverPaths`
-
-The three parts the custody waivers are kept in.
-
 ## `private static readonly Regex TAuditCeilingPattern`
 
 A ceiling entry as it stands in a settings file.
 A key is anything but a quote, so a chain key with its colon, greater-than and dots is read whole.
-
-## `private static readonly Regex TAuditWaiverPattern`
-
-A custody waiver line as it stands in a settings file.
 
 ## `private static readonly Regex TAuditRowPattern`
 
@@ -89,10 +81,6 @@ No surface admits a name the committed surface did not.
 ## `public void AuditRatchet_FrameAllowed_NeverWidens()`
 
 No namespace joins the frame without a commit.
-
-## `public void AuditRatchet_TruthWaiver_NeverGrows()`
-
-No custody waiver is missing from the committed waiver parts.
 
 ## `public void AuditRatchet_Enforced_NeverFlipsOff()`
 

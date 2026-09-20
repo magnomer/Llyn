@@ -21,7 +21,6 @@ public sealed partial class LEngine
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineInflectionSources = new(StringComparer.Ordinal);
     private readonly Dictionary<long, CancellationTokenSource> _lEngineInflectionPending = [];
     private IReadOnlyList<string>? _lEngineLanguageListed;
-    private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
     private LEnsign _lEngineEnsign;
     private string _lEngineWorkspace;
@@ -51,15 +50,12 @@ public sealed partial class LEngine
     private LCourtVault _lEngineCourts;
     private LRevisionVault _lEngineRevisions;
     private LWorkspaceVault _lEngineWorkspaces;
-    private LTombstoneVault _lEngineTombstones;
     private LAuthorVault _lEngineAuthors;
-    private LCollocationVault _lEngineCollocations;
     private LDiweiVault _lEngineDiweiVault;
     private LExampleVault _lEngineExamples;
     private LFanqieVault _lEngineFanqieVault;
     private LFavoriteVault _lEngineFavorites;
     private LFrequencyVault _lEngineFrequencies;
-    private LGlossVault _lEngineGlosses;
     private LImageVault _lEngineImages;
     private LInflectionVault _lEngineInflections;
     private LLacunaVault _lEngineLacunae;
@@ -70,12 +66,10 @@ public sealed partial class LEngine
     private LPronunciationVault _lEnginePronunciations;
     private LReferenceVault _lEngineReferences;
     private LReflexVault _lEngineReflexes;
-    private LRegisterVault _lEngineRegisters;
     private LScriptVault _lEngineScripts;
     private LSentenceVault _lEngineSentences;
     private LSituationVault _lEngineSituations;
     private LSpeechVault _lEngineSpeeches;
-    private LTagVault _lEngineTags;
     private LTranscriptionVault _lEngineTranscriptions;
     private LTranslationVault _lEngineTranslations;
     private LVideoVault _lEngineVideos;
@@ -84,6 +78,18 @@ public sealed partial class LEngine
     private LIdentity _lEngineIdentity;
     private LLanguageCache _lEngineLanguageCache;
     private LDraftClerk _lEngineDraftClerk;
+    private LTagClerk _lEngineTagClerk;
+    private LRegisterClerk _lEngineRegisterClerk;
+    private LTranslationClerk _lEngineTranslationClerk;
+    private LExampleClerk _lEngineExampleClerk;
+    private LCardClerk _lEngineCardClerk;
+    private LMeaningClerk _lEngineMeaningClerk;
+    private LMentionClerk _lEngineMentionClerk;
+    private LUsageClerk _lEngineUsageClerk;
+    private LVocabularyClerk _lEngineVocabularyClerk;
+    private LParadigmClerk _lEngineParadigmClerk;
+    private LInflectionClerk _lEngineInflectionClerk;
+    private LPronunciationClerk _lEnginePronunciationClerk;
     private LEntryClerk _lEngineEntryClerk;
 
     public LEngine(LRig rig)
@@ -128,15 +134,12 @@ public sealed partial class LEngine
         nameof(_lEngineCourts),
         nameof(_lEngineRevisions),
         nameof(_lEngineWorkspaces),
-        nameof(_lEngineTombstones),
         nameof(_lEngineAuthors),
-        nameof(_lEngineCollocations),
         nameof(_lEngineDiweiVault),
         nameof(_lEngineExamples),
         nameof(_lEngineFanqieVault),
         nameof(_lEngineFavorites),
         nameof(_lEngineFrequencies),
-        nameof(_lEngineGlosses),
         nameof(_lEngineImages),
         nameof(_lEngineInflections),
         nameof(_lEngineLacunae),
@@ -147,12 +150,10 @@ public sealed partial class LEngine
         nameof(_lEnginePronunciations),
         nameof(_lEngineReferences),
         nameof(_lEngineReflexes),
-        nameof(_lEngineRegisters),
         nameof(_lEngineScripts),
         nameof(_lEngineSentences),
         nameof(_lEngineSituations),
         nameof(_lEngineSpeeches),
-        nameof(_lEngineTags),
         nameof(_lEngineTranscriptions),
         nameof(_lEngineTranslations),
         nameof(_lEngineVideos),
@@ -160,6 +161,18 @@ public sealed partial class LEngine
         nameof(_lEngineIdentity),
         nameof(_lEngineLanguageCache),
         nameof(_lEngineDraftClerk),
+        nameof(_lEngineTagClerk),
+        nameof(_lEngineRegisterClerk),
+        nameof(_lEngineTranslationClerk),
+        nameof(_lEngineExampleClerk),
+        nameof(_lEngineCardClerk),
+        nameof(_lEngineMeaningClerk),
+        nameof(_lEngineMentionClerk),
+        nameof(_lEngineUsageClerk),
+        nameof(_lEngineVocabularyClerk),
+        nameof(_lEngineParadigmClerk),
+        nameof(_lEngineInflectionClerk),
+        nameof(_lEnginePronunciationClerk),
         nameof(_lEngineEntryClerk),
         nameof(_lEngineEnsign))]
     private void LEngineRigSet(LRig rig)
@@ -189,15 +202,12 @@ public sealed partial class LEngine
         _lEngineCourts = rig.LRigCourts;
         _lEngineRevisions = rig.LRigRevisions;
         _lEngineWorkspaces = rig.LRigWorkspaces;
-        _lEngineTombstones = rig.LRigTombstones;
         _lEngineAuthors = rig.LRigAuthors;
-        _lEngineCollocations = rig.LRigCollocations;
         _lEngineDiweiVault = rig.LRigDiwei;
         _lEngineExamples = rig.LRigExamples;
         _lEngineFanqieVault = rig.LRigFanqie;
         _lEngineFavorites = rig.LRigFavorites;
         _lEngineFrequencies = rig.LRigFrequencies;
-        _lEngineGlosses = rig.LRigGlosses;
         _lEngineImages = rig.LRigImages;
         _lEngineInflections = rig.LRigInflections;
         _lEngineLacunae = rig.LRigLacunae;
@@ -208,12 +218,10 @@ public sealed partial class LEngine
         _lEnginePronunciations = rig.LRigPronunciations;
         _lEngineReferences = rig.LRigReferences;
         _lEngineReflexes = rig.LRigReflexes;
-        _lEngineRegisters = rig.LRigRegisters;
         _lEngineScripts = rig.LRigScripts;
         _lEngineSentences = rig.LRigSentences;
         _lEngineSituations = rig.LRigSituations;
         _lEngineSpeeches = rig.LRigSpeeches;
-        _lEngineTags = rig.LRigTags;
         _lEngineTranscriptions = rig.LRigTranscriptions;
         _lEngineTranslations = rig.LRigTranslations;
         _lEngineVideos = rig.LRigVideos;
@@ -221,7 +229,27 @@ public sealed partial class LEngine
         _lEngineIdentity = new LIdentity(rig.LRigWorkspaces);
         _lEngineLanguageCache = new LLanguageCache(rig.LRigLanguages);
         _lEngineDraftClerk = new LDraftClerk(rig, _lEngineIdentity, _lEngineLanguageCache);
-        _lEngineEntryClerk = new LEntryClerk(rig);
+        _lEngineTagClerk = new LTagClerk(rig);
+        _lEngineRegisterClerk = new LRegisterClerk(rig);
+        _lEngineTranslationClerk = new LTranslationClerk(rig);
+        _lEngineExampleClerk = new LExampleClerk(rig);
+        _lEngineCardClerk = new LCardClerk(
+            rig, _lEngineTagClerk, _lEngineRegisterClerk, _lEngineTranslationClerk, _lEngineExampleClerk);
+        _lEngineMeaningClerk = new LMeaningClerk(rig, _lEngineCardClerk);
+        _lEngineMentionClerk = new LMentionClerk(rig, _lEngineLanguageCache);
+        _lEngineUsageClerk = new LUsageClerk(rig);
+        _lEngineVocabularyClerk = new LVocabularyClerk(rig);
+        _lEngineParadigmClerk = new LParadigmClerk(rig);
+        _lEngineInflectionClerk = new LInflectionClerk(rig, _lEngineParadigmClerk);
+        _lEnginePronunciationClerk = new LPronunciationClerk(rig);
+        _lEngineEntryClerk = new LEntryClerk(
+            rig,
+            _lEngineCardClerk,
+            _lEngineMeaningClerk,
+            _lEngineVocabularyClerk,
+            _lEngineInflectionClerk,
+            _lEngineParadigmClerk,
+            _lEnginePronunciationClerk);
         _lEngineEnsign = new LEnsign(rig.LRigUsher);
     }
 
@@ -309,7 +337,6 @@ public sealed partial class LEngine
             LEngineReflexClear();
             _lEngineLanguageListed = null;
             _lEngineEnsign.LEnsignClear();
-            _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
 
             _lEngineSettings = settings;

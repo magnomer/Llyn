@@ -14,17 +14,13 @@ The colour a taint carries when it came from logic.
 
 The colour a taint carries when it came from an input member of a control.
 
-## `private static IReadOnlySet<string> TAuditReaderNames = new HashSet<string>();`
+## `private static IReadOnlySet<ISymbol> TAuditReaderNames`
 
 The shell members that read logic or request, read by the truth walker.
 
-## `private static IReadOnlySet<string> TAuditControlNames = new HashSet<string>();`
-
-The `x:Name` identifiers the markup declares.
-
 ## `public static IReadOnlyList<TViolation> TAuditRun(`
 
-Parses every file and scans each member on its own, since a taint lives inside one member.
+Compiles every file and scans each walked member on its own, since a taint lives inside one member.
 
 ## `private static void TAuditMemberScan(MemberDeclarationSyntax member, List<TViolation> violations)`
 
@@ -32,25 +28,25 @@ Reads the member's taints, then looks at every operator, query verb and conditio
 A line that already names logic is the treat rule's and is skipped here.
 A hit is reported once per line and reason, with the first line of the node as its name.
 
-## `private static Dictionary<string, string> TAuditTaintRead(MemberDeclarationSyntax member)`
+## `private static Dictionary<ISymbol, string> TAuditTaintRead(MemberDeclarationSyntax member)`
 
-The locals of a member and the colour each carries.
+The locals of a member, by symbol, and the colour each carries.
 A parameter of logic type is tainted from the start.
 An initialiser, an assignment, a loop variable and a pattern designation each carry the colour of their source.
 A local built from a tainted local is followed, so the hop count is not limited to one.
 
-## `private static string? TAuditColourRead(ExpressionSyntax value, Dictionary<string, string> tainted)`
+## `private static void TAuditColourAdd(SyntaxNode node, string colour, Dictionary<ISymbol, string> tainted)`
+
+Colours the symbol a declaration or name resolves to.
+
+## `private static string? TAuditColourRead(ExpressionSyntax value, Dictionary<ISymbol, string> tainted)`
 
 The colour an expression carries, or null when it is clean.
 
 ## `private static (string TViolationName, string TViolationColour)? TAuditTaintFind(`
 
 The first tainted name inside a node and its colour.
-A tainted local, a logic name, a reader member and an input member of a control each count.
-
-## `private static string? TAuditOwnerRead(ExpressionSyntax owner)`
-
-The identifier a member access is read off, through `this` if written so.
+A tainted local, a logic symbol, a reader member and an input member of a control-typed expression each count.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
 
@@ -59,22 +55,6 @@ False for a null check, a type test and a bare verdict, which decide nothing abo
 ## `private static bool TAuditVerdictCheck(ExpressionSyntax condition)`
 
 True when the condition is only a logic call or a reader call, whose answer is audited elsewhere.
-
-## `private static bool TAuditPatternCheck(PatternSyntax pattern)`
-
-True for a null, declaration, var or type pattern.
-
-## `private static bool TAuditNullCheck(ExpressionSyntax expression)`
-
-True for the `null` or `default` literal.
-
-## `private static bool TAuditDataCheck(SyntaxNode node)`
-
-True when the node names logic anywhere inside it.
-
-## `private static bool TAuditLogicCheck(string name)`
-
-True for a name that starts with `L` followed by a capital.
 
 ## `private static int TAuditLineRead(SyntaxNode node)`
 

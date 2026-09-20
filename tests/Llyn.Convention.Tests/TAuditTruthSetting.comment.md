@@ -2,8 +2,9 @@
 
 ## `internal static partial class TAuditTruthSetting`
 
-Hand-written and tracked: the truth-audit scope, the ceilings and the handle types live here.
-The waivers live in their own parts, one per kind of hit.
+Hand-written and tracked: the truth-audit scope, the binder inputs and the ceilings live here.
+There is no waiver and no handle list, since the binder says what is logic.
+A ceiling is the only tolerance.
 No script writes this file.
 
 ## `public const bool TAuditTruthEnforced = true;`
@@ -28,9 +29,30 @@ The engine's notice type, so a handler taking one and never reading it is a deaf
 
 The shell's subscription type, so a lambda handed to one that ignores its bulletin is deaf too.
 
+## `public const string TAuditConfiguration = "Debug";`
+
+The build configuration whose output and generated files the binder reads.
+
+## `public const string TAuditReferenceRoot = "src/Llyn.UIVeneer";`
+
+The project whose build output carries every package the source references.
+
+## `public static readonly string[] TAuditShellInclude`
+
+The `git ls-files` patterns of every shell source.
+A type declared under one of these is shell, and a type declared under any other source is logic.
+
 ## `public static readonly string[] TAuditTruthInclude`
 
-The `git ls-files` patterns of the shell sources.
+The patterns of the sources the custody walk audits: the veneer and the deportment both.
+
+## `public static readonly string[] TAuditFrameworkPacks`
+
+The shared frameworks referenced beside the test runtime, so framework types resolve.
+
+## `public static readonly string[] TAuditControlBases`
+
+A type deriving from one of these is a control, whose state may not decide a request.
 
 ## `public static readonly string[] TAuditOrderVerbs`
 
@@ -61,23 +83,16 @@ The members of a control that carry what the user typed or chose.
 ## `public static readonly string[] TAuditTruthHandles`
 
 Types a shell field may hold as a handle to the engine rather than as a value.
-A handle is called on and passed back, so the argument and guard rules skip it.
+A handle is called on and passed back, so the field is skipped before any rule reads it.
 The six `L*Port` interfaces are the slices of the engine a deportment holds in its place.
 `LWindow` is the window deportment, a stateless forwarder over those ports that the veneer helpers take.
 The desk keeps the observers it puts on each tenure it starts, in a list of subject and observer pairs.
 A subscription is a delegate over a bulletin, kept only so the surface can detach the one it attached.
-No panel derives from a contract to be called back, since every callback arrives through a delegate.
+A type is matched as the binder shows it, with any nullable mark dropped.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling`
 
-The hit count each kind may reach, waived hits included.
+The hit count each kind may reach.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when the shell sheds a hit, never raise one to admit a new one.
 
-
-## `public static string[] TAuditTruthWaiver => [.. TAuditWaiverArgument, .. TAuditWaiverGuard, .. TAuditWaiverField];`
-
-Every waiver, joined from the argument, guard and field parts on each read.
-A property, since static fields across partial files initialise in no fixed order.
-A new field, or a new kind on a waived field, is not waived and fails.
-A waiver matching no hit is reported as stale and is removed, never kept.

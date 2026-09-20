@@ -9,10 +9,10 @@ internal static class TAuditNameSetting
     public const int TAuditComponentLimit = 3;
     public const int TAuditComponentReview = 3;
     public const string TAuditXamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
-    public const string TAuditCommandCancelArgument = "IncludeCancelCommand";
-    public const string TAuditCommandAsyncSuffix = "Async";
+    public const string TAuditCancelArgument = "IncludeCancelCommand";
+    public const string TAuditAsyncSuffix = "Async";
     public const string TAuditCommandSuffix = "Command";
-    public const string TAuditCommandCancelSuffix = "CancelCommand";
+    public const string TAuditCancelSuffix = "CancelCommand";
 
     public static readonly string[] TAuditPrefixes =
     [

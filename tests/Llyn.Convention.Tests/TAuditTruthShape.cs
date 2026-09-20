@@ -6,8 +6,6 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthWalker
 {
-    private static HashSet<string> TAuditControlNames = [];
-
     private static void TAuditShapeScan(SyntaxNode root, List<TViolation> violations)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
@@ -26,7 +24,7 @@ internal static partial class TAuditTruthWalker
                     {
                         RawKind: (int)SyntaxKind.AddAssignmentExpression,
                         Left: MemberAccessExpressionSyntax clock
-                    } wired when TAuditClockCheck(clock.Expression, root) && TAuditDriveCheck(wired.Right)
+                    } wired when TAuditClockCheck(clock.Expression) && TAuditDriveCheck(wired.Right)
                     => (clock.Expression.ToString(), "a clock drives a request"),
                 MethodDeclarationSyntax handler when TAuditDeafRead(handler) is string bulletin
                     => (handler.Identifier.ValueText, $"handles the bulletin '{bulletin}' without reading it"),
@@ -53,52 +51,25 @@ internal static partial class TAuditTruthWalker
         foreach (MemberAccessExpressionSyntax access in condition.DescendantNodesAndSelf()
                      .OfType<MemberAccessExpressionSyntax>())
         {
-            string? owner = access.Expression switch
+            if (TAuditBinder.TAuditControlCheck(TAuditBinder.TAuditTypeRead(access.Expression)))
             {
-                IdentifierNameSyntax name => name.Identifier.ValueText,
-                MemberAccessExpressionSyntax { Expression: ThisExpressionSyntax } own => own.Name.Identifier.ValueText,
-                _ => null
-            };
-            if (owner is not null && TAuditControlNames.Contains(owner))
-            {
-                return owner;
+                return access.Expression.ToString();
             }
         }
 
         return null;
     }
 
-    private static bool TAuditClockCheck(ExpressionSyntax clock, SyntaxNode root)
+    private static bool TAuditClockCheck(ExpressionSyntax clock)
     {
-        string name = clock switch
-        {
-            IdentifierNameSyntax bare => bare.Identifier.ValueText,
-            MemberAccessExpressionSyntax { Expression: ThisExpressionSyntax } own => own.Name.Identifier.ValueText,
-            _ => string.Empty
-        };
-        if (name.Length == 0)
-        {
-            return false;
-        }
-
-        return root.DescendantNodes().OfType<VariableDeclarationSyntax>()
-            .Where(declaration => declaration.Variables.Any(variable =>
-                string.Equals(variable.Identifier.ValueText, name, StringComparison.Ordinal)))
-            .Select(declaration => TAuditNameRead(declaration.Type))
-            .Any(typeName => typeName is not null
-                             && TAuditTruthSetting.TAuditClockTypes.Contains(typeName, StringComparer.Ordinal));
+        return TAuditBinder.TAuditNamedCheck(
+            TAuditBinder.TAuditTypeRead(clock), TAuditTruthSetting.TAuditClockTypes);
     }
 
     private static bool TAuditLambdaCheck(LambdaExpressionSyntax lambda)
     {
-        if (lambda.Parent is not ArgumentSyntax
-            {
-                Parent.Parent: InvocationExpressionSyntax
-                {
-                    Expression: MemberAccessExpressionSyntax { Expression: IdentifierNameSyntax owner }
-                }
-            }
-            || owner.Identifier.ValueText != TAuditTruthSetting.TAuditObserverType)
+        if (lambda.Parent is not ArgumentSyntax { Parent.Parent: ObjectCreationExpressionSyntax creation }
+            || TAuditBinder.TAuditTypeRead(creation.Type)?.Name != TAuditTruthSetting.TAuditObserverType)
         {
             return false;
         }
@@ -109,36 +80,39 @@ internal static partial class TAuditTruthWalker
             ParenthesizedLambdaExpressionSyntax full => full.ParameterList.Parameters.FirstOrDefault(),
             _ => null
         };
-        if (parameter is null)
+        if (parameter is null || TAuditBinder.TAuditSymbolRead(parameter) is not { } symbol)
         {
             return false;
         }
 
-        string name = parameter.Identifier.ValueText;
-        return name == "_" || !TAuditNameCheck(lambda.Body, name);
+        HashSet<ISymbol> symbols = new([symbol], SymbolEqualityComparer.Default);
+        return parameter.Identifier.ValueText == "_" || !TAuditNameCheck(lambda.Body, symbols);
     }
 
     private static bool TAuditDriveCheck(ExpressionSyntax handler)
     {
         return TAuditRequestCheck(handler)
                || handler.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>()
-                   .Any(name => TAuditRelayNames.Contains(name.Identifier.ValueText));
+                   .Any(name =>
+                       TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditRelayNames.Contains(symbol));
     }
 
     private static string? TAuditDeafRead(MethodDeclarationSyntax handler)
     {
         foreach (ParameterSyntax parameter in handler.ParameterList.Parameters)
         {
-            if (parameter.Type is null || TAuditNameRead(parameter.Type) != TAuditTruthSetting.TAuditBulletinType)
+            if (parameter.Type is null
+                || TAuditBinder.TAuditTypeRead(parameter.Type)?.Name != TAuditTruthSetting.TAuditBulletinType
+                || TAuditBinder.TAuditSymbolRead(parameter) is not { } symbol)
             {
                 continue;
             }
 
-            string name = parameter.Identifier.ValueText;
             SyntaxNode? body = (SyntaxNode?)handler.Body ?? handler.ExpressionBody;
-            if (body is not null && !TAuditNameCheck(body, name))
+            HashSet<ISymbol> symbols = new([symbol], SymbolEqualityComparer.Default);
+            if (body is not null && !TAuditNameCheck(body, symbols))
             {
-                return name;
+                return parameter.Identifier.ValueText;
             }
         }
 

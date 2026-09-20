@@ -66,6 +66,11 @@ public sealed class TAuditDraft
 
     private static void TAuditDraftCheck(string side, IReadOnlyList<string> include, IReadOnlyList<string> waiver)
     {
+        if (TAuditDraftSetting.TAuditDraftTypes.Length == 0)
+        {
+            return;
+        }
+
         string repoRoot = TAuditSource.TAuditRootRead();
         Dictionary<string, IReadOnlyList<string>> records = TAuditDraftRead(repoRoot);
         string text = TAuditTextRead(repoRoot, include);

@@ -52,7 +52,8 @@ The labels made distinct in their given order, numbered where two share a name, 
 
 ## `private static string[] LEngineTwinRead(IReadOnlyList<LEntry> entries)`
 
-The twin name of each entry, by position, numbered by entry id.
+The twin name of each entry, by position, numbered by entry id, through `LEntryClerkTwin`.
+The generic overload and the name read forward the same way for the catalog parts that still call them.
 
 ## `private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)`
 

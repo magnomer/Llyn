@@ -2,107 +2,96 @@
 
 ## `public sealed partial class LEngine`
 
-The card half of `LEngineEntryUpdate`.
-It reconciles an entry's stored Meanings and Collocations to the cards a draft lists.
-It does the same for the Examples and Situations they reference and the Tags they carry.
-It sits in its own file because it is the bulk of the update and answers one question.
-That question is which stored row each card is.
-It also asks what to do with the rows no card names any more.
+The card facade of the engine, over Meanings, Collocations, Tags, Registers and Translations.
+Every call takes the gate and hands the work to the clerk that owns the rows.
+The facade stays because the shell calls the engine, and the engine alone holds the gate and the observers.
+Which side an id names arrives as an `LOwner` rather than in the method's name.
+A name carries three components after its prefix, and a method per side would need four.
+A Tag, a Register or a link hangs from a Meaning or a Collocation and from nothing else.
+So the facade turns the owner into the flag the clerks take, and any other side is refused here.
 
-## Inline notes
+## `internal LMeaning LEngineMeaningCreate(LMeaning meaning)`
 
-### `private void LEngineCardUpdate(`
+The meaning clerk's create under the gate.
+Every other Meaning and Collocation call is the same relay for the clerk member of the same shape.
 
-Reconciles one card set — the entry's Meanings or its Collocations — to the cards the draft lists.
-A card naming a stored row of this entry updates that row when its text or its place moved.
-A row the card left as it was is neither rewritten nor recorded, so a no-op save leaves no history.
-An unreadable value is still sent, because the store is what refuses it.
-A card naming nothing creates one.
-A stored row the draft stopped naming is deleted.
-A card that has gone blank never reaches here.
-So clearing a card removes its row, exactly as adding text to a blank one adds one.
+## `public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)`
 
-Deletions run first, so the creates that follow append onto a set already free of the going rows.
-The whole surviving set is renumbered afterwards in one pass.
-The unique (owner, position) index rejects a swap done row by row.
-That is what `LCollocationOrderSet` on the collocation vault exists for.
+Reads the Meanings of the Entry identified by `ownerId`, in stored order.
+Only an Entry holds Meanings, so any other owner is refused.
 
-A Meaning list is a tree and is reconciled in `LEngineMeaningCard.cs`.
-What stays here is the flat half, which is what a Collocation list is.
+## `internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)`
 
-### `LEngineCardValidate(cards, collocation);`
+Reads the Collocations of the Entry identified by `ownerId`, in stored order, on the same terms.
 
-A Collocation carrying a card inside it is refused before anything is written.
-Only a Meaning nests, because only a sense names a parent in the store.
+## `internal IReadOnlyList<LTag> LEngineTagRead()`
 
-### `List<LCardDraft> kept = [];`
+Reads every Tag the workspace holds, once each, in alphabetical order.
 
-The cards the draft still names, in draft order.
-A card naming a row of another entry names nothing here, and so does one already gone.
-So it is created rather than reaching across.
+## `public IReadOnlyList<LTag> LEngineTagFind(LVista vista)`
 
-### `HashSet<string> applied = new(StringComparer.Ordinal);`
+The tags the taxonomy panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries of the chosen tag, not tags, so it is not applied here.
+A vista whose chosen tag no longer answers is deselected.
 
-A card names a stored row once.
-Two cards carrying one id would otherwise both write that row.
-The renumber would then be handed the same member twice.
-So the second is a new card.
+## `internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)`
 
-### `bool reuse = named.Contains(card.LCardDraftId) && applied.Add(card.LCardDraftId);`
+Writes that card's whole Tag line and moves the holding Entry's updated stamp.
 
-A card the draft still names is written onto the row it names and keeps that row's id.
-Any other card is appended as a new row.
-The renumber that follows the whole set puts it where the draft holds it.
+## `public LTag LEngineTagCreate(string text)`
 
-### `private void LEngineCardSync(`
+The tag clerk's create, then the tag bulletin raised outside the gate.
+The catalog is announced so every panel listing Tags shows the new row.
+The rename and the delete raise the same bulletin the same way.
 
-Re-attaches the rows and Situations one card references and rewrites the Tags it carries so they match the draft.
-A row the card names by a positive id is kept and moved to its new place.
-A row the card names by a negative id gets a row of its own.
-The map records which one.
-A row the card dropped is detached only.
-Those rows are independent data the card references.
-So the last reference going does not take the row with it.
-Tags are not reconciled that way.
-A Tag is its own text and lives on the card.
-So the card's whole Tag line is written over.
-Translations are written over the same way, because a link is an id the card holds.
-Nothing is created or detached for one, and no target row is touched.
-A name that is no Entry is dropped rather than written.
-An import points a card at an Entry the same file declares, and that Entry may not exist yet.
-A newly created card has nothing attached yet, so the same path attaches its whole set.
-A stale positive id anywhere in the card is refused rather than rebound.
-The card therefore never points where the user did not.
+## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)`
 
-### `private void LEngineSentenceSync(`
+The shelf the tenor panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries of the chosen Register, not Registers, so it is not applied here.
 
-Writes the whole row list of one card over what the store holds for it.
-The store hands back the id of every row it wrote.
-A negative row id is mapped to its new row.
-A row states which Example it quotes, and two cards quoting one sentence name one Example row.
-A row naming no Example is written with none, which is what the store's check allows for a bare frame.
+## `public LRegister LEngineRegisterCreate(string name)`
 
-### `private void LEngineTagSave(`
+The register clerk's create, then the register bulletin raised outside the gate.
+The announcement is raised either way, so the panel lists and selects the row.
+The rename and the delete raise the same bulletin whether or not the row moved.
+So a shown panel always re-reads.
 
-Writes the whole Tag line of one card over what the store holds for it.
-The store resolves each Tag to its row, by id when it has one and by wording otherwise.
-The wording is the Tag's identity in the store, so a written Tag can only ever name one row.
-A negative Tag id is mapped to the row the store answered with.
+## `internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)`
 
-### `private static void LEngineFieldSync<TRow>(`
+Writes that card's whole link line and moves the holding Entry's updated stamp.
 
-One card field reconciled against the rows it already references.
-Situation, Register, Image and Video differ only in two things.
-Those are which resolver turns a value into a row id, and which pair of methods attaches and detaches it.
-So they are handed in and the reconciliation itself is written once.
+## `private void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, bool collocation)`
 
-A value names its row by id and nothing else.
-A positive id keeps that row, and a negative id creates one.
-A card naming one id twice keeps one association.
-Blank values are dropped on the same terms the save drops them.
+The same line written from the draft translation part, which already holds the side as a flag.
 
-### `for (int position = 0; position < targets.Count; position++)`
+## `public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)`
 
-Attaching a row the card already references moves it.
-The association goes in at the end and the set is renumbered around the requested position.
-So draft order becomes stored order.
+The translation search built into vista rows, for the prospect list under a card.
+
+## `internal LEntry LEngineTranslationCreate(string headword, string language)`
+
+The translation clerk's stub create under the gate.
+A frequency fill starts for it after the commit, exactly as it does for a saved draft.
+The making is announced as an entry bulletin once the lock is released.
+The library list then shows the stub at once.
+
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)`
+
+The targets of the draft's link ids, so a card resolves its chips in one read.
+
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)`
+
+The targets the held draft `ownerId` names, or nothing while the draft targets no entry.
+
+## `public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)`
+
+The held draft's targets keyed by id, so a card can find its own without a scan.
+
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
+
+The targets of `ids` as the draft `ownerId` sees them.
+The engine reads the draft's court links and hands them to the clerk, which answers a tentative target from them.
+
+## `public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)`
+
+Every card of either kind that links to the Entry, with the epithet the settings ask for.

@@ -64,13 +64,13 @@ internal static class TAuditNameFilter
         }
 
         return TAuditGeneratedCheck(attributes) ||
-               TAuditAnyAttributeCheck(attributes, TAuditNameSetting.TAuditExternalAttributes);
+               TAuditAttributesCheck(attributes, TAuditNameSetting.TAuditExternalAttributes);
     }
 
     internal static bool TAuditGeneratedCheck(SyntaxList<AttributeListSyntax> attributes) =>
-        TAuditAnyAttributeCheck(attributes, TAuditNameSetting.TAuditGeneratedAttributes);
+        TAuditAttributesCheck(attributes, TAuditNameSetting.TAuditGeneratedAttributes);
 
-    internal static bool TAuditAnyAttributeCheck(SyntaxList<AttributeListSyntax> attributes, string[] expectedNames)
+    internal static bool TAuditAttributesCheck(SyntaxList<AttributeListSyntax> attributes, string[] expectedNames)
     {
         foreach (string expectedName in expectedNames)
         {
