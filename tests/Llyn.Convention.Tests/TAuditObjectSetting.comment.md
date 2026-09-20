@@ -46,6 +46,12 @@ The hit count each kind may reach.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a type sheds a hit, never raise one to admit a new one.
 
+## `public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling`
+
+The parts a named type may be split over, keyed by its full name.
+The engine stood at 72 parts after plan 09 lifted the draft clerk, and a part is never added.
+Lower a ceiling when a plan lifts a part into a clerk, never raise one.
+
 ## `public static readonly string[] TAuditObjectInclude`
 
 The `git ls-files` patterns of the sources the walk compiles.

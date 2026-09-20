@@ -41,7 +41,7 @@ internal static class TAuditObjectWalker
             .ToList();
     }
 
-    private static List<MetadataReference> TAuditReferenceRead()
+    public static List<MetadataReference> TAuditReferenceRead()
     {
         List<MetadataReference> references = [];
         if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is not string trusted)

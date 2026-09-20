@@ -4,7 +4,7 @@
 
 Holds the generation this checkout of the convention tests applies.
 A generation names the set of checks the audits apply, not a count of edits.
-The name, line, and comment audits share one number, so a report from any of them compares across projects.
+Every audit and every settings sidecar share one number, so a report from any of them compares across projects.
 
 ## `public static string TAuditReportFormat(string audit, string report)`
 

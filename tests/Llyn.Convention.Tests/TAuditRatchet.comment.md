@@ -19,75 +19,93 @@ The three parts the custody waivers are kept in.
 ## `private static readonly Regex TAuditCeilingPattern`
 
 A ceiling entry as it stands in a settings file.
+A key is anything but a quote, so a chain key with its colon, greater-than and dots is read whole.
 
 ## `private static readonly Regex TAuditWaiverPattern`
 
-A waiver line as it stands in a settings file.
+A custody waiver line as it stands in a settings file.
 
-## `private static readonly Regex TAuditRingPattern`
+## `private static readonly Regex TAuditRowPattern`
 
-A ring waiver or exempt line as it stands in the ring settings file, a path and a namespace.
+A `path:name` waiver row as it stands in a settings file.
 
 ## `private static readonly Regex TAuditRolePattern`
 
-One role row of the ring table: the assembly and the namespaces it may not name.
+A dictionary entry whose value is a list of names, with the key and the list captured.
 
 ## `private static readonly Regex TAuditQuotedPattern`
 
-A quoted string, used to read the names of a role row.
+One quoted name inside a captured list.
 
 ## `private static readonly Regex TAuditEnforcedPattern`
 
-The enforcement switch as it stands in a settings file.
+An enforcement flag as it stands in a settings file.
 
 ## `private static readonly Regex TAuditGenerationPattern`
 
-The generation a settings file was written at.
+The generation constant as it stands in a settings file.
 
 ## `public void AuditRatchet_TruthCeiling_NeverRises()`
 
-No custody ceiling stands above its committed value.
+No truth ceiling stands above its committed value.
 
 ## `public void AuditRatchet_StrictCeiling_NeverRises()`
 
 No strict ceiling stands above its committed value.
 
-## `public void AuditRatchet_RingCeiling_NeverRises()`
-
-No ring ceiling stands above its committed value.
-
 ## `public void AuditRatchet_ObjectCeiling_NeverRises()`
 
-No object ceiling stands above its committed value.
+No object or part ceiling stands above its committed value.
 
-## `public void AuditRatchet_RingWaiver_NeverGrows()`
+## `public void AuditRatchet_ChainCeiling_NeverRises()`
 
-No ring waiver is missing from the committed waiver list.
-Only the waiver block is read, so an exempt row does not stand in for a waiver.
+No chain ceiling stands above its committed value.
 
-## `public void AuditRatchet_RingExempt_NeverGrows()`
+## `public void AuditRatchet_FrameCeiling_NeverRises()`
 
-No ring exempt row is missing from the committed exempt list.
-An exempt row bypasses the ring guard outright, so one never appears without a commit that shows it.
+No frame ceiling stands above its committed value.
 
-## `public void AuditRatchet_RingRoles_NeverShrink()`
+## `public void AuditRatchet_ChainWaiver_NeverGrows()`
 
-Every namespace a role was forbidden at the commit is still forbidden.
-A role may gain a forbidden namespace, never lose one.
+No chain waiver is missing from the committed waiver list.
+
+## `public void AuditRatchet_FrameWaiver_NeverGrows()`
+
+No frame waiver is missing from the committed waiver list.
+
+## `public void AuditRatchet_ChainReach_NeverWidens()`
+
+No ring reaches a ring the committed chain did not let it reach.
+A reach dropped is a tightening and passes.
+
+## `public void AuditRatchet_ChainSurface_NeverWidens()`
+
+No surface admits a name the committed surface did not.
+
+## `public void AuditRatchet_FrameAllowed_NeverWidens()`
+
+No namespace joins the frame without a commit.
 
 ## `public void AuditRatchet_TruthWaiver_NeverGrows()`
 
-No custody waiver is missing from the committed list.
-Skipped while the committed file carries no ceilings, which is the first enforcement.
+No custody waiver is missing from the committed waiver parts.
 
 ## `public void AuditRatchet_Enforced_NeverFlipsOff()`
 
-A switch committed as true is still true.
+No enforcement flag committed as true is false in the working tree.
 
 ## `private static void TAuditCeilingCheck(string path, IReadOnlyDictionary<string, int> current)`
 
 Reads the committed ceilings and lists every kind whose current value is higher.
 A file not yet committed has nothing to hold against and passes.
+
+## `private static void TAuditRowCheck(string path, string block, IReadOnlyList<string> rows, string label)`
+
+Reads the committed rows of one waiver block and lists every current row missing from it.
+
+## `private static void TAuditListCheck(string path, string block, IReadOnlyDictionary<string, string[]> current, string label, string verb)`
+
+Reads the committed lists of one dictionary block and lists every current name a key gained.
 
 ## `private static string TAuditBlockRead(string committed, string name)`
 

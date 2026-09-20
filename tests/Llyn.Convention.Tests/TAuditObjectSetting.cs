@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 9;
+    public const int TAuditGeneration = 10;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
     public const int TAuditPartFloor = 5;
@@ -15,6 +15,11 @@ internal static class TAuditObjectSetting
     {
         ["Monolith"] = 7,
         ["Hub"] = 35,
+    };
+
+    public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling = new Dictionary<string, int>
+    {
+        ["Llyn.ShellEngine.LEngine"] = 72,
     };
 
     public static readonly string[] TAuditObjectInclude =

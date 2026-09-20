@@ -39,6 +39,20 @@ public sealed class TAuditObject
     }
 
     [Fact]
+    public void AuditObject_Parts_HoldWithinCeiling()
+    {
+        Dictionary<string, int> parts = TAuditPartRead();
+        List<string> over = TAuditObjectSetting.TAuditPartCeiling
+            .Where(pair => parts.GetValueOrDefault(pair.Key) > pair.Value)
+            .Select(pair => $"  {pair.Key}: {parts.GetValueOrDefault(pair.Key)} part(s), ceiling {pair.Value}")
+            .ToList();
+
+        Assert.True(over.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITOBJECT",
+            $"{over.Count} type(s) are split over more parts than their ceiling.\n{string.Join('\n', over)}"));
+    }
+
+    [Fact]
     public void AuditObject_Ceiling_MatchesHits()
     {
         Dictionary<string, int> counts = new(StringComparer.Ordinal)
@@ -46,8 +60,13 @@ public sealed class TAuditObject
             ["Monolith"] = TAuditObjectRows.Value.Count(row => row.TAuditObjectMonolith),
             ["Hub"] = TAuditObjectRows.Value.Sum(row => row.TAuditObjectHubs.Count),
         };
+        foreach ((string name, int parts) in TAuditPartRead())
+        {
+            counts[name] = parts;
+        }
 
         List<string> stale = TAuditObjectSetting.TAuditObjectCeiling
+            .Concat(TAuditObjectSetting.TAuditPartCeiling)
             .Where(pair => counts.GetValueOrDefault(pair.Key) < pair.Value)
             .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key)} hit(s), ceiling {pair.Value}")
             .ToList();
@@ -55,6 +74,13 @@ public sealed class TAuditObject
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT",
             $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+    }
+
+    private static Dictionary<string, int> TAuditPartRead()
+    {
+        return TAuditObjectRows.Value
+            .Where(row => TAuditObjectSetting.TAuditPartCeiling.ContainsKey(row.TAuditObjectName))
+            .ToDictionary(row => row.TAuditObjectName, row => row.TAuditObjectParts.Count, StringComparer.Ordinal);
     }
 
     private void TAuditObjectCheck(string kind, List<string> hits, string summary)

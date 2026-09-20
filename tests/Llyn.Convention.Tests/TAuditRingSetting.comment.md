@@ -2,65 +2,12 @@
 
 ## `internal static class TAuditRingSetting`
 
-Hand-written and tracked: the ring table, the project edges, the waivers and the ceilings live here.
+Hand-written and tracked: the project edge table lives here.
 No script writes this file.
-
-## `public static readonly IReadOnlyDictionary<string, int> TAuditRingCeiling`
-
-The hit count each kind may reach.
-`EngineField` counts the `LEngine _lEngine` fields in the veneer.
-`EngineName` counts every declaration typed `LEngine` in the veneer.
-Those are the window's field and constructor, and the root's field, local and apply parameter.
-`EngineHelper` counts the tenure, vista and foray type names in the veneer.
-`AdapterEngine` counts the archives, loaders and sessions the engine constructs itself, none since plan 08.
-`EnginePart` counts the files declaring `partial class LEngine`, 72 after plan 09 lifted the draft clerk.
-A count above fails the fact, a ceiling above the count is stale and fails too.
-Lower a ceiling when a ring sheds a hit, never raise one to admit a new one.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditRingEdges`
 
 Every `ProjectReference` under `src`, as project name to referenced project names.
 The fact holds the `.csproj` files to this table exactly, so a new edge is an edit here first.
-The engine has no edge to the infrastructure since plan 08.
-The veneer holds that edge for the composition root alone.
-
-## `public static readonly IReadOnlyDictionary<string, string[]> TAuditRingRoles`
-
-Every project under `src`, as project name to the namespaces its sources may not name.
-The core names no other project and neither the file system, reflection nor the network.
-The application adds only threading to what the core may name.
-The engine never names the infrastructure, since the rig hands it every adapter.
-The adapters name no other adapter and nothing above them.
-The deportment never names an adapter, and the veneer never names the infrastructure.
-
-## `public static readonly string[] TAuditRingExempt`
-
-The `path:namespace` rows that stand for good.
-`App.xaml.cs` composes the application and so may name the infrastructure.
-
-## `public static readonly string[] TAuditRingRoot`
-
-The paths that may construct an adapter: the infrastructure itself and the composition root.
-`LRigFactory` builds every adapter of a rig, and `App.xaml.cs` opens the default catalog before any rig exists.
-
-## `public static readonly string[] TAuditRingStream`
-
-A file naming one of these types uses the file system, so its `System.IO` is a break.
-A file that names only `StringReader` or `TextReader` under `System.IO` reads text and is not.
-
-## `public static readonly string[] TAuditRingWaiver`
-
-The `path:namespace` rows that break the rings today, one per break, each deleted by a later plan.
-A path ending in `/*` waives a whole project for one namespace.
-Every row must still match a source line, so a fixed break deletes its row.
-The table is empty since plan 08 cut the engine's edge to the infrastructure.
-
-## `public static readonly string[] TAuditRingHandles`
-
-The engine types a deportment source may name: the six ports and the four handles.
-Every other type declared in the engine ring is a helper the deportment may not reach.
-
-## `public const int TAuditRingFloor = 40;`
-
-The fewest source files the application ring may hold.
-Raise it when a plan lifts another clerk in, never lower it.
+An edge is wider than a reach.
+The engine references the core to carry its records and reaches the application alone.

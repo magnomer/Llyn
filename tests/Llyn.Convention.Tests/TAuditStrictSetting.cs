@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
-    public const int TAuditGeneration = 9;
+    public const int TAuditGeneration = 10;
     public const bool TAuditStrictEnforced = true;
     public const string TAuditStrictReport = "temp/audit/Truth-{0}.md";
 

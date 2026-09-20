@@ -15,10 +15,11 @@ The parse options every source is read with.
 Parses every source, builds one compilation, registers members in a first pass and links them in a second.
 Returns one row per type with members, largest first.
 
-## `private static List<MetadataReference> TAuditReferenceRead()`
+## `public static List<MetadataReference> TAuditReferenceRead()`
 
 The runtime's trusted platform assemblies as metadata references.
 A file that is not a managed assembly is skipped.
+The chain walker binds against the same set.
 
 ## `private static void TAuditMemberScan(SemanticModel model, string repoRoot, Dictionary<INamedTypeSymbol, TAuditObjectType> types)`
 

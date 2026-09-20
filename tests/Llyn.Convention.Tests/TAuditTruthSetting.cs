@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static partial class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 9;
+    public const int TAuditGeneration = 10;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";

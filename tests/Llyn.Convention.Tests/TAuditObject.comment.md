@@ -29,10 +29,18 @@ Each hit names the type, its parts, lines, cross references, hub-free weave and 
 A state slot reached from as many parts as the hub reach allows, or more.
 Each hit names the type, the slot and how many parts reach it.
 
+## `public void AuditObject_Parts_HoldWithinCeiling()`
+
+Every type with a part ceiling is split over no more parts than it.
+
 ## `public void AuditObject_Ceiling_MatchesHits()`
 
 Every ceiling equals its count, so a ceiling left above the count is stale.
 This holds even when the object rules are not enforced.
+
+## `private static Dictionary<string, int> TAuditPartRead()`
+
+The part count of every type a part ceiling names.
 
 ## `private void TAuditObjectCheck(string kind, List<string> hits, string summary)`
 

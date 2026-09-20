@@ -5,58 +5,10 @@ namespace Convention.Tests;
 
 public sealed class TAuditBoundary
 {
-    private static readonly string[] TAuditBoundaryForbidden =
-    [
-        @"\bLStateValueRead\s*\(",
-        @"\bLStateValueCreate\s*\(",
-        @"\bLStateWrittenResolve\s*\(",
-        @"\bLStateAnchorRead\s*\(",
-        @"\bLStateAnchorCreate\s*\(",
-        @"\busing\s+static\s+Llyn\.",
-    ];
-
-    private static readonly string[] TAuditBoundaryState =
-    [
-        @"\bLStateUnknown\b(?!\s*[:=])",
-        @"\bLStateSpecified\b(?!\s*[:=])",
-        @"\bLStateUnspecified\b(?!\s*[:=])",
-    ];
-
-    private static readonly string[] TAuditBoundaryConverter =
-    [
-        "PStateConverter.cs",
-        "PSentenceConverter.cs",
-    ];
-
-    private static readonly string[] TAuditBoundaryHidden =
-    [
-        @"^\s*#\s*if\b",
-        @"\bdynamic\b",
-        @"\bType\.GetType\s*\(",
-        @"\bActivator\.",
-        @"\.GetMethods?\s*\(",
-        @"\.GetPropert(y|ies)\s*\(",
-        @"\.GetFields?\s*\(",
-        @"<x:Code\b",
-        @"\bEnum\.(Try)?Parse\b",
-        @"^\s*(global\s+)?using\s+\w+\s*=",
-        @"^\s*extern\s+alias\b",
-    ];
-
-    private static readonly string[] TAuditBoundaryLoader =
-    [
-        "PHeadquarter.cs",
-        "PThemeLoader.cs",
-    ];
-
-    private const string TAuditBoundaryReflection = @"\bSystem\.Reflection\b";
-
-    private const string TAuditBoundaryTimer = @"\bCancellationTokenSource\b";
-
     [Fact]
     public void AuditBoundary_ShellSources_BuildNoStateValue()
     {
-        List<string> hits = TAuditBoundaryScan(static _ => true, TAuditBoundaryForbidden);
+        List<string> hits = TAuditBoundaryScan(static _ => true, TAuditBoundarySetting.TAuditBoundaryForbidden);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITBOUNDARY",
@@ -67,8 +19,8 @@ public sealed class TAuditBoundary
     public void AuditBoundary_Veneer_ComparesNoState()
     {
         List<string> hits = TAuditBoundaryScan(
-            static name => !TAuditBoundaryConverter.Contains(name, StringComparer.Ordinal),
-            TAuditBoundaryState);
+            static name => !TAuditBoundarySetting.TAuditBoundaryConverter.Contains(name, StringComparer.Ordinal),
+            TAuditBoundarySetting.TAuditBoundaryState);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITBOUNDARY",
@@ -78,7 +30,7 @@ public sealed class TAuditBoundary
     [Fact]
     public void AuditBoundary_ShellSources_HideNothing()
     {
-        List<string> hits = TAuditBoundaryScan(static _ => true, TAuditBoundaryHidden);
+        List<string> hits = TAuditBoundaryScan(static _ => true, TAuditBoundarySetting.TAuditBoundaryHidden);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITBOUNDARY",
@@ -89,8 +41,8 @@ public sealed class TAuditBoundary
     public void AuditBoundary_PanelSources_ReflectNothing()
     {
         List<string> hits = TAuditBoundaryScan(
-            static name => !TAuditBoundaryLoader.Contains(name, StringComparer.Ordinal),
-            [TAuditBoundaryReflection]);
+            static name => !TAuditBoundarySetting.TAuditBoundaryLoader.Contains(name, StringComparer.Ordinal),
+            [TAuditBoundarySetting.TAuditBoundaryReflection]);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITBOUNDARY",
@@ -136,7 +88,7 @@ public sealed class TAuditBoundary
             string[] lines = File.ReadAllLines(path);
             for (int index = 0; index < lines.Length; index++)
             {
-                if (Regex.IsMatch(lines[index], @"\b(class|struct|record)\s+PS?[A-Z]"))
+                if (Regex.IsMatch(lines[index], TAuditBoundarySetting.TAuditBoundaryPanel))
                 {
                     hits.Add($"  {Path.GetRelativePath(repoRoot, path).Replace('\\', '/')}:{index + 1}");
                 }
@@ -152,9 +104,8 @@ public sealed class TAuditBoundary
     public void AuditBoundary_HoldSources_KeepNoTimer()
     {
         List<string> hits = TAuditBoundaryScan(
-            static name => name.EndsWith("Hold.cs", StringComparison.Ordinal)
-                || name.StartsWith("PEditor", StringComparison.Ordinal),
-            [TAuditBoundaryTimer]);
+            static name => TAuditBoundarySetting.TAuditBoundaryHold.Any(pattern => Regex.IsMatch(name, pattern)),
+            [TAuditBoundarySetting.TAuditBoundaryTimer]);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITBOUNDARY",
