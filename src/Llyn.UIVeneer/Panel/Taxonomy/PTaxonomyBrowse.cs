@@ -125,6 +125,7 @@ public partial class PTaxonomy
             return;
         }
 
+        _pTaxonomyHost.PVoyageRecord();
         PDirectorySelect(item.PDirectoryItemChosen ? null : item.PDirectoryItemId);
     }
 

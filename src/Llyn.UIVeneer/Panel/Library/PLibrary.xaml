@@ -153,6 +153,43 @@
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PLibraryViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PLibraryEarlier"
+                            Click="PLibraryRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PLibraryLater"
+                            Click="PLibraryAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PLibraryScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PLibraryBackward"
+                            Click="PLibraryUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PLibraryForward"
+                            Click="PLibraryRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Click="PLibraryMarkupHandle"
                         Content="{DynamicResource List.Import}"

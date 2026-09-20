@@ -131,6 +131,7 @@ public partial class PFavorite
             return;
         }
 
+        _pFavoriteHost.PVoyageRecord();
         PRosterEntryShow(item.PRosterItemId);
     }
 
@@ -267,6 +268,11 @@ public partial class PFavorite
         }
 
         PFavoriteScribeShow(editing);
+    }
+
+    internal long PFavoriteVoyageRead()
+    {
+        return _lFavorite.LFavoriteVoyageRead();
     }
 
     internal bool PFavoriteLeaveConfirm()

@@ -35,13 +35,14 @@ A field standing Unspecified or Unknown still has a place in every ordering, ord
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
 The action row of the panel.
-`PReferenceBackward` and `PReferenceForward` walk the chronicle of whichever editor is in front.
-They are lit only while the engine has a step to walk.
-They carry no label, only the arrow and a tooltip, and a divider parts them from new and save.
 `PReferenceFresh` opens the edit area on a Source nothing cites yet.
 That is the normal case, because a Source is written down first and cited afterwards.
 `PReferenceStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Source.
 It stands in the rail at all times, as the repertoire panel's save does.
+One slot sits between save and export, and it holds whichever pair the mode asks for.
+Reading shows `PReferenceEarlier` and `PReferenceLater`, which walk the window's trail of records.
+Writing shows `PReferenceBackward` and `PReferenceForward`, which walk the chronicle of the editor in front.
+Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
 Export and print are mock-up controls and are not wired.
 
 ## `<ItemsControl x:Name="PShelf" Button.Click="PShelfHandle" ...>`

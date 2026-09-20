@@ -71,3 +71,8 @@ The chosen entry changed under the panel, so it is reloaded quietly and a vanish
 Any stored entry re-lists the rows.
 A tab in front and in edit mode adopts the stored entry as its choice.
 That is how a fresh entry becomes the shown one.
+
+## `public long LPanelVoyageRead()`
+
+The record the panel stands on, as the station the window's trail records.
+Zero says the panel stands on none, so there is no place to come back to.

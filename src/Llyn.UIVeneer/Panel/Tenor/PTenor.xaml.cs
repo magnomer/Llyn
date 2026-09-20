@@ -30,6 +30,7 @@ public partial class PTenor : UserControl
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PTenorStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorChronicleChanged += PTenorChronicleUpdate;
     }
 
     private void PTenorStoreUpdate()
@@ -86,5 +87,38 @@ public partial class PTenor : UserControl
                 await _pTenorHost.PWindowPortraitExport(_lTenor.LTenorFileRead(), _lTenor.LTenorPortraitExport);
             }
         }
+    }
+
+    internal void PTenorVoyageShow(bool past, bool future)
+    {
+        PTenorEarlier.IsEnabled = past;
+        PTenorLater.IsEnabled = future;
+    }
+
+    private void PTenorRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pTenorHost.PVoyageRetreatRun();
+    }
+
+    private void PTenorAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pTenorHost.PVoyageAdvanceRun();
+    }
+
+    private void PTenorUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PTenorRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PTenorChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PTenorBackward.IsEnabled = undo;
+        PTenorForward.IsEnabled = redo;
     }
 }

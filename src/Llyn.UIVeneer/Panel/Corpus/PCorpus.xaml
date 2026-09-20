@@ -136,21 +136,6 @@
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
-                        x:Name="PCorpusBackward"
-                        Click="PCorpusUndoHandle"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon undo, 24}"
-                        ToolTip="{DynamicResource Chronicle.Undo}" />
-                    <Button
-                        x:Name="PCorpusForward"
-                        Click="PCorpusRedoHandle"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon redo, 24}"
-                        ToolTip="{DynamicResource Chronicle.Redo}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
                         x:Name="PCorpusFresh"
                         Click="PCorpusFreshHandle"
                         Content="{DynamicResource Scribe.New}"
@@ -163,6 +148,43 @@
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PCorpusViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PCorpusEarlier"
+                            Click="PCorpusRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PCorpusLater"
+                            Click="PCorpusAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PCorpusScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PCorpusBackward"
+                            Click="PCorpusUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PCorpusForward"
+                            Click="PCorpusRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Command="local:PDisplayCommand.PDisplayCommandPortrait"

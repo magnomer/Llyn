@@ -72,3 +72,25 @@ The window supplies both label sets, and the deportment picks the vista, so noth
 
 The editor opens on no entry: this panel puts it on one when the reader asks to write.
 The origin names this panel, so its held work is told apart from the other panels'.
+
+## `internal void PReferenceVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PReferenceRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PReferenceAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `internal long PReferenceVoyageRead()`
+
+The Source the panel shows, read off the shelf panel as the station of this panel.
+
+## `internal void PShelfSourceShow(long id)`
+
+Shows one Source by id, the same selection a click on its shelf row makes.
+The window's trail walks back into this panel through it.

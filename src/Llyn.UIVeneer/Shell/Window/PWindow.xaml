@@ -116,15 +116,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel>
-                            <StackPanel x:Name="PVoyage" Margin="12,8,12,2" Orientation="Horizontal">
-                                <Button x:Name="PVoyageBackward" Click="PVoyageHandle" IsEnabled="False" Style="{StaticResource Theme.Navigation.Voyage}" ToolTip="{DynamicResource Voyage.Retreat}">
-                                    <Path Width="16" Height="16" Data="{local:PIcon earlier, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                                </Button>
-                                <Button x:Name="PVoyageForward" Click="PVoyageHandle" IsEnabled="False" Style="{StaticResource Theme.Navigation.Voyage}" ToolTip="{DynamicResource Voyage.Advance}">
-                                    <Path Width="16" Height="16" Data="{local:PIcon later, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                                </Button>
-                            </StackPanel>
+                        <StackPanel Margin="0,8,0,0">
                             <local:PTab
                                 x:Name="PNavigationInput"
                                 Click="PNavigationHandle"

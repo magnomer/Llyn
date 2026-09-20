@@ -75,3 +75,38 @@ The aid is given both fields a phonetic character is typed into.
 The search comes first, because a reader who opens the charts with nothing focused is looking a pronunciation up.
 The editor's field takes over as soon as the reader focuses it.
 It is named once here rather than looked up whenever a character is chosen.
+
+## `internal void PPhonologyVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PPhonologyRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PPhonologyAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PPhonologyUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor back one step.
+
+## `private void PPhonologyRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor forward one step.
+
+## `private void PPhonologyChronicleUpdate()`
+
+Lights the two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.
+
+## `internal long PPhonologyVoyageRead()`
+
+The Entry the panel shows, read off the phonology panel as the station of this panel.
+
+## `internal void PInventoryEntryShow(long id)`
+
+Shows one Entry by id, the same selection a click on its inventory row makes.
+The window's trail walks back into this panel through it.

@@ -130,6 +130,7 @@ public partial class PTenor
             return;
         }
 
+        _pTenorHost.PVoyageRecord();
         PGamutSelect(item.PGamutItemChosen ? null : item.PGamutItemId);
     }
 

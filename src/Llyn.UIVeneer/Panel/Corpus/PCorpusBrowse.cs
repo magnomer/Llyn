@@ -162,6 +162,7 @@ public partial class PCorpus
             return;
         }
 
+        _pCorpusHost.PVoyageRecord();
         PAnthologyExampleShow(item.PAnthologyItemId);
     }
 
@@ -352,6 +353,22 @@ public partial class PCorpus
     internal long PCorpusVoyageRead()
     {
         return _lCorpus.LCorpusChosen ?? 0;
+    }
+
+    internal void PCorpusVoyageShow(bool past, bool future)
+    {
+        PCorpusEarlier.IsEnabled = past;
+        PCorpusLater.IsEnabled = future;
+    }
+
+    private void PCorpusRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pCorpusHost.PVoyageRetreatRun();
+    }
+
+    private void PCorpusAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pCorpusHost.PVoyageAdvanceRun();
     }
 
     private void PCorpusClear()

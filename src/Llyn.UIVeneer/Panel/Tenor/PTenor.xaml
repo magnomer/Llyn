@@ -225,6 +225,43 @@
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PTenorViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PTenorEarlier"
+                            Click="PTenorRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PTenorLater"
+                            Click="PTenorAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PTenorScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PTenorBackward"
+                            Click="PTenorUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PTenorForward"
+                            Click="PTenorRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Command="local:PDisplayCommand.PDisplayCommandPortrait"
                         Content="{DynamicResource Scribe.Export}"

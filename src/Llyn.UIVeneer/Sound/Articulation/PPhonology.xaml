@@ -145,6 +145,43 @@
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PPhonologyViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PPhonologyEarlier"
+                            Click="PPhonologyRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PPhonologyLater"
+                            Click="PPhonologyAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PPhonologyScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PPhonologyBackward"
+                            Click="PPhonologyUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PPhonologyForward"
+                            Click="PPhonologyRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Command="local:PDisplayCommand.PDisplayCommandPortrait"
                         Content="{DynamicResource Scribe.Export}"

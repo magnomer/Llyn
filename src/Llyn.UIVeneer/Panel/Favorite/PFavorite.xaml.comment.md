@@ -55,3 +55,29 @@ Nothing is read back from the screen.
 Exports the entry being read, as the engine portrays it.
 The window asks for the file and the format, and the engine writes the document from stored rows.
 Nothing is read back from the screen.
+
+## `internal void PFavoriteVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PFavoriteRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PFavoriteAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PFavoriteUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor back one step.
+
+## `private void PFavoriteRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor forward one step.
+
+## `private void PFavoriteChronicleUpdate()`
+
+Lights the two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.

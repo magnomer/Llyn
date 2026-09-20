@@ -31,14 +31,15 @@ An Example whose text is unwritten still has a place in every ordering, ordered 
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
 The action row of the panel.
-`PCorpusBackward` and `PCorpusForward` walk the chronicle of whichever editor is in front.
-They are lit only while the engine has a step to walk.
-They carry no label, only the arrow and a tooltip, and a divider parts them from new and save.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
 This panel is the only place such an Example can arise.
 Elsewhere one is written from the card that quotes it.
 `PCorpusStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Example.
 It stands in the rail at all times, as the repertoire panel's save does.
+One slot sits between save and export, and it holds whichever pair the mode asks for.
+Reading shows `PCorpusEarlier` and `PCorpusLater`, which walk the window's trail of records.
+Writing shows `PCorpusBackward` and `PCorpusForward`, which walk the chronicle of the editor in front.
+Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
 Export and print are mock-up controls and are not wired.
 
 ## `<Grid x:Name="PTranscript">`

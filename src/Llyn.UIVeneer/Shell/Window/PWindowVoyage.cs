@@ -24,7 +24,12 @@ public partial class PWindow
             ("Repertoire", PRepertoire, PRepertoire.PRepertoireVoyageRead),
             ("Taxonomy", PTaxonomy, PTaxonomy.PTaxonomyVoyageRead),
             ("Corpus", PCorpus, PCorpus.PCorpusVoyageRead),
-            ("Tenor", PTenor, PTenor.PTenorVoyageRead)
+            ("Tenor", PTenor, PTenor.PTenorVoyageRead),
+            ("Reference", PReference, PReference.PReferenceVoyageRead),
+            ("Guild", PGuild, PGuild.PGuildVoyageRead),
+            ("Favorite", PFavorite, PFavorite.PFavoriteVoyageRead),
+            ("Phonology", PPhonology, PPhonology.PPhonologyVoyageRead),
+            ("Yunjing", PYunjing, PYunjing.PYunjingVoyageRead)
         ];
     }
 
@@ -41,7 +46,7 @@ public partial class PWindow
         return (string.Empty, 0);
     }
 
-    private void PVoyageRecord()
+    internal void PVoyageRecord()
     {
         if (_pVoyageSailing)
         {
@@ -87,6 +92,11 @@ public partial class PWindow
                 "Taxonomy" => PWindowTagShow(station.PVoyageId),
                 "Corpus" => PWindowExampleShow(station.PVoyageId),
                 "Tenor" => PWindowRegisterShow(station.PVoyageId),
+                "Reference" => PWindowSourceShow(station.PVoyageId),
+                "Guild" => PWindowAuthorShow(station.PVoyageId),
+                "Favorite" => PWindowFavoriteShow(station.PVoyageId),
+                "Phonology" => PWindowInventoryShow(station.PVoyageId),
+                "Yunjing" => PWindowXiaoyunShow(station.PVoyageId),
                 _ => false,
             };
         }
@@ -96,12 +106,12 @@ public partial class PWindow
         }
     }
 
-    private void PVoyageRetreatRun()
+    internal void PVoyageRetreatRun()
     {
         PVoyageRun(_pVoyagePast, _pVoyageFuture);
     }
 
-    private void PVoyageAdvanceRun()
+    internal void PVoyageAdvanceRun()
     {
         PVoyageRun(_pVoyageFuture, _pVoyagePast);
     }
@@ -127,17 +137,6 @@ public partial class PWindow
         }
 
         PVoyageUpdate();
-    }
-
-    private void PVoyageHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender == PVoyageBackward)
-        {
-            PVoyageRetreatRun();
-            return;
-        }
-
-        PVoyageAdvanceRun();
     }
 
     private void PVoyageKeyHandle(object sender, KeyEventArgs e)
@@ -175,7 +174,18 @@ public partial class PWindow
 
     private void PVoyageUpdate()
     {
-        PVoyageBackward.IsEnabled = _pVoyagePast.Count > 0;
-        PVoyageForward.IsEnabled = _pVoyageFuture.Count > 0;
+        bool past = _pVoyagePast.Count > 0;
+        bool future = _pVoyageFuture.Count > 0;
+
+        PCorpus.PCorpusVoyageShow(past, future);
+        PRepertoire.PRepertoireVoyageShow(past, future);
+        PReference.PReferenceVoyageShow(past, future);
+        PFavorite.PFavoriteVoyageShow(past, future);
+        PGuild.PGuildVoyageShow(past, future);
+        PLibrary.PLibraryVoyageShow(past, future);
+        PTaxonomy.PTaxonomyVoyageShow(past, future);
+        PTenor.PTenorVoyageShow(past, future);
+        PPhonology.PPhonologyVoyageShow(past, future);
+        PYunjing.PYunjingVoyageShow(past, future);
     }
 }

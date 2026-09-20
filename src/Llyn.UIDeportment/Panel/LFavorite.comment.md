@@ -18,3 +18,8 @@ Whether the rows are ordered by grasp, in which case a grasp change re-sorts the
 ## `public LVista? LFavoriteVista => _lFavoriteVista;`
 
 The vista, exposed for the window's export dialog alone, which names its file after the vista.
+
+## `public long LFavoriteVoyageRead()`
+
+The Entry the panel stands on, as the station the window's trail records.
+Zero says the panel stands on none, so there is no place to come back to.

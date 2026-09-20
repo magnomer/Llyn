@@ -238,6 +238,11 @@ public sealed class LPanel
         LPanelRowShow(id);
     }
 
+    public long LPanelVoyageRead()
+    {
+        return _lPanelVista?.LVistaChosen ?? 0;
+    }
+
     public void LPanelRowShow(long? id)
     {
         _lPanelVista?.LVistaSelect(id);

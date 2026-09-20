@@ -121,3 +121,16 @@ It walks the rows already listed, so choosing a Situation never re-reads the atl
 
 The Situation the panel shows, as the station the window records before a jump away.
 Zero says no Situation is shown, so there is no place to come back to.
+
+## `internal void PRepertoireVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PRepertoireRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PRepertoireAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.

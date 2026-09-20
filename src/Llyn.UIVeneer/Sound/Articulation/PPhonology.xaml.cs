@@ -41,6 +41,8 @@ public partial class PPhonology : UserControl
 
         PEditor.PEditorAttach(host, _lPhonology.LPhonologyEditor);
 
+        PEditor.PEditorChronicleChanged += PPhonologyChronicleUpdate;
+
         PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciationField);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PPhonologyPressHandle, PPhonologyPressCheck));
@@ -186,8 +188,19 @@ public partial class PPhonology : UserControl
 
     private void PInventoryHandle(object sender, RoutedEventArgs e)
     {
+        _pPhonologyHost.PVoyageRecord();
         _lPhonology.LPhonologyPanel.LPanelRowSelect(
             PSender.PSenderItemRead<PInventoryItem>(sender)?.PInventoryItemId);
+    }
+
+    internal long PPhonologyVoyageRead()
+    {
+        return _lPhonology.LPhonologyPanel.LPanelVoyageRead();
+    }
+
+    internal void PInventoryEntryShow(long id)
+    {
+        _lPhonology.LPhonologyPanel.LPanelRowSelect(id);
     }
 
     private void PPhonologyFreshHandle(object sender, RoutedEventArgs e)
@@ -225,5 +238,38 @@ public partial class PPhonology : UserControl
     {
         await _pPhonologyHost.PWindowPortraitExport(
             _lPhonology.LPhonologyFileRead(), _lPhonology.LPhonologyPortraitExport);
+    }
+
+    internal void PPhonologyVoyageShow(bool past, bool future)
+    {
+        PPhonologyEarlier.IsEnabled = past;
+        PPhonologyLater.IsEnabled = future;
+    }
+
+    private void PPhonologyRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pPhonologyHost.PVoyageRetreatRun();
+    }
+
+    private void PPhonologyAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pPhonologyHost.PVoyageAdvanceRun();
+    }
+
+    private void PPhonologyUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PPhonologyRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PPhonologyChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PPhonologyBackward.IsEnabled = undo;
+        PPhonologyForward.IsEnabled = redo;
     }
 }

@@ -143,6 +143,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         return _lEditor.LEditorDesk.LDeskChangeCheck();
     }
 
+    internal event Action? PEditorChronicleChanged;
+
     internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
     {
         return _lEditor.LEditorDesk.LDeskChronicleRead();
@@ -303,6 +305,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         (bool undo, bool redo) = _lEditor.LEditorDesk.LDeskChronicleRead();
         PEditorBackward.IsEnabled = undo;
         PEditorForward.IsEnabled = redo;
+        PEditorChronicleChanged?.Invoke();
     }
 
     private void PEditorStopUpdate()

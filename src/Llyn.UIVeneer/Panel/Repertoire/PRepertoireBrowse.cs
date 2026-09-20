@@ -154,6 +154,7 @@ public partial class PRepertoire
             return;
         }
 
+        _pRepertoireHost.PVoyageRecord();
         PRepertoireShow(item.PAtlasItemId);
     }
 
@@ -321,6 +322,22 @@ public partial class PRepertoire
     internal long PRepertoireVoyageRead()
     {
         return _lRepertoire.LRepertoireChosen ?? 0;
+    }
+
+    internal void PRepertoireVoyageShow(bool past, bool future)
+    {
+        PRepertoireEarlier.IsEnabled = past;
+        PRepertoireLater.IsEnabled = future;
+    }
+
+    private void PRepertoireRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pRepertoireHost.PVoyageRetreatRun();
+    }
+
+    private void PRepertoireAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pRepertoireHost.PVoyageAdvanceRun();
     }
 
     private void PRepertoireClear()

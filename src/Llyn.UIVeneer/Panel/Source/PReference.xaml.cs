@@ -199,6 +199,22 @@ public partial class PReference : UserControl
         PReferenceForward.IsEnabled = redo;
     }
 
+    internal void PReferenceVoyageShow(bool past, bool future)
+    {
+        PReferenceEarlier.IsEnabled = past;
+        PReferenceLater.IsEnabled = future;
+    }
+
+    private void PReferenceRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pReferenceHost.PVoyageRetreatRun();
+    }
+
+    private void PReferenceAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pReferenceHost.PVoyageAdvanceRun();
+    }
+
     private void PReferenceSourceUpdate(LDraft draft)
     {
         PColophon.PColophonShow(_lShelf.LShelfColophonRead(draft));
@@ -238,7 +254,18 @@ public partial class PReference : UserControl
 
     private void PShelfHandle(object sender, RoutedEventArgs e)
     {
+        _pReferenceHost.PVoyageRecord();
         _lShelf.LShelfRowSelect(PSender.PSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
+    }
+
+    internal long PReferenceVoyageRead()
+    {
+        return _lShelf.LShelfPanel.LPanelVoyageRead();
+    }
+
+    internal void PShelfSourceShow(long id)
+    {
+        _lShelf.LShelfRowSelect(id);
     }
 
     private void PFootnoteHandle(object sender, RoutedEventArgs e)

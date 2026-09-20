@@ -94,3 +94,38 @@ A citing place leads to its Example or its Entry, as the row knows.
 ## `private async void PGuildPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the Source read in the colophon, through the window's press run.
+
+## `internal void PGuildVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PGuildRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PGuildAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PGuildUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the autograph desk back one step, with the caret kept where it was.
+
+## `private void PGuildRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the autograph desk forward one step, the mirror of the undo.
+
+## `private void PGuildChronicleUpdate()`
+
+Lights the two chronicle buttons only while the desk has a step to walk.
+It runs whenever the desk reports its state again.
+
+## `internal long PGuildVoyageRead()`
+
+The Author the panel shows, read off the guild panel as the station of this panel.
+
+## `internal void PRollAuthorShow(long id)`
+
+Shows one Author by id, the same selection a click on its roll row makes.
+The window's trail walks back into this panel through it.

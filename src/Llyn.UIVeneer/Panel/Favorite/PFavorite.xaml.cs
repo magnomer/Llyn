@@ -29,6 +29,7 @@ public partial class PFavorite : UserControl
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorChronicleChanged += PFavoriteChronicleUpdate;
     }
 
     private void PFavoriteStoreUpdate()
@@ -85,5 +86,38 @@ public partial class PFavorite : UserControl
                     _lFavorite.LFavoriteFileRead(), _lFavorite.LFavoritePortraitExport);
             }
         }
+    }
+
+    internal void PFavoriteVoyageShow(bool past, bool future)
+    {
+        PFavoriteEarlier.IsEnabled = past;
+        PFavoriteLater.IsEnabled = future;
+    }
+
+    private void PFavoriteRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pFavoriteHost.PVoyageRetreatRun();
+    }
+
+    private void PFavoriteAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pFavoriteHost.PVoyageAdvanceRun();
+    }
+
+    private void PFavoriteUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PFavoriteRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PFavoriteChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PFavoriteBackward.IsEnabled = undo;
+        PFavoriteForward.IsEnabled = redo;
     }
 }

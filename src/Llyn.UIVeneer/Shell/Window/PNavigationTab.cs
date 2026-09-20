@@ -253,4 +253,61 @@ public partial class PWindow
         PTenor.PGamutRegisterShow(id);
         return true;
     }
+
+    private bool PWindowStationShow(PTab tab, Func<bool> leave, Action show)
+    {
+        if (!leave())
+        {
+            return false;
+        }
+
+        PVoyageRecord();
+        PNavigationHandle(tab, new RoutedEventArgs());
+        show();
+        return true;
+    }
+
+    internal bool PWindowSourceShow(long id)
+    {
+        return PWindowStationShow(
+            PNavigationSource, PReferenceLeaveConfirm, () => PReference.PShelfSourceShow(id));
+    }
+
+    internal bool PWindowAuthorShow(long id)
+    {
+        return PWindowStationShow(PNavigationGuild, PGuildLeaveConfirm, () => PGuild.PRollAuthorShow(id));
+    }
+
+    internal bool PWindowFavoriteShow(long id)
+    {
+        return PWindowStationShow(
+            PNavigationFavorite, PFavorite.PFavoriteLeaveConfirm, () => PFavorite.PRosterEntryShow(id));
+    }
+
+    internal bool PWindowInventoryShow(long id)
+    {
+        return PWindowStationShow(
+            PNavigationPhonology, PPhonologyLeaveConfirm, () => PPhonology.PInventoryEntryShow(id));
+    }
+
+    internal bool PWindowXiaoyunShow(long id)
+    {
+        return PWindowStationShow(
+            PNavigationYunjing, PYunjing.PYunjingLeaveConfirm, () => PYunjing.PXiaoyunEntryShow(id));
+    }
+
+    private bool PReferenceLeaveConfirm()
+    {
+        return PWindowDiscardConfirm(PReference.PReferenceChangeCheck(), PReference.PReferenceDraftFinish);
+    }
+
+    private bool PGuildLeaveConfirm()
+    {
+        return PWindowDiscardConfirm(PGuild.PGuildChangeCheck(), PGuild.PGuildDraftFinish);
+    }
+
+    private bool PPhonologyLeaveConfirm()
+    {
+        return PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck(), PPhonology.PPhonologyDraftFinish);
+    }
 }

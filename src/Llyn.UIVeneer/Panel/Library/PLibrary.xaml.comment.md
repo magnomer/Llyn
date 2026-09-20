@@ -109,3 +109,29 @@ The origin names this panel, so its held work is told apart from the input panel
 A store may have changed the headword the index lists and the text the display shows.
 The engine announces it through the vista, so both are read again from what was written.
 It is the same announcement whether the store happened in this panel's editor or in another tab.
+
+## `internal void PLibraryVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PLibraryRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PLibraryAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PLibraryUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor back one step.
+
+## `private void PLibraryRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor forward one step.
+
+## `private void PLibraryChronicleUpdate()`
+
+Lights the two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.

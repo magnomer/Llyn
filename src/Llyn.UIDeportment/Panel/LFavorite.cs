@@ -119,6 +119,11 @@ public sealed class LFavorite
         _lFavoriteVista?.LVistaObserverAttach(subject, observer);
     }
 
+    public long LFavoriteVoyageRead()
+    {
+        return _lFavoriteVista?.LVistaChosen ?? 0;
+    }
+
     public void LFavoriteChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lFavoriteVista?.LVistaChosenAttach(subject, observer);

@@ -146,3 +146,16 @@ It walks the rows already listed, so choosing an Example never re-reads the anth
 
 The Example the panel shows, as the station the window records before a jump away.
 Zero says no Example is shown, so there is no place to come back to.
+
+## `internal void PCorpusVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PCorpusRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PCorpusAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.

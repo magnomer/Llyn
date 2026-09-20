@@ -36,3 +36,7 @@ One category row: its key and the count of entries under it, shared by the onset
 ## `<local:PRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">`
 
 The command rail over the reader: new, save, export and print, then the view and edit switch.
+One slot sits between save and export, and it holds whichever pair the mode asks for.
+Reading shows `PYunjingEarlier` and `PYunjingLater`, which walk the window's trail of records.
+Writing shows `PYunjingBackward` and `PYunjingForward`, which walk the chronicle of the editor in front.
+Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.

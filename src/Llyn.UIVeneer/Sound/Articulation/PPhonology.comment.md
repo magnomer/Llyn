@@ -33,6 +33,10 @@ There is no state to keep, because the toggle already is the state.
 
 The action row of a browse-style panel, on the broader side.
 It is the same row the library panel carries, and it names the same four actions.
+One slot sits between save and export, and it holds whichever pair the mode asks for.
+Reading shows `PPhonologyEarlier` and `PPhonologyLater`, which walk the window's trail of records.
+Writing shows `PPhonologyBackward` and `PPhonologyForward`, which walk the chronicle of the editor in front.
+Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
 The mode toggle stands there rather than inside the display, because the display is shared.
 
 ## `<local:PArticulation ... Grid.ColumnSpan="2" />`

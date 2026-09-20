@@ -35,6 +35,10 @@ The kinds are drawn in code, because their words come from the sources panel's o
 The action row of the panel.
 `PGuildFresh` opens the edit area on an Author nothing credits yet.
 `PGuildStore` saves the held Author, and stands in the rail at all times.
+One slot sits between save and export, and it holds whichever pair the mode asks for.
+Reading shows `PGuildEarlier` and `PGuildLater`, which walk the window's trail of records.
+Writing shows `PGuildBackward` and `PGuildForward`, which walk the chronicle of the held Author.
+Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
 Print puts the Source read in the colophon on paper, and is dead while an Author is read instead.
 Export is not offered, because it belongs to an Entry and no Entry is read here.
 

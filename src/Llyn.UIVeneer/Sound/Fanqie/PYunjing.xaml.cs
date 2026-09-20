@@ -30,7 +30,7 @@ public partial class PYunjing : UserControl
         _lYunjing = host.PWindowDeportment.LWindowYunjingCreate(
             host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
             PYunjingShownCheck,
-            PYunjingLeaveConfirm,
+            PYunjingDiscardConfirm,
             host.PWindowDeleteConfirm);
         _lYunjing.LYunjingEditor.LEditorStateChanged += PYunjingStoreUpdate;
         _lYunjing.LYunjingChanged += PYunjingColumnUpdate;
@@ -51,6 +51,8 @@ public partial class PYunjing : UserControl
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
 
         PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor);
+
+        PEditor.PEditorChronicleChanged += PYunjingChronicleUpdate;
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PYunjingPressHandle, PYunjingPressCheck));
         CommandBindings.Add(
@@ -133,6 +135,11 @@ public partial class PYunjing : UserControl
     }
 
     internal bool PYunjingLeaveConfirm()
+    {
+        return _lYunjing.LYunjingPanel.LPanelLeaveConfirm();
+    }
+
+    private bool PYunjingDiscardConfirm()
     {
         return _pYunjingHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
     }
@@ -254,7 +261,18 @@ public partial class PYunjing : UserControl
 
     private void PXiaoyunHandle(object sender, RoutedEventArgs e)
     {
+        _pYunjingHost.PVoyageRecord();
         _lYunjing.LYunjingPanel.LPanelRowSelect(PSender.PSenderItemRead<PXiaoyunItem>(sender)?.PXiaoyunItemId);
+    }
+
+    internal long PYunjingVoyageRead()
+    {
+        return _lYunjing.LYunjingPanel.LPanelVoyageRead();
+    }
+
+    internal void PXiaoyunEntryShow(long id)
+    {
+        _lYunjing.LYunjingPanel.LPanelRowSelect(id);
     }
 
     private void PYunjingFreshHandle(object sender, RoutedEventArgs e)
@@ -291,5 +309,38 @@ public partial class PYunjing : UserControl
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
         await _pYunjingHost.PWindowPortraitExport(_lYunjing.LYunjingFileRead(), _lYunjing.LYunjingPortraitExport);
+    }
+
+    internal void PYunjingVoyageShow(bool past, bool future)
+    {
+        PYunjingEarlier.IsEnabled = past;
+        PYunjingLater.IsEnabled = future;
+    }
+
+    private void PYunjingRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pYunjingHost.PVoyageRetreatRun();
+    }
+
+    private void PYunjingAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pYunjingHost.PVoyageAdvanceRun();
+    }
+
+    private void PYunjingUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PYunjingRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PYunjingChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PYunjingBackward.IsEnabled = undo;
+        PYunjingForward.IsEnabled = redo;
     }
 }

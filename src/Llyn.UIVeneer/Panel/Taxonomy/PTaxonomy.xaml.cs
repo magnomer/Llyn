@@ -30,6 +30,7 @@ public partial class PTaxonomy : UserControl
         PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorChronicleChanged += PTaxonomyChronicleUpdate;
     }
 
     private void PTaxonomyStoreUpdate()
@@ -87,5 +88,38 @@ public partial class PTaxonomy : UserControl
                     _lTaxonomy.LTaxonomyFileRead(), _lTaxonomy.LTaxonomyPortraitExport);
             }
         }
+    }
+
+    internal void PTaxonomyVoyageShow(bool past, bool future)
+    {
+        PTaxonomyEarlier.IsEnabled = past;
+        PTaxonomyLater.IsEnabled = future;
+    }
+
+    private void PTaxonomyRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pTaxonomyHost.PVoyageRetreatRun();
+    }
+
+    private void PTaxonomyAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pTaxonomyHost.PVoyageAdvanceRun();
+    }
+
+    private void PTaxonomyUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PTaxonomyRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PTaxonomyChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PTaxonomyBackward.IsEnabled = undo;
+        PTaxonomyForward.IsEnabled = redo;
     }
 }

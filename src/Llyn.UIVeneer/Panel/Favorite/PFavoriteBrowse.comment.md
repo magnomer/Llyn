@@ -145,3 +145,8 @@ It walks the rows already listed, so choosing an entry never re-reads the roster
 
 The delete button acts on the entry the vista stands on.
 It is derived from that one fact rather than switched on at each place an entry appears.
+
+## `internal long PFavoriteVoyageRead()`
+
+The Entry the panel shows, as the station the window's trail records.
+Zero says the panel shows none, so there is no place to come back to.

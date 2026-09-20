@@ -149,21 +149,6 @@
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
-                        x:Name="PReferenceBackward"
-                        Click="PReferenceUndoHandle"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon undo, 24}"
-                        ToolTip="{DynamicResource Chronicle.Undo}" />
-                    <Button
-                        x:Name="PReferenceForward"
-                        Click="PReferenceRedoHandle"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon redo, 24}"
-                        ToolTip="{DynamicResource Chronicle.Redo}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
                         x:Name="PReferenceFresh"
                         Click="PReferenceFreshHandle"
                         Content="{DynamicResource Scribe.New}"
@@ -176,6 +161,43 @@
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PReferenceViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PReferenceEarlier"
+                            Click="PReferenceRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PReferenceLater"
+                            Click="PReferenceAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PReferenceScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PReferenceBackward"
+                            Click="PReferenceUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PReferenceForward"
+                            Click="PReferenceRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Command="local:PDisplayCommand.PDisplayCommandPortrait"

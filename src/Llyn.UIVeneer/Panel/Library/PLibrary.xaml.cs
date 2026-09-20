@@ -43,6 +43,8 @@ public partial class PLibrary : UserControl
 
         PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor);
 
+        PEditor.PEditorChronicleChanged += PLibraryChronicleUpdate;
+
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PLibraryPressHandle, PLibraryPressCheck));
         CommandBindings.Add(
             new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, PLibraryPortraitHandle, PLibraryPressCheck));
@@ -215,6 +217,7 @@ public partial class PLibrary : UserControl
 
     private void PIndexHandle(object sender, RoutedEventArgs e)
     {
+        _pLibraryHost.PVoyageRecord();
         _lLibrary.LLibraryPanel.LPanelRowSelect(PSender.PSenderItemRead<PIndexItem>(sender)?.PIndexItemId);
     }
 
@@ -257,5 +260,38 @@ public partial class PLibrary : UserControl
     private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
         await _pLibraryHost.PWindowPortraitExport(_lLibrary.LLibraryFileRead(), _lLibrary.LLibraryPortraitExport);
+    }
+
+    internal void PLibraryVoyageShow(bool past, bool future)
+    {
+        PLibraryEarlier.IsEnabled = past;
+        PLibraryLater.IsEnabled = future;
+    }
+
+    private void PLibraryRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pLibraryHost.PVoyageRetreatRun();
+    }
+
+    private void PLibraryAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pLibraryHost.PVoyageAdvanceRun();
+    }
+
+    private void PLibraryUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleUndo();
+    }
+
+    private void PLibraryRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PChronicleRedo();
+    }
+
+    private void PLibraryChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.PEditorChronicleRead();
+        PLibraryBackward.IsEnabled = undo;
+        PLibraryForward.IsEnabled = redo;
     }
 }

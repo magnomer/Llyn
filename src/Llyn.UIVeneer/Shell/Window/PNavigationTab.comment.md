@@ -99,3 +99,24 @@ The tenor is asked first, for the reason the library is asked above.
 
 Every browse-style panel that holds an editor is asked the same question before the tab changes.
 The list stays one guard per panel rather than one loop, because each panel names its own check.
+
+## `internal bool PWindowSourceShow(long id)`
+
+Jumps to the sources panel and reads one Source there.
+The panel is asked to part with an unsaved draft first, and a refusal stops the jump.
+
+## `internal bool PWindowAuthorShow(long id)`
+
+Jumps to the authors panel and reads one Author there, the mirror of the source jump.
+
+## `internal bool PWindowFavoriteShow(long id)`
+
+Jumps to the favorites panel and reads one Entry there.
+
+## `internal bool PWindowInventoryShow(long id)`
+
+Jumps to the phonology panel and reads one Entry there.
+
+## `internal bool PWindowXiaoyunShow(long id)`
+
+Jumps to the yunjing panel and reads one Entry there.

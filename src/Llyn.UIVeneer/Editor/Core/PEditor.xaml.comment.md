@@ -100,3 +100,8 @@ The toggle keeps its arrow and its menu, because here the language is chosen rat
 The frequency chip sits after the star, drawn as the reading view draws it.
 It is read only here as there, since a frequency is fetched rather than typed.
 A form standing on nothing hides it, and nothing beside it moves when it does.
+
+## `internal event Action? PEditorChronicleChanged;`
+
+Says the chronicle may now stand differently, so a host panel can light its own buttons.
+An embedded editor hides its own rail, and the panel around it carries undo and redo.

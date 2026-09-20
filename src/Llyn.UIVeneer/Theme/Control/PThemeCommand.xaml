@@ -6,6 +6,8 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <BooleanToVisibilityConverter x:Key="Theme.Command.Fold" />
+
     <Style x:Key="Theme.Command.Group" TargetType="Border">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />

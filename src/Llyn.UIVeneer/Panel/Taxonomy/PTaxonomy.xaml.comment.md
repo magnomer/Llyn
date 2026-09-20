@@ -78,3 +78,29 @@ The engine announces it through the vistas, so the catalog and the entries under
 An entry can leave the chosen tag by being stored, and the panel must show that it did.
 An entry stored in another tab moves the same way.
 The announcement is listened to rather than a sibling panel.
+
+## `internal void PTaxonomyVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PTaxonomyRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PTaxonomyAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PTaxonomyUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor back one step.
+
+## `private void PTaxonomyRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor forward one step.
+
+## `private void PTaxonomyChronicleUpdate()`
+
+Lights the two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.

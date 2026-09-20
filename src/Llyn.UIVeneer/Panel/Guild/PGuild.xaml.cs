@@ -47,6 +47,7 @@ public partial class PGuild : UserControl
         PGuildObserverAttach();
         _lGuild.LGuildAutograph.LDeskDraftChanged += PAutographDraftUpdate;
         _lGuild.LGuildAutograph.LDeskFailed += host.PWindowFailureShow;
+        _lGuild.LGuildAutograph.LDeskStateChanged += PGuildChronicleUpdate;
 
         PRoll.ItemsSource = _pRollList;
         POeuvre.ItemsSource = _pOeuvreList;
@@ -239,7 +240,18 @@ public partial class PGuild : UserControl
 
     private void PRollHandle(object sender, RoutedEventArgs e)
     {
+        _pGuildHost.PVoyageRecord();
         _lGuild.LGuildRowSelect(PSender.PSenderSourceRead<PRollItem>(e)?.PRollItemId);
+    }
+
+    internal long PGuildVoyageRead()
+    {
+        return _lGuild.LGuildPanel.LPanelVoyageRead();
+    }
+
+    internal void PRollAuthorShow(long id)
+    {
+        _lGuild.LGuildRowSelect(id);
     }
 
     private void POeuvreHandle(object sender, RoutedEventArgs e)
@@ -302,5 +314,38 @@ public partial class PGuild : UserControl
     {
         await _pGuildHost.PWindowPressRun(
             ticket => _lGuild.LGuildPortraitPrint(_pGuildHost.PWindowLegendRead("Source"), ticket));
+    }
+
+    internal void PGuildVoyageShow(bool past, bool future)
+    {
+        PGuildEarlier.IsEnabled = past;
+        PGuildLater.IsEnabled = future;
+    }
+
+    private void PGuildRetreatHandle(object sender, RoutedEventArgs e)
+    {
+        _pGuildHost.PVoyageRetreatRun();
+    }
+
+    private void PGuildAdvanceHandle(object sender, RoutedEventArgs e)
+    {
+        _pGuildHost.PVoyageAdvanceRun();
+    }
+
+    private void PGuildUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PChronicle.PChronicleRun(_lGuild.LGuildAutograph.LDeskUndo);
+    }
+
+    private void PGuildRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PChronicle.PChronicleRun(_lGuild.LGuildAutograph.LDeskRedo);
+    }
+
+    private void PGuildChronicleUpdate()
+    {
+        (bool undo, bool redo) = _lGuild.LGuildAutograph.LDeskChronicleRead();
+        PGuildBackward.IsEnabled = undo;
+        PGuildForward.IsEnabled = redo;
     }
 }

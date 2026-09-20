@@ -42,3 +42,29 @@ Each row carries the flag, the headword and the language, in the library catalog
 
 The entry actions over the reader, and the reader/editor toggle.
 Export and Print stand here as on every panel that reads an entry.
+
+## `internal void PTenorVoyageShow(bool past, bool future)`
+
+Lights the two trail buttons from the stacks the window keeps.
+The window owns the trail, so the panel only shows what it is told.
+
+## `private void PTenorRetreatHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail back one station.
+
+## `private void PTenorAdvanceHandle(object sender, RoutedEventArgs e)`
+
+Steps the window's trail forward one station.
+
+## `private void PTenorUndoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor back one step.
+
+## `private void PTenorRedoHandle(object sender, RoutedEventArgs e)`
+
+Walks the chronicle of the editor forward one step.
+
+## `private void PTenorChronicleUpdate()`
+
+Lights the two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.
