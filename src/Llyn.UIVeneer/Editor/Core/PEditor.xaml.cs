@@ -88,7 +88,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _lEditor.LEditorFavoriteChanged += PEditorFavoriteUpdate;
         _lEditor.LEditorGraspChanged += PEditorGraspUpdate;
         PEditorGrasp.PGraspLimit = _lEditor.LEditorGraspStep;
-        _lEditor.LEditorFanqieChanged += PEditorFanqieUpdate;
+        _lEditor.LEditorSounding.LSoundingChanged += PEditorFanqieUpdate;
         _lEditor.LEditorFailed += host.PWindowFailureShow;
         _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
         _lEditor.LEditorClip.LClipRecordingAdded += PClipRecordingHandle;
@@ -397,5 +397,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             PLook.PLookFirstRead<Action?>(_lEditor.LEditorRebuildable, _lEditor.LEditorFanqieRebuild, null);
         PEditorFanqie.PFanqieDiweiNotice =
             (kind, key) => _pEditorHost.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
+        PEditorFanqie.PFanqieRepresentativeNotice =
+            (fanqieId, rank) => _lEditor.LEditorFanqieSet(fanqieId, rank);
+        PEditorReading.Text = _lEditor.LEditorReadingRead(PHeadword.Text);
     }
 }

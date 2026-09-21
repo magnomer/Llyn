@@ -1,4 +1,4 @@
-namespace Convention.Tests;
+﻿namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
@@ -12,7 +12,7 @@ internal static class TAuditStrictSetting
         ["Flow"] = 975,
         ["Treat"] = 117,
         ["Reach"] = 64,
-        ["Taint"] = 141,
+        ["Taint"] = 131,
     };
 
     public static readonly string[] TAuditReachInclude =

@@ -1,4 +1,4 @@
-# LDiwei.cs
+﻿# LDiwei.cs
 
 ## `public sealed record LDiwei(`
 
@@ -11,7 +11,7 @@ Every character whose placement carries the part links to the same row, so a cat
 - `LDiweiId` — The row's own key.
 - `LDiweiLanguage` — The language pack the placements belong to.
 - `LDiweiKind` — Which part: `initial`, `rime` or `tone`.
-- `LDiweiKey` — The part as the category names it: 來, `寒 I W` or the class `6`.
+- `LDiweiKey` — The part as the category names it: 來, `寒W I` or the class `6`.
 - `LDiweiCount` — How many entries of the language carry a character placed in this category.
 
 ## `public const string LDiweiInitial = "initial";`
@@ -20,7 +20,7 @@ The kind of a category made from a placement's initial, such as 來.
 
 ## `public const string LDiweiRime = "rime";`
 
-The kind of a category made from a placement's rime, division and 開合, such as `寒 I W`.
+The kind of a category made from a placement's rime, division and 開合, such as `寒W I`.
 
 ## `public const string LDiweiTone = "tone";`
 
@@ -38,14 +38,20 @@ The division words the rime books print, in the order the Roman numerals stand f
 
 The Roman numeral each division becomes inside a rime key.
 
+## `public static string LDiweiChongniuRead(string rime)`
+
+The 重紐 letter the source hung on a rime, such as the `A` of 寒A, or empty.
+The letter tells the two halves of a 重紐 pair apart, and `X` marks a row outside the pair.
+
 ## `public static string LDiweiRimeNormalize(string rime)`
 
 The rime as a category keys it: the trailing 重紐 letter dropped, so 寒A and 寒 name one row.
 
 ## `public static string LDiweiRimeFormat(string rime, string division, bool rounded)`
 
-The key of a rime category: rime without 重紐 letter, division as Roman numeral, `W` when 合口.
-So 模 一 開 keys `模 I` and 寒 一 合 keys `寒 I W`.
+The key of a rime category: rime without 重紐 letter, `W` when 合口, then division as Roman numeral.
+So 模 一 開 keys `模 I` and 寒 一 合 keys `寒W I`.
+The 合口 mark rides on the rime itself, since it names the rime rather than the division.
 Every division and 開合 gets its own row.
 A division outside 一 to 四 stays as printed.
 Empty with an empty rime.

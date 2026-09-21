@@ -19,3 +19,14 @@ Groups the rows by character and then by book, in the order the pack lists the b
 The series of a character is put on its first block alone, so the line is printed once.
 The stored series text is cut on the separator, so each series stands as its own chip.
 Handing no series over leaves every block without one, as a pack declaring none does.
+
+## `public static string LFanqieReadingFormat(IReadOnlyList<LFanqieGroup> groups, string headword)`
+
+The headword's representative reading, drawn under the headword itself, such as `/bhiaeng 'an/`.
+Each character gives the reading its first-ranked row stored, in the order the headword writes them.
+A character with no first-ranked row, or one whose row stored no reading, is left out.
+Nothing ranked at all gives an empty line, and the view then shows none.
+
+## `private static string LFanqiePrimaryFind(IReadOnlyList<LFanqieGroup> groups, string character)`
+
+The reading of the character's first-ranked row, empty when no block holds one.

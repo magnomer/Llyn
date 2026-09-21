@@ -5,11 +5,11 @@
   "tonal": true,
   "silent": true,
   "font": {
-    "family": "SimSun, Microsoft YaHei",
+    "family": "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic",
     "size": 40
   },
   "example": {
-    "family": "SimSun, Microsoft YaHei",
+    "family": "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic",
     "size": 16
   },
   "script": [

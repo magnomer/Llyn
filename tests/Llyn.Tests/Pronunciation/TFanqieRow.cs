@@ -94,4 +94,36 @@ public sealed class TFanqieRow
         Assert.Equal("per million 12", banded.LFrequencyFigure);
         Assert.Equal("12", bare.LFrequencyFigure);
     }
+
+    [Fact]
+    public void FanqieReadingFormat_RankedRows_ReadsOnePerCharacter()
+    {
+        IReadOnlyList<LFanqieRow> rows =
+        [
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "phien", rank: 2),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "bhiaeng", rank: 1),
+            TInterface.TFanqieRowCreate("安", "廣韻", "烏寒切", reading: "'an", rank: 1),
+            TInterface.TFanqieRowCreate("安", "廣韻", "烏寒切", reading: "'anh"),
+        ];
+
+        IReadOnlyList<LFanqieGroup> groups = TInterface.TFanqieGroupScan(
+            rows, [TInterface.TFanqieBookCreate("廣韻", "廣韻")]);
+
+        Assert.Equal("/bhiaeng 'an/", TInterface.TFanqieReadingFormat(groups, "平安"));
+        Assert.Equal("/bhiaeng/", TInterface.TFanqieReadingFormat(groups, "平"));
+    }
+
+    [Fact]
+    public void FanqieReadingFormat_NothingRanked_ReadsNothing()
+    {
+        IReadOnlyList<LFanqieRow> rows =
+        [
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "bhiaeng"),
+        ];
+
+        IReadOnlyList<LFanqieGroup> groups = TInterface.TFanqieGroupScan(
+            rows, [TInterface.TFanqieBookCreate("廣韻", "廣韻")]);
+
+        Assert.Equal(string.Empty, TInterface.TFanqieReadingFormat(groups, "平"));
+    }
 }

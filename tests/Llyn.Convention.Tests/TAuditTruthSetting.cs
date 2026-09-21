@@ -1,4 +1,4 @@
-namespace Convention.Tests;
+﻿namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
@@ -110,11 +110,11 @@ internal static class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 128,
+        ["Argument"] = 120,
         ["Guard"] = 145,
         ["Fork"] = 24,
         ["Mirror"] = 31,
         ["Mutation"] = 14,
-        ["Shape"] = 112,
+        ["Shape"] = 102,
     };
 }

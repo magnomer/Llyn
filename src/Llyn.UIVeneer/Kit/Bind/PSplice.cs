@@ -34,6 +34,21 @@ internal static class PSplice
         }
     }
 
+    internal static IReadOnlyList<PSpliceItem> PSpliceBuild<PSpliceRow, PSpliceItem>(
+        IReadOnlyList<PSpliceRow> rows, Func<PSpliceRow, PSpliceItem> make)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(make);
+
+        List<PSpliceItem> built = new(rows.Count);
+        foreach (PSpliceRow row in rows)
+        {
+            built.Add(make(row));
+        }
+
+        return built;
+    }
+
     private static bool PSpliceMatchCheck<PSpliceRow>(
         ObservableCollection<PSpliceRow> held,
         IReadOnlyList<PSpliceRow> fresh,

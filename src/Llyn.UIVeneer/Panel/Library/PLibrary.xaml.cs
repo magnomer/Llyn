@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -253,8 +253,7 @@ public partial class PLibrary : UserControl
 
     private async void PLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pLibraryHost.PWindowPressRun(
-            ticket => _lLibrary.LLibraryPortraitPrint(_pLibraryHost.PWindowLabelRead(), ticket));
+        await _pLibraryHost.PWindowPressRun(_lLibrary.LLibraryPortraitPrint);
     }
 
     private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)

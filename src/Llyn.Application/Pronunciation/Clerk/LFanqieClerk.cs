@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -180,6 +180,16 @@ public sealed class LFanqieClerk
 
             LFanqieClerkStart(entryId, entry.LEntryLanguage, character);
         }
+    }
+
+    public void LFanqieClerkSet(long entryId, long fanqieId, int rank)
+    {
+        lock (_lFanqieClerkGate)
+        {
+            _lFanqieClerkFanqie.LFanqieRepresentativeSet(fanqieId, rank);
+        }
+
+        _lFanqieClerkBulletin(LSubject.LSubjectFanqie, entryId);
     }
 
     public bool LFanqieClerkCheck(long entryId)

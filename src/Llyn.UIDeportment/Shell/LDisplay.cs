@@ -179,6 +179,16 @@ public sealed class LDisplay
         return _lPhonologyPort.LEngineFanqieDivide(id);
     }
 
+    public string LDisplayReadingRead(long id, string headword)
+    {
+        return LFanqieGroup.LFanqieReadingFormat(_lPhonologyPort.LEngineFanqieDivide(id), headword);
+    }
+
+    public void LDisplayFanqieSet(long id, long fanqieId, int rank)
+    {
+        _lPhonologyPort.LEngineFanqieSet(id, fanqieId, rank);
+    }
+
     public void LDisplayScriptStart(long id)
     {
         _lPhonologyPort.LEngineScriptStart(id);

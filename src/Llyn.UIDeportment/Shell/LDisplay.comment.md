@@ -24,6 +24,11 @@ The compass labels made distinct, numbered in order where two sections share a n
 
 The wording of a grasp step, or empty while no entry is shown.
 
+## `public string LDisplayReadingRead(long id, string headword)`
+
+The headword's representative reading, formed by the engine from the blocks it divides.
+The view prints it under the headword, so the shell holds no reading of its own.
+
 ## `public bool LDisplayFanqieCheck(long? id)`
 
 Whether the entry's rime-book rows are still being fetched, false for no entry or when the engine refuses to say.

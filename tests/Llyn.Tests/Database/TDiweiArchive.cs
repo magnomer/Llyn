@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -124,15 +124,27 @@ public sealed class TDiweiArchive
 
     [Theory]
     [InlineData("模", "一", false, "模 I")]
-    [InlineData("寒A", "一", true, "寒 I W")]
+    [InlineData("寒A", "一", true, "寒W I")]
     [InlineData("侵", "三", false, "侵 III")]
-    [InlineData("侵", "", true, "侵 W")]
+    [InlineData("侵X", "三", false, "侵 III")]
+    [InlineData("侵", "", true, "侵W")]
     [InlineData("侵", "五", false, "侵 五")]
     [InlineData("", "一", true, "")]
     public void RimeFormat_DivisionAndRounding_KeysSeparateRows(
         string rime, string division, bool rounded, string expected)
     {
         Assert.Equal(expected, TInterface.TDiweiRimeFormat(rime, division, rounded));
+    }
+
+    [Theory]
+    [InlineData("寒A", "A")]
+    [InlineData("侵X", "X")]
+    [InlineData("模", "")]
+    [InlineData("W", "")]
+    [InlineData("", "")]
+    public void ChongniuRead_TrailingCapital_ReadsTheLetterAlone(string rime, string expected)
+    {
+        Assert.Equal(expected, TInterface.TDiweiChongniuRead(rime));
     }
 
     private static LFanqieRow TDiweiRowCreate(

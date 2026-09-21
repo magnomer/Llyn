@@ -1,14 +1,30 @@
-# PFanqieLine.cs
+﻿# PFanqieLine.cs
 
 ## `public sealed class PFanqieLine`
 
 One placement drawn as one row of the fanqie block, its parts in shared columns.
-The columns read as a 音韻地位: reading, tone class, initial, rime, 開合, division, tone and 反切.
+The columns read as a 音韻地位: reading, tone class, initial, rime, 重紐, 開合, division, tone and 反切.
 
 ## `private const string PFanqieLineMark = "合";`
 
 The medial column's word for a rounded placement.
 It is drawn as a chip so it stands out as the site's colour did.
+
+## `public int PFanqieLineRank`
+
+The line's place among the character's representative readings, one first, zero when unmarked.
+
+## `public bool PFanqieLineMarked`
+
+Whether the line is a representative reading at all, so the template fills the star.
+
+## `public bool PFanqieLinePrimary`
+
+Whether the line is the first representative reading, the one drawn at full strength.
+
+## `public string PFanqieLineOrder`
+
+The rank as the badge prints it beside the star, empty when the line is unmarked.
 
 ## `public string PFanqieLineReading`
 
@@ -22,18 +38,20 @@ The stored tone class in the interface language, such as `4성S`, or empty when 
 
 The initial, such as 疑.
 
-## `public string PFanqieLineRime`
+## `public string PFanqieLineYunmu`
 
-The rime as the source prints it, such as 模 or 寒A, drawn as the link into the rime table.
+The rime category the line points to, as the diwei store keys it, drawn as the link itself.
+It drops the heading and the 重紐 letter and adds the 開合 mark and the division, such as `寒W I`.
+The link carries the key it opens, so what the chip reads is what the rime table shows.
 
 ## `public string PFanqieLineHeading`
 
 The rime heading in brackets when the source gives one, such as `[桓]`, drawn after the link and outside it.
 
-## `public string PFanqieLineYunmu`
+## `public string PFanqieLineKnot`
 
-The rime category the line points to, as the diwei store keys it.
-It drops the heading and the 重紐 letter and adds the division and 開合, such as `寒 I W`.
+The 重紐 letter in its own bracket, such as `(重紐:X)`, or empty when the rime carries none.
+It stands apart from the link because it names the placement rather than the rime category.
 
 ## `public string PFanqieLineMedial`
 

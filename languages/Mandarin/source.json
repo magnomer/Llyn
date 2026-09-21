@@ -80,7 +80,7 @@
     "name": "Traditional",
     "language": "Classical Chinese",
     "font": {
-      "family": "SimSun, Microsoft YaHei",
+      "family": "Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic",
       "size": 26
     },
     "sources": [
@@ -128,7 +128,7 @@
     "size": 40
   },
   "example": {
-    "family": "SimSun, Microsoft YaHei",
+    "family": "Microsoft YaHei UI, Microsoft YaHei, Malgun Gothic",
     "size": 16
   },
   "pronunciation": [

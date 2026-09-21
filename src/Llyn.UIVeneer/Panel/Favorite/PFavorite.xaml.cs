@@ -70,8 +70,7 @@ public partial class PFavorite : UserControl
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pFavoriteHost.PWindowPressRun(
-                    ticket => _lFavorite.LFavoritePortraitPrint(_pFavoriteHost.PWindowLabelRead(), ticket));
+                await _pFavoriteHost.PWindowPressRun(_lFavorite.LFavoritePortraitPrint);
             }
         }
     }

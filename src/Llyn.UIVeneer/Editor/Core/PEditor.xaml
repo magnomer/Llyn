@@ -23,7 +23,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid MinHeight="56">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -31,8 +31,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <Grid MinHeight="56" Margin="0,0,10,0">
+            <Grid VerticalAlignment="Center">
                 <TextBlock x:Name="PHeadwordHint" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Hint}" Text="{DynamicResource Input.Headword}" />
                 <TextBlock x:Name="PHeadwordGhost" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Ghost}" />
                 <TextBox
@@ -43,8 +47,9 @@
                     Style="{StaticResource Theme.Input.Headword}"
                     Tag="{DynamicResource Input.Headword}" />
             </Grid>
+            <TextBlock x:Name="PEditorReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Margin="14,0,0,0">
                 <ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">
                     <StackPanel Style="{StaticResource Theme.Language.Face}">
                         <Grid Style="{StaticResource Theme.Language.Flag}">
@@ -91,6 +96,7 @@
                 x:Name="PEditorCommand"
                 Grid.Column="3"
                 Grid.ColumnSpan="2"
+                Grid.RowSpan="2"
                 VerticalAlignment="Center"
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
@@ -173,7 +179,6 @@
                 </Popup>
             </Grid>
             <StackPanel Orientation="Horizontal">
-
                 <Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -218,11 +223,9 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-
                 <Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">
                     <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                 </Border>
-
             </StackPanel>
 
             <local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" PContourIpa="{Binding Text, ElementName=PPronunciationField}" />
@@ -290,9 +293,13 @@
 
             <local:PParadigm x:Name="PEditorParadigm" Margin="0,14,0,0" />
 
-            <local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />
+            <ScrollViewer MaxHeight="300" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />
 
-            <local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />
+                    <local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
 
         <Button

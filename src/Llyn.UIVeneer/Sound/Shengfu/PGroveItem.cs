@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Llyn.Core;
@@ -7,14 +7,15 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PGroveItem : INotifyPropertyChanged
 {
-    private bool _pGroveItemChosen;
+    private static readonly PropertyChangedEventArgs PGroveItemMark = new(nameof(PGroveItemChosen));
 
-    internal PGroveItem(LStem row, bool chosen)
+    private PGroveItem(LStem row, bool chosen)
     {
-        _pGroveItemChosen = chosen;
+        PGroveItemRow = row;
         PGroveItemId = row.LStemId;
         PGroveItemKey = row.LStemKey;
         PGroveItemCount = row.LStemCount;
+        PGroveItemChosen = chosen;
     }
 
     public long PGroveItemId { get; }
@@ -23,46 +24,33 @@ internal sealed class PGroveItem : INotifyPropertyChanged
 
     public int PGroveItemCount { get; }
 
+    public bool PGroveItemChosen { get; private set; }
+
+    internal LStem PGroveItemRow { get; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    public bool PGroveItemChosen
-    {
-        get => _pGroveItemChosen;
-
-        set
-        {
-            if (_pGroveItemChosen == value)
-            {
-                return;
-            }
-
-            _pGroveItemChosen = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PGroveItemChosen)));
-        }
-    }
 
     internal static IReadOnlyList<PGroveItem> PGroveItemBuild(IReadOnlyList<LStem> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        List<PGroveItem> built = new(rows.Count);
-        foreach (LStem row in rows)
-        {
-            built.Add(new PGroveItem(row, row.LStemChosen));
-        }
-
-        return built;
+        return PSplice.PSpliceBuild(rows, row => new PGroveItem(row, row.LStemChosen));
     }
 
     internal static bool PGroveItemMatch(PGroveItem held, PGroveItem fresh)
     {
-        return held.PGroveItemId == fresh.PGroveItemId
-            && string.Equals(held.PGroveItemKey, fresh.PGroveItemKey, StringComparison.Ordinal)
-            && held.PGroveItemCount == fresh.PGroveItemCount;
+        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(fresh);
+
+        return held.PGroveItemRow.LStemMatch(fresh.PGroveItemRow);
     }
 
     internal static void PGroveItemSync(PGroveItem held, PGroveItem fresh)
     {
+        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(fresh);
+
         held.PGroveItemChosen = fresh.PGroveItemChosen;
+        held.PropertyChanged?.Invoke(held, PGroveItemMark);
     }
 }

@@ -50,6 +50,8 @@
 
     <SolidColorBrush x:Key="Theme.Favorite" Color="{DynamicResource Theme.Favorite.Color}" />
 
+    <SolidColorBrush x:Key="Theme.Representative" Color="{DynamicResource Theme.Representative.Color}" />
+
     <SolidColorBrush x:Key="Theme.DisabledLine" Color="{DynamicResource Theme.DisabledLine.Color}" />
 
     <SolidColorBrush x:Key="Theme.DisabledInk" Color="{DynamicResource Theme.DisabledInk.Color}" />
@@ -59,5 +61,7 @@
     <FontFamily x:Key="Theme.Font">Segoe UI Variable, Segoe UI</FontFamily>
 
     <FontFamily x:Key="Theme.Phonetic">Segoe UI, Arial</FontFamily>
+
+    <FontFamily x:Key="Theme.Han">Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic, Segoe UI</FontFamily>
 
 </ResourceDictionary>

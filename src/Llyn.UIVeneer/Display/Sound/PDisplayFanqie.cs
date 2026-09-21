@@ -42,6 +42,31 @@ public partial class PDisplay
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
         PDisplayFanqie.PFanqieStemNotice = key => _pDisplayHost.PWindowStemShow(language, key);
+        PDisplayFanqie.PFanqieRepresentativeNotice = (fanqieId, rank) => PDisplayFanqieSet(id, fanqieId, rank);
+        PDisplayReadingShow(id);
+    }
+
+    private void PDisplayReadingShow(long id)
+    {
+        try
+        {
+            PDisplayReading.Text = _lDisplay.LDisplayReadingRead(id, PDisplayHeadword.Text);
+        }
+        catch (Exception)
+        {
+            PDisplayReading.Text = string.Empty;
+        }
+    }
+
+    private void PDisplayFanqieSet(long id, long fanqieId, int rank)
+    {
+        try
+        {
+            _lDisplay.LDisplayFanqieSet(id, fanqieId, rank);
+        }
+        catch (Exception)
+        {
+        }
     }
 
     private void PDisplayFanqieClear()
@@ -51,5 +76,7 @@ public partial class PDisplay
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(null);
         PDisplayFanqie.PFanqieDiweiNotice = null;
         PDisplayFanqie.PFanqieStemNotice = null;
+        PDisplayFanqie.PFanqieRepresentativeNotice = null;
+        PDisplayReading.Text = string.Empty;
     }
 }

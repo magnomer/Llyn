@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
@@ -43,6 +43,8 @@ public sealed class LEditor
         LEditorCard = new LCard(drafts, entries, phonology);
         LEditorClip = new LClip();
         LEditorNotation = new LNotation();
+        LEditorSounding = new LSounding(phonology);
+        LEditorSounding.LSoundingFailed += LEditorFailureShow;
         LEditorDesk.LDeskStateChanged += LEditorStateUpdate;
         LEditorDesk.LDeskFinished += LEditorStoredShow;
     }
@@ -55,8 +57,6 @@ public sealed class LEditor
 
     public event Action? LEditorGraspChanged;
 
-    public event Action? LEditorFanqieChanged;
-
     public event Action<string, Exception>? LEditorFailed;
 
     public LDesk LEditorDesk { get; }
@@ -68,6 +68,8 @@ public sealed class LEditor
     public LClip LEditorClip { get; }
 
     public LNotation LEditorNotation { get; }
+
+    public LSounding LEditorSounding { get; }
 
     public bool LEditorOwned => _lEditorVista?.LVistaInput ?? false;
 
@@ -414,85 +416,41 @@ public sealed class LEditor
 
     public IReadOnlyList<LFanqieGroup> LEditorFanqieRead()
     {
-        if (LEditorEntry is not long id)
-        {
-            return [];
-        }
+        return LEditorSounding.LSoundingFanqieRead(LEditorEntry);
+    }
 
-        try
-        {
-            _lPhonologyPort.LEngineFanqieStart(id);
-            return _lPhonologyPort.LEngineFanqieDivide(id);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+    public string LEditorReadingRead(string headword)
+    {
+        return LEditorSounding.LSoundingReadingRead(LEditorEntry, headword);
     }
 
     public IReadOnlyList<LFanqieRow> LEditorAnchorRead()
     {
-        List<LFanqieRow> rows = [];
-        foreach (LFanqieGroup group in LEditorFanqieRead())
-        {
-            rows.AddRange(group.LFanqieGroupRows);
-        }
-
-        return rows;
+        return LEditorSounding.LSoundingAnchorRead(LEditorEntry);
     }
 
     public void LEditorFanqieRebuild()
     {
-        if (LEditorEntry is not long id)
-        {
-            return;
-        }
+        LEditorSounding.LSoundingFanqieRebuild(LEditorEntry);
+    }
 
-        try
-        {
-            _lPhonologyPort.LEngineFanqieRebuild(id);
-        }
-        catch (Exception exception)
-        {
-            LEditorFailed?.Invoke("Display.FanqieRebuildFailed", exception);
-            return;
-        }
-
-        LEditorFanqieChanged?.Invoke();
+    public void LEditorFanqieSet(long fanqieId, int rank)
+    {
+        LEditorSounding.LSoundingFanqieSet(LEditorEntry, fanqieId, rank);
     }
 
     public IReadOnlyList<LScriptGroup> LEditorScriptRead()
     {
-        if (LEditorEntry is not long id)
-        {
-            return [];
-        }
-
-        try
-        {
-            _lPhonologyPort.LEngineScriptStart(id);
-            return _lPhonologyPort.LEngineScriptDivide(id);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+        return LEditorSounding.LSoundingScriptRead(LEditorEntry);
     }
 
     public IReadOnlyList<LParadigmSlot> LEditorParadigmRead()
     {
-        if (LEditorEntry is not long id)
-        {
-            return [];
-        }
+        return LEditorSounding.LSoundingParadigmRead(LEditorEntry);
+    }
 
-        try
-        {
-            return _lPhonologyPort.LEngineParadigmShow(id);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
+    private void LEditorFailureShow(string key, Exception exception)
+    {
+        LEditorFailed?.Invoke(key, exception);
     }
 }

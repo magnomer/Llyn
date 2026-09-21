@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -63,6 +63,11 @@ public sealed partial class LEngine
     {
         _lEngineFanqieClerk.LFanqieClerkRebuild(entryId);
         _lEngineShengfuClerk.LShengfuClerkRebuild(entryId);
+    }
+
+    public void LEngineFanqieSet(long entryId, long fanqieId, int rank)
+    {
+        _lEngineFanqieClerk.LFanqieClerkSet(entryId, fanqieId, rank);
     }
 
     public bool LEngineFanqieCheck(long entryId)

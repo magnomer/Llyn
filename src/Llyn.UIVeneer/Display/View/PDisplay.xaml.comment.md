@@ -116,3 +116,8 @@ Showing or clearing an entry drops the band, since the text it spanned is gone.
 
 The contents are rebuilt at the end of showing an entry, after every section has been given its visibility.
 Rebuilding earlier would list sections the entry is about to collapse.
+
+### `<TextBlock x:Name="PDisplayReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />`
+
+The representative reading takes the header's second row, under the headword.
+The language pill and the star row centre on the headword row alone, not on the whole header.

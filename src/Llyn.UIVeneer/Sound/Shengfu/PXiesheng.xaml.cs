@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -125,7 +125,7 @@ public partial class PXiesheng : UserControl
         return _pXieshengHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
     }
 
-    internal void PXieshengStemShow(string language, string key)
+    internal void PXieshengStemShow(string language, string? key)
     {
         PLodestar.Text = string.Empty;
         _lXiesheng.LXieshengStemShow(language, key);
@@ -262,8 +262,7 @@ public partial class PXiesheng : UserControl
 
     private async void PXieshengPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pXieshengHost.PWindowPressRun(
-            ticket => _lXiesheng.LXieshengPortraitPrint(_pXieshengHost.PWindowLabelRead(), ticket));
+        await _pXieshengHost.PWindowPressRun(_lXiesheng.LXieshengPortraitPrint);
     }
 
     private async void PXieshengPortraitHandle(object sender, ExecutedRoutedEventArgs e)

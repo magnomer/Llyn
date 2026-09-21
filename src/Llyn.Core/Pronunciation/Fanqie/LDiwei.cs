@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -45,11 +45,18 @@ public sealed record LDiwei(
 
     private static readonly string[] LDiweiRomans = ["I", "II", "III", "IV"];
 
+    public static string LDiweiChongniuRead(string rime)
+    {
+        ArgumentNullException.ThrowIfNull(rime);
+
+        return rime.Length > 1 && char.IsAsciiLetterUpper(rime[^1]) ? rime[^1..] : string.Empty;
+    }
+
     public static string LDiweiRimeNormalize(string rime)
     {
         ArgumentNullException.ThrowIfNull(rime);
 
-        return rime.Length > 1 && char.IsAsciiLetterUpper(rime[^1]) ? rime[..^1] : rime;
+        return rime[..(rime.Length - LDiweiChongniuRead(rime).Length)];
     }
 
     public static string LDiweiRimeFormat(string rime, string division, bool rounded)
@@ -62,12 +69,12 @@ public sealed record LDiwei(
             return key;
         }
 
-        if (division.Length > 0)
+        if (rounded)
         {
-            key += ' ' + LDiweiDivisionFormat(division);
+            key += LDiweiRounded;
         }
 
-        return rounded ? key + ' ' + LDiweiRounded : key;
+        return division.Length == 0 ? key : key + ' ' + LDiweiDivisionFormat(division);
     }
 
     public static string LDiweiDivisionFormat(string division)

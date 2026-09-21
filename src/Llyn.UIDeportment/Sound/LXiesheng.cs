@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -212,10 +212,14 @@ public sealed class LXiesheng
         LXieshengChanged?.Invoke();
     }
 
-    public void LXieshengStemShow(string language, string key)
+    public void LXieshengStemShow(string language, string? key)
     {
         ArgumentNullException.ThrowIfNull(language);
-        ArgumentNullException.ThrowIfNull(key);
+
+        if (string.IsNullOrEmpty(key))
+        {
+            return;
+        }
 
         if (_lPhonologyPort.LEngineStemFind(language, key) is not LStem found)
         {

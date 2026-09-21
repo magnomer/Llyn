@@ -12,6 +12,40 @@ public sealed record LFanqieGroup(
 {
     public IReadOnlyList<string> LFanqieGroupStems { get; init; } = LFanqieGroupStems ?? [];
 
+    public static string LFanqieReadingFormat(IReadOnlyList<LFanqieGroup> groups, string headword)
+    {
+        ArgumentNullException.ThrowIfNull(groups);
+        ArgumentNullException.ThrowIfNull(headword);
+
+        List<string> readings = [];
+        foreach (string character in LGlyph.LGlyphScan(headword))
+        {
+            if (LFanqiePrimaryFind(groups, character) is { Length: > 0 } reading)
+            {
+                readings.Add(reading);
+            }
+        }
+
+        return readings.Count == 0 ? string.Empty : '/' + string.Join(' ', readings) + '/';
+    }
+
+    private static string LFanqiePrimaryFind(IReadOnlyList<LFanqieGroup> groups, string character)
+    {
+        foreach (LFanqieGroup group in groups)
+        {
+            foreach (LFanqieRow row in group.LFanqieGroupRows)
+            {
+                if (row.LFanqieRowPrimary
+                    && string.Equals(row.LFanqieRowCharacter, character, StringComparison.Ordinal))
+                {
+                    return row.LFanqieRowReading;
+                }
+            }
+        }
+
+        return string.Empty;
+    }
+
     public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(
         IReadOnlyList<LFanqieRow> rows,
         IReadOnlyList<LFanqieBook> books,

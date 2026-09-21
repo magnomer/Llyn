@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.UIDeportment;
@@ -72,8 +72,7 @@ public partial class PTenor : UserControl
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pTenorHost.PWindowPressRun(
-                    ticket => _lTenor.LTenorPortraitPrint(_pTenorHost.PWindowLabelRead(), ticket));
+                await _pTenorHost.PWindowPressRun(_lTenor.LTenorPortraitPrint);
             }
         }
     }

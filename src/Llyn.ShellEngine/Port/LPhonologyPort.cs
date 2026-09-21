@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -15,6 +15,8 @@ public interface LPhonologyPort
     IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId);
 
     void LEngineFanqieRebuild(long entryId);
+
+    void LEngineFanqieSet(long entryId, long fanqieId, int rank);
 
     bool LEngineScriptCheck(long entryId);
 

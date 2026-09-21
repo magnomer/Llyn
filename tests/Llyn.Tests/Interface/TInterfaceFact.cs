@@ -90,10 +90,12 @@ internal static partial class TInterface
         bool rounded = false,
         string reading = "",
         string toneClass = "",
-        long id = 0) =>
+        long id = 0,
+        int rank = 0) =>
         new(
             character, book, 0, text, initial, rime, heading, division, tone, rounded,
-            LFanqieRowReading: reading, LFanqieRowClass: toneClass, LFanqieRowId: id);
+            LFanqieRowReading: reading, LFanqieRowClass: toneClass, LFanqieRowId: id,
+            LFanqieRowRepresentative: rank);
 
     internal static LFanqieRow TFanqieRowFormat(this LFanqieRow row, string pattern) =>
         row.LFanqieRowFormat(pattern);
@@ -104,6 +106,9 @@ internal static partial class TInterface
     internal static IReadOnlyList<LFanqieGroup> TFanqieGroupScan(
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books) =>
         LFanqieGroup.LFanqieGroupScan(rows, books);
+
+    internal static string TFanqieReadingFormat(IReadOnlyList<LFanqieGroup> groups, string headword) =>
+        LFanqieGroup.LFanqieReadingFormat(groups, headword);
 
     internal static LScriptStyle TScriptStyleCreate(string name) =>
         new(name, string.Empty, new Dictionary<string, string>(), string.Empty, 0, 0);

@@ -37,7 +37,12 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Center" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
+                        <TextBlock x:Name="PDisplayReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />
                         <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
                             <StackPanel Style="{StaticResource Theme.Language.Face}">
                                 <Grid Style="{StaticResource Theme.Language.Flag}">

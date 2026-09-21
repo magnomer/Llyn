@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -60,6 +60,9 @@ public sealed class LFanqieArchive : LFanqieVault
         }
 
         LFanqieLeftoverDelete(session.LDatabaseSessionConnection, language, character, kept);
+        LFanqieRankApply(
+            session.LDatabaseSessionConnection,
+            LFanqieMarkedRead(session.LDatabaseSessionConnection, language, character));
         session.LDatabaseSessionCommit();
     }
 
@@ -85,7 +88,7 @@ public sealed class LFanqieArchive : LFanqieVault
         command.CommandText =
             """
             SELECT book, position, text, initial, rime, heading, division, tone, rounded, source, spelling,
-                   reading, tone_class, fanqie_id
+                   reading, tone_class, fanqie_id, representative
             FROM fanqie
             WHERE language = $language AND character = $character
             ORDER BY fanqie_id;
@@ -112,9 +115,84 @@ public sealed class LFanqieArchive : LFanqieVault
                 reader.GetString(10),
                 reader.GetString(11),
                 reader.GetString(12),
-                reader.GetInt64(13)));
+                reader.GetInt64(13),
+                LFanqieRowRepresentative: reader.GetInt32(14)));
         }
 
         return rows;
+    }
+
+    public void LFanqieRepresentativeSet(long fanqieId, int rank)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(fanqieId);
+
+        using LDatabaseSession session = _lFanqieArchiveDatabase.LDatabaseSessionStart();
+        if (LFanqiePlaceRead(session.LDatabaseSessionConnection, fanqieId) is not (string language, string character))
+        {
+            return;
+        }
+
+        List<long> marked = LFanqieMarkedRead(session.LDatabaseSessionConnection, language, character);
+        marked.Remove(fanqieId);
+        if (rank > 0)
+        {
+            marked.Insert(Math.Min(rank - 1, marked.Count), fanqieId);
+        }
+        else
+        {
+            LFanqieRankSave(session.LDatabaseSessionConnection, fanqieId, 0);
+        }
+
+        LFanqieRankApply(session.LDatabaseSessionConnection, marked);
+        session.LDatabaseSessionCommit();
+    }
+
+    private static (string, string)? LFanqiePlaceRead(SqliteConnection connection, long fanqieId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT language, character FROM fanqie WHERE fanqie_id = $id;";
+        command.Parameters.AddWithValue("$id", fanqieId);
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? (reader.GetString(0), reader.GetString(1)) : null;
+    }
+
+    private static List<long> LFanqieMarkedRead(SqliteConnection connection, string language, string character)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT fanqie_id
+            FROM fanqie
+            WHERE language = $language AND character = $character AND representative > 0
+            ORDER BY representative, fanqie_id;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$character", character);
+
+        List<long> marked = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            marked.Add(reader.GetInt64(0));
+        }
+
+        return marked;
+    }
+
+    private static void LFanqieRankApply(SqliteConnection connection, IReadOnlyList<long> marked)
+    {
+        for (int place = 0; place < marked.Count; place++)
+        {
+            LFanqieRankSave(connection, marked[place], place + 1);
+        }
+    }
+
+    private static void LFanqieRankSave(SqliteConnection connection, long fanqieId, int rank)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "UPDATE fanqie SET representative = $representative WHERE fanqie_id = $id;";
+        command.Parameters.AddWithValue("$representative", rank);
+        command.Parameters.AddWithValue("$id", fanqieId);
+        command.ExecuteNonQuery();
     }
 }

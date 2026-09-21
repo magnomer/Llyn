@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -21,13 +21,18 @@ public sealed record LFanqieRow(
     string LFanqieRowClass = "",
     long LFanqieRowId = 0,
     string LFanqieRowLabel = "",
-    string LFanqieRowSummary = "")
+    string LFanqieRowSummary = "",
+    int LFanqieRowRepresentative = 0)
 {
+    public const int LFanqieRankLast = int.MaxValue;
+
     private const string LFanqieRowUnrounded = "開";
 
     private const string LFanqieRowMark = "合";
 
     private const string LFanqieRowSuffix = "等";
+
+    private const string LFanqieRowKnot = "重紐:";
 
     public string LFanqieRowSource { get; init; } = LFanqieRowSource ?? LFanqieRowBook;
 
@@ -40,6 +45,13 @@ public sealed record LFanqieRow(
     public string LFanqieRowSummary { get; init; } = LFanqieRowSummary ?? string.Empty;
 
     public bool LFanqieRowStored => LFanqieRowId > 0;
+
+    public bool LFanqieRowMarked => LFanqieRowRepresentative > 0;
+
+    public bool LFanqieRowPrimary => LFanqieRowRepresentative == 1;
+
+    public string LFanqieRowOrder =>
+        LFanqieRowMarked ? LFanqieRowRepresentative.ToString(CultureInfo.InvariantCulture) : string.Empty;
 
     public bool LFanqieRowParted => LFanqieRowInitial.Length > 0 || LFanqieRowRime.Length > 0;
 
@@ -58,9 +70,25 @@ public sealed record LFanqieRow(
     public string LFanqieRowMedial =>
         !LFanqieRowParted ? string.Empty : LFanqieRowRounded ? LFanqieRowMark : LFanqieRowUnrounded;
 
+    public bool LFanqieRowClosed => LFanqieRowParted && LFanqieRowRounded;
+
+    public string LFanqieRowKnotted =>
+        LDiwei.LDiweiChongniuRead(LFanqieRowRime) is { Length: > 0 } letter
+            ? '(' + LFanqieRowKnot + letter + ')'
+            : string.Empty;
+
     public string LFanqieRowCell => LDiwei.LDiweiRimeFormat(LFanqieRowRime, LFanqieRowDivision, LFanqieRowRounded);
 
     public string LFanqieRowRemainder => LFanqieRowParted ? string.Empty : LFanqieRowText;
+
+    public static int LFanqieRankResolve(int rank, bool raise)
+    {
+        return rank <= 0 || (raise && rank == 1)
+            ? LFanqieRankLast
+            : raise
+                ? rank - 1
+                : 0;
+    }
 
     public bool LFanqieRowMatch(string character, LFanqieBook book)
     {

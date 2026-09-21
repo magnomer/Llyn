@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -89,8 +89,7 @@ public partial class PCorpus : UserControl, PChronicleHost
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pCorpusHost.PWindowPressRun(
-                    ticket => _lCorpus.LCorpusPortraitPrint(_pCorpusHost.PWindowLabelRead(), ticket));
+                await _pCorpusHost.PWindowPressRun(_lCorpus.LCorpusPortraitPrint);
                 return;
             }
         }

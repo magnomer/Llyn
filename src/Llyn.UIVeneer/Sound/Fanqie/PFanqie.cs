@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Automation.Peers;
@@ -73,6 +73,8 @@ public sealed class PFanqie : ContentControl
             new CommandBinding(PFanqieCommand.PFanqieCommandRime, PFanqieDiweiHandle));
         _pFanqieList.CommandBindings.Add(
             new CommandBinding(PFanqieCommand.PFanqieCommandStem, PFanqieStemHandle));
+        _pFanqieList.CommandBindings.Add(
+            new CommandBinding(PFanqieCommand.PFanqieCommandRepresentative, PFanqieRepresentativeHandle));
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
@@ -114,7 +116,9 @@ public sealed class PFanqie : ContentControl
 
     internal Action<string, string>? PFanqieDiweiNotice { get; set; }
 
-    internal Action<string>? PFanqieStemNotice { get; set; }
+    internal Action<string?>? PFanqieStemNotice { get; set; }
+
+    internal Action<long, int>? PFanqieRepresentativeNotice { get; set; }
 
     private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)
     {
@@ -133,10 +137,13 @@ public sealed class PFanqie : ContentControl
 
     private void PFanqieStemHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is string key && key.Length > 0)
-        {
-            PFanqieStemNotice?.Invoke(key);
-        }
+        PFanqieStemNotice?.Invoke(PSender.PSenderTextRead(e));
+    }
+
+    private void PFanqieRepresentativeHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        PSender.PSenderParameterRead<PFanqieLine>(e)?.PFanqieLineApply(
+            Keyboard.Modifiers.HasFlag(ModifierKeys.Control), PFanqieRepresentativeNotice);
     }
 
     private static void PFanqieStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)

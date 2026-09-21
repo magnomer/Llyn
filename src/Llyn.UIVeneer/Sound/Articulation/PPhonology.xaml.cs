@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -230,8 +230,7 @@ public partial class PPhonology : UserControl
 
     private async void PPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pPhonologyHost.PWindowPressRun(
-            ticket => _lPhonology.LPhonologyPortraitPrint(_pPhonologyHost.PWindowLabelRead(), ticket));
+        await _pPhonologyHost.PWindowPressRun(_lPhonology.LPhonologyPortraitPrint);
     }
 
     private async void PPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)

@@ -1,17 +1,10 @@
-using System.Windows;
-
-namespace Llyn.UIVeneer;
+﻿namespace Llyn.UIVeneer;
 
 public partial class PWindow
 {
-    internal void PWindowStemShow(string language, string key)
+    internal void PWindowStemShow(string language, string? key)
     {
-        if (!PXiesheng.PXieshengLeaveConfirm())
-        {
-            return;
-        }
-
-        PNavigationHandle(PNavigationXiesheng, new RoutedEventArgs());
-        PXiesheng.PXieshengStemShow(language, key);
+        PWindowStationOpen(
+            PNavigationXiesheng, PXiesheng.PXieshengLeaveConfirm, () => PXiesheng.PXieshengStemShow(language, key));
     }
 }

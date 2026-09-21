@@ -105,3 +105,10 @@ A form standing on nothing hides it, and nothing beside it moves when it does.
 
 Says the chronicle may now stand differently, so a host panel can light its own buttons.
 An embedded editor hides its own rail, and the panel around it carries undo and redo.
+
+### `<TextBlock x:Name="PEditorReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />`
+
+The representative reading takes the header's second row, as the reading view lays it out.
+The header carries the least height, so the headword box no longer pushes the line down.
+The pill is inset by the same fourteen the reading view insets it.
+The style hides the line on empty text, so nothing ranked leaves the header as it was.

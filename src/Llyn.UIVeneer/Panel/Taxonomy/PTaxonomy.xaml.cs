@@ -72,8 +72,7 @@ public partial class PTaxonomy : UserControl
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pTaxonomyHost.PWindowPressRun(
-                    ticket => _lTaxonomy.LTaxonomyPortraitPrint(_pTaxonomyHost.PWindowLabelRead(), ticket));
+                await _pTaxonomyHost.PWindowPressRun(_lTaxonomy.LTaxonomyPortraitPrint);
             }
         }
     }

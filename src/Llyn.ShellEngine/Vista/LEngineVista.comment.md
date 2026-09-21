@@ -1,4 +1,4 @@
-# LEngineVista.cs
+﻿# LEngineVista.cs
 
 ## `public sealed partial class LEngine`
 
@@ -93,3 +93,10 @@ Marking changes no lexical data and keeps the entry's identity.
 
 Unmarks the entry and announces it.
 The entry stands, still reachable through the entry catalog.
+
+## `internal LDraft? LEngineVistaLoad(LVista vista)`
+
+Loads the selected record according to the vista subject under the engine gate.
+The result is a snapshot, with no claim file, editing identity, or registered tenure.
+Reference snapshots include credits.
+Tag and register snapshots retain their own stored records.

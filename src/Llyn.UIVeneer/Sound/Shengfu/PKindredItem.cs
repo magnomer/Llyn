@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -8,69 +8,56 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PKindredItem : INotifyPropertyChanged
 {
-    private bool _pKindredItemChosen;
+    private static readonly PropertyChangedEventArgs PKindredItemMark = new(nameof(PKindredItemChosen));
 
-    internal PKindredItem(LVistaRow row, bool chosen)
+    private PKindredItem(LVistaRow row, bool chosen)
     {
-        _pKindredItemChosen = chosen;
+        PKindredItemRow = row;
         PKindredItemId = row.LVistaRowId;
         PKindredItemHeadword = row.LVistaRowHeadword;
         PKindredItemName = row.LVistaRowName;
-        PKindredItemEpithet = row.LVistaRowEpithet ?? string.Empty;
+        PKindredItemEpithet = row.LVistaRowEpithet;
         PKindredItemFlag = PEnsign.PEnsignFind(row.LVistaRowLanguage);
+        PKindredItemChosen = chosen;
     }
 
     public long PKindredItemId { get; }
 
     public string PKindredItemHeadword { get; }
 
-    public string PKindredItemEpithet { get; }
+    public string? PKindredItemEpithet { get; }
 
     public string PKindredItemName { get; }
 
     public ImageSource? PKindredItemFlag { get; }
 
+    public bool PKindredItemChosen { get; private set; }
+
+    internal LVistaRow PKindredItemRow { get; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    public bool PKindredItemChosen
-    {
-        get => _pKindredItemChosen;
-
-        set
-        {
-            if (_pKindredItemChosen == value)
-            {
-                return;
-            }
-
-            _pKindredItemChosen = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PKindredItemChosen)));
-        }
-    }
 
     internal static IReadOnlyList<PKindredItem> PKindredItemBuild(IReadOnlyList<LVistaRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        List<PKindredItem> built = new(rows.Count);
-        foreach (LVistaRow row in rows)
-        {
-            built.Add(new PKindredItem(row, row.LVistaRowChosen));
-        }
-
-        return built;
+        return PSplice.PSpliceBuild(rows, row => new PKindredItem(row, row.LVistaRowChosen));
     }
 
     internal static bool PKindredItemMatch(PKindredItem held, PKindredItem fresh)
     {
-        return held.PKindredItemId == fresh.PKindredItemId
-            && string.Equals(held.PKindredItemHeadword, fresh.PKindredItemHeadword, StringComparison.Ordinal)
-            && string.Equals(held.PKindredItemEpithet, fresh.PKindredItemEpithet, StringComparison.Ordinal)
-            && string.Equals(held.PKindredItemName, fresh.PKindredItemName, StringComparison.Ordinal);
+        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(fresh);
+
+        return held.PKindredItemRow.LVistaRowMatch(fresh.PKindredItemRow);
     }
 
     internal static void PKindredItemSync(PKindredItem held, PKindredItem fresh)
     {
+        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(fresh);
+
         held.PKindredItemChosen = fresh.PKindredItemChosen;
+        held.PropertyChanged?.Invoke(held, PKindredItemMark);
     }
 }

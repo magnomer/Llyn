@@ -30,6 +30,7 @@ public static class LSchemaFanqie
                 spelling TEXT NOT NULL,
                 reading TEXT NOT NULL DEFAULT '',
                 tone_class TEXT NOT NULL DEFAULT '',
+                representative INTEGER NOT NULL DEFAULT 0,
                 UNIQUE (language, character, book, source, position)
             );
             """;

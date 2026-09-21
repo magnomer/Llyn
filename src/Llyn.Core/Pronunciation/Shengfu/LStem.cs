@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +14,15 @@ public sealed record LStem(
     public bool LStemMatch(long id)
     {
         return LStemId == id;
+    }
+
+    public bool LStemMatch(LStem other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+
+        return LStemId == other.LStemId
+            && string.Equals(LStemKey, other.LStemKey, StringComparison.Ordinal)
+            && LStemCount == other.LStemCount;
     }
 
     public static LStem? LStemFind(IReadOnlyList<LStem> rows, long id)

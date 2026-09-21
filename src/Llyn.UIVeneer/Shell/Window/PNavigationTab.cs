@@ -14,70 +14,13 @@ public partial class PWindow
             return;
         }
 
-        if (PLibrary.IsVisible && selectedButton != PNavigationLibrary
-            && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck(), PLibrary.PLibraryDraftFinish))
+        foreach ((PTab button, FrameworkElement panel, Func<bool> draft, Func<bool, bool> leave)
+                 in PNavigationGuardRead())
         {
-            return;
-        }
-
-        if (PPhonology.IsVisible && selectedButton != PNavigationPhonology
-            && !PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck(), PPhonology.PPhonologyDraftFinish))
-        {
-            return;
-        }
-
-        if (PXiesheng.IsVisible && selectedButton != PNavigationXiesheng
-            && !PWindowDiscardConfirm(PXiesheng.PXieshengChangeCheck(), PXiesheng.PXieshengDraftFinish))
-        {
-            return;
-        }
-
-        if (PYunjing.IsVisible && selectedButton != PNavigationYunjing
-            && !PWindowDiscardConfirm(PYunjing.PYunjingChangeCheck(), PYunjing.PYunjingDraftFinish))
-        {
-            return;
-        }
-
-        if (PTaxonomy.IsVisible && selectedButton != PNavigationTaxonomy
-            && !PWindowDiscardConfirm(PTaxonomy.PTaxonomyChangeCheck(), PTaxonomy.PTaxonomyDraftFinish))
-        {
-            return;
-        }
-
-        if (PTenor.IsVisible && selectedButton != PNavigationTenor
-            && !PWindowDiscardConfirm(PTenor.PTenorChangeCheck(), PTenor.PTenorDraftFinish))
-        {
-            return;
-        }
-
-        if (PRepertoire.IsVisible && selectedButton != PNavigationRepertoire
-            && !PWindowDiscardConfirm(PRepertoire.PRepertoireChangeCheck(), PRepertoire.PRepertoireDraftFinish))
-        {
-            return;
-        }
-
-        if (PCorpus.IsVisible && selectedButton != PNavigationCorpus
-            && !PWindowDiscardConfirm(PCorpus.PCorpusChangeCheck(), PCorpus.PCorpusDraftFinish))
-        {
-            return;
-        }
-
-        if (PReference.IsVisible && selectedButton != PNavigationSource
-            && !PWindowDiscardConfirm(PReference.PReferenceChangeCheck(), PReference.PReferenceDraftFinish))
-        {
-            return;
-        }
-
-        if (PGuild.IsVisible && selectedButton != PNavigationGuild
-            && !PWindowDiscardConfirm(PGuild.PGuildChangeCheck(), PGuild.PGuildDraftFinish))
-        {
-            return;
-        }
-
-        if (PFavorite.IsVisible && selectedButton != PNavigationFavorite
-            && !PWindowDiscardConfirm(PFavorite.PFavoriteChangeCheck(), PFavorite.PFavoriteDraftFinish))
-        {
-            return;
+            if (panel.IsVisible && button != selectedButton && !PWindowDiscardConfirm(draft(), leave))
+            {
+                return;
+            }
         }
 
         foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
@@ -106,6 +49,26 @@ public partial class PWindow
             scribe?.Invoke(_lWindow.LWindowPostureRead().LPostureStateSplit);
             return;
         }
+    }
+
+    private (PTab PNavigationButton, FrameworkElement PNavigationPanel, Func<bool> PNavigationDraft,
+        Func<bool, bool> PNavigationLeave)[] PNavigationGuardRead()
+    {
+        return
+        [
+            (PNavigationLibrary, PLibrary, PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
+            (PNavigationPhonology, PPhonology, PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
+            (PNavigationXiesheng, PXiesheng, PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
+            (PNavigationYunjing, PYunjing, PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
+            (PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
+            (PNavigationTenor, PTenor, PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
+            (PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireChangeCheck,
+                PRepertoire.PRepertoireDraftFinish),
+            (PNavigationCorpus, PCorpus, PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
+            (PNavigationSource, PReference, PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
+            (PNavigationGuild, PGuild, PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish),
+            (PNavigationFavorite, PFavorite, PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
+        ];
     }
 
     private (string PNavigationMode, PTab PNavigationButton, FrameworkElement PNavigationPanel,
@@ -259,6 +222,17 @@ public partial class PWindow
         PNavigationHandle(PNavigationTenor, new RoutedEventArgs());
         PTenor.PGamutRegisterShow(id);
         return true;
+    }
+
+    private void PWindowStationOpen(PTab tab, Func<bool> leave, Action show)
+    {
+        if (!leave())
+        {
+            return;
+        }
+
+        PNavigationHandle(tab, new RoutedEventArgs());
+        show();
     }
 
     private bool PWindowStationShow(PTab tab, Func<bool> leave, Action show)

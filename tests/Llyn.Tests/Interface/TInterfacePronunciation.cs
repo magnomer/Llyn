@@ -26,6 +26,9 @@ internal static partial class TInterface
     internal static string TDiweiRimeFormat(string rime, string division, bool rounded) =>
         LDiwei.LDiweiRimeFormat(rime, division, rounded);
 
+    internal static string TDiweiChongniuRead(string rime) =>
+        LDiwei.LDiweiChongniuRead(rime);
+
     internal static int TDiweiRankRead(string kind, string heading, LHypothesis? hypothesis) =>
         LDiwei.LDiweiRankRead(kind, heading, hypothesis);
 

@@ -1,4 +1,4 @@
-# LEditor.cs
+﻿# LEditor.cs
 
 ## `public sealed class LEditor`
 
@@ -45,6 +45,11 @@ The recording menu deportment, holding the foray the menu searches recordings th
 ## `public LNotation LEditorNotation { get; }`
 
 The pronunciation menu deportment, holding the foray the menu searches readings through.
+
+## `public LSounding LEditorSounding { get; }`
+
+The sound sheet of the held entry, which the editor hands to the rime, script and paradigm boxes.
+Its refusals are announced through `LEditorFailed`, so one notice reaches the window.
 
 ## `public void LEditorClipStart(string word, long target, Action<LHarvestStep> sink)`
 
@@ -121,7 +126,12 @@ The engine words it, so the deportment names no localization and no grasp key.
 
 ## `public IReadOnlyList<LFanqieGroup> LEditorFanqieRead()`
 
-The stored entry's rime-book groups, started when missing, or nothing for a fresh draft or a refusal.
+The held entry's rime-book groups, read off the sound sheet.
+
+## `public string LEditorReadingRead(string headword)`
+
+The headword's representative reading, formed by the engine from the same groups the box draws.
+The editor prints it under the headword box, as the reading view prints it under the headword.
 
 ## `public IReadOnlyList<LFanqieRow> LEditorAnchorRead()`
 
@@ -129,4 +139,20 @@ The same rows flattened, for the reflex rows to anchor on.
 
 ## `public void LEditorFanqieRebuild()`
 
-Fetches the rime-book rows again and announces the change, or the refusal.
+Fetches the rime-book rows again for the held entry, announcing the change or the refusal.
+
+## `public void LEditorFanqieSet(long fanqieId, int rank)`
+
+Ranks one rime-book row of the held entry among its representative readings.
+
+## `public IReadOnlyList<LScriptGroup> LEditorScriptRead()`
+
+The held entry's script rows, read off the sound sheet.
+
+## `public IReadOnlyList<LParadigmSlot> LEditorParadigmRead()`
+
+The held entry's paradigm slots, read off the sound sheet.
+
+## `private void LEditorFailureShow(string key, Exception exception)`
+
+Passes a sound sheet refusal on under the editor's own notice, so the window listens once.

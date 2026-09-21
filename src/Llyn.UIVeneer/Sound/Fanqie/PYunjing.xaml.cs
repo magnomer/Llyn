@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -302,8 +302,7 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pYunjingHost.PWindowPressRun(
-            ticket => _lYunjing.LYunjingPortraitPrint(_pYunjingHost.PWindowLabelRead(), ticket));
+        await _pYunjingHost.PWindowPressRun(_lYunjing.LYunjingPortraitPrint);
     }
 
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)

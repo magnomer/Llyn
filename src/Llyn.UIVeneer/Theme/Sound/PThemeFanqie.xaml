@@ -46,7 +46,7 @@
     </Style>
 
     <Style x:Key="Theme.Fanqie.Book" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Han}" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
@@ -128,6 +128,17 @@
         <Setter Property="Text" Value="{Binding PFanqieLineHeading}" />
     </Style>
 
+    <Style x:Key="Theme.Fanqie.Knot" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="Text" Value="{Binding PFanqieLineKnot}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PFanqieLineKnot}" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="Theme.Fanqie.Reading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">
         <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -190,9 +201,89 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Theme.Fanqie.RepresentativeIcon" TargetType="Path">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Stretch" Value="None" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Data" Value="{local:PIcon star, 14}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                <Setter Property="Fill" Value="{StaticResource Theme.Muted}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PFanqieLineMarked}" Value="True">
+                <Setter Property="Fill" Value="{StaticResource Theme.Representative}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Fanqie.RepresentativeOrder" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Representative}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="1,0,0,0" />
+        <Setter Property="Text" Value="{Binding PFanqieLineOrder}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PFanqieLineMarked}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Fanqie.Representative" TargetType="Button">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Command" Value="{x:Static local:PFanqieCommand.PFanqieCommandRepresentative}" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+        <Setter Property="ToolTip" Value="{DynamicResource Display.FanqieRepresentative}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" Background="Transparent">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Style="{StaticResource Theme.Fanqie.RepresentativeIcon}" />
+                            <TextBlock Style="{StaticResource Theme.Fanqie.RepresentativeOrder}" />
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding PFanqieLineMarked}" Value="True" />
+                    <Condition Binding="{Binding PFanqieLinePrimary}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Opacity" Value="0.62" />
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding PFanqieLineMarked}" Value="True">
+                <Setter Property="ToolTip" Value="{DynamicResource Display.FanqieRepresentativeMarked}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <DataTemplate x:Key="Theme.Fanqie.Line">
         <Grid Height="24">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieRepresentative" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieReading" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieLabel" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieInitial" />
@@ -203,20 +294,22 @@
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieSpelling" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Style="{StaticResource Theme.Fanqie.Reading}" />
-            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Fanqie.Label}" />
-            <Button Grid.Column="2" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandInitial}" Content="{Binding PFanqieLineInitial}" />
-            <StackPanel Grid.Column="3" Orientation="Horizontal">
-                <Button Style="{StaticResource Theme.Fanqie.Link}" Margin="0" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineRime}" />
+            <Button Style="{StaticResource Theme.Fanqie.Representative}" />
+            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Fanqie.Reading}" />
+            <TextBlock Grid.Column="2" Style="{StaticResource Theme.Fanqie.Label}" />
+            <Button Grid.Column="3" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandInitial}" Content="{Binding PFanqieLineInitial}" />
+            <StackPanel Grid.Column="4" Orientation="Horizontal">
+                <Button Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineYunmu}" />
                 <TextBlock Style="{StaticResource Theme.Fanqie.Heading}" />
+                <TextBlock Style="{StaticResource Theme.Fanqie.Knot}" />
             </StackPanel>
-            <Border Grid.Column="4" Style="{StaticResource Theme.Fanqie.Medial}">
+            <Border Grid.Column="5" Style="{StaticResource Theme.Fanqie.Medial}">
                 <TextBlock Style="{StaticResource Theme.Fanqie.MedialText}" />
             </Border>
-            <TextBlock Grid.Column="5" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineDivision}" />
-            <TextBlock Grid.Column="6" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineTone}" />
-            <TextBlock Grid.Column="7" Style="{StaticResource Theme.Fanqie.Spelling}" />
-            <TextBlock Grid.Column="8" Style="{StaticResource Theme.Fanqie.Text}" />
+            <TextBlock Grid.Column="6" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineDivision}" />
+            <TextBlock Grid.Column="7" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineTone}" />
+            <TextBlock Grid.Column="8" Style="{StaticResource Theme.Fanqie.Spelling}" />
+            <TextBlock Grid.Column="9" Style="{StaticResource Theme.Fanqie.Text}" />
         </Grid>
     </DataTemplate>
 
@@ -293,13 +386,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieCharacter" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieBook" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieRepresentative" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Style="{StaticResource Theme.Fanqie.Character}" Text="" Visibility="Collapsed" />
                 <Border Grid.Column="1" Style="{StaticResource Theme.Fanqie.StemChip}">
                     <TextBlock Style="{StaticResource Theme.Fanqie.StemLabel}" />
                 </Border>
-                <ItemsControl Grid.Column="2" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Fanqie.StemChipItem}" ItemsSource="{Binding PFanqieItemStems}">
+                <ItemsControl Grid.Column="3" Margin="-9,0,0,0" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Fanqie.StemChipItem}" ItemsSource="{Binding PFanqieItemStems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />

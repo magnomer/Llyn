@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -167,8 +167,9 @@ public sealed class TLanguageLoaderSource
         Assert.Equal("Traditional", language.LLanguageGlyph.LGlyphName);
         Assert.Equal("Classical Chinese", language.LLanguageGlyph.LGlyphLanguage);
         Assert.Equal("Wiktionary", Assert.Single(language.LLanguageGlyph.LGlyphSources).LSourceSpecName);
-        Assert.Equal("SimSun, Microsoft YaHei", language.LLanguageGlyph.LGlyphFont?.LFontFamily);
-        Assert.Equal(26, language.LLanguageGlyph.LGlyphFont?.LFontSize);
+        LFont? font = language.LLanguageGlyph.LGlyphFont;
+        Assert.Equal("Microsoft JhengHei UI, Microsoft YaHei UI, Malgun Gothic", font?.LFontFamily);
+        Assert.Equal(26, font?.LFontSize);
     }
 
     [Fact]

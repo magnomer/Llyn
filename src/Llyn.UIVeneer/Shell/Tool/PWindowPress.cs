@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Printing;
 using System.Threading.Tasks;
@@ -24,6 +24,13 @@ public partial class PWindow
         {
             PWindowFailureShow("Print.Failed", exception);
         }
+    }
+
+    internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)
+    {
+        ArgumentNullException.ThrowIfNull(print);
+
+        return PWindowPressRun(ticket => print(PWindowLabelRead(), ticket));
     }
 
     internal LPressTicket? PWindowTicketRead()

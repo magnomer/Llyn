@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -87,8 +87,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         {
             if (PDisplay.Visibility == Visibility.Visible)
             {
-                await _pRepertoireHost.PWindowPressRun(
-                    ticket => _lRepertoire.LRepertoirePortraitPrint(_pRepertoireHost.PWindowLabelRead(), ticket));
+                await _pRepertoireHost.PWindowPressRun(_lRepertoire.LRepertoirePortraitPrint);
                 return;
             }
         }

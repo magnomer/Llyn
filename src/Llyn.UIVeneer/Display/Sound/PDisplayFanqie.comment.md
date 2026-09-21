@@ -23,6 +23,17 @@ The box takes the pack's glyph font family, so the Han text is drawn as the glyp
 The fetch announces itself as a fanqie bulletin, and this view re-reads the box alone.
 The rows are kept and the reflex rows' anchor labels rewritten from them, since the labels name those rows.
 
+## `private void PDisplayFanqieSet(long id, long fanqieId, int rank)`
+
+Hands the engine the rank a star click asks for, so the reading view ranks as the editor does.
+A failed write is ignored, and the fanqie bulletin the write raises re-reads the box.
+
+## `private void PDisplayReadingShow(long id)`
+
+Asks the shell for the headword's representative reading and prints it under the headword.
+The style hides the line on empty text, so a headword with nothing ranked shows none.
+A failed read prints nothing, as a failed block read shows nothing.
+
 ## `private void PDisplayFanqieClear()`
 
 Hands the box nothing, so it hides, and forgets the rows.

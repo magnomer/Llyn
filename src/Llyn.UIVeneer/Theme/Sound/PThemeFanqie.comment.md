@@ -17,7 +17,7 @@ It is hidden, not collapsed, on a block repeating the book above it, so the colu
 
 ## `<Style x:Key="Theme.Fanqie.Book" TargetType="TextBlock">`
 
-The book name inside the chip, in the interface font so the glyph font does not carry into it.
+The book name inside the chip, in the Han font at interface size, not the headword glyph.
 
 ## `<Style x:Key="Theme.Fanqie.Origin" TargetType="Border">`
 
@@ -35,7 +35,7 @@ One column of a line, in the glyph font family at reading size rather than the h
 ## `<Style x:Key="Theme.Fanqie.Link" TargetType="Button">`
 
 The initial and rime columns as chip buttons, accent ink on the soft accent ground the book chip uses.
-Each opens the rime table on its category.
+Each opens the rime table on its category, and each reads as the key that category is stored under.
 The word takes the button's ink itself, since the default text style would paint it black.
 The border is always drawn and only coloured under the mouse, so hovering moves nothing beside it.
 It fades while pressed and collapses when the part is empty.
@@ -43,6 +43,12 @@ It fades while pressed and collapses when the part is empty.
 ## `<Style x:Key="Theme.Fanqie.Heading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
 The bracketed rime heading after the rime link, plain ink, so only the rime itself reads as the link.
+
+## `<Style x:Key="Theme.Fanqie.Knot" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
+
+The 重紐 letter after the heading, such as `(重紐:X)`, small and muted like the 反切 column.
+It is collapsed on a rime that carries no letter, which is most of them.
+It is read out of the link so the chip can carry the rime key alone.
 
 ## `<Style x:Key="Theme.Fanqie.Reading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
@@ -66,9 +72,18 @@ The 反切 column, smaller and muted, since it is the source's evidence rather t
 
 The placement as fetched, shown only on a line that carries no parts.
 
+## `<Style x:Key="Theme.Fanqie.RepresentativeIcon" TargetType="Path">`
+
+The star inside the representative toggle, unseen when unchecked, muted under the pointer, the representative ink when checked.
+
+## `<Style x:Key="Theme.Fanqie.Representative" TargetType="ToggleButton">`
+
+The per-line toggle marking one reconstruction as representative among its siblings.
+It is independent per line, so more than one reconstruction can carry the mark.
+
 ## `<DataTemplate x:Key="Theme.Fanqie.Line">`
 
-One placement across the shared columns: reading, initial, rime, 開合, division, tone, 反切.
+One placement across the shared columns: representative, reading, initial, rime, 重紐, 開合, division, tone, 反切.
 The initial and the rime are links into the rime table, the rime heading sitting after its link.
 The columns share their widths across every block of the box, so the parts line up under each other.
 
@@ -109,6 +124,7 @@ It is drawn at the headword size, since it names the whole character rather than
 
 One block: the series line above, then the character column, the book chip, the lines and the origin chip.
 The columns share their widths across the box, the series line included.
+The series chips stand over the reading column, clearing the star column the lines carry.
 
 ## `<Style x:Key="Theme.Fanqie.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">`
 
