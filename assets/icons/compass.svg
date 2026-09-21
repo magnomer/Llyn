@@ -1,1 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M160-280q-17 0-28.5-11.5T120-320q0-17 11.5-28.5T160-360h480q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280H160Zm0-160q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h480q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440H160Zm0-160q-17 0-28.5-11.5T120-640q0-17 11.5-28.5T160-680h480q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600H160Zm640 320q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Compass">
+<title>Compass</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<circle cx="12" cy="12" r="8.5" fill="url(#ice)" stroke="#8EC7F4" stroke-width="1"/>
+<path d="M14.5 9.5L17.4 6.6L14.7 13.7L7.2 17.1L10.4 10.2L14.5 9.5Z" fill="url(#blue)"/>
+<circle cx="12" cy="12" r="1.2" fill="white"/>
+
+</svg>

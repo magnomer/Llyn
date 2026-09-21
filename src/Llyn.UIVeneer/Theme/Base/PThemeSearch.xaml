@@ -1,6 +1,7 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
@@ -98,15 +99,13 @@
                         CornerRadius="13"
                         SnapsToDevicePixels="True">
                         <StackPanel Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                            <Path
+                            <local:PIconImage
                                 x:Name="PSurfaceMark"
                                 Width="24"
                                 Height="24"
                                 Margin="0,0,6,0"
                                 VerticalAlignment="Center"
-                                Data="{TemplateBinding Tag}"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="None" />
+                                PIconSource="{TemplateBinding Tag}" />
                             <TextBlock
                                 x:Name="PSurfaceLabel"
                                 VerticalAlignment="Center"

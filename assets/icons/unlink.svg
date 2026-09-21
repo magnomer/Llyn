@@ -1,1 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m625-449-71-71h46q17 0 28.5 11.5T640-480q0 10-4 18t-11 13ZM820-84q-11 11-28 11t-28-11L84-764q-11-11-11-28t11-28q11-11 28-11t28 11l680 680q11 11 11 28t-11 28ZM280-280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h25l79 80H360Zm380 112q-9-14-6.5-30t16.5-25q23-17 36.5-42t13.5-55q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 49-22.5 91.5T795-318q-14 9-30 6.5T740-328Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Unlink">
+<title>Unlink</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<path d="M8.9 14.8L7 16.7C5.8 17.9 3.85 17.9 2.65 16.7C1.45 15.5 1.45 13.55 2.65 12.35L5.2 9.8C6.4 8.6 8.35 8.6 9.55 9.8" stroke="#4E92C8" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M15.1 9.2L17 7.3C18.2 6.1 20.15 6.1 21.35 7.3C22.55 8.5 22.55 10.45 21.35 11.65L18.8 14.2C17.6 15.4 15.65 15.4 14.45 14.2" stroke="#4E92C8" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M8.4 12H15.6M12 8.4V15.6" stroke="#E85A59" stroke-width="1.35" stroke-linecap="round" transform="rotate(45 12 12)"/>
+
+</svg>

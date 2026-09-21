@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Llyn.UIVeneer.PTenor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -61,7 +61,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Degree.Title}">
-                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon sort, 24}" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
@@ -100,15 +100,13 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Path
+                                    <local:PIconImage
                                         Grid.Column="0"
                                         Width="16"
                                         Height="16"
                                         Margin="0,0,8,0"
                                         VerticalAlignment="Center"
-                                        Data="{local:PIcon register, 16}"
-                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                                        Stretch="None" />
+                                        PIconSource="{local:PIcon register, 16}" />
                                     <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PGamutItemName}" />
                                     <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
                                         <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PGamutItemCount}" />
@@ -179,7 +177,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Grille.Title}">
                     <Grid Width="24" Height="24">
-                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                        <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon filter, 24}" />
                         <Ellipse
                             x:Name="PGrilleMark"
                             Width="6"
@@ -313,7 +311,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon delete, 24}" />
                 </Button>
             </Grid>
         </Border>

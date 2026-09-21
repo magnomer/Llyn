@@ -1,1 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Lookup">
+<title>Lookup</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<circle cx="10.2" cy="10.2" r="5.4" fill="url(#ice)" stroke="#0A72DF" stroke-width="1.25"/>
+<path d="M14.1 14.1L19.2 19.2" stroke="#0A72DF" stroke-width="1.55" stroke-linecap="round"/>
+<path d="M7.6 9.1H12.8M7.6 11.5H11.3" stroke="#4E92C8" stroke-width="1" stroke-linecap="round"/>
+
+</svg>

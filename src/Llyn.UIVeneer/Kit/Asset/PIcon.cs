@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -7,13 +8,17 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Resources;
 using System.Xml.Linq;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
 
 namespace Llyn.UIVeneer;
 
-[MarkupExtensionReturnType(typeof(Geometry))]
+[MarkupExtensionReturnType(typeof(ImageSource))]
 public sealed class PIcon : MarkupExtension
 {
-    private static readonly Dictionary<string, Geometry> PIconStore = [];
+    private static readonly Dictionary<string, ImageSource> PIconStore = [];
+
+    private static readonly Dictionary<ImageSource, ImageSource> PIconGrayStore = [];
 
     private static readonly XNamespace PIconSpace = "http://www.w3.org/2000/svg";
 
@@ -32,26 +37,128 @@ public sealed class PIcon : MarkupExtension
         return PIconResolve(PIconName, PIconSize);
     }
 
-    internal static Geometry PIconResolve(string name, double size)
+    [return: NotNullIfNotNull(nameof(name))]
+    internal static ImageSource? PIconResolve(string? name, double size, ImageSource? source = null, bool active = true)
     {
+        if (source is not null)
+        {
+            if (active)
+            {
+                return source;
+            }
+
+            lock (PIconGrayStore)
+            {
+                if (PIconGrayStore.TryGetValue(source, out ImageSource? graySource))
+                {
+                    return graySource;
+                }
+
+                if (source is not DrawingImage drawingImage)
+                {
+                    return source;
+                }
+
+                Drawing drawing = drawingImage.Drawing.Clone();
+                PImageApply(drawing);
+                DrawingImage grayImage = new(drawing);
+                grayImage.Freeze();
+                PIconGrayStore[source] = grayImage;
+                return grayImage;
+            }
+        }
+
+        if (name is null)
+        {
+            return null;
+        }
+
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(size);
 
-        string key = string.Concat(name, "/", size.ToString(CultureInfo.InvariantCulture));
         lock (PIconStore)
         {
-            if (PIconStore.TryGetValue(key, out Geometry? cached))
+            if (PIconStore.TryGetValue(name, out ImageSource? cached))
             {
                 return cached;
             }
 
-            (Geometry symbol, Rect frame) = PIconLoad(name);
-            double scale = size / Math.Max(frame.Width, frame.Height);
-            Geometry scaled = symbol.Clone();
-            scaled.Transform = new MatrixTransform(scale, 0, 0, scale, -frame.X * scale, -frame.Y * scale);
-            scaled.Freeze();
-            PIconStore[key] = scaled;
-            return scaled;
+            Uri uri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".svg"));
+            StreamResourceInfo resource = System.Windows.Application.GetResourceStream(uri)
+                ?? throw new FileNotFoundException(name);
+            using Stream stream = resource.Stream;
+            using FileSvgReader reader = new(new WpfDrawingSettings
+            {
+                IncludeRuntime = false,
+                TextAsGeometry = true,
+            });
+            DrawingImage image = new(reader.Read(stream) ?? throw new InvalidDataException(name));
+            image.Freeze();
+            PIconStore[name] = image;
+            return image;
+        }
+
+        void PImageApply(Drawing drawing)
+        {
+            switch (drawing)
+            {
+                case DrawingGroup group:
+                    group.OpacityMask = PImageResolve(group.OpacityMask);
+                    foreach (Drawing child in group.Children)
+                    {
+                        PImageApply(child);
+                    }
+
+                    break;
+                case GeometryDrawing geometry:
+                    geometry.Brush = PImageResolve(geometry.Brush);
+                    if (geometry.Pen is Pen pen)
+                    {
+                        geometry.Pen = pen.Clone();
+                        geometry.Pen.Brush = PImageResolve(geometry.Pen.Brush);
+                    }
+
+                    break;
+                case GlyphRunDrawing glyph:
+                    glyph.ForegroundBrush = PImageResolve(glyph.ForegroundBrush);
+                    break;
+            }
+        }
+
+        Brush? PImageResolve(Brush? brush)
+        {
+            if (brush is SolidColorBrush solid)
+            {
+                SolidColorBrush gray = solid.Clone();
+                gray.Color = PGlyphResolve(gray.Color);
+                return gray;
+            }
+
+            if (brush is GradientBrush gradient)
+            {
+                GradientBrush gray = gradient.Clone();
+                foreach (GradientStop stop in gray.GradientStops)
+                {
+                    stop.Color = PGlyphResolve(stop.Color);
+                }
+
+                return gray;
+            }
+
+            if (brush is DrawingBrush drawingBrush)
+            {
+                DrawingBrush gray = drawingBrush.Clone();
+                PImageApply(gray.Drawing);
+                return gray;
+            }
+
+            return brush;
+        }
+
+        static Color PGlyphResolve(Color color)
+        {
+            byte gray = (byte)Math.Round((0.2126 * color.R) + (0.7152 * color.G) + (0.0722 * color.B));
+            return Color.FromArgb(color.A, gray, gray, gray);
         }
     }
 

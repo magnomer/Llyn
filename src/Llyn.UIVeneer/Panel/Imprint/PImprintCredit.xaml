@@ -46,16 +46,16 @@
                     <Style TargetType="StackPanel" BasedOn="{StaticResource Imprint.Credit.Control}" />
                 </StackPanel.Style>
                 <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Add" ToolTip="{DynamicResource Source.AuthorAdd}">
-                    <Path Width="12" Height="12" Data="{local:PIcon add, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
+                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon add, 12}" />
                 </Button>
                 <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}">
-                    <Path Width="12" Height="12" Data="{local:PIcon remove, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon remove, 12}" />
                 </Button>
                 <Button IsEnabled="{Binding PAuthorItemEarlier}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}">
-                    <Path Width="12" Height="12" Data="{local:PIcon earlier, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon earlier, 12}" />
                 </Button>
                 <Button IsEnabled="{Binding PAuthorItemLater}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}">
-                    <Path Width="12" Height="12" Data="{local:PIcon later, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon later, 12}" />
                 </Button>
             </StackPanel>
         </Grid>

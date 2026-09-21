@@ -1,1 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M148-148q-19 19-43.5 8.5T80-177v-263q0-17 11.5-28.5T120-480q17 0 28.5 11.5T160-440v165l34-34q5-5 12.5-8t15.5-3h58q17 0 28.5 11.5T320-280q0 17-11.5 28.5T280-240h-40l-92 92Zm532-92q-17 0-28.5-11.5T640-280q0-17 11.5-28.5T680-320h120v-121q0-17 11.5-28t28.5-11q17 0 28.5 11.5T880-440v120q0 33-23.5 56.5T800-240H680ZM451.5-371.5Q440-383 440-400v-320q0-17 11.5-28.5T480-760q17 0 28.5 11.5T520-720v320q0 17-11.5 28.5T480-360q-17 0-28.5-11.5Zm-160-80Q280-463 280-480v-160q0-17 11.5-28.5T320-680q17 0 28.5 11.5T360-640v160q0 17-11.5 28.5T320-440q-17 0-28.5-11.5Zm320-40Q600-503 600-520v-80q0-17 11.5-28.5T640-640q17 0 28.5 11.5T680-600v80q0 17-11.5 28.5T640-480q-17 0-28.5-11.5ZM120-640q-17 0-28.5-11.5T80-680v-120q0-33 23.5-56.5T160-880h120q17 0 28.5 11.5T320-840q0 17-11.5 28.5T280-800H160v121q0 17-11.5 28T120-640Zm691.5-11.5Q800-663 800-680v-120H680q-17 0-28.5-11.5T640-840q0-17 11.5-28.5T680-880h120q33 0 56.5 23.5T880-800v121q0 17-11.5 28T840-640q-17 0-28.5-11.5Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Download">
+<title>Download</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<path d="M12 4.7V14.1M8.8 11L12 14.2L15.2 11" stroke="#0A72DF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.3 17.2V19H18.7V17.2" stroke="#4E92C8" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

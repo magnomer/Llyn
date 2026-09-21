@@ -1,18 +1,13 @@
-﻿# PTab.cs
+# PTab.cs
 
 ## `public sealed class PTab : Button`
 
-One navigation button carrying two marks and the knowledge of whether its panel is the one shown.
-The template shows the outline mark at rest and the filled mark with an accent bar while chosen.
-Holding both geometries on the control lets one style serve every tab without a second style to swap in.
+One navigation button carrying its mark and the knowledge of whether its panel is the one shown.
+The template keeps the same mark while the chosen state adds its accent surface and bar.
 
-## `public Geometry? PTabOutline`
+## `public ImageSource? PTabIcon`
 
-The mark drawn in the tab's own foreground while its panel is hidden.
-
-## `public Geometry? PTabFilled`
-
-The mark drawn in the accent while its panel is shown.
+The colored mark shown in both the resting and chosen states.
 
 ## `public bool PTabChosen`
 

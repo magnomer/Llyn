@@ -92,15 +92,13 @@
                                     FontSize="{TemplateBinding FontSize}"
                                     Foreground="{TemplateBinding Foreground}"
                                     Text="{Binding PTranscriptionItemLabel}" />
-                                <Path
+                                <local:PIconImage
                                     x:Name="PSchemeChevron"
                                     Width="12"
                                     Height="12"
                                     Margin="-1,1,-11,0"
                                     VerticalAlignment="Center"
-                                    Data="{local:PIcon expand, 12}"
-                                    Fill="{StaticResource Theme.Muted}"
-                                    Stretch="None" />
+                                    PIconSource="{local:PIcon expand, 12}" />
                             </StackPanel>
                         </ToggleButton>
                         <Popup
@@ -122,11 +120,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSchemeName" Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSchemeChevron" Property="Fill" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="PSchemeName" Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSchemeChevron" Property="Fill" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

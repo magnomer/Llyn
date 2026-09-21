@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="Llyn.UIVeneer.PWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -122,88 +122,76 @@
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Input}"
                                 PTabChosen="True"
-                                PTabFilled="{local:PIcon input-chosen, 24}"
-                                PTabOutline="{local:PIcon input, 24}"
+                                PTabIcon="{local:PIcon input, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationLibrary"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Library}"
-                                PTabFilled="{local:PIcon library-chosen, 24}"
-                                PTabOutline="{local:PIcon library, 24}"
+                                PTabIcon="{local:PIcon library, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationFavorite"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Favorite}"
-                                PTabFilled="{local:PIcon favorite-marked, 24}"
-                                PTabOutline="{local:PIcon favorite, 24}"
+                                PTabIcon="{local:PIcon favorite, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
                             <local:PTab
                                 x:Name="PNavigationPhonology"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Phonology}"
-                                PTabFilled="{local:PIcon phonology-chosen, 24}"
-                                PTabOutline="{local:PIcon phonology, 24}"
+                                PTabIcon="{local:PIcon phonology, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationRepertoire"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Repertoire}"
-                                PTabFilled="{local:PIcon repertoire-chosen, 24}"
-                                PTabOutline="{local:PIcon repertoire, 24}"
+                                PTabIcon="{local:PIcon repertoire, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationTenor"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Tenor}"
-                                PTabFilled="{local:PIcon tenor-chosen, 24}"
-                                PTabOutline="{local:PIcon tenor, 24}"
+                                PTabIcon="{local:PIcon tenor, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationTaxonomy"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Taxonomy}"
-                                PTabFilled="{local:PIcon taxonomy-chosen, 24}"
-                                PTabOutline="{local:PIcon taxonomy, 24}"
+                                PTabIcon="{local:PIcon taxonomy, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
                             <local:PTab
                                 x:Name="PNavigationCorpus"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Corpus}"
-                                PTabFilled="{local:PIcon corpus-chosen, 24}"
-                                PTabOutline="{local:PIcon corpus, 24}"
+                                PTabIcon="{local:PIcon corpus, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationSource"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Source}"
-                                PTabFilled="{local:PIcon reference-chosen, 24}"
-                                PTabOutline="{local:PIcon reference, 24}"
+                                PTabIcon="{local:PIcon reference, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationGuild"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Guild}"
-                                PTabFilled="{local:PIcon guild-chosen, 24}"
-                                PTabOutline="{local:PIcon guild, 24}"
+                                PTabIcon="{local:PIcon guild, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
                             <local:PTab
                                 x:Name="PNavigationXiesheng"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Xiesheng}"
-                                PTabFilled="{local:PIcon xiesheng-chosen, 24}"
-                                PTabOutline="{local:PIcon xiesheng, 24}"
+                                PTabIcon="{local:PIcon xiesheng, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationYunjing"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Yunjing}"
-                                PTabFilled="{local:PIcon yunjing-chosen, 24}"
-                                PTabOutline="{local:PIcon yunjing, 24}"
+                                PTabIcon="{local:PIcon yunjing, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                         </StackPanel>
 
@@ -213,15 +201,13 @@
                                 x:Name="PNavigationDuplex"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.DualPanel}"
-                                PTabFilled="{local:PIcon duplex-chosen, 24}"
-                                PTabOutline="{local:PIcon duplex, 24}"
+                                PTabIcon="{local:PIcon duplex, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
                                 x:Name="PNavigationSettings"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Settings}"
-                                PTabFilled="{local:PIcon settings-chosen, 24}"
-                                PTabOutline="{local:PIcon settings, 24}"
+                                PTabIcon="{local:PIcon settings, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                         </StackPanel>
                     </Grid>

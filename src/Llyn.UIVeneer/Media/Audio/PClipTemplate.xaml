@@ -81,7 +81,7 @@
                     Click="PClipPreviewHandle"
                     Style="{StaticResource Theme.Clip.Preview}"
                     ToolTip="{DynamicResource Downloader.Play}">
-                    <Path Width="24" Height="24" Data="{local:PIcon play, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon play, 24}" />
                 </Button>
                 <Button
                     x:Name="PClipSelector"

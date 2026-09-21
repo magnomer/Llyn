@@ -101,7 +101,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Echelon.Title}">
-                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon sort, 24}" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
@@ -153,7 +153,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Louver.Title}">
                     <Grid Width="24" Height="24">
-                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                        <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon filter, 24}" />
                         <Ellipse
                             x:Name="PLouverMark"
                             Width="6"
@@ -399,7 +399,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon delete, 24}" />
                 </Button>
             </Grid>
         </Border>

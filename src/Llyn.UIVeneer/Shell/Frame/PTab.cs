@@ -6,14 +6,9 @@ namespace Llyn.UIVeneer;
 
 public sealed class PTab : Button
 {
-    public static readonly DependencyProperty PTabOutlineProperty = DependencyProperty.Register(
-        nameof(PTabOutline),
-        typeof(Geometry),
-        typeof(PTab));
-
-    public static readonly DependencyProperty PTabFilledProperty = DependencyProperty.Register(
-        nameof(PTabFilled),
-        typeof(Geometry),
+    public static readonly DependencyProperty PTabIconProperty = DependencyProperty.Register(
+        nameof(PTabIcon),
+        typeof(ImageSource),
         typeof(PTab));
 
     public static readonly DependencyProperty PTabChosenProperty = DependencyProperty.Register(
@@ -22,16 +17,10 @@ public sealed class PTab : Button
         typeof(PTab),
         new FrameworkPropertyMetadata(false));
 
-    public Geometry? PTabOutline
+    public ImageSource? PTabIcon
     {
-        get => (Geometry?)GetValue(PTabOutlineProperty);
-        set => SetValue(PTabOutlineProperty, value);
-    }
-
-    public Geometry? PTabFilled
-    {
-        get => (Geometry?)GetValue(PTabFilledProperty);
-        set => SetValue(PTabFilledProperty, value);
+        get => (ImageSource?)GetValue(PTabIconProperty);
+        set => SetValue(PTabIconProperty, value);
     }
 
     public bool PTabChosen

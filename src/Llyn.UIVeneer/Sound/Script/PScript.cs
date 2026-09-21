@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Shapes;
 
 namespace Llyn.UIVeneer;
 
@@ -47,11 +46,7 @@ public sealed class PScript : ContentControl
         TextBlock label = new();
         label.SetResourceReference(StyleProperty, "Theme.Script.Head");
         label.SetResourceReference(TextBlock.TextProperty, "Display.Script");
-        Path chevron = new() { Width = 12, Height = 12, Stretch = System.Windows.Media.Stretch.None };
-        chevron.Data = PIcon.PIconResolve("expand", 12);
-        chevron.SetBinding(
-            Shape.FillProperty,
-            new System.Windows.Data.Binding(nameof(Foreground)) { Source = _pScriptSwitch });
+        PIconImage chevron = new() { Width = 12, Height = 12, PIconSource = PIcon.PIconResolve("expand", 12) };
         _pScriptSwitch.Content = chevron;
         _pScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
         _pScriptSwitch.Checked += (_, _) => PScriptStateApply();

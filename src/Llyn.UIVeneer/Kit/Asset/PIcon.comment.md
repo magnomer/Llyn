@@ -2,29 +2,27 @@
 
 ## `public sealed class PIcon : MarkupExtension`
 
-Turns one SVG asset under `assets/icons` into a frozen geometry a `Path` fills with its own brush.
-The asset file is the only place a symbol's shape lives, so no XAML or C# holds path data.
-Every symbol is scaled by the frame its `viewBox` declares, never by the bounds of its ink.
-Two symbols asked for at the same size therefore share one stroke width and one optical box.
-Material Symbols draw on a 24-unit grid, so frames of 12 and 24 land every edge on a device pixel.
-A `Path` showing the result sets `Stretch="None"` and the same width and height as the frame.
+Turns one SVG asset under `assets/icons` into a frozen drawing an `Image` can display.
+SharpVectors preserves the asset's separate fills, strokes, gradients, and opacity instead of flattening every path into one monochrome geometry.
+The SVG file alone defines each symbol, so XAML and C# hold no path or palette data.
 
 ## `public PIcon(string name, double size)`
 
-`name` is the asset's file name without `.svg`, and `size` is the frame's edge in device-independent pixels.
+`name` is the asset's file name without `.svg`, and `size` validates the intended square image size at the call site.
 
 ## `public override object ProvideValue(IServiceProvider serviceProvider)`
 
-Answers the cached geometry for the name and size, so XAML pays the file read once per pair.
+Answers the cached drawing image, so XAML pays the SVG conversion once per asset.
 
-## `internal static Geometry PIconResolve(string name, double size)`
+## `internal static ImageSource? PIconResolve(string? name, double size, ImageSource? source = null, bool active = true)`
 
-Loads the symbol on first use and keeps the scaled, frozen copy under the name and size.
-The transform maps the frame's origin to zero and its longer edge to `size`.
+Loads the symbol on first use and keeps the frozen drawing under its name.
+The receiving `Image` supplies the requested width and height while WPF scales the drawing uniformly.
+It also builds cached grayscale drawings when an icon image reports an inherited disabled state.
 
 ## `internal static (Geometry, Rect) PIconLoad(string name)`
 
 Reads the asset as XML and joins every `path` into one nonzero-filled group.
 The `F1` prefix keeps the nonzero rule the SVG default gives, so rings and cutouts wind as drawn.
 The frame is the `viewBox`, or the width and height when a file declares none.
-Callers that fit by ink rather than by frame, like the grasp stars, take the raw symbol from here.
+The grasp rating alone uses this monochrome geometry because it paints partial stars with live theme brushes.

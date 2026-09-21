@@ -9,12 +9,10 @@
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <TextBlock Style="{DynamicResource Theme.Marker.Name}" Text="{Binding PMarkerChipName}" />
                 <Button Click="PMarkerChipHandle" Style="{DynamicResource Theme.Marker.Remove}">
-                    <Path
+                    <local:PIconImage
                         Width="12"
                         Height="12"
-                        Data="{local:PIcon close, 12}"
-                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                        Stretch="None" />
+                        PIconSource="{local:PIcon close, 12}" />
                 </Button>
             </StackPanel>
         </Border>

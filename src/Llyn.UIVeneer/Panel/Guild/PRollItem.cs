@@ -30,7 +30,7 @@ internal sealed class PRollItem : INotifyPropertyChanged
 
     public string PRollItemCount { get; }
 
-    public Geometry PRollItemMark { get; }
+    public ImageSource PRollItemMark { get; }
 
     internal static IReadOnlyList<PRollItem> PRollItemBuild(IReadOnlyList<LCatalogAuthor> rows)
     {

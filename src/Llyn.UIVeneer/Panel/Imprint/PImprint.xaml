@@ -69,7 +69,7 @@
                     <ToggleButton x:Name="PImprintKind" Style="{StaticResource Imprint.Kind}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="PImprintKindName" Style="{StaticResource Theme.Speech.Name}" />
-                            <Path Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" Data="{local:PIcon expand, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
+                            <local:PIconImage Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" PIconSource="{local:PIcon expand, 12}" />
                         </StackPanel>
                     </ToggleButton>
                     <Popup

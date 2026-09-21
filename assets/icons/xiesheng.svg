@@ -1,1 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M40-860h200v200H40ZM100-800v80h80v-80ZM380-860h200v200H380ZM440-800v80h80v-80ZM720-860h200v200H720ZM780-800v80h80v-80ZM380-300h200v200H380ZM440-240v80h80v-80ZM110-660h60v160h-60ZM450-660h60v160h-60ZM790-660h60v160h-60ZM110-530h740v60H110ZM450-470h60v170h-60Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Xiesheng series">
+<title>Xiesheng series</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<rect x="3.5" y="4.4" width="7.1" height="6.4" rx="1.4" fill="url(#ice)" stroke="#8EC7F4" stroke-width="0.9"/>
+<rect x="13.4" y="4.4" width="7.1" height="6.4" rx="1.4" fill="url(#ice)" stroke="#8EC7F4" stroke-width="0.9"/>
+<rect x="8.45" y="13.6" width="7.1" height="6.4" rx="1.4" fill="url(#ice)" stroke="#8EC7F4" stroke-width="0.9"/>
+<!-- Shared phonetic component is the same blue mark in every character tile. -->
+<path d="M5.2 6.3V9M5.2 7.65H7.7M15.1 6.3V9M15.1 7.65H17.6M10.15 15.5V18.2M10.15 16.85H12.65" stroke="#0A72DF" stroke-width="0.95" stroke-linecap="round"/>
+<!-- Distinct remaining components -->
+<path d="M8.5 6.4V8.9M18.4 6.2L19 8.8M13.5 15.7L14.1 18" stroke="#4E92C8" stroke-width="0.9" stroke-linecap="round"/>
+<path d="M7 10.8L10.1 13.6M17 10.8L13.9 13.6" stroke="#8EC7F4" stroke-width="0.9" stroke-linecap="round"/>
+
+</svg>

@@ -21,15 +21,13 @@
                     Text="{Binding PCategoryItemName}"
                     TextTrimming="CharacterEllipsis" />
 
-                <Path
+                <local:PIconImage
                     Grid.Column="1"
                     Width="12"
                     Height="12"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Data="{local:PIcon check, 12}"
-                    Fill="{DynamicResource Theme.Accent}"
-                    Stretch="None"
+                    PIconSource="{local:PIcon check, 12}"
                     Visibility="{Binding PCategoryItemTaken, Converter={StaticResource Theme.Category.Fold}}" />
             </Grid>
         </Button>
