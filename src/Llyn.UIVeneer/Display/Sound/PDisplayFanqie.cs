@@ -41,6 +41,7 @@ public partial class PDisplay
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(groups);
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
+        PDisplayFanqie.PFanqieStemNotice = key => _pDisplayHost.PWindowStemShow(language, key);
     }
 
     private void PDisplayFanqieClear()
@@ -49,5 +50,6 @@ public partial class PDisplay
         PDisplayFanqie.PFanqieItems = null;
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(null);
         PDisplayFanqie.PFanqieDiweiNotice = null;
+        PDisplayFanqie.PFanqieStemNotice = null;
     }
 }

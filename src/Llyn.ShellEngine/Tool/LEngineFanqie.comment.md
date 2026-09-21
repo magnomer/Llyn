@@ -32,14 +32,15 @@ The rows grouped by book.
 ## `public void LEngineFanqieStart(long entryId)`
 
 Starts the fetch of every character that has no rows.
+It starts the phonetic-series fetch too, since one box prints both.
 
 ## `public void LEngineFanqieRebuild(long entryId)`
 
-Fetches every character of the entry again.
+Fetches every character of the entry again, its series along with its rows.
 
 ## `public bool LEngineFanqieCheck(long entryId)`
 
-Whether a fetch is pending for any character of the entry.
+Whether a fetch of rows or of a series is pending for any character of the entry.
 
 ## `internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(string character, string language, CancellationToken cancellation)`
 

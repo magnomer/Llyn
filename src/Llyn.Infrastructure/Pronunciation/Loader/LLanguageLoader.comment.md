@@ -12,6 +12,7 @@ The loaded `LLanguage` carries every language-specific fact onward.
 The reading of one declared source, its attempts and its readings, sits in `LLanguageLoaderSource.cs`.
 The reading of the `script` list, one character style per row, sits in `LLanguageLoaderScript.cs`.
 The reading of the `fanqie` list, one rime book per row, sits in `LLanguageLoaderFanqie.cs`.
+The reading of the `shengfu` block, the one phonetic-series source, sits in `LLanguageLoaderShengfu.cs`.
 The reading of the `reflex` list, one fetch rule per borrowing language, sits in `LLanguageLoaderReflex.cs`.
 The reading of the `hypothesis` file, the reconstruction tables, sits in `LLanguageLoaderHypothesis.cs`.
 The reading of the rewrite rules and the transcription schemes sits in `LLanguageLoaderRespelling.cs`.

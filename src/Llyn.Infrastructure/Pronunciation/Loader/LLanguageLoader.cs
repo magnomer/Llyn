@@ -239,7 +239,8 @@ public sealed partial class LLanguageLoader : LLanguageVault
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic),
             root.ValueKind != JsonValueKind.Object || LLanguageListedRead(root),
             LLanguageAnatomyRead(language, root),
-            LLanguageClassRead(language, root));
+            LLanguageClassRead(language, root),
+            LLanguageShengfuRead(root));
     }
 
     private static bool LLanguageListedRead(JsonElement root)

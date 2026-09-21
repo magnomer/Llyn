@@ -1,0 +1,43 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PStem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:PStemCommand.PStemCommandEntry}" Executed="PStemEntryHandle" />
+    </UserControl.CommandBindings>
+    <ScrollViewer
+        Margin="30,18,0,0"
+        Padding="0,0,10,0"
+        HorizontalScrollBarVisibility="Disabled"
+        Style="{StaticResource Theme.Scroll.Gutter}"
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Grid MinHeight="56" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="PStemHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" />
+                <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
+                    <TextBlock x:Name="PStemKind" Style="{StaticResource Theme.Language.Name}" Text="{DynamicResource Xiesheng.Stem}" />
+                </Border>
+                <Border Grid.Column="2" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Chip}">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <Image x:Name="PStemFlag" Width="19" Height="14" VerticalAlignment="Center" Stretch="Uniform" />
+                        <TextBlock x:Name="PStemLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <TextBlock x:Name="PStemEmpty" Style="{StaticResource Theme.Stem.Empty}" Text="{DynamicResource Xiesheng.StemEmpty}" />
+            <ItemsControl x:Name="PStemList" Margin="0,25,0,24" ItemTemplate="{StaticResource Theme.Stem.Glyph}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

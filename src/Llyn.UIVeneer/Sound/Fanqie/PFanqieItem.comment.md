@@ -20,6 +20,11 @@ Empty when the block above already carries the same book from another source, so
 
 The site the lines came from, drawn as the chip at the right of the block.
 
+## `public string PFanqieItemShengfu`
+
+The character's phonetic series, drawn as the line above the book chip.
+Empty on every block but the character's first, so the line is drawn once.
+
 ## `public IReadOnlyList<PFanqieLine> PFanqieItemLines`
 
 The character's placements in that book from that source, one line each, in answer order.

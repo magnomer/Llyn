@@ -12,6 +12,7 @@ public sealed class LFanqieClerk
 
     private readonly LEntryVault _lFanqieClerkEntries;
     private readonly LFanqieVault _lFanqieClerkFanqie;
+    private readonly LShengfuVault _lFanqieClerkShengfu;
     private readonly LDiweiVault _lFanqieClerkDiwei;
     private readonly LFanqieSource _lFanqieClerkSource;
     private readonly LLanguageVault _lFanqieClerkPacks;
@@ -32,6 +33,7 @@ public sealed class LFanqieClerk
         ArgumentNullException.ThrowIfNull(raise);
         _lFanqieClerkEntries = rig.LRigEntries;
         _lFanqieClerkFanqie = rig.LRigFanqie;
+        _lFanqieClerkShengfu = rig.LRigShengfu;
         _lFanqieClerkDiwei = rig.LRigDiwei;
         _lFanqieClerkSource = rig.LRigFanqieSource;
         _lFanqieClerkPacks = rig.LRigLanguages;
@@ -101,7 +103,31 @@ public sealed class LFanqieClerk
             entry = _lFanqieClerkEntries.LEntryRead(entryId);
         }
 
-        return LFanqieGroup.LFanqieGroupScan(rows, LFanqieBookRead(entry?.LEntryLanguage ?? string.Empty));
+        string language = entry?.LEntryLanguage ?? string.Empty;
+        IReadOnlyList<LShengfu> shengfu = LShengfuStoredScan(language, LFanqieRow.LFanqieCharacterScan(rows));
+        return LFanqieGroup.LFanqieGroupScan(
+            rows, LFanqieBookRead(language), shengfu, LShengfuSeparatorRead(language));
+    }
+
+    private string LShengfuSeparatorRead(string language)
+    {
+        return string.IsNullOrWhiteSpace(language)
+            ? string.Empty
+            : _lFanqieClerkLanguages.LLanguageCacheRead(language).LLanguageShengfu?.LShengfuRuleSeparator
+                ?? string.Empty;
+    }
+
+    private IReadOnlyList<LShengfu> LShengfuStoredScan(string language, IReadOnlyList<string> characters)
+    {
+        if (language.Length == 0)
+        {
+            return [];
+        }
+
+        lock (_lFanqieClerkGate)
+        {
+            return _lFanqieClerkShengfu.LShengfuScan(language, characters);
+        }
     }
 
     public void LFanqieClerkStart(long entryId)

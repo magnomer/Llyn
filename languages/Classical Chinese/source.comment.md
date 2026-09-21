@@ -53,6 +53,16 @@ A character without a module answers not found and is left alone.
 
 The 集韻 row posts the same Kaom form as the 廣韻 row with the book changed in `t`.
 
+## `shengfu`
+
+The shengfu key names where the phonetic series of a character is read from, one source for the language.
+The series is the character whose sound the graph was borrowed for, 工 for 江 and 共 for 洪.
+It is fetched with a GET as plain text from the English Wiktionary's Zhengzhang 上古音 data module.
+The match pattern reads the series out of the second field of each row of that module.
+A character listed twice under different series has both printed, joined by a middle dot.
+A character without a module answers not found and is left alone.
+The reading view prints the series as one line above that character's rime books.
+
 ## `hypothesis`
 
 The hypothesis key names the file beside this one holding the user's own reconstruction tables, `hypothesis.json`.

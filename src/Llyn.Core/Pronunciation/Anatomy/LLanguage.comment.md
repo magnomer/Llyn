@@ -69,6 +69,7 @@ Everything language-specific arrives through this record.
   The reading view shows one row per style above the first meaning, and the order here is the row order.
   A pack that lists none carries an empty list, and no script box is shown.
 - `LLanguageFanqieBooks` — The rime books the pack lists under `fanqie`, each an [LFanqieBook](LFanqieBook.comment.md) record, in written order.
+- `LLanguageShengfu` — The phonetic-series source the pack declares under `shengfu`, or null when it declares none.
   The reading view shows one block per book under the script box, and the order here is the block order.
   A pack that lists none carries an empty list, and no fanqie box is shown.
 - `LLanguageHypothesis` — The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](LHypothesis.comment.md) record.

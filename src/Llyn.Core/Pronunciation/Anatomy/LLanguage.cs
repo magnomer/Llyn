@@ -28,7 +28,8 @@ public sealed record LLanguage(
     bool LLanguagePhonemic = false,
     bool LLanguageListed = true,
     IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null,
-    IReadOnlyList<LAnatomyTone>? LLanguageAnatomyTones = null)
+    IReadOnlyList<LAnatomyTone>? LLanguageAnatomyTones = null,
+    LShengfuRule? LLanguageShengfu = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 

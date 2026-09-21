@@ -1,4 +1,4 @@
-# PThemeFanqie.xaml
+﻿# PThemeFanqie.xaml
 
 ## `<Style x:Key="Theme.Fanqie.Box" TargetType="Border">`
 
@@ -81,10 +81,34 @@ The box's name at the head of a folded box, small and muted in the interface fon
 The muted line under the blocks saying the books are being asked, in the interface font.
 It is the only content of the box while nothing is stored yet.
 
+## `<Style x:Key="Theme.Fanqie.Stem" TargetType="Grid">`
+
+The series line above the books of a character, collapsed while the character has no series.
+It keeps a gap under itself, so the series stands apart from the books.
+
+## `<Style x:Key="Theme.Fanqie.StemChip" TargetType="Border">`
+
+The accent chip carrying the series label, sitting in the book chip's column.
+It wears the book chip's colours, so the series and the books read as one family.
+
+## `<Style x:Key="Theme.Fanqie.StemLabel" TargetType="TextBlock">`
+
+The localized word for the series inside the chip, in the interface font.
+
+## `<Style x:Key="Theme.Fanqie.StemKey" TargetType="Button">`
+
+One series as a pressable chip, inked in the glyph font the box inherits from `PFontApply`.
+Pressing it opens that series in the xiesheng panel, as the initial and rime links open a cell.
+
+## `<DataTemplate x:Key="Theme.Fanqie.StemChipItem">`
+
+Draws one series of the line as a chip, so a character under two series shows two.
+It is drawn at the headword size, since it names the whole character rather than one line of it.
+
 ## `<DataTemplate x:Key="Theme.Fanqie.Row">`
 
-One block: the character column, the book chip, the list of lines and the origin chip at the right.
-The columns share their widths across the box.
+One block: the series line above, then the character column, the book chip, the lines and the origin chip.
+The columns share their widths across the box, the series line included.
 
 ## `<Style x:Key="Theme.Fanqie.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">`
 

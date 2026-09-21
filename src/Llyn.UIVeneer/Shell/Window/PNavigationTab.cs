@@ -26,6 +26,12 @@ public partial class PWindow
             return;
         }
 
+        if (PXiesheng.IsVisible && selectedButton != PNavigationXiesheng
+            && !PWindowDiscardConfirm(PXiesheng.PXieshengChangeCheck(), PXiesheng.PXieshengDraftFinish))
+        {
+            return;
+        }
+
         if (PYunjing.IsVisible && selectedButton != PNavigationYunjing
             && !PWindowDiscardConfirm(PYunjing.PYunjingChangeCheck(), PYunjing.PYunjingDraftFinish))
         {
@@ -110,6 +116,7 @@ public partial class PWindow
             ("Input", PNavigationInput, PInput, null),
             ("Library", PNavigationLibrary, PLibrary, PLibrary.PLibraryScribeRestore),
             ("Phonology", PNavigationPhonology, PPhonology, PPhonology.PPhonologyScribeRestore),
+            ("Xiesheng", PNavigationXiesheng, PXiesheng, PXiesheng.PXieshengScribeRestore),
             ("Yunjing", PNavigationYunjing, PYunjing, PYunjing.PYunjingScribeRestore),
             ("Taxonomy", PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyScribeRestore),
             ("Tenor", PNavigationTenor, PTenor, PTenor.PTenorScribeRestore),
@@ -294,6 +301,12 @@ public partial class PWindow
     {
         return PWindowStationShow(
             PNavigationYunjing, PYunjing.PYunjingLeaveConfirm, () => PYunjing.PXiaoyunEntryShow(id));
+    }
+
+    internal bool PWindowKindredShow(long id)
+    {
+        return PWindowStationShow(
+            PNavigationXiesheng, PXiesheng.PXieshengLeaveConfirm, () => PXiesheng.PKindredEntryShow(id));
     }
 
     private bool PReferenceLeaveConfirm()

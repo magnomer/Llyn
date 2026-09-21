@@ -6,11 +6,17 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PFanqieItem
 {
-    private PFanqieItem(string character, string book, string source, IReadOnlyList<PFanqieLine> lines)
+    private PFanqieItem(
+        string character,
+        string book,
+        string source,
+        IReadOnlyList<string> stems,
+        IReadOnlyList<PFanqieLine> lines)
     {
         PFanqieItemCharacter = character;
         PFanqieItemBook = book;
         PFanqieItemSource = source;
+        PFanqieItemStems = stems;
         PFanqieItemLines = lines;
     }
 
@@ -19,6 +25,8 @@ internal sealed class PFanqieItem
     public string PFanqieItemBook { get; }
 
     public string PFanqieItemSource { get; }
+
+    public IReadOnlyList<string> PFanqieItemStems { get; }
 
     public IReadOnlyList<PFanqieLine> PFanqieItemLines { get; }
 
@@ -36,7 +44,11 @@ internal sealed class PFanqieItem
             }
 
             items.Add(new PFanqieItem(
-                group.LFanqieGroupHeading, group.LFanqieGroupLabel, group.LFanqieGroupSource, lines));
+                group.LFanqieGroupHeading,
+                group.LFanqieGroupLabel,
+                group.LFanqieGroupSource,
+                group.LFanqieGroupStems,
+                lines));
         }
 
         return items;

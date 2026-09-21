@@ -56,16 +56,19 @@ public sealed partial class LEngine
     public void LEngineFanqieStart(long entryId)
     {
         _lEngineFanqieClerk.LFanqieClerkStart(entryId);
+        _lEngineShengfuClerk.LShengfuClerkStart(entryId);
     }
 
     public void LEngineFanqieRebuild(long entryId)
     {
         _lEngineFanqieClerk.LFanqieClerkRebuild(entryId);
+        _lEngineShengfuClerk.LShengfuClerkRebuild(entryId);
     }
 
     public bool LEngineFanqieCheck(long entryId)
     {
-        return _lEngineFanqieClerk.LFanqieClerkCheck(entryId);
+        return _lEngineFanqieClerk.LFanqieClerkCheck(entryId)
+            || _lEngineShengfuClerk.LShengfuClerkCheck(entryId);
     }
 
     internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(

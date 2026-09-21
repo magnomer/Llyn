@@ -49,6 +49,8 @@ public sealed partial class LEngine
     private LFavoriteClerk _lEngineFavoriteClerk;
     private LCitationClerk _lEngineCitationClerk;
     private LFanqieClerk _lEngineFanqieClerk;
+    private LShengfuClerk _lEngineShengfuClerk;
+    private LStemClerk _lEngineStemClerk;
     private LDiweiClerk _lEngineDiweiClerk;
     private LScriptClerk _lEngineScriptClerk;
     private LWorkspaceClerk _lEngineWorkspaceClerk;
@@ -102,6 +104,8 @@ public sealed partial class LEngine
         nameof(_lEngineFavoriteClerk),
         nameof(_lEngineCitationClerk),
         nameof(_lEngineFanqieClerk),
+        nameof(_lEngineShengfuClerk),
+        nameof(_lEngineStemClerk),
         nameof(_lEngineDiweiClerk),
         nameof(_lEngineScriptClerk),
         nameof(_lEngineWorkspaceClerk),
@@ -183,6 +187,8 @@ public sealed partial class LEngine
             _lEngineSituationClerk,
             _lEngineEntryClerk);
         _lEngineFanqieClerk = new LFanqieClerk(rig, _lEngineLanguageCache, gate, raise);
+        _lEngineShengfuClerk = new LShengfuClerk(rig, _lEngineLanguageCache, gate, raise);
+        _lEngineStemClerk = new LStemClerk(rig);
         _lEngineDiweiClerk = new LDiweiClerk(rig, _lEngineLanguageCache);
         _lEngineScriptClerk = new LScriptClerk(rig, _lEngineLanguageCache, gate, raise);
         _lEngineWorkspaceClerk = new LWorkspaceClerk(
@@ -218,6 +224,7 @@ public sealed partial class LEngine
     {
         LEngineLanguageImport();
         _lEngineFanqieClerk.LDiweiApply();
+        _lEngineShengfuClerk.LStemApply();
         if (_lEngineWorkspaceClerk.LWorkspaceClerkMigrated)
         {
             _lEngineWorkspaceClerk.LWorkspaceClerkUpdate();
@@ -317,6 +324,7 @@ public sealed partial class LEngine
         _lEngineLacunaClerk.LLacunaClerkClear();
         _lEngineScriptClerk.LScriptClerkClear();
         _lEngineFanqieClerk.LFanqieClerkClear();
+        _lEngineShengfuClerk.LShengfuClerkClear();
         _lEngineReflexClerk.LReflexClerkClear();
     }
 

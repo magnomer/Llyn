@@ -1,0 +1,110 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Llyn.Core;
+
+namespace Llyn.ShellEngine;
+
+public sealed partial class LEngine
+{
+    internal IReadOnlyList<LStem> LEngineStemRead(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineStemClerk.LStemClerkRead(language);
+        }
+    }
+
+    public LStem? LEngineStemRead(long? id)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineStemClerk.LStemClerkRead(id);
+        }
+    }
+
+    public LStem? LEngineStemFind(string language, string key)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineStemClerk.LStemClerkFind(language, key);
+        }
+    }
+
+    public string? LEngineStemFind()
+    {
+        foreach (string language in LEngineLanguageRead())
+        {
+            if (LEngineStemCheck(language))
+            {
+                return language;
+            }
+        }
+
+        return null;
+    }
+
+    public IReadOnlyList<LStem> LEngineStemFind(LVista vista, string language)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        string wanted = vista.LVistaQuery.Trim();
+        IEnumerable<LStem> kept = LEngineStemRead(language).Where(row =>
+            wanted.Length == 0 || row.LStemKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
+        IReadOnlyList<LStem> sorted = vista.LVistaOrder switch
+        {
+            LCatalogOrder.LCatalogOrderReverse => [.. kept
+                .OrderByDescending(row => row.LStemKey, StringComparer.Ordinal)],
+            LCatalogOrder.LCatalogOrderUsage => [.. kept
+                .OrderByDescending(row => row.LStemCount)
+                .ThenBy(row => row.LStemKey, StringComparer.Ordinal)],
+            _ => [.. kept.OrderBy(row => row.LStemKey, StringComparer.Ordinal)],
+        };
+        if (vista.LVistaChosen is long chosen && LStem.LStemFind(sorted, chosen) is null)
+        {
+            vista.LVistaSelect(null);
+        }
+
+        return [.. sorted.Select(row => row with { LStemChosen = vista.LVistaMatch(row.LStemId) })];
+    }
+
+    public LStemPage LEngineStemResolve(long? id)
+    {
+        lock (_lEngineGate)
+        {
+            LStem? stem = _lEngineStemClerk.LStemClerkRead(id);
+            return stem is null ? LStemPage.LStemPageBlank : _lEngineStemClerk.LStemPageRead(stem);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineKindredFind(string language, LVista grove, LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(grove);
+        ArgumentNullException.ThrowIfNull(vista);
+
+        if (grove.LVistaChosen is not long chosen)
+        {
+            return [];
+        }
+
+        return LEngineKindredFind(language, [chosen], vista.LVistaQuery.Trim(), vista);
+    }
+
+    internal IReadOnlyList<LVistaRow> LEngineKindredFind(
+        string language, IReadOnlyList<long> stemIds, string query, LVista? vista = null)
+    {
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LEntry> entries = _lEngineStemClerk.LStemEntryScan(language, stemIds, query);
+            return entries.Count == 0 ? [] : LEngineVistaBuild(entries, vista?.LVistaChosen);
+        }
+    }
+
+    private bool LEngineStemCheck(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineShengfuClerk.LShengfuRuleRead(language) is not null;
+        }
+    }
+}

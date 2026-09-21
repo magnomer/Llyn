@@ -32,6 +32,12 @@ internal static partial class TInterface
     internal static int TDiweiRankNormalize(int rank) =>
         LDiwei.LDiweiRankNormalize(rank);
 
+    internal static IReadOnlyList<string> TStemKeyScan(string text, string separator) =>
+        LStem.LStemKeyScan(text, separator);
+
+    internal static LShengfu TShengfuCreate(string character, string text, string source = "") =>
+        new(character, text, source);
+
     internal static LRespellingRule TRespellingRuleCreate(string pattern, string replacement) =>
         new LRespellingRule(pattern, replacement);
 

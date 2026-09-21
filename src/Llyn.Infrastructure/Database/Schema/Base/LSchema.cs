@@ -28,6 +28,8 @@ public static class LSchema
         LSchemaLacuna.LSchemaLacunaCreate(connection);
         LSchemaScript.LSchemaScriptCreate(connection);
         LSchemaFanqie.LSchemaFanqieCreate(connection);
+        LSchemaShengfu.LSchemaShengfuCreate(connection);
+        LSchemaStem.LSchemaStemCreate(connection);
         LSchemaDiwei.LSchemaDiweiCreate(connection);
         LSchemaAnchor.LSchemaAnchorCreate(connection);
 

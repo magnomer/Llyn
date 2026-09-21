@@ -30,6 +30,7 @@ An example row carries a foreign key into source, and SQLite refuses a child tab
 
 ### `LSchemaAnchor.LSchemaAnchorCreate(connection);`
 
+The shengfu table comes after fanqie, since both are read for one character of a headword.
 The anchor table comes after reflex, fanqie and diwei.
 It carries a foreign key into both reflex and fanqie, so both parents must stand first.
 

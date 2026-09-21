@@ -7,10 +7,16 @@ public sealed record LFanqieGroup(
     string LFanqieGroupHeading,
     string LFanqieGroupLabel,
     string LFanqieGroupSource,
-    IReadOnlyList<LFanqieRow> LFanqieGroupRows)
+    IReadOnlyList<LFanqieRow> LFanqieGroupRows,
+    IReadOnlyList<string>? LFanqieGroupStems = null)
 {
+    public IReadOnlyList<string> LFanqieGroupStems { get; init; } = LFanqieGroupStems ?? [];
+
     public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books)
+        IReadOnlyList<LFanqieRow> rows,
+        IReadOnlyList<LFanqieBook> books,
+        IReadOnlyList<LShengfu>? shengfu = null,
+        string separator = "")
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(books);
@@ -30,7 +36,10 @@ public sealed record LFanqieGroup(
 
                 string heading = first && characters.Count > 1 ? character : string.Empty;
                 string label = book.LFanqieBookMatch(shown) ? string.Empty : book.LFanqieBookName;
-                groups.Add(new LFanqieGroup(heading, label, book.LFanqieBookSource, found));
+                IReadOnlyList<string> stems = first && shengfu is not null
+                    ? LStem.LStemKeyScan(LShengfu.LShengfuTextFind(shengfu, character), separator)
+                    : [];
+                groups.Add(new LFanqieGroup(heading, label, book.LFanqieBookSource, found, stems));
                 first = false;
                 shown = book.LFanqieBookName;
             }

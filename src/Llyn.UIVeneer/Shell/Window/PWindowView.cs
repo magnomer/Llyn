@@ -16,6 +16,7 @@ public partial class PWindow
         PReference.PReferenceVistaRestore();
         PCorpus.PCorpusVistaRestore();
         PGuild.PGuildVistaRestore();
+        PXiesheng.PXieshengVistaRestore();
         PYunjing.PYunjingVistaRestore();
 
         PDuplex.PDuplexRestore(state);

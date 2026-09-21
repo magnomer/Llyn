@@ -409,6 +409,19 @@ internal static partial class TInterface
     internal static LDiwei? TEngineDiweiFind(this LEngine engine, string language, string kind, string key) =>
         engine.LEngineDiweiFind(language, kind, key);
 
+    internal static LStem? TEngineStemFind(this LEngine engine, string language, string key) =>
+        engine.LEngineStemFind(language, key);
+
+    internal static string? TEngineStemFind(this LEngine engine) =>
+        engine.LEngineStemFind();
+
+    internal static LStemPage TEngineStemResolve(this LEngine engine, long? id) =>
+        engine.LEngineStemResolve(id);
+
+    internal static IReadOnlyList<LVistaRow> TEngineKindredFind(
+        this LEngine engine, string language, IReadOnlyList<long> stemIds, string query) =>
+        engine.LEngineKindredFind(language, stemIds, query);
+
     internal static IReadOnlyList<LTally> TEngineTallyRead(this LEngine engine, LDiwei diwei) =>
         engine.LEngineTallyRead(diwei);
 
@@ -417,6 +430,9 @@ internal static partial class TInterface
 
     internal static void TEngineFanqieStart(this LEngine engine, long entryId) =>
         engine.LEngineFanqieStart(entryId);
+
+    internal static IReadOnlyList<LFanqieGroup> TEngineFanqieDivide(this LEngine engine, long entryId) =>
+        engine.LEngineFanqieDivide(entryId);
 
     internal static Task<IReadOnlyList<LFanqieRow>> TEngineFanqieFind(
         this LEngine engine,

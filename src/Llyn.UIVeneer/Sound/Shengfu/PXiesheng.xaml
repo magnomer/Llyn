@@ -1,0 +1,265 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PXiesheng"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    >
+
+    <UserControl.Resources>
+        <Style x:Key="Theme.Grove.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PGroveItemChosen}" Value="True">
+                    <Setter Property="Tag" Value="Chosen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Theme.Kindred.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PKindredItemChosen}" Value="True">
+                    <Setter Property="Tag" Value="Chosen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Theme.Grove.Key" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Title}">
+            <Setter Property="FontSize" Value="26" />
+        </Style>
+
+        <DataTemplate x:Key="Theme.Grove.Cell">
+            <Button Click="PGroveHandle" Style="{StaticResource Theme.Grove.Row}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Grove.Key}" Text="{Binding PGroveItemKey}" />
+                    <Border Grid.Column="1" Style="{StaticResource Theme.Catalog.Pellet}">
+                        <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PGroveItemCount}" />
+                    </Border>
+                </Grid>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="34,20,34,38">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:PSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Border
+            x:Name="PRungBar"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="{StaticResource Theme.Catalog.HeaderMargin}"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="PRungDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Rung.Title}">
+                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PLodestar"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Lodestar.Search}"
+                    TextChanged="PLodestarHandle" />
+                <Popup
+                    x:Name="PRungDropdown"
+                    Width="252"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PRungDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PRungBar}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel x:Name="PRungList">
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Rung.Title}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PGrove" ItemTemplate="{StaticResource Theme.Grove.Cell}" />
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PGroveEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Xiesheng.GroveEmpty}" />
+        </Grid>
+
+        <Border
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="-4,0,16,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <TextBox
+                x:Name="PSextant"
+                Style="{StaticResource Theme.Search.Field}"
+                Tag="{DynamicResource Sextant.Search}"
+                TextChanged="PSextantHandle" />
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PKindred">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PKindredHandle" Style="{StaticResource Theme.Kindred.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PKindredItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PKindredItemName, Mode=OneWay}" /><Run
+                                        Style="{StaticResource Theme.Catalog.Epithet}"
+                                        Text="{Binding PKindredItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PKindredEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Xiesheng.KindredEmpty}" />
+        </Grid>
+
+        <local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PXieshengFresh"
+                        Click="PXieshengFreshHandle"
+                        Content="{DynamicResource Scribe.New}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon new, 24}" />
+                    <Button
+                        x:Name="PXieshengStore"
+                        Click="PXieshengStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PXieshengViewer, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PXieshengEarlier"
+                            Click="PXieshengRetreatHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon retreat, 24}"
+                            ToolTip="{DynamicResource Voyage.Retreat}" />
+                        <Button
+                            x:Name="PXieshengLater"
+                            Click="PXieshengAdvanceHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon advance, 24}"
+                            ToolTip="{DynamicResource Voyage.Advance}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, ElementName=PXieshengScribe, Converter={StaticResource Theme.Command.Fold}}">
+                        <Button
+                            x:Name="PXieshengBackward"
+                            Click="PXieshengUndoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon undo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Undo}" />
+                        <Button
+                            x:Name="PXieshengForward"
+                            Click="PXieshengRedoHandle"
+                            IsEnabled="False"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon redo, 24}"
+                            ToolTip="{DynamicResource Chronicle.Redo}" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
+                        Content="{DynamicResource Scribe.Export}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon export, 24}" />
+                    <Button
+                        Command="ApplicationCommands.Print"
+                        Content="{DynamicResource Scribe.Print}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon print, 24}" />
+                </StackPanel>
+            </Border>
+            <Border
+                x:Name="PXieshengMode"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="PXieshengViewer"
+                        Click="PXieshengScribeHandle"
+                        Content="{DynamicResource Scribe.View}"
+                        GroupName="PXieshengMode"
+                        IsChecked="True"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon view, 24}" />
+                    <RadioButton
+                        x:Name="PXieshengScribe"
+                        Click="PXieshengScribeHandle"
+                        Content="{DynamicResource Scribe.Edit}"
+                        GroupName="PXieshengMode"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="{local:PIcon edit, 24}" />
+                </StackPanel>
+            </Border>
+        </local:PRail>
+
+        <Border Grid.Row="1" Grid.Column="2" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+            <Grid>
+                <local:PDisplay x:Name="PDisplay" />
+
+                <local:PStem x:Name="PXieshengStem" Visibility="Collapsed" />
+
+                <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
+
+                <Button
+                    x:Name="PXieshengBin"
+                    Margin="0,17,26,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="PXieshengBinHandle"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Input.Bin}"
+                    ToolTip="{DynamicResource Scribe.Delete}">
+                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

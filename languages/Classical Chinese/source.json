@@ -145,6 +145,11 @@
       "spelling": "<a[^>]*>([^<]*)</a>"
     }
   ],
+  "shengfu": {
+    "source": "Wiktionary",
+    "url": "https://en.wiktionary.org/w/index.php?title=Module:zh/data/och-pron-ZS/{word}&action=raw",
+    "match": "\\{ \"\\d+\", \"(?<shengfu>[^\"]+)\""
+  },
   "reflex": [
     {
       "language": "Korean",

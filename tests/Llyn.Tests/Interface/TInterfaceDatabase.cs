@@ -31,6 +31,35 @@ internal static partial class TInterface
     internal static LEntryArchive TEntryArchiveCreate(LDatabase database) =>
         new(database);
 
+    internal static LShengfuArchive TShengfuArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TShengfuSave(this LShengfuVault shengfuVault, string language, LShengfu row) =>
+        shengfuVault.LShengfuSave(language, row);
+
+    internal static LStemArchive TStemArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TStemApply(
+        this LStemVault stemVault, string language, string character, IReadOnlyList<string> keys) =>
+        stemVault.LStemApply(language, character, keys);
+
+    internal static void TStemRebuild(this LStemVault stemVault, string language, string separator) =>
+        stemVault.LStemRebuild(language, separator);
+
+    internal static IReadOnlyList<LStem> TStemRead(this LStemVault stemVault, string language) =>
+        stemVault.LStemRead(language);
+
+    internal static LStem? TStemFind(this LStemVault stemVault, string language, string key) =>
+        stemVault.LStemFind(language, key);
+
+    internal static IReadOnlyList<string> TStemCharacterRead(this LStemVault stemVault, long stemId) =>
+        stemVault.LStemCharacterRead(stemId);
+
+    internal static IReadOnlyList<long> TStemEntryScan(
+        this LStemVault stemVault, string language, IReadOnlyList<long> stemIds) =>
+        stemVault.LStemEntryScan(language, stemIds);
+
     internal static LEntry TEntryCreate(
         this LEntryVault entryVault,
         LEntry entry,

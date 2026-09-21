@@ -71,6 +71,8 @@ public sealed class PFanqie : ContentControl
             new CommandBinding(PFanqieCommand.PFanqieCommandInitial, PFanqieDiweiHandle));
         _pFanqieList.CommandBindings.Add(
             new CommandBinding(PFanqieCommand.PFanqieCommandRime, PFanqieDiweiHandle));
+        _pFanqieList.CommandBindings.Add(
+            new CommandBinding(PFanqieCommand.PFanqieCommandStem, PFanqieStemHandle));
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
@@ -112,6 +114,8 @@ public sealed class PFanqie : ContentControl
 
     internal Action<string, string>? PFanqieDiweiNotice { get; set; }
 
+    internal Action<string>? PFanqieStemNotice { get; set; }
+
     private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is not PFanqieLine line)
@@ -124,6 +128,14 @@ public sealed class PFanqie : ContentControl
         if (key.Length > 0)
         {
             PFanqieDiweiNotice?.Invoke(initial ? LDiwei.LDiweiInitial : LDiwei.LDiweiRime, key);
+        }
+    }
+
+    private void PFanqieStemHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is string key && key.Length > 0)
+        {
+            PFanqieStemNotice?.Invoke(key);
         }
     }
 

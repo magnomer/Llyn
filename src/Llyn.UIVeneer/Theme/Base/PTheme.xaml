@@ -38,6 +38,7 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeScript.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeFanqie.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeDiwei.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeXiesheng.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

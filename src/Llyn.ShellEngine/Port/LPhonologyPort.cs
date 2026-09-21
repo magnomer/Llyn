@@ -46,6 +46,18 @@ public interface LPhonologyPort
 
     IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista);
 
+    LStem? LEngineStemFind(string language, string key);
+
+    IReadOnlyList<LStem> LEngineStemFind(LVista vista, string language);
+
+    string? LEngineStemFind();
+
+    LStem? LEngineStemRead(long? id);
+
+    LStemPage LEngineStemResolve(long? id);
+
+    IReadOnlyList<LVistaRow> LEngineKindredFind(string language, LVista grove, LVista vista);
+
     bool LEngineBookCheck(string language);
 
     string? LEngineBookFind();

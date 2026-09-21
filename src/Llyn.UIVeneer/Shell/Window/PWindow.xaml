@@ -192,6 +192,13 @@
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
                             <local:PTab
+                                x:Name="PNavigationXiesheng"
+                                Click="PNavigationHandle"
+                                Content="{DynamicResource Navigation.Xiesheng}"
+                                PTabFilled="{local:PIcon xiesheng-chosen, 24}"
+                                PTabOutline="{local:PIcon xiesheng, 24}"
+                                Style="{StaticResource Theme.Navigation.Tab}" />
+                            <local:PTab
                                 x:Name="PNavigationYunjing"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Yunjing}"
@@ -224,6 +231,7 @@
                     <local:PInput x:Name="PInput" />
                     <local:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
                     <local:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
+                    <local:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
                     <local:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
                     <local:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <local:PTenor x:Name="PTenor" Visibility="Collapsed" />

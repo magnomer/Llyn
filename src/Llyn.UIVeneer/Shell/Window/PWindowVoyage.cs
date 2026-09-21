@@ -29,7 +29,8 @@ public partial class PWindow
             ("Guild", PGuild, PGuild.PGuildVoyageRead),
             ("Favorite", PFavorite, PFavorite.PFavoriteVoyageRead),
             ("Phonology", PPhonology, PPhonology.PPhonologyVoyageRead),
-            ("Yunjing", PYunjing, PYunjing.PYunjingVoyageRead)
+            ("Yunjing", PYunjing, PYunjing.PYunjingVoyageRead),
+            ("Xiesheng", PXiesheng, PXiesheng.PXieshengVoyageRead)
         ];
     }
 
@@ -97,6 +98,7 @@ public partial class PWindow
                 "Favorite" => PWindowFavoriteShow(station.PVoyageId),
                 "Phonology" => PWindowInventoryShow(station.PVoyageId),
                 "Yunjing" => PWindowXiaoyunShow(station.PVoyageId),
+                "Xiesheng" => PWindowKindredShow(station.PVoyageId),
                 _ => false,
             };
         }
@@ -187,5 +189,6 @@ public partial class PWindow
         PTenor.PTenorVoyageShow(past, future);
         PPhonology.PPhonologyVoyageShow(past, future);
         PYunjing.PYunjingVoyageShow(past, future);
+        PXiesheng.PXieshengVoyageShow(past, future);
     }
 }

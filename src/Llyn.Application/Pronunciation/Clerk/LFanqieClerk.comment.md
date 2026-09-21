@@ -25,6 +25,7 @@ The stored rows of every character of the entry, tone formatted by the localized
 ## `public IReadOnlyList<LFanqieGroup> LFanqieClerkDivide(long entryId)`
 
 The stored rows grouped by book in the pack's order.
+The stored phonetic series of each character rides on that character's first block.
 
 ## `public void LFanqieClerkStart(long entryId)`
 
@@ -57,6 +58,15 @@ One request per book, spaced by the book's interval on the clock.
 ## `private static string LFanqieKeyFormat(string language, string character)`
 
 The pending key of one character in one language.
+
+## `private string LShengfuSeparatorRead(string language)`
+
+The separator the pack rule joins several series with, or empty when it declares no rule.
+
+## `private IReadOnlyList<LShengfu> LShengfuStoredScan(string language, IReadOnlyList<string> characters)`
+
+The series [LShengfuClerk](LShengfuClerk.comment.md) has already stored for those characters.
+This clerk only reads them, because the box printing the books is the box printing the series.
 
 ## `private void LFanqieClerkStart(long entryId, string language, string character)`
 

@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRig(
     LVault LRigVault,
@@ -19,6 +19,8 @@ public sealed record LRig(
     LDiweiVault LRigDiwei,
     LExampleVault LRigExamples,
     LFanqieVault LRigFanqie,
+    LShengfuVault LRigShengfu,
+    LStemVault LRigStems,
     LFavoriteVault LRigFavorites,
     LFrequencyVault LRigFrequencies,
     LGlossVault LRigGlosses,
@@ -43,6 +45,7 @@ public sealed record LRig(
     LVideoVault LRigVideos,
     LSourceFactory LRigSources,
     LFanqieSource LRigFanqieSource,
+    LShengfuSource LRigShengfuSource,
     LReflexSource LRigReflexSource,
     LScriptSource LRigScriptSource,
     LRecordingVault LRigRecordings,

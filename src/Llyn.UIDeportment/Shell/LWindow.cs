@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,6 +119,12 @@ public sealed class LWindow : IDisposable
     public LWing LWindowWingCreate()
     {
         return new LWing(_lEntryPort, _lPhonologyPort, _lSettingsPort);
+    }
+
+    public LXiesheng LWindowXieshengCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        return new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LYunjing LWindowYunjingCreate(

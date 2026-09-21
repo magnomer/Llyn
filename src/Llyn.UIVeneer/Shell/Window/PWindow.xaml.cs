@@ -70,6 +70,8 @@ public partial class PWindow : Window
         PInput.PInputAttach(this);
         PLibrary.PLibraryAttach(this);
         PPhonology.PPhonologyAttach(this);
+        PXiesheng.PXieshengAttach(this);
+        PNavigationXiesheng.Visibility = PXiesheng.PXieshengCheck() ? Visibility.Visible : Visibility.Collapsed;
         PYunjing.PYunjingAttach(this);
         PNavigationYunjing.Visibility = PYunjing.PYunjingCheck() ? Visibility.Visible : Visibility.Collapsed;
         PTaxonomy.PTaxonomyAttach(this);
@@ -92,6 +94,7 @@ public partial class PWindow : Window
     {
         _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
         _pLayout.PLayoutAttach((Grid)PPhonology.Content, "phonology");
+        _pLayout.PLayoutAttach((Grid)PXiesheng.Content, "xiesheng");
         _pLayout.PLayoutAttach((Grid)PYunjing.Content, "yunjing");
         _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
         _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
@@ -119,6 +122,7 @@ public partial class PWindow : Window
         PInput.PInputClose();
         PLibrary.PLibraryClose();
         PPhonology.PPhonologyClose();
+        PXiesheng.PXieshengClose();
         PYunjing.PYunjingClose();
         PTaxonomy.PTaxonomyClose();
         PTenor.PTenorClose();
