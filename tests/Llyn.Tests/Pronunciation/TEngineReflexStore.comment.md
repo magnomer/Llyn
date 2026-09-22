@@ -6,6 +6,8 @@ Covers the engine filling and keeping the reflex rows of a stored entry.
 A start on an entry with nothing stored fetches, stores the rows and raises the reflex bulletin.
 A start on an entry with rows stored fetches nothing.
 A rebuild drops the stored rows and fetches them again.
+A user-entered meaning is restored to a fetched row with the same language, region, kind and text.
+A scraped meaning is not restored, so a corrected source replaces it.
 An entry every page was not found for is asked once per session and stores nothing.
 A held draft of the entry with no rows takes the stored rows and stays unchanged against the entry.
 The epithet is derived when the rows are stored and kept on the entry.

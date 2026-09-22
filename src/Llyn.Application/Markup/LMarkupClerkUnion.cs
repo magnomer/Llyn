@@ -31,7 +31,7 @@ public static class LMarkupClerkUnion
                     row.LReflexDraftRegion,
                     row.LReflexDraftKind,
                     row.LReflexDraftText,
-                    row.LReflexDraftNote)),
+                    row.LReflexDraftRomanization)),
             LEntryDraftSpeeches = LMarkupRowAppend(
                 loaded.LEntryDraftSpeeches,
                 parsed.LEntryDraftSpeeches,

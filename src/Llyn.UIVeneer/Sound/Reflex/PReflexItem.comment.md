@@ -3,7 +3,7 @@
 ## `internal sealed class PReflexItem : INotifyPropertyChanged`
 
 One reflex row as the reading view and the input panel bind it.
-It carries the language, kind, text, note, region, remark and main mark of one draft row.
+It carries the language, kind, text, romanization, meaning, note, region and main mark of one draft row.
 It also knows whether it leads its language group, and whether it is folded away under the visible rows.
 It holds the fanqie ids the row is anchored to and the label they print as.
 It also knows whether the row may be anchored at all.
@@ -58,14 +58,18 @@ The slash drawn after the reading of a phonemic language, or nothing.
 
 The reading as typed or fetched, bare, in the form the switch picks for the row's language.
 
+## `public string PReflexItemRomanization`
+
+The romanized reading printed after the reading itself.
+
+## `public string PReflexItemMeaning`
+
+The lexical meaning paired with the reading and editable by the user.
+
 ## `public string PReflexItemRegion`
 
 The place the reading is taken from, as fetched, never typed.
 Both the view and the editor show it on the lead row when its language is hovered.
-
-## `public string PReflexItemRemark`
-
-What the source says of the reading, printed after the note and edited on the row.
 
 ## `public bool PReflexItemHidden`
 
@@ -74,7 +78,7 @@ The panel and the view set it from the shared fold state.
 
 ## `public string PReflexItemNote`
 
-The note printed after the reading as stored, such as the pinyin of a Mandarin reading or the Korean 훈.
+What the source says of the reading, printed after its meaning, such as `literary`.
 Empty when the reading carries none.
 
 ## `public bool PReflexItemMain`
@@ -93,7 +97,7 @@ The label is not derived here, since the item never sees the fanqie rows.
 
 ## `public string PReflexItemAnchor`
 
-The anchored placements printed after the remark, written by the pane that holds the fanqie rows.
+The anchored placements printed after the note, written by the pane that holds the fanqie rows.
 
 ## `public bool PReflexItemAnchorable`
 
@@ -125,8 +129,6 @@ Builds the row for one draft reflex, printing the form `respelling` picks for th
 ## `internal static string PReflexTextRead(LReflexDraft draft, PRespelling respelling)`
 
 The form of one draft reflex to print, its respelling while shown and filled and its reading otherwise.
-
-A row from one draft row.
 
 ## `internal static string PReflexLabelFormat(PWindow host, string name)`
 

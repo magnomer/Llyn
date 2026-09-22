@@ -40,4 +40,5 @@ Writes one `transcription` element with its scheme and text.
 
 ## `private static LMarkupNode LMarkupReflexFormat(LReflexDraft reflex)`
 
-Writes one `reflex` element with its language, kind, text, note, region and remark, and an empty `main` element when marked.
+Writes one `reflex` element with its language, kind, text, romanization, meaning, note and region.
+It writes empty `owned` and `main` elements when their flags are marked.

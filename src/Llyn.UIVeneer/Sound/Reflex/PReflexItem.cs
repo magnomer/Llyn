@@ -11,9 +11,10 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     private string _pReflexItemLanguage;
     private string _pReflexItemKind;
     private string _pReflexItemText;
+    private string _pReflexItemRomanization;
+    private string _pReflexItemMeaning;
     private string _pReflexItemNote;
     private string _pReflexItemRegion;
-    private string _pReflexItemRemark;
     private bool _pReflexItemMain;
     private bool _pReflexItemLead;
     private bool _pReflexItemHidden;
@@ -27,11 +28,12 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         string language,
         string kind,
         string text,
+        string romanization,
+        string meaning,
         string note,
         bool main,
         bool respelled,
         string region,
-        string remark,
         bool phonemic,
         bool folded,
         IReadOnlyList<long> anchors)
@@ -42,9 +44,10 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         _pReflexItemLanguage = language;
         _pReflexItemKind = kind;
         _pReflexItemText = text;
+        _pReflexItemRomanization = romanization;
+        _pReflexItemMeaning = meaning;
         _pReflexItemNote = note;
         _pReflexItemRegion = region;
-        _pReflexItemRemark = remark;
         _pReflexItemMain = main;
         PReflexItemRespelled = respelled;
         PReflexItemPhonemic = phonemic;
@@ -107,6 +110,18 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         }
     }
 
+    public string PReflexItemRomanization
+    {
+        get => _pReflexItemRomanization;
+        set => PReflexItemSet(ref _pReflexItemRomanization, value, nameof(PReflexItemRomanization));
+    }
+
+    public string PReflexItemMeaning
+    {
+        get => _pReflexItemMeaning;
+        set => PReflexItemSet(ref _pReflexItemMeaning, value, nameof(PReflexItemMeaning));
+    }
+
     public string PReflexItemNote
     {
         get => _pReflexItemNote;
@@ -123,12 +138,6 @@ internal sealed class PReflexItem : INotifyPropertyChanged
                 PReflexItemRaise(nameof(PReflexItemArea));
             }
         }
-    }
-
-    public string PReflexItemRemark
-    {
-        get => _pReflexItemRemark;
-        set => PReflexItemSet(ref _pReflexItemRemark, value, nameof(PReflexItemRemark));
     }
 
     public bool PReflexItemMain
@@ -242,11 +251,12 @@ internal sealed class PReflexItem : INotifyPropertyChanged
             draft.LReflexDraftLanguage,
             draft.LReflexDraftKind,
             PReflexTextRead(draft, respelling),
+            draft.LReflexDraftRomanization,
+            draft.LReflexDraftMeaning,
             draft.LReflexDraftNote,
             draft.LReflexDraftMain,
             respelling.PRespellingShown,
             draft.LReflexDraftRegion,
-            draft.LReflexDraftRemark,
             phonemic,
             folded,
             draft.LReflexDraftAnchors)

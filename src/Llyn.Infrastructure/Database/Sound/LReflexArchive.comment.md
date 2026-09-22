@@ -25,7 +25,7 @@ Each row carries its own entry id and its anchors, as a read would give it.
 
 ## `private static LReflex LReflexRowRead(SqliteDataReader reader, long entryId)`
 
-One reflex row from the eighteen columns every reflex select lists in the same order.
+One reflex row from the twenty columns every reflex select lists in the same order.
 
 ## `private static IReadOnlyList<LReflex> LReflexAnchorLoad(SqliteConnection connection, List<LReflex> rows)`
 
@@ -42,7 +42,7 @@ An id no fanqie row carries is skipped, so a stale draft never breaks the save.
 
 ## `private static LAnatomy LReflexAnatomyRead(SqliteDataReader reader)`
 
-The anatomy of one row, from the eight columns after the remark in the select order.
+The anatomy of one row, from the eight columns after the region in the select order.
 
 ## `public IReadOnlyList<LReflex> LReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)`
 
@@ -55,6 +55,18 @@ The anchors of each row are rewritten after the row, under the id the row now ha
 The whole write is one transaction.
 It throws when a positive id names no row of this entry.
 No column is unique, so no row needs shelving before the write.
+
+## `private static void LReflexLeftoverDelete(SqliteConnection connection, long entryId, HashSet<long> kept)`
+
+Deletes each stored row of the entry whose id the replacement list did not keep.
+
+## `private static LReflex LReflexRowSave(SqliteConnection connection, LReflex row)`
+
+Updates one existing row and refuses an id that belongs to no row of the entry.
+
+## `private static LReflex LReflexInsert(SqliteConnection connection, LReflex row)`
+
+Inserts one new row and returns it with its minted id.
 
 ## `private static void LReflexParameterApply(SqliteCommand command, LReflex row)`
 

@@ -22,3 +22,5 @@ Every URL, field and pattern is pack data, so a new database needs no code.
   A site that draws the glyph at a requested size is asked for a large original this way.
 - `LScriptStyleGloss` — A regex whose first group reads a gloss the page prints beside the pictures, or `null`.
   The 說文 entry under the small seal results is read this way.
+- `LScriptStyleEpoch` — The chronology labels this style's captions open with, each paired with its stored code.
+  A style whose captions carry no age lists none, and its captions are stored whole.

@@ -27,7 +27,7 @@ The reflexes of a draft as lines, in draft order, skipping a row whose reading i
 Each reflex belongs to its own language, so the two questions are asked per language.
 A phonemic reflex takes slashes around the reading alone and any other stands bare, as the reflex rows do.
 The label is the language, the kind, the region and the main mark, so a page reads `Japanese Kan-on`.
-The note, the remark and the anchored rime rows follow the reading, as the panel's reflex row prints them.
+The romanization, meaning, note and anchored rime rows follow the reading, as the panel's reflex row prints them.
 
 ## `public static string LPortraitAnchorRead(IReadOnlyList<LFanqieRow> fanqie, IReadOnlyList<long> anchors)`
 

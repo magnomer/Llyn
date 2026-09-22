@@ -48,11 +48,11 @@ A page reached but matching nothing is reached, and the miss is remembered for t
 
 Reads the rows out of one fetched page.
 Each match yields a row whose text is the format filled from the match, with every slash and bracket dropped.
-Its kind, note and main mark come from their named groups, and its region is the rule's.
-With `split` set the text and the note are cut into pieces.
-Each reading is paired with the note at its position.
-The remark of each reading is read through `LReflexRemarkRead`.
-A row repeating the kind, text and note of an earlier row is dropped.
+Its kind, romanization, meaning, note and main mark come from their named groups, and its region is the rule's.
+With `split` set the text and romanization are cut into pieces.
+Each reading is paired with the romanization at its position.
+The gloss of each reading supplies its separate note and meaning.
+A row repeating the kind, text and romanization of an earlier row is dropped.
 A page lists a reading once per section, and one is enough.
 A match whose text comes out empty is skipped.
 With `every` unset only the first match is kept.
@@ -61,7 +61,7 @@ Otherwise, with `first` set and no match capturing `main`, the first row is mark
 
 ## `private static bool LReflexRowMatch(LReflexDraft one, LReflexDraft other)`
 
-True when two rows carry one kind, one text and one note, so the second adds nothing.
+True when two rows carry one kind, one text and one romanization, so the second adds nothing.
 
 ## `private static string LReflexDelimiterRemove(string text)`
 
@@ -73,27 +73,27 @@ A later job can then read its onset, nucleus and coda.
 Cuts one text on the rule's split pattern into its trimmed non-empty pieces.
 Without a pattern the text is handed back whole.
 
-## `private static string LReflexRemarkRead(LReflexRule rule, string body, Match match, string note)`
+## `private static (string LReflexNote, string LReflexMeaning) LReflexGlossRead(LReflexRule rule, string body, Match match, string roman)`
 
-A match capturing a filled `remark` group hands that text as the remark.
-Otherwise the remark is looked up after the match through `LReflexRemarkFind`.
+A match capturing a note or meaning hands those texts back directly.
+Otherwise the gloss is looked up after the match through `LReflexGlossFind`.
 
-## `private static string LReflexRemarkFind(LReflexRule rule, string body, int start, string note)`
+## `private static (string LReflexNote, string LReflexMeaning) LReflexGlossFind(LReflexRule rule, string body, int start, string roman)`
 
-What the page says of one reading, read from the stretch after the match up to the rule's `until` pattern.
-The rule's remark pattern is filled with the escaped note and its `remark` group is the answer.
-Empty without a remark pattern, without a note, or when the stretch holds no such line.
+The note and meaning of one reading, read from the stretch after the match up to the rule's `until` pattern.
+The rule's gloss pattern is filled with the escaped romanization and its named groups are the answer.
+Both are empty without a gloss pattern, without a romanization, or when the stretch holds no such line.
 
 ## `private static string LReflexTextResolve(LReflexRule rule, string text)`
 
 Runs the rule's rewrites over the formatted text in pack order and trims it.
 A rule with no rewrite hands the text back as it came.
 
-## `private static string LReflexNoteFormat(LReflexRule rule, string note)`
+## `private static string LReflexRomanizationFormat(LReflexRule rule, string roman)`
 
-Runs the rule's recasts over one note piece in pack order and trims it.
+Runs the rule's recasts over one romanization piece in pack order and trims it.
 With `superscript` set every ASCII digit left is then raised, so `oq7` is stored as `oq⁷`.
-The remark is looked for under the piece as it came, since the page never carries the recast form.
+The gloss is looked for under the piece as it came, since the page never carries the recast form.
 
 ## `private static string LReflexTextFormat(LReflexRule rule, Regex line, Match match)`
 

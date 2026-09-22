@@ -63,7 +63,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
             LLanguageRewriteScan(row),
             LLanguageTextRead(row, "region")?.Trim(),
             LLanguageTextRead(row, "split"),
-            LLanguageTextRead(row, "remark"),
+            LLanguageTextRead(row, "gloss"),
             LLanguageTextRead(row, "until"),
             LLanguageBooleanRead(row, "folded"),
             LLanguageRewriteScan(row, LLanguageLoaderRecast),

@@ -10,20 +10,24 @@ public sealed record LReflex(
     string LReflexKind,
     string LReflexText,
     bool LReflexMain = false,
+    string LReflexRomanization = "",
+    string LReflexMeaning = "",
+    bool LReflexOwned = false,
     string LReflexNote = "",
     string LReflexRespelling = "",
     string LReflexRegion = "",
-    string LReflexRemark = "",
     LAnatomy? LReflexAnatomy = null,
     IReadOnlyList<long>? LReflexAnchors = null)
 {
+    public string LReflexRomanization { get; init; } = LReflexRomanization ?? string.Empty;
+
+    public string LReflexMeaning { get; init; } = LReflexMeaning ?? string.Empty;
+
     public string LReflexNote { get; init; } = LReflexNote ?? string.Empty;
 
     public string LReflexRespelling { get; init; } = LReflexRespelling ?? string.Empty;
 
     public string LReflexRegion { get; init; } = LReflexRegion ?? string.Empty;
-
-    public string LReflexRemark { get; init; } = LReflexRemark ?? string.Empty;
 
     public LAnatomy LReflexAnatomy { get; init; } = LReflexAnatomy ?? LAnatomy.LAnatomyEmpty;
 

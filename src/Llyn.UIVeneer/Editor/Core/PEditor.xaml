@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIVeneer.PEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -36,17 +36,16 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid VerticalAlignment="Center">
-                <TextBlock x:Name="PHeadwordHint" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Hint}" Text="{DynamicResource Input.Headword}" />
-                <TextBlock x:Name="PHeadwordGhost" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Ghost}" />
+            <local:PGauge VerticalAlignment="Stretch">
+                <TextBlock x:Name="PHeadwordGhost" Style="{StaticResource Editor.Field.Ghost}" />
                 <TextBox
                     x:Name="PHeadword"
                     Margin="-2,0,0,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
                     Style="{StaticResource Theme.Input.Headword}"
                     Tag="{DynamicResource Input.Headword}" />
-            </Grid>
+            </local:PGauge>
             <TextBlock x:Name="PEditorReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />
 
             <Grid Grid.Column="1" Margin="14,0,0,0">

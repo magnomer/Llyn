@@ -54,6 +54,8 @@ Starts a fetch for an entry that has rules, no rows and no remembered miss.
 ## `public void LReflexClerkRebuild(long entryId)`
 
 Clears the rows and the miss of an entry, empties its held drafts, and fetches again.
+Before clearing, it remembers each user-owned meaning by language, region, kind and text.
+When the fetch lands, those meanings replace the scraped meanings of matching rows.
 The bulletins for the entry and every emptied draft are raised here.
 
 ## `public bool LReflexClerkCheck(long entryId)`
@@ -79,6 +81,18 @@ One fetch admitted through the two-wide gate.
 The answer is written only when the fetch still stands and the entry still has no rows.
 The entry must still read the same headword and language.
 A miss is remembered and a failure still raises the bulletin, so the panel stops waiting.
+
+## `private void LReflexMeaningRecord(long entryId)`
+
+Remembers every non-empty user-owned meaning before a rebuild clears the rows.
+
+## `private IReadOnlyList<LReflex> LReflexMeaningRestore(long entryId, IReadOnlyList<LReflex> rows)`
+
+Restores the remembered meanings to matching fetched rows and consumes the remembered set.
+
+## `private static string LMeaningKeyRead(LReflex row)`
+
+The language, region, kind and text key that identifies a reading across a rebuild.
 
 ## `private List<long> LReflexClerkPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)`
 

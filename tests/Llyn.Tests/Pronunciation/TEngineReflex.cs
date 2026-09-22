@@ -28,7 +28,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_ThreeRules_ReadsRowsKindsNotesAndMark()
+    public async Task ReflexFind_ThreeRules_ReadsRowsKindsRomanizationsAndMark()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -93,7 +93,7 @@ public sealed class TEngineReflex
             { "reflex": [ { "language": "Korean", "url": "https://example.test/api?query={word}",
               "match": "(?<=\"items\":\\[\\{[^\\[\\]]*\"expKoreanPron\":\"[^\"]*)
             """.TrimEnd()
-            + """(?<note>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])", "every": true, "first": true } ] }""");
+            + """(?<meaning>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])", "every": true, "first": true } ] }""");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
@@ -107,11 +107,14 @@ public sealed class TEngineReflex
 
         Assert.Equal(
             [
-                ("Korean", "", "악", "악할", true),
-                ("Korean", "", "오", "미워할", false),
-                ("Korean", "", "호", "강 이름", false),
+                ("Korean", "", "악", "", true),
+                ("Korean", "", "오", "", false),
+                ("Korean", "", "호", "", false),
             ],
             found.Select(TReflexFixture.TReflexRowRead));
+        Assert.Equal(
+            ["악할", "미워할", "강 이름"],
+            found.Select(row => row.LReflexDraftMeaning));
     }
 
     [Fact]
@@ -152,13 +155,13 @@ public sealed class TEngineReflex
         Assert.Equal("nʊŋ⁵¹", found[3].LReflexDraftText);
         Assert.Equal("nuŋ4", found[3].LReflexDraftRespelling);
         Assert.Equal("luŋ4", found[4].LReflexDraftRespelling);
-        Assert.Equal("nòng", found[3].LReflexDraftNote);
+        Assert.Equal("nòng", found[3].LReflexDraftRomanization);
         Assert.Equal("ろう", found[2].LReflexDraftText);
         Assert.Equal(string.Empty, found[2].LReflexDraftRespelling);
     }
 
     [Fact]
-    public async Task ReflexFind_TwoCharacters_MergesRowsOfOneKindAndNote()
+    public async Task ReflexFind_TwoCharacters_MergesRowsOfOneKindAndRomanization()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -197,6 +200,6 @@ public sealed class TEngineReflex
                 ("Wu", "", "ʊʔ⁵", "ok⁷", false),
             ],
             found.Select(TReflexFixture.TReflexRowRead));
-        Assert.Equal("literary", found[1].LReflexDraftRemark);
+        Assert.Equal("literary", found[1].LReflexDraftNote);
     }
 }

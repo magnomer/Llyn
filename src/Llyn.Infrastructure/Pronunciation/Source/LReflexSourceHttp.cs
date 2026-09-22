@@ -86,20 +86,22 @@ public sealed class LReflexSourceHttp : LReflexSource
                 continue;
             }
 
-            string note = LReflexGroupRead(match, LReflexRule.LReflexRuleNote);
+            string roman = LReflexGroupRead(match, LReflexRule.LReflexRuleRomanization);
             IReadOnlyList<string> texts = LReflexPieceScan(rule, text);
-            IReadOnlyList<string> notes = LReflexPieceScan(rule, note);
+            IReadOnlyList<string> romans = LReflexPieceScan(rule, roman);
             for (int index = 0; index < texts.Count; index++)
             {
-                string held = notes.Count == texts.Count ? notes[index] : note;
+                string held = romans.Count == texts.Count ? romans[index] : roman;
+                (string note, string meaning) = LReflexGlossRead(rule, body, match, held);
                 LReflexDraft row = new(
                     rule.LReflexRuleLanguage,
                     LReflexGroupRead(match, LReflexRule.LReflexRuleKind),
                     texts[index],
                     match.Groups[LReflexRule.LReflexRuleMain] is { Success: true, Length: > 0 },
-                    LReflexDraftNote: LReflexNoteFormat(rule, held),
-                    LReflexDraftRegion: rule.LReflexRuleRegion ?? string.Empty,
-                    LReflexDraftRemark: LReflexRemarkRead(rule, body, match, held));
+                    LReflexDraftRomanization: LReflexRomanizationFormat(rule, held),
+                    LReflexDraftMeaning: meaning,
+                    LReflexDraftNote: note,
+                    LReflexDraftRegion: rule.LReflexRuleRegion ?? string.Empty);
                 if (!rows.Exists(kept => LReflexRowMatch(kept, row)))
                 {
                     rows.Add(row);
@@ -131,7 +133,8 @@ public sealed class LReflexSourceHttp : LReflexSource
     {
         return string.Equals(one.LReflexDraftKind, other.LReflexDraftKind, StringComparison.Ordinal)
             && string.Equals(one.LReflexDraftText, other.LReflexDraftText, StringComparison.Ordinal)
-            && string.Equals(one.LReflexDraftNote, other.LReflexDraftNote, StringComparison.Ordinal);
+            && string.Equals(
+                one.LReflexDraftRomanization, other.LReflexDraftRomanization, StringComparison.Ordinal);
     }
 
     private static string LReflexDelimiterRemove(string text)
@@ -162,19 +165,22 @@ public sealed class LReflexSourceHttp : LReflexSource
         return pieces.Count == 0 ? [text] : pieces;
     }
 
-    private static string LReflexRemarkRead(LReflexRule rule, string body, Match match, string note)
+    private static (string LReflexNote, string LReflexMeaning) LReflexGlossRead(
+        LReflexRule rule, string body, Match match, string roman)
     {
-        Group sense = match.Groups[LReflexRule.LReflexRuleSense];
-        return sense.Success && sense.Length > 0
-            ? LReflexTextNormalize(sense.Value)
-            : LReflexRemarkFind(rule, body, match.Index + match.Length, note);
+        string note = LReflexGroupRead(match, LReflexRule.LReflexRuleNote);
+        string meaning = LReflexGroupRead(match, LReflexRule.LReflexRuleMeaning);
+        return note.Length > 0 || meaning.Length > 0
+            ? (note, meaning)
+            : LReflexGlossFind(rule, body, match.Index + match.Length, roman);
     }
 
-    private static string LReflexRemarkFind(LReflexRule rule, string body, int start, string note)
+    private static (string LReflexNote, string LReflexMeaning) LReflexGlossFind(
+        LReflexRule rule, string body, int start, string roman)
     {
-        if (string.IsNullOrEmpty(rule.LReflexRuleRemark) || note.Length == 0 || start >= body.Length)
+        if (string.IsNullOrEmpty(rule.LReflexRuleGloss) || roman.Length == 0 || start >= body.Length)
         {
-            return string.Empty;
+            return (string.Empty, string.Empty);
         }
 
         int end = body.Length;
@@ -187,10 +193,13 @@ public sealed class LReflexSourceHttp : LReflexSource
             }
         }
 
-        string pattern = rule.LReflexRuleRemark.Replace(
-            "{" + LReflexRule.LReflexRuleNote + "}", Regex.Escape(note), StringComparison.Ordinal);
+        string pattern = rule.LReflexRuleGloss.Replace(
+            "{" + LReflexRule.LReflexRuleRomanization + "}", Regex.Escape(roman), StringComparison.Ordinal);
         Match found = new Regex(pattern, LReflexSourceLoose, LReflexSourcePatience).Match(body, start, end - start);
-        return found.Success ? LReflexGroupRead(found, LReflexRule.LReflexRuleSense) : string.Empty;
+        return found.Success
+            ? (LReflexGroupRead(found, LReflexRule.LReflexRuleNote),
+                LReflexGroupRead(found, LReflexRule.LReflexRuleMeaning))
+            : (string.Empty, string.Empty);
     }
 
     private static string LReflexTextResolve(LReflexRule rule, string text)
@@ -203,20 +212,20 @@ public sealed class LReflexSourceHttp : LReflexSource
         return text.Trim();
     }
 
-    private static string LReflexNoteFormat(LReflexRule rule, string note)
+    private static string LReflexRomanizationFormat(LReflexRule rule, string roman)
     {
         foreach (LRespellingRule recast in rule.LReflexRuleRecast)
         {
-            note = recast.LRespellingRuleResolve(note);
+            roman = recast.LRespellingRuleResolve(roman);
         }
 
         if (!rule.LReflexRuleSuperscript)
         {
-            return note.Trim();
+            return roman.Trim();
         }
 
-        StringBuilder raised = new(note.Length);
-        foreach (char symbol in note.Trim())
+        StringBuilder raised = new(roman.Length);
+        foreach (char symbol in roman.Trim())
         {
             raised.Append(char.IsAsciiDigit(symbol) ? LReflexSourceSuperscript[symbol - '0'] : symbol);
         }

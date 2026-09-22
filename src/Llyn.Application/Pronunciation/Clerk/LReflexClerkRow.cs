@@ -20,7 +20,10 @@ public static class LReflexClerkRow
                     string.Equals(held.LReflexDraftLanguage, row.LReflexDraftLanguage, StringComparison.Ordinal)
                     && string.Equals(held.LReflexDraftRegion, row.LReflexDraftRegion, StringComparison.Ordinal)
                     && string.Equals(held.LReflexDraftKind, row.LReflexDraftKind, StringComparison.Ordinal)
-                    && string.Equals(held.LReflexDraftNote, row.LReflexDraftNote, StringComparison.Ordinal));
+                    && string.Equals(
+                        held.LReflexDraftRomanization,
+                        row.LReflexDraftRomanization,
+                        StringComparison.Ordinal));
                 if (place >= 0 && stamps[place] != round)
                 {
                     LReflexDraft held = merged[place];
@@ -56,10 +59,12 @@ public static class LReflexClerkRow
                 draft.LReflexDraftKind.Trim(),
                 draft.LReflexDraftText.Trim(),
                 draft.LReflexDraftMain,
+                draft.LReflexDraftRomanization.Trim(),
+                draft.LReflexDraftMeaning.Trim(),
+                draft.LReflexDraftOwned,
                 draft.LReflexDraftNote.Trim(),
                 draft.LReflexDraftRespelling.Trim(),
                 draft.LReflexDraftRegion.Trim(),
-                draft.LReflexDraftRemark.Trim(),
                 draft.LReflexDraftAnatomy,
                 draft.LReflexDraftAnchors));
         }
@@ -119,8 +124,8 @@ public static class LReflexClerkRow
     {
         string[] parts =
         [
-            reflex.LReflexLanguage, reflex.LReflexRegion, reflex.LReflexKind, reflex.LReflexText, reflex.LReflexNote,
-            reflex.LReflexRemark,
+            reflex.LReflexLanguage, reflex.LReflexRegion, reflex.LReflexKind, reflex.LReflexText,
+            reflex.LReflexRomanization, reflex.LReflexMeaning, reflex.LReflexNote,
         ];
         foreach (string part in parts)
         {

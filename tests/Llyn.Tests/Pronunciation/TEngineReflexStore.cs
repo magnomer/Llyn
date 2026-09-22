@@ -86,6 +86,60 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
+    public async Task ReflexRebuild_HandTypedMeaning_RestoresItByRowShape()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexMeaningPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(TReflexPagesRead("corrected source")));
+        LEntry entry = engine.TEngineEntrySave(
+            TReflexFixture.TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
+            {
+                LEntryDraftReflexes =
+                [
+                    TInterface.TReflexDraftCreate(
+                        "Wu", "literary", "oʔ⁵⁵", meaning: "stale source", region: "Shanghai"),
+                ],
+            });
+        LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
+        long row = Assert.Single(started.LDraftContent.LEntryDraftReflexes).LReflexDraftId;
+        engine.TEngineRequestApply(TInterface.TReflexMeaningCreate(started.LDraftId, row, "hand typed"));
+        engine.TEngineDraftCommit(started.LDraftId);
+
+        engine.TEngineReflexRebuild(entry.LEntryId);
+        await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
+
+        LReflex rebuilt = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
+        Assert.Equal("hand typed", rebuilt.LReflexMeaning);
+        Assert.True(rebuilt.LReflexOwned);
+    }
+
+    [Fact]
+    public async Task ReflexRebuild_ScrapedMeaning_ReadsTheCorrectedSource()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexMeaningPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(TReflexPagesRead("corrected source")));
+        LEntry entry = engine.TEngineEntrySave(
+            TReflexFixture.TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
+            {
+                LEntryDraftReflexes =
+                [
+                    TInterface.TReflexDraftCreate(
+                        "Wu", "literary", "oʔ⁵⁵", meaning: "stale source", region: "Shanghai"),
+                ],
+            });
+
+        engine.TEngineReflexRebuild(entry.LEntryId);
+        await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
+
+        LReflex rebuilt = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
+        Assert.Equal("corrected source", rebuilt.LReflexMeaning);
+        Assert.False(rebuilt.LReflexOwned);
+    }
+
+    [Fact]
     public void EpithetRead_KoreanRowsStored_JoinsClippedPieces()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
@@ -192,4 +246,17 @@ public sealed class TEngineReflexStore
         Assert.Equal("악할 악", reopened.TEngineEpithetRead(id));
         Assert.Equal(["", "tsiŋ³⁵"], reopened.TEngineReflexRead(id).Select(row => row.LReflexRespelling));
     }
+
+    private const string TReflexMeaningPack =
+        """
+        { "reflex": [ { "language": "Wu", "region": "Shanghai", "url": "https://example.test/wiki/{word}",
+          "match": "kind: (?<kind>[^;]+); text: (?<text>[^;]+); meaning: (?<meaning>[^<]+)",
+          "every": true } ] }
+        """;
+
+    private static IReadOnlyDictionary<string, string> TReflexPagesRead(string meaning) =>
+        new Dictionary<string, string>
+        {
+            ["https://example.test/wiki/%E6%83%A1"] = $"kind: literary; text: oʔ⁵⁵; meaning: {meaning}",
+        };
 }

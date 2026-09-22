@@ -9,7 +9,8 @@ public sealed record LScriptImage(
     int LScriptImagePosition,
     string LScriptImageCaption,
     string LScriptImageGloss,
-    byte[] LScriptImageData)
+    byte[] LScriptImageData,
+    string LScriptImageEpoch = "")
 {
     public bool LScriptImageMatch(string character, string style)
     {

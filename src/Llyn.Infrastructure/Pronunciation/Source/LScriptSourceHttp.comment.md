@@ -33,6 +33,7 @@ How long one pack pattern may run over one answer before the answer counts as em
 Posts the form, reads the pictures and captions the pattern names, and fetches each picture in turn.
 A picture that cannot be fetched is skipped, and the positions count only those kept.
 The gloss read from the page is repeated on every picture of the style.
+A caption's chronology is stored as its own code, so nothing is fetched again when the interface language changes.
 The second value says whether the database answered at all.
 An answer naming no picture is a miss, while a database that never answered is not.
 
@@ -42,9 +43,12 @@ Posts the pack's fields as a URL-encoded form, which sends the character as UTF-
 The site reads a raw multibyte body as another encoding and finds nothing, so the encoding matters.
 A failed request or an error status reads as null.
 
-## `private static IReadOnlyList<(string LScriptAddress, string LScriptCaption)> LScriptHitScan(LScriptStyle style, string body)`
+## `private static IReadOnlyList<(string LScriptAddress, string LScriptCaption, string LScriptEpoch)> LScriptHitScan(LScriptStyle style, string body)`
 
-Every match of the pattern, as a resolved picture address and a cleaned caption.
+Every match of the pattern, as a resolved picture address, a cleaned caption and the code of its age.
+The pack's chronology labels are cut off the head of the caption here.
+The age is matched once and then stored.
+A caption whose age the pack does not list keeps it, and the code is empty.
 A match whose image group is empty is dropped.
 
 ## `private static string LScriptGlossRead(LScriptStyle style, string body)`

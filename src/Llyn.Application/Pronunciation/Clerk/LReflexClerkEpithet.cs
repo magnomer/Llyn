@@ -60,6 +60,9 @@ public static class LReflexClerkEpithet
         string piece = rule.LReflexRuleEpithet!
             .Replace("{" + LReflexRule.LReflexRuleText + "}", row.LReflexText, StringComparison.Ordinal)
             .Replace("{" + LReflexRule.LReflexRuleKind + "}", row.LReflexKind, StringComparison.Ordinal)
+            .Replace(
+                "{" + LReflexRule.LReflexRuleRomanization + "}", row.LReflexRomanization, StringComparison.Ordinal)
+            .Replace("{" + LReflexRule.LReflexRuleMeaning + "}", row.LReflexMeaning, StringComparison.Ordinal)
             .Replace("{" + LReflexRule.LReflexRuleNote + "}", row.LReflexNote, StringComparison.Ordinal);
 
         if (!string.IsNullOrEmpty(rule.LReflexRuleClip))

@@ -27,9 +27,9 @@ It takes the label size and colour, so it reads as the label does.
 It overhangs its unseen twin by the two pixels a field pads its text with.
 So the column is as wide as the view's.
 
-## `<Style x:Key="Theme.Reflex.Note" TargetType="TextBox">`
+## `<Style x:Key="Theme.Reflex.Aside" TargetType="TextBox">`
 
-The bare field editing a row's kind, note or remark, in their size and colour.
+The bare field editing a row's kind, romanization, meaning or note, in its matching size and colour.
 It overhangs its unseen twin as the language field does, for the same reason.
 
 ## `<Style x:Key="Theme.Reflex.Star" TargetType="Button">`
@@ -58,9 +58,10 @@ The row's slot names it by tag, and the handles are built into the slot on first
 
 ## `<DataTemplate x:Key="Theme.Reflex.Row">`
 
-One editor row: the language, kind, reading, note and remark fields, the anchor button, the hover star, plus and minus.
+One editor row with the language, kind, reading, romanization, meaning and note fields.
+The anchor button, hover star, plus and minus follow them.
 Every field is bare and stands where the reading view prints its text.
-The note and remark cells are the same grids in both templates.
+The side cells are the same grids in both templates.
 So an empty cell measures alike in both modes.
 The region is no field, only the hover the view has on the language.
 The reading field of a phonemic language stands between two slashes it does not hold.

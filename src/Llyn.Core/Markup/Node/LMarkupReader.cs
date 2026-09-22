@@ -295,10 +295,12 @@ internal static class LMarkupReader
         string kind = string.Empty;
         string text = string.Empty;
         string respelling = string.Empty;
+        string romanization = string.Empty;
+        string meaning = string.Empty;
         string note = string.Empty;
         string region = string.Empty;
-        string remark = string.Empty;
         bool main = false;
+        bool owned = false;
 
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
@@ -316,14 +318,20 @@ internal static class LMarkupReader
                 case "respelling":
                     respelling = LMarkup.LMarkupTextParse(child);
                     break;
+                case "romanization":
+                    romanization = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "meaning":
+                    meaning = LMarkup.LMarkupTextParse(child);
+                    break;
                 case "note":
                     note = LMarkup.LMarkupTextParse(child);
                     break;
                 case "region":
                     region = LMarkup.LMarkupTextParse(child);
                     break;
-                case "remark":
-                    remark = LMarkup.LMarkupTextParse(child);
+                case "owned":
+                    owned = true;
                     break;
                 case "main":
                     main = true;
@@ -339,9 +347,11 @@ internal static class LMarkupReader
             kind,
             text,
             main,
+            LReflexDraftRomanization: romanization,
+            LReflexDraftMeaning: meaning,
+            LReflexDraftOwned: owned,
             LReflexDraftNote: note,
             LReflexDraftRespelling: respelling,
-            LReflexDraftRegion: region,
-            LReflexDraftRemark: remark);
+            LReflexDraftRegion: region);
     }
 }

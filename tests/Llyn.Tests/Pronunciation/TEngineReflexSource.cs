@@ -11,13 +11,61 @@ namespace Llyn.Tests;
 public sealed class TEngineReflexSource
 {
     [Fact]
-    public async Task ReflexFind_DialectRule_SplitsPairsRemarksAndRegions()
+    public async Task ReflexFind_SouthernMinPage_PartsBareAndParenthesizedGlosses()
     {
+        const string match =
+            """<li><small>\\((?:(?!</small>).)*?>Xiamen<(?:(?!</small>).)*?\\)"""
+            + """(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Pe.{1,3}h-.{1,3}e-j.{1,3}</a>"""
+            + """(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<romanization>(?:(?!</li>).)*?)</li>"""
+            + """(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a> \\((?:(?!</small>).)*?>Xiamen"""
+            + """(?:(?!</small>).)*?\\)</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>""";
+        const string gloss =
+            """<li>{romanization} - (?<note>(?:(?!</li>|\\s*[(\"“”]).)*?)\\s*"""
+            + """(?:\\(?\\s*[“\"](?<meaning>(?:(?!</li>).)*?)[”\"]\\s*\\)?)?[;.]?</li>""";
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
-            """
+            $$"""
+            { "reflex": [ { "language": "Southern Min", "region": "Xiamen",
+              "url": "https://example.test/wiki/{word}",
+              "match": "{{match}}",
+              "split": "\\s*[,]\\s*",
+              "gloss": "{{gloss}}",
+              "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+              "every": true, "first": true, "folded": true, "superscript": true } ] }
+            """);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
+            new Dictionary<string, string>
+            {
+                ["https://example.test/wiki/%E6%83%A1"] =
+                    "<li><small>(<a>Xiamen</a>)</small><ul>"
+                    + "<li><a>Pe̍h-ōe-jī</a>: <span class=\"zhpron-monospace\">ok4, oh4</span></li>"
+                    + "<li><small>Sinological <a>IPA</a> (<a>Xiamen</a>)</small>: "
+                    + "<span class=\"IPA\">/ɔk³²/, /ɔʔ³²/</span></li></ul>"
+                    + "<ul><li>ok4 - literary;</li><li>oh4 - vernacular (“hostile”).</li></ul>",
+            }));
+
+        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
+            "惡", pack.TLanguageFixtureName, CancellationToken.None);
+
+        Assert.Equal(
+            [("Southern Min", "", "ɔk³²", "ok⁴", true),
+             ("Southern Min", "", "ɔʔ³²", "oh⁴", false)],
+            found.Select(TReflexFixture.TReflexRowRead));
+        Assert.Equal(["literary", "vernacular"], found.Select(row => row.LReflexDraftNote));
+        Assert.Equal(["", "hostile"], found.Select(row => row.LReflexDraftMeaning));
+    }
+
+    [Fact]
+    public async Task ReflexFind_DialectRule_SplitsPairsGlossesAndRegions()
+    {
+        const string gloss =
+            """<li>{romanization} - (?<note>(?:(?!</li>|\\s*[(\"“”]).)*?)\\s*"""
+            + """(?:\\(?\\s*[“\"](?<meaning>(?:(?!</li>).)*?)[”\"]\\s*\\)?)?[;.]?</li>""";
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            $$"""
             { "reflex": [ { "language": "Jin", "region": "Taiyuan", "url": "https://example.test/wiki/{word}",
-              "match": "Wiktionary: <span>(?<note>[^<]+)</span>.*?IPA: <span>(?<text>[^<]+)</span>",
-              "split": "\\s*[,/]\\s*", "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+              "match": "Wiktionary: <span>(?<romanization>[^<]+)</span>.*?IPA: <span>(?<text>[^<]+)</span>",
+              "split": "\\s*[,/]\\s*", "gloss": "{{gloss}}",
               "until": "<h3>", "every": true, "first": true, "folded": true } ] }
             """);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -39,7 +87,8 @@ public sealed class TEngineReflexSource
             [("Jin", "", "ɣaʔ²", "ghah4", true), ("Jin", "", "ɣəʔ²", "gheh4", false)],
             found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal(["Taiyuan", "Taiyuan"], found.Select(row => row.LReflexDraftRegion));
-        Assert.Equal(["literary", "vernacular (“difficult”)"], found.Select(row => row.LReflexDraftRemark));
+        Assert.Equal(["literary", "vernacular"], found.Select(row => row.LReflexDraftNote));
+        Assert.Equal(["", "difficult"], found.Select(row => row.LReflexDraftMeaning));
         Assert.True(Assert.Single(engine.TEngineReflexRead(pack.TLanguageFixtureName)).LReflexRuleFolded);
     }
 
@@ -49,7 +98,8 @@ public sealed class TEngineReflexSource
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
             { "reflex": [ { "language": "Wu", "url": "https://example.test/wiki/{word}",
-              "match": "Wugniu: <span>(?<note>[^<]+)</span>.*?IPA: <span>(?<text>[^<]+)</span>", "every": true } ] }
+              "match": "Wugniu: <span>(?<romanization>[^<]+)</span>.*?IPA: <span>(?<text>[^<]+)</span>",
+              "every": true } ] }
             """);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
@@ -67,13 +117,13 @@ public sealed class TEngineReflexSource
     }
 
     [Fact]
-    public async Task ReflexFind_RemarkGroup_LabelsHistoricalAndFoldsSameSpelling()
+    public async Task ReflexFind_NoteGroup_LabelsHistoricalAndFoldsSameSpelling()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """{ "reflex": [ { "language": "Japanese", "url": "https://example.test/wiki/{word}", "every": true,"""
             + """ "match": "<i>(?<=<b>(?<kind>Go-on|Kan-on)</b>: <span class=\"on-yomi\">(?:(?!</li>).){0,2000}?"""
             + """(?<main><span class=\"jouyou\">)?<i>)<a>(?<text>[^<]+)</a>"""
-            + """(?=(?:(?!<sup>|</sup>|</li>).)*?(?:<a>)?(?<remark>historical|ancient)<|)" } ] }""");
+            + """(?=(?:(?!<sup>|</sup>|</li>).)*?(?:<a>)?(?<note>historical|ancient)<|)" } ] }""");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
@@ -95,18 +145,18 @@ public sealed class TEngineReflexSource
              ("Japanese", "Kan-on", "りん", "", true),
              ("Japanese", "Kan-on", "りむ", "", false)],
             found.Select(TReflexFixture.TReflexRowRead));
-        Assert.Equal(["", "historical", "", "ancient"], found.Select(row => row.LReflexDraftRemark));
+        Assert.Equal(["", "historical", "", "ancient"], found.Select(row => row.LReflexDraftNote));
     }
 
     [Fact]
-    public async Task ReflexFind_MainGroupInsideRemark_MarksNewStyleOverFirst()
+    public async Task ReflexFind_MainGroupInsideNote_MarksNewStyleOverFirst()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
             { "reflex": [ { "language": "Xiang", "region": "Changsha", "url": "https://example.test/wiki/{word}",
-              "match": "(?<=<p>Note: <span>(?<note>[^<]+)</span></p>(?:(?!</ul>).)*?)IPA
+              "match": "(?<=<p>Note: <span>(?<romanization>[^<]+)</span></p>(?:(?!</ul>).)*?)IPA
             """.TrimEnd()
-            + """(?: \\(<i>(?<remark>(?<main>new-style)|[^<]+)</i>\\))?: <span>(?<text>[^<]+)</span>","""
+            + """(?: \\(<i>(?<note>(?<main>new-style)|[^<]+)</i>\\))?: <span>(?<text>[^<]+)</span>","""
             + """
               "every": true, "first": true } ] }
             """);
@@ -129,7 +179,7 @@ public sealed class TEngineReflexSource
         Assert.Equal(
             [("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false), ("Xiang", "", "t͡sən⁴¹", "zhen3", true)],
             styled.Select(TReflexFixture.TReflexRowRead));
-        Assert.Equal(["old-style", "new-style"], styled.Select(row => row.LReflexDraftRemark));
+        Assert.Equal(["old-style", "new-style"], styled.Select(row => row.LReflexDraftNote));
         Assert.Equal([("Xiang", "", "lin¹³", "lin2", true)], plain.Select(TReflexFixture.TReflexRowRead));
     }
 }

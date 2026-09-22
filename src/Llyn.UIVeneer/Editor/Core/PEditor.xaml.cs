@@ -223,6 +223,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PReflexShow(draft);
         PMarkerShow(draft.LEntryDraftSpeeches);
         PEditorLanguageUpdate();
+        PEditorReadingShow();
 
         IReadOnlyDictionary<long, LTranslationTarget> targets = _lEditor.LEditorTargetRead();
         PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets, draft.LEntryDraftLanguage);
@@ -238,9 +239,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     {
         PSpeakerName.Text = _lEditor.LEditorLanguage;
         PSpeakerFlagUpdate();
-        PFont.PFontApply(
-            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordHint, PHeadwordGhost);
-        PFont.PFontPlace(PHeadword, PHeadwordHint, PHeadwordGhost);
+        PFont.PFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
+        PFont.PFontPlace(PHeadword, PHeadwordGhost);
         PFont.PFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTonal;
         PPronunciation.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
@@ -399,6 +399,11 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             (kind, key) => _pEditorHost.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
         PEditorFanqie.PFanqieRepresentativeNotice =
             (fanqieId, rank) => _lEditor.LEditorFanqieSet(fanqieId, rank);
+        PEditorReadingShow();
+    }
+
+    private void PEditorReadingShow()
+    {
         PEditorReading.Text = _lEditor.LEditorReadingRead(PHeadword.Text);
     }
 }

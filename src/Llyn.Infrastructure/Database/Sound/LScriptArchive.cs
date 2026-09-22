@@ -35,8 +35,8 @@ public sealed class LScriptArchive : LScriptVault
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO script (language, character, style, position, caption, gloss, data)
-                VALUES ($language, $character, $style, $position, $caption, $gloss, $data);
+                INSERT INTO script (language, character, style, position, caption, gloss, data, epoch)
+                VALUES ($language, $character, $style, $position, $caption, $gloss, $data, $epoch);
                 """;
             command.Parameters.AddWithValue("$language", language);
             command.Parameters.AddWithValue("$character", character);
@@ -45,6 +45,7 @@ public sealed class LScriptArchive : LScriptVault
             command.Parameters.AddWithValue("$caption", image.LScriptImageCaption);
             command.Parameters.AddWithValue("$gloss", image.LScriptImageGloss);
             command.Parameters.AddWithValue("$data", image.LScriptImageData);
+            command.Parameters.AddWithValue("$epoch", image.LScriptImageEpoch);
             command.ExecuteNonQuery();
         }
 
@@ -60,7 +61,7 @@ public sealed class LScriptArchive : LScriptVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT style, position, caption, gloss, data
+            SELECT style, position, caption, gloss, data, epoch
             FROM script
             WHERE language = $language AND character = $character
             ORDER BY script_id;
@@ -78,7 +79,8 @@ public sealed class LScriptArchive : LScriptVault
                 reader.GetInt32(1),
                 reader.GetString(2),
                 reader.GetString(3),
-                (byte[])reader.GetValue(4)));
+                (byte[])reader.GetValue(4),
+                reader.GetString(5)));
         }
 
         return images;

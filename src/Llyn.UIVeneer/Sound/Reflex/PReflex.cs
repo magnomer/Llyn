@@ -77,10 +77,12 @@ public partial class PEditor
             nameof(PReflexItem.PReflexItemText) => row.PReflexItemRespelled
                 ? new LRequestReflexRespelling(PEditorDraft, row.PReflexItemId, row.PReflexItemText)
                 : new LRequestReflexText(PEditorDraft, row.PReflexItemId, row.PReflexItemText),
+            nameof(PReflexItem.PReflexItemRomanization) =>
+                new LRequestReflexRomanization(PEditorDraft, row.PReflexItemId, row.PReflexItemRomanization),
+            nameof(PReflexItem.PReflexItemMeaning) =>
+                new LRequestReflexMeaning(PEditorDraft, row.PReflexItemId, row.PReflexItemMeaning),
             nameof(PReflexItem.PReflexItemNote) =>
                 new LRequestReflexNote(PEditorDraft, row.PReflexItemId, row.PReflexItemNote),
-            nameof(PReflexItem.PReflexItemRemark) =>
-                new LRequestReflexRemark(PEditorDraft, row.PReflexItemId, row.PReflexItemRemark),
             _ => null,
         };
 
@@ -202,9 +204,10 @@ public partial class PEditor
         row.PReflexItemLanguage = reflex.LReflexDraftLanguage;
         row.PReflexItemKind = reflex.LReflexDraftKind;
         row.PReflexItemText = PReflexItem.PReflexTextRead(reflex, respelling);
+        row.PReflexItemRomanization = reflex.LReflexDraftRomanization;
+        row.PReflexItemMeaning = reflex.LReflexDraftMeaning;
         row.PReflexItemNote = reflex.LReflexDraftNote;
         row.PReflexItemRegion = reflex.LReflexDraftRegion;
-        row.PReflexItemRemark = reflex.LReflexDraftRemark;
 
         row.PReflexItemTone = reflex.LReflexDraftAnatomy.LAnatomyToneIpa;
         row.PReflexItemAnchors = reflex.LReflexDraftAnchors;

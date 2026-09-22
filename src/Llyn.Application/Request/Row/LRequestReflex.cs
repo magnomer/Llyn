@@ -37,6 +37,18 @@ public sealed record LRequestReflexRespelling(long LRequestDraftId, long LReques
     public override string LRequestKey => $"{nameof(LRequestReflexRespelling)}:{LRequestReflexId}";
 }
 
+public sealed record LRequestReflexRomanization(long LRequestDraftId, long LRequestReflexId, string LRequestText)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestReflexRomanization)}:{LRequestReflexId}";
+}
+
+public sealed record LRequestReflexMeaning(long LRequestDraftId, long LRequestReflexId, string LRequestText)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestReflexMeaning)}:{LRequestReflexId}";
+}
+
 public sealed record LRequestReflexNote(long LRequestDraftId, long LRequestReflexId, string LRequestText)
     : LRequest(LRequestDraftId)
 {
@@ -47,12 +59,6 @@ public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestRefle
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => $"{nameof(LRequestReflexMain)}:{LRequestReflexId}";
-}
-
-public sealed record LRequestReflexRemark(long LRequestDraftId, long LRequestReflexId, string LRequestText)
-    : LRequest(LRequestDraftId)
-{
-    public override string LRequestKey => $"{nameof(LRequestReflexRemark)}:{LRequestReflexId}";
 }
 
 public sealed record LRequestReflexAnchor(

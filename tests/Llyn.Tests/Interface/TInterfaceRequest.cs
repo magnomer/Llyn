@@ -218,8 +218,14 @@ internal static partial class TInterface
     internal static LRequest TReflexMainCreate(long draftId, long reflexId, bool main) =>
         new LRequestReflexMain(draftId, reflexId, main);
 
-    internal static LRequest TReflexRemarkCreate(long draftId, long reflexId, string text) =>
-        new LRequestReflexRemark(draftId, reflexId, text);
+    internal static LRequest TReflexRomanizationCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexRomanization(draftId, reflexId, text);
+
+    internal static LRequest TReflexMeaningCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexMeaning(draftId, reflexId, text);
+
+    internal static LRequest TReflexNoteCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexNote(draftId, reflexId, text);
 
     internal static LRequest TReflexAnchorCreate(long draftId, long reflexId, long fanqieId, bool anchored) =>
         new LRequestReflexAnchor(draftId, reflexId, fanqieId, anchored);

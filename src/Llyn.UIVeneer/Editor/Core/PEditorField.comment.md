@@ -1,4 +1,4 @@
-# PEditorField.xaml
+﻿# PEditorField.xaml
 
 ## `ResourceDictionary`
 
@@ -7,15 +7,12 @@ Each is a rule about one box rather than a piece of the form's shape.
 
 ## Inline notes
 
-### `<Style x:Key="Editor.Field.Hint" TargetType="TextBlock">`
-
-The word asked for, shown only while the headword box is empty.
-It is set as the headword is set, so what is asked for sits where the answer will.
-
 ### `<Style x:Key="Editor.Field.Ghost" TargetType="TextBlock">`
 
-The unseen twin that measures the headword.
-It decides the cell's width, so the row closes on the text rather than on a fixed box.
+The unseen twin that measures the headword, standing in the same PGauge as the box.
+It alone is measured, so the cell closes on the text rather than on the box.
+A box measures wider than its text, by its caret and its scroll host.
+An empty box is measured by the word it asks for, so the row never closes on nothing.
 
 ### `<Style x:Key="Editor.Field.Measure" TargetType="TextBlock">`
 

@@ -23,7 +23,8 @@ public sealed class LReflexArchive : LReflexVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT reflex_id, position, language, kind, text, main, note, respelling, region, remark,
+            SELECT reflex_id, position, language, kind, text, main, romanization, meaning, owned, note, respelling,
+                region,
                 onset_ipa, vowel_ipa, coda_ipa, tone_ipa,
                 onset_respelling, vowel_respelling, coda_respelling, tone_respelling
             FROM reflex WHERE entry_parent = $entry ORDER BY position, reflex_id;
@@ -50,8 +51,8 @@ public sealed class LReflexArchive : LReflexVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT r.reflex_id, r.position, r.language, r.kind, r.text, r.main, r.note, r.respelling, r.region,
-                r.remark, r.onset_ipa, r.vowel_ipa, r.coda_ipa, r.tone_ipa,
+            SELECT r.reflex_id, r.position, r.language, r.kind, r.text, r.main, r.romanization, r.meaning, r.owned,
+                r.note, r.respelling, r.region, r.onset_ipa, r.vowel_ipa, r.coda_ipa, r.tone_ipa,
                 r.onset_respelling, r.vowel_respelling, r.coda_respelling, r.tone_respelling,
                 r.entry_parent, a.fanqie_ref
             FROM fanqie_diwei l
@@ -69,8 +70,8 @@ public sealed class LReflexArchive : LReflexVault
         {
             while (reader.Read())
             {
-                rows.Add(LReflexRowRead(reader, reader.GetInt64(18)));
-                owners.Add(reader.GetInt64(19));
+                rows.Add(LReflexRowRead(reader, reader.GetInt64(20)));
+                owners.Add(reader.GetInt64(21));
             }
         }
 
@@ -107,8 +108,10 @@ public sealed class LReflexArchive : LReflexVault
             reader.GetInt32(5) != 0,
             reader.GetString(6),
             reader.GetString(7),
-            reader.GetString(8),
+            reader.GetInt32(8) != 0,
             reader.GetString(9),
+            reader.GetString(10),
+            reader.GetString(11),
             LReflexAnatomyRead(reader));
     }
 
@@ -165,14 +168,14 @@ public sealed class LReflexArchive : LReflexVault
     private static LAnatomy LReflexAnatomyRead(SqliteDataReader reader)
     {
         return new LAnatomy(
-            reader.GetString(10),
-            reader.GetString(11),
             reader.GetString(12),
             reader.GetString(13),
             reader.GetString(14),
             reader.GetString(15),
             reader.GetString(16),
-            reader.GetString(17));
+            reader.GetString(17),
+            reader.GetString(18),
+            reader.GetString(19));
     }
 
     public IReadOnlyList<LReflex> LReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)
@@ -189,9 +192,10 @@ public sealed class LReflexArchive : LReflexVault
             ArgumentNullException.ThrowIfNull(reflex.LReflexLanguage);
             ArgumentNullException.ThrowIfNull(reflex.LReflexKind);
             ArgumentNullException.ThrowIfNull(reflex.LReflexText);
+            ArgumentNullException.ThrowIfNull(reflex.LReflexRomanization);
+            ArgumentNullException.ThrowIfNull(reflex.LReflexMeaning);
             ArgumentNullException.ThrowIfNull(reflex.LReflexNote);
             ArgumentNullException.ThrowIfNull(reflex.LReflexRegion);
-            ArgumentNullException.ThrowIfNull(reflex.LReflexRemark);
             if (reflex.LReflexId > 0)
             {
                 kept.Add(reflex.LReflexId);
@@ -210,10 +214,11 @@ public sealed class LReflexArchive : LReflexVault
                 LReflexLanguage = reflexes[position].LReflexLanguage.Trim(),
                 LReflexKind = reflexes[position].LReflexKind.Trim(),
                 LReflexText = reflexes[position].LReflexText.Trim(),
+                LReflexRomanization = reflexes[position].LReflexRomanization.Trim(),
+                LReflexMeaning = reflexes[position].LReflexMeaning.Trim(),
                 LReflexNote = reflexes[position].LReflexNote.Trim(),
                 LReflexRespelling = reflexes[position].LReflexRespelling.Trim(),
                 LReflexRegion = reflexes[position].LReflexRegion.Trim(),
-                LReflexRemark = reflexes[position].LReflexRemark.Trim(),
             };
 
             LReflex saved = row.LReflexId > 0 ? LReflexRowSave(connection, row) : LReflexInsert(connection, row);
@@ -248,7 +253,9 @@ public sealed class LReflexArchive : LReflexVault
         command.CommandText =
             """
             UPDATE reflex SET position = $position, language = $language, kind = $kind, text = $text, main = $main,
-                note = $note, respelling = $respelling, region = $region, remark = $remark,
+                romanization = $romanization, meaning = $meaning, owned = $owned, note = $note,
+                respelling = $respelling,
+                region = $region,
                 onset_ipa = $onset_ipa, vowel_ipa = $vowel_ipa, coda_ipa = $coda_ipa, tone_ipa = $tone_ipa,
                 onset_respelling = $onset_respelling, vowel_respelling = $vowel_respelling,
                 coda_respelling = $coda_respelling, tone_respelling = $tone_respelling
@@ -270,10 +277,12 @@ public sealed class LReflexArchive : LReflexVault
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            INSERT INTO reflex (entry_parent, position, language, kind, text, main, note, respelling, region, remark,
+            INSERT INTO reflex (entry_parent, position, language, kind, text, main, romanization, meaning, owned,
+                note, respelling, region,
                 onset_ipa, vowel_ipa, coda_ipa, tone_ipa,
                 onset_respelling, vowel_respelling, coda_respelling, tone_respelling)
-            VALUES ($entry, $position, $language, $kind, $text, $main, $note, $respelling, $region, $remark,
+            VALUES ($entry, $position, $language, $kind, $text, $main, $romanization, $meaning, $owned,
+                $note, $respelling, $region,
                 $onset_ipa, $vowel_ipa, $coda_ipa, $tone_ipa,
                 $onset_respelling, $vowel_respelling, $coda_respelling, $tone_respelling)
             RETURNING reflex_id;
@@ -290,10 +299,12 @@ public sealed class LReflexArchive : LReflexVault
         command.Parameters.AddWithValue("$kind", row.LReflexKind);
         command.Parameters.AddWithValue("$text", row.LReflexText);
         command.Parameters.AddWithValue("$main", row.LReflexMain ? 1 : 0);
+        command.Parameters.AddWithValue("$romanization", row.LReflexRomanization);
+        command.Parameters.AddWithValue("$meaning", row.LReflexMeaning);
+        command.Parameters.AddWithValue("$owned", row.LReflexOwned ? 1 : 0);
         command.Parameters.AddWithValue("$note", row.LReflexNote);
         command.Parameters.AddWithValue("$respelling", row.LReflexRespelling);
         command.Parameters.AddWithValue("$region", row.LReflexRegion);
-        command.Parameters.AddWithValue("$remark", row.LReflexRemark);
         LReflexAnatomyApply(command, row.LReflexAnatomy);
     }
 

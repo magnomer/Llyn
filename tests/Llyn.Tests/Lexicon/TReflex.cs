@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -16,8 +17,8 @@ public sealed class TReflex
 
         LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate(
             [
-                TInterface.TReflexDraftCreate("Korean", "", "롱(농)", note: "희롱할"),
-                TInterface.TReflexDraftCreate("Mandarin", "", "nʊŋ⁵¹", note: "nòng"),
+                TInterface.TReflexDraftCreate("Korean", "", "롱(농)", meaning: "희롱할"),
+                TInterface.TReflexDraftCreate("Mandarin", "", "nʊŋ⁵¹", romanization: "nòng"),
                 TInterface.TReflexDraftCreate("Japanese", "Go-on", "る"),
                 TInterface.TReflexDraftCreate("Japanese", "Kan-on", "ろう", true),
             ]));
@@ -25,7 +26,8 @@ public sealed class TReflex
         IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
         Assert.Equal(["Korean", "Mandarin", "Japanese", "Japanese"], read.Select(row => row.LReflexLanguage));
         Assert.Equal(["", "", "Go-on", "Kan-on"], read.Select(row => row.LReflexKind));
-        Assert.Equal(["희롱할", "nòng", "", ""], read.Select(row => row.LReflexNote));
+        Assert.Equal(["희롱할", "", "", ""], read.Select(row => row.LReflexMeaning));
+        Assert.Equal(["", "nòng", "", ""], read.Select(row => row.LReflexRomanization));
         Assert.Equal([false, false, false, true], read.Select(row => row.LReflexMain));
         Assert.Equal([0, 1, 2, 3], read.Select(row => row.LReflexPosition));
 
@@ -35,8 +37,11 @@ public sealed class TReflex
             ["롱(농)", "nʊŋ⁵¹", "る", "ろう"],
             loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftText));
         Assert.Equal(
-            ["희롱할", "nòng", "", ""],
-            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftNote));
+            ["희롱할", "", "", ""],
+            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftMeaning));
+        Assert.Equal(
+            ["", "nòng", "", ""],
+            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftRomanization));
         Assert.All(loaded.LEntryDraftReflexes, row => Assert.True(row.LReflexDraftId > 0));
     }
 
@@ -165,7 +170,7 @@ public sealed class TReflex
               <entry>
                 <headword>弄</headword>
                 <language>Classical Chinese</language>
-                <reflex><language>Korean</language><text>롱(농)</text><note>희롱할</note></reflex>
+                <reflex><language>Korean</language><text>롱(농)</text><meaning>희롱할</meaning></reflex>
                 <reflex><language>Japanese</language><kind>Kan-on</kind><text>ろう</text><main /></reflex>
               </entry>
             </llyn>
@@ -185,30 +190,31 @@ public sealed class TReflex
                 (row.LReflexDraftLanguage,
                  row.LReflexDraftKind,
                  row.LReflexDraftText,
-                 row.LReflexDraftNote,
+                 row.LReflexDraftMeaning,
                  row.LReflexDraftMain)));
         Assert.Contains("<main />", written);
     }
 
     [Fact]
-    public void EntrySave_RegionAndRemark_ReadBackOnEveryPath()
+    public void EntrySave_RegionAndNote_ReadBackOnEveryPath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate(
             [
-                TInterface.TReflexDraftCreate("Wu", "", "oʔ⁵⁵", note: "7oq", region: "Shanghai", remark: "literary"),
+                TInterface.TReflexDraftCreate(
+                    "Wu", "", "oʔ⁵⁵", romanization: "7oq", note: "literary", region: "Shanghai"),
             ]));
 
         LReflex stored = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
-        Assert.Equal(("Shanghai", "literary"), (stored.LReflexRegion, stored.LReflexRemark));
+        Assert.Equal(("Shanghai", "literary"), (stored.LReflexRegion, stored.LReflexNote));
         LReflexDraft loaded = Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftReflexes);
-        Assert.Equal(("Shanghai", "literary"), (loaded.LReflexDraftRegion, loaded.LReflexDraftRemark));
+        Assert.Equal(("Shanghai", "literary"), (loaded.LReflexDraftRegion, loaded.LReflexDraftNote));
     }
 
     [Fact]
-    public void RequestApply_ReflexRemark_LandsOnTheRow()
+    public void RequestApply_OnlyReflexMeaning_MarksTheRowAsOwned()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -217,15 +223,36 @@ public sealed class TReflex
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TReflexAdditionCreate(started.LDraftId, "Wu", "", 0));
         long row = Assert.Single(answered.LDraftContent.LEntryDraftReflexes).LReflexDraftId;
-        answered = engine.TEngineRequestApply(TInterface.TReflexRemarkCreate(started.LDraftId, row, "vernacular"));
+        Assert.False(Assert.Single(answered.LDraftContent.LEntryDraftReflexes).LReflexDraftOwned);
+
+        LRequest[] other =
+        [
+            TInterface.TReflexLanguageCreate(started.LDraftId, row, "Wu"),
+            TInterface.TReflexKindCreate(started.LDraftId, row, "colloquial"),
+            TInterface.TReflexTextCreate(started.LDraftId, row, "oʔ⁵⁵"),
+            TInterface.TReflexRespellingCreate(started.LDraftId, row, "oʔ⁵⁵"),
+            TInterface.TReflexRomanizationCreate(started.LDraftId, row, "7oq"),
+            TInterface.TReflexNoteCreate(started.LDraftId, row, "vernacular"),
+            TInterface.TReflexMainCreate(started.LDraftId, row, true),
+            TInterface.TReflexAnchorCreate(started.LDraftId, row, 42, true),
+        ];
+        foreach (LRequest request in other)
+        {
+            answered = engine.TEngineRequestApply(request);
+            Assert.False(Assert.Single(answered.LDraftContent.LEntryDraftReflexes).LReflexDraftOwned);
+        }
+
+        answered = engine.TEngineRequestApply(
+            TInterface.TReflexMeaningCreate(started.LDraftId, row, "hostile"));
 
         LReflexDraft filled = Assert.Single(answered.LDraftContent.LEntryDraftReflexes);
-        Assert.Equal("vernacular", filled.LReflexDraftRemark);
+        Assert.Equal(("vernacular", "hostile"), (filled.LReflexDraftNote, filled.LReflexDraftMeaning));
+        Assert.True(filled.LReflexDraftOwned);
         Assert.False(filled.LReflexDraftEmpty);
     }
 
     [Fact]
-    public void MarkupFormat_ReflexRegionAndRemark_RoundTrip()
+    public void MarkupFormat_ReflexRegionAndGloss_RoundTrip()
     {
         const string text = """
             <llyn>
@@ -233,8 +260,8 @@ public sealed class TReflex
                 <headword>惡</headword>
                 <language>Classical Chinese</language>
                 <reflex>
-                  <language>Wu</language><text>oʔ⁵⁵</text><note>7oq</note>
-                  <region>Shanghai</region><remark>literary</remark>
+                  <language>Wu</language><text>oʔ⁵⁵</text><romanization>7oq</romanization>
+                  <meaning>hostile</meaning><owned /><note>literary</note><region>Shanghai</region>
                 </reflex>
               </entry>
             </llyn>
@@ -248,7 +275,11 @@ public sealed class TReflex
         Assert.Empty(omissions);
         Assert.Equal(parsed, again);
         LReflexDraft reflex = Assert.Single(Assert.Single(again).LMarkupEntryReflex);
-        Assert.Equal(("Shanghai", "literary"), (reflex.LReflexDraftRegion, reflex.LReflexDraftRemark));
+        Assert.Equal(
+            ("Shanghai", "literary", "hostile"),
+            (reflex.LReflexDraftRegion, reflex.LReflexDraftNote, reflex.LReflexDraftMeaning));
+        Assert.True(reflex.LReflexDraftOwned);
+        Assert.Contains("<owned />", written);
         Assert.Contains("<region>Shanghai</region>", written);
     }
 

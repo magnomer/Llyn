@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -70,6 +71,7 @@ public sealed class PScript : ContentControl
         Border box = new() { Child = stack };
         box.SetResourceReference(StyleProperty, "Theme.Script.Box");
         Content = box;
+        PLocalizationCatalog.PLocalizationCatalogCurrent.PropertyChanged += PScriptLanguageHandle;
         PScriptStateApply();
     }
 
@@ -94,6 +96,22 @@ public sealed class PScript : ContentControl
     private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         ((PScript)sender).PScriptStateApply();
+    }
+
+    private void PScriptLanguageHandle(object? sender, PropertyChangedEventArgs e)
+    {
+        if (PScriptItems is not IReadOnlyList<PScriptItem> items)
+        {
+            return;
+        }
+
+        foreach (PScriptItem item in items)
+        {
+            foreach (PScriptImage picture in item.PScriptItemImages)
+            {
+                picture.PScriptImageUpdate();
+            }
+        }
     }
 
     private void PScriptStateApply()

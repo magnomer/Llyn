@@ -48,6 +48,8 @@ The surface peer, so thirty glyph pictures and their captions are not reported o
 ## `public PScript()`
 
 Builds the box from the theme's script styles, unfocusable, collapsed until it has something to show.
+It also listens to the localization catalog, because the age under a picture is the box's own text to redraw.
+There are two boxes for the program's life, one per view, so the listening is never unhooked.
 
 ## `internal IReadOnlyList<PScriptItem>? PScriptItems`
 
@@ -64,6 +66,11 @@ Whether the box starts closed under its head.
 ## `private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
 Redraws the box when any of its three properties change.
+
+## `private void PScriptLanguageHandle(object? sender, PropertyChangedEventArgs e)`
+
+Tells every picture on show that its age reads differently, once the catalog has taken a new language.
+Nothing is read from the engine and nothing is fetched, because only the printed words change.
 
 ## `private void PScriptStateApply()`
 

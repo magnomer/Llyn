@@ -13,13 +13,18 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
 
     private const int PScriptImageDecode = 2;
 
+    private const string PScriptImageArea = "Epoch.";
+
+    private readonly string _pScriptImageEpoch;
+
     private byte[]? _pScriptImageData;
 
     private BitmapSource? _pScriptImageSource;
 
-    private PScriptImage(byte[] data, string caption, double width)
+    private PScriptImage(byte[] data, string caption, string epoch, double width)
     {
         _pScriptImageData = data;
+        _pScriptImageEpoch = epoch;
         PScriptImageCaption = caption;
         PScriptImageWidth = width;
     }
@@ -41,6 +46,10 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
 
     public string PScriptImageCaption { get; }
 
+    public string PScriptImageEpoch => _pScriptImageEpoch.Length == 0
+        ? string.Empty
+        : PLocalizationCatalog.PLocalizationTextFind(PScriptImageArea + _pScriptImageEpoch) ?? string.Empty;
+
     public double PScriptImageWidth { get; }
 
     public double PScriptImageHeight => PScriptImageMeasure;
@@ -59,7 +68,13 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
         double width = shape.Height > 0
             ? Math.Round(PScriptImageMeasure * shape.Width / shape.Height)
             : PScriptImageMeasure;
-        return new PScriptImage(image.LScriptImageData, image.LScriptImageCaption, width);
+        return new PScriptImage(
+            image.LScriptImageData, image.LScriptImageCaption, image.LScriptImageEpoch, width);
+    }
+
+    internal void PScriptImageUpdate()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PScriptImageEpoch)));
     }
 
     public void PImageLoad()

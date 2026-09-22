@@ -52,14 +52,22 @@ public sealed class LDraftClerkReflex
                 row => _lDraftClerkLanguages.LLanguageAnatomyResolve(
                     content.LEntryDraftLanguage,
                     row with { LReflexDraftRespelling = sent.LRequestText ?? string.Empty })),
+            LRequestReflexRomanization sent => LReflexChange(
+                content,
+                sent.LRequestReflexId,
+                row => row with { LReflexDraftRomanization = sent.LRequestText ?? string.Empty }),
+            LRequestReflexMeaning sent => LReflexChange(
+                content,
+                sent.LRequestReflexId,
+                row => row with
+                {
+                    LReflexDraftMeaning = sent.LRequestText ?? string.Empty,
+                    LReflexDraftOwned = true,
+                }),
             LRequestReflexNote sent => LReflexChange(
                 content,
                 sent.LRequestReflexId,
                 row => row with { LReflexDraftNote = sent.LRequestText ?? string.Empty }),
-            LRequestReflexRemark sent => LReflexChange(
-                content,
-                sent.LRequestReflexId,
-                row => row with { LReflexDraftRemark = sent.LRequestText ?? string.Empty }),
             LRequestReflexMain sent => LReflexChange(
                 content,
                 sent.LRequestReflexId,

@@ -20,6 +20,7 @@ public sealed class LReflexClerk
     private readonly SemaphoreSlim _lReflexClerkAdmission = new(2, 2);
     private readonly Dictionary<long, CancellationTokenSource> _lReflexClerkPending = [];
     private readonly HashSet<long> _lReflexClerkMissed = [];
+    private readonly Dictionary<long, Dictionary<string, string>> _lReflexClerkMeaning = [];
     private DateTimeOffset _lReflexClerkStamp = DateTimeOffset.MinValue;
 
     public LReflexClerk(
@@ -193,6 +194,7 @@ public sealed class LReflexClerk
             }
 
             _lReflexClerkMissed.Remove(entryId);
+            LReflexMeaningRecord(entryId);
             _lReflexClerkReflexes.LReflexSet(entryId, []);
             LReflexEpithetSave(entryId);
             cleared = LReflexClerkPropagate(entryId, [], true);
@@ -234,6 +236,7 @@ public sealed class LReflexClerk
 
             _lReflexClerkPending.Clear();
             _lReflexClerkMissed.Clear();
+            _lReflexClerkMeaning.Clear();
         }
     }
 
@@ -327,7 +330,9 @@ public sealed class LReflexClerk
                 }
 
                 IReadOnlyList<LReflex> saved = reflexes.LReflexSet(
-                    entry.LEntryId, LReflexClerkRow.LReflexRowRead(entry.LEntryId, found));
+                    entry.LEntryId,
+                    LReflexMeaningRestore(
+                        entry.LEntryId, LReflexClerkRow.LReflexRowRead(entry.LEntryId, found)));
                 LReflexEpithetSave(entry.LEntryId);
                 drafts = LReflexClerkPropagate(entry.LEntryId, saved);
             }
@@ -364,6 +369,51 @@ public sealed class LReflexClerk
         }
     }
 
+    private void LReflexMeaningRecord(long entryId)
+    {
+        Dictionary<string, string> held = [];
+        foreach (LReflex row in _lReflexClerkReflexes.LReflexRead(entryId))
+        {
+            if (row.LReflexOwned && row.LReflexMeaning.Length > 0)
+            {
+                held[LMeaningKeyRead(row)] = row.LReflexMeaning;
+            }
+        }
+
+        if (held.Count > 0)
+        {
+            _lReflexClerkMeaning[entryId] = held;
+        }
+        else
+        {
+            _lReflexClerkMeaning.Remove(entryId);
+        }
+    }
+
+    private IReadOnlyList<LReflex> LReflexMeaningRestore(long entryId, IReadOnlyList<LReflex> rows)
+    {
+        if (!_lReflexClerkMeaning.Remove(entryId, out Dictionary<string, string>? held))
+        {
+            return rows;
+        }
+
+        List<LReflex> filled = new(rows.Count);
+        foreach (LReflex row in rows)
+        {
+            filled.Add(held.TryGetValue(LMeaningKeyRead(row), out string? meaning)
+                ? row with { LReflexMeaning = meaning, LReflexOwned = true }
+                : row);
+        }
+
+        return filled;
+    }
+
+    private static string LMeaningKeyRead(LReflex row)
+    {
+        return string.Join(
+            '', row.LReflexLanguage, row.LReflexRegion, row.LReflexKind, row.LReflexText);
+    }
+
     private List<long> LReflexClerkPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)
     {
         List<LReflexDraft> rows = new(saved.Count);
@@ -375,10 +425,12 @@ public sealed class LReflexClerk
                 reflex.LReflexText,
                 reflex.LReflexMain,
                 reflex.LReflexId,
+                reflex.LReflexRomanization,
+                reflex.LReflexMeaning,
+                reflex.LReflexOwned,
                 reflex.LReflexNote,
                 reflex.LReflexRespelling,
                 reflex.LReflexRegion,
-                reflex.LReflexRemark,
                 reflex.LReflexAnatomy,
                 reflex.LReflexAnchors));
         }

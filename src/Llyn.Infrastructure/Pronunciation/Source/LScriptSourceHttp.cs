@@ -43,7 +43,7 @@ public sealed class LScriptSourceHttp : LScriptSource
             return ([], false);
         }
 
-        IReadOnlyList<(string LScriptAddress, string LScriptCaption)> hits;
+        IReadOnlyList<(string LScriptAddress, string LScriptCaption, string LScriptEpoch)> hits;
         string gloss;
         try
         {
@@ -56,12 +56,13 @@ public sealed class LScriptSourceHttp : LScriptSource
         }
 
         List<LScriptImage> images = [];
-        foreach ((string address, string caption) in hits)
+        foreach ((string address, string caption, string epoch) in hits)
         {
             byte[]? data = await LScriptDataRead(_lScriptSourceClient, address, cancellation).ConfigureAwait(false);
             if (data is not null)
             {
-                images.Add(new LScriptImage(character, style.LScriptStyleName, images.Count, caption, gloss, data));
+                images.Add(new LScriptImage(
+                    character, style.LScriptStyleName, images.Count, caption, gloss, data, epoch));
             }
         }
 
@@ -102,10 +103,10 @@ public sealed class LScriptSourceHttp : LScriptSource
         }
     }
 
-    private static IReadOnlyList<(string LScriptAddress, string LScriptCaption)> LScriptHitScan(
+    private static IReadOnlyList<(string LScriptAddress, string LScriptCaption, string LScriptEpoch)> LScriptHitScan(
         LScriptStyle style, string body)
     {
-        List<(string, string)> hits = [];
+        List<(string, string, string)> hits = [];
         foreach (Match match in Regex.Matches(
             body, style.LScriptStylePattern, RegexOptions.CultureInvariant, LScriptSourcePatience))
         {
@@ -115,8 +116,9 @@ public sealed class LScriptSourceHttp : LScriptSource
                 continue;
             }
 
-            string caption = LScriptTextNormalize(LScriptGroupRead(match, style.LScriptStyleCaption));
-            hits.Add((LScriptAddressResolve(style, address), caption));
+            (string epoch, string caption) = LEpoch.LEpochResolve(
+                style.LScriptStyleEpoch, LScriptTextNormalize(LScriptGroupRead(match, style.LScriptStyleCaption)));
+            hits.Add((LScriptAddressResolve(style, address), caption, epoch));
         }
 
         return hits;

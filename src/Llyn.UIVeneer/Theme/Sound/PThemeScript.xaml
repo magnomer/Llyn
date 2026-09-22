@@ -67,10 +67,27 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="MaxWidth" Value="120" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="Margin" Value="0,1,0,0" />
         <Setter Property="Text" Value="{Binding PScriptImageCaption}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding PScriptImageCaption}" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Script.Epoch" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="MaxWidth" Value="120" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Text" Value="{Binding PScriptImageEpoch}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PScriptImageEpoch}" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
         </Style.Triggers>
@@ -110,7 +127,10 @@
             <local:PImageLazy PImageLazyRow="{Binding}">
                 <Rectangle Style="{StaticResource Theme.Script.Shape}" />
             </local:PImageLazy>
-            <TextBlock Style="{StaticResource Theme.Script.Caption}" />
+            <StackPanel Margin="0,4,0,0">
+                <TextBlock Style="{StaticResource Theme.Script.Epoch}" />
+                <TextBlock Style="{StaticResource Theme.Script.Caption}" />
+            </StackPanel>
         </StackPanel>
     </DataTemplate>
 

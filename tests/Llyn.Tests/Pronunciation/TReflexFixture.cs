@@ -20,7 +20,7 @@ internal static class TReflexFixture
               "match": "<b>(?<kind>Go-on|Kan-on)</b>: (?<main><i class=\"jouyou\">)?<span>(?<text>[^<]+)</span>",
               "every": true, "first": true },
             { "language": "Mandarin", "url": "https://example.test/ipa/{word}",
-              "match": "IPA: (?<text>/[^ <]+/(?:, /[^ <]+/)*)(?: (?<note>[^<]+))?", "busy": "Too fast",
+              "match": "IPA: (?<text>/[^ <]+/(?:, /[^ <]+/)*)(?: (?<romanization>[^<]+))?", "busy": "Too fast",
               "split": "\\s*,\\s*", "region": "Beijing" } ] }
         """;
 
@@ -60,9 +60,9 @@ internal static class TReflexFixture
         """
         { "reflex": [
             { "language": "Wu", "url": "https://example.test/wu/{word}",
-              "match": "Wugniu: (?<note>[^<]+)</span>.*?IPA: (?<text>[^<]+)</span>",
+              "match": "Wugniu: (?<romanization>[^<]+)</span>.*?IPA: (?<text>[^<]+)</span>",
               "split": "\\s*[,/]\\s*", "recast": [["^(\\d)(.+)$", "$2$1"]], "superscript": true,
-              "remark": "<li>{note} - (?<remark>[^<]*?)[;.]?</li>", "every": true, "first": true } ] }
+              "gloss": "<li>{romanization} - (?<note>[^<]*?)[;.]?</li>", "every": true, "first": true } ] }
         """;
 
     internal static readonly Dictionary<string, string> TReflexWuPages = new()
@@ -85,11 +85,15 @@ internal static class TReflexFixture
         (row.LReflexDraftLanguage,
          row.LReflexDraftKind,
          row.LReflexDraftText,
-         row.LReflexDraftNote,
+         row.LReflexDraftRomanization,
          row.LReflexDraftMain);
 
     internal static (string, string, string, string, bool) TReflexRowRead(LReflex row) =>
-        (row.LReflexLanguage, row.LReflexKind, row.LReflexText, row.LReflexNote, row.LReflexMain);
+        (row.LReflexLanguage,
+         row.LReflexKind,
+         row.LReflexText,
+         row.LReflexRomanization,
+         row.LReflexMain);
 
     internal static LEntryDraft TReflexDraftCreate(string headword, string language)
     {

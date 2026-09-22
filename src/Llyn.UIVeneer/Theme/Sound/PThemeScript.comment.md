@@ -28,7 +28,14 @@ Its width and height come from the item, which keeps the original's aspect at th
 ## `<Style x:Key="Theme.Script.Caption" TargetType="TextBlock">`
 
 The caption under a picture, muted, centered and wrapped within a narrow width.
+It sits right under the age when there is one, so the two read as one caption of two lines.
 It collapses when empty.
+
+## `<Style x:Key="Theme.Script.Epoch" TargetType="TextBlock">`
+
+The age above the caption, drawn like it but semibold and in the interface font.
+The font is named here because the box inherits the glyph font, which is for the source's words, not ours.
+It collapses when the picture carries no age, or when no shipped language names the stored code.
 
 ## `<Style x:Key="Theme.Script.Gloss" TargetType="TextBlock">`
 
@@ -46,7 +53,9 @@ It is the only content of the box while nothing is stored yet.
 
 ## `<DataTemplate x:Key="Theme.Script.Picture">`
 
-One picture with its caption beneath, spaced from the next.
+One picture with its age and caption beneath, spaced from the next.
+The two lines sit in a panel of their own.
+The gap under the picture then stands whichever line is shown.
 
 ## `<DataTemplate x:Key="Theme.Script.Row">`
 

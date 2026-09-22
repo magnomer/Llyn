@@ -16,6 +16,8 @@ A row the current schema cannot hold, such as a child whose parent is gone, is d
 The launch goes on without it.
 The id counters carry across, so a rebuilt workspace never hands out an id a tombstone remembers.
 The realm row, the stamp and the id counter on a fresh workspace are covered by `TSchemaRealm`.
+A version-71 reflex carries its old note into romanization and its old remark into the new note.
+Its new meaning is empty and its ownership flag is clear.
 
 ## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
 

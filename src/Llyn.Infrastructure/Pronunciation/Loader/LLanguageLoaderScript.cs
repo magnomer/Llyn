@@ -10,6 +10,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
     private const string LLanguageLoaderScript = "script";
     private const string LLanguageLoaderForm = "form";
     private const string LLanguageLoaderRewrite = "rewrite";
+    private const string LLanguageLoaderEpoch = "epoch";
 
     private static IReadOnlyList<LScriptStyle> LLanguageScriptScan(JsonElement root)
     {
@@ -57,7 +58,35 @@ public sealed partial class LLanguageLoader : LLanguageVault
             LLanguageNumberRead(row, "caption"),
             LLanguageTextRead(row, "prefix"),
             LLanguageRewriteScan(row),
-            LLanguageTextRead(row, "gloss"));
+            LLanguageTextRead(row, "gloss"),
+            LLanguageEpochScan(row));
+    }
+
+    private static IReadOnlyList<LEpoch> LLanguageEpochScan(JsonElement row)
+    {
+        if (!row.TryGetProperty(LLanguageLoaderEpoch, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<LEpoch>();
+        }
+
+        List<LEpoch> epochs = new();
+        foreach (JsonElement pair in rows.EnumerateArray())
+        {
+            if (pair.ValueKind != JsonValueKind.Array || pair.GetArrayLength() != 2 ||
+                pair[0].ValueKind != JsonValueKind.String || pair[1].ValueKind != JsonValueKind.String)
+            {
+                continue;
+            }
+
+            string label = pair[0].GetString()!.Trim();
+            string code = pair[1].GetString()!.Trim();
+            if (label.Length > 0 && code.Length > 0)
+            {
+                epochs.Add(new LEpoch(label, code));
+            }
+        }
+
+        return epochs;
     }
 
     private static IReadOnlyDictionary<string, string> LLanguageFormRead(JsonElement row)

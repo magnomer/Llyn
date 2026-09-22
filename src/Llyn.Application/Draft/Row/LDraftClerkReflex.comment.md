@@ -16,7 +16,9 @@ Holds the pack cache a row is respelled and cut through and the issuer that name
 Routes every reflex request to its handler, and answers null for any other request.
 The clerk then hands that request on to the card lists.
 A language, text or respelling request respells the row and recuts its anatomy under the entry's own language.
-A remark request replaces that one text of the named row, while the region only comes from the fetch.
+A romanization or note request replaces that one text of the named row.
+A meaning request also marks the row as user-owned so the meaning survives a rebuild.
+The region only comes from the fetch.
 An anchor request ties or unties the named row and one fanqie row.
 The row's other anchors stand as they were.
 

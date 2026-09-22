@@ -14,7 +14,14 @@ A pack without the array yields an empty list, and the reading view shows no scr
 
 One style row: its name, the address the form is posted to, and the pattern reading the answer.
 A row missing any of the three is dropped, because none of them has a default worth guessing.
-The group numbers, prefix, rewrite rules and gloss pattern are optional.
+The group numbers, prefix, rewrite rules, gloss pattern and chronology labels are optional.
+
+## `private static IReadOnlyList<LEpoch> LLanguageEpochScan(JsonElement row)`
+
+The `epoch` array as ordered [LEpoch](../../Llyn.Core/Pronunciation/LEpoch.comment.md) pairs, each a label and its code.
+A pair missing either half is skipped.
+A label with no code dates nothing, and a code with no label is never met.
+A style whose captions carry no age lists none, and its captions are stored whole.
 
 ## `private static IReadOnlyDictionary<string, string> LLanguageFormRead(JsonElement row)`
 

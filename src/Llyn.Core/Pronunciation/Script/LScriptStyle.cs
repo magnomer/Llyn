@@ -11,7 +11,10 @@ public sealed record LScriptStyle(
     int LScriptStyleCaption,
     string? LScriptStylePrefix = null,
     IReadOnlyList<LRespellingRule>? LScriptStyleRewrite = null,
-    string? LScriptStyleGloss = null)
+    string? LScriptStyleGloss = null,
+    IReadOnlyList<LEpoch>? LScriptStyleEpoch = null)
 {
     public IReadOnlyList<LRespellingRule> LScriptStyleRewrite { get; init; } = LScriptStyleRewrite ?? [];
+
+    public IReadOnlyList<LEpoch> LScriptStyleEpoch { get; init; } = LScriptStyleEpoch ?? [];
 }

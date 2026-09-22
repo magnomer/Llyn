@@ -6,7 +6,7 @@ The pure row helpers of the reflex clerk: merging fetched rounds, reading drafts
 
 ## `public static IReadOnlyList<LReflexDraft> LReflexRoundResolve(IReadOnlyList<IReadOnlyList<LReflexDraft>> rounds)`
 
-Rows from later rounds that match an earlier row by language, region, kind and note join its text.
+Rows from later rounds that match an earlier row by language, region, kind and romanization join its text.
 A row already joined in the same round stays separate.
 
 ## `public static IReadOnlyList<LReflex> LReflexRowRead(long entryId, IReadOnlyList<LReflexDraft> drafts)`
@@ -27,4 +27,4 @@ The rows as one summary line for the revision.
 
 ## `private static IEnumerable<string> LReflexPartScan(LReflex reflex)`
 
-The non-empty parts of one row in display order.
+The non-empty language, region, kind, reading, romanization, meaning and note of one row in display order.

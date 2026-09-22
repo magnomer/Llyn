@@ -12,5 +12,5 @@ The styles arrive in pack order and the positions in source order, and the row i
 
 ## `public IReadOnlyList<LScriptImage> LScriptRead(string language, string character)`
 
-Every stored picture of the character, in insertion order, with its bytes.
+Every stored picture of the character, in insertion order, with its bytes and the code of its age.
 An empty list means the character was never fetched, or nothing was found and nothing stored.

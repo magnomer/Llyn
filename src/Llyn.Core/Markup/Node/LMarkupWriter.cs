@@ -136,9 +136,15 @@ internal static class LMarkupWriter
         LMarkup.LMarkupTextFormat(element, "kind", reflex.LReflexDraftKind);
         LMarkup.LMarkupTextFormat(element, "text", reflex.LReflexDraftText);
         LMarkup.LMarkupTextFormat(element, "respelling", reflex.LReflexDraftRespelling);
+        LMarkup.LMarkupTextFormat(element, "romanization", reflex.LReflexDraftRomanization);
+        LMarkup.LMarkupTextFormat(element, "meaning", reflex.LReflexDraftMeaning);
         LMarkup.LMarkupTextFormat(element, "note", reflex.LReflexDraftNote);
         LMarkup.LMarkupTextFormat(element, "region", reflex.LReflexDraftRegion);
-        LMarkup.LMarkupTextFormat(element, "remark", reflex.LReflexDraftRemark);
+        if (reflex.LReflexDraftOwned)
+        {
+            element.Add(LMarkupNode.LMarkupNodeCreate("owned"));
+        }
+
         if (reflex.LReflexDraftMain)
         {
             element.Add(LMarkupNode.LMarkupNodeCreate("main"));

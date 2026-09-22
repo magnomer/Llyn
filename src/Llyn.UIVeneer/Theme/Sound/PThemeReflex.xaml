@@ -102,12 +102,10 @@
         </Setter>
     </Style>
 
-    <Style x:Key="Theme.Reflex.Tag" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Text}">
-        <Setter Property="Margin" Value="0,0,6,2" />
+    <Style x:Key="Theme.Reflex.Tag" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Label}">
+        <Setter Property="Margin" Value="0,0,6,0" />
         <Setter Property="MaxWidth" Value="160" />
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="ToolTip" Value="{x:Null}" />
         <Setter Property="Text" Value="{Binding PReflexItemTag}" />
         <Style.Triggers>
             <Trigger Property="Text" Value="">
@@ -116,19 +114,33 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Reflex.Side" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Tag}">
-        <Setter Property="Margin" Value="12,0,3,2" />
+    <Style x:Key="Theme.Reflex.Minor" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Text}">
+        <Setter Property="Margin" Value="6,0,3,2" />
         <Setter Property="MaxWidth" Value="420" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Hidden" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Reflex.Romanization" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
+        <Setter Property="Margin" Value="12,0,3,2" />
+        <Setter Property="Text" Value="{Binding PReflexItemRomanization}" />
+    </Style>
+
+    <Style x:Key="Theme.Reflex.Meaning" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
+        <Setter Property="Text" Value="{Binding PReflexItemMeaning}" />
+    </Style>
+
+    <Style x:Key="Theme.Reflex.Note" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
         <Setter Property="Text" Value="{Binding PReflexItemNote}" />
     </Style>
 
-    <Style x:Key="Theme.Reflex.Remark" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Tag}">
-        <Setter Property="Margin" Value="6,0,3,2" />
-        <Setter Property="MaxWidth" Value="420" />
-        <Setter Property="Text" Value="{Binding PReflexItemRemark}" />
-    </Style>
-
-    <Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Tag}">
+    <Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
         <Setter Property="Margin" Value="12,0,3,2" />
         <Setter Property="MaxWidth" Value="520" />
         <Setter Property="Text" Value="{Binding PReflexItemAnchor}" />
@@ -154,27 +166,32 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexKind" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexText" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexRomanization" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexMeaning" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexNote" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
                     <TextBlock Style="{StaticResource Theme.Reflex.Label}" />
                 </StackPanel>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource Theme.Reflex.Tag}" />
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Lead}">
+                    <TextBlock Style="{StaticResource Theme.Reflex.Tag}" />
+                </StackPanel>
                 <StackPanel Grid.Column="2" Margin="3,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemOpener}" />
                     <TextBlock Style="{StaticResource Theme.Reflex.Text}" />
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemCloser}" />
                 </StackPanel>
-                <StackPanel Grid.Column="3" Orientation="Horizontal">
-                    <Grid Margin="12,0,3,2" MinWidth="12">
-                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Side}" />
-                    </Grid>
-                    <Grid Margin="6,0,3,2" MinWidth="12">
-                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Remark}" />
-                    </Grid>
-                </StackPanel>
-                <TextBlock Grid.Column="4" Style="{StaticResource Theme.Reflex.Anchor}" />
+                <Grid Grid.Column="3" Margin="12,0,3,2" MinWidth="12">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Romanization}" />
+                </Grid>
+                <Grid Grid.Column="4" Margin="6,0,3,2" MinWidth="12">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Meaning}" />
+                </Grid>
+                <Grid Grid.Column="5" Margin="6,0,3,2" MinWidth="12">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Note}" />
+                </Grid>
+                <TextBlock Grid.Column="6" Style="{StaticResource Theme.Reflex.Anchor}" />
             </Grid>
         </Border>
     </DataTemplate>

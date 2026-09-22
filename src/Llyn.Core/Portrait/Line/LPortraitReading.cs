@@ -86,8 +86,9 @@ public static class LPortraitReading
 
             (string open, string close) = LPortraitMarkRead(phonemic(language), false);
             List<string> tail = [open + text + close];
+            LPortraitReadingAdd(tail, reflex.LReflexDraftRomanization);
+            LPortraitReadingAdd(tail, reflex.LReflexDraftMeaning);
             LPortraitReadingAdd(tail, reflex.LReflexDraftNote);
-            LPortraitReadingAdd(tail, reflex.LReflexDraftRemark);
             LPortraitReadingAdd(tail, LPortraitAnchorRead(fanqie, reflex.LReflexDraftAnchors));
 
             shown.Add(new LPortraitLine(string.Join(" ", parts), string.Join(" ", tail)));

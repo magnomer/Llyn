@@ -120,6 +120,23 @@ internal static partial class TInterface
         IReadOnlyList<LScriptImage> images, IReadOnlyList<LScriptStyle> styles) =>
         LScriptGroup.LScriptGroupScan(images, styles);
 
+    internal static IReadOnlyList<LEpoch> TEpochTableRead(LLanguage pack)
+    {
+        foreach (LScriptStyle style in pack.LLanguageScripts)
+        {
+            if (style.LScriptStyleEpoch.Count > 0)
+            {
+                return style.LScriptStyleEpoch;
+            }
+        }
+
+        return [];
+    }
+
+    internal static (string LEpochFound, string LEpochCaption) TEpochResolve(
+        IReadOnlyList<LEpoch> epochs, string caption) =>
+        LEpoch.LEpochResolve(epochs, caption);
+
     internal static LMentionResult TMentionResultCreate(
         int offset, int length, LMention? stored, IReadOnlyList<LTranslationTarget> targets) =>
         new(offset, length, stored, targets);

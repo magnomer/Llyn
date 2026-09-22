@@ -150,10 +150,12 @@ public sealed class LEntryLoader
                 reflex.LReflexText,
                 reflex.LReflexMain,
                 reflex.LReflexId,
+                reflex.LReflexRomanization,
+                reflex.LReflexMeaning,
+                reflex.LReflexOwned,
                 reflex.LReflexNote,
                 reflex.LReflexRespelling,
                 reflex.LReflexRegion,
-                reflex.LReflexRemark,
                 reflex.LReflexAnatomy,
                 reflex.LReflexAnchors));
         }

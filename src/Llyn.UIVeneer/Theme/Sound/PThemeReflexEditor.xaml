@@ -30,7 +30,7 @@
                             <TextBlock
                                 x:Name="PSurfacePrompt"
                                 Margin="12,0,3,2"
-                                Style="{StaticResource Theme.Reflex.Tag}"
+                                Style="{StaticResource Theme.Reflex.Minor}"
                                 Text="{DynamicResource Input.Anchor}"
                                 Visibility="Collapsed" />
                         </Grid>
@@ -88,7 +88,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Reflex.Note" TargetType="TextBox" BasedOn="{StaticResource Theme.Pronunciation.Field}">
+    <Style x:Key="Theme.Reflex.Aside" TargetType="TextBox" BasedOn="{StaticResource Theme.Pronunciation.Field}">
         <Setter Property="Margin" Value="-2,0" />
         <Setter Property="MinWidth" Value="12" />
         <Setter Property="MaxWidth" Value="424" />
@@ -177,6 +177,8 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexKind" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexText" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexRomanization" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexMeaning" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexNote" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -185,14 +187,11 @@
                         <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Label}" />
                     </Grid>
                 </StackPanel>
-                <Grid
-                    Grid.Column="1"
-                    Margin="0,0,6,2"
-                    MinWidth="12"
-                    HorizontalAlignment="Left"
-                    Background="Transparent" Tag="Theme.Reflex.Note PReflexItemKind">
-                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Tag}" />
-                </Grid>
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Lead}">
+                    <Grid Margin="0,0,6,0" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Name PReflexItemKind">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Tag}" />
+                    </Grid>
+                </StackPanel>
                 <StackPanel Grid.Column="2" Margin="3,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemOpener}" />
                     <Grid HorizontalAlignment="Left" Background="Transparent" Tag="Theme.Reflex.Field PReflexItemText Input.Reflex">
@@ -200,15 +199,28 @@
                     </Grid>
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemCloser}" />
                 </StackPanel>
-                <StackPanel Grid.Column="3" Style="{StaticResource Theme.Pronunciation.Body}">
-                    <Grid Margin="12,0,3,2" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Note PReflexItemNote">
-                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Side}" />
-                    </Grid>
-                    <Grid Margin="6,0,3,2" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Note PReflexItemRemark">
-                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Remark}" />
-                    </Grid>
-                </StackPanel>
-                <StackPanel Grid.Column="4" Style="{StaticResource Theme.Pronunciation.Body}">
+                <Grid
+                    Grid.Column="3"
+                    Margin="12,0,3,2"
+                    MinWidth="12"
+                    Background="Transparent" Tag="Theme.Reflex.Aside PReflexItemRomanization">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Romanization}" />
+                </Grid>
+                <Grid
+                    Grid.Column="4"
+                    Margin="6,0,3,2"
+                    MinWidth="12"
+                    Background="Transparent" Tag="Theme.Reflex.Aside PReflexItemMeaning Input.Meaning">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Meaning}" />
+                </Grid>
+                <Grid
+                    Grid.Column="5"
+                    Margin="6,0,3,2"
+                    MinWidth="12"
+                    Background="Transparent" Tag="Theme.Reflex.Aside PReflexItemNote">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Note}" />
+                </Grid>
+                <StackPanel Grid.Column="6" Style="{StaticResource Theme.Pronunciation.Body}">
                     <Button Style="{StaticResource Theme.Reflex.Anchoring}" />
                     <ContentControl Focusable="False" Tag="Theme.Reflex.Control" />
                 </StackPanel>

@@ -18,7 +18,7 @@ public sealed record LReflexRule(
     IReadOnlyList<LRespellingRule>? LReflexRuleRewrite = null,
     string? LReflexRuleRegion = null,
     string? LReflexRuleSplit = null,
-    string? LReflexRuleRemark = null,
+    string? LReflexRuleGloss = null,
     string? LReflexRuleUntil = null,
     bool LReflexRuleFolded = false,
     IReadOnlyList<LRespellingRule>? LReflexRuleRecast = null,
@@ -28,11 +28,13 @@ public sealed record LReflexRule(
 
     public const string LReflexRuleKind = "kind";
 
+    public const string LReflexRuleRomanization = "romanization";
+
+    public const string LReflexRuleMeaning = "meaning";
+
     public const string LReflexRuleNote = "note";
 
     public const string LReflexRuleMain = "main";
-
-    public const string LReflexRuleSense = "remark";
 
     public string LReflexRuleTemplate { get; init; } = LReflexRuleTemplate ?? "{" + LReflexRuleText + "}";
 

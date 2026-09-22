@@ -203,10 +203,12 @@ internal static class TExemplar
                     "exemplar-reflex-reading",
                     LReflexDraftMain: true,
                     0,
+                    "exemplar-reflex-romanization",
+                    "exemplar-reflex-meaning",
+                    true,
                     "exemplar-reflex-note",
                     "exemplar-reflex-respelling",
-                    "exemplar-region",
-                    "exemplar-remark"),
+                    "exemplar-region"),
             ]);
     }
 
@@ -271,9 +273,10 @@ internal static class TExemplar
                 reflex.LReflexDraftKind,
                 reflex.LReflexDraftText,
                 reflex.LReflexDraftRespelling,
+                reflex.LReflexDraftRomanization,
+                reflex.LReflexDraftMeaning,
                 reflex.LReflexDraftNote,
-                reflex.LReflexDraftRegion,
-                reflex.LReflexDraftRemark);
+                reflex.LReflexDraftRegion);
         }
 
         TExemplarTextAdd(texts, draft.LEntryDraftMeanings);

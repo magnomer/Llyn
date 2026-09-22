@@ -59,5 +59,5 @@ Reads one `transcription` element as a scheme and its text.
 
 ## `private static LReflexDraft LMarkupReflexParse(LMarkupNode element, List<LMarkupOmission> omissions)`
 
-Reads one `reflex` element as a language, a kind, its text, its note, its region and its remark.
-An empty `main` element marks it.
+Reads one `reflex` element as a language, kind, text, romanization, meaning, note and region.
+An empty `owned` element marks a user-entered meaning and an empty `main` element marks the common reading.

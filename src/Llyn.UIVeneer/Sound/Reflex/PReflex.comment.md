@@ -4,7 +4,7 @@
 
 The reflex rows of the input panel, under the headword at the head of the reading stack.
 The rows are the same rows the reading view prints, with bare fields where it prints text.
-The remark has a field of its own after the note.
+The romanization, meaning and note each have a field after the reading.
 The region is only a hover on the language field.
 The folded languages hide under the same fold the view has, and the fold state is shared with it.
 Every change is a request to the engine, and the rows are rebuilt from the draft it answers with.
@@ -35,7 +35,7 @@ A failed ask is ignored, and the rows stay as they are.
 ## `private void PReflexChangeHandle(object? sender, PropertyChangedEventArgs e)`
 
 A text change becomes a respelling request while the row prints its respelling and a reading request otherwise.
-
+Romanization, meaning and note changes become their matching requests.
 Defers a request for the field that changed, so typing is sent in one piece.
 A language change also remarks the leads at once, so the language prints on the right row while typing.
 

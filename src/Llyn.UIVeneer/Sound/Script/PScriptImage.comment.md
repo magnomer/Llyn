@@ -18,6 +18,10 @@ The height every picture is drawn at, in device-independent pixels.
 
 How many pixels are decoded per drawn pixel of height, so a scaled display still reads crisp.
 
+## `private const string PScriptImageArea`
+
+The localization area a stored age's code is read under.
+
 ## `public BitmapSource? PScriptImageSource`
 
 The decoded picture, used as an opacity mask so the glyph takes the theme's ink.
@@ -26,7 +30,14 @@ Null until the picture is seen, and the mask then draws nothing.
 
 ## `public string PScriptImageCaption`
 
-The caption printed under the picture, or empty so the template collapses it.
+The caption printed under the picture, without its age, or empty so the template collapses it.
+
+## `public string PScriptImageEpoch`
+
+The stored age in the interface language, printed above the caption, or empty so the template collapses it.
+The stored code names a localization text, which is read on every request rather than kept.
+So the line follows a language change with no fetch and no rebuilt row.
+A code no shipped language names reads as empty, because a bare code says less than nothing to a reader.
 
 ## `public double PScriptImageWidth`
 
@@ -39,6 +50,11 @@ The drawn height, handed to the template so the measure lives in one place.
 ## `internal static PScriptImage? PScriptImageCreate(LScriptImage image)`
 
 Reads the size from the stored bytes, or returns null when they are not a picture the framework can read.
+
+## `internal void PScriptImageUpdate()`
+
+Tells the row its age reads differently now, which the box calls for every picture after a language change.
+The picture itself is untouched, so only the one line is redrawn.
 
 ## `public void PImageLoad()`
 
