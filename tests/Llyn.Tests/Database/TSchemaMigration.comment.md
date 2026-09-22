@@ -19,6 +19,11 @@ The realm row, the stamp and the id counter on a fresh workspace are covered by 
 A version-71 reflex carries its old note into romanization and its old remark into the new note.
 Its new meaning is empty and its ownership flag is clear.
 
+## `public void DatabaseCreate_BuildWithoutEtymology_RaisesTheTablesEmpty()`
+
+A version-73 workspace has no etymology tables.
+The rebuild adds all three empty and carries every entry across.
+
 ## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
 
 A version-47 workspace has no Situation media tables.

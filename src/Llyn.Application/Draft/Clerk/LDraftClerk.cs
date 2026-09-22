@@ -8,6 +8,7 @@ public sealed class LDraftClerk
     private readonly LIdentity _lDraftClerkIdentity;
     private readonly LLanguageCache _lDraftClerkLanguages;
     private readonly LDraftClerkChip _lDraftClerkChip;
+    private readonly LDraftClerkEtymology _lDraftClerkEtymology;
     private readonly LDraftClerkGloss _lDraftClerkGloss;
     private readonly LDraftClerkMedia _lDraftClerkMedia;
     private readonly LDraftClerkMention _lDraftClerkMention;
@@ -25,6 +26,7 @@ public sealed class LDraftClerk
         _lDraftClerkIdentity = identity;
         _lDraftClerkLanguages = languages;
         _lDraftClerkChip = new LDraftClerkChip(rig.LRigSituations, rig.LRigRegisters, rig.LRigTags, identity);
+        _lDraftClerkEtymology = new LDraftClerkEtymology(rig.LRigEntries, identity);
         _lDraftClerkGloss = new LDraftClerkGloss(identity);
         _lDraftClerkMedia = new LDraftClerkMedia(rig.LRigImages, rig.LRigVideos, identity);
         _lDraftClerkMention = new LDraftClerkMention(rig.LRigEntries, rig.LRigMeanings, identity);
@@ -149,6 +151,7 @@ public sealed class LDraftClerk
                 card => card with { LCardDraftMeaning = LStateValue.LStateValueRead(sent.LRequestValue) }),
             _ => _lDraftClerkReading.LReadingApply(content, request)
                 ?? _lDraftClerkReflex.LReflexApply(content, request)
+                ?? _lDraftClerkEtymology.LEtymologyApply(content, request)
                 ?? LDraftListApply(content, request),
         };
     }

@@ -8,6 +8,7 @@ public sealed record LRig(
     LAuditVault LRigAudit,
     LPostureVault LRigPosture,
     LEntryVault LRigEntries,
+    LEtymologyVault LRigEtymologies,
     LDraftVault LRigDrafts,
     LClaimVault LRigClaims,
     LCourtVault LRigCourts,

@@ -26,6 +26,7 @@ public partial class PEditor
         [
             (PStackMeaning, PMeaning),
             (PStackCollocation, PCollocation),
+            (PStackEtymology, PEtymologyField),
             (PStackNote, PNote)
         ];
 

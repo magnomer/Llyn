@@ -50,6 +50,11 @@ The audio's added time stays behind, because it is workspace bookkeeping.
 
 Every stored transcription of the entry, in stored order, each with its scheme and its id.
 
+### `private LEtymologyDraft LEntryEtymologyRead(long id)`
+
+The stored etymology of the entry, both shapes read together into one draft.
+An entry that declares no origin gives an empty draft rather than null.
+
 ### `private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)`
 
 Every stored reflex of the entry, in stored order, each with its language, kind, mark and id.

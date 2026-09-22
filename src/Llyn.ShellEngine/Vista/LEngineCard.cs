@@ -338,13 +338,19 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        return LEngineTargetRead(draft.LEntryDraftTargets);
+        return LEngineTargetRead([.. draft.LEntryDraftTargets, .. draft.LEntryDraftSources]);
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)
     {
         LEntryDraft? draft = LEngineDraftRead(ownerId)?.LDraftContent;
-        return draft is null || !draft.LEntryDraftTargeted ? [] : LEngineTargetRead(ownerId, draft.LEntryDraftTargets);
+        if (draft is null)
+        {
+            return [];
+        }
+
+        List<long> ids = [.. draft.LEntryDraftTargets, .. draft.LEntryDraftSources];
+        return ids.Count == 0 ? [] : LEngineTargetRead(ownerId, ids);
     }
 
     public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId)

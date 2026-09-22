@@ -79,6 +79,8 @@ internal static class TAuditNameRegistry
         "Entry",
         "Epoch",
         "Establishment",
+        "Etymology",
+        "Etymon",
         "Example",
         "Excerpt",
         "Exemplar",

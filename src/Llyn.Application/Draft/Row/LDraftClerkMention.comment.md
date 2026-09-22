@@ -46,7 +46,7 @@ Replaces the text of a row's Example and shifts its Mentions to follow.
 
 The same for the Example the corpus panel holds.
 
-## `private static IReadOnlyList<LMentionDraft> LMentionUpdate(`
+## `public static IReadOnlyList<LMentionDraft> LMentionUpdate(`
 
 Recomputes every span after the text changed from `before` to `after`.
 The common prefix and the common suffix of the two texts are found in code points.
@@ -55,6 +55,7 @@ One entirely inside the suffix shifts by the length delta.
 One touching the edited middle is dropped, because the word it marked is no longer what it was.
 This is right for every single-keystroke edit.
 A paste over the whole sentence drops everything, which is what the user expects.
+The etymology prose uses it too, so both texts carry their spans across an edit alike.
 
 ## `public static IReadOnlyList<LMentionDraft> LMentionRead(IReadOnlyList<LMention> mentions)`
 

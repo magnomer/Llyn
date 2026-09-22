@@ -80,6 +80,7 @@ public sealed class LPortraitClerk
         List<long> ids = [];
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftMeanings, ids);
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftCollocations, ids);
+        ids.AddRange(draft.LEntryDraftSources);
 
         IReadOnlyDictionary<long, LPortraitLink> targets = LPortraitTargetScan(ids);
         IReadOnlyDictionary<long, string> sources = LPortraitSourceScan();
@@ -118,6 +119,7 @@ public sealed class LPortraitClerk
                 label,
                 targets,
                 sources));
+        LPortraitClerkCard.LPortraitEtymologyAdd(sections, draft, targets, label);
         LPortraitClerkCard.LPortraitIncomingAdd(sections, LPortraitIncomingScan(entryId), label);
         LPortraitClerkCard.LPortraitNoteAdd(sections, draft, label);
         LPortraitClerkCrest.LPortraitScriptAdd(sections, LPortraitScriptScan(entryId, language), label);

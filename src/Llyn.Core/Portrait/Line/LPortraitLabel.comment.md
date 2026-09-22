@@ -25,6 +25,7 @@ Passing the words in keeps export out of the interface layer without moving tran
 - `LPortraitLabelGloss` - the label of a gloss line whose language is unnamed.
 - `LPortraitLabelSource` - the label of the source line under an example.
 - `LPortraitLabelMention` - the heading over the words an example mentions.
+- `LPortraitLabelEtymology` - the heading over the entry's etymology.
 - `LPortraitLabelSituation` - the heading over situation chips.
 - `LPortraitLabelRegister` - the heading over register chips.
 - `LPortraitLabelTranslation` - the heading over translation links.

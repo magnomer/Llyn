@@ -21,10 +21,12 @@ public sealed class LDraftClerkMint
         IReadOnlyList<LPronunciationDraft> spoken = LPronunciationNormalize(content.LEntryDraftPronunciations);
         IReadOnlyList<LTranscriptionDraft> spelled = LTranscriptionNormalize(content.LEntryDraftTranscriptions);
         IReadOnlyList<LReflexDraft> reflexes = LReflexNormalize(content.LEntryDraftReflexes);
+        LEtymologyDraft etymology = LEtymologyNormalize(content.LEntryDraftEtymology);
         IReadOnlyList<LCardDraft> meanings = LCardNormalize(content.LEntryDraftMeanings);
         IReadOnlyList<LCardDraft> collocations = LCardNormalize(content.LEntryDraftCollocations);
 
-        return ReferenceEquals(spoken, content.LEntryDraftPronunciations)
+        return ReferenceEquals(etymology, content.LEntryDraftEtymology)
+            && ReferenceEquals(spoken, content.LEntryDraftPronunciations)
             && ReferenceEquals(spelled, content.LEntryDraftTranscriptions)
             && ReferenceEquals(reflexes, content.LEntryDraftReflexes)
             && ReferenceEquals(meanings, content.LEntryDraftMeanings)
@@ -35,6 +37,7 @@ public sealed class LDraftClerkMint
                 LEntryDraftPronunciations = spoken,
                 LEntryDraftTranscriptions = spelled,
                 LEntryDraftReflexes = reflexes,
+                LEntryDraftEtymology = etymology,
                 LEntryDraftMeanings = meanings,
                 LEntryDraftCollocations = collocations,
             };
@@ -48,6 +51,22 @@ public sealed class LDraftClerkMint
             drafts,
             static draft => draft.LReflexDraftId == 0 && draft.LReflexDraftEmpty,
             draft => draft.LReflexDraftId == 0 ? draft with { LReflexDraftId = LIdentityCreate() } : draft);
+    }
+
+    public LEtymologyDraft LEtymologyNormalize(LEtymologyDraft etymology)
+    {
+        ArgumentNullException.ThrowIfNull(etymology);
+
+        IReadOnlyList<LMentionDraft> mentions = LDraftClerkList.LDraftListNormalize(
+            etymology.LEtymologyDraftMentions,
+            static mention => !mention.LMentionDraftLinked,
+            mention => mention.LMentionDraftId == 0
+                ? mention with { LMentionDraftId = LIdentityCreate() }
+                : mention);
+
+        return ReferenceEquals(mentions, etymology.LEtymologyDraftMentions)
+            ? etymology
+            : etymology with { LEtymologyDraftMentions = mentions };
     }
 
     private long LIdentityCreate()

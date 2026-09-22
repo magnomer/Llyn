@@ -125,7 +125,7 @@ internal static class LMarkupCardReader
                     glosses.Add(LMarkupGlossParse(child, omissions));
                     break;
                 case "mention":
-                    mentions.Add(LMarkupMentionParse(child, omissions));
+                    mentions.Add(LMarkupMentionParse(child, true, omissions));
                     break;
                 case "reference":
                     reference = LMarkupReferenceParse(child, omissions);
@@ -163,7 +163,8 @@ internal static class LMarkupCardReader
         return new LGlossDraft(0, language, text);
     }
 
-    private static LMarkupMention LMarkupMentionParse(LMarkupNode element, List<LMarkupOmission> omissions)
+    internal static LMarkupMention LMarkupMentionParse(
+        LMarkupNode element, bool sensed, List<LMarkupOmission> omissions)
     {
         int offset = -1;
         int length = 0;
@@ -187,7 +188,7 @@ internal static class LMarkupCardReader
                 case "language":
                     language = LMarkup.LMarkupTextParse(child);
                     break;
-                case "sense":
+                case "sense" when sensed:
                     sense = LMarkup.LMarkupTextParse(child);
                     break;
                 default:

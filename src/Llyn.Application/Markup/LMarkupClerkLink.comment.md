@@ -20,6 +20,13 @@ A mention out of range or overlapping another is omitted.
 A mention with a sense is held for settling once the entries stand, its draft id a negative slot.
 A referenced source is found or created.
 
+## `public LEtymologyDraft LMarkupEtymologyResolve(LMarkupEntry entry, IReadOnlyDictionary<(string, string), long> prepared, List<LMarkupOmission> omissions)`
+
+The etymology draft from the markup, both shapes resolved against the entries the import knows.
+A source link that names no stored entry is omitted, and a repeated one is taken once.
+A span out of range, overlapping another, or naming no entry is omitted.
+The engine keeps only one shape when it writes, so both may be read.
+
 ## `public long LMarkupEntryResolve(string headword, string language, IReadOnlyDictionary<(string, string), long> prepared)`
 
 The entry the import is creating under that name, else the single stored match, else zero.

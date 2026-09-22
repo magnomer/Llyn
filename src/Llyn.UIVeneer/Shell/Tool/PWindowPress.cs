@@ -98,6 +98,7 @@ public partial class PWindow
             PLocalizationCatalog.PLocalizationTextRead("Portrait.Gloss"),
             PLocalizationCatalog.PLocalizationTextRead("Reference.Title"),
             PLocalizationCatalog.PLocalizationTextRead("Portrait.Mention"),
+            PLocalizationCatalog.PLocalizationTextRead("Portrait.Etymology"),
             PLocalizationCatalog.PLocalizationTextRead("Portrait.Situation"),
             PLocalizationCatalog.PLocalizationTextRead("Portrait.Register"),
             PLocalizationCatalog.PLocalizationTextRead("Portrait.Translation"),

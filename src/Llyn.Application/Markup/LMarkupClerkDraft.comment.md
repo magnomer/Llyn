@@ -14,6 +14,7 @@ Reads the speech and morphology ports out of `rig` and keeps the link resolver.
 The draft of one entry.
 A speech the workspace does not know stays as a named draft, an inflection's unknown speech is omitted.
 A recording whose location cannot stand loses the recording.
+The etymology is resolved beside the rest, both shapes at once.
 
 ## `private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)`
 

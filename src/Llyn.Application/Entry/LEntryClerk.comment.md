@@ -188,6 +188,7 @@ The localized label of one grasp step.
 Saves the whole input form as one new entry.
 That is the headword row and its meanings and collocations in card order.
 It is also its note, its inflections and its pronunciations when they carry anything.
+It is also its etymology, written in whichever of the two shapes the draft ended in.
 The note is stored as Markdown normalized by `LMarkdown`.
 It is also the revision recording the create, and the workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.

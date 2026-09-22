@@ -333,6 +333,7 @@
                         <StackPanel x:Name="PStackTabs" Orientation="Horizontal" SizeChanged="PStackSizeHandle">
                             <Button x:Name="PStackMeaning" Tag="Selected" Content="{DynamicResource Display.Meaning}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
                             <Button x:Name="PStackCollocation" Content="{DynamicResource Display.CollocationSingle}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                            <Button x:Name="PStackEtymology" Content="{DynamicResource Display.Etymology}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
                             <Button x:Name="PStackNote" Content="{DynamicResource Display.Note}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
                         </StackPanel>
                     </Grid>
@@ -361,6 +362,8 @@
 
                             <Button Click="PCollocationHandle" Content="{DynamicResource Input.CollocationAdd}" Style="{StaticResource Editor.Card.Add}" />
                         </StackPanel>
+
+                        <local:PEtymology x:Name="PEtymologyField" MinHeight="360" Style="{StaticResource Theme.Etymology.Card}" PEtymologyEditable="True" Visibility="Collapsed" />
 
                         <Border x:Name="PNote" MinHeight="360" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
                             <Grid>

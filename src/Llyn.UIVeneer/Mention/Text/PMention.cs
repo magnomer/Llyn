@@ -153,6 +153,12 @@ public sealed class PMention : TextBlock
         return new Rect(0, ActualHeight, 0, 0);
     }
 
+    internal static LWindow? PMentionWindowRead(DependencyObject holder)
+    {
+        ArgumentNullException.ThrowIfNull(holder);
+        return (LWindow?)holder.GetValue(PMentionWindowProperty);
+    }
+
     private static void PMentionChangeHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         if (sender is PMention mention)

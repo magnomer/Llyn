@@ -179,7 +179,7 @@ public sealed class LDraftClerkMention
         return example with { LExampleText = text, LExampleMention = LMentionRead(shifted) };
     }
 
-    private static IReadOnlyList<LMentionDraft> LMentionUpdate(
+    public static IReadOnlyList<LMentionDraft> LMentionUpdate(
         string before, string after, IReadOnlyList<LMentionDraft> mentions)
     {
         if (mentions.Count == 0 || string.Equals(before, after, StringComparison.Ordinal))

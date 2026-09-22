@@ -9,6 +9,7 @@ public sealed class LEntryClerk
 {
     private readonly LVault _lEntryClerkVault;
     private readonly LEntryVault _lEntryClerkEntries;
+    private readonly LEtymologyVault _lEntryClerkEtymologies;
     private readonly LFrequencyVault _lEntryClerkFrequencies;
     private readonly LNoteVault _lEntryClerkNotes;
     private readonly LRevisionVault _lEntryClerkRevisions;
@@ -48,6 +49,7 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(recordings);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
+        _lEntryClerkEtymologies = rig.LRigEtymologies;
         _lEntryClerkFrequencies = rig.LRigFrequencies;
         _lEntryClerkNotes = rig.LRigNotes;
         _lEntryClerkRevisions = rig.LRigRevisions;
@@ -324,6 +326,7 @@ public sealed class LEntryClerk
             identity);
         _lEntryClerkReflexes.LReflexClerkSync(
             entry.LEntryId, language, LReflexClerk.LReflexClerkReset(draft.LEntryDraftReflexes), null, identity);
+        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, null);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
         LRevisionRecord([new LRevisionChange(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
@@ -398,6 +401,7 @@ public sealed class LEntryClerk
         _lEntryClerkPronunciations.LPronunciationClerkSync(id, draft.LEntryDraftPronunciations, changes, identity);
         _lEntryClerkTranscriptions.LTranscriptionClerkSync(id, draft.LEntryDraftTranscriptions, changes, identity);
         _lEntryClerkReflexes.LReflexClerkSync(id, language, draft.LEntryDraftReflexes, changes, identity);
+        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, id, draft, changes);
 
         LEntry updated = _lEntryClerkEntries.LEntryRead(id) ?? stored;
         _lEntryClerkParadigms.LParadigmClerkUpdate(updated);

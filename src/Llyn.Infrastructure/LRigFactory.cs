@@ -33,6 +33,7 @@ public static class LRigFactory
             new LAuditWriter(root),
             new LPostureFile(new LKeepFile(root)),
             new LEntryArchive(database),
+            new LEtymologyArchive(database),
             new LDraftArchive(root),
             new LClaimArchive(root),
             new LCourtArchive(root),

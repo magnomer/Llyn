@@ -254,6 +254,11 @@
                         </ItemsControl>
                     </StackPanel>
 
+                    <StackPanel x:Name="PDisplayEtymologySection" Margin="0,28,0,0">
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Etymology}" />
+                        <local:PEtymology x:Name="PDisplayEtymology" Style="{StaticResource Theme.Etymology.Read}" />
+                    </StackPanel>
+
                     <StackPanel x:Name="PDisplayNoteSection" Margin="0,28,0,0">
                         <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
                         <Border Padding="26,22" Style="{StaticResource Theme.Input.Card}">

@@ -1,3 +1,5 @@
+using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -75,6 +77,68 @@ public sealed class TPortraitEntry
 
         Assert.Equal("ˈkɪndəl", Assert.Single(plain.LPortraitPageLine).LPortraitLineText);
         Assert.Equal("KIN-dəl", Assert.Single(respelled.LPortraitPageLine).LPortraitLineText);
+    }
+
+    [Fact]
+    public void PortraitRead_LinkedEtymology_CarriesOneBandOfSourceLinks()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long source = TPortraitEntryCreate(engine, "rinnan");
+        long entryId = TPortraitEntryCreate(engine, "run");
+
+        LDraft held = engine.TEngineDraftStart("Input", entryId);
+        engine.TEngineRequestApply(TInterface.TEtymonAdditionCreate(held.LDraftId, source, 0));
+        engine.TEngineDraftCommit(held.LDraftId);
+
+        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
+
+        LPortraitSection band = Assert.Single(
+            page.LPortraitPageSection,
+            static row => row.LPortraitSectionHeading == "Etymology");
+        Assert.Empty(band.LPortraitSectionLine);
+        Assert.Equal("rinnan", Assert.Single(band.LPortraitSectionLink).LPortraitLinkHeadword);
+    }
+
+    [Fact]
+    public void PortraitRead_NarratedEtymology_CarriesTheProseAndItsSpans()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long source = TPortraitEntryCreate(engine, "rinnan");
+        long entryId = TPortraitEntryCreate(engine, "run");
+
+        LDraft held = engine.TEngineDraftStart("Input", entryId);
+        engine.TEngineRequestApply(TInterface.TEtymologyTextCreate(held.LDraftId, "From rinnan."));
+        engine.TEngineRequestApply(TInterface.TEtymologyMentionCreate(held.LDraftId, 5, 6, source));
+        engine.TEngineDraftCommit(held.LDraftId);
+
+        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
+
+        LPortraitSection band = Assert.Single(
+            page.LPortraitPageSection,
+            static row => row.LPortraitSectionHeading == "Etymology");
+        Assert.Equal("From rinnan.", Assert.Single(band.LPortraitSectionLine).LPortraitLineText);
+        Assert.Equal("rinnan", Assert.Single(band.LPortraitSectionLink).LPortraitLinkHeadword);
+    }
+
+    [Fact]
+    public void PortraitRead_NoEtymology_AddsNoBand()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long entryId = TPortraitEntryCreate(engine, "run");
+
+        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
+
+        Assert.DoesNotContain(
+            page.LPortraitPageSection, static row => row.LPortraitSectionHeading == "Etymology");
+    }
+
+    private static long TPortraitEntryCreate(LEngine engine, string headword)
+    {
+        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            headword, "English", string.Empty, string.Empty, [], [])).LEntryId;
     }
 
     [Fact]

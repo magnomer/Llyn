@@ -14,8 +14,11 @@ public sealed record LEntryDraft(
     IReadOnlyList<LForm>? LEntryDraftForms = null,
     IReadOnlyList<LInflection>? LEntryDraftInflections = null,
     IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null,
-    IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null)
+    IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null,
+    LEtymologyDraft? LEntryDraftEtymology = null)
 {
+    public LEtymologyDraft LEntryDraftEtymology { get; init; } = LEntryDraftEtymology ?? new LEtymologyDraft();
+
     public IReadOnlyList<LPronunciationDraft> LEntryDraftPronunciations { get; init; } =
         LEntryDraftPronunciations ?? [];
 
@@ -50,11 +53,22 @@ public sealed record LEntryDraft(
 
     public bool LEntryDraftReflected => LEntryDraftReflexes.Count > 0;
 
+    public bool LEntryDraftDerived =>
+        LEntryDraftEtymology.LEtymologyDraftNarrated || LEntryDraftEtymology.LEtymologyDraftLinked;
+
     public bool LEntryDraftTargeted => LEntryDraftTargets.Count > 0;
 
     public IReadOnlyList<long> LEntryDraftTargets =>
         LEntryDraftMeanings.Concat(LEntryDraftCollocations)
             .SelectMany(static card => card.LCardDraftTranslation)
+            .Distinct()
+            .ToList();
+
+    public IReadOnlyList<long> LEntryDraftSources =>
+        LEntryDraftEtymology.LEtymologyDraftEtymons
+            .Concat(LEntryDraftEtymology.LEtymologyDraftMentions.Select(
+                static mention => mention.LMentionDraftEntry))
+            .Where(static id => id > 0)
             .Distinct()
             .ToList();
 

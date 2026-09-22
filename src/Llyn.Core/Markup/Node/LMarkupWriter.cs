@@ -41,6 +41,17 @@ internal static class LMarkupWriter
             element.Add(LMarkupReflexFormat(reflex));
         }
 
+        foreach (LMarkupEtymon etymon in entry.LMarkupEntryEtymon)
+        {
+            element.Add(LMarkupEtymonFormat(etymon));
+        }
+
+        if (entry.LMarkupEntryEtymology is LMarkupEtymology etymology
+            && etymology.LMarkupEtymologyText.Length > 0)
+        {
+            element.Add(LMarkupEtymologyFormat(etymology));
+        }
+
         foreach (LMarkupCard card in entry.LMarkupEntryMeaning)
         {
             element.Add(LMarkupCardWriter.LMarkupCardFormat(card, "meaning"));
@@ -53,6 +64,27 @@ internal static class LMarkupWriter
 
         LMarkup.LMarkupTextFormat(element, "note", entry.LMarkupEntryNote);
         return LMarkupNode.LMarkupNodeCreate("entry", element);
+    }
+
+    private static LMarkupNode LMarkupEtymonFormat(LMarkupEtymon etymon)
+    {
+        List<LMarkupNode> element = [];
+        LMarkup.LMarkupTextFormat(element, "headword", etymon.LMarkupEtymonHeadword);
+        LMarkup.LMarkupTextFormat(element, "language", etymon.LMarkupEtymonLanguage);
+        return LMarkupNode.LMarkupNodeCreate("etymon", element);
+    }
+
+    private static LMarkupNode LMarkupEtymologyFormat(LMarkupEtymology etymology)
+    {
+        List<LMarkupNode> element = [];
+        LMarkup.LMarkupTextFormat(element, "text", etymology.LMarkupEtymologyText);
+
+        foreach (LMarkupMention mention in etymology.LMarkupEtymologyMention)
+        {
+            element.Add(LMarkupCardWriter.LMarkupMentionFormat(mention));
+        }
+
+        return LMarkupNode.LMarkupNodeCreate("etymology", element);
     }
 
     private static LMarkupNode LMarkupFormFormat(LForm form)

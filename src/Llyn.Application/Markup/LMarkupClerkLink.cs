@@ -88,6 +88,63 @@ public sealed class LMarkupClerkLink
             mentions);
     }
 
+    public LEtymologyDraft LMarkupEtymologyResolve(
+        LMarkupEntry entry,
+        IReadOnlyDictionary<(string, string), long> prepared,
+        List<LMarkupOmission> omissions)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(prepared);
+        ArgumentNullException.ThrowIfNull(omissions);
+
+        List<long> etymons = [];
+        foreach (LMarkupEtymon etymon in entry.LMarkupEntryEtymon)
+        {
+            long target = LMarkupEntryResolve(
+                etymon.LMarkupEtymonHeadword, etymon.LMarkupEtymonLanguage, prepared);
+            if (target == 0)
+            {
+                omissions.Add(new LMarkupOmission(0, $"etymon \"{etymon.LMarkupEtymonHeadword}\""));
+                continue;
+            }
+
+            if (!etymons.Contains(target))
+            {
+                etymons.Add(target);
+            }
+        }
+
+        if (entry.LMarkupEntryEtymology is not LMarkupEtymology etymology)
+        {
+            return new LEtymologyDraft(string.Empty, [], etymons);
+        }
+
+        string text = etymology.LMarkupEtymologyText;
+        int length = LMentionClerk.LMentionRuneRead(text).Count;
+        List<LMentionDraft> mentions = [];
+        foreach (LMarkupMention mention in etymology.LMarkupEtymologyMention)
+        {
+            if (mention.LMarkupMentionHeadword.Length == 0 || !LMarkupMentionCheck(mention, length, mentions))
+            {
+                omissions.Add(new LMarkupOmission(0, $"mention at {mention.LMarkupMentionOffset}"));
+                continue;
+            }
+
+            long target = LMarkupEntryResolve(
+                mention.LMarkupMentionHeadword, mention.LMarkupMentionLanguage, prepared);
+            if (target == 0)
+            {
+                omissions.Add(new LMarkupOmission(0, $"mention \"{mention.LMarkupMentionHeadword}\""));
+                continue;
+            }
+
+            mentions.Add(new LMentionDraft(
+                0, mention.LMarkupMentionOffset, mention.LMarkupMentionLength, target));
+        }
+
+        return new LEtymologyDraft(text, mentions, etymons);
+    }
+
     public long LMarkupEntryResolve(
         string headword, string language, IReadOnlyDictionary<(string, string), long> prepared)
     {

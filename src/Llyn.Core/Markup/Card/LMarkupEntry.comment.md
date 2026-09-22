@@ -21,6 +21,8 @@ Two entries are equal when every row is equal in order, so a round trip can be c
 - `LMarkupEntryCollocation` — Collocation cards, which never nest.
 - `LMarkupEntryNote` — The note markdown, empty when there is none.
 - `LMarkupEntryLine` — The line the entry opened on in its file, zero for an entry built in memory.
+- `LMarkupEntryEtymology` — The narrative etymology, nothing when the entry has none.
+- `LMarkupEntryEtymon` — The direct source links in file order, empty when the entry has none.
 
 ## `public bool Equals(LMarkupEntry? other)`
 

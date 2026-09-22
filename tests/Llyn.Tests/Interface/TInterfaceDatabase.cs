@@ -31,6 +31,27 @@ internal static partial class TInterface
     internal static LEntryArchive TEntryArchiveCreate(LDatabase database) =>
         new(database);
 
+    internal static LEtymologyArchive TEtymologyArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static LEtymology? TEtymologyRead(this LEtymologyVault etymologyVault, long entryId) =>
+        etymologyVault.LEtymologyRead(entryId);
+
+    internal static LEtymology? TEtymologySave(
+        this LEtymologyVault etymologyVault, long entryId, LEtymology? etymology) =>
+        etymologyVault.LEtymologySave(entryId, etymology);
+
+    internal static IReadOnlyList<LEtymon> TEtymonRead(this LEtymologyVault etymologyVault, long entryId) =>
+        etymologyVault.LEtymologyEtymonRead(entryId);
+
+    internal static IReadOnlyList<LEtymon> TEtymonSet(
+        this LEtymologyVault etymologyVault, long entryId, IReadOnlyList<long> targetIds) =>
+        etymologyVault.LEtymologyEtymonSet(entryId, targetIds);
+
+    internal static IReadOnlyList<LEntry> TEtymologySourceScan(
+        this LEtymologyVault etymologyVault, long entryId) =>
+        etymologyVault.LEtymologySourceScan(entryId);
+
     internal static LShengfuArchive TShengfuArchiveCreate(LDatabase database) =>
         new(database);
 

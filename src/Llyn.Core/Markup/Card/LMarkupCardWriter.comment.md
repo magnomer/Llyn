@@ -18,7 +18,7 @@ Writes one `sentence` element, the frame first and the example after it.
 
 Writes one `example` element with its glosses, mentions and reference.
 
-## `private static LMarkupNode LMarkupMentionFormat(LMarkupMention mention)`
+## `internal static LMarkupNode LMarkupMentionFormat(LMarkupMention mention)`
 
 Writes one `mention` element, offset and length in invariant digits.
 

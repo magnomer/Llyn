@@ -12,6 +12,14 @@ Each writer fills a child list and closes it into one `LMarkupNode`, which `LMar
 
 Writes one `entry` element with every row the record holds.
 
+## `private static LMarkupNode LMarkupEtymonFormat(LMarkupEtymon etymon)`
+
+Writes one `etymon` element with its headword and language.
+
+## `private static LMarkupNode LMarkupEtymologyFormat(LMarkupEtymology etymology)`
+
+Writes one `etymology` element with its text and the spans that name an entry.
+
 ## `private static LMarkupNode LMarkupFormFormat(LForm form)`
 
 Writes one `form` element with its text, local spelling and role.

@@ -29,6 +29,17 @@ Grasp, frequency, favorite and timestamps are never read.
 Forms and syllables pass whole, since they hold no id worth hiding.
 A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.
 
+## `private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)`
+
+The narrative etymology with each span's target named by headword and language.
+Nothing when the etymology carries no text, since only one shape travels.
+A span whose target no longer stands is left out, since an etymology span always names an entry.
+
+## `private IReadOnlyList<LMarkupEtymon> LMarkupEtymonCreate(LEtymologyDraft etymology)`
+
+The direct source links named by headword and language, in stored order.
+A link whose target no longer stands is left out.
+
 ## `private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)`
 
 Replaces the speech value id and morphology ids with their stored names.

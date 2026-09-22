@@ -24,9 +24,10 @@ Reads one `example` element with its glosses, mentions and reference.
 
 Reads one `gloss` element as a draft with no id.
 
-## `private static LMarkupMention LMarkupMentionParse(LMarkupNode element, List<LMarkupOmission> omissions)`
+## `internal static LMarkupMention LMarkupMentionParse(LMarkupNode element, bool sensed, List<LMarkupOmission> omissions)`
 
 Reads one `mention` element, its target by headword and language and its sense by position path.
+A `sense` child is read only when `sensed` allows it, and is an omission everywhere else.
 An offset or length that is not a number reads as out of range.
 The import then drops the span and reports it.
 A mention with no headword is a plain span that stands for no entry.

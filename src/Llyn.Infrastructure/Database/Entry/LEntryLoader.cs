@@ -36,6 +36,7 @@ public sealed class LEntryLoader
         IReadOnlyList<LPronunciationDraft> pronunciations = LEntrySoundRead(id);
         IReadOnlyList<LTranscriptionDraft> transcriptions = LEntrySpellingRead(id);
         IReadOnlyList<LReflexDraft> reflexes = LEntryReflexRead(id);
+        LEtymologyDraft etymology = LEntryEtymologyRead(id);
 
         Dictionary<long, List<LMeaning>> senses = [];
         foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
@@ -75,7 +76,8 @@ public sealed class LEntryLoader
             forms,
             inflections,
             transcriptions,
-            reflexes);
+            reflexes,
+            etymology);
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(
@@ -137,6 +139,18 @@ public sealed class LEntryLoader
         }
 
         return drafts;
+    }
+
+    private LEtymologyDraft LEntryEtymologyRead(long id)
+    {
+        LEtymologyArchive etymologies = new(_lEntryLoaderDatabase);
+        List<long> targets = [];
+        foreach (LEtymon etymon in etymologies.LEtymologyEtymonRead(id))
+        {
+            targets.Add(etymon.LEtymonTargetId);
+        }
+
+        return LEtymologyDraft.LEtymologyDraftCreate(etymologies.LEtymologyRead(id), targets);
     }
 
     private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)

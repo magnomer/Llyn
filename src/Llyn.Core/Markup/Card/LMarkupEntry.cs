@@ -16,7 +16,9 @@ public sealed record LMarkupEntry(
     IReadOnlyList<LMarkupCard>? LMarkupEntryMeaning = null,
     IReadOnlyList<LMarkupCard>? LMarkupEntryCollocation = null,
     string LMarkupEntryNote = "",
-    int LMarkupEntryLine = 0) : IEquatable<LMarkupEntry>
+    int LMarkupEntryLine = 0,
+    LMarkupEtymology? LMarkupEntryEtymology = null,
+    IReadOnlyList<LMarkupEtymon>? LMarkupEntryEtymon = null) : IEquatable<LMarkupEntry>
 {
     public string LMarkupEntryName { get; init; } = LMarkupEntryHeadword;
 
@@ -44,6 +46,10 @@ public sealed record LMarkupEntry(
 
     public string LMarkupEntryNote { get; init; } = LMarkupEntryNote ?? string.Empty;
 
+    public LMarkupEtymology? LMarkupEntryEtymology { get; init; } = LMarkupEntryEtymology;
+
+    public IReadOnlyList<LMarkupEtymon> LMarkupEntryEtymon { get; init; } = LMarkupEntryEtymon ?? [];
+
     public bool Equals(LMarkupEntry? other)
     {
         return other is not null
@@ -60,6 +66,8 @@ public sealed record LMarkupEntry(
             && LMarkupEntryReflex.SequenceEqual(other.LMarkupEntryReflex)
             && LMarkupEntryMeaning.SequenceEqual(other.LMarkupEntryMeaning)
             && LMarkupEntryCollocation.SequenceEqual(other.LMarkupEntryCollocation)
+            && Equals(LMarkupEntryEtymology, other.LMarkupEntryEtymology)
+            && LMarkupEntryEtymon.SequenceEqual(other.LMarkupEntryEtymon)
             && LMarkupEntryNote == other.LMarkupEntryNote;
     }
 

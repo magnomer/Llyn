@@ -59,6 +59,8 @@ internal static class LMarkupReader
         List<LReflexDraft> reflexes = [];
         List<LMarkupCard> meanings = [];
         List<LMarkupCard> collocations = [];
+        List<LMarkupEtymon> etymons = [];
+        LMarkupEtymology? etymology = null;
 
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
@@ -88,6 +90,12 @@ internal static class LMarkupReader
                 case "reflex":
                     reflexes.Add(LMarkupReflexParse(child, omissions));
                     break;
+                case "etymon":
+                    etymons.Add(LMarkupEtymonParse(child, omissions));
+                    break;
+                case "etymology":
+                    etymology = LMarkupEtymologyParse(child, omissions);
+                    break;
                 case "meaning":
                     meanings.Add(LMarkupCardReader.LMarkupCardParse(child, true, omissions));
                     break;
@@ -115,7 +123,57 @@ internal static class LMarkupReader
             meanings,
             collocations,
             note,
-            element.LMarkupNodeLine);
+            element.LMarkupNodeLine,
+            etymology,
+            etymons);
+    }
+
+    private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)
+    {
+        string headword = string.Empty;
+        string language = string.Empty;
+
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
+        {
+            switch (child.LMarkupNodeName)
+            {
+                case "headword":
+                    headword = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "language":
+                    language = LMarkup.LMarkupTextParse(child);
+                    break;
+                default:
+                    LMarkupOmissionAdd(omissions, child);
+                    break;
+            }
+        }
+
+        return new LMarkupEtymon(headword, language);
+    }
+
+    private static LMarkupEtymology LMarkupEtymologyParse(LMarkupNode element, List<LMarkupOmission> omissions)
+    {
+        string text = string.Empty;
+        List<LMarkupMention> mentions = [];
+
+        foreach (LMarkupNode child in element.LMarkupNodeChild)
+        {
+            switch (child.LMarkupNodeName)
+            {
+                case "text":
+                    text = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "mention":
+                    mentions.Add(LMarkupCardReader.LMarkupMentionParse(child, false, omissions));
+                    break;
+                default:
+                    LMarkupOmissionAdd(omissions, child);
+                    break;
+            }
+        }
+
+        return new LMarkupEtymology(text, mentions);
     }
 
     private static LForm LMarkupFormParse(LMarkupNode element, int position, List<LMarkupOmission> omissions)

@@ -137,7 +137,44 @@ public sealed class LMarkupClerk
             reflexes,
             LMarkupCardCreate(draft.LEntryDraftMeanings),
             LMarkupCardCreate(draft.LEntryDraftCollocations),
-            draft.LEntryDraftNote);
+            draft.LEntryDraftNote,
+            0,
+            LMarkupEtymologyCreate(draft.LEntryDraftEtymology),
+            LMarkupEtymonCreate(draft.LEntryDraftEtymology));
+    }
+
+    private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)
+    {
+        if (!etymology.LEtymologyDraftNarrated)
+        {
+            return null;
+        }
+
+        List<LMarkupMention> mentions = new(etymology.LEtymologyDraftMentions.Count);
+        foreach (LMentionDraft mention in etymology.LEtymologyDraftMentions)
+        {
+            LMarkupMention written = LMarkupMentionCreate(mention with { LMentionDraftSense = 0 });
+            if (written.LMarkupMentionHeadword.Length > 0)
+            {
+                mentions.Add(written);
+            }
+        }
+
+        return new LMarkupEtymology(etymology.LEtymologyDraftText, mentions);
+    }
+
+    private IReadOnlyList<LMarkupEtymon> LMarkupEtymonCreate(LEtymologyDraft etymology)
+    {
+        List<LMarkupEtymon> etymons = new(etymology.LEtymologyDraftEtymons.Count);
+        foreach (long id in etymology.LEtymologyDraftEtymons)
+        {
+            if (_lMarkupClerkEntries.LEntryRead(id) is LEntry entry)
+            {
+                etymons.Add(new LMarkupEtymon(entry.LEntryHeadword, entry.LEntryLanguage));
+            }
+        }
+
+        return etymons;
     }
 
     private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)

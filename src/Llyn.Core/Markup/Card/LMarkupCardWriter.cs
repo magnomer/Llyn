@@ -101,7 +101,7 @@ internal static class LMarkupCardWriter
         return LMarkupNode.LMarkupNodeCreate("example", element);
     }
 
-    private static LMarkupNode LMarkupMentionFormat(LMarkupMention mention)
+    internal static LMarkupNode LMarkupMentionFormat(LMarkupMention mention)
     {
         List<LMarkupNode> element = [];
         string offset = mention.LMarkupMentionOffset.ToString(CultureInfo.InvariantCulture);

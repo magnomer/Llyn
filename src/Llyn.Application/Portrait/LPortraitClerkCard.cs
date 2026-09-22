@@ -51,6 +51,55 @@ public static class LPortraitClerkCard
         sections.Add(LPortraitSection.LPortraitSectionCreate(label.LPortraitLabelIncoming, rows));
     }
 
+    public static void LPortraitEtymologyAdd(
+        List<LPortraitSection> sections,
+        LEntryDraft draft,
+        IReadOnlyDictionary<long, LPortraitLink> targets,
+        LPortraitLabel label)
+    {
+        ArgumentNullException.ThrowIfNull(sections);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(label);
+
+        LEtymologyDraft etymology = draft.LEntryDraftEtymology;
+        List<LPortraitLine> lines = [];
+        List<LPortraitLink> links = [];
+
+        if (etymology.LEtymologyDraftNarrated)
+        {
+            lines.Add(new LPortraitLine(string.Empty, etymology.LEtymologyDraftText));
+            foreach (LMentionDraft mention in etymology.LEtymologyDraftMentions)
+            {
+                LPortraitEtymologyAdd(links, targets, mention.LMentionDraftEntry);
+            }
+        }
+        else
+        {
+            foreach (long id in etymology.LEtymologyDraftEtymons)
+            {
+                LPortraitEtymologyAdd(links, targets, id);
+            }
+        }
+
+        if (lines.Count == 0 && links.Count == 0)
+        {
+            return;
+        }
+
+        sections.Add(new LPortraitSection(
+            label.LPortraitLabelEtymology, lines, string.Empty, [], [], LPortraitSectionLink: links));
+    }
+
+    private static void LPortraitEtymologyAdd(
+        List<LPortraitLink> links, IReadOnlyDictionary<long, LPortraitLink> targets, long id)
+    {
+        if (targets.TryGetValue(id, out LPortraitLink? link) && !links.Contains(link))
+        {
+            links.Add(link);
+        }
+    }
+
     public static void LPortraitNoteAdd(List<LPortraitSection> sections, LEntryDraft draft, LPortraitLabel label)
     {
         ArgumentNullException.ThrowIfNull(sections);

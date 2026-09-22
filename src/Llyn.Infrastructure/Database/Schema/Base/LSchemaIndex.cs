@@ -28,6 +28,8 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS collocation_image_member ON collocation_image (image_ref);
             CREATE INDEX IF NOT EXISTS collocation_example_member ON collocation_example (example_ref);
             CREATE INDEX IF NOT EXISTS example_mention_entry ON example_mention (entry_ref);
+            CREATE INDEX IF NOT EXISTS etymology_mention_entry ON etymology_mention (entry_ref);
+            CREATE INDEX IF NOT EXISTS etymon_entry ON etymon (entry_ref);
             CREATE INDEX IF NOT EXISTS example_mention_sense ON example_mention (sense_ref);
             CREATE INDEX IF NOT EXISTS sense_tag_member ON sense_tag (tag_ref);
             CREATE INDEX IF NOT EXISTS collocation_tag_member ON collocation_tag (tag_ref);
@@ -58,6 +60,7 @@ public static class LSchemaIndex
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS pronunciation_position ON pronunciation (entry_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS transcription_position ON transcription (entry_parent, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS etymon_position ON etymon (entry_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position
                 ON sense_translation (sense_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_translation_position

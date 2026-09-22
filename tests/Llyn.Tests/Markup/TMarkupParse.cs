@@ -63,7 +63,7 @@ public sealed class TMarkupParse
             <llyn>
               <entry>
                 <headword>ember</headword>
-                <etymology>Old English</etymology>
+                <origin>Old English</origin>
               </entry>
             </llyn>
             """;
@@ -73,7 +73,7 @@ public sealed class TMarkupParse
 
         Assert.Equal("ember", Assert.Single(entries).LMarkupEntryHeadword);
         LMarkupOmission omission = Assert.Single(omissions);
-        Assert.Equal((4, "<etymology>"), (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
+        Assert.Equal((4, "<origin>"), (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
     }
 
     [Fact]

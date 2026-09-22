@@ -34,6 +34,7 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeSearch.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeCatalog.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeMention.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeEtymology.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeGloss.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeParadigm.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeScript.xaml" />

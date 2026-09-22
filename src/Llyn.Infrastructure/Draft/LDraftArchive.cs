@@ -15,7 +15,7 @@ public sealed class LDraftArchive : LDraftVault
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
-    public const int LDraftArchiveVersion = 4;
+    public const int LDraftArchiveVersion = 5;
 
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 
@@ -262,6 +262,16 @@ public sealed class LDraftArchive : LDraftVault
         foreach (LReflexDraft reflex in draft.LDraftContent.LEntryDraftReflexes)
         {
             LDraftArchiveCheck(reflex.LReflexDraftId, "reflex");
+        }
+
+        foreach (LMentionDraft mention in draft.LDraftContent.LEntryDraftEtymology.LEtymologyDraftMentions)
+        {
+            LDraftArchiveCheck(mention.LMentionDraftId, "etymology mention");
+        }
+
+        foreach (long etymon in draft.LDraftContent.LEntryDraftEtymology.LEtymologyDraftEtymons)
+        {
+            LDraftArchiveCheck(etymon, "etymon");
         }
 
         LDraftArchiveCheck(draft.LDraftContent.LEntryDraftMeanings);

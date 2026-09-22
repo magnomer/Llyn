@@ -18,6 +18,11 @@ The same instance comes back when nothing changed, so a caller can tell a no-op 
 
 Blank unidentified reflex rows dropped and the rest given ids.
 
+## `public LEtymologyDraft LEtymologyNormalize(LEtymologyDraft etymology)`
+
+Spans naming no Entry dropped and the rest given ids.
+The links carry no id of their own, so nothing is minted for them.
+
 ## `private long LIdentityCreate()`
 
 One fresh id.

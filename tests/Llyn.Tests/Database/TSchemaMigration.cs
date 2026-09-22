@@ -22,6 +22,28 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_BuildWithoutEtymology_RaisesTheTablesEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "DROP TABLE etymology_mention; DROP TABLE etymology; DROP TABLE etymon; " +
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('run', 'English', '2026-01-01', '2026-01-01'); " +
+            "UPDATE schema_version SET version = 73;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE headword = 'run';"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymology;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymology_mention;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymon;"));
+    }
+
+    [Fact]
     public void WorkspacePrepare_NewConnection_EnforcesForeignKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

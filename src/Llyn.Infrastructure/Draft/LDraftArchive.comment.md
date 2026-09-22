@@ -39,12 +39,13 @@ A credited author is an item too, so a credit with id zero is refused the same w
 The image and video rows of a held Situation are items too, and are checked as a card's are.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
 
-## `public const int LDraftArchiveVersion = 4;`
+## `public const int LDraftArchiveVersion = 5;`
 
 Shape of the draft file the current build writes.
 It moves whenever a draft-shaped record changes, so an older file is skipped rather than misread.
 Version two added the credited authors a source draft carries.
 Version three made the pronunciation a list and added the transcriptions beside it.
+Version five added the etymology an entry draft carries, with its spans and its links.
 
 ## `public LDraft? LDraftRead(long id)`
 

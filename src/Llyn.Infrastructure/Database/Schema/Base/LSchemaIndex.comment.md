@@ -31,6 +31,7 @@ Lexical rows owned by an Entry or a Meaning whose owning column carries no key o
 
 The member side of every association table, and the shared entities those members name.
 The two references a Mention carries are listed here as well, since both cascade from their parent.
+The target of an etymology span and the target of an Etymon are here for the same reason.
 
 ### `command.CommandText =`
 

@@ -33,6 +33,9 @@ public partial class PDisplay : UserControl
         PDisplayPlaybackAttach();
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
 
+        CommandBindings.Add(new CommandBinding(
+            PEtymologyCommand.PEtymologyCommandEntry, PDisplayEtymologyHandle));
+
         PCompassAttach();
     }
 
@@ -123,6 +126,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Visible
             : Visibility.Collapsed;
 
+        PDisplayEtymologyShow(draft);
         PMarkdown.PMarkdownShow(PDisplayNote, draft.LEntryDraftNote, _pDisplayHost.PWindowDeportment);
         PDisplayNoteSection.Visibility = draft.LEntryDraftNoted ? Visibility.Visible : Visibility.Collapsed;
 

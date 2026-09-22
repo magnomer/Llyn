@@ -36,6 +36,16 @@ A bad offset is therefore dropped and not moved to zero.
 Reads one `entry` element with all of its repeated children in file order.
 The line the element opens on travels with the record, so the import can place its own omissions.
 
+## `private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)`
+
+Reads one `etymon` element as a headword and language.
+The position of the link is its place among the `etymon` elements.
+
+## `private static LMarkupEtymology LMarkupEtymologyParse(LMarkupNode element, List<LMarkupOmission> omissions)`
+
+Reads one `etymology` element as text with the spans that name an entry.
+A span carries no sense, so a `sense` child is an omission.
+
 ## `private static LForm LMarkupFormParse(LMarkupNode element, int position, List<LMarkupOmission> omissions)`
 
 Reads one `form` element as a form with no entry id and the given position.

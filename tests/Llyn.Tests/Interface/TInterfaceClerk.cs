@@ -15,6 +15,7 @@ internal static partial class TInterface
             LRigPronunciations = new TVaultFakePronunciation(),
             LRigTranscriptions = new TVaultFakeTranscription(),
             LRigReflexes = new TVaultFakeReflex(),
+            LRigEtymologies = new TVaultFakeEtymology(),
         };
 
     internal static LRig TRigClaimCreate() =>

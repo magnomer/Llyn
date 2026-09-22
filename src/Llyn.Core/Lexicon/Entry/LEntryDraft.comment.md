@@ -25,6 +25,17 @@ The entry-level detail travels as the shapes the archives store, never as flatte
   Empty when the language shows none.
 - `LEntryDraftReflexes` — Reflexes in list order, grouped by borrowing language.
   Empty when the language declares no reflex rule or nothing was fetched or typed.
+- `LEntryDraftEtymology` — What the entry says about its own origin, in either shape.
+  Never null, since an entry that says nothing carries an empty etymology draft.
+
+## `public bool LEntryDraftDerived`
+
+Whether the entry says anything about its origin, by prose or by link.
+
+## `public IReadOnlyList<long> LEntryDraftSources`
+
+Every entry the etymology names, its source links and the spans of its narrative alike.
+One list lets a reader resolve them all in a single query.
 
 ## `public LPronunciationDraft? LEntryDraftPronunciation`
 

@@ -20,6 +20,7 @@ internal static class TRigFake
             TRigStubCreate<LAuditVault>(),
             new TPostureFake(),
             entries,
+            TRigStubCreate<LEtymologyVault>(),
             TRigStubCreate<LDraftVault>(),
             TRigStubCreate<LClaimVault>(),
             TRigStubCreate<LCourtVault>(),
