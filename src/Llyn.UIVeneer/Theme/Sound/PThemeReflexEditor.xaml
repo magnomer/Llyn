@@ -8,6 +8,7 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeAccent.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeCommand.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeRebuild.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflex.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -118,48 +119,11 @@
         <Setter Property="Command" Value="{x:Static local:PReflexCommand.PReflexCommandRemoval}" />
     </Style>
 
-    <Style x:Key="Theme.Reflex.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Command.Icon}">
+    <Style x:Key="Theme.Reflex.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Sound.Rebuild}">
         <Setter Property="Margin" Value="0,12,-5,0" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="ToolTip" Value="{DynamicResource Reflex.Rebuild}" />
         <Setter Property="Command" Value="{x:Static local:PReflexCommand.PReflexCommandRenewal}" />
-        <Setter Property="Content" Value="" />
-        <Setter Property="ContentTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <local:PIconImage
-                        x:Name="PSurfaceMark"
-                        Width="24"
-                        Height="24"
-                        PIconSource="{local:PIcon rebuild, 24}"
-                        RenderTransformOrigin="0.5,0.5">
-                        <local:PIconImage.RenderTransform>
-                            <RotateTransform Angle="0" />
-                        </local:PIconImage.RenderTransform>
-                    </local:PIconImage>
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="PSurfaceSpin">
-                                    <Storyboard RepeatBehavior="Forever">
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="PSurfaceMark"
-                                            Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
-                                            From="0"
-                                            To="360"
-                                            Duration="0:0:1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard BeginStoryboardName="PSurfaceSpin" />
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
     </Style>
 
     <DataTemplate x:Key="Theme.Reflex.Control">

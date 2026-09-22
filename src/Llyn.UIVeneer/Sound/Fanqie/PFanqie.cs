@@ -29,6 +29,12 @@ public sealed class PFanqie : ContentControl
         typeof(PFanqie),
         new FrameworkPropertyMetadata(false, PFanqieStateHandle));
 
+    public static readonly DependencyProperty PFanqieRenewalProperty = DependencyProperty.Register(
+        nameof(PFanqieRenewal),
+        typeof(Action),
+        typeof(PFanqie),
+        new FrameworkPropertyMetadata(null, PFanqieStateHandle));
+
     private readonly Grid _pFanqieHead = new();
     private readonly ToggleButton _pFanqieSwitch = new();
     private readonly StackPanel _pFanqieBody = new();
@@ -55,10 +61,15 @@ public sealed class PFanqie : ContentControl
         _pFanqieSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
         _pFanqieSwitch.Checked += (_, _) => PFanqieStateApply();
         _pFanqieSwitch.Unchecked += (_, _) => PFanqieStateApply();
+        _pFanqieRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
+        _pFanqieRefresh.Click += (_, _) => PFanqieRenewal?.Invoke();
         _pFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         _pFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        Grid.SetColumn(_pFanqieSwitch, 1);
+        _pFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        Grid.SetColumn(_pFanqieRefresh, 1);
+        Grid.SetColumn(_pFanqieSwitch, 2);
         _pFanqieHead.Children.Add(label);
+        _pFanqieHead.Children.Add(_pFanqieRefresh);
         _pFanqieHead.Children.Add(_pFanqieSwitch);
 
         Grid.SetIsSharedSizeScope(_pFanqieList, true);
@@ -73,12 +84,8 @@ public sealed class PFanqie : ContentControl
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
-        _pFanqieRefresh.SetResourceReference(StyleProperty, "Theme.Fanqie.Rebuild");
-        _pFanqieRefresh.SetResourceReference(ContentProperty, "Display.FanqieRebuild");
-        _pFanqieRefresh.Click += (_, _) => PFanqieRebuildNotice?.Invoke();
         _pFanqieBody.Children.Add(_pFanqieList);
         _pFanqieBody.Children.Add(_pFanqieLoading);
-        _pFanqieBody.Children.Add(_pFanqieRefresh);
 
         StackPanel stack = new();
         stack.Children.Add(_pFanqieHead);
@@ -107,7 +114,11 @@ public sealed class PFanqie : ContentControl
         set => SetValue(PFanqieFoldedProperty, value);
     }
 
-    internal Action? PFanqieRebuildNotice { get; set; }
+    internal Action? PFanqieRenewal
+    {
+        get => (Action?)GetValue(PFanqieRenewalProperty);
+        set => SetValue(PFanqieRenewalProperty, value);
+    }
 
     internal Action<string, string>? PFanqieDiweiNotice { get; set; }
 
@@ -152,14 +163,13 @@ public sealed class PFanqie : ContentControl
         bool filled = items is not null && items.Count > 0;
         _pFanqieList.ItemsSource = filled ? items : null;
         _pFanqieLoading.Visibility = PFanqiePending ? Visibility.Visible : Visibility.Collapsed;
-        _pFanqieRefresh.Visibility = PFanqieRebuildNotice is not null && !PFanqiePending
-            ? Visibility.Visible
-            : Visibility.Collapsed;
+        _pFanqieRefresh.Visibility = PLook.PLookVisibleRead(PFanqieRenewal is not null);
+        _pFanqieRefresh.Tag = PFanqiePending;
         _pFanqieHead.Visibility = PFanqieFolded ? Visibility.Visible : Visibility.Collapsed;
         _pFanqieBody.Visibility = !PFanqieFolded || _pFanqieSwitch.IsChecked == true
             ? Visibility.Visible
             : Visibility.Collapsed;
-        Visibility = filled || PFanqiePending || PFanqieRebuildNotice is not null
+        Visibility = filled || PFanqiePending || PFanqieRenewal is not null
             ? Visibility.Visible
             : Visibility.Collapsed;
     }

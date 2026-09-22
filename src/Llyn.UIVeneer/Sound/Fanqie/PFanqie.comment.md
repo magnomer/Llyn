@@ -21,15 +21,19 @@ That shows the loading line and keeps the box up while nothing is stored.
 
 Whether the box starts closed under a head with a switch.
 
+## `public static readonly DependencyProperty PFanqieRenewalProperty`
+
+What the regenerate button runs, or nothing where no rebuild is offered.
+
 ## `private readonly Grid _pFanqieHead = new();`
 
-The head row: the box's name on the left, the switch on the right, present only when folded.
+The head row: the box's name on the left, then the regenerate button and the switch, present only when folded.
 
 ## `private readonly Button _pFanqieRefresh = new();`
 
-The regenerate button at the foot of the body, shown only where the editor hands the box a rebuild.
+The shared regenerate button in the head, shown only where the editor hands the box a rebuild.
 It fetches the placements of the entry's characters again and files them into their categories afresh.
-Hidden while a fetch runs, so it is not pressed twice.
+Its mark turns while a fetch runs, as the readings button's does.
 
 ## `private readonly ToggleButton _pFanqieSwitch = new();`
 
@@ -64,9 +68,10 @@ The blocks shown, or `null` for none.
 
 Whether a fetch runs for the entry shown.
 
-## `internal Action? PFanqieRebuildNotice { get; set; }`
+## `internal Action? PFanqieRenewal`
 
 What the regenerate button runs, or `null` in a reading view, where the button is not shown.
+It is a property of the box, so handing one over redraws the head as the blocks do.
 
 ## `internal Action<string, string>? PFanqieDiweiNotice { get; set; }`
 
@@ -85,10 +90,11 @@ Whether the box starts closed under its head.
 
 ## `private static void PFanqieStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
-Redraws the box when any of its three properties change.
+Redraws the box when any of its four properties change.
 
 ## `private void PFanqieStateApply()`
 
 Feeds the list and shows the loading line while pending.
+The regenerate button stands wherever one was handed over, and its tag turns its mark while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.

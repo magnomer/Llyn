@@ -43,6 +43,10 @@ Rank zero unmarks the row, and the last rank appends it after the rows already m
 
 The entry's script rows, started when missing, or nothing for a fresh draft or a refusal.
 
+## `public void LSoundingScriptRebuild(long? entry)`
+
+Drops the entry's script rows and fetches them again, announcing the change or the refusal.
+
 ## `public IReadOnlyList<LParadigmSlot> LSoundingParadigmRead(long? entry)`
 
 The entry's paradigm slots, or nothing for a fresh draft or a refusal.

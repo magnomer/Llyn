@@ -133,6 +133,64 @@ public sealed class TEngineScript
     }
 
     [Fact]
+    public async Task ScriptRebuild_ImagesStored_DropsThemAndFetchesAgain()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate(TEngineScriptPages));
+        LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
+
+        engine.TEngineScriptStart(entry.LEntryId);
+        await TScriptSettle(engine, entry.LEntryId);
+        Assert.Equal(3, engine.TEngineScriptRead(entry.LEntryId).Count);
+
+        engine.TEngineScriptRebuild(entry.LEntryId);
+        await TScriptSettle(engine, entry.LEntryId);
+
+        IReadOnlyList<LScriptImage> read = engine.TEngineScriptRead(entry.LEntryId);
+        Assert.Equal(3, read.Count);
+        Assert.Equal(("整", "Seal", 0, "Shuowen", "Seal gloss", "PNG-A"), TScriptImageRead(read[0]));
+        Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM script;"));
+    }
+
+    [Fact]
+    public async Task ScriptRebuild_SourcesOnceSilent_AsksThemAgain()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TSourceHandler handler = new("nothing here", HttpStatusCode.OK);
+        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
+
+        engine.TEngineScriptStart(entry.LEntryId);
+        await TScriptCountCheck(handler, 2);
+        await TScriptSettle(engine, entry.LEntryId);
+
+        engine.TEngineScriptRebuild(entry.LEntryId);
+        await TScriptCountCheck(handler, 4);
+        await TScriptSettle(engine, entry.LEntryId);
+
+        Assert.Equal(4, handler.TSourceHandlerCount);
+        Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
+    }
+
+    [Fact]
+    public void ScriptRebuild_LanguageWithoutStyles_FetchesNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TSourceHandler handler = new("nothing here", HttpStatusCode.OK);
+        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
+
+        engine.TEngineScriptRebuild(entry.LEntryId);
+
+        Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
+        Assert.Equal(0, handler.TSourceHandlerCount);
+    }
+
+    [Fact]
     public void ScriptStart_LanguageWithoutStyles_ReadsEmptyWithoutFetch()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");

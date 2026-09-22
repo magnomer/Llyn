@@ -17,6 +17,7 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeContour.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeTranscription.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Card/PThemeGlyph.xaml" />
+        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeRebuild.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflex.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflexEditor.xaml" />
         <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemePlayback.xaml" />

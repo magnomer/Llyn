@@ -7,7 +7,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaScript
 {
-    public const long LSchemaScriptNoted = 71;
+    public const long LSchemaScriptNoted = 73;
 
     public static void LSchemaScriptCreate(SqliteConnection connection)
     {

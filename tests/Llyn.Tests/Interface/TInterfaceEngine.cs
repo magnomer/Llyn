@@ -367,6 +367,9 @@ internal static partial class TInterface
     internal static void TEngineScriptStart(this LEngine engine, long entryId) =>
         engine.LEngineScriptStart(entryId);
 
+    internal static void TEngineScriptRebuild(this LEngine engine, long entryId) =>
+        engine.LEngineScriptRebuild(entryId);
+
     internal static Task<IReadOnlyList<LScriptImage>> TEngineScriptFind(
         this LEngine engine,
         string character,

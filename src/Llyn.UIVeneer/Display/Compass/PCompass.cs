@@ -22,8 +22,6 @@ public partial class PDisplay
 
     private readonly ObservableCollection<PCompassItem> _pCompassRows = [];
 
-    private bool _pCompassFold;
-
     private void PCompassAttach()
     {
         PCompassList.ItemsSource = _pCompassRows;
@@ -132,7 +130,7 @@ public partial class PDisplay
             && _pCompassRows.Count > 1;
 
         PCompass.Visibility = room ? Visibility.Visible : Visibility.Collapsed;
-        PCompassSurface.Visibility = room && !_pCompassFold ? Visibility.Visible : Visibility.Collapsed;
+        PCompassSurface.Visibility = PLook.PLookVisibleRead(room && PLook.PLookCheckedRead(PCompassSwitch.IsChecked));
 
         Thickness margin = PCompass.Margin;
         margin.Top = PCompassTopResolve(margin.Right);
@@ -215,7 +213,6 @@ public partial class PDisplay
 
     private void PCompassSwitchHandle(object sender, RoutedEventArgs e)
     {
-        _pCompassFold = PCompassSwitch.IsChecked != true;
         PCompassPlace();
     }
 

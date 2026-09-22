@@ -287,6 +287,8 @@
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieLabel" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieInitial" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieRime" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieHeading" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieKnot" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieMedial" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieDivision" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PFanqieTone" />
@@ -297,18 +299,16 @@
             <TextBlock Grid.Column="1" Style="{StaticResource Theme.Fanqie.Reading}" />
             <TextBlock Grid.Column="2" Style="{StaticResource Theme.Fanqie.Label}" />
             <Button Grid.Column="3" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandInitial}" Content="{Binding PFanqieLineInitial}" />
-            <StackPanel Grid.Column="4" Orientation="Horizontal">
-                <Button Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineYunmu}" />
-                <TextBlock Style="{StaticResource Theme.Fanqie.Heading}" />
-                <TextBlock Style="{StaticResource Theme.Fanqie.Knot}" />
-            </StackPanel>
-            <Border Grid.Column="5" Style="{StaticResource Theme.Fanqie.Medial}">
+            <Button Grid.Column="4" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineYunmu}" />
+            <TextBlock Grid.Column="5" Style="{StaticResource Theme.Fanqie.Heading}" />
+            <TextBlock Grid.Column="6" Style="{StaticResource Theme.Fanqie.Knot}" />
+            <Border Grid.Column="7" Style="{StaticResource Theme.Fanqie.Medial}">
                 <TextBlock Style="{StaticResource Theme.Fanqie.MedialText}" />
             </Border>
-            <TextBlock Grid.Column="6" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineDivision}" />
-            <TextBlock Grid.Column="7" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineTone}" />
-            <TextBlock Grid.Column="8" Style="{StaticResource Theme.Fanqie.Spelling}" />
-            <TextBlock Grid.Column="9" Style="{StaticResource Theme.Fanqie.Text}" />
+            <TextBlock Grid.Column="8" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineDivision}" />
+            <TextBlock Grid.Column="9" Style="{StaticResource Theme.Fanqie.Part}" Text="{Binding PFanqieLineTone}" />
+            <TextBlock Grid.Column="10" Style="{StaticResource Theme.Fanqie.Spelling}" />
+            <TextBlock Grid.Column="11" Style="{StaticResource Theme.Fanqie.Text}" />
         </Grid>
     </DataTemplate>
 
@@ -319,15 +319,6 @@
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,0,0,4" />
-    </Style>
-
-    <Style x:Key="Theme.Fanqie.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">
-        <Setter Property="Height" Value="26" />
-        <Setter Property="Padding" Value="10,0" />
-        <Setter Property="Margin" Value="0,4,0,2" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
     </Style>
 
     <Style x:Key="Theme.Fanqie.Loading" TargetType="TextBlock">

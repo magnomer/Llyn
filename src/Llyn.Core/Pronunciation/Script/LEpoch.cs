@@ -5,30 +5,52 @@ namespace Llyn.Core;
 
 public sealed record LEpoch(string LEpochLabel, string LEpochCode)
 {
+    private const char LEpochRange = '或';
+
     public static (string LEpochFound, string LEpochCaption) LEpochResolve(
         IReadOnlyList<LEpoch> epochs, string caption)
     {
         ArgumentNullException.ThrowIfNull(epochs);
         ArgumentNullException.ThrowIfNull(caption);
 
-        string label = string.Empty;
+        string[] words = caption.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        int place = -1;
+        int width = 0;
         string code = string.Empty;
-        foreach (LEpoch epoch in epochs)
+        for (int index = 0; index < words.Length; index++)
         {
-            if (epoch.LEpochLabel.Length > label.Length && LEpochPrefixCheck(caption, epoch.LEpochLabel))
+            foreach (LEpoch epoch in epochs)
             {
-                label = epoch.LEpochLabel;
-                code = epoch.LEpochCode;
+                if (epoch.LEpochLabel.Length > width && LEpochWordCheck(words[index], epoch.LEpochLabel))
+                {
+                    place = index;
+                    width = epoch.LEpochLabel.Length;
+                    code = epoch.LEpochCode;
+                }
             }
         }
 
-        return label.Length == 0 ? (string.Empty, caption) : (code, caption[label.Length..].TrimStart());
+        if (place < 0)
+        {
+            return (string.Empty, caption);
+        }
+
+        List<string> rest = new(words.Length - 1);
+        for (int index = 0; index < words.Length; index++)
+        {
+            if (index != place)
+            {
+                rest.Add(words[index]);
+            }
+        }
+
+        return (code, string.Join(' ', rest));
     }
 
-    private static bool LEpochPrefixCheck(string caption, string label)
+    private static bool LEpochWordCheck(string word, string label)
     {
         return label.Length > 0
-            && caption.StartsWith(label, StringComparison.Ordinal)
-            && (caption.Length == label.Length || char.IsWhiteSpace(caption[label.Length]));
+            && word.StartsWith(label, StringComparison.Ordinal)
+            && (word.Length == label.Length || word[label.Length] == LEpochRange);
     }
 }

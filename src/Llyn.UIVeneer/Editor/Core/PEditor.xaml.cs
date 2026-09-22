@@ -384,6 +384,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorScript);
         PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
         PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
+        PEditorScript.PScriptRenewal =
+            PLook.PLookFirstRead<Action?>(_lEditor.LEditorScriptRebuildable, _lEditor.LEditorScriptRebuild, null);
     }
 
     private void PEditorFanqieUpdate()
@@ -393,8 +395,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorFanqie);
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
         PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;
-        PEditorFanqie.PFanqieRebuildNotice =
-            PLook.PLookFirstRead<Action?>(_lEditor.LEditorRebuildable, _lEditor.LEditorFanqieRebuild, null);
+        PEditorFanqie.PFanqieRenewal =
+            PLook.PLookFirstRead<Action?>(_lEditor.LEditorFanqieRebuildable, _lEditor.LEditorFanqieRebuild, null);
         PEditorFanqie.PFanqieDiweiNotice =
             (kind, key) => _pEditorHost.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
         PEditorFanqie.PFanqieRepresentativeNotice =

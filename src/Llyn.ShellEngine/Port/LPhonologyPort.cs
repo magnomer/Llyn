@@ -22,7 +22,11 @@ public interface LPhonologyPort
 
     void LEngineScriptStart(long entryId);
 
+    void LEngineScriptRebuild(long entryId);
+
     IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId);
+
+    bool LEngineStyleCheck(string language);
 
     bool LEngineReflexCheck(long entryId);
 

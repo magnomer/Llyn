@@ -104,6 +104,14 @@ The stored script images of every character of an entry.
 
 Starts the fetch of every character that has no images.
 
+## `public bool LEngineStyleCheck(string language)`
+
+Whether the language pack names any script style at all.
+
+## `public void LEngineScriptRebuild(long entryId)`
+
+Drops the stored images of the entry's characters and fetches them again.
+
 ## `public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)`
 
 The images grouped by style.

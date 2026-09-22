@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -27,11 +28,18 @@ public sealed class PScript : ContentControl
         typeof(PScript),
         new FrameworkPropertyMetadata(false, PScriptStateHandle));
 
+    public static readonly DependencyProperty PScriptRenewalProperty = DependencyProperty.Register(
+        nameof(PScriptRenewal),
+        typeof(Action),
+        typeof(PScript),
+        new FrameworkPropertyMetadata(null, PScriptStateHandle));
+
     private readonly Grid _pScriptHead = new();
     private readonly ToggleButton _pScriptSwitch = new();
     private readonly StackPanel _pScriptBody = new();
     private readonly ItemsControl _pScriptList = new();
     private readonly TextBlock _pScriptLoading = new();
+    private readonly Button _pScriptRefresh = new();
 
     protected override AutomationPeer OnCreateAutomationPeer()
     {
@@ -52,10 +60,15 @@ public sealed class PScript : ContentControl
         _pScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
         _pScriptSwitch.Checked += (_, _) => PScriptStateApply();
         _pScriptSwitch.Unchecked += (_, _) => PScriptStateApply();
+        _pScriptRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
+        _pScriptRefresh.Click += (_, _) => PScriptRenewal?.Invoke();
         _pScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         _pScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        Grid.SetColumn(_pScriptSwitch, 1);
+        _pScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        Grid.SetColumn(_pScriptRefresh, 1);
+        Grid.SetColumn(_pScriptSwitch, 2);
         _pScriptHead.Children.Add(label);
+        _pScriptHead.Children.Add(_pScriptRefresh);
         _pScriptHead.Children.Add(_pScriptSwitch);
 
         Grid.SetIsSharedSizeScope(_pScriptList, true);
@@ -93,6 +106,12 @@ public sealed class PScript : ContentControl
         set => SetValue(PScriptFoldedProperty, value);
     }
 
+    internal Action? PScriptRenewal
+    {
+        get => (Action?)GetValue(PScriptRenewalProperty);
+        set => SetValue(PScriptRenewalProperty, value);
+    }
+
     private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         ((PScript)sender).PScriptStateApply();
@@ -120,10 +139,14 @@ public sealed class PScript : ContentControl
         bool filled = items is not null && items.Count > 0;
         _pScriptList.ItemsSource = filled ? items : null;
         _pScriptLoading.Visibility = PScriptPending ? Visibility.Visible : Visibility.Collapsed;
+        _pScriptRefresh.Visibility = PLook.PLookVisibleRead(PScriptRenewal is not null);
+        _pScriptRefresh.Tag = PScriptPending;
         _pScriptHead.Visibility = PScriptFolded ? Visibility.Visible : Visibility.Collapsed;
         _pScriptBody.Visibility = !PScriptFolded || _pScriptSwitch.IsChecked == true
             ? Visibility.Visible
             : Visibility.Collapsed;
-        Visibility = filled || PScriptPending ? Visibility.Visible : Visibility.Collapsed;
+        Visibility = filled || PScriptPending || PScriptRenewal is not null
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 }

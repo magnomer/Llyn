@@ -43,6 +43,7 @@ It fades while pressed and collapses when the part is empty.
 ## `<Style x:Key="Theme.Fanqie.Heading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
 The bracketed rime heading after the rime link, plain ink, so only the rime itself reads as the link.
+It stands in a shared column of its own, so a wider rime chip never pushes it out of line.
 
 ## `<Style x:Key="Theme.Fanqie.Knot" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
@@ -83,8 +84,8 @@ It is independent per line, so more than one reconstruction can carry the mark.
 
 ## `<DataTemplate x:Key="Theme.Fanqie.Line">`
 
-One placement across the shared columns: representative, reading, initial, rime, 重紐, 開合, division, tone, 反切.
-The initial and the rime are links into the rime table, the rime heading sitting after its link.
+One placement across the shared columns: representative, reading, initial, rime, heading, 重紐, 開合, division, tone, 反切.
+The initial and the rime are links into the rime table, the rime heading sitting in the next column.
 The columns share their widths across every block of the box, so the parts line up under each other.
 
 ## `<Style x:Key="Theme.Fanqie.Head" TargetType="TextBlock">`
@@ -125,7 +126,3 @@ It is drawn at the headword size, since it names the whole character rather than
 One block: the series line above, then the character column, the book chip, the lines and the origin chip.
 The columns share their widths across the box, the series line included.
 The series chips stand over the reading column, clearing the star column the lines carry.
-
-## `<Style x:Key="Theme.Fanqie.Rebuild" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">`
-
-The regenerate button at the foot of the box in the editor: a small accent pill, left-aligned under the blocks.

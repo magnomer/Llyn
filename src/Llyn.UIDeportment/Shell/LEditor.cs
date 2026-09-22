@@ -120,7 +120,11 @@ public sealed class LEditor
 
     public bool LEditorPhonemic => LEditorRespelled && _lPhonologyPort.LEnginePhonemicCheck(LEditorLanguage);
 
-    public bool LEditorRebuildable => LEditorEntry is not null && _lPhonologyPort.LEngineBookCheck(LEditorLanguage);
+    public bool LEditorFanqieRebuildable =>
+        LEditorEntry is not null && _lPhonologyPort.LEngineBookCheck(LEditorLanguage);
+
+    public bool LEditorScriptRebuildable =>
+        LEditorEntry is not null && _lPhonologyPort.LEngineStyleCheck(LEditorLanguage);
 
     public bool LEditorMorphology => _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
 
@@ -442,6 +446,11 @@ public sealed class LEditor
     public IReadOnlyList<LScriptGroup> LEditorScriptRead()
     {
         return LEditorSounding.LSoundingScriptRead(LEditorEntry);
+    }
+
+    public void LEditorScriptRebuild()
+    {
+        LEditorSounding.LSoundingScriptRebuild(LEditorEntry);
     }
 
     public IReadOnlyList<LParadigmSlot> LEditorParadigmRead()

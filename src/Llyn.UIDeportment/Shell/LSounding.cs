@@ -112,6 +112,26 @@ public sealed class LSounding
         }
     }
 
+    public void LSoundingScriptRebuild(long? entry)
+    {
+        if (entry is not long id)
+        {
+            return;
+        }
+
+        try
+        {
+            _lPhonologyPort.LEngineScriptRebuild(id);
+        }
+        catch (Exception exception)
+        {
+            LSoundingFailed?.Invoke("Display.ScriptRebuildFailed", exception);
+            return;
+        }
+
+        LSoundingChanged?.Invoke();
+    }
+
     public IReadOnlyList<LParadigmSlot> LSoundingParadigmRead(long? entry)
     {
         if (entry is not long id)

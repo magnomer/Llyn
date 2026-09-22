@@ -95,6 +95,33 @@ public sealed class LScriptClerk
         }
     }
 
+    public void LScriptClerkRebuild(long entryId)
+    {
+        LEntry? entry;
+        lock (_lScriptClerkGate)
+        {
+            entry = _lScriptClerkEntries.LEntryRead(entryId);
+        }
+
+        if (entry is null || LScriptStyleRead(entry.LEntryLanguage).Count == 0)
+        {
+            return;
+        }
+
+        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
+        {
+            lock (_lScriptClerkGate)
+            {
+                _lScriptClerkMissed.Remove(LScriptKeyFormat(entry.LEntryLanguage, character));
+                _lScriptClerkScripts.LScriptSave(entry.LEntryLanguage, character, []);
+            }
+
+            LScriptClerkStart(entryId, entry.LEntryLanguage, character);
+        }
+
+        _lScriptClerkBulletin(LSubject.LSubjectScript, entryId);
+    }
+
     public IReadOnlyList<LScriptGroup> LScriptClerkDivide(long entryId)
     {
         IReadOnlyList<LScriptImage> images = LScriptClerkRead(entryId);

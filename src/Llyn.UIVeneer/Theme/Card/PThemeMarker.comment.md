@@ -14,7 +14,10 @@ What is typed and what is committed then look alike, so committing moves nothing
 ## `<Style x:Key="Theme.Marker.Switch" TargetType="ToggleButton">`
 
 The chevron that opens the presets, held inside the pill rather than beside it.
-It fills with the accent while the menu stands open, so the pill says the menu is showing.
+It also heads a folded sound part, where it opens and shuts the part's body.
+The chevron turns over while the switch stands open, so it points the way the next click goes.
+The ground behind it warms to the soft accent, never the accent itself.
+The mark carries its own blue, so a full accent ground would swallow it whole.
 
 ## `<Style x:Key="Theme.Marker.Menu" TargetType="Border">`
 

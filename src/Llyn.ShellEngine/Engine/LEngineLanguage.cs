@@ -177,6 +177,16 @@ public sealed partial class LEngine
         _lEngineScriptClerk.LScriptClerkStart(entryId);
     }
 
+    public bool LEngineStyleCheck(string language)
+    {
+        return LEngineStyleRead(language).Count > 0;
+    }
+
+    public void LEngineScriptRebuild(long entryId)
+    {
+        _lEngineScriptClerk.LScriptClerkRebuild(entryId);
+    }
+
     public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
     {
         return _lEngineScriptClerk.LScriptClerkDivide(entryId);

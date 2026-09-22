@@ -21,10 +21,11 @@ public sealed partial class LLanguageLoader : LLanguageVault
             return Array.Empty<LScriptStyle>();
         }
 
+        IReadOnlyList<LEpoch> shared = LLanguageEpochScan(root);
         List<LScriptStyle> styles = new();
         foreach (JsonElement row in rows.EnumerateArray())
         {
-            LScriptStyle? style = LLanguageScriptRead(row);
+            LScriptStyle? style = LLanguageScriptRead(row, shared);
             if (style is not null)
             {
                 styles.Add(style);
@@ -34,7 +35,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
         return styles;
     }
 
-    private static LScriptStyle? LLanguageScriptRead(JsonElement row)
+    private static LScriptStyle? LLanguageScriptRead(JsonElement row, IReadOnlyList<LEpoch> shared)
     {
         if (row.ValueKind != JsonValueKind.Object)
         {
@@ -59,12 +60,14 @@ public sealed partial class LLanguageLoader : LLanguageVault
             LLanguageTextRead(row, "prefix"),
             LLanguageRewriteScan(row),
             LLanguageTextRead(row, "gloss"),
-            LLanguageEpochScan(row));
+            LLanguageEpochScan(row) is { Count: > 0 } epochs ? epochs : shared);
     }
 
     private static IReadOnlyList<LEpoch> LLanguageEpochScan(JsonElement row)
     {
-        if (!row.TryGetProperty(LLanguageLoaderEpoch, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        if (row.ValueKind != JsonValueKind.Object
+            || !row.TryGetProperty(LLanguageLoaderEpoch, out JsonElement rows)
+            || rows.ValueKind != JsonValueKind.Array)
         {
             return Array.Empty<LEpoch>();
         }

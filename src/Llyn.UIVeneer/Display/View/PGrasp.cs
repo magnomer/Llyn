@@ -79,7 +79,7 @@ public sealed class PGrasp : FrameworkElement
         SetResourceReference(PGraspEmptyProperty, "Theme.Grasp.Empty");
         SetResourceReference(PGraspUnratedProperty, "Theme.Grasp.Unrated");
         SetResourceReference(PGraspPreviewProperty, "Theme.Grasp.Preview");
-        IsEnabledChanged += (_, _) => Opacity = IsEnabled ? 1 : 0.4;
+        IsEnabledChanged += (_, _) => Opacity = PLook.PLookOpacityRead(IsEnabled, 1, 0.4);
     }
 
     public event RoutedEventHandler PGraspChanged

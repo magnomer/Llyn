@@ -22,6 +22,11 @@ The stored images of every character of the entry.
 
 Starts a fetch for every character of the entry that has no images yet.
 
+## `public void LScriptClerkRebuild(long entryId)`
+
+Drops the stored images of every character of the entry and fetches them again.
+The missed mark goes too, so a character the sources once denied is asked once more.
+
 ## `public IReadOnlyList<LScriptGroup> LScriptClerkDivide(long entryId)`
 
 The stored images grouped by style in the pack's order.

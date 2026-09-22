@@ -21,9 +21,13 @@ That shows the loading line and keeps the box up while nothing is stored.
 
 Whether the box starts closed under a head with a switch.
 
+## `public static readonly DependencyProperty PScriptRenewalProperty`
+
+What the regenerate button runs, or nothing where no rebuild is offered.
+
 ## `private readonly Grid _pScriptHead = new();`
 
-The head row: the box's name on the left, the switch on the right, present only when folded.
+The head row: the box's name on the left, then the regenerate button and the switch, present only when folded.
 
 ## `private readonly ToggleButton _pScriptSwitch = new();`
 
@@ -40,6 +44,12 @@ The list of rows, its own shared-size scope so the columns line up across rows.
 ## `private readonly TextBlock _pScriptLoading = new();`
 
 The loading line under the rows.
+
+## `private readonly Button _pScriptRefresh = new();`
+
+The shared regenerate button in the head, shown only where the editor hands the box a rebuild.
+It drops the stored pictures of the entry's characters and fetches them again from every style source.
+Its mark turns while a fetch runs, as the rime and readings buttons' do.
 
 ## `protected override AutomationPeer OnCreateAutomationPeer()`
 
@@ -63,9 +73,14 @@ Whether a fetch runs for the entry shown.
 
 Whether the box starts closed under its head.
 
+## `internal Action? PScriptRenewal`
+
+What the regenerate button runs, or `null` in a reading view, where the button is not shown.
+It is a property of the box, so handing one over redraws the head as the rows do.
+
 ## `private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
-Redraws the box when any of its three properties change.
+Redraws the box when any of its four properties change.
 
 ## `private void PScriptLanguageHandle(object? sender, PropertyChangedEventArgs e)`
 
@@ -75,5 +90,6 @@ Nothing is read from the engine and nothing is fetched, because only the printed
 ## `private void PScriptStateApply()`
 
 Feeds the list and shows the loading line while pending.
+The regenerate button stands wherever one was handed over, and its tag turns its mark while a fetch runs.
 The head shows only when folded, and the body only when open.
-The box itself is visible when it has rows or a fetch runs, and collapsed otherwise.
+The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.

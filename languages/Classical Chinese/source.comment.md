@@ -18,6 +18,15 @@ Group 2 is the caption under it, such as the inscription and its era.
 The rewrite lifts the image size so the stored picture is the large original, and the view scales it down.
 The small seal style also reads the 說文 gloss the page prints under the results.
 
+## `epoch`
+
+The chronology labels the 小學堂 captions date their pieces by, each paired with the code Llyn stores.
+The table sits beside the script list, not inside a style, because all four databases date in the same words.
+The code names a localization key under `Epoch`, so the reader meets the age in the interface language.
+A label is listed in every spelling the site uses, such as 商晚期 beside 商代晚期.
+The longer spelling wins wherever both would match, so a dynasty never stands for one of its periods.
+Bronze captions run from 商 to 戰國, and clerical and variant captions carry on through 唐.
+
 ## `fanqie`
 
 The fanqie list names the rime books the reading view shows under the script box.

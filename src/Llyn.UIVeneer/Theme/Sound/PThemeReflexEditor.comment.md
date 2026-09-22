@@ -47,9 +47,8 @@ The hover minus dropping this row.
 ## `<Style x:Key="Theme.Reflex.Rebuild" TargetType="Button">`
 
 The button at the top right corner of the editor's reflex block that drops the rows and fetches them again.
-It is drawn as the icon commands of a meaning card are: ink at rest, lit only under the pointer.
-While the button's tag is true the icon turns in place once a second, and stops when the tag falls.
-The editor sets the tag from the engine's fill state, so the icon turns as long as the fetch runs.
+It is the shared regenerate button, placed here and given the renewal command.
+The editor sets the tag from the engine's fill state, so the mark turns as long as the fetch runs.
 
 ## `<DataTemplate x:Key="Theme.Reflex.Control">`
 
