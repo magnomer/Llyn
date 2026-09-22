@@ -20,7 +20,7 @@ public sealed record LFanqieGroup(
         List<string> readings = [];
         foreach (string character in LGlyph.LGlyphScan(headword))
         {
-            if (LFanqiePrimaryFind(groups, character) is { Length: > 0 } reading)
+            if (LFanqieMarkedFind(groups, character) is { Length: > 0 } reading)
             {
                 readings.Add(reading);
             }
@@ -29,21 +29,36 @@ public sealed record LFanqieGroup(
         return readings.Count == 0 ? string.Empty : '/' + string.Join(' ', readings) + '/';
     }
 
-    private static string LFanqiePrimaryFind(IReadOnlyList<LFanqieGroup> groups, string character)
+    private static string LFanqieMarkedFind(IReadOnlyList<LFanqieGroup> groups, string character)
     {
+        List<LFanqieRow> marked = [];
         foreach (LFanqieGroup group in groups)
         {
             foreach (LFanqieRow row in group.LFanqieGroupRows)
             {
-                if (row.LFanqieRowPrimary
+                if (row.LFanqieRowMarked
+                    && row.LFanqieRowSpoken
                     && string.Equals(row.LFanqieRowCharacter, character, StringComparison.Ordinal))
                 {
-                    return row.LFanqieRowReading;
+                    int place = 0;
+                    while (place < marked.Count
+                           && marked[place].LFanqieRowRepresentative <= row.LFanqieRowRepresentative)
+                    {
+                        place++;
+                    }
+
+                    marked.Insert(place, row);
                 }
             }
         }
 
-        return string.Empty;
+        List<string> readings = new(marked.Count);
+        foreach (LFanqieRow row in marked)
+        {
+            readings.Add(row.LFanqieRowReading);
+        }
+
+        return string.Join(", ", readings);
     }
 
     public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(

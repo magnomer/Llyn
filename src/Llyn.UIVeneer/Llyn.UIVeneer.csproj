@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
@@ -29,6 +29,7 @@
 
   <ItemGroup>
 
+    <Resource Include="..\..\assets\icons\**\*.png" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
     <Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
     <Resource Include="..\..\assets\brand\icon.png" Link="brand\icon.png" />
     <Resource Include="..\..\assets\brand\icon.ico" Link="brand\icon.ico" />

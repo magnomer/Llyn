@@ -96,11 +96,11 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieReadingFormat_RankedRows_ReadsOnePerCharacter()
+    public void FanqieReadingFormat_RankedRows_ReadsEveryMarkedRowPerCharacter()
     {
         IReadOnlyList<LFanqieRow> rows =
         [
-            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "phien", rank: 2),
+            TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "bhien", rank: 2),
             TInterface.TFanqieRowCreate("平", "廣韻", "符兵切", reading: "bhiaeng", rank: 1),
             TInterface.TFanqieRowCreate("安", "廣韻", "烏寒切", reading: "'an", rank: 1),
             TInterface.TFanqieRowCreate("安", "廣韻", "烏寒切", reading: "'anh"),
@@ -109,8 +109,8 @@ public sealed class TFanqieRow
         IReadOnlyList<LFanqieGroup> groups = TInterface.TFanqieGroupScan(
             rows, [TInterface.TFanqieBookCreate("廣韻", "廣韻")]);
 
-        Assert.Equal("/bhiaeng 'an/", TInterface.TFanqieReadingFormat(groups, "平安"));
-        Assert.Equal("/bhiaeng/", TInterface.TFanqieReadingFormat(groups, "平"));
+        Assert.Equal("/bhiaeng, bhien 'an/", TInterface.TFanqieReadingFormat(groups, "平安"));
+        Assert.Equal("/bhiaeng, bhien/", TInterface.TFanqieReadingFormat(groups, "平"));
     }
 
     [Fact]

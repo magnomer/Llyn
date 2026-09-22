@@ -39,8 +39,8 @@
                             SnapsToDevicePixels="True">
                             <StackPanel Margin="{TemplateBinding Padding}" VerticalAlignment="Center" Orientation="Horizontal">
                                 <local:PIconImage
-                                    Width="24"
-                                    Height="24"
+                                    Width="32"
+                                    Height="32"
                                     Margin="0,0,12,0"
                                     VerticalAlignment="Center"
                                     PIconSource="{TemplateBinding PTabIcon}" />

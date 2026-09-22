@@ -42,3 +42,20 @@ Checked 2 is 7, checked 5 is 8S or 8.
 
 53 is 1, 23 is 2, 4S, 4 or 6, 34 is 3 or 5.
 Checked 55 is 7, checked 12 is 8S or 8.
+
+## Gan
+
+42 is 1, 35 is 2 or 5, 24 is 2, 213 is 3, 4S or 5, and 2 is 4 or 6.
+45 and 55 are alternative transcriptions of 35, and 21 is an alternative transcription of 2.
+Checked 5 is 7, checked 2 is 8S or 8.
+
+## Jin
+
+11 is 1 or 2, 53 is 3 or 4S, and 45 is 4, 5 or 6.
+Checked 2 is 7 or 8S, and checked 54 is 8.
+
+## Xiang
+
+33 is 1, 13 is 2, 41 is 3 or 4S, 21 is 4 or 6, and 45 is 5.
+55 is an alternative transcription of 45.
+Checked 24 is 7, 8S or 8.

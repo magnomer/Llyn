@@ -10,11 +10,13 @@ public sealed class PGrasp : FrameworkElement
 
     private const double PGraspStarGap = 3;
 
-    private const double PGraspStrokeWidth = 1.4;
-
     private const double PGraspHitSlack = 4;
 
-    private static readonly Geometry PGraspStarGeometry = PGraspStarBuild();
+    private static readonly ImageSource PGraspStarImage =
+        PIcon.PIconResolve("star", PGraspStarSize) ?? throw new InvalidOperationException("star");
+
+    private static readonly ImageSource PGraspGrayImage =
+        PIcon.PIconResolve(null, 0, PGraspStarImage, false) ?? throw new InvalidOperationException("star");
 
     public static readonly DependencyProperty PGraspLimitProperty = DependencyProperty.Register(
         nameof(PGraspLimit),
@@ -234,53 +236,36 @@ public sealed class PGrasp : FrameworkElement
         return star * 2 + (within < pitch / 2 ? 1 : 2);
     }
 
-    private static Geometry PGraspStarBuild()
-    {
-        (Geometry raw, _) = PIcon.PIconLoad("star");
-        Geometry symbol = raw.Clone();
-        Rect bounds = symbol.Bounds;
-        double inset = PGraspStrokeWidth / 2;
-        double room = 16 - PGraspStrokeWidth;
-        double scale = room / Math.Max(bounds.Width, bounds.Height);
-        TransformGroup transform = new();
-        transform.Children.Add(new TranslateTransform(-bounds.X, -bounds.Y));
-        transform.Children.Add(new ScaleTransform(scale, scale));
-        transform.Children.Add(new TranslateTransform(
-            inset + (room - bounds.Width * scale) / 2,
-            inset + (room - bounds.Height * scale) / 2));
-        symbol.Transform = transform;
-        symbol.Freeze();
-        return symbol;
-    }
-
     private void PGraspDraw(DrawingContext context)
     {
         int shown = _pGraspHover ?? PGraspStep;
-        Brush fill = _pGraspHover is null ? PGraspFill : PGraspPreview;
-        Pen outline = new(shown == 0 ? PGraspUnrated : PGraspEmpty, PGraspStrokeWidth) { LineJoin = PenLineJoin.Round };
 
         context.DrawRectangle(Brushes.Transparent, null, new Rect(RenderSize));
         context.PushTransform(new TranslateTransform(PGraspHitSlack, PGraspHitSlack));
-        context.PushTransform(new ScaleTransform(PGraspStarSize / 16, PGraspStarSize / 16));
-        double pitch = (PGraspStarSize + PGraspStarGap) * 16 / PGraspStarSize;
+        double pitch = PGraspStarSize + PGraspStarGap;
+        Rect frame = new(0, 0, PGraspStarSize, PGraspStarSize);
 
         for (int star = 0; star < PGraspStarCount; star++)
         {
             int filled = Math.Clamp(shown - star * 2, 0, 2);
             context.PushTransform(new TranslateTransform(star * pitch, 0));
+            context.PushOpacity(shown == 0 ? 0.35 : 0.55);
+            context.DrawImage(PGraspGrayImage, frame);
+            context.Pop();
 
             if (filled > 0)
             {
-                context.PushClip(new RectangleGeometry(new Rect(0, 0, filled == 2 ? 16 : 8, 16)));
-                context.DrawGeometry(fill, null, PGraspStarGeometry);
+                context.PushClip(new RectangleGeometry(
+                    new Rect(0, 0, filled == 2 ? PGraspStarSize : PGraspStarSize / 2, PGraspStarSize)));
+                context.PushOpacity(_pGraspHover is null ? 1 : 0.7);
+                context.DrawImage(PGraspStarImage, frame);
+                context.Pop();
                 context.Pop();
             }
 
-            context.DrawGeometry(null, outline, PGraspStarGeometry);
             context.Pop();
         }
 
-        context.Pop();
         context.Pop();
     }
 }

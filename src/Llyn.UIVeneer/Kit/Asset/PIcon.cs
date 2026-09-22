@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.Xml.Linq;
 using SharpVectors.Converters;
@@ -54,15 +55,23 @@ public sealed class PIcon : MarkupExtension
                     return graySource;
                 }
 
-                if (source is not DrawingImage drawingImage)
+                ImageSource grayImage;
+                if (source is DrawingImage drawingImage)
+                {
+                    Drawing drawing = drawingImage.Drawing.Clone();
+                    PImageApply(drawing);
+                    grayImage = new DrawingImage(drawing);
+                    grayImage.Freeze();
+                }
+                else if (source is BitmapSource bitmapSource)
+                {
+                    grayImage = PImageGrayCreate(bitmapSource);
+                }
+                else
                 {
                     return source;
                 }
 
-                Drawing drawing = drawingImage.Drawing.Clone();
-                PImageApply(drawing);
-                DrawingImage grayImage = new(drawing);
-                grayImage.Freeze();
                 PIconGrayStore[source] = grayImage;
                 return grayImage;
             }
@@ -83,16 +92,7 @@ public sealed class PIcon : MarkupExtension
                 return cached;
             }
 
-            Uri uri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".svg"));
-            StreamResourceInfo resource = System.Windows.Application.GetResourceStream(uri)
-                ?? throw new FileNotFoundException(name);
-            using Stream stream = resource.Stream;
-            using FileSvgReader reader = new(new WpfDrawingSettings
-            {
-                IncludeRuntime = false,
-                TextAsGeometry = true,
-            });
-            DrawingImage image = new(reader.Read(stream) ?? throw new InvalidDataException(name));
+            ImageSource image = PIconAssetLoad(name);
             image.Freeze();
             PIconStore[name] = image;
             return image;
@@ -160,6 +160,72 @@ public sealed class PIcon : MarkupExtension
             byte gray = (byte)Math.Round((0.2126 * color.R) + (0.7152 * color.G) + (0.0722 * color.B));
             return Color.FromArgb(color.A, gray, gray, gray);
         }
+
+        static ImageSource PImageGrayCreate(BitmapSource source)
+        {
+            FormatConvertedBitmap bitmap = new(source, PixelFormats.Bgra32, null, 0);
+            int stride = bitmap.PixelWidth * 4;
+            byte[] pixels = new byte[stride * bitmap.PixelHeight];
+            bitmap.CopyPixels(pixels, stride, 0);
+            for (int index = 0; index < pixels.Length; index += 4)
+            {
+                byte gray = (byte)Math.Round(
+                    (0.2126 * pixels[index + 2]) + (0.7152 * pixels[index + 1]) + (0.0722 * pixels[index]));
+                pixels[index] = gray;
+                pixels[index + 1] = gray;
+                pixels[index + 2] = gray;
+            }
+
+            BitmapSource grayImage = BitmapSource.Create(
+                bitmap.PixelWidth,
+                bitmap.PixelHeight,
+                bitmap.DpiX,
+                bitmap.DpiY,
+                PixelFormats.Bgra32,
+                null,
+                pixels,
+                stride);
+            grayImage.Freeze();
+            return grayImage;
+        }
+    }
+
+    private static ImageSource PIconAssetLoad(string name)
+    {
+        StreamResourceInfo? pngResource = null;
+        if (!PIconSvgCheck(name))
+        {
+            Uri pngUri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".png"));
+            try
+            {
+                pngResource = System.Windows.Application.GetResourceStream(pngUri);
+            }
+            catch (IOException)
+            {
+            }
+        }
+
+        if (pngResource is not null)
+        {
+            using Stream stream = pngResource.Stream;
+            return BitmapFrame.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+        }
+
+        Uri svgUri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".svg"));
+        StreamResourceInfo svgResource = System.Windows.Application.GetResourceStream(svgUri)
+            ?? throw new FileNotFoundException(name);
+        using Stream svgStream = svgResource.Stream;
+        using FileSvgReader reader = new(new WpfDrawingSettings
+        {
+            IncludeRuntime = false,
+            TextAsGeometry = true,
+        });
+        return new DrawingImage(reader.Read(svgStream) ?? throw new InvalidDataException(name));
+    }
+
+    private static bool PIconSvgCheck(string name)
+    {
+        return name is "add" or "check" or "close" or "remove";
     }
 
     internal static (Geometry, Rect) PIconLoad(string name)
