@@ -21,7 +21,8 @@ A failed read hands it nothing.
 A click on an initial or a rime asks the window to open the rime table on that category.
 The box takes the pack's glyph font family, so the Han text is drawn as the glyph chips are.
 The fetch announces itself as a fanqie bulletin, and this view re-reads the box alone.
-The rows are kept and the reflex rows' anchor labels rewritten from them, since the labels name those rows.
+The reflex rows' anchor labels are rewritten from these rows, since the labels name them.
+The entry show relies on this, so the reflex rows read no blocks of their own there.
 
 ## `private void PDisplayFanqieSet(long id, long fanqieId, int rank)`
 

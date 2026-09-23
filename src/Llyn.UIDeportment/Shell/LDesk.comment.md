@@ -84,6 +84,8 @@ The Mention a selection in a sentence field lies inside, read from the held draf
 The selection arrives as the field gives it, in UTF-16 units, and the engine measures it.
 The find answers from what the engine holds, never from a list the shell keeps.
 It reads the draft without persisting, so a context menu asking many times sends nothing.
+The tenure keeps the draft it read until the next change, so command checks read no file per keystroke.
+A command about to act on the answer persists first, so pending typing cannot shift the offsets.
 
 ## `public void LDeskDraftUpdate()`
 

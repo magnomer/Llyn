@@ -26,11 +26,3 @@ Replaces the note.
 ## `public sealed record LRequestReferenceUrl(long LRequestDraftId, LStateValue LRequestValue)`
 
 Replaces the url.
-
-## `public sealed record LRequestReferenceBody`
-
-Carries every field of the source at once, as the form currently holds them.
-Each text field travels as written, with its mark, and the engine resolves the state.
-The engine takes the title, year, kind, note, url and author state from it and keeps the held id.
-A form sends this instead of comparing its controls against the draft field by field.
-So the decision of what changed lives in the engine, and an unchanged body saves and announces nothing.

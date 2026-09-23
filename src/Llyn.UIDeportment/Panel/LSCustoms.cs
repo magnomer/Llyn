@@ -36,4 +36,23 @@ public static class LSCustoms
 
         return count;
     }
+
+    public static LMarkupIntake LSCustomsIntakeCreate(int index, IReadOnlyList<LEntry> candidates)
+    {
+        ArgumentNullException.ThrowIfNull(candidates);
+
+        return candidates.Count == 1
+            ? new LMarkupIntake(index, LMarkupMode.LMarkupModeMerge, candidates[0].LEntryId)
+            : new LMarkupIntake(index, LMarkupMode.LMarkupModeNew, 0);
+    }
+
+    public static LMarkupIntake LSCustomsIntakeCreate(int index, LMarkupMode mode, long target)
+    {
+        return LMarkupIntake.LMarkupIntakeCreate(index, mode, target);
+    }
+
+    public static bool LSCustomsTargetCheck(LMarkupMode mode) => mode != LMarkupMode.LMarkupModeNew;
+
+    public static bool LSCustomsReadyCheck(LMarkupMode mode, long target) =>
+        !LSCustomsTargetCheck(mode) || target > 0;
 }

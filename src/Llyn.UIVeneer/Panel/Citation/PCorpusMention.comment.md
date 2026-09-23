@@ -19,6 +19,7 @@ On pick the selection becomes a Mention of the chosen Entry.
 
 Opens the Meaning menu on the Entry the Mention under the selection stands for.
 A Mention standing for nothing offers no Meanings, so the item is disabled for it.
+Pending typing is persisted first, so the Mention is found against the text the field shows.
 
 ### `private void PTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -28,6 +29,7 @@ Marks the selection as standing for nothing, which is an addition with Entry 0.
 
 Drops the Mention under the selection, or the one whose chip was asked from.
 A chip carries itself as the command parameter, so the same command serves both.
+Pending typing is persisted first, so the Mention is found against the text the field shows.
 
 ### `private void PTranscriptMentionShow(LExample? example)`
 

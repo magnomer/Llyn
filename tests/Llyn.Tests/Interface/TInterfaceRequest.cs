@@ -230,23 +230,6 @@ internal static partial class TInterface
     internal static LRequest TReflexAnchorCreate(long draftId, long reflexId, long fanqieId, bool anchored) =>
         new LRequestReflexAnchor(draftId, reflexId, fanqieId, anchored);
 
-    internal static LRequest TReferenceBodyCreate(long draftId, LReference reference) =>
-        new LRequestReferenceBody(
-            draftId,
-            reference.LReferenceTitle.TStateWrittenRead(),
-            reference.LReferenceYear.TStateWrittenRead(),
-            reference.LReferenceKind,
-            reference.LReferenceNote.TStateWrittenRead(),
-            reference.LReferenceUrl.TStateWrittenRead(),
-            reference.LReferenceAuthorState.LStateMarkState);
-
-    internal static LRequest TExampleBodyCreate(long draftId, LExample example) =>
-        new LRequestExampleBody(
-            draftId,
-            example.LExampleLanguage,
-            example.LExampleText.TStateWrittenRead(),
-            example.LExampleSource.LStateAnchorShow());
-
     internal static LRequest TSituationBodyCreate(long draftId, long situationId, LSituation situation) =>
         new LRequestSituationBody(
             draftId,

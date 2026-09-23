@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
@@ -175,7 +175,7 @@ public sealed class LDesk
 
     public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)
     {
-        return _lDeskTenure?.LTenureRead()?.LDraftExampleRead(cardId, sentenceId)
+        return _lDeskTenure?.LTenureExampleRead(cardId, sentenceId)
             ?.LExampleDraftFind(_lDraftPort.LEngineSpanRead(text, start, length));
     }
 

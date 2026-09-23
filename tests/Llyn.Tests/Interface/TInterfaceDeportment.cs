@@ -18,6 +18,18 @@ internal static class TInterfaceDeportment
 
     internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) => LSCustoms.LSCustomsCardScan(cards);
 
+    internal static LMarkupIntake TCustomsIntakeCreate(int index, IReadOnlyList<LEntry> candidates) =>
+        LSCustoms.LSCustomsIntakeCreate(index, candidates);
+
+    internal static LMarkupIntake TCustomsIntakeCreate(int index, LMarkupMode mode, long target) =>
+        LSCustoms.LSCustomsIntakeCreate(index, mode, target);
+
+    internal static bool TCustomsReadyCheck(LMarkupMode mode, long target) =>
+        LSCustoms.LSCustomsReadyCheck(mode, target);
+
+    internal static string TCustomsLossResolve(LWindow? window, LMarkupMode mode, long target) =>
+        LSCustoms.LSCustomsLossResolve(window, mode, target, "{0}/{1}");
+
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
     internal static void TEditorOpen(this LEditor editor, long? id) => editor.LEditorOpen(id);
@@ -276,6 +288,16 @@ internal static class TInterfaceDeportment
             drafts,
             TEngineFake.TEngineStubCreate<LEntryPort>(),
             settings,
+            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            TEngineFake.TEngineStubCreate<LPortraitPort>());
+
+    internal static LWindow TWindowCreate(LEntryPort entries) =>
+        new(
+            new LPosture(new LEngine(TRigFake.TRigFakeBuild())),
+            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            entries,
+            TEngineFake.TEngineStubCreate<LSettingsPort>(),
             TEngineFake.TEngineStubCreate<LPhonologyPort>(),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             TEngineFake.TEngineStubCreate<LPortraitPort>());

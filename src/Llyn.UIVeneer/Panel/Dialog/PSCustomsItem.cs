@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -21,8 +22,9 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
         PSCustomsItemHeadword = entry.LMarkupEntryName;
         PSCustomsItemLanguage = entry.LMarkupEntryLanguage;
         PSCustomsItemCandidate = candidates;
-        _psCustomsItemMode = candidates.Count == 1 ? LMarkupMode.LMarkupModeMerge : LMarkupMode.LMarkupModeNew;
-        _psCustomsItemTarget = candidates.Count == 1 ? candidates[0].LEntryId : 0;
+        LMarkupIntake first = LSCustoms.LSCustomsIntakeCreate(index, candidates);
+        _psCustomsItemMode = first.LMarkupIntakeMode;
+        _psCustomsItemTarget = first.LMarkupIntakeTarget;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -68,7 +70,7 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
         }
     }
 
-    public bool PSCustomsItemTargeted => _psCustomsItemMode != LMarkupMode.LMarkupModeNew;
+    public bool PSCustomsItemTargeted => LSCustoms.LSCustomsTargetCheck(_psCustomsItemMode);
 
     public string PSCustomsItemLoss
     {
@@ -86,6 +88,5 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
         }
     }
 
-    public bool PSCustomsItemReady =>
-        _psCustomsItemMode == LMarkupMode.LMarkupModeNew || _psCustomsItemTarget > 0;
+    public bool PSCustomsItemReady => LSCustoms.LSCustomsReadyCheck(_psCustomsItemMode, _psCustomsItemTarget);
 }

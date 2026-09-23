@@ -248,49 +248,18 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_ReferenceBody_LaysEveryFieldAndKeepsTheHeldId()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDraft started = engine.TEngineReferenceStart("Reference", null);
-        LReference sent = TInterface.TReferenceCreate(
-            999,
-            TInterface.TStateValueCreate("the evening news"),
-            TInterface.TStateValueCreate("1999"),
-            LReferenceKind.LReferenceKindBook,
-            TInterface.TStateValueCreate("a note"),
-            TInterface.TStateValueCreate("https://example.org"),
-            LStateMark.LStateMarkUnknown);
-
-        LDraft answered = engine.TEngineRequestApply(TInterface.TReferenceBodyCreate(started.LDraftId, sent));
-
-        LReference held = answered.LDraftReference!;
-        Assert.Equal(started.LDraftReference!.LReferenceId, held.LReferenceId);
-        Assert.Equal("the evening news", held.LReferenceTitle.TStateValueShow());
-        Assert.Equal("1999", held.LReferenceYear.TStateValueShow());
-        Assert.Equal(LReferenceKind.LReferenceKindBook, held.LReferenceKind);
-        Assert.Equal("a note", held.LReferenceNote.TStateValueShow());
-        Assert.Equal("https://example.org", held.LReferenceUrl.TStateValueShow());
-        Assert.Equal(LState.LStateUnknown, held.LReferenceAuthorState.LStateMarkState);
-    }
-
-    [Fact]
-    public void RequestApply_UnchangedBody_WritesNothingAndRaisesNothing()
+    public void RequestApply_UnchangedText_WritesNothingAndRaisesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineExampleStart("Example", null);
-        LExample sent = TInterface.TExampleCreate(
-            0,
-            "en",
-            TInterface.TStateValueCreate("a line"),
-            LStateValue.LStateValueUnspecified,
-            LStateAnchor.LStateAnchorUnspecified);
-        LDraft changed = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
+        LDraft changed = engine.TEngineRequestApply(
+            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
         List<LBulletin> bulletins = [];
         engine.TEngineObserverAttach(bulletins.Add);
 
-        LDraft answered = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
 
         Assert.Equal(changed.LDraftVersion, answered.LDraftVersion);
         Assert.Equal(changed.LDraftExample, answered.LDraftExample);

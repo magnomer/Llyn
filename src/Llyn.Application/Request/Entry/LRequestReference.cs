@@ -31,16 +31,3 @@ public sealed record LRequestReferenceUrl(long LRequestDraftId, LStateWritten LR
 {
     public override string LRequestKey => nameof(LRequestReferenceUrl);
 }
-
-public sealed record LRequestReferenceBody(
-    long LRequestDraftId,
-    LStateWritten LRequestTitle,
-    LStateWritten LRequestYear,
-    LReferenceKind LRequestKind,
-    LStateWritten LRequestNote,
-    LStateWritten LRequestUrl,
-    LState LRequestAuthorState)
-    : LRequest(LRequestDraftId)
-{
-    public override string LRequestKey => nameof(LRequestReferenceBody);
-}

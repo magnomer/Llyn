@@ -18,18 +18,6 @@ Applies one change to the sentence the draft holds, and refuses a draft holding 
 
 Applies one change to the source the draft holds, and refuses a draft holding none.
 
-## `public static LReference LReferenceBodyApply(LReference held, LRequestReferenceBody sent)`
-
-Resolves each written field of the sent source and lays it over the held one, keeping the held id.
-Nothing is compared here.
-The caller drops the result when it equals what was held.
-
-## `public static LExample LExampleBodyApply(LExample held, LRequestExampleBody sent)`
-
-Resolves the written text and the chosen source of the sent sentence.
-The Glosses are left as held, because each is a row the Gloss requests edit on its own.
-It lays them, with the language, over the held one, keeping the held id.
-
 ## `public static LSituation LSituationBodyApply(LSituation held, LRequestSituationBody sent)`
 
 Resolves the written title, description and kind of the sent situation.

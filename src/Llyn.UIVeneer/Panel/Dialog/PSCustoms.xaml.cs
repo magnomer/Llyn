@@ -46,7 +46,7 @@ public partial class PSCustoms : Window
         List<LMarkupIntake> intakes = new(dialog._psCustomsItem.Count);
         foreach (PSCustomsItem item in dialog._psCustomsItem)
         {
-            intakes.Add(new LMarkupIntake(
+            intakes.Add(LSCustoms.LSCustomsIntakeCreate(
                 item.PSCustomsItemIndex,
                 item.PSCustomsItemMode,
                 item.PSCustomsItemTarget));

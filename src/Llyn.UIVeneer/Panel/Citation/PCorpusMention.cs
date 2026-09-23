@@ -36,6 +36,7 @@ public partial class PCorpus
             return;
         }
 
+        PTranscriptDesk.LDeskPersist();
         if (PTranscriptMentionFind() is not LMentionDraft mention)
         {
             return;
@@ -68,6 +69,7 @@ public partial class PCorpus
 
     private void PTranscriptUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
+        PTranscriptDesk.LDeskPersist();
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
             : PTranscriptMentionFind()?.LMentionDraftId;

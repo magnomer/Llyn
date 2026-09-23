@@ -19,13 +19,3 @@ public sealed record LRequestExampleReference(long LRequestDraftId, long LReques
 {
     public override string LRequestKey => nameof(LRequestExampleReference);
 }
-
-public sealed record LRequestExampleBody(
-    long LRequestDraftId,
-    string? LRequestLanguage,
-    LStateWritten LRequestText,
-    long LRequestReferenceId)
-    : LRequest(LRequestDraftId)
-{
-    public override string LRequestKey => nameof(LRequestExampleBody);
-}

@@ -75,6 +75,14 @@ internal static partial class TInterface
         IReadOnlyList<LAnatomyTone> rules, string language, string tone) =>
         LAnatomyTone.LAnatomyToneScan(rules, language, tone);
 
+    internal static IReadOnlyList<LAnchorRow> TReflexAnchorScan(
+        IReadOnlyList<LFanqieRow> rows,
+        IReadOnlyList<long> anchors,
+        IReadOnlyList<LAnatomyTone> tones,
+        string reflex,
+        string tone) =>
+        LReflexClerk.LReflexAnchorScan(rows, anchors, tones, reflex, tone);
+
     internal static bool TAnatomyToneMatch(this LAnatomyTone rule, string language) =>
         rule.LAnatomyToneMatch(language);
 

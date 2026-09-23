@@ -143,6 +143,7 @@ public partial class PEditor
 
     internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)
     {
+        _lEditor.LEditorDesk.LDeskPersist();
         if (e.Source is not TextBox { DataContext: PSentence row } box
             || PCardSentenceFind(row) is not PCard card
             || PSentenceMentionFind(box, card, row) is not LMentionDraft mention)
@@ -189,6 +190,7 @@ public partial class PEditor
             return;
         }
 
+        _lEditor.LEditorDesk.LDeskPersist();
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
             : e.Source is TextBox box

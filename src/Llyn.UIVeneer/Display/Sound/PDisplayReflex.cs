@@ -24,7 +24,7 @@ public partial class PDisplay
         }
     }
 
-    private void PDisplayReflexShow(long id, LEntryDraft draft)
+    private void PDisplayReflexShow(LEntryDraft draft)
     {
         _pDisplayReflex.Clear();
         HashSet<string> folded = PReflexFoldRead(_pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
@@ -38,8 +38,6 @@ public partial class PDisplay
 
         PReflexLeadApply(_pDisplayReflex);
         PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
-        LWindow window = _pDisplayHost.PWindowDeportment;
-        PReflexAnchorApply(window, _pDisplayReflex, _lDisplay.LDisplayAnchorRead(id), draft.LEntryDraftHeadword);
     }
 
     private void PReflexPendingShow(long id)
@@ -70,7 +68,9 @@ public partial class PDisplay
 
         if (draft is not null)
         {
-            PDisplayReflexShow(id, draft);
+            PDisplayReflexShow(draft);
+            LWindow window = _pDisplayHost.PWindowDeportment;
+            PReflexAnchorApply(window, _pDisplayReflex, _lDisplay.LDisplayAnchorRead(id), PDisplayHeadword.Text);
         }
 
         PReflexPendingShow(id);

@@ -89,10 +89,6 @@ public sealed class LDraftClerk
                 {
                     LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState),
                 }),
-            LRequestReferenceBody sent => LDraftClerkPanel.LReferenceChange(
-                draft, reference => LDraftClerkPanel.LReferenceBodyApply(reference, sent)),
-            LRequestExampleBody sent => LDraftClerkPanel.LExampleChange(
-                draft, example => LDraftClerkPanel.LExampleBodyApply(example, sent)),
             LRequestSituationBody sent => LDraftClerkChip.LSituationChange(
                 draft,
                 draft.LDraftSituation?.LSituationId ?? sent.LRequestSituationId,

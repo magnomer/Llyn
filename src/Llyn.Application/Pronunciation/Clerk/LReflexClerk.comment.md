@@ -22,7 +22,7 @@ Whether two anchor lists name the same rows.
 ## `public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(`
 
 The stored fanqie rows marked held and estimated for the anchor dropdown.
-The estimated classes are the ones `tones` resolves for the reflex `language` and `tone`.
+The estimated classes are the ones `tones` resolves for the `reflex` language and `tone`.
 
 ## `public static bool LReflexAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)`
 

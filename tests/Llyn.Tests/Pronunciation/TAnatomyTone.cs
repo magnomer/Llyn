@@ -89,4 +89,22 @@ public sealed class TAnatomyTone
         Assert.Empty(TInterface.TAnatomyToneScan(rows, "Mandarin", ""));
         Assert.Empty(TInterface.TAnatomyToneScan(rows, "Korean", "55"));
     }
+
+    [Fact]
+    public void ReflexAnchorScan_MandarinLevelTone_EstimatesItsClass()
+    {
+        LFanqieRow level = TInterface.TFanqieRowCreate("疑", "模", "模", "一", "平", false)
+            with { LFanqieRowId = 5, LFanqieRowClass = "1" };
+        LFanqieRow departing = TInterface.TFanqieRowCreate("匣", "寒", "寒", "一", "去", false)
+            with { LFanqieRowId = 6, LFanqieRowClass = "5" };
+
+        IReadOnlyList<LAnchorRow> rows = TInterface.TReflexAnchorScan(
+            [level, departing], [6], TAnatomyToneRead(), "Mandarin", "55");
+
+        Assert.Equal(2, rows.Count);
+        Assert.True(rows[0].LAnchorRowEstimated);
+        Assert.False(rows[0].LAnchorRowHeld);
+        Assert.False(rows[1].LAnchorRowEstimated);
+        Assert.True(rows[1].LAnchorRowHeld);
+    }
 }

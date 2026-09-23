@@ -11,6 +11,10 @@ public sealed partial class LTenure
 
     private int _lTenurePreparing;
 
+    private LDraft? _lTenureKept;
+
+    private int _lTenureRound;
+
     public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         LTenureObserverInsert(subject, observer, null);
@@ -47,6 +51,11 @@ public sealed partial class LTenure
         (LSubject, Action<LBulletin>, long?)[] observers;
         lock (_lTenureGate)
         {
+            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+            {
+                LTenureKeptClear();
+            }
+
             if (_lTenureEnded)
             {
                 return;
@@ -126,11 +135,56 @@ public sealed partial class LTenure
                 lock (_lTenureGate)
                 {
                     _lTenurePreparing--;
+                    LTenureKeptClear();
                 }
             }
         }
     }
 
+    public LExampleDraft? LTenureExampleRead(long cardId, long sentenceId)
+    {
+        int round;
+        lock (_lTenureGate)
+        {
+            if (_lTenureEnded)
+            {
+                return null;
+            }
+
+            if (_lTenureKept is LDraft kept)
+            {
+                return kept.LDraftExampleRead(cardId, sentenceId);
+            }
+
+            round = _lTenureRound;
+        }
+
+        LDraft? read;
+        try
+        {
+            read = _lEngine.LEngineDraft.LEngineDraftRead(LTenureId);
+        }
+        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
+        {
+            return null;
+        }
+
+        lock (_lTenureGate)
+        {
+            if (round == _lTenureRound)
+            {
+                _lTenureKept = read;
+            }
+        }
+
+        return read?.LDraftExampleRead(cardId, sentenceId);
+    }
+
+    private void LTenureKeptClear()
+    {
+        _lTenureKept = null;
+        _lTenureRound++;
+    }
     private void LTenureObserverClear()
     {
         _lEngine.LEngineObserverDetach(LTenureBulletinHandle);

@@ -5,7 +5,6 @@
 One row of the customs window: an entry from the file and how it is to enter.
 It keeps the entry's position in the file, since the intake is answered by position.
 The candidates are the stored entries sharing its headword and language, looked up once when the row is made.
-A row with exactly one candidate starts as Merge into it, and every other row starts as New.
 
 ## `public string PSCustomsItemNumber`
 

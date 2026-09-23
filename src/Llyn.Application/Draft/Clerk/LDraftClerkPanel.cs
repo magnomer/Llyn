@@ -35,33 +35,6 @@ public sealed class LDraftClerkPanel
         return draft with { LDraftReference = change(held) };
     }
 
-    public static LReference LReferenceBodyApply(LReference held, LRequestReferenceBody sent)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-        ArgumentNullException.ThrowIfNull(sent);
-
-        return held with
-        {
-            LReferenceTitle = LStateValue.LStateValueRead(sent.LRequestTitle),
-            LReferenceYear = LStateValue.LStateValueRead(sent.LRequestYear),
-            LReferenceKind = sent.LRequestKind,
-            LReferenceNote = LStateValue.LStateValueRead(sent.LRequestNote),
-            LReferenceUrl = LStateValue.LStateValueRead(sent.LRequestUrl),
-            LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestAuthorState),
-        };
-    }
-
-    public static LExample LExampleBodyApply(LExample held, LRequestExampleBody sent)
-    {
-        ArgumentNullException.ThrowIfNull(sent);
-
-        return LDraftClerkMention.LMentionUpdate(held, LStateValue.LStateValueRead(sent.LRequestText)) with
-        {
-            LExampleLanguage = sent.LRequestLanguage ?? string.Empty,
-            LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
-        };
-    }
-
     public static LSituation LSituationBodyApply(LSituation held, LRequestSituationBody sent)
     {
         ArgumentNullException.ThrowIfNull(held);

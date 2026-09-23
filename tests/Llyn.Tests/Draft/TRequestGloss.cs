@@ -126,9 +126,9 @@ public sealed class TRequestGloss
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineExampleStart("Corpus", null);
-        engine.TEngineRequestApply(TInterface.TExampleBodyCreate(
-            started.LDraftId,
-            TInterface.TExampleCreate(0, "English", TInterface.TStateValueCreate("a line"), null, null)));
+        engine.TEngineRequestApply(
+            TInterface.TExampleTextCreate(started.LDraftId, TInterface.TStateValueCreate("a line")));
+        engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(started.LDraftId, "English"));
         LDraft added = engine.TEngineRequestApply(
             TInterface.TGlossAdditionCreate(started.LDraftId, 0, 0, "Korean", 0));
         long gloss = Assert.Single(added.LDraftExample!.LExampleGloss).LGlossId;

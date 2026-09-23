@@ -17,6 +17,7 @@ Each entry's candidates are looked up before the window opens, so the rows arriv
 One candidate defaults to Merge with it, none to New, and several to New with the target left to choose.
 Headwords shared by two rows are numbered, so a reader can tell twin rows apart.
 Null when cancelled, otherwise one intake per row in file order.
+A New row's intake carries no target, even when the row still holds an earlier pick.
 
 ## `internal static void PSCustomsOmissionShow(Window owner, IReadOnlyList<LMarkupOmission> omissions)`
 

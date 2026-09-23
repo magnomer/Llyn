@@ -57,6 +57,7 @@ The card and row ids are taken before the picker opens, since the pick answers l
 
 Opens the window's Meaning menu on the Entry the Mention under the selection stands for.
 The chosen sense goes out as a request naming the Mention, and the redraw shows it on the chip.
+Pending typing is persisted first, so the Mention is found against the text the field shows.
 
 ## `internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -66,6 +67,7 @@ Marks the selection as standing for nothing, which is an addition with Entry 0.
 
 Drops the Mention under the selection, or the one whose chip was asked from.
 The row is read from the element the command was bound on, because a chip button is not the field.
+Pending typing is persisted first, so the Mention is found against the text the field shows.
 
 ## `internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)`
 

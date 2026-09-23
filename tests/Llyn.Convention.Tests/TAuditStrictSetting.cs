@@ -9,8 +9,8 @@ internal static class TAuditStrictSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
         ["Storage"] = 177,
-        ["Flow"] = 968,
-        ["Treat"] = 84,
+        ["Flow"] = 965,
+        ["Treat"] = 81,
         ["Reach"] = 64,
         ["Taint"] = 101,
     };
