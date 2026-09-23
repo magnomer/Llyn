@@ -35,6 +35,10 @@ Nothing starts when the setting is off or the language declares no source.
 
 Cancels every pending fetch and forgets the misses.
 
+## `public void LFrequencyClerkClear(long entryId)`
+
+Cancels the pending fetch for `entryId`, forgets its miss and clears its stored rows.
+
 ## `private void LFrequencyClerkCancel(long entryId)`
 
 Cancels and disposes the pending fetch of one entry.

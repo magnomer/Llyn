@@ -10,7 +10,7 @@ public sealed class LEntryClerk
     private readonly LVault _lEntryClerkVault;
     private readonly LEntryVault _lEntryClerkEntries;
     private readonly LEtymologyVault _lEntryClerkEtymologies;
-    private readonly LFrequencyVault _lEntryClerkFrequencies;
+    private readonly LFrequencyClerk _lEntryClerkFrequencies;
     private readonly LNoteVault _lEntryClerkNotes;
     private readonly LRevisionVault _lEntryClerkRevisions;
     private readonly LTombstoneVault _lEntryClerkTombstones;
@@ -35,7 +35,8 @@ public sealed class LEntryClerk
         LPronunciationClerk pronunciations,
         LTranscriptionClerk transcriptions,
         LReflexClerk reflexes,
-        LRecordingClerk recordings)
+        LRecordingClerk recordings,
+        LFrequencyClerk frequencies)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(cards);
@@ -47,10 +48,11 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(transcriptions);
         ArgumentNullException.ThrowIfNull(reflexes);
         ArgumentNullException.ThrowIfNull(recordings);
+        ArgumentNullException.ThrowIfNull(frequencies);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
         _lEntryClerkEtymologies = rig.LRigEtymologies;
-        _lEntryClerkFrequencies = rig.LRigFrequencies;
+        _lEntryClerkFrequencies = frequencies;
         _lEntryClerkNotes = rig.LRigNotes;
         _lEntryClerkRevisions = rig.LRigRevisions;
         _lEntryClerkTombstones = rig.LRigTombstones;
@@ -386,7 +388,7 @@ public sealed class LEntryClerk
             !string.Equals(stored.LEntryLanguage, language, StringComparison.Ordinal);
         if (renamed)
         {
-            _lEntryClerkFrequencies.LFrequencyClear(id);
+            _lEntryClerkFrequencies.LFrequencyClerkClear(id);
             changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
         }
 

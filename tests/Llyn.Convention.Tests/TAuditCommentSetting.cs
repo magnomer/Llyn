@@ -9,8 +9,17 @@ internal static class TAuditCommentSetting
     public static readonly string[] TAuditCommentRoots =
     [
         "languages",
+        "localization",
         "src",
         "tests",
+        "themes",
+    ];
+
+    public static readonly string[] TAuditCommentFiles =
+    [
+        "Directory.Build.props",
+        "Llyn.slnx",
+        "version.json",
     ];
 
     public static readonly string[] TAuditCommentForbidden =
@@ -37,6 +46,16 @@ internal static class TAuditCommentSetting
         "publish",
     ];
 
+    public static readonly string[] TAuditCommentSources =
+    [
+        "*.cs",
+        "*.xaml",
+        "*.csproj",
+        "*.json",
+        "*.props",
+        "*.slnx",
+    ];
+
     public static readonly string[] TAuditCommentSuffixes =
     [
         ".g.cs",
@@ -55,5 +74,6 @@ internal static class TAuditCommentSetting
     {
         [".cs"] = ["//", "/*"],
         [".xaml"] = ["<!--"],
+        [".props"] = ["<!--"],
     };
 }

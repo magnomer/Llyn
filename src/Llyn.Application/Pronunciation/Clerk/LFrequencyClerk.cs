@@ -148,6 +148,16 @@ public sealed class LFrequencyClerk
         }
     }
 
+    public void LFrequencyClerkClear(long entryId)
+    {
+        lock (_lFrequencyClerkGate)
+        {
+            LFrequencyClerkCancel(entryId);
+            _lFrequencyClerkMissed.Remove(entryId);
+            _lFrequencyClerkFrequencies.LFrequencyClear(entryId);
+        }
+    }
+
     private void LFrequencyClerkCancel(long entryId)
     {
         if (_lFrequencyClerkPending.Remove(entryId, out CancellationTokenSource? held))

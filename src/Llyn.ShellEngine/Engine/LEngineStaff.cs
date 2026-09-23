@@ -81,10 +81,11 @@ internal sealed record LEngineStaff(
         LRecordingClerk recording = new(rig, cache, trail, claim);
         LTranscriptionClerk transcription = new(rig, cache);
         LReflexClerk reflex = new(rig, cache, claim, gate, raise);
-        LEntryClerk entry = new(
-            rig, card, meaning, vocabulary, inflection, paradigm, pronunciation, transcription, reflex, recording);
-        LLacunaClerk lacuna = new(rig, cache, paradigm, claim, gate, settings, raise);
         LFrequencyClerk frequency = new(rig, cache, gate, settings, raise);
+        LEntryClerk entry = new(
+            rig, card, meaning, vocabulary, inflection, paradigm, pronunciation, transcription, reflex, recording,
+            frequency);
+        LLacunaClerk lacuna = new(rig, cache, paradigm, claim, gate, settings, raise);
         LOutcomeClerk outcome = new(
             rig, cache, draft, claim, court, entry, lacuna, frequency);
         LAuthorClerk author = new(rig);

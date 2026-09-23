@@ -14,10 +14,10 @@ The transcriptions and the reflexes are still reconciled by the engine after the
 Their sync reads the source factory, which no clerk holds until plan 16 gives it a clerk.
 The engine holds the outer session across both halves, so a commit is still whole or nothing.
 
-## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings)`
+## `public LEntryClerk(LRig rig, LCardClerk cards, LMeaningClerk meanings, LVocabularyClerk vocabulary, LInflectionClerk inflections, LParadigmClerk paradigms, LPronunciationClerk pronunciations, LTranscriptionClerk transcriptions, LReflexClerk reflexes, LRecordingClerk recordings, LFrequencyClerk frequencies)`
 
-Reads the ports the lifecycle touches out of `rig`.
-Those are the root, the entries, the frequencies, the notes, the revisions, the tombstones and the workspace row.
+Reads the ports the lifecycle touches out of `rig` and takes the frequency clerk for clearing a renamed entry.
+The ports are the root, the entries, the notes, the revisions, the tombstones and the workspace row.
 The eight clerks handed in write the parts of an entry a commit spans.
 The recording clerk resolves the recording paths of a loaded draft.
 
@@ -221,7 +221,8 @@ Applies `draft` to the entry identified by `id` and returns the stored entry as 
 A blank headword is refused before any session opens, and the headword is trimmed.
 The entry keeps its opaque id and its `added_utc`.
 Only `updated_utc` moves, and only when the draft differs from the entry as loaded with its recordings resolved.
-A changed headword or language clears the stored frequency, so a stale figure never shows under the new headword.
+A changed headword or language clears stored frequencies through the clerk.
+No stale figure then appears under the new headword.
 An id no entry carries is refused before anything is written.
 
 Every change is appended to `changes` and no revision is recorded here.

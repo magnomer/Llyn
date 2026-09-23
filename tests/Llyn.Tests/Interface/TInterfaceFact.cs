@@ -20,6 +20,9 @@ internal static partial class TInterface
     internal static IReadOnlyDictionary<string, string> TLocalizationLoaderRead(string language) =>
         new LLocalizationLoader().LLocalizationRead(language);
 
+    internal static IReadOnlyList<string> TLocalizationScan() =>
+        new LLocalizationLoader().LLocalizationScan();
+
     internal static string TLocalizationTextRead(string key) =>
         LLocalization.LLocalizationTextRead(key);
 

@@ -116,7 +116,8 @@ internal static partial class TInterface
             new LPronunciationClerk(rig),
             new LTranscriptionClerk(rig, languages),
             new LReflexClerk(rig, languages, claims, new object(), static (_, _) => { }),
-            new LRecordingClerk(rig, languages, new LTrailClerk(rig), claims));
+            new LRecordingClerk(rig, languages, new LTrailClerk(rig), claims),
+            new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }));
     }
 
     internal static LRecordingClerk TRecordingClerkCreate(LRig rig) =>
