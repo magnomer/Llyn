@@ -12,3 +12,5 @@ So a click lands on a run that already knows where it stands.
 - `LMentionPieceOffset` — The code-point offset the piece begins at, counted from zero.
 - `LMentionPieceLength` — The number of code points the piece covers, always above zero.
 - `LMentionPieceStored` — The Mention the piece stands for, or null for a gap.
+- `LMentionPieceText` — The characters the piece covers, cut from the sentence in UTF-16 units.
+  The control draws it as is, so it never converts a code-point span itself.

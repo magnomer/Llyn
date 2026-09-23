@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
@@ -14,6 +15,8 @@ internal static class TInterfaceDeportment
         new LPhonologyOutlet(engine),
         new LSettingsOutlet(engine),
         static () => false);
+
+    internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) => LSCustoms.LSCustomsCardScan(cards);
 
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
@@ -334,4 +337,11 @@ internal static class TInterfaceDeportment
     internal static LRegister TTenorRegisterCreate(this LTenor tenor, string name) => tenor.LTenorRegisterCreate(name);
 
     internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
+
+    internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TWindowMeaningSort(
+        IReadOnlyList<LMeaning> meanings, string unknown) => LWindow.LWindowMeaningSort(meanings, unknown);
+
+    internal static bool TCaretKeyApply(
+        string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
+        LCaret.LCaretKeyApply(key, caret, length, selection, remove, move, place);
 }

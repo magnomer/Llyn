@@ -29,6 +29,23 @@ internal sealed class LReflexFacade
         return LReflexClerk.LReflexAnchorMatch(one, other);
     }
 
+    public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)
+    {
+        return LReflexClerk.LReflexAnchorScan(rows, anchors, LEngineToneRead(language), reflex, tone);
+    }
+
+    public bool LEngineAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    {
+        return LReflexClerk.LReflexAnchorCheck(rows, headword);
+    }
+
+    public string LEngineAnchorFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        return LReflexClerk.LReflexAnchorFormat(rows, anchors, headword, separator);
+    }
+
     public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)
     {
         lock (_lReflexFacadeGate)

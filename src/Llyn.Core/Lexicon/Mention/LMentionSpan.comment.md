@@ -26,11 +26,18 @@ The span carries no id and no entry, since it only measures where a Mention woul
 ## `public static IReadOnlyList<LMentionPiece> LMentionSpanDivide(string text, IReadOnlyList<LMention> mentions)`
 
 Cuts `text` at every Mention boundary into pieces that cover it end to end.
-Each piece carries its offset, its length and its Mention, or null for a gap.
+Each piece carries its offset, its length, its Mention or null for a gap, and its own text.
 No piece is empty, so a sentence with no Mention is one piece and an empty sentence is none.
 A Mention reaching past the end of the text is trimmed to it rather than refused.
 The store never writes such a Mention, and a stale one must not blank the sentence.
 Overlapping Mentions are a caller error and throw, with `LMention.LMentionOverlapCheck` as the guard.
+
+## `public static LMentionDraft? LMentionSpanFind(IReadOnlyList<LMentionDraft> mentions, LMentionDraft span)`
+
+The Mention that `span` lies wholly inside, or nothing.
+A caret with no length counts as inside when it stands anywhere on a Mention, its ends included.
+So a right click on a linked word finds it without the word being selected first.
+Every draft that holds Mentions answers its selection through this one test.
 
 ## `public static int LMentionOffsetRead(string text, int unit)`
 
@@ -46,6 +53,10 @@ WPF measures text in UTF-16 units, and the engine and the store count code point
 These two methods are the only place the conversion lives.
 
 ## Inline notes
+
+### `private static string LMentionTextRead(string text, int start, int end)`
+
+The characters between two code-point offsets, cut at the matching UTF-16 units.
 
 ### `private static bool LMentionJoinCheck(Rune left, Rune right, bool separated)`
 

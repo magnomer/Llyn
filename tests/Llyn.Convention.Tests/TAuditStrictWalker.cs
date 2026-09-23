@@ -178,6 +178,7 @@ internal static class TAuditStrictWalker
                          && !binary.IsKind(SyntaxKind.LogicalAndExpression)
                          && !binary.IsKind(SyntaxKind.LogicalOrExpression)
                          && !TAuditNullCheck(binary.Left) && !TAuditNullCheck(binary.Right)
+                         && !TAuditSetterCheck(binary)
                          && (TAuditDataCheck(binary.Left) || TAuditDataCheck(binary.Right))
                     => $"logic value in {binary.OperatorToken.ValueText}",
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } query
@@ -226,12 +227,27 @@ internal static class TAuditStrictWalker
 
         if (condition is BinaryExpressionSyntax binary
             && (binary.IsKind(SyntaxKind.EqualsExpression) || binary.IsKind(SyntaxKind.NotEqualsExpression))
-            && (TAuditNullCheck(binary.Left) || TAuditNullCheck(binary.Right)))
+            && (TAuditNullCheck(binary.Left) || TAuditNullCheck(binary.Right) || TAuditSetterCheck(binary)))
         {
             return false;
         }
 
         return !TAuditVerdictCheck(condition) && TAuditDataCheck(condition);
+    }
+
+    private static bool TAuditSetterCheck(BinaryExpressionSyntax binary)
+    {
+        if (!binary.IsKind(SyntaxKind.EqualsExpression) && !binary.IsKind(SyntaxKind.NotEqualsExpression)
+            || binary.FirstAncestorOrSelf<AccessorDeclarationSyntax>() is not { } accessor
+            || !accessor.IsKind(SyntaxKind.SetAccessorDeclaration)
+            && !accessor.IsKind(SyntaxKind.InitAccessorDeclaration))
+        {
+            return false;
+        }
+
+        return new[] { binary.Left, binary.Right }.Any(side =>
+            side is IdentifierNameSyntax { Identifier.ValueText: "value" }
+            && TAuditBinder.TAuditSymbolRead(side) is IParameterSymbol { IsImplicitlyDeclared: true });
     }
 
     public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)

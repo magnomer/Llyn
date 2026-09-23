@@ -11,12 +11,12 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
     private bool _pInventoryItemChosen;
 
     internal PInventoryItem(
-        long id, string headword, string language, string sound, string epithet = "", bool chosen = false)
+        long id, string headword, string name, string language, string sound, string epithet = "", bool chosen = false)
     {
         _pInventoryItemChosen = chosen;
         PInventoryItemId = id;
         PInventoryItemHeadword = headword;
-        PInventoryItemName = headword;
+        PInventoryItemName = name;
         PInventoryItemEpithet = epithet ?? string.Empty;
         PInventoryItemLanguage = language;
         PInventoryItemSound = sound;
@@ -30,7 +30,7 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
 
     public string PInventoryItemEpithet { get; }
 
-    public string PInventoryItemName { get; internal set; }
+    public string PInventoryItemName { get; }
 
     public string PInventoryItemLanguage { get; }
 
@@ -50,13 +50,11 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
             built.Add(new PInventoryItem(
                 row.LCatalogPronunciationEntry.LEntryId,
                 row.LCatalogPronunciationEntry.LEntryHeadword,
+                row.LCatalogPronunciationName,
                 row.LCatalogPronunciationEntry.LEntryLanguage,
                 row.LCatalogPronunciationSound,
                 row.LCatalogPronunciationEpithet ?? string.Empty,
-                row.LCatalogPronunciationChosen)
-            {
-                PInventoryItemName = row.LCatalogPronunciationName,
-            });
+                row.LCatalogPronunciationChosen));
         }
 
         return built;

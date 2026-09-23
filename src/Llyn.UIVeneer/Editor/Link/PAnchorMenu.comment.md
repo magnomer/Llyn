@@ -30,7 +30,7 @@ Opens the popup under the label that was pressed, filled for the row the command
 ## `private void PAnchorBuild(PReflexItem row)`
 
 Fills the list with one tick row per stored placement, ticked where `row` is anchored.
-The classes the row's tone may descend from are read under the entry language's tone rows first.
+The engine marks each placement, reading the classes the row's tone may descend from under the entry language's tone rows.
 The empty notice shows when the character has no stored placement yet.
 
 ## `private TextBlock PAnchorLabelBuild(PAnchorItem item)`

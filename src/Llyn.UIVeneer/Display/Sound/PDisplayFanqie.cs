@@ -35,8 +35,7 @@ public partial class PDisplay
             rows.AddRange(group.LFanqieGroupRows);
         }
 
-        _pDisplayFanqie = rows;
-        PReflexAnchorApply(_pDisplayReflex, rows, PDisplayHeadword.Text);
+        PReflexAnchorApply(_pDisplayHost.PWindowDeportment, _pDisplayReflex, rows, PDisplayHeadword.Text);
         PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(groups);
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
@@ -71,7 +70,6 @@ public partial class PDisplay
 
     private void PDisplayFanqieClear()
     {
-        _pDisplayFanqie = [];
         PDisplayFanqie.PFanqieItems = null;
         PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(null);
         PDisplayFanqie.PFanqieDiweiNotice = null;

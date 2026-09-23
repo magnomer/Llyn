@@ -25,6 +25,10 @@ Reads the workspace languages the picker offers.
 No default is chosen, because an Example's language is optional and the store accepts none.
 Choosing one here would put a language on every sentence the user never named.
 
+## `internal void PSpeakerHandle(object sender, RoutedEventArgs e)`
+
+The pick goes to the engine, and the chip changes when the draft bulletin returns.
+
 ## `private string PTranscriptHintRead(bool unknown)`
 
 The placeholder the sentence field shows while empty.
@@ -47,14 +51,6 @@ The language and the citation are compared the same way, so a bulletin that chan
 ## `private void PTranscriptFieldShow(TextBox field, LStateValue value, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
-
-## `private LRequestExampleBody PTranscriptRead(long draft)`
-
-The controls as written, for the engine to read into the sentence it holds.
-Text travels with its mark and the citation as the chosen id, so the panel resolves no state.
-The Gloss rows are not in the body, because each travels as its own request from [PCorpusGloss](PCorpusGloss.comment.md).
-The engine keeps the id of the sentence it holds.
-The panel therefore never mints or carries an id of its own.
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
 

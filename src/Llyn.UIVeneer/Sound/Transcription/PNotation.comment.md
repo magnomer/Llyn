@@ -68,6 +68,7 @@ A blank scheme is a pronunciation search and a named one a transcription search 
 
 Writes the reading into the row the menu was opened for, then tags that row with its variety.
 A transcription row takes the text alone, because its scheme is already fixed and it carries no variety.
+A transcription reading is sent as a request, and the row shows it when the draft returns.
 The primary row and a further row each take a reading request sent at once, carrying the source's phonetic.
 The engine derives the respelling from it, so the pick fills both forms whatever the field prints.
 The request is sent before the variety, because the primary row exists only once it has run.

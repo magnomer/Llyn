@@ -173,6 +173,12 @@ public sealed class LDesk
         return held.LTenureRead();
     }
 
+    public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)
+    {
+        return _lDeskTenure?.LTenureRead()?.LDraftExampleRead(cardId, sentenceId)
+            ?.LExampleDraftFind(_lDraftPort.LEngineSpanRead(text, start, length));
+    }
+
     public void LDeskDraftUpdate()
     {
         if (LDeskFilling)

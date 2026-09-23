@@ -18,18 +18,10 @@ The template binds this, because a margin is the one thing markup cannot compute
 
 The Entry-mode rows, one per candidate, in the order the engine returned them.
 
-## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(long entryId, IReadOnlyList<LMeaning> meanings, string whole, string unknown)`
+## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(long entryId, IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> senses, string whole)`
 
 The Sense-mode rows, led by one row for the whole Entry.
-A Meaning is named by its title, or by its definition when it has no title.
-The unknown label names it when it has neither.
-The words for the whole Entry and for an unknown name are handed in.
+The senses arrive named and ordered by `LWindow`, so the record only wraps them.
+The word for the whole Entry is handed in.
 The record has no window to read a key from.
 
-## `private static void PMentionItemAppend(...)`
-
-Walks one level of the tree and recurses under each Meaning it lists.
-The engine returns the Meanings grouped by parent, and the menu wants them in reading order.
-So the children of each parent are picked out and sorted by position before their own children follow.
-A row that names itself as its parent is skipped rather than followed.
-So a bad row cannot loop the walk.

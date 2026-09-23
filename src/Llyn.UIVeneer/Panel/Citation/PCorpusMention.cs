@@ -11,8 +11,6 @@ public partial class PCorpus
 {
     private readonly PMentionLine _pTranscriptChip = new();
 
-    private IReadOnlyList<LMentionDraft> _pTranscriptMention = [];
-
     private void PTranscriptLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         (int offset, int length) = PMentionSelection.PMentionSelectionRead(
@@ -99,9 +97,8 @@ public partial class PCorpus
 
     private LMentionDraft? PTranscriptMentionFind()
     {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(
-            PTranscriptText, _pCorpusHost.PWindowDeportment);
-        return PMentionSelection.PMentionSelectionFind(_pTranscriptMention, offset, length);
+        return PTranscriptDesk.LDeskMentionFind(
+            0, 0, PTranscriptText.Text, PTranscriptText.SelectionStart, PTranscriptText.SelectionLength);
     }
 
     private void PTranscriptMentionShow(LExample? example)
@@ -111,8 +108,6 @@ public partial class PCorpus
         {
             mentions.Add(LMentionDraft.LMentionDraftCreate(mention));
         }
-
-        _pTranscriptMention = mentions;
 
         if (example is null)
         {

@@ -44,6 +44,13 @@ Never null, so a reader walks it without a check.
 The credits as editor rows, each knowing its place and whether it can move.
 The source editor copies them and splices its own blank row in, so it never counts the credits itself.
 
+## `public LExampleDraft? LDraftExampleRead(long cardId, long sentenceId)`
+
+The example a Mention request with these ids would edit, or none.
+Card and sentence both zero name the example the draft holds itself, as the corpus panel sends.
+Other ids name a sentence row on a meaning or a collocation, at any depth.
+It locates the row exactly as the draft clerk does, so a find and its request agree.
+
 ## `public LDraft LDraftNormalize()`
 
 The same draft, whichever kind of record it holds with every unreadable value dropped to unspecified.
@@ -52,3 +59,10 @@ Called only after the user agreed to lose what the store could not read.
 ## `public string LDraftAuthorName`
 
 The name of the held Author, or empty while the draft holds none, so a name field writes without branching.
+
+## Inline notes
+
+### `private static LSentenceDraft? LDraftSentenceRead(IReadOnlyList<LCardDraft> cards, long cardId, long sentenceId)`
+
+Walks the cards and their children for the card, then answers its sentence row.
+A card found without that row ends the walk, since card ids are unique.

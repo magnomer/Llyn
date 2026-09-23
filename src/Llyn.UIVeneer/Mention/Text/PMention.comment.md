@@ -39,15 +39,10 @@ A drag is the reader selecting text to copy, and it opens nothing.
 In the reading view the band captures the mouse on a drag, so no release reaches here at all.
 The event bubbles, so a host holding many sentences listens once above them all.
 
-### `protected override void OnQueryCursor(QueryCursorEventArgs e)`
-
-The cursor is a hand over a word linked to an Entry.
-Anywhere else it is left to whoever answers next, which in the reading view is the band's beam.
-An unlinked word may open an Entry too, but only the engine knows that, and the cursor does not ask.
-
 ### `private void PMentionShow()`
 
 One run per piece, so the whole text is present and no gap is split into words.
+Each run takes its text from the piece, so the control converts no span itself.
 The span of an unlinked word is the engine's to decide at click time, from the offset.
 A linked run wears the linked style and a run standing for nothing wears the silent style.
 A gap wears nothing.

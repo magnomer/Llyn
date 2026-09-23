@@ -47,6 +47,8 @@ So it counts as a pronunciation only once it carries something.
 
 A new pronunciation row with the reading sent and a minted id, at the place asked for.
 Its respelling is derived from that reading at once.
+An addition past the primary onto an empty list seeds a blank primary first.
+The primary is always row zero, so the shell never has to ask.
 
 ## `private static LEntryDraft LPronunciationChange(`
 

@@ -43,3 +43,8 @@ It has no id yet, no rendering, no Source cited, and no language stated.
 
 The same example with every unreadable value dropped to unspecified and its Mentions sorted by start.
 Called only after the user agreed to lose what the store could not read.
+
+## `public LMentionDraft? LExampleDraftFind(LMentionDraft span)`
+
+The Mention of the sentence the span lies inside, or none.
+It asks `LMentionSpan.LMentionSpanFind`, so a sentence and a narrative match a selection alike.

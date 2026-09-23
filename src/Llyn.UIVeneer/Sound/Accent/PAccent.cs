@@ -30,11 +30,6 @@ public partial class PEditor
     internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
         int position = e.Parameter is PAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
-        if (_pAccentPrimaryId == 0)
-        {
-            PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, 0));
-        }
-
         PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, position));
     }
 

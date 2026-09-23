@@ -78,8 +78,6 @@ public interface LPhonologyPort
 
     bool LEngineFlaggedCheck(LEntryDraft draft);
 
-    IReadOnlyList<LAnatomyTone> LEngineToneRead(string language);
-
     IReadOnlyList<string> LEngineSchemeRead(string language);
 
     LSpeechValue? LEngineSpeechRead(long id);

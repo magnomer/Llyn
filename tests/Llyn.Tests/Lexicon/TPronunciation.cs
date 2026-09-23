@@ -212,11 +212,26 @@ public sealed class TPronunciation
         LDraft started = engine.TEngineDraftStart("Input", null);
 
         engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "word"));
-        engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, string.Empty, 1));
+        engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, string.Empty, 0));
         LEntry entry = engine.TEngineDraftCommit(started.LDraftId);
 
         LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
         Assert.True(string.IsNullOrEmpty(kept.LPronunciationIpa));
+    }
+
+    [Fact]
+    public void RequestApply_AdditionOnEmptyList_SeedsThePrimaryFirst()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TPronunciationAdditionCreate(started.LDraftId, "wɝd", 1));
+
+        Assert.Equal(
+            [string.Empty, "wɝd"],
+            answered.LDraftContent.LEntryDraftPronunciations.Select(row => row.LPronunciationDraftIpa));
     }
 
     [Fact]

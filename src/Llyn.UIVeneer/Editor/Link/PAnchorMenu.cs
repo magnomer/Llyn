@@ -37,12 +37,13 @@ public partial class PEditor
     private void PAnchorBuild(PReflexItem row)
     {
         PAnchorList.Children.Clear();
-        IReadOnlyList<string> classes = LAnatomyTone.LAnatomyToneScan(
-            _pEditorHost.PWindowDeportment.LWindowToneRead(_lEditor.LEditorLanguage),
-            row.PReflexItemLanguage,
-            row.PReflexItemTone);
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
-            _lEditor.LEditorAnchorRead(), row.PReflexItemAnchors, classes);
+            _pEditorHost.PWindowDeportment.LWindowAnchorScan(
+                _lEditor.LEditorAnchorRead(),
+                row.PReflexItemAnchors,
+                _lEditor.LEditorLanguage,
+                row.PReflexItemLanguage,
+                row.PReflexItemTone));
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)
         {

@@ -11,6 +11,7 @@ It also covers the variety label reaching the stored row and counting as a chang
 
 The primary field is seeded, so a reading typed and cleared again is no change and stores nothing.
 A row the user added counts even blank and is stored empty, so it stands again next edit.
+An addition past the primary onto an empty list lands beneath a blank primary the engine seeds.
 
 ## Inline notes
 

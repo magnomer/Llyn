@@ -41,8 +41,6 @@ public sealed class PMention : TextBlock
         typeof(EventHandler<PMentionArgument>),
         typeof(PMention));
 
-    private IReadOnlyList<LMentionPiece> _pMentionPiece = [];
-
     private Point? _pMentionPress;
 
     public PMention()
@@ -99,22 +97,7 @@ public sealed class PMention : TextBlock
         }
 
         e.Handled = true;
-        RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset, PMentionPieceFind(offset)));
-    }
-
-    protected override void OnQueryCursor(QueryCursorEventArgs e)
-    {
-        base.OnQueryCursor(e);
-
-        LMentionPiece? piece = PMentionOffsetRead(e.GetPosition(this)) is int offset
-            ? PMentionPieceFind(offset)
-            : null;
-
-        if (piece is { LMentionPieceLinked: true })
-        {
-            e.Cursor = Cursors.Hand;
-            e.Handled = true;
-        }
+        RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset));
     }
 
     internal Rect PMentionPieceRead(int offset)
@@ -179,12 +162,9 @@ public sealed class PMention : TextBlock
             return;
         }
 
-        _pMentionPiece = window.LWindowMentionDivide(text, PMentionMention ?? []);
-        foreach (LMentionPiece piece in _pMentionPiece)
+        foreach (LMentionPiece piece in window.LWindowMentionDivide(text, PMentionMention ?? []))
         {
-            int start = window.LWindowUnitRead(text, piece.LMentionPieceOffset);
-            int end = window.LWindowUnitRead(text, piece.LMentionPieceEnd);
-            Run run = new(text[start..end]) { Tag = piece };
+            Run run = new(piece.LMentionPieceText) { Tag = piece };
 
             if (piece.LMentionPieceStored is LMention stored)
             {
@@ -226,18 +206,5 @@ public sealed class PMention : TextBlock
 
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
         return piece.LMentionPieceOffset + window.LWindowOffsetRead(run.Text, unit);
-    }
-
-    private LMentionPiece? PMentionPieceFind(int offset)
-    {
-        foreach (LMentionPiece piece in _pMentionPiece)
-        {
-            if (offset >= piece.LMentionPieceOffset && offset < piece.LMentionPieceEnd)
-            {
-                return piece;
-            }
-        }
-
-        return null;
     }
 }

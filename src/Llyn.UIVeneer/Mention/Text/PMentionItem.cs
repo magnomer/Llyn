@@ -35,37 +35,14 @@ internal sealed record PMentionItem(
     }
 
     internal static IReadOnlyList<PMentionItem> PMentionItemCreate(
-        long entryId, IReadOnlyList<LMeaning> meanings, string whole, string unknown)
+        long entryId, IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> senses, string whole)
     {
         List<PMentionItem> rows = [new PMentionItem(entryId, 0, whole, string.Empty, null, 0)];
-        PMentionItemAppend(rows, entryId, meanings, 0, 0, unknown);
+        foreach ((long id, string name, int depth) in senses)
+        {
+            rows.Add(new PMentionItem(entryId, id, name, string.Empty, null, depth));
+        }
+
         return rows;
-    }
-
-    private static void PMentionItemAppend(
-        List<PMentionItem> rows,
-        long entryId,
-        IReadOnlyList<LMeaning> meanings,
-        long parent,
-        int depth,
-        string unknown)
-    {
-        List<LMeaning> children = [];
-        foreach (LMeaning meaning in meanings)
-        {
-            if ((meaning.LMeaningParentId ?? 0) == parent && meaning.LMeaningId != parent)
-            {
-                children.Add(meaning);
-            }
-        }
-
-        children.Sort((left, right) => left.LMeaningPosition.CompareTo(right.LMeaningPosition));
-        foreach (LMeaning meaning in children)
-        {
-            string name = meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown;
-
-            rows.Add(new PMentionItem(entryId, meaning.LMeaningId, name, string.Empty, null, depth));
-            PMentionItemAppend(rows, entryId, meanings, meaning.LMeaningId, depth + 1, unknown);
-        }
     }
 }

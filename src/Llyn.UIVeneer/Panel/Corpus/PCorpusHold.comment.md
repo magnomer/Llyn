@@ -46,11 +46,6 @@ Whether the editor holds work a host would be sorry to lose.
 Typing still waiting to be written is written first.
 Otherwise a window closing within a keystroke of the last change would call it unchanged.
 
-## `private void PTranscriptChangeDefer()`
-
-Defers the whole body of the form as one request, for every edit the body's controls report.
-The engine decides what changed, and an unchanged body raises no bulletin, so nothing is redrawn under the caret.
-
 ## `private void PTranscriptRequestDefer(LRequest request)`
 
 Hands one request to the tenure to write once the typing stops.

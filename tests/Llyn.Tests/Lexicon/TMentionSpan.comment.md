@@ -1,11 +1,12 @@
-# TMentionSpan.cs
+﻿# TMentionSpan.cs
 
 ## `public sealed class TMentionSpan`
 
 Span operations use code-point offsets and respect word and script boundaries.
 Division preserves gaps and avoids empty pieces around mentions.
 Selection normalization trims outer spaces.
-Etymology lookup accepts only selections contained by one mention.
+Etymology and sentence lookup accept only selections contained by one mention.
+A draft reads a sentence example by its card and sentence ids.
 
 ## `MentionSpanResolve_MidWord_ReturnsTheWholeWord()`
 
@@ -40,6 +41,7 @@ No zero-length boundary pieces are emitted.
 ## `MentionSpanDivide_SurrogatePairBeforeMention_KeepsCodePointOffsets()`
 
 A mention after a surrogate pair retains code-point offsets when the text is divided.
+Each piece's text is still cut whole, with the pair kept in one piece.
 
 ## `MentionSpanDivide_NoMention_CutsOnePiece()`
 
@@ -74,3 +76,16 @@ An exact selection of it resolves to the same mention.
 ## `EtymologyDraftFind_SpanPastTheMention_ReturnsNothing()`
 
 A wider selection or a later unrelated selection does not match a mention merely because it overlaps or follows it.
+
+## `ExampleDraftFind_SelectionInsideMention_ReturnsIt()`
+
+A sentence answers a selection wholly inside one of its Mentions, and nothing for one running past its end.
+
+## `DraftExampleRead_HeldCardAndSentence_ReturnsTheSentenceExample()`
+
+A card id and a sentence id name the example a Mention request would edit.
+
+## `DraftExampleRead_UnknownSentence_ReturnsNothing()`
+
+A sentence id the card lacks reads nothing.
+Zero ids on a draft holding no example read nothing too.

@@ -45,4 +45,12 @@ public interface LDraftPort
     IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored);
 
     bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other);
+
+    IReadOnlyList<LAnchorRow> LEngineAnchorScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone);
+
+    bool LEngineAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword);
+
+    string LEngineAnchorFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator);
 }

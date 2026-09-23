@@ -19,6 +19,19 @@ The anchor list with `fanqieId` added or removed.
 
 Whether two anchor lists name the same rows.
 
+## `public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(`
+
+The stored fanqie rows marked held and estimated for the anchor dropdown.
+The estimated classes are the ones `tones` resolves for the reflex `language` and `tone`.
+
+## `public static bool LReflexAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)`
+
+Whether the reflex rows of `headword` may carry anchors.
+
+## `public static string LReflexAnchorFormat(`
+
+The readings of the anchored rows joined with `separator`, or empty when the rows cannot be anchored.
+
 ## `public IReadOnlyList<LReflexRule> LReflexRuleRead(string language)`
 
 The reflex rules the pack of `language` declares, or none for a blank language.

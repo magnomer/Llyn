@@ -31,6 +31,18 @@ public sealed record LDraft(
         return LAuthorRow.LAuthorRowCreate(LDraftAuthor);
     }
 
+    public LExampleDraft? LDraftExampleRead(long cardId, long sentenceId)
+    {
+        if (cardId == 0 && sentenceId == 0)
+        {
+            return LDraftExample is LExample held ? LExampleDraft.LExampleDraftCreate(held) : null;
+        }
+
+        LSentenceDraft? sentence = LDraftSentenceRead(LDraftContent.LEntryDraftMeanings, cardId, sentenceId)
+            ?? LDraftSentenceRead(LDraftContent.LEntryDraftCollocations, cardId, sentenceId);
+        return sentence?.LSentenceDraftExample;
+    }
+
     public LDraft LDraftNormalize()
     {
         return this with
@@ -40,5 +52,33 @@ public sealed record LDraft(
             LDraftSituation = LDraftSituation?.LSituationNormalize(),
             LDraftReference = LDraftReference?.LReferenceNormalize(),
         };
+    }
+
+    private static LSentenceDraft? LDraftSentenceRead(IReadOnlyList<LCardDraft> cards, long cardId, long sentenceId)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            if (card.LCardDraftId != cardId)
+            {
+                if (LDraftSentenceRead(card.LCardDraftChild, cardId, sentenceId) is LSentenceDraft found)
+                {
+                    return found;
+                }
+
+                continue;
+            }
+
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                if (sentence.LSentenceDraftId == sentenceId)
+                {
+                    return sentence;
+                }
+            }
+
+            return null;
+        }
+
+        return null;
     }
 }

@@ -78,6 +78,7 @@ public sealed class TMentionSpan
 
         Assert.Equal([0, 7], pieces.Select(piece => piece.LMentionPieceOffset));
         Assert.Equal([7, 3], pieces.Select(piece => piece.LMentionPieceLength));
+        Assert.Equal(["go 𝒜bc ", "now"], pieces.Select(piece => piece.LMentionPieceText));
         Assert.Equal(1, pieces[1].LMentionPieceStored!.LMentionId);
     }
 
@@ -168,5 +169,40 @@ public sealed class TMentionSpan
 
         Assert.Null(TInterface.TEtymologyDraftFind(etymology, wider));
         Assert.Null(TInterface.TEtymologyDraftFind(etymology, later));
+    }
+
+    [Fact]
+    public void ExampleDraftFind_SelectionInsideMention_ReturnsIt()
+    {
+        LMentionDraft held = TInterface.TMentionDraftCreate(1, 4, 3, 7);
+        LExampleDraft example = TInterface.TExampleDraftCreate("he said the word") with
+        {
+            LExampleDraftMention = [held],
+        };
+
+        Assert.Same(held, TInterface.TExampleDraftFind(example, TInterface.TMentionDraftCreate(0, 5, 2, 0)));
+        Assert.Null(TInterface.TExampleDraftFind(example, TInterface.TMentionDraftCreate(0, 5, 3, 0)));
+    }
+
+    [Fact]
+    public void DraftExampleRead_HeldCardAndSentence_ReturnsTheSentenceExample()
+    {
+        LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
+        LCardDraft card = draft.LDraftContent.LEntryDraftMeanings[0];
+        LSentenceDraft sentence = card.LCardDraftSentence[0];
+
+        LExampleDraft? read = TInterface.TDraftExampleRead(draft, card.LCardDraftId, sentence.LSentenceDraftId);
+
+        Assert.Same(sentence.LSentenceDraftExample, read);
+    }
+
+    [Fact]
+    public void DraftExampleRead_UnknownSentence_ReturnsNothing()
+    {
+        LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
+        long cardId = draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftId;
+
+        Assert.Null(TInterface.TDraftExampleRead(draft, cardId, TInterface.TIdentityCreate()));
+        Assert.Null(TInterface.TDraftExampleRead(draft, 0, 0));
     }
 }

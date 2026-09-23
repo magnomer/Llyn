@@ -150,13 +150,16 @@ public sealed class LDraftClerkReading
 
     private LEntryDraft LPronunciationAdd(LEntryDraft content, LRequestPronunciationAddition request)
     {
+        LEntryDraft held = request.LRequestPosition > 0 && content.LEntryDraftPronunciations.Count == 0
+            ? LPronunciationAdd(content, request with { LRequestText = string.Empty, LRequestPosition = 0 })
+            : content;
         LPronunciationDraft spoken = _lDraftClerkLanguages.LLanguageRespellingResolve(
-            content.LEntryDraftLanguage,
+            held.LEntryDraftLanguage,
             new LPronunciationDraft(
                 request.LRequestText ?? string.Empty,
                 LPronunciationDraftId: _lDraftClerkIdentity.LIdentityCreate()));
         return LPronunciationApply(
-            content, list => LDraftClerkList.LDraftListAdd(list, spoken, request.LRequestPosition));
+            held, list => LDraftClerkList.LDraftListAdd(list, spoken, request.LRequestPosition));
     }
 
     private static LEntryDraft LPronunciationChange(

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -38,9 +39,8 @@ public partial class PWindow
             "Mention.Sense",
             PMentionItem.PMentionItemCreate(
                 entryId,
-                meanings,
-                PLocalizationCatalog.PLocalizationTextRead("Mention.Whole"),
-                PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")),
+                LWindow.LWindowMeaningSort(meanings, PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")),
+                PLocalizationCatalog.PLocalizationTextRead("Mention.Whole")),
             item => chosen(item.PMentionItemSense));
     }
 

@@ -87,19 +87,37 @@ public static class LMentionSpan
 
             if (start > cursor)
             {
-                pieces.Add(new LMentionPiece(cursor, start - cursor, null));
+                pieces.Add(new LMentionPiece(cursor, start - cursor, null, LMentionTextRead(text, cursor, start)));
             }
 
-            pieces.Add(new LMentionPiece(start, end - start, mention));
+            pieces.Add(new LMentionPiece(start, end - start, mention, LMentionTextRead(text, start, end)));
             cursor = end;
         }
 
         if (cursor < count)
         {
-            pieces.Add(new LMentionPiece(cursor, count - cursor, null));
+            pieces.Add(new LMentionPiece(cursor, count - cursor, null, LMentionTextRead(text, cursor, count)));
         }
 
         return pieces;
+    }
+
+    public static LMentionDraft? LMentionSpanFind(IReadOnlyList<LMentionDraft> mentions, LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(mentions);
+        ArgumentNullException.ThrowIfNull(span);
+
+        int end = span.LMentionDraftOffset + span.LMentionDraftLength;
+        foreach (LMentionDraft mention in mentions)
+        {
+            if (span.LMentionDraftOffset >= mention.LMentionDraftOffset
+                && end <= mention.LMentionDraftOffset + mention.LMentionDraftLength)
+            {
+                return mention;
+            }
+        }
+
+        return null;
     }
 
     public static int LMentionOffsetRead(string text, int unit)
@@ -142,6 +160,11 @@ public static class LMentionSpan
         }
 
         return unit;
+    }
+
+    private static string LMentionTextRead(string text, int start, int end)
+    {
+        return text[LMentionUnitRead(text, start)..LMentionUnitRead(text, end)];
     }
 
     private static bool LMentionJoinCheck(Rune left, Rune right, bool separated)

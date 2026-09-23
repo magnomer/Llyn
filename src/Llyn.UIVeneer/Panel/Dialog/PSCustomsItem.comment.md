@@ -13,8 +13,7 @@ The row's place in the file, counted from one as a reader counts.
 
 ## `public string PSCustomsItemHeadword`
 
-The headword as shown, which twin numbering may have extended.
-It announces only a real change, so numbering an unshared name stays silent.
+The headword as shown, fixed when the row is made.
 
 ## `public LMarkupMode PSCustomsItemMode`
 

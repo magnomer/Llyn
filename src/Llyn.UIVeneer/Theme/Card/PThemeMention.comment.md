@@ -4,6 +4,9 @@
 
 A word that stands for an Entry is underlined in the accent colour.
 A reader tells at a glance which words of a sentence lead somewhere.
+The cursor turns to a hand over it, so the run itself answers the pointer and no code searches pieces.
+Anywhere else the cursor is left to whoever answers next, which in the reading view is the band's beam.
+An unlinked word may open an Entry too, but only the engine knows that, and the cursor does not ask.
 
 ## `<Style x:Key="Theme.Mention.Silent" TargetType="Run">`
 

@@ -43,11 +43,6 @@ public partial class PCorpus
         return PTranscriptDesk.LDeskChangeCheck();
     }
 
-    private void PTranscriptChangeDefer()
-    {
-        PTranscriptRequestDefer(PTranscriptRead(PTranscriptDraft));
-    }
-
     private void PTranscriptRequestDefer(LRequest request)
     {
         if (_pTranscriptLoading)

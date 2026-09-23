@@ -18,7 +18,7 @@ Drops the chip whose cross was clicked.
 
 The keys the caret answers.
 The shelf comes first while it stands open, then Enter, then the edits an empty caret allows.
-Backspace and Delete reach the neighbouring chips only when nothing is selected, so ordinary editing is untouched.
+The chip keys go through `PCaretKeyApply`.
 
 ## `internal void PRegisterCloseHandle(object sender, RoutedEventArgs e)`
 

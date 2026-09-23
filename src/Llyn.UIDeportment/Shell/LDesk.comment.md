@@ -78,6 +78,13 @@ The sink is the veneer's delegate over each step, handed through untouched.
 
 The held draft after the deferred requests have been applied, or null while nothing is held.
 
+## `public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)`
+
+The Mention a selection in a sentence field lies inside, read from the held draft.
+The selection arrives as the field gives it, in UTF-16 units, and the engine measures it.
+The find answers from what the engine holds, never from a list the shell keeps.
+It reads the draft without persisting, so a context menu asking many times sends nothing.
+
 ## `public void LDeskDraftUpdate()`
 
 Reads the draft again and announces it, unless the announcement itself is what is running.

@@ -49,37 +49,12 @@ public partial class PEditor
             return;
         }
 
-        if (box.SelectionLength != 0)
-        {
-            return;
-        }
-
-        if (e.Key == Key.Back && box.CaretIndex == 0)
-        {
-            PContextRemove(card, card.PCardContextFind(-1));
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
-        {
-            PContextRemove(card, card.PCardContextFind(1));
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Left && box.Text.Length == 0 && card.PCardContextMove(-1))
-        {
-            PEditorCaretApply(box, row, 0);
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Right && box.Text.Length == 0 && card.PCardContextMove(1))
-        {
-            PEditorCaretApply(box, row, 0);
-            e.Handled = true;
-        }
+        e.Handled = PCaretKeyApply(
+            box,
+            e.Key,
+            step => PContextRemove(card, card.PCardContextFind(step)),
+            card.PCardContextMove,
+            () => PEditorCaretApply(box, row, 0));
     }
 
     internal void PContextCloseHandle(object sender, RoutedEventArgs e)

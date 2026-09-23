@@ -51,6 +51,27 @@ public sealed class LReflexClerk
         return LAnchor.LAnchorMatch(one, other);
     }
 
+    public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(
+        IReadOnlyList<LFanqieRow> rows,
+        IReadOnlyList<long> anchors,
+        IReadOnlyList<LAnatomyTone> tones,
+        string language,
+        string tone)
+    {
+        return LAnchor.LAnchorRowScan(rows, anchors, LAnatomyTone.LAnatomyToneScan(tones, language, tone));
+    }
+
+    public static bool LReflexAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    {
+        return LAnchor.LAnchorCheck(rows, headword);
+    }
+
+    public static string LReflexAnchorFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        return LAnchor.LAnchorTextFormat(rows, anchors, headword, separator);
+    }
+
     public IReadOnlyList<LReflexRule> LReflexRuleRead(string language)
     {
         return string.IsNullOrWhiteSpace(language)

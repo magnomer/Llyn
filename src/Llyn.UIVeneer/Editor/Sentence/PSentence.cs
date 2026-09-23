@@ -7,7 +7,6 @@ namespace Llyn.UIVeneer;
 
 internal sealed partial class PSentence : INotifyPropertyChanged
 {
-    private long _pSentenceId;
     private LStateValue _pSentenceText;
     private LStateAnchor _pSentenceCitation;
     private LStateValue _pSentenceParticle;
@@ -34,7 +33,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceDependenceCatalog = dependences;
         PSentenceLanguageCatalog = languages;
         _pSentenceRow = draft.LSentenceDraftId;
-        _pSentenceId = example.LExampleDraftId;
         _pSentenceText = example.LExampleDraftText;
         _pSentenceCitation = example.LExampleDraftReference;
         _pSentenceParticle = draft.LSentenceDraftParticle;
@@ -50,21 +48,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     public ObservableCollection<string> PSentenceParticleCatalog { get; }
 
     public ObservableCollection<string> PSentenceDependenceCatalog { get; }
-
-    public long PSentenceId
-    {
-        get => _pSentenceId;
-        private set
-        {
-            if (_pSentenceId == value)
-            {
-                return;
-            }
-
-            _pSentenceId = value;
-            PSentenceRaise(nameof(PSentenceId));
-        }
-    }
 
     internal long PSentenceRow => _pSentenceRow;
 
@@ -192,7 +175,6 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             ?? LExampleDraft.LExampleDraftCreate(string.Empty);
 
         _pSentenceRow = draft.LSentenceDraftId;
-        PSentenceId = example.LExampleDraftId;
         _pSentenceMention = example.LExampleDraftMention;
         PSentenceGlossShow(example.LExampleDraftGloss);
         PSentenceText = example.LExampleDraftText;

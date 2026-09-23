@@ -63,4 +63,67 @@ public static class LAnchor
 
         return true;
     }
+
+    public static IReadOnlyList<LAnchorRow> LAnchorRowScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(anchors);
+        ArgumentNullException.ThrowIfNull(classes);
+
+        List<LAnchorRow> marked = new(rows.Count);
+        foreach (LFanqieRow row in rows)
+        {
+            if (!row.LFanqieRowStored)
+            {
+                continue;
+            }
+
+            bool estimated = row.LFanqieRowClassed && classes.Contains(row.LFanqieRowClass);
+            marked.Add(new LAnchorRow(row, anchors.Contains(row.LFanqieRowId), estimated));
+        }
+
+        return marked;
+    }
+
+    public static bool LAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Count > 0 && LGlyph.LGlyphSingleCheck(headword);
+    }
+
+    public static string LAnchorTextFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(anchors);
+
+        if (!LAnchorCheck(rows, headword))
+        {
+            return string.Empty;
+        }
+
+        List<string> readings = [];
+        foreach (LFanqieRow row in rows)
+        {
+            if (!row.LFanqieRowStored)
+            {
+                continue;
+            }
+
+            if (!anchors.Contains(row.LFanqieRowId))
+            {
+                continue;
+            }
+
+            string reading = row.LFanqieRowSpoken ? row.LFanqieRowSlashed : row.LFanqieRowSummary;
+            if (!readings.Contains(reading))
+            {
+                readings.Add(reading);
+            }
+        }
+
+        return string.Join(separator, readings);
+    }
 }

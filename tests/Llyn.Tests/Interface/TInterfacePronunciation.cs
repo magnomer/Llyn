@@ -11,6 +11,14 @@ internal static partial class TInterface
     internal static IReadOnlyList<long> TAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
         LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
 
+    internal static IReadOnlyList<LAnchorRow> TAnchorRowScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes) =>
+        LAnchor.LAnchorRowScan(rows, anchors, classes);
+
+    internal static string TAnchorTextFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword) =>
+        LAnchor.LAnchorTextFormat(rows, anchors, headword, " · ");
+
     internal static LReading TReadingCreate(string variety, string phonetic) =>
         new LReading(variety, phonetic);
 

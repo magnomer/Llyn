@@ -86,7 +86,7 @@ public partial class PDisplay : UserControl
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
         PDisplayReflexStart(id);
-        PDisplayReflexShow(draft);
+        PDisplayReflexShow(id, draft);
         PReflexPendingShow(id);
         PRespelling respelling = PRespelling.PRespellingRead(
             _pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);

@@ -22,3 +22,17 @@ Panel state stays on each panel's deportment, and window geometry stays on the p
 ## `public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)`
 
 A field's selection as a Mention span, measured by the engine in code points.
+
+## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LWindowMeaningSort(IReadOnlyList<LMeaning> meanings, string unknown)`
+
+The Meanings of one Entry as sense-menu rows in reading order, each with its depth.
+A Meaning is named by its title, or by its definition when it has no title.
+The unknown label names it when it has neither.
+
+## `private static void LWindowMeaningAppend(...)`
+
+Walks one level of the tree and recurses under each Meaning it lists.
+The engine returns the Meanings grouped by parent, and the menu wants them in reading order.
+So the children of each parent are picked out and sorted by position before their own children follow.
+A row that names itself as its parent is skipped rather than followed.
+So a bad row cannot loop the walk.

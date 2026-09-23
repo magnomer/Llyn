@@ -112,9 +112,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEngineFlaggedCheck(LEntryDraft draft) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineFlaggedCheck(draft);
 
-    public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language) =>
-        _lPhonologyOutletEngine.LEngineReflex.LEngineToneRead(language);
-
     public IReadOnlyList<string> LEngineSchemeRead(string language) =>
         _lPhonologyOutletEngine.LEnginePronunciation.LEngineSchemeRead(language);
 

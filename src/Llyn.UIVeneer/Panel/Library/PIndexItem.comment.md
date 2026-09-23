@@ -20,6 +20,7 @@ The engine row carries it, and `PSplice` moves the mark in place, so the list ke
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
 The engine numbers it on the row it returns, because a repeat is only visible across rows.
 `PIndexItemHeadword` keeps the plain headword for everything that is not display.
+The constructor takes it, so the row has one writer.
 
 ## `public string PIndexItemEpithet { get; }`
 

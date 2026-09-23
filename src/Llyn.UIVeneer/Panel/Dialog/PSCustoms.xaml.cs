@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -50,7 +49,7 @@ public partial class PSCustoms : Window
             intakes.Add(new LMarkupIntake(
                 item.PSCustomsItemIndex,
                 item.PSCustomsItemMode,
-                item.PSCustomsItemMode == LMarkupMode.LMarkupModeNew ? 0 : item.PSCustomsItemTarget));
+                item.PSCustomsItemTarget));
         }
 
         return intakes;
@@ -124,34 +123,10 @@ public partial class PSCustoms : Window
 
     private string PSCustomsLossFormat(PSCustomsItem item)
     {
-        if (_lWindow is null
-            || item.PSCustomsItemMode != LMarkupMode.LMarkupModeReplace
-            || item.PSCustomsItemTarget <= 0)
-        {
-            return string.Empty;
-        }
-
-        LEntryDraft? stored = _lWindow.LWindowEntryLoad(item.PSCustomsItemTarget);
-        if (stored is null)
-        {
-            return string.Empty;
-        }
-
-        return string.Format(
-            CultureInfo.CurrentCulture,
-            TryFindResource("Customs.Loss") as string ?? "Customs.Loss",
-            PSCustomsTallyRead(stored.LEntryDraftMeanings),
-            PSCustomsTallyRead(stored.LEntryDraftCollocations));
-    }
-
-    private static int PSCustomsTallyRead(IReadOnlyList<LCardDraft> cards)
-    {
-        int count = 0;
-        foreach (LCardDraft card in cards)
-        {
-            count += 1 + PSCustomsTallyRead(card.LCardDraftChild);
-        }
-
-        return count;
+        return LSCustoms.LSCustomsLossResolve(
+            _lWindow,
+            item.PSCustomsItemMode,
+            item.PSCustomsItemTarget,
+            TryFindResource("Customs.Loss") as string ?? "Customs.Loss");
     }
 }

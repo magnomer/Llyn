@@ -196,6 +196,12 @@ internal static partial class TInterface
     internal static LMentionDraft? TEtymologyDraftFind(LEtymologyDraft etymology, LMentionDraft span) =>
         etymology.LEtymologyDraftFind(span);
 
+    internal static LMentionDraft? TExampleDraftFind(LExampleDraft example, LMentionDraft span) =>
+        example.LExampleDraftFind(span);
+
+    internal static LExampleDraft? TDraftExampleRead(LDraft draft, long cardId, long sentenceId) =>
+        draft.LDraftExampleRead(cardId, sentenceId);
+
     internal static int TMentionUnitRead(string text, int offset) =>
         LMentionSpan.LMentionUnitRead(text, offset);
 

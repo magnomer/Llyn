@@ -32,10 +32,17 @@ One hit per veneer member, naming each flow kind found in it.
 
 One hit per line and reason where a logic value is an operand, query source, cast, `typeof`, attribute or condition.
 Null checks, coalescing and the logical connectives are not treatment.
+Nor is a setter's equality between its value and the stored one.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
 
 True when the condition treats a logic value, and false for a null check or a bare verdict.
+A setter comparing its value with the stored one is false too.
+
+## `private static bool TAuditSetterCheck(BinaryExpressionSyntax binary)`
+
+True for an equality inside a set or init accessor with the implicit `value` on one side.
+That comparison only skips a change that changes nothing, so it treats no logic.
 
 ## `public static ExpressionSyntax TAuditCoreRead(ExpressionSyntax condition)`
 

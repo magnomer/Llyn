@@ -13,8 +13,6 @@ public partial class PDisplay
 {
     private readonly ObservableCollection<PReflexItem> _pDisplayReflex = [];
 
-    private IReadOnlyList<LFanqieRow> _pDisplayFanqie = [];
-
     private void PDisplayReflexStart(long id)
     {
         try
@@ -26,7 +24,7 @@ public partial class PDisplay
         }
     }
 
-    private void PDisplayReflexShow(LEntryDraft draft)
+    private void PDisplayReflexShow(long id, LEntryDraft draft)
     {
         _pDisplayReflex.Clear();
         HashSet<string> folded = PReflexFoldRead(_pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
@@ -40,7 +38,8 @@ public partial class PDisplay
 
         PReflexLeadApply(_pDisplayReflex);
         PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
-        PReflexAnchorApply(_pDisplayReflex, _pDisplayFanqie, draft.LEntryDraftHeadword);
+        LWindow window = _pDisplayHost.PWindowDeportment;
+        PReflexAnchorApply(window, _pDisplayReflex, _lDisplay.LDisplayAnchorRead(id), draft.LEntryDraftHeadword);
     }
 
     private void PReflexPendingShow(long id)
@@ -71,7 +70,7 @@ public partial class PDisplay
 
         if (draft is not null)
         {
-            PDisplayReflexShow(draft);
+            PDisplayReflexShow(id, draft);
         }
 
         PReflexPendingShow(id);
@@ -126,15 +125,14 @@ public partial class PDisplay
     }
 
     internal static void PReflexAnchorApply(
-        IReadOnlyList<PReflexItem> rows, IReadOnlyList<LFanqieRow> fanqie, string headword)
+        LWindow window, IReadOnlyList<PReflexItem> rows, IReadOnlyList<LFanqieRow> fanqie, string headword)
     {
-        bool anchorable = fanqie.Count > 0 && LGlyph.LGlyphSingleCheck(headword);
+        bool anchorable = window.LWindowAnchorCheck(fanqie, headword);
         foreach (PReflexItem row in rows)
         {
             row.PReflexItemAnchorable = anchorable;
-            row.PReflexItemAnchor = anchorable
-                ? PAnchorItem.PAnchorTextFormat(fanqie, row.PReflexItemAnchors)
-                : string.Empty;
+            row.PReflexItemAnchor = window.LWindowAnchorFormat(
+                fanqie, row.PReflexItemAnchors, headword, PAnchorItem.PAnchorItemSeparator);
         }
     }
 

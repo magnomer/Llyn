@@ -22,10 +22,7 @@ Closes the Tag whose button was pressed.
 
 The dropdown is offered the key first while it stands open, so the arrows and enter reach the list.
 Enter commits what is standing in the entry.
-Backspace at the start of the entry drops the Tag before it.
-Delete at the end of the entry drops the Tag after it.
-The arrow keys walk the entry past a Tag once the text runs out.
-So a Tag is crossed the way a character is, in either direction.
+The chip keys go through `PCaretKeyApply`.
 Every other key is left to the text box.
 
 ## `internal void PLabelCloseHandle(object sender, RoutedEventArgs e)`

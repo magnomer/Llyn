@@ -206,6 +206,24 @@ public sealed class LDisplay
         return _lPhonologyPort.LEngineFanqieDivide(id);
     }
 
+    public IReadOnlyList<LFanqieRow> LDisplayAnchorRead(long id)
+    {
+        List<LFanqieRow> rows = [];
+        try
+        {
+            foreach (LFanqieGroup group in _lPhonologyPort.LEngineFanqieDivide(id))
+            {
+                rows.AddRange(group.LFanqieGroupRows);
+            }
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+
+        return rows;
+    }
+
     public string LDisplayReadingRead(long id, string headword)
     {
         return LFanqieGroup.LFanqieReadingFormat(_lPhonologyPort.LEngineFanqieDivide(id), headword);

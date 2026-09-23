@@ -8,12 +8,13 @@ internal sealed class PRosterItem : INotifyPropertyChanged
 {
     private bool _pRosterItemChosen;
 
-    internal PRosterItem(long id, string headword, string language, string epithet = "", bool chosen = false)
+    internal PRosterItem(
+        long id, string headword, string name, string language, string epithet = "", bool chosen = false)
     {
         _pRosterItemChosen = chosen;
         PRosterItemId = id;
         PRosterItemHeadword = headword;
-        PRosterItemName = headword;
+        PRosterItemName = name;
         PRosterItemEpithet = epithet ?? string.Empty;
         PRosterItemLanguage = language;
         PRosterItemFlag = PEnsign.PEnsignFind(language);
@@ -25,7 +26,7 @@ internal sealed class PRosterItem : INotifyPropertyChanged
 
     public string PRosterItemEpithet { get; }
 
-    public string PRosterItemName { get; internal set; }
+    public string PRosterItemName { get; }
 
     public string PRosterItemLanguage { get; }
 

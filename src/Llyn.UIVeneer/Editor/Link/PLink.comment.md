@@ -30,9 +30,7 @@ Closes the link whose button was pressed.
 An open dropdown is offered every key first, so it answers the arrows and enter before the field does.
 Enter resolves what is standing in the entry once no dropdown is open.
 Escape closes an open dropdown and leaves the word alone.
-Backspace at the start of the entry drops the link before it.
-Delete at the end of the entry drops the link after it.
-The arrow keys walk the entry past a link once the text runs out.
+The chip keys go through `PCaretKeyApply`.
 Every other key is left to the text box.
 
 ## `internal void PLinkCloseHandle(object sender, RoutedEventArgs e)`

@@ -31,6 +31,11 @@ Only a line the user is typing opens the list, never one the page put there.
 Leaving the field drops an uncommitted line and shows the cited name again.
 A typed line that was never entered is not a citation.
 
+## `private void PCitationSet(long id)`
+
+The pick goes to the engine, and the draft bulletin redraws the field.
+A pick of the citation already held raises no bulletin, so the field is redrawn here too.
+
 ## `private void PCitationCommit()`
 
 An empty line drops the citation.

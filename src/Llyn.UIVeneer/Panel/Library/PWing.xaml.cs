@@ -182,20 +182,7 @@ public partial class PWing : UserControl
 
     private void PWingIndexFind()
     {
-        List<PIndexItem> fresh = [];
-        IReadOnlyList<LVistaRow> read = _lWing.LWingRowsRead();
-        foreach (LVistaRow row in read)
-        {
-            fresh.Add(new PIndexItem(
-                row.LVistaRowId,
-                row.LVistaRowHeadword,
-                row.LVistaRowLanguage,
-                row.LVistaRowEpithet ?? string.Empty,
-                row.LVistaRowChosen)
-            {
-                PIndexItemName = row.LVistaRowName,
-            });
-        }
+        IReadOnlyList<PIndexItem> fresh = PIndexItem.PIndexItemBuild(_lWing.LWingRowsRead());
 
         PSplice.PSpliceApply(_pWingIndex, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
         bool typed = _lWing.LWingQueried;

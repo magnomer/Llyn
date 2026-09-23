@@ -8,7 +8,6 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PSCustomsItem : INotifyPropertyChanged
 {
-    private string _psCustomsItemHeadword;
     private LMarkupMode _psCustomsItemMode;
     private long _psCustomsItemTarget;
     private string _psCustomsItemLoss = string.Empty;
@@ -19,7 +18,7 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(candidates);
 
         PSCustomsItemIndex = index;
-        _psCustomsItemHeadword = entry.LMarkupEntryName;
+        PSCustomsItemHeadword = entry.LMarkupEntryName;
         PSCustomsItemLanguage = entry.LMarkupEntryLanguage;
         PSCustomsItemCandidate = candidates;
         _psCustomsItemMode = candidates.Count == 1 ? LMarkupMode.LMarkupModeMerge : LMarkupMode.LMarkupModeNew;
@@ -36,21 +35,7 @@ internal sealed class PSCustomsItem : INotifyPropertyChanged
 
     public IReadOnlyList<LEntry> PSCustomsItemCandidate { get; }
 
-    public string PSCustomsItemHeadword
-    {
-        get => _psCustomsItemHeadword;
-        set
-        {
-            string text = value ?? string.Empty;
-            if (string.Equals(_psCustomsItemHeadword, text, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _psCustomsItemHeadword = text;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PSCustomsItemHeadword)));
-        }
-    }
+    public string PSCustomsItemHeadword { get; }
 
     public LMarkupMode PSCustomsItemMode
     {

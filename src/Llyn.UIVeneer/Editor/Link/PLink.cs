@@ -77,37 +77,12 @@ public partial class PEditor
             return;
         }
 
-        if (box.SelectionLength != 0)
-        {
-            return;
-        }
-
-        if (e.Key == Key.Back && box.CaretIndex == 0)
-        {
-            PLinkRemove(card, card.PCardLinkFind(-1));
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
-        {
-            PLinkRemove(card, card.PCardLinkFind(1));
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Left && box.Text.Length == 0 && card.PCardLinkMove(-1))
-        {
-            PLinkCaretApply(box, row, 0);
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Right && box.Text.Length == 0 && card.PCardLinkMove(1))
-        {
-            PLinkCaretApply(box, row, 0);
-            e.Handled = true;
-        }
+        e.Handled = PCaretKeyApply(
+            box,
+            e.Key,
+            step => PLinkRemove(card, card.PCardLinkFind(step)),
+            card.PCardLinkMove,
+            () => PLinkCaretApply(box, row, 0));
     }
 
     internal void PLinkCloseHandle(object sender, RoutedEventArgs e)

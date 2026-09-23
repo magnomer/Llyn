@@ -105,12 +105,10 @@ public partial class PFavorite
             fresh.Add(new PRosterItem(
                 row.LVistaRowId,
                 row.LVistaRowHeadword,
+                row.LVistaRowName,
                 row.LVistaRowLanguage,
                 row.LVistaRowEpithet ?? string.Empty,
-                row.LVistaRowChosen)
-            {
-                PRosterItemName = row.LVistaRowName,
-            });
+                row.LVistaRowChosen));
         }
 
         PSplice.PSpliceApply(

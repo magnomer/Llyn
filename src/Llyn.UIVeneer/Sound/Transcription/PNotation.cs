@@ -59,11 +59,10 @@ public partial class PEditor
         long id = _lEditor.LEditorNotation.LNotationTarget;
         if (_lEditor.LEditorNotation.LNotationSchemed)
         {
-            PTranscriptionItem? spelled = PTranscriptionFind(id);
-            if (spelled is not null)
+            if (PTranscriptionFind(id) is { } spelled)
             {
-                spelled.PTranscriptionItemText = reading.PNotationReadingPhonetic;
-                _lEditor.LEditorPersist();
+                PEditorRequestSend(new LRequestTranscriptionText(
+                    PEditorDraft, spelled.PTranscriptionItemId, reading.PNotationReadingPhonetic));
             }
 
             return;

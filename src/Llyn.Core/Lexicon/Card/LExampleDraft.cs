@@ -57,6 +57,11 @@ public sealed record LExampleDraft(
         };
     }
 
+    public LMentionDraft? LExampleDraftFind(LMentionDraft span)
+    {
+        return LMentionSpan.LMentionSpanFind(LExampleDraftMention, span);
+    }
+
     public static LExampleDraft LExampleDraftCreate(string text)
     {
         return new LExampleDraft(

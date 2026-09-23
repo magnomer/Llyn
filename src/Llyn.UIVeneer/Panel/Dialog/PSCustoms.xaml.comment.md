@@ -17,7 +17,6 @@ Each entry's candidates are looked up before the window opens, so the rows arriv
 One candidate defaults to Merge with it, none to New, and several to New with the target left to choose.
 Headwords shared by two rows are numbered, so a reader can tell twin rows apart.
 Null when cancelled, otherwise one intake per row in file order.
-A New intake carries no target even when a candidate was picked earlier, so the engine reads no stale one.
 
 ## `internal static void PSCustomsOmissionShow(Window owner, IReadOnlyList<LMarkupOmission> omissions)`
 
@@ -40,7 +39,3 @@ The engine would refuse such an intake, so the window refuses it first.
 The meanings and collocations a Replace would drop, counted from the stored entry.
 Nested meanings are counted too, since every one of them goes.
 Blank for any other mode, and blank when the target cannot be read.
-
-## `private static int PSCustomsTallyRead(IReadOnlyList<LCardDraft> cards)`
-
-Counts the cards and every card nested under them.

@@ -20,10 +20,7 @@ Closes the Situation whose button was pressed.
 
 The dropdown is offered the key first, so the arrows and escape reach the candidate list.
 Enter commits what is standing in the entry, unless a candidate is selected in the dropdown.
-Backspace at the start of the entry drops the Situation before it.
-Delete at the end of the entry drops the Situation after it.
-The arrow keys walk the entry past a Situation once the text runs out.
-So a Situation is crossed the way a character is, in either direction.
+The chip keys go through `PCaretKeyApply`.
 Every other key is left to the text box.
 
 ## `internal void PContextCloseHandle(object sender, RoutedEventArgs e)`

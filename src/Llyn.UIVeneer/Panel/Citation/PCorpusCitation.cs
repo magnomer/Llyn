@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;
@@ -159,9 +160,8 @@ public partial class PCorpus
 
     private void PCitationSet(long id)
     {
-        _pTranscriptCitation = id;
+        PTranscriptRequestSend(new LRequestExampleReference(PTranscriptDraft, id));
         PCitationUpdate();
-        PTranscriptChangeDefer();
     }
 
     private void PCitationCommit()

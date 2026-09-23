@@ -47,10 +47,8 @@ public partial class PCorpus
             return;
         }
 
-        _pTranscriptLanguage = item.PLanguageItemName;
         PSpeaker.IsChecked = false;
-        PSpeakerShow();
-        PTranscriptChangeDefer();
+        PTranscriptRequestSend(new LRequestExampleLanguage(PTranscriptDraft, item.PLanguageItemName));
     }
 
     private void PSpeakerShow()
@@ -68,7 +66,8 @@ public partial class PCorpus
 
         _pTranscriptTextUnknown = false;
         PTranscriptText.Tag = PTranscriptHintRead(false);
-        PTranscriptChangeDefer();
+        PTranscriptRequestDefer(
+            new LRequestExampleText(PTranscriptDraft, new LStateWritten(PTranscriptText.Text, false)));
     }
 
     private string PTranscriptHintRead(bool unknown)
@@ -115,10 +114,10 @@ public partial class PCorpus
             PSpeakerShow();
         }
 
-        long citation = example.LExampleSource.LStateAnchorShow();
-        if (_pTranscriptCitation != citation)
+        long shown = _pTranscriptCitation;
+        _pTranscriptCitation = example.LExampleSource.LStateAnchorShow();
+        if (shown != _pTranscriptCitation)
         {
-            _pTranscriptCitation = citation;
             PCitationUpdate();
         }
 
@@ -140,15 +139,6 @@ public partial class PCorpus
         bool uncertain = value.LStateValueUncertain;
         held = uncertain;
         field.Tag = PTranscriptHintRead(held);
-    }
-
-    private LRequestExampleBody PTranscriptRead(long draft)
-    {
-        return new LRequestExampleBody(
-            draft,
-            _pTranscriptLanguage,
-            new LStateWritten(PTranscriptText.Text, _pTranscriptTextUnknown),
-            _pTranscriptCitation);
     }
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)

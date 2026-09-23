@@ -10,12 +10,13 @@ internal sealed class PIndexItem : INotifyPropertyChanged
 {
     private bool _pIndexItemChosen;
 
-    internal PIndexItem(long id, string headword, string language, string epithet = "", bool chosen = false)
+    internal PIndexItem(
+        long id, string headword, string name, string language, string epithet = "", bool chosen = false)
     {
         _pIndexItemChosen = chosen;
         PIndexItemId = id;
         PIndexItemHeadword = headword;
-        PIndexItemName = headword;
+        PIndexItemName = name;
         PIndexItemEpithet = epithet ?? string.Empty;
         PIndexItemLanguage = language;
         PIndexItemFlag = PEnsign.PEnsignFind(language);
@@ -27,7 +28,7 @@ internal sealed class PIndexItem : INotifyPropertyChanged
 
     public string PIndexItemEpithet { get; }
 
-    public string PIndexItemName { get; internal set; }
+    public string PIndexItemName { get; }
 
     public string PIndexItemLanguage { get; }
 
@@ -43,12 +44,10 @@ internal sealed class PIndexItem : INotifyPropertyChanged
             built.Add(new PIndexItem(
                 row.LVistaRowId,
                 row.LVistaRowHeadword,
+                row.LVistaRowName,
                 row.LVistaRowLanguage,
                 row.LVistaRowEpithet ?? string.Empty,
-                row.LVistaRowChosen)
-            {
-                PIndexItemName = row.LVistaRowName,
-            });
+                row.LVistaRowChosen));
         }
 
         return built;

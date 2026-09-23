@@ -51,19 +51,7 @@ public sealed record LEtymologyDraft(
 
     public LMentionDraft? LEtymologyDraftFind(LMentionDraft span)
     {
-        ArgumentNullException.ThrowIfNull(span);
-
-        int end = span.LMentionDraftOffset + span.LMentionDraftLength;
-        foreach (LMentionDraft mention in LEtymologyDraftMentions)
-        {
-            if (span.LMentionDraftOffset >= mention.LMentionDraftOffset
-                && end <= mention.LMentionDraftOffset + mention.LMentionDraftLength)
-            {
-                return mention;
-            }
-        }
-
-        return null;
+        return LMentionSpan.LMentionSpanFind(LEtymologyDraftMentions, span);
     }
 
     public IReadOnlyList<LMentionPiece> LEtymologyDraftDivide()

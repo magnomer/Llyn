@@ -285,6 +285,23 @@ public sealed class LWindow : IDisposable
         return _lDraftPort.LEngineAnchorMatch(one, other);
     }
 
+    public IReadOnlyList<LAnchorRow> LWindowAnchorScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)
+    {
+        return _lDraftPort.LEngineAnchorScan(rows, anchors, language, reflex, tone);
+    }
+
+    public bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    {
+        return _lDraftPort.LEngineAnchorCheck(rows, headword);
+    }
+
+    public string LWindowAnchorFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        return _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator);
+    }
+
     public IReadOnlyList<LMarkdownBlock> LWindowMarkdownParse(string? text)
     {
         return _lEntryPort.LEngineMarkdownParse(text);
@@ -303,11 +320,6 @@ public sealed class LWindow : IDisposable
     public IReadOnlyList<string> LWindowSchemeRead(string language)
     {
         return _lPhonologyPort.LEngineSchemeRead(language);
-    }
-
-    public IReadOnlyList<LAnatomyTone> LWindowToneRead(string language)
-    {
-        return _lPhonologyPort.LEngineToneRead(language);
     }
 
     public IReadOnlyList<LSpeechValue> LWindowSpeechRead(string language)
@@ -433,6 +445,41 @@ public sealed class LWindow : IDisposable
     public IReadOnlyList<LMeaning> LWindowMeaningRead(long entryId)
     {
         return _lEntryPort.LEngineMeaningRead(entryId, LOwner.LOwnerEntry);
+    }
+
+    public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LWindowMeaningSort(
+        IReadOnlyList<LMeaning> meanings, string unknown)
+    {
+        ArgumentNullException.ThrowIfNull(meanings);
+        ArgumentNullException.ThrowIfNull(unknown);
+
+        List<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows = [];
+        LWindowMeaningAppend(rows, meanings, 0, 0, unknown);
+        return rows;
+    }
+
+    private static void LWindowMeaningAppend(
+        List<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows,
+        IReadOnlyList<LMeaning> meanings,
+        long parent,
+        int depth,
+        string unknown)
+    {
+        List<LMeaning> children = [];
+        foreach (LMeaning meaning in meanings)
+        {
+            if ((meaning.LMeaningParentId ?? 0) == parent && meaning.LMeaningId != parent)
+            {
+                children.Add(meaning);
+            }
+        }
+
+        children.Sort((left, right) => left.LMeaningPosition.CompareTo(right.LMeaningPosition));
+        foreach (LMeaning meaning in children)
+        {
+            rows.Add((meaning.LMeaningId, meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown, depth));
+            LWindowMeaningAppend(rows, meanings, meaning.LMeaningId, depth + 1, unknown);
+        }
     }
 
     public Task LWindowPortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)

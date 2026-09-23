@@ -10,6 +10,7 @@
     <Style x:Key="Theme.Mention.Linked" TargetType="Run">
         <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
         <Setter Property="TextDecorations" Value="Underline" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
 
     <Style x:Key="Theme.Mention.Silent" TargetType="Run" />

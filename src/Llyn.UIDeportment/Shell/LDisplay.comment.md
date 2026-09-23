@@ -24,6 +24,12 @@ The compass labels made distinct, numbered in order where two sections share a n
 
 The wording of a grasp step, or empty while no entry is shown.
 
+## `public IReadOnlyList<LFanqieRow> LDisplayAnchorRead(long id)`
+
+The fanqie rows of every block the engine divides, in order, for the anchor text of the reflex rows.
+The view reads them afresh each time, so the shell holds no fanqie rows of its own.
+A failed read gives no rows, and the reflex rows then show no anchors.
+
 ## `public string LDisplayReadingRead(long id, string headword)`
 
 The headword's representative reading, formed by the engine from the blocks it divides.

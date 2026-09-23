@@ -21,8 +21,6 @@ The row prints the form the switch picks, so the text it holds belongs to that f
 ## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Adds a blank pronunciation after the row carried as the command parameter, or after the primary when none is.
-A primary the draft does not yet hold is added first.
-So the new row lands beneath it rather than in its place.
 
 ## `internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 

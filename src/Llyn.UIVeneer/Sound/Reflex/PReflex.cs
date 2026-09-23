@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -122,7 +123,8 @@ public partial class PEditor
 
     internal void PReflexAnchorShow()
     {
-        PDisplay.PReflexAnchorApply(_pReflexItem, _lEditor.LEditorAnchorRead(), PHeadword.Text);
+        LWindow window = _pEditorHost.PWindowDeportment;
+        PDisplay.PReflexAnchorApply(window, _pReflexItem, _lEditor.LEditorAnchorRead(), PHeadword.Text);
     }
 
     internal void PReflexPendingShow()
