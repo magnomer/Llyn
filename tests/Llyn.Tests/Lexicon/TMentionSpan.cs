@@ -122,4 +122,51 @@ public sealed class TMentionSpan
             Assert.Equal(offset, TInterface.TMentionOffsetRead(text, TInterface.TMentionUnitRead(text, offset)));
         }
     }
+
+    [Fact]
+    public void MentionSpanRead_PaddedSelection_DropsTheOuterSpaces()
+    {
+        LMentionDraft span = TInterface.TMentionSpanRead("he said the word", 2, 6);
+
+        Assert.Equal(3, span.LMentionDraftOffset);
+        Assert.Equal(4, span.LMentionDraftLength);
+    }
+
+    [Fact]
+    public void MentionSpanRead_SurrogatePair_CountsCodePoints()
+    {
+        LMentionDraft span = TInterface.TMentionSpanRead("go 𝒜bc now", 3, 4);
+
+        Assert.Equal(3, span.LMentionDraftOffset);
+        Assert.Equal(3, span.LMentionDraftLength);
+    }
+
+    [Fact]
+    public void MentionSpanRead_OnlySpaces_ReadsAnEmptySpan()
+    {
+        Assert.Equal(0, TInterface.TMentionSpanRead("he said the word", 2, 1).LMentionDraftLength);
+    }
+
+    [Fact]
+    public void EtymologyDraftFind_CaretInsideSpan_ReturnsThatMention()
+    {
+        LMentionDraft mention = TInterface.TMentionDraftCreate(7, 3, 4, 42);
+        LEtymologyDraft etymology = new("he said the word", [mention]);
+        LMentionDraft caret = TInterface.TMentionSpanRead(etymology.LEtymologyDraftText, 5, 0);
+        LMentionDraft whole = TInterface.TMentionSpanRead(etymology.LEtymologyDraftText, 3, 4);
+
+        Assert.Same(mention, TInterface.TEtymologyDraftFind(etymology, caret));
+        Assert.Same(mention, TInterface.TEtymologyDraftFind(etymology, whole));
+    }
+
+    [Fact]
+    public void EtymologyDraftFind_SpanPastTheMention_ReturnsNothing()
+    {
+        LEtymologyDraft etymology = new("he said the word", [TInterface.TMentionDraftCreate(7, 3, 4, 42)]);
+        LMentionDraft wider = TInterface.TMentionSpanRead(etymology.LEtymologyDraftText, 3, 8);
+        LMentionDraft later = TInterface.TMentionSpanRead(etymology.LEtymologyDraftText, 12, 4);
+
+        Assert.Null(TInterface.TEtymologyDraftFind(etymology, wider));
+        Assert.Null(TInterface.TEtymologyDraftFind(etymology, later));
+    }
 }

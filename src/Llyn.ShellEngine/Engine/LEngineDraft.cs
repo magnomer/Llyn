@@ -7,8 +7,6 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private readonly HashSet<long> _lEngineDraftStale = [];
-
     public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)
     {
         return LEntryClerkField.LMarkdownParse(text);
@@ -16,17 +14,17 @@ public sealed partial class LEngine
 
     internal LDraft LEngineDraftStart(string origin, long? entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             IReadOnlyList<string> languages = LEngineLanguageRead();
             string language = languages.Count > 0 ? languages[0] : string.Empty;
-            return _lEngineCitationClerk.LEntryStart(origin, entryId, language);
+            return _lEngineStaff.LEngineStaffCitation.LEntryStart(origin, entryId, language);
         }
     }
 
     internal IReadOnlyList<LRequest> LEngineDraftPrepare(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             LEntryDraft draft = LEngineDraftLoad(id).LDraftContent;
             List<LRequest> requests = [];
@@ -77,30 +75,30 @@ public sealed partial class LEngine
 
     internal LDraft? LEngineDraftRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            return _lEngineClaimClerk.LDraftRead(id);
+            return _lEngineStaff.LEngineStaffClaim.LDraftRead(id);
         }
     }
 
     internal IReadOnlyList<LDraft> LEngineDraftScan()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineClaimClerk.LDraftScan();
+            return _lEngineStaff.LEngineStaffClaim.LDraftScan();
         }
     }
 
     public void LEngineDraftDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            _lEngineClaimClerk.LClaimClerkDelete(id);
-            _lEngineTrove.LTroveClear(id);
+            _lEngineStaff.LEngineStaffClaim.LClaimClerkDelete(id);
+            LEngineTrove.LTroveClear(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
@@ -113,7 +111,7 @@ public sealed partial class LEngine
 
     internal bool LEngineDraftCheck(long id, out string? refusal)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             refusal = null;
             if (id == 0)
@@ -123,7 +121,7 @@ public sealed partial class LEngine
 
             LEngineDraftValidate(id);
 
-            LDraft? draft = _lEngineClaimClerk.LDraftRead(id);
+            LDraft? draft = _lEngineStaff.LEngineStaffClaim.LDraftRead(id);
             if (draft is null)
             {
                 return false;
@@ -136,19 +134,19 @@ public sealed partial class LEngine
 
     private bool LEngineDraftCheck(LDraft draft)
     {
-        return _lEngineCitationClerk.LCitationDraftCheck(draft);
+        return _lEngineStaff.LEngineStaffCitation.LCitationDraftCheck(draft);
     }
 
     internal void LEngineDraftSweep(long id)
     {
         LDraft saved;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
             saved = LEngineDraftLoad(id).LDraftNormalize();
-            _lEngineClaimClerk.LDraftSave(saved);
+            _lEngineStaff.LEngineStaffClaim.LDraftSave(saved);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
@@ -158,13 +156,13 @@ public sealed partial class LEngine
     {
         LOutcome outcome;
         List<long> raised = [];
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
-            outcome = _lEngineOutcomeClerk.LOutcomeClerkCommit(id, raised);
-            _lEngineTrove.LTroveClear(id);
+            outcome = _lEngineStaff.LEngineStaffOutcome.LOutcomeClerkCommit(id, raised);
+            LEngineTrove.LTroveClear(id);
         }
 
         foreach (long entryId in raised)
@@ -178,12 +176,12 @@ public sealed partial class LEngine
 
     internal void LEngineDraftCancel(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            _lEngineClaimClerk.LClaimClerkCancel(id);
-            _lEngineTrove.LTroveClear(id);
+            _lEngineStaff.LEngineStaffClaim.LClaimClerkCancel(id);
+            LEngineTrove.LTroveClear(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
@@ -191,14 +189,14 @@ public sealed partial class LEngine
 
     public void LEngineLeftoverSweep()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineClaimClerk.LClaimClerkSweep();
+            _lEngineStaff.LEngineStaffClaim.LClaimClerkSweep();
 
-            foreach (LDraft draft in _lEngineClaimClerk.LDraftScan())
+            foreach (LDraft draft in _lEngineStaff.LEngineStaffClaim.LDraftScan())
             {
-                if (_lEngineClaimClerk.LClaimClerkHeld.Contains(draft.LDraftId)
-                    || _lEngineClaimClerk.LClaimForeignCheck(draft.LDraftId))
+                if (_lEngineStaff.LEngineStaffClaim.LClaimClerkHeld.Contains(draft.LDraftId)
+                    || _lEngineStaff.LEngineStaffClaim.LClaimForeignCheck(draft.LDraftId))
                 {
                     continue;
                 }
@@ -207,15 +205,15 @@ public sealed partial class LEngine
                 {
                     if (!LEngineDraftCheck(draft))
                     {
-                        _lEngineClaimClerk.LClaimClerkCancel(draft.LDraftId);
+                        _lEngineStaff.LEngineStaffClaim.LClaimClerkCancel(draft.LDraftId);
                     }
 
                     continue;
                 }
 
-                if (_lEngineCitationClerk.LCitationLeftoverCheck(draft))
+                if (_lEngineStaff.LEngineStaffCitation.LCitationLeftoverCheck(draft))
                 {
-                    _lEngineClaimClerk.LClaimClerkCancel(draft.LDraftId);
+                    _lEngineStaff.LEngineStaffClaim.LClaimClerkCancel(draft.LDraftId);
                 }
             }
         }
@@ -223,14 +221,14 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LDraft> LEngineLeftoverRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             List<LDraft> leftovers = [];
-            foreach (LDraft draft in _lEngineClaimClerk.LDraftScan())
+            foreach (LDraft draft in _lEngineStaff.LEngineStaffClaim.LDraftScan())
             {
-                if (_lEngineClaimClerk.LClaimClerkHeld.Contains(draft.LDraftId)
+                if (_lEngineStaff.LEngineStaffClaim.LClaimClerkHeld.Contains(draft.LDraftId)
                     || !LEngineDraftCheck(draft.LDraftId)
-                    || _lEngineClaimClerk.LClaimForeignCheck(draft.LDraftId))
+                    || _lEngineStaff.LEngineStaffClaim.LClaimForeignCheck(draft.LDraftId))
                 {
                     continue;
                 }
@@ -244,11 +242,11 @@ public sealed partial class LEngine
 
     private void LEngineDraftValidate(long id)
     {
-        LClaimClerk.LClaimStaleValidate(_lEngineDraftStale, id);
+        LClaimClerk.LClaimStaleValidate(LEngineDraftStale, id);
     }
 
     private LDraft LEngineDraftLoad(long id)
     {
-        return _lEngineClaimClerk.LDraftLoad(id);
+        return _lEngineStaff.LEngineStaffClaim.LDraftLoad(id);
     }
 }

@@ -94,6 +94,11 @@ public sealed class LMentionClerk
         return LMentionSpan.LMentionOffsetRead(text, unit);
     }
 
+    public static LMentionDraft LMentionSpanRead(string text, int start, int length)
+    {
+        return LMentionSpan.LMentionSpanRead(text, start, length);
+    }
+
     public IReadOnlyList<LMentionLabel> LMentionClerkResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
         ArgumentNullException.ThrowIfNull(text);

@@ -411,7 +411,7 @@ public sealed class LReflexClerk
     private static string LMeaningKeyRead(LReflex row)
     {
         return string.Join(
-            '', row.LReflexLanguage, row.LReflexRegion, row.LReflexKind, row.LReflexText);
+            '\u001F', row.LReflexLanguage, row.LReflexRegion, row.LReflexKind, row.LReflexText);
     }
 
     private List<long> LReflexClerkPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)

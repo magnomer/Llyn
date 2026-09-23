@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -8,18 +8,18 @@ public sealed partial class LEngine
 {
     internal LReference LEngineReferenceCreate(LReference reference)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LReferenceClerkCreate(reference);
+            return _lEngineStaff.LEngineStaffReference.LReferenceClerkCreate(reference);
         }
     }
 
     public LReference LEngineCitationCreate(string title)
     {
         LReference stored;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            stored = _lEngineReferenceClerk.LReferenceClerkCreate(title);
+            stored = _lEngineStaff.LEngineStaffReference.LReferenceClerkCreate(title);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
@@ -28,25 +28,25 @@ public sealed partial class LEngine
 
     internal LReference? LEngineReferenceRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LReferenceClerkRead(id);
+            return _lEngineStaff.LEngineStaffReference.LReferenceClerkRead(id);
         }
     }
 
     internal IReadOnlyList<LReference> LEngineReferenceRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LReferenceClerkRead();
+            return _lEngineStaff.LEngineStaffReference.LReferenceClerkRead();
         }
     }
 
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LReferenceClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffReference.LReferenceClerkFind(query, order);
         }
     }
 
@@ -77,41 +77,41 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LReferenceClerkRead(ownerId, owner);
+            return _lEngineStaff.LEngineStaffReference.LReferenceClerkRead(ownerId, owner);
         }
     }
 
     internal void LEngineReferenceUpdate(LReference reference)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineReferenceClerk.LReferenceClerkUpdate(reference);
+            _lEngineStaff.LEngineStaffReference.LReferenceClerkUpdate(reference);
         }
     }
 
     internal void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineReferenceClerk.LReferenceClerkAttach(ownerId, referenceId, owner);
+            _lEngineStaff.LEngineStaffReference.LReferenceClerkAttach(ownerId, referenceId, owner);
         }
     }
 
     internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineReferenceClerk.LReferenceClerkDetach(ownerId, owner);
+            _lEngineStaff.LEngineStaffReference.LReferenceClerkDetach(ownerId, owner);
         }
     }
 
     internal void LEngineReferenceDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineReferenceClerk.LReferenceClerkDelete(id);
+            _lEngineStaff.LEngineStaffReference.LReferenceClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
@@ -119,9 +119,9 @@ public sealed partial class LEngine
 
     internal void LEngineReferenceDelete(long id, bool detach)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineReferenceClerk.LReferenceClerkDelete(id, detach);
+            _lEngineStaff.LEngineStaffReference.LReferenceClerkDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, id);
@@ -129,29 +129,29 @@ public sealed partial class LEngine
 
     public IReadOnlyDictionary<long, string> LEngineCitationRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReferenceClerk.LCitationRead();
+            return _lEngineStaff.LEngineStaffReference.LCitationRead();
         }
     }
 
     internal LDraft LEngineReferenceStart(string origin, long? referenceId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return _lEngineCitationClerk.LReferenceStart(origin, referenceId);
+            return _lEngineStaff.LEngineStaffCitation.LReferenceStart(origin, referenceId);
         }
     }
 
     internal LReference LEngineReferenceCommit(long id)
     {
         LReference settled;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            settled = _lEngineCitationClerk.LReferenceCommit(id);
+            settled = _lEngineStaff.LEngineStaffCitation.LReferenceCommit(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectReference, settled.LReferenceId);

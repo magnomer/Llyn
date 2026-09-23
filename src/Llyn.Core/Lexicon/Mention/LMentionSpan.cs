@@ -39,6 +39,25 @@ public static class LMentionSpan
         return (start, end - start + 1);
     }
 
+    public static LMentionDraft LMentionSpanRead(string text, int start, int length)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        int end = start + length;
+        while (start < end && char.IsWhiteSpace(text[start]))
+        {
+            start++;
+        }
+
+        while (end > start && char.IsWhiteSpace(text[end - 1]))
+        {
+            end--;
+        }
+
+        int offset = LMentionOffsetRead(text, start);
+        return new LMentionDraft(0, offset, LMentionOffsetRead(text, end) - offset, 0);
+    }
+
     public static IReadOnlyList<LMentionPiece> LMentionSpanDivide(string text, IReadOnlyList<LMention> mentions)
     {
         ArgumentNullException.ThrowIfNull(text);

@@ -1,15 +1,11 @@
-using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
 public partial class PEditor
 {
-    private IReadOnlyList<LMentionDraft> _pEtymologyMention = [];
-
     internal void PEtymologyAttach()
     {
         CommandBindings.Add(new CommandBinding(
@@ -25,132 +21,79 @@ public partial class PEditor
         PEtymologyField.PEtymologyBox.TextChanged += PEtymologyWriteHandle;
     }
 
-    private void PEtymologyShow(LEntryDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets)
+    private void PEtymologyShow(LEntryDraft draft)
     {
-        LEtymologyDraft etymology = draft.LEntryDraftEtymology;
-        _pEtymologyMention = etymology.LEtymologyDraftMentions;
-
-        List<PEtymologyChip> chips = [];
-        foreach (long id in etymology.LEtymologyDraftEtymons)
-        {
-            if (targets.TryGetValue(id, out LTranslationTarget? target))
-            {
-                chips.Add(new PEtymologyChip(
-                    id, target.LTranslationTargetHeadword, target.LTranslationTargetLanguage, true));
-            }
-        }
-
         PEtymologyField.PEtymologyLanguage = draft.LEntryDraftLanguage;
-        PEtymologyField.PEtymologyText = etymology.LEtymologyDraftText;
-        PEtymologyField.PEtymologySourceShow(chips);
+        PEtymologyField.PEtymologyText = draft.LEntryDraftEtymology.LEtymologyDraftText;
+        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorDisplay.LDisplayEtymonRead(draft));
         PEtymologyField.PEtymologyMentionShow(
-            _pEtymologyMention, PLocalizationCatalog.PLocalizationTextRead("Mention.Silent"));
+            _pEditorHost.PWindowDeportment,
+            draft.LEntryDraftEtymology.LEtymologyDraftText,
+            draft.LEntryDraftEtymology.LEtymologyDraftMentions,
+            PLocalizationCatalog.PLocalizationTextRead("Mention.Silent"));
     }
 
     private void PEtymologyWriteHandle(object sender, TextChangedEventArgs e)
     {
-        PEditorRequestDefer(new LRequestEtymologyText(PEditorDraft, PEtymologyField.PEtymologyBox.Text));
+        _lEditor.LEditorCard.LCardEtymologySet(PEtymologyField.PEtymologyBox.Text);
     }
 
     private void PEtymologyAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not PEtymologyCaret caret || e.OriginalSource is not TextBox box)
-        {
-            return;
-        }
-
-        string word = caret.PEtymologyCaretText.Trim();
-        if (word.Length == 0)
-        {
-            return;
-        }
-
+        PEtymon caret = (PEtymon)e.Parameter;
+        TextBox box = (TextBox)e.OriginalSource;
         _pEditorHost.PWindowProspectShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
-            word,
+            caret.PEtymonText.Trim(),
             _lEditor.LEditorLanguage,
             entryId => PEtymonSend(caret, entryId));
     }
 
-    private void PEtymonSend(PEtymologyCaret caret, long entryId)
+    private void PEtymonSend(PEtymon caret, long entryId)
     {
-        if (entryId <= 0)
-        {
-            return;
-        }
-
-        caret.PEtymologyCaretText = string.Empty;
-        PEditorRequestSend(new LRequestEtymonAddition(PEditorDraft, entryId, int.MaxValue));
+        caret.PEtymonText = string.Empty;
+        _lEditor.LEditorCard.LCardEtymonAdd(entryId);
     }
 
     private void PEtymologyRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PEtymologyChip chip)
-        {
-            PEditorRequestSend(new LRequestEtymonRemoval(PEditorDraft, chip.PEtymologyChipId));
-        }
+        _lEditor.LEditorCard.LCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
     }
 
     private void PEtymologyEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PEtymologyChip chip)
-        {
-            _pEditorHost.PWindowEntryShow(chip.PEtymologyChipId);
-        }
+        _pEditorHost.PWindowEntryShow(((PEtymon)e.Parameter).PEtymonId);
     }
 
     private void PEtymologyLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
-        if (length == 0)
-        {
-            return;
-        }
-
+        string text = box.Text;
+        int start = box.SelectionStart;
+        int length = box.SelectionLength;
         _pEditorHost.PWindowProspectShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
             _lEditor.LEditorLanguage,
-            entryId => PEtymologyMentionSend(offset, length, entryId));
-    }
-
-    private void PEtymologyMentionSend(int offset, int length, long entryId)
-    {
-        if (entryId > 0)
-        {
-            PEditorRequestSend(new LRequestEtymologyMention(PEditorDraft, offset, length, entryId));
-        }
+            entryId => _lEditor.LEditorCard.LCardMentionSave(text, start, length, entryId));
     }
 
     private void PEtymologyUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (PEtymologySpanFind() is not LMentionDraft mention)
-        {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestEtymologyMention(
-            PEditorDraft, mention.LMentionDraftOffset, mention.LMentionDraftLength, 0));
+        TextBox box = PEtymologyField.PEtymologyBox;
+        _lEditor.LEditorCard.LCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void PEtymologyLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = PMentionSelection.PMentionSelectionRead(
-            PEtymologyField.PEtymologyBox, _pEditorHost.PWindowDeportment).PMentionSelectionLength > 0;
+        e.CanExecute = !string.IsNullOrWhiteSpace(PEtymologyField.PEtymologyBox.SelectedText);
     }
 
     private void PEtymologyUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = PEtymologySpanFind() is not null;
-    }
-
-    private LMentionDraft? PEtymologySpanFind()
-    {
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(
-            PEtymologyField.PEtymologyBox, _pEditorHost.PWindowDeportment);
-        return PMentionSelection.PMentionSelectionFind(_pEtymologyMention, offset, length);
+        TextBox box = PEtymologyField.PEtymologyBox;
+        e.CanExecute = _lEditor.LEditorCard.LCardMentionCheck(box.Text, box.SelectionStart, box.SelectionLength);
     }
 }

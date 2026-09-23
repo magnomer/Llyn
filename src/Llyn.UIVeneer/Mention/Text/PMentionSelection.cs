@@ -11,22 +11,7 @@ internal static class PMentionSelection
     internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(
         TextBox box, LWindow window)
     {
-        string text = box.Text;
-        int start = box.SelectionStart;
-        int end = start + box.SelectionLength;
-
-        while (start < end && char.IsWhiteSpace(text[start]))
-        {
-            start++;
-        }
-
-        while (end > start && char.IsWhiteSpace(text[end - 1]))
-        {
-            end--;
-        }
-
-        int offset = window.LWindowOffsetRead(text, start);
-        return (offset, window.LWindowOffsetRead(text, end) - offset);
+        return window.LWindowSpanRead(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     internal static LMentionDraft? PMentionSelectionFind(IReadOnlyList<LMentionDraft> mentions, int offset, int length)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,7 +21,7 @@ public sealed partial class LEngine
 
         LVista vista = new(
             this, Interlocked.Increment(ref _lEngineVistaCount), tab, subject, order, filter, blank, editing);
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             if (_lEngineVistas.TryGetValue(tab, out LVista? former))
             {
@@ -37,7 +37,7 @@ public sealed partial class LEngine
 
     public LVista? LEngineVistaRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             foreach (LVista vista in _lEngineVistas.Values)
             {
@@ -60,7 +60,7 @@ public sealed partial class LEngine
             return [];
         }
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             IReadOnlyList<LEntry> entries = LEngineEntryFind(vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
             return LEngineVistaBuild(entries, vista.LVistaChosen);
@@ -74,7 +74,7 @@ public sealed partial class LEngine
             return [];
         }
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             long id = parent.LVistaChosen ?? 0;
             IReadOnlyList<LEntry> entries = parent.LVistaSubject switch
@@ -141,7 +141,7 @@ public sealed partial class LEngine
 
     private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)
     {
-        if (!_lEngineSettings.LSettingsEpithet || entries.Count == 0)
+        if (!LEngineSettingsHeld.LSettingsEpithet || entries.Count == 0)
         {
             return new Dictionary<long, string>();
         }
@@ -152,30 +152,30 @@ public sealed partial class LEngine
             ids[index] = entries[index].LEntryId;
         }
 
-        return _lEngineEntryClerk.LEntryEpithetScan(ids);
+        return _lEngineStaff.LEngineStaffEntry.LEntryEpithetScan(ids);
     }
 
     public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFavoriteClerk.LFavoriteClerkFind(query);
+            return _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkFind(query);
         }
     }
 
     public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFavoriteClerk.LFavoriteClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkFind(query, order);
         }
     }
 
     public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFavoriteClerk.LFavoriteClerkFind(query, order, filter);
+            return _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkFind(query, order, filter);
         }
     }
 
@@ -183,7 +183,7 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(vista);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             IReadOnlyList<LCatalogFavorite> favorites = LEngineFavoriteFind(
                 vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
@@ -199,17 +199,17 @@ public sealed partial class LEngine
 
     public bool LEngineFavoriteCheck(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFavoriteClerk.LFavoriteClerkCheck(entryId);
+            return _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkCheck(entryId);
         }
     }
 
     public void LEngineFavoriteSave(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineFavoriteClerk.LFavoriteClerkSave(entryId);
+            _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkSave(entryId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
@@ -217,9 +217,9 @@ public sealed partial class LEngine
 
     public void LEngineFavoriteDelete(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineFavoriteClerk.LFavoriteClerkDelete(entryId);
+            _lEngineStaff.LEngineStaffFavorite.LFavoriteClerkDelete(entryId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
@@ -227,7 +227,7 @@ public sealed partial class LEngine
 
     internal LDraft? LEngineVistaLoad(LVista vista)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             if (vista.LVistaChosen is not long id || id <= 0)
             {

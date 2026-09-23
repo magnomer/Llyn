@@ -8,7 +8,12 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceDeportment
 {
-    internal static LEditor TEditorCreate(LEngine engine) => new(engine, engine, engine, engine, static () => false);
+    internal static LEditor TEditorCreate(LEngine engine) => new(
+        new LDraftOutlet(engine),
+        new LEntryOutlet(engine),
+        new LPhonologyOutlet(engine),
+        new LSettingsOutlet(engine),
+        static () => false);
 
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
@@ -55,13 +60,25 @@ internal static class TInterfaceDeportment
     internal static void TEditorReferenceAdd(this LEditor editor, long id) => editor.LEditorReferenceAdd(id);
 
     internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
+        new(
+            new LPhonologyOutlet(engine),
+            new LPortraitOutlet(engine),
+            TEditorCreate(engine),
+            () => true,
+            leaveSeam,
+            deleteSeam);
 
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
     internal static LLibrary TLibraryCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(engine, engine, TEditorCreate(engine), () => true, leaveSeam, deleteSeam);
+        new(
+            new LEntryOutlet(engine),
+            new LPortraitOutlet(engine),
+            TEditorCreate(engine),
+            () => true,
+            leaveSeam,
+            deleteSeam);
 
     internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
         panel.LLibraryVistaRestore(vista);
@@ -71,7 +88,16 @@ internal static class TInterfaceDeportment
     internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
 
     internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, _ => true, () => false);
+        new(
+            new LDraftOutlet(engine),
+            new LEntryOutlet(engine),
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            TEditorCreate(engine),
+            () => true,
+            leaveSeam,
+            _ => true,
+            () => false);
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
         shelf.LShelfVistaRestore(vista, footnote);
@@ -141,7 +167,7 @@ internal static class TInterfaceDeportment
     internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
 
     internal static LDesk TDeskCreate(LEngine engine, string scope, Func<bool> unreadableSeam) =>
-        new(engine, scope, unreadableSeam);
+        new(new LDraftOutlet(engine), scope, unreadableSeam);
 
     internal static void TDeskVistaRestore(this LDesk desk, LVista vista) => desk.LDeskVistaRestore(vista);
 
@@ -162,7 +188,16 @@ internal static class TInterfaceDeportment
 
     internal static LGuild TGuildCreate(
         LEngine engine, Func<bool> leaveSeam, Func<int, bool> removalSeam, Func<string, string, bool> unionSeam) =>
-        new(engine, engine, engine, engine, () => true, leaveSeam, removalSeam, unionSeam, () => false);
+        new(
+            new LDraftOutlet(engine),
+            new LEntryOutlet(engine),
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            () => true,
+            leaveSeam,
+            removalSeam,
+            unionSeam,
+            () => false);
 
     internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
         guild.LGuildVistaRestore(vista, oeuvre);
@@ -198,7 +233,14 @@ internal static class TInterfaceDeportment
         oeuvre.LOeuvreColophonRead(draft);
 
     internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(engine, engine, engine, TEditorCreate(engine), () => true, leaveSeam, () => true);
+        new(
+            new LPhonologyOutlet(engine),
+            new LPortraitOutlet(engine),
+            new LSettingsOutlet(engine),
+            TEditorCreate(engine),
+            () => true,
+            leaveSeam,
+            () => true);
 
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
         panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
@@ -236,7 +278,14 @@ internal static class TInterfaceDeportment
             TEngineFake.TEngineStubCreate<LPortraitPort>());
 
     internal static LWindow TWindowCreate(LEngine engine) =>
-        new(new LPosture(engine), engine, engine, engine, engine, engine, engine);
+        new(
+            new LPosture(engine),
+            new LDraftOutlet(engine),
+            new LEntryOutlet(engine),
+            new LSettingsOutlet(engine),
+            new LPhonologyOutlet(engine),
+            new LMediaOutlet(engine),
+            new LPortraitOutlet(engine));
 
     internal static LFont TFontCreate(string family, double size) => new(family, size);
 

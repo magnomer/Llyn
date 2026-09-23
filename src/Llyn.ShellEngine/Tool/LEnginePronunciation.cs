@@ -11,25 +11,25 @@ public sealed partial class LEngine
 {
     internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEnginePronunciationClerk.LPronunciationClerkCreate(pronunciation);
+            return _lEngineStaff.LEngineStaffPronunciation.LPronunciationClerkCreate(pronunciation);
         }
     }
 
     internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEnginePronunciationClerk.LPronunciationClerkRead(entryId);
+            return _lEngineStaff.LEngineStaffPronunciation.LPronunciationClerkRead(entryId);
         }
     }
 
     public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEnginePronunciationClerk.LPronunciationClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffPronunciation.LPronunciationClerkFind(query, order);
         }
     }
 
@@ -47,7 +47,7 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(vista);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             IReadOnlyList<LCatalogPronunciation> found = LEnginePronunciationFind(
                 vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
@@ -75,64 +75,64 @@ public sealed partial class LEngine
 
     internal void LEnginePronunciationUpdate(LPronunciation pronunciation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEnginePronunciationClerk.LPronunciationClerkUpdate(pronunciation);
+            _lEngineStaff.LEngineStaffPronunciation.LPronunciationClerkUpdate(pronunciation);
         }
     }
 
     internal void LEnginePronunciationDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEnginePronunciationClerk.LPronunciationClerkDelete(id);
+            _lEngineStaff.LEngineStaffPronunciation.LPronunciationClerkDelete(id);
         }
     }
 
     internal void LEngineAudioSave(long pronunciationId, string file, string? source)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEnginePronunciationClerk.LAudioSave(pronunciationId, file, source);
+            _lEngineStaff.LEngineStaffPronunciation.LAudioSave(pronunciationId, file, source);
         }
     }
 
     internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            LPronunciationAudio? audio = _lEnginePronunciationClerk.LAudioRead(pronunciationId);
+            LPronunciationAudio? audio = _lEngineStaff.LEngineStaffPronunciation.LAudioRead(pronunciationId);
             if (audio is null)
             {
                 return null;
             }
 
-            string file = _lEngineRecordingClerk.LRecordingClerkResolve(audio.LPronunciationAudioFile);
+            string file = _lEngineStaff.LEngineStaffRecording.LRecordingClerkResolve(audio.LPronunciationAudioFile);
             return audio with { LPronunciationAudioFile = file };
         }
     }
 
     internal void LEngineNoteSave(LNote note)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEnginePronunciationClerk.LNoteSave(note);
+            _lEngineStaff.LEngineStaffPronunciation.LNoteSave(note);
         }
     }
 
     internal LNote? LEngineNoteRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEnginePronunciationClerk.LNoteRead(entryId);
+            return _lEngineStaff.LEngineStaffPronunciation.LNoteRead(entryId);
         }
     }
 
     internal void LEngineNoteDelete(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEnginePronunciationClerk.LNoteDelete(entryId);
+            _lEngineStaff.LEngineStaffPronunciation.LNoteDelete(entryId);
         }
     }
 
@@ -147,17 +147,18 @@ public sealed partial class LEngine
 
         IReadOnlyList<LCandidate>? held;
         Task<IReadOnlyList<LCandidate>>? scan = null;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            held = _lEngineTrove.LTroveCandidateRead(session, word, language);
+            held = LEngineTrove.LTroveCandidateRead(session, word, language);
             if (held is null)
             {
-                scan = _lEngineTranscriptionClerk.LTranscriptionClerkFind(word, language, sink, cancellation);
+                scan = _lEngineStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
+                    word, language, sink, cancellation);
             }
         }
 
         return scan is null
-            ? _lEngineTranscriptionClerk.LTranscriptionClerkPublish(held!, language, sink)
+            ? _lEngineStaff.LEngineStaffTranscription.LTranscriptionClerkPublish(held!, language, sink)
             : LEngineTroveSave(scan, session, word, language, null);
     }
 
@@ -166,15 +167,15 @@ public sealed partial class LEngine
     {
         IReadOnlyList<LCandidate> found = await scan.ConfigureAwait(false);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             if (scheme is null)
             {
-                _lEngineTrove.LTroveCandidateSave(session, word, language, found);
+                LEngineTrove.LTroveCandidateSave(session, word, language, found);
             }
             else
             {
-                _lEngineTrove.LTroveTranscriptionSave(session, word, language, scheme, found);
+                LEngineTrove.LTroveTranscriptionSave(session, word, language, scheme, found);
             }
         }
     }
@@ -193,13 +194,14 @@ public sealed partial class LEngine
         IReadOnlyList<LRecording>? held;
         string variety;
         Task<IReadOnlyList<LRecording>>? scan = null;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             variety = LEngineVarietyResolve(session, target);
-            held = _lEngineTrove.LTroveRecordingRead(session, word, language);
+            held = LEngineTrove.LTroveRecordingRead(session, word, language);
             if (held is null)
             {
-                scan = _lEngineRecordingClerk.LRecordingClerkFind(word, language, variety, listener, cancellation);
+                scan = _lEngineStaff.LEngineStaffRecording.LRecordingClerkFind(
+                    word, language, variety, listener, cancellation);
             }
         }
 
@@ -213,9 +215,9 @@ public sealed partial class LEngine
     {
         IReadOnlyList<LRecording> found = await scan.ConfigureAwait(false);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineTrove.LTroveRecordingSave(session, word, language, found);
+            LEngineTrove.LTroveRecordingSave(session, word, language, found);
         }
     }
 
@@ -253,9 +255,9 @@ public sealed partial class LEngine
         LRecording recording, string word, string language, CancellationToken cancellation)
     {
         LRecordingClerk recordings;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            recordings = _lEngineRecordingClerk;
+            recordings = _lEngineStaff.LEngineStaffRecording;
         }
 
         return recordings.LRecordingClerkSave(recording, word, language, cancellation);
@@ -264,9 +266,9 @@ public sealed partial class LEngine
     public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)
     {
         LRecordingClerk recordings;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            recordings = _lEngineRecordingClerk;
+            recordings = _lEngineStaff.LEngineStaffRecording;
         }
 
         return recordings.LRecordingClerkPrepare(recording, cancellation);
@@ -274,25 +276,25 @@ public sealed partial class LEngine
 
     public void LEngineRecordingSweep()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineRecordingClerk.LRecordingClerkSweep();
+            _lEngineStaff.LEngineStaffRecording.LRecordingClerkSweep();
         }
     }
 
     public bool LEngineRecordingExist(string? file)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineRecordingClerk.LRecordingClerkExist(file);
+            return _lEngineStaff.LEngineStaffRecording.LRecordingClerkExist(file);
         }
     }
 
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranscriptionClerk.LSchemeRead(language);
+            return _lEngineStaff.LEngineStaffTranscription.LSchemeRead(language);
         }
     }
 
@@ -309,12 +311,12 @@ public sealed partial class LEngine
 
         IReadOnlyList<LCandidate>? held;
         Task<IReadOnlyList<LCandidate>>? scan = null;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            held = _lEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
+            held = LEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
             if (held is null)
             {
-                scan = _lEngineTranscriptionClerk.LTranscriptionClerkFind(
+                scan = _lEngineStaff.LEngineStaffTranscription.LTranscriptionClerkFind(
                     word, language, scheme, sink, cancellation);
             }
         }
@@ -326,42 +328,42 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranscriptionClerk.LTranscriptionClerkRead(entryId);
+            return _lEngineStaff.LEngineStaffTranscription.LTranscriptionClerkRead(entryId);
         }
     }
 
     internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(
         long entryId, IReadOnlyList<LTranscription> transcriptions)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranscriptionClerk.LTranscriptionClerkSet(entryId, transcriptions);
+            return _lEngineStaff.LEngineStaffTranscription.LTranscriptionClerkSet(entryId, transcriptions);
         }
     }
 
     internal Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(
         string word, string language, CancellationToken cancellation)
     {
-        return _lEngineFrequencyClerk.LFrequencyClerkFind(word, language, cancellation);
+        return _lEngineStaff.LEngineStaffFrequency.LFrequencyClerkFind(word, language, cancellation);
     }
 
     internal string? LEngineBandResolve(string language, string source, string raw)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFrequencyClerk.LBandResolve(language, source, raw);
+            return _lEngineStaff.LEngineStaffFrequency.LBandResolve(language, source, raw);
         }
     }
 
     public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)
     {
-        return _lEngineFrequencyClerk.LFrequencyClerkRead(entryId);
+        return _lEngineStaff.LEngineStaffFrequency.LFrequencyClerkRead(entryId);
     }
 
     internal void LEngineFrequencyStart(long entryId)
     {
-        _lEngineFrequencyClerk.LFrequencyClerkStart(entryId);
+        _lEngineStaff.LEngineStaffFrequency.LFrequencyClerkStart(entryId);
     }
 }

@@ -7,9 +7,9 @@ public sealed partial class LEngine
 {
     public LWorkspaceState LEngineStateRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineWorkspaceClerk.LWorkspaceStateRead();
+            return _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStateRead();
         }
     }
 
@@ -25,30 +25,31 @@ public sealed partial class LEngine
 
     private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineWorkspaceClerk.LWorkspaceStateSave(change(_lEngineWorkspaceClerk.LWorkspaceStateRead()));
+            LWorkspaceState current = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStateRead();
+            _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStateSave(change(current));
         }
     }
 
     public Uri? LEngineLocationResolve(string? location)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTrailClerk.LTrailClerkResolve(location);
+            return _lEngineStaff.LEngineStaffTrail.LTrailClerkResolve(location);
         }
     }
 
     public Uri? LEngineLocationRead(string? location)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTrailClerk.LTrailClerkRead(location);
+            return _lEngineStaff.LEngineStaffTrail.LTrailClerkRead(location);
         }
     }
 
     public void LEngineLocationOpen(string target)
     {
-        _lEngineTrailClerk.LTrailClerkOpen(target);
+        _lEngineStaff.LEngineStaffTrail.LTrailClerkOpen(target);
     }
 }

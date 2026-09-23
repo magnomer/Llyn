@@ -10,6 +10,11 @@ The file usher answers path facts and the shell usher adds the launch of a folde
 The press the rig is built over, composed here for the same reason as the usher.
 The engine prints through the rig, so no press is applied after construction.
 
+## `private static LWindow LBootstrapWindowCreate(LEngine engine)`
+
+Composes the window from the posture and one outlet per port, all over the one engine.
+The deportment receives the six outlets and never sees the engine itself.
+
 ## `protected override void OnExit(ExitEventArgs e)`
 
 Disposes the engine the window ran over, then the one client every rig of the session was built over.

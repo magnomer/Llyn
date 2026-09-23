@@ -9,7 +9,7 @@ public sealed partial class LEngine
 {
     public LMarkupCargo LEngineMarkupRead(string path)
     {
-        return _lEngineMarkupClerk.LMarkupClerkRead(path);
+        return _lEngineStaff.LEngineStaffMarkup.LMarkupClerkRead(path);
     }
 
     public Task<LMarkupCargo> LEngineMarkupStart(string path)
@@ -21,9 +21,10 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(entry);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryHeadwordFind(entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
+            return _lEngineStaff.LEngineStaffEntry.LEntryHeadwordFind(
+                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
         }
     }
 
@@ -34,17 +35,17 @@ public sealed partial class LEngine
 
     public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMarkupIntake.LMarkupClerkImport(cargo, intakes);
+            return _lEngineStaff.LEngineStaffIntake.LMarkupClerkImport(cargo, intakes);
         }
     }
 
     internal void LEngineMarkupExport(IReadOnlyList<long> ids, string path)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineMarkupClerk.LMarkupClerkExport(ids, path);
+            _lEngineStaff.LEngineStaffMarkup.LMarkupClerkExport(ids, path);
         }
     }
 }

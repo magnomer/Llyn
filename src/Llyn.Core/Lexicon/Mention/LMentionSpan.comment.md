@@ -17,6 +17,12 @@ For a separated language a word is a run of letters, digits, apostrophes and hyp
 For an unseparated language a word is the longest run of letters with no script change.
 So a kanji run stops where hiragana begins, and the particle stands alone.
 
+## `public static LMentionDraft LMentionSpanRead(string text, int start, int length)`
+
+A selection of the text, given in UTF-16 units, as a span in code points.
+Whitespace at either end is dropped, because a double click selects the space after a word too.
+The span carries no id and no entry, since it only measures where a Mention would stand.
+
 ## `public static IReadOnlyList<LMentionPiece> LMentionSpanDivide(string text, IReadOnlyList<LMention> mentions)`
 
 Cuts `text` at every Mention boundary into pieces that cover it end to end.

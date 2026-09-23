@@ -205,11 +205,12 @@ internal static class TExemplar
                     0,
                     "exemplar-reflex-romanization",
                     "exemplar-reflex-meaning",
-                    true,
+                    LReflexDraftOwned: true,
                     "exemplar-reflex-note",
                     "exemplar-reflex-respelling",
                     "exemplar-region"),
-            ]);
+            ],
+            LEntryDraftEtymology: new LEtymologyDraft("exemplar-etymology"));
     }
 
     internal static IReadOnlyList<long> TExemplarSave(LEngine engine, LEntryDraft draft)

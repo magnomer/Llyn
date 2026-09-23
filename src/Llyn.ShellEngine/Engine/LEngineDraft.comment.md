@@ -13,10 +13,6 @@ These are primitives, and `LTenure` in `LTenure.cs` is the session object that s
 The sentence, situation, source and author starts and commits live beside their kind's reads.
 Every edit in between is a request, applied in `LEngineRequest.cs` for all kinds alike.
 
-## `private readonly HashSet<long> _lEngineDraftStale = [];`
-
-The ids held when the workspace changed, refused ever after.
-
 ## `public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)`
 
 The note text parsed into blocks, through the entry field helpers.
@@ -108,4 +104,3 @@ Refuses an id marked stale by a workspace change, through the claim clerk's stat
 ## `private LDraft LEngineDraftLoad(long id)`
 
 Reads a held draft that the caller is about to act on, refusing when it is gone.
-

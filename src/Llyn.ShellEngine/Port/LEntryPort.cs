@@ -37,6 +37,8 @@ public interface LEntryPort
 
     IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft);
 
+    IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft);
+
     LMentionResult LEngineMentionFind(long exampleId, int offset);
 
     LMentionResult LEngineMentionFind(string text, string language, int offset, IReadOnlyList<LMention> mentions);

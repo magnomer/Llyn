@@ -8,18 +8,18 @@ public sealed partial class LEngine
 {
     public LMentionResult LEngineMentionFind(long exampleId, int offset)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMentionClerk.LMentionClerkFind(exampleId, offset);
+            return _lEngineStaff.LEngineStaffMention.LMentionClerkFind(exampleId, offset);
         }
     }
 
     public LMentionResult LEngineMentionFind(
         string text, string language, int offset, IReadOnlyList<LMention> mentions)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMentionClerk.LMentionClerkFind(text, language, offset, mentions);
+            return _lEngineStaff.LEngineStaffMention.LMentionClerkFind(text, language, offset, mentions);
         }
     }
 
@@ -38,11 +38,16 @@ public sealed partial class LEngine
         return LMentionClerk.LMentionOffsetRead(text, unit);
     }
 
+    public LMentionDraft LEngineSpanRead(string text, int start, int length)
+    {
+        return LMentionClerk.LMentionSpanRead(text, start, length);
+    }
+
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMentionClerk.LMentionClerkResolve(text, mentions);
+            return _lEngineStaff.LEngineStaffMention.LMentionClerkResolve(text, mentions);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -8,33 +8,33 @@ public sealed partial class LEngine
 {
     internal LExample LEngineExampleCreate(LExample example)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LExampleClerkCreate(example);
+            return _lEngineStaff.LEngineStaffExample.LExampleClerkCreate(example);
         }
     }
 
     internal LExample? LEngineExampleRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LExampleClerkRead(id);
+            return _lEngineStaff.LEngineStaffExample.LExampleClerkRead(id);
         }
     }
 
     internal IReadOnlyList<LExample> LEngineExampleRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LExampleClerkRead();
+            return _lEngineStaff.LEngineStaffExample.LExampleClerkRead();
         }
     }
 
     public IReadOnlyList<LCatalogExample> LEngineExampleFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LExampleClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffExample.LExampleClerkFind(query, order);
         }
     }
 
@@ -62,73 +62,73 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LExampleClerkRead(ownerId, owner);
+            return _lEngineStaff.LEngineStaffExample.LExampleClerkRead(ownerId, owner);
         }
     }
 
     internal IReadOnlyList<LSentence> LEngineSentenceRead(long meaningId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LSentenceRead(meaningId);
+            return _lEngineStaff.LEngineStaffExample.LSentenceRead(meaningId);
         }
     }
 
     internal IReadOnlyList<LSentence> LEngineSentenceRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineExampleClerk.LSentenceRead(ownerId, owner);
+            return _lEngineStaff.LEngineStaffExample.LSentenceRead(ownerId, owner);
         }
     }
 
     internal void LEngineExampleUpdate(LExample example)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkUpdate(example);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkUpdate(example);
         }
     }
 
     internal void LEngineExampleUpdate(long exampleId, LStateAnchor reference)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkUpdate(exampleId, reference);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkUpdate(exampleId, reference);
         }
     }
 
     internal void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkAttach(ownerId, exampleId, position, owner);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkAttach(ownerId, exampleId, position, owner);
         }
     }
 
     internal void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkDetach(ownerId, exampleId, owner);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkDetach(ownerId, exampleId, owner);
         }
     }
 
     internal void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCardClerk.LExampleRemove(ownerId, exampleId, owner);
+            _lEngineStaff.LEngineStaffCard.LExampleRemove(ownerId, exampleId, owner);
         }
     }
 
     internal void LEngineExampleDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkDelete(id);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
@@ -136,9 +136,9 @@ public sealed partial class LEngine
 
     internal void LEngineExampleDelete(long id, bool detach)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineExampleClerk.LExampleClerkDelete(id, detach);
+            _lEngineStaff.LEngineStaffExample.LExampleClerkDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
@@ -146,21 +146,21 @@ public sealed partial class LEngine
 
     internal LDraft LEngineExampleStart(string origin, long? exampleId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return _lEngineCitationClerk.LExampleStart(origin, exampleId);
+            return _lEngineStaff.LEngineStaffCitation.LExampleStart(origin, exampleId);
         }
     }
 
     internal LExample LEngineExampleCommit(long id)
     {
         LExample settled;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            settled = _lEngineCitationClerk.LExampleCommit(id);
+            settled = _lEngineStaff.LEngineStaffCitation.LExampleCommit(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);

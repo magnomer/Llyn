@@ -12,9 +12,9 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<string> LEngineLanguageRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineLanguageClerk.LLanguageClerkRead();
+            return _lEngineStaff.LEngineStaffLanguage.LLanguageClerkRead();
         }
     }
 
@@ -39,9 +39,9 @@ public sealed partial class LEngine
     public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
     {
         LLanguageClerk languages;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            languages = _lEngineLanguageClerk;
+            languages = _lEngineStaff.LEngineStaffLanguage;
         }
 
         return languages.LLanguageFlagRead(language, cancellation);
@@ -49,14 +49,14 @@ public sealed partial class LEngine
 
     public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()
     {
-        string[] missing = _lEngineEnsign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
+        string[] missing = _lEngineStaff.LEngineStaffEnsign.LEnsignMissingRead(LEngineLanguageRead(), out int age);
         if (missing.Length == 0)
         {
             return [];
         }
 
         string?[] paths = await Task.WhenAll(missing.Select(LEngineEnsignRead)).ConfigureAwait(false);
-        return _lEngineEnsign.LEnsignPathAdd(age, missing, paths);
+        return _lEngineStaff.LEngineStaffEnsign.LEnsignPathAdd(age, missing, paths);
     }
 
     public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)
@@ -70,7 +70,7 @@ public sealed partial class LEngine
             keyed[LEnsign.LEnsignKeyFormat(language, variety)] = variety;
         }
 
-        string[] missing = _lEngineEnsign.LEnsignMissingRead(keyed.Keys, out int age);
+        string[] missing = _lEngineStaff.LEngineStaffEnsign.LEnsignMissingRead(keyed.Keys, out int age);
         if (missing.Length == 0)
         {
             return [];
@@ -79,12 +79,12 @@ public sealed partial class LEngine
         string?[] paths = await Task
             .WhenAll(missing.Select(key => LEngineEnsignResolve(language, keyed[key])))
             .ConfigureAwait(false);
-        return _lEngineEnsign.LEnsignPathAdd(age, missing, paths);
+        return _lEngineStaff.LEngineStaffEnsign.LEnsignPathAdd(age, missing, paths);
     }
 
     public void LEngineEnsignDelete(string path)
     {
-        _lEngineEnsign.LEnsignPathDelete(path);
+        _lEngineStaff.LEngineStaffEnsign.LEnsignPathDelete(path);
     }
 
     private async Task<string?> LEngineEnsignRead(string language)
@@ -140,9 +140,9 @@ public sealed partial class LEngine
     public Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
     {
         LLanguageClerk languages;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            languages = _lEngineLanguageClerk;
+            languages = _lEngineStaff.LEngineStaffLanguage;
         }
 
         return languages.LVarietyFlagRead(language, variety, cancellation);
@@ -151,9 +151,9 @@ public sealed partial class LEngine
     private LLanguage LEngineLanguageLoad(string language)
     {
         LLanguageClerk languages;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            languages = _lEngineLanguageClerk;
+            languages = _lEngineStaff.LEngineStaffLanguage;
         }
 
         return languages.LLanguageClerkLoad(language);
@@ -161,20 +161,20 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineScriptClerk.LScriptStyleRead(language);
+            return _lEngineStaff.LEngineStaffScript.LScriptStyleRead(language);
         }
     }
 
     public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)
     {
-        return _lEngineScriptClerk.LScriptClerkRead(entryId);
+        return _lEngineStaff.LEngineStaffScript.LScriptClerkRead(entryId);
     }
 
     public void LEngineScriptStart(long entryId)
     {
-        _lEngineScriptClerk.LScriptClerkStart(entryId);
+        _lEngineStaff.LEngineStaffScript.LScriptClerkStart(entryId);
     }
 
     public bool LEngineStyleCheck(string language)
@@ -184,22 +184,22 @@ public sealed partial class LEngine
 
     public void LEngineScriptRebuild(long entryId)
     {
-        _lEngineScriptClerk.LScriptClerkRebuild(entryId);
+        _lEngineStaff.LEngineStaffScript.LScriptClerkRebuild(entryId);
     }
 
     public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
     {
-        return _lEngineScriptClerk.LScriptClerkDivide(entryId);
+        return _lEngineStaff.LEngineStaffScript.LScriptClerkDivide(entryId);
     }
 
     public bool LEngineScriptCheck(long entryId)
     {
-        return _lEngineScriptClerk.LScriptClerkCheck(entryId);
+        return _lEngineStaff.LEngineStaffScript.LScriptClerkCheck(entryId);
     }
 
     internal Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
         string character, string language, CancellationToken cancellation)
     {
-        return _lEngineScriptClerk.LScriptClerkFind(character, language, cancellation);
+        return _lEngineStaff.LEngineStaffScript.LScriptClerkFind(character, language, cancellation);
     }
 }

@@ -10,27 +10,30 @@ public sealed partial class LEngine
     internal LDraft LEngineRequestApply(LRequest request)
     {
         LDraft saved;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentOutOfRangeException.ThrowIfZero(request.LRequestDraftId);
             LEngineDraftValidate(request.LRequestDraftId);
 
-            LDraft held = _lEngineClaimClerk.LClaimClerkLoad(request.LRequestDraftId);
-            LDraft draft = _lEngineDraftClerk.LDraftClerkApply(held, request);
+            LDraft held = _lEngineStaff.LEngineStaffClaim.LClaimClerkLoad(request.LRequestDraftId);
+            LDraft draft = _lEngineStaff.LEngineStaffDraft.LDraftClerkApply(held, request);
             if (request is LRequestHeadword or LRequestLanguage)
             {
                 draft = LEngineAudioClear(held, draft);
             }
 
-            saved = draft with { LDraftContent = _lEngineDraftClerk.LDraftClerkNormalize(draft.LDraftContent) };
+            saved = draft with
+            {
+                LDraftContent = _lEngineStaff.LEngineStaffDraft.LDraftClerkNormalize(draft.LDraftContent),
+            };
             if (saved == held)
             {
                 return held;
             }
 
             LEngineChronicleRecord(held, saved, request);
-            _lEngineClaimClerk.LDraftSave(saved);
+            _lEngineStaff.LEngineStaffClaim.LDraftSave(saved);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
@@ -61,17 +64,17 @@ public sealed partial class LEngine
             return;
         }
 
-        _lEngineChronicleClerk.LChronicleClerkRecord(held, saved, request);
+        _lEngineStaff.LEngineStaffChronicle.LChronicleClerkRecord(held, saved, request);
     }
 
     internal LDraft? LEngineChronicleUndo(long id)
     {
         LDraft? restored;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            restored = _lEngineChronicleClerk.LChronicleClerkUndo(id);
+            restored = _lEngineStaff.LEngineStaffChronicle.LChronicleClerkUndo(id);
         }
 
         if (restored is not null)
@@ -85,11 +88,11 @@ public sealed partial class LEngine
     internal LDraft? LEngineChronicleRedo(long id)
     {
         LDraft? restored;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            restored = _lEngineChronicleClerk.LChronicleClerkRedo(id);
+            restored = _lEngineStaff.LEngineStaffChronicle.LChronicleClerkRedo(id);
         }
 
         if (restored is not null)
@@ -102,23 +105,23 @@ public sealed partial class LEngine
 
     internal bool LEngineUndoCheck(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineChronicleClerk.LChronicleUndoCheck(id);
+            return _lEngineStaff.LEngineStaffChronicle.LChronicleUndoCheck(id);
         }
     }
 
     internal bool LEngineRedoCheck(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineChronicleClerk.LChronicleRedoCheck(id);
+            return _lEngineStaff.LEngineStaffChronicle.LChronicleRedoCheck(id);
         }
     }
 
     internal IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             LEngineDraftValidate(id);
             LDraft draft = LEngineDraftLoad(id);
@@ -143,7 +146,7 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             LEngineDraftValidate(id);
             LDraft draft = LEngineDraftLoad(id);
@@ -158,7 +161,7 @@ public sealed partial class LEngine
 
     internal long LEngineCardCreate()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             return LEngineIdentityCreate();
         }
@@ -185,23 +188,23 @@ public sealed partial class LEngine
 
         LDraft saved = draft with { LDraftContent = content };
         LEngineChronicleRecord(draft, saved, null);
-        _lEngineClaimClerk.LDraftSave(saved);
+        _lEngineStaff.LEngineStaffClaim.LDraftSave(saved);
         return cards;
     }
 
     internal LCourt LEngineCourtSave(
         long ownerId, long targetId, string headword, string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineCourtClerk.LCourtClerkSave(ownerId, targetId, headword, language);
+            return _lEngineStaff.LEngineStaffCourt.LCourtClerkSave(ownerId, targetId, headword, language);
         }
     }
 
     public LCourt LEngineCourtStart(
         long ownerId, string origin, string headword, string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(ownerId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
@@ -212,7 +215,7 @@ public sealed partial class LEngine
 
             try
             {
-                _lEngineClaimClerk.LDraftSave(target with
+                _lEngineStaff.LEngineStaffClaim.LDraftSave(target with
                 {
                     LDraftContent = target.LDraftContent with
                     {
@@ -233,17 +236,17 @@ public sealed partial class LEngine
 
     public void LEngineCourtDelete(long linkId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCourtClerk.LCourtClerkDelete(linkId);
+            _lEngineStaff.LEngineStaffCourt.LCourtClerkDelete(linkId);
         }
     }
 
     public LCourt? LEngineCourtFind(long ownerId, long targetId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineCourtClerk.LCourtClerkFind(ownerId, targetId);
+            return _lEngineStaff.LEngineStaffCourt.LCourtClerkFind(ownerId, targetId);
         }
     }
 }

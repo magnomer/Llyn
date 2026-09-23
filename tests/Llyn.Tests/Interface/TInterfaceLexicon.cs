@@ -190,6 +190,12 @@ internal static partial class TInterface
     internal static int TMentionOffsetRead(string text, int unit) =>
         LMentionSpan.LMentionOffsetRead(text, unit);
 
+    internal static LMentionDraft TMentionSpanRead(string text, int start, int length) =>
+        LMentionSpan.LMentionSpanRead(text, start, length);
+
+    internal static LMentionDraft? TEtymologyDraftFind(LEtymologyDraft etymology, LMentionDraft span) =>
+        etymology.LEtymologyDraftFind(span);
+
     internal static int TMentionUnitRead(string text, int offset) =>
         LMentionSpan.LMentionUnitRead(text, offset);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -8,25 +8,25 @@ public sealed partial class LEngine
 {
     internal LSituation LEngineSituationCreate(LSituation situation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSituationClerk.LSituationClerkCreate(situation);
+            return _lEngineStaff.LEngineStaffSituation.LSituationClerkCreate(situation);
         }
     }
 
     internal IReadOnlyList<LSituation> LEngineSituationRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSituationClerk.LSituationClerkRead();
+            return _lEngineStaff.LEngineStaffSituation.LSituationClerkRead();
         }
     }
 
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSituationClerk.LSituationClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffSituation.LSituationClerkFind(query, order);
         }
     }
 
@@ -55,57 +55,57 @@ public sealed partial class LEngine
 
     internal LSituation? LEngineSituationRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSituationClerk.LSituationClerkRead(id);
+            return _lEngineStaff.LEngineStaffSituation.LSituationClerkRead(id);
         }
     }
 
     internal IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSituationClerk.LSituationClerkRead(ownerId, owner);
+            return _lEngineStaff.LEngineStaffSituation.LSituationClerkRead(ownerId, owner);
         }
     }
 
     internal void LEngineSituationUpdate(LSituation situation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineSituationClerk.LSituationClerkUpdate(situation);
+            _lEngineStaff.LEngineStaffSituation.LSituationClerkUpdate(situation);
         }
     }
 
     internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineSituationClerk.LSituationClerkAttach(ownerId, situationId, position, owner);
+            _lEngineStaff.LEngineStaffSituation.LSituationClerkAttach(ownerId, situationId, position, owner);
         }
     }
 
     internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineSituationClerk.LSituationClerkDetach(ownerId, situationId, owner);
+            _lEngineStaff.LEngineStaffSituation.LSituationClerkDetach(ownerId, situationId, owner);
         }
     }
 
     internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCardClerk.LSituationRemove(ownerId, situationId, owner);
+            _lEngineStaff.LEngineStaffCard.LSituationRemove(ownerId, situationId, owner);
         }
     }
 
     internal void LEngineSituationDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineSituationClerk.LSituationClerkDelete(id);
+            _lEngineStaff.LEngineStaffSituation.LSituationClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
@@ -113,9 +113,9 @@ public sealed partial class LEngine
 
     internal void LEngineSituationDelete(long id, bool detach)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineSituationClerk.LSituationClerkDelete(id, detach);
+            _lEngineStaff.LEngineStaffSituation.LSituationClerkDelete(id, detach);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
@@ -123,21 +123,21 @@ public sealed partial class LEngine
 
     internal LDraft LEngineSituationStart(string origin, long? situationId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
-            return _lEngineCitationClerk.LSituationStart(origin, situationId);
+            return _lEngineStaff.LEngineStaffCitation.LSituationStart(origin, situationId);
         }
     }
 
     internal LSituation LEngineSituationCommit(long id)
     {
         LSituation settled;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            settled = _lEngineCitationClerk.LSituationCommit(id);
+            settled = _lEngineStaff.LEngineStaffCitation.LSituationCommit(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);

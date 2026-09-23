@@ -12,7 +12,7 @@ internal static class TAuditStrictSetting
         ["Flow"] = 975,
         ["Treat"] = 117,
         ["Reach"] = 64,
-        ["Taint"] = 131,
+        ["Taint"] = 130,
     };
 
     public static readonly string[] TAuditReachInclude =

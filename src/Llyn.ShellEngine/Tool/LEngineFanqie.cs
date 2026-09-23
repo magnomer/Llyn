@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,9 +11,9 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFanqieClerk.LFanqieBookRead(language);
+            return _lEngineStaff.LEngineStaffFanqie.LFanqieBookRead(language);
         }
     }
 
@@ -37,64 +37,64 @@ public sealed partial class LEngine
 
     public LHypothesis? LEngineHypothesisRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineFanqieClerk.LHypothesisRead(language);
+            return _lEngineStaff.LEngineStaffFanqie.LHypothesisRead(language);
         }
     }
 
     public IReadOnlyList<LFanqieRow> LEngineFanqieRead(long entryId)
     {
-        return _lEngineFanqieClerk.LFanqieClerkRead(entryId);
+        return _lEngineStaff.LEngineStaffFanqie.LFanqieClerkRead(entryId);
     }
 
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)
     {
-        return _lEngineFanqieClerk.LFanqieClerkDivide(entryId);
+        return _lEngineStaff.LEngineStaffFanqie.LFanqieClerkDivide(entryId);
     }
 
     public void LEngineFanqieStart(long entryId)
     {
-        _lEngineFanqieClerk.LFanqieClerkStart(entryId);
-        _lEngineShengfuClerk.LShengfuClerkStart(entryId);
+        _lEngineStaff.LEngineStaffFanqie.LFanqieClerkStart(entryId);
+        _lEngineStaff.LEngineStaffShengfu.LShengfuClerkStart(entryId);
     }
 
     public void LEngineFanqieRebuild(long entryId)
     {
-        _lEngineFanqieClerk.LFanqieClerkRebuild(entryId);
-        _lEngineShengfuClerk.LShengfuClerkRebuild(entryId);
+        _lEngineStaff.LEngineStaffFanqie.LFanqieClerkRebuild(entryId);
+        _lEngineStaff.LEngineStaffShengfu.LShengfuClerkRebuild(entryId);
     }
 
     public void LEngineFanqieSet(long entryId, long fanqieId, int rank)
     {
-        _lEngineFanqieClerk.LFanqieClerkSet(entryId, fanqieId, rank);
+        _lEngineStaff.LEngineStaffFanqie.LFanqieClerkSet(entryId, fanqieId, rank);
     }
 
     public bool LEngineFanqieCheck(long entryId)
     {
-        return _lEngineFanqieClerk.LFanqieClerkCheck(entryId)
-            || _lEngineShengfuClerk.LShengfuClerkCheck(entryId);
+        return _lEngineStaff.LEngineStaffFanqie.LFanqieClerkCheck(entryId)
+            || _lEngineStaff.LEngineStaffShengfu.LShengfuClerkCheck(entryId);
     }
 
     internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
         string character, string language, CancellationToken cancellation)
     {
-        return _lEngineFanqieClerk.LFanqieClerkFind(character, language, cancellation);
+        return _lEngineStaff.LEngineStaffFanqie.LFanqieClerkFind(character, language, cancellation);
     }
 
     internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LDiweiClerkRead(language, kind);
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiClerkRead(language, kind);
         }
     }
 
     public LDiwei? LEngineDiweiRead(long? id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LDiweiClerkRead(id);
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiClerkRead(id);
         }
     }
 
@@ -102,27 +102,27 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(localize);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            LDiwei? diwei = _lEngineDiweiClerk.LDiweiClerkRead(id);
+            LDiwei? diwei = _lEngineStaff.LEngineStaffDiwei.LDiweiClerkRead(id);
             if (diwei is null)
             {
                 return LDiweiPage.LDiweiPageBlank;
             }
 
-            return _lEngineDiweiClerk.LDiweiPageRead(
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiPageRead(
                 diwei,
                 LEngineRespellingCheck(diwei.LDiweiLanguage),
-                _lEngineSettings.LSettingsTally,
+                LEngineSettingsHeld.LSettingsTally,
                 localize);
         }
     }
 
     public LDiwei? LEngineDiweiFind(string language, string kind, string key)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LDiweiClerkFind(language, kind, key);
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiClerkFind(language, kind, key);
         }
     }
 
@@ -152,26 +152,26 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LDiweiFanqieRead(diwei);
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiFanqieRead(diwei);
         }
     }
 
     internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LDiweiClerkScan(language, diweiIds);
+            return _lEngineStaff.LEngineStaffDiwei.LDiweiClerkScan(language, diweiIds);
         }
     }
 
     public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(
         string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            IReadOnlyList<LEntry> entries = _lEngineDiweiClerk.LDiweiEntryScan(language, diweiIds, query);
+            IReadOnlyList<LEntry> entries = _lEngineStaff.LEngineStaffDiwei.LDiweiEntryScan(language, diweiIds, query);
             return entries.Count == 0 ? [] : LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }
@@ -203,17 +203,17 @@ public sealed partial class LEngine
 
     internal void LEngineDiweiRebuild()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineFanqieClerk.LDiweiApply();
+            _lEngineStaff.LEngineStaffFanqie.LDiweiApply();
         }
     }
 
     public IReadOnlyList<LTally> LEngineTallyRead(LDiwei diwei)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineDiweiClerk.LTallyRead(diwei);
+            return _lEngineStaff.LEngineStaffDiwei.LTallyRead(diwei);
         }
     }
 }

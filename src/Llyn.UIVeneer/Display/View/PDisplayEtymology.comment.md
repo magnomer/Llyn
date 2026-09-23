@@ -8,8 +8,12 @@ The reading view's half of the etymology: the source links and the narrative, dr
 
 ### `private void PDisplayEtymologyShow(LEntryDraft draft)`
 
-Hands the field the chips already named, and hides the section for an entry that says nothing.
-A read the engine refuses leaves the chips empty rather than stopping the page.
+Hands the field the source links the engine resolved, and hides the section for an entry that is not derived.
+A read the engine refuses leaves the links empty rather than stopping the page.
+
+### `private void PDisplayEtymologyApply(LEntryDraft draft, IReadOnlyList<LTranslationTarget> etymons)`
+
+Shows the field only when it has a narrative or a link, as the display deportment decides.
 
 ### `private void PDisplayEtymologyHandle(object sender, ExecutedRoutedEventArgs e)`
 

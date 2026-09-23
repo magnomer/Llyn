@@ -269,6 +269,12 @@ public sealed class LWindow : IDisposable
         return _lDraftPort.LEngineOffsetRead(text, unit);
     }
 
+    public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)
+    {
+        LMentionDraft span = _lDraftPort.LEngineSpanRead(text, start, length);
+        return (span.LMentionDraftOffset, span.LMentionDraftLength);
+    }
+
     public IReadOnlyList<long> LWindowAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
     {
         return _lDraftPort.LEngineAnchorToggle(anchors, fanqieId, anchored);

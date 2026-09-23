@@ -43,6 +43,10 @@ The UTF-16 index of a code-point offset in the text.
 
 The code-point offset of a UTF-16 index in the text.
 
+## `public static LMentionDraft LMentionSpanRead(string text, int start, int length)`
+
+A selection of the text in UTF-16 units, read as a span in code points without its outer whitespace.
+
 ## `public IReadOnlyList<LMentionLabel> LMentionClerkResolve(string text, IReadOnlyList<LMentionDraft> mentions)`
 
 Reads the span text, headword and sense of every Mention in one pass, in the order given.

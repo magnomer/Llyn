@@ -9,154 +9,154 @@ public sealed partial class LEngine
 {
     internal LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkCreate(entry, forms, speeches);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkCreate(entry, forms, speeches);
         }
     }
 
     public LEntry? LEngineEntryRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkRead(id);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkRead(id);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(string query)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(query);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(query);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(query, order);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(query, order, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(query, order, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(tag);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(tag);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(tag, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(tag, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, string query, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(tag, query, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(tag, query, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(register);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(register);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(register, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(register, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, string query, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(register, query, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(register, query, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(situation);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(situation);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation, string query, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(situation, query, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(situation, query, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LExample example)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(example);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(example);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LExample example, string query, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(example, query, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(example, query, filter);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(reference);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(reference);
         }
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference, string query, LCatalogFilter filter)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkFind(reference, query, filter);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(reference, query, filter);
         }
     }
 
     public LEntryDraft? LEngineEntryLoad(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LEntryClerkLoad(id);
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkLoad(id);
         }
     }
 
     internal LRevision LEngineEntryDelete(long id)
     {
         LRevision recorded;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            recorded = _lEngineEntryClerk.LEntryClerkDelete(id);
+            recorded = _lEngineStaff.LEngineStaffEntry.LEntryClerkDelete(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectEntry, id);
@@ -165,25 +165,25 @@ public sealed partial class LEngine
 
     internal LTombstone? LEngineTombstoneRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LTombstoneRead(entryId);
+            return _lEngineStaff.LEngineStaffEntry.LTombstoneRead(entryId);
         }
     }
 
     internal LRevision? LEngineRevisionRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LRevisionRead();
+            return _lEngineStaff.LEngineStaffEntry.LRevisionRead();
         }
     }
 
     internal IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineEntryClerk.LRevisionChangeRead(revisionId);
+            return _lEngineStaff.LEngineStaffEntry.LRevisionChangeRead(revisionId);
         }
     }
     public LGlyph? LEngineGlyphRead(string language)
@@ -197,9 +197,9 @@ public sealed partial class LEngine
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
         string headword = character.Trim();
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            foreach (LEntry entry in _lEngineEntryClerk.LEntryClerkFind(headword))
+            foreach (LEntry entry in _lEngineStaff.LEngineStaffEntry.LEntryClerkFind(headword))
             {
                 if (string.Equals(entry.LEntryHeadword, headword, StringComparison.Ordinal)
                     && string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
@@ -221,18 +221,18 @@ public sealed partial class LEngine
 
     public int LEngineGraspRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-            return _lEngineEntryClerk.LEntryClerkRead(entryId)?.LEntryGrasp ?? 0;
+            return _lEngineStaff.LEngineStaffEntry.LEntryClerkRead(entryId)?.LEntryGrasp ?? 0;
         }
     }
 
     public void LEngineGraspSave(long entryId, int grasp)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineEntryClerk.LEntryGraspSet(entryId, grasp);
+            _lEngineStaff.LEngineStaffEntry.LEntryGraspSet(entryId, grasp);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
@@ -240,18 +240,20 @@ public sealed partial class LEngine
 
     public string LEngineEpithetRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSettings.LSettingsEpithet ? _lEngineEntryClerk.LEntryEpithetRead(entryId) : string.Empty;
+            return LEngineSettingsHeld.LSettingsEpithet
+                ? _lEngineStaff.LEngineStaffEntry.LEntryEpithetRead(entryId)
+                : string.Empty;
         }
     }
 
     public LEstablishment LEngineEstablishmentRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             int unsaved = 0;
-            foreach (long id in _lEngineClaimClerk.LClaimClerkHeld)
+            foreach (long id in _lEngineStaff.LEngineStaffClaim.LClaimClerkHeld)
             {
                 if (LEngineDraftCheck(id))
                 {
@@ -260,23 +262,25 @@ public sealed partial class LEngine
             }
 
             return new LEstablishment(
-                unsaved, _lEngineEntryClerk.LEntryCountRead(), _lEngineEntryClerk.LWorkspaceSizeRead());
+                unsaved,
+                _lEngineStaff.LEngineStaffEntry.LEntryCountRead(),
+                _lEngineStaff.LEngineStaffEntry.LWorkspaceSizeRead());
         }
     }
 
     public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineUsageClerk.LUsageClerkRead(owner);
+            return _lEngineStaff.LEngineStaffUsage.LUsageClerkRead(owner);
         }
     }
 
     public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineUsageClerk.LUsageClerkRead(id, owner, _lEngineSettings.LSettingsEpithet);
+            return _lEngineStaff.LEngineStaffUsage.LUsageClerkRead(id, owner, LEngineSettingsHeld.LSettingsEpithet);
         }
     }
 }

@@ -9,49 +9,49 @@ public sealed partial class LEngine
 {
     public LSettings LEngineSettingsRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineSettings;
+            return LEngineSettingsHeld;
         }
     }
 
     internal bool LEnginePostureLoad(string name, out LPostureState? state)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineWorkspaceClerk.LWorkspacePostureRead(name, out state);
+            return _lEngineStaff.LEngineStaffWorkspace.LWorkspacePostureRead(name, out state);
         }
     }
 
     internal void LEnginePostureSave(string name, LPostureState state)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineWorkspaceClerk.LWorkspacePostureSave(name, state);
+            _lEngineStaff.LEngineStaffWorkspace.LWorkspacePostureSave(name, state);
         }
     }
 
     internal DateTimeOffset LEngineStampRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineWorkspaceClerk.LWorkspaceClockRead();
+            return _lEngineStaff.LEngineStaffWorkspace.LWorkspaceClockRead();
         }
     }
 
     internal string LEngineTrailNormalize(string name)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTrailClerk.LTrailNameNormalize(name);
+            return _lEngineStaff.LEngineStaffTrail.LTrailNameNormalize(name);
         }
     }
 
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineWorkspaceClerk.LWorkspaceLocalizationLoad(language);
+            return _lEngineStaff.LEngineStaffWorkspace.LWorkspaceLocalizationLoad(language);
         }
     }
 
@@ -89,17 +89,18 @@ public sealed partial class LEngine
 
     public bool LEngineRespellingCheck(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineLanguageClerk.LLanguageRespellingCheck(language, _lEngineSettings.LSettingsRespelled);
+            return _lEngineStaff.LEngineStaffLanguage.LLanguageRespellingCheck(
+                language, LEngineSettingsHeld.LSettingsRespelled);
         }
     }
 
     public bool LEnginePhonemicCheck(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineLanguageClerk.LLanguagePhonemicCheck(language);
+            return _lEngineStaff.LEngineStaffLanguage.LLanguagePhonemicCheck(language);
         }
     }
 
@@ -127,12 +128,12 @@ public sealed partial class LEngine
     public void LEngineMorphologySave(bool morphology)
     {
         bool changed;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             changed = LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
             if (changed && !morphology)
             {
-                _lEngineLacunaClerk.LLacunaClerkClear();
+                _lEngineStaff.LEngineStaffLacuna.LLacunaClerkClear();
             }
         }
 
@@ -144,16 +145,16 @@ public sealed partial class LEngine
 
     private bool LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            LSettings changed = change(_lEngineSettings);
-            if (changed == _lEngineSettings)
+            LSettings changed = change(LEngineSettingsHeld);
+            if (changed == LEngineSettingsHeld)
             {
                 return false;
             }
 
-            _lEngineSettings = changed;
-            _lEngineWorkspaceClerk.LWorkspaceSettingsSave(_lEngineSettings);
+            LEngineSettingsHeld = changed;
+            _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsSave(LEngineSettingsHeld);
             return true;
         }
     }

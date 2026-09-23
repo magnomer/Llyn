@@ -9,6 +9,15 @@ The count of cards marked with it is held as a number and shown as text.
 A Register nothing is marked with shows nothing rather than a zero, because a zero reads as a value.
 The chosen flag alone is settable and announces its change, so a new choice re-marks the rows in place.
 
+## `private static readonly Dictionary<string, string> PGamutItemIcons`
+
+The registers that have an icon of their own, keyed without regard to case.
+Any other register wears the plain register icon.
+
+## `public ImageSource PGamutItemIcon`
+
+The register's icon, drawn at the row's full size.
+
 ## `private bool _pGamutItemChosen;`
 
 Whether this row is the chosen one.

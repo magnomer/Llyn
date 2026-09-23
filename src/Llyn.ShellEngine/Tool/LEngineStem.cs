@@ -9,25 +9,25 @@ public sealed partial class LEngine
 {
     internal IReadOnlyList<LStem> LEngineStemRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineStemClerk.LStemClerkRead(language);
+            return _lEngineStaff.LEngineStaffStem.LStemClerkRead(language);
         }
     }
 
     public LStem? LEngineStemRead(long? id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineStemClerk.LStemClerkRead(id);
+            return _lEngineStaff.LEngineStaffStem.LStemClerkRead(id);
         }
     }
 
     public LStem? LEngineStemFind(string language, string key)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineStemClerk.LStemClerkFind(language, key);
+            return _lEngineStaff.LEngineStaffStem.LStemClerkFind(language, key);
         }
     }
 
@@ -70,10 +70,10 @@ public sealed partial class LEngine
 
     public LStemPage LEngineStemResolve(long? id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            LStem? stem = _lEngineStemClerk.LStemClerkRead(id);
-            return stem is null ? LStemPage.LStemPageBlank : _lEngineStemClerk.LStemPageRead(stem);
+            LStem? stem = _lEngineStaff.LEngineStaffStem.LStemClerkRead(id);
+            return stem is null ? LStemPage.LStemPageBlank : _lEngineStaff.LEngineStaffStem.LStemPageRead(stem);
         }
     }
 
@@ -93,18 +93,18 @@ public sealed partial class LEngine
     internal IReadOnlyList<LVistaRow> LEngineKindredFind(
         string language, IReadOnlyList<long> stemIds, string query, LVista? vista = null)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            IReadOnlyList<LEntry> entries = _lEngineStemClerk.LStemEntryScan(language, stemIds, query);
+            IReadOnlyList<LEntry> entries = _lEngineStaff.LEngineStaffStem.LStemEntryScan(language, stemIds, query);
             return entries.Count == 0 ? [] : LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }
 
     private bool LEngineStemCheck(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineShengfuClerk.LShengfuRuleRead(language) is not null;
+            return _lEngineStaff.LEngineStaffShengfu.LShengfuRuleRead(language) is not null;
         }
     }
 }

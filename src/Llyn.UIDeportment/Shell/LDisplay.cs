@@ -143,6 +143,33 @@ public sealed class LDisplay
         return _lEntryPort.LEngineTargetRead(draft);
     }
 
+    public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)
+    {
+        try
+        {
+            return _lEntryPort.LEngineEtymonRead(draft);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    public static bool LDisplayNarrativeCheck(bool editable, string text)
+    {
+        return !editable && text.Trim().Length > 0;
+    }
+
+    public static bool LDisplayEtymonCheck(bool editable, int count)
+    {
+        return editable || count > 0;
+    }
+
+    public static bool LDisplayEtymologyCheck(string text, int count)
+    {
+        return text.Trim().Length > 0 || count > 0;
+    }
+
     public IReadOnlyDictionary<long, string> LDisplayCitationRead()
     {
         return _lEntryPort.LEngineCitationRead();

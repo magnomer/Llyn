@@ -1,16 +1,31 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.Windows.Media;
 
 namespace Llyn.UIVeneer;
 
 internal sealed class PGamutItem : INotifyPropertyChanged
 {
+    private static readonly Dictionary<string, string> PGamutItemIcons = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["archaic"] = "register/archaic",
+        ["epic"] = "register/epic",
+        ["formal"] = "register/formal",
+        ["impolite"] = "register/impolite",
+        ["informal"] = "register/informal",
+        ["poetic"] = "register/poetic",
+        ["polite"] = "register/polite",
+    };
+
     private bool _pGamutItemChosen;
 
     internal PGamutItem(long id, string name, int usage, bool chosen)
     {
         PGamutItemId = id;
         PGamutItemName = name;
+        PGamutItemIcon = PIcon.PIconResolve(PGamutItemIcons.GetValueOrDefault(name.Trim(), "register"), 32);
         PGamutItemUsage = usage;
         _pGamutItemChosen = chosen;
     }
@@ -20,6 +35,8 @@ internal sealed class PGamutItem : INotifyPropertyChanged
     public long PGamutItemId { get; }
 
     public string PGamutItemName { get; }
+
+    public ImageSource PGamutItemIcon { get; }
 
     public int PGamutItemUsage { get; }
 

@@ -230,7 +230,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets, draft.LEntryDraftLanguage);
         PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets, draft.LEntryDraftLanguage);
 
-        PEtymologyShow(draft, targets);
+        PEtymologyShow(draft);
         PField.PFieldNoteShow(PNoteContents, draft.LEntryDraftNote);
         PEditorRecordingShow(draft);
         PPlaybackTrayShow();

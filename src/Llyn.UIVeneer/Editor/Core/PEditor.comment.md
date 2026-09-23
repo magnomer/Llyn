@@ -1,5 +1,9 @@
 # PEditor.xaml
 
+## `<Grid UseLayoutRounding="False">`
+
+Keep Auto row sizes unrounded and round each section's contents like PDisplay.
+
 ## `<ResourceDictionary.MergedDictionaries>`
 
 The form's shape stays here and the rules its parts are drawn by stand beside it.

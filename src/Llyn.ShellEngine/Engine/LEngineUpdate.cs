@@ -6,27 +6,27 @@ public sealed partial class LEngine
 {
     internal LEntry LEngineEntrySave(LEntryDraft draft)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineOutcomeClerk.LOutcomeEntrySave(draft, []);
+            return _lEngineStaff.LEngineStaffOutcome.LOutcomeEntrySave(draft, []);
         }
     }
 
     internal LEntry LEngineEntryUpdate(long id, LEntryDraft draft)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineOutcomeClerk.LOutcomeEntryUpdate(id, draft, []);
+            return _lEngineStaff.LEngineStaffOutcome.LOutcomeEntryUpdate(id, draft, []);
         }
     }
 
     private void LEngineUpdatedSet(long entryId)
     {
-        _lEngineEntryClerk.LEntryUpdatedSet(entryId);
+        _lEngineStaff.LEngineStaffEntry.LEntryUpdatedSet(entryId);
     }
 
     private void LEngineUpdatedSet(long ownerId, bool collocation)
     {
-        _lEngineCardClerk.LCardUpdatedSet(ownerId, collocation);
+        _lEngineStaff.LEngineStaffCard.LCardUpdatedSet(ownerId, collocation);
     }
 }

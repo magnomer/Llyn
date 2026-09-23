@@ -38,6 +38,8 @@ public interface LDraftPort
 
     int LEngineUnitRead(string text, int offset);
 
+    LMentionDraft LEngineSpanRead(string text, int start, int length);
+
     int LEngineOffsetRead(string text, int unit);
 
     IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored);

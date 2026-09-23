@@ -19,6 +19,10 @@ The clerk's find over the text a draft-backed form shows, under the gate.
 
 The pieces a sentence falls into around its Mentions.
 
+## `public LMentionDraft LEngineSpanRead(string text, int start, int length)`
+
+A field's selection as the span a Mention request carries, measured by the engine so the shell never counts.
+
 ## `public int LEngineUnitRead(string text, int offset)`
 
 The UTF-16 index of a code-point offset in the text.

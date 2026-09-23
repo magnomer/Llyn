@@ -80,6 +80,7 @@ internal static class TAuditDraftSetting
         "LPronunciationDraftAudio",
         "LPronunciationDraftSource",
         "LPronunciationDraftSyllables",
+        "LReflexDraftOwned",
         "LSituationDraftDescription",
         "LSituationDraftKind",
         "LSpeechDraftName",

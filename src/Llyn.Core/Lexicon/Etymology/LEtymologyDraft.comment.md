@@ -38,6 +38,11 @@ A missing narrative gives an empty text, and missing links give an empty list.
 The narrative shape the draft would be stored as, under the entry given.
 The link ids are not part of it, since the two shapes are written apart.
 
+## `public LMentionDraft? LEtymologyDraftFind(LMentionDraft span)`
+
+The Mention of the narrative the span lies inside, or none.
+A span with no length counts as inside when it stands anywhere on the Mention, its ends included.
+
 ## `public IReadOnlyList<LMentionPiece> LEtymologyDraftDivide()`
 
 Parts the prose into the pieces a view draws, each either plain text or one span.

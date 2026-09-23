@@ -8,9 +8,9 @@ public sealed partial class LEngine
 {
     internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEnginePortraitClerk.LPortraitClerkRead(entryId, label);
+            return _lEngineStaff.LEngineStaffPortrait.LPortraitClerkRead(entryId, label);
         }
     }
 
@@ -19,13 +19,13 @@ public sealed partial class LEngine
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(legend);
 
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             LPortraitPage? page = owner switch
             {
-                LOwner.LOwnerExample => _lEngineExampleClerk.LExampleClerkRead(id, legend),
-                LOwner.LOwnerReference => _lEngineReferenceClerk.LReferenceClerkRead(id, legend),
-                LOwner.LOwnerSituation => _lEngineSituationClerk.LSituationClerkRead(id, legend),
+                LOwner.LOwnerExample => _lEngineStaff.LEngineStaffExample.LExampleClerkRead(id, legend),
+                LOwner.LOwnerReference => _lEngineStaff.LEngineStaffReference.LReferenceClerkRead(id, legend),
+                LOwner.LOwnerSituation => _lEngineStaff.LEngineStaffSituation.LSituationClerkRead(id, legend),
                 _ => throw LEngineOwnerRaise(owner),
             };
 
@@ -42,15 +42,16 @@ public sealed partial class LEngine
 
         if (format == LPortraitFormat.LPortraitFormatMarkup)
         {
-            lock (_lEngineGate)
+            lock (LEngineGate)
             {
-                _lEnginePortraitClerk.LPortraitMarkupExport(entryId, path);
+                _lEngineStaff.LEngineStaffPortrait.LPortraitMarkupExport(entryId, path);
             }
 
             return Task.CompletedTask;
         }
 
-        return _lEnginePortraitClerk.LPortraitClerkExport(LEnginePortraitRead(entryId, label), path, format);
+        return _lEngineStaff.LEngineStaffPortrait.LPortraitClerkExport(
+            LEnginePortraitRead(entryId, label), path, format);
     }
 
     internal Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)
@@ -59,7 +60,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(label);
         ArgumentNullException.ThrowIfNull(ticket);
 
-        return _lEnginePortraitClerk.LPortraitClerkPrint(LEnginePortraitRead(entryId, label), ticket);
+        return _lEngineStaff.LEngineStaffPortrait.LPortraitClerkPrint(LEnginePortraitRead(entryId, label), ticket);
     }
 
     public Task LEnginePortraitExport(
@@ -98,6 +99,6 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(ticket);
 
-        return _lEnginePortraitClerk.LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
+        return _lEngineStaff.LEngineStaffPortrait.LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
     }
 }

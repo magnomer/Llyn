@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -46,6 +47,23 @@ public sealed record LEtymologyDraft(
         }
 
         return new LEtymology(LEtymologyDraftId, entryId, LEtymologyDraftText, mentions);
+    }
+
+    public LMentionDraft? LEtymologyDraftFind(LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        int end = span.LMentionDraftOffset + span.LMentionDraftLength;
+        foreach (LMentionDraft mention in LEtymologyDraftMentions)
+        {
+            if (span.LMentionDraftOffset >= mention.LMentionDraftOffset
+                && end <= mention.LMentionDraftOffset + mention.LMentionDraftLength)
+            {
+                return mention;
+            }
+        }
+
+        return null;
     }
 
     public IReadOnlyList<LMentionPiece> LEtymologyDraftDivide()

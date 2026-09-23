@@ -8,84 +8,94 @@
         <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeInput.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <DataTemplate x:Key="Theme.Etymology.Chip">
-        <Border Padding="10,5,5,5" Margin="0,0,7,7" Cursor="Arrow" Style="{DynamicResource Theme.Card.Pellet}">
-            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PEtymologyChipFlag}" Stretch="Uniform" />
-                <Button
-                    Command="{x:Static local:PEtymologyCommand.PEtymologyCommandEntry}"
-                    CommandParameter="{Binding}"
-                    Cursor="Hand">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <StackPanel Background="Transparent" Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PEtymologyChipHeadword}" />
-                                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PEtymologyChipLanguage}" />
-                            </StackPanel>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-                <Button
-                    Width="16"
-                    Height="16"
-                    Margin="7,0,0,0"
-                    Padding="0"
-                    Command="{x:Static local:PEtymologyCommand.PEtymologyCommandRemoval}"
-                    CommandParameter="{Binding}"
-                    Cursor="Hand"
-                    Visibility="Collapsed">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding PEtymologyChipClosable}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Grid Background="Transparent">
-                                <local:PIconImage
-                                    Width="12"
-                                    Height="12"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    PIconSource="{local:PIcon unlink, 12}" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-            </StackPanel>
-        </Border>
+    <DataTemplate x:Key="Theme.Etymology.Item">
+        <Grid>
+            <Border x:Name="PEtymonChip" Padding="10,5,5,5" Margin="0,0,7,7" Cursor="Arrow" Style="{DynamicResource Theme.Card.Pellet}">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <Image
+                        Width="18"
+                        Height="13"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"
+                        Source="{Binding PEtymonFlag}"
+                        Stretch="Uniform" />
+                    <Button
+                        Command="{x:Static local:PEtymologyCommand.PEtymologyCommandEntry}"
+                        CommandParameter="{Binding}"
+                        Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel Background="Transparent" Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PEtymonHeadword}" />
+                                    <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PEtymonLanguage}" />
+                                </StackPanel>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button
+                        Width="16"
+                        Height="16"
+                        Margin="7,0,0,0"
+                        Padding="0"
+                        Command="{x:Static local:PEtymologyCommand.PEtymologyCommandRemoval}"
+                        CommandParameter="{Binding}"
+                        Cursor="Hand"
+                        Visibility="Collapsed">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PEtymologyEditable, RelativeSource={RelativeSource AncestorType=local:PEtymology}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Grid Background="Transparent">
+                                    <local:PIconImage
+                                        Width="12"
+                                        Height="12"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        PIconSource="{local:PIcon unlink, 12}" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Border>
+            <TextBox
+                x:Name="PEtymonBox"
+                Visibility="Collapsed"
+                MinWidth="96"
+                Margin="2,0,9,7"
+                Padding="0,5"
+                VerticalContentAlignment="Center"
+                AcceptsReturn="False"
+                FontSize="13"
+                Foreground="{DynamicResource Theme.Ink}"
+                Style="{DynamicResource Theme.Input.Bare}"
+                Tag="{DynamicResource Input.EtymonHint}"
+                Text="{Binding PEtymonText, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="NoWrap">
+                <TextBox.InputBindings>
+                    <KeyBinding
+                        Key="Return"
+                        Command="{x:Static local:PEtymologyCommand.PEtymologyCommandAddition}"
+                        CommandParameter="{Binding}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding PEtymonCaret}" Value="True">
+                <Setter TargetName="PEtymonChip" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PEtymonShown}" Value="True">
+                <Setter TargetName="PEtymonBox" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
-
-    <DataTemplate x:Key="Theme.Etymology.Entry">
-        <TextBox
-            MinWidth="96"
-            Margin="2,0,9,7"
-            Padding="0,5"
-            VerticalContentAlignment="Center"
-            AcceptsReturn="False"
-            FontSize="13"
-            Foreground="{DynamicResource Theme.Ink}"
-            Style="{DynamicResource Theme.Input.Bare}"
-            Tag="{DynamicResource Input.EtymonHint}"
-            Text="{Binding PEtymologyCaretText, UpdateSourceTrigger=PropertyChanged}"
-            TextWrapping="NoWrap">
-            <TextBox.InputBindings>
-                <KeyBinding
-                    Key="Return"
-                    Command="{x:Static local:PEtymologyCommand.PEtymologyCommandAddition}"
-                    CommandParameter="{Binding}" />
-            </TextBox.InputBindings>
-        </TextBox>
-    </DataTemplate>
-
-    <local:PEtymologySelector
-        x:Key="Theme.Etymology.Item"
-        PEtymologySelectorCaret="{StaticResource Theme.Etymology.Entry}"
-        PEtymologySelectorChip="{StaticResource Theme.Etymology.Chip}" />
 
     <Style x:Key="Theme.Etymology.Field" TargetType="ItemsControl">
         <Setter Property="Margin" Value="0,0,0,4" />

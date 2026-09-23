@@ -19,6 +19,11 @@ public sealed class PIcon : MarkupExtension
 {
     private static readonly Dictionary<string, ImageSource> PIconStore = [];
 
+    private static readonly HashSet<string> PIconVector = new(StringComparer.Ordinal)
+    {
+        "add", "check", "close", "remove",
+    };
+
     private static readonly Dictionary<ImageSource, ImageSource> PIconGrayStore = [];
 
     private static readonly XNamespace PIconSpace = "http://www.w3.org/2000/svg";
@@ -193,7 +198,7 @@ public sealed class PIcon : MarkupExtension
     private static ImageSource PIconAssetLoad(string name)
     {
         StreamResourceInfo? pngResource = null;
-        if (!PIconSvgCheck(name))
+        if (!PIconVector.Contains(name))
         {
             Uri pngUri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".png"));
             try
@@ -221,11 +226,6 @@ public sealed class PIcon : MarkupExtension
             TextAsGeometry = true,
         });
         return new DrawingImage(reader.Read(svgStream) ?? throw new InvalidDataException(name));
-    }
-
-    private static bool PIconSvgCheck(string name)
-    {
-        return name is "add" or "check" or "close" or "remove";
     }
 
     internal static (Geometry, Rect) PIconLoad(string name)

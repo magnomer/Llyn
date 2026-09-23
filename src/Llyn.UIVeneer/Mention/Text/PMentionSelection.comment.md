@@ -8,9 +8,8 @@ Both hosts of the gesture read the field the same way, so the reading lives apar
 ## `internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(TextBox box, LWindow window)`
 
 The selection in code points, which is what every Mention is measured in.
-The field counts in UTF-16 units, so the window deportment converts the span before anything reaches a request.
-Whitespace at either end is dropped, because a double click selects the space after a word too.
-An empty selection reads as the caret with no length.
+The field counts in UTF-16 units, so the engine converts the span before anything reaches a request.
+The engine also drops whitespace at either end, because a double click selects the space after a word too.
 
 ## `internal static LMentionDraft? PMentionSelectionFind(IReadOnlyList<LMentionDraft> mentions, int offset, int length)`
 

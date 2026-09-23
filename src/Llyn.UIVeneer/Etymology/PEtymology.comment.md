@@ -6,7 +6,8 @@ The etymology field as one control, so the reading view and the editor draw the 
 It holds the source chips and the narrative together, since an entry declares its origin in one of the two.
 Editable, it adds an entry the user types a source into and writes the narrative in a box.
 Read, it prints the narrative with its spans underlined and the chips beside it.
-It shows and hides itself from what it was handed, except while editable, where the tab decides.
+The host decides whether the whole field shows, since the editor's tab and the reading view differ.
+Every visibility verdict comes from the display deportment, so the control only draws.
 
 ## `public static readonly DependencyProperty PEtymologyEditableProperty`
 
@@ -41,18 +42,15 @@ The language a span is resolved against.
 
 The narrative box, which the editor reads a selection from.
 
-## `internal PEtymologyCaret PEtymologyEntry`
+## `internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)`
 
-The entry a typed source word stands in.
+Draws the source links the engine already resolved to a headword and a language.
+The typing entry always closes the row, collapsed on the read side, so the row has one shape.
 
-## `internal void PEtymologySourceShow(IReadOnlyList<PEtymologyChip> chips)`
+## `internal void PEtymologyMentionShow(LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)`
 
-Draws the source links already resolved to a headword and a language.
-
-## `internal void PEtymologyMentionShow(IReadOnlyList<LMentionDraft> mentions, string silent)`
-
-Draws the spans, as underlines on the read side and as chips on the edit side.
-A window the control was never given leaves the chips empty rather than guessing names.
+Draws the spans as chips under the narrative box.
+Only the editor calls it, and it hands the window and the text in, so nothing is guessed.
 
 ## `protected override AutomationPeer OnCreateAutomationPeer()`
 
@@ -66,8 +64,4 @@ Every property redraws the whole field, which is small enough to build again.
 
 ### `private void PEtymologyStateApply()`
 
-Decides which face of the narrative stands and whether the field is worth showing at all.
-
-### `private void PEtymologyItemApply(bool editable)`
-
-The chips first and the typing entry last, so the field reads as one line of words.
+Decides which face of the narrative stands, from the verdicts the display deportment gives.

@@ -40,7 +40,7 @@ public sealed class LEditor
         _lSettingsPort = settings;
         LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
         LEditorDisplay = new LDisplay(entries, phonology, settings);
-        LEditorCard = new LCard(drafts, entries, phonology);
+        LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
         LEditorClip = new LClip();
         LEditorNotation = new LNotation();
         LEditorSounding = new LSounding(phonology);

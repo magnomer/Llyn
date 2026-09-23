@@ -65,6 +65,10 @@ public partial class PEditor
     {
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(chosen);
+        if (word.Trim().Length == 0)
+        {
+            return;
+        }
 
         IReadOnlyList<LVistaRow> found;
         try

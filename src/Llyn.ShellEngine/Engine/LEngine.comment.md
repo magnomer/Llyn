@@ -1,19 +1,20 @@
 # LEngine.cs
 
-## `public sealed partial class LEngine : IDisposable, LDraftPort, LEntryPort, LPhonologyPort, LSettingsPort, LMediaPort, LPortraitPort`
+## `public sealed partial class LEngine : IDisposable`
 
 The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
 It hands a delegate over `LLookupStep` for pronunciation or over `LHarvestStep` for audio.
-It subscribes a delegate over `LBulletin` to learn that stored data changed, which `LEngineObserver.cs` owns.
+It subscribes a delegate over `LBulletin` to learn that stored data changed.
 The first two stream one answer to the caller that asked.
 The third announces a change to everyone.
 
 The deportment never holds the engine itself.
 It holds the six `L*Port` slices under `Port/`, cut by concern so each later clerk implements one.
-The engine implements all six, and the veneer window hands it in as each port.
+Each sealed `L*Outlet` implements one port and forwards its members to this engine.
+The veneer window hands those outlets in.
 
-The engine is serialised behind one gate.
+The engine is serialised behind `LEngineGate`.
 Every public entry point holds a single lock for the whole of its work.
 The lock is reentrant, which is what lets an entry point call another one.
 The entry points that return a `Task` hold the gate briefly and run the fetch outside it.
@@ -23,14 +24,13 @@ So a fetch that lands writes under the lock every other vault call holds.
 A held draft is driven by an `LTenure`, made in `LEngineTenure.cs`, so no panel sequences the draft calls itself.
 
 The engine holds no vault of its own.
-Every port arrives in one `LRig` and is handed to the clerks `LEngineRigSet` builds over it.
+Every port arrives in one `LRig` and is handed to the staff `LEngineStaffBuild` builds over it.
 The composition root, `App.xaml.cs`, builds the rig through `LRigFactory`, and a test builds one from fakes.
 The engine never names the infrastructure and needs no SQLite to start.
 All use cases sit in `Llyn.Application` as sealed clerks over the rig, one per concern.
-The engine keeps the gate, the observers, the stale marks, the session trove, the settings snapshot and the clerks.
+The engine keeps the gate, the observers, the stale marks, the session trove, the settings snapshot and the staff record.
 Each part of the engine is a facade that takes the gate and calls a clerk.
-The fields are many because each clerk is a plain relay to one concern.
-`LEngineRigSet` news them in dependency order and nothing else.
+`LEngineStaff` keeps the clerks in dependency order and swaps them together when the rig changes.
 
 ## `public LEngine(LRig rig)`
 
@@ -40,13 +40,10 @@ Changing the user's workspace is `LEngineRigApply` with a rig over the new folde
 The clerks are built first, then the settings, the rescue and the realm are read through them.
 A database this build can no longer read costs the user a launch rather than the program.
 
-## `private void LEngineRigSet(LRig rig)`
+## `internal LEngineStaff LEngineStaffHeld`
 
-Builds every clerk over `rig`, the one place the clerk fields are assigned.
-The constructor and `LEngineRigApply` both call it, so a workspace change swaps every clerk at once.
-A clerk built over the old rig would keep the old ports, so none survives a rig apply.
-The fetching clerks take the gate, the bulletin raiser and a settings reader, which read the engine live.
-The order follows the constructor arguments: a clerk is built after every clerk it composes.
+Returns the current staff record for engine facades that need a clerk.
+The record changes as one unit when `LEngineRigApply` moves to another workspace.
 
 ## `private void LEngineWorkspaceOpen()`
 
@@ -55,10 +52,43 @@ The controlled vocabularies come from the language packs on disk and are written
 The 音韻地位 categories are derived again from the stored placements and the hypothesis on disk.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
 
-## `private long LEngineIdentityCreate()`
+## `internal long LEngineIdentityCreate()`
 
 Issues the next temporary id for a draft row of the open workspace.
 The engine owns the issuer, because the floor it counts from belongs to the workspace and changes with it.
+
+## `internal object LEngineGate`
+
+The shared lock every facade and fetching clerk uses for engine state.
+Callers hold it while reading or changing the state below.
+
+## `internal LTrove LEngineTrove`
+
+The engine session cache, shared with the facades that read and clear it.
+
+## `internal LSettings LEngineSettingsHeld`
+
+The current settings snapshot.
+Callers read and update it under `LEngineGate`.
+
+## `internal HashSet<long> LEngineDraftStale`
+
+Draft ids claimed in a former workspace, kept so a surviving tenure cannot write into the new one.
+
+## `public void LEngineObserverAttach(Action<LBulletin> observer)`
+
+Subscribes `observer` to future announcements.
+An already attached delegate is not added a second time.
+
+## `public void LEngineObserverDetach(Action<LBulletin> observer)`
+
+Stops announcing to `observer`, so a closed surface is never called again.
+
+## `internal void LEngineBulletinRaise(LSubject subject, long id)`
+
+Announces one stored change to every subscriber.
+The list is copied under the gate, then callbacks run outside it, so a subscriber can detach without disturbing iteration.
+Announcements happen when a stored record is finished, so an import announces once after all its records are written.
 
 ## `internal LRealm LEngineRealmRead()`
 
@@ -105,12 +135,12 @@ The move is then announced, so every surface holding a stored record learns that
 
 Cancels every pending fetch of the five fetching clerks, on a rig apply and on dispose.
 
-## `private static bool LEngineOwnerCheck(LOwner owner)`
+## `internal static bool LEngineOwnerCheck(LOwner owner)`
 
 Which of the two card sides an owner id names, through the card clerk.
 True is the Collocation side, and any other side throws as a caller mistake.
 
-## `private static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
+## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
 
 The one failure for a side an entity has no association table for.
 Returned rather than thrown so a switch arm can throw it.

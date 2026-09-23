@@ -22,7 +22,7 @@
             HorizontalScrollBarVisibility="Disabled"
             Style="{StaticResource Theme.Scroll.Gutter}"
             VerticalScrollBarVisibility="Auto">
-            <Grid>
+            <Grid UseLayoutRounding="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -31,7 +31,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid MinHeight="56">
+                <Grid MinHeight="56" UseLayoutRounding="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -140,7 +140,7 @@
                     </Border>
                 </Grid>
 
-                <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left" Grid.IsSharedSizeScope="True">
+                <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left" Grid.IsSharedSizeScope="True" UseLayoutRounding="True">
                     <StackPanel.CommandBindings>
                         <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandAddition}" Executed="PAccentAddHandle" />
                         <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandRemoval}" Executed="PAccentRemoveHandle" />
@@ -241,7 +241,7 @@
                     <ItemsControl x:Name="PGlyph" ItemTemplate="{StaticResource Theme.Glyph.Row}" Visibility="Collapsed" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="2">
+                <StackPanel Grid.Row="2" UseLayoutRounding="True">
                     <WrapPanel x:Name="PMarker" Margin="12,14,0,0" Orientation="Horizontal">
 
                         <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">

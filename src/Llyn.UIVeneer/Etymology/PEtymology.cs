@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -32,25 +31,20 @@ public sealed class PEtymology : ContentControl
     private readonly StackPanel _pEtymologyBody = new();
     private readonly ItemsControl _pEtymologyField = new();
     private readonly ItemsControl _pEtymologyStrip = new();
-    private readonly ObservableCollection<object> _pEtymologyItem = [];
     private readonly PMention _pEtymologyProse = new();
     private readonly TextBox _pEtymologyWrite = new();
     private readonly PMentionLine _pEtymologyLine = new();
-    private readonly PEtymologyCaret _pEtymologyCaret = new();
-
-    private IReadOnlyList<PEtymologyChip> _pEtymologySource = [];
-
-    private IReadOnlyList<LMentionDraft> _pEtymologyMention = [];
+    private readonly PEtymon _pEtymologyCaret = new();
 
     public PEtymology()
     {
         Focusable = false;
         IsTabStop = false;
 
-        _pEtymologyField.ItemsSource = _pEtymologyItem;
+        _pEtymologyField.ItemsSource = new List<PEtymon> { _pEtymologyCaret };
         _pEtymologyField.SetResourceReference(StyleProperty, "Theme.Etymology.Field");
         _pEtymologyField.SetResourceReference(
-            ItemsControl.ItemTemplateSelectorProperty, "Theme.Etymology.Item");
+            ItemsControl.ItemTemplateProperty, "Theme.Etymology.Item");
 
         _pEtymologyProse.SetResourceReference(StyleProperty, "Theme.Etymology.Text");
         _pEtymologyWrite.SetResourceReference(StyleProperty, "Theme.Etymology.Prose");
@@ -78,44 +72,35 @@ public sealed class PEtymology : ContentControl
 
     public string PEtymologyText
     {
-        get => (string?)GetValue(PEtymologyTextProperty) ?? string.Empty;
+        get => (string)GetValue(PEtymologyTextProperty);
         set => SetValue(PEtymologyTextProperty, value);
     }
 
     public string PEtymologyLanguage
     {
-        get => (string?)GetValue(PEtymologyLanguageProperty) ?? string.Empty;
+        get => (string)GetValue(PEtymologyLanguageProperty);
         set => SetValue(PEtymologyLanguageProperty, value);
     }
 
     internal TextBox PEtymologyBox => _pEtymologyWrite;
 
-    internal PEtymologyCaret PEtymologyEntry => _pEtymologyCaret;
-
-    internal void PEtymologySourceShow(IReadOnlyList<PEtymologyChip> chips)
+    internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)
     {
-        ArgumentNullException.ThrowIfNull(chips);
+        ArgumentNullException.ThrowIfNull(etymons);
 
-        _pEtymologySource = chips;
-        PEtymologyStateApply();
+        _pEtymologyField.ItemsSource = PEtymon.PEtymonBuild(etymons, _pEtymologyCaret);
+        _pEtymologyField.Visibility = PLook.PLookVisibleRead(
+            LDisplay.LDisplayEtymonCheck(PEtymologyEditable, etymons.Count));
     }
 
-    internal void PEtymologyMentionShow(IReadOnlyList<LMentionDraft> mentions, string silent)
+    internal void PEtymologyMentionShow(
+        LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)
     {
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(mentions);
         ArgumentNullException.ThrowIfNull(silent);
 
-        _pEtymologyMention = mentions;
-        if (PMention.PMentionWindowRead(this) is LWindow window)
-        {
-            _pEtymologyLine.PMentionLineShow(window, PEtymologyText, mentions, silent);
-        }
-        else
-        {
-            _pEtymologyLine.PMentionLineClear();
-        }
-
-        PEtymologyStateApply();
+        _pEtymologyLine.PMentionLineShow(window, text, mentions, silent);
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()
@@ -125,55 +110,22 @@ public sealed class PEtymology : ContentControl
 
     private static void PEtymologyStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
-        if (sender is PEtymology etymology)
-        {
-            etymology.PEtymologyStateApply();
-        }
+        ((PEtymology)sender).PEtymologyStateApply();
     }
 
     private void PEtymologyStateApply()
     {
         bool editable = PEtymologyEditable;
         string text = PEtymologyText;
-        bool narrated = text.Trim().Length > 0;
-
-        PEtymologyItemApply(editable);
-
-        List<LMention> shown = new(_pEtymologyMention.Count);
-        foreach (LMentionDraft mention in _pEtymologyMention)
-        {
-            shown.Add(mention.LMentionDraftResolve());
-        }
 
         _pEtymologyProse.PMentionText = text;
-        _pEtymologyProse.PMentionMention = shown;
         _pEtymologyProse.PMentionLanguage = PEtymologyLanguage;
 
         PField.PFieldTextShow(_pEtymologyWrite, text);
 
-        _pEtymologyProse.Visibility = !editable && narrated ? Visibility.Visible : Visibility.Collapsed;
-        _pEtymologyWrite.Visibility = editable ? Visibility.Visible : Visibility.Collapsed;
-        _pEtymologyStrip.Visibility = editable ? Visibility.Visible : Visibility.Collapsed;
-        _pEtymologyField.Visibility = editable || _pEtymologySource.Count > 0
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-        if (!editable)
-        {
-            Visibility = narrated || _pEtymologySource.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-        }
-    }
-
-    private void PEtymologyItemApply(bool editable)
-    {
-        _pEtymologyItem.Clear();
-        foreach (PEtymologyChip chip in _pEtymologySource)
-        {
-            _pEtymologyItem.Add(chip);
-        }
-
-        if (editable)
-        {
-            _pEtymologyItem.Add(_pEtymologyCaret);
-        }
+        _pEtymologyCaret.PEtymonShown = editable;
+        _pEtymologyProse.Visibility = PLook.PLookVisibleRead(LDisplay.LDisplayNarrativeCheck(editable, text));
+        _pEtymologyWrite.Visibility = PLook.PLookVisibleRead(editable);
+        _pEtymologyStrip.Visibility = PLook.PLookVisibleRead(editable);
     }
 }

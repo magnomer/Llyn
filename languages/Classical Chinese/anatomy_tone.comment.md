@@ -45,7 +45,8 @@ Checked 55 is 7, checked 12 is 8S or 8.
 
 ## Gan
 
-42 is 1, 35 is 2 or 5, 24 is 2, 213 is 3, 4S or 5, and 2 is 4 or 6.
+42 is 1, 35 is 2 or 5, and 24 is 2.
+213 is 3, 4S or 5, and 2 is 4 or 6.
 45 and 55 are alternative transcriptions of 35, and 21 is an alternative transcription of 2.
 Checked 5 is 7, checked 2 is 8S or 8.
 

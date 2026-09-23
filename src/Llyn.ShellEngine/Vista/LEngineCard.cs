@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -8,115 +9,115 @@ public sealed partial class LEngine
 {
     internal LMeaning LEngineMeaningCreate(LMeaning meaning)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMeaningClerk.LMeaningClerkCreate(meaning);
+            return _lEngineStaff.LEngineStaffMeaning.LMeaningClerkCreate(meaning);
         }
     }
 
     public LMeaning? LEngineMeaningRead(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineMeaningClerk.LMeaningClerkRead(id);
+            return _lEngineStaff.LEngineStaffMeaning.LMeaningClerkRead(id);
         }
     }
 
     public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             if (owner != LOwner.LOwnerEntry)
             {
                 throw LEngineOwnerRaise(owner);
             }
 
-            return _lEngineMeaningClerk.LMeaningClerkScan(ownerId);
+            return _lEngineStaff.LEngineStaffMeaning.LMeaningClerkScan(ownerId);
         }
     }
 
     internal void LEngineMeaningUpdate(LMeaning meaning)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineMeaningClerk.LMeaningClerkUpdate(meaning);
+            _lEngineStaff.LEngineStaffMeaning.LMeaningClerkUpdate(meaning);
         }
     }
 
     internal void LEngineMeaningMove(long id, int position)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineMeaningClerk.LMeaningClerkMove(id, position);
+            _lEngineStaff.LEngineStaffMeaning.LMeaningClerkMove(id, position);
         }
     }
 
     internal void LEngineMeaningDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineMeaningClerk.LMeaningClerkDelete(id);
+            _lEngineStaff.LEngineStaffMeaning.LMeaningClerkDelete(id);
         }
     }
 
     internal LCollocation LEngineCollocationCreate(LCollocation collocation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineCardClerk.LCollocationCreate(collocation);
+            return _lEngineStaff.LEngineStaffCard.LCollocationCreate(collocation);
         }
     }
 
     internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             if (owner != LOwner.LOwnerEntry)
             {
                 throw LEngineOwnerRaise(owner);
             }
 
-            return _lEngineCardClerk.LCollocationRead(ownerId);
+            return _lEngineStaff.LEngineStaffCard.LCollocationRead(ownerId);
         }
     }
 
     internal void LEngineCollocationUpdate(LCollocation collocation)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCardClerk.LCollocationUpdate(collocation);
+            _lEngineStaff.LEngineStaffCard.LCollocationUpdate(collocation);
         }
     }
 
     internal void LEngineCollocationMove(long id, int position)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCardClerk.LCollocationMove(id, position);
+            _lEngineStaff.LEngineStaffCard.LCollocationMove(id, position);
         }
     }
 
     internal void LEngineCollocationDelete(long id)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineCardClerk.LCollocationDelete(id);
+            _lEngineStaff.LEngineStaffCard.LCollocationDelete(id);
         }
     }
 
     internal IReadOnlyList<LTag> LEngineTagRead()
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTagClerk.LTagClerkRead();
+            return _lEngineStaff.LEngineStaffTag.LTagClerkRead();
         }
     }
 
     public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTagClerk.LTagClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffTag.LTagClerkFind(query, order);
         }
     }
 
@@ -142,18 +143,18 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTagClerk.LTagClerkRead(ownerId, LEngineOwnerCheck(owner));
+            return _lEngineStaff.LEngineStaffTag.LTagClerkRead(ownerId, LEngineOwnerCheck(owner));
         }
     }
 
     internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             bool collocation = LEngineOwnerCheck(owner);
-            _lEngineTagClerk.LTagClerkSave(ownerId, written, collocation);
+            _lEngineStaff.LEngineStaffTag.LTagClerkSave(ownerId, written, collocation);
             LEngineUpdatedSet(ownerId, collocation);
         }
     }
@@ -161,9 +162,9 @@ public sealed partial class LEngine
     public LTag LEngineTagCreate(string text)
     {
         LTag created;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            created = _lEngineTagClerk.LTagClerkCreate(text);
+            created = _lEngineStaff.LEngineStaffTag.LTagClerkCreate(text);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectTag, created.LTagId);
@@ -172,9 +173,9 @@ public sealed partial class LEngine
 
     internal void LEngineTagChange(long tagId, string renamed)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineTagClerk.LTagClerkChange(tagId, renamed);
+            _lEngineStaff.LEngineStaffTag.LTagClerkChange(tagId, renamed);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
@@ -182,9 +183,9 @@ public sealed partial class LEngine
 
     internal void LEngineTagDelete(long tagId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineTagClerk.LTagClerkDelete(tagId);
+            _lEngineStaff.LEngineStaffTag.LTagClerkDelete(tagId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
@@ -192,25 +193,25 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineRegisterClerk.LRegisterClerkRead(ownerId, LEngineOwnerCheck(owner));
+            return _lEngineStaff.LEngineStaffRegister.LRegisterClerkRead(ownerId, LEngineOwnerCheck(owner));
         }
     }
 
     public IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineRegisterClerk.LRegisterClerkFind(query, language);
+            return _lEngineStaff.LEngineStaffRegister.LRegisterClerkFind(query, language);
         }
     }
 
     public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(string query, LCatalogOrder order)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineRegisterClerk.LRegisterClerkFind(query, order);
+            return _lEngineStaff.LEngineStaffRegister.LRegisterClerkFind(query, order);
         }
     }
 
@@ -237,9 +238,9 @@ public sealed partial class LEngine
     public LRegister LEngineRegisterCreate(string name)
     {
         LRegister created;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            created = _lEngineRegisterClerk.LRegisterClerkCreate(name);
+            created = _lEngineStaff.LEngineStaffRegister.LRegisterClerkCreate(name);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
@@ -248,9 +249,9 @@ public sealed partial class LEngine
 
     internal void LEngineRegisterChange(long registerId, string renamed)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineRegisterClerk.LRegisterClerkChange(registerId, renamed);
+            _lEngineStaff.LEngineStaffRegister.LRegisterClerkChange(registerId, renamed);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
@@ -258,9 +259,9 @@ public sealed partial class LEngine
 
     internal void LEngineRegisterDelete(long registerId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            _lEngineRegisterClerk.LRegisterClerkDelete(registerId);
+            _lEngineStaff.LEngineStaffRegister.LRegisterClerkDelete(registerId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
@@ -268,57 +269,57 @@ public sealed partial class LEngine
 
     internal IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationClerkRead(ownerId, LEngineOwnerCheck(owner));
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationClerkRead(ownerId, LEngineOwnerCheck(owner));
         }
     }
 
     internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
             bool collocation = LEngineOwnerCheck(owner);
-            _lEngineTranslationClerk.LTranslationClerkSave(ownerId, ids, collocation);
+            _lEngineStaff.LEngineStaffTranslation.LTranslationClerkSave(ownerId, ids, collocation);
             LEngineUpdatedSet(ownerId, collocation);
         }
     }
 
     private void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, bool collocation)
     {
-        _lEngineTranslationClerk.LTranslationClerkSave(ownerId, ids, collocation);
+        _lEngineStaff.LEngineStaffTranslation.LTranslationClerkSave(ownerId, ids, collocation);
     }
 
     internal IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationClerkFind(query, entryId);
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationClerkFind(query, entryId);
         }
     }
 
     public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return LEngineVistaBuild(_lEngineTranslationClerk.LTranslationClerkFind(query, null), null);
+            return LEngineVistaBuild(_lEngineStaff.LEngineStaffTranslation.LTranslationClerkFind(query, null), null);
         }
     }
 
     public LEntry? LEngineTranslationResolve(string word, long? entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationClerkResolve(word, entryId);
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationClerkResolve(word, entryId);
         }
     }
 
     internal LEntry LEngineTranslationCreate(string headword, string language)
     {
         LEntry entry;
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            entry = _lEngineTranslationClerk.LTranslationClerkCreate(headword, language);
+            entry = _lEngineStaff.LEngineStaffTranslation.LTranslationClerkCreate(headword, language);
             LEngineFrequencyStart(entry.LEntryId);
         }
 
@@ -328,9 +329,9 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<long> ids)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationTargetRead(ids);
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationTargetRead(ids);
         }
     }
 
@@ -339,6 +340,20 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(draft);
 
         return LEngineTargetRead([.. draft.LEntryDraftTargets, .. draft.LEntryDraftSources]);
+    }
+
+    public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        IReadOnlyList<long> etymons = draft.LEntryDraftEtymology.LEtymologyDraftEtymons;
+        Dictionary<long, LTranslationTarget> found = [];
+        foreach (LTranslationTarget target in LEngineTargetRead(etymons))
+        {
+            found[target.LTranslationTargetId] = target;
+        }
+
+        return [.. etymons.Where(found.ContainsKey).Select(id => found[id])];
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)
@@ -366,18 +381,19 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationTargetRead(
-                ownerId, ids, _lEngineCourtClerk.LCourtClerkScan(ownerId));
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationTargetRead(
+                ownerId, ids, _lEngineStaff.LEngineStaffCourt.LCourtClerkScan(ownerId));
         }
     }
 
     public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineTranslationClerk.LTranslationIncomingRead(entryId, _lEngineSettings.LSettingsEpithet);
+            return _lEngineStaff.LEngineStaffTranslation.LTranslationIncomingRead(
+                entryId, LEngineSettingsHeld.LSettingsEpithet);
         }
     }
 }

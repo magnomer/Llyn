@@ -75,6 +75,11 @@ A frequency fill starts for it after the commit, exactly as it does for a saved 
 The making is announced as an entry bulletin once the lock is released.
 The library list then shows the stub at once.
 
+## `public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)`
+
+The source links of the draft's etymology, named and in the draft's own order.
+A link whose entry is gone is left out, so a chip is never drawn blank.
+
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)`
 
 The targets of the draft's link ids, so a card resolves its chips in one read.

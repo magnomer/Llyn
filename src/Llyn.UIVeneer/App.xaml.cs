@@ -74,8 +74,19 @@ public partial class LBootstrap : System.Windows.Application
 
         base.OnStartup(e);
 
-        LWindow window = new(new LPosture(engine), engine, engine, engine, engine, engine, engine);
-        new PWindow(window, LBootstrapWorkspaceChange).Show();
+        new PWindow(LBootstrapWindowCreate(engine), LBootstrapWorkspaceChange).Show();
+    }
+
+    private static LWindow LBootstrapWindowCreate(LEngine engine)
+    {
+        return new LWindow(
+            new LPosture(engine),
+            new LDraftOutlet(engine),
+            new LEntryOutlet(engine),
+            new LSettingsOutlet(engine),
+            new LPhonologyOutlet(engine),
+            new LMediaOutlet(engine),
+            new LPortraitOutlet(engine));
     }
 
     protected override void OnExit(ExitEventArgs e)

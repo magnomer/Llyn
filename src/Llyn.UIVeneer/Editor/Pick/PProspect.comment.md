@@ -20,6 +20,7 @@ The corpus scribe reaches the second through the window, so the popup is still d
 
 Opens the dropdown over a selected word, listing the Entries the word matches in the given language.
 No create row is offered, because a Mention may only point at an Entry that already exists.
+A blank word opens nothing, since every Entry would match it.
 The match is the translation lookup, exact headwords first, and an empty language filters nothing.
 Twin numbers are given before the language filter runs, so a row keeps the number the catalog shows.
 The dropdown stands at the selection's rectangle rather than under the field, so it opens where the word is.

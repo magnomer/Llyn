@@ -20,47 +20,47 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReflexClerk.LReflexRuleRead(language);
+            return _lEngineStaff.LEngineStaffReflex.LReflexRuleRead(language);
         }
     }
 
     public IReadOnlyList<LReflex> LEngineReflexRead(long entryId)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReflexClerk.LReflexClerkRead(entryId);
+            return _lEngineStaff.LEngineStaffReflex.LReflexClerkRead(entryId);
         }
     }
 
     internal IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)
     {
-        lock (_lEngineGate)
+        lock (LEngineGate)
         {
-            return _lEngineReflexClerk.LReflexClerkSet(entryId, reflexes);
+            return _lEngineStaff.LEngineStaffReflex.LReflexClerkSet(entryId, reflexes);
         }
     }
 
     public void LEngineReflexStart(long entryId)
     {
-        _lEngineReflexClerk.LReflexClerkStart(entryId);
+        _lEngineStaff.LEngineStaffReflex.LReflexClerkStart(entryId);
     }
 
     public void LEngineReflexRebuild(long entryId)
     {
-        _lEngineReflexClerk.LReflexClerkRebuild(entryId);
+        _lEngineStaff.LEngineStaffReflex.LReflexClerkRebuild(entryId);
     }
 
     public bool LEngineReflexCheck(long entryId)
     {
-        return _lEngineReflexClerk.LReflexClerkCheck(entryId);
+        return _lEngineStaff.LEngineStaffReflex.LReflexClerkCheck(entryId);
     }
 
     internal Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(
         string headword, string language, CancellationToken cancellation)
     {
-        return _lEngineReflexClerk.LReflexClerkFind(headword, language, cancellation);
+        return _lEngineStaff.LEngineStaffReflex.LReflexClerkFind(headword, language, cancellation);
     }
 
     public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)

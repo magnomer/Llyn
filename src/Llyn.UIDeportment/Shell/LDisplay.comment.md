@@ -36,3 +36,20 @@ Whether the entry's rime-book rows are still being fetched, false for no entry o
 ## `public bool LDisplayScriptCheck(long? id)`
 
 Whether the entry's script images are still being fetched, false for no entry or when the engine refuses to say.
+
+## `public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)`
+
+The source links of an etymology, named by the engine.
+A read the engine refuses answers no links, so the page still draws.
+
+## `public static bool LDisplayNarrativeCheck(bool editable, string text)`
+
+Whether the read face of the narrative stands: only on the read side, and only with words in it.
+
+## `public static bool LDisplayEtymonCheck(bool editable, int count)`
+
+Whether the row of source links shows: always while editable, else only with a link.
+
+## `public static bool LDisplayEtymologyCheck(string text, int count)`
+
+Whether a read etymology is worth a place at all: a narrative or a link.
