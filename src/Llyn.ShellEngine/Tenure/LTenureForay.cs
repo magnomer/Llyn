@@ -25,7 +25,7 @@ public sealed partial class LTenure
         }
 
         foray.LForayStart(
-            token => _lEngine.LEngineRecordingFind(LTenureId, word, language, target, sink, token),
+            token => _lEngine.LEnginePronunciation.LEngineRecordingFind(LTenureId, word, language, target, sink, token),
             listener.LListenerFinish);
         return foray;
     }
@@ -47,8 +47,9 @@ public sealed partial class LTenure
 
         foray.LForayStart(
             token => scheme.Length == 0
-                ? _lEngine.LEnginePronunciationFind(LTenureId, word, language, sink, token)
-                : _lEngine.LEngineTranscriptionFind(LTenureId, word, language, scheme, sink, token),
+                ? _lEngine.LEnginePronunciation.LEnginePronunciationFind(LTenureId, word, language, sink, token)
+                : _lEngine.LEnginePronunciation.LEngineTranscriptionFind(
+                    LTenureId, word, language, scheme, sink, token),
             receiver.LReceiverLookupFinish);
         return foray;
     }

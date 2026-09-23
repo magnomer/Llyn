@@ -24,9 +24,11 @@ Drafts, court links, and claims are files named by the id they were issued.
 A counter that restarted at zero with the process would name a new draft after a file still on disk.
 So the floor lives in the workspace database and every issue lowers it there before the id is used.
 
-## `public LIdentity(LWorkspaceVault workspaces)`
+## `public LIdentity(LWorkspaceVault workspaces, IReadOnlySet<long>? retired = null)`
 
 Binds the issuer to the workspace vault whose floor it lowers.
+The retired ids are ones a tenure still holds from a workspace the engine has left.
+Each workspace counts from its own floor, so the next one would otherwise issue those ids again.
 
 ## `public long LIdentityFloor`
 
@@ -40,6 +42,7 @@ Lowers the floor in the database and returns the new floor, in one statement.
 The write commits before the id is handed out.
 A crash after the call therefore cannot bring the id round again.
 Two engines open on one workspace lower the same row, so neither can issue what the other already holds.
+A retired id is skipped, so a draft of this workspace never shares an id with a stale tenure.
 
 ## `public static void LIdentityRecord(Dictionary<long, long> identity, long draftId, long rowId)`
 

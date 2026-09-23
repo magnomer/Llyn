@@ -66,7 +66,7 @@ internal static class TAuditDraftSetting
     [
         "src/Llyn.Core/Portrait/*.cs",
         "src/Llyn.Application/Portrait/*.cs",
-        "src/Llyn.ShellEngine/LEnginePortrait*.cs",
+        "src/Llyn.ShellEngine/Tool/LPortraitFacade.cs",
     ];
 
     public static readonly string[] TAuditPortraitWaiver =

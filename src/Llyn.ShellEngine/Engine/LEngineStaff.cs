@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -49,9 +50,13 @@ internal sealed record LEngineStaff(
     LEnsign LEngineStaffEnsign)
 {
     internal static LEngineStaff LEngineStaffBuild(
-        LRig rig, object gate, Action<LSubject, long> raise, Func<LSettings> settings)
+        LRig rig,
+        object gate,
+        Action<LSubject, long> raise,
+        Func<LSettings> settings,
+        IReadOnlySet<long> retired)
     {
-        LIdentity identity = new(rig.LRigWorkspaces);
+        LIdentity identity = new(rig.LRigWorkspaces, retired);
         LLanguageCache cache = new(rig.LRigLanguages);
         LDraftClerk draft = new(rig, identity, cache);
         LChronicleClerk chronicle = new(rig);

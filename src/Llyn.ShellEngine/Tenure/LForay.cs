@@ -24,7 +24,7 @@ public sealed class LForay
         LForayLanguage = language;
         LForayTarget = target;
         LForayScheme = scheme;
-        LForayFlagged = language.Length > 0 && engine.LEngineFlaggedCheck(language);
+        LForayFlagged = language.Length > 0 && engine.LEngineLanguage.LEngineFlaggedCheck(language);
     }
 
     public long LForayTarget { get; }
@@ -67,7 +67,7 @@ public sealed class LForay
         }
 
         string path = await _lEngine
-            .LEngineRecordingSave(recording, LForayWord, LForayLanguage, CancellationToken.None)
+            .LEnginePronunciation.LEngineRecordingSave(recording, LForayWord, LForayLanguage, CancellationToken.None)
             .ConfigureAwait(false);
 
         if (!LForayDraftCheck())

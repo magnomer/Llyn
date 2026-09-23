@@ -1,6 +1,6 @@
 # LEngine.cs
 
-## `public sealed partial class LEngine : IDisposable`
+## `public sealed class LEngine : IDisposable`
 
 The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
@@ -28,8 +28,8 @@ Every port arrives in one `LRig` and is handed to the staff `LEngineStaffBuild` 
 The composition root, `App.xaml.cs`, builds the rig through `LRigFactory`, and a test builds one from fakes.
 The engine never names the infrastructure and needs no SQLite to start.
 All use cases sit in `Llyn.Application` as sealed clerks over the rig, one per concern.
-The engine keeps the gate, the observers, the stale marks, the session trove, the settings snapshot and the staff record.
-Each part of the engine is a facade that takes the gate and calls a clerk.
+The core keeps the gate, the staff, shared state, observers and one property per facade.
+Each sealed facade holds the engine and uses its gate to call a clerk.
 `LEngineStaff` keeps the clerks in dependency order and swaps them together when the rig changes.
 
 ## `public LEngine(LRig rig)`
@@ -38,12 +38,27 @@ Binds the engine to the ports of `rig`, already built over the workspace they st
 It neither reads nor rewrites the recorded workspace pointer.
 Changing the user's workspace is `LEngineRigApply` with a rig over the new folder.
 The clerks are built first, then the settings, the rescue and the realm are read through them.
+The facades come last, so none of them can ever see an engine without its staff.
 A database this build can no longer read costs the user a launch rather than the program.
+
+## `internal LVistaFacade LEngineVista`
+
+Owns the vista registry and serves the entry and favorite rows shown by each catalog tab.
 
 ## `internal LEngineStaff LEngineStaffHeld`
 
 Returns the current staff record for engine facades that need a clerk.
 The record changes as one unit when `LEngineRigApply` moves to another workspace.
+It is read under the gate, so a caller outside the gate still sees one whole record.
+
+## `internal LSettings LEngineSettingsRead()`
+
+The current settings snapshot, read under the gate.
+The fetch clerks hold this reader, so it exists before any facade does.
+
+## `internal LDraftFacade LEngineDraft`
+
+The draft facade, built once with the others like every facade.
 
 ## `private void LEngineWorkspaceOpen()`
 
@@ -103,6 +118,7 @@ The answer is replaced when `LEngineRigApply` opens another workspace.
 ## `public string LEngineWorkspaceRead()`
 
 Returns the current workspace folder, where the user's settings and database are stored.
+The folder is kept apart from the workspace facade, which serves the workspace row.
 
 ## `public string LEngineWorkspaceFormat()`
 

@@ -55,3 +55,4 @@ Each facade reads its concern from this record.
 
 Builds the staff in dependency order over one rig.
 Fetch clerks receive the gate, settings reader and bulletin raiser supplied by the engine.
+The identity issuer receives the stale ids, so the new workspace never issues one a tenure still holds.

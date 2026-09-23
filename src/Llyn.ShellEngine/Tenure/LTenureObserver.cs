@@ -92,7 +92,7 @@ public sealed partial class LTenure
 
     private bool LTenureDraftApply()
     {
-        IReadOnlyList<LRequest> requests = _lEngine.LEngineDraftPrepare(LTenureId);
+        IReadOnlyList<LRequest> requests = _lEngine.LEngineDraft.LEngineDraftPrepare(LTenureId);
         foreach (LRequest request in requests)
         {
             LTenureRequestApply(request);

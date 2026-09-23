@@ -15,14 +15,16 @@ public sealed class LMediaOutlet : LMediaPort
         _lMediaOutletEngine = engine;
     }
 
-    public Uri? LEngineLocationRead(string? location) => _lMediaOutletEngine.LEngineLocationRead(location);
+    public Uri? LEngineLocationRead(string? location) =>
+        _lMediaOutletEngine.LEngineWorkspace.LEngineLocationRead(location);
 
-    public void LEngineLocationOpen(string target) => _lMediaOutletEngine.LEngineLocationOpen(target);
+    public void LEngineLocationOpen(string target) => _lMediaOutletEngine.LEngineWorkspace.LEngineLocationOpen(target);
 
-    public bool LEngineRecordingExist(string? file) => _lMediaOutletEngine.LEngineRecordingExist(file);
+    public bool LEngineRecordingExist(string? file) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingExist(file);
 
     public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation) =>
-        _lMediaOutletEngine.LEngineRecordingPrepare(recording, cancellation);
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPrepare(recording, cancellation);
 
-    public void LEngineRecordingSweep() => _lMediaOutletEngine.LEngineRecordingSweep();
+    public void LEngineRecordingSweep() => _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingSweep();
 }

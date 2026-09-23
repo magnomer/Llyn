@@ -284,7 +284,7 @@ internal static partial class TInterface
         long target,
         Action<LHarvestStep> sink,
         CancellationToken cancellation) =>
-        engine.LEngineRecordingFind(session, word, language, target, sink, cancellation);
+        engine.LEnginePronunciation.LEngineRecordingFind(session, word, language, target, sink, cancellation);
 
     internal static Task TEngineTranscriptionFind(
         this LEngine engine,
@@ -294,19 +294,19 @@ internal static partial class TInterface
         string scheme,
         Action<LLookupStep> sink,
         CancellationToken cancellation) =>
-        engine.LEngineTranscriptionFind(session, word, language, scheme, sink, cancellation);
+        engine.LEnginePronunciation.LEngineTranscriptionFind(session, word, language, scheme, sink, cancellation);
 
     internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
-        engine.LEngineVarietyRead(language);
+        engine.LEngineLanguage.LEngineVarietyRead(language);
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, string language) =>
-        engine.LEngineFlaggedCheck(language);
+        engine.LEngineLanguage.LEngineFlaggedCheck(language);
 
     internal static bool TEngineTonalCheck(this LEngine engine, string language) =>
-        engine.LEngineTonalCheck(language);
+        engine.LEngineLanguage.LEngineTonalCheck(language);
 
     internal static IReadOnlyList<string> TEngineLanguageRead(this LEngine engine) =>
-        engine.LEngineLanguageRead();
+        engine.LEngineLanguage.LEngineLanguageRead();
 
     internal static IReadOnlyList<LContour> TContourParse(string ipa) =>
         LContour.LContourParse(ipa);

@@ -53,7 +53,7 @@ public sealed partial class LTenure
             }
         }
 
-        return _lEngine.LEngineDraftRead(LTenureId);
+        return _lEngine.LEngineDraft.LEngineDraftRead(LTenureId);
     }
 
     public string LTenureLanguageRead()
@@ -76,12 +76,12 @@ public sealed partial class LTenure
 
         try
         {
-            bool changed = _lEngine.LEngineDraftCheck(LTenureId, out string? refusal);
+            bool changed = _lEngine.LEngineDraft.LEngineDraftCheck(LTenureId, out string? refusal);
             return new LTenureState(
                 changed,
                 refusal,
-                !halted && _lEngine.LEngineUndoCheck(LTenureId),
-                !halted && _lEngine.LEngineRedoCheck(LTenureId),
+                !halted && _lEngine.LEngineRequest.LEngineUndoCheck(LTenureId),
+                !halted && _lEngine.LEngineRequest.LEngineRedoCheck(LTenureId),
                 halted);
         }
         catch (Exception exception)
@@ -95,7 +95,7 @@ public sealed partial class LTenure
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        int delay = _lEngine.LEngineTenureDelay;
+        int delay = _lEngine.LEngineTenure.LEngineTenureDelay;
         lock (_lTenureGate)
         {
             if (_lTenureEnded || _lTenureFault is not null)
@@ -138,12 +138,12 @@ public sealed partial class LTenure
 
     public LDraft? LTenureUndo()
     {
-        return LTenureRestore(_lEngine.LEngineChronicleUndo);
+        return LTenureRestore(_lEngine.LEngineRequest.LEngineChronicleUndo);
     }
 
     public LDraft? LTenureRedo()
     {
-        return LTenureRestore(_lEngine.LEngineChronicleRedo);
+        return LTenureRestore(_lEngine.LEngineRequest.LEngineChronicleRedo);
     }
 
     public void LTenureSweep()
@@ -156,7 +156,7 @@ public sealed partial class LTenure
             }
         }
 
-        _lEngine.LEngineDraftSweep(LTenureId);
+        _lEngine.LEngineDraft.LEngineDraftSweep(LTenureId);
         LTenureStateRaise();
     }
 
@@ -178,7 +178,7 @@ public sealed partial class LTenure
         try
         {
             LTenureObserverClear();
-            _lEngine.LEngineDraftCancel(LTenureId);
+            _lEngine.LEngineDraft.LEngineDraftCancel(LTenureId);
         }
         catch (Exception)
         {
@@ -220,7 +220,7 @@ public sealed partial class LTenure
                 ExceptionDispatchInfo.Throw(fault);
             }
 
-            if (!_lEngine.LEngineDraftCheck(LTenureId))
+            if (!_lEngine.LEngineDraft.LEngineDraftCheck(LTenureId))
             {
                 LTenureCancel();
                 return null;
@@ -252,11 +252,11 @@ public sealed partial class LTenure
     {
         return _lTenureSubject switch
         {
-            LSubject.LSubjectEntry => _lEngine.LEngineDraftCommit(LTenureId).LOutcomeEntry.LEntryId,
-            LSubject.LSubjectExample => _lEngine.LEngineExampleCommit(LTenureId).LExampleId,
-            LSubject.LSubjectSituation => _lEngine.LEngineSituationCommit(LTenureId).LSituationId,
-            LSubject.LSubjectReference => _lEngine.LEngineReferenceCommit(LTenureId).LReferenceId,
-            LSubject.LSubjectAuthor => _lEngine.LEngineAuthorCommit(LTenureId).LAuthorId,
+            LSubject.LSubjectEntry => _lEngine.LEngineDraft.LEngineDraftCommit(LTenureId).LOutcomeEntry.LEntryId,
+            LSubject.LSubjectExample => _lEngine.LEngineExample.LEngineExampleCommit(LTenureId).LExampleId,
+            LSubject.LSubjectSituation => _lEngine.LEngineSituation.LEngineSituationCommit(LTenureId).LSituationId,
+            LSubject.LSubjectReference => _lEngine.LEngineReference.LEngineReferenceCommit(LTenureId).LReferenceId,
+            LSubject.LSubjectAuthor => _lEngine.LEngineAuthor.LEngineAuthorCommit(LTenureId).LAuthorId,
             _ => throw new InvalidOperationException(
                 "A tenure holds only an entry, example, situation, reference or author."),
         };
@@ -368,7 +368,7 @@ public sealed partial class LTenure
 
             try
             {
-                _lEngine.LEngineRequestApply(request);
+                _lEngine.LEngineRequest.LEngineRequestApply(request);
             }
             catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
             {

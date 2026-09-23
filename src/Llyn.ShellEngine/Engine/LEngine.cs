@@ -5,15 +5,36 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed partial class LEngine : IDisposable
+public sealed class LEngine : IDisposable
 {
     internal object LEngineGate { get; } = new();
+    internal LVistaFacade LEngineVista { get; }
+    internal LTenureFacade LEngineTenure { get; }
+    internal LMentionFacade LEngineMention { get; }
+    internal LMarkupFacade LEngineMarkup { get; }
+    internal LWorkspaceFacade LEngineWorkspace { get; }
+    internal LReflexFacade LEngineReflex { get; }
+    internal LPortraitFacade LEnginePortrait { get; }
+    internal LStemFacade LEngineStem { get; }
+    internal LFanqieFacade LEngineFanqie { get; }
+    internal LLanguageFacade LEngineLanguage { get; }
+    internal LVocabularyFacade LEngineVocabulary { get; }
+    internal LPronunciationFacade LEnginePronunciation { get; }
+    internal LDraftFacade LEngineDraft { get; }
+    internal LSettingsFacade LEngineSettings { get; }
+    internal LRequestFacade LEngineRequest { get; }
+    internal LAuthorFacade LEngineAuthor { get; }
+    internal LExampleFacade LEngineExample { get; }
+    internal LReferenceFacade LEngineReference { get; }
+    internal LSituationFacade LEngineSituation { get; }
+    internal LCardFacade LEngineCard { get; }
+    internal LEntryFacade LEngineEntry { get; }
     internal LTrove LEngineTrove { get; } = new();
     internal LSettings LEngineSettingsHeld { get; set; }
     internal HashSet<long> LEngineDraftStale { get; } = [];
     private readonly List<Action<LBulletin>> _lEngineObservers = [];
     private LEngineStaff _lEngineStaff;
-    private string _lEngineWorkspace;
+    private string _lEngineFolder;
     private LDoctorRescue _lEngineRescue;
     private LRealm _lEngineRealm;
 
@@ -21,20 +42,59 @@ public sealed partial class LEngine : IDisposable
     {
         ArgumentNullException.ThrowIfNull(rig);
 
-        _lEngineWorkspace = rig.LRigWorkspace;
+        _lEngineFolder = rig.LRigWorkspace;
         _lEngineStaff = LEngineStaff.LEngineStaffBuild(
-            rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead);
+            rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
         LEngineSettingsHeld = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsRead();
         _lEngineRescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
         _lEngineRealm = LWorkspaceClerk.LWorkspaceRealmRead(rig);
+
+        LEngineVista = new LVistaFacade(this);
+        LEngineDraft = new LDraftFacade(this);
+        LEngineEntry = new LEntryFacade(this);
+        LEngineCard = new LCardFacade(this);
+        LEngineReference = new LReferenceFacade(this);
+        LEngineSituation = new LSituationFacade(this);
+        LEngineAuthor = new LAuthorFacade(this);
+        LEngineExample = new LExampleFacade(this);
+        LEngineSettings = new LSettingsFacade(this);
+        LEngineRequest = new LRequestFacade(this);
+        LEngineTenure = new LTenureFacade(this);
+        LEngineMention = new LMentionFacade(this);
+        LEngineMarkup = new LMarkupFacade(this);
+        LEngineWorkspace = new LWorkspaceFacade(this);
+        LEngineReflex = new LReflexFacade(this);
+        LEnginePortrait = new LPortraitFacade(this);
+        LEngineStem = new LStemFacade(this);
+        LEngineFanqie = new LFanqieFacade(this);
+        LEngineLanguage = new LLanguageFacade(this);
+        LEngineVocabulary = new LVocabularyFacade(this);
+        LEnginePronunciation = new LPronunciationFacade(this);
         LEngineWorkspaceOpen();
     }
 
-    internal LEngineStaff LEngineStaffHeld => _lEngineStaff;
+    internal LEngineStaff LEngineStaffHeld
+    {
+        get
+        {
+            lock (LEngineGate)
+            {
+                return _lEngineStaff;
+            }
+        }
+    }
+
+    internal LSettings LEngineSettingsRead()
+    {
+        lock (LEngineGate)
+        {
+            return LEngineSettingsHeld;
+        }
+    }
 
     private void LEngineWorkspaceOpen()
     {
-        LEngineLanguageImport();
+        LEngineVocabulary.LEngineLanguageImport();
         _lEngineStaff.LEngineStaffFanqie.LDiweiApply();
         _lEngineStaff.LEngineStaffShengfu.LStemApply();
         if (_lEngineStaff.LEngineStaffWorkspace.LWorkspaceClerkMigrated)
@@ -71,7 +131,7 @@ public sealed partial class LEngine : IDisposable
     {
         lock (LEngineGate)
         {
-            return _lEngineWorkspace;
+            return _lEngineFolder;
         }
     }
 
@@ -118,9 +178,9 @@ public sealed partial class LEngine : IDisposable
             LEngineSettingsHeld = settings;
             _lEngineRescue = rescue;
             _lEngineRealm = realm;
-            _lEngineWorkspace = rig.LRigWorkspace;
+            _lEngineFolder = rig.LRigWorkspace;
             _lEngineStaff = LEngineStaff.LEngineStaffBuild(
-                rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead);
+                rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
             if (!settled)
             {
                 _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsSave(LEngineSettingsHeld);

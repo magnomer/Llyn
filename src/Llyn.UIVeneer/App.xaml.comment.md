@@ -31,7 +31,7 @@ The pointer resolves the path to its full form itself, so it reads as the rig's 
 The rig passes straight from the factory into the engine.
 The shell may hold no engine answer of its own.
 
-## `private void LBootstrapLocalizationApply(LEngine engine)`
+## `private void LBootstrapLocalizationApply(LSettingsPort settings)`
 
 Applies the language the workspace stores before any window or notice is shown.
 Every panel therefore attaches in that language, and the rescue notice speaks it too.
@@ -87,12 +87,13 @@ A corrupt database or a file from a newer build no longer stops the launch.
 A database another program holds is not set aside, and the message says so.
 Closing that program is the cure.
 
-### `engine = new LEngine(LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient));`
+### `engine = new LEngine(`
 
 This file is the composition root: the one place above Infrastructure that builds a rig.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
 The client is the root's field, built once and handed to every rig, and disposed in `OnExit`.
 
-### `new PWindow(engine, LBootstrapWorkspaceChange).Show();`
+### `new PWindow(LBootstrapWindowCreate(engine), LBootstrapWorkspaceChange).Show();`
 
-The window owns the engine from here: it disposes it when it closes.
+The window receives the deportment built over the engine, never the engine itself.
+The root keeps the engine and disposes it in `OnExit`.

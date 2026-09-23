@@ -69,7 +69,7 @@ public partial class LBootstrap : System.Windows.Application
         DispatcherUnhandledException += LBootstrapFaultHandle;
         TaskScheduler.UnobservedTaskException += LBootstrapStrayHandle;
 
-        LBootstrapLocalizationApply(engine);
+        LBootstrapLocalizationApply(new LSettingsOutlet(engine));
         LBootstrapRescueShow(engine.LEngineRescueRead());
 
         base.OnStartup(e);
@@ -103,9 +103,9 @@ public partial class LBootstrap : System.Windows.Application
         LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 
-    private void LBootstrapLocalizationApply(LEngine engine)
+    private void LBootstrapLocalizationApply(LSettingsPort settings)
     {
-        if (LLocalization.LLocalizationDefaultCheck(engine.LEngineSettingsRead().LSettingsLocalization))
+        if (LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization))
         {
             return;
         }
@@ -114,8 +114,8 @@ public partial class LBootstrap : System.Windows.Application
         {
             PLocalizationCatalog.PLocalizationCatalogApply(
                 Resources,
-                engine.LEngineLocalizationLoad(
-                    LLocalization.LLocalizationNormalize(engine.LEngineSettingsRead().LSettingsLocalization)));
+                settings.LEngineLocalizationLoad(
+                    LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
         }
         catch (Exception exception)
         {

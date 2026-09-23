@@ -1,0 +1,73 @@
+{
+  "language": "Tagalog",
+  "exampleOrder": [
+    "particle",
+    "dependence"
+  ],
+  "registers": [
+    "Formal",
+    "Informal",
+    "Polite",
+    "Impolite"
+  ],
+  "parts": [
+    {
+      "id": 1,
+      "name": "Noun"
+    },
+    {
+      "id": 2,
+      "name": "Noun, proper"
+    },
+    {
+      "id": 3,
+      "name": "Verb"
+    },
+    {
+      "id": 4,
+      "name": "Adjective"
+    },
+    {
+      "id": 5,
+      "name": "Adverb"
+    },
+    {
+      "id": 6,
+      "name": "Pronoun"
+    },
+    {
+      "id": 7,
+      "name": "Numeral"
+    },
+    {
+      "id": 8,
+      "name": "Classifier"
+    },
+    {
+      "id": 9,
+      "name": "Preposition"
+    },
+    {
+      "id": 10,
+      "name": "Conjunction"
+    },
+    {
+      "id": 11,
+      "name": "Particle"
+    },
+    {
+      "id": 12,
+      "name": "Interjection"
+    },
+    {
+      "id": 13,
+      "name": "Phrase"
+    },
+    {
+      "id": 14,
+      "name": "Idiom"
+    }
+  ],
+  "features": [],
+  "values": []
+}

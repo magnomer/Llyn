@@ -7,10 +7,10 @@ namespace Llyn.Tests;
 internal static partial class TInterface
 {
     internal static LTenure TEngineTenureStart(this LEngine engine, string origin, LSubject subject, long? id) =>
-        engine.LEngineTenureStart(origin, subject, id);
+        engine.LEngineTenure.LEngineTenureStart(origin, subject, id);
 
     internal static void TEngineDelaySet(this LEngine engine, int delay) =>
-        engine.LEngineTenureDelay = delay;
+        engine.LEngineTenure.LEngineTenureDelay = delay;
 
     internal static LDraft? TTenureRead(this LTenure tenure) =>
         tenure.LTenureRead();

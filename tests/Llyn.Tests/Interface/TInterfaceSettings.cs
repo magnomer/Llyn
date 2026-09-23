@@ -115,11 +115,11 @@ internal static partial class TInterface
 
     internal static void TEngineLeftSave(this LEngine engine, long? id)
     {
-        engine.LEngineLeftSave(id);
+        engine.LEngineWorkspace.LEngineLeftSave(id);
     }
 
     internal static void TEngineRightSave(this LEngine engine, long? id)
     {
-        engine.LEngineRightSave(id);
+        engine.LEngineWorkspace.LEngineRightSave(id);
     }
 }

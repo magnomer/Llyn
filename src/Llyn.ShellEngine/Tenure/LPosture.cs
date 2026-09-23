@@ -66,7 +66,8 @@ public sealed class LPosture : IDisposable
             break;
         }
 
-        LVista vista = _lEngine.LEngineVistaStart(tab, subject, order, filter, state.LPostureStateSplit, blank);
+        LVista vista = _lEngine.LEngineVista.LEngineVistaStart(
+            tab, subject, order, filter, state.LPostureStateSplit, blank);
         vista.LVistaEditingSaved += LPostureSplitSave;
         lock (_lPostureGate)
         {
@@ -178,7 +179,7 @@ public sealed class LPosture : IDisposable
         }
 
         if (!bulletin.LBulletinMatch(LSubject.LSubjectVista) ||
-            _lEngine.LEngineVistaRead(bulletin.LBulletinId) is not LVista vista)
+            _lEngine.LEngineVista.LEngineVistaRead(bulletin.LBulletinId) is not LVista vista)
         {
             return;
         }
@@ -230,7 +231,7 @@ public sealed class LPosture : IDisposable
     {
         lock (_lPostureGate)
         {
-            if (!_lEngine.LEnginePostureLoad(LPostureName, out LPostureState? kept))
+            if (!_lEngine.LEngineSettings.LEnginePostureLoad(LPostureName, out LPostureState? kept))
             {
                 return;
             }
@@ -241,7 +242,7 @@ public sealed class LPosture : IDisposable
                 return;
             }
 
-            if (!_lEngine.LEnginePostureLoad(LPostureLegacy, out LPostureState? legacy))
+            if (!_lEngine.LEngineSettings.LEnginePostureLoad(LPostureLegacy, out LPostureState? legacy))
             {
                 return;
             }
@@ -273,6 +274,6 @@ public sealed class LPosture : IDisposable
 
     private void LPostureSave()
     {
-        _lEngine.LEnginePostureSave(LPostureName, _lPostureState);
+        _lEngine.LEngineSettings.LEnginePostureSave(LPostureName, _lPostureState);
     }
 }

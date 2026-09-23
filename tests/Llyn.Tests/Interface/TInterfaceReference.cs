@@ -11,43 +11,43 @@ internal static partial class TInterface
         long authorId,
         int position)
     {
-        engine.LEngineAuthorAttach(referenceId, authorId, position);
+        engine.LEngineAuthor.LEngineAuthorAttach(referenceId, authorId, position);
     }
 
     internal static LAuthor TEngineAuthorCreate(this LEngine engine, LAuthor author) =>
-        engine.LEngineAuthorCreate(author);
+        engine.LEngineAuthor.LEngineAuthorCreate(author);
 
     internal static void TEngineAuthorDelete(this LEngine engine, long id)
     {
-        engine.LEngineAuthorDelete(id);
+        engine.LEngineAuthor.LEngineAuthorDelete(id);
     }
 
     internal static void TEngineAuthorDetach(this LEngine engine, long referenceId, long authorId)
     {
-        engine.LEngineAuthorDetach(referenceId, authorId);
+        engine.LEngineAuthor.LEngineAuthorDetach(referenceId, authorId);
     }
 
     internal static LAuthor? TEngineAuthorRead(this LEngine engine, long id) =>
-        engine.LEngineAuthorRead(id);
+        engine.LEngineAuthor.LEngineAuthorRead(id);
 
     internal static IReadOnlyList<LAuthor> TEngineAuthorRead(this LEngine engine) =>
-        engine.LEngineAuthorRead();
+        engine.LEngineAuthor.LEngineAuthorRead();
 
     internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
-        engine.LEngineAuthorFind(query);
+        engine.LEngineAuthor.LEngineAuthorFind(query);
 
     internal static IReadOnlyList<LCatalogAuthor> TEngineAuthorFind(
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineAuthorFind(query, order);
+        engine.LEngineAuthor.LEngineAuthorFind(query, order);
 
     internal static IReadOnlyList<LFellow> TEngineFellowFind(this LEngine engine, long authorId) =>
-        engine.LEngineFellowFind(authorId);
+        engine.LEngineAuthor.LEngineFellowFind(authorId);
 
     internal static void TEngineAuthorAbsorb(this LEngine engine, long kept, long dropped)
     {
-        engine.LEngineAuthorAbsorb(kept, dropped);
+        engine.LEngineAuthor.LEngineAuthorAbsorb(kept, dropped);
     }
 
     internal static IReadOnlyList<LCatalogReference> TEngineOeuvreFind(
@@ -56,17 +56,17 @@ internal static partial class TInterface
         string query,
         LCatalogFilter kind,
         LCatalogOrder order) =>
-        engine.LEngineOeuvreFind(author, query, kind, order);
+        engine.LEngineAuthor.LEngineOeuvreFind(author, query, kind, order);
 
     internal static IReadOnlyList<LAuthor> TEngineAuthorRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineAuthorRead(ownerId, owner);
+        engine.LEngineAuthor.LEngineAuthorRead(ownerId, owner);
 
     internal static void TEngineAuthorUpdate(this LEngine engine, LAuthor author)
     {
-        engine.LEngineAuthorUpdate(author);
+        engine.LEngineAuthor.LEngineAuthorUpdate(author);
     }
 
     internal static void TEngineReferenceAttach(
@@ -76,21 +76,21 @@ internal static partial class TInterface
         int position,
         LOwner owner)
     {
-        engine.LEngineReferenceAttach(ownerId, referenceId, position, owner);
+        engine.LEngineReference.LEngineReferenceAttach(ownerId, referenceId, position, owner);
     }
 
     internal static LReference TEngineReferenceCommit(this LEngine engine, long id) =>
-        engine.LEngineReferenceCommit(id);
+        engine.LEngineReference.LEngineReferenceCommit(id);
 
     internal static LReference TEngineReferenceCreate(this LEngine engine, LReference reference) =>
-        engine.LEngineReferenceCreate(reference);
+        engine.LEngineReference.LEngineReferenceCreate(reference);
 
     internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, long? referenceId) =>
-        engine.LEngineReferenceStart(origin, referenceId);
+        engine.LEngineReference.LEngineReferenceStart(origin, referenceId);
 
     internal static void TEngineReferenceDelete(this LEngine engine, long id)
     {
-        engine.LEngineReferenceDelete(id);
+        engine.LEngineReference.LEngineReferenceDelete(id);
     }
 
     internal static void TEngineReferenceDetach(
@@ -99,18 +99,18 @@ internal static partial class TInterface
         long referenceId,
         LOwner owner)
     {
-        engine.LEngineReferenceDetach(ownerId, referenceId, owner);
+        engine.LEngineReference.LEngineReferenceDetach(ownerId, referenceId, owner);
     }
 
     internal static IReadOnlyList<LReference> TEngineReferenceRead(this LEngine engine) =>
-        engine.LEngineReferenceRead();
+        engine.LEngineReference.LEngineReferenceRead();
 
     internal static LReference? TEngineReferenceRead(this LEngine engine, long id) =>
-        engine.LEngineReferenceRead(id);
+        engine.LEngineReference.LEngineReferenceRead(id);
 
     internal static IReadOnlyList<LReference> TEngineReferenceRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineReferenceRead(ownerId, owner);
+        engine.LEngineReference.LEngineReferenceRead(ownerId, owner);
 }

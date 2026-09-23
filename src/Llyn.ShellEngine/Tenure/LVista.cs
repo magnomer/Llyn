@@ -70,7 +70,7 @@ public sealed class LVista
 
     public LDraft? LVistaLoad()
     {
-        LDraft? draft = _lEngine.LEngineVistaLoad(this);
+        LDraft? draft = _lEngine.LEngineVista.LEngineVistaLoad(this);
         if (draft is null && LVistaStored is not null)
         {
             LVistaSelect(null);
@@ -94,7 +94,7 @@ public sealed class LVista
         string trimmed = headword.Trim();
         return trimmed.Length == 0 || vista is null
             ? "entry"
-            : vista._lEngine.LEngineTrailNormalize(trimmed);
+            : vista._lEngine.LEngineSettings.LEngineTrailNormalize(trimmed);
     }
 
     public LRevision? LVistaDelete()
@@ -108,22 +108,22 @@ public sealed class LVista
         switch (LVistaSubject)
         {
             case LSubject.LSubjectEntry:
-                revision = _lEngine.LEngineEntryDelete(id);
+                revision = _lEngine.LEngineEntry.LEngineEntryDelete(id);
                 break;
             case LSubject.LSubjectExample:
-                _lEngine.LEngineExampleDelete(id, true);
+                _lEngine.LEngineExample.LEngineExampleDelete(id, true);
                 revision = null;
                 break;
             case LSubject.LSubjectSituation:
-                _lEngine.LEngineSituationDelete(id, true);
+                _lEngine.LEngineSituation.LEngineSituationDelete(id, true);
                 revision = null;
                 break;
             case LSubject.LSubjectReference:
-                _lEngine.LEngineReferenceDelete(id, true);
+                _lEngine.LEngineReference.LEngineReferenceDelete(id, true);
                 revision = null;
                 break;
             case LSubject.LSubjectAuthor:
-                _lEngine.LEngineAuthorDelete(id, true);
+                _lEngine.LEngineAuthor.LEngineAuthorDelete(id, true);
                 revision = null;
                 break;
             default:

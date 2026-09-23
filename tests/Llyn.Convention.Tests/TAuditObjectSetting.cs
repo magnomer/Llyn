@@ -13,14 +13,11 @@ internal static class TAuditObjectSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
-        ["Monolith"] = 7,
-        ["Hub"] = 14,
+        ["Monolith"] = 6,
+        ["Hub"] = 11,
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling = new Dictionary<string, int>
-    {
-        ["Llyn.ShellEngine.LEngine"] = 23,
-    };
+    public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling = new Dictionary<string, int>();
 
     public static readonly string[] TAuditObjectInclude =
     [

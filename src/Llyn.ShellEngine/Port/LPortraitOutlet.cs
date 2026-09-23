@@ -16,16 +16,17 @@ public sealed class LPortraitOutlet : LPortraitPort
     }
 
     public Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket) =>
-        _lPortraitOutletEngine.LEnginePortraitPrint(vista, label, ticket);
+        _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitPrint(vista, label, ticket);
 
     public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket) =>
-        _lPortraitOutletEngine.LEnginePortraitPrint(vista, legend, ticket);
+        _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitPrint(vista, legend, ticket);
 
     public Task LEnginePortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label) =>
-        _lPortraitOutletEngine.LEnginePortraitExport(vista, path, format, label);
+        _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);
 
-    public Task<LMarkupCargo> LEngineMarkupStart(string path) => _lPortraitOutletEngine.LEngineMarkupStart(path);
+    public Task<LMarkupCargo> LEngineMarkupStart(string path) =>
+        _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path);
 
     public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
-        _lPortraitOutletEngine.LEngineMarkupStart(cargo, intakes);
+        _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(cargo, intakes);
 }

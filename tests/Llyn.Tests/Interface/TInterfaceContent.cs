@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 internal static partial class TInterface
 {
     internal static LPronunciationAudio? TEngineAudioRead(this LEngine engine, long pronunciationId) =>
-        engine.LEngineAudioRead(pronunciationId);
+        engine.LEnginePronunciation.LEngineAudioRead(pronunciationId);
 
     internal static void TEngineAudioSave(
         this LEngine engine,
@@ -14,31 +14,31 @@ internal static partial class TInterface
         string file,
         string? source)
     {
-        engine.LEngineAudioSave(pronunciationId, file, source);
+        engine.LEnginePronunciation.LEngineAudioSave(pronunciationId, file, source);
     }
 
     internal static LCollocation TEngineCollocationCreate(this LEngine engine, LCollocation collocation) =>
-        engine.LEngineCollocationCreate(collocation);
+        engine.LEngineCard.LEngineCollocationCreate(collocation);
 
     internal static void TEngineCollocationDelete(this LEngine engine, long id)
     {
-        engine.LEngineCollocationDelete(id);
+        engine.LEngineCard.LEngineCollocationDelete(id);
     }
 
     internal static void TEngineCollocationMove(this LEngine engine, long id, int position)
     {
-        engine.LEngineCollocationMove(id, position);
+        engine.LEngineCard.LEngineCollocationMove(id, position);
     }
 
     internal static IReadOnlyList<LCollocation> TEngineCollocationRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineCollocationRead(ownerId, owner);
+        engine.LEngineCard.LEngineCollocationRead(ownerId, owner);
 
     internal static void TEngineCollocationUpdate(this LEngine engine, LCollocation collocation)
     {
-        engine.LEngineCollocationUpdate(collocation);
+        engine.LEngineCard.LEngineCollocationUpdate(collocation);
     }
 
     internal static void TEngineExampleAttach(
@@ -48,26 +48,26 @@ internal static partial class TInterface
         int position,
         LOwner owner)
     {
-        engine.LEngineExampleAttach(ownerId, exampleId, position, owner);
+        engine.LEngineExample.LEngineExampleAttach(ownerId, exampleId, position, owner);
     }
 
     internal static LExample TEngineExampleCommit(this LEngine engine, long id) =>
-        engine.LEngineExampleCommit(id);
+        engine.LEngineExample.LEngineExampleCommit(id);
 
     internal static LDraft TEngineExampleStart(this LEngine engine, string origin, long? exampleId) =>
-        engine.LEngineExampleStart(origin, exampleId);
+        engine.LEngineExample.LEngineExampleStart(origin, exampleId);
 
     internal static LExample TEngineExampleCreate(this LEngine engine, LExample example) =>
-        engine.LEngineExampleCreate(example);
+        engine.LEngineExample.LEngineExampleCreate(example);
 
     internal static void TEngineExampleDelete(this LEngine engine, long id)
     {
-        engine.LEngineExampleDelete(id);
+        engine.LEngineExample.LEngineExampleDelete(id);
     }
 
     internal static void TEngineExampleDelete(this LEngine engine, long id, bool detach)
     {
-        engine.LEngineExampleDelete(id, detach);
+        engine.LEngineExample.LEngineExampleDelete(id, detach);
     }
 
     internal static void TEngineExampleDetach(
@@ -76,20 +76,20 @@ internal static partial class TInterface
         long exampleId,
         LOwner owner)
     {
-        engine.LEngineExampleDetach(ownerId, exampleId, owner);
+        engine.LEngineExample.LEngineExampleDetach(ownerId, exampleId, owner);
     }
 
     internal static IReadOnlyList<LExample> TEngineExampleRead(this LEngine engine) =>
-        engine.LEngineExampleRead();
+        engine.LEngineExample.LEngineExampleRead();
 
     internal static LExample? TEngineExampleRead(this LEngine engine, long id) =>
-        engine.LEngineExampleRead(id);
+        engine.LEngineExample.LEngineExampleRead(id);
 
     internal static IReadOnlyList<LExample> TEngineExampleRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineExampleRead(ownerId, owner);
+        engine.LEngineExample.LEngineExampleRead(ownerId, owner);
 
     internal static void TEngineExampleRemove(
         this LEngine engine,
@@ -97,163 +97,163 @@ internal static partial class TInterface
         long exampleId,
         LOwner owner)
     {
-        engine.LEngineExampleRemove(ownerId, exampleId, owner);
+        engine.LEngineExample.LEngineExampleRemove(ownerId, exampleId, owner);
     }
 
     internal static void TEngineExampleUpdate(this LEngine engine, LExample example)
     {
-        engine.LEngineExampleUpdate(example);
+        engine.LEngineExample.LEngineExampleUpdate(example);
     }
 
     internal static void TEngineExampleUpdate(this LEngine engine, long exampleId, LStateAnchor reference)
     {
-        engine.LEngineExampleUpdate(exampleId, reference);
+        engine.LEngineExample.LEngineExampleUpdate(exampleId, reference);
     }
 
     internal static IReadOnlyList<LUsage> TEngineIncomingRead(this LEngine engine, long entryId) =>
-        engine.LEngineIncomingRead(entryId);
+        engine.LEngineCard.LEngineIncomingRead(entryId);
 
     internal static void TEngineInflectionAppend(
         this LEngine engine,
         long entryId,
         IReadOnlyList<LInflection> inflections)
     {
-        engine.LEngineInflectionAppend(entryId, inflections);
+        engine.LEngineVocabulary.LEngineInflectionAppend(entryId, inflections);
     }
 
     internal static void TEngineInflectionDelete(this LEngine engine, long entryId, int position)
     {
-        engine.LEngineInflectionDelete(entryId, position);
+        engine.LEngineVocabulary.LEngineInflectionDelete(entryId, position);
     }
 
     internal static void TEngineInflectionMove(this LEngine engine, long entryId, int position, int target)
     {
-        engine.LEngineInflectionMove(entryId, position, target);
+        engine.LEngineVocabulary.LEngineInflectionMove(entryId, position, target);
     }
 
     internal static IReadOnlyList<LInflection> TEngineInflectionRead(this LEngine engine, long entryId) =>
-        engine.LEngineInflectionRead(entryId);
+        engine.LEngineVocabulary.LEngineInflectionRead(entryId);
 
     internal static void TEngineInflectionSet(
         this LEngine engine,
         long entryId,
         IReadOnlyList<LInflection> inflections)
     {
-        engine.LEngineInflectionSet(entryId, inflections);
+        engine.LEngineVocabulary.LEngineInflectionSet(entryId, inflections);
     }
 
     internal static LFeature TEngineFeatureCreate(
         this LEngine engine, LFeature feature) =>
-        engine.LEngineFeatureCreate(feature);
+        engine.LEngineVocabulary.LEngineFeatureCreate(feature);
 
     internal static LMorphology TEngineMorphologyCreate(
         this LEngine engine, LMorphology value) =>
-        engine.LEngineMorphologyCreate(value);
+        engine.LEngineVocabulary.LEngineMorphologyCreate(value);
 
     internal static IReadOnlyList<LFeature> TEngineFeatureRead(
         this LEngine engine, long speechValueId) =>
-        engine.LEngineFeatureRead(speechValueId);
+        engine.LEngineVocabulary.LEngineFeatureRead(speechValueId);
 
     internal static LFeature? TEngineFeatureFind(
         this LEngine engine, long speechValueId, string name) =>
-        engine.LEngineFeatureFind(speechValueId, name);
+        engine.LEngineVocabulary.LEngineFeatureFind(speechValueId, name);
 
     internal static LMorphology? TEngineMorphologyRead(this LEngine engine, long id) =>
-        engine.LEngineMorphologyRead(id);
+        engine.LEngineVocabulary.LEngineMorphologyRead(id);
 
     internal static IReadOnlyList<LMorphology> TEngineMorphologyScan(
         this LEngine engine, long featureId) =>
-        engine.LEngineMorphologyScan(featureId);
+        engine.LEngineVocabulary.LEngineMorphologyScan(featureId);
 
     internal static LMorphology? TEngineMorphologyFind(
         this LEngine engine, long featureId, string name) =>
-        engine.LEngineMorphologyFind(featureId, name);
+        engine.LEngineVocabulary.LEngineMorphologyFind(featureId, name);
 
     internal static IReadOnlyList<LParadigmSlot> TEngineParadigmRead(this LEngine engine, long entryId) =>
-        engine.LEngineParadigmRead(entryId);
+        engine.LEngineVocabulary.LEngineParadigmRead(entryId);
 
     internal static IReadOnlyList<LParadigmSlot> TEngineParadigmShow(this LEngine engine, long entryId) =>
-        engine.LEngineParadigmShow(entryId);
+        engine.LEngineVocabulary.LEngineParadigmShow(entryId);
 
     internal static bool TEngineParadigmMatch(LParadigm paradigm, string headword, string form) =>
-        LEngine.LEngineParadigmMatch(paradigm, headword, form);
+        LVocabularyFacade.LEngineParadigmMatch(paradigm, headword, form);
 
     internal static void TEngineNoteDelete(this LEngine engine, long entryId)
     {
-        engine.LEngineNoteDelete(entryId);
+        engine.LEnginePronunciation.LEngineNoteDelete(entryId);
     }
 
     internal static LNote? TEngineNoteRead(this LEngine engine, long entryId) =>
-        engine.LEngineNoteRead(entryId);
+        engine.LEnginePronunciation.LEngineNoteRead(entryId);
 
     internal static void TEngineNoteSave(this LEngine engine, LNote note)
     {
-        engine.LEngineNoteSave(note);
+        engine.LEnginePronunciation.LEngineNoteSave(note);
     }
 
     internal static LPronunciation TEnginePronunciationCreate(
         this LEngine engine,
         LPronunciation pronunciation) =>
-        engine.LEnginePronunciationCreate(pronunciation);
+        engine.LEnginePronunciation.LEnginePronunciationCreate(pronunciation);
 
     internal static void TEnginePronunciationDelete(this LEngine engine, long id)
     {
-        engine.LEnginePronunciationDelete(id);
+        engine.LEnginePronunciation.LEnginePronunciationDelete(id);
     }
 
     internal static IReadOnlyList<LPronunciation> TEnginePronunciationRead(this LEngine engine, long entryId) =>
-        engine.LEnginePronunciationRead(entryId);
+        engine.LEnginePronunciation.LEnginePronunciationRead(entryId);
 
     internal static IReadOnlyList<LTranscription> TEngineTranscriptionRead(this LEngine engine, long entryId) =>
-        engine.LEngineTranscriptionRead(entryId);
+        engine.LEnginePronunciation.LEngineTranscriptionRead(entryId);
 
     internal static IReadOnlyList<LTranscription> TEngineTranscriptionSet(
         this LEngine engine, long entryId, IReadOnlyList<LTranscription> transcriptions) =>
-        engine.LEngineTranscriptionSet(entryId, transcriptions);
+        engine.LEnginePronunciation.LEngineTranscriptionSet(entryId, transcriptions);
 
     internal static IReadOnlyList<string> TEngineSchemeRead(this LEngine engine, string language) =>
-        engine.LEngineSchemeRead(language);
+        engine.LEnginePronunciation.LEngineSchemeRead(language);
 
     internal static LGlyph? TEngineGlyphRead(this LEngine engine, string language) =>
-        engine.LEngineGlyphRead(language);
+        engine.LEngineEntry.LEngineGlyphRead(language);
 
     internal static LEntry TEngineGlyphResolve(this LEngine engine, string character, string language) =>
-        engine.LEngineGlyphResolve(character, language);
+        engine.LEngineEntry.LEngineGlyphResolve(character, language);
 
     internal static void TEnginePronunciationUpdate(this LEngine engine, LPronunciation pronunciation)
     {
-        engine.LEnginePronunciationUpdate(pronunciation);
+        engine.LEnginePronunciation.LEnginePronunciationUpdate(pronunciation);
     }
 
     internal static LMeaning TEngineMeaningCreate(this LEngine engine, LMeaning meaning) =>
-        engine.LEngineMeaningCreate(meaning);
+        engine.LEngineCard.LEngineMeaningCreate(meaning);
 
     internal static void TEngineMeaningDelete(this LEngine engine, long id)
     {
-        engine.LEngineMeaningDelete(id);
+        engine.LEngineCard.LEngineMeaningDelete(id);
     }
 
     internal static void TEngineMeaningMove(this LEngine engine, long id, int position)
     {
-        engine.LEngineMeaningMove(id, position);
+        engine.LEngineCard.LEngineMeaningMove(id, position);
     }
 
     internal static LMeaning? TEngineMeaningRead(this LEngine engine, long id) =>
-        engine.LEngineMeaningRead(id);
+        engine.LEngineCard.LEngineMeaningRead(id);
 
     internal static IReadOnlyList<LMentionLabel> TEngineMentionResolve(
         this LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions) =>
-        engine.LEngineMentionResolve(text, mentions);
+        engine.LEngineMention.LEngineMentionResolve(text, mentions);
 
     internal static IReadOnlyList<LMeaning> TEngineMeaningRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineMeaningRead(ownerId, owner);
+        engine.LEngineCard.LEngineMeaningRead(ownerId, owner);
 
     internal static void TEngineMeaningUpdate(this LEngine engine, LMeaning meaning)
     {
-        engine.LEngineMeaningUpdate(meaning);
+        engine.LEngineCard.LEngineMeaningUpdate(meaning);
     }
 
     internal static void TEngineSituationAttach(
@@ -263,26 +263,26 @@ internal static partial class TInterface
         int position,
         LOwner owner)
     {
-        engine.LEngineSituationAttach(ownerId, situationId, position, owner);
+        engine.LEngineSituation.LEngineSituationAttach(ownerId, situationId, position, owner);
     }
 
     internal static LSituation TEngineSituationCommit(this LEngine engine, long id) =>
-        engine.LEngineSituationCommit(id);
+        engine.LEngineSituation.LEngineSituationCommit(id);
 
     internal static LSituation TEngineSituationCreate(this LEngine engine, LSituation situation) =>
-        engine.LEngineSituationCreate(situation);
+        engine.LEngineSituation.LEngineSituationCreate(situation);
 
     internal static LDraft TEngineSituationStart(this LEngine engine, string origin, long? situationId) =>
-        engine.LEngineSituationStart(origin, situationId);
+        engine.LEngineSituation.LEngineSituationStart(origin, situationId);
 
     internal static void TEngineSituationDelete(this LEngine engine, long id)
     {
-        engine.LEngineSituationDelete(id);
+        engine.LEngineSituation.LEngineSituationDelete(id);
     }
 
     internal static void TEngineSituationDelete(this LEngine engine, long id, bool detach)
     {
-        engine.LEngineSituationDelete(id, detach);
+        engine.LEngineSituation.LEngineSituationDelete(id, detach);
     }
 
     internal static void TEngineSituationDetach(
@@ -291,20 +291,20 @@ internal static partial class TInterface
         long situationId,
         LOwner owner)
     {
-        engine.LEngineSituationDetach(ownerId, situationId, owner);
+        engine.LEngineSituation.LEngineSituationDetach(ownerId, situationId, owner);
     }
 
     internal static IReadOnlyList<LSituation> TEngineSituationRead(this LEngine engine) =>
-        engine.LEngineSituationRead();
+        engine.LEngineSituation.LEngineSituationRead();
 
     internal static LSituation? TEngineSituationRead(this LEngine engine, long id) =>
-        engine.LEngineSituationRead(id);
+        engine.LEngineSituation.LEngineSituationRead(id);
 
     internal static IReadOnlyList<LSituation> TEngineSituationRead(
         this LEngine engine,
         long ownerId,
         LOwner owner) =>
-        engine.LEngineSituationRead(ownerId, owner);
+        engine.LEngineSituation.LEngineSituationRead(ownerId, owner);
 
     internal static void TEngineSituationRemove(
         this LEngine engine,
@@ -312,47 +312,47 @@ internal static partial class TInterface
         long situationId,
         LOwner owner)
     {
-        engine.LEngineSituationRemove(ownerId, situationId, owner);
+        engine.LEngineSituation.LEngineSituationRemove(ownerId, situationId, owner);
     }
 
     internal static void TEngineSituationUpdate(this LEngine engine, LSituation situation)
     {
-        engine.LEngineSituationUpdate(situation);
+        engine.LEngineSituation.LEngineSituationUpdate(situation);
     }
 
     internal static LSpeechValue? TEngineSpeechAdd(this LEngine engine, string language, string name) =>
-        engine.LEngineSpeechAdd(language, name);
+        engine.LEngineVocabulary.LEngineSpeechAdd(language, name);
 
     internal static LSpeechValue TEngineSpeechCreate(this LEngine engine, LSpeechValue value) =>
-        engine.LEngineSpeechCreate(value);
+        engine.LEngineVocabulary.LEngineSpeechCreate(value);
 
     internal static LSpeechValue? TEngineSpeechFind(this LEngine engine, string language, string name) =>
-        engine.LEngineSpeechFind(language, name);
+        engine.LEngineVocabulary.LEngineSpeechFind(language, name);
 
     internal static IReadOnlyList<LSpeechValue> TEngineSpeechRead(this LEngine engine, string language) =>
-        engine.LEngineSpeechRead(language);
+        engine.LEngineVocabulary.LEngineSpeechRead(language);
 
     internal static LSpeechValue? TEngineSpeechRead(this LEngine engine, long id) =>
-        engine.LEngineSpeechRead(id);
+        engine.LEngineVocabulary.LEngineSpeechRead(id);
 
     internal static LTag TEngineTagCreate(this LEngine engine, string text) =>
-        engine.LEngineTagCreate(text);
+        engine.LEngineCard.LEngineTagCreate(text);
 
     internal static void TEngineTagChange(this LEngine engine, long tagId, string renamed)
     {
-        engine.LEngineTagChange(tagId, renamed);
+        engine.LEngineCard.LEngineTagChange(tagId, renamed);
     }
 
     internal static void TEngineTagDelete(this LEngine engine, long tagId)
     {
-        engine.LEngineTagDelete(tagId);
+        engine.LEngineCard.LEngineTagDelete(tagId);
     }
 
     internal static IReadOnlyList<LTag> TEngineTagRead(this LEngine engine) =>
-        engine.LEngineTagRead();
+        engine.LEngineCard.LEngineTagRead();
 
     internal static IReadOnlyList<LTag> TEngineTagRead(this LEngine engine, long ownerId, LOwner owner) =>
-        engine.LEngineTagRead(ownerId, owner);
+        engine.LEngineCard.LEngineTagRead(ownerId, owner);
 
     internal static void TEngineTagSave(
         this LEngine engine,
@@ -360,24 +360,24 @@ internal static partial class TInterface
         IReadOnlyList<LTag> written,
         LOwner owner)
     {
-        engine.LEngineTagSave(ownerId, written, owner);
+        engine.LEngineCard.LEngineTagSave(ownerId, written, owner);
     }
 
     internal static LEntry TEngineTranslationCreate(this LEngine engine, string headword, string language) =>
-        engine.LEngineTranslationCreate(headword, language);
+        engine.LEngineCard.LEngineTranslationCreate(headword, language);
 
     internal static IReadOnlyList<LEntry> TEngineTranslationFind(
         this LEngine engine,
         string query,
         long? entryId) =>
-        engine.LEngineTranslationFind(query, entryId);
+        engine.LEngineCard.LEngineTranslationFind(query, entryId);
 
     internal static LEntry? TEngineTranslationResolve(this LEngine engine, string word, long? entryId) =>
-        engine.LEngineTranslationResolve(word, entryId);
+        engine.LEngineCard.LEngineTranslationResolve(word, entryId);
 
     internal static IReadOnlyDictionary<long, int> TEngineUsageRead(this LEngine engine, LOwner owner) =>
-        engine.LEngineUsageRead(owner);
+        engine.LEngineEntry.LEngineUsageRead(owner);
 
     internal static IReadOnlyList<LUsage> TEngineUsageRead(this LEngine engine, long id, LOwner owner) =>
-        engine.LEngineUsageRead(id, owner);
+        engine.LEngineEntry.LEngineUsageRead(id, owner);
 }

@@ -1,0 +1,69 @@
+{
+  "language": "Sanskrit",
+  "exampleOrder": [
+    "particle",
+    "dependence"
+  ],
+  "registers": [
+    "Formal",
+    "Informal",
+    "Polite",
+    "Impolite"
+  ],
+  "parts": [
+    {
+      "id": 1,
+      "name": "Noun"
+    },
+    {
+      "id": 2,
+      "name": "Noun, proper"
+    },
+    {
+      "id": 3,
+      "name": "Verb"
+    },
+    {
+      "id": 4,
+      "name": "Adjective"
+    },
+    {
+      "id": 5,
+      "name": "Adverb"
+    },
+    {
+      "id": 6,
+      "name": "Pronoun"
+    },
+    {
+      "id": 7,
+      "name": "Numeral"
+    },
+    {
+      "id": 8,
+      "name": "Participle"
+    },
+    {
+      "id": 9,
+      "name": "Infinitive"
+    },
+    {
+      "id": 10,
+      "name": "Gerund"
+    },
+    {
+      "id": 11,
+      "name": "Indeclinable"
+    },
+    {
+      "id": 12,
+      "name": "Compound"
+    },
+    {
+      "id": 13,
+      "name": "Phrase"
+    }
+  ],
+  "features": [],
+  "values": []
+}

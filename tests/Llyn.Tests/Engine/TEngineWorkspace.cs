@@ -99,6 +99,35 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
+    public void WorkspaceOpen_HeldDraftId_IsNeverIssuedToTheNextWorkspace()
+    {
+        using TWorkspace first = TWorkspace.TWorkspaceCreate();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LDraft held = engine.TEngineDraftStart("editor", null);
+
+        engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+        LDraft fresh = engine.TEngineDraftStart("editor", null);
+
+        Assert.NotEqual(held.LDraftId, fresh.LDraftId);
+        Assert.NotNull(engine.TEngineDraftRead(fresh.LDraftId));
+    }
+
+    [Fact]
+    public void WorkspaceOpen_HeldDraftCancelled_ReleasesItsStaleId()
+    {
+        using TWorkspace first = TWorkspace.TWorkspaceCreate();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LDraft held = engine.TEngineDraftStart("editor", null);
+        engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+
+        engine.TEngineDraftCancel(held.LDraftId);
+
+        Assert.False(engine.TEngineDraftCheck(held.LDraftId));
+    }
+
+    [Fact]
     public void WorkspaceOpen_Observer_RaisesWorkspaceBulletinOnce()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();

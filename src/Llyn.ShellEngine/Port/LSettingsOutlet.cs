@@ -16,36 +16,40 @@ public sealed class LSettingsOutlet : LSettingsPort
         _lSettingsOutletEngine = engine;
     }
 
-    public LSettings LEngineSettingsRead() => _lSettingsOutletEngine.LEngineSettingsRead();
+    public LSettings LEngineSettingsRead() => _lSettingsOutletEngine.LEngineSettings.LEngineSettingsRead();
 
     public string LEngineWorkspaceRead() => _lSettingsOutletEngine.LEngineWorkspaceRead();
 
     public string LEngineWorkspaceFormat() => _lSettingsOutletEngine.LEngineWorkspaceFormat();
 
-    public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineStateRead();
+    public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineStateRead();
 
-    public void LEngineLeftSave(long? id) => _lSettingsOutletEngine.LEngineLeftSave(id);
+    public void LEngineLeftSave(long? id) => _lSettingsOutletEngine.LEngineWorkspace.LEngineLeftSave(id);
 
-    public void LEngineRightSave(long? id) => _lSettingsOutletEngine.LEngineRightSave(id);
+    public void LEngineRightSave(long? id) => _lSettingsOutletEngine.LEngineWorkspace.LEngineRightSave(id);
 
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language) =>
-        _lSettingsOutletEngine.LEngineLocalizationLoad(language);
+        _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationLoad(language);
 
-    public string LEngineLocalizationRead() => _lSettingsOutletEngine.LEngineLocalizationRead();
+    public string LEngineLocalizationRead() => _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationRead();
 
-    public string LEngineTextRead(string key) => _lSettingsOutletEngine.LEngineTextRead(key);
+    public string LEngineTextRead(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextRead(key);
 
-    public string? LEngineTextFind(string key) => _lSettingsOutletEngine.LEngineTextFind(key);
+    public string? LEngineTextFind(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextFind(key);
 
-    public void LEngineLocalizationSave(string language) => _lSettingsOutletEngine.LEngineLocalizationSave(language);
+    public void LEngineLocalizationSave(string language) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationSave(language);
 
-    public void LEngineEpithetSave(bool epithet) => _lSettingsOutletEngine.LEngineEpithetSave(epithet);
+    public void LEngineEpithetSave(bool epithet) => _lSettingsOutletEngine.LEngineSettings.LEngineEpithetSave(epithet);
 
-    public void LEngineFrequencySave(bool frequency) => _lSettingsOutletEngine.LEngineFrequencySave(frequency);
+    public void LEngineFrequencySave(bool frequency) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineFrequencySave(frequency);
 
-    public void LEngineMorphologySave(bool morphology) => _lSettingsOutletEngine.LEngineMorphologySave(morphology);
+    public void LEngineMorphologySave(bool morphology) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineMorphologySave(morphology);
 
-    public void LEngineRespellingSave(bool respelled) => _lSettingsOutletEngine.LEngineRespellingSave(respelled);
+    public void LEngineRespellingSave(bool respelled) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 
     public LDoctorRescue LEngineRescueRead() => _lSettingsOutletEngine.LEngineRescueRead();
 
@@ -54,16 +58,17 @@ public sealed class LSettingsOutlet : LSettingsPort
     public string? LEngineNoticeRead(Exception exception) => _lSettingsOutletEngine.LEngineNoticeRead(exception);
 
     public LFont LEngineFontRead(string language, LFontRole role) =>
-        _lSettingsOutletEngine.LEngineFontRead(language, role);
+        _lSettingsOutletEngine.LEngineLanguage.LEngineFontRead(language, role);
 
-    public Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad() => _lSettingsOutletEngine.LEngineEnsignLoad();
+    public Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad() =>
+        _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignLoad();
 
     public Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties) =>
-        _lSettingsOutletEngine.LEngineEnsignLoad(language, varieties);
+        _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignLoad(language, varieties);
 
-    public void LEngineEnsignDelete(string path) => _lSettingsOutletEngine.LEngineEnsignDelete(path);
+    public void LEngineEnsignDelete(string path) => _lSettingsOutletEngine.LEngineLanguage.LEngineEnsignDelete(path);
 
-    public LEstablishment LEngineEstablishmentRead() => _lSettingsOutletEngine.LEngineEstablishmentRead();
+    public LEstablishment LEngineEstablishmentRead() => _lSettingsOutletEngine.LEngineEntry.LEngineEstablishmentRead();
 
-    public IReadOnlyList<string> LEngineLanguageRead() => _lSettingsOutletEngine.LEngineLanguageRead();
+    public IReadOnlyList<string> LEngineLanguageRead() => _lSettingsOutletEngine.LEngineLanguage.LEngineLanguageRead();
 }
