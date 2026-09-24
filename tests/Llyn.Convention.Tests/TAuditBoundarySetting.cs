@@ -44,7 +44,7 @@ internal static class TAuditBoundarySetting
 
     public static readonly string[] TAuditBoundaryLoader =
     [
-        "PHeadquarter.cs",
+        "LHeadquarter.cs",
         "PThemeLoader.cs",
     ];
 

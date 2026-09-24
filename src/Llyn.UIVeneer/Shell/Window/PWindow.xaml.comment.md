@@ -80,7 +80,7 @@ They are sized to the tab strip and start disabled, there being nowhere to go be
 
 ## Inline notes
 
-### `PWindowStateRestore();`
+### `_lFootprint.LFootprintRestore();`
 
 Geometry is applied before any panel is attached, while the window is still unshown.
 
@@ -100,14 +100,6 @@ The popup itself is declared in the markup beside the panels, once, because the 
 Closing runs while the window is still up and can be called off.
 Closed cannot.
 Unsaved text is caught in the first, and the panels are stopped in the second.
-
-### `e.Cancel = !PWindowDiscardConfirm();`
-
-Declining leaves the window open on the form exactly as typed, which is the only place the work still exists.
-
-### `PWindowStateSave();`
-
-Geometry is stored only once the close is certain, so a declined close changes nothing.
 
 ### `PInput.PInputClose();`
 

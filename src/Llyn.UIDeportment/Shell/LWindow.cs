@@ -160,9 +160,9 @@ public sealed class LWindow : IDisposable
         return _lPosture.LPostureVistaStart(tab, subject, fallback, blank);
     }
 
-    public void LWindowStateSave(LWindowState window)
+    public void LWindowStateDefer(LWindowState window, bool minimized, int delay)
     {
-        _lPosture.LPostureWindowSave(window);
+        _lPosture.LPostureWindowDefer(window, minimized, delay);
     }
 
     public void LWindowVolumeSave(double volume)

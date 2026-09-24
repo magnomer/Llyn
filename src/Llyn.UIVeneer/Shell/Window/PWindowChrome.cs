@@ -1,6 +1,6 @@
-using System;
 using System.Windows;
 using System.Windows.Input;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -13,7 +13,7 @@ public partial class PWindow
 
     private void PCaptionMaximizeHandle(object sender, RoutedEventArgs e)
     {
-        PWindowMaximizeToggle();
+        LCaption.LCaptionMaximizeToggle(this);
     }
 
     private void PCaptionExitHandle(object sender, RoutedEventArgs e)
@@ -23,50 +23,6 @@ public partial class PWindow
 
     private void PRoofHandle(object sender, MouseButtonEventArgs e)
     {
-        if (e.ClickCount == 2)
-        {
-            PWindowMaximizeToggle();
-            return;
-        }
-
-        if (WindowState == WindowState.Maximized)
-        {
-            PWindowPointerRestore(e);
-        }
-
-        DragMove();
-    }
-
-    private void PWindowMaximizeToggle()
-    {
-        if (WindowState == WindowState.Maximized)
-        {
-            SystemCommands.RestoreWindow(this);
-        }
-        else
-        {
-            SystemCommands.MaximizeWindow(this);
-        }
-    }
-
-    private void PWindowPointerRestore(MouseButtonEventArgs e)
-    {
-        Point pointerInWindow = e.GetPosition(this);
-        Point pointerOnScreen = PointToScreen(pointerInWindow);
-        PresentationSource? source = PresentationSource.FromVisual(this);
-
-        if (source?.CompositionTarget is not null)
-        {
-            pointerOnScreen = source.CompositionTarget.TransformFromDevice.Transform(pointerOnScreen);
-        }
-
-        double restoredWidth = RestoreBounds.Width;
-        double horizontalRatio = ActualWidth > 0
-            ? Math.Clamp(pointerInWindow.X / ActualWidth, 0, 1)
-            : 0.5;
-
-        SystemCommands.RestoreWindow(this);
-        Left = pointerOnScreen.X - (restoredWidth * horizontalRatio);
-        Top = pointerOnScreen.Y - Math.Min(pointerInWindow.Y, PRoof.ActualHeight / 2);
+        LCaption.LCaptionDragHandle(this, PRoof, e);
     }
 }

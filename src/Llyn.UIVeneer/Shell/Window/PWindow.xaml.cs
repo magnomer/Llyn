@@ -15,6 +15,8 @@ public partial class PWindow : Window
 
     private readonly Action<string> _pWindowWorkspaceOpener;
 
+    private readonly LFootprint _lFootprint;
+
     public PWindow(LWindow window, Action<string> workspaceOpener)
     {
         ArgumentNullException.ThrowIfNull(window);
@@ -35,8 +37,8 @@ public partial class PWindow : Window
         PreviewMouseDown += PVoyageMouseHandle;
         Deactivated += PMentionLeaveHandle;
 
-        PWindowStateRestore();
-        PWindowStateAttach();
+        _lFootprint = new LFootprint(this, window);
+        _lFootprint.LFootprintRestore();
 
         PWindowAttach();
 
@@ -109,12 +111,7 @@ public partial class PWindow : Window
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)
     {
-        e.Cancel = !PWindowDiscardConfirm();
-
-        if (!e.Cancel)
-        {
-            PWindowStateSave();
-        }
+        _lFootprint.LFootprintClosingHandle(e, PWindowDiscardConfirm());
     }
 
     private void PWindowExitHandle(object? sender, EventArgs e)

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -19,6 +21,8 @@ public sealed class LPosture : IDisposable
     private readonly List<LVista> _lPostureWatched = [];
 
     private LPostureState _lPostureState = new();
+
+    private CancellationTokenSource? _lPosturePending;
 
     public LPosture(LEngine engine)
     {
@@ -82,6 +86,30 @@ public sealed class LPosture : IDisposable
     {
         ArgumentNullException.ThrowIfNull(window);
         LPostureChange(state => state with { LPostureStateWindow = window });
+    }
+
+    public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+
+        lock (_lPostureGate)
+        {
+            LPostureWindowCancel();
+            if (minimized)
+            {
+                return;
+            }
+
+            if (delay > 0)
+            {
+                CancellationTokenSource pending = new();
+                _lPosturePending = pending;
+                _ = LPostureWindowRun(pending, window, delay);
+                return;
+            }
+
+            LPostureChange(state => state with { LPostureStateWindow = window });
+        }
     }
 
     public void LPostureVolumeSave(double volume)
@@ -160,6 +188,7 @@ public sealed class LPosture : IDisposable
         _lEngine.LEngineObserverDetach(LPostureBulletinHandle);
         lock (_lPostureGate)
         {
+            LPostureWindowCancel();
             foreach (LVista vista in _lPostureWatched)
             {
                 vista.LVistaEditingSaved -= LPostureSplitSave;
@@ -270,6 +299,43 @@ public sealed class LPosture : IDisposable
             LPostureSave();
             return true;
         }
+    }
+
+    private async Task LPostureWindowRun(CancellationTokenSource pending, LWindowState window, int delay)
+    {
+        try
+        {
+            await Task.Delay(delay, pending.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        lock (_lPostureGate)
+        {
+            if (!ReferenceEquals(_lPosturePending, pending))
+            {
+                return;
+            }
+
+            LPostureWindowCancel();
+            LPostureChange(state => state with { LPostureStateWindow = window });
+        }
+    }
+
+    private void LPostureWindowCancel()
+    {
+        CancellationTokenSource? pending = _lPosturePending;
+        _lPosturePending = null;
+
+        if (pending is null)
+        {
+            return;
+        }
+
+        pending.Cancel();
+        pending.Dispose();
     }
 
     private void LPostureSave()

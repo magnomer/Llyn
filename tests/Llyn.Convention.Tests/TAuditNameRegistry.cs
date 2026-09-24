@@ -94,6 +94,7 @@ internal static class TAuditNameRegistry
         "Folio",
         "Font",
         "Footnote",
+        "Footprint",
         "Foray",
         "Form",
         "Frequency",

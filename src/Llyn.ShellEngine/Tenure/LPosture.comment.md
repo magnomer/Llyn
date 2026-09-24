@@ -37,6 +37,21 @@ The vista is remembered so the event can be given back on dispose.
 
 Stores the window geometry of the run that is ending.
 
+## `public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)`
+
+Stores the window geometry after `delay` milliseconds, or at once when `delay` is zero.
+Every call cancels the write still waiting, so a drag ends in one write.
+A minimized window stores nothing, so the maximized flag it had before survives a close from the taskbar.
+The shell hands the raw facts here, so no control and no clock of its own decides the write.
+
+## `private async Task LPostureWindowRun(CancellationTokenSource pending, LWindowState window, int delay)`
+
+Waits out the delay, then writes unless a later call replaced or cancelled the wait.
+
+## `private void LPostureWindowCancel()`
+
+Cancels and releases the waiting write, if there is one.
+
 ## `public void LPostureVolumeSave(double volume)`
 
 Stores how loud a pronunciation is played, clamped so no caller writes a level the player cannot take.

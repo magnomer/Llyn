@@ -1,7 +1,5 @@
-﻿using System;
-using System.Reflection;
-using System.Windows;
 using System.Windows.Input;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -9,38 +7,21 @@ public partial class PWindow
 {
     private void PLogoHandle(object sender, MouseButtonEventArgs e)
     {
-        PHeadquarter.IsOpen = !PHeadquarter.IsOpen;
-        e.Handled = true;
+        LHeadquarter.LHeadquarterToggle(PHeadquarter, e);
     }
 
     private void PHeadquarterAboutHandle(object sender, MouseButtonEventArgs e)
     {
-        PHeadquarter.IsOpen = false;
-        e.Handled = true;
-
-        string product = PLocalizationCatalog.PLocalizationTextRead("Terms.Product");
-
-        MessageBox.Show(
+        LHeadquarter.LHeadquarterAboutHandle(
             this,
-            $"{product}\n{PLocalizationCatalog.PLocalizationTextRead("Headquarter.Version")} "
-                + PHeadquarterVersionRead(),
-            product,
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+            PHeadquarter,
+            e,
+            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            PLocalizationCatalog.PLocalizationTextRead("Headquarter.Version"));
     }
 
     private void PHeadquarterExitHandle(object sender, MouseButtonEventArgs e)
     {
-        PHeadquarter.IsOpen = false;
-        e.Handled = true;
-
-        SystemCommands.CloseWindow(this);
-    }
-
-    internal static string PHeadquarterVersionRead()
-    {
-        Version? version = Assembly.GetExecutingAssembly().GetName().Version;
-
-        return version is null ? string.Empty : version.ToString(3);
+        LHeadquarter.LHeadquarterExitHandle(this, PHeadquarter, e);
     }
 }
