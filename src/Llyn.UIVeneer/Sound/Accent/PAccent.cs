@@ -17,7 +17,6 @@ public partial class PEditor
     private string _pAccentLanguage = string.Empty;
     private bool _pAccentFlagged;
     private string _pAccentPrimary = string.Empty;
-    private long _pAccentPrimaryId;
     private PRespelling _pAccentRespelling = PRespelling.PRespellingPlain;
 
     private LRequest PAccentRequestCreate(PAccentItem row)
@@ -35,11 +34,8 @@ public partial class PEditor
 
     internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        long id = e.Parameter is PAccentItem row ? row.PAccentItemId : _pAccentPrimaryId;
-        if (id != 0)
-        {
-            PEditorRequestSend(new LRequestPronunciationRemoval(PEditorDraft, id));
-        }
+        PEditorRequestSend(
+            new LRequestPronunciationRemoval(PEditorDraft, (e.Parameter as PAccentItem)?.PAccentItemId ?? 0));
     }
 
     internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)
@@ -111,7 +107,6 @@ public partial class PEditor
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
-        _pAccentPrimaryId = draft.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
         PRespelling respelling = PRespelling.PRespellingRead(_pEditorHost.PWindowDeportment, language);
         if (respelling != _pAccentRespelling)
         {
@@ -210,7 +205,6 @@ public partial class PEditor
         _pAccentLanguage = string.Empty;
         _pAccentFlagged = false;
         _pAccentPrimary = string.Empty;
-        _pAccentPrimaryId = 0;
         PAccentPrimaryShow();
     }
 }

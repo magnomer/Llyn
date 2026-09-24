@@ -66,7 +66,7 @@ public sealed class TAuditStrict
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITSTRICT",
-            $"{hits.Count} deportment line(s) reach the framework or the file system:\n{string.Join('\n', hits)}"));
+            $"{hits.Count} deportment line(s) reach the file system:\n{string.Join('\n', hits)}"));
     }
 
     [Fact]

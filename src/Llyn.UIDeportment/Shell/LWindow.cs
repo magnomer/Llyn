@@ -60,9 +60,11 @@ public sealed class LWindow : IDisposable
         return new LCorpus(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, unreadableSeam);
     }
 
-    public LFavorite LWindowFavoriteCreate(LEditor editor)
+    public LFavorite LWindowFavoriteCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LFavorite(_lEntryPort, _lPortraitPort, _lSettingsPort, editor);
+        return new LFavorite(
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LGuild LWindowGuildCreate(
@@ -106,14 +108,18 @@ public sealed class LWindow : IDisposable
         return new LRepertoire(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, unreadableSeam);
     }
 
-    public LTaxonomy LWindowTaxonomyCreate(LEditor editor)
+    public LTaxonomy LWindowTaxonomyCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LTaxonomy(_lEntryPort, _lPortraitPort, _lSettingsPort, editor);
+        return new LTaxonomy(
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
     }
 
-    public LTenor LWindowTenorCreate(LEditor editor)
+    public LTenor LWindowTenorCreate(
+        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LTenor(_lEntryPort, _lPortraitPort, _lSettingsPort, editor);
+        return new LTenor(
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LWing LWindowWingCreate()

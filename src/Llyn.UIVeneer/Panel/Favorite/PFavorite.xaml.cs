@@ -22,7 +22,14 @@ public partial class PFavorite : UserControl
     {
         _pFavoriteHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        _lFavorite = host.PWindowDeportment.LWindowFavoriteCreate(_lEditor);
+        _lFavorite = host.PWindowDeportment.LWindowFavoriteCreate(
+            _lEditor, PFavoriteShownCheck, PFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
+        LPanel panel = _lFavorite.LFavoritePanel;
+        panel.LPanelChanged += PFavoriteModeUpdate;
+        panel.LPanelRowsChanged += PRosterFind;
+        panel.LPanelCleared += PDisplay.PDisplayClear;
+        panel.LPanelDraftChanged += PFavoriteEntryUpdate;
+        panel.LPanelFailed += host.PWindowFailureShow;
 
         PRoster.ItemsSource = _pRosterList;
 
@@ -39,8 +46,7 @@ public partial class PFavorite : UserControl
 
     internal void PFavoriteReset()
     {
-        PFavoriteClear();
-        PRosterFind();
+        _lFavorite.LFavoritePanel.LPanelReset();
     }
 
     internal bool PFavoriteDraftFinish(bool store)
@@ -50,7 +56,7 @@ public partial class PFavorite : UserControl
 
     internal bool PFavoriteChangeCheck()
     {
-        return PEditor.Visibility == System.Windows.Visibility.Visible && PEditor.PEditorChangeCheck();
+        return _lFavorite.LFavoritePanel.LPanelChangeCheck();
     }
 
     internal void PFavoriteClose()
@@ -61,30 +67,17 @@ public partial class PFavorite : UserControl
 
     private void PFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lFavorite?.LFavoriteChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lFavorite?.LFavoritePanel.LPanelPressAllowed ?? false;
     }
 
     private async void PFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lFavorite.LFavoriteChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pFavoriteHost.PWindowPressRun(_lFavorite.LFavoritePortraitPrint);
-            }
-        }
+        await _pFavoriteHost.PWindowPressRun(_lFavorite.LFavoritePortraitPrint);
     }
 
     private async void PFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lFavorite.LFavoriteChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pFavoriteHost.PWindowPortraitExport(
-                    _lFavorite.LFavoriteFileRead(), _lFavorite.LFavoritePortraitExport);
-            }
-        }
+        await _pFavoriteHost.PWindowPortraitExport(_lFavorite.LFavoriteFileRead(), _lFavorite.LFavoritePortraitExport);
     }
 
     internal void PFavoriteVoyageShow(bool past, bool future)
@@ -118,5 +111,26 @@ public partial class PFavorite : UserControl
         (bool undo, bool redo) = PEditor.PEditorChronicleRead();
         PFavoriteBackward.IsEnabled = undo;
         PFavoriteForward.IsEnabled = redo;
+    }
+
+    private bool PFavoriteShownCheck()
+    {
+        return IsVisible;
+    }
+
+    private bool PFavoriteDiscardConfirm()
+    {
+        return _pFavoriteHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
+    }
+
+    private void PFavoriteModeUpdate()
+    {
+        LPanel panel = _lFavorite.LFavoritePanel;
+        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
+        PFavoriteViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
+        PFavoriteScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
+        PFavoriteMode.IsEnabled = panel.LPanelModeEnabled;
+        PFavoriteBin.IsEnabled = panel.LPanelBinEnabled;
     }
 }

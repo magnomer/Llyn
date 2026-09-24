@@ -6,11 +6,19 @@ The tenor panel's deportment: the register vista and the cohort vista it holds, 
 The register side finds rows, takes the query, order and kind filter, and creates a Register.
 The cohort side finds the entries of the chosen Register, loads and deletes the chosen one, and marks it edited.
 Both vistas are handed in by the window, which restores every tab's vistas together.
-The panel's mode, its bin and its scribe toggle stay in the veneer until the tabs share one panel deportment.
 
 ## `public LEditor LTenorEditor { get; }`
 
 The entry editor's deportment on the cohort side, which takes the cohort vista when the panel's vistas are restored.
+
+## `public LPanel LTenorPanel { get; }`
+
+The shared panel state over the cohort vista: the chosen entry, the scribe mode, the bin and the leave guard.
+
+## `public void LTenorEntryCreate()`
+
+Opens a blank entry in the editor.
+When a Register is chosen, the new entry starts inside that Register.
 
 ## `public LVista? LTenorCohortVista => _lTenorCohort;`
 

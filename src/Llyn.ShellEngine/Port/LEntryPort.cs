@@ -73,7 +73,7 @@ public interface LEntryPort
 
     IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista);
 
-    LReference LEngineCitationCreate(string title);
+    long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title);
 
     IReadOnlyDictionary<long, string> LEngineCitationRead();
 

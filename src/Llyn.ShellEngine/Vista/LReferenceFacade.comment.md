@@ -22,6 +22,13 @@ Creates `reference` and returns it with its assigned id.
 Creates a Reference carrying nothing but `title`, for a citation typed where no stored Source answered.
 Observers hear of the new Reference at once, because every open citation catalogue must list it.
 
+## `public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)`
+
+The Reference a typed citation names, found or created under one hold of the gate.
+The Reference cited now is read off the held draft, so no shell carries it in.
+Zero card and sentence ids name the draft's own Example, as on the corpus panel.
+The clerk decides the match, and only a created Reference is announced.
+
 ## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.

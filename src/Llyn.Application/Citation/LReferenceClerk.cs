@@ -40,6 +40,44 @@ public sealed class LReferenceClerk
         return _lReferenceClerkReferences.LReferenceCreate(LReferenceClerkBlank with { LReferenceTitle = named });
     }
 
+    public long? LReferenceClerkResolve(string title, long held)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        string typed = LCatalog.LCatalogTextNormalize(title);
+        if (typed.Length == 0)
+        {
+            return 0;
+        }
+
+        IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits = _lReferenceClerkAuthors.LAuthorReferenceRead();
+        long? titled = null;
+        long? signed = null;
+        foreach (LReference reference in _lReferenceClerkReferences.LReferenceAllRead())
+        {
+            long id = reference.LReferenceId;
+            credits.TryGetValue(id, out IReadOnlyList<LAuthor>? credited);
+            bool named = LCatalog.LCatalogTextNormalize(reference.LReferenceTitle.LStateValueShow()) == typed;
+            bool bylined = LCatalog.LCatalogTextNormalize(reference.LReferenceBylineRead(credited ?? [])) == typed;
+            if (id == held && (named || bylined))
+            {
+                return id;
+            }
+
+            if (named)
+            {
+                titled = Math.Min(titled ?? id, id);
+            }
+
+            if (bylined)
+            {
+                signed = Math.Min(signed ?? id, id);
+            }
+        }
+
+        return titled ?? signed;
+    }
+
     public LReference? LReferenceClerkRead(long id)
     {
         return _lReferenceClerkReferences.LReferenceRead(id);

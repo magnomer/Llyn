@@ -223,7 +223,7 @@ public partial class PCorpus
             return;
         }
 
-        int usage = _pAnthologyCount.GetValueOrDefault(id);
+        int usage = _lCorpus.LCorpusUsageRead(id);
 
         if (!_pCorpusHost.PWindowRemovalConfirm(usage, "Example"))
         {

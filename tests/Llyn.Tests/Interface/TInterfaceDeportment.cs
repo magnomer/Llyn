@@ -350,7 +350,10 @@ internal static class TInterfaceDeportment
                 entries,
                 TEngineFake.TEngineStubCreate<LPhonologyPort>(),
                 settings,
-                static () => false));
+                static () => false),
+            static () => true,
+            static () => true,
+            static () => true);
 
     internal static IReadOnlyList<LCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
 

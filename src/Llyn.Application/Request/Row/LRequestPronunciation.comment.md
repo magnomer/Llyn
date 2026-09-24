@@ -12,6 +12,7 @@ Adds a new pronunciation row at `LRequestPosition` with `LRequestText` as its re
 ## `public sealed record LRequestPronunciationRemoval(long LRequestDraftId, long LRequestPronunciationId)`
 
 Removes one pronunciation row, its recording with it.
+Id zero names the primary row, and nothing happens when there is none.
 
 ## `public sealed record LRequestPronunciationShift(long LRequestDraftId, long LRequestPronunciationId, int LRequestPosition)`
 

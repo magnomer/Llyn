@@ -79,9 +79,13 @@ public sealed class LCard
         return _lEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
     }
 
-    public LReference LCardCitationCreate(string title)
+    public void LCardCitationSet(long cardId, long sentenceId, string title)
     {
-        return _lEntryPort.LEngineCitationCreate(title);
+        _lCardDesk.LDeskSend(new LRequestSentenceReference(
+            _lCardDesk.LDeskId,
+            cardId,
+            sentenceId,
+            _lEntryPort.LEngineCitationResolve(_lCardDesk.LDeskId, cardId, sentenceId, title)));
     }
 
     public IReadOnlyList<LTag> LCardTagFind(string word)

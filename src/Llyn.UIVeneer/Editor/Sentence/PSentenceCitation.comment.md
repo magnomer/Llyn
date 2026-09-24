@@ -25,16 +25,12 @@ The field keeps no line of its own, so discarding the typed one is only a re-rea
 
 ### `private void PSentenceCitationCommit(PCard card, PSentence row, TextBox box)`
 
-An empty line stops the row citing anything.
-A line equal to the cited byline changes nothing.
-A line equal to some offered byline cites that Source, so typing a byline out in full never doubles it.
-Any other line becomes a new Source titled with that line, which the row then cites.
-The new Source joins the offered list at once rather than waiting for the engine to report it.
+Hands the typed line to the deportment, which resolves it against the held draft in one request.
+The field then reads its binding again, so a failed line never stays.
 
 ### `private void PSentenceCitationSend(PCard card, PSentence row, long reference)`
 
-Asks the engine to cite one Source on one row, or none when the id is zero.
-Every path that settles a citation ends here, so the row itself never writes one.
+Asks the engine to cite one picked Source on one row, or none when the id is zero.
 
 ### `private void PSentenceCitationShow()`
 

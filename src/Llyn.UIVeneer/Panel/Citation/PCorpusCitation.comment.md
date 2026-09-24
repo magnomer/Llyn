@@ -38,9 +38,8 @@ A pick of the citation already held raises no bulletin, so the field is redrawn 
 
 ## `private void PCitationCommit()`
 
-An empty line drops the citation.
-The Source is left standing, because clearing a pointer is not deleting what it pointed at.
-A line matching a known name, ignoring case, cites that Source rather than minting a twin.
+Hands the typed line to the deportment, which resolves it against the held draft in one request.
+An empty line drops the citation but leaves the Source standing.
 
 ## `private void PCitationShow(string text)`
 

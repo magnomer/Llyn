@@ -63,22 +63,6 @@ The window this panel sits in.
 It is who reports a read that failed.
 It also asks the question put before unsaved work would be lost.
 
-### `PDisplay.PDisplayAttach(host, engine);`
-
-The reader is the same control the library panel mounts.
-The window comes with it, because an incoming row opens the entry it names.
-It is given the workspace because it fetches the flag of the language it shows.
-
-### `PEditor.PEditorAttach(host, engine, "Taxonomy", null);`
-
-The editor opens on no entry: this panel puts it on one when the reader asks to write.
-The origin names this panel, so its held work is told apart from the other panels'.
-A store may have changed the tags the entry carries and the headword the membership row lists.
-The engine announces it through the vistas, so the catalog and the entries under it are read again.
-An entry can leave the chosen tag by being stored, and the panel must show that it did.
-An entry stored in another tab moves the same way.
-The announcement is listened to rather than a sibling panel.
-
 ## `internal void PTaxonomyVoyageShow(bool past, bool future)`
 
 Lights the two trail buttons from the stacks the window keeps.
@@ -104,3 +88,8 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
+
+## `private void PTaxonomyModeUpdate()`
+
+Paints the mode from the shared panel state.
+No control's visibility stands in for the mode any more.

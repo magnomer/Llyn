@@ -28,6 +28,15 @@ Its fields carry the three-state distinction the model gives them: unspecified, 
 Creates a Reference carrying nothing but `title`, for a citation typed where no stored Source answered.
 The typed line is resolved like any written value, and a blank line is refused as an argument.
 
+## `public long? LReferenceClerkResolve(string title, long held)`
+
+The stored Reference a typed citation names, zero for a blank line, or `null` when none answers.
+Both sides fold the way `LCatalogTextNormalize` folds, so case and edge spaces never mint a twin.
+The held Reference wins when its title or byline answers, so re-entering an unchanged line keeps it.
+Bylines repeat across works by one author, and only this rule stops a silent switch to a sibling.
+Otherwise a title match beats a byline match, since a byline leaves the title out once credits exist.
+Ties go to the oldest id, so the same line always lands on the same Reference.
+
 ## `public LReference? LReferenceClerkRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.

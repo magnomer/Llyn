@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -24,7 +25,7 @@ public partial class PTaxonomy
     private void PTaxonomyTagUpdate()
     {
         PDirectoryFind();
-        PTaxonomyEntryUpdate();
+        _lTaxonomy.LTaxonomyPanel.LPanelDraftUpdate();
     }
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
@@ -58,10 +59,12 @@ public partial class PTaxonomy
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, PObserver.PObserverCreate(this, PTaxonomyTagUpdate));
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PDirectoryFind));
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PDirectoryFind));
-        _lTaxonomy.LTaxonomyMembershipAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PMembershipEntryUpdate));
-        _lTaxonomy.LTaxonomyEntryAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PTaxonomyEntryUpdate));
-        _lTaxonomy.LTaxonomyMembershipAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PMembershipFind));
+        LPanel panel = _lTaxonomy.LTaxonomyPanel;
+        panel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PMembershipFind));
+        panel.LPanelChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelDraftUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PDirectoryFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -152,14 +155,14 @@ public partial class PTaxonomy
 
         if (_lTaxonomy.LTaxonomyChosen is null)
         {
-            if (_lTaxonomy.LTaxonomyMembershipChosen is null)
+            if (!_lTaxonomy.LTaxonomyPanel.LPanelBinEnabled)
             {
                 PDirectoryTagCreate();
                 return;
             }
         }
 
-        PMembershipEntryCreate();
+        _lTaxonomy.LTaxonomyEntryCreate();
     }
 
     private void PDirectoryTagCreate()
@@ -180,101 +183,28 @@ public partial class PTaxonomy
             return;
         }
 
-        PTaxonomyClear();
+        _lTaxonomy.LTaxonomyPanel.LPanelClear();
         PDirectoryTagShow(created.LTagId);
     }
 
     private void PTaxonomyScribeHandle(object sender, RoutedEventArgs e)
     {
-        bool editing = ReferenceEquals(sender, PTaxonomyScribe);
-        if (editing == (PEditor.Visibility == Visibility.Visible))
-        {
-            return;
-        }
-
-        if (!editing)
-        {
-            if (!PTaxonomyLeaveConfirm())
-            {
-                PTaxonomyScribeShow(true);
-                return;
-            }
-
-            PTaxonomyScribeShow(false);
-
-            if (_lTaxonomy.LTaxonomyMembershipChosen is long shown)
-            {
-                PMembershipEntryShow(shown);
-                return;
-            }
-
-            PTaxonomyClear();
-            return;
-        }
-
-        if (_lTaxonomy.LTaxonomyMembershipChosen is not long edited)
-        {
-            PTaxonomyClear();
-            return;
-        }
-
-        PEditor.PEditorEntryShow(edited);
-        PTaxonomyScribeShow(true);
-    }
-
-    private void PTaxonomyScribeShow(bool editing)
-    {
-        _lTaxonomy.LTaxonomyScribeSet(editing);
-
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PTaxonomyViewer.IsChecked = !editing;
-        PTaxonomyScribe.IsChecked = editing;
+        _lTaxonomy.LTaxonomyPanel.LPanelScribeSet(ReferenceEquals(sender, PTaxonomyScribe));
     }
 
     internal void PTaxonomyScribeRestore(bool editing)
     {
-        if (editing)
-        {
-            if (_lTaxonomy.LTaxonomyMembershipChosen is null)
-            {
-                return;
-            }
-        }
-
-        if (editing)
-        {
-            PTaxonomyMode.IsEnabled = true;
-        }
-
-        PTaxonomyScribeShow(editing);
+        _lTaxonomy.LTaxonomyPanel.LPanelScribeRestore(editing);
     }
 
     internal bool PTaxonomyLeaveConfirm()
     {
-        return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck(), PTaxonomyDraftFinish);
+        return _lTaxonomy.LTaxonomyPanel.LPanelLeaveConfirm();
     }
 
     internal long PTaxonomyVoyageRead()
     {
         return _lTaxonomy.LTaxonomyChosen ?? 0;
-    }
-
-    private void PTaxonomyEntryShow(LEntryDraft draft)
-    {
-        PDisplay.PDisplayShow(draft);
-        PTaxonomyMode.IsEnabled = true;
-    }
-
-    private void PTaxonomyClear()
-    {
-        _lTaxonomy.LTaxonomyMembershipSelect(null);
-        PMembershipFind();
-        PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
-        PTaxonomyScribeShow(false);
-        PTaxonomyMode.IsEnabled = false;
-        PTaxonomyBin.IsEnabled = false;
     }
 
     private void PTaxonomyStoreHandle(object sender, RoutedEventArgs e)
@@ -284,21 +214,6 @@ public partial class PTaxonomy
 
     private void PTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (!_pTaxonomyHost.PWindowDeleteConfirm())
-        {
-            return;
-        }
-
-        try
-        {
-            _lTaxonomy.LTaxonomyMembershipDelete();
-        }
-        catch (Exception exception)
-        {
-            _pTaxonomyHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
-            return;
-        }
-
-        PTaxonomyClear();
+        _lTaxonomy.LTaxonomyPanel.LPanelDelete();
     }
 }

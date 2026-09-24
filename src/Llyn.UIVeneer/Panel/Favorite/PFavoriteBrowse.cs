@@ -48,15 +48,22 @@ public partial class PFavorite
     internal async void PFavoriteVistaRestore()
     {
         _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowDeportment);
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectVista, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
             LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PFavoriteWorkspaceUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PSeriesGraspUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PRosterEntryUpdate));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectFavorite, PObserver.PObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoriteObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoriteChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PFavoriteEntryUpdate));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PSeriesGraspUpdate));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lFavorite.LFavoritePanel.LPanelEntryHandle));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectFavorite, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoritePanel.LPanelObserverAttach(
+            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PRosterFind));
+        _lFavorite.LFavoritePanel.LPanelChosenAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lFavorite.LFavoritePanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -130,142 +137,27 @@ public partial class PFavorite
         }
 
         _pFavoriteHost.PVoyageRecord();
-        PRosterEntryShow(item.PRosterItemId);
+        _lFavorite.LFavoritePanel.LPanelRowShow(item.PRosterItemId);
     }
 
     internal void PRosterEntryShow(long id)
     {
-        LEntryDraft? draft;
-        try
-        {
-            _lFavorite.LFavoriteSelect(id);
-            draft = _lFavorite.LFavoriteLoad();
-        }
-        catch (Exception exception)
-        {
-            _pFavoriteHost.PWindowFailureShow("Favorite.LoadFailed", exception);
-            return;
-        }
-
-        if (draft is null)
-        {
-            PFavoriteClear();
-            PRosterFind();
-            return;
-        }
-
-        _lFavorite.LFavoriteSelect(id);
-        PRosterFind();
-        PFavoriteEntryShow(draft);
-
-        if (PEditor.Visibility == Visibility.Visible)
-        {
-            PEditor.PEditorEntryShow(id);
-        }
+        _lFavorite.LFavoritePanel.LPanelRowSelect(id);
     }
 
-    private void PRosterEntryUpdate(LBulletin bulletin)
+    private void PFavoriteEntryUpdate(LDraft draft)
     {
-        if (bulletin.LBulletinStored)
-        {
-            if (IsVisible)
-            {
-                if (PEditor.Visibility == Visibility.Visible)
-                {
-                    _lFavorite.LFavoriteSelect(bulletin.LBulletinId);
-                }
-            }
-        }
-
-        PFavoriteCommandApply();
-        PRosterFind();
-    }
-
-    private void PFavoriteEntryUpdate(LBulletin bulletin)
-    {
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lFavorite.LFavoriteLoad();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (draft is null)
-        {
-            PFavoriteClear();
-            return;
-        }
-
-        PFavoriteEntryShow(draft);
+        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)
     {
-        bool editing = ReferenceEquals(sender, PFavoriteScribe);
-        if (editing == (PEditor.Visibility == Visibility.Visible))
-        {
-            return;
-        }
-
-        if (!editing)
-        {
-            if (!PFavoriteLeaveConfirm())
-            {
-                PFavoriteScribeShow(true);
-                return;
-            }
-
-            PFavoriteScribeShow(false);
-
-            if (_lFavorite.LFavoriteChosen is long chosen)
-            {
-                PRosterEntryShow(chosen);
-                return;
-            }
-
-            PFavoriteClear();
-            return;
-        }
-
-        if (_lFavorite.LFavoriteChosen is not long shown)
-        {
-            PFavoriteClear();
-            return;
-        }
-
-        PEditor.PEditorEntryShow(shown);
-        PFavoriteScribeShow(true);
-    }
-
-    private void PFavoriteScribeShow(bool editing)
-    {
-        _lFavorite.LFavoriteScribeSet(editing);
-
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PFavoriteViewer.IsChecked = !editing;
-        PFavoriteScribe.IsChecked = editing;
+        _lFavorite.LFavoritePanel.LPanelScribeSet(ReferenceEquals(sender, PFavoriteScribe));
     }
 
     internal void PFavoriteScribeRestore(bool editing)
     {
-        if (editing)
-        {
-            if (_lFavorite.LFavoriteChosen is null)
-            {
-                return;
-            }
-        }
-
-        if (editing)
-        {
-            PFavoriteMode.IsEnabled = true;
-        }
-
-        PFavoriteScribeShow(editing);
+        _lFavorite.LFavoritePanel.LPanelScribeRestore(editing);
     }
 
     internal long PFavoriteVoyageRead()
@@ -275,30 +167,7 @@ public partial class PFavorite
 
     internal bool PFavoriteLeaveConfirm()
     {
-        return _pFavoriteHost.PWindowDiscardConfirm(PFavoriteChangeCheck(), PFavoriteDraftFinish);
-    }
-
-    private void PFavoriteEntryShow(LEntryDraft draft)
-    {
-        PDisplay.PDisplayShow(draft);
-        PFavoriteMode.IsEnabled = true;
-        PFavoriteCommandApply();
-    }
-
-    private void PFavoriteCommandApply()
-    {
-        PFavoriteBin.IsEnabled = _lFavorite.LFavoriteChosen is not null;
-    }
-
-    private void PFavoriteClear()
-    {
-        _lFavorite.LFavoriteSelect(null);
-        PRosterFind();
-        PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
-        PFavoriteScribeShow(false);
-        PFavoriteMode.IsEnabled = false;
-        PFavoriteCommandApply();
+        return _lFavorite.LFavoritePanel.LPanelLeaveConfirm();
     }
 
     private void PFavoriteStoreHandle(object sender, RoutedEventArgs e)
@@ -308,21 +177,6 @@ public partial class PFavorite
 
     private void PFavoriteBinHandle(object sender, RoutedEventArgs e)
     {
-        if (!_pFavoriteHost.PWindowDeleteConfirm())
-        {
-            return;
-        }
-
-        try
-        {
-            _lFavorite.LFavoriteDelete();
-        }
-        catch (Exception exception)
-        {
-            _pFavoriteHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
-            return;
-        }
-
-        PFavoriteClear();
+        _lFavorite.LFavoritePanel.LPanelDelete();
     }
 }

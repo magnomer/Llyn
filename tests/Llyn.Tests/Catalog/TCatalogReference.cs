@@ -187,6 +187,69 @@ public sealed class TCatalogReference
         Assert.Throws<ArgumentException>(() => engine.TEngineCitationCreate("   "));
     }
 
+    [Fact]
+    public void CitationResolve_SharedBylineHeld_KeepsHeldSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference origin = TCatalogReferenceCreate(engine, "Origin of Species", "1859", null, null);
+        LReference letters = TCatalogReferenceCreate(engine, "Letters", "1859", null, null);
+        TCatalogCreditAttach(engine, origin.LReferenceId, "Darwin");
+        TCatalogCreditAttach(engine, letters.LReferenceId, "Darwin");
+        long draftId = engine.TEngineDraftStart("Input", null).LDraftId;
+        (long card, long sentence) = TCatalogSentenceAdd(engine, draftId);
+        engine.TEngineRequestApply(
+            TInterface.TSentenceReferenceCreate(draftId, card, sentence, letters.LReferenceId));
+
+        Assert.Equal(letters.LReferenceId, engine.TEngineCitationResolve(draftId, card, sentence, "Darwin (1859)"));
+        Assert.Equal(origin.LReferenceId, engine.TEngineCitationResolve(draftId, 0, 0, "darwin (1859)"));
+        Assert.Equal(3, engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName).Count);
+    }
+
+    [Fact]
+    public void CitationResolve_CreditedTitle_ReturnsStoredSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference origin = TCatalogReferenceCreate(engine, "Origin of Species", "1859", null, null);
+        TCatalogCreditAttach(engine, origin.LReferenceId, "Darwin");
+        long draftId = engine.TEngineDraftStart("Input", null).LDraftId;
+
+        Assert.Equal(origin.LReferenceId, engine.TEngineCitationResolve(draftId, 0, 0, "  origin of species "));
+        Assert.Equal(2, engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName).Count);
+    }
+
+    [Fact]
+    public void CitationResolve_BlankLine_ReturnsZero()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference held = engine.TEngineCitationCreate("Field notes");
+        long draftId = engine.TEngineDraftStart("Input", null).LDraftId;
+        (long card, long sentence) = TCatalogSentenceAdd(engine, draftId);
+        engine.TEngineRequestApply(TInterface.TSentenceReferenceCreate(draftId, card, sentence, held.LReferenceId));
+
+        Assert.Equal(0, engine.TEngineCitationResolve(draftId, card, sentence, "   "));
+        Assert.Equal(2, engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName).Count);
+    }
+
+    [Fact]
+    public void CitationResolve_UnknownLine_CreatesSourceOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        long draftId = engine.TEngineDraftStart("Input", null).LDraftId;
+        long minted = engine.TEngineCitationResolve(draftId, 0, 0, "  Field notes ");
+
+        Assert.Equal("Field notes", engine.TEngineCitationRead()[minted]);
+        Assert.Equal(minted, engine.TEngineCitationResolve(draftId, 0, 0, "FIELD NOTES"));
+        Assert.Equal(2, engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName).Count);
+    }
+
     private static LReference TCatalogReferenceCreate(
         LEngine engine,
         string? title,
@@ -208,6 +271,16 @@ public sealed class TCatalogReference
     {
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, name));
         engine.TEngineAuthorAttach(referenceId, author.LAuthorId, 0);
+    }
+
+    private static (long TCatalogReferenceCard, long TCatalogReferenceSentence) TCatalogSentenceAdd(
+        LEngine engine, long draftId)
+    {
+        LDraft carded = engine.TEngineRequestApply(
+            TInterface.TRequestAdditionCreate(draftId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        long card = carded.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
+        LDraft rowed = engine.TEngineRequestApply(TInterface.TSentenceAdditionCreate(draftId, card, 0));
+        return (card, TInterface.TRequestCardFind(rowed.LDraftContent, card).LCardDraftSentence[0].LSentenceDraftId);
     }
 
     private static void TCatalogCitationCreate(LEngine engine, string text, long referenceId)

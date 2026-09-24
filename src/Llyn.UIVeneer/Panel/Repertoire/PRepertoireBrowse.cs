@@ -218,7 +218,7 @@ public partial class PRepertoire
             return;
         }
 
-        int usage = _pAtlasCount.GetValueOrDefault(id);
+        int usage = _lRepertoire.LRepertoireUsageRead(id);
 
         if (!_pRepertoireHost.PWindowRemovalConfirm(usage))
         {

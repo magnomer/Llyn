@@ -9,7 +9,6 @@ internal static class TAuditFrameSetting
         "Llyn.Core",
         "Llyn.Application",
         "Llyn.ShellEngine",
-        "Llyn.UIDeportment",
     ];
 
     public static readonly string[] TAuditFrameAllowed =

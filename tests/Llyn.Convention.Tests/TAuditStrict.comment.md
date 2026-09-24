@@ -49,8 +49,8 @@ The hit kinds in report order.
 
 ## `public void AuditStrict_DeportmentSources_ReachNoMarkup()`
 
-A deportment line that names WPF, the dispatcher or the file system, outside the exempt files.
-The deportment holds panel state for the veneer and must build without a window.
+A deportment line that names the file system, outside the exempt files.
+Deportment uses WPF freely, but disk work stays behind the engine's ports.
 
 ## `public void AuditStrict_VeneerSources_HoldNoCatalog()`
 

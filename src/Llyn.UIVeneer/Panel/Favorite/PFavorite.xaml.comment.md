@@ -81,3 +81,8 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
+
+## `private void PFavoriteModeUpdate()`
+
+Paints the mode from the shared panel state.
+No control's visibility stands in for the mode any more.

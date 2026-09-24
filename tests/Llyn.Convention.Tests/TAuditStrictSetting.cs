@@ -8,11 +8,11 @@ internal static class TAuditStrictSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 177,
-        ["Flow"] = 965,
+        ["Storage"] = 176,
+        ["Flow"] = 930,
         ["Treat"] = 81,
         ["Reach"] = 64,
-        ["Taint"] = 101,
+        ["Taint"] = 97,
     };
 
     public static readonly string[] TAuditReachInclude =
@@ -58,8 +58,6 @@ internal static class TAuditStrictSetting
 
     public static readonly string[] TAuditMarkupPatterns =
     [
-        @"\bSystem\.Windows\b",
-        @"\bDispatcher\b",
         @"\bSystem\.IO\b",
     ];
 

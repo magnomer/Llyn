@@ -1,8 +1,12 @@
 # Llyn.UIDeportment.csproj
 
-## `<TargetFramework>net10.0</TargetFramework>`
+## `<TargetFramework>net10.0-windows</TargetFramework>`
 
-Deportment holds panel state and no control, so it builds without WPF and runs under the test project.
+Deportment drives the veneer's controls, so it builds for Windows.
+
+## `<UseWPF>true</UseWPF>`
+
+Deportment names windows, controls and event arguments directly.
 
 ## `<ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />`
 

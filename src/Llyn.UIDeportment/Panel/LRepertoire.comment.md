@@ -29,3 +29,8 @@ Marks the situation vista as edited or read, which the posture keeps across runs
 ## `public void LRepertoireEditorSet(bool editing)`
 
 Marks the occurrence vista as edited or read, for the entry editor on the right.
+
+## `public int LRepertoireUsageRead(long? id)`
+
+How many entries cite the given Situation, read fresh from the engine.
+Zero when no Situation is given.

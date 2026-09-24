@@ -31,7 +31,7 @@ The `git ls-files` patterns of the veneer sources, scanned for catalog, file and
 
 ## `public static readonly string[] TAuditDeportmentInclude`
 
-The `git ls-files` patterns of the deportment sources, scanned for a reach into the framework.
+The `git ls-files` patterns of the deportment sources, scanned for a reach into the file system.
 
 ## `public const string TAuditDeportmentNamespace = "Llyn.UIDeportment";`
 
@@ -48,12 +48,12 @@ The veneer files whose stream use is the framework's own: a resource stream, a b
 
 ## `public static readonly string[] TAuditMarkupPatterns`
 
-A deportment line matching one of these names WPF, the dispatcher or the file system.
+A deportment line matching one of these names the file system.
 
 ## `public static readonly string[] TAuditMarkupExempt`
 
-The deportment files exempt from the framework scan by name.
-Empty: no deportment file names the framework.
+The deportment files exempt from the file-system scan by name.
+Empty: no deportment file names the file system.
 
 ## `public static readonly string[] TAuditReachNamespaces`
 

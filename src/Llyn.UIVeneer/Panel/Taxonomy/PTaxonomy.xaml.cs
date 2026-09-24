@@ -22,7 +22,14 @@ public partial class PTaxonomy : UserControl
     {
         _pTaxonomyHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        _lTaxonomy = host.PWindowDeportment.LWindowTaxonomyCreate(_lEditor);
+        _lTaxonomy = host.PWindowDeportment.LWindowTaxonomyCreate(
+            _lEditor, PTaxonomyShownCheck, PTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
+        LPanel panel = _lTaxonomy.LTaxonomyPanel;
+        panel.LPanelChanged += PTaxonomyModeUpdate;
+        panel.LPanelRowsChanged += PMembershipFind;
+        panel.LPanelCleared += PDisplay.PDisplayClear;
+        panel.LPanelDraftChanged += PTaxonomyEntryUpdate;
+        panel.LPanelFailed += host.PWindowFailureShow;
 
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
@@ -40,7 +47,7 @@ public partial class PTaxonomy : UserControl
 
     internal void PTaxonomyReset()
     {
-        PTaxonomyClear();
+        _lTaxonomy.LTaxonomyPanel.LPanelClear();
         PDirectoryReset();
         PDirectoryFind();
     }
@@ -52,7 +59,7 @@ public partial class PTaxonomy : UserControl
 
     internal bool PTaxonomyChangeCheck()
     {
-        return PEditor.Visibility == System.Windows.Visibility.Visible && PEditor.PEditorChangeCheck();
+        return _lTaxonomy.LTaxonomyPanel.LPanelChangeCheck();
     }
 
     internal void PTaxonomyClose()
@@ -63,30 +70,17 @@ public partial class PTaxonomy : UserControl
 
     private void PTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTaxonomy?.LTaxonomyMembershipChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lTaxonomy?.LTaxonomyPanel.LPanelPressAllowed ?? false;
     }
 
     private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lTaxonomy.LTaxonomyMembershipChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pTaxonomyHost.PWindowPressRun(_lTaxonomy.LTaxonomyPortraitPrint);
-            }
-        }
+        await _pTaxonomyHost.PWindowPressRun(_lTaxonomy.LTaxonomyPortraitPrint);
     }
 
     private async void PTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lTaxonomy.LTaxonomyMembershipChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pTaxonomyHost.PWindowPortraitExport(
-                    _lTaxonomy.LTaxonomyFileRead(), _lTaxonomy.LTaxonomyPortraitExport);
-            }
-        }
+        await _pTaxonomyHost.PWindowPortraitExport(_lTaxonomy.LTaxonomyFileRead(), _lTaxonomy.LTaxonomyPortraitExport);
     }
 
     internal void PTaxonomyVoyageShow(bool past, bool future)
@@ -120,5 +114,26 @@ public partial class PTaxonomy : UserControl
         (bool undo, bool redo) = PEditor.PEditorChronicleRead();
         PTaxonomyBackward.IsEnabled = undo;
         PTaxonomyForward.IsEnabled = redo;
+    }
+
+    private bool PTaxonomyShownCheck()
+    {
+        return IsVisible;
+    }
+
+    private bool PTaxonomyDiscardConfirm()
+    {
+        return _pTaxonomyHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
+    }
+
+    private void PTaxonomyModeUpdate()
+    {
+        LPanel panel = _lTaxonomy.LTaxonomyPanel;
+        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
+        PTaxonomyViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
+        PTaxonomyScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
+        PTaxonomyMode.IsEnabled = panel.LPanelModeEnabled;
+        PTaxonomyBin.IsEnabled = panel.LPanelBinEnabled;
     }
 }

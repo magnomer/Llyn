@@ -22,7 +22,14 @@ public partial class PTenor : UserControl
     {
         _pTenorHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        _lTenor = host.PWindowDeportment.LWindowTenorCreate(_lEditor);
+        _lTenor = host.PWindowDeportment.LWindowTenorCreate(
+            _lEditor, PTenorShownCheck, PTenorDiscardConfirm, host.PWindowDeleteConfirm);
+        LPanel panel = _lTenor.LTenorPanel;
+        panel.LPanelChanged += PTenorModeUpdate;
+        panel.LPanelRowsChanged += PCohortFind;
+        panel.LPanelCleared += PDisplay.PDisplayClear;
+        panel.LPanelDraftChanged += PTenorEntryUpdate;
+        panel.LPanelFailed += host.PWindowFailureShow;
 
         PGamut.ItemsSource = _pGamutList;
         PCohort.ItemsSource = _pCohortList;
@@ -40,7 +47,7 @@ public partial class PTenor : UserControl
 
     internal void PTenorReset()
     {
-        PTenorClear();
+        _lTenor.LTenorPanel.LPanelClear();
         PGamutReset();
         PGamutFind();
     }
@@ -52,7 +59,7 @@ public partial class PTenor : UserControl
 
     internal bool PTenorChangeCheck()
     {
-        return PEditor.Visibility == System.Windows.Visibility.Visible && PEditor.PEditorChangeCheck();
+        return _lTenor.LTenorPanel.LPanelChangeCheck();
     }
 
     internal void PTenorClose()
@@ -63,29 +70,17 @@ public partial class PTenor : UserControl
 
     private void PTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTenor?.LTenorCohortChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lTenor?.LTenorPanel.LPanelPressAllowed ?? false;
     }
 
     private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lTenor.LTenorCohortChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pTenorHost.PWindowPressRun(_lTenor.LTenorPortraitPrint);
-            }
-        }
+        await _pTenorHost.PWindowPressRun(_lTenor.LTenorPortraitPrint);
     }
 
     private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lTenor.LTenorCohortChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pTenorHost.PWindowPortraitExport(_lTenor.LTenorFileRead(), _lTenor.LTenorPortraitExport);
-            }
-        }
+        await _pTenorHost.PWindowPortraitExport(_lTenor.LTenorFileRead(), _lTenor.LTenorPortraitExport);
     }
 
     internal void PTenorVoyageShow(bool past, bool future)
@@ -119,5 +114,26 @@ public partial class PTenor : UserControl
         (bool undo, bool redo) = PEditor.PEditorChronicleRead();
         PTenorBackward.IsEnabled = undo;
         PTenorForward.IsEnabled = redo;
+    }
+
+    private bool PTenorShownCheck()
+    {
+        return IsVisible;
+    }
+
+    private bool PTenorDiscardConfirm()
+    {
+        return _pTenorHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
+    }
+
+    private void PTenorModeUpdate()
+    {
+        LPanel panel = _lTenor.LTenorPanel;
+        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
+        PTenorViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
+        PTenorScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
+        PTenorMode.IsEnabled = panel.LPanelModeEnabled;
+        PTenorBin.IsEnabled = panel.LPanelBinEnabled;
     }
 }

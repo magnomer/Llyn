@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -127,6 +128,11 @@ public sealed class LCorpus
         return _lEntryPort.LEngineUsageRead(LOwner.LOwnerExample);
     }
 
+    public int LCorpusUsageRead(long? id)
+    {
+        return id is long stored ? LCorpusUsageRead().GetValueOrDefault(stored) : 0;
+    }
+
     public IReadOnlyList<LVistaRow> LCorpusQuotationRead()
     {
         return _lEntryPort.LEngineEntryFind(_lCorpusVista, _lCorpusQuotation);
@@ -157,9 +163,10 @@ public sealed class LCorpus
         return _lEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
     }
 
-    public LReference LCorpusCitationCreate(string title)
+    public void LCorpusCitationSet(string title)
     {
-        return _lEntryPort.LEngineCitationCreate(title);
+        LCorpusDesk.LDeskSend(new LRequestExampleReference(
+            LCorpusDesk.LDeskId, _lEntryPort.LEngineCitationResolve(LCorpusDesk.LDeskId, 0, 0, title)));
     }
 
     public LMentionResult LCorpusMentionFind(long id, int offset)

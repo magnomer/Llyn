@@ -16,7 +16,14 @@ public sealed class LFavorite
 
     private LVista? _lFavoriteVista;
 
-    public LFavorite(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, LEditor editor)
+    public LFavorite(
+        LEntryPort entries,
+        LPortraitPort portraits,
+        LSettingsPort settings,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -27,13 +34,28 @@ public sealed class LFavorite
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
         LFavoriteEditor = editor;
+
+        LFavoritePanel = new LPanel(
+            "Favorite.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
+        LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
     }
 
     public LEditor LFavoriteEditor { get; }
 
-    public LVista? LFavoriteVista => _lFavoriteVista;
+    public LPanel LFavoritePanel { get; }
 
-    public long? LFavoriteChosen => _lFavoriteVista?.LVistaChosen;
+    private void LFavoriteEditorClear()
+    {
+        LFavoriteEditor.LEditorOpen(null);
+    }
+
+    private void LFavoriteEditorOpen(long id)
+    {
+        LFavoriteEditor.LEditorOpen(id);
+    }
+
+    public LVista? LFavoriteVista => _lFavoriteVista;
 
     public bool LFavoriteFiltered => _lFavoriteVista?.LVistaFiltered ?? false;
 
@@ -44,6 +66,7 @@ public sealed class LFavorite
         ArgumentNullException.ThrowIfNull(vista);
 
         _lFavoriteVista = vista;
+        LFavoritePanel.LPanelVistaRestore(vista);
         LFavoriteEditor.LEditorVistaRestore(vista);
     }
 
@@ -71,29 +94,9 @@ public sealed class LFavorite
         _lFavoriteVista?.LVistaFilterSet(filter);
     }
 
-    public void LFavoriteSelect(long? id)
-    {
-        _lFavoriteVista?.LVistaSelect(id);
-    }
-
-    public void LFavoriteScribeSet(bool editing)
-    {
-        _lFavoriteVista?.LVistaEditingSet(editing);
-    }
-
     public IReadOnlyList<LVistaRow> LFavoriteRowsRead()
     {
         return _lFavoriteVista is LVista vista ? _lEntryPort.LEngineFavoriteFind(vista) : [];
-    }
-
-    public LEntryDraft? LFavoriteLoad()
-    {
-        return _lFavoriteVista?.LVistaLoad()?.LDraftContent;
-    }
-
-    public void LFavoriteDelete()
-    {
-        _lFavoriteVista?.LVistaDelete();
     }
 
     public IReadOnlyList<string> LFavoriteLanguageRead()
@@ -114,19 +117,9 @@ public sealed class LFavorite
             window.LWindowVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LFavoriteObserverAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lFavoriteVista?.LVistaObserverAttach(subject, observer);
-    }
-
     public long LFavoriteVoyageRead()
     {
         return _lFavoriteVista?.LVistaChosen ?? 0;
-    }
-
-    public void LFavoriteChosenAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lFavoriteVista?.LVistaChosenAttach(subject, observer);
     }
 
     public LCatalogOrder LFavoriteOrder => _lFavoriteVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;

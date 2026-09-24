@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Llyn.Application;
-using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -60,45 +59,16 @@ public partial class PEditor
     private void PSentenceCitationCommit(PCard card, PSentence row, TextBox box)
     {
         PCandidateHide();
-
-        string typed = box.Text.Trim();
-        if (typed.Length == 0)
-        {
-            PSentenceCitationSend(card, row, 0);
-            return;
-        }
-
-        string cited = PSentence.PSentenceCitationFind(_pEditorCitation, row.PSentenceCitation);
-        if (string.Equals(typed, cited, StringComparison.Ordinal))
-        {
-            PSentenceCitationReset(box);
-            return;
-        }
-
-        foreach (PCitationItem item in _pEditorCitation)
-        {
-            if (string.Equals(item.PCitationItemName, typed, StringComparison.CurrentCultureIgnoreCase))
-            {
-                PSentenceCitationSend(card, row, item.PCitationItemId);
-                return;
-            }
-        }
-
-        LReference stored;
         try
         {
-            stored = _lEditor.LEditorCard.LCardCitationCreate(typed);
+            _lEditor.LEditorCard.LCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
         }
         catch (Exception exception)
         {
             _pEditorHost.PWindowFailureShow("Reference.CreateFailed", exception);
-            PSentenceCitationReset(box);
-            return;
         }
 
-        _pEditorCitation.Add(PCitationItem.PCitationItemCreate(
-            LCatalogReference.LCatalogReferenceCreate(stored, null, 0)));
-        PSentenceCitationSend(card, row, stored.LReferenceId);
+        PSentenceCitationReset(box);
     }
 
     private void PSentenceCitationSend(PCard card, PSentence row, long reference)

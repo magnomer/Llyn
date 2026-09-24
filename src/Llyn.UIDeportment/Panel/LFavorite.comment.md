@@ -5,11 +5,14 @@
 The favorites panel's deportment: the one vista it holds and what the panel asks of it.
 It finds the marked rows, takes the query, order and language filter, and loads or deletes the chosen entry.
 The vista is handed in by the window, which restores every tab's vistas together.
-The panel's mode, its bin and its scribe toggle stay in the veneer until the tabs share one panel deportment.
 
 ## `public LEditor LFavoriteEditor { get; }`
 
 The entry editor's deportment, which takes the favorite vista when the panel's vista is restored.
+
+## `public LPanel LFavoritePanel { get; }`
+
+The shared panel state: the chosen row, the scribe mode, the bin and the leave guard.
 
 ## `public bool LFavoriteGraspOrdered => _lFavoriteVista?.LVistaOrderMatch(LCatalogOrder.LCatalogOrderGrasp) ?? false;`
 

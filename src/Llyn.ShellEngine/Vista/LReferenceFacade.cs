@@ -36,6 +36,29 @@ internal sealed class LReferenceFacade
         return stored;
     }
 
+    public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)
+    {
+        LReference stored;
+        lock (_lReferenceFacadeGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(draftId);
+            _lReferenceFacadeEngine.LEngineDraft.LEngineDraftValidate(draftId);
+
+            long held = _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId)
+                .LDraftExampleRead(cardId, sentenceId)?.LExampleDraftReference.LStateAnchorShow() ?? 0;
+            long? found = LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkResolve(title, held);
+            if (found is long id)
+            {
+                return id;
+            }
+
+            stored = LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkCreate(title);
+        }
+
+        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
+        return stored.LReferenceId;
+    }
+
     internal LReference? LEngineReferenceRead(long id)
     {
         lock (_lReferenceFacadeGate)

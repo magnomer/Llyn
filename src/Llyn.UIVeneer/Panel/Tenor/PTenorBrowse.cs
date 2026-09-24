@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -26,7 +27,7 @@ public partial class PTenor
     private void PTenorRegisterUpdate()
     {
         PGamutFind();
-        PTenorEntryUpdate();
+        _lTenor.LTenorPanel.LPanelDraftUpdate();
     }
 
     private void PSoundingHandle(object sender, TextChangedEventArgs e)
@@ -60,9 +61,12 @@ public partial class PTenor
         _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, PObserver.PObserverCreate(this, PTenorRegisterUpdate));
         _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PGamutFind));
         _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PGamutFind));
-        _lTenor.LTenorCohortAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PCohortEntryUpdate));
-        _lTenor.LTenorEntryAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PTenorEntryUpdate));
-        _lTenor.LTenorCohortAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PCohortFind));
+        LPanel panel = _lTenor.LTenorPanel;
+        panel.LPanelObserverAttach(
+            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PCohortFind));
+        panel.LPanelChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelDraftUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PGamutFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -157,14 +161,14 @@ public partial class PTenor
 
         if (_lTenor.LTenorChosen is null)
         {
-            if (_lTenor.LTenorCohortChosen is null)
+            if (!_lTenor.LTenorPanel.LPanelBinEnabled)
             {
                 PGamutRegisterCreate();
                 return;
             }
         }
 
-        PCohortEntryCreate();
+        _lTenor.LTenorEntryCreate();
     }
 
     private void PGamutRegisterCreate()
@@ -185,101 +189,28 @@ public partial class PTenor
             return;
         }
 
-        PTenorClear();
+        _lTenor.LTenorPanel.LPanelClear();
         PGamutRegisterShow(created.LRegisterId);
     }
 
     private void PTenorScribeHandle(object sender, RoutedEventArgs e)
     {
-        bool editing = ReferenceEquals(sender, PTenorScribe);
-        if (editing == (PEditor.Visibility == Visibility.Visible))
-        {
-            return;
-        }
-
-        if (!editing)
-        {
-            if (!PTenorLeaveConfirm())
-            {
-                PTenorScribeShow(true);
-                return;
-            }
-
-            PTenorScribeShow(false);
-
-            if (_lTenor.LTenorCohortChosen is long shown)
-            {
-                PCohortEntryShow(shown);
-                return;
-            }
-
-            PTenorClear();
-            return;
-        }
-
-        if (_lTenor.LTenorCohortChosen is not long edited)
-        {
-            PTenorClear();
-            return;
-        }
-
-        PEditor.PEditorEntryShow(edited);
-        PTenorScribeShow(true);
-    }
-
-    private void PTenorScribeShow(bool editing)
-    {
-        _lTenor.LTenorScribeSet(editing);
-
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PTenorViewer.IsChecked = !editing;
-        PTenorScribe.IsChecked = editing;
+        _lTenor.LTenorPanel.LPanelScribeSet(ReferenceEquals(sender, PTenorScribe));
     }
 
     internal void PTenorScribeRestore(bool editing)
     {
-        if (editing)
-        {
-            if (_lTenor.LTenorCohortChosen is null)
-            {
-                return;
-            }
-        }
-
-        if (editing)
-        {
-            PTenorMode.IsEnabled = true;
-        }
-
-        PTenorScribeShow(editing);
+        _lTenor.LTenorPanel.LPanelScribeRestore(editing);
     }
 
     internal bool PTenorLeaveConfirm()
     {
-        return _pTenorHost.PWindowDiscardConfirm(PTenorChangeCheck(), PTenorDraftFinish);
+        return _lTenor.LTenorPanel.LPanelLeaveConfirm();
     }
 
     internal long PTenorVoyageRead()
     {
         return _lTenor.LTenorChosen ?? 0;
-    }
-
-    private void PTenorEntryShow(LEntryDraft draft)
-    {
-        PDisplay.PDisplayShow(draft);
-        PTenorMode.IsEnabled = true;
-    }
-
-    private void PTenorClear()
-    {
-        _lTenor.LTenorCohortSelect(null);
-        PCohortFind();
-        PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
-        PTenorScribeShow(false);
-        PTenorMode.IsEnabled = false;
-        PTenorBin.IsEnabled = false;
     }
 
     private void PTenorStoreHandle(object sender, RoutedEventArgs e)
@@ -289,21 +220,6 @@ public partial class PTenor
 
     private void PTenorBinHandle(object sender, RoutedEventArgs e)
     {
-        if (!_pTenorHost.PWindowDeleteConfirm())
-        {
-            return;
-        }
-
-        try
-        {
-            _lTenor.LTenorCohortDelete();
-        }
-        catch (Exception exception)
-        {
-            _pTenorHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
-            return;
-        }
-
-        PTenorClear();
+        _lTenor.LTenorPanel.LPanelDelete();
     }
 }

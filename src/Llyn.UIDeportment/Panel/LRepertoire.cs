@@ -127,6 +127,11 @@ public sealed class LRepertoire
         return _lEntryPort.LEngineUsageRead(LOwner.LOwnerSituation);
     }
 
+    public int LRepertoireUsageRead(long? id)
+    {
+        return id is long stored ? LRepertoireUsageRead().GetValueOrDefault(stored) : 0;
+    }
+
     public IReadOnlyList<LVistaRow> LRepertoireOccurrenceRead()
     {
         return _lEntryPort.LEngineEntryFind(_lRepertoireVista, _lRepertoireOccurrence);

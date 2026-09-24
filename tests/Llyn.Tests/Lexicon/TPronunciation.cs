@@ -189,6 +189,21 @@ public sealed class TPronunciation
     }
 
     [Fact]
+    public void RequestApply_RemovalOfZeroId_RemovesThePrimaryRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        engine.TEngineRequestApply(TInterface.TRequestIpaCreate(started.LDraftId, "wɜːd"));
+        engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, "wɝd", 1));
+        LDraft answered = engine.TEngineRequestApply(TInterface.TPronunciationRemovalCreate(started.LDraftId, 0));
+
+        LPronunciationDraft left = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal("wɝd", left.LPronunciationDraftIpa);
+    }
+
+    [Fact]
     public void DraftCheck_PrimaryClearedAgain_IsNoChangeWhereAddedBlankRowIs()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

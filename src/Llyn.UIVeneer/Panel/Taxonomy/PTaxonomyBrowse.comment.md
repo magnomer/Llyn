@@ -12,15 +12,6 @@ The entry list itself lives in [PTaxonomyMembership.cs](PTaxonomyMembership.comm
 
 ## Inline notes
 
-### `private LTaxonomy _lTaxonomy = null!;`
-
-The panel's deportment, holding the tag vista and the Membership vista the window restored.
-The vista carries the order, the query, the chosen Tag, and the languages hidden from its entries.
-The panel keeps no copy of any of the four and asks the deportment for each where it needs it.
-The chosen tag is null when none is chosen, which is the whole workspace, not an absence to be corrected.
-It is null until the window hands one over, so the handlers do nothing before that.
-A switched workspace hands over a fresh vista, read from that workspace's own layout.
-
 ### `private async void PTaxonomyWorkspaceUpdate()`
 
 A workspace that moved empties the panel and reloads its flags before any row is built.

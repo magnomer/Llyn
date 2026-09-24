@@ -18,7 +18,14 @@ public sealed class LTenor
 
     private LVista? _lTenorCohort;
 
-    public LTenor(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, LEditor editor)
+    public LTenor(
+        LEntryPort entries,
+        LPortraitPort portraits,
+        LSettingsPort settings,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -29,15 +36,39 @@ public sealed class LTenor
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
         LTenorEditor = editor;
+
+        LTenorPanel = new LPanel(
+            "Register.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LTenorPanel.LPanelCleared += LTenorEditorClear;
+        LTenorPanel.LPanelEdited += LTenorEditorOpen;
     }
 
     public LEditor LTenorEditor { get; }
 
+    public LPanel LTenorPanel { get; }
+
+    private void LTenorEditorClear()
+    {
+        LTenorEditor.LEditorOpen(null);
+    }
+
+    private void LTenorEditorOpen(long id)
+    {
+        LTenorEditor.LEditorOpen(id);
+    }
+
+    public void LTenorEntryCreate()
+    {
+        LTenorPanel.LPanelFreshOpen();
+        if (LTenorChosen is long register)
+        {
+            LTenorEditor.LEditorRegisterAdd(register);
+        }
+    }
+
     public LVista? LTenorCohortVista => _lTenorCohort;
 
     public long? LTenorChosen => _lTenorVista?.LVistaChosen;
-
-    public long? LTenorCohortChosen => _lTenorCohort?.LVistaChosen;
 
     public bool LTenorFiltered => _lTenorVista?.LVistaFiltered ?? false;
 
@@ -48,6 +79,7 @@ public sealed class LTenor
 
         _lTenorVista = vista;
         _lTenorCohort = cohort;
+        LTenorPanel.LPanelVistaRestore(cohort);
         LTenorEditor.LEditorVistaRestore(cohort);
     }
 
@@ -87,16 +119,6 @@ public sealed class LTenor
         _lTenorVista?.LVistaSelect(id);
     }
 
-    public void LTenorCohortSelect(long? id)
-    {
-        _lTenorCohort?.LVistaSelect(id);
-    }
-
-    public void LTenorScribeSet(bool editing)
-    {
-        _lTenorCohort?.LVistaEditingSet(editing);
-    }
-
     public IReadOnlyList<LCatalogRegister> LTenorRowsRead()
     {
         return _lTenorVista is LVista vista ? _lEntryPort.LEngineRegisterFind(vista) : [];
@@ -105,16 +127,6 @@ public sealed class LTenor
     public IReadOnlyList<LVistaRow> LTenorCohortRead()
     {
         return _lEntryPort.LEngineEntryFind(_lTenorVista, _lTenorCohort);
-    }
-
-    public LEntryDraft? LTenorCohortLoad()
-    {
-        return _lTenorCohort?.LVistaLoad()?.LDraftContent;
-    }
-
-    public void LTenorCohortDelete()
-    {
-        _lTenorCohort?.LVistaDelete();
     }
 
     public LRegister LTenorRegisterCreate(string name)
@@ -149,16 +161,6 @@ public sealed class LTenor
     public void LTenorChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorVista?.LVistaChosenAttach(subject, observer);
-    }
-
-    public void LTenorCohortAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTenorCohort?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LTenorEntryAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTenorCohort?.LVistaChosenAttach(subject, observer);
     }
 
     public LCatalogOrder LTenorOrder => _lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;

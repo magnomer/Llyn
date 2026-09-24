@@ -14,10 +14,14 @@ public partial class PWindow
             return;
         }
 
-        foreach ((PTab button, FrameworkElement panel, Func<bool> draft, Func<bool, bool> leave)
-                 in PNavigationGuardRead())
+        foreach ((string mode, PTab button, Func<bool> draft, Func<bool, bool> leave) in PNavigationGuardRead())
         {
-            if (panel.IsVisible && button != selectedButton && !PWindowDiscardConfirm(draft(), leave))
+            if (!_lWindow.LWindowModeMatch(mode))
+            {
+                continue;
+            }
+
+            if (button != selectedButton && !PWindowDiscardConfirm(draft(), leave))
             {
                 return;
             }
@@ -51,23 +55,23 @@ public partial class PWindow
         }
     }
 
-    private (PTab PNavigationButton, FrameworkElement PNavigationPanel, Func<bool> PNavigationDraft,
+    private (string PNavigationMode, PTab PNavigationButton, Func<bool> PNavigationDraft,
         Func<bool, bool> PNavigationLeave)[] PNavigationGuardRead()
     {
         return
         [
-            (PNavigationLibrary, PLibrary, PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
-            (PNavigationPhonology, PPhonology, PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
-            (PNavigationXiesheng, PXiesheng, PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
-            (PNavigationYunjing, PYunjing, PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
-            (PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
-            (PNavigationTenor, PTenor, PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
-            (PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireChangeCheck,
+            ("Library", PNavigationLibrary, PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
+            ("Phonology", PNavigationPhonology, PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
+            ("Xiesheng", PNavigationXiesheng, PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
+            ("Yunjing", PNavigationYunjing, PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
+            ("Taxonomy", PNavigationTaxonomy, PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
+            ("Tenor", PNavigationTenor, PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
+            ("Repertoire", PNavigationRepertoire, PRepertoire.PRepertoireChangeCheck,
                 PRepertoire.PRepertoireDraftFinish),
-            (PNavigationCorpus, PCorpus, PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
-            (PNavigationSource, PReference, PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
-            (PNavigationGuild, PGuild, PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish),
-            (PNavigationFavorite, PFavorite, PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
+            ("Corpus", PNavigationCorpus, PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
+            ("Reference", PNavigationSource, PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
+            ("Guild", PNavigationGuild, PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish),
+            ("Favorite", PNavigationFavorite, PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
         ];
     }
 

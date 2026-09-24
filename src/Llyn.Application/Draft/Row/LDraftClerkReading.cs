@@ -38,6 +38,12 @@ public sealed class LDraftClerkReading
                     LPronunciationDraftSource = sent.LRequestSource,
                 }),
             LRequestPronunciationAddition sent => LPronunciationAdd(content, sent),
+            LRequestPronunciationRemoval { LRequestPronunciationId: 0 } => LPronunciationApply(
+                content,
+                spoken => spoken.Count == 0
+                    ? spoken
+                    : LDraftClerkList.LDraftListRemove(
+                        spoken, spoken[0].LPronunciationDraftId, static row => row.LPronunciationDraftId)),
             LRequestPronunciationRemoval sent => LPronunciationApply(
                 content,
                 spoken => LDraftClerkList.LDraftListRemove(

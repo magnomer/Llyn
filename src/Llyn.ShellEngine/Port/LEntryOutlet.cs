@@ -117,8 +117,8 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista) =>
         _lEntryOutletEngine.LEngineReference.LEngineReferenceFind(vista);
 
-    public LReference LEngineCitationCreate(string title) =>
-        _lEntryOutletEngine.LEngineReference.LEngineCitationCreate(title);
+    public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title) =>
+        _lEntryOutletEngine.LEngineReference.LEngineCitationResolve(draftId, cardId, sentenceId, title);
 
     public IReadOnlyDictionary<long, string> LEngineCitationRead() =>
         _lEntryOutletEngine.LEngineReference.LEngineCitationRead();

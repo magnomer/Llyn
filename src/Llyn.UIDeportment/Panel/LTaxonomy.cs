@@ -18,7 +18,14 @@ public sealed class LTaxonomy
 
     private LVista? _lTaxonomyMembership;
 
-    public LTaxonomy(LEntryPort entries, LPortraitPort portraits, LSettingsPort settings, LEditor editor)
+    public LTaxonomy(
+        LEntryPort entries,
+        LPortraitPort portraits,
+        LSettingsPort settings,
+        LEditor editor,
+        Func<bool> shownSeam,
+        Func<bool> leaveSeam,
+        Func<bool> deleteSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -29,15 +36,39 @@ public sealed class LTaxonomy
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
         LTaxonomyEditor = editor;
+
+        LTaxonomyPanel = new LPanel(
+            "Tag.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+        LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
+        LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
     }
 
     public LEditor LTaxonomyEditor { get; }
 
+    public LPanel LTaxonomyPanel { get; }
+
+    private void LTaxonomyEditorClear()
+    {
+        LTaxonomyEditor.LEditorOpen(null);
+    }
+
+    private void LTaxonomyEditorOpen(long id)
+    {
+        LTaxonomyEditor.LEditorOpen(id);
+    }
+
+    public void LTaxonomyEntryCreate()
+    {
+        LTaxonomyPanel.LPanelFreshOpen();
+        if (LTaxonomyChosen is long tag)
+        {
+            LTaxonomyEditor.LEditorTagAdd(tag);
+        }
+    }
+
     public LVista? LTaxonomyMembershipVista => _lTaxonomyMembership;
 
     public long? LTaxonomyChosen => _lTaxonomyVista?.LVistaChosen;
-
-    public long? LTaxonomyMembershipChosen => _lTaxonomyMembership?.LVistaChosen;
 
     public bool LTaxonomyFiltered => _lTaxonomyVista?.LVistaFiltered ?? false;
 
@@ -48,6 +79,7 @@ public sealed class LTaxonomy
 
         _lTaxonomyVista = vista;
         _lTaxonomyMembership = membership;
+        LTaxonomyPanel.LPanelVistaRestore(membership);
         LTaxonomyEditor.LEditorVistaRestore(membership);
     }
 
@@ -87,16 +119,6 @@ public sealed class LTaxonomy
         _lTaxonomyVista?.LVistaSelect(id);
     }
 
-    public void LTaxonomyMembershipSelect(long? id)
-    {
-        _lTaxonomyMembership?.LVistaSelect(id);
-    }
-
-    public void LTaxonomyScribeSet(bool editing)
-    {
-        _lTaxonomyMembership?.LVistaEditingSet(editing);
-    }
-
     public IReadOnlyList<LCatalogTag> LTaxonomyRowsRead()
     {
         return _lTaxonomyVista is LVista vista ? _lEntryPort.LEngineTagFind(vista) : [];
@@ -105,16 +127,6 @@ public sealed class LTaxonomy
     public IReadOnlyList<LVistaRow> LTaxonomyMembershipRead()
     {
         return _lEntryPort.LEngineEntryFind(_lTaxonomyVista, _lTaxonomyMembership);
-    }
-
-    public LEntryDraft? LTaxonomyMembershipLoad()
-    {
-        return _lTaxonomyMembership?.LVistaLoad()?.LDraftContent;
-    }
-
-    public void LTaxonomyMembershipDelete()
-    {
-        _lTaxonomyMembership?.LVistaDelete();
     }
 
     public LTag LTaxonomyTagCreate(string name)
@@ -149,16 +161,6 @@ public sealed class LTaxonomy
     public void LTaxonomyChosenAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyVista?.LVistaChosenAttach(subject, observer);
-    }
-
-    public void LTaxonomyMembershipAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTaxonomyMembership?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LTaxonomyEntryAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTaxonomyMembership?.LVistaChosenAttach(subject, observer);
     }
 
     public LCatalogOrder LTaxonomyOrder => _lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;

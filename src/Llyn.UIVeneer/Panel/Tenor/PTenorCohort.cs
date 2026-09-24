@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -58,91 +59,11 @@ public partial class PTenor
             return;
         }
 
-        PCohortEntryShow(item.PCohortItemId);
+        _lTenor.LTenorPanel.LPanelRowShow(item.PCohortItemId);
     }
 
-    private void PCohortEntryShow(long id)
+    private void PTenorEntryUpdate(LDraft draft)
     {
-        LEntryDraft? draft;
-        try
-        {
-            _lTenor.LTenorCohortSelect(id);
-            draft = _lTenor.LTenorCohortLoad();
-        }
-        catch (Exception exception)
-        {
-            _pTenorHost.PWindowFailureShow(PTenorFailure, exception);
-            return;
-        }
-
-        if (draft is null)
-        {
-            PTenorClear();
-            PGamutFind();
-            return;
-        }
-
-        _lTenor.LTenorCohortSelect(id);
-        PCohortFind();
-        PTenorBin.IsEnabled = true;
-        PTenorEntryShow(draft);
-
-        if (PEditor.Visibility == Visibility.Visible)
-        {
-            PEditor.PEditorEntryShow(id);
-        }
-    }
-
-    private void PCohortEntryUpdate(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinStored)
-        {
-            if (IsVisible)
-            {
-                if (PEditor.Visibility == Visibility.Visible)
-                {
-                    _lTenor.LTenorCohortSelect(bulletin.LBulletinId);
-                    PCohortFind();
-                    PTenorBin.IsEnabled = true;
-                }
-            }
-        }
-
-        PGamutFind();
-    }
-
-    private void PTenorEntryUpdate()
-    {
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lTenor.LTenorCohortLoad();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (draft is null)
-        {
-            PTenorClear();
-            return;
-        }
-
-        PTenorEntryShow(draft);
-    }
-
-    private void PCohortEntryCreate()
-    {
-        long? register = _lTenor.LTenorChosen;
-
-        PTenorClear();
-        PTenorMode.IsEnabled = true;
-        PTenorScribeShow(true);
-
-        if (register is long id)
-        {
-            _lEditor.LEditorRegisterAdd(id);
-        }
+        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 }

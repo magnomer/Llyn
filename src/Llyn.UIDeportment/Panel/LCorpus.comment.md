@@ -29,3 +29,13 @@ Marks the example vista as edited or read, which the posture keeps across runs.
 ## `public void LCorpusEditorSet(bool editing)`
 
 Marks the quotation vista as edited or read, for the entry editor on the right.
+
+## `public int LCorpusUsageRead(long? id)`
+
+How many entries cite the given Example, read fresh from the engine.
+Zero when no Example is given.
+
+## `public void LCorpusCitationSet(string title)`
+
+Points the Example's citation at the Reference the engine resolves the typed title to.
+The engine reads the Reference cited now off the held draft, so an unchanged title keeps it.

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -58,91 +59,11 @@ public partial class PTaxonomy
             return;
         }
 
-        PMembershipEntryShow(item.PMembershipItemId);
+        _lTaxonomy.LTaxonomyPanel.LPanelRowShow(item.PMembershipItemId);
     }
 
-    private void PMembershipEntryShow(long id)
+    private void PTaxonomyEntryUpdate(LDraft draft)
     {
-        LEntryDraft? draft;
-        try
-        {
-            _lTaxonomy.LTaxonomyMembershipSelect(id);
-            draft = _lTaxonomy.LTaxonomyMembershipLoad();
-        }
-        catch (Exception exception)
-        {
-            _pTaxonomyHost.PWindowFailureShow("Tag.LoadFailed", exception);
-            return;
-        }
-
-        if (draft is null)
-        {
-            PTaxonomyClear();
-            PDirectoryFind();
-            return;
-        }
-
-        _lTaxonomy.LTaxonomyMembershipSelect(id);
-        PMembershipFind();
-        PTaxonomyBin.IsEnabled = true;
-        PTaxonomyEntryShow(draft);
-
-        if (PEditor.Visibility == Visibility.Visible)
-        {
-            PEditor.PEditorEntryShow(id);
-        }
-    }
-
-    private void PMembershipEntryUpdate(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinStored)
-        {
-            if (IsVisible)
-            {
-                if (PEditor.Visibility == Visibility.Visible)
-                {
-                    _lTaxonomy.LTaxonomyMembershipSelect(bulletin.LBulletinId);
-                    PMembershipFind();
-                    PTaxonomyBin.IsEnabled = true;
-                }
-            }
-        }
-
-        PDirectoryFind();
-    }
-
-    private void PTaxonomyEntryUpdate()
-    {
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lTaxonomy.LTaxonomyMembershipLoad();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (draft is null)
-        {
-            PTaxonomyClear();
-            return;
-        }
-
-        PTaxonomyEntryShow(draft);
-    }
-
-    private void PMembershipEntryCreate()
-    {
-        long? tag = _lTaxonomy.LTaxonomyChosen;
-
-        PTaxonomyClear();
-        PTaxonomyMode.IsEnabled = true;
-        PTaxonomyScribeShow(true);
-
-        if (tag is long id)
-        {
-            _lEditor.LEditorTagAdd(id);
-        }
+        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 }

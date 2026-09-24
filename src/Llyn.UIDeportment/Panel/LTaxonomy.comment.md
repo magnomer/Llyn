@@ -6,11 +6,19 @@ The taxonomy panel's deportment: the tag vista and the membership vista it holds
 The tag side finds rows, takes the query, order and kind filter, and creates a Tag.
 The membership side finds the entries of the chosen Tag, loads and deletes the chosen one, and marks it edited.
 Both vistas are handed in by the window, which restores every tab's vistas together.
-The panel's mode, its bin and its scribe toggle stay in the veneer until the tabs share one panel deportment.
 
 ## `public LEditor LTaxonomyEditor { get; }`
 
 The entry editor's deportment on the membership side, which takes the membership vista when the panel's vistas are restored.
+
+## `public LPanel LTaxonomyPanel { get; }`
+
+The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
+
+## `public void LTaxonomyEntryCreate()`
+
+Opens a blank entry in the editor.
+When a Tag is chosen, the new entry starts inside that Tag.
 
 ## `public LVista? LTaxonomyMembershipVista => _lTaxonomyMembership;`
 

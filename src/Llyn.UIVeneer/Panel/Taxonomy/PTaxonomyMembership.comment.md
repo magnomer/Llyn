@@ -1,4 +1,4 @@
-﻿# PTaxonomyMembership.cs
+# PTaxonomyMembership.cs
 
 ## `public partial class PTaxonomy`
 
@@ -9,38 +9,10 @@ Choosing a row loads it back from the workspace into the reader, or the editor w
 
 A clicked row is shown once the leave check has settled any unsaved draft.
 
-## `private void PMembershipEntryShow(long id)`
-
-Loads the chosen entry and hands it to the reader, and to the editor when that side is open.
-An entry the workspace no longer holds clears the panel and rebuilds the catalog without it.
-
 ## Inline notes
-
-### `private void PMembershipChosenApply()`
-
-Marks the entry row the vista has chosen and clears the mark from every other row.
-No chosen entry leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown entry changes, so the mark and the reader never disagree.
 
 ### `private void PMembershipFind()`
 
 The entry list is never refilled on its own.
 It is refilled whenever the catalog is, because the chosen tag may have just changed or vanished.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
-
-### `private void PMembershipEntryUpdate(LBulletin bulletin)`
-
-A store is answered by re-reading the catalog rather than the entry list alone.
-Storing may have written a tag no other card carries, or taken away the last card that carried one.
-An entry stored while the editor is open becomes the chosen row first, since the user did not leave it.
-
-### `private void PTaxonomyEntryUpdate()`
-
-Reached only for the entry the panel stands on, or for a store that named no entry.
-The entry is read back and shown again, or the panel clears when it is gone.
-
-### `private void PMembershipEntryCreate()`
-
-Starts a fresh entry in the editor, carrying the chosen tag on its first sense.
-The clear leaves the tag choice standing, so the list still shows that tag's entries beside the fresh one.
-An entry started with no tag chosen comes up blank, since every entry is listed then.

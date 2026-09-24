@@ -5,14 +5,6 @@
 Browsing the marked entries: the search, the ordering, the roster, and the switch between reading and editing.
 The panel shell lives in the file beside this one.
 
-## `private LFavorite _lFavorite = null!;`
-
-The panel's deportment, holding the vista the window restored.
-The vista carries the order, the filter and the query.
-The panel keeps no copy of any of the three and asks the deportment for each where it needs it.
-It is null until the window hands one over, so the handlers do nothing before that.
-A switched workspace hands over a fresh vista, read from that workspace's own layout.
-
 ## `private async void PFavoriteWorkspaceUpdate()`
 
 A workspace that moved empties the panel and loads its flags before the rows are built.
@@ -41,64 +33,21 @@ An unknown workspace leaves the roster empty and tells the user why.
 The empty line is shown only while no row stands.
 Rows arrive numbered and with their epithets, so the panel only copies them.
 
-## `private void PRosterUpdate()`
-
-Reads the roster again after a mark or an unmark.
-An unmarked entry loses its row at once, while the display keeps showing it.
-
 ## `private void PRosterHandle(object sender, RoutedEventArgs e)`
 
 Selects the clicked entry, after the editor has been given the chance to keep unsaved changes.
 
 ## `internal void PRosterEntryShow(long id)`
 
-Loads the entry and shows it in the display.
-An entry that has left the workspace clears the panel and re-reads the roster.
-An open editor is moved onto the same entry, so the two never stand on different records.
-
-## `private void PRosterEntryUpdate(LBulletin bulletin)`
-
-Re-reads the roster after the editor stored the entry.
-A headword the store changed must reach the row that carries it.
-An entry stored while the editor is open becomes the chosen row first, since the user did not leave it.
-
-## `private void PFavoriteEntryUpdate(LBulletin bulletin)`
-
-Reached only for the entry the panel stands on, or for a store that named no entry.
-The entry is read back and shown again, or the panel clears when it is gone.
-
-## `private void PEditorEntryRestore()`
-
-Puts the editor back on the selected entry after a discard.
-Nothing selected leaves the editor empty.
+Selects the entry on the shared panel, which loads it and drives the display and any open editor from there.
 
 ## `private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)`
 
-Swaps the read view for the editor, and back.
-Leaving the editor asks about unsaved changes first, then reloads the entry as stored.
-
-
-## `if (editing == (PEditor.Visibility == Visibility.Visible))`
-
-Both segments answer here, so the click is read off which one was pressed.
-The segment already standing for what is on screen changes nothing.
-## `private void PFavoriteScribeShow(bool editing)`
-
-Shows one of the two views and relabels the button with what the next click does.
-The side chosen is pushed downstream as it changes, so the panel opens on it next time.
+Swaps the read view for the editor, and back, through the shared panel.
 
 ## `internal bool PFavoriteLeaveConfirm()`
 
-Asks the window whether the unsaved changes may be dropped.
-An editor holding nothing answers yes without asking.
-
-## `private void PFavoriteEntryShow(LEntryDraft draft)`
-
-Fills the display and enables the mode toggle, which is dead while nothing is selected.
-
-## `private void PFavoriteClear()`
-
-Returns the panel to nothing selected, reading, and no editor open.
+Asks the shared panel whether the unsaved changes may be dropped.
 
 ## `private void PSeriesGraspUpdate()`
 
@@ -128,23 +77,7 @@ Shows the filter mark while the vista hides any language.
 
 ## `internal void PFavoriteScribeRestore(bool editing)`
 
-Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored.
-An empty editor is the state a new record is written in.
-
-A session that ended on the editor with nothing selected comes back on the reading side instead.
-Otherwise the launch would open a blank draft nobody asked for.
-
-### `private void PRosterChosenApply()`
-
-Marks the row of the entry the vista stands on and clears the mark from every other row.
-No row is marked when the vista stands on none, which is what a cleared panel shows.
-It walks the rows already listed, so choosing an entry never re-reads the roster.
-
-### `private void PFavoriteCommandApply()`
-
-The delete button acts on the entry the vista stands on.
-It is derived from that one fact rather than switched on at each place an entry appears.
+Puts the panel back on the side it was left standing on, through the shared panel.
 
 ## `internal long PFavoriteVoyageRead()`
 

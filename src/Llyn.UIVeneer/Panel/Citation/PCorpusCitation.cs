@@ -167,44 +167,16 @@ public partial class PCorpus
     private void PCitationCommit()
     {
         PCitationHide();
-
-        string typed = PCitationField.Text.Trim();
-        if (typed.Length == 0)
-        {
-            PCitationSet(0);
-            return;
-        }
-
-        if (string.Equals(typed, PCitationNameRead(_pTranscriptCitation), StringComparison.Ordinal))
-        {
-            PCitationUpdate();
-            return;
-        }
-
-        foreach (PCitationItem item in _pCitationCatalog)
-        {
-            if (string.Equals(item.PCitationItemName, typed, StringComparison.CurrentCultureIgnoreCase))
-            {
-                PCitationSet(item.PCitationItemId);
-                return;
-            }
-        }
-
-        LReference stored;
         try
         {
-            stored = _lCorpus.LCorpusCitationCreate(typed);
+            _lCorpus.LCorpusCitationSet(PCitationField.Text);
         }
         catch (Exception exception)
         {
             _pCorpusHost.PWindowFailureShow("Reference.CreateFailed", exception);
-            PCitationUpdate();
-            return;
         }
 
-        _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(
-            LCatalogReference.LCatalogReferenceCreate(stored, null, 0)));
-        PCitationSet(stored.LReferenceId);
+        PCitationUpdate();
     }
 
     private void PCitationShow(string text)

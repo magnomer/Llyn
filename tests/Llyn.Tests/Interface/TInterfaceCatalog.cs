@@ -68,6 +68,10 @@ internal static partial class TInterface
     internal static LReference TEngineCitationCreate(this LEngine engine, string title) =>
         engine.LEngineReference.LEngineCitationCreate(title);
 
+    internal static long TEngineCitationResolve(
+        this LEngine engine, long draftId, long cardId, long sentenceId, string title) =>
+        engine.LEngineReference.LEngineCitationResolve(draftId, cardId, sentenceId, title);
+
     internal static string TCatalogOrderFormat(LCatalogOrder order) =>
         LCatalog.LCatalogOrderFormat(order);
 

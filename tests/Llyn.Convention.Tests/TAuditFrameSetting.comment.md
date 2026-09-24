@@ -9,7 +9,7 @@ The values mirror the ring frames in `auditstructure.json`, kept by hand.
 ## `public static readonly string[] TAuditFramePure`
 
 The rings held to the frame and kept from every ambient member.
-The veneer and the adapters are outside the chain's purity and name what they need.
+The veneer, the deportment and the adapters are outside the chain's purity and name what they need.
 
 ## `public static readonly string[] TAuditFrameAllowed`
 
