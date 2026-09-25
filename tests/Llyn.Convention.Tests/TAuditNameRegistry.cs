@@ -62,6 +62,7 @@ internal static class TAuditNameRegistry
         "Customs",
         "Database",
         "Degree",
+        "Demeanor",
         "Desk",
         "Dial",
         "Directory",

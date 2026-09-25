@@ -13,9 +13,9 @@ public partial class PLinkTemplate : ResourceDictionary
         InitializeComponent();
     }
 
-    private void PLinkChipHandle(object sender, RoutedEventArgs e)
+    private void PLinkDropHandle(object sender, RoutedEventArgs e)
     {
-        _pLinkHost.PLinkChipHandle(sender, e);
+        _pLinkHost.PLinkDropHandle(sender, e);
     }
 
     private void PLinkCaretHandle(object sender, KeyEventArgs e)

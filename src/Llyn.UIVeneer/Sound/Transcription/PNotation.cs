@@ -127,8 +127,7 @@ public partial class PEditor
             LAccentItem.LAccentFlagFind(
                 _lEditor.LEditorNotation.LNotationLanguage,
                 _lEditor.LEditorNotation.LNotationFlagged,
-                variety,
-                PEnsign.PEnsignFind),
+                variety),
             phonetic,
             text,
             opener,
@@ -157,7 +156,7 @@ public partial class PEditor
             {
                 if (_lEditor.LEditorFlagged)
                 {
-                    await PEnsign.PEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
+                    await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
                 }
 
                 if (!PNotation.IsOpen)
@@ -170,7 +169,7 @@ public partial class PEditor
                 word,
                 target,
                 scheme,
-                PObserver.PObserverCreate<LLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
+                LObserver.LObserverCreate<LLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
         }
         catch (Exception)
         {

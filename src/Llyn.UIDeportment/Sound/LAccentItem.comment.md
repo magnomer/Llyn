@@ -40,19 +40,19 @@ Blank is what collapses the play button.
 ## `public static LAccentItem LAccentItemCreate(`
 
 Builds the row for one draft pronunciation under the language it belongs to, printing the form `respelling` picks.
-The flag is read through `flagSeam`, since the drawn flags are kept by the view.
+The flag is read from `LEnsignImage`, which keeps the drawn flags.
 
 ## `public static string LAccentLabelFormat(string variety)`
 
 A variety's label is its localized `Variety.*` text when one exists and its raw name otherwise.
 An unnamed variety has no label.
 
-## `public static ImageSource? LAccentFlagFind(`
+## `public static ImageSource? LAccentFlagFind(string language, bool flagged, string variety)`
 
-Looks a variety's flag up through `flagSeam`, only in flag mode and only for a named variety.
+Looks a variety's flag up in `LEnsignImage`, only in flag mode and only for a named variety.
 The store may not hold it yet, and null then says so.
 
-## `public void LAccentFlagUpdate(string language, bool flagged, Func<string, ImageSource?> flagSeam)`
+## `public void LAccentFlagUpdate(string language, bool flagged)`
 
 Looks the flag up again after the store has been filled.
 

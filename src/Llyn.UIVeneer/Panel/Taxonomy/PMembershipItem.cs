@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -15,7 +16,7 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
         PMembershipItemHeadword = headword;
         PMembershipItemEpithet = epithet ?? string.Empty;
         PMembershipItemLanguage = language;
-        PMembershipItemFlag = PEnsign.PEnsignFind(language);
+        PMembershipItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PMembershipItemId { get; }

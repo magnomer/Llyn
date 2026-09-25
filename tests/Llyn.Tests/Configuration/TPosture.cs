@@ -172,6 +172,23 @@ public sealed class TPosture
     }
 
     [Fact]
+    public void PostureVolumeSave_SameLevel_WritesNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LPosture posture = engine.TPostureStart();
+        string path = Path.Combine(workspace.TWorkspaceFolder, "posture.json");
+
+        posture.TPostureVolumeSave(0.25);
+        DateTime written = File.GetLastWriteTimeUtc(path);
+        File.SetLastWriteTimeUtc(path, written.AddMinutes(-5));
+
+        posture.TPostureVolumeSave(0.25);
+
+        Assert.Equal(written.AddMinutes(-5), File.GetLastWriteTimeUtc(path));
+    }
+
+    [Fact]
     public void WindowSave_WorkspaceReopened_KeepsGeometryAndVolume()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

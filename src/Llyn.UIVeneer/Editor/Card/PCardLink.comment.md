@@ -36,7 +36,7 @@ Makes the chips show the engine's links, matched by id.
 Each target carries the headword and language its id stands for, read once for the whole card.
 A chip whose word or language changed is replaced, since a chip is immutable.
 
-## `internal PLinkChip? PCardLinkFind(int step)`
+## `internal LLinkChip? PCardLinkFind(int step)`
 
 The chip standing one step from the entry, before it or after it, or null.
 

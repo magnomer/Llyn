@@ -36,6 +36,12 @@ Whether a row stands under any scheme but the glyph section's, or under any sche
 
 Whether `scheme` is this section's own name, so a transcription under it is the glyph row.
 
+## `public IReadOnlyList<LGlyphCell> LGlyphDivide(LEntryDraft draft)`
+
+The cells of the draft's glyph row, one per rune.
+The text is the first filled transcription under this section's scheme, else the headword.
+A lone Han character carries this section's language, and any other rune carries a blank one.
+
 ## `public IReadOnlyList<LSourceSpec>? LGlyphSourceRead(string scheme)`
 
 The section's sources when `scheme` is its name, else null so the pack's scheme list alone decides.

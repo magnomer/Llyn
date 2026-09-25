@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -18,7 +19,7 @@ public partial class PCorpus
     {
         PExcerptSentenceShow(example);
         PExcerptLanguage.Text = example.LExampleLanguage;
-        PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
+        PExcerptFlag.Source = LEnsignImage.LEnsignFind(example.LExampleLanguage);
         PExcerptGlossShow(example.LExampleGloss);
         PExcerptCitationShow(example.LExampleSource);
         PExcerptTally.Text = PCorpusTallyRead(_lCorpus.LCorpusAnthology.LAnthologyChosen);

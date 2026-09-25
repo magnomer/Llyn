@@ -42,6 +42,8 @@ public sealed class LTenor
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTenorPanel.LPanelCleared += LTenorEditorClear;
         LTenorPanel.LPanelEdited += LTenorEditorOpen;
+        LTenorPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LTenorPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     public LEditor LTenorEditor { get; }

@@ -38,7 +38,6 @@ public partial class PYunjing : UserControl
         _lYunjing.LYunjingPanel.LPanelChanged += PYunjingModeUpdate;
         _lYunjing.LYunjingPanel.LPanelRowsChanged += PXiaoyunUpdate;
         _lYunjing.LYunjingPanel.LPanelCleared += PYunjingClearUpdate;
-        _lYunjing.LYunjingPanel.LPanelDraftChanged += PYunjingEntryUpdate;
         _lYunjing.LYunjingPanel.LPanelFailed += host.PWindowFailureShow;
 
         PShengmu.ItemsSource = _pShengmuList;
@@ -73,23 +72,23 @@ public partial class PYunjing : UserControl
     {
         _lYunjing.LYunjingVistaRestore(_pYunjingHost.PWindowDeportment);
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingYunmuAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PYunjingWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PYunjingWorkspaceUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectFanqie, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lYunjing.LYunjingPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingPanel.LPanelRowsUpdate));
         _lYunjing.LYunjingPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lYunjing.LYunjingEntryHandle));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lYunjing.LYunjingEntryHandle));
         _lYunjing.LYunjingPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -120,7 +119,7 @@ public partial class PYunjing : UserControl
 
     private async void PYunjingWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pYunjingHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pYunjingHost.PWindowDeportment);
         _lYunjing.LYunjingReset();
     }
 
@@ -216,13 +215,7 @@ public partial class PYunjing : UserControl
 
     private void PYunjingClearUpdate()
     {
-        PDisplay.PDisplayClear();
         PDiweiUpdate();
-    }
-
-    private void PYunjingEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PPlumbHandle(object sender, TextChangedEventArgs e)

@@ -25,10 +25,10 @@ The engine numbers it on the row it returns, because a repeat is only visible ac
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
 It is empty when the setting is off or the entry keeps none.
 
-## `public static IReadOnlyList<LIndexItem> LIndexItemBuild(IReadOnlyList<LVistaRow> rows, Func<string, ImageSource?> flagSeam)`
+## `public static IReadOnlyList<LIndexItem> LIndexItemBuild(IReadOnlyList<LVistaRow> rows)`
 
 One item per engine row, in the order the engine returned them.
-The veneer hands in the flag lookup, so the deportment never reads a flag file itself.
+Each flag comes from `LEnsignImage`, which has drawn it before the rows are asked.
 
 ## `public static bool LIndexItemMatch(LIndexItem held, LIndexItem fresh)`
 

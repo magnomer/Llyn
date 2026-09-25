@@ -28,6 +28,10 @@ The frozen clock every rig of this workspace carries.
 
 The fake press every rig of this workspace carries, holding the last sheet and ticket it received.
 
+## `public TPhonographFake TWorkspacePhonograph { get; }`
+
+The fake phonograph every rig of this workspace carries, holding each file it was asked to play.
+
 ## `public void TWorkspaceClockSet(Func<DateTimeOffset> clock)`
 
 Freezes the clock on `clock`, for every engine and clerk built over this workspace.
@@ -65,7 +69,7 @@ A rig over the workspace with a client that answers nothing, for a clerk test.
 
 ## `public LRig TWorkspaceRigCreate(HttpClient client)`
 
-A rig over the workspace with `client` as its web, the workspace's clock and press in place.
+A rig over the workspace with `client` as its web, the workspace's clock, press and phonograph in place.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 

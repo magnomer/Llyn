@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -21,7 +22,7 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
         PInventoryItemLanguage = language;
         PInventoryItemSound = sound;
         PInventoryItemPronunciation = sound.Length == 0 ? "[ ]" : $"[{sound}]";
-        PInventoryItemFlag = PEnsign.PEnsignFind(language);
+        PInventoryItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PInventoryItemId { get; }

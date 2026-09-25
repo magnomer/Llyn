@@ -1,25 +1,27 @@
 <#
 .SYNOPSIS
-Audits the veneer for anything but calls and the deportment for deciding data, through the convention tests.
+Audits the surfaces for anything but calls and the drivers for deciding data, through the convention tests.
 
 .DESCRIPTION
-The veneer (Llyn.UIVeneer) is what the user sees. A veneer member only calls a function:
+A surface is what the user sees: the veneer (Llyn.UIVeneer) for the GUI and the terminal
+(Llyn.UITerminal) for the CUI. A surface member only calls a function:
 no branch, no operator, no assignment, no held state, and no reach into the engine.
-The deportment (Llyn.UIDeportment) drives the veneer and may control the UI freely, but it
-must not decide the data: that stays with the engine.
+A driver drives its surface: the deportment (Llyn.UIDeportment) and the demeanor
+(Llyn.UIDemeanor). A driver may control its medium freely, but it must not decide the
+data: that stays with the Conduct gates and the engine.
 
 Reads the project configuration from auditui.json next to this script, then performs
 these actions on every run:
   1. Runs the two convention-test classes that walk the UI sources with Roslyn:
-     TAuditStrict (the veneer: Storage, Call, Engine, Reach, Trigger)
-     and TAuditTruth (the deportment: the custody kinds, Treat and Taint).
+     TAuditStrict (the surfaces: Storage, Call, Engine, Reach, Trigger)
+     and TAuditTruth (the drivers: the custody kinds, Treat and Taint).
   2. Reads the two Markdown reports those tests write under temp/audit.
   3. Triages every hit into a verdict with the ordered rules of triage.rules:
-       violation  a real issue: the veneer does more than call, or the deportment decides data
+       violation  a real issue: a surface does more than call, or a driver decides data
        review     may be real: a person has to look at the line
        covered    repeats an issue counted at another hit, named in its why
-       allow      not an issue: the deportment controls the UI
-     Every veneer hit is a violation, since the veneer has no tolerated logic.
+       allow      not an issue: a driver controls its medium
+     Every surface hit is a violation, since a surface has no tolerated logic.
   4. Prints a short console summary: the verdicts by kind, the violations by reason
      and the files with the most violations.
   5. Writes one Markdown report to {report.directory}\{prefix}{version}.md, which lists
@@ -124,7 +126,7 @@ NAME
     auditui.ps1
 
 SYNOPSIS
-    Audit the veneer for anything but calls and the deportment for deciding
+    Audit the surfaces for anything but calls and the drivers for deciding
     data, triage every hit into violation, review, covered or allow, and
     create a Markdown report.
 
@@ -135,14 +137,14 @@ SYNTAX
 CONFIGURATION
     All project-specific values live in auditui.json next to the script: the
     test project, configuration and filter, the two report files the tests
-    write, the veneer and deportment hit kinds, the triage rules, report location,
+    write, the surface and driver hit kinds, the triage rules, report location,
     version file and key. Parameters below override it per run.
 
 VERDICTS
-    violation  A real issue: the veneer does more than call, or the deportment decides data.
+    violation  A real issue: a surface does more than call, or a driver decides data.
     review     May be real: a person has to look at the line.
     covered    Repeats an issue counted at another hit.
-    allow      Not an issue: the deportment controls the UI.
+    allow      Not an issue: a driver controls its medium.
 
     The console shows only the verdict counts, the violations by reason and
     the files with the most violations. The Markdown report lists every hit.
@@ -598,18 +600,18 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("- Test project: ``$(ConvertTo-MarkdownCell $config.test.project)`` ($Configuration)")
 [void]$report.AppendLine("- Test filter: ``$(ConvertTo-MarkdownCell $testFilter)``")
 [void]$report.AppendLine("- Test exit code: $testExit")
-[void]$report.AppendLine("- Veneer enforced: $($veneer.Bullets['Enforced'])")
-[void]$report.AppendLine("- Deportment enforced: $($deportment.Bullets['Enforced'])")
+[void]$report.AppendLine("- Surface enforced: $($veneer.Bullets['Enforced'])")
+[void]$report.AppendLine("- Driver enforced: $($deportment.Bullets['Enforced'])")
 [void]$report.AppendLine("- Violations: $(Format-Integer $byVerdict['violation'].Count)")
 [void]$report.AppendLine("- Review: $(Format-Integer $byVerdict['review'].Count)")
 [void]$report.AppendLine("- Covered: $(Format-Integer $byVerdict['covered'].Count)")
 [void]$report.AppendLine("- Allowed: $(Format-Integer $byVerdict['allow'].Count)")
 [void]$report.AppendLine()
-[void]$report.AppendLine("A veneer member only calls a function, and every veneer hit is a violation.")
-[void]$report.AppendLine("The deportment may control the UI but must not decide the data.")
+[void]$report.AppendLine("A surface member only calls a function, and every surface hit is a violation.")
+[void]$report.AppendLine("A driver may control its medium but must not decide the data.")
 [void]$report.AppendLine("A review may be real and needs a person to look at the line.")
 [void]$report.AppendLine("A covered hit repeats an issue counted at another hit, which its why names.")
-[void]$report.AppendLine("An allowed hit is the deportment controlling the UI.")
+[void]$report.AppendLine("An allowed hit is a driver controlling its medium.")
 [void]$report.AppendLine("The triage rules live in ``scripts/auditui.json``.")
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Verdicts by kind")

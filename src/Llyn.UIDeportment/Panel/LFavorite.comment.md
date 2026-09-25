@@ -5,6 +5,7 @@
 The favorites panel's deportment: the one vista it holds and what the panel asks of it.
 It finds the marked rows, takes the query, order and language filter, and loads or deletes the chosen entry.
 The vista is handed in by the window, which restores every tab's vistas together.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public LEditor LFavoriteEditor { get; }`
 

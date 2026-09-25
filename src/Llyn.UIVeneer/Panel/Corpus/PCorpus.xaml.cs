@@ -55,8 +55,6 @@ public partial class PCorpus : UserControl, PChronicleHost
         anthology.LPanelFailed += host.PWindowFailureShow;
         quotation.LPanelChanged += PCorpusModeUpdate;
         quotation.LPanelRowsChanged += PQuotationFind;
-        quotation.LPanelCleared += PDisplay.PDisplayClear;
-        quotation.LPanelDraftChanged += PQuotationDraftShow;
         quotation.LPanelFailed += host.PWindowFailureShow;
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PCorpusPressHandle, PCorpusPressCheck));
@@ -77,11 +75,6 @@ public partial class PCorpus : UserControl, PChronicleHost
     private bool PCorpusRemovalConfirm(int usage)
     {
         return _pCorpusHost.PWindowRemovalConfirm(usage, "Example");
-    }
-
-    private void PQuotationDraftShow(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PCorpusModeUpdate()

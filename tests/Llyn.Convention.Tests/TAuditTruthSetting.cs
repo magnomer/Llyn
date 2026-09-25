@@ -7,7 +7,7 @@ internal static class TAuditTruthSetting
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
     public const string TAuditBulletinType = "LBulletin";
-    public const string TAuditObserverType = "PObserver";
+    public const string TAuditObserverType = "LObserver";
     public const string TAuditConfiguration = "Debug";
     public const string TAuditReferenceRoot = "src/Llyn.UIVeneer";
 
@@ -15,11 +15,14 @@ internal static class TAuditTruthSetting
     [
         "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
+        "src/Llyn.UITerminal/*.cs",
+        "src/Llyn.UIDemeanor/*.cs",
     ];
 
     public static readonly string[] TAuditTruthInclude =
     [
         "src/Llyn.UIDeportment/*.cs",
+        "src/Llyn.UIDemeanor/*.cs",
     ];
 
     public static readonly string[] TAuditFrameworkPacks =
@@ -103,6 +106,7 @@ internal static class TAuditTruthSetting
         "LVista",
         "LPosture",
         "LDisplay",
+        "LDisplaySound",
         "LWindow",
         "List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)>",
         "Action<LBulletin>",

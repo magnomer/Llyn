@@ -73,6 +73,9 @@ public sealed class LEntryOutlet : LEntryPort
 
     public LGlyph? LEngineGlyphRead(string language) => _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(language);
 
+    public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft) =>
+        _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage)?.LGlyphDivide(draft) ?? [];
+
     public LEntry LEngineGlyphResolve(string character, string language) =>
         _lEntryOutletEngine.LEngineEntry.LEngineGlyphResolve(character, language);
 

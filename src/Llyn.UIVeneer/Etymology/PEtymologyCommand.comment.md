@@ -23,3 +23,4 @@ Drops the source link the chip names.
 ## `public static RoutedCommand PEtymologyCommandEntry`
 
 Opens the entry the chip names.
+Its parameter is the chip's entry id, so a handler names no veneer type.

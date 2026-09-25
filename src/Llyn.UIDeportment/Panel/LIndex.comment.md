@@ -15,10 +15,6 @@ Only the index touches it, so no caller reads a control's state.
 
 The notice shown in place of rows when a request found nothing.
 
-## `private readonly Func<string, ImageSource?> _lIndexFlag;`
-
-The flag lookup the veneer supplies, so the deportment never reads a flag file itself.
-
 ## `public static IReadOnlyList<LCatalogOrder> LIndexOrder { get; } =`
 
 The orderings an entry list offers, in the order its dropdown lists them.

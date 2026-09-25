@@ -13,6 +13,12 @@ public interface LMediaPort
 
     bool LEngineRecordingExist(string? file);
 
+    void LEngineRecordingPlay(string? file);
+
+    void LEngineRecordingStop();
+
+    void LEngineVolumeSet(double volume);
+
     Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation);
 
     void LEngineRecordingSweep();

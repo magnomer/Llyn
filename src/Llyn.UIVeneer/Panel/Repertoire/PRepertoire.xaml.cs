@@ -55,8 +55,6 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         atlas.LPanelFailed += host.PWindowFailureShow;
         occurrence.LPanelChanged += PRepertoireModeUpdate;
         occurrence.LPanelRowsChanged += POccurrenceFind;
-        occurrence.LPanelCleared += PDisplay.PDisplayClear;
-        occurrence.LPanelDraftChanged += POccurrenceDraftShow;
         occurrence.LPanelFailed += host.PWindowFailureShow;
 
         CommandBindings.Add(new CommandBinding(
@@ -78,11 +76,6 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     private bool PRepertoireRemovalConfirm(int usage)
     {
         return _pRepertoireHost.PWindowRemovalConfirm(usage);
-    }
-
-    private void POccurrenceDraftShow(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PRepertoireModeUpdate()

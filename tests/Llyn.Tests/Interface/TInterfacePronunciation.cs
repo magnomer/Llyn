@@ -206,6 +206,12 @@ internal static partial class TInterface
     internal static IReadOnlyList<string> TGlyphScan(string text) =>
         LGlyph.LGlyphScan(text);
 
+    internal static LGlyph TGlyphCreate(string name, string language) =>
+        new(name, language, []);
+
+    internal static IReadOnlyList<LGlyphCell> TGlyphDivide(this LGlyph glyph, LEntryDraft draft) =>
+        glyph.LGlyphDivide(draft);
+
     internal static LTrove TTroveCreate() =>
         new LTrove();
 
@@ -328,6 +334,9 @@ internal static partial class TInterface
 
     internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
         new LFrequency(source, raw, band);
+
+    internal static LFrequency TFrequencyIntervalCreate(string source, string raw, long once) =>
+        new LFrequency(source, raw, null, once);
 
     internal static long? TFrequencyOnceResolve(LSourceSpec spec, double raw) =>
         LFrequency.LFrequencyOnceResolve(spec, raw);

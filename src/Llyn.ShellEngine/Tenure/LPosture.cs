@@ -109,6 +109,11 @@ public sealed class LPosture : IDisposable
     public void LPostureVolumeSave(double volume)
     {
         double level = Math.Clamp(volume, 0, 1);
+        if (LPostureVolumeMatch(level))
+        {
+            return;
+        }
+
         LPostureChange(state => state with { LPostureStateVolume = level });
     }
 

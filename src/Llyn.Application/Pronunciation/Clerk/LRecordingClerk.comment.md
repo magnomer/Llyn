@@ -31,6 +31,19 @@ Fetches a recording to a playable local file without storing it.
 
 Whether the recording resolves to a file that exists.
 
+## `public void LRecordingClerkPlay(string? file)`
+
+Plays the recording through the phonograph when it resolves to a file that exists.
+A missing or unnamed file plays nothing, so the phonograph never opens a path that is not there.
+
+## `public void LRecordingClerkStop()`
+
+Stops whatever the phonograph plays.
+
+## `public void LRecordingClerkAdjust(double volume)`
+
+Sets the phonograph level, clamped so the player never takes a level outside zero to one.
+
 ## `public LEntryDraft LRecordingClerkResolve(LEntryDraft draft)`
 
 The draft with every recording path made absolute, so a form can play it.

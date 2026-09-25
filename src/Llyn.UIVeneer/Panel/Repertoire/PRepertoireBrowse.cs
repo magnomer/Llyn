@@ -17,7 +17,7 @@ public partial class PRepertoire
 
     private async void PRepertoireWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pRepertoireHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pRepertoireHost.PWindowDeportment);
         PRepertoireReset();
     }
 
@@ -51,7 +51,7 @@ public partial class PRepertoire
         PChoice.PChoiceOrderApply(PTierDropdown, atlas.LPanelOrder);
         PMeshRestore();
 
-        await PEnsign.PEnsignLoad(_pRepertoireHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pRepertoireHost.PWindowDeportment);
 
         PMeshBuild();
         _lRepertoire.LRepertoireAtlas.LAtlasInquestSet(PInquest.Text ?? string.Empty);
@@ -63,20 +63,20 @@ public partial class PRepertoire
     {
         LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
         LPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
-        Action<LBulletin> rows = PObserver.PObserverCreate(this, atlas.LPanelRowsUpdate);
+        Action<LBulletin> rows = LObserver.LObserverCreate(this, atlas.LPanelRowsUpdate);
         atlas.LPanelObserverAttach(LSubject.LSubjectVista, rows);
         atlas.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PRepertoireWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PRepertoireWorkspaceUpdate));
         atlas.LPanelObserverAttach(LSubject.LSubjectSituation, rows);
         atlas.LPanelObserverAttach(LSubject.LSubjectReflex, rows);
         atlas.LPanelObserverAttach(LSubject.LSubjectSettings, rows);
         occurrence.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, occurrence.LPanelEntrySelect));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, occurrence.LPanelEntrySelect));
         occurrence.LPanelObserverAttach(LSubject.LSubjectEntry, rows);
         occurrence.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lRepertoire.LRepertoireEntryUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lRepertoire.LRepertoireEntryUpdate));
         occurrence.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, occurrence.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, occurrence.LPanelRowsUpdate));
     }
 
     private void PMeshRestore()

@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -168,7 +169,7 @@ internal static class PChoice
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
         Grid badge = new() { Width = 19, Height = 14, VerticalAlignment = VerticalAlignment.Center };
-        ImageSource? flag = PEnsign.PEnsignFind(language);
+        ImageSource? flag = LEnsignImage.LEnsignFind(language);
         if (flag is not null)
         {
             badge.Children.Add(new Image { Stretch = Stretch.Uniform, Source = flag });

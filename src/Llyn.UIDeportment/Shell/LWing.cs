@@ -18,28 +18,28 @@ public sealed class LWing
 
     private readonly LSettingsPort _lSettingsPort;
 
+    private readonly LDisplay _lWingDisplay;
+
     private LVista? _lWingVista;
 
     private LIndex? _lWingIndex;
 
     private TextBox? _lWingQuery;
 
-    public LWing(LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings)
+    public LWing(LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(media);
 
         _lEntryPort = entries;
         _lSettingsPort = settings;
-        LWingLectern = new LLectern(new LDisplay(entries, phonology, settings));
+        _lWingDisplay = new LDisplay(entries, phonology, settings, media);
+        LWingLectern = new LLectern(_lWingDisplay);
     }
 
     public event Action<string, Exception>? LWingFailed;
-
-    public event Action<LEntryDraft>? LWingDraftChanged;
-
-    public event Action? LWingCleared;
 
     public LLectern LWingLectern { get; }
 
@@ -54,7 +54,7 @@ public sealed class LWing
         ArgumentNullException.ThrowIfNull(vista);
 
         _lWingVista = vista;
-        LWingLectern.LLecternVistaRestore(vista);
+        _lWingDisplay.LDisplayVistaRestore(vista);
     }
 
     private void LWingQuerySet(string query)
@@ -111,12 +111,11 @@ public sealed class LWing
             window.LWindowVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
     }
 
-    public void LWingIndexAttach(
-        ItemsControl view, FrameworkElement empty, TextBox query, Func<string, ImageSource?> flagSeam)
+    public void LWingIndexAttach(ItemsControl view, FrameworkElement empty, TextBox query)
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        _lWingIndex = new LIndex(view, empty, flagSeam);
+        _lWingIndex = new LIndex(view, empty);
         _lWingQuery = query;
     }
 
@@ -149,7 +148,7 @@ public sealed class LWing
 
     public void LWingEntryShow(long? id)
     {
-        LWingCleared?.Invoke();
+        LWingLectern.LLecternClear();
         if (id is long shown)
         {
             LWingEntryLoad(shown);
@@ -158,10 +157,9 @@ public sealed class LWing
 
     private void LWingEntryLoad(long id)
     {
-        LEntryDraft? draft;
         try
         {
-            draft = _lEntryPort.LEngineEntryLoad(id);
+            _lWingDisplay.LDisplayEntryLoad(id);
         }
         catch (Exception exception)
         {
@@ -169,17 +167,8 @@ public sealed class LWing
             return;
         }
 
-        if (draft is null)
-        {
-            LWingSelect(null);
-            LWingIndexShow();
-            LWingCleared?.Invoke();
-            return;
-        }
-
-        LWingSelect(id);
         LWingIndexShow();
-        LWingDraftChanged?.Invoke(draft);
+        LWingLectern.LLecternLoadedShow();
     }
 
     public void LWingQueryHandle()

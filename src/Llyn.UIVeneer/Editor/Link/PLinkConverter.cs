@@ -1,3 +1,4 @@
+using Llyn.UIDeportment;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +9,7 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PLinkConverter : IValueConverter
 {
-    private readonly Dictionary<long, PLinkChip> _pLinkConverterTargets = [];
+    private readonly Dictionary<long, LLinkChip> _pLinkConverterTargets = [];
 
     internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)
     {
@@ -17,21 +18,16 @@ internal sealed class PLinkConverter : IValueConverter
         _pLinkConverterTargets.Clear();
         foreach (LTranslationTarget target in targets)
         {
-            _pLinkConverterTargets[target.LTranslationTargetId] = new PLinkChip(
+            _pLinkConverterTargets[target.LTranslationTargetId] = new LLinkChip(
                 target.LTranslationTargetId,
                 target.LTranslationTargetHeadword,
                 target.LTranslationTargetLanguage);
         }
     }
 
-    internal void PLinkConverterClear()
-    {
-        _pLinkConverterTargets.Clear();
-    }
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        List<PLinkChip> chips = [];
+        List<LLinkChip> chips = [];
         if (value is not IEnumerable<long> ids)
         {
             return chips;
@@ -39,7 +35,7 @@ internal sealed class PLinkConverter : IValueConverter
 
         foreach (long id in ids)
         {
-            if (_pLinkConverterTargets.TryGetValue(id, out PLinkChip? chip))
+            if (_pLinkConverterTargets.TryGetValue(id, out LLinkChip? chip))
             {
                 chips.Add(chip);
             }

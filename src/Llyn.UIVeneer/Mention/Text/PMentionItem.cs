@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -27,7 +28,7 @@ internal sealed record PMentionItem(
                 0,
                 target.LTranslationTargetHeadword,
                 target.LTranslationTargetLanguage,
-                PEnsign.PEnsignFind(target.LTranslationTargetLanguage),
+                LEnsignImage.LEnsignFind(target.LTranslationTargetLanguage),
                 0));
         }
 

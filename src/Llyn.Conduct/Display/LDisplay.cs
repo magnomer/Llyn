@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -7,28 +9,30 @@ namespace Llyn.Conduct;
 
 public sealed class LDisplay
 {
+    private static readonly string[] LDisplayBands = ["Rare", "Advanced", "Everyday", "Core"];
+
+    private const string LDisplayUnknown = "Unknown";
+
     private readonly LEntryPort _lEntryPort;
 
     private readonly LPhonologyPort _lPhonologyPort;
 
-    private readonly LSettingsPort _lSettingsPort;
-
     private LVista? _lDisplayVista;
 
-    private bool _lDisplayOpened;
+    private LEntryDraft? _lDisplayLoaded;
 
-    public LDisplay(LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings)
+    public LDisplay(LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(entries);
-        ArgumentNullException.ThrowIfNull(phonology);
-        ArgumentNullException.ThrowIfNull(settings);
 
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
-        _lSettingsPort = settings;
+        LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
     }
 
-    public bool LDisplayFoldOpened => _lDisplayOpened;
+    public LDisplaySound LDisplaySound { get; }
+
+    public event Action<string, Exception>? LDisplayFailed;
 
     public long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
 
@@ -51,52 +55,84 @@ public sealed class LDisplay
 
     public LEntryDraft? LDisplayDraftLoad()
     {
-        return _lDisplayVista?.LVistaLoad()?.LDraftContent;
+        try
+        {
+            return _lDisplayVista?.LVistaLoad()?.LDraftContent;
+        }
+        catch (Exception)
+        {
+            return LDisplaySound.LDisplayShown;
+        }
     }
 
-    public void LDisplayFoldSet(bool opened)
+    public LEntryDraft? LDisplayLoaded => _lDisplayLoaded;
+
+    public void LDisplayEntryLoad(long id)
     {
-        _lDisplayOpened = opened;
+        _lDisplayLoaded = _lEntryPort.LEngineEntryLoad(id);
+        _lDisplayVista?.LVistaSelect(_lDisplayLoaded is null ? null : id);
     }
 
-    public bool LDisplayFanqieCheck(long? id)
+    public string LDisplayLanguageRead()
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineFanqieCheck, id);
+        return LDisplaySound.LDisplayShown?.LEntryDraftLanguage ?? string.Empty;
     }
 
-    public bool LDisplayScriptCheck(long? id)
+    public void LDisplayShow(LEntryDraft draft)
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineScriptCheck, id);
+        LDisplaySound.LDisplaySoundShow(LDisplayChosen, draft);
     }
 
-    public bool LDisplayParadigmCheck(long? id)
+    public void LDisplayClear()
     {
-        return LDisplayPendingRead(_lPhonologyPort.LEngineInflectionCheck, id);
+        LDisplaySound.LDisplaySoundClear();
     }
 
-    public LEntry? LDisplayEntryRead(long id)
+    public bool LDisplayFanqieCheck(long? id) => LDisplaySound.LDisplayFanqieCheck(id);
+
+    public bool LDisplayScriptCheck(long? id) => LDisplaySound.LDisplayScriptCheck(id);
+
+    public bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
+
+    public bool LDisplayFavoriteRead()
     {
-        return _lEntryPort.LEngineEntryRead(id);
+        if (LDisplayChosen is not long id)
+        {
+            return false;
+        }
+
+        try
+        {
+            return _lEntryPort.LEngineFavoriteCheck(id);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    public LEntryDraft? LDisplayEntryLoad(long id)
+    public void LDisplayFavoriteSave(bool marked)
     {
-        return _lEntryPort.LEngineEntryLoad(id);
-    }
+        if (LDisplayChosen is not long id)
+        {
+            return;
+        }
 
-    public bool LDisplayFavoriteCheck(long id)
-    {
-        return _lEntryPort.LEngineFavoriteCheck(id);
-    }
-
-    public void LDisplayFavoriteSave(long id)
-    {
-        _lEntryPort.LEngineFavoriteSave(id);
-    }
-
-    public void LDisplayFavoriteDelete(long id)
-    {
-        _lEntryPort.LEngineFavoriteDelete(id);
+        try
+        {
+            if (marked)
+            {
+                _lEntryPort.LEngineFavoriteSave(id);
+            }
+            else
+            {
+                _lEntryPort.LEngineFavoriteDelete(id);
+            }
+        }
+        catch (Exception exception)
+        {
+            LDisplayFailed?.Invoke("Favorite.MarkFailed", exception);
+        }
     }
 
     public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
@@ -106,6 +142,22 @@ public sealed class LDisplay
         return _lEntryPort.LEngineNameResolve(labels);
     }
 
+    public static string LDisplayTitleRead(LCardDraft card, string kind, string unknown)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+
+        return card.LCardDraftTitle.LStateValueUncertain
+            ? unknown
+            : card.LCardDraftTitle.LStateValueShown ?? kind;
+    }
+
+    public static bool LDisplayCardCheck(LCardDraft card, long id)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+
+        return card.LCardDraftId == id;
+    }
+
     public string LDisplayGraspFormat(int step)
     {
         return LDisplayChosen is null
@@ -113,34 +165,221 @@ public sealed class LDisplay
             : _lEntryPort.LEngineGraspFormat(step);
     }
 
-    public int LDisplayGraspRead(long id)
+    public int LDisplayGraspRead()
     {
-        return _lEntryPort.LEngineGraspRead(id);
+        if (LDisplayChosen is not long id)
+        {
+            return 0;
+        }
+
+        try
+        {
+            return _lEntryPort.LEngineGraspRead(id);
+        }
+        catch (Exception)
+        {
+            return 0;
+        }
     }
 
-    public void LDisplayGraspSave(long id, int grasp)
+    public void LDisplayGraspSave(int step)
     {
-        _lEntryPort.LEngineGraspSave(id, grasp);
+        if (LDisplayChosen is not long id)
+        {
+            return;
+        }
+
+        try
+        {
+            _lEntryPort.LEngineGraspSave(id, step);
+        }
+        catch (Exception exception)
+        {
+            LDisplayFailed?.Invoke("Grasp.MarkFailed", exception);
+        }
     }
 
-    public IReadOnlyList<LFrequency> LDisplayFrequencyRead(long id)
+    public LDisplayStamp LDisplayStampRead()
     {
-        return _lEntryPort.LEngineFrequencyRead(id);
+        LEntry? entry;
+        try
+        {
+            entry = LDisplayChosen is long id ? _lEntryPort.LEngineEntryRead(id) : null;
+        }
+        catch (Exception)
+        {
+            entry = null;
+        }
+
+        return entry is null
+            ? new LDisplayStamp(false, string.Empty, string.Empty)
+            : new LDisplayStamp(
+                true, LDisplayStampFormat(entry.LEntryAddedUtc), LDisplayStampFormat(entry.LEntryUpdatedUtc));
     }
 
-    public string LDisplayEpithetRead(long id)
+    public static string LDisplayStampFormat(string? utc)
     {
-        return _lEntryPort.LEngineEpithetRead(id);
+        if (utc is null
+            || !DateTimeOffset.TryParse(
+                utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
+        {
+            return string.Empty;
+        }
+
+        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
     }
 
-    public IReadOnlyList<LUsage> LDisplayIncomingRead(long id)
+    public IReadOnlyList<string> LDisplaySpeechRead()
     {
-        return _lEntryPort.LEngineIncomingRead(id);
+        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
+        {
+            return [];
+        }
+
+        List<string> named = new(draft.LEntryDraftSpeeches.Count);
+        foreach (LSpeechDraft speech in draft.LEntryDraftSpeeches)
+        {
+            if (speech.LSpeechDraftNamed)
+            {
+                named.Add(speech.LSpeechDraftName);
+            }
+        }
+
+        return named;
     }
 
-    public IReadOnlyList<LTranslationTarget> LDisplayTargetRead(LEntryDraft draft)
+    public IReadOnlyList<LFrequency> LDisplayFrequencyRead()
     {
-        return _lEntryPort.LEngineTargetRead(draft);
+        if (LDisplayChosen is not long id)
+        {
+            return [];
+        }
+
+        try
+        {
+            return _lEntryPort.LEngineFrequencyRead(id);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    public static bool LDisplayFrequencyCheck(IReadOnlyList<LFrequency> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Count > 0;
+    }
+
+    public static int LDisplayBandResolve(IReadOnlyList<LFrequency> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        foreach (LFrequency row in rows)
+        {
+            if (row.LFrequencyBand is not null)
+            {
+                return row.LFrequencyRank;
+            }
+        }
+
+        return 0;
+    }
+
+    public static string LDisplayBandRead(int count, string prefix)
+    {
+        return prefix + (count == 0 ? LDisplayUnknown : LDisplayBands[count - 1]);
+    }
+
+    public static string LDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        StringBuilder lines = new();
+        foreach (LFrequency row in rows)
+        {
+            if (lines.Length > 0)
+            {
+                lines.Append('\n');
+            }
+
+            string figure = row.LFrequencyOnce is long interval
+                ? string.Format(CultureInfo.CurrentCulture, once, interval.ToString("N0", CultureInfo.CurrentCulture))
+                : row.LFrequencyFigure;
+            lines.Append(row.LFrequencySource).Append(": ").Append(figure);
+        }
+
+        return lines.ToString();
+    }
+
+    public IReadOnlyList<LUsage> LDisplayIncomingRead()
+    {
+        if (LDisplaySound.LDisplayEntry is not long id)
+        {
+            return [];
+        }
+
+        try
+        {
+            List<LUsage> usages = [];
+            foreach (LUsage usage in _lEntryPort.LEngineIncomingRead(id))
+            {
+                usages.Add(usage with { LUsageEpithet = _lEntryPort.LEngineEpithetRead(usage.LUsageEntry) });
+            }
+
+            return usages;
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    public static string LDisplayOwnerRead(LUsage usage)
+    {
+        ArgumentNullException.ThrowIfNull(usage);
+
+        return usage.LUsageCollocated ? "Display.CollocationSingle" : "Display.MeaningSingle";
+    }
+
+    public IReadOnlyList<LTranslationTarget> LDisplayTargetRead()
+    {
+        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
+        {
+            return [];
+        }
+
+        try
+        {
+            return _lEntryPort.LEngineTargetRead(draft);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead()
+    {
+        return LDisplaySound.LDisplayShown is LEntryDraft draft ? LDisplayEtymonRead(draft) : [];
+    }
+
+    public LSentenceOrder LDisplayOrderRead()
+    {
+        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
+        {
+            return LSentenceOrder.LSentenceOrderDefault;
+        }
+
+        try
+        {
+            return _lPhonologyPort.LEngineOrderRead(draft.LEntryDraftLanguage);
+        }
+        catch (Exception)
+        {
+            return LSentenceOrder.LSentenceOrderDefault;
+        }
     }
 
     public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)
@@ -172,127 +411,30 @@ public sealed class LDisplay
 
     public IReadOnlyDictionary<long, string> LDisplayCitationRead()
     {
-        return _lEntryPort.LEngineCitationRead();
-    }
-
-    public LGlyph? LDisplayGlyphRead(string language)
-    {
-        return _lEntryPort.LEngineGlyphRead(language);
+        try
+        {
+            return _lEntryPort.LEngineCitationRead();
+        }
+        catch (Exception)
+        {
+            return new Dictionary<long, string>();
+        }
     }
 
     public LMentionResult LDisplayMentionFind(
-        string text, string language, int offset, IReadOnlyList<LMention> mentions)
+        string text, string language, int offset, IReadOnlyList<LMention>? mentions)
     {
-        return _lEntryPort.LEngineMentionFind(text, language, offset, mentions);
-    }
-
-    public bool LDisplayTonalCheck(string language)
-    {
-        return _lPhonologyPort.LEngineTonalCheck(language);
-    }
-
-    public bool LDisplayFlaggedCheck(LEntryDraft draft)
-    {
-        return _lPhonologyPort.LEngineFlaggedCheck(draft);
-    }
-
-    public void LDisplayFanqieStart(long id)
-    {
-        _lPhonologyPort.LEngineFanqieStart(id);
-    }
-
-    public IReadOnlyList<LFanqieGroup> LDisplayFanqieDivide(long id)
-    {
-        return _lPhonologyPort.LEngineFanqieDivide(id);
-    }
-
-    public IReadOnlyList<LFanqieRow> LDisplayAnchorRead(long id)
-    {
-        List<LFanqieRow> rows = [];
+        string shown = language.Length > 0
+            ? language
+            : LDisplaySound.LDisplayShown?.LEntryDraftLanguage ?? string.Empty;
         try
         {
-            foreach (LFanqieGroup group in _lPhonologyPort.LEngineFanqieDivide(id))
-            {
-                rows.AddRange(group.LFanqieGroupRows);
-            }
+            return _lEntryPort.LEngineMentionFind(text, shown, offset, mentions ?? []);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            return [];
-        }
-
-        return rows;
-    }
-
-    public string LDisplayReadingRead(long id, string headword)
-    {
-        return _lPhonologyPort.LEngineReadingRead(id, headword);
-    }
-
-    public void LDisplayFanqieSet(long id, long fanqieId, int rank)
-    {
-        _lPhonologyPort.LEngineFanqieSet(id, fanqieId, rank);
-    }
-
-    public void LDisplayScriptStart(long id)
-    {
-        _lPhonologyPort.LEngineScriptStart(id);
-    }
-
-    public IReadOnlyList<LScriptGroup> LDisplayScriptDivide(long id)
-    {
-        return _lPhonologyPort.LEngineScriptDivide(id);
-    }
-
-    public void LDisplayReflexStart(long id)
-    {
-        _lPhonologyPort.LEngineReflexStart(id);
-    }
-
-    public bool LDisplayReflexCheck(long id)
-    {
-        return _lPhonologyPort.LEngineReflexCheck(id);
-    }
-
-    public void LDisplayReflexRebuild(long id)
-    {
-        _lPhonologyPort.LEngineReflexRebuild(id);
-    }
-
-    public IReadOnlyList<LParadigmSlot> LDisplayParadigmShow(long id)
-    {
-        return _lPhonologyPort.LEngineParadigmShow(id);
-    }
-
-    public void LDisplayInflectionStart(long id)
-    {
-        _lPhonologyPort.LEngineInflectionStart(id);
-    }
-
-    public bool LDisplayInflectionCheck(long id)
-    {
-        return _lPhonologyPort.LEngineInflectionCheck(id);
-    }
-
-    public bool LDisplayMorphologyRead()
-    {
-        return _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
-    }
-
-    private static bool LDisplayPendingRead(Func<long, bool> check, long? id)
-    {
-        if (id is not long shown)
-        {
-            return false;
-        }
-
-        try
-        {
-            return check(shown);
-        }
-        catch (Exception)
-        {
-            return false;
+            LDisplayFailed?.Invoke("Mention.FindFailed", exception);
+            return new LMentionResult(offset, null, []);
         }
     }
 }

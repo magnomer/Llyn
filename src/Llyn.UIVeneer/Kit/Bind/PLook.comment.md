@@ -14,10 +14,6 @@ Visible when shown, else collapsed so the control takes no room.
 
 The three-state value a toggle's `IsChecked` takes, never indeterminate.
 
-## `internal static double PLookOpacityRead(bool active, double full, double faded)`
-
-The full opacity when active, else the faded one the caller names.
-
 ## `internal static PLookChoice PLookFirstRead<PLookChoice>(bool first, PLookChoice chosen, PLookChoice other)`
 
 One of two values by a verdict, so a tab with two edit areas picks the active one without branching.

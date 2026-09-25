@@ -42,6 +42,8 @@ public sealed class LTaxonomy
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
         LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
+        LTaxonomyPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LTaxonomyPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     public LEditor LTaxonomyEditor { get; }

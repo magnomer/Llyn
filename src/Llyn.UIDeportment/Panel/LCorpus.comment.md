@@ -7,6 +7,7 @@ The example list lives in the anthology, which holds the example vista's panel s
 The quotation list lives in the quotation, whose rows follow the chosen Example.
 The desk holds the example tenure the transcript editor edits, under the `Example` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
+The quotation list's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `private LEditor LCorpusEditor { get; }`
 

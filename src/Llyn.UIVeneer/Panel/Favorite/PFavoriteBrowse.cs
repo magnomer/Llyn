@@ -15,7 +15,7 @@ public partial class PFavorite
 
     private async void PFavoriteWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pFavoriteHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pFavoriteHost.PWindowDeportment);
         PFavoriteReset();
     }
 
@@ -50,21 +50,21 @@ public partial class PFavorite
     {
         _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowDeportment);
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, PRosterFind));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, PRosterFind));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PFavoriteWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PFavoriteWorkspaceUpdate));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PSeriesGraspUpdate));
+            LSubject.LSubjectGrasp, LObserver.LObserverCreate(this, PSeriesGraspUpdate));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lFavorite.LFavoritePanel.LPanelEntryHandle));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lFavorite.LFavoritePanel.LPanelEntryHandle));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectFavorite, PObserver.PObserverCreate(this, PRosterFind));
+            LSubject.LSubjectFavorite, LObserver.LObserverCreate(this, PRosterFind));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PRosterFind));
+            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PRosterFind));
         _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PRosterFind));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PRosterFind));
         _lFavorite.LFavoritePanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lFavorite.LFavoritePanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lFavorite.LFavoritePanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -81,7 +81,7 @@ public partial class PFavorite
         PChoice.PChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
         PStrainerRestore();
 
-        await PEnsign.PEnsignLoad(_pFavoriteHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pFavoriteHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(
             PStrainerList, _lFavorite.LFavoriteLanguageRead(), _lFavorite.LFavoriteFilter, PStrainerHandle);
@@ -144,11 +144,6 @@ public partial class PFavorite
     internal void PRosterEntryShow(long id)
     {
         _lFavorite.LFavoritePanel.LPanelRowShow(id);
-    }
-
-    private void PFavoriteEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)

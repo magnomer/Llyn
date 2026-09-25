@@ -55,6 +55,7 @@ public sealed record LRig(
     LPortraitVault LRigPortrait,
     LPress LRigPress,
     LUsher LRigUsher,
+    LPhonograph LRigPhonograph,
     LTrail LRigTrail,
     LClock LRigClock,
     int LRigProcess,

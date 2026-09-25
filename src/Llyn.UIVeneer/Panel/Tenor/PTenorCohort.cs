@@ -61,9 +61,4 @@ public partial class PTenor
 
         _lTenor.LTenorPanel.LPanelRowShow(item.PCohortItemId);
     }
-
-    private void PTenorEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
-    }
 }

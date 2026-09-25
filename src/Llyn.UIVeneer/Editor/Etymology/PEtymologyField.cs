@@ -63,7 +63,7 @@ public partial class PEditor
 
     private void PEtymologyEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _pEditorHost.PWindowEntryShow(((PEtymon)e.Parameter).PEtymonId);
+        _pEditorHost.PWindowEntryShow((long)e.Parameter);
     }
 
     private void PEtymologyLinkHandle(object sender, ExecutedRoutedEventArgs e)

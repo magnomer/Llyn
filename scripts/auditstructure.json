@@ -116,8 +116,8 @@
       "pure": false
     },
     {
-      "name": "Media",
-      "path": "src/Llyn.Media",
+      "name": "CoreWindows",
+      "path": "src/Llyn.Core.Windows",
       "reach": [
         "Core"
       ],
@@ -157,7 +157,7 @@
     "root": "allow"
   },
   "ceilings": {
-    "reach:UIDeportment>ShellEngine": 28
+    "reach:UIDeportment>ShellEngine": 27
   },
   "exempt": {},
   "sources": {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -24,13 +23,6 @@ public sealed record LFrequency(
     public int LFrequencyRank => LFrequencyBand is null ? 0 : Array.IndexOf(LFrequencyRanks, LFrequencyBand) + 1;
 
     public string LFrequencyFigure => LFrequencyUnit is string unit ? unit + " " + LFrequencyRaw : LFrequencyRaw;
-
-    public static bool LFrequencyCheck(IReadOnlyList<LFrequency> rows)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        return rows.Count > 0;
-    }
 
     public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)
     {

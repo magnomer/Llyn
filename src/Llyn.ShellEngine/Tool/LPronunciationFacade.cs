@@ -225,6 +225,30 @@ internal sealed class LPronunciationFacade
         }
     }
 
+    public void LEngineRecordingPlay(string? file)
+    {
+        lock (_lPronunciationFacadeGate)
+        {
+            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkPlay(file);
+        }
+    }
+
+    public void LEngineRecordingStop()
+    {
+        lock (_lPronunciationFacadeGate)
+        {
+            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkStop();
+        }
+    }
+
+    public void LEngineVolumeSet(double volume)
+    {
+        lock (_lPronunciationFacadeGate)
+        {
+            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkAdjust(volume);
+        }
+    }
+
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
         lock (_lPronunciationFacadeGate)

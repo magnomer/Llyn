@@ -52,7 +52,8 @@ Writes every visibility and enablement off the deportment's verdicts.
 
 ## `private void PYunjingClearUpdate()`
 
-The entry list was cleared: the reader empties, the editor resets, and the page is read again.
+The entry list was cleared, so the page is read again.
+The deportment empties the reader and resets the editor itself.
 
 ## `private void PYunjingHandle(object sender, RoutedEventArgs e)`
 

@@ -91,8 +91,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
         string language,
         bool flagged,
         LPronunciationDraft spoken,
-        LRespellingMark respelling,
-        Func<string, ImageSource?> flagSeam)
+        LRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(spoken);
         ArgumentNullException.ThrowIfNull(respelling);
@@ -102,7 +101,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
             spoken.LPronunciationDraftId,
             variety,
             LAccentLabelFormat(variety),
-            LAccentFlagFind(language, flagged, variety, flagSeam),
+            LAccentFlagFind(language, flagged, variety),
             respelling.LRespellingMarkResolve(spoken),
             spoken.LPronunciationDraftAudio,
             respelling);
@@ -115,19 +114,18 @@ public sealed class LAccentItem : INotifyPropertyChanged
             : LLocalizationCatalog.LLocalizationTextFind(string.Concat("Variety.", variety)) ?? variety;
     }
 
-    public static ImageSource? LAccentFlagFind(
-        string language, bool flagged, string variety, Func<string, ImageSource?> flagSeam)
+    public static ImageSource? LAccentFlagFind(string language, bool flagged, string variety)
     {
-        ArgumentNullException.ThrowIfNull(flagSeam);
+        ArgumentNullException.ThrowIfNull(variety);
 
         return flagged && variety.Length > 0
-            ? flagSeam(LAccentVarietyFormat(language, variety))
+            ? LEnsignImage.LEnsignFind(LAccentVarietyFormat(language, variety))
             : null;
     }
 
-    public void LAccentFlagUpdate(string language, bool flagged, Func<string, ImageSource?> flagSeam)
+    public void LAccentFlagUpdate(string language, bool flagged)
     {
-        LAccentItemFlag = LAccentFlagFind(language, flagged, LAccentItemVariety, flagSeam);
+        LAccentItemFlag = LAccentFlagFind(language, flagged, LAccentItemVariety);
     }
 
     public static string LAccentVarietyFormat(string language, string variety)

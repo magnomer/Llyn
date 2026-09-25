@@ -7,6 +7,7 @@ The situation list lives in the atlas, which holds the situation vista's panel s
 The occurrence list lives in the occurrence, whose rows follow the chosen Situation.
 The desk holds the situation tenure the scenario editor edits, under the `Situation` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
+The occurrence list's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `private LEditor LRepertoireEditor { get; }`
 

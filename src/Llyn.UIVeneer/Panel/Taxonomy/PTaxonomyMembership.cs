@@ -61,9 +61,4 @@ public partial class PTaxonomy
 
         _lTaxonomy.LTaxonomyPanel.LPanelRowShow(item.PMembershipItemId);
     }
-
-    private void PTaxonomyEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
-    }
 }

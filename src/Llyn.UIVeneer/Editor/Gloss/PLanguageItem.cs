@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -27,7 +28,7 @@ internal sealed class PLanguageItem
         rows.Clear();
         foreach (string language in languages)
         {
-            rows.Add(new PLanguageItem(language, PEnsign.PEnsignFind(language)));
+            rows.Add(new PLanguageItem(language, LEnsignImage.LEnsignFind(language)));
         }
     }
 

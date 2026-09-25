@@ -43,6 +43,8 @@ public sealed class LRepertoire
         LRepertoireAtlas.LAtlasPanel.LPanelDraftChanged += LRepertoireSituationUpdate;
         LRepertoireOccurrence.LOccurrencePanel.LPanelEdited += LRepertoireEditorOpen;
         LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += editor.LEditorClose;
+        LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LRepertoireOccurrence.LOccurrencePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
         LRepertoireDesk.LDeskStateChanged += LRepertoireStateUpdate;
         editor.LEditorStateChanged += LRepertoireStateUpdate;
     }

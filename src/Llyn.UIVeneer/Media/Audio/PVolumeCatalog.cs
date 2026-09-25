@@ -25,4 +25,9 @@ public sealed class PVolumeCatalog : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public void PVolumeCatalogSet(double level)
+    {
+        PVolumeCatalogLevel = level;
+    }
 }

@@ -29,11 +29,9 @@ public partial class PLibrary : UserControl
         _lLibrary.LLibraryFailed += host.PWindowFailureShow;
         _lLibrary.LLibraryEditor.LEditorStateChanged += PLibraryStoreUpdate;
         _lLibrary.LLibraryPanel.LPanelChanged += PLibraryModeUpdate;
-        _lLibrary.LLibraryPanel.LPanelCleared += PLibraryClearUpdate;
-        _lLibrary.LLibraryPanel.LPanelDraftChanged += PLibraryEntryUpdate;
         _lLibrary.LLibraryPanel.LPanelFailed += host.PWindowFailureShow;
 
-        _lLibrary.LLibraryIndexAttach(PIndex, PIndexEmpty, PEnsign.PEnsignFind);
+        _lLibrary.LLibraryIndexAttach(PIndex, PIndexEmpty);
 
         PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorLectern);
 
@@ -55,24 +53,24 @@ public partial class PLibrary : UserControl
     {
         _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowDeportment);
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PLibraryWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PLibraryWorkspaceUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
         _lLibrary.LLibraryPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(POrderList, "Order", POrderHandle, LIndex.LIndexOrder);
         PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
         _lLibrary.LLibrarySieveShow(PSieveMark);
 
-        await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pLibraryHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(
             PSieveList,
@@ -85,7 +83,7 @@ public partial class PLibrary : UserControl
 
     private async void PLibraryWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pLibraryHost.PWindowDeportment);
         _lLibrary.LLibraryPanel.LPanelClear();
     }
 
@@ -143,16 +141,6 @@ public partial class PLibrary : UserControl
         PLibraryScribe.IsChecked = PLook.PLookCheckedRead(_lLibrary.LLibraryPanel.LPanelScribeChecked);
         PLibraryMode.IsEnabled = _lLibrary.LLibraryPanel.LPanelModeEnabled;
         PLibraryBin.IsEnabled = _lLibrary.LLibraryPanel.LPanelBinEnabled;
-    }
-
-    private void PLibraryClearUpdate()
-    {
-        PDisplay.PDisplayClear();
-    }
-
-    private void PLibraryEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private string? PLibraryMarkupOpen()

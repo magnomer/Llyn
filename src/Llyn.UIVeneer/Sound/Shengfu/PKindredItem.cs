@@ -17,7 +17,7 @@ internal sealed class PKindredItem : INotifyPropertyChanged
         PKindredItemId = row.LVistaRowId;
         PKindredItemName = row.LVistaRowName;
         PKindredItemEpithet = row.LVistaRowEpithet;
-        PKindredItemFlag = PEnsign.PEnsignFind(row.LVistaRowLanguage);
+        PKindredItemFlag = LEnsignImage.LEnsignFind(row.LVistaRowLanguage);
         PKindredItemChosen = chosen;
     }
 

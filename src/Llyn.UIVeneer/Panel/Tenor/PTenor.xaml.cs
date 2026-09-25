@@ -27,8 +27,6 @@ public partial class PTenor : UserControl
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelChanged += PTenorModeUpdate;
         panel.LPanelRowsChanged += PCohortFind;
-        panel.LPanelCleared += PDisplay.PDisplayClear;
-        panel.LPanelDraftChanged += PTenorEntryUpdate;
         panel.LPanelFailed += host.PWindowFailureShow;
 
         PGamut.ItemsSource = _pGamutList;

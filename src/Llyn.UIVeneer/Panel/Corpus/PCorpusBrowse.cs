@@ -22,7 +22,7 @@ public partial class PCorpus
 
     private async void PCorpusWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pCorpusHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pCorpusHost.PWindowDeportment);
         PSpeakerLoad();
         PCorpusReset();
     }
@@ -58,7 +58,7 @@ public partial class PCorpus
         PChoice.PChoiceOrderApply(PRankDropdown, anthology.LPanelOrder);
         PGauzeRestore();
 
-        await PEnsign.PEnsignLoad(_pCorpusHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pCorpusHost.PWindowDeportment);
 
         PGauzeBuild();
         _lCorpus.LCorpusAnthology.LAnthologyQuerySet(PQuery.Text ?? string.Empty);
@@ -72,11 +72,11 @@ public partial class PCorpus
     {
         LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
         LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
-        Action<LBulletin> rows = PObserver.PObserverCreate(this, anthology.LPanelRowsUpdate);
-        Action<LBulletin> citation = PObserver.PObserverCreate(this, PCitationFind);
+        Action<LBulletin> rows = LObserver.LObserverCreate(this, anthology.LPanelRowsUpdate);
+        Action<LBulletin> citation = LObserver.LObserverCreate(this, PCitationFind);
         anthology.LPanelObserverAttach(LSubject.LSubjectVista, rows);
         anthology.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PCorpusWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PCorpusWorkspaceUpdate));
         anthology.LPanelObserverAttach(LSubject.LSubjectExample, citation);
         anthology.LPanelObserverAttach(LSubject.LSubjectExample, rows);
         anthology.LPanelObserverAttach(LSubject.LSubjectReference, citation);
@@ -84,13 +84,13 @@ public partial class PCorpus
         anthology.LPanelObserverAttach(LSubject.LSubjectReflex, rows);
         anthology.LPanelObserverAttach(LSubject.LSubjectSettings, rows);
         quotation.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, quotation.LPanelEntrySelect));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, quotation.LPanelEntrySelect));
         quotation.LPanelObserverAttach(LSubject.LSubjectEntry, citation);
         quotation.LPanelObserverAttach(LSubject.LSubjectEntry, rows);
         quotation.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lCorpus.LCorpusEntryUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lCorpus.LCorpusEntryUpdate));
         quotation.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, quotation.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, quotation.LPanelRowsUpdate));
     }
 
     private void PGauzeRestore()

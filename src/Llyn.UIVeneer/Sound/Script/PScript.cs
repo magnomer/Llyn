@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -110,6 +111,12 @@ public sealed class PScript : ContentControl
     {
         get => (Action?)GetValue(PScriptRenewalProperty);
         set => SetValue(PScriptRenewalProperty, value);
+    }
+
+    internal void PScriptShow(IReadOnlyList<LScriptGroup> groups, bool pending)
+    {
+        SetCurrentValue(PScriptItemsProperty, PScriptItem.PScriptItemScan(groups));
+        SetCurrentValue(PScriptPendingProperty, pending);
     }
 
     private static void PScriptStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)

@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CA1416</WarningsAsErrors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />
+  </ItemGroup>
 </Project>

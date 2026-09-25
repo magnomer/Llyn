@@ -36,6 +36,8 @@ public sealed class LPhonology
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
         LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
+        LPhonologyPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LPhonologyPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     public LEditor LPhonologyEditor { get; }

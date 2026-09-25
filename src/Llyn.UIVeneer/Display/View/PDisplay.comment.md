@@ -10,6 +10,7 @@ Every member the loaded draft carries is drawn.
 A field the card left empty collapses rather than leaving a blank line.
 The incoming rows and the stamps take their shapes from [PDisplayUsage.xaml](PDisplayUsage.comment.md).
 The contents column takes its row from [PDisplayCompass.xaml](PDisplayCompass.comment.md), merged from code because the row answers a click.
+The root and the header resize the contents through the compass, so neither names a handler here.
 
 ## `<StackPanel x:Name="PDisplayIncomingSection">`
 
@@ -142,7 +143,7 @@ The toggle stands at the left edge of the panel it opens rather than the right.
 The right edge of that row belongs to the delete button every panel holding a Display puts there.
 The column keeps its width while folded.
 The toggle therefore does not slide under that button when the panel goes away.
-The behavior lives in [PCompass.cs](PCompass.comment.md).
+The behavior lives in [LCompass](../../../Llyn.UIDeportment/Display/LCompass.comment.md).
 
 ## `<StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">`
 
@@ -150,3 +151,8 @@ The entry's creation and last update times, closing the page beneath one hairlin
 Two bare rows, no card, because the stamps are a footnote and not content.
 The times come from the stored entry rather than the draft, since the draft carries no clock.
 Each is shown in local time in the short general format of the current culture.
+
+## `<Ellipse x:Name="PDisplayLanguageGlobe"`
+
+The globe stands where no flag is known.
+The lectern shows the flag or the globe, so no trigger here watches the image.

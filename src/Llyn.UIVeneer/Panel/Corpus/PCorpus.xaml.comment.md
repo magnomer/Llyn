@@ -36,10 +36,6 @@ A save runs the finish the deportment handed in, so the deportment decides what 
 
 Asks the window whether an Example cited this many times may be removed.
 
-## `private void PQuotationDraftShow(LDraft draft)`
-
-Shows the quotation's held entry in the display.
-
 ## `private void PCorpusModeUpdate()`
 
 Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.

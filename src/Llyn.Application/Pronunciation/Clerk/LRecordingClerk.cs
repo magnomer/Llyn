@@ -11,6 +11,7 @@ public sealed class LRecordingClerk
     private readonly LRecordingVault _lRecordingClerkRecordings;
     private readonly LPronunciationVault _lRecordingClerkPronunciations;
     private readonly LSourceFactory _lRecordingClerkFactory;
+    private readonly LPhonograph _lRecordingClerkPhonograph;
     private readonly LLanguageCache _lRecordingClerkLanguages;
     private readonly LTrailClerk _lRecordingClerkTrail;
     private readonly LClaimClerk _lRecordingClerkClaims;
@@ -25,6 +26,7 @@ public sealed class LRecordingClerk
         _lRecordingClerkRecordings = rig.LRigRecordings;
         _lRecordingClerkPronunciations = rig.LRigPronunciations;
         _lRecordingClerkFactory = rig.LRigSources;
+        _lRecordingClerkPhonograph = rig.LRigPhonograph;
         _lRecordingClerkLanguages = languages;
         _lRecordingClerkTrail = trail;
         _lRecordingClerkClaims = claims;
@@ -70,6 +72,26 @@ public sealed class LRecordingClerk
     public bool LRecordingClerkExist(string? file)
     {
         return _lRecordingClerkTrail.LRecordingExist(file);
+    }
+
+    public void LRecordingClerkPlay(string? file)
+    {
+        if (!LRecordingClerkExist(file))
+        {
+            return;
+        }
+
+        _lRecordingClerkPhonograph.LPhonographPlay(file!);
+    }
+
+    public void LRecordingClerkStop()
+    {
+        _lRecordingClerkPhonograph.LPhonographStop();
+    }
+
+    public void LRecordingClerkAdjust(double volume)
+    {
+        _lRecordingClerkPhonograph.LPhonographVolumeSet(Math.Clamp(volume, 0, 1));
     }
 
     public LEntryDraft LRecordingClerkResolve(LEntryDraft draft)

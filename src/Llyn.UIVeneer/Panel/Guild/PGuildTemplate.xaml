@@ -48,13 +48,13 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PUsageItemFlag}" Stretch="Uniform" />
-                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}"><Run Text="{Binding PUsageItemName, Mode=OneWay}" /><Run
+                <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LUsageItemFlag}" Stretch="Uniform" />
+                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}"><Run Text="{Binding LUsageItemName, Mode=OneWay}" /><Run
                     Style="{DynamicResource Theme.Catalog.Epithet}"
-                    Text="{Binding PUsageItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
-                <TextBlock Grid.Column="2" MaxWidth="220" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" Text="{Binding PUsageItemTitle}" />
+                    Text="{Binding LUsageItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                <TextBlock Grid.Column="2" MaxWidth="220" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" Text="{Binding LUsageItemTitle}" />
                 <Border Grid.Column="3" Style="{DynamicResource Theme.Catalog.Pellet}">
-                    <TextBlock Style="{DynamicResource Theme.Catalog.Tally}" Text="{Binding PUsageItemOwner}" />
+                    <TextBlock Style="{DynamicResource Theme.Catalog.Tally}" Text="{Binding LUsageItemOwner}" />
                 </Border>
             </Grid>
         </Button>

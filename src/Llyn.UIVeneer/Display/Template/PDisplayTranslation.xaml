@@ -46,9 +46,9 @@
     <DataTemplate x:Key="Display.Card.TranslationChip">
         <Button Style="{StaticResource Display.Card.TranslationLink}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PLinkChipFlag}" Stretch="Uniform" />
-                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PLinkChipHeadword}" />
-                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLinkChipLanguage}" />
+                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LLinkChipFlag}" Stretch="Uniform" />
+                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding LLinkChipHeadword}" />
+                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding LLinkChipLanguage}" />
             </StackPanel>
         </Button>
     </DataTemplate>

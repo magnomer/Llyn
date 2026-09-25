@@ -21,7 +21,7 @@ Offers the Entries a half-typed translation matches, as it is typed.
 Nothing is selected in the dropdown while it merely stands open, so enter still resolves the typed word.
 The user reaches the list with the arrows, and only then does enter take a row.
 
-## `internal void PLinkChipHandle(object sender, RoutedEventArgs e)`
+## `internal void PLinkDropHandle(object sender, RoutedEventArgs e)`
 
 Closes the link whose button was pressed.
 
@@ -50,7 +50,7 @@ Redraws every card's chips once the workspace's flags have finished loading.
 
 ## Inline notes
 
-### `private void PLinkRemove(PCard card, PLinkChip? chip)`
+### `private void PLinkRemove(PCard card, LLinkChip? chip)`
 
 Asks the engine to unlink the chip, then closes the court link behind it if there was one.
 The chip is gone from the draft before the court is touched.

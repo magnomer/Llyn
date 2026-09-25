@@ -6,6 +6,7 @@ The deportment of the library panel: the shared panel state, the entry rows it b
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public event Action<string, Exception>? LLibraryFailed;`
 
@@ -25,7 +26,7 @@ The rows the engine returns for the vista, already filtered, sorted, numbered an
 The entry list the panel fills, absent until the veneer hands over its controls.
 Tests attach none, so the panel reads its rows without a list to fill.
 
-## `public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty, Func<string, ImageSource?> flagSeam)`
+## `public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty)`
 
 Builds the list over the veneer's controls and refills it whenever the panel announces new rows.
 

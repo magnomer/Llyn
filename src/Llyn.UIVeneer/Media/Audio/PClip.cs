@@ -54,7 +54,7 @@ public partial class PEditor
         {
             if (_lEditor.LEditorFlagged)
             {
-                await PEnsign.PEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
+                await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
                 if (!PClip.IsOpen)
                 {
                     return;
@@ -62,7 +62,7 @@ public partial class PEditor
             }
 
             _lEditor.LEditorClipStart(
-                word, target, PObserver.PObserverCreate<LHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
+                word, target, LObserver.LObserverCreate<LHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
         }
         catch (Exception)
         {
@@ -108,7 +108,7 @@ public partial class PEditor
             recording,
             LAccentItem.LAccentLabelFormat(variety),
             LAccentItem.LAccentFlagFind(
-                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety, PEnsign.PEnsignFind),
+                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety),
             action);
     }
 

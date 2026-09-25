@@ -36,7 +36,6 @@ public partial class PXiesheng : UserControl
         _lXiesheng.LXieshengPanel.LPanelChanged += PXieshengModeUpdate;
         _lXiesheng.LXieshengPanel.LPanelRowsChanged += PKindredUpdate;
         _lXiesheng.LXieshengPanel.LPanelCleared += PXieshengClearUpdate;
-        _lXiesheng.LXieshengPanel.LPanelDraftChanged += PXieshengEntryUpdate;
         _lXiesheng.LXieshengPanel.LPanelFailed += host.PWindowFailureShow;
 
         PGrove.ItemsSource = _pGroveList;
@@ -69,19 +68,19 @@ public partial class PXiesheng : UserControl
     {
         _lXiesheng.LXieshengVistaRestore(_pXieshengHost.PWindowDeportment);
         _lXiesheng.LXieshengGroveAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
         _lXiesheng.LXieshengGroveAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PXieshengWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PXieshengWorkspaceUpdate));
         _lXiesheng.LXieshengGroveAttach(
-            LSubject.LSubjectFanqie, PObserver.PObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
+            LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
         _lXiesheng.LXieshengGroveAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
         _lXiesheng.LXieshengPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelRowsUpdate));
         _lXiesheng.LXieshengPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lXiesheng.LXieshengEntryHandle));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lXiesheng.LXieshengEntryHandle));
         _lXiesheng.LXieshengPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -101,7 +100,7 @@ public partial class PXiesheng : UserControl
 
     private async void PXieshengWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pXieshengHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pXieshengHost.PWindowDeportment);
         _lXiesheng.LXieshengReset();
     }
 
@@ -189,13 +188,7 @@ public partial class PXiesheng : UserControl
 
     private void PXieshengClearUpdate()
     {
-        PDisplay.PDisplayClear();
         PStemUpdate();
-    }
-
-    private void PXieshengEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PLodestarHandle(object sender, TextChangedEventArgs e)

@@ -52,7 +52,7 @@ public sealed class LWindow : IDisposable
 
     public LEditor LWindowEditorCreate(Func<bool> unreadableSeam)
     {
-        return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, unreadableSeam);
+        return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, _lMediaPort, unreadableSeam);
     }
 
     public LCorpus LWindowCorpusCreate(
@@ -132,7 +132,7 @@ public sealed class LWindow : IDisposable
 
     public LWing LWindowWingCreate()
     {
-        return new LWing(_lEntryPort, _lPhonologyPort, _lSettingsPort);
+        return new LWing(_lEntryPort, _lPhonologyPort, _lSettingsPort, _lMediaPort);
     }
 
     public LXiesheng LWindowXieshengCreate(

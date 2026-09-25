@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -17,7 +18,7 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
         PXiaoyunItemHeadword = row.LVistaRowHeadword;
         PXiaoyunItemName = row.LVistaRowName;
         PXiaoyunItemEpithet = row.LVistaRowEpithet ?? string.Empty;
-        PXiaoyunItemFlag = PEnsign.PEnsignFind(row.LVistaRowLanguage);
+        PXiaoyunItemFlag = LEnsignImage.LEnsignFind(row.LVistaRowLanguage);
     }
 
     public long PXiaoyunItemId { get; }

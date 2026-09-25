@@ -22,11 +22,6 @@ internal sealed class PCitationConverter : IValueConverter, IMultiValueConverter
         }
     }
 
-    internal void PCitationConverterClear()
-    {
-        _pCitationConverterLines.Clear();
-    }
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not LStateAnchor anchor)

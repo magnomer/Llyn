@@ -5,6 +5,7 @@
 The port through which the logic rings ask a fact about a path.
 `LEnsign` decides which flags to keep and which cached file to drop, and never touches a disk itself.
 `LUsherFile` in the infrastructure answers from the file system, and a test answers from a list.
+Playing a recording is not a path fact, so it goes through its sibling port `LPhonograph`.
 
 ## `bool LUsherPathExist(string? path);`
 

@@ -45,7 +45,7 @@ The origin names this panel, so its held work is told apart from the library's.
 A form that stood on one would turn the next store into an update of it.
 That is how a session's second entry used to overwrite its first.
 
-### `_pInputObserver = PObserver.PObserverCreate(this, PInputBulletinHandle);`
+### `_pInputObserver = LObserver.LObserverCreate(this, PInputBulletinHandle);`
 
 The panel listens for the workspace moving and for nothing else.
 It lists nothing, so a stored record elsewhere is none of its business.

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -34,7 +35,7 @@ public partial class PCorpus
         foreach (string language in languages)
         {
             _pLanguageItem.Add(new PLanguageItem(
-                language, PEnsign.PEnsignFind(language)));
+                language, LEnsignImage.LEnsignFind(language)));
         }
 
         PSpeakerShow();
@@ -54,7 +55,7 @@ public partial class PCorpus
     private void PSpeakerShow()
     {
         PSpeakerName.Text = _pTranscriptLanguage;
-        PSpeakerFlag.Source = PEnsign.PEnsignFind(_pTranscriptLanguage);
+        PSpeakerFlag.Source = LEnsignImage.LEnsignFind(_pTranscriptLanguage);
     }
 
     private void PTranscriptTextHandle(object sender, TextChangedEventArgs e)

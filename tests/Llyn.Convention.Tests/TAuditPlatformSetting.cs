@@ -24,6 +24,7 @@ internal static class TAuditPlatformSetting
         ["Llyn.Conduct"] = "Llyn.Conduct",
         ["Llyn.UIDeportment"] = "Llyn.Conduct",
         ["Llyn.UIVeneer"] = "Llyn.Conduct",
+        ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor",
         ["Llyn.UITerminal"] = "Llyn.UITerminal",
         ["Llyn.Host"] = "",
     };
@@ -50,8 +51,8 @@ internal static class TAuditPlatformSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPlatformCeiling = new Dictionary<string, int>
     {
-        ["Unmapped"] = 1,
-        ["Absent"] = 1,
+        ["Unmapped"] = 0,
+        ["Absent"] = 0,
         ["Column"] = 4,
         ["Analyzer"] = 4,
     };

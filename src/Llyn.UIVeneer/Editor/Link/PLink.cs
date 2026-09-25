@@ -1,3 +1,4 @@
+using Llyn.UIDeportment;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -43,9 +44,9 @@ public partial class PEditor
         PProspectShow(card, word, found, false);
     }
 
-    internal void PLinkChipHandle(object sender, RoutedEventArgs e)
+    internal void PLinkDropHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PLinkChip chip } && PCardLinkFind(chip) is PCard card)
+        if (sender is FrameworkElement { DataContext: LLinkChip chip } && PCardLinkFind(chip) is PCard card)
         {
             PLinkRemove(card, chip);
         }
@@ -132,15 +133,15 @@ public partial class PEditor
         }
     }
 
-    private void PLinkRemove(PCard card, PLinkChip? chip)
+    private void PLinkRemove(PCard card, LLinkChip? chip)
     {
         if (chip is null)
         {
             return;
         }
 
-        PEditorRequestSend(new LRequestTranslationRemoval(PEditorDraft, card.PCardId, chip.PLinkChipId));
-        PLinkCourtDelete(chip.PLinkChipId);
+        PEditorRequestSend(new LRequestTranslationRemoval(PEditorDraft, card.PCardId, chip.LLinkChipId));
+        PLinkCourtDelete(chip.LLinkChipId);
     }
 
     private bool PLinkSend(PCard card, long id)

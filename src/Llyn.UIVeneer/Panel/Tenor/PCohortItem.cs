@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -15,7 +16,7 @@ internal sealed class PCohortItem : INotifyPropertyChanged
         PCohortItemHeadword = headword;
         PCohortItemEpithet = epithet ?? string.Empty;
         PCohortItemLanguage = language;
-        PCohortItemFlag = PEnsign.PEnsignFind(language);
+        PCohortItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PCohortItemId { get; }

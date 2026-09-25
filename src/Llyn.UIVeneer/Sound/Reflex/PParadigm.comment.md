@@ -22,3 +22,12 @@ The box neither focuses nor tabs, since nothing in it is edited.
 ## `private static void PParadigmItemsHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
 Hands the new rows to the list and shows or collapses the box by their count.
+
+## `public IReadOnlyList<PParadigmItem>? PParadigmItems`
+
+The rows shown, or `null` for none.
+
+## `internal void PParadigmShow(IReadOnlyList<LParadigmSlot> slots, bool pending, bool enabled)`
+
+The seam the lectern's sound draws through, mapping the slots to rows, and no slots collapse the box.
+It only sets a value, so the box redraws itself as for any other change.

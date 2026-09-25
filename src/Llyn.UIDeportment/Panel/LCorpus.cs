@@ -42,6 +42,8 @@ public sealed class LCorpus
         LCorpusAnthology.LAnthologyPanel.LPanelDraftChanged += LCorpusExampleUpdate;
         LCorpusQuotation.LQuotationPanel.LPanelEdited += LCorpusEditorOpen;
         LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorClose;
+        LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LCorpusQuotation.LQuotationPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
         LCorpusDesk.LDeskStateChanged += LCorpusStateUpdate;
         editor.LEditorStateChanged += LCorpusStateUpdate;
     }

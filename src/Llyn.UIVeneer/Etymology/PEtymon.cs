@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -31,7 +32,7 @@ internal sealed class PEtymon : DependencyObject
         PEtymonId = id;
         PEtymonHeadword = headword;
         PEtymonLanguage = language;
-        PEtymonFlag = PEnsign.PEnsignFind(language);
+        PEtymonFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PEtymonId { get; }

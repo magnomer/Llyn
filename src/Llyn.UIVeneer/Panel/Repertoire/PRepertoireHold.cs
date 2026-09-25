@@ -14,9 +14,9 @@ public partial class PRepertoire
 
     private void PScenarioDeskAttach()
     {
-        PScenarioDesk.LDeskDraftAttach(LSubject.LSubjectDraft, PObserver.PObserverCreate(this, PScenarioDraftRestore));
+        PScenarioDesk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, PScenarioDraftRestore));
         PScenarioDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, PObserver.PObserverCreate(this, PScenarioDesk.LDeskStateUpdate));
+            LSubject.LSubjectTenure, LObserver.LObserverCreate(this, PScenarioDesk.LDeskStateUpdate));
         PScenarioDesk.LDeskFailed += _pRepertoireHost.PWindowFailureShow;
         PScenarioDesk.LDeskRefused += _pRepertoireHost.PWindowFailureShow;
     }

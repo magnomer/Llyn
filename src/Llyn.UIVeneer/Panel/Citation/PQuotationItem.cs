@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -15,7 +16,7 @@ internal sealed class PQuotationItem : INotifyPropertyChanged
         PQuotationItemHeadword = headword;
         PQuotationItemEpithet = epithet ?? string.Empty;
         PQuotationItemLanguage = language;
-        PQuotationItemFlag = PEnsign.PEnsignFind(language);
+        PQuotationItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PQuotationItemId { get; }

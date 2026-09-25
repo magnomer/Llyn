@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -14,6 +17,7 @@ internal static class TInterfaceDeportment
         new LEntryOutlet(engine),
         new LPhonologyOutlet(engine),
         new LSettingsOutlet(engine),
+        new LMediaOutlet(engine),
         static () => false);
 
     internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) => LSCustoms.LSCustomsCardScan(cards);
@@ -346,6 +350,7 @@ internal static class TInterfaceDeportment
                 entries,
                 TEngineFake.TEngineStubCreate<LPhonologyPort>(),
                 settings,
+                TEngineFake.TEngineStubCreate<LMediaPort>(),
                 static () => false),
             static () => true,
             static () => true,
@@ -363,7 +368,7 @@ internal static class TInterfaceDeportment
         IReadOnlyList<LMeaning> meanings, string unknown) => LWindow.LWindowMeaningSort(meanings, unknown);
 
     internal static IReadOnlyList<LIndexItem> TIndexItemBuild(IReadOnlyList<LVistaRow> rows) =>
-        LIndexItem.LIndexItemBuild(rows, static _ => null);
+        LIndexItem.LIndexItemBuild(rows);
 
     internal static bool TIndexItemMatch(LIndexItem held, LIndexItem fresh) => LIndexItem.LIndexItemMatch(held, fresh);
 
@@ -375,4 +380,16 @@ internal static class TInterfaceDeportment
     internal static bool TCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
         LCaret.LCaretKeyApply(key, caret, length, selection, remove, move, place);
+
+    internal static void TLecternFoldSet(this LLectern lectern, bool opened) => lectern.LLecternFoldSet(opened);
+
+    internal static void TLecternReflexAttach(
+        this LLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>
+        lectern.LLecternSound.LLecternReflexAttach(reflex, loading, fold);
+
+    internal static void TLecternFoldHandle(this LLectern lectern, bool opened) =>
+        lectern.LLecternSound.LLecternFoldHandle(opened);
+
+    internal static void TReflexFoldApply(IReadOnlyList<LReflexItem> rows, ToggleButton fold, bool opened) =>
+        LReflexItem.LReflexFoldApply(rows, fold, opened);
 }

@@ -84,6 +84,13 @@ public sealed class PEtymology : ContentControl
 
     internal TextBox PEtymologyBox => _pEtymologyWrite;
 
+    internal void PEtymologyShow(string language, string text, IReadOnlyList<LTranslationTarget> etymons)
+    {
+        PEtymologyLanguage = language;
+        PEtymologyText = text;
+        PEtymologySourceShow(etymons);
+    }
+
     internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)
     {
         ArgumentNullException.ThrowIfNull(etymons);

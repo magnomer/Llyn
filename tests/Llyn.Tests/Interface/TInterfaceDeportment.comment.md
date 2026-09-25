@@ -8,4 +8,5 @@ The relay layer grows by owner and not by partial.
 Each relay is transparent and carries no test logic of its own.
 The shown seam is answered true, because a test panel is always the one in front.
 The window and tenor relays build their deportments over fake ports, with no engine behind them.
-The entry row relays answer the flag seam with null, so no WPF object is made.
+The entry row relays read a flag store no test fills, so no WPF object is made.
+The lectern fold relays hand a WPF toggle through, so their caller runs them on an STA thread.

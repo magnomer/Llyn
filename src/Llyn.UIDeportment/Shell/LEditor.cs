@@ -17,6 +17,8 @@ public sealed class LEditor
 
     private readonly LSettingsPort _lSettingsPort;
 
+    private readonly LDisplay _lEditorDisplay;
+
     private LVista? _lEditorVista;
 
     private bool _lEditorFresh;
@@ -28,19 +30,22 @@ public sealed class LEditor
         LEntryPort entries,
         LPhonologyPort phonology,
         LSettingsPort settings,
+        LMediaPort media,
         Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(media);
 
         _lDraftPort = drafts;
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
         _lSettingsPort = settings;
         LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
-        LEditorLectern = new LLectern(new LDisplay(entries, phonology, settings));
+        _lEditorDisplay = new LDisplay(entries, phonology, settings, media);
+        LEditorLectern = new LLectern(_lEditorDisplay);
         LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
         LEditorClip = new LClip();
         LEditorNotation = new LNotation();
@@ -135,11 +140,11 @@ public sealed class LEditor
 
     public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;
 
-    public bool LEditorFanqiePending => LEditorLectern.LLecternFanqieCheck(LEditorEntry);
+    public bool LEditorFanqiePending => _lEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
 
-    public bool LEditorScriptPending => LEditorLectern.LLecternScriptCheck(LEditorEntry);
+    public bool LEditorScriptPending => _lEditorDisplay.LDisplayScriptCheck(LEditorEntry);
 
-    public bool LEditorParadigmPending => LEditorLectern.LLecternParadigmCheck(LEditorEntry);
+    public bool LEditorParadigmPending => _lEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
 
     public string LEditorParadigmLanguage => LParadigm.LParadigmLanguageRead(LEditorParadigmRead());
 
@@ -153,7 +158,7 @@ public sealed class LEditor
 
         _lEditorVista = vista;
         LEditorDesk.LDeskVistaRestore(vista);
-        LEditorLectern.LLecternVistaRestore(vista);
+        _lEditorDisplay.LDisplayVistaRestore(vista);
     }
 
     public void LEditorVistaRestore(LWindow window)

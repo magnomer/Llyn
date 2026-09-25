@@ -43,7 +43,7 @@ Asks the user about an unsaved change before the panel is left.
 
 The seam the deportment discards a draft through.
 
-## `internal void PXieshengStemShow(string language, string key)`
+## `internal void PXieshengStemShow(string language, string? key)`
 
 Opens that series, clearing the column's query first so the series can be listed.
 
@@ -77,11 +77,8 @@ Shows the reader, the page or the editor, and enables the mode and bin buttons.
 
 ## `private void PXieshengClearUpdate()`
 
-Clears the reader and writes the page again, as the panel is cleared.
-
-## `private void PXieshengEntryUpdate(LDraft draft)`
-
-Shows the held draft in the reader.
+Writes the page again, as the panel is cleared.
+The deportment empties the reader itself.
 
 ## `private void PLodestarHandle(object sender, TextChangedEventArgs e)`
 

@@ -21,14 +21,6 @@ The side's search field, read on each keystroke and kept to tell a leave from a 
 
 Raised with the failure key when an entry load threw, so the veneer can report it.
 
-## `public event Action<LEntryDraft>? LWingDraftChanged;`
-
-Raised with the loaded entry, so the reading view shows it.
-
-## `public event Action? LWingCleared;`
-
-Raised when the side stands on nothing, so the reading view empties.
-
 ## `private void LWingOrderSet(LCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves it under the side's tab and announces it.
@@ -51,7 +43,7 @@ A clicked language row sets the filter the list now stands for, then redraws the
 
 Shows the mark on the sieve button while the vista hides any language.
 
-## `public void LWingIndexAttach(ItemsControl view, FrameworkElement empty, TextBox query, Func<string, ImageSource?> flagSeam)`
+## `public void LWingIndexAttach(ItemsControl view, FrameworkElement empty, TextBox query)`
 
 Takes the side's list, empty notice and field once, and builds the index over them.
 
@@ -84,7 +76,8 @@ The side is cleared first, so a failed load never leaves another tab's entry sta
 Loads one entry onto this side for a pick from the list.
 An entry that is gone leaves the side empty rather than showing what it was.
 A load that failed leaves the side where it stood and reports the failure.
-The vista's choice follows what the side now stands on.
+The wing's display loads and chooses the entry, so the wing never holds the draft.
+The wing then shows or clears its own lectern, so no veneer relays the draft.
 
 ## `public void LWingQueryHandle()`
 

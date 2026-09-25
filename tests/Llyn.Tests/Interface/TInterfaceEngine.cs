@@ -206,7 +206,8 @@ internal static partial class TInterface
             path,
             TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound),
             new LUsherFile(),
-            new TPress())
+            new TPress(),
+            new TPhonographFake())
             with { LRigClock = new TClockFake() });
     }
 

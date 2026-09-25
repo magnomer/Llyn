@@ -1,10 +1,10 @@
 # Llyn.UITerminal.csproj
 
-The console interface, the second UI beside the WPF veneer.
-It holds no source yet and references nothing yet.
+The console surface, the second UI beside the WPF veneer.
+It holds no source yet.
 
-## Project ring
+## `<ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />`
 
-It will reference Conduct alone, render Conduct's state and send input to Conduct.
-It never copies a behaviour that Conduct already holds.
+Demeanor is the only reference, as Deportment is the veneer's only reference.
+A UITerminal member only calls a function, and Demeanor drives it.
 It targets the portable framework, and a Windows API fails its build through CA1416.

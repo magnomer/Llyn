@@ -6,116 +6,90 @@ The shared read-only entry view as a control.
 It is handed a loaded draft and draws it.
 It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
-Playback, heart, star row, paradigm box, announcements and incoming links each sit in a part of their own.
+Every member only calls the lectern, except the three resource reads.
 
 ## `internal void PDisplayAttach(PWindow host, LLectern lectern)`
 
 Puts the view on `lectern`, the deportment its owner built over the ports.
-The deportment is asked for the linked headwords, the incoming cards and every fetched section.
-The window deportment is asked for the flag beside the language and the fonts.
-The window is held because an incoming row opens the entry it names.
+The notice, the page, the header, the stamp, frequency, speech and note controls go to the lectern.
+The swath's clear and the star row's two properties are its seams.
+The play button, the volume tray and the slider are handed to the lectern's playback, which drives them.
+The shared volume catalog's setter is the seam that keeps every other tray on the same level.
+The pronunciation surface, the accent and transcription lists and the glyph row are handed over too.
+The window's glyph opener is the seam a character chip opens its entry through.
+The reflex, fanqie, script and paradigm controls go to the lectern's sound with their show members as seams.
+The fanqie's notices are wired back to the sound, so a click reaches the shown entry.
+The floating contents and its eight sections are handed to the lectern's compass, which places and fills it.
+The card lists, incoming rows and etymology go to the lectern's card.
+The converters' fill members and the window's openers and failure notice are its seams.
 
-## `private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
+## `private PSentenceConverter PDisplayFrameRead()`
 
-The parts of speech as the names a reader reads.
-The draft keeps the stored value beside the name, and the panel shows only the name.
+The sentence converter the example template binds through, held in the view's resources.
 
-## `internal void PDisplayShow(LEntryDraft draft)`
+## `internal void PDisplayCardScroll(long id)`
 
-Draws `draft` as the entry being read.
-A field the draft left empty collapses instead of standing as a blank line.
-The note is Markdown, drawn as blocks by `PMarkdown` inside the note card.
-The primary play button appears only when the entry owns a recording that is still on disk.
-The volume tray appears while any pronunciation row has a recording.
-The volume is read from the workspace on every show.
-A level the editor set is the level this view plays at.
-A draft does not say which entry it is, so the id comes from the vista the tab handed over.
-That id is what the incoming cards are looked up by.
-A vista choosing nothing clears the surface instead, since the draft then stands on no entry.
+Hands the scroll to the lectern's card, since the window reaches the card lists only through this view.
+## `internal void PCompassRowHandle(object sender, RoutedEventArgs e)`
 
-## `private void PDisplayStampShow(long id)`
+Hands a contents row's click to the lectern's compass, which scrolls to the section the row names.
+It is internal, because the contents dictionary forwards its row clicks here.
 
-Fills the creation and update times from the stored entry, since the draft carries no clock.
-The stamps collapse when the entry cannot be read.
+## `private void PReflexFoldHandle(object sender, RoutedEventArgs e)`
 
-## `private void PDisplayFrequencyShow(long id)`
+Hands the fold toggle's state to the lectern's sound, which sets the fold and redraws the rows.
 
-Fills the frequency chip from the stored entry, since the draft does not carry it.
-The chip, its stars and its tooltip are worded by the shared label, so the editor shows the same.
-The rung name is localized here, since only the surface knows the user's language.
-The section collapses when the entry has no frequency yet or the read fails.
-An entry with no value asks the engine to fill it, and the fill announces itself when done.
+## `internal void PDisplayObserverAttach()`
 
-## `private static string PDisplayStampFormat(string? utc)`
+Asks the lectern to listen for the bulletins, marshalled onto this view.
 
-Turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
-A missing or unreadable stamp shows as nothing.
+## `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 
-## `internal void PDisplayClear()`
+Hands the heart's press to the lectern, which stores it.
 
-Empties the view and leaves the unselected notice in its place.
-Playback stops, because what it was playing belonged to the entry that was shown.
+## `private void PDisplayGraspHandle(object sender, RoutedEventArgs e)`
+
+Hands the star row's new step to the lectern, which stores it.
+
+## `private void PDisplayHoverHandle(object sender, RoutedEventArgs e)`
+
+Hands the step under the pointer to the lectern, which words it.
+
+## `private void PPlaybackActionHandle(object sender, RoutedEventArgs e)`
+
+Asks the lectern to play the shown entry's own recording.
+
+## `internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Hands the accent row to the lectern, which plays its recording through the engine.
+
+## `private void PDisplayGlyphHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Hands the pressed chip to the lectern, which opens the character's entry.
 
 ## `internal void PDisplayClose()`
 
-Releases this view's own playback.
+Asks the lectern to stop what the engine plays.
 
 ## Inline notes
 
-### `private void PDisplayCardUpdate()`
-
-The chips a card shows are read through a converter that is filled just before they are drawn.
-A converter holding a dictionary says nothing when that dictionary changes.
-So the card lists are handed their items again once the words behind the ids are known.
-That way the order of the two steps cannot quietly cost the reader every chip.
-
-### `private void PDisplayExampleShow(string language)`
-
-Example lines are drawn inside card templates, where no code can reach one line at a time.
-So the pack's example and Gloss typography is put into view resources the templates read.
-A pack that declares none has its keys removed, and the card's own fallback typography stands.
-
 ### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
 
-Every chip on a card names a record kept in some other panel.
-Reading it there is one click away.
-What was clicked stands for the record it was drawn from.
-The record decides the panel.
-A situation opens the repertoire, a translation the library, a tag the taxonomy.
-One handler serves all three.
 The chips are drawn from a shared dictionary that knows no window.
-It reaches the cards only through the two lists this sits on.
-The chip is read off what was clicked rather than off the click's source.
-A click leaving a template is re-sourced to the presenter that drew it.
-A chip naming a record the card never saved leads nowhere.
-
-### `private async void PDisplayLanguageShow(string language)`
-
-The flag comes from `PEnsign`, which every tab holding a display reads too.
-The first call may await a fetch, so a later entry may be shown before it arrives.
-The language shown now is compared before the image is set.
-
-### `LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);`
-
-The reading view draws a headword exactly as the editor does.
-Both ask the same pack, so the two views never differ in family or size.
+They reach the cards only through the two lists this sits on.
+So the click is handed to the lectern's card.
 
 ### `AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));`
 
 Every sentence on every card raises the same bubbling event.
 One handler on the control above them all answers it, so a card template stays free of handlers.
-The answer itself lives in [PDisplayMention.cs](PDisplayMention.comment.md).
+The lectern's card asks what stands at the offset, and the window decides what the answer opens.
 
 ### `PDisplaySwath.PSwathAttach(PDisplayContents);`
 
 The band a reader drags across the page lies over the contents, inside the scroll viewer.
 It listens on the viewer, so a drag begun anywhere on the page selects.
 Showing or clearing an entry drops the band, since the text it spanned is gone.
-
-### `PCompassUpdate();`
-
-The contents are rebuilt at the end of showing an entry, after every section has been given its visibility.
-Rebuilding earlier would list sections the entry is about to collapse.
 
 ### `<TextBlock x:Name="PDisplayReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />`
 

@@ -126,6 +126,20 @@ public sealed class PFanqie : ContentControl
 
     internal Action<long, int>? PFanqieRepresentativeNotice { get; set; }
 
+    internal void PFanqieShow(IReadOnlyList<LFanqieGroup> groups, bool pending)
+    {
+        SetCurrentValue(PFanqieItemsProperty, PFanqieItem.PFanqieItemScan(groups));
+        SetCurrentValue(PFanqiePendingProperty, pending);
+    }
+
+    internal void PFanqieNoticeAttach(
+        Action<string, string> diwei, Action<string?> stem, Action<long, int> representative)
+    {
+        PFanqieDiweiNotice = diwei;
+        PFanqieStemNotice = stem;
+        PFanqieRepresentativeNotice = representative;
+    }
+
     private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is not PFanqieLine line)

@@ -40,6 +40,8 @@ public sealed class LLibrary
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LLibraryPanel.LPanelCleared += LLibraryEditorClear;
         LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
+        LLibraryPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LLibraryPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     public event Action<string, Exception>? LLibraryFailed;
@@ -72,9 +74,9 @@ public sealed class LLibrary
         return _lLibraryVista is LVista vista ? _lEntryPort.LEngineEntryFind(vista) : [];
     }
 
-    public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty, Func<string, ImageSource?> flagSeam)
+    public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty)
     {
-        _lLibraryIndex = new LIndex(view, empty, flagSeam);
+        _lLibraryIndex = new LIndex(view, empty);
         LLibraryPanel.LPanelRowsChanged += LLibraryIndexShow;
     }
 

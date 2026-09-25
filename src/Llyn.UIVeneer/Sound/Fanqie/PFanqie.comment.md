@@ -98,3 +98,12 @@ Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and its tag turns its mark while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.
+
+## `internal void PFanqieShow(IReadOnlyList<LFanqieGroup> groups, bool pending)`
+
+The seam the lectern's sound draws through, mapping the groups to blocks and setting whether a fetch runs.
+It only sets values, so the box redraws itself as for any other change.
+
+## `internal void PFanqieNoticeAttach(Action<string, string> diwei, Action<string?> stem, Action<long, int> representative)`
+
+Hands over what a click on a category, a stem or a representative runs, all at once.

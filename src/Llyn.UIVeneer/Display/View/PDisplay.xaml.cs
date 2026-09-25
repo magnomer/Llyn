@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,8 +9,6 @@ namespace Llyn.UIVeneer;
 
 public partial class PDisplay : UserControl
 {
-    private readonly ObservableCollection<PUsageItem> _pDisplayIncoming = [];
-
     private PWindow _pDisplayHost = null!;
 
     private LLectern _lLectern = null!;
@@ -23,310 +17,192 @@ public partial class PDisplay : UserControl
     {
         InitializeComponent();
         Resources.MergedDictionaries.Add(new PDisplayCompass(this));
-        PDisplayIncoming.ItemsSource = _pDisplayIncoming;
-        PDisplayAccent.ItemsSource = _pDisplayAccent;
-        PDisplayTranscription.ItemsSource = _pDisplayTranscription;
-        PDisplayReflex.ItemsSource = _pDisplayReflex;
-        PDisplayGlyph.ItemsSource = _pDisplayGlyph;
 
         PDisplaySwath.PSwathAttach(PDisplayContents);
-        PDisplayPlaybackAttach();
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
 
         CommandBindings.Add(new CommandBinding(
-            PEtymologyCommand.PEtymologyCommandEntry, PDisplayEtymologyHandle));
-
-        PCompassAttach();
+            PEtymologyCommand.PEtymologyCommandEntry, PDisplayEtymonHandle));
     }
 
     internal void PDisplayAttach(PWindow host, LLectern lectern)
     {
         _pDisplayHost = host;
         _lLectern = lectern;
-        PDisplayGrasp.PGraspLimit = lectern.LLecternGraspStep;
+        lectern.LLecternAttach(host.PWindowDeportment, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
+        lectern.LLecternHeaderAttach(
+            PDisplayHeadword,
+            PDisplayLanguage,
+            PDisplayLanguageFlag,
+            PDisplayLanguageGlobe,
+            PDisplayFavorite,
+            PDisplayGrasp,
+            PGrasp.PGraspStepProperty,
+            PGrasp.PGraspLimitProperty,
+            PDisplayGraspLabel);
+        lectern.LLecternStampAttach(PDisplayStampSection, PDisplayStampAdded, PDisplayStampUpdated);
+        lectern.LLecternFrequencyAttach(
+            PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand);
+        lectern.LLecternSpeechAttach(PDisplaySpeechSection, PDisplaySpeech);
+        lectern.LLecternNoteAttach(PDisplayNoteSection, PDisplayNote);
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-
-        PVolumeLoad();
+        lectern.LLecternPlayback.LLecternPlaybackAttach(
+            host.PWindowDeportment,
+            PPlaybackAction,
+            PPlayback,
+            PVolume,
+            PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogSet);
+        lectern.LLecternAccent.LLecternAccentAttach(
+            host.PWindowDeportment,
+            PDisplayPronunciationSurface,
+            PDisplayPronunciationLead,
+            PDisplayPronunciationFlag,
+            PDisplayPronunciationLabel,
+            PDisplayPronunciationOpener,
+            PDisplayPronunciation,
+            PDisplayPronunciationCloser,
+            PDisplayAccent,
+            PDisplayContour,
+            PContour.PContourTonalProperty);
+        lectern.LLecternSound.LLecternGlyphAttach(
+            host.PWindowDeportment,
+            PDisplayTranscription,
+            PDisplayGlyphSection,
+            PDisplayGlyphLead,
+            PDisplayGlyphLabel,
+            PDisplayGlyph,
+            host.PWindowGlyphShow);
+        lectern.LLecternSound.LLecternReflexAttach(PDisplayReflex, PDisplayReflexLoading, PDisplayReflexFold);
+        lectern.LLecternSound.LLecternFanqieAttach(
+            PDisplayFanqie,
+            PDisplayReading,
+            PDisplayFanqie.PFanqieShow,
+            host.PWindowDiweiShow,
+            host.PWindowStemShow);
+        lectern.LLecternSound.LLecternScriptAttach(PDisplayScript, PDisplayScript.PScriptShow);
+        lectern.LLecternSound.LLecternParadigmAttach(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
+        lectern.LLecternCompassAttach(
+            this, PDisplayContents, PDisplayHeader, PCompass, PCompassSurface, PCompassSwitch, PCompassList);
+        lectern.LLecternCompass.LCompassSectionAttach(
+            PDisplaySpeechSection,
+            PDisplayFrequencySection,
+            PDisplayMeaningSection,
+            PDisplayMeaning,
+            PDisplayCollocationSection,
+            PDisplayCollocation,
+            PDisplayIncomingSection,
+            PDisplayNoteSection);
+        lectern.LLecternCard.LLecternCardAttach(
+            host.PWindowDeportment,
+            Resources,
+            PDisplayMeaning,
+            PDisplayMeaningSection,
+            PDisplayCollocation,
+            PDisplayCollocationSection,
+            PDisplayContents,
+            lectern.LLecternCompass);
+        lectern.LLecternCard.LLecternLinkAttach(
+            ((PLinkConverter)Resources["Display.Card.Translation"]).PLinkConverterShow,
+            ((PCitationConverter)Resources["Display.Card.Citation"]).PCitationConverterShow,
+            PDisplayFrameRead().PSentenceConverterApply);
+        lectern.LLecternCard.LLecternIncomingAttach(PDisplayIncoming, PDisplayIncomingSection);
+        lectern.LLecternCard.LLecternEtymologyAttach(
+            PDisplayEtymology, PDisplayEtymologySection, PDisplayEtymology.PEtymologyShow);
+        lectern.LLecternCard.LLecternRouteAttach(
+            host.PWindowEntryShow,
+            host.PWindowSituationShow,
+            host.PWindowRegisterShow,
+            host.PWindowTagShow,
+            host.PWindowFailureShow);
+        PDisplayFanqie.PFanqieNoticeAttach(
+            lectern.LLecternSound.LLecternDiweiShow,
+            lectern.LLecternSound.LLecternStemShow,
+            lectern.LLecternSound.LLecternFanqieSet);
     }
 
-    private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)
+    internal void PCompassRowHandle(object sender, RoutedEventArgs e)
     {
-        List<string> named = new(speeches.Count);
-        foreach (LSpeechDraft speech in speeches)
-        {
-            if (speech.LSpeechDraftNamed)
-            {
-                named.Add(speech.LSpeechDraftName);
-            }
-        }
-
-        return named;
+        _lLectern.LLecternCompass.LCompassRowHandle(sender);
     }
 
-    internal void PDisplayShow(LEntryDraft draft)
+    private void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        if (_lLectern.LLecternChosen is not long id)
-        {
-            PDisplayClear();
-            return;
-        }
-
-        PDisplaySwath.PSwathClear();
-        PDisplayFavoriteShow(id);
-        PDisplayGraspShow(id);
-
-        _pDisplayRecording = _pDisplayHost.PWindowDeportment.LWindowRecordingExist(draft.LEntryDraftAudio)
-            ? draft.LEntryDraftAudio
-            : null;
-        PPlaybackAction.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
-        PVolumeLoad();
-
-        PDisplayHeadword.Text = draft.LEntryDraftHeadword;
-        PDisplayLanguageShow(draft.LEntryDraftLanguage);
-        PDisplayReflexStart(id);
-        PDisplayReflexShow(draft);
-        PReflexPendingShow(id);
-        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(
-            _pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
-        PDisplayPronunciation.Text = draft.LEntryDraftPronunciation is LPronunciationDraft primary
-            ? respelling.LRespellingMarkResolve(primary)
-            : string.Empty;
-        PDisplayPronunciationOpener.Text = respelling.LRespellingMarkOpener;
-        PDisplayPronunciationCloser.Text = respelling.LRespellingMarkCloser;
-        PDisplayContour.PContourTonal = _lLectern.LLecternTonalCheck(draft.LEntryDraftLanguage);
-        PDisplayPronunciationSurface.Visibility = PDisplayPronunciation.Text.Length == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-        PDisplayPronunciationLead.SharedSizeGroup = PDisplayPronunciation.Text.Length == 0 ? null : "PReadingLabel";
-        PDisplayAccentShow(draft);
-        PDisplayGlyphShow(draft);
-        PDisplayTranscriptionShow(draft);
-        PDisplayPlaybackShow();
-
-        PDisplayFrameShow(draft.LEntryDraftLanguage);
-        PDisplayExampleShow(draft.LEntryDraftLanguage);
-        PDisplayCitationShow();
-        PDisplayTranslationShow(draft);
-        PDisplayIncomingShow(id);
-
-        PDisplaySpeech.ItemsSource = PDisplaySpeechShow(draft.LEntryDraftSpeeches);
-        PDisplaySpeechSection.Visibility = draft.LEntryDraftMarked ? Visibility.Visible : Visibility.Collapsed;
-        PDisplayFrequencyShow(id);
-        PDisplayParadigmShow(id);
-        PDisplayScriptStart(id);
-        PDisplayScriptShow(id, draft.LEntryDraftLanguage);
-        PDisplayFanqieStart(id);
-        PDisplayFanqieShow(id, draft.LEntryDraftLanguage);
-        PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
-        PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
-        PDisplayMeaningSection.Visibility = draft.LEntryDraftDefined ? Visibility.Visible : Visibility.Collapsed;
-        PDisplayCollocationSection.Visibility = draft.LEntryDraftCollocated
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-
-        PDisplayEtymologyShow(draft);
-        PMarkdown.PMarkdownShow(PDisplayNote, draft.LEntryDraftNote, _pDisplayHost.PWindowDeportment);
-        PDisplayNoteSection.Visibility = draft.LEntryDraftNoted ? Visibility.Visible : Visibility.Collapsed;
-
-        PDisplayStampShow(id);
-
-        PDisplayEmpty.Visibility = Visibility.Collapsed;
-        PDisplayContents.Visibility = Visibility.Visible;
-
-        PCompassUpdate();
+        _lLectern.LLecternSound.LLecternFoldHandle(PLook.PLookCheckedRead(PDisplayReflexFold.IsChecked));
     }
 
-    private void PDisplayStampShow(long id)
+    internal void PDisplayObserverAttach()
     {
-        LEntry? entry;
-        try
-        {
-            entry = _lLectern.LLecternEntryRead(id);
-        }
-        catch (Exception)
-        {
-            entry = null;
-        }
-
-        PDisplayStampAdded.Text = PDisplayStampFormat(entry?.LEntryAddedUtc);
-        PDisplayStampUpdated.Text = PDisplayStampFormat(entry?.LEntryUpdatedUtc);
-        PDisplayStampSection.Visibility = entry is null
-            ? Visibility.Collapsed
-            : Visibility.Visible;
+        _lLectern.LLecternObserverAttach(this);
     }
 
-    private void PDisplayFrequencyShow(long id)
+    private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        IReadOnlyList<LFrequency> frequency;
-        try
-        {
-            frequency = _lLectern.LLecternFrequencyRead(id);
-        }
-        catch (Exception)
-        {
-            frequency = [];
-        }
-
-        LFrequencyLabel.LFrequencyChipShow(
-            PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand, frequency);
+        _lLectern.LLecternFavoriteHandle();
     }
 
-    private static string PDisplayStampFormat(string? utc)
+    private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
     {
-        if (utc is null
-            || !DateTimeOffset.TryParse(
-                utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
-        {
-            return string.Empty;
-        }
-
-        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
+        _lLectern.LLecternGraspHandle(PDisplayGrasp.PGraspStep);
     }
 
-    internal void PDisplayClear()
+    private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
     {
-        PDisplaySwath.PSwathClear();
-        PDisplayFavorite.IsChecked = false;
-        PDisplayGrasp.PGraspStep = 0;
-        PDisplayGraspLabel.Text = string.Empty;
-        _pDisplayRecording = null;
-        _pDisplayPlayer.Stop();
-        PDisplayLanguage.Text = string.Empty;
-        PDisplayLanguageFlag.Source = null;
-        PPlayback.Visibility = Visibility.Collapsed;
-        PPlaybackAction.Visibility = Visibility.Collapsed;
-        PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
-        PDisplayPronunciationLead.SharedSizeGroup = null;
-        PDisplayAccentClear();
-        _pDisplayTranscription.Clear();
-        _pDisplayReflex.Clear();
-        PDisplayReflexFold.Visibility = Visibility.Collapsed;
-        PDisplayReflexLoading.Visibility = Visibility.Collapsed;
-        PDisplayGlyphClear();
-        PDisplaySpeech.ItemsSource = null;
-        PDisplaySpeechSection.Visibility = Visibility.Collapsed;
-        PDisplayFrequency.Text = string.Empty;
-        PDisplayFrequencyChip.ToolTip = null;
-        PDisplayFrequencySection.Visibility = Visibility.Collapsed;
-        PDisplayParadigm.PParadigmItems = null;
-        PDisplayScriptClear();
-        PDisplayFanqieClear();
-        _pDisplayIncoming.Clear();
-        PDisplayIncomingSection.Visibility = Visibility.Collapsed;
-        PDisplayTranslationRead().PLinkConverterClear();
-        PDisplayCitationRead().PCitationConverterClear();
-        PDisplayMeaning.ItemsSource = null;
-        PDisplayCollocation.ItemsSource = null;
-        PDisplayMeaningSection.Visibility = Visibility.Collapsed;
-        PDisplayCollocationSection.Visibility = Visibility.Collapsed;
-        PDisplayNoteSection.Visibility = Visibility.Collapsed;
-        PDisplayStampSection.Visibility = Visibility.Collapsed;
-        PDisplayContents.Visibility = Visibility.Collapsed;
-        PDisplayEmpty.Visibility = Visibility.Visible;
+        _lLectern.LLecternHoverHandle(PDisplayGrasp.PGraspPointed);
+    }
 
-        PCompassClear();
+    private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
+    {
+        _lLectern.LLecternPlayback.LLecternActionHandle();
+    }
+
+    internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        _lLectern.LLecternPlayback.LLecternPlaybackHandle(e.Parameter);
+    }
+
+    private void PDisplayGlyphHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        _lLectern.LLecternSound.LLecternGlyphHandle(e.Parameter);
     }
 
     internal void PDisplayClose()
     {
-        _pDisplayPlayer.Close();
+        _lLectern.LLecternClose();
     }
 
-    private void PDisplayTranslationShow(LEntryDraft draft)
+    private PSentenceConverter PDisplayFrameRead()
     {
-        PLinkConverter converter = PDisplayTranslationRead();
-        try
-        {
-            converter.PLinkConverterShow(_lLectern.LLecternTargetRead(draft));
-        }
-        catch (Exception)
-        {
-            converter.PLinkConverterClear();
-        }
-
-        PDisplayCardUpdate();
-    }
-
-    private void PDisplayCardUpdate()
-    {
-        System.Collections.IEnumerable? meanings = PDisplayMeaning.ItemsSource;
-        System.Collections.IEnumerable? collocations = PDisplayCollocation.ItemsSource;
-
-        PDisplayMeaning.ItemsSource = null;
-        PDisplayCollocation.ItemsSource = null;
-        PDisplayMeaning.ItemsSource = meanings;
-        PDisplayCollocation.ItemsSource = collocations;
-    }
-
-    private PLinkConverter PDisplayTranslationRead()
-    {
-        return (PLinkConverter)Resources["Display.Card.Translation"];
-    }
-
-    private void PDisplayFrameShow(string language)
-    {
-        LSentenceOrder order;
-        try
-        {
-            order = _pDisplayHost.PWindowDeportment.LWindowOrderRead(language);
-        }
-        catch (Exception)
-        {
-            order = LSentenceOrder.LSentenceOrderDefault;
-        }
-
-        ((PSentenceConverter)Resources["Display.Card.Frame"]).PSentenceConverterApply(order);
-    }
-
-    private void PDisplayExampleShow(string language)
-    {
-        LFontFace.LFontExampleApply(Resources, _pDisplayHost.PWindowDeportment, language);
+        return (PSentenceConverter)Resources["Display.Card.Frame"];
     }
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
     {
-        if (e.OriginalSource is not FrameworkElement chip)
-        {
-            return;
-        }
-
-        switch (chip.DataContext)
-        {
-            case LSituationDraft { LSituationDraftStored: true } situation:
-                e.Handled = true;
-                _pDisplayHost.PWindowSituationShow(situation.LSituationDraftId);
-                break;
-            case LRegisterDraft { LRegisterDraftStored: true } register:
-                e.Handled = true;
-                _pDisplayHost.PWindowRegisterShow(register.LRegisterDraftId);
-                break;
-            case PLinkChip link when link.PLinkChipId != 0:
-                e.Handled = true;
-                _pDisplayHost.PWindowEntryShow(link.PLinkChipId);
-                break;
-            case LTagDraft { LTagDraftStored: true } tag:
-                e.Handled = true;
-                _pDisplayHost.PWindowTagShow(tag.LTagDraftId);
-                break;
-        }
+        _lLectern.LLecternCard.LLecternCardHandle(e);
     }
 
-    private async void PDisplayLanguageShow(string language)
+    private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
     {
-        PDisplayLanguage.Text = language;
-        PDisplayLanguageFlag.Source = null;
-        LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);
-        LFontFace.LFontPlace(PDisplayHeadword);
+        _lLectern.LLecternCard.LLecternIncomingHandle(sender);
+    }
 
-        await PEnsign.PEnsignLoad(_pDisplayHost.PWindowDeportment);
+    private void PDisplayEtymonHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        _lLectern.LLecternCard.LLecternEtymonHandle(e.Parameter);
+    }
 
-        if (!string.Equals(PDisplayLanguage.Text, language, StringComparison.Ordinal))
-        {
-            return;
-        }
+    private void PDisplayMentionHandle(object? sender, PMentionArgument e)
+    {
+        _pDisplayHost.PWindowMentionHandle(
+            e.PMentionArgumentOrigin,
+            _lLectern.LLecternCard.LLecternMentionFind(
+                e.PMentionArgumentText,
+                e.PMentionArgumentLanguage,
+                e.PMentionArgumentOffset,
+                e.PMentionArgumentMention));
+    }
 
-        PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
+    internal void PDisplayCardScroll(long id)
+    {
+        _lLectern.LLecternCard.LLecternCardScroll(id);
     }
 }

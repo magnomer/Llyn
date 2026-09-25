@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -17,7 +18,7 @@ internal sealed class PFootnoteItem : INotifyPropertyChanged
         PFootnoteItemHeadword = headword;
         PFootnoteItemEpithet = epithet ?? string.Empty;
         PFootnoteItemLanguage = language;
-        PFootnoteItemFlag = PEnsign.PEnsignFind(language);
+        PFootnoteItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PFootnoteItemId { get; }

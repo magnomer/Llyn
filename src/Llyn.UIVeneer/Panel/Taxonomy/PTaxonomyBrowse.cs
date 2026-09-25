@@ -18,7 +18,7 @@ public partial class PTaxonomy
 
     private async void PTaxonomyWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pTaxonomyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pTaxonomyHost.PWindowDeportment);
         PTaxonomyReset();
     }
 
@@ -53,18 +53,18 @@ public partial class PTaxonomy
     internal async void PTaxonomyVistaRestore()
     {
         _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowDeportment);
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PDirectoryFind));
         _lTaxonomy.LTaxonomyObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTaxonomyWorkspaceUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, PObserver.PObserverCreate(this, PTaxonomyTagUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PDirectoryFind));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PDirectoryFind));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PTaxonomyWorkspaceUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectTag, LObserver.LObserverCreate(this, PTaxonomyTagUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PDirectoryFind));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PDirectoryFind));
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PMembershipFind));
-        panel.LPanelChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelDraftUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PDirectoryFind));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PMembershipFind));
+        panel.LPanelChosenAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelDraftUpdate));
+        _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PDirectoryFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -78,7 +78,7 @@ public partial class PTaxonomy
         PChoice.PChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         PLatticeRestore();
 
-        await PEnsign.PEnsignLoad(_pTaxonomyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pTaxonomyHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(
             PLatticeList, _lTaxonomy.LTaxonomyLanguageRead(), _lTaxonomy.LTaxonomyFilter, PLatticeHandle);

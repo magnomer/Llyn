@@ -37,10 +37,6 @@ A save runs the finish the deportment handed in, so the deportment decides what 
 
 Asks the window whether a Situation used this many times may be removed.
 
-## `private void POccurrenceDraftShow(LDraft draft)`
-
-Shows the occurrence's held entry in the display.
-
 ## `private void PRepertoireModeUpdate()`
 
 Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.

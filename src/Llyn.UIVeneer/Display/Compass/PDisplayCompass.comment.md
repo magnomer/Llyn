@@ -4,6 +4,7 @@
 
 The floating contents column of the entry page: its row, its number and the row template.
 The row answers a click the panel handles, so the dictionary carries a class and forwards to its host.
+The host hands the click on to [LCompass](../../../Llyn.UIDeportment/Display/LCompass.comment.md).
 The panel adds it from code after its own markup is parsed, so the list reads the template dynamically.
 
 ## `<Style x:Key="Theme.Compass.Choice" TargetType="Button">`

@@ -32,7 +32,7 @@ public partial class PDiwei : UserControl
         PDiweiHeadword.Text = page.LDiweiPageKey;
         PDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         PDiweiLanguage.Text = page.LDiweiPageLanguage;
-        PDiweiFlag.Source = PEnsign.PEnsignFind(page.LDiweiPageLanguage);
+        PDiweiFlag.Source = LEnsignImage.LEnsignFind(page.LDiweiPageLanguage);
         PDiweiList.ItemsSource = PDiweiItem.PDiweiItemBuild(page.LDiweiPageSections);
         PDiweiEmpty.Visibility = PLook.PLookVisibleRead(page.LDiweiPageEmpty);
     }

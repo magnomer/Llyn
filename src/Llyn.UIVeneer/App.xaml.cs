@@ -6,7 +6,7 @@ using System.Windows.Threading;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
-using Llyn.Media;
+using Llyn.Core.Windows;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 
@@ -19,6 +19,8 @@ public partial class LBootstrap : System.Windows.Application
     private readonly LUsher _lBootstrapUsher = new LUsherShell(new LUsherFile());
 
     private readonly LPress _lBootstrapPress = new LPressBrowser();
+
+    private readonly LPhonograph _lBootstrapPhonograph = new LPhonographMedia();
 
     private LEngine? _lBootstrapEngine;
 
@@ -51,7 +53,8 @@ public partial class LBootstrap : System.Windows.Application
         {
             workspace = LWorkspaceRoot.LWorkspaceRootRead();
             engine = new LEngine(
-                LRigFactory.LRigFactoryBuild(workspace, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress));
+                LRigFactory.LRigFactoryBuild(
+                    workspace, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress, _lBootstrapPhonograph));
         }
         catch (Exception exception)
         {
@@ -99,7 +102,8 @@ public partial class LBootstrap : System.Windows.Application
     private void LBootstrapWorkspaceChange(string path)
     {
         _lBootstrapEngine?.LEngineRigApply(
-            LRigFactory.LRigFactoryBuild(path, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress));
+            LRigFactory.LRigFactoryBuild(
+                path, _lBootstrapClient, _lBootstrapUsher, _lBootstrapPress, _lBootstrapPhonograph));
         LWorkspaceRoot.LWorkspaceRootChange(path);
     }
 

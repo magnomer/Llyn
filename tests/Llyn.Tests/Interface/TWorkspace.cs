@@ -29,6 +29,8 @@ internal sealed class TWorkspace : IDisposable
 
     public TPress TWorkspacePress { get; } = new();
 
+    public TPhonographFake TWorkspacePhonograph { get; } = new();
+
     public void TWorkspaceClockSet(Func<DateTimeOffset> clock)
     {
         TWorkspaceClock.TClockSet(clock);
@@ -72,7 +74,8 @@ internal sealed class TWorkspace : IDisposable
 
     public LRig TWorkspaceRigCreate(HttpClient client)
     {
-        LRig rig = LRigFactory.LRigFactoryBuild(_tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress);
+        LRig rig = LRigFactory.LRigFactoryBuild(
+            _tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress, TWorkspacePhonograph);
         return rig with { LRigClock = TWorkspaceClock };
     }
 

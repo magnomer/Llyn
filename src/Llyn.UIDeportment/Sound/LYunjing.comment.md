@@ -7,6 +7,7 @@ It holds no language of its own.
 The language of the page is the language of the chosen cell, else the first pack that carries rime books.
 The page opens on the column last clicked, kept as a side flag the engine is never told.
 The page is shown while that cell is chosen and the entry list has nothing chosen and is not writing.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public event Action? LYunjingChanged;`
 

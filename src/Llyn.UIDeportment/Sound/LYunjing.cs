@@ -51,6 +51,8 @@ public sealed class LYunjing
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LYunjingPanel.LPanelCleared += LYunjingEditorClear;
         LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
+        LYunjingPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LYunjingPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     private void LYunjingEditorClear()

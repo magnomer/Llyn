@@ -21,7 +21,7 @@
                         Stretch="Uniform" />
                     <Button
                         Command="{x:Static local:PEtymologyCommand.PEtymologyCommandEntry}"
-                        CommandParameter="{Binding}"
+                        CommandParameter="{Binding PEtymonId}"
                         Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">

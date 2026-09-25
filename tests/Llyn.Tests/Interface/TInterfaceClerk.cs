@@ -185,6 +185,11 @@ internal static partial class TInterface
         clerk.LRecordingClerkSweep();
     }
 
+    internal static void TRecordingClerkPlay(this LRecordingClerk clerk, string? file)
+    {
+        clerk.LRecordingClerkPlay(file);
+    }
+
     internal static string TRecordingFormat(LRig rig, string path) =>
         rig.LRigTrail.LTrailRelativeResolve(rig.LRigWorkspace, path) ?? path;
 

@@ -42,6 +42,11 @@ The language a span is resolved against.
 
 The narrative box, which the editor reads a selection from.
 
+## `internal void PEtymologyShow(string language, string text, IReadOnlyList<LTranslationTarget> etymons)`
+
+Sets the language and the narrative, then draws the source links.
+The reading view's card deportment calls it as its seam.
+
 ## `internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)`
 
 Draws the source links the engine already resolved to a headword and a language.

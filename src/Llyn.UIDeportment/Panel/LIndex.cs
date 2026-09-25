@@ -17,17 +17,13 @@ public sealed class LIndex
 
     private readonly FrameworkElement _lIndexEmpty;
 
-    private readonly Func<string, ImageSource?> _lIndexFlag;
-
-    public LIndex(ItemsControl view, FrameworkElement empty, Func<string, ImageSource?> flagSeam)
+    public LIndex(ItemsControl view, FrameworkElement empty)
     {
         ArgumentNullException.ThrowIfNull(view);
         ArgumentNullException.ThrowIfNull(empty);
-        ArgumentNullException.ThrowIfNull(flagSeam);
 
         _lIndexView = view;
         _lIndexEmpty = empty;
-        _lIndexFlag = flagSeam;
         view.ItemsSource = _lIndexList;
     }
 
@@ -53,7 +49,7 @@ public sealed class LIndex
 
         LSplice.LSpliceApply(
             _lIndexList,
-            LIndexItem.LIndexItemBuild(rows, _lIndexFlag),
+            LIndexItem.LIndexItemBuild(rows),
             LIndexItem.LIndexItemMatch,
             LIndexItem.LIndexItemSync);
         _lIndexEmpty.Visibility = asked && _lIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

@@ -6,6 +6,7 @@ The taxonomy panel's deportment: the tag vista and the membership vista it holds
 The tag side finds rows, takes the query, order and kind filter, and creates a Tag.
 The membership side finds the entries of the chosen Tag, loads and deletes the chosen one, and marks it edited.
 Both vistas are handed in by the window, which restores every tab's vistas together.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public LEditor LTaxonomyEditor { get; }`
 

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -17,7 +18,7 @@ internal sealed class PRosterItem : INotifyPropertyChanged
         PRosterItemName = name;
         PRosterItemEpithet = epithet ?? string.Empty;
         PRosterItemLanguage = language;
-        PRosterItemFlag = PEnsign.PEnsignFind(language);
+        PRosterItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long PRosterItemId { get; }

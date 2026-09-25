@@ -25,7 +25,7 @@ A field or property whose name ends in this is a state the engine should own.
 
 The engine's notice type, so a handler taking one and never reading it is a deaf handler.
 
-## `public const string TAuditObserverType = "PObserver";`
+## `public const string TAuditObserverType = "LObserver";`
 
 The shell's subscription type, so a lambda handed to one that ignores its bulletin is deaf too.
 

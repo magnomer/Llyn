@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -23,7 +24,7 @@ public partial class PEstablishment : UserControl
     {
         _pEstablishmentHost = host;
 
-        _pEstablishmentObserver = PObserver.PObserverCreate(this, PEstablishmentBulletinHandle);
+        _pEstablishmentObserver = LObserver.LObserverCreate(this, PEstablishmentBulletinHandle);
         host.PWindowDeportment.LWindowObserverAttach(_pEstablishmentObserver);
 
         PEstablishmentUpdate();

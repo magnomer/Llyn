@@ -19,7 +19,7 @@ public partial class PSettings : UserControl
     internal void PSettingsAttach(PWindow host)
     {
         _pSettingsHost = host;
-        PSettingsWindow.LWindowObserverAttach(PObserver.PObserverCreate(this, PSettingsBulletinHandle));
+        PSettingsWindow.LWindowObserverAttach(LObserver.LObserverCreate(this, PSettingsBulletinHandle));
 
         PSettingsSync();
         PLedgerBuild();

@@ -37,13 +37,12 @@ public sealed class LIndexItem : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public static IReadOnlyList<LIndexItem> LIndexItemBuild(
-        IReadOnlyList<LVistaRow> rows, Func<string, ImageSource?> flagSeam)
+    public static IReadOnlyList<LIndexItem> LIndexItemBuild(IReadOnlyList<LVistaRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
-        ArgumentNullException.ThrowIfNull(flagSeam);
 
-        return LSplice.LSpliceBuild(rows, row => new LIndexItem(row, flagSeam(row.LVistaRowLanguage)));
+        return LSplice.LSpliceBuild(
+            rows, row => new LIndexItem(row, LEnsignImage.LEnsignFind(row.LVistaRowLanguage)));
     }
 
     public static bool LIndexItemMatch(LIndexItem held, LIndexItem fresh)

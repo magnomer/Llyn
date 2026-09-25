@@ -52,6 +52,8 @@ public sealed class LShelf
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
         LShelfPanel.LPanelCleared += LShelfImprint.LImprintCancel;
         LShelfPanel.LPanelEdited += LShelfImprintOpen;
+        LShelfFootnote.LFootnotePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LShelfFootnote.LFootnotePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
         LShelfImprint.LImprintDesk.LDeskFinished += LShelfStoredShow;
         LShelfImprint.LImprintDesk.LDeskStateChanged += LShelfStateUpdate;
         LShelfEditor.LEditorStateChanged += LShelfStateUpdate;

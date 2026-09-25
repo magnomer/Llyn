@@ -31,7 +31,7 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PCompassItemCurrent}" Value="True">
+            <DataTrigger Binding="{Binding LCompassItemCurrent}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
                 <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
             </DataTrigger>
@@ -52,17 +52,17 @@
 
     <DataTemplate x:Key="Theme.Compass.Row">
         <Button Click="PCompassRowHandle" Style="{StaticResource Theme.Compass.Choice}">
-            <Grid Margin="{Binding PCompassItemIndent}">
+            <Grid Margin="{Binding LCompassItemIndent}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Style="{StaticResource Theme.Compass.Number}" Text="{Binding PCompassItemNumber}" />
+                <TextBlock Style="{StaticResource Theme.Compass.Number}" Text="{Binding LCompassItemNumber}" />
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     FontSize="12"
-                    Text="{Binding PCompassItemName}"
+                    Text="{Binding LCompassItemName}"
                     TextTrimming="CharacterEllipsis" />
             </Grid>
         </Button>

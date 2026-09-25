@@ -26,6 +26,33 @@ public sealed class TGlyph
     }
 
     [Fact]
+    public void GlyphDivide_GlyphScheme_TakesTranscription()
+    {
+        LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");
+        LEntryDraft draft = TInterface.TEntryDraftCreate(
+            "国家", "Mandarin", string.Empty, string.Empty, [], [],
+            transcriptions:
+            [
+                TInterface.TTranscriptionDraftCreate("Pinyin", "guójiā"),
+                TInterface.TTranscriptionDraftCreate("Traditional", "國家"),
+            ]);
+
+        Assert.Equal(["國", "家"], glyph.TGlyphDivide(draft).Select(cell => cell.LGlyphCellText));
+    }
+
+    [Fact]
+    public void GlyphDivide_SingleCharacter_CarriesLanguage()
+    {
+        LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");
+        LEntryDraft draft = TInterface.TEntryDraftCreate("國a", "Mandarin", string.Empty, string.Empty, [], []);
+
+        IReadOnlyList<LGlyphCell> cells = glyph.TGlyphDivide(draft);
+
+        Assert.Equal("Classical Chinese", cells[0].LGlyphCellLanguage);
+        Assert.Empty(cells[1].LGlyphCellLanguage);
+    }
+
+    [Fact]
     public void GlyphResolve_MissingEntry_CreatesOnceThenFinds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

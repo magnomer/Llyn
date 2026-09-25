@@ -9,12 +9,14 @@ internal static class TAuditRingSetting
         ["Llyn.Core"] = [],
         ["Llyn.Application"] = ["Llyn.Core"],
         ["Llyn.Infrastructure"] = ["Llyn.Core"],
-        ["Llyn.Media"] = ["Llyn.Core"],
+        ["Llyn.Core.Windows"] = ["Llyn.Core"],
         ["Llyn.Host"] = [],
-        ["Llyn.UITerminal"] = [],
+        ["Llyn.UITerminal"] = ["Llyn.UIDemeanor"],
+        ["Llyn.UIDemeanor"] = ["Llyn.Conduct"],
         ["Llyn.ShellEngine"] = ["Llyn.Core", "Llyn.Application"],
         ["Llyn.Conduct"] = ["Llyn.ShellEngine"],
         ["Llyn.UIDeportment"] = ["Llyn.Conduct"],
-        ["Llyn.UIVeneer"] = ["Llyn.Core", "Llyn.Infrastructure", "Llyn.Media", "Llyn.ShellEngine", "Llyn.UIDeportment"],
+        ["Llyn.UIVeneer"] =
+            ["Llyn.Core", "Llyn.Infrastructure", "Llyn.Core.Windows", "Llyn.ShellEngine", "Llyn.UIDeportment"],
     };
 }

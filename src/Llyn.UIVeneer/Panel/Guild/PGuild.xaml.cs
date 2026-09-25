@@ -59,20 +59,20 @@ public partial class PGuild : UserControl
     {
         _lGuild.LGuildVistaRestore(_pGuildHost.PWindowDeportment);
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
             LSubject.LSubjectVista,
-            PObserver.PObserverCreate(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
+            LObserver.LObserverCreate(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, _lGuild.LGuildReset));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, _lGuild.LGuildReset));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectAuthor, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectReference, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectReference, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectExample, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectExample, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         PChoice.PChoiceOrderBuild(
             PEchelonList,
             "Echelon",
@@ -153,7 +153,7 @@ public partial class PGuild : UserControl
         PAutographWork.Text = vita.LVitaWork;
         PAutographTally.Text = vita.LVitaTally;
         PFellow.ItemsSource = PFellowItem.PFellowItemBuild(vita.LVitaFellows);
-        PVitaCitation.ItemsSource = PUsageItem.PUsageItemBuild(vita.LVitaUsages);
+        PVitaCitation.ItemsSource = LUsageItem.LUsageItemBuild(vita.LVitaUsages);
         PVitaFellowSection.Visibility = PLook.PLookVisibleRead(vita.LVitaFellowShown);
         PVitaCitationSection.Visibility = PLook.PLookVisibleRead(vita.LVitaUsageShown);
         PVitaBody.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildVitaHeld);
@@ -198,8 +198,8 @@ public partial class PGuild : UserControl
 
     private void PAutographObserverAttach(LDesk desk)
     {
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, PObserver.PObserverCreate(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, LObserver.LObserverCreate(this, desk.LDeskStateUpdate));
     }
 
     private void PAutographStartUpdate()
@@ -269,7 +269,9 @@ public partial class PGuild : UserControl
 
     private void PVitaCitationHandle(object sender, RoutedEventArgs e)
     {
-        PSender.PSenderSourceRead<PUsageItem>(e)?.PUsageItemShow(_pGuildHost);
+        PSender.PSenderSourceRead<LUsageItem>(e)?.LUsageItemShow(
+            _pGuildHost.PWindowExampleShow,
+            _pGuildHost.PWindowEntryShow);
     }
 
     private void PAutographNameHandle(object sender, TextChangedEventArgs e)

@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
     <ProjectReference Include="..\Llyn.Infrastructure\Llyn.Infrastructure.csproj" />
-    <ProjectReference Include="..\Llyn.Media\Llyn.Media.csproj" />
+    <ProjectReference Include="..\Llyn.Core.Windows\Llyn.Core.Windows.csproj" />
     <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
     <ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />
   </ItemGroup>

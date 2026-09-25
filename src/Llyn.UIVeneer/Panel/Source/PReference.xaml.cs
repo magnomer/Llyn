@@ -41,8 +41,6 @@ public partial class PReference : UserControl
         _lShelf.LShelfPanel.LPanelFailed += host.PWindowFailureShow;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelChanged += PReferenceModeUpdate;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsChanged += PFootnoteUpdate;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelCleared += PDisplay.PDisplayClear;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelDraftChanged += PReferenceEntryUpdate;
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelFailed += host.PWindowFailureShow;
 
         PShelf.ItemsSource = _pShelfList;
@@ -62,32 +60,32 @@ public partial class PReference : UserControl
     {
         _lShelf.LShelfVistaRestore(_pReferenceHost.PWindowDeportment);
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, _lShelf.LShelfClear));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, _lShelf.LShelfClear));
         _lShelf.LShelfPanel.LPanelObserverAttach(
             LSubject.LSubjectAuthor,
-            PObserver.PObserverCreate(this, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
+            LObserver.LObserverCreate(this, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectAuthor, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectReference, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReference, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectExample, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectExample, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
             LSubject.LSubjectEntry,
-            PObserver.PObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelEntryHandle));
+            LObserver.LObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelEntryHandle));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lShelf.LShelfPanel.LPanelRowsUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lShelf.LShelfEntryUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lShelf.LShelfEntryUpdate));
         _lShelf.LShelfFootnote.LFootnotePanel.LPanelObserverAttach(
             LSubject.LSubjectVista,
-            PObserver.PObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
+            LObserver.LObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -103,7 +101,7 @@ public partial class PReference : UserControl
         PChoice.PChoiceOrderApply(PGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
         PTrellisUpdate();
 
-        await PEnsign.PEnsignLoad(_pReferenceHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pReferenceHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(
             PTrellisList,
@@ -222,11 +220,6 @@ public partial class PReference : UserControl
     private void PReferenceSourceUpdate(LDraft draft)
     {
         PColophon.PColophonShow(_lShelf.LShelfColophonRead(draft));
-    }
-
-    private void PReferenceEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PTrellisUpdate()

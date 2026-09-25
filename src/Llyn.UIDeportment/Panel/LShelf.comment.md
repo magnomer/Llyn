@@ -12,6 +12,7 @@ The entry edit area is still a veneer hold, so its change answer arrives through
 The unreadable seam is the window's sweep question, passed on to the imprint's desk.
 The leave seam is the window's discard dialog, asked once for the whole tab before any switch of side.
 The removal seam is the window's delete question, worded by how many rows still cite the Source.
+The citing entries' loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public event Action? LShelfChanged;`
 

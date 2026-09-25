@@ -12,7 +12,7 @@ The host identifies the active card when shared link controls raise events.
 
 The editor reference preserves card ownership across shared link templates.
 
-## `private void PLinkChipHandle(object sender, RoutedEventArgs e)`
+## `private void PLinkDropHandle(object sender, RoutedEventArgs e)`
 
 Chip activation asks the editor to follow the selected link action for its card.
 

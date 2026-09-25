@@ -6,6 +6,7 @@ The deportment of the phonology panel: the shared panel state and the pronunciat
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public LEditor LPhonologyEditor { get; }`
 

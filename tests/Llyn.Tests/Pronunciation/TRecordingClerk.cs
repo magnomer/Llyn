@@ -56,6 +56,18 @@ public sealed class TRecordingClerk
         Assert.True(File.Exists(stored));
     }
 
+    [Fact]
+    public void RecordingClerkPlay_MissingFile_PlaysNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+
+        clerk.TRecordingClerkPlay(Path.Combine(workspace.TWorkspaceFolder, "audio", "missing.mp3"));
+        clerk.TRecordingClerkPlay(null);
+
+        Assert.Empty(workspace.TWorkspacePhonograph.TPhonographFakePlayed);
+    }
+
     private static string TRecordingFileSave(TWorkspace workspace, string name)
     {
         string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");

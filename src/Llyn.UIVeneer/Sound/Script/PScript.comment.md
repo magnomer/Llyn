@@ -93,3 +93,8 @@ Feeds the list and shows the loading line while pending.
 The regenerate button stands wherever one was handed over, and its tag turns its mark while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.
+
+## `internal void PScriptShow(IReadOnlyList<LScriptGroup> groups, bool pending)`
+
+The seam the lectern's sound draws through, mapping the groups to rows and setting whether a fetch runs.
+It only sets values, so the box redraws itself as for any other change.

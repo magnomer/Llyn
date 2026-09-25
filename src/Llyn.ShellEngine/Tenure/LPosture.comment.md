@@ -51,6 +51,7 @@ Cancels and releases the waiting write, if there is one.
 ## `public void LPostureVolumeSave(double volume)`
 
 Stores how loud a pronunciation is played, clamped so no caller writes a level the player cannot take.
+A level already stored writes nothing, so no shell asks before it saves.
 Every view plays through the same level.
 A change made in one is the level the next one opens at.
 

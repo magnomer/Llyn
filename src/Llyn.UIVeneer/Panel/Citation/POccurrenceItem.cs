@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -15,7 +16,7 @@ internal sealed class POccurrenceItem : INotifyPropertyChanged
         POccurrenceItemHeadword = headword;
         POccurrenceItemEpithet = epithet ?? string.Empty;
         POccurrenceItemLanguage = language;
-        POccurrenceItemFlag = PEnsign.PEnsignFind(language);
+        POccurrenceItemFlag = LEnsignImage.LEnsignFind(language);
     }
 
     public long POccurrenceItemId { get; }

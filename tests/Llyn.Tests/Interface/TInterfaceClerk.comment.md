@@ -99,6 +99,10 @@ Relays the harvest of the recording clerk.
 
 Relays the sweep of the recording clerk.
 
+## `internal static void TRecordingClerkPlay(this LRecordingClerk clerk, string? file)`
+
+Relays the playback of the recording clerk.
+
 ## `internal static string TRecordingFormat(LRig rig, string path)`
 
 A recording path made workspace-relative through the trail of `rig`.

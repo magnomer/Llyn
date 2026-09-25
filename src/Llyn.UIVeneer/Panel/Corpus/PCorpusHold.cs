@@ -15,9 +15,9 @@ public partial class PCorpus
     private void PTranscriptDeskAttach()
     {
         PTranscriptDesk.LDeskDraftAttach(
-            LSubject.LSubjectDraft, PObserver.PObserverCreate(this, PTranscriptDraftRestore));
+            LSubject.LSubjectDraft, LObserver.LObserverCreate(this, PTranscriptDraftRestore));
         PTranscriptDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, PObserver.PObserverCreate(this, PTranscriptDesk.LDeskStateUpdate));
+            LSubject.LSubjectTenure, LObserver.LObserverCreate(this, PTranscriptDesk.LDeskStateUpdate));
         PTranscriptDesk.LDeskFailed += _pCorpusHost.PWindowFailureShow;
         PTranscriptDesk.LDeskRefused += _pCorpusHost.PWindowFailureShow;
     }

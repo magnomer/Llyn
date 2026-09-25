@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Media;
+using Llyn.Core.Windows;
 
 namespace Llyn.UIVeneer;
 

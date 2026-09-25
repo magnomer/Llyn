@@ -33,11 +33,6 @@ Even then the bands must carry these four names and rank the source's levels ont
 
 The label past the last rung, fewer than one occurrence per million words.
 
-## `public static bool LFrequencyCheck(IReadOnlyList<LFrequency> rows)`
-
-Whether an entry has any frequency to show, true when at least one source answered.
-The engine answers it, so a surface hides an empty section without counting rows itself.
-
 ## `public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)`
 
 Grades a raw figure on the shared ladder through the interval the source's pack figures describe.

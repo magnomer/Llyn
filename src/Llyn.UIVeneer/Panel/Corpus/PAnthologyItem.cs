@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -16,7 +17,7 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
         PAnthologyItemId = example.LExampleId;
         PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unknown) ?? unwritten;
         PAnthologyItemLanguage = example.LExampleLanguage;
-        PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
+        PAnthologyItemFlag = LEnsignImage.LEnsignFind(example.LExampleLanguage);
         PAnthologyItemCount = usage.ToString(CultureInfo.CurrentCulture);
     }
 

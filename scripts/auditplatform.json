@@ -12,6 +12,7 @@
       { "name": "Llyn.Conduct", "role": "portable" },
       { "name": "Llyn.UIDeportment", "role": "twin", "half": "Llyn.Conduct" },
       { "name": "Llyn.UIVeneer", "role": "twin", "half": "Llyn.Conduct" },
+      { "name": "Llyn.UIDemeanor", "role": "portable" },
       { "name": "Llyn.UITerminal", "role": "portable" },
       { "name": "Llyn.Host", "role": "host" }
     ]

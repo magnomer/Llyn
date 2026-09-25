@@ -27,8 +27,6 @@ public partial class PTaxonomy : UserControl
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelChanged += PTaxonomyModeUpdate;
         panel.LPanelRowsChanged += PMembershipFind;
-        panel.LPanelCleared += PDisplay.PDisplayClear;
-        panel.LPanelDraftChanged += PTaxonomyEntryUpdate;
         panel.LPanelFailed += host.PWindowFailureShow;
 
         PDirectory.ItemsSource = _pDirectoryList;

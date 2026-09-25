@@ -27,8 +27,6 @@ public partial class PFavorite : UserControl
         LPanel panel = _lFavorite.LFavoritePanel;
         panel.LPanelChanged += PFavoriteModeUpdate;
         panel.LPanelRowsChanged += PRosterFind;
-        panel.LPanelCleared += PDisplay.PDisplayClear;
-        panel.LPanelDraftChanged += PFavoriteEntryUpdate;
         panel.LPanelFailed += host.PWindowFailureShow;
 
         PRoster.ItemsSource = _pRosterList;

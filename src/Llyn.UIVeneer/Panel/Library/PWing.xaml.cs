@@ -22,10 +22,8 @@ public partial class PWing : UserControl
         _pWingHost = host;
         _lWing = host.PWindowDeportment.LWindowWingCreate();
 
-        _lWing.LWingIndexAttach(PWingIndex, PWingEmpty, PWingQuery, PEnsign.PEnsignFind);
+        _lWing.LWingIndexAttach(PWingIndex, PWingEmpty, PWingQuery);
         _lWing.LWingFailed += host.PWindowFailureShow;
-        _lWing.LWingDraftChanged += PWingDisplay.PDisplayShow;
-        _lWing.LWingCleared += PWingDisplay.PDisplayClear;
 
         PWingDisplay.PDisplayAttach(host, _lWing.LWingLectern);
     }
@@ -33,10 +31,10 @@ public partial class PWing : UserControl
     internal async void PWingRestore(string tab, long? id)
     {
         _lWing.LWingVistaRestore(_pWingHost.PWindowDeportment, tab);
-        _lWing.LWingObserverAttach(this, PObserver.PObserverCreate);
+        _lWing.LWingObserverAttach(this, LObserver.LObserverCreate);
         PWingDisplay.PDisplayObserverAttach();
         _lWing.LWingIndexClear();
-        await PEnsign.PEnsignLoad(_pWingHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pWingHost.PWindowDeportment);
 
         PChoice.PChoiceOrderBuild(PWingOrderList, "Order", PWingOrderHandle, LIndex.LIndexOrder);
         PChoice.PChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);

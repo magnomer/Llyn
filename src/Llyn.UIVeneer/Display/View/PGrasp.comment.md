@@ -42,74 +42,37 @@ The listener reads `PGraspStep` and writes it through the engine.
 ## `public static readonly RoutedEvent PGraspHoveredEvent`
 
 Raised when the pointer moves onto another half star or leaves the row.
-The listener reads `PGraspHover` and words the step beside the stars.
+The listener reads `PGraspPointed` and words the step beside the stars.
 
 ## `public PGrasp()`
 
-A disabled row is dimmed rather than hidden, so the header keeps its shape on a form standing on nothing.
-
-## `public int? PGraspHover`
-
-The half step under the pointer, or null while nothing hovers.
+Builds the `LGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and images.
 
 ## `public int PGraspPointed`
 
-The half step to word beside the stars: the hovered one, else the set one.
+The half step to word beside the stars, read from `LGraspStar.LGraspPointed`.
 
 ## `protected override Size MeasureOverride(Size availableSize)`
 
-Five stars and the four gaps between them, at a fixed size, plus a slack border on every side.
-The slack lets a pointer near the row count as on it.
+The row's size comes from `LGraspStar.LGraspSizeResolve`.
 
 ## `protected override void OnMouseMove(MouseEventArgs e)`
 
-Tracks which half star the pointer covers and redraws when it moves to another.
+Hands the pointer position to `LGraspStar.LGraspHoverHandle`.
 
 ## `protected override void OnMouseLeave(MouseEventArgs e)`
 
-Drops the preview so the committed step shows again.
+Hands the leave to `LGraspStar.LGraspLeaveHandle`.
 
 ## `protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)`
 
-Sets the step the pointer covers.
-Clicking the half that already equals the step clears to zero, so one click unrates.
+Hands the press to `LGraspStar.LGraspPressHandle` and marks the click handled.
 
 ## `protected override void OnKeyDown(KeyEventArgs e)`
 
-Left and Right move one half step, Home clears, End sets the limit.
+Hands the key to `LGraspStar.LGraspKeyHandle`.
 
 ## `private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
 A new limit clamps the step already held.
 So a limit set after the step never leaves it out of range.
-
-## `private static object PGraspStepClamp(DependencyObject sender, object value)`
-
-Holds the step at or under the limit, since a step past the last star has nothing to draw.
-
-## `private void PGraspHoverChange(int? hovered)`
-
-Records the hovered step, redraws the preview, and raises the hover event.
-
-## `private void PGraspStepChange(int step)`
-
-Sets the step and raises the change, doing nothing when the step already stands.
-
-## `private static int PGraspStepResolve(Point point)`
-
-Maps a point on the row to a half step from one to ten.
-The left half of a star is its odd step and the right half its even step.
-Gaps and slack fold into the nearest star, so no point near the row is dead.
-
-## `private static Geometry PGraspStarBuild()`
-
-The star symbol from `star.svg` scaled once into the sixteen-unit box every star is drawn in.
-Half the stroke width is kept as inset, so the outline never leaves the box.
-The loaded symbol arrives frozen, so a clone carries the transform.
-
-## `private void PGraspDraw(DrawingContext context)`
-
-A transparent rectangle over the whole row is drawn first, so the pointer hits the row, not only the ink.
-Draws every star's outline, then a fill clipped to the whole or left half for each earned step.
-An unrated row outlines in the muted brush, so the accent waits for a step or a hover.
-While the pointer hovers, the preview step and brush are drawn instead of the committed ones.

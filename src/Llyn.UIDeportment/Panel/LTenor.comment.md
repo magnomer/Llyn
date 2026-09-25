@@ -6,6 +6,7 @@ The tenor panel's deportment: the register vista and the cohort vista it holds, 
 The register side finds rows, takes the query, order and kind filter, and creates a Register.
 The cohort side finds the entries of the chosen Register, loads and deletes the chosen one, and marks it edited.
 Both vistas are handed in by the window, which restores every tab's vistas together.
+The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `public LEditor LTenorEditor { get; }`
 

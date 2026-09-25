@@ -40,6 +40,8 @@ public sealed class LFavorite
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
         LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
+        LFavoritePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LFavoritePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     public LEditor LFavoriteEditor { get; }

@@ -20,7 +20,7 @@ public partial class PTenor
 
     private async void PTenorWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pTenorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pTenorHost.PWindowDeportment);
         PTenorReset();
     }
 
@@ -55,18 +55,18 @@ public partial class PTenor
     internal async void PTenorVistaRestore()
     {
         _lTenor.LTenorVistaRestore(_pTenorHost.PWindowDeportment);
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PGamutFind));
         _lTenor.LTenorObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PTenorWorkspaceUpdate));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, PObserver.PObserverCreate(this, PTenorRegisterUpdate));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PGamutFind));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PGamutFind));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PTenorWorkspaceUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectRegister, LObserver.LObserverCreate(this, PTenorRegisterUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PGamutFind));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PGamutFind));
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PCohortFind));
-        panel.LPanelChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, panel.LPanelDraftUpdate));
-        _lTenor.LTenorObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PGamutFind));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PCohortFind));
+        panel.LPanelChosenAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelDraftUpdate));
+        _lTenor.LTenorObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PGamutFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -81,7 +81,7 @@ public partial class PTenor
         PChoice.PChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
         PGrilleRestore();
 
-        await PEnsign.PEnsignLoad(_pTenorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pTenorHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(PGrilleList, _lTenor.LTenorLanguageRead(), _lTenor.LTenorFilter, PGrilleHandle);
         _lTenor.LTenorSoundingSet(PSounding.Text ?? string.Empty);

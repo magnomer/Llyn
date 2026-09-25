@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -50,7 +51,7 @@ public partial class PRepertoire
     {
         string? text = PVignetteTextRead(value);
 
-        PMarkdown.PMarkdownShow(PVignetteDescription, text, _pRepertoireHost.PWindowDeportment);
+        LMarkdownFace.LMarkdownShow(PVignetteDescription, text, _pRepertoireHost.PWindowDeportment);
         PVignetteDescriptionSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 

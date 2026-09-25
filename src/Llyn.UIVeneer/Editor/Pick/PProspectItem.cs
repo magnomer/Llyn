@@ -1,4 +1,5 @@
 using System.Windows.Media;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -12,7 +13,7 @@ internal sealed class PProspectItem
         PProspectItemName = name ?? headword;
         PProspectItemEpithet = epithet ?? string.Empty;
         PProspectItemLanguage = language;
-        PProspectItemFlag = PEnsign.PEnsignFind(language);
+        PProspectItemFlag = LEnsignImage.LEnsignFind(language);
         PProspectItemFresh = fresh;
     }
 

@@ -14,10 +14,6 @@ One lookup for the entry keeps the reading of an entry to a single question.
 Takes the headwords the entry's links resolved to.
 It is called before the cards are handed over, so the templates find them ready.
 
-## `internal void PLinkConverterClear()`
-
-Forgets the headwords of the entry that was shown.
-
 ## Inline notes
 
 ### `public object Convert(object value, Type targetType, object parameter, CultureInfo culture)`

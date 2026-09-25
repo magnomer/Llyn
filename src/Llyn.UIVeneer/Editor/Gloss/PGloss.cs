@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -21,7 +22,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         PGlossLanguageCatalog = catalog;
         _pGlossId = draft.LGlossDraftId;
         _pGlossLanguage = draft.LGlossDraftLanguage;
-        _pGlossFlag = PEnsign.PEnsignFind(_pGlossLanguage);
+        _pGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
         _pGlossText = draft.LGlossDraftText;
     }
 
@@ -46,7 +47,7 @@ internal sealed class PGloss : INotifyPropertyChanged
             }
 
             _pGlossLanguage = value;
-            PGlossFlag = PEnsign.PEnsignFind(value);
+            PGlossFlag = LEnsignImage.LEnsignFind(value);
             PGlossRaise(nameof(PGlossLanguage));
         }
     }
@@ -103,7 +104,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         if (!string.Equals(_pGlossLanguage, draft.LGlossDraftLanguage, StringComparison.Ordinal))
         {
             _pGlossLanguage = draft.LGlossDraftLanguage;
-            PGlossFlag = PEnsign.PEnsignFind(_pGlossLanguage);
+            PGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
             PGlossRaise(nameof(PGlossLanguage));
         }
 

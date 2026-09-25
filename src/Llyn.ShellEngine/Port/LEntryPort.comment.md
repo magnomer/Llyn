@@ -14,6 +14,10 @@ Everything here reads or writes a committed record, never a held draft.
 
 The entry rows of a child list narrowed by the parent catalog's choice, as the footnote and cohort lists read.
 
+## `IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft);`
+
+The cells of the draft's glyph row, empty when its language declares no glyph section.
+
 ## `IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);`
 
 How many places cite each record of one owner kind, keyed by record id.

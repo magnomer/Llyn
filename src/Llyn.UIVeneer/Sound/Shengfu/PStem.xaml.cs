@@ -29,7 +29,7 @@ public partial class PStem : UserControl
         LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, LFontRole.LFontRoleGlyph, PStemList);
         PStemHeadword.Text = page.LStemPageKey;
         PStemLanguage.Text = page.LStemPageLanguage;
-        PStemFlag.Source = PEnsign.PEnsignFind(page.LStemPageLanguage);
+        PStemFlag.Source = LEnsignImage.LEnsignFind(page.LStemPageLanguage);
         PStemList.ItemsSource = page.LStemPageCharacters;
         PStemEmpty.Visibility = PLook.PLookVisibleRead(page.LStemPageEmpty);
     }

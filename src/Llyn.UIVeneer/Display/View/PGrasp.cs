@@ -1,22 +1,14 @@
-using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Llyn.UIDeportment;
 namespace Llyn.UIVeneer;
 
 public sealed class PGrasp : FrameworkElement
 {
-    private const double PGraspStarSize = 16;
+    private static readonly ImageSource? PGraspStarImage = PIcon.PIconResolve("star", 16);
 
-    private const double PGraspStarGap = 3;
-
-    private const double PGraspHitSlack = 4;
-
-    private static readonly ImageSource PGraspStarImage =
-        PIcon.PIconResolve("star", PGraspStarSize) ?? throw new InvalidOperationException("star");
-
-    private static readonly ImageSource PGraspGrayImage =
-        PIcon.PIconResolve(null, 0, PGraspStarImage, false) ?? throw new InvalidOperationException("star");
+    private static readonly ImageSource? PGraspGrayImage = PIcon.PIconResolve(null, 0, PGraspStarImage, false);
 
     public static readonly DependencyProperty PGraspLimitProperty = DependencyProperty.Register(
         nameof(PGraspLimit),
@@ -32,7 +24,11 @@ public sealed class PGrasp : FrameworkElement
         nameof(PGraspStep),
         typeof(int),
         typeof(PGrasp),
-        new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender, null, PGraspStepClamp),
+        new FrameworkPropertyMetadata(
+            0,
+            FrameworkPropertyMetadataOptions.AffectsRender,
+            null,
+            (sender, value) => LGraspStar.LGraspStepClamp(sender, value, PGraspLimitProperty)),
         value => (int)value >= 0);
 
     public static readonly DependencyProperty PGraspFillProperty = DependencyProperty.Register(
@@ -71,7 +67,7 @@ public sealed class PGrasp : FrameworkElement
         typeof(RoutedEventHandler),
         typeof(PGrasp));
 
-    private int? _pGraspHover;
+    private readonly LGraspStar _lGraspStar;
 
     public PGrasp()
     {
@@ -81,7 +77,14 @@ public sealed class PGrasp : FrameworkElement
         SetResourceReference(PGraspEmptyProperty, "Theme.Grasp.Empty");
         SetResourceReference(PGraspUnratedProperty, "Theme.Grasp.Unrated");
         SetResourceReference(PGraspPreviewProperty, "Theme.Grasp.Preview");
-        IsEnabledChanged += (_, _) => Opacity = PLook.PLookOpacityRead(IsEnabled, 1, 0.4);
+        _lGraspStar = new LGraspStar(
+            this,
+            PGraspStepProperty,
+            PGraspLimitProperty,
+            PGraspChangedEvent,
+            PGraspHoveredEvent,
+            PGraspStarImage,
+            PGraspGrayImage);
     }
 
     public event RoutedEventHandler PGraspChanged
@@ -96,9 +99,7 @@ public sealed class PGrasp : FrameworkElement
         remove => RemoveHandler(PGraspHoveredEvent, value);
     }
 
-    public int? PGraspHover => _pGraspHover;
-
-    public int PGraspPointed => _pGraspHover ?? PGraspStep;
+    public int PGraspPointed => _lGraspStar.LGraspPointed;
 
     public int PGraspLimit
     {
@@ -111,8 +112,6 @@ public sealed class PGrasp : FrameworkElement
         get => (int)GetValue(PGraspStepProperty);
         set => SetValue(PGraspStepProperty, value);
     }
-
-    private int PGraspStarCount => PGraspLimit / 2;
 
     public Brush PGraspFill
     {
@@ -140,132 +139,42 @@ public sealed class PGrasp : FrameworkElement
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        return new Size(
-            PGraspStarCount * PGraspStarSize + (PGraspStarCount - 1) * PGraspStarGap + 2 * PGraspHitSlack,
-            PGraspStarSize + 2 * PGraspHitSlack);
+        return _lGraspStar.LGraspSizeResolve();
     }
 
     protected override void OnRender(DrawingContext drawingContext)
     {
         base.OnRender(drawingContext);
-        PGraspDraw(drawingContext);
+        _lGraspStar.LGraspDraw(drawingContext);
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        int hovered = PGraspStepResolve(e.GetPosition(this));
-        if (_pGraspHover != hovered)
-        {
-            PGraspHoverChange(hovered);
-        }
+        _lGraspStar.LGraspHoverHandle(e.GetPosition(this));
     }
 
     protected override void OnMouseLeave(MouseEventArgs e)
     {
         base.OnMouseLeave(e);
-        if (_pGraspHover is not null)
-        {
-            PGraspHoverChange(null);
-        }
+        _lGraspStar.LGraspLeaveHandle();
     }
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
-        Focus();
-        int chosen = PGraspStepResolve(e.GetPosition(this));
-        PGraspStepChange(chosen == PGraspStep ? 0 : chosen);
+        _lGraspStar.LGraspPressHandle(e.GetPosition(this));
         e.Handled = true;
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
-        int? next = e.Key switch
-        {
-            Key.Left => Math.Max(0, PGraspStep - 1),
-            Key.Right => Math.Min(PGraspLimit, PGraspStep + 1),
-            Key.Home => 0,
-            Key.End => PGraspLimit,
-            _ => null,
-        };
-
-        if (next is int step)
-        {
-            PGraspStepChange(step);
-            e.Handled = true;
-        }
+        _lGraspStar.LGraspKeyHandle(e);
     }
 
     private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         sender.CoerceValue(PGraspStepProperty);
-    }
-
-    private static object PGraspStepClamp(DependencyObject sender, object value)
-    {
-        return Math.Min((int)value, ((PGrasp)sender).PGraspLimit);
-    }
-
-    private void PGraspHoverChange(int? hovered)
-    {
-        _pGraspHover = hovered;
-        InvalidateVisual();
-        RaiseEvent(new RoutedEventArgs(PGraspHoveredEvent, this));
-    }
-
-    private void PGraspStepChange(int step)
-    {
-        if (step == PGraspStep)
-        {
-            return;
-        }
-
-        PGraspStep = step;
-        RaiseEvent(new RoutedEventArgs(PGraspChangedEvent, this));
-    }
-
-    private int PGraspStepResolve(Point point)
-    {
-        double pitch = PGraspStarSize + PGraspStarGap;
-        double x = point.X - PGraspHitSlack + PGraspStarGap / 2;
-        int star = (int)Math.Floor(x / pitch);
-        star = Math.Clamp(star, 0, PGraspStarCount - 1);
-        double within = x - star * pitch;
-        return star * 2 + (within < pitch / 2 ? 1 : 2);
-    }
-
-    private void PGraspDraw(DrawingContext context)
-    {
-        int shown = _pGraspHover ?? PGraspStep;
-
-        context.DrawRectangle(Brushes.Transparent, null, new Rect(RenderSize));
-        context.PushTransform(new TranslateTransform(PGraspHitSlack, PGraspHitSlack));
-        double pitch = PGraspStarSize + PGraspStarGap;
-        Rect frame = new(0, 0, PGraspStarSize, PGraspStarSize);
-
-        for (int star = 0; star < PGraspStarCount; star++)
-        {
-            int filled = Math.Clamp(shown - star * 2, 0, 2);
-            context.PushTransform(new TranslateTransform(star * pitch, 0));
-            context.PushOpacity(shown == 0 ? 0.35 : 0.55);
-            context.DrawImage(PGraspGrayImage, frame);
-            context.Pop();
-
-            if (filled > 0)
-            {
-                context.PushClip(new RectangleGeometry(
-                    new Rect(0, 0, filled == 2 ? PGraspStarSize : PGraspStarSize / 2, PGraspStarSize)));
-                context.PushOpacity(_pGraspHover is null ? 1 : 0.7);
-                context.DrawImage(PGraspStarImage, frame);
-                context.Pop();
-                context.Pop();
-            }
-
-            context.Pop();
-        }
-
-        context.Pop();
     }
 }

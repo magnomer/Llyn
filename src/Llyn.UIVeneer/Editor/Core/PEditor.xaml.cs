@@ -178,16 +178,16 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorObserverAttach(LDesk desk)
     {
-        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, PObserver.PObserverCreate(this, PEditorFrequencyUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PEditorGraspUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectInflection, PObserver.PObserverCreate(this, PEditorParadigmUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PReflexPendingShow));
-        desk.LDeskObserverAttach(LSubject.LSubjectScript, PObserver.PObserverCreate(this, PEditorScriptUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, PObserver.PObserverCreate(this, PEditorFanqieUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectReference, PObserver.PObserverCreate(this, PSentenceLoad));
-        desk.LDeskObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, PObserver.PObserverCreate(this, desk.LDeskStateUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, PObserver.PObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, LObserver.LObserverCreate(this, PEditorFrequencyUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, LObserver.LObserverCreate(this, PEditorGraspUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectInflection, LObserver.LObserverCreate(this, PEditorParadigmUpdate));
+        desk.LDeskEntryAttach(LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PReflexPendingShow));
+        desk.LDeskObserverAttach(LSubject.LSubjectScript, LObserver.LObserverCreate(this, PEditorScriptUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, PEditorFanqieUpdate));
+        desk.LDeskObserverAttach(LSubject.LSubjectReference, LObserver.LObserverCreate(this, PSentenceLoad));
+        desk.LDeskObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectTenure, LObserver.LObserverCreate(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
     }
 
     private void PEditorStartUpdate()
@@ -248,7 +248,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     internal async void PSpeakerLoad()
     {
-        await PEnsign.PEnsignLoad(_pEditorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowDeportment);
         PLanguageItem.PLanguageItemReset(_pLanguageItem, _pEditorHost.PWindowDeportment.LWindowLanguageRead());
         PEditorLanguageUpdate();
         PLinkFlagUpdate();
@@ -262,8 +262,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private async void PSpeakerFlagUpdate()
     {
-        await PEnsign.PEnsignLoad(_pEditorHost.PWindowDeportment);
-        PEnsign.PEnsignFlagShow(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
+        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowDeportment);
+        LEnsignImage.LEnsignFlagShow(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
     }
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)

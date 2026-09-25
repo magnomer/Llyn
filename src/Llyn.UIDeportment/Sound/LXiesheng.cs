@@ -40,6 +40,8 @@ public sealed class LXiesheng
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LXieshengPanel.LPanelCleared += LXieshengEditorClear;
         LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
+        LXieshengPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LXieshengPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
     }
 
     private void LXieshengEditorClear()

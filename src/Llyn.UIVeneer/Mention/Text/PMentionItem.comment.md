@@ -7,7 +7,7 @@ It carries display strings and ids only, so the menu never reads the engine.
 In Entry mode a row stands for one candidate Entry: its headword, its language and the flag of that language.
 In Sense mode a row stands for one Meaning of one Entry.
 It stands for the whole Entry when its sense is zero.
-The flag comes from `PEnsign`, so the rows read as every other headword list does.
+The flag comes from `LEnsignImage`, so the rows read as every other headword list does.
 
 ## `public Thickness PMentionItemIndent`
 

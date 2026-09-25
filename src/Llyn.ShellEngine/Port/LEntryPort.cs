@@ -47,6 +47,8 @@ public interface LEntryPort
 
     LGlyph? LEngineGlyphRead(string language);
 
+    IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft);
+
     LEntry LEngineGlyphResolve(string character, string language);
 
     IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner);

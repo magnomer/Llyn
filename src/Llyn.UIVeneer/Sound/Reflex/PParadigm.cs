@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -33,6 +34,11 @@ public sealed class PParadigm : ContentControl
     {
         get => (IReadOnlyList<PParadigmItem>?)GetValue(PParadigmItemsProperty);
         set => SetValue(PParadigmItemsProperty, value);
+    }
+
+    internal void PParadigmShow(IReadOnlyList<LParadigmSlot> slots, bool pending, bool enabled)
+    {
+        SetCurrentValue(PParadigmItemsProperty, PParadigmItem.PParadigmItemScan(slots, pending, enabled, false));
     }
 
     private static void PParadigmItemsHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)

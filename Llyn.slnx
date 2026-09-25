@@ -4,8 +4,9 @@
   <Project Path="src/Llyn.Core/Llyn.Core.csproj" />
   <Project Path="src/Llyn.Host/Llyn.Host.csproj" />
   <Project Path="src/Llyn.Infrastructure/Llyn.Infrastructure.csproj" />
-  <Project Path="src/Llyn.Media/Llyn.Media.csproj" />
+  <Project Path="src/Llyn.Core.Windows/Llyn.Core.Windows.csproj" />
   <Project Path="src/Llyn.ShellEngine/Llyn.ShellEngine.csproj" />
+  <Project Path="src/Llyn.UIDemeanor/Llyn.UIDemeanor.csproj" />
   <Project Path="src/Llyn.UIDeportment/Llyn.UIDeportment.csproj" />
   <Project Path="src/Llyn.UITerminal/Llyn.UITerminal.csproj" />
   <Project Path="src/Llyn.UIVeneer/Llyn.UIVeneer.csproj" />

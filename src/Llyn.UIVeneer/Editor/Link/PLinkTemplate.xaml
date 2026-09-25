@@ -7,10 +7,10 @@
     <DataTemplate x:Key="Theme.Link.Chip">
         <Border Padding="10,5,5,5" Cursor="Arrow" Style="{DynamicResource Theme.Card.Pellet}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PLinkChipFlag}" Stretch="Uniform" />
-                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PLinkChipHeadword}" />
-                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLinkChipLanguage}" />
-                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PLinkChipHandle">
+                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LLinkChipFlag}" Stretch="Uniform" />
+                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding LLinkChipHeadword}" />
+                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding LLinkChipLanguage}" />
+                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PLinkDropHandle">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">

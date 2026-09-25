@@ -10,6 +10,7 @@ It is the yunjing deportment with one column instead of two, since a series name
 
 Takes the engine ports, the editor it shares with the panel, and the shell's three seams.
 The panel clears and opens the editor through the notices it raises.
+Its loads and clears also go straight to the editor's lectern, so the veneer relays no draft.
 
 ## `private void LXieshengEditorClear()`
 

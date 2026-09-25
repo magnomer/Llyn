@@ -15,7 +15,7 @@ Takes the port that answers path facts, an `LUsherFile` in the engine and a reco
 ## `public static string LEnsignKeyFormat(string language, string variety)`
 
 The key a variety's flag is kept under: its language and its name joined by a slash.
-`PEnsign` spells the same key on its side, so a row hands no logic value down to ask for one.
+`LEnsignImage` spells the same key on its side, so a row hands no logic value down to ask for one.
 
 ## `private int _lEnsignAge;`
 

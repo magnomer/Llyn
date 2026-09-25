@@ -61,6 +61,18 @@ Deletes every stored recording no row and no draft names.
 
 Whether the recording resolves to a file that exists.
 
+## `public void LEngineRecordingPlay(string? file)`
+
+Plays the recording under the gate, and plays nothing for a file that does not exist.
+
+## `public void LEngineRecordingStop()`
+
+Stops the playing recording under the gate.
+
+## `public void LEngineVolumeSet(double volume)`
+
+Sets the playing level under the gate.
+
 ## `public IReadOnlyList<string> LEngineSchemeRead(string language)`
 
 The scheme names of a language.

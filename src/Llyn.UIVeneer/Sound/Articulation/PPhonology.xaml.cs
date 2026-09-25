@@ -31,8 +31,6 @@ public partial class PPhonology : UserControl
         _lPhonology.LPhonologyEditor.LEditorStateChanged += PPhonologyStoreUpdate;
         _lPhonology.LPhonologyPanel.LPanelChanged += PPhonologyModeUpdate;
         _lPhonology.LPhonologyPanel.LPanelRowsChanged += PInventoryUpdate;
-        _lPhonology.LPhonologyPanel.LPanelCleared += PPhonologyClearUpdate;
-        _lPhonology.LPhonologyPanel.LPanelDraftChanged += PPhonologyEntryUpdate;
         _lPhonology.LPhonologyPanel.LPanelFailed += host.PWindowFailureShow;
 
         PInventory.ItemsSource = _pInventoryList;
@@ -60,17 +58,17 @@ public partial class PPhonology : UserControl
     {
         _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowDeportment);
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
+            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PPhonologyWorkspaceUpdate));
+            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PPhonologyWorkspaceUpdate));
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelEntryHandle));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelEntryHandle));
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
+            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
         _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
+            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
         _lPhonology.LPhonologyPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
+            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         PChoice.PChoiceOrderBuild(
@@ -86,7 +84,7 @@ public partial class PPhonology : UserControl
         PChoice.PChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         PLensUpdate();
 
-        await PEnsign.PEnsignLoad(_pPhonologyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pPhonologyHost.PWindowDeportment);
 
         PChoice.PChoiceFilterBuild(
             PLensList,
@@ -99,7 +97,7 @@ public partial class PPhonology : UserControl
 
     private async void PPhonologyWorkspaceUpdate()
     {
-        await PEnsign.PEnsignLoad(_pPhonologyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pPhonologyHost.PWindowDeportment);
         _lPhonology.LPhonologyPanel.LPanelClear();
     }
 
@@ -157,16 +155,6 @@ public partial class PPhonology : UserControl
         PPhonologyScribe.IsChecked = PLook.PLookCheckedRead(_lPhonology.LPhonologyPanel.LPanelScribeChecked);
         PPhonologyMode.IsEnabled = _lPhonology.LPhonologyPanel.LPanelModeEnabled;
         PPhonologyBin.IsEnabled = _lPhonology.LPhonologyPanel.LPanelBinEnabled;
-    }
-
-    private void PPhonologyClearUpdate()
-    {
-        PDisplay.PDisplayClear();
-    }
-
-    private void PPhonologyEntryUpdate(LDraft draft)
-    {
-        PDisplay.PDisplayShow(draft.LDraftContent);
     }
 
     private void PLensUpdate()

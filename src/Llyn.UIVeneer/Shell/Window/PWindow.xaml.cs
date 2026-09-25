@@ -59,7 +59,7 @@ public partial class PWindow : Window
 
     private void PWindowAttach()
     {
-        PEnsign.PEnsignAttach(_lWindow);
+        LEnsignImage.LEnsignAttach(_lWindow);
 
         _lWindow.LWindowLeftoverSweep();
         _lWindow.LWindowRecordingSweep();

@@ -1,3 +1,4 @@
+using Llyn.UIDeportment;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ internal sealed partial class PCard
     private bool _pCardLinkBusy;
 
     private static readonly Func<object, long?> _pCardLinkKey =
-        row => row is PLinkChip chip ? chip.PLinkChipId : null;
+        row => row is LLinkChip chip ? chip.LLinkChipId : null;
 
     public ObservableCollection<object> PCardLink { get; } = [];
 
@@ -36,16 +37,16 @@ internal sealed partial class PCard
             static target => target.LTranslationTargetId,
             PCardLinkCreate,
             static (row, target) =>
-                row is PLinkChip chip
-                && string.Equals(chip.PLinkChipHeadword, target.LTranslationTargetHeadword, StringComparison.Ordinal)
-                && string.Equals(chip.PLinkChipLanguage, target.LTranslationTargetLanguage, StringComparison.Ordinal)
+                row is LLinkChip chip
+                && string.Equals(chip.LLinkChipHeadword, target.LTranslationTargetHeadword, StringComparison.Ordinal)
+                && string.Equals(chip.LLinkChipLanguage, target.LTranslationTargetLanguage, StringComparison.Ordinal)
                     ? row
                     : PCardLinkCreate(target));
 
         PCardLinkUpdate();
     }
 
-    internal PLinkChip? PCardLinkFind(int step)
+    internal LLinkChip? PCardLinkFind(int step)
     {
         int index = PCardLink.IndexOf(_pCardLinkCaret);
         int target = index + step;
@@ -54,7 +55,7 @@ internal sealed partial class PCard
             return null;
         }
 
-        return PCardLink[target] as PLinkChip;
+        return PCardLink[target] as LLinkChip;
     }
 
     internal bool PCardLinkMove(int step)
@@ -96,7 +97,7 @@ internal sealed partial class PCard
     {
         foreach (object row in PCardLink)
         {
-            if (row is PLinkChip chip && chip.PLinkChipId == id)
+            if (row is LLinkChip chip && chip.LLinkChipId == id)
             {
                 return true;
             }
@@ -109,22 +110,22 @@ internal sealed partial class PCard
     {
         for (int index = 0; index < PCardLink.Count; index++)
         {
-            if (PCardLink[index] is not PLinkChip chip ||
-                chip.PLinkChipFlag is not null)
+            if (PCardLink[index] is not LLinkChip chip ||
+                chip.LLinkChipFlag is not null)
             {
                 continue;
             }
 
-            PCardLink[index] = new PLinkChip(
-                chip.PLinkChipId,
-                chip.PLinkChipHeadword,
-                chip.PLinkChipLanguage);
+            PCardLink[index] = new LLinkChip(
+                chip.LLinkChipId,
+                chip.LLinkChipHeadword,
+                chip.LLinkChipLanguage);
         }
     }
 
     private static object PCardLinkCreate(LTranslationTarget target)
     {
-        return new PLinkChip(
+        return new LLinkChip(
             target.LTranslationTargetId, target.LTranslationTargetHeadword, target.LTranslationTargetLanguage);
     }
 

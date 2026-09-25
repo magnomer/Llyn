@@ -130,7 +130,7 @@ public partial class PEditor
     private LAccentItem PAccentCreate(LPronunciationDraft spoken)
     {
         LAccentItem row = LAccentItem.LAccentItemCreate(
-            _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling, PEnsign.PEnsignFind);
+            _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling);
         row.PropertyChanged += PAccentChangeHandle;
         return row;
     }
@@ -152,7 +152,7 @@ public partial class PEditor
     private void PAccentPrimaryShow()
     {
         PPronunciationFlag.Source = LAccentItem.LAccentFlagFind(
-            _pAccentLanguage, _pAccentFlagged, _pAccentPrimary, PEnsign.PEnsignFind);
+            _pAccentLanguage, _pAccentFlagged, _pAccentPrimary);
         PPronunciationLabel.Text = PPronunciationFlag.Source is null
             ? LAccentItem.LAccentLabelFormat(_pAccentPrimary)
             : string.Empty;
@@ -170,7 +170,7 @@ public partial class PEditor
 
         try
         {
-            await PEnsign.PEnsignVarietyLoad(
+            await LEnsignImage.LEnsignVarietyLoad(
                 _pEditorHost.PWindowDeportment, language, varieties.Where(static variety => variety.Length > 0));
         }
         catch (Exception)
@@ -185,7 +185,7 @@ public partial class PEditor
 
         foreach (LAccentItem row in _pAccentItem)
         {
-            row.LAccentFlagUpdate(language, flagged, PEnsign.PEnsignFind);
+            row.LAccentFlagUpdate(language, flagged);
         }
 
         PAccentPrimaryShow();

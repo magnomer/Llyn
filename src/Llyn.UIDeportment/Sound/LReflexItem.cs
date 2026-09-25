@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -257,6 +258,20 @@ public sealed class LReflexItem : INotifyPropertyChanged
         };
     }
 
+    public static List<LReflexItem> LReflexItemScan(
+        LWindow window, IReadOnlyList<LReflexDraft> reflexes, HashSet<string> folded)
+    {
+        ArgumentNullException.ThrowIfNull(reflexes);
+
+        List<LReflexItem> rows = new(reflexes.Count);
+        foreach (LReflexDraft reflex in reflexes)
+        {
+            rows.Add(LReflexItemCreate(window, reflex, folded));
+        }
+
+        return rows;
+    }
+
     public static LReflexItem LReflexItemCreate(LWindow window, LReflexDraft reflex, HashSet<string> folded)
     {
         ArgumentNullException.ThrowIfNull(window);
@@ -299,21 +314,9 @@ public sealed class LReflexItem : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(language);
 
-        HashSet<string> folded = new(StringComparer.Ordinal);
-        if (language.Trim().Length == 0)
-        {
-            return folded;
-        }
-
-        foreach (LReflexRule rule in window.LWindowReflexRead(language))
-        {
-            if (rule.LReflexRuleFolded)
-            {
-                folded.Add(rule.LReflexRuleLanguage);
-            }
-        }
-
-        return folded;
+        return language.Trim().Length == 0
+            ? new HashSet<string>(StringComparer.Ordinal)
+            : LDisplaySound.LDisplayFoldScan(window.LWindowReflexRead(language));
     }
 
     public static void LReflexLeadApply(IReadOnlyList<LReflexItem> rows)

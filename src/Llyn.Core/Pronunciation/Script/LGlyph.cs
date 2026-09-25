@@ -58,6 +58,30 @@ public sealed record LGlyph(
         return string.Equals(LGlyphName, scheme, StringComparison.Ordinal);
     }
 
+    public IReadOnlyList<LGlyphCell> LGlyphDivide(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        string text = draft.LEntryDraftHeadword;
+        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
+        {
+            if (!spelled.LTranscriptionDraftEmpty && LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            {
+                text = spelled.LTranscriptionDraftText;
+                break;
+            }
+        }
+
+        List<LGlyphCell> cells = [];
+        foreach (Rune rune in text.EnumerateRunes())
+        {
+            string character = rune.ToString();
+            cells.Add(new LGlyphCell(character, LGlyphSingleCheck(character) ? LGlyphLanguage : string.Empty));
+        }
+
+        return cells;
+    }
+
     public IReadOnlyList<LSourceSpec>? LGlyphSourceRead(string scheme)
     {
         return string.Equals(LGlyphName, scheme, StringComparison.Ordinal) ? LGlyphSources : null;

@@ -19,11 +19,6 @@ internal static class PLook
         return shown == true;
     }
 
-    internal static double PLookOpacityRead(bool active, double full, double faded)
-    {
-        return active ? full : faded;
-    }
-
     internal static PLookChoice PLookFirstRead<PLookChoice>(bool first, PLookChoice chosen, PLookChoice other)
     {
         return first ? chosen : other;
