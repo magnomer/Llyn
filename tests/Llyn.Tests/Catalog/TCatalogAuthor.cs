@@ -18,9 +18,9 @@ public sealed class TCatalogAuthor
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ahn"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, lee.LAuthorId, 1);
 
         TCatalogCitationCreate(engine, "he said the word", dictionary.LReferenceId);
         TCatalogCitationCreate(engine, "not a word was spoken", dictionary.LReferenceId);
@@ -44,9 +44,9 @@ public sealed class TCatalogAuthor
 
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, lee.LAuthorId, 1);
 
         TCatalogCitationCreate(engine, "in a word, no", grammar.LReferenceId);
         TCatalogCitationCreate(engine, "in a word, yes", grammar.LReferenceId);
@@ -93,9 +93,9 @@ public sealed class TCatalogAuthor
 
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, lee.LAuthorId, 1);
 
         Assert.Equal(
             ["A Dictionary", "A Grammar"],
@@ -130,9 +130,9 @@ public sealed class TCatalogAuthor
         LReference glossary = TCatalogWorkCreate(engine, "A Glossary", LReferenceKind.LReferenceKindBook);
 
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(glossary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(glossary.LReferenceId, kim.LAuthorId, 0);
 
         Assert.Equal(
             ["A Dictionary", "A Glossary"],

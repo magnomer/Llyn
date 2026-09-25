@@ -19,6 +19,4 @@ public interface LPronunciationVault
     LPronunciationAudio? LPronunciationAudioRead(long pronunciationId);
 
     IReadOnlyList<string> LPronunciationAudioScan();
-
-    long? LPronunciationHolderRead(long id);
 }

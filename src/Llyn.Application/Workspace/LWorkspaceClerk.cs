@@ -47,12 +47,6 @@ public sealed class LWorkspaceClerk
         return rig.LRigDoctor.LDoctorDatabaseCreate();
     }
 
-    public static LRealm LWorkspaceRealmRead(LRig rig)
-    {
-        ArgumentNullException.ThrowIfNull(rig);
-        return rig.LRigRealm.LRealmRead();
-    }
-
     public static LSettings LWorkspaceSettingsRead(LRig rig, LSettings fallback, out bool settled)
     {
         ArgumentNullException.ThrowIfNull(rig);

@@ -33,7 +33,7 @@ The card added got a row of its own.
 
 The workspace row moved onto the revision the update recorded.
 
-### `engine.LEngineEntryUpdate(entry.LEntryId, loaded with`
+### `engine.TEngineEntryUpdate(entry.LEntryId, loaded with`
 
 The Examples are reordered and the second Tag cleared.
 The first Tag stays as it was.
@@ -46,11 +46,11 @@ Reordering re-attached the rows that were already there rather than writing new 
 
 The dropped Tag was detached, not deleted: it is independent data the card only referenced.
 
-### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineEntryUpdate(`
+### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(`
 
 The first card names a Tag row nobody stores, so the tag write is refused.
 That failure is reached only after the entry row and the card text have been written.
 
-### `Assert.Equal(before?.LRevisionId, engine.LEngineRevisionRead()?.LRevisionId);`
+### `Assert.Equal(before, engine.TEngineRevisionRead());`
 
 A refused update records no history at all.

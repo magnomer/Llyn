@@ -158,16 +158,4 @@ public partial class PEditor
         row.PTranscriptionItemText = spelled.LTranscriptionDraftText;
         return row;
     }
-
-    private void PTranscriptionClear()
-    {
-        foreach (PTranscriptionItem row in _pTranscriptionItem)
-        {
-            row.PropertyChanged -= PTranscriptionChangeHandle;
-        }
-
-        _pTranscriptionItem.Clear();
-        _pTranscriptionSchemes = [];
-        PTranscription.Visibility = Visibility.Collapsed;
-    }
 }

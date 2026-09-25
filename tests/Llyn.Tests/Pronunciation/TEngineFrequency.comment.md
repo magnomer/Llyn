@@ -15,7 +15,9 @@ A stored value on such an entry still reads back, only with its band left null.
 A language change while a fill is pending drops the old answer instead of storing it under the new language.
 A word every source reached yet none knew is asked once per session, however often it is displayed.
 A word no source could be reached for is asked again on the next display.
-A source that answers stops the fill, so the later source is never asked.
+Every source is asked, even after an earlier one has answered.
+A fill is observed as the user sees it.
+The entry is saved, the bulletin lands, and the store is read.
 
 ## Inline notes
 
@@ -38,3 +40,12 @@ The short delay that follows in the callers lets the fill settle after its last 
 
 The same gate holds the fill open while the entry is deleted under it.
 Nothing observable follows, so a short wait stands in for the fill settling.
+
+### `private static async Task<IReadOnlyList<LFrequency>> TFrequencyFetchRead(LEngine engine, string language)`
+
+Saves an entry, waits for the fill its save starts, and reads what the fill stored.
+
+### `private static string? TFrequencyBandRead(`
+
+Stores one raw value with no band for `source` and reads back the band the pack grades it into.
+The entry's earlier rows are dropped first, so each call reads exactly one row.

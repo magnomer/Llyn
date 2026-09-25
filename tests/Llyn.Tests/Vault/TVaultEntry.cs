@@ -14,7 +14,7 @@ public sealed class TVaultEntry
         LEntry stored = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "kindle", "en", 0, null, null),
             [TInterface.TFormCreate(0, 0, "kindle", null, "headword")],
-            [TInterface.TSpeechCreate(0, 0, null, "verb")]);
+            [TInterface.TSpeechCreate(null, "verb")]);
         LEntry? read = entries.TEntryRead(stored.LEntryId);
 
         Assert.NotNull(read);
@@ -33,7 +33,7 @@ public sealed class TVaultEntry
             TInterface.TEntryCreate(0, "kindle", "en", 0, null, null),
             [TInterface.TFormCreate(0, 0, "kindle", null, "headword"),
              TInterface.TFormCreate(0, 0, "kindled", null, "past")],
-            [TInterface.TSpeechCreate(0, 0, null, "verb")]);
+            [TInterface.TSpeechCreate(null, "verb")]);
         LEntry? read = entries.TEntryRead(stored.LEntryId);
         LEntryDraft? loaded = entries.TEntryLoad(stored.LEntryId);
 

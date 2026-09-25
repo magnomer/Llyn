@@ -29,6 +29,8 @@ public sealed class TAuditConvention
             (nameof(TAuditFrameSetting), TAuditFrameSetting.TAuditGeneration),
             (nameof(TAuditBoundarySetting), TAuditBoundarySetting.TAuditGeneration),
             (nameof(TAuditEncodingSetting), TAuditEncodingSetting.TAuditGeneration),
+            (nameof(TAuditFakeSetting), TAuditFakeSetting.TAuditGeneration),
+            (nameof(TAuditPlatformSetting), TAuditPlatformSetting.TAuditGeneration),
         ];
 
         string[] stale = sidecars

@@ -44,15 +44,6 @@ A caller holding its id therefore finds the same row after the save.
 
 Writes a Collocation's whole set at once, on the same terms as a Meaning.
 
-## `public void LSentenceMeaningAttach(long meaningId, long exampleId, int position)`
-
-References an existing Example from a Meaning at `position` in that Meaning's order.
-The row is opened with no frame, because attaching states none.
-
-## `public void LSentenceCollocationAttach(long collocationId, long exampleId, int position)`
-
-References an existing Example from a Collocation at `position` in that Collocation's order.
-
 ## `public IReadOnlyList<string> LSentenceParticleRead(string language)`
 
 Reads every marker already saved under an Entry written in `language`, without duplicates.
@@ -66,15 +57,6 @@ Reads every role already saved under an Entry written in `language`, on the same
 ## `public LSentenceOrder LSentenceLoad(string language)`
 
 The example order the language pack declares, read through `LSentenceLoader`.
-
-## `public void LSentenceMeaningDetach(long meaningId, long exampleId)`
-
-Removes a Meaning's hold on an Example.
-The Example and every other owner's hold on it survive.
-
-## `public void LSentenceCollocationDetach(long collocationId, long exampleId)`
-
-Removes a Collocation's hold on an Example, on the same terms as a Meaning.
 
 ## Inline notes
 

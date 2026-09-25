@@ -6,10 +6,7 @@ namespace Llyn.Application;
 
 public sealed class LCardClerk
 {
-    private readonly LVault _lCardClerkVault;
-    private readonly LEntryVault _lCardClerkEntries;
     private readonly LCollocationVault _lCardClerkCollocations;
-    private readonly LMeaningVault _lCardClerkMeanings;
     private readonly LImageVault _lCardClerkImages;
     private readonly LVideoVault _lCardClerkVideos;
     private readonly LSentenceVault _lCardClerkSentences;
@@ -18,26 +15,20 @@ public sealed class LCardClerk
     private readonly LRegisterClerk _lCardClerkRegisters;
     private readonly LTranslationClerk _lCardClerkTranslations;
     private readonly LExampleClerk _lCardClerkExamples;
-    private readonly LSituationClerk _lCardClerkSituations;
 
     public LCardClerk(
         LRig rig,
         LTagClerk tags,
         LRegisterClerk registers,
         LTranslationClerk translations,
-        LExampleClerk examples,
-        LSituationClerk situations)
+        LExampleClerk examples)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(tags);
         ArgumentNullException.ThrowIfNull(registers);
         ArgumentNullException.ThrowIfNull(translations);
         ArgumentNullException.ThrowIfNull(examples);
-        ArgumentNullException.ThrowIfNull(situations);
-        _lCardClerkVault = rig.LRigVault;
-        _lCardClerkEntries = rig.LRigEntries;
         _lCardClerkCollocations = rig.LRigCollocations;
-        _lCardClerkMeanings = rig.LRigMeanings;
         _lCardClerkImages = rig.LRigImages;
         _lCardClerkVideos = rig.LRigVideos;
         _lCardClerkSentences = rig.LRigSentences;
@@ -46,83 +37,6 @@ public sealed class LCardClerk
         _lCardClerkRegisters = registers;
         _lCardClerkTranslations = translations;
         _lCardClerkExamples = examples;
-        _lCardClerkSituations = situations;
-    }
-
-    public static bool LCardOwnerCheck(LOwner owner)
-    {
-        return owner switch
-        {
-            LOwner.LOwnerMeaning => false,
-            LOwner.LOwnerCollocation => true,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(owner), owner, "This entity has no reference from that kind of row."),
-        };
-    }
-
-    public void LExampleRemove(long ownerId, long exampleId, LOwner owner)
-    {
-        using LVaultSession session = _lCardClerkVault.LVaultSessionStart();
-        _lCardClerkExamples.LExampleClerkRemove(ownerId, exampleId, owner);
-        LCardUpdatedSet(ownerId, LCardOwnerCheck(owner));
-        session.LVaultSessionCommit();
-    }
-
-    public void LSituationRemove(long ownerId, long situationId, LOwner owner)
-    {
-        using LVaultSession session = _lCardClerkVault.LVaultSessionStart();
-        _lCardClerkSituations.LSituationClerkRemove(ownerId, situationId, owner);
-        LCardUpdatedSet(ownerId, LCardOwnerCheck(owner));
-        session.LVaultSessionCommit();
-    }
-
-    public LCollocation LCollocationCreate(LCollocation collocation)
-    {
-        ArgumentNullException.ThrowIfNull(collocation);
-        LCollocation created = _lCardClerkCollocations.LCollocationCreate(collocation);
-        _lCardClerkEntries.LEntryUpdatedSet(created.LCollocationEntryId);
-        return created;
-    }
-
-    public IReadOnlyList<LCollocation> LCollocationRead(long entryId)
-    {
-        return _lCardClerkCollocations.LCollocationRead(entryId);
-    }
-
-    public void LCollocationUpdate(LCollocation collocation)
-    {
-        ArgumentNullException.ThrowIfNull(collocation);
-        _lCardClerkCollocations.LCollocationUpdate(collocation);
-        _lCardClerkEntries.LEntryUpdatedSet(collocation.LCollocationEntryId);
-    }
-
-    public void LCollocationMove(long id, int position)
-    {
-        _lCardClerkCollocations.LCollocationMove(id, position);
-        LCardUpdatedSet(id, true);
-    }
-
-    public void LCollocationDelete(long id)
-    {
-        LCollocationVault collocations = _lCardClerkCollocations;
-        long? entryId = collocations.LCollocationHolderRead(id);
-        collocations.LCollocationDelete(id);
-        if (entryId is long held)
-        {
-            _lCardClerkEntries.LEntryUpdatedSet(held);
-        }
-    }
-
-    public void LCardUpdatedSet(long ownerId, bool collocation)
-    {
-        long? entryId = collocation
-            ? _lCardClerkCollocations.LCollocationHolderRead(ownerId)
-            : _lCardClerkMeanings.LMeaningHolderRead(ownerId);
-
-        if (entryId is long held)
-        {
-            _lCardClerkEntries.LEntryUpdatedSet(held);
-        }
     }
 
     public void LCollocationSave(
@@ -167,7 +81,6 @@ public sealed class LCardClerk
             }
 
             changes.Add(new LRevisionChange(
-                0,
                 dropped,
                 "collocation",
                 "delete",
@@ -200,7 +113,6 @@ public sealed class LCardClerk
                         LCollocationMeaning = card.LCardDraftMeaning,
                     });
                     changes.Add(new LRevisionChange(
-                        0,
                         row.LCollocationId,
                         "collocation",
                         "update",
@@ -213,7 +125,6 @@ public sealed class LCardClerk
             {
                 rowId = LCollocationInsert(entryId, card, identity);
                 changes.Add(new LRevisionChange(
-                    0,
                     rowId,
                     "collocation",
                     "create",
@@ -323,8 +234,6 @@ public sealed class LCardClerk
         {
             rows.Add(new LSentence(
                 draft.LSentenceDraftId,
-                ownerId,
-                rows.Count,
                 _lCardClerkExamples.LExampleClerkResolve(draft, language, ownerId, collocation, identity),
                 draft.LSentenceDraftParticle,
                 draft.LSentenceDraftDependence));

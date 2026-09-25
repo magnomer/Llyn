@@ -5,7 +5,6 @@ using System.Globalization;
 namespace Llyn.Core;
 
 public sealed record LDiweiSection(
-    string LDiweiSectionHeading,
     string LDiweiSectionLabel,
     IReadOnlyList<LDiweiLine> LDiweiSectionLines,
     IReadOnlyList<LTallyLine> LDiweiSectionTallies,
@@ -70,7 +69,6 @@ public sealed record LDiweiSection(
             List<LDiweiLine> placed = sections[heading];
             LDiweiLineSort(placed);
             built.Add(new LDiweiSection(
-                heading,
                 rime ? LDiweiPlaceFormat(heading, localize) : LDiweiLabelFormat(heading, localize),
                 placed,
                 LDiweiTallyScan(tallies, heading, respelled),

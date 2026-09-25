@@ -67,8 +67,6 @@ public sealed class LTenor
         }
     }
 
-    public LVista? LTenorCohortVista => _lTenorCohort;
-
     public long? LTenorChosen => _lTenorVista?.LVistaChosen;
 
     public bool LTenorFiltered => _lTenorVista?.LVistaFiltered ?? false;
@@ -157,11 +155,6 @@ public sealed class LTenor
     public void LTenorObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTenorVista?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LTenorChosenAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTenorVista?.LVistaChosenAttach(subject, observer);
     }
 
     public LCatalogOrder LTenorOrder => _lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;

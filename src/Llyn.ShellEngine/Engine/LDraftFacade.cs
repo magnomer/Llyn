@@ -96,14 +96,6 @@ internal sealed class LDraftFacade
         }
     }
 
-    internal IReadOnlyList<LDraft> LEngineDraftScan()
-    {
-        lock (_lDraftFacadeGate)
-        {
-            return LDraftFacadeStaff.LEngineStaffClaim.LDraftScan();
-        }
-    }
-
     public void LEngineDraftDelete(long id)
     {
         lock (_lDraftFacadeGate)
@@ -236,27 +228,6 @@ internal sealed class LDraftFacade
                     LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkCancel(draft.LDraftId);
                 }
             }
-        }
-    }
-
-    public IReadOnlyList<LDraft> LEngineLeftoverRead()
-    {
-        lock (_lDraftFacadeGate)
-        {
-            List<LDraft> leftovers = [];
-            foreach (LDraft draft in LDraftFacadeStaff.LEngineStaffClaim.LDraftScan())
-            {
-                if (LDraftFacadeStaff.LEngineStaffClaim.LClaimClerkHeld.Contains(draft.LDraftId)
-                    || !LEngineDraftCheck(draft.LDraftId)
-                    || LDraftFacadeStaff.LEngineStaffClaim.LClaimForeignCheck(draft.LDraftId))
-                {
-                    continue;
-                }
-
-                leftovers.Add(draft);
-            }
-
-            return leftovers;
         }
     }
 

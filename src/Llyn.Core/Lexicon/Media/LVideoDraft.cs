@@ -20,10 +20,5 @@ public sealed record LVideoDraft(
         };
     }
 
-    public static LVideoDraft LVideoDraftCreate(LStateValue location)
-    {
-        return new LVideoDraft(location, LStateValue.LStateValueUnspecified);
-    }
-
     public bool LVideoDraftEmpty => LVideoDraftLocation.LStateValueEmpty;
 }

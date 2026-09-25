@@ -26,7 +26,7 @@ public sealed class TWindowMention
         Assert.Equal(TInterface.TMentionSpanDivide("the cat sat", mentions), pieces);
         Assert.Equal(3, pieces.Count);
         Assert.Equal(4, pieces[1].LMentionPieceOffset);
-        Assert.True(pieces[1].LMentionPieceLinked);
+        Assert.True(pieces[1].LMentionPieceStored!.LMentionLinked);
     }
 
     [Fact]

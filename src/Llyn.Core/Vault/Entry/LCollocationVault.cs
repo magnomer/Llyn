@@ -10,11 +10,7 @@ public interface LCollocationVault
 
     void LCollocationUpdate(LCollocation collocation);
 
-    void LCollocationMove(long id, int position);
-
     void LCollocationDelete(long id);
-
-    long? LCollocationHolderRead(long id);
 
     void LCollocationOrderSet(long entryId, IReadOnlyList<long> order);
 }

@@ -14,13 +14,6 @@ public sealed class LRegisterClerk
         _lRegisterClerkRegisters = rig.LRigRegisters;
     }
 
-    public IReadOnlyList<LRegister> LRegisterClerkRead(long ownerId, bool collocation)
-    {
-        return collocation
-            ? _lRegisterClerkRegisters.LRegisterCollocationRead(ownerId)
-            : _lRegisterClerkRegisters.LRegisterMeaningRead(ownerId);
-    }
-
     public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language)
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -72,21 +65,6 @@ public sealed class LRegisterClerk
             ?? _lRegisterClerkRegisters.LRegisterCreate(new LRegister(
                 0,
                 LStateValue.LStateValueRead(name.Trim())));
-    }
-
-    public void LRegisterClerkChange(long registerId, string renamed)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
-        ArgumentNullException.ThrowIfNull(renamed);
-
-        _lRegisterClerkRegisters.LRegisterNameUpdate(
-            registerId, LStateValue.LStateValueRead(renamed.Trim()));
-    }
-
-    public void LRegisterClerkDelete(long registerId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
-        _lRegisterClerkRegisters.LRegisterDelete(registerId, true);
     }
 
     public void LRegisterClerkPrepare(string language)

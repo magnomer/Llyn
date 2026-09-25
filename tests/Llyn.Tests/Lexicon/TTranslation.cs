@@ -23,19 +23,15 @@ public sealed class TTranslation
         translations.TTranslationMeaningSave(
             meaningId,
             [
-                TInterface.TTranslationCreate(first.LEntryId, 0),
-                TInterface.TTranslationCreate(second.LEntryId, 0),
-                TInterface.TTranslationCreate(third.LEntryId, 0),
+                TInterface.TTranslationCreate(first.LEntryId),
+                TInterface.TTranslationCreate(second.LEntryId),
+                TInterface.TTranslationCreate(third.LEntryId),
             ]);
 
         Assert.Equal(
             [first.LEntryId, second.LEntryId, third.LEntryId],
             translations.TTranslationMeaningRead(meaningId)
                 .Select(translation => translation.LTranslationEntryId));
-        Assert.Equal(
-            [0, 1, 2],
-            translations.TTranslationMeaningRead(meaningId)
-                .Select(translation => translation.LTranslationPosition));
     }
 
     [Fact]
@@ -53,10 +49,10 @@ public sealed class TTranslation
         translations.TTranslationMeaningSave(
             meaningId,
             [
-                TInterface.TTranslationCreate(first.LEntryId, 0),
-                TInterface.TTranslationCreate(first.LEntryId, 0),
-                TInterface.TTranslationCreate(0, 0),
-                TInterface.TTranslationCreate(second.LEntryId, 0),
+                TInterface.TTranslationCreate(first.LEntryId),
+                TInterface.TTranslationCreate(first.LEntryId),
+                TInterface.TTranslationCreate(0),
+                TInterface.TTranslationCreate(second.LEntryId),
             ]);
 
         Assert.Equal(
@@ -84,13 +80,13 @@ public sealed class TTranslation
         translations.TTranslationCollocationSave(
             collocationId,
             [
-                TInterface.TTranslationCreate(first.LEntryId, 0),
-                TInterface.TTranslationCreate(second.LEntryId, 0),
-                TInterface.TTranslationCreate(third.LEntryId, 0),
+                TInterface.TTranslationCreate(first.LEntryId),
+                TInterface.TTranslationCreate(second.LEntryId),
+                TInterface.TTranslationCreate(third.LEntryId),
             ]);
         translations.TTranslationCollocationSave(
             collocationId,
-            [TInterface.TTranslationCreate(third.LEntryId, 0), TInterface.TTranslationCreate(first.LEntryId, 0)]);
+            [TInterface.TTranslationCreate(third.LEntryId), TInterface.TTranslationCreate(first.LEntryId)]);
 
         Assert.Equal(
             [third.LEntryId, first.LEntryId],
@@ -116,7 +112,7 @@ public sealed class TTranslation
 
         translations.TTranslationMeaningSave(
             meaningId,
-            [TInterface.TTranslationCreate(first.LEntryId, 0), TInterface.TTranslationCreate(second.LEntryId, 0)]);
+            [TInterface.TTranslationCreate(first.LEntryId), TInterface.TTranslationCreate(second.LEntryId)]);
 
         entries.TEntryDelete(first.LEntryId);
 
@@ -179,9 +175,9 @@ public sealed class TTranslation
         long collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
         LEntry target = TTranslationEntryCreate(entries, "부수다", "Korean");
 
-        translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
+        translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(target.LEntryId)]);
         translations.TTranslationCollocationSave(
-            collocationId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
+            collocationId, [TInterface.TTranslationCreate(target.LEntryId)]);
 
         IReadOnlyList<LUsage> incoming = translations.TTranslationIncomingRead(target.LEntryId);
 

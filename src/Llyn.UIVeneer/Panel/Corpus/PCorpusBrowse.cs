@@ -35,7 +35,7 @@ public partial class PCorpus
     private void PRankHandle(object sender, RoutedEventArgs e)
     {
         PRankDropper.IsChecked = false;
-        _lCorpus.LCorpusAnthology.LAnthologyRankSet(PSender.PSenderOrderRead(sender));
+        _lCorpus.LCorpusAnthology.LAnthologyRankSet(LChoice.LChoiceOrderRead(sender));
     }
 
     internal async void PCorpusVistaRestore()
@@ -121,7 +121,7 @@ public partial class PCorpus
 
     private void PGauzeHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusAnthology.LAnthologyGauzeSet(PChoice.PChoiceFilterRead(PGauzeList));
+        _lCorpus.LCorpusAnthology.LAnthologyGauzeSet(LChoice.LChoiceFilterRead(PGauzeList));
         PGauzeRestore();
     }
 
@@ -158,7 +158,7 @@ public partial class PCorpus
             });
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pAnthologyList, fresh, PAnthologyItem.PAnthologyItemMatch, PAnthologyItem.PAnthologyItemSync);
 
         PAnthologyEmpty.Visibility = PLook.PLookVisibleRead(_pAnthologyList.Count == 0);

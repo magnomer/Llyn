@@ -6,21 +6,21 @@ Covers the engine's answer to which forms an entry is expected to have.
 Every test saves an entry through the engine against the shipped English pack.
 So the parent chain, the paradigms, and the morphology rows are the real ones and not a fixture.
 
-## `public void ParadigmRead_ChildOfDeclaredPart_ReturnsParentSlots()`
+## `public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()`
 
 A part naming a parent inherits the parent's paradigm, and the slots carry the child part, not the parent.
 With nothing stored every slot is unspecified.
 
-## `public void ParadigmRead_StoredInflection_MarksSlotSpecified()`
+## `public void ParadigmShow_StoredInflection_MarksSlotSpecified()`
 
 An appended inflection carrying a slot's morphology row answers that slot and makes it specified.
 Its neighbour stays unspecified.
 
-## `public void ParadigmRead_CustomPart_ReturnsNothing()`
+## `public void ParadigmShow_CustomPart_ReturnsNothing()`
 
 A part typed by hand declares no paradigm, and an entry the workspace does not hold answers nothing either.
 
-## `public void ParadigmRead_ManyParts_ReturnsSlotsInPartOrder()`
+## `public void ParadigmShow_ManyParts_ReturnsSlotsInPartOrder()`
 
 An entry with several parts lists each part's slots in the order the parts are stored.
 
@@ -64,6 +64,10 @@ A source page carrying both verb forms, held behind a gate so the switch can fli
 ### `private static void TParadigmInflectionAppend(LEngine engine, long entryId, params string[] forms)`
 
 Stores one form per slot, in slot order, so a test fills a paradigm in one line.
+
+### `private static void TParadigmInflectionSave(LEngine engine, long entryId, IReadOnlyList<LInflection> added)`
+
+Adds forms after the stored ones through the entry update, which regrades every form it stores.
 
 ### `private static LEntryDraft TParadigmDraftCreate(string headword, params string[] speeches)`
 

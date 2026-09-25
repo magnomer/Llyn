@@ -54,22 +54,6 @@ internal sealed class LReflexFacade
         }
     }
 
-    public IReadOnlyList<LReflex> LEngineReflexRead(long entryId)
-    {
-        lock (_lReflexFacadeGate)
-        {
-            return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkRead(entryId);
-        }
-    }
-
-    internal IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)
-    {
-        lock (_lReflexFacadeGate)
-        {
-            return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkSet(entryId, reflexes);
-        }
-    }
-
     public void LEngineReflexStart(long entryId)
     {
         LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkStart(entryId);
@@ -83,12 +67,6 @@ internal sealed class LReflexFacade
     public bool LEngineReflexCheck(long entryId)
     {
         return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkCheck(entryId);
-    }
-
-    internal Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(
-        string headword, string language, CancellationToken cancellation)
-    {
-        return LReflexFacadeStaff.LEngineStaffReflex.LReflexClerkFind(headword, language, cancellation);
     }
 
     public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)

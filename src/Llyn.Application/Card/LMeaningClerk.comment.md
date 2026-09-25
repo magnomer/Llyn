@@ -12,36 +12,11 @@ It runs over the meaning port of one rig and hands each card's lines to the card
 
 ## `public LMeaningClerk(LRig rig, LCardClerk cards)`
 
-Reads the entry and meaning ports out of `rig` and keeps the card clerk that writes a card's lines.
-
-## `public LMeaning LMeaningClerkCreate(LMeaning meaning)`
-
-Creates `meaning` at the end of its Entry's Meanings.
-When it names a parent, it goes at the end of that parent's subordinate Meanings.
-Returns it with its assigned id and position.
-
-## `public LMeaning? LMeaningClerkRead(long id)`
-
-Reads the Meaning for `id`, or `null` when none has that id.
+Reads the meaning port out of `rig` and keeps the card clerk that writes a card's lines.
 
 ## `public IReadOnlyList<LMeaning> LMeaningClerkScan(long entryId)`
 
 Reads the Meanings of the Entry identified by `entryId`, in stored order, roots and children together.
-
-## `public void LMeaningClerkUpdate(LMeaning meaning)`
-
-Rewrites the fields of the Meaning `meaning` identifies.
-Its place among its siblings is not touched here, since the move owns the order.
-
-## `public void LMeaningClerkMove(long id, int position)`
-
-Moves the Meaning identified by `id` to `position` among its siblings, renumbering the group.
-A position outside the group is clamped into it.
-
-## `public void LMeaningClerkDelete(long id)`
-
-Deletes the Meaning identified by `id` with everything it owns.
-That is its subordinate Meanings and its Example, Tag and Situation association rows.
 
 ## `public void LMeaningClerkCreate(long entryId, long? parentId, LCardDraft card, string language, Dictionary<long, long> identity)`
 

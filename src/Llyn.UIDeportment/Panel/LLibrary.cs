@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -14,7 +18,7 @@ public sealed class LLibrary
 
     private LVista? _lLibraryVista;
 
-    private int _lLibraryCount;
+    private LIndex? _lLibraryIndex;
 
     public LLibrary(
         LEntryPort entries,
@@ -54,9 +58,7 @@ public sealed class LLibrary
         LLibraryEditor.LEditorOpen(id);
     }
 
-    public bool LLibraryIndexEmpty => _lLibraryCount == 0;
-
-    public bool LLibrarySieveActive => _lLibraryVista?.LVistaFiltered ?? false;
+    private bool LLibrarySieveActive => _lLibraryVista?.LVistaFiltered ?? false;
 
     public void LLibraryVistaRestore(LVista vista)
     {
@@ -67,9 +69,23 @@ public sealed class LLibrary
 
     public IReadOnlyList<LVistaRow> LLibraryRowsRead()
     {
-        IReadOnlyList<LVistaRow> rows = _lLibraryVista is LVista vista ? _lEntryPort.LEngineEntryFind(vista) : [];
-        _lLibraryCount = rows.Count;
-        return rows;
+        return _lLibraryVista is LVista vista ? _lEntryPort.LEngineEntryFind(vista) : [];
+    }
+
+    public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty, Func<string, ImageSource?> flagSeam)
+    {
+        _lLibraryIndex = new LIndex(view, empty, flagSeam);
+        LLibraryPanel.LPanelRowsChanged += LLibraryIndexShow;
+    }
+
+    private void LLibraryIndexShow()
+    {
+        _lLibraryIndex?.LIndexShow(LLibraryRowsRead(), true);
+    }
+
+    public void LLibraryIndexSelect(object sender)
+    {
+        LLibraryPanel.LPanelRowSelect(LIndex.LIndexEntryRead(sender));
     }
 
     public long LLibraryVoyageRead()
@@ -84,7 +100,7 @@ public sealed class LLibrary
         _lLibraryVista?.LVistaQuerySet(query);
     }
 
-    public void LLibraryOrderSet(LCatalogOrder? order)
+    private void LLibraryOrderSet(LCatalogOrder? order)
     {
         if (_lLibraryVista is not LVista vista)
         {
@@ -94,11 +110,30 @@ public sealed class LLibrary
         vista.LVistaOrderSet(order ?? vista.LVistaOrder);
     }
 
-    public void LLibrarySieveSet(LCatalogFilter filter)
+    private void LLibrarySieveSet(LCatalogFilter filter)
     {
-        ArgumentNullException.ThrowIfNull(filter);
-
         _lLibraryVista?.LVistaFilterSet(filter);
+    }
+
+    public void LLibraryOrderHandle(object sender, ToggleButton dropper)
+    {
+        ArgumentNullException.ThrowIfNull(dropper);
+
+        dropper.IsChecked = false;
+        LLibraryOrderSet(LChoice.LChoiceOrderRead(sender));
+    }
+
+    public void LLibrarySieveHandle(Panel list, UIElement mark)
+    {
+        LLibrarySieveSet(LChoice.LChoiceFilterRead(list));
+        LLibrarySieveShow(mark);
+    }
+
+    public void LLibrarySieveShow(UIElement mark)
+    {
+        ArgumentNullException.ThrowIfNull(mark);
+
+        mark.Visibility = LLibrarySieveActive ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public Task LLibraryPortraitPrint(LPortraitLabel label, LPressTicket ticket)

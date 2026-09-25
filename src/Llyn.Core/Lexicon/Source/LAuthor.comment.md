@@ -24,7 +24,3 @@ Those are states on the Reference itself (`LReference.LReferenceAuthorState`).
 ## `public bool LAuthorStored`
 
 Whether the record stands for a stored Author, since the id zero names the uncredited row.
-
-## `public bool LAuthorNameMatch(string name)`
-
-Whether the name written is exactly the name held, so an unchanged credit is not re-added.

@@ -7,11 +7,6 @@ public sealed record LImageDraft(
     public LStateValue LImageDraftLocation { get; init; } =
         LImageDraftLocation ?? LStateValue.LStateValueUnspecified;
 
-    public static LImageDraft LImageDraftCreate(LStateValue location)
-    {
-        return new LImageDraft(location);
-    }
-
     public LImageDraft LImageDraftNormalize()
     {
         return this with { LImageDraftLocation = LImageDraftLocation.LStateValueNormalize() };

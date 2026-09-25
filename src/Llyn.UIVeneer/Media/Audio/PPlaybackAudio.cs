@@ -13,7 +13,6 @@ public partial class PEditor
     private readonly MediaPlayer _pDownloaderPlayer = new();
 
     private string? _pRecording;
-    private string? _pRecordingSource;
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
@@ -63,10 +62,10 @@ public partial class PEditor
             return;
         }
 
-        PRecordingShow(draft.LEntryDraftAudio, draft.LEntryDraftPronunciation?.LPronunciationDraftSource);
+        PRecordingShow(draft.LEntryDraftAudio);
     }
 
-    private void PRecordingShow(string audio, string? source)
+    private void PRecordingShow(string audio)
     {
         if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(audio))
         {
@@ -76,14 +75,12 @@ public partial class PEditor
 
         PRecordingClear();
         _pRecording = audio;
-        _pRecordingSource = source;
         PPlaybackAction.Visibility = Visibility.Visible;
     }
 
     private void PRecordingClear()
     {
         _pRecording = null;
-        _pRecordingSource = null;
         _pDownloaderPlayer.Stop();
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PPlaybackTrayShow();

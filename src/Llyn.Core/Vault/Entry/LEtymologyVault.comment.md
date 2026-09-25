@@ -28,9 +28,3 @@ Returns the stored narrative with its ids filled in.
 Makes `targetIds` the whole list of the entry's direct links, in the order given.
 A repeated target, a missing id and the entry itself are dropped rather than refused.
 Returns the stored links with their ids and positions filled in.
-
-## `IReadOnlyList<LEntry> LEtymologySourceScan(long entryId);`
-
-The entries that name this one as part of their own origin, by link or by span.
-It is the way back, so an entry can show what descends from it.
-The entries come back ordered by language and then headword.

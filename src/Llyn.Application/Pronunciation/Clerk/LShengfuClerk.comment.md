@@ -15,11 +15,6 @@ Takes the ports off the rig, the shared engine gate, and the notice the shell re
 
 The pack rule of that language, or null when the pack declares no series source.
 
-## `public IReadOnlyList<LShengfu> LShengfuClerkRead(long entryId)`
-
-The stored series of every character of the headword, in headword order.
-An entry whose pack declares no rule answers with nothing.
-
 ## `public void LShengfuClerkStart(long entryId)`
 
 Starts a fetch for each character of the headword that has no series stored yet.

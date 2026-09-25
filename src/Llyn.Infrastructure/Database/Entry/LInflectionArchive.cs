@@ -65,51 +65,6 @@ public sealed class LInflectionArchive : LInflectionVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LInflectionDelete(long entryId, int position)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-
-        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        List<LInflection> remaining = new(LInflectionSetRead(connection, entryId));
-        int index = remaining.FindIndex(inflection => inflection.LInflectionPosition == position);
-        if (index < 0)
-        {
-            return;
-        }
-
-        remaining.RemoveAt(index);
-        LInflectionClear(connection, entryId);
-        LInflectionInsert(connection, entryId, remaining, 0);
-
-        session.LDatabaseSessionCommit();
-    }
-
-    public void LInflectionMove(long entryId, int position, int target)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-
-        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        List<LInflection> ordered = new(LInflectionSetRead(connection, entryId));
-        int index = ordered.FindIndex(inflection => inflection.LInflectionPosition == position);
-        if (index < 0)
-        {
-            return;
-        }
-
-        LInflection moved = ordered[index];
-        ordered.RemoveAt(index);
-        ordered.Insert(Math.Clamp(target, 0, ordered.Count), moved);
-
-        LInflectionClear(connection, entryId);
-        LInflectionInsert(connection, entryId, ordered, 0);
-
-        session.LDatabaseSessionCommit();
-    }
-
     private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)
     {
         List<(long LInflectionId, int LInflectionPosition, string LInflectionText, string? LInflectionLocal,

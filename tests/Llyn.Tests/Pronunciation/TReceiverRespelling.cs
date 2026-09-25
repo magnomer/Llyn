@@ -7,8 +7,8 @@ public sealed class TReceiverRespelling
 {
     private static readonly IReadOnlyList<LRespelling> TReceiverRespellingGroups =
     [
-        TInterface.TRespellingCreate("British", ["British"], [TInterface.TRespellingRuleCreate("æ", "a")]),
-        TInterface.TRespellingCreate("Shared", [], [TInterface.TRespellingRuleCreate("ɪ$", "i")]),
+        TInterface.TRespellingCreate(["British"], [TInterface.TRespellingRuleCreate("æ", "a")]),
+        TInterface.TRespellingCreate([], [TInterface.TRespellingRuleCreate("ɪ$", "i")]),
     ];
 
     [Fact]

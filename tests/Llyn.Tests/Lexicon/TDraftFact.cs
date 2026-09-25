@@ -102,14 +102,16 @@ public sealed class TDraftFact
     }
 
     [Fact]
-    public void MentionPieceLinked_SilentAndLinkedMentions_MarksOnlyTheLinkedPiece()
+    public void MentionSpanDivide_SilentAndLinkedMentions_MarksOnlyTheLinkedPiece()
     {
         IReadOnlyList<LMentionPiece> pieces = TInterface.TMentionSpanDivide(
             "the grey wolf", [TInterface.TMentionCreate(1, 4, 4, 5, 2), TInterface.TMentionCreate(2, 9, 4, 0)]);
 
         Assert.Equal([0, 4, 8, 9], pieces.Select(piece => piece.LMentionPieceOffset));
         Assert.Equal([4, 8, 9, 13], pieces.Select(piece => piece.LMentionPieceEnd));
-        Assert.Equal([false, true, false, false], pieces.Select(piece => piece.LMentionPieceLinked));
+        Assert.Equal(
+            [false, true, false, false],
+            pieces.Select(piece => piece.LMentionPieceStored is { LMentionLinked: true }));
         Assert.True(pieces[1].LMentionPieceStored!.LMentionSensed);
         Assert.True(TInterface.TMentionDraftCreate(1, 4, 4, 5).LMentionDraftLinked);
         Assert.False(TInterface.TMentionDraftCreate(2, 9, 4, 0).LMentionDraftLinked);
@@ -119,10 +121,9 @@ public sealed class TDraftFact
     public void MentionResultSingle_OneTarget_NamesItsId()
     {
         LMentionResult single = TInterface.TMentionResultCreate(
-            0, 4, null, [TInterface.TTranslationTargetCreate(8, "wolf", "English")]);
+            0, null, [TInterface.TTranslationTargetCreate(8, "wolf", "English")]);
         LMentionResult many = TInterface.TMentionResultCreate(
             0,
-            4,
             null,
             [
                 TInterface.TTranslationTargetCreate(8, "wolf", "English"),

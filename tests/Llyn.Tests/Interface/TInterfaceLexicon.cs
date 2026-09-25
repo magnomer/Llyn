@@ -94,7 +94,7 @@ internal static partial class TInterface
         new(
             headword,
             language,
-            TPronunciationListCreate(LPronunciationDraft.LPronunciationDraftCreate(pronunciation, audio, source)),
+            TPronunciationListCreate(TPronunciationDraftCreate(pronunciation, audio: audio, source: source)),
             note,
             meanings,
             collocations,
@@ -102,8 +102,8 @@ internal static partial class TInterface
             LEntryDraftTranscriptions: transcriptions,
             LEntryDraftReflexes: reflexes);
 
-    internal static IReadOnlyList<LPronunciationDraft> TPronunciationListCreate(LPronunciationDraft? pronunciation) =>
-        pronunciation is null ? [] : [pronunciation];
+    internal static IReadOnlyList<LPronunciationDraft> TPronunciationListCreate(LPronunciationDraft pronunciation) =>
+        pronunciation.LPronunciationDraftEmpty ? [] : [pronunciation];
 
     internal static LPronunciationDraft TPronunciationDraftCreate(
         string ipa,
@@ -235,7 +235,10 @@ internal static partial class TInterface
             row);
 
     internal static LSentenceDraft TSentenceDraftCreate(string text) =>
-        LSentenceDraft.LSentenceDraftCreate(text);
+        new(
+            LExampleDraft.LExampleDraftCreate(text),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified);
 
     internal static LSentenceDraft TSentenceDraftCreate(
         LStateValue? particle, LStateValue? dependence) =>
@@ -246,15 +249,11 @@ internal static partial class TInterface
 
     internal static LSentence TSentenceCreate(
         long id,
-        long ownerId,
-        int position,
         LExample? example,
         LStateValue? particle,
         LStateValue? dependence) =>
         new(
             id,
-            ownerId,
-            position,
             example,
             particle ?? LStateValue.LStateValueUnspecified,
             dependence ?? LStateValue.LStateValueUnspecified);
@@ -357,7 +356,7 @@ internal static partial class TInterface
         new(id, LStateValue.LStateValueRead(name));
 
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
-        LRegisterDraft.LRegisterDraftCreate(text);
+        new(LStateValue.LStateValueRead(text), 0);
 
     internal static LRegisterDraft TRegisterDraftCreate(LStateValue name, long id) =>
         new(name, id);
@@ -385,14 +384,14 @@ internal static partial class TInterface
             kind ?? LStateValue.LStateValueUnspecified);
 
     internal static LSituationDraft TSituationDraftCreate(string text) =>
-        LSituationDraft.LSituationDraftCreate(text);
+        new(
+            LStateValue.LStateValueRead(text),
+            0,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified);
 
-    internal static LSpeech TSpeechCreate(
-        long entryId,
-        int position,
-        long? valueId,
-        string? custom = null) =>
-        new(entryId, position, valueId, custom);
+    internal static LSpeech TSpeechCreate(long? valueId, string? custom = null) =>
+        new(valueId, custom);
 
     internal static LSpeechValue TSpeechValueCreate(string language, long packId, string name, int position) =>
         new(0, language, packId, name, position);
@@ -404,7 +403,9 @@ internal static partial class TInterface
         new LStateWritten(text, unknown).LStateWrittenResolve();
 
     internal static LStateWritten TStateWrittenRead(this LStateValue value) =>
-        LStateWritten.LStateWrittenRead(value);
+        value is null
+            ? LStateWritten.LStateWrittenEmpty
+            : new LStateWritten(value.LStateValueShow(), value.LStateValueState == LState.LStateUnknown);
 
     internal static string TStateValueShow(this LStateValue stateValue) =>
         stateValue.LStateValueShow();
@@ -421,12 +422,9 @@ internal static partial class TInterface
     internal static LTag TTagCreate(long id, string text) =>
         new(id, text);
 
-    internal static LTranslation TTranslationCreate(long entryId, int position) =>
-        new(entryId, position);
+    internal static LTranslation TTranslationCreate(long entryId) =>
+        new(entryId);
 
     internal static bool TGraspCheck(int grasp) =>
         LGrasp.LGraspCheck(grasp);
-
-    internal static string TGraspFormat(int grasp) =>
-        LGrasp.LGraspFormat(grasp);
 }

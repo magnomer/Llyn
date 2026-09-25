@@ -205,9 +205,9 @@ public sealed class TEtymology
         engine.TEngineRequestApply(TInterface.TEtymologyTextCreate(held.LDraftId, "From rinnan."));
         engine.TEngineDraftCommit(held.LDraftId);
 
-        LRevision revision = Assert.IsType<LRevision>(engine.TEngineRevisionRead());
+        long revision = Assert.IsType<long>(engine.TEngineRevisionRead());
         LRevisionChange change = Assert.Single(
-            engine.TEngineChangeRead(revision.LRevisionId),
+            workspace.TRevisionChangeRead(revision),
             static row => string.Equals(row.LRevisionChangeSubject, "etymology", StringComparison.Ordinal));
         Assert.Equal("create", change.LRevisionChangeKind);
         Assert.Equal("From rinnan.", change.LRevisionChangeSummary);

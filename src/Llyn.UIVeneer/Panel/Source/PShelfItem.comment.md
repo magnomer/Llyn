@@ -9,7 +9,7 @@ A Source is shown by the first field it actually states, then by its id if it na
 It is never offered as a blank row the reader could not tell from the next one.
 `Untitled` is a stated title and shows as one, and `Anonymous` is a credited Author.
 
-## `internal PShelfItem(LCatalogReference row, string unknown, string unset)`
+## `internal PShelfItem(LCatalogReference row, string unknown, string unset, bool chosen)`
 
 Builds the row from the catalog row the engine returned.
 The name, the credits and the citation count arrive with it, so nothing is derived or read again here.
@@ -37,13 +37,13 @@ The catalog carries it and not only the editor.
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The engine row carries it, and `PSplice` moves the mark in place, so the list keeps its scroll position.
+The engine row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `internal static bool PShelfItemMatch(PShelfItem held, PShelfItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void PShelfItemSync(PShelfItem held, PShelfItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.

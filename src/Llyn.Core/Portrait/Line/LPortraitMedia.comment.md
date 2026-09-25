@@ -9,7 +9,6 @@ Both kinds share a shape because both are drawn as a bordered preview.
 
 - `LPortraitMediaLocation` - the file path or address the plate stands for.
 - `LPortraitMediaSpan` - the played span of a video, or the caption of a stored picture.
-- `LPortraitMediaMoving` - whether this plate is a video rather than a picture.
 
 ## `public static IReadOnlyList<LPortraitMedia> LPortraitMediaCreate(IReadOnlyList<LImageDraft> images, string mark)`
 

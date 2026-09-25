@@ -38,7 +38,7 @@ public sealed record LEtymologyDraft(
             etymology?.LEtymologyId ?? 0);
     }
 
-    public LEtymology LEtymologyDraftResolve(long entryId)
+    public LEtymology LEtymologyDraftResolve()
     {
         List<LMention> mentions = [];
         foreach (LMentionDraft mention in LEtymologyDraftMentions)
@@ -46,22 +46,11 @@ public sealed record LEtymologyDraft(
             mentions.Add(mention.LMentionDraftResolve());
         }
 
-        return new LEtymology(LEtymologyDraftId, entryId, LEtymologyDraftText, mentions);
+        return new LEtymology(LEtymologyDraftId, LEtymologyDraftText, mentions);
     }
 
     public LMentionDraft? LEtymologyDraftFind(LMentionDraft span)
     {
         return LMentionSpan.LMentionSpanFind(LEtymologyDraftMentions, span);
-    }
-
-    public IReadOnlyList<LMentionPiece> LEtymologyDraftDivide()
-    {
-        List<LMention> mentions = [];
-        foreach (LMentionDraft mention in LEtymologyDraftMentions)
-        {
-            mentions.Add(mention.LMentionDraftResolve());
-        }
-
-        return LMentionSpan.LMentionSpanDivide(LEtymologyDraftText, mentions);
     }
 }

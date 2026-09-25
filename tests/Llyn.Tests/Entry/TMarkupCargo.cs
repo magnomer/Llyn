@@ -84,7 +84,7 @@ public sealed class TMarkupCargo
         string path = workspace.TWorkspaceMarkupSave(TMarkupTwo.Replace(
             "<headword>glow", "<origin>x</origin><headword>glow", StringComparison.Ordinal));
         LMarkupCargo cargo = engine.TEngineMarkupRead(path);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             cargo,
             [
                 TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew),
@@ -92,6 +92,6 @@ public sealed class TMarkupCargo
             ]);
 
         Assert.Equal("<origin>", Assert.Single(cargo.LMarkupCargoOmission).LMarkupOmissionText);
-        Assert.Equal(cargo.LMarkupCargoOmission, outcome.LMarkupOutcomeOmission);
+        Assert.Equal(cargo.LMarkupCargoOmission, outcome.TMarkupOutcomeOmission);
     }
 }

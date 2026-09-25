@@ -9,7 +9,6 @@ Each association carries the position the Image takes for that referrer alone.
 Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Image and its other references untouched.
 Updating rewrites the location and never the id.
-`LImageDelete` refuses to run while any reference remains.
 
 A referrer's order is a unique index.
 So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
@@ -45,16 +44,6 @@ Reads the Images a Situation references, in the order that Situation gives them.
 
 Rewrites the location of the Image `image` names.
 Every referrer sees the change at once, because a reference points at the row and never at its text.
-
-## `public int LImageReferenceRead(long id)`
-
-Counts the references standing on the Image, across every side, the Situation one included.
-It is what a delete asks before it refuses.
-
-## `public void LImageDelete(long id)`
-
-Deletes the Image, refusing while any Meaning, Collocation, or Situation still references it.
-So a live reference is never left pointing at a row that is gone.
 
 ## `public void LImageMeaningAttach(long meaningId, long imageId, int position)`
 

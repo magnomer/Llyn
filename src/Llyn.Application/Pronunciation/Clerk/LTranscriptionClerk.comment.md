@@ -8,7 +8,7 @@ The engine hands in a step sink and never sees the receiver the lookup is typed 
 
 ## `public LTranscriptionClerk(LRig rig, LLanguageCache languages)`
 
-Reads the entry and transcription ports and the source factory out of `rig`.
+Reads the transcription port and the source factory out of `rig`.
 
 ## `public IReadOnlyList<string> LSchemeRead(string language)`
 
@@ -38,14 +38,6 @@ Hands every held candidate to `receiver` and finishes the lookup.
 ## `private static LReceiver LReceiverCreate(LLanguage pack, Action<LLookupStep> sink)`
 
 A relay to `sink`, wrapped in a respelling receiver when `pack` declares respelling groups.
-
-## `public IReadOnlyList<LTranscription> LTranscriptionClerkRead(long entryId)`
-
-The stored transcription rows of an entry.
-
-## `public IReadOnlyList<LTranscription> LTranscriptionClerkSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
-
-Replaces the rows of an entry and marks the entry updated.
 
 ## `public void LTranscriptionClerkSync(long entryId, IReadOnlyList<LTranscriptionDraft> drafts, List<LRevisionChange>? changes, Dictionary<long, long> identity)`
 

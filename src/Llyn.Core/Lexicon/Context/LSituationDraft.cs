@@ -26,13 +26,4 @@ public sealed record LSituationDraft(
             LSituationDraftKind = LSituationDraftKind.LStateValueNormalize(),
         };
     }
-
-    public static LSituationDraft LSituationDraftCreate(string text)
-    {
-        return new LSituationDraft(
-            LStateValue.LStateValueRead(text),
-            0,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified);
-    }
 }

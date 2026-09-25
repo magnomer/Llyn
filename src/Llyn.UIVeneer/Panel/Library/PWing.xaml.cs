@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Llyn.Core;
 using Llyn.UIDeportment;
 
@@ -13,8 +8,6 @@ namespace Llyn.UIVeneer;
 
 public partial class PWing : UserControl
 {
-    private readonly ObservableCollection<PIndexItem> _pWingIndex = [];
-
     private PWindow _pWingHost = null!;
 
     private LWing _lWing = null!;
@@ -29,7 +22,10 @@ public partial class PWing : UserControl
         _pWingHost = host;
         _lWing = host.PWindowDeportment.LWindowWingCreate();
 
-        PWingIndex.ItemsSource = _pWingIndex;
+        _lWing.LWingIndexAttach(PWingIndex, PWingEmpty, PWingQuery, PEnsign.PEnsignFind);
+        _lWing.LWingFailed += host.PWindowFailureShow;
+        _lWing.LWingDraftChanged += PWingDisplay.PDisplayShow;
+        _lWing.LWingCleared += PWingDisplay.PDisplayClear;
 
         PWingDisplay.PDisplayAttach(host, _lWing.LWingDisplay);
     }
@@ -37,36 +33,19 @@ public partial class PWing : UserControl
     internal async void PWingRestore(string tab, long? id)
     {
         _lWing.LWingVistaRestore(_pWingHost.PWindowDeportment, tab);
-        _lWing.LWingObserverAttach(LSubject.LSubjectVista, PObserver.PObserverCreate(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PWingIndexFind));
-        _lWing.LWingObserverAttach(LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PWingIndexFind));
+        _lWing.LWingObserverAttach(this, PObserver.PObserverCreate);
         PWingDisplay.PDisplayObserverAttach();
-        _pWingIndex.Clear();
+        _lWing.LWingIndexClear();
         await PEnsign.PEnsignLoad(_pWingHost.PWindowDeportment);
 
-        PChoice.PChoiceOrderBuild(
-            PWingOrderList,
-            "Order",
-            PWingOrderHandle,
-            [
-                LCatalogOrder.LCatalogOrderHeadword,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderRecent,
-                LCatalogOrder.LCatalogOrderEarliest,
-            ]);
+        PChoice.PChoiceOrderBuild(PWingOrderList, "Order", PWingOrderHandle, LIndex.LIndexOrder);
         PChoice.PChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);
-        PWingSieveRestore();
+        _lWing.LWingSieveShow(PWingSieveMark);
         PChoice.PChoiceFilterBuild(
             PWingSieveList, _lWing.LWingLanguageRead(), _lWing.LWingFilter, PWingSieveHandle);
 
         PWingQuery.Text = string.Empty;
-        PWingDisplay.PDisplayClear();
-
-        if (id is long shown)
-        {
-            PWingEntryShow(shown);
-        }
+        _lWing.LWingEntryShow(id);
     }
 
     internal void PWingClose()
@@ -76,147 +55,31 @@ public partial class PWing : UserControl
 
     private void PWingOrderHandle(object sender, RoutedEventArgs e)
     {
-        PWingOrderDropper.IsChecked = false;
-        _lWing.LWingOrderSet(PSender.PSenderOrderRead(sender));
+        _lWing.LWingOrderHandle(sender, PWingOrderDropper);
     }
 
     private void PWingSieveHandle(object sender, RoutedEventArgs e)
     {
-        _lWing.LWingSieveSet(PChoice.PChoiceFilterRead(PWingSieveList));
-        PWingSieveRestore();
+        _lWing.LWingSieveHandle(PWingSieveList, PWingSieveMark);
     }
 
     private void PWingQueryHandle(object sender, TextChangedEventArgs e)
     {
-        string query = PWingQuery.Text ?? string.Empty;
-        PWingIndex.Visibility = query.Trim().Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        _lWing.LWingQuerySet(query);
+        _lWing.LWingQueryHandle();
     }
 
     private void PWingKeyHandle(object sender, KeyEventArgs e)
     {
-        if (PWingIndex.Visibility != Visibility.Visible)
-        {
-            return;
-        }
-
-        if (e.Key == Key.Escape)
-        {
-            PWingIndex.Visibility = Visibility.Collapsed;
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Enter)
-        {
-            if (_lWing.LWingChosen is long chosen)
-            {
-                if (_pWingIndex.Any(row => row.PIndexItemId == chosen))
-                {
-                    PWingIndex.Visibility = Visibility.Collapsed;
-                    PWingEntryShow(chosen);
-                    PWingEntrySave();
-                }
-            }
-
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key is not (Key.Down or Key.Up) || _pWingIndex.Count == 0)
-        {
-            return;
-        }
-
-        int place = -1;
-        for (int index = 0; index < _pWingIndex.Count; index++)
-        {
-            if (_pWingIndex[index].PIndexItemChosen)
-            {
-                place = index;
-                break;
-            }
-        }
-
-        place = e.Key == Key.Down
-            ? Math.Min(place + 1, _pWingIndex.Count - 1)
-            : Math.Max(place - 1, 0);
-        PIndexItem target = _pWingIndex[place];
-        _lWing.LWingSelect(target.PIndexItemId);
-        PWingIndexFind();
-        if (PWingIndex.ItemContainerGenerator.ContainerFromItem(target) is FrameworkElement container)
-        {
-            container.BringIntoView();
-        }
-
-        e.Handled = true;
+        _lWing.LWingKeyHandle(e);
     }
 
     private void PWingLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        if (e.NewFocus is Visual target
-            && (ReferenceEquals(target, PWingQuery) || PWingIndex.IsAncestorOf(target)))
-        {
-            return;
-        }
-
-        PWingIndex.Visibility = Visibility.Collapsed;
+        _lWing.LWingLeaveHandle(e);
     }
 
     private void PWingIndexHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PIndexItem item })
-        {
-            return;
-        }
-
-        PWingIndex.Visibility = Visibility.Collapsed;
-        PWingEntryShow(item.PIndexItemId);
-        PWingEntrySave();
-    }
-
-    private void PWingSieveRestore()
-    {
-        PWingSieveMark.Visibility = _lWing.LWingFiltered ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PWingIndexFind()
-    {
-        IReadOnlyList<PIndexItem> fresh = PIndexItem.PIndexItemBuild(_lWing.LWingRowsRead());
-
-        PSplice.PSpliceApply(_pWingIndex, fresh, PIndexItem.PIndexItemMatch, PIndexItem.PIndexItemSync);
-        bool typed = _lWing.LWingQueried;
-        PWingEmpty.Visibility = typed && _pWingIndex.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PWingEntryShow(long id)
-    {
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lWing.LWingEntryLoad(id);
-        }
-        catch (Exception exception)
-        {
-            _pWingHost.PWindowFailureShow("Duplex.LoadFailed", exception);
-            return;
-        }
-
-        if (draft is null)
-        {
-            _lWing.LWingSelect(null);
-            PWingIndexFind();
-            PWingDisplay.PDisplayClear();
-            return;
-        }
-
-        _lWing.LWingSelect(id);
-        PWingIndexFind();
-        PWingDisplay.PDisplayShow(draft);
-    }
-
-    private void PWingEntrySave()
-    {
-        _lWing.LWingEntrySave();
+        _lWing.LWingIndexHandle(sender);
     }
 }

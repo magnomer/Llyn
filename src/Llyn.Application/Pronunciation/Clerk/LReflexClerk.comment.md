@@ -36,14 +36,6 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 
 The reflex rules the pack of `language` declares, or none for a blank language.
 
-## `public IReadOnlyList<LReflex> LReflexClerkRead(long entryId)`
-
-The stored reflex rows of an entry.
-
-## `public IReadOnlyList<LReflex> LReflexClerkSet(long entryId, IReadOnlyList<LReflex> reflexes)`
-
-Replaces the rows of an entry, rewrites its epithet and marks it updated.
-
 ## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionChange>? changes, Dictionary<long, long> identity)`
 
 The reflexes of an entry reconciled to its draft, anatomies filled from the pack.
@@ -74,10 +66,6 @@ The bulletins for the entry and every emptied draft are raised here.
 ## `public bool LReflexClerkCheck(long entryId)`
 
 Whether a fetch is pending for the entry.
-
-## `public async Task<IReadOnlyList<LReflexDraft>> LReflexClerkFind(string headword, string language, CancellationToken cancellation)`
-
-The reflexes of `headword` fetched now, merged across rules and characters.
 
 ## `public void LReflexClerkClear()`
 

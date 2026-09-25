@@ -42,16 +42,6 @@ public sealed class LCourtArchive : LCourtVault
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
-    public LCourt? LCourtRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfZero(id);
-
-        string path = Path.Combine(
-            LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot),
-            id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
-        return LCourtArchiveLoad(path);
-    }
-
     public IReadOnlyList<LCourt> LCourtScan()
     {
         string folder = LWorkspaceRoot.LWorkspaceCourtRead(_lCourtArchiveRoot);

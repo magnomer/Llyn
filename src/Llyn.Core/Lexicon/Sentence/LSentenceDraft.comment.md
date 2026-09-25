@@ -43,11 +43,6 @@ A minted id is not a stored one, so an Example the engine named but nobody wrote
 An Example carrying a stored id names a stored row, however little the sentence says.
 Such an empty row records nothing and is never committed.
 
-## `public static LSentenceDraft LSentenceDraftCreate(string text)`
-
-A sentence quoted with nothing else said about it.
-The Example has no id yet and cites no Source, and the row states no frame.
-
 ## `public LSentenceDraft LSentenceDraftNormalize()`
 
 The same row and its example with every unreadable value dropped to unspecified.

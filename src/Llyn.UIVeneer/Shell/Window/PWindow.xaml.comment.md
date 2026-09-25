@@ -23,13 +23,6 @@ The deportment is set as the mention attached property on the window, so every m
 Moves the user onto the workspace at `path` through the bootstrap's delegate.
 The settings panel calls it, so no panel names the factory or the pointer.
 
-## `internal int PWindowLeftover { get; private set; }`
-
-How many held drafts the workspace carried that no open window claims.
-It is read once as the window attaches, before any panel starts a draft of its own.
-Reading it later would count this session's own work, which no one needs offering back.
-The count is held and nothing is shown yet, because the recovery dialog is not built.
-
 ## `private void PWindowAttach()`
 
 Puts every panel to work on the window deportment, which builds each panel's deportment over the one engine.

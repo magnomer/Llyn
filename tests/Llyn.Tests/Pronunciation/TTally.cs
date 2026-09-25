@@ -112,14 +112,9 @@ public sealed class TTally
             ]);
         archive.TDiweiApply(TTallyLanguage, "完", null);
         IReadOnlyList<LFanqieRow> rows = fanqie.TFanqieRead(TTallyLanguage, "完");
-        IReadOnlyList<LReflex> reflexes = engine.TEngineReflexRead(wan.LEntryId);
-        engine.TEngineReflexSet(
-            wan.LEntryId,
-            [
-                reflexes[0] with { LReflexAnchors = [rows[0].LFanqieRowId] },
-                reflexes[1] with { LReflexAnchors = [rows[1].LFanqieRowId] },
-                reflexes[2] with { LReflexAnchors = [rows[0].LFanqieRowId] },
-            ]);
+        engine.TEntryAnchorApply(wan.LEntryId, [rows[0].LFanqieRowId], 0);
+        engine.TEntryAnchorApply(wan.LEntryId, [rows[1].LFanqieRowId], 1);
+        engine.TEntryAnchorApply(wan.LEntryId, [rows[0].LFanqieRowId], 2);
         LDiwei xia = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "匣"));
         LDiwei xi = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "溪"));
 
@@ -222,11 +217,7 @@ public sealed class TTally
                 .ToList();
             foreach (LEntry entry in entries.TEntryHeadwordFind(TTallyLanguage, character))
             {
-                engine.TEngineReflexSet(
-                    entry.LEntryId,
-                    engine.TEngineReflexRead(entry.LEntryId)
-                        .Select(reflex => reflex with { LReflexAnchors = anchors })
-                        .ToList());
+                engine.TEntryAnchorApply(entry.LEntryId, anchors);
             }
         }
     }

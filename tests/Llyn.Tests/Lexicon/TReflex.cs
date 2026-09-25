@@ -23,26 +23,16 @@ public sealed class TReflex
                 TInterface.TReflexDraftCreate("Japanese", "Kan-on", "ろう", true),
             ]));
 
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
-        Assert.Equal(["Korean", "Mandarin", "Japanese", "Japanese"], read.Select(row => row.LReflexLanguage));
-        Assert.Equal(["", "", "Go-on", "Kan-on"], read.Select(row => row.LReflexKind));
-        Assert.Equal(["희롱할", "", "", ""], read.Select(row => row.LReflexMeaning));
-        Assert.Equal(["", "nòng", "", ""], read.Select(row => row.LReflexRomanization));
-        Assert.Equal([false, false, false, true], read.Select(row => row.LReflexMain));
-        Assert.Equal([0, 1, 2, 3], read.Select(row => row.LReflexPosition));
-
-        LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
-        Assert.NotNull(loaded);
+        IReadOnlyList<LReflexDraft> read = engine.TEntryReflexRead(entry.LEntryId);
+        Assert.Equal(["Korean", "Mandarin", "Japanese", "Japanese"], read.Select(row => row.LReflexDraftLanguage));
+        Assert.Equal(["", "", "Go-on", "Kan-on"], read.Select(row => row.LReflexDraftKind));
+        Assert.Equal(["롱(농)", "nʊŋ⁵¹", "る", "ろう"], read.Select(row => row.LReflexDraftText));
+        Assert.Equal(["희롱할", "", "", ""], read.Select(row => row.LReflexDraftMeaning));
+        Assert.Equal(["", "nòng", "", ""], read.Select(row => row.LReflexDraftRomanization));
+        Assert.Equal([false, false, false, true], read.Select(row => row.LReflexDraftMain));
+        Assert.All(read, row => Assert.True(row.LReflexDraftId > 0));
         Assert.Equal(
-            ["롱(농)", "nʊŋ⁵¹", "る", "ろう"],
-            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftText));
-        Assert.Equal(
-            ["희롱할", "", "", ""],
-            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftMeaning));
-        Assert.Equal(
-            ["", "nòng", "", ""],
-            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftRomanization));
-        Assert.All(loaded.LEntryDraftReflexes, row => Assert.True(row.LReflexDraftId > 0));
+            3, workspace.TWorkspaceCountRead("SELECT MAX(position) FROM reflex;"));
     }
 
     [Fact]
@@ -71,7 +61,8 @@ public sealed class TReflex
 
         Assert.Equal(
             [(second, "Kan-on", true), (first, "Go-on", false)],
-            engine.TEngineReflexRead(entry.LEntryId).Select(row => (row.LReflexId, row.LReflexKind, row.LReflexMain)));
+            engine.TEntryReflexRead(entry.LEntryId)
+                .Select(row => (row.LReflexDraftId, row.LReflexDraftKind, row.LReflexDraftMain)));
     }
 
     [Fact]
@@ -89,7 +80,7 @@ public sealed class TReflex
 
         Assert.Equal(
             ["Korean", "Japanese"],
-            engine.TEngineReflexRead(entry.LEntryId).Select(row => row.LReflexLanguage));
+            engine.TEntryReflexRead(entry.LEntryId).Select(row => row.LReflexDraftLanguage));
     }
 
     [Fact]
@@ -207,9 +198,7 @@ public sealed class TReflex
                     "Wu", "", "oʔ⁵⁵", romanization: "7oq", note: "literary", region: "Shanghai"),
             ]));
 
-        LReflex stored = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
-        Assert.Equal(("Shanghai", "literary"), (stored.LReflexRegion, stored.LReflexNote));
-        LReflexDraft loaded = Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftReflexes);
+        LReflexDraft loaded = Assert.Single(engine.TEntryReflexRead(entry.LEntryId));
         Assert.Equal(("Shanghai", "literary"), (loaded.LReflexDraftRegion, loaded.LReflexDraftNote));
     }
 

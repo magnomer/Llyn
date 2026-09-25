@@ -33,8 +33,6 @@ public sealed class LTheme
 
     public string LThemeSerif => "Georgia, \"Segoe UI\", serif";
 
-    public IReadOnlyDictionary<string, string> LThemeColor => _lThemeColor;
-
     public string LThemeColorRead(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);

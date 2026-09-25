@@ -15,7 +15,7 @@ The folder is created when missing, so a fresh workspace opens as an empty one.
 One database stands behind every archive, and the client handed in behind every fetcher and download.
 The caller owns the client and disposes it, so the factory holds nothing across builds.
 The test suite hands in a client over a stub handler, so an engine-level search runs offline.
-Nothing here is opened or read: the engine runs the doctor, realm and settings reads on the rig it receives.
+Nothing here is opened or read: the engine runs the doctor and settings reads on the rig it receives.
 The posture adapter is built over a keep file of its own.
 So the posture lands beside the settings as before.
 The trail, the clock and the process id are read here.

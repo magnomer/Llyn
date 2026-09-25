@@ -12,52 +12,10 @@ Which stored row each card is comes from `LCardDraft.LCardDraftId`, never from i
 A card naming a stored row updates that row in place, so its id survives.
 A card naming nothing is created, and a stored row the draft no longer names is deleted.
 
-## `public LCardClerk(LRig rig, LTagClerk tags, LRegisterClerk registers, LTranslationClerk translations, LExampleClerk examples, LSituationClerk situations)`
+## `public LCardClerk(LRig rig, LTagClerk tags, LRegisterClerk registers, LTranslationClerk translations, LExampleClerk examples)`
 
-Reads the entry, collocation, meaning, image, video, sentence and situation ports out of `rig`.
+Reads the collocation, image, video, sentence and situation ports out of `rig`.
 The four clerks handed in write the lines a card carries.
-
-## `public static bool LCardOwnerCheck(LOwner owner)`
-
-Which of the two card sides an owner id names, true for the collocation side.
-Any other side is a caller mistake and throws, since no user can correct it.
-
-## `public void LExampleRemove(long ownerId, long exampleId, LOwner owner)`
-
-Detaches an example from its card and marks the owning entry updated, in one session.
-
-## `public void LSituationRemove(long ownerId, long situationId, LOwner owner)`
-
-Detaches a situation from its card and marks the owning entry updated, in one session.
-
-## `public LCollocation LCollocationCreate(LCollocation collocation)`
-
-Creates `collocation` at the end of its Entry's Collocations and returns it with its assigned id and position.
-The Entry's updated stamp moves.
-
-## `public IReadOnlyList<LCollocation> LCollocationRead(long entryId)`
-
-Reads the Collocations of the Entry identified by `entryId`, in stored order.
-
-## `public void LCollocationUpdate(LCollocation collocation)`
-
-Rewrites the title, expression and meaning of the Collocation `collocation` identifies.
-
-## `public void LCollocationMove(long id, int position)`
-
-Moves the Collocation identified by `id` to `position` in its Entry's card order.
-It renumbers the set so the positions stay contiguous.
-
-## `public void LCollocationDelete(long id)`
-
-Deletes the Collocation identified by `id`.
-Its association rows go with it.
-The independent Examples, Tags and Situations they pointed at are left standing.
-
-## `public void LCardUpdatedSet(long ownerId, bool collocation)`
-
-Moves the updated stamp of the Entry holding the card `ownerId` names.
-The card's holder is looked up first, and a card nobody holds moves nothing.
 
 ## `public void LCollocationSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionChange> changes, Dictionary<long, long> identity)`
 

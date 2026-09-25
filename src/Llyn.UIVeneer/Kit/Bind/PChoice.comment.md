@@ -35,6 +35,7 @@ Nothing is marked when no row offers that ordering.
 Fills `list` with one ticked row per language in `languages`, unticking those `filter` hides.
 Every row reports its click to `handler`, which is the panel's own filter handler.
 The rows are built here so six panels share one row shape and one reading of a stored filter.
+`LChoice` reads the ticked rows back, so the deportment owns the filter a click stands for.
 
 ## `internal static void PChoiceKindBuild(Panel list, LCatalogFilter filter, RoutedEventHandler handler)`
 
@@ -49,11 +50,6 @@ The stored word is the tag and the localized name the content, as the kind filte
 ## `internal static void PChoiceMenuApply(Panel list, string tag)`
 
 Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu shows the held kind.
-
-## `internal static LCatalogFilter PChoiceFilterRead(Panel list)`
-
-The filter the rows of `list` now stand for: every unticked language is hidden.
-A list with nothing unticked reads as the shared empty filter.
 
 ## `private static Grid PChoiceRowBuild(string language)`
 

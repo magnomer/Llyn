@@ -216,11 +216,6 @@ public sealed class LExampleArchive : LExampleVault
         return counts;
     }
 
-    public void LExampleDelete(long id)
-    {
-        LExampleDelete(id, false);
-    }
-
     public void LExampleDelete(long id, bool detach)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

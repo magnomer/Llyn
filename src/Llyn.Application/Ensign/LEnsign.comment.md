@@ -34,10 +34,6 @@ The keys not yet asked, each once, with the age the caller hands back when the p
 Records the path each key resolved to, null when the usher finds nothing there, and answers with the rows kept.
 An age that no longer matches records nothing, since the workspace has moved on.
 
-## `public string? LEnsignPathRead(string key)`
-
-The path a key resolved to, or null when it is unasked or resolved to nothing.
-
 ## `public void LEnsignPathDelete(string path)`
 
 Asks the usher to remove a cached SVG the renderer could not read, so the next fetch replaces it.

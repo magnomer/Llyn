@@ -182,7 +182,6 @@ public sealed class LPortraitClerk
             foreach (LTranslationTarget target in _lPortraitClerkTranslations.LTranslationTargetRead(ids))
             {
                 targets[target.LTranslationTargetId] = new LPortraitLink(
-                    target.LTranslationTargetId,
                     target.LTranslationTargetHeadword,
                     target.LTranslationTargetLanguage);
             }

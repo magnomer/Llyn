@@ -44,14 +44,6 @@ internal sealed class LWorkspaceFacade
         }
     }
 
-    public Uri? LEngineLocationResolve(string? location)
-    {
-        lock (_lWorkspaceFacadeGate)
-        {
-            return LWorkspaceFacadeStaff.LEngineStaffTrail.LTrailClerkResolve(location);
-        }
-    }
-
     public Uri? LEngineLocationRead(string? location)
     {
         lock (_lWorkspaceFacadeGate)

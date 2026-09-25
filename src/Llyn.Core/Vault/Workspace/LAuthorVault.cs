@@ -18,8 +18,6 @@ public interface LAuthorVault
 
     void LAuthorAbsorb(long kept, long dropped);
 
-    void LAuthorDelete(long id);
-
     void LAuthorDelete(long id, bool detach);
 
     IReadOnlyList<LUsage> LAuthorUsageRead(long id);

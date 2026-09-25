@@ -7,6 +7,4 @@ public sealed record LMentionPiece(
     string LMentionPieceText)
 {
     public int LMentionPieceEnd => LMentionPieceOffset + LMentionPieceLength;
-
-    public bool LMentionPieceLinked => LMentionPieceStored is { LMentionLinked: true };
 }

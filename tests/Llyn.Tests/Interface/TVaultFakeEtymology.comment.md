@@ -21,7 +21,3 @@ Keeps the narrative, numbering its spans from one, and forgets it when the prose
 ## `public IReadOnlyList<LEtymon> LEtymologyEtymonSet(long entryId, IReadOnlyList<long> targetIds)`
 
 Keeps the links in the order given, numbering ids and positions as the database would.
-
-## `public IReadOnlyList<LEntry> LEtymologySourceScan(long entryId)`
-
-Always empty, since no test asks the fake store for the way back.

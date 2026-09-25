@@ -5,7 +5,7 @@
 Reads a stored entry back into the `LEntryDraft` the input form saved.
 It owns no SQL of its own.
 It composes what the archives already read into one value shape.
-That shape is what `LEngineEntrySave` consumes, so a save and a load are inverses.
+That shape is what a draft commit consumes, so a save and a load are inverses.
 The parts are the entry row, its meanings and collocations, its note, its pronunciations and its transcriptions.
 They include the entry's forms, its parts of speech and its inflections with their features.
 They also include every Example and Situation each card references and every Tag and Translation it carries.
@@ -34,7 +34,7 @@ Meanings arrive as the tree the store keeps, each card holding the cards nested 
 A Collocation never nests, so its children are read nowhere.
 
 Each card carries the id of the row it was read from.
-So a draft loaded, edited and handed to `LEngineEntryUpdate` names the row each card belongs to.
+So a draft loaded, edited and committed names the row each card belongs to.
 A card the user adds afterwards has no id and is created.
 
 ## Inline notes

@@ -38,8 +38,6 @@ public interface LSettingsPort
 
     void LEngineRespellingSave(bool respelled);
 
-    LDoctorRescue LEngineRescueRead();
-
     string? LEngineAuditRecord(Exception exception);
 
     string? LEngineNoticeRead(Exception exception);

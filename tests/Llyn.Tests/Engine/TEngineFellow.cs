@@ -52,7 +52,7 @@ public sealed class TEngineFellow
             LStateMark.LStateMarkUnspecified));
         for (int position = 0; position < credited.Length; position++)
         {
-            engine.TEngineAuthorAttach(reference.LReferenceId, credited[position].LAuthorId, position);
+            engine.TRequestCreditApply(reference.LReferenceId, credited[position].LAuthorId, position);
         }
     }
 }

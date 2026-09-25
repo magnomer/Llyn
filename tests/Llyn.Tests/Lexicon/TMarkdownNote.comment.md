@@ -24,9 +24,9 @@ A lone asterisk or an underscore inside a word must not vanish from a note.
 
 The create path normalizes the note like the update path does.
 
-## `public void NoteSave_WindowsLineEnds_StoresNormalizedMarkdown()`
+## `public void NoteUpdate_WindowsLineEnds_StoresNormalizedMarkdown()`
 
-The direct save normalizes as well, so no path stores a raw note.
+The update path normalizes as well, so no path stores a raw note.
 
 ## `private static LEntryDraft TMarkdownNoteCreate(string note)`
 

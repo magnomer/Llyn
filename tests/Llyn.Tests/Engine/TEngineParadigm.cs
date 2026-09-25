@@ -12,14 +12,15 @@ namespace Llyn.Tests;
 public sealed class TEngineParadigm
 {
     [Fact]
-    public void ParadigmRead_ChildOfDeclaredPart_ReturnsParentSlots()
+    public void ParadigmShow_ChildOfDeclaredPart_ReturnsParentSlots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, transitive"));
 
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(["past", "past participle"], slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
         Assert.All(slots, slot => Assert.Equal(7, slot.LParadigmSlotSpeech.LSpeechValueCode));
         Assert.All(slots, slot => Assert.Null(slot.LParadigmSlotInflection));
@@ -27,19 +28,20 @@ public sealed class TEngineParadigm
     }
 
     [Fact]
-    public void ParadigmRead_StoredInflection_MarksSlotSpecified()
+    public void ParadigmShow_StoredInflection_MarksSlotSpecified()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, transitive"));
-        LParadigmSlot past = engine.TEngineParadigmRead(entry.LEntryId)[0];
-        engine.TEngineInflectionAppend(entry.LEntryId, [
+        LParadigmSlot past = engine.TEngineParadigmShow(entry.LEntryId)[0];
+        TParadigmInflectionSave(engine, entry.LEntryId, [
             TInterface.TInflectionCreate(
                 entry.LEntryId, 0, "worded", null, null, [past.LParadigmSlotMorphology.LMorphologyId]),
         ]);
 
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(LState.LStateSpecified, slots[0].LParadigmSlotState);
         Assert.Equal("worded", slots[0].LParadigmSlotInflection?.LInflectionText);
         Assert.Equal(LState.LStateUnspecified, slots[1].LParadigmSlotState);
@@ -47,7 +49,7 @@ public sealed class TEngineParadigm
     }
 
     [Fact]
-    public void ParadigmRead_ExceptedPart_ReturnsNothing()
+    public void ParadigmShow_ExceptedPart_ReturnsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -55,31 +57,31 @@ public sealed class TEngineParadigm
         LEntry water = engine.TEngineEntrySave(TParadigmDraftCreate("water", "Noun, uncountable"));
         LEntry cat = engine.TEngineEntrySave(TParadigmDraftCreate("cat", "Noun, countable"));
 
-        Assert.Empty(engine.TEngineParadigmRead(water.LEntryId));
-        Assert.Single(engine.TEngineParadigmRead(cat.LEntryId));
+        Assert.Empty(engine.TEngineParadigmShow(water.LEntryId));
+        Assert.Single(engine.TEngineParadigmShow(cat.LEntryId));
     }
 
     [Fact]
-    public void ParadigmRead_CustomPart_ReturnsNothing()
+    public void ParadigmShow_CustomPart_ReturnsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Verb, ergative"));
 
-        Assert.Empty(engine.TEngineParadigmRead(entry.LEntryId));
-        Assert.Empty(engine.TEngineParadigmRead(entry.LEntryId + 1));
+        Assert.Empty(engine.TEngineParadigmShow(entry.LEntryId));
+        Assert.Empty(engine.TEngineParadigmShow(entry.LEntryId + 1));
     }
 
     [Fact]
-    public void ParadigmRead_ManyParts_ReturnsSlotsInPartOrder()
+    public void ParadigmShow_ManyParts_ReturnsSlotsInPartOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Noun", "Verb"));
 
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(
             ["plural", "past", "past participle"], slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
         Assert.Equal([1L, 6L, 6L], slots.Select(slot => slot.LParadigmSlotSpeech.LSpeechValueCode));
@@ -117,14 +119,14 @@ public sealed class TEngineParadigm
     }
 
     [Fact]
-    public void ParadigmRead_SharedForm_FillsBothSlots()
+    public void ParadigmShow_SharedForm_FillsBothSlots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("walk", "Verb"));
-        IReadOnlyList<LParadigmSlot> empty = engine.TEngineParadigmRead(entry.LEntryId);
-        engine.TEngineInflectionAppend(entry.LEntryId, [
+        IReadOnlyList<LParadigmSlot> empty = engine.TEngineParadigmShow(entry.LEntryId);
+        TParadigmInflectionSave(engine, entry.LEntryId, [
             TInterface.TInflectionCreate(
                 entry.LEntryId,
                 0,
@@ -134,7 +136,7 @@ public sealed class TEngineParadigm
                 empty.Select(slot => slot.LParadigmSlotMorphology.LMorphologyId).ToList()),
         ]);
 
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(2, slots.Count);
         Assert.All(slots, slot => Assert.Equal("walked", slot.LParadigmSlotInflection?.LInflectionText));
         Assert.Single(slots.Select(slot => slot.LParadigmSlotInflection?.LInflectionId).Distinct());
@@ -150,7 +152,7 @@ public sealed class TEngineParadigm
         TParadigmInflectionAppend(engine, entry.LEntryId, "cats");
 
         Assert.Empty(engine.TEngineParadigmShow(entry.LEntryId));
-        Assert.Single(engine.TEngineParadigmRead(entry.LEntryId));
+        Assert.Single(engine.TEntryInflectionRead(entry.LEntryId));
     }
 
     [Fact]
@@ -186,6 +188,7 @@ public sealed class TEngineParadigm
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
 
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("cat", "Noun"));
 
@@ -210,9 +213,9 @@ public sealed class TEngineParadigm
         await Task.Delay(300);
 
         Assert.False(engine.TEngineSettingsRead().LSettingsMorphology);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
         Assert.All(
-            engine.TEngineParadigmRead(entry.LEntryId),
+            engine.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
 
@@ -222,7 +225,7 @@ public sealed class TEngineParadigm
 
     private static void TParadigmInflectionAppend(LEngine engine, long entryId, params string[] forms)
     {
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entryId);
         List<LInflection> inflections = [];
         for (int index = 0; index < forms.Length; index++)
         {
@@ -230,7 +233,12 @@ public sealed class TEngineParadigm
                 entryId, 0, forms[index], null, null, [slots[index].LParadigmSlotMorphology.LMorphologyId]));
         }
 
-        engine.TEngineInflectionAppend(entryId, inflections);
+        TParadigmInflectionSave(engine, entryId, inflections);
+    }
+
+    private static void TParadigmInflectionSave(LEngine engine, long entryId, IReadOnlyList<LInflection> added)
+    {
+        engine.TEntryInflectionSave(entryId, [.. engine.TEntryInflectionRead(entryId), .. added]);
     }
 
     private static LEntryDraft TParadigmDraftCreate(string headword, params string[] speeches)

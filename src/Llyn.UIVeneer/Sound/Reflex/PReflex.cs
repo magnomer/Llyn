@@ -215,20 +215,4 @@ public partial class PEditor
         row.PReflexItemAnchors = reflex.LReflexDraftAnchors;
         return row;
     }
-
-    private void PReflexClear()
-    {
-        foreach (PReflexItem row in _pReflexItem)
-        {
-            row.PropertyChanged -= PReflexChangeHandle;
-        }
-
-        _pReflexItem.Clear();
-        PReflexFold.Visibility = Visibility.Collapsed;
-        PReflexLoading.Visibility = Visibility.Collapsed;
-        PReflexRenewal.Tag = false;
-        PReflexTable.MinWidth = 0;
-        PReflexTable.MinHeight = 0;
-        PReflexBlock.Visibility = Visibility.Collapsed;
-    }
 }

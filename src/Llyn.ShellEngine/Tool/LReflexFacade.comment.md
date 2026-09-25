@@ -33,14 +33,6 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 
 The reflex rules of a language.
 
-## `public IReadOnlyList<LReflex> LEngineReflexRead(long entryId)`
-
-The stored reflex rows of an entry.
-
-## `internal IReadOnlyList<LReflex> LEngineReflexSet(long entryId, IReadOnlyList<LReflex> reflexes)`
-
-The rows of an entry replaced, the epithet rewritten with them.
-
 ## `public void LEngineReflexStart(long entryId)`
 
 Starts the reflex fetch of an entry that has none.
@@ -52,10 +44,6 @@ Clears and fetches the reflexes of an entry again.
 ## `public bool LEngineReflexCheck(long entryId)`
 
 Whether a reflex fetch is pending for the entry.
-
-## `internal Task<IReadOnlyList<LReflexDraft>> LEngineReflexFind(string headword, string language, CancellationToken cancellation)`
-
-The reflexes of `headword` fetched now.
 
 ## `public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)`
 

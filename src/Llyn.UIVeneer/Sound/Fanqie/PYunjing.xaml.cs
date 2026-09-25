@@ -169,12 +169,12 @@ public partial class PYunjing : UserControl
 
     private void PYunjingColumnUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pShengmuList,
             PYunjingItem.PYunjingItemBuild(_lYunjing.LYunjingShengmuRead()),
             PYunjingItem.PYunjingItemMatch,
             PYunjingItem.PYunjingItemSync);
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pYunmuList,
             PYunjingItem.PYunjingItemBuild(_lYunjing.LYunjingYunmuRead()),
             PYunjingItem.PYunjingItemMatch,
@@ -189,7 +189,7 @@ public partial class PYunjing : UserControl
 
     private void PXiaoyunUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pXiaoyunList,
             PXiaoyunItem.PXiaoyunItemBuild(_lYunjing.LYunjingXiaoyunRead()),
             PXiaoyunItem.PXiaoyunItemMatch,
@@ -243,13 +243,13 @@ public partial class PYunjing : UserControl
     private void PLadderHandle(object sender, RoutedEventArgs e)
     {
         PLadderDropper.IsChecked = false;
-        _lYunjing.LYunjingLadderSet(PSender.PSenderOrderRead(sender));
+        _lYunjing.LYunjingLadderSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PStairHandle(object sender, RoutedEventArgs e)
     {
         PStairDropper.IsChecked = false;
-        _lYunjing.LYunjingStairSet(PSender.PSenderOrderRead(sender));
+        _lYunjing.LYunjingStairSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PYunjingHandle(object sender, RoutedEventArgs e)

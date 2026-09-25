@@ -134,14 +134,6 @@ public sealed class LRegisterArchive : LRegisterVault
         session.LDatabaseSessionCommit();
     }
 
-    public int LRegisterReferenceRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
-        return LRegisterReferenceRead(session.LDatabaseSessionConnection, id);
-    }
-
     public IReadOnlyDictionary<long, int> LRegisterReferenceRead()
     {
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
@@ -164,46 +156,6 @@ public sealed class LRegisterArchive : LRegisterVault
         }
 
         return counts;
-    }
-
-    public void LRegisterDelete(long id)
-    {
-        LRegisterDelete(id, false);
-    }
-
-    public void LRegisterDelete(long id, bool detach)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        if (LRegisterRead(id) is not LRegister stored || stored.LRegisterBuiltin)
-        {
-            return;
-        }
-
-        using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        if (detach)
-        {
-            LRegisterLinkDelete(connection, "sense_register", "sense_parent", id);
-            LRegisterLinkDelete(connection, "collocation_register", "collocation_parent", id);
-        }
-
-        int references = LRegisterReferenceRead(connection, id);
-        if (references > 0)
-        {
-            throw new InvalidOperationException(
-                $"Register {id} is still referenced {references} time(s); detach every reference before deleting it.");
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM register WHERE register_id = $id AND builtin = 0;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
     }
 
     public void LRegisterMeaningAttach(long meaningId, long registerId, int position)
@@ -232,58 +184,6 @@ public sealed class LRegisterArchive : LRegisterVault
             reader.GetInt64(0),
             LStateColumn.LStateColumnRead(reader, 1),
             reader.GetInt64(3) != 0);
-    }
-
-    private static int LRegisterReferenceRead(SqliteConnection connection, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT
-                (SELECT COUNT(*) FROM sense_register WHERE register_ref = $id)
-                + (SELECT COUNT(*) FROM collocation_register WHERE register_ref = $id);
-            """;
-        command.Parameters.AddWithValue("$id", id);
-        return Convert.ToInt32(command.ExecuteScalar());
-    }
-
-    private static void LRegisterLinkDelete(
-        SqliteConnection connection,
-        string table,
-        string column,
-        long registerId)
-    {
-        List<long> referrers = [];
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = $"SELECT {column} FROM {table} WHERE register_ref = $register;";
-            command.Parameters.AddWithValue("$register", registerId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                referrers.Add(reader.GetInt64(0));
-            }
-        }
-
-        if (referrers.Count == 0)
-        {
-            return;
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = $"DELETE FROM {table} WHERE register_ref = $register;";
-            command.Parameters.AddWithValue("$register", registerId);
-            command.ExecuteNonQuery();
-        }
-
-        string scope = $"{column} = $owner";
-        foreach (long referrer in referrers)
-        {
-            LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, referrer, "register_ref",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "register_ref"));
-        }
     }
 
     private void LRegisterReferenceAttach(

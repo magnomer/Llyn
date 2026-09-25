@@ -21,14 +21,6 @@ So a second run rewrites the same rows, keeps their ids, and adds nothing.
 
 Reads the root, entry, language, morphology, sentence and speech ports out of `rig`.
 
-## `public LSpeechValue LSpeechCreate(LSpeechValue value)`
-
-Adds or replaces one part-of-speech value, keyed by its language and code, and returns it with its row id.
-
-## `public LSpeechValue? LSpeechRead(long id)`
-
-Reads the part-of-speech value with row id `id`, or `null` when no row has it.
-
 ## `public IReadOnlyList<LSpeechValue> LSpeechRead(string language)`
 
 Reads the parts of speech `language` declares, in the order its pack lists them.
@@ -43,17 +35,12 @@ Matching is on the trimmed name, without case, because the field is typed into b
 A new preset takes the next free order and a negative code, outside the space a pack owns.
 It returns the preset the name now stands for, or `null` when either argument is blank.
 
-## `public LSpeechValue? LSpeechFind(string language, string name)`
-
-Resolves the display `name` of a part of speech back to the row `language` declares.
-It returns `null` when no preset carries that name.
-
 ## `public static IReadOnlyList<string> LSpeechShow(IReadOnlyList<LSpeechDraft> drafts)`
 
 The names of the parts of speech, for the surfaces that show words rather than ids.
 A draft that names nothing shows nothing.
 
-## `public IReadOnlyList<LSpeech> LSpeechResolve(long entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)`
+## `public IReadOnlyList<LSpeech> LSpeechResolve(string language, IReadOnlyList<LSpeechDraft>? drafts)`
 
 The parts of speech a draft carries, as the rows the store keeps.
 A draft linking a value row that still exists is stored under that link untouched.
@@ -80,34 +67,6 @@ Two sets of assignments compared as they are stored.
 A row is the same row when it links the same value row at the same position.
 It is also the same when it carries the same typed text at the same position.
 The generated record equality would compare the entry id too, which is empty on the way in.
-
-## `public LFeature LFeatureCreate(LFeature feature)`
-
-Adds or replaces one feature under its part of speech, keyed by code, and returns it with its row id.
-
-## `public LMorphology LMorphologyCreate(LMorphology value)`
-
-Adds or replaces one value under its feature, keyed by code, and returns it with its row id.
-
-## `public IReadOnlyList<LFeature> LFeatureRead(long speechValueId)`
-
-Reads the features the part of speech takes, in display order.
-
-## `public LFeature? LFeatureFind(long speechValueId, string name)`
-
-Resolves the feature `name` names under the part of speech, or `null` when none does.
-
-## `public LMorphology? LMorphologyRead(long id)`
-
-Reads the morphology value with row id `id`, or `null` when no row has it.
-
-## `public IReadOnlyList<LMorphology> LMorphologyScan(long featureId)`
-
-Reads the values the feature takes, in display order.
-
-## `public LMorphology? LMorphologyFind(long featureId, string name)`
-
-Resolves the value `name` names under the feature, or `null` when none does.
 
 ## `public LSentenceOrder LSentenceOrderRead(string language)`
 

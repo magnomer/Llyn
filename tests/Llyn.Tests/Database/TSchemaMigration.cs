@@ -44,6 +44,37 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_CollocationSharingMeaningId_RenumbersItAndItsLinks()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, 'word', 'English', '2026-01-01', '2026-01-01'), " +
+            "       (2, 'Wort', 'German', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO sense (sense_id, entry_parent, position) VALUES (1, 1, 0); " +
+            "INSERT INTO collocation (collocation_id, entry_parent, position) VALUES (1, 1, 0), (5, 1, 1); " +
+            "INSERT INTO collocation_translation (collocation_parent, entry_ref, position) VALUES (1, 2, 0); " +
+            "INSERT INTO revision (revision_id, created_utc) VALUES (1, '2026-01-01'); " +
+            "INSERT INTO revision_change (revision_parent, position, target_ref, target_type, kind) " +
+            "VALUES (1, 0, 1, 'collocation', 'update'), (1, 1, 1, 'sense', 'update'); " +
+            "UPDATE schema_version SET version = 74;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            [5L, 6L],
+            workspace.TWorkspaceColumnRead("SELECT collocation_id FROM collocation ORDER BY collocation_id;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT sense_id FROM sense;"));
+        Assert.Equal(6, workspace.TWorkspaceCountRead("SELECT collocation_parent FROM collocation_translation;"));
+        Assert.Equal(6, workspace.TWorkspaceCountRead(
+            "SELECT target_ref FROM revision_change WHERE target_type = 'collocation';"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT target_ref FROM revision_change WHERE target_type = 'sense';"));
+        Assert.Equal(6, workspace.TWorkspaceCountRead("SELECT seq FROM sqlite_sequence WHERE name = 'collocation';"));
+    }
+
+    [Fact]
     public void WorkspacePrepare_NewConnection_EnforcesForeignKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

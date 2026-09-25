@@ -22,8 +22,6 @@ public interface LSituationVault
 
     IReadOnlyList<LUsage> LSituationUsageRead(long id);
 
-    void LSituationDelete(long id);
-
     void LSituationDelete(long id, bool detach);
 
     void LSituationMeaningAttach(long meaningId, long situationId, int position);

@@ -2,11 +2,10 @@
 
 ## `public sealed class TExample`
 
-Covers the engine's Example seam.
-An Example is created with its renditions.
-It is referenced from all three sides that may quote one.
-It is rewritten, pointed at a Reference and let go of.
-That includes the removal that deletes an Example nothing quotes any more.
+Covers Examples as the entry editor quotes them.
+An Example is created with its renditions and quoted from both card sides by a sentence citing it.
+What a card quotes is read back through the entry's load, as the editor reads it.
+It is rewritten through a card and pointed at a Reference through a card.
 
 ## `public void ExampleRead_FortyThousandExamples_ReadsEveryGlossAndMention()`
 
@@ -14,21 +13,6 @@ The whole-table read fills every Example's Glosses and Mentions in one statement
 Past 32 766 Examples that statement can no longer bind one parameter per id.
 So the ids travel as one JSON value.
 A corpus that deep must still open.
-
-## Inline notes
-
-### `Assert.Throws<InvalidOperationException>(() => engine.LEngineExampleDelete(example.LExampleId));`
-
-A delete while something still quotes it is refused.
-A detach leaves the row for the side that still does.
-
-### `engine.LEngineExampleUpdate(example.LExampleId, null);`
-
-Clearing the citation leaves both rows standing: only the pointer moved.
-
-### `private static LEntry TExampleEntryCreate(LEngine engine)`
-
-One saved entry with a Meaning card and a Collocation card, neither quoting an Example of its own.
 
 ## `public void EntryUpdate_SharedExampleEdited_LeavesOtherCardsSentence()`
 
@@ -43,10 +27,22 @@ The reads the browsing panel stands on.
 Every Example comes back with its renditions, including one nothing quotes.
 The counts answer for every Example at once, and an unquoted one is simply absent rather than zero.
 
-## `public void UsageRead_ExampleQuotedEverySide_NamesEachSide()`
+## `public void UsageRead_ExampleQuotedBothCardSides_NamesEachSide()`
 
 The itemized usage and the detaching delete.
-An Entry, a Meaning and a Collocation each quote on their own terms, and the read says which is which.
+A Meaning and a Collocation each quote on their own terms, and the read says which is which.
 The plain delete is still refused while anything quotes it.
 The detaching delete drops every reference and the row in one operation.
 
+## `private static LEntry TExampleEntryCreate(LEngine engine, IReadOnlyList<LSentenceDraft> meaningSentences, IReadOnlyList<LSentenceDraft> collocationSentences)`
+
+One saved entry with a Meaning card and a Collocation card, each carrying the sentences given.
+
+## `private static LSentenceDraft TExampleCiteCreate(LExample example)`
+
+A sentence citing a stored Example by id, with the text and source it already holds.
+Anything else would edit the Example rather than quote it.
+
+## `private static LCardDraft TExampleCardRead(LEngine engine, long entryId, bool collocation)`
+
+The first Meaning or Collocation card of the entry as its load returns it.

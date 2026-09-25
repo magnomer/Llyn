@@ -28,11 +28,6 @@ public sealed class LAuthorClerk
         return _lAuthorClerkAuthors.LAuthorRead(id);
     }
 
-    public IReadOnlyList<LAuthor> LAuthorClerkRead()
-    {
-        return _lAuthorClerkAuthors.LAuthorAllRead();
-    }
-
     public IReadOnlyList<LAuthor> LAuthorClerkRead(long ownerId, LOwner owner)
     {
         if (owner != LOwner.LOwnerReference)
@@ -43,35 +38,10 @@ public sealed class LAuthorClerk
         return _lAuthorClerkAuthors.LAuthorReferenceRead(ownerId);
     }
 
-    public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LAuthorClerkRead(LOwner owner)
-    {
-        if (owner != LOwner.LOwnerReference)
-        {
-            throw LAuthorOwnerRaise(owner);
-        }
-
-        return _lAuthorClerkAuthors.LAuthorReferenceRead();
-    }
-
     public void LAuthorClerkUpdate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
         _lAuthorClerkAuthors.LAuthorUpdate(author);
-    }
-
-    public void LAuthorClerkAttach(long referenceId, long authorId, int position)
-    {
-        _lAuthorClerkReferences.LReferenceAuthorAttach(referenceId, authorId, position);
-    }
-
-    public void LAuthorClerkDetach(long referenceId, long authorId)
-    {
-        _lAuthorClerkReferences.LReferenceAuthorDetach(referenceId, authorId);
-    }
-
-    public void LAuthorClerkDelete(long id)
-    {
-        _lAuthorClerkAuthors.LAuthorDelete(id);
     }
 
     public void LAuthorClerkDelete(long id, bool detach)

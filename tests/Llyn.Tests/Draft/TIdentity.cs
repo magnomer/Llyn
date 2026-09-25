@@ -138,7 +138,7 @@ public sealed class TIdentity
         engine.TEngineRequestApply(TInterface.TSituationPickCreate(
             started.LDraftId, content.LEntryDraftMeanings[0].LCardDraftId, stored.LSituationId, 0));
 
-        engine.TEngineSituationDelete(stored.LSituationId);
+        engine.TEngineSituationDelete(stored.LSituationId, false);
 
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineOutcomeCommit(started.LDraftId));
         Assert.Equal(LRefusal.LRefusalLink, refusal.LRefusalReason);

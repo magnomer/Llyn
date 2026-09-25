@@ -15,7 +15,7 @@ public sealed class LDraftArchive : LDraftVault
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
-    public const int LDraftArchiveVersion = 5;
+    public const int LDraftArchiveVersion = 6;
 
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 

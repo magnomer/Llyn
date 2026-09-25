@@ -9,7 +9,6 @@ Everything language-specific arrives through this record.
 
 **Parameters**
 
-- `LLanguageName` — The language's name, matching its folder under `languages/`.
 - `LLanguageFlag` — The pack's flag as an ISO 3166-1 alpha-2 country code (for example `gb`).
   It may instead be the full path of an SVG shipped in the pack folder.
   It is `null` when the pack declares none.
@@ -82,8 +81,6 @@ Everything language-specific arrives through this record.
   An entry of the language with no reflex rows is filled once from these, one rule per borrowing language.
   A pack that lists none carries an empty list, and nothing is fetched or shown.
 - `LLanguagePhonemic` — Whether a respelled reading is shown between slashes, declared with the top-level key `phonemic` set to `true`.
-- `LLanguageListed` — Whether the language picker offers the pack, off when the top-level key `listed` is `false`.
-  A pack that only names the language of a reflex row stays off the list until it is filled.
   The respelling groups of such a pack collapse allophones, so their output is phonemic rather than phonetic.
   The brackets stay square while the original reading is shown, and in a pack that omits the key.
 - `LLanguageAnatomies` — The rules the pack declares under `anatomy`, held as [LAnatomyRule](LAnatomyRule.comment.md) records.

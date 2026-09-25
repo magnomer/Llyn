@@ -21,11 +21,6 @@ The variety label is kept even when the reading is blank, so a row being filled 
   It is stored beside the original so the respelling switch only picks which of the two is shown.
   The engine derives it whenever the reading or its variety changes, and the user may overwrite it by hand.
 
-## `public static LPronunciationDraft? LPronunciationDraftCreate(string ipa, string audio, string? source)`
-
-Builds the draft from a reading and a recording alone.
-It gives back null when neither was given, because an empty pronunciation is no pronunciation.
-
 ## `public string LPronunciationDraftRead(bool respelled)`
 
 The reading as the field shows it: the respelling when the switch is on and one exists, else the original.

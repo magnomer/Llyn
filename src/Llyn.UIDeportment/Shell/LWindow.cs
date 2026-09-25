@@ -436,11 +436,6 @@ public sealed class LWindow : IDisposable
         return _lSettingsPort.LEngineNoticeRead(exception);
     }
 
-    public IReadOnlyList<LDraft> LWindowLeftoverRead()
-    {
-        return _lDraftPort.LEngineLeftoverRead();
-    }
-
     public void LWindowLeftoverSweep()
     {
         _lDraftPort.LEngineLeftoverSweep();

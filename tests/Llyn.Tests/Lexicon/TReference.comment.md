@@ -3,22 +3,22 @@
 ## `public sealed class TReference`
 
 Covers the engine's bibliographic seams.
-A Reference is created, cited by an Entry and by an Example.
-It is credited to Authors in order.
-Each side refuses a delete while something still points at the row.
+A Reference is created, cited by an Example and credited to Authors in order.
+Each side refuses a plain delete while something still points at the row.
+The detaching delete the catalog runs lets go of every pointer and the row together.
 Neither a Reference nor an Author is deleted by a citation or a credit going.
 Both are deliberate data, not something typed into a card.
 
 ## Inline notes
 
-### `LExample example = engine.LEngineExampleCreate(`
+### `Assert.NotNull(engine.TEngineExampleRead(example.LExampleId));`
 
-An Example holds one citation, so attaching a second replaces the first rather than adding.
+The Example that cited the Reference stays, only its pointer goes.
 
-### `Assert.Throws<InvalidOperationException>(() => engine.LEngineAuthorDelete(first.LAuthorId));`
+### `Assert.Throws<InvalidOperationException>(() => engine.TEngineAuthorDelete(first.LAuthorId, false));`
 
-A credited Author is not deletable, and losing the credit does not delete the person.
+A credited Author is not deletable until the delete detaches its credits.
 
-### `engine.LEngineReferenceDelete(reference.LReferenceId);`
+### `engine.TEngineReferenceDelete(reference.LReferenceId, true);`
 
 Deleting the Reference takes the credits it owns and leaves the Author it credited.

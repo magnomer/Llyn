@@ -4,9 +4,15 @@
 
 Covers the engine's Situation seam, which mirrors the Tag one.
 A Situation is created, read, rewritten and referenced from both card kinds.
-It covers the difference between a detach and a remove.
-It covers the delete the references refuse.
+It covers the delete the references refuse and the detach that leaves the row standing.
+Situations on a card are read back through the entry's load, as the editor reads them.
 The Images and Videos a Situation shows are covered by `TSituationMedia`.
+
+## `public void SituationPick_CollocationCard_LandsOnThatCard()`
+
+A request names its card by id alone.
+So a Meaning and a Collocation of one entry must never share an id.
+A pick aimed at the Collocation of a fresh entry once landed on its Meaning, since both were number 1.
 
 ## `public void SituationRead_WorkspaceShelf_ReturnsReferenceCounts()`
 
@@ -33,6 +39,22 @@ A gap in a card's positions is the next attach failing on the unique index.
 
 The second one asked for position 0, so it takes it and the set is renumbered around it.
 
+### `private static LCardDraft TSituationCardRead(LEngine engine, long entryId, bool collocation)`
+
+The first Meaning or Collocation card of the entry as its load returns it.
+
+### `private static void TSituationPickApply(`
+
+References a stored Situation from the first Meaning the way the entry form does, by picking it in a draft.
+
 ### `private static LEntry TSituationEntryCreate(LEngine engine)`
 
 One saved entry with a Meaning card and a Collocation card, neither carrying situations of its own.
+
+### `private static LEntry TSituationEntryCreate(`
+
+The same entry, with each card referencing the stored Situations given for it, in the order given.
+
+### `private static List<LSituationDraft> TSituationDraftRead(IReadOnlyList<LSituation> situations)`
+
+The chips a form holds for stored Situations, so the save picks them rather than minting new ones.

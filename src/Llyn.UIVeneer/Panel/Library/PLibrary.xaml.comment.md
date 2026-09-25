@@ -19,6 +19,7 @@ The print and portrait command bindings are added last, so no can-execute query 
 
 The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Hands the vista to the deportment and attaches the observers that carry each announcement onto the dispatcher.
+The dropdown lists the shared entry orderings, and the deportment draws the filter mark from the vista.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 
 ## `internal bool PLibraryDraftFinish(bool store)`
@@ -57,10 +58,6 @@ The discard seam: the window's leave dialog over the editor's finish, asked only
 ## `internal void PLibraryClose()`
 
 Stops the panel: the editor is shut down and the shared display releases its playback.
-
-## `private void PIndexUpdate()`
-
-Refills the index from the rows the deportment reads, spliced so the list keeps its scroll position.
 
 ## `private void PLibraryModeUpdate()`
 

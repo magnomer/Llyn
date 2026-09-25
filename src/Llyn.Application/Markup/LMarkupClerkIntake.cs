@@ -118,7 +118,6 @@ public sealed class LMarkupClerkIntake
                 }
 
                 changes.Add(new LRevisionChange(
-                    0,
                     id,
                     "entry",
                     mode == LMarkupMode.LMarkupModeNew ? "create" : "update",
@@ -138,7 +137,7 @@ public sealed class LMarkupClerkIntake
             _lMarkupIntakeFrequencies.LFrequencyClerkStart(entry.LEntryId);
         }
 
-        return new LMarkupOutcome(stored, omissions);
+        return new LMarkupOutcome(omissions);
     }
 
     private static void LMarkupLineSet(List<LMarkupOmission> omissions, int noted, int line)

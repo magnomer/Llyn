@@ -57,8 +57,8 @@ public sealed class TEntryUpdate
         Assert.Equal(thirdId, stored[1].LMeaningId);
         Assert.DoesNotContain(stored[2].LMeaningId, new[] { firstId, thirdId });
 
-        LRevision revision = Assert.IsType<LRevision>(engine.TEngineRevisionRead());
-        IReadOnlyList<LRevisionChange> changes = engine.TEngineChangeRead(revision.LRevisionId);
+        long revision = Assert.IsType<long>(engine.TEngineRevisionRead());
+        IReadOnlyList<LRevisionChange> changes = workspace.TRevisionChangeRead(revision);
         Assert.Contains(changes, change =>
             change.LRevisionChangeKind == "delete" && change.LRevisionChangeSummary == "second");
         Assert.Contains(changes, change =>
@@ -68,7 +68,7 @@ public sealed class TEntryUpdate
         Assert.Contains(changes, change =>
             change.LRevisionChangeKind == "create" && change.LRevisionChangeSummary == "fourth");
 
-        Assert.Equal(revision.LRevisionId, engine.TEngineStateRead().LWorkspaceStateRevision);
+        Assert.Equal(revision, engine.TEngineStateRead().LWorkspaceStateRevision);
     }
 
     [Fact]
@@ -126,31 +126,6 @@ public sealed class TEntryUpdate
         LEntry updated = engine.TEngineEntryUpdate(entry.LEntryId, edited);
 
         Assert.Equal("word", updated.LEntryHeadword);
-        Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
-    }
-
-    [Fact]
-    public void EntryUpdate_MeaningUpdatedDirectly_StampsEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "word",
-            "English",
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1)],
-            []));
-
-        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
-        LMeaning stored = meanings.TMeaningRead(entry.LEntryId)[0];
-
-        Thread.Sleep(20);
-        engine.TEngineMeaningUpdate(stored with { LMeaningDefinition = "reworded" });
-
-        LEntry? updated = engine.TEngineEntryRead(entry.LEntryId);
-        Assert.NotNull(updated);
         Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
     }
 
@@ -224,7 +199,7 @@ public sealed class TEntryUpdate
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        LRevision? before = engine.TEngineRevisionRead();
+        long? before = engine.TEngineRevisionRead();
 
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(
             entry.LEntryId,
@@ -253,7 +228,7 @@ public sealed class TEntryUpdate
             "a note",
             TInterface.TNoteArchiveCreate(workspace.TWorkspaceDatabase).TNoteRead(entry.LEntryId)?.LNoteText);
 
-        Assert.Equal(before?.LRevisionId, engine.TEngineRevisionRead()?.LRevisionId);
+        Assert.Equal(before, engine.TEngineRevisionRead());
     }
 
     [Fact]

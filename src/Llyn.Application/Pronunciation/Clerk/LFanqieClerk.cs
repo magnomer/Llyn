@@ -215,14 +215,6 @@ public sealed class LFanqieClerk
         return false;
     }
 
-    public async Task<IReadOnlyList<LFanqieRow>> LFanqieClerkFind(
-        string character, string language, CancellationToken cancellation)
-    {
-        (IReadOnlyList<LFanqieRow> found, _) =
-            await LFanqieClerkScan(character, language, cancellation).ConfigureAwait(false);
-        return found;
-    }
-
     public void LFanqieClerkClear()
     {
         lock (_lFanqieClerkGate)

@@ -55,16 +55,6 @@ No store of its own has to know which association tables exist.
 How many rows reference each Example, counted across the three association tables at once.
 The browsing panel needs the figure for every row it lists, so one statement answers for all of them.
 
-## `void LExampleDelete(long id);`
-
-Deletes the Example identified by `id`.
-Guarded: while any Meaning or Collocation still references the Example, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach every reference first.
-A Source the Example cited is left standing.
-Only the reference to it disappears with the row.
-The guard and the delete share one transaction, so nothing can attach the Example between them.
-
 ## `void LExampleDelete(long id, bool detach);`
 
 Deletes the Example, clearing every reference to it first when `detach` is set.

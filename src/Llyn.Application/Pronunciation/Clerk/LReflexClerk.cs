@@ -79,20 +79,6 @@ public sealed class LReflexClerk
             : _lReflexClerkLanguages.LLanguageCacheRead(language).LLanguageReflexRules;
     }
 
-    public IReadOnlyList<LReflex> LReflexClerkRead(long entryId)
-    {
-        return _lReflexClerkReflexes.LReflexRead(entryId);
-    }
-
-    public IReadOnlyList<LReflex> LReflexClerkSet(long entryId, IReadOnlyList<LReflex> reflexes)
-    {
-        ArgumentNullException.ThrowIfNull(reflexes);
-        IReadOnlyList<LReflex> saved = _lReflexClerkReflexes.LReflexSet(entryId, reflexes);
-        LReflexEpithetSave(entryId);
-        _lReflexClerkEntries.LEntryUpdatedSet(entryId);
-        return saved;
-    }
-
     public void LReflexClerkSync(
         long entryId,
         string language,
@@ -137,7 +123,6 @@ public sealed class LReflexClerk
         }
 
         changes?.Add(new LRevisionChange(
-            0,
             entryId,
             "reflex",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
@@ -235,14 +220,6 @@ public sealed class LReflexClerk
         {
             return _lReflexClerkPending.ContainsKey(entryId);
         }
-    }
-
-    public async Task<IReadOnlyList<LReflexDraft>> LReflexClerkFind(
-        string headword, string language, CancellationToken cancellation)
-    {
-        (IReadOnlyList<LReflexDraft> found, _) =
-            await LReflexClerkScan(headword, language, cancellation).ConfigureAwait(false);
-        return found;
     }
 
     public void LReflexClerkClear()

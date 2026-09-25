@@ -7,82 +7,31 @@ namespace Llyn.Tests;
 public sealed class TMeaning
 {
     [Fact]
-    public void MeaningCreate_OneRowAtATime_ReadsBackEachStep()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = TMeaningEntryCreate(engine);
-        LMeaning first = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
-
-        LMeaning second = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
-            0, entry.LEntryId, null, 0, null, "a second meaning"));
-        Assert.Equal(1, second.LMeaningPosition);
-        Assert.Equal("a second meaning", engine.TEngineMeaningRead(second.LMeaningId)?.LMeaningDefinition);
-
-        engine.TEngineMeaningUpdate(second with { LMeaningTitle = "the other one" });
-        Assert.Equal("the other one", engine.TEngineMeaningRead(second.LMeaningId)?.LMeaningTitle);
-
-        engine.TEngineMeaningMove(second.LMeaningId, 0);
-        Assert.Equal(
-            [second.LMeaningId, first.LMeaningId],
-            engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry).Select(row => row.LMeaningId));
-
-        engine.TEngineMeaningDelete(second.LMeaningId);
-        LMeaning left = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
-        Assert.Equal(first.LMeaningId, left.LMeaningId);
-        Assert.Equal(0, left.LMeaningPosition);
-    }
-
-    [Fact]
     public void MeaningRead_SubSensesUnderParent_CarryParentAndPosition()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TMeaningEntryCreate(engine);
-        LMeaning parent = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
-        LMeaning firstChild = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
-            0, entry.LEntryId, parent.LMeaningId, 0, null, "first sub-sense"));
-        LMeaning secondChild = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
-            0, entry.LEntryId, parent.LMeaningId, 0, null, "second sub-sense"));
+        LCardDraft firstSub =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "first sub-sense", [], [], [], [], [], 1);
+        LCardDraft secondSub =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "second sub-sense", [], [], [], [], [], 2);
+        LCardDraft root =
+            TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)
+            with { LCardDraftChild = [firstSub, secondSub] };
+        LEntry entry = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("word", "English", string.Empty, string.Empty, [root], []));
 
         IReadOnlyList<LMeaning> read = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry);
 
         Assert.Equal(3, read.Count);
+        LMeaning parent = read.Single(row => row.LMeaningParentId is null);
         LMeaning[] children = read.Where(row => row.LMeaningParentId == parent.LMeaningId)
             .OrderBy(row => row.LMeaningPosition).ToArray();
-        Assert.Equal([firstChild.LMeaningId, secondChild.LMeaningId], children.Select(row => row.LMeaningId));
-        Assert.Null(read.Single(row => row.LMeaningId == parent.LMeaningId).LMeaningParentId);
-    }
-
-    [Fact]
-    public void CollocationCreate_OneRowAtATime_ReadsBackEachStep()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = TMeaningEntryCreate(engine);
-        LCollocation first =
-            Assert.Single(engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry));
-
-        LCollocation second = engine.TEngineCollocationCreate(TInterface.TCollocationCreate(
-            0, entry.LEntryId, 0, null, "at a word", "quickly"));
-        Assert.Equal(1, second.LCollocationPosition);
-
-        engine.TEngineCollocationUpdate(second with { LCollocationMeaning = "in short" });
-        engine.TEngineCollocationMove(second.LCollocationId, 0);
-
-        IReadOnlyList<LCollocation> stored =
-            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry);
-        Assert.Equal([second.LCollocationId, first.LCollocationId], stored.Select(row => row.LCollocationId));
-        Assert.Equal("in short", stored[0].LCollocationMeaning);
-
-        engine.TEngineCollocationDelete(second.LCollocationId);
         Assert.Equal(
-            first.LCollocationId,
-            Assert.Single(engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry))
-                .LCollocationId);
+            ["first sub-sense", "second sub-sense"],
+            children.Select(row => row.LMeaningDefinition.TStateValueShow()));
+        Assert.Equal([0, 1], children.Select(row => row.LMeaningPosition));
     }
 
     [Fact]
@@ -96,8 +45,6 @@ public sealed class TMeaning
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             engine.TEngineMeaningRead(meaningId, LOwner.LOwnerMeaning));
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            engine.TEngineCollocationRead(meaningId, LOwner.LOwnerCollocation));
     }
 
     private static LEntry TMeaningEntryCreate(LEngine engine)

@@ -52,8 +52,6 @@ public partial class PGuild : UserControl
         PRoll.ItemsSource = _pRollList;
         POeuvre.ItemsSource = _pOeuvreList;
 
-        PColophon.PColophonAttach(host);
-
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PGuildPressHandle, PGuildPressCheck));
     }
 
@@ -136,7 +134,7 @@ public partial class PGuild : UserControl
 
     private void PRollUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pRollList,
             PRollItem.PRollItemBuild(_lGuild.LGuildRollRead()),
             PRollItem.PRollItemMatch,
@@ -164,7 +162,7 @@ public partial class PGuild : UserControl
 
     private void POeuvreUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pOeuvreList,
             PShelfItem.PShelfItemBuild(_lGuild.LGuildOeuvre.LOeuvreRowsRead()),
             PShelfItem.PShelfItemMatch,
@@ -234,12 +232,12 @@ public partial class PGuild : UserControl
     private void PEchelonHandle(object sender, RoutedEventArgs e)
     {
         PEchelonDropper.IsChecked = false;
-        _lGuild.LGuildOrderSet(PSender.PSenderOrderRead(sender));
+        _lGuild.LGuildOrderSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PLouverHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildLouverSet(PChoice.PChoiceFilterRead(PLouverList));
+        _lGuild.LGuildLouverSet(LChoice.LChoiceFilterRead(PLouverList));
         PLouverUpdate();
     }
 

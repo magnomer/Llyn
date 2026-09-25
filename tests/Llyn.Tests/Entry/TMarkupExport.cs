@@ -41,8 +41,8 @@ public sealed class TMarkupExport
             LStateMark.LStateMarkUnspecified));
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
-        engine.TEngineAuthorAttach(reference.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(reference.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(reference.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(reference.LReferenceId, lee.LAuthorId, 1);
 
         LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
             TInterface.TStateValueCreate("The ember glows."),
@@ -212,11 +212,11 @@ public sealed class TMarkupExport
             intakes.Add(TInterface.TMarkupIntakeCreate(index, LMarkupMode.LMarkupModeNew));
         }
 
-        LMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        TMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
 
         List<long> imported = [];
-        foreach (LEntry entry in outcome.LMarkupOutcomeEntry)
+        foreach (LEntry entry in outcome.TMarkupOutcomeEntry)
         {
             imported.Add(entry.LEntryId);
         }
@@ -252,11 +252,11 @@ public sealed class TMarkupExport
             intakes.Add(TInterface.TMarkupIntakeCreate(index, LMarkupMode.LMarkupModeNew));
         }
 
-        LMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        TMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
 
         string arrived = TExemplar.TExemplarShapeRead(
-            received.TEngineEntryLoad(outcome.LMarkupOutcomeEntry[0].LEntryId)!);
+            received.TEngineEntryLoad(outcome.TMarkupOutcomeEntry[0].LEntryId)!);
         Assert.Equal(sent, arrived);
     }
 }

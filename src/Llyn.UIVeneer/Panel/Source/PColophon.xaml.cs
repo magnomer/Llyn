@@ -8,24 +8,9 @@ namespace Llyn.UIVeneer;
 
 public partial class PColophon : UserControl
 {
-    private PWindow _pColophonHost = null!;
-
     public PColophon()
     {
         InitializeComponent();
-    }
-
-    internal void PColophonAttach(PWindow host)
-    {
-        ArgumentNullException.ThrowIfNull(host);
-        _pColophonHost = host;
-    }
-
-    internal void PColophonShow(LReference reference, IReadOnlyList<LAuthor> credits, string tally)
-    {
-        ArgumentNullException.ThrowIfNull(reference);
-
-        PColophonShow(reference.LReferenceColophonRead(credits, tally, PLocalizationCatalog.PLocalizationTextRead));
     }
 
     internal void PColophonShow(LColophon sheet)

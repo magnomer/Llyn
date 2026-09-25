@@ -20,8 +20,6 @@ public interface LExampleVault
 
     IReadOnlyDictionary<long, int> LExampleReferenceRead();
 
-    void LExampleDelete(long id);
-
     void LExampleDelete(long id, bool detach);
 
     IReadOnlyList<LUsage> LExampleUsageRead(long id);

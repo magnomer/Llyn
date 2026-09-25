@@ -2,8 +2,6 @@
 
 public sealed record LSentence(
     long LSentenceId,
-    long LSentenceOwnerId,
-    int LSentencePosition,
     LExample? LSentenceExample,
     LStateValue LSentenceParticle,
     LStateValue LSentenceDependence)

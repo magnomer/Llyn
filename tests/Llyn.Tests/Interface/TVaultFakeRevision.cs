@@ -15,9 +15,6 @@ internal sealed class TVaultFakeRevision : LRevisionVault
         return new LRevision(id, DateTimeOffset.UtcNow.ToString("O"));
     }
 
-    public LRevision? LRevisionRead(long id) =>
-        _tVaultFakeRows.ContainsKey(id) ? new LRevision(id, string.Empty) : null;
-
-    public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId) =>
+    internal IReadOnlyList<LRevisionChange> TRevisionChangeRead(long revisionId) =>
         _tVaultFakeRows.GetValueOrDefault(revisionId, []);
 }

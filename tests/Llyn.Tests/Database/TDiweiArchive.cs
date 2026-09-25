@@ -161,9 +161,7 @@ public sealed class TDiweiArchive
     private static void TDiweiAnchorApply(LEngine engine, long entryId, IReadOnlyList<LFanqieRow> rows)
     {
         IReadOnlyList<long> anchors = rows.Select(row => row.LFanqieRowId).ToList();
-        engine.TEngineReflexSet(
-            entryId,
-            engine.TEngineReflexRead(entryId).Select(reflex => reflex with { LReflexAnchors = anchors }).ToList());
+        engine.TEntryAnchorApply(entryId, anchors);
     }
 
     private static LEntryDraft TDiweiDraftCreate(string headword, string language, string reading = "")

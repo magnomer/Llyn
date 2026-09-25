@@ -16,7 +16,7 @@ public sealed class TGuildRoll
         LReference book = engine.TEngineCitationCreate("Book");
         engine.TEngineCitationCreate("Orphan");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
 
         IReadOnlyList<LCatalogAuthor> rows = guild.TGuildRollRead();
 
@@ -49,8 +49,8 @@ public sealed class TGuildRoll
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LAuthor bob = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
-        engine.TEngineAuthorAttach(book.LReferenceId, bob.LAuthorId, 1);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, bob.LAuthorId, 1);
 
         guild.TGuildRowSelect(ada.LAuthorId);
         LVita vita = guild.TGuildVitaRead();
@@ -90,7 +90,7 @@ public sealed class TGuildRoll
         LGuild guild = TGuildPrepare(engine);
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         LColophon? shown = null;
         guild.LGuildOeuvre.LOeuvrePanel.LPanelDraftChanged +=
             draft => shown = guild.LGuildOeuvre.TOeuvreColophonRead(draft);

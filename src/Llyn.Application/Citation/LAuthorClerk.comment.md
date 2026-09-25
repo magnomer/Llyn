@@ -24,39 +24,15 @@ This is the door the shell knocks on, and a name left empty there is a slip.
 
 Reads the Author for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LAuthor> LAuthorClerkRead()`
-
-Reads every Author the workspace holds, by name.
-
 ## `public IReadOnlyList<LAuthor> LAuthorClerkRead(long ownerId, LOwner owner)`
 
 Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.
 Only a Reference has credits, and any other side is refused.
 
-## `public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LAuthorClerkRead(LOwner owner)`
-
-Reads the credits of every Reference at once, each in that Reference's own order.
-`LOwner` names the kind being asked about, as the usage seam does, and only a Reference has credits.
-
 ## `public void LAuthorClerkUpdate(LAuthor author)`
 
 Renames the Author `author` identifies.
 Every credit reads the new name.
-
-## `public void LAuthorClerkAttach(long referenceId, long authorId, int position)`
-
-Credits the Author on the Reference at `position` in that Reference's author order.
-The Author row stays available to every other Reference.
-
-## `public void LAuthorClerkDetach(long referenceId, long authorId)`
-
-Removes one Reference's credit for an Author.
-The Author and its other credits survive.
-
-## `public void LAuthorClerkDelete(long id)`
-
-Deletes the Author identified by `id`.
-Refused while any Reference still credits the Author.
 
 ## `public void LAuthorClerkDelete(long id, bool detach)`
 

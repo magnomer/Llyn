@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <Style x:Key="Theme.Index.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding PIndexItemChosen}" Value="True">
+                <DataTrigger Binding="{Binding LIndexItemChosen}" Value="True">
                     <Setter Property="Tag" Value="Chosen" />
                 </DataTrigger>
             </Style.Triggers>
@@ -129,11 +129,11 @@
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PIndexItemFlag}" Stretch="Uniform" />
-                                            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PIndexItemName, Mode=OneWay}" /><Run
+                                            <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LIndexItemFlag}" Stretch="Uniform" />
+                                            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding LIndexItemName, Mode=OneWay}" /><Run
                                                 Style="{StaticResource Theme.Catalog.Epithet}"
-                                                Text="{Binding PIndexItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
-                                            <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PIndexItemLanguage}" />
+                                                Text="{Binding LIndexItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                                            <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding LIndexItemLanguage}" />
                                         </Grid>
                                     </Button>
                                 </DataTemplate>

@@ -58,30 +58,6 @@ Whether an undo would step anywhere, so a button can dim before it is pressed.
 
 Whether a redo would step anywhere.
 
-## `internal IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)`
-
-Reorders one card inside the held content and hands the whole list back renumbered.
-Positions are rewritten from `1` so they stay contiguous whatever the drag did.
-`collocation` picks which of the two lists is reordered.
-Both ends are clamped into range, because a drag can land past the last card.
-
-## `internal IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)`
-
-Renumbers one card list without moving anything, and hands the whole list back.
-A removed card leaves a gap in the numbering that nothing else closes.
-
-## `internal long LEngineCardCreate()`
-
-Mints one card id for a card the form has just added.
-The form cannot mint one itself, because identity is the workspace's to give.
-
-## `private IReadOnlyList<LCardDraft> LEngineCardApply(LDraft draft, bool collocation, List<LCardDraft> cards)`
-
-Writes one card list onto a held draft, numbered from `1` and named throughout.
-A card still carrying no id is named here too, because the answer is about to be matched by id.
-When the list actually changed, the draft is recorded in the chronicle before the write.
-So a move can be undone.
-
 ## `internal LCourt LEngineCourtSave(long ownerId, long targetId, string headword, string language)`
 
 Writes one court row: a link from a held draft to a target that is not an entry yet.
@@ -101,5 +77,3 @@ Removes one court row, for a chip the user took back.
 ## `internal LCourt? LEngineCourtFind(long ownerId, long targetId)`
 
 The court row one draft holds against one target, or null when there is none.
-
-

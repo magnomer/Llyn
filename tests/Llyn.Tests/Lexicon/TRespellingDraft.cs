@@ -99,14 +99,8 @@ public sealed class TRespellingDraft
 
         Assert.Equal(
             [("ʈ͡ʂʊŋ⁵⁵", "tʂuŋ⁵⁵"), ("ʈ͡ʂʊŋ⁵¹", "tʂuŋ⁵¹")],
-            engine.TEnginePronunciationRead(entry.LEntryId)
-                .Select(row => (row.LPronunciationIpa, row.LPronunciationRespelling)));
-
-        LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
-        Assert.NotNull(loaded);
-        Assert.Equal(
-            ["tʂuŋ⁵⁵", "tʂuŋ⁵¹"],
-            loaded.LEntryDraftPronunciations.Select(row => row.LPronunciationDraftRespelling));
+            engine.TEntryPronunciationRead(entry.LEntryId)
+                .Select(row => (row.LPronunciationDraftIpa, row.LPronunciationDraftRespelling)));
     }
 
     [Fact]
@@ -116,15 +110,15 @@ public sealed class TRespellingDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = engine.TEngineEntrySave(TRespellingDraftCreate(
             [TInterface.TPronunciationDraftCreate("ʈ͡ʂʊŋ⁵⁵", respelling: "tʂuŋ⁵⁵")]));
-        long stored = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationId;
+        long stored = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId)).LPronunciationDraftId;
         LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
 
         engine.TEngineRequestApply(TInterface.TPronunciationRespellingCreate(started.LDraftId, stored, "tʂuŋ"));
         engine.TEngineDraftCommit(started.LDraftId);
 
-        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
-        Assert.Equal("ʈ͡ʂʊŋ⁵⁵", kept.LPronunciationIpa);
-        Assert.Equal("tʂuŋ", kept.LPronunciationRespelling);
+        LPronunciationDraft kept = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId));
+        Assert.Equal("ʈ͡ʂʊŋ⁵⁵", kept.LPronunciationDraftIpa);
+        Assert.Equal("tʂuŋ", kept.LPronunciationDraftRespelling);
     }
 
     [Fact]
@@ -169,10 +163,8 @@ public sealed class TRespellingDraft
         });
 
         Assert.Equal(
-            "tʂuŋ⁵⁵", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationRespelling);
-        Assert.Equal(
             ["tsiŋ³⁵", ""],
-            engine.TEngineReflexRead(entry.LEntryId).Select(row => row.LReflexRespelling));
+            engine.TEntryReflexRead(entry.LEntryId).Select(row => row.LReflexDraftRespelling));
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         Assert.Equal("tʂuŋ⁵⁵", Assert.Single(loaded.LEntryDraftPronunciations).LPronunciationDraftRespelling);

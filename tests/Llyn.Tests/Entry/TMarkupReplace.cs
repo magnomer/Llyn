@@ -35,11 +35,11 @@ public sealed class TMarkupReplace
             </llyn>
             """;
         string path = TInterface.TMarkupSave(workspace, text);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path),
             [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeMerge, ember.LEntryId)]);
 
-        Assert.Equal(ember.LEntryId, Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId);
+        Assert.Equal(ember.LEntryId, Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         Assert.Equal(3, draft.LEntryDraftMeanings.Count);
         Assert.Equal(coalId, draft.LEntryDraftMeanings[0].LCardDraftId);
@@ -47,7 +47,7 @@ public sealed class TMarkupReplace
         Assert.Equal("a remnant", draft.LEntryDraftMeanings[1].LCardDraftMeaning.TStateValueShow());
         Assert.Equal("a spark of feeling", draft.LEntryDraftMeanings[2].LCardDraftMeaning.TStateValueShow());
         Assert.Equal(3, draft.LEntryDraftMeanings[2].LCardDraftPosition);
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
     }
 
     [Fact]
@@ -96,11 +96,11 @@ public sealed class TMarkupReplace
         engine.TEngineFavoriteSave(glow.LEntryId);
 
         string path = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path),
             [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeReplace, glow.LEntryId)]);
 
-        LEntry replaced = Assert.Single(outcome.LMarkupOutcomeEntry);
+        LEntry replaced = Assert.Single(outcome.TMarkupOutcomeEntry);
         Assert.Equal(glow.LEntryId, replaced.LEntryId);
         Assert.Equal("ember", replaced.LEntryHeadword);
         Assert.Equal(3, engine.TEngineGraspRead(glow.LEntryId));
@@ -151,11 +151,11 @@ public sealed class TMarkupReplace
             </llyn>
             """;
         string path = TInterface.TMarkupSave(workspace, text);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path),
             [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeReplace, glow.LEntryId)]);
 
-        Assert.Contains("sense", Assert.Single(outcome.LMarkupOutcomeOmission).LMarkupOmissionText);
+        Assert.Contains("sense", Assert.Single(outcome.TMarkupOutcomeOmission).LMarkupOmissionText);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         LExampleDraft example = Assert.IsType<LExampleDraft>(
             Assert.Single(Assert.Single(draft.LEntryDraftMeanings).LCardDraftSentence).LSentenceDraftExample);

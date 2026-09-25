@@ -85,14 +85,14 @@ public sealed class TDraftCommit
         LDraft started = engine.TEngineDraftStart("Input", null);
         engine.TRequestContentApply(started.LDraftId, TDraftContentCreate("kindle"));
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
-        LRevision? before = engine.TEngineRevisionRead();
+        long? before = engine.TEngineRevisionRead();
 
         engine.TEngineEntryUpdate(stored.LEntryId, engine.TEngineEntryLoad(stored.LEntryId)!);
-        LRevision? after = engine.TEngineRevisionRead();
+        long? after = engine.TEngineRevisionRead();
 
         Assert.NotNull(before);
         Assert.NotNull(after);
-        Assert.Equal(before.LRevisionId, after.LRevisionId);
+        Assert.Equal(before, after);
     }
 
     [Fact]
@@ -145,10 +145,10 @@ public sealed class TDraftCommit
                 sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
         LExample example = engine.TEngineExampleCommit(sentence.LDraftId);
 
-        LRevision? revision = engine.TEngineRevisionRead();
+        long? revision = engine.TEngineRevisionRead();
 
         Assert.NotNull(revision);
-        LRevisionChange change = Assert.Single(engine.TEngineChangeRead(revision.LRevisionId));
+        LRevisionChange change = Assert.Single(workspace.TRevisionChangeRead(revision.Value));
         Assert.Equal("example", change.LRevisionChangeSubject);
         Assert.Equal("create", change.LRevisionChangeKind);
         Assert.Equal(example.LExampleId, change.LRevisionChangeTarget);

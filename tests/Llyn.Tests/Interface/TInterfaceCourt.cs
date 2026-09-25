@@ -28,7 +28,7 @@ internal static partial class TInterface
         new(draftId, process, moment);
 
     internal static LCourt? TCourtArchiveRead(string root, long id) =>
-        new LCourtArchive(root).LCourtRead(id);
+        new LCourtArchive(root).LCourtScan().FirstOrDefault(link => link.LCourtId == id);
 
     internal static void TCourtArchiveSave(string root, LCourt link)
     {

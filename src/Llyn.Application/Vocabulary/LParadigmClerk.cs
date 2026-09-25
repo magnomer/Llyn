@@ -24,17 +24,6 @@ public sealed class LParadigmClerk
         _lParadigmClerkSpeeches = rig.LRigSpeeches;
     }
 
-    public IReadOnlyList<LParadigmSlot> LParadigmClerkRead(long entryId)
-    {
-        if (entryId <= 0)
-        {
-            return [];
-        }
-
-        LEntry? entry = _lParadigmClerkEntries.LEntryRead(entryId);
-        return entry is null ? [] : LParadigmClerkRead(entry);
-    }
-
     public IReadOnlyList<LParadigmSlot> LParadigmClerkRead(LEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);

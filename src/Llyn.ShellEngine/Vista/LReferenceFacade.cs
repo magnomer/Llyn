@@ -16,26 +16,6 @@ internal sealed class LReferenceFacade
         _lReferenceFacadeGate = engine.LEngineGate;
     }
 
-    internal LReference LEngineReferenceCreate(LReference reference)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            return LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkCreate(reference);
-        }
-    }
-
-    public LReference LEngineCitationCreate(string title)
-    {
-        LReference stored;
-        lock (_lReferenceFacadeGate)
-        {
-            stored = LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkCreate(title);
-        }
-
-        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
-        return stored;
-    }
-
     public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)
     {
         LReference stored;
@@ -64,14 +44,6 @@ internal sealed class LReferenceFacade
         lock (_lReferenceFacadeGate)
         {
             return LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkRead(id);
-        }
-    }
-
-    internal IReadOnlyList<LReference> LEngineReferenceRead()
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            return LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkRead();
         }
     }
 
@@ -106,48 +78,6 @@ internal sealed class LReferenceFacade
         }
 
         return rows;
-    }
-
-    internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            return LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkRead(ownerId, owner);
-        }
-    }
-
-    internal void LEngineReferenceUpdate(LReference reference)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkUpdate(reference);
-        }
-    }
-
-    internal void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkAttach(ownerId, referenceId, owner);
-        }
-    }
-
-    internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkDetach(ownerId, owner);
-        }
-    }
-
-    internal void LEngineReferenceDelete(long id)
-    {
-        lock (_lReferenceFacadeGate)
-        {
-            LReferenceFacadeStaff.LEngineStaffReference.LReferenceClerkDelete(id);
-        }
-
-        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
     internal void LEngineReferenceDelete(long id, bool detach)

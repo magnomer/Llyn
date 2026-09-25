@@ -37,7 +37,7 @@ public partial class PTaxonomy
             });
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pMembershipList, fresh, PMembershipItem.PMembershipItemMatch, PMembershipItem.PMembershipItemSync);
 
         PMembershipEmpty.SetResourceReference(

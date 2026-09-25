@@ -33,7 +33,7 @@ public sealed class TEngineInflectionFetch
         LBulletin raised = await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
 
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(["went", "gone"], slots.Select(slot => slot.LParadigmSlotInflection?.LInflectionText));
         Assert.All(slots, slot => Assert.Equal(LState.LStateSpecified, slot.LParadigmSlotState));
         Assert.All(
@@ -58,7 +58,7 @@ public sealed class TEngineInflectionFetch
         engine.TEngineInflectionStart(entry.LEntryId);
         await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
 
-        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(LState.LStateSpecified, slots[0].LParadigmSlotState);
         Assert.Equal("went", slots[0].LParadigmSlotInflection?.LInflectionText);
         Assert.Equal(LState.LStateUnknown, slots[1].LParadigmSlotState);
@@ -80,9 +80,9 @@ public sealed class TEngineInflectionFetch
         LBulletin raised = await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
 
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
         Assert.All(
-            engine.TEngineParadigmRead(entry.LEntryId),
+            engine.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnknown, slot.LParadigmSlotState));
     }
 
@@ -106,11 +106,11 @@ public sealed class TEngineInflectionFetch
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
         Assert.All(
-            engine.TEngineParadigmRead(entry.LEntryId),
+            engine.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
 
-        engine.TEngineInflectionSet(entry.LEntryId, []);
+        engine.TEntryInflectionSave(entry.LEntryId, []);
         engine.TEngineInflectionStart(entry.LEntryId);
         await TInflectionCountCheck(handler, asked + 1);
     }
@@ -135,7 +135,7 @@ public sealed class TEngineInflectionFetch
 
         Assert.Equal(1, handler.TSourceHandlerCount);
         Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
-        Assert.Equal(2, engine.TEngineInflectionRead(entry.LEntryId).Count);
+        Assert.Equal(2, engine.TEntryInflectionRead(entry.LEntryId).Count);
     }
 
     [Fact]
@@ -145,7 +145,9 @@ public sealed class TEngineInflectionFetch
         TSourceHandler handler = new(TInflectionFetchBody, HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         engine.TEngineFrequencySave(false);
+        engine.TEngineMorphologySave(false);
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
+        engine.TEngineMorphologySave(true);
         LDraft draft = engine.TEngineDraftStart("test", entry.LEntryId);
 
         engine.TEngineInflectionStart(entry.LEntryId);
@@ -173,7 +175,7 @@ public sealed class TEngineInflectionFetch
         await Task.Delay(200);
 
         Assert.Equal(0, handler.TSourceHandlerCount);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
         Assert.False(observer.TInflectionObserverRaised.IsCompleted);
     }
 
@@ -191,19 +193,20 @@ public sealed class TEngineInflectionFetch
 
         engine.TEngineInflectionStart(entry.LEntryId);
         LEntryDraft loaded = engine.TEngineEntryLoad(entry.LEntryId)!;
+        engine.TEngineMorphologySave(false);
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with { LEntryDraftHeadword = "goes" });
         gate.SetResult();
         Task settled = await Task.WhenAny(observer.TInflectionObserverRaised, Task.Delay(500));
 
         Assert.NotSame(observer.TInflectionObserverRaised, settled);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
         Assert.All(
-            engine.TEngineParadigmRead(entry.LEntryId),
+            engine.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
 
     [Fact]
-    public async Task InflectionSet_AfterMiss_ClearsUnknownMark()
+    public async Task InflectionSave_AfterMiss_ClearsUnknownMark()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
@@ -214,12 +217,13 @@ public sealed class TEngineInflectionFetch
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
         engine.TEngineInflectionStart(entry.LEntryId);
         await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
-        Assert.Equal(LState.LStateUnknown, engine.TEngineParadigmRead(entry.LEntryId)[1].LParadigmSlotState);
+        Assert.Equal(LState.LStateUnknown, engine.TEngineParadigmShow(entry.LEntryId)[1].LParadigmSlotState);
 
-        engine.TEngineInflectionSet(entry.LEntryId, []);
+        engine.TEngineMorphologySave(false);
+        engine.TEntryInflectionSave(entry.LEntryId, []);
 
         Assert.All(
-            engine.TEngineParadigmRead(entry.LEntryId),
+            engine.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
 
@@ -237,7 +241,7 @@ public sealed class TEngineInflectionFetch
 
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));
-        IReadOnlyList<LParadigmSlot> slots = reopened.TEngineParadigmRead(entry.LEntryId);
+        IReadOnlyList<LParadigmSlot> slots = reopened.TEngineParadigmShow(entry.LEntryId);
         Assert.Equal(LState.LStateSpecified, slots[0].LParadigmSlotState);
         Assert.Equal("went", slots[0].LParadigmSlotInflection?.LInflectionText);
         Assert.Equal(LState.LStateUnknown, slots[1].LParadigmSlotState);
@@ -258,13 +262,13 @@ public sealed class TEngineInflectionFetch
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));
         Assert.All(
-            reopened.TEngineParadigmRead(entry.LEntryId),
+            reopened.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
     }
 
     [Fact]
-    public async Task InflectionSet_AfterReopen_ClearsLacuna()
+    public async Task InflectionSave_AfterReopen_ClearsLacuna()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TSourceHandler handler = new(TInflectionFetchPast, HttpStatusCode.OK);
@@ -272,12 +276,14 @@ public sealed class TEngineInflectionFetch
 
         using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
-        reopened.TEngineInflectionSet(entry.LEntryId, []);
+        reopened.TEngineMorphologySave(false);
+        reopened.TEntryInflectionSave(entry.LEntryId, []);
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
         Assert.All(
-            reopened.TEngineParadigmRead(entry.LEntryId),
+            reopened.TEngineParadigmShow(entry.LEntryId),
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
+        reopened.TEngineMorphologySave(true);
         int asked = handler.TSourceHandlerCount;
         reopened.TEngineInflectionStart(entry.LEntryId);
         await TInflectionCountCheck(handler, asked + 1);

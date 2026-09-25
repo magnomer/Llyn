@@ -48,7 +48,6 @@ public partial class PReference : UserControl
         PShelf.ItemsSource = _pShelfList;
         PFootnote.ItemsSource = _pFootnoteList;
 
-        PColophon.PColophonAttach(host);
         PImprint.PImprintAttach(host, _lShelf.LShelfImprint);
         PDisplay.PDisplayAttach(host, _lShelf.LShelfEditor.LEditorDisplay);
         PEditor.PEditorAttach(host, _lShelf.LShelfEditor);
@@ -162,7 +161,7 @@ public partial class PReference : UserControl
 
     private void PShelfUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pShelfList,
             PShelfItem.PShelfItemBuild(_lShelf.LShelfRowsRead()),
             PShelfItem.PShelfItemMatch,
@@ -174,7 +173,7 @@ public partial class PReference : UserControl
 
     private void PFootnoteUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pFootnoteList,
             PFootnoteItem.PFootnoteItemBuild(_lShelf.LShelfFootnote.LFootnoteRowsRead()),
             PFootnoteItem.PFootnoteItemMatch,
@@ -247,14 +246,14 @@ public partial class PReference : UserControl
 
     private void PTrellisHandle(object sender, RoutedEventArgs e)
     {
-        _lShelf.LShelfSieveSet(PChoice.PChoiceFilterRead(PTrellisList));
+        _lShelf.LShelfSieveSet(LChoice.LChoiceFilterRead(PTrellisList));
         PTrellisUpdate();
     }
 
     private void PGradeHandle(object sender, RoutedEventArgs e)
     {
         PGradeDropper.IsChecked = false;
-        _lShelf.LShelfOrderSet(PSender.PSenderOrderRead(sender));
+        _lShelf.LShelfOrderSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PShelfHandle(object sender, RoutedEventArgs e)

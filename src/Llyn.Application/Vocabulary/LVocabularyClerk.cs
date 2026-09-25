@@ -24,17 +24,6 @@ public sealed class LVocabularyClerk
         _lVocabularyClerkSpeeches = rig.LRigSpeeches;
     }
 
-    public LSpeechValue LSpeechCreate(LSpeechValue value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-        return _lVocabularyClerkSpeeches.LSpeechValueCreate(value);
-    }
-
-    public LSpeechValue? LSpeechRead(long id)
-    {
-        return _lVocabularyClerkSpeeches.LSpeechValueRead(id);
-    }
-
     public IReadOnlyList<LSpeechValue> LSpeechRead(string language)
     {
         return _lVocabularyClerkSpeeches.LSpeechValueRead(language);
@@ -65,11 +54,6 @@ public sealed class LVocabularyClerk
         return values.LSpeechValueCreate(new LSpeechValue(0, language, 0, typed, position));
     }
 
-    public LSpeechValue? LSpeechFind(string language, string name)
-    {
-        return _lVocabularyClerkSpeeches.LSpeechValueFind(language, name);
-    }
-
     public static IReadOnlyList<string> LSpeechShow(IReadOnlyList<LSpeechDraft> drafts)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -86,7 +70,7 @@ public sealed class LVocabularyClerk
         return named;
     }
 
-    public IReadOnlyList<LSpeech> LSpeechResolve(long entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)
+    public IReadOnlyList<LSpeech> LSpeechResolve(string language, IReadOnlyList<LSpeechDraft>? drafts)
     {
         if (drafts is null || drafts.Count == 0)
         {
@@ -104,7 +88,7 @@ public sealed class LVocabularyClerk
                     throw new LRefusal(LRefusal.LRefusalLink);
                 }
 
-                speeches.Add(new LSpeech(entryId, speeches.Count, draft.LSpeechDraftValue));
+                speeches.Add(new LSpeech(draft.LSpeechDraftValue));
                 continue;
             }
 
@@ -119,8 +103,8 @@ public sealed class LVocabularyClerk
                 : values.LSpeechValueFind(language, typed);
 
             speeches.Add(value is null
-                ? new LSpeech(entryId, speeches.Count, null, typed)
-                : new LSpeech(entryId, speeches.Count, value.LSpeechValueId));
+                ? new LSpeech(null, typed)
+                : new LSpeech(value.LSpeechValueId));
         }
 
         return speeches;
@@ -133,7 +117,7 @@ public sealed class LVocabularyClerk
 
         LEntryVault entries = _lVocabularyClerkEntries;
         IReadOnlyList<LSpeech> stored = entries.LEntrySpeechRead(entryId);
-        IReadOnlyList<LSpeech> current = LSpeechResolve(entryId, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches);
+        IReadOnlyList<LSpeech> current = LSpeechResolve(draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches);
 
         if (LSpeechMatch(stored, current))
         {
@@ -142,7 +126,6 @@ public sealed class LVocabularyClerk
 
         entries.LEntrySpeechSet(entryId, current);
         changes.Add(new LRevisionChange(
-            0,
             entryId,
             "speech",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
@@ -185,51 +168,6 @@ public sealed class LVocabularyClerk
         }
 
         return true;
-    }
-
-    public LFeature LFeatureCreate(LFeature feature)
-    {
-        ArgumentNullException.ThrowIfNull(feature);
-        return _lVocabularyClerkMorphologies.LFeatureCreate(feature);
-    }
-
-    public LMorphology LMorphologyCreate(LMorphology value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-        return _lVocabularyClerkMorphologies.LMorphologyCreate(value);
-    }
-
-    public IReadOnlyList<LFeature> LFeatureRead(long speechValueId)
-    {
-        return speechValueId <= 0
-            ? []
-            : _lVocabularyClerkMorphologies.LFeatureRead(speechValueId);
-    }
-
-    public LFeature? LFeatureFind(long speechValueId, string name)
-    {
-        return speechValueId <= 0
-            ? null
-            : _lVocabularyClerkMorphologies.LFeatureFind(speechValueId, name);
-    }
-
-    public LMorphology? LMorphologyRead(long id)
-    {
-        return _lVocabularyClerkMorphologies.LMorphologyRead(id);
-    }
-
-    public IReadOnlyList<LMorphology> LMorphologyScan(long featureId)
-    {
-        return featureId <= 0
-            ? []
-            : _lVocabularyClerkMorphologies.LMorphologyScan(featureId);
-    }
-
-    public LMorphology? LMorphologyFind(long featureId, string name)
-    {
-        return featureId <= 0
-            ? null
-            : _lVocabularyClerkMorphologies.LMorphologyFind(featureId, name);
     }
 
     public LSentenceOrder LSentenceOrderRead(string language)

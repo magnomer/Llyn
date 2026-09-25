@@ -28,15 +28,16 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_ThreeRules_ReadsRowsKindsRomanizationsAndMark()
+    public async Task ReflexStart_ThreeRules_StoresRowsRomanizationsAndMark()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "弄", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "弄", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [
@@ -52,29 +53,31 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_OptionalSegmentUncaptured_DropsTheSegment()
+    public async Task ReflexStart_OptionalSegmentUncaptured_DropsTheSegment()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "璋", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "璋", pack.TLanguageFixtureName);
 
         Assert.Equal("장 | 홀", found[0].LReflexDraftText);
     }
 
     [Fact]
-    public async Task ReflexFind_NoMainCaptured_MarksFirstRow()
+    public async Task ReflexStart_NoMainCaptured_MarksFirstRow()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "璋", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "璋", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [
@@ -86,7 +89,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_KoreanPairOfSeveralWords_ReadsLastWordAsReading()
+    public async Task ReflexStart_KoreanMultiWordPair_StoresLastWordAsReading()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -94,7 +97,7 @@ public sealed class TEngineReflex
               "match": "(?<=\"items\":\\[\\{[^\\[\\]]*\"expKoreanPron\":\"[^\"]*)
             """.TrimEnd()
             + """(?<meaning>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])", "every": true, "first": true } ] }""");
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -102,8 +105,9 @@ public sealed class TEngineReflex
                     """{"items":[{"expEntry":"惡","expKoreanPron":"악할 악, 미워할 오, 강 이름 호","x":1}]}""",
             }));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "惡", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "惡", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [
@@ -118,15 +122,16 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_OneTextAcrossKinds_MarksEveryRow()
+    public async Task ReflexStart_OneTextAcrossKinds_MarksEveryRow()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "安", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "安", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [
@@ -139,7 +144,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_BorrowerPack_FillsRespellingBesideText()
+    public async Task ReflexStart_BorrowerPack_FillsRespellingBesideText()
     {
         using TLanguageFixture borrower = TLanguageFixture.TLanguageFixtureCreate(
             """{ "phonemic": true, "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"], ["⁵¹", "4"]] } ] }""");
@@ -149,8 +154,9 @@ public sealed class TEngineReflex
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "弄", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "弄", pack.TLanguageFixtureName);
 
         Assert.Equal("nʊŋ⁵¹", found[3].LReflexDraftText);
         Assert.Equal("nuŋ4", found[3].LReflexDraftRespelling);
@@ -161,15 +167,16 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_TwoCharacters_MergesRowsOfOneKindAndRomanization()
+    public async Task ReflexStart_TwoCharacters_MergesRowsOfOneKind()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "弄璋", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "弄璋", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [
@@ -184,15 +191,16 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexFind_RecastAndSuperscript_MovesToneAndRaisesDigits()
+    public async Task ReflexStart_Recast_MovesToneAndRaisesDigits()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexWuPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexWuPages));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "屋", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "屋", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [

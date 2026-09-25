@@ -90,30 +90,6 @@ public sealed class LReferenceArchive : LReferenceVault
         return references;
     }
 
-    public LReference? LReferenceExampleRead(long exampleId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
-
-        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        long id;
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "SELECT reference_ref FROM example WHERE example_id = $example;";
-            command.Parameters.AddWithValue("$example", exampleId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            if (!reader.Read() || reader.IsDBNull(0))
-            {
-                return null;
-            }
-
-            id = reader.GetInt64(0);
-        }
-
-        return LReferenceSingleRead(connection, id);
-    }
-
     public IReadOnlyDictionary<long, int> LReferenceUsageRead()
     {
         return new LReferenceUsage(_lReferenceArchiveDatabase).LReferenceUsageRead();
@@ -159,11 +135,6 @@ public sealed class LReferenceArchive : LReferenceVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LReferenceDelete(long id)
-    {
-        LReferenceDelete(id, false);
-    }
-
     public void LReferenceDelete(long id, bool detach)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -207,40 +178,6 @@ public sealed class LReferenceArchive : LReferenceVault
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
         LReferenceLinkDetach("reference_author", "reference_parent", "author_ref", referenceId, authorId);
-    }
-
-    public void LReferenceExampleAttach(long exampleId, long referenceId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
-
-        LReferenceExampleSave(exampleId, LStateAnchor.LStateAnchorCreate(referenceId));
-    }
-
-    public void LReferenceExampleDetach(long exampleId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
-
-        LReferenceExampleSave(exampleId, LStateAnchor.LStateAnchorUnspecified);
-    }
-
-    private void LReferenceExampleSave(long exampleId, LStateAnchor reference)
-    {
-        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText =
-                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference "
-                + "WHERE example_id = $example;";
-            LStateColumn.LStateColumnApply(command, "reference", reference);
-            command.Parameters.AddWithValue("$example", exampleId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
-            }
-        }
-
-        session.LDatabaseSessionCommit();
     }
 
     private void LReferenceLinkAttach(

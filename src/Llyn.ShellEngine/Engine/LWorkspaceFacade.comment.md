@@ -24,10 +24,6 @@ Remembers the entry shown on the right.
 
 Reads, changes and writes the state row under the gate.
 
-## `public Uri? LEngineLocationResolve(string? location)`
-
-A location resolved against the workspace, through the trail clerk.
-
 ## `public Uri? LEngineLocationRead(string? location)`
 
 The resolved location, or null when it is a file that does not exist.

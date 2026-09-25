@@ -47,7 +47,7 @@ public sealed class TLibraryVoyage
         panel.LLibraryPanel.TPanelDelete();
 
         Assert.Equal(0, panel.TLibraryVoyageRead());
-        Assert.True(panel.LLibraryIndexEmpty);
+        Assert.Empty(panel.TLibraryRowsRead());
     }
 
     private static LLibrary TLibraryPrepare(LEngine engine)

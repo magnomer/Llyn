@@ -13,9 +13,4 @@ public sealed record LRegisterDraft(
     {
         return this with { LRegisterDraftName = LRegisterDraftName.LStateValueNormalize() };
     }
-
-    public static LRegisterDraft LRegisterDraftCreate(string text)
-    {
-        return new LRegisterDraft(LStateValue.LStateValueRead(text), 0);
-    }
 }

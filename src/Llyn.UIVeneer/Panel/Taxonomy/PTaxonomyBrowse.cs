@@ -41,12 +41,12 @@ public partial class PTaxonomy
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
         PFunnelDropper.IsChecked = false;
-        _lTaxonomy.LTaxonomyFunnelSet(PSender.PSenderOrderRead(sender));
+        _lTaxonomy.LTaxonomyFunnelSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PLatticeHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyLatticeSet(PChoice.PChoiceFilterRead(PLatticeList));
+        _lTaxonomy.LTaxonomyLatticeSet(LChoice.LChoiceFilterRead(PLatticeList));
         PLatticeRestore();
     }
 

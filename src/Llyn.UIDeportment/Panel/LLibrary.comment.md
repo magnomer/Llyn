@@ -16,24 +16,54 @@ The engine imports every entry or none, so nothing needs undoing before it is sh
 
 The entry editor's deportment, whose desk answers whether the panel may leave and opens the row that is edited.
 
-## `private int _lLibraryCount;`
-
-How many rows the last read returned, so the empty notice is a verdict rather than a veneer count.
-
 ## `public IReadOnlyList<LVistaRow> LLibraryRowsRead()`
 
 The rows the engine returns for the vista, already filtered, sorted, numbered and marked.
+
+## `private LIndex? _lLibraryIndex;`
+
+The entry list the panel fills, absent until the veneer hands over its controls.
+Tests attach none, so the panel reads its rows without a list to fill.
+
+## `public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty, Func<string, ImageSource?> flagSeam)`
+
+Builds the list over the veneer's controls and refills it whenever the panel announces new rows.
+
+## `private void LLibraryIndexShow()`
+
+Reads the rows and hands them to the list as an answered request.
+The list counts what it holds, so the empty notice needs no count kept here.
+
+## `public void LLibraryIndexSelect(object sender)`
+
+Puts the panel on the entry of the clicked row, or on none when the sender carries no row.
 
 ## `public long LLibraryVoyageRead()`
 
 The entry the panel shows, as the station the window records before a jump away.
 Zero says no entry is shown, so there is no place to come back to.
 
-## `public void LLibraryOrderSet(LCatalogOrder? order)`
+## `private void LLibraryOrderSet(LCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
-The veneer hands the enum its row carries, so no ordering is spelled or parsed.
 A sender that is no order row hands null, which keeps the ordering it has.
+
+## `private void LLibrarySieveSet(LCatalogFilter filter)`
+
+Hands the ticked languages to the vista, which saves and announces them.
+
+## `public void LLibraryOrderHandle(object sender, ToggleButton dropper)`
+
+A clicked order row closes the dropdown and sets the ordering its tag carries.
+The row's enum is read here, so no ordering is spelled or parsed in the veneer.
+
+## `public void LLibrarySieveHandle(Panel list, UIElement mark)`
+
+A clicked language row sets the filter the list now stands for, then redraws the mark at once.
+
+## `public void LLibrarySieveShow(UIElement mark)`
+
+Shows the mark on the sieve button while the vista hides any language.
 
 ## `public Task LLibraryPortraitPrint(LPortraitLabel label, LPressTicket ticket)`
 

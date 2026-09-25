@@ -6,8 +6,6 @@ using Llyn.Core;
 namespace Llyn.ShellEngine;
 
 internal sealed record LEngineStaff(
-    LIdentity LEngineStaffIdentity,
-    LLanguageCache LEngineStaffCache,
     LDraftClerk LEngineStaffDraft,
     LChronicleClerk LEngineStaffChronicle,
     LCourtClerk LEngineStaffCourt,
@@ -18,13 +16,11 @@ internal sealed record LEngineStaff(
     LReferenceClerk LEngineStaffReference,
     LExampleClerk LEngineStaffExample,
     LSituationClerk LEngineStaffSituation,
-    LCardClerk LEngineStaffCard,
     LMeaningClerk LEngineStaffMeaning,
     LMentionClerk LEngineStaffMention,
     LUsageClerk LEngineStaffUsage,
     LVocabularyClerk LEngineStaffVocabulary,
     LParadigmClerk LEngineStaffParadigm,
-    LInflectionClerk LEngineStaffInflection,
     LPronunciationClerk LEngineStaffPronunciation,
     LTrailClerk LEngineStaffTrail,
     LLanguageClerk LEngineStaffLanguage,
@@ -68,7 +64,7 @@ internal sealed record LEngineStaff(
         LReferenceClerk reference = new(rig);
         LExampleClerk example = new(rig, reference);
         LSituationClerk situation = new(rig);
-        LCardClerk card = new(rig, tag, register, translation, example, situation);
+        LCardClerk card = new(rig, tag, register, translation, example);
         LMeaningClerk meaning = new(rig, card);
         LMentionClerk mention = new(rig, cache);
         LUsageClerk usage = new(rig);
@@ -108,8 +104,8 @@ internal sealed record LEngineStaff(
         LEnsign ensign = new(rig.LRigUsher);
 
         return new LEngineStaff(
-            identity, cache, draft, chronicle, court, claim, tag, register, translation, reference, example,
-            situation, card, meaning, mention, usage, vocabulary, paradigm, inflection, pronunciation, trail,
+            draft, chronicle, court, claim, tag, register, translation, reference, example,
+            situation, meaning, mention, usage, vocabulary, paradigm, pronunciation, trail,
             language, recording, transcription, reflex, entry, lacuna, frequency, outcome, author, favorite,
             citation, fanqie, shengfu, stem, diwei, script, workspace, markup, intake, portrait, ensign);
     }

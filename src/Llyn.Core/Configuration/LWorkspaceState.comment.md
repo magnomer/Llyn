@@ -20,7 +20,6 @@ No query reads it back, so the database has no use for it.
 
 **Parameters**
 
-- `LWorkspaceStateId` — Id of the workspace row, always 1.
 - `LWorkspaceStateLeft` — Id of the Entry the left duplex side shows, and `null` when that side is empty.
 - `LWorkspaceStateRight` — Id of the Entry the right duplex side shows, and `null` when that side is empty.
 - `LWorkspaceStateRevision` — Id of the current revision, and `null` before any revision is recorded.

@@ -88,12 +88,14 @@ internal static class TReflexFixture
          row.LReflexDraftRomanization,
          row.LReflexDraftMain);
 
-    internal static (string, string, string, string, bool) TReflexRowRead(LReflex row) =>
-        (row.LReflexLanguage,
-         row.LReflexKind,
-         row.LReflexText,
-         row.LReflexRomanization,
-         row.LReflexMain);
+    internal static async Task<IReadOnlyList<LReflexDraft>> TReflexFetchRead(
+        LEngine engine, string headword, string language)
+    {
+        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate(headword, language));
+        engine.TEngineReflexStart(entry.LEntryId);
+        await TReflexSettle(engine, entry.LEntryId);
+        return engine.TEntryReflexRead(entry.LEntryId);
+    }
 
     internal static LEntryDraft TReflexDraftCreate(string headword, string language)
     {

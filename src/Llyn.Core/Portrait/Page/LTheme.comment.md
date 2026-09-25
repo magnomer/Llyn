@@ -19,11 +19,6 @@ The page font stack, matching the shell's own family with web fallbacks appended
 
 The example font stack, matching the serif the display uses for sentences.
 
-## `public IReadOnlyDictionary<string, string> LThemeColor`
-
-Every colour the theme file names, keyed by the file's own key.
-The shell walks it to fill its resources and refuses a palette that lacks a key it needs.
-
 ## `public string LThemeColorRead(string name)`
 
 The colour the theme file names, refused when the file lacks it.

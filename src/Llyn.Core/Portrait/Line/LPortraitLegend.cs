@@ -19,22 +19,6 @@ public sealed record LPortraitLegend(
     string LPortraitLegendDescription,
     IReadOnlyDictionary<LReferenceKind, string> LPortraitLegendKind)
 {
-    public static LPortraitLegend LPortraitLegendDefault { get; } = new(
-        "Unknown",
-        "Untitled",
-        "Unwritten",
-        "Not used yet",
-        "Used in one place",
-        "places use it",
-        "Translation",
-        "Source",
-        "Authors",
-        "Year",
-        "URL",
-        "Note",
-        "Description",
-        new Dictionary<LReferenceKind, string>());
-
     public string LPortraitTallyFormat(int count)
     {
         return count switch

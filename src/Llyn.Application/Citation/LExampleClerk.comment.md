@@ -13,7 +13,7 @@ The corpus panel reads its rows and its page here, so screen and print show one 
 
 ## `public LExampleClerk(LRig rig, LReferenceClerk references)`
 
-Reads the example, gloss, mention and sentence ports out of `rig`.
+Reads the example, gloss and mention ports out of `rig`.
 The reference clerk names the Source an Example cites.
 
 ## `public static LExample LExampleClerkBlank`
@@ -28,15 +28,6 @@ Creates `example` and returns it with its assigned id.
 
 Reads the Example for `id`, or `null` when no Example has that id.
 
-## `public IReadOnlyList<LExample> LExampleClerkRead()`
-
-Every Example in the workspace, for the panel that browses the shared stock of sentences itself.
-
-## `public IReadOnlyList<LExample> LExampleClerkRead(long ownerId, LOwner owner)`
-
-Reads the Examples the Meaning or Collocation identified by `ownerId` references, in the order that side holds them.
-A side no sentence table serves is refused rather than picked for.
-
 ## `public LPortraitPage? LExampleClerkRead(long id, LPortraitLegend legend)`
 
 The page of one Example, or null when no Example has that id.
@@ -48,42 +39,9 @@ The Examples answering `query`, in `order`, as rows already carrying their cited
 An Example is matched over its sentence, its translation and the name of the Source it cites.
 The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
 
-## `public IReadOnlyList<LSentence> LSentenceRead(long meaningId)`
-
-The sentence rows one Meaning holds, in its order.
-
-## `public IReadOnlyList<LSentence> LSentenceRead(long ownerId, LOwner owner)`
-
-The sentence rows the Meaning or Collocation identified by `ownerId` holds, in the order that side holds them.
-
 ## `public void LExampleClerkUpdate(LExample example)`
 
 Rewrites the language, the sentence and the translation of the Example `example` identifies.
-
-## `public void LExampleClerkUpdate(long exampleId, LStateAnchor reference)`
-
-Sets or clears the single Source the Example identified by `exampleId` cites.
-Only the citation moves, and the Reference row itself is neither created, changed nor deleted.
-
-## `public void LExampleClerkAttach(long ownerId, long exampleId, int position, LOwner owner)`
-
-References the Example from the Meaning or Collocation identified by `ownerId`, at `position`.
-The set is renumbered around it so the positions stay contiguous.
-
-## `public void LExampleClerkDetach(long ownerId, long exampleId, LOwner owner)`
-
-Removes one side's reference to an Example.
-The Example and its other references survive, which is the rule a card edit follows.
-
-## `public void LExampleClerkRemove(long ownerId, long exampleId, LOwner owner)`
-
-Removes one side's reference to an Example and deletes the Example when that was its last reference.
-The engine wraps the two in one session, so the row is judged against the references as they stand.
-
-## `public void LExampleClerkDelete(long id)`
-
-Deletes the Example identified by `id`.
-Refused while any Meaning or Collocation still references it.
 
 ## `public void LExampleClerkDelete(long id, bool detach)`
 
@@ -105,10 +63,6 @@ The cited source is named as the catalog names it, and an example citing nothing
 ## `private static string LExampleSourceRead(IReadOnlyDictionary<long, string> named, LStateAnchor source)`
 
 The cited name a catalog row shows, the bare id when the Source is gone, nothing when none is cited.
-
-## `private static ArgumentOutOfRangeException LExampleOwnerRaise(LOwner owner)`
-
-The refusal for a side no sentence table serves.
 
 ## `public LExample? LExampleClerkResolve(LSentenceDraft draft, string language, long ownerId, bool collocation, Dictionary<long, long> identity)`
 

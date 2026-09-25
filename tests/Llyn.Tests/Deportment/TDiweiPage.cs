@@ -23,10 +23,8 @@ public sealed class TDiweiPage
 
         Assert.Equal(language, page.LDiweiPageLanguage);
         Assert.Equal("來", page.LDiweiPageKey);
-        Assert.False(page.LDiweiPageFinal);
         Assert.False(page.LDiweiPageEmpty);
         LDiweiSection section = Assert.Single(page.LDiweiPageSections);
-        Assert.Equal("一", section.LDiweiSectionHeading);
         Assert.Equal("一", section.LDiweiSectionLabel);
         LDiweiLine line = Assert.Single(section.LDiweiSectionLines);
         Assert.Equal("寒", line.LDiweiLineLabel);

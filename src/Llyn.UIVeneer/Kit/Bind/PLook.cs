@@ -9,11 +9,6 @@ internal static class PLook
         return shown ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    internal static Visibility PLookHiddenRead(bool shown)
-    {
-        return shown ? Visibility.Visible : Visibility.Hidden;
-    }
-
     internal static bool? PLookCheckedRead(bool chosen)
     {
         return chosen;
@@ -32,10 +27,5 @@ internal static class PLook
     internal static PLookChoice PLookFirstRead<PLookChoice>(bool first, PLookChoice chosen, PLookChoice other)
     {
         return first ? chosen : other;
-    }
-
-    internal static Thickness PLookThicknessRead(double left)
-    {
-        return new Thickness(left, 0, 0, 0);
     }
 }

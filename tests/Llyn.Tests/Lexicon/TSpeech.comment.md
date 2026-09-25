@@ -4,8 +4,8 @@
 
 Covers the controlled vocabularies and the inflections that use them.
 The engine writes parts of speech and morphology into a workspace from the packs on disk.
-It covers the seams that add and resolve one row.
-It covers an Entry's inflected forms set, appended to, moved and deleted.
+It covers a pack row rewritten in place, as a second import rewrites it.
+It covers an Entry's inflected forms appended to, moved and deleted through the entry update.
 
 ## Inline notes
 
@@ -32,10 +32,6 @@ A language declaring no morphology is an ordinary language, not a broken pack.
 A second engine over the same workspace writes the packs again.
 So the pack's wording is what the workspace ends up holding.
 
-### `engine.LEngineInflectionSet(entry.LEntryId, []);`
-
-Setting the list makes it the list: an empty one clears the forms.
-
 ### `LSpeech speech = Assert.Single(`
 
 Stored as the id, never as the word: renaming the preset renames it on this entry too.
@@ -49,19 +45,14 @@ And the field gets its own text back, resolved through the language's vocabulary
 The pack has never heard of it.
 So it is kept as the user wrote it, trimmed, and resolving against nothing.
 
-### `Assert.Equal("verb_transitive", engine.LEngineSpeechFind("English", "verb, TRANSITIVE"));`
-
-A preset is matched by its name however it was typed.
-So the dropdown and the keyboard reach the same row rather than one preset and one look-alike.
-
-### `engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, ergative"));`
+### `engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, ergative"));`
 
 A part of speech no pack declares replaces a declared one on the same terms.
 
-### `engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate(string.Empty));`
+### `engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate(string.Empty));`
 
 The field cleared is the entry left with no part of speech, not the last one still standing.
 
-### `engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));`
+### `engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));`
 
 An update that leaves the field as it stands records nothing about it.

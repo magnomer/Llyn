@@ -20,10 +20,6 @@ They are stored data, so a save that dropped them would erase what another panel
 - `LSituationDraftDescription` — What the Situation describes at length, and what is known about it.
 - `LSituationDraftKind` — What kind of Situation it is, and what is known about it.
 
-## `public static LSituationDraft LSituationDraftCreate(string text)`
-
-A wording written with nothing else said about it, and no id yet.
-
 ## `public LSituationDraft LSituationDraftNormalize()`
 
 The same situation with every unreadable value dropped to unspecified.

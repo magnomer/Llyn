@@ -11,6 +11,4 @@ public interface LEtymologyVault
     LEtymology? LEtymologySave(long entryId, LEtymology? etymology);
 
     IReadOnlyList<LEtymon> LEtymologyEtymonSet(long entryId, IReadOnlyList<long> targetIds);
-
-    IReadOnlyList<LEntry> LEtymologySourceScan(long entryId);
 }

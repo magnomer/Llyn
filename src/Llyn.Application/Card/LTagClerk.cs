@@ -36,26 +36,6 @@ public sealed class LTagClerk
         return LCatalogTag.LCatalogTagSort(found, order);
     }
 
-    public IReadOnlyList<LTag> LTagClerkRead(long ownerId, bool collocation)
-    {
-        return collocation
-            ? _lTagClerkTags.LTagCollocationRead(ownerId)
-            : _lTagClerkTags.LTagMeaningRead(ownerId);
-    }
-
-    public void LTagClerkSave(long ownerId, IReadOnlyList<LTag> written, bool collocation)
-    {
-        ArgumentNullException.ThrowIfNull(written);
-
-        if (collocation)
-        {
-            _lTagClerkTags.LTagCollocationSave(ownerId, written);
-            return;
-        }
-
-        _lTagClerkTags.LTagMeaningSave(ownerId, written);
-    }
-
     public void LTagClerkSave(
         long ownerId, IReadOnlyList<LTagDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {
@@ -87,15 +67,5 @@ public sealed class LTagClerk
 
         long id = _lTagClerkTags.LTagResolve(text);
         return _lTagClerkTags.LTagRead(id) ?? throw new LRefusal(LRefusal.LRefusalItem);
-    }
-
-    public void LTagClerkChange(long tagId, string renamed)
-    {
-        _lTagClerkTags.LTagChange(tagId, renamed);
-    }
-
-    public void LTagClerkDelete(long tagId)
-    {
-        _lTagClerkTags.LTagDelete(tagId);
     }
 }

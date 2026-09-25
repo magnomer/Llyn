@@ -67,8 +67,6 @@ public sealed class LTaxonomy
         }
     }
 
-    public LVista? LTaxonomyMembershipVista => _lTaxonomyMembership;
-
     public long? LTaxonomyChosen => _lTaxonomyVista?.LVistaChosen;
 
     public bool LTaxonomyFiltered => _lTaxonomyVista?.LVistaFiltered ?? false;
@@ -157,11 +155,6 @@ public sealed class LTaxonomy
     public void LTaxonomyObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
         _lTaxonomyVista?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LTaxonomyChosenAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lTaxonomyVista?.LVistaChosenAttach(subject, observer);
     }
 
     public LCatalogOrder LTaxonomyOrder => _lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;

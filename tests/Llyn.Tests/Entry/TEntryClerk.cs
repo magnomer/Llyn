@@ -9,9 +9,10 @@ public sealed class TEntryClerk
     [Fact]
     public void EntryClerkRead_AfterCreate_ReturnsStoredEntry()
     {
-        LEntryClerk clerk = TInterface.TEntryClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
+        LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);
 
-        LEntry stored = clerk.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
+        LEntry stored = rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
 
         LEntry? read = clerk.TEntryClerkRead(stored.LEntryId);
         Assert.NotNull(read);
@@ -21,9 +22,10 @@ public sealed class TEntryClerk
     [Fact]
     public void EntryClerkFind_ReverseOrder_ListsLastHeadwordFirst()
     {
-        LEntryClerk clerk = TInterface.TEntryClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
-        clerk.TEntryClerkAdd(TInterface.TEntryCreate(0, "ash", "English", 0, null, null));
-        clerk.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
+        LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
+        LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);
+        rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "ash", "English", 0, null, null));
+        rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
 
         IReadOnlyList<LEntry> found = clerk.TEntryClerkFind(string.Empty, LCatalogOrder.LCatalogOrderReverse);
 
@@ -33,17 +35,18 @@ public sealed class TEntryClerk
     [Fact]
     public void EntryClerkDelete_StoredEntry_LeavesTombstoneAndRevision()
     {
-        LEntryClerk clerk = TInterface.TEntryClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
-        LEntry stored = clerk.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
+        LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
+        LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);
+        LEntry stored = rig.TEntryClerkAdd(TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
 
         LRevision revision = clerk.TEntryClerkDelete(stored.LEntryId);
 
         Assert.Null(clerk.TEntryClerkRead(stored.LEntryId));
-        LTombstone? stone = clerk.TEntryTombstoneRead(stored.LEntryId);
+        LTombstone? stone = rig.TTombstoneRead(stored.LEntryId);
         Assert.NotNull(stone);
         Assert.Equal(revision.LRevisionId, stone.LTombstoneRevisionId);
-        Assert.Equal(revision.LRevisionId, clerk.TEntryRevisionRead()?.LRevisionId);
-        LRevisionChange change = Assert.Single(clerk.TEntryChangeRead(revision.LRevisionId));
+        Assert.Equal(revision.LRevisionId, rig.TRevisionRead());
+        LRevisionChange change = Assert.Single(rig.TRevisionChangeRead(revision.LRevisionId));
         Assert.Equal("kindle", change.LRevisionChangeSummary);
     }
 

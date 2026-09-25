@@ -18,7 +18,7 @@ public sealed class TFavorite
 
         Assert.True(engine.TEngineFavoriteCheck(entry.LEntryId));
 
-        LCatalogFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
+        LCatalogFavorite favorite = Assert.Single(TFavoriteRead(engine, string.Empty));
         Assert.Equal(entry.LEntryId, favorite.LCatalogFavoriteEntry.LEntryId);
         Assert.Equal("word", favorite.LCatalogFavoriteEntry.LEntryHeadword);
         Assert.NotEqual(string.Empty, favorite.LCatalogFavoriteMarked);
@@ -33,11 +33,11 @@ public sealed class TFavorite
         LEntry entry = TFavoriteEntryCreate(engine, "word");
 
         engine.TEngineFavoriteSave(entry.LEntryId);
-        string first = Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LCatalogFavoriteMarked;
+        string first = Assert.Single(TFavoriteRead(engine, string.Empty)).LCatalogFavoriteMarked;
 
         engine.TEngineFavoriteSave(entry.LEntryId);
 
-        Assert.Equal(first, Assert.Single(engine.TEngineFavoriteFind(string.Empty)).LCatalogFavoriteMarked);
+        Assert.Equal(first, Assert.Single(TFavoriteRead(engine, string.Empty)).LCatalogFavoriteMarked);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class TFavorite
 
         Assert.Equal(
             ["water"],
-            engine.TEngineFavoriteFind("wat").Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
+            TFavoriteRead(engine, "wat").Select(favorite => favorite.LCatalogFavoriteEntry.LEntryHeadword));
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public sealed class TFavorite
         engine.TEngineFavoriteDelete(entry.LEntryId);
 
         Assert.False(engine.TEngineFavoriteCheck(entry.LEntryId));
-        Assert.Empty(engine.TEngineFavoriteFind(string.Empty));
+        Assert.Empty(TFavoriteRead(engine, string.Empty));
         Assert.NotNull(engine.TEngineEntryRead(entry.LEntryId));
     }
 
@@ -86,7 +86,12 @@ public sealed class TFavorite
         engine.TEngineEntryDelete(entry.LEntryId);
 
         Assert.False(engine.TEngineFavoriteCheck(entry.LEntryId));
-        Assert.Empty(engine.TEngineFavoriteFind(string.Empty));
+        Assert.Empty(TFavoriteRead(engine, string.Empty));
+    }
+
+    private static IReadOnlyList<LCatalogFavorite> TFavoriteRead(LEngine engine, string query)
+    {
+        return engine.TEngineFavoriteFind(query, LCatalogOrder.LCatalogOrderRecent);
     }
 
     private static LEntry TFavoriteEntryCreate(LEngine engine, string headword)

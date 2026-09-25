@@ -28,7 +28,7 @@ internal sealed class TVaultFakeEtymology : LEtymologyVault
             mentions.Add(mention with { LMentionId = mentions.Count + 1 });
         }
 
-        LEtymology stored = new(entryId, entryId, etymology.LEtymologyText, mentions);
+        LEtymology stored = new(entryId, etymology.LEtymologyText, mentions);
         _tVaultFakeNarratives[entryId] = stored;
         return stored;
     }
@@ -38,12 +38,10 @@ internal sealed class TVaultFakeEtymology : LEtymologyVault
         List<LEtymon> stored = [];
         foreach (long targetId in targetIds)
         {
-            stored.Add(new LEtymon(stored.Count + 1, entryId, stored.Count, targetId));
+            stored.Add(new LEtymon(targetId));
         }
 
         _tVaultFakeLinks[entryId] = stored;
         return stored;
     }
-
-    public IReadOnlyList<LEntry> LEtymologySourceScan(long entryId) => [];
 }

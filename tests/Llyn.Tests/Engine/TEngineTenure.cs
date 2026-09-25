@@ -45,7 +45,7 @@ public sealed class TEngineTenure
         Assert.Null(tenure.TTenureFinish(true));
         Assert.Null(engine.TEngineDraftRead(held));
         Assert.Null(tenure.TTenureRead());
-        Assert.Empty(engine.TEngineExampleRead());
+        Assert.Empty(engine.TEngineExampleFind(string.Empty, LCatalogOrder.LCatalogOrderEarliest));
     }
 
     [Fact]
@@ -250,7 +250,7 @@ public sealed class TEngineTenure
 
         Assert.Equal(author.LAuthorId, tenure.TTenureFinish(true));
         Assert.Equal("Ada Lovelace", engine.TEngineAuthorRead(author.LAuthorId)?.LAuthorName);
-        Assert.Single(engine.TEngineAuthorRead());
+        Assert.Single(engine.TEngineAuthorFind(string.Empty));
     }
 
     [Fact]

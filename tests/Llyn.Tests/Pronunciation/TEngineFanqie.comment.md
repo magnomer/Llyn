@@ -3,7 +3,7 @@
 ## `public sealed class TEngineFanqie`
 
 Covers the engine's fanqie fetch over a fixture pack with two books behind stubbed rime tables.
-A find posts each book's form and reads every cell carrying the marked character into one line.
+A start posts each book's form and reads every cell carrying the marked character into one line.
 The line joins the row's initial, the cell's rime with its rime heading, and the column's heading.
 A cell parted into groups yields one row per marked group.
 Each carries its own rime heading, tone, rounding and 反切.
@@ -21,6 +21,7 @@ A language whose pack lists no book reads empty and asks nothing.
 
 ## Inline notes
 
+`TFanqieFetchRead` saves an entry, starts its fetch, waits for it to settle and reads what it stored.
 `TFanqieSettle` waits until no fetch runs for the entry, since a bulletin is raised per character.
 `TFanqieCountCheck` waits for the stub to see the given number of requests.
 `TFanqiePartRead` and `TFanqieRowRead` flatten a row for one-line assertions.

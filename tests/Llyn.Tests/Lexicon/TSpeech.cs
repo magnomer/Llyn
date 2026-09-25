@@ -15,28 +15,26 @@ public sealed class TSpeech
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LSpeechValue? noun = engine.TEngineSpeechFind("English", "Noun");
+        LSpeechValue? noun = engine.TSpeechValueFind("English", "Noun");
         Assert.NotNull(noun);
         Assert.Equal(1, noun.LSpeechValueCode);
-        Assert.Equal("Noun", engine.TEngineSpeechRead(noun.LSpeechValueId)?.LSpeechValueName);
-        Assert.NotNull(engine.TEngineSpeechFind("English", "Verb, transitive"));
-        Assert.Null(engine.TEngineSpeechFind("English", "nosuchpartofspeech"));
-
-        LFeature? number = engine.TEngineFeatureFind(noun.LSpeechValueId, "number");
-        Assert.NotNull(number);
-        LMorphology? plural = engine.TEngineMorphologyFind(number.LFeatureId, "plural");
-        Assert.NotNull(plural);
-        Assert.Equal("plural", engine.TEngineMorphologyRead(plural.LMorphologyId)?.LMorphologyName);
+        Assert.Equal("Noun", engine.TEngineSpeechRead("English", noun.LSpeechValueId)?.LSpeechValueName);
+        Assert.NotNull(engine.TSpeechValueFind("English", "Verb, transitive"));
+        Assert.Null(engine.TSpeechValueFind("English", "nosuchpartofspeech"));
 
         Assert.Equal(
             ["singular", "plural"],
-            engine.TEngineMorphologyScan(number.LFeatureId).Select(row => row.LMorphologyName));
+            workspace.TWorkspaceRowRead(
+                "SELECT value.name FROM morphology_value value " +
+                "JOIN morphology_feature feature ON value.morphology_feature_parent = feature.morphology_feature_id " +
+                $"WHERE feature.speech_value_parent = {noun.LSpeechValueId} AND feature.name = 'number' " +
+                "ORDER BY value.position;"));
 
-        Assert.NotNull(engine.TEngineSpeechFind("Vietnamese", "Classifier"));
+        Assert.NotNull(engine.TSpeechValueFind("Vietnamese", "Classifier"));
     }
 
     [Fact]
-    public void SpeechCreate_SameRowAgain_RewritesNotAdds()
+    public void SpeechValueCreate_SameRowAgain_RewritesNotAdds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,51 +46,54 @@ public sealed class TSpeech
         Assert.True(features > 0);
         Assert.True(rows > 0);
 
-        LSpeechValue noun = engine.TEngineSpeechFind("English", "Noun")!;
-        LFeature number = engine.TEngineFeatureFind(noun.LSpeechValueId, "number")!;
-        LMorphology plural = engine.TEngineMorphologyFind(number.LFeatureId, "plural")!;
+        LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("Noun"));
+        LSpeechValue noun = engine.TSpeechValueFind("English", "Noun")!;
+        LMorphology plural = engine.TParadigmMorphologyRead(entry.LEntryId, "plural");
 
-        LSpeechValue renamed = engine.TEngineSpeechCreate(
+        LSpeechValue renamed = TInterface.TSpeechArchiveCreate(workspace.TWorkspaceDatabase).TSpeechValueCreate(
             TInterface.TSpeechValueCreate("English", noun.LSpeechValueCode, "substantive", 0));
-        LMorphology relabeled = engine.TEngineMorphologyCreate(TInterface.TMorphologyCreate(
-            number.LFeatureId, plural.LMorphologyCode, "plural form", 1));
+        LMorphology relabeled = TInterface.TMorphologyArchiveCreate(workspace.TWorkspaceDatabase).TMorphologyCreate(
+            TInterface.TMorphologyCreate(plural.LMorphologyFeatureId, plural.LMorphologyCode, "plural form", 1));
 
         Assert.Equal(noun.LSpeechValueId, renamed.LSpeechValueId);
         Assert.Equal(plural.LMorphologyId, relabeled.LMorphologyId);
-        Assert.Equal("substantive", engine.TEngineSpeechRead(noun.LSpeechValueId)?.LSpeechValueName);
-        Assert.Equal("plural form", engine.TEngineMorphologyRead(plural.LMorphologyId)?.LMorphologyName);
+        Assert.Equal("substantive", engine.TEngineSpeechRead("English", noun.LSpeechValueId)?.LSpeechValueName);
+        Assert.Equal(
+            ["plural form"],
+            workspace.TWorkspaceRowRead(
+                $"SELECT name FROM morphology_value WHERE morphology_value_id = {plural.LMorphologyId};"));
         Assert.Equal(parts, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM speech_value;"));
         Assert.Equal(features, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM morphology_feature;"));
         Assert.Equal(rows, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM morphology_value;"));
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
-        Assert.Equal("Noun", reopened.TEngineSpeechRead(noun.LSpeechValueId)?.LSpeechValueName);
+        Assert.Equal("Noun", reopened.TEngineSpeechRead("English", noun.LSpeechValueId)?.LSpeechValueName);
         Assert.Equal(parts, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM speech_value;"));
     }
 
     [Fact]
-    public void InflectionSet_AppendedMovedDeleted_ReadsBackEachStep()
+    public void InflectionUpdate_AppendedMovedDeleted_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TSpeechEntryCreate(engine);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("Noun"));
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
 
-        LSpeechValue noun = engine.TEngineSpeechFind("English", "Noun")!;
-        LFeature number = engine.TEngineFeatureFind(noun.LSpeechValueId, "number")!;
-        LMorphology plural = engine.TEngineMorphologyFind(number.LFeatureId, "plural")!;
+        LSpeechValue noun = engine.TSpeechValueFind("English", "Noun")!;
+        LMorphology plural = engine.TParadigmMorphologyRead(entry.LEntryId, "plural");
 
-        engine.TEngineInflectionSet(entry.LEntryId, [
+        engine.TEntryInflectionSave(entry.LEntryId, [
             TInterface.TInflectionCreate(entry.LEntryId, 0, "word", null, noun.LSpeechValueId, []),
             TInterface.TInflectionCreate(entry.LEntryId, 1, "words", null, noun.LSpeechValueId,
                 [plural.LMorphologyId]),
         ]);
-        engine.TEngineInflectionAppend(entry.LEntryId, [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "word's", null, noun.LSpeechValueId, []),
+        engine.TEntryInflectionSave(entry.LEntryId, [
+            .. engine.TEntryInflectionRead(entry.LEntryId),
+            TInterface.TInflectionCreate(entry.LEntryId, 2, "word's", null, noun.LSpeechValueId, []),
         ]);
 
-        IReadOnlyList<LInflection> stored = engine.TEngineInflectionRead(entry.LEntryId);
+        IReadOnlyList<LInflection> stored = engine.TEntryInflectionRead(entry.LEntryId);
         Assert.Equal(["word", "words", "word's"], stored.Select(row => row.LInflectionText));
         Assert.Equal(
             plural.LMorphologyId,
@@ -100,18 +101,17 @@ public sealed class TSpeech
         Assert.Equal(noun.LSpeechValueId, stored[0].LInflectionSpeechId);
         Assert.True(stored[0].LInflectionId > 0);
 
-        engine.TEngineInflectionMove(entry.LEntryId, 2, 0);
-        Assert.Equal(
-            ["word's", "word", "words"],
-            engine.TEngineInflectionRead(entry.LEntryId).Select(row => row.LInflectionText));
+        engine.TEntryInflectionSave(entry.LEntryId, [stored[2], stored[0], stored[1]]);
+        IReadOnlyList<LInflection> moved = engine.TEntryInflectionRead(entry.LEntryId);
+        Assert.Equal(["word's", "word", "words"], moved.Select(row => row.LInflectionText));
 
-        engine.TEngineInflectionDelete(entry.LEntryId, 0);
+        engine.TEntryInflectionSave(entry.LEntryId, [moved[1], moved[2]]);
         Assert.Equal(
             ["word", "words"],
-            engine.TEngineInflectionRead(entry.LEntryId).Select(row => row.LInflectionText));
+            engine.TEntryInflectionRead(entry.LEntryId).Select(row => row.LInflectionText));
 
-        engine.TEngineInflectionSet(entry.LEntryId, []);
-        Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
+        engine.TEntryInflectionSave(entry.LEntryId, []);
+        Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public sealed class TSpeech
 
         LSpeech speech = Assert.Single(
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId));
-        Assert.Equal(engine.TEngineSpeechFind("English", "Verb, transitive")!.LSpeechValueId, speech.LSpeechValueId);
+        Assert.Equal(engine.TSpeechValueFind("English", "Verb, transitive")!.LSpeechValueId, speech.LSpeechValueId);
         Assert.Null(speech.LSpeechCustom);
 
         Assert.Equal(
@@ -148,8 +148,7 @@ public sealed class TSpeech
             "Verb, ergative",
             Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));
 
-        Assert.Equal("Verb, transitive", engine.TEngineSpeechFind("English", "verb, TRANSITIVE")?.LSpeechValueName);
-        Assert.Null(engine.TEngineSpeechFind("English", "Verb, ergative"));
+        Assert.Null(engine.TSpeechValueFind("English", "Verb, ergative"));
     }
 
     [Fact]
@@ -175,7 +174,7 @@ public sealed class TSpeech
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, intransitive"));
         Assert.Equal(
-            engine.TEngineSpeechFind("English", "Verb, intransitive")!.LSpeechValueId,
+            engine.TSpeechValueFind("English", "Verb, intransitive")!.LSpeechValueId,
             Assert.Single(entries.TEntrySpeechRead(entry.LEntryId)).LSpeechValueId);
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, ergative"));
@@ -187,16 +186,16 @@ public sealed class TSpeech
         Assert.Empty(entries.TEntrySpeechRead(entry.LEntryId));
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));
-        LRevision? revision = engine.TEngineRevisionRead();
+        long? revision = engine.TEngineRevisionRead();
         Assert.Equal(
             "speech",
-            Assert.Single(engine.TEngineChangeRead(revision!.LRevisionId),
+            Assert.Single(workspace.TRevisionChangeRead(revision!.Value),
                 change => change.LRevisionChangeSubject == "speech").LRevisionChangeSubject);
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));
         revision = engine.TEngineRevisionRead();
         Assert.DoesNotContain(
-            engine.TEngineChangeRead(revision!.LRevisionId),
+            workspace.TRevisionChangeRead(revision!.Value),
             change => change.LRevisionChangeSubject == "speech");
     }
 
@@ -212,9 +211,8 @@ public sealed class TSpeech
         IReadOnlyList<LSpeech> speeches =
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId);
         Assert.Equal(3, speeches.Count);
-        Assert.Equal([0, 1, 2], speeches.Select(row => row.LSpeechPosition));
         Assert.Equal(
-            engine.TEngineSpeechFind("English", "Verb, transitive")!.LSpeechValueId,
+            engine.TSpeechValueFind("English", "Verb, transitive")!.LSpeechValueId,
             speeches[1].LSpeechValueId);
         Assert.Equal("Verb, ergative", speeches[2].LSpeechCustom);
 
@@ -235,16 +233,5 @@ public sealed class TSpeech
             string.Empty,
             null,
             speeches);
-    }
-
-    private static LEntry TSpeechEntryCreate(LEngine engine)
-    {
-        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "word",
-            "English",
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
-            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
     }
 }

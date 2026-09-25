@@ -44,7 +44,7 @@ public static class LPortraitClerkCard
                 [],
                 [],
                 LPortraitSectionLink:
-                    [new LPortraitLink(usage.LUsageEntry, usage.LUsageHeadword, usage.LUsageLanguage)],
+                    [new LPortraitLink(usage.LUsageHeadword, usage.LUsageLanguage)],
                 LPortraitSectionRole: LPortraitRole.LPortraitRoleUsage));
         }
 

@@ -21,12 +21,6 @@ Carrying it counts as no change, so a form opened and closed untouched still sto
 A commit the database refuses leaves the file exactly where it was, and writes no entry.
 A blank headword is refused, and that is the moment the user most needs what they typed to survive.
 
-## `public void DraftMove_CardMoved_RenumbersAllCards()`
-
-Moving one card reorders the list and renumbers every position contiguously from `1`.
-The renumbered cards are returned to the caller and written to the file.
-The form and the folder never disagree.
-
 ## `public void DraftCheck_OnlyVideoAdded_ReportsChanged()`
 
 A card given nothing but a video reads as changed against the entry it was opened from.

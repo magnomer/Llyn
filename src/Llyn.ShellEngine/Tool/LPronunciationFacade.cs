@@ -21,22 +21,6 @@ internal sealed class LPronunciationFacade
 
     private LEngineStaff LPronunciationFacadeStaff => _lPronunciationFacadeEngine.LEngineStaffHeld;
 
-    internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffPronunciation.LPronunciationClerkCreate(pronunciation);
-        }
-    }
-
-    internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffPronunciation.LPronunciationClerkRead(entryId);
-        }
-    }
-
     public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)
     {
         lock (_lPronunciationFacadeGate)
@@ -83,71 +67,6 @@ internal sealed class LPronunciationFacade
             }
 
             return rows;
-        }
-    }
-
-    internal void LEnginePronunciationUpdate(LPronunciation pronunciation)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffPronunciation.LPronunciationClerkUpdate(pronunciation);
-        }
-    }
-
-    internal void LEnginePronunciationDelete(long id)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffPronunciation.LPronunciationClerkDelete(id);
-        }
-    }
-
-    internal void LEngineAudioSave(long pronunciationId, string file, string? source)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffPronunciation.LAudioSave(pronunciationId, file, source);
-        }
-    }
-
-    internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationAudio? audio = LPronunciationFacadeStaff
-                .LEngineStaffPronunciation.LAudioRead(pronunciationId);
-            if (audio is null)
-            {
-                return null;
-            }
-
-            string file = LPronunciationFacadeStaff.LEngineStaffRecording
-                .LRecordingClerkResolve(audio.LPronunciationAudioFile);
-            return audio with { LPronunciationAudioFile = file };
-        }
-    }
-
-    internal void LEngineNoteSave(LNote note)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffPronunciation.LNoteSave(note);
-        }
-    }
-
-    internal LNote? LEngineNoteRead(long entryId)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffPronunciation.LNoteRead(entryId);
-        }
-    }
-
-    internal void LEngineNoteDelete(long entryId)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffPronunciation.LNoteDelete(entryId);
         }
     }
 
@@ -340,37 +259,6 @@ internal sealed class LPronunciationFacade
         return scan is null
             ? LTranscriptionClerk.LTranscriptionClerkPublish(held!, sink)
             : LEngineTroveSave(scan, session, word, language, scheme);
-    }
-
-    internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkRead(entryId);
-        }
-    }
-
-    internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(
-        long entryId, IReadOnlyList<LTranscription> transcriptions)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffTranscription.LTranscriptionClerkSet(entryId, transcriptions);
-        }
-    }
-
-    internal Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(
-        string word, string language, CancellationToken cancellation)
-    {
-        return LPronunciationFacadeStaff.LEngineStaffFrequency.LFrequencyClerkFind(word, language, cancellation);
-    }
-
-    internal string? LEngineBandResolve(string language, string source, string raw)
-    {
-        lock (_lPronunciationFacadeGate)
-        {
-            return LPronunciationFacadeStaff.LEngineStaffFrequency.LBandResolve(language, source, raw);
-        }
     }
 
     public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)

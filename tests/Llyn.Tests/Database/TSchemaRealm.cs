@@ -13,7 +13,7 @@ public sealed class TSchemaRealm
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM realm;"));
         Assert.Equal(16, workspace.TWorkspaceCountRead("SELECT length(value) FROM realm;"));
-        Assert.NotEqual(Guid.Empty, TInterface.TRealmRead(workspace.TWorkspaceDatabase).LRealmValue);
+        Assert.NotEqual(Guid.Empty, TInterface.TRealmValueRead(workspace));
     }
 
     [Fact]

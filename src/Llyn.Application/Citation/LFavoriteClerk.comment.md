@@ -11,11 +11,6 @@ The mark carries its own stamp, so ordering by the mark is not ordering by the e
 
 Reads the favorite port out of `rig`.
 
-## `public IReadOnlyList<LCatalogFavorite> LFavoriteClerkFind(string query)`
-
-Finds the marked entries whose headword carries the query.
-An empty query returns every marked entry.
-
 ## `public IReadOnlyList<LCatalogFavorite> LFavoriteClerkFind(string query, LCatalogOrder order)`
 
 The marked entries answering `query`, in `order`.

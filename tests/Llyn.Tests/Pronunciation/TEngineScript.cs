@@ -48,15 +48,14 @@ public sealed class TEngineScript
     };
 
     [Fact]
-    public async Task ScriptFind_TwoStyles_ReadsImagesCaptionsAndGlossInPackOrder()
+    public async Task ScriptStart_TwoStyles_StoresImagesAndGlossInPackOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TEngineScriptPages));
 
-        IReadOnlyList<LScriptImage> found = await engine.TEngineScriptFind(
-            "整", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LScriptImage> found = await TScriptFetchRead(engine, "整", pack.TLanguageFixtureName);
 
         Assert.Equal(3, found.Count);
         Assert.Equal(("整", "Seal", 0, "Shuowen", "Seal gloss", "PNG-A"), TScriptImageRead(found[0]));
@@ -65,16 +64,15 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptFind_ImageUnreachable_SkipsThatFormAlone()
+    public async Task ScriptStart_ImageUnreachable_SkipsThatFormAlone()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         Dictionary<string, string> pages = new(TEngineScriptPages);
         pages.Remove("https://example.test/image?text=b");
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
 
-        IReadOnlyList<LScriptImage> found = await engine.TEngineScriptFind(
-            "整", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LScriptImage> found = await TScriptFetchRead(engine, "整", pack.TLanguageFixtureName);
 
         Assert.Equal(2, found.Count);
         Assert.Equal(
@@ -203,6 +201,15 @@ public sealed class TEngineScript
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
         Assert.False(engine.TEngineScriptCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);
+    }
+
+    private static async Task<IReadOnlyList<LScriptImage>> TScriptFetchRead(
+        LEngine engine, string headword, string language)
+    {
+        LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate(headword, language));
+        engine.TEngineScriptStart(entry.LEntryId);
+        await TScriptSettle(engine, entry.LEntryId);
+        return engine.TEngineScriptRead(entry.LEntryId);
     }
 
     private static async Task TScriptSettle(LEngine engine, long entryId)

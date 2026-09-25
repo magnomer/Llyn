@@ -69,12 +69,3 @@ The whole fold is one transaction, so no Reference is left crediting a deleted A
 The same delete, with `detach` dropping every credit first.
 Dropping a credit renumbers that Reference's remaining credits, because the order is a unique index.
 Deleting an Author never deletes a Reference.
-
-## `public void LAuthorDelete(long id)`
-
-Deletes the Author identified by `id`.
-Guarded: while any Reference still credits the Author, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach the Author from every Reference first.
-Deleting an Author never deletes a Reference.
-The guard and the delete share one transaction, so nothing can start crediting the Author between them.

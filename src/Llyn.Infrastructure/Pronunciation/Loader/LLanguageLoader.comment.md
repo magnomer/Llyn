@@ -104,7 +104,6 @@ A missing block reads as no varieties, and a repeated name keeps its first row.
 The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
 The top-level `silent` key is read the same way, and only a literal `true` hides the pronunciation rows.
 The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
-The top-level `listed` key is read by `LLanguageListedRead`, and only a literal `false` takes the pack off the picker.
 The top-level `anatomy` key is read by `LLanguageAnatomyRead` in `LLanguageLoaderAnatomy.cs`.
 The top-level `tone` key is read by `LLanguageClassRead` in `LLanguageLoaderClass.cs`.
 

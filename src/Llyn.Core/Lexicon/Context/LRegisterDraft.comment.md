@@ -20,10 +20,6 @@ The draft carries no flag for it.
 - `LRegisterDraftName` — The name the row shows, and what is known about it.
 - `LRegisterDraftId` — The id of the Register the row edits, empty until one is given.
 
-## `public static LRegisterDraft LRegisterDraftCreate(string text)`
-
-A name written with nothing else said about it, and no id yet.
-
 ## `public LRegisterDraft LRegisterDraftNormalize()`
 
 The same register with every unreadable value dropped to unspecified.

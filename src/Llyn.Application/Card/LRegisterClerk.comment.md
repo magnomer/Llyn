@@ -14,10 +14,6 @@ So a language pack added after a workspace was made still offers its Registers.
 
 Reads the register vault out of `rig`.
 
-## `public IReadOnlyList<LRegister> LRegisterClerkRead(long ownerId, bool collocation)`
-
-Reads the Registers a Meaning or Collocation is marked with, in that card's order.
-
 ## `public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language)`
 
 The shelf a card offers while a Register is being typed.
@@ -34,16 +30,6 @@ A row is answered by its name.
 
 Makes a written Register reading `name` with no card marked by it yet, for the tenor panel's New.
 A row already reading the same is returned rather than doubled.
-
-## `public void LRegisterClerkChange(long registerId, string renamed)`
-
-Renames a written Register, which every card marked with it then shows.
-A row a language pack ships is left as it stands, because the pack owns the wording.
-
-## `public void LRegisterClerkDelete(long registerId)`
-
-Deletes a written Register and every mark on it, which is what the panel confirms before calling.
-A row a language pack ships is left whole, marks included.
 
 ## `public void LRegisterClerkPrepare(string language)`
 

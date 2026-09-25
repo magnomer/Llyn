@@ -16,7 +16,7 @@ public sealed class TEntryStore
             TInterface.TEntryCreate(0, "word", "en", 0, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword"),
              TInterface.TFormCreate(0, 0, "words", null, "plural")],
-            [TInterface.TSpeechCreate(0, 0, null, "noun")]);
+            [TInterface.TSpeechCreate(null, "noun")]);
 
         Assert.NotEqual(0, stored.LEntryId);
         Assert.Equal("word", entries.TEntryRead(stored.LEntryId)?.LEntryHeadword);
@@ -52,7 +52,7 @@ public sealed class TEntryStore
         LExample example = examples.TExampleCreate(
             TInterface.TExampleCreate(
             0, "en", "a sentence", null, null));
-        links.TSentenceMeaningAttach(meaning.LMeaningId, example.LExampleId, 0);
+        links.TSentenceMeaningSave(meaning.LMeaningId, [TInterface.TSentenceCreate(0, example, null, null)]);
 
         entries.TEntryDelete(entry.LEntryId);
 

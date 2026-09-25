@@ -10,7 +10,7 @@ Deleting the entry removes its collocations.
 
 Order within the entry is a unique index, so a position is never written one row at a time.
 A new collocation is appended to the end.
-`LCollocationMove` renumbers the whole set through `LDatabaseOrder`.
+`LCollocationOrderSet` renumbers the whole set through `LDatabaseOrder`.
 
 ## `public LCollocationArchive(LDatabase database)`
 
@@ -19,6 +19,7 @@ Binds the store to the workspace `database` it opens sessions through.
 ## `public LCollocation LCollocationCreate(LCollocation collocation)`
 
 Inserts `collocation` with a fresh opaque id at the end of its entry's order.
+The id comes from the space Collocations share with Meanings, `LSchemaCollocationSequence`.
 Returns the stored collocation with that id and its assigned position filled in.
 
 ## `public IReadOnlyList<LCollocation> LCollocationRead(long entryId)`
@@ -29,14 +30,8 @@ Reads the entry's collocations in card order.
 
 Updates the title, expression, and meaning of the collocation identified by `collocation`'s id.
 The id, owning entry, and position are untouched.
-Card order is changed by `LCollocationMove`, which has to renumber the whole set.
+Card order is changed by `LCollocationOrderSet`, which renumbers the whole set.
 Throws when no collocation carries that id.
-
-## `public void LCollocationMove(long id, int position)`
-
-Moves the collocation identified by `id` to `position` in its entry's card order.
-It renumbers the whole set so positions stay `0 … n-1`.
-A position outside the set is clamped into it, and nothing moves when no collocation carries that id.
 
 ## `public void LCollocationOrderSet(long entryId, IReadOnlyList<long> order)`
 
@@ -49,11 +44,6 @@ Deletes the collocation identified by `id`.
 Its example, tag, and situation association rows go with it through the foreign-key cascade.
 The independent Examples, Tags, and Situations they pointed at are left standing.
 The collocations left under the same entry are renumbered so their positions stay contiguous.
-
-## `public long? LCollocationHolderRead(long id)`
-
-Which entry holds the collocation, or nothing when no row carries the id.
-The engine uses it to stamp the entry when a collocation changes on its own.
 
 ## Inline notes
 

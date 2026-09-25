@@ -24,10 +24,6 @@ Repeats, the entry itself and an empty id are skipped, and the rest are numbered
 
 An empty list is how the links are dropped.
 
-## `public void EtymologySourceScan_NamedEntry_ListsBothShapesOnce()`
-
-The entries that name one entry, by link or by span, each listed once.
-
 ## `public void EntryDelete_NamedSource_TakesEveryLinkToItAway()`
 
 Deleting an entry takes every link and span naming it away, leaving the narrative standing.

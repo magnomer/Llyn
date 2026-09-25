@@ -8,8 +8,6 @@ Each facade reads its concern from this record.
 
 **Parameters**
 
-- `LEngineStaffIdentity` issues temporary ids for the workspace.
-- `LEngineStaffCache` holds the loaded language packs.
 - `LEngineStaffDraft` manages held drafts.
 - `LEngineStaffChronicle` manages draft history.
 - `LEngineStaffCourt` manages claims and ownership history.
@@ -20,13 +18,11 @@ Each facade reads its concern from this record.
 - `LEngineStaffReference` manages references.
 - `LEngineStaffExample` manages examples.
 - `LEngineStaffSituation` manages situations.
-- `LEngineStaffCard` manages meaning cards.
 - `LEngineStaffMeaning` manages meaning operations.
 - `LEngineStaffMention` manages text mentions.
 - `LEngineStaffUsage` manages usage records.
 - `LEngineStaffVocabulary` manages vocabulary rows.
 - `LEngineStaffParadigm` manages paradigms.
-- `LEngineStaffInflection` manages inflections.
 - `LEngineStaffPronunciation` manages pronunciations.
 - `LEngineStaffTrail` manages workspace trails.
 - `LEngineStaffLanguage` manages language data.

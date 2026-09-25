@@ -33,7 +33,3 @@ The glyph typography goes into the list's resources, so the field takes it and t
 
 Asks for a seeded row in the glyph scheme when the language declares one and the draft has none.
 It runs before the render, as the transcription rows' ask does, and costs nothing while left blank.
-
-## `private void PGlyphClear()`
-
-Drops the row and forgets the section, for the next draft to start clean.

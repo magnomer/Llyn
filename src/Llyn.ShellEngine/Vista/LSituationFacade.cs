@@ -16,22 +16,6 @@ internal sealed class LSituationFacade
         _lSituationFacadeGate = engine.LEngineGate;
     }
 
-    internal LSituation LEngineSituationCreate(LSituation situation)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkCreate(situation);
-        }
-    }
-
-    internal IReadOnlyList<LSituation> LEngineSituationRead()
-    {
-        lock (_lSituationFacadeGate)
-        {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkRead();
-        }
-    }
-
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)
     {
         lock (_lSituationFacadeGate)
@@ -69,56 +53,6 @@ internal sealed class LSituationFacade
         {
             return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkRead(id);
         }
-    }
-
-    internal IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            return LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkRead(ownerId, owner);
-        }
-    }
-
-    internal void LEngineSituationUpdate(LSituation situation)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkUpdate(situation);
-        }
-    }
-
-    internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkAttach(ownerId, situationId, position, owner);
-        }
-    }
-
-    internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkDetach(ownerId, situationId, owner);
-        }
-    }
-
-    internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            LSituationFacadeStaff.LEngineStaffCard.LSituationRemove(ownerId, situationId, owner);
-        }
-    }
-
-    internal void LEngineSituationDelete(long id)
-    {
-        lock (_lSituationFacadeGate)
-        {
-            LSituationFacadeStaff.LEngineStaffSituation.LSituationClerkDelete(id);
-        }
-
-        _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 
     internal void LEngineSituationDelete(long id, bool detach)

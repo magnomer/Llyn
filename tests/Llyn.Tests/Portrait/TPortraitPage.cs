@@ -53,7 +53,7 @@ public sealed class TPortraitPage
             0, "Field Notes", "1999", LReferenceKind.LReferenceKindBook, null, "https://notes.example",
             LStateMark.LStateMarkUnspecified));
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TEngineAuthorAttach(source.LReferenceId, author.LAuthorId, 0);
+        engine.TRequestCreditApply(source.LReferenceId, author.LAuthorId, 0);
 
         LPortraitPage page = engine.TEnginePortraitRead(
             source.LReferenceId, LOwner.LOwnerReference, TInterface.TPortraitLegendRead());

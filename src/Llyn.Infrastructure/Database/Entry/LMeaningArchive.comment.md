@@ -11,7 +11,7 @@ Deleting a meaning removes its subordinate meanings through the foreign-key casc
 
 Sibling order is a unique index, so a position is never written one row at a time.
 A new meaning is appended to the end of its sibling group.
-`LMeaningMove` renumbers the whole group through `LDatabaseOrder`.
+`LMeaningOrderSet` renumbers the whole group through `LDatabaseOrder`.
 Updating a meaning therefore changes its content and nothing about where it sits.
 
 ## `public LMeaningArchive(LDatabase database)`
@@ -21,6 +21,7 @@ Binds the store to the workspace `database` it opens sessions through.
 ## `public LMeaning LMeaningCreate(LMeaning meaning)`
 
 Inserts `meaning` with a fresh opaque id at the end of its sibling group.
+The id comes from the space Meanings share with Collocations, `LSchemaCollocationSequence`.
 Returns the stored meaning with that id and its assigned position filled in.
 When it names a parent, the parent must be an existing meaning in the same entry.
 Otherwise an `InvalidOperationException` is thrown before anything is written.
@@ -40,7 +41,7 @@ That is the one-row read a caller needs when it holds a Meaning id alone.
 
 Updates the title and definition of the meaning identified by `meaning`'s id.
 The id, entry, parent link, and position are untouched.
-Where a Meaning sits among its siblings is changed by `LMeaningMove`.
+Where a Meaning sits among its siblings is changed by `LMeaningOrderSet`.
 That method has to renumber the whole group.
 Throws when no meaning carries that id.
 
@@ -51,13 +52,6 @@ The row goes to the end of the group it joins, and the group it left is renumber
 The unique sibling index rejects two rows sharing a place, so neither group is left with a gap.
 A Meaning cannot be moved inside its own subtree, because a Meaning is not its own ancestor.
 Nothing happens when the row already sits under that parent.
-
-## `public void LMeaningMove(long id, int position)`
-
-Moves the meaning identified by `id` to `position` among its siblings.
-It renumbers the whole group so positions stay `0 … n-1`.
-A position outside the group is clamped into it.
-Nothing moves when no meaning carries that id.
 
 ## `public void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order)`
 
@@ -74,11 +68,6 @@ It is also its example, tag, and situation association rows.
 Sibling and ancestor meanings are untouched and are renumbered so positions stay contiguous.
 The independent Examples, Tags, and Situations it referenced are left standing.
 Only the links go.
-
-## `public long? LMeaningHolderRead(long id)`
-
-Which entry holds the meaning, or nothing when no row carries the id.
-The engine uses it to stamp the entry when a meaning changes on its own.
 
 ## Inline notes
 
@@ -105,4 +94,3 @@ The ids of one sibling group in order.
 Root meanings have no parent id to key on.
 So their group is the entry's parentless meanings.
 That is the same group the ifnull() expression index treats as one.
-

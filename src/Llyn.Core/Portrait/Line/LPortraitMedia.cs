@@ -5,8 +5,7 @@ namespace Llyn.Core;
 
 public sealed record LPortraitMedia(
     string LPortraitMediaLocation,
-    string LPortraitMediaSpan,
-    bool LPortraitMediaMoving)
+    string LPortraitMediaSpan)
 {
     public static IReadOnlyList<LPortraitMedia> LPortraitMediaCreate(
         IReadOnlyList<LImageDraft> images, string mark)
@@ -20,8 +19,7 @@ public sealed record LPortraitMedia(
             {
                 shown.Add(new LPortraitMedia(
                     LPortraitText.LPortraitTextRead(image.LImageDraftLocation, mark),
-                    string.Empty,
-                    false));
+                    string.Empty));
             }
         }
 
@@ -39,7 +37,7 @@ public sealed record LPortraitMedia(
                 : "image/jpeg";
 
         return new LPortraitMedia(
-            "data:" + media + ";base64," + Convert.ToBase64String(data), caption ?? string.Empty, false);
+            "data:" + media + ";base64," + Convert.ToBase64String(data), caption ?? string.Empty);
     }
 
     public static IReadOnlyList<LPortraitMedia> LPortraitMediaCreate(
@@ -54,8 +52,7 @@ public sealed record LPortraitMedia(
             {
                 shown.Add(new LPortraitMedia(
                     LPortraitText.LPortraitTextRead(video.LVideoDraftLocation, mark),
-                    LPortraitText.LPortraitTextRead(video.LVideoDraftSpan, mark),
-                    true));
+                    LPortraitText.LPortraitTextRead(video.LVideoDraftSpan, mark)));
             }
         }
 

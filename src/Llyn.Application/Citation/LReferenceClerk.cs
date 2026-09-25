@@ -88,18 +88,6 @@ public sealed class LReferenceClerk
         return _lReferenceClerkReferences.LReferenceAllRead();
     }
 
-    public IReadOnlyList<LReference> LReferenceClerkRead(long ownerId, LOwner owner)
-    {
-        switch (owner)
-        {
-            case LOwner.LOwnerExample:
-                LReference? cited = _lReferenceClerkReferences.LReferenceExampleRead(ownerId);
-                return cited is null ? [] : [cited];
-            default:
-                throw LReferenceOwnerRaise(owner);
-        }
-    }
-
     public LPortraitPage? LReferenceClerkRead(long id, LPortraitLegend legend)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -200,35 +188,6 @@ public sealed class LReferenceClerk
         _lReferenceClerkReferences.LReferenceUpdate(reference);
     }
 
-    public void LReferenceClerkAttach(long ownerId, long referenceId, LOwner owner)
-    {
-        switch (owner)
-        {
-            case LOwner.LOwnerExample:
-                _lReferenceClerkReferences.LReferenceExampleAttach(ownerId, referenceId);
-                return;
-            default:
-                throw LReferenceOwnerRaise(owner);
-        }
-    }
-
-    public void LReferenceClerkDetach(long ownerId, LOwner owner)
-    {
-        switch (owner)
-        {
-            case LOwner.LOwnerExample:
-                _lReferenceClerkReferences.LReferenceExampleDetach(ownerId);
-                return;
-            default:
-                throw LReferenceOwnerRaise(owner);
-        }
-    }
-
-    public void LReferenceClerkDelete(long id)
-    {
-        _lReferenceClerkReferences.LReferenceDelete(id);
-    }
-
     public void LReferenceClerkDelete(long id, bool detach)
     {
         _lReferenceClerkReferences.LReferenceDelete(id, detach);
@@ -291,11 +250,5 @@ public sealed class LReferenceClerk
             string.Empty,
             chips,
             sections);
-    }
-
-    private static ArgumentOutOfRangeException LReferenceOwnerRaise(LOwner owner)
-    {
-        return new ArgumentOutOfRangeException(
-            nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 }

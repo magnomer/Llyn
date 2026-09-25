@@ -23,7 +23,7 @@ public static class LEntryClerkEtymology
         if (current.LEtymologyDraftNarrated)
         {
             etymologies.LEtymologyEtymonSet(entryId, []);
-            etymologies.LEtymologySave(entryId, current.LEtymologyDraftResolve(entryId));
+            etymologies.LEtymologySave(entryId, current.LEtymologyDraftResolve());
         }
         else if (current.LEtymologyDraftLinked)
         {
@@ -37,7 +37,6 @@ public static class LEntryClerkEtymology
         }
 
         changes?.Add(new LRevisionChange(
-            0,
             entryId,
             "etymology",
             current.LEtymologyDraftEmpty ? "delete" : stored.LEtymologyDraftEmpty ? "create" : "update",

@@ -5,36 +5,18 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static void TEngineAuthorAttach(
-        this LEngine engine,
-        long referenceId,
-        long authorId,
-        int position)
+    internal static LAuthor TEngineAuthorCreate(this LEngine engine, LAuthor author)
     {
-        engine.LEngineAuthor.LEngineAuthorAttach(referenceId, authorId, position);
-    }
-
-    internal static LAuthor TEngineAuthorCreate(this LEngine engine, LAuthor author) =>
-        engine.LEngineAuthor.LEngineAuthorCreate(author);
-
-    internal static void TEngineAuthorDelete(this LEngine engine, long id)
-    {
-        engine.LEngineAuthor.LEngineAuthorDelete(id);
-    }
-
-    internal static void TEngineAuthorDetach(this LEngine engine, long referenceId, long authorId)
-    {
-        engine.LEngineAuthor.LEngineAuthorDetach(referenceId, authorId);
+        LAuthor created = engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkCreate(author);
+        engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
+        return created;
     }
 
     internal static LAuthor? TEngineAuthorRead(this LEngine engine, long id) =>
         engine.LEngineAuthor.LEngineAuthorRead(id);
 
-    internal static IReadOnlyList<LAuthor> TEngineAuthorRead(this LEngine engine) =>
-        engine.LEngineAuthor.LEngineAuthorRead();
-
     internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
-        engine.LEngineAuthor.LEngineAuthorFind(query);
+        engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkFind(query);
 
     internal static IReadOnlyList<LCatalogAuthor> TEngineAuthorFind(
         this LEngine engine,
@@ -66,51 +48,33 @@ internal static partial class TInterface
 
     internal static void TEngineAuthorUpdate(this LEngine engine, LAuthor author)
     {
-        engine.LEngineAuthor.LEngineAuthorUpdate(author);
+        engine.LEngineStaffHeld.LEngineStaffAuthor.LAuthorClerkUpdate(author);
+        engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
     }
 
-    internal static void TEngineReferenceAttach(
-        this LEngine engine,
-        long ownerId,
-        long referenceId,
-        int position,
-        LOwner owner)
+    internal static void TEngineAuthorDelete(this LEngine engine, long id, bool detach)
     {
-        engine.LEngineReference.LEngineReferenceAttach(ownerId, referenceId, position, owner);
+        engine.LEngineAuthor.LEngineAuthorDelete(id, detach);
     }
 
     internal static LReference TEngineReferenceCommit(this LEngine engine, long id) =>
         engine.LEngineReference.LEngineReferenceCommit(id);
 
     internal static LReference TEngineReferenceCreate(this LEngine engine, LReference reference) =>
-        engine.LEngineReference.LEngineReferenceCreate(reference);
+        engine.LEngineStaffHeld.LEngineStaffReference.LReferenceClerkCreate(reference);
 
     internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, long? referenceId) =>
         engine.LEngineReference.LEngineReferenceStart(origin, referenceId);
 
-    internal static void TEngineReferenceDelete(this LEngine engine, long id)
-    {
-        engine.LEngineReference.LEngineReferenceDelete(id);
-    }
-
-    internal static void TEngineReferenceDetach(
-        this LEngine engine,
-        long ownerId,
-        long referenceId,
-        LOwner owner)
-    {
-        engine.LEngineReference.LEngineReferenceDetach(ownerId, referenceId, owner);
-    }
-
     internal static IReadOnlyList<LReference> TEngineReferenceRead(this LEngine engine) =>
-        engine.LEngineReference.LEngineReferenceRead();
+        engine.LEngineStaffHeld.LEngineStaffReference.LReferenceClerkRead();
 
     internal static LReference? TEngineReferenceRead(this LEngine engine, long id) =>
         engine.LEngineReference.LEngineReferenceRead(id);
 
-    internal static IReadOnlyList<LReference> TEngineReferenceRead(
-        this LEngine engine,
-        long ownerId,
-        LOwner owner) =>
-        engine.LEngineReference.LEngineReferenceRead(ownerId, owner);
+    internal static void TEngineReferenceDelete(this LEngine engine, long id, bool detach)
+    {
+        engine.LEngineReference.LEngineReferenceDelete(id, detach);
+    }
+
 }

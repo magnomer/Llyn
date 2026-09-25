@@ -31,12 +31,6 @@ public sealed class LStemClerk
         return _lStemClerkStems.LStemFind(language, key);
     }
 
-    public IReadOnlyList<long> LStemClerkScan(string language, IReadOnlyList<long> stemIds)
-    {
-        ArgumentNullException.ThrowIfNull(stemIds);
-        return _lStemClerkStems.LStemEntryScan(language, stemIds);
-    }
-
     public IReadOnlyList<LEntry> LStemEntryScan(string language, IReadOnlyList<long> stemIds, string query)
     {
         ArgumentNullException.ThrowIfNull(stemIds);

@@ -30,7 +30,3 @@ One verb names both stages, since together they are the one staged procedure the
 ## `public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 
 The import of a cargo under the reader's intake choices, run by the intake clerk under the gate.
-
-## `internal void LEngineMarkupExport(IReadOnlyList<long> ids, string path)`
-
-The entries written as one markup file through the markup clerk.

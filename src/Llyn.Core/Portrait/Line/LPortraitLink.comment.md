@@ -6,7 +6,6 @@ One linked entry on a section, such as a translation chip on a card.
 
 **Parameters**
 
-- `LPortraitLinkId` - the linked entry's id, kept so a writer may address it.
 - `LPortraitLinkHeadword` - the linked entry's word, shown on the chip.
 - `LPortraitLinkLanguage` - the linked entry's language, shown after the word.
 

@@ -29,16 +29,16 @@ public sealed class TAnchor
         Assert.Equal(first.Select(row => row.LFanqieRowId), second.Select(row => row.LFanqieRowId));
         Assert.Equal("寒A", second[0].LFanqieRowRime);
         Assert.Equal(
-            [first[0].LFanqieRowId], Assert.Single(engine.TEngineReflexRead(wan.LEntryId)).LReflexAnchors);
+            [first[0].LFanqieRowId], Assert.Single(engine.TEntryReflexRead(wan.LEntryId)).LReflexDraftAnchors);
 
         fanqie.TFanqieSave(TAnchorLanguage, "完", [TAnchorRowCreate("溪", 1)]);
 
         Assert.Equal([first[1].LFanqieRowId], fanqie.TFanqieRead(TAnchorLanguage, "完").Select(row => row.LFanqieRowId));
-        Assert.Empty(Assert.Single(engine.TEngineReflexRead(wan.LEntryId)).LReflexAnchors);
+        Assert.Empty(Assert.Single(engine.TEntryReflexRead(wan.LEntryId)).LReflexDraftAnchors);
     }
 
     [Fact]
-    public void ReflexSet_Anchors_RoundTripSortedAndDropUnknownRows()
+    public void ReflexSync_Anchors_RoundTripSortedAndDropUnknownRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,14 +49,12 @@ public sealed class TAnchor
 
         TAnchorApply(engine, wan.LEntryId, [ids[1], ids[0], 9999]);
 
-        Assert.Equal([ids[0], ids[1]], Assert.Single(engine.TEngineReflexRead(wan.LEntryId)).LReflexAnchors);
-        LEntryDraft? loaded = engine.TEngineEntryLoad(wan.LEntryId);
-        Assert.NotNull(loaded);
-        Assert.Equal([ids[0], ids[1]], Assert.Single(loaded.LEntryDraftReflexes).LReflexDraftAnchors);
+        Assert.Equal([ids[0], ids[1]], Assert.Single(engine.TEntryReflexRead(wan.LEntryId)).LReflexDraftAnchors);
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM anchor;"));
 
         TAnchorApply(engine, wan.LEntryId, []);
 
-        Assert.Empty(Assert.Single(engine.TEngineReflexRead(wan.LEntryId)).LReflexAnchors);
+        Assert.Empty(Assert.Single(engine.TEntryReflexRead(wan.LEntryId)).LReflexDraftAnchors);
     }
 
     [Fact]
@@ -83,15 +81,13 @@ public sealed class TAnchor
 
         engine.TEngineDraftCommit(started.LDraftId);
 
-        IReadOnlyList<LReflex> stored = engine.TEngineReflexRead(wan.LEntryId);
-        Assert.Equal([[], [ids[0]]], stored.Select(reflex => reflex.LReflexAnchors.ToArray()));
+        IReadOnlyList<LReflexDraft> stored = engine.TEntryReflexRead(wan.LEntryId);
+        Assert.Equal([[], [ids[0]]], stored.Select(reflex => reflex.LReflexDraftAnchors.ToArray()));
     }
 
     private static void TAnchorApply(LEngine engine, long entryId, IReadOnlyList<long> anchors)
     {
-        engine.TEngineReflexSet(
-            entryId,
-            engine.TEngineReflexRead(entryId).Select(reflex => reflex with { LReflexAnchors = anchors }).ToList());
+        engine.TEntryAnchorApply(entryId, anchors);
     }
 
     [Fact]

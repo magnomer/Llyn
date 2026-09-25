@@ -2,11 +2,9 @@
 
 ## `public sealed class TTag`
 
-Covers the engine's Tag seam.
-A Tag is created, read, renamed and referenced from both card kinds through `LEngine`.
-It covers the difference between detaching a reference and removing one.
-It covers the refusals that meet a delete the references forbid.
-It also covers a side a Tag never hangs from.
+Covers Tags as the entry editor writes them, through the cards of a saved entry.
+A Tag line is saved on either card kind and read back through the entry's load.
+It covers the catalog's own Tag create as well.
 
 ## `public void TagCreate_WordingNoCardCarries_ListsItInTheCatalog()`
 
@@ -16,33 +14,14 @@ The taxonomy panel's New makes a Tag no card carries yet, trimmed, listed at onc
 
 A wording already stored answers the stored row rather than a second one.
 
-## Inline notes
+## `public void TagSave_KnownId_LinksThatRowWhateverTheText()`
 
-### `engine.LEngineTagAttach(meaningId, rare.LTagId, 0, LOwner.LOwnerMeaning);`
+A chip naming a stored Tag links that row, so the stored wording wins over the chip's text.
 
-One row, referenced from both sides, each side holding its own order over what it references.
+## `public void TagSave_DroppedFromEveryCard_KeepsRowInCatalog()`
 
-### `engine.LEngineTagUpdate(formal with { LTagText = "formal register" });`
+A Tag no card carries any more stays in the catalog and browses to no entry.
 
-A rename reaches every reference at once: a reference points at the row, never at its words.
+## `private static LEntry TTagEntryCreate(LEngine engine, IReadOnlyList<string> meaningTags, IReadOnlyList<string> collocationTags)`
 
-### `engine.LEngineTagDetach(meaningId, tag.LTagId, LOwner.LOwnerMeaning);`
-
-Detaching is what editing a card does: the reference goes, the row other cards use stays.
-
-### `engine.LEngineTagAttach(meaningId, tag.LTagId, 0, LOwner.LOwnerMeaning);`
-
-Removing is the other intention, and it still leaves a Tag another card references.
-
-### `engine.LEngineTagRemove(collocationId, tag.LTagId, LOwner.LOwnerCollocation);`
-
-The last reference going takes the row with it, so no Tag is left that nothing can reach.
-
-### `Assert.Throws<ArgumentOutOfRangeException>(() =>`
-
-An Entry references Examples but never Tags, so there is no table to attach this to.
-
-### `private static LEntry TTagEntryCreate(LEngine engine)`
-
-One saved entry with a Meaning card and a Collocation card, neither carrying tags of its own.
-So every Tag in these tests is one the seam wrote.
+One saved entry with a Meaning card and a Collocation card, each carrying the Tag line given.

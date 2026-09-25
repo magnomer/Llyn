@@ -39,10 +39,6 @@ Forgets the misses of the entry's characters and fetches them again.
 
 Whether a fetch is pending for any character of the entry.
 
-## `public async Task<IReadOnlyList<LFanqieRow>> LFanqieClerkFind(string character, string language, CancellationToken cancellation)`
-
-The rows of one character fetched now across the books.
-
 ## `public void LFanqieClerkClear()`
 
 Cancels every pending fetch and forgets the misses.

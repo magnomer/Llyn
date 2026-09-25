@@ -50,7 +50,7 @@ public sealed class TCatalogTag
 
     private static void TCatalogTagSave(LEngine engine, IReadOnlyList<string> texts)
     {
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+        engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "apple",
             "English",
             string.Empty,
@@ -62,15 +62,10 @@ public sealed class TCatalogTag
                 [],
                 [],
                 [],
-                [],
+                texts,
                 [],
                 1)],
             []));
-
-        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        engine.TEngineTagSave(
-            meaningId,
-            [.. texts.Select(TInterface.TTagCreate)],
-            LOwner.LOwnerMeaning);
     }
+
 }

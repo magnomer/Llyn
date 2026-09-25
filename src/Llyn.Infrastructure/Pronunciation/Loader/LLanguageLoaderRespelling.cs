@@ -39,7 +39,6 @@ public sealed partial class LLanguageLoader : LLanguageVault
             return null;
         }
 
-        string name = LLanguageTextRead(group, "name")?.Trim() ?? string.Empty;
         List<string> varieties = new();
         if (group.TryGetProperty(LLanguageLoaderVarieties, out JsonElement names) &&
             names.ValueKind == JsonValueKind.Array)
@@ -55,7 +54,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
         }
 
         IReadOnlyList<LRespellingRule> rules = LLanguageRuleScan(rows);
-        return rules.Count == 0 ? null : new LRespelling(name, varieties, rules);
+        return rules.Count == 0 ? null : new LRespelling(varieties, rules);
     }
 
     private static IReadOnlyList<LRespellingRule> LLanguageSpellingScan(JsonElement root)

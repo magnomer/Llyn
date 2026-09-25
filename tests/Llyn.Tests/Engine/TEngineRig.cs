@@ -20,9 +20,10 @@ public sealed class TEngineRig
     public void EntryCreate_FakeRig_LandsInFakeVault()
     {
         TVaultFake fake = new();
-        using LEngine engine = new(TRigFake.TRigFakeBuild(fake));
+        using LEngine engine = new(TInterface.TRigClerkCreate(fake));
+        engine.TEngineFrequencySave(false);
 
-        LEntry created = engine.TEngineEntryCreate(TInterface.TEntryCreate(0, "kindle", "en", 0, null, null), [], []);
+        LEntry created = engine.TEngineTranslationCreate("kindle", "en");
 
         Assert.Equal(1, created.LEntryId);
         Assert.Equal("kindle", engine.TEngineEntryRead(created.LEntryId)?.LEntryHeadword);

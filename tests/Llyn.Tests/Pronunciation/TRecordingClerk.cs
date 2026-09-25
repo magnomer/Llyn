@@ -44,7 +44,7 @@ public sealed class TRecordingClerk
         LRecordingClerk clerk = TInterface.TRecordingClerkCreate(rig);
         string orphan = TRecordingFileSave(workspace, "orphan.mp3");
         string stored = TRecordingFileSave(workspace, "kindle.mp3");
-        LEntry kindle = TInterface.TEntryClerkCreate(rig).TEntryClerkAdd(
+        LEntry kindle = rig.TEntryClerkAdd(
             TInterface.TEntryCreate(0, "kindle", "English", 0, null, null));
         LPronunciation spoken = TInterface.TPronunciationSave(
             rig, TInterface.TPronunciationCreate(0, kindle.LEntryId, "ˈkɪndəl", []));

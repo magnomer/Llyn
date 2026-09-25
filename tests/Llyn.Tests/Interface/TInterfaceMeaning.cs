@@ -35,11 +35,6 @@ internal static partial class TInterface
         meaningArchive.LMeaningDelete(id);
     }
 
-    internal static void TMeaningMove(this LMeaningArchive meaningArchive, long id, int position)
-    {
-        meaningArchive.LMeaningMove(id, position);
-    }
-
     internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, long entryId) =>
         meaningArchive.LMeaningRead(entryId);
 
@@ -61,13 +56,6 @@ internal static partial class TInterface
 
     internal static LRegister? TRegisterRead(this LRegisterArchive registerArchive, long id) =>
         registerArchive.LRegisterRead(id);
-
-    internal static void TRegisterDelete(this LRegisterArchive registerArchive, long id) =>
-        registerArchive.LRegisterDelete(id);
-
-    internal static void TRegisterDelete(
-        this LRegisterArchive registerArchive, long id, bool detach) =>
-        registerArchive.LRegisterDelete(id, detach);
 
     internal static LSituationArchive TSituationArchiveCreate(LDatabase database) =>
         new(database);

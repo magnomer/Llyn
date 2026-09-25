@@ -40,7 +40,6 @@ public static class LEntryClerkField
 
         entries.LEntryFormSet(entryId, current);
         changes.Add(new LRevisionChange(
-            0,
             entryId,
             "form",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
@@ -84,7 +83,7 @@ public static class LEntryClerkField
             if (stored is not null)
             {
                 notes.LNoteDelete(entryId);
-                changes.Add(new LRevisionChange(0, entryId, "note", "delete", null));
+                changes.Add(new LRevisionChange(entryId, "note", "delete", null));
             }
 
             return;
@@ -96,6 +95,6 @@ public static class LEntryClerkField
         }
 
         notes.LNoteSave(new LNote(entryId, text));
-        changes.Add(new LRevisionChange(0, entryId, "note", stored is null ? "create" : "update", null));
+        changes.Add(new LRevisionChange(entryId, "note", stored is null ? "create" : "update", null));
     }
 }

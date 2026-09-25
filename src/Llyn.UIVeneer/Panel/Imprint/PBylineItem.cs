@@ -10,7 +10,6 @@ internal sealed class PBylineItem
     internal PBylineItem(long id, string name, string word)
     {
         PBylineItemId = id;
-        PBylineItemName = name;
 
         int found = -1;
         int size = 0;
@@ -34,8 +33,6 @@ internal sealed class PBylineItem
     }
 
     internal long PBylineItemId { get; }
-
-    public string PBylineItemName { get; }
 
     public string PBylineItemLead { get; }
 

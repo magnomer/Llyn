@@ -67,11 +67,6 @@ public sealed class LRecordingClerk
         return _lRecordingClerkRecordings.LRecordingPrepare(recording, cancellation);
     }
 
-    public string LRecordingClerkResolve(string file)
-    {
-        return _lRecordingClerkTrail.LRecordingResolve(file);
-    }
-
     public bool LRecordingClerkExist(string? file)
     {
         return _lRecordingClerkTrail.LRecordingExist(file);

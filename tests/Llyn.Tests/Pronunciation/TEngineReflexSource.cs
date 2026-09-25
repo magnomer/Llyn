@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TEngineReflexSource
 {
     [Fact]
-    public async Task ReflexFind_SouthernMinPage_PartsBareAndParenthesizedGlosses()
+    public async Task ReflexStart_SouthernMinPage_PartsBothGlossShapes()
     {
         const string match =
             """<li><small>\\((?:(?!</small>).)*?>Xiamen<(?:(?!</small>).)*?\\)"""
@@ -32,7 +32,7 @@ public sealed class TEngineReflexSource
               "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
               "every": true, "first": true, "folded": true, "superscript": true } ] }
             """);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -44,8 +44,9 @@ public sealed class TEngineReflexSource
                     + "<ul><li>ok4 - literary;</li><li>oh4 - vernacular (“hostile”).</li></ul>",
             }));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "惡", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "惡", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("Southern Min", "", "ɔk³²", "ok⁴", true),
@@ -56,7 +57,7 @@ public sealed class TEngineReflexSource
     }
 
     [Fact]
-    public async Task ReflexFind_DialectRule_SplitsPairsGlossesAndRegions()
+    public async Task ReflexStart_DialectRule_SplitsPairsGlossesAndRegions()
     {
         const string gloss =
             """<li>{romanization} - (?<note>(?:(?!</li>|\\s*[(\"“”]).)*?)\\s*"""
@@ -68,7 +69,7 @@ public sealed class TEngineReflexSource
               "split": "\\s*[,/]\\s*", "gloss": "{{gloss}}",
               "until": "<h3>", "every": true, "first": true, "folded": true } ] }
             """);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -80,8 +81,9 @@ public sealed class TEngineReflexSource
                     """,
             }));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "惡", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "惡", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("Jin", "", "ɣaʔ²", "ghah4", true), ("Jin", "", "ɣəʔ²", "gheh4", false)],
@@ -93,7 +95,7 @@ public sealed class TEngineReflexSource
     }
 
     [Fact]
-    public async Task ReflexFind_SameReadingTwice_KeepsOneRow()
+    public async Task ReflexStart_SameReadingTwice_KeepsOneRow()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -101,7 +103,7 @@ public sealed class TEngineReflexSource
               "match": "Wugniu: <span>(?<romanization>[^<]+)</span>.*?IPA: <span>(?<text>[^<]+)</span>",
               "every": true } ] }
             """);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -110,21 +112,22 @@ public sealed class TEngineReflexSource
                     + "<p>Wugniu: <span>5u</span></p><p>IPA: <span>/u³⁴/</span></p>",
             }));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "惡", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "惡", pack.TLanguageFixtureName);
 
         Assert.Equal([("Wu", "", "u³⁴", "5u", false)], found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
-    public async Task ReflexFind_NoteGroup_LabelsHistoricalAndFoldsSameSpelling()
+    public async Task ReflexStart_NoteGroup_LabelsHistoricalAndFolds()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """{ "reflex": [ { "language": "Japanese", "url": "https://example.test/wiki/{word}", "every": true,"""
             + """ "match": "<i>(?<=<b>(?<kind>Go-on|Kan-on)</b>: <span class=\"on-yomi\">(?:(?!</li>).){0,2000}?"""
             + """(?<main><span class=\"jouyou\">)?<i>)<a>(?<text>[^<]+)</a>"""
             + """(?=(?:(?!<sup>|</sup>|</li>).)*?(?:<a>)?(?<note>historical|ancient)<|)" } ] }""");
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -136,8 +139,9 @@ public sealed class TEngineReflexSource
                     + "<sup>←<i><a>りむ</a></i> (<span>ancient</span>)</sup></span></li>",
             }));
 
-        IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
-            "林", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> found =
+
+            await TReflexFixture.TReflexFetchRead(engine, "林", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("Japanese", "Go-on", "きょう", "", true),
@@ -149,7 +153,7 @@ public sealed class TEngineReflexSource
     }
 
     [Fact]
-    public async Task ReflexFind_MainGroupInsideNote_MarksNewStyleOverFirst()
+    public async Task ReflexStart_MainGroupInsideNote_MarksNewStyleOverFirst()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -160,7 +164,7 @@ public sealed class TEngineReflexSource
             + """
               "every": true, "first": true } ] }
             """);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -171,10 +175,11 @@ public sealed class TEngineReflexSource
                     "<ul><p>Note: <span>lin2</span></p><li>IPA: <span>/lin¹³/</span></li></ul>",
             }));
 
-        IReadOnlyList<LReflexDraft> styled = await engine.TEngineReflexFind(
-            "整", pack.TLanguageFixtureName, CancellationToken.None);
-        IReadOnlyList<LReflexDraft> plain = await engine.TEngineReflexFind(
-            "林", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> styled =
+
+            await TReflexFixture.TReflexFetchRead(engine, "整", pack.TLanguageFixtureName);
+        IReadOnlyList<LReflexDraft> plain =
+            await TReflexFixture.TReflexFetchRead(engine, "林", pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false), ("Xiang", "", "t͡sən⁴¹", "zhen3", true)],

@@ -2,7 +2,7 @@
 
 ## `public sealed class TPronunciation`
 
-Covers the engine's stored-pronunciation seams.
+Covers the engine's stored-pronunciation seams, driven through the entry save and read through its load.
 That is the ordered pronunciation rows an Entry keeps, the first being the primary one.
 It is also the audio hanging from each, stored workspace-relative and handed back resolved.
 It is also the single note an Entry keeps beside them.
@@ -20,9 +20,9 @@ An addition past the primary onto an empty list lands beneath a blank primary th
 Stored relative, so a moved workspace keeps its audio.
 Handed back full, so the shell plays a path without knowing where the workspace is.
 
-### `engine.LEnginePronunciationDelete(pronunciation.LPronunciationId);`
+### `engine.TEngineEntryUpdate(`
 
-The pronunciation going takes the audio row with it.
+The pronunciation dropped from the entry takes the audio row with it.
 The file on disk is the workspace's.
 
 ### `public void EntryUpdate_ReorderedPronunciations_KeepsIdsAndAudio()`

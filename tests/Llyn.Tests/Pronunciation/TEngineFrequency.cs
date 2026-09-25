@@ -32,10 +32,10 @@ public sealed class TEngineFrequency
     private static readonly TimeSpan TEngineFrequencyPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task FrequencyFind_FirstSourceSilent_KeepsSecondAlone()
+    public async Task FrequencyStart_FirstSourceSilent_StoresSecondAlone()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -43,8 +43,7 @@ public sealed class TEngineFrequency
                 ["https://example.test/b/tomato"] = "b=7",
             }));
 
-        IReadOnlyList<LFrequency> found = await engine.TEngineFrequencyFind(
-            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFrequency> found = await TFrequencyFetchRead(engine, pack.TLanguageFixtureName);
 
         LFrequency row = Assert.Single(found);
         Assert.Equal(
@@ -53,10 +52,10 @@ public sealed class TEngineFrequency
     }
 
     [Fact]
-    public async Task FrequencyFind_BothSourcesAnswer_KeepsBothInWrittenOrder()
+    public async Task FrequencyStart_BothSourcesAnswer_StoresBothInOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -64,8 +63,7 @@ public sealed class TEngineFrequency
                 ["https://example.test/b/tomato"] = "b=250",
             }));
 
-        IReadOnlyList<LFrequency> found = await engine.TEngineFrequencyFind(
-            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFrequency> found = await TFrequencyFetchRead(engine, pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("First", "S1", "Core", null), ("Second", "250", "Core", 3000L)],
@@ -73,10 +71,10 @@ public sealed class TEngineFrequency
     }
 
     [Fact]
-    public async Task FrequencyFind_UnitSource_StampsUnitOnNumericAnswerOnly()
+    public async Task FrequencyStart_UnitSource_StampsUnitOnNumericOnly()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
             new Dictionary<string, string>
             {
@@ -84,8 +82,7 @@ public sealed class TEngineFrequency
                 ["https://example.test/c/tomato"] = "c=3",
             }));
 
-        IReadOnlyList<LFrequency> found = await engine.TEngineFrequencyFind(
-            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFrequency> found = await TFrequencyFetchRead(engine, pack.TLanguageFixtureName);
 
         Assert.Equal(
             [("First", "S1", null, null), ("Third", "3", "Level", null)],
@@ -93,24 +90,25 @@ public sealed class TEngineFrequency
     }
 
     [Fact]
-    public void BandResolve_NumericRaw_GradesByIntervalBeforePackPatterns()
+    public void FrequencyRead_StoredRaw_GradesByIntervalBeforePatterns()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineFrequencySave(false);
+        long entryId = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName)).LEntryId;
 
-        Assert.Equal("Advanced", engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "5"));
-        Assert.Equal("Everyday", engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "50"));
-        Assert.Equal("Core", engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "500"));
-        Assert.Equal("Rare", engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "0.5"));
-        Assert.Equal("Core", engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "W1"));
-        Assert.Null(engine.TEngineBandResolve(pack.TLanguageFixtureName, "First", "W2"));
-        Assert.Equal("Core", engine.TEngineBandResolve(pack.TLanguageFixtureName, "Second", "100"));
-        Assert.Equal("Advanced", engine.TEngineBandResolve(pack.TLanguageFixtureName, "Second", "50000"));
-        Assert.Equal("Rare", engine.TEngineBandResolve(pack.TLanguageFixtureName, "Second", "unranked"));
-        Assert.Null(engine.TEngineBandResolve(pack.TLanguageFixtureName, "Third", "5"));
-        Assert.Null(engine.TEngineBandResolve(pack.TLanguageFixtureName, "Fourth", "5"));
-        Assert.Null(engine.TEngineBandResolve(" ", "First", "5"));
+        Assert.Equal("Advanced", TFrequencyBandRead(workspace, engine, entryId, "First", "5"));
+        Assert.Equal("Everyday", TFrequencyBandRead(workspace, engine, entryId, "First", "50"));
+        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "First", "500"));
+        Assert.Equal("Rare", TFrequencyBandRead(workspace, engine, entryId, "First", "0.5"));
+        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "First", "W1"));
+        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "First", "W2"));
+        Assert.Equal("Core", TFrequencyBandRead(workspace, engine, entryId, "Second", "100"));
+        Assert.Equal("Advanced", TFrequencyBandRead(workspace, engine, entryId, "Second", "50000"));
+        Assert.Equal("Rare", TFrequencyBandRead(workspace, engine, entryId, "Second", "unranked"));
+        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "Third", "5"));
+        Assert.Null(TFrequencyBandRead(workspace, engine, entryId, "Fourth", "5"));
     }
 
     [Fact]
@@ -318,15 +316,14 @@ public sealed class TEngineFrequency
     }
 
     [Fact]
-    public async Task FrequencyFind_EverySourceAsked_EvenAfterTheFirstAnswers()
+    public async Task FrequencyStart_FirstSourceAnswers_AsksEverySource()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TSourceHandler handler = new("a=2.5", HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
 
-        IReadOnlyList<LFrequency> found = await engine.TEngineFrequencyFind(
-            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFrequency> found = await TFrequencyFetchRead(engine, pack.TLanguageFixtureName);
 
         LFrequency row = Assert.Single(found);
         Assert.Equal(
@@ -343,6 +340,23 @@ public sealed class TEngineFrequency
             Assert.True(DateTime.UtcNow < deadline, $"Waited for {count} requests, saw {handler.TSourceHandlerCount}.");
             await Task.Delay(20);
         }
+    }
+
+    private static async Task<IReadOnlyList<LFrequency>> TFrequencyFetchRead(LEngine engine, string language)
+    {
+        TFrequencyObserver observer = new();
+        engine.TEngineObserverAttach(observer.TFrequencyObserverHandle);
+        LEntry entry = engine.TEngineEntrySave(TFrequencyDraftCreate("tomato", language));
+        await observer.TFrequencyObserverRaised.WaitAsync(TEngineFrequencyPatience);
+        return engine.TEngineFrequencyRead(entry.LEntryId);
+    }
+
+    private static string? TFrequencyBandRead(
+        TWorkspace workspace, LEngine engine, long entryId, string source, string raw)
+    {
+        workspace.TWorkspaceScriptRun($"DELETE FROM frequency WHERE entry_parent = {entryId};");
+        TFrequencyStoredSet(workspace, entryId, source, raw, null);
+        return Assert.Single(engine.TEngineFrequencyRead(entryId)).LFrequencyBand;
     }
 
     private static LEntryDraft TFrequencyDraftCreate(string headword, string language)

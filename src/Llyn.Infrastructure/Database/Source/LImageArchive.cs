@@ -82,52 +82,6 @@ public sealed class LImageArchive : LImageVault
         session.LDatabaseSessionCommit();
     }
 
-    public int LImageReferenceRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
-        return LImageReferenceRead(session.LDatabaseSessionConnection, id);
-    }
-
-    private static int LImageReferenceRead(SqliteConnection connection, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT
-                (SELECT COUNT(*) FROM sense_image WHERE image_ref = $id)
-                + (SELECT COUNT(*) FROM collocation_image WHERE image_ref = $id)
-                + (SELECT COUNT(*) FROM situation_image WHERE image_ref = $id);
-            """;
-        command.Parameters.AddWithValue("$id", id);
-        return Convert.ToInt32(command.ExecuteScalar());
-    }
-
-    public void LImageDelete(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        int references = LImageReferenceRead(connection, id);
-        if (references > 0)
-        {
-            throw new InvalidOperationException(
-                $"Image {id} is still referenced {references} time(s); detach every reference before deleting it.");
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM image WHERE image_id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
     public void LImageMeaningAttach(long meaningId, long imageId, int position)
     {
         LImageReferenceAttach("sense_image", "sense_parent", meaningId, imageId, position);

@@ -20,18 +20,9 @@ A pack that renames a value keeps the row id, so every inflection that links it 
 
 Reads every feature the part of speech takes, in display order.
 
-## `LFeature? LFeatureFind(long speechValueId, string name);`
-
-Resolves the feature `name` names under the part of speech, or `null` when none does.
-Matching is a trimmed, case-insensitive comparison of the display name.
-
 ## `LMorphology? LMorphologyRead(long id);`
 
 Reads one value by row id, or `null` when no row has it.
-
-## `IReadOnlyList<LMorphology> LMorphologyScan(long featureId);`
-
-Reads every value the feature takes, in display order.
 
 ## `LMorphology? LMorphologyFind(long featureId, string name);`
 

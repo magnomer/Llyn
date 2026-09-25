@@ -18,13 +18,7 @@ public interface LRegisterVault
 
     void LRegisterNameUpdate(long registerId, LStateValue name);
 
-    int LRegisterReferenceRead(long id);
-
     IReadOnlyDictionary<long, int> LRegisterReferenceRead();
-
-    void LRegisterDelete(long id);
-
-    void LRegisterDelete(long id, bool detach);
 
     void LRegisterMeaningAttach(long meaningId, long registerId, int position);
 

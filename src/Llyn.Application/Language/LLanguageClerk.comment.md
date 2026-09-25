@@ -26,10 +26,6 @@ The setting must be on and the pack must declare respelling groups.
 
 Whether the pack of `language` is phonemic.
 
-## `public bool LLanguageNameValidate(string language)`
-
-Whether `language` names a pack the workspace can load.
-
 ## `public Task<string?> LLanguageFlagRead(string language, CancellationToken cancellation)`
 
 The flag image path of `language`, fetched when the code is remote.

@@ -12,14 +12,6 @@ The situation draft starts and commits here too, through the citation clerk.
 
 Stores the engine and its gate for situation operations.
 
-## `internal LSituation LEngineSituationCreate(LSituation situation)`
-
-Creates `situation` and returns it with its assigned id and its media read back.
-
-## `internal IReadOnlyList<LSituation> LEngineSituationRead()`
-
-Every Situation in the workspace, for the panel that browses the shelf itself.
-
 ## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
 
 The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
@@ -34,31 +26,6 @@ The panel hands in the words shown for an unknown or untitled one.
 ## `internal LSituation? LEngineSituationRead(long id)`
 
 Reads the Situation for `id`, or `null` when none has that id.
-
-## `internal IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)`
-
-Reads the Situations the Meaning or Collocation identified by `ownerId` references, in the order that side holds them.
-
-## `internal void LEngineSituationUpdate(LSituation situation)`
-
-Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
-
-## `internal void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
-
-References the Situation from the Meaning or Collocation identified by `ownerId`, at `position`.
-
-## `internal void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)`
-
-Removes one side's reference to a Situation, leaving the Situation and its other references.
-
-## `internal void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)`
-
-Removes one side's reference to a Situation and deletes the Situation when that was its last reference.
-The detach, the count, the delete and the owner's stamp share one session.
-
-## `internal void LEngineSituationDelete(long id)`
-
-Deletes the Situation identified by `id`, refused while any card still references it, and announces it.
 
 ## `internal void LEngineSituationDelete(long id, bool detach)`
 

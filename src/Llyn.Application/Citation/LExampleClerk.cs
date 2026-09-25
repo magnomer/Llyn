@@ -11,7 +11,6 @@ public sealed class LExampleClerk
     private readonly LExampleVault _lExampleClerkExamples;
     private readonly LGlossVault _lExampleClerkGlosses;
     private readonly LMentionVault _lExampleClerkMentions;
-    private readonly LSentenceVault _lExampleClerkSentences;
     private readonly LReferenceClerk _lExampleClerkReferences;
 
     public LExampleClerk(LRig rig, LReferenceClerk references)
@@ -21,7 +20,6 @@ public sealed class LExampleClerk
         _lExampleClerkExamples = rig.LRigExamples;
         _lExampleClerkGlosses = rig.LRigGlosses;
         _lExampleClerkMentions = rig.LRigMentions;
-        _lExampleClerkSentences = rig.LRigSentences;
         _lExampleClerkReferences = references;
     }
 
@@ -41,23 +39,6 @@ public sealed class LExampleClerk
     public LExample? LExampleClerkRead(long id)
     {
         return _lExampleClerkExamples.LExampleRead(id);
-    }
-
-    public IReadOnlyList<LExample> LExampleClerkRead()
-    {
-        return _lExampleClerkExamples.LExampleRead();
-    }
-
-    public IReadOnlyList<LExample> LExampleClerkRead(long ownerId, LOwner owner)
-    {
-        return owner switch
-        {
-            LOwner.LOwnerMeaning or LOwner.LOwnerCollocation =>
-                [.. LSentenceRead(ownerId, owner)
-                    .Select(sentence => sentence.LSentenceExample)
-                    .OfType<LExample>()],
-            _ => throw LExampleOwnerRaise(owner),
-        };
     }
 
     public LPortraitPage? LExampleClerkRead(long id, LPortraitLegend legend)
@@ -104,76 +85,10 @@ public sealed class LExampleClerk
         return LCatalogExample.LCatalogExampleSort(rows, order);
     }
 
-    public IReadOnlyList<LSentence> LSentenceRead(long meaningId)
-    {
-        return _lExampleClerkSentences.LSentenceMeaningRead(meaningId);
-    }
-
-    public IReadOnlyList<LSentence> LSentenceRead(long ownerId, LOwner owner)
-    {
-        return owner switch
-        {
-            LOwner.LOwnerMeaning => _lExampleClerkSentences.LSentenceMeaningRead(ownerId),
-            LOwner.LOwnerCollocation => _lExampleClerkSentences.LSentenceCollocationRead(ownerId),
-            _ => throw LExampleOwnerRaise(owner),
-        };
-    }
-
     public void LExampleClerkUpdate(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);
         _lExampleClerkExamples.LExampleUpdate(example);
-    }
-
-    public void LExampleClerkUpdate(long exampleId, LStateAnchor reference)
-    {
-        _lExampleClerkExamples.LExampleSourceUpdate(exampleId, reference);
-    }
-
-    public void LExampleClerkAttach(long ownerId, long exampleId, int position, LOwner owner)
-    {
-        switch (owner)
-        {
-            case LOwner.LOwnerMeaning:
-                _lExampleClerkSentences.LSentenceMeaningAttach(ownerId, exampleId, position);
-                return;
-            case LOwner.LOwnerCollocation:
-                _lExampleClerkSentences.LSentenceCollocationAttach(ownerId, exampleId, position);
-                return;
-            default:
-                throw LExampleOwnerRaise(owner);
-        }
-    }
-
-    public void LExampleClerkDetach(long ownerId, long exampleId, LOwner owner)
-    {
-        switch (owner)
-        {
-            case LOwner.LOwnerMeaning:
-                _lExampleClerkSentences.LSentenceMeaningDetach(ownerId, exampleId);
-                return;
-            case LOwner.LOwnerCollocation:
-                _lExampleClerkSentences.LSentenceCollocationDetach(ownerId, exampleId);
-                return;
-            default:
-                throw LExampleOwnerRaise(owner);
-        }
-    }
-
-    public void LExampleClerkRemove(long ownerId, long exampleId, LOwner owner)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
-
-        LExampleClerkDetach(ownerId, exampleId, owner);
-        if (_lExampleClerkExamples.LExampleReferenceRead(exampleId) == 0)
-        {
-            _lExampleClerkExamples.LExampleDelete(exampleId);
-        }
-    }
-
-    public void LExampleClerkDelete(long id)
-    {
-        _lExampleClerkExamples.LExampleDelete(id);
     }
 
     public void LExampleClerkDelete(long id, bool detach)
@@ -239,12 +154,6 @@ public sealed class LExampleClerk
         return named.TryGetValue(id, out string? name)
             ? name
             : id.ToString(CultureInfo.InvariantCulture);
-    }
-
-    private static ArgumentOutOfRangeException LExampleOwnerRaise(LOwner owner)
-    {
-        return new ArgumentOutOfRangeException(
-            nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 
     public LExample? LExampleClerkResolve(

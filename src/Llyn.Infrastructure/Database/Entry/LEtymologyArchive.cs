@@ -40,7 +40,7 @@ public sealed class LEtymologyArchive : LEtymologyVault
             text = reader.GetString(1);
         }
 
-        return new LEtymology(id, entryId, text, LEtymologyMentionRead(connection, id));
+        return new LEtymology(id, text, LEtymologyMentionRead(connection, id));
     }
 
     public IReadOnlyList<LEtymon> LEtymologyEtymonRead(long entryId)
@@ -51,7 +51,7 @@ public sealed class LEtymologyArchive : LEtymologyVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT etymon_id, position, entry_ref FROM etymon
+            SELECT entry_ref FROM etymon
             WHERE entry_parent = $entry
             ORDER BY position;
             """;
@@ -61,7 +61,7 @@ public sealed class LEtymologyArchive : LEtymologyVault
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            etymons.Add(new LEtymon(reader.GetInt64(0), entryId, reader.GetInt32(1), reader.GetInt64(2)));
+            etymons.Add(new LEtymon(reader.GetInt64(0)));
         }
 
         return etymons;
@@ -105,7 +105,7 @@ public sealed class LEtymologyArchive : LEtymologyVault
         }
 
         session.LDatabaseSessionCommit();
-        return new LEtymology(id, entryId, text, written);
+        return new LEtymology(id, text, written);
     }
 
     public IReadOnlyList<LEtymon> LEtymologyEtymonSet(long entryId, IReadOnlyList<long> targetIds)
@@ -135,52 +135,17 @@ public sealed class LEtymologyArchive : LEtymologyVault
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO etymon (entry_parent, position, entry_ref) VALUES ($entry, $position, $target)
-                RETURNING etymon_id;
+                INSERT INTO etymon (entry_parent, position, entry_ref) VALUES ($entry, $position, $target);
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
             command.Parameters.AddWithValue("$position", written.Count);
             command.Parameters.AddWithValue("$target", targetId);
-            written.Add(new LEtymon((long)command.ExecuteScalar()!, entryId, written.Count, targetId));
+            command.ExecuteNonQuery();
+            written.Add(new LEtymon(targetId));
         }
 
         session.LDatabaseSessionCommit();
         return written;
-    }
-
-    public IReadOnlyList<LEntry> LEtymologySourceScan(long entryId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-
-        using LDatabaseSession session = _lEtymologyArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT entry.entry_id, entry.headword, entry.language, entry.grasp, entry.added_utc, entry.updated_utc
-            FROM entry
-            WHERE entry.entry_id IN (SELECT entry_parent FROM etymon WHERE entry_ref = $entry)
-               OR entry.entry_id IN (
-                   SELECT etymology.entry_parent FROM etymology_mention
-                   JOIN etymology ON etymology.etymology_id = etymology_mention.etymology_parent
-                   WHERE etymology_mention.entry_ref = $entry)
-            ORDER BY entry.language, entry.headword;
-            """;
-        command.Parameters.AddWithValue("$entry", entryId);
-
-        List<LEntry> entries = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            entries.Add(new LEntry(
-                reader.GetInt64(0),
-                reader.GetString(1),
-                reader.GetString(2),
-                reader.GetInt32(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
-                reader.IsDBNull(5) ? null : reader.GetString(5)));
-        }
-
-        return entries;
     }
 
     private static IReadOnlyList<LMention> LEtymologyMentionRead(SqliteConnection connection, long etymologyId)

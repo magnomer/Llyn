@@ -9,13 +9,13 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineEntry.LEngineEntryFind(query, order);
+        engine.LEngineStaffHeld.LEngineStaffEntry.LEntryClerkFind(query, order);
 
     internal static IReadOnlyList<LCatalogFavorite> TEngineFavoriteFind(
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineVista.LEngineFavoriteFind(query, order);
+        engine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkFind(query, order);
 
     internal static IReadOnlyList<LCatalogPronunciation> TEnginePronunciationFind(
         this LEngine engine,
@@ -65,8 +65,12 @@ internal static partial class TInterface
     internal static string TReferenceNameRead(this LReference reference) =>
         reference.LReferenceNameRead();
 
-    internal static LReference TEngineCitationCreate(this LEngine engine, string title) =>
-        engine.LEngineReference.LEngineCitationCreate(title);
+    internal static LReference TEngineCitationCreate(this LEngine engine, string title)
+    {
+        LReference stored = engine.LEngineStaffHeld.LEngineStaffReference.LReferenceClerkCreate(title);
+        engine.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
+        return stored;
+    }
 
     internal static long TEngineCitationResolve(
         this LEngine engine, long draftId, long cardId, long sentenceId, string title) =>

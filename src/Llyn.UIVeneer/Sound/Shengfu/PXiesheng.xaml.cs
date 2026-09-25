@@ -149,7 +149,7 @@ public partial class PXiesheng : UserControl
 
     private void PXieshengColumnUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pGroveList,
             PGroveItem.PGroveItemBuild(_lXiesheng.LXieshengGroveRead()),
             PGroveItem.PGroveItemMatch,
@@ -162,7 +162,7 @@ public partial class PXiesheng : UserControl
 
     private void PKindredUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pKindredList,
             PKindredItem.PKindredItemBuild(_lXiesheng.LXieshengKindredRead()),
             PKindredItem.PKindredItemMatch,
@@ -211,7 +211,7 @@ public partial class PXiesheng : UserControl
     private void PRungHandle(object sender, RoutedEventArgs e)
     {
         PRungDropper.IsChecked = false;
-        _lXiesheng.LXieshengRungSet(PSender.PSenderOrderRead(sender));
+        _lXiesheng.LXieshengRungSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PGroveHandle(object sender, RoutedEventArgs e)

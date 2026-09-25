@@ -33,10 +33,6 @@ The vista's starting order and filter are marked, so the first bulletin stores o
 The vista's editing event is taken here, since only a vista started through the posture is the window's.
 The vista is remembered so the event can be given back on dispose.
 
-## `public void LPostureWindowSave(LWindowState window)`
-
-Stores the window geometry of the run that is ending.
-
 ## `public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)`
 
 Stores the window geometry after `delay` milliseconds, or at once when `delay` is zero.
@@ -121,4 +117,3 @@ An equal record is not written again.
 ## `private void LPostureSave()`
 
 Writes the posture through the engine, which records and swallows a vault fault.
-

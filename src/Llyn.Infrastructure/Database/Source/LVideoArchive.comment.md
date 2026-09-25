@@ -8,4 +8,3 @@ It keeps one thing an Image has no use for, the span of the film worth watching.
 The span is held as written and read as written.
 A Video is owned by nothing, so a reference is a link and never containment.
 The order a Video appears in lives on each reference, and every write renumbers that referrer's set.
-A Video is refused deletion while anything still points at it, so no reference is ever left dangling.

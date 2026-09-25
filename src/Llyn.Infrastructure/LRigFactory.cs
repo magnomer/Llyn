@@ -28,7 +28,6 @@ public static class LRigFactory
         return new LRig(
             database,
             new LDoctor(database),
-            new LRealmArchive(database),
             new LSettingsLoader(root),
             new LAuditWriter(root),
             new LPostureFile(new LKeepFile(root)),

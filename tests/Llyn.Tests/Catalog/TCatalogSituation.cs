@@ -45,17 +45,7 @@ public sealed class TCatalogSituation
         LSituation quiet = TCatalogSituationCreate(engine, "quiet place", null, null);
         LSituation busy = TCatalogSituationCreate(engine, "busy place", null, null);
 
-        LEntry entry = TCatalogEntryCreate(engine, "apple");
-        IReadOnlyList<LMeaning> meanings = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry);
-        IReadOnlyList<LCollocation> collocations =
-            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry);
-
-        engine.TEngineSituationAttach(
-            meanings[0].LMeaningId, busy.LSituationId, 0, LOwner.LOwnerMeaning);
-        engine.TEngineSituationAttach(
-            collocations[0].LCollocationId, busy.LSituationId, 0, LOwner.LOwnerCollocation);
-        engine.TEngineSituationAttach(
-            meanings[0].LMeaningId, quiet.LSituationId, 1, LOwner.LOwnerMeaning);
+        TCatalogEntryCreate(engine, "apple", [busy, quiet], [busy]);
 
         IReadOnlyList<LCatalogSituation> read =
             engine.TEngineSituationFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);
@@ -93,7 +83,8 @@ public sealed class TCatalogSituation
             TInterface.TSituationCreate(0, title, description, kind));
     }
 
-    private static LEntry TCatalogEntryCreate(LEngine engine, string headword)
+    private static LEntry TCatalogEntryCreate(
+        LEngine engine, string headword, IReadOnlyList<LSituation> meaning, IReadOnlyList<LSituation> collocation)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             headword,
@@ -105,7 +96,7 @@ public sealed class TCatalogSituation
                 string.Empty,
                 "a meaning",
                 [],
-                [],
+                TCatalogDraftRead(meaning),
                 [],
                 [],
                 [],
@@ -115,10 +106,15 @@ public sealed class TCatalogSituation
                 "an expression",
                 "a meaning",
                 [],
-                [],
+                TCatalogDraftRead(collocation),
                 [],
                 [],
                 [],
                 1)]));
+    }
+
+    private static List<LSituationDraft> TCatalogDraftRead(IReadOnlyList<LSituation> situations)
+    {
+        return [.. situations.Select(row => TInterface.TSituationDraftCreate(row.LSituationTitle, row.LSituationId))];
     }
 }

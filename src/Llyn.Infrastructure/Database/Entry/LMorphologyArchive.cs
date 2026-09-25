@@ -98,29 +98,6 @@ public sealed class LMorphologyArchive : LMorphologyVault
         return features;
     }
 
-    public LFeature? LFeatureFind(long speechValueId, string name)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(speechValueId);
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return null;
-        }
-
-        using LDatabaseSession session = _lMorphologyArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT morphology_feature_id, speech_value_parent, pack_code, name, position FROM morphology_feature
-            WHERE speech_value_parent = $speech AND trim(name) = trim($name) COLLATE NOCASE
-            ORDER BY position, morphology_feature_id LIMIT 1;
-            """;
-        command.Parameters.AddWithValue("$speech", speechValueId);
-        command.Parameters.AddWithValue("$name", name);
-
-        using SqliteDataReader reader = command.ExecuteReader();
-        return reader.Read() ? LFeatureRowRead(reader) : null;
-    }
-
     public LMorphology? LMorphologyRead(long id)
     {
         if (id <= 0)
@@ -139,29 +116,6 @@ public sealed class LMorphologyArchive : LMorphologyVault
 
         using SqliteDataReader reader = command.ExecuteReader();
         return reader.Read() ? LMorphologyRowRead(reader) : null;
-    }
-
-    public IReadOnlyList<LMorphology> LMorphologyScan(long featureId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(featureId);
-
-        using LDatabaseSession session = _lMorphologyArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position FROM morphology_value
-            WHERE morphology_feature_parent = $feature ORDER BY position, morphology_value_id;
-            """;
-        command.Parameters.AddWithValue("$feature", featureId);
-
-        List<LMorphology> values = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            values.Add(LMorphologyRowRead(reader));
-        }
-
-        return values;
     }
 
     public LMorphology? LMorphologyFind(long featureId, string name)

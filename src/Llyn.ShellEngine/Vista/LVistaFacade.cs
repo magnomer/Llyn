@@ -172,22 +172,6 @@ internal sealed class LVistaFacade
         return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffEntry.LEntryEpithetScan(ids);
     }
 
-    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)
-    {
-        lock (_lVistaFacadeGate)
-        {
-            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkFind(query);
-        }
-    }
-
-    public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
-    {
-        lock (_lVistaFacadeGate)
-        {
-            return _lVistaFacadeEngine.LEngineStaffHeld.LEngineStaffFavorite.LFavoriteClerkFind(query, order);
-        }
-    }
-
     public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
     {
         lock (_lVistaFacadeGate)

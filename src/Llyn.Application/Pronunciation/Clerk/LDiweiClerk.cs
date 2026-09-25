@@ -43,12 +43,6 @@ public sealed class LDiweiClerk
         return _lDiweiClerkDiwei.LDiweiFanqieRead(diwei.LDiweiId);
     }
 
-    public IReadOnlyList<long> LDiweiClerkScan(string language, IReadOnlyList<long> diweiIds)
-    {
-        ArgumentNullException.ThrowIfNull(diweiIds);
-        return _lDiweiClerkDiwei.LDiweiEntryScan(language, diweiIds);
-    }
-
     public IReadOnlyList<LEntry> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds, string query)
     {
         ArgumentNullException.ThrowIfNull(diweiIds);
@@ -66,7 +60,6 @@ public sealed class LDiweiClerk
         return new LDiweiPage(
             diwei.LDiweiLanguage,
             diwei.LDiweiKey,
-            diwei.LDiweiFinal,
             LDiweiSection.LDiweiSectionScan(
                 diwei.LDiweiKind,
                 LDiweiFanqieRead(diwei),

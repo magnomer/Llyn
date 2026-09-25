@@ -40,16 +40,6 @@ public sealed class LMentionArchive : LMentionVault
         return written;
     }
 
-    public void LMentionExampleCopy(long fromId, long toId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(fromId);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(toId);
-
-        using LDatabaseSession session = _lMentionArchiveDatabase.LDatabaseSessionStart();
-        LMentionExampleCopy(session.LDatabaseSessionConnection, fromId, toId);
-        session.LDatabaseSessionCommit();
-    }
-
     public IReadOnlyList<long> LMentionSenseClear(long meaningId)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(meaningId);
@@ -186,30 +176,6 @@ public sealed class LMentionArchive : LMentionVault
             "DELETE FROM example_mention WHERE example_parent = $example AND start + length > $length;";
         command.Parameters.AddWithValue("$example", exampleId);
         command.Parameters.AddWithValue("$length", length);
-        command.ExecuteNonQuery();
-    }
-
-    internal static void LMentionExampleCopy(SqliteConnection connection, long fromId, long toId)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO example_mention (example_parent, start, length, entry_ref, sense_ref)
-            SELECT $to, start, length, entry_ref, sense_ref
-            FROM example_mention
-            WHERE example_parent = $from
-            ORDER BY start;
-            """;
-        command.Parameters.AddWithValue("$from", fromId);
-        command.Parameters.AddWithValue("$to", toId);
-        command.ExecuteNonQuery();
-    }
-
-    internal static void LMentionExampleClear(SqliteConnection connection, long exampleId)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM example_mention WHERE example_parent = $example;";
-        command.Parameters.AddWithValue("$example", exampleId);
         command.ExecuteNonQuery();
     }
 

@@ -42,7 +42,7 @@ public sealed class TDeskFinish
 
         Assert.False(desk.LDeskHeld);
         Assert.Equal(0, finished);
-        Assert.Empty(engine.TEngineAuthorRead());
+        Assert.Empty(engine.TEngineAuthorFind(string.Empty));
         Assert.False(desk.TDeskChangeCheck());
     }
 

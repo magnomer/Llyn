@@ -23,10 +23,3 @@ Answers the cached drawing image, so XAML pays the SVG conversion once per asset
 Loads the symbol on first use and keeps the frozen drawing under its name.
 The receiving `Image` supplies the requested width and height while WPF scales the drawing uniformly.
 It also builds cached grayscale drawings when an icon image reports an inherited disabled state.
-
-## `internal static (Geometry, Rect) PIconLoad(string name)`
-
-Reads the asset as XML and joins every `path` into one nonzero-filled group.
-The `F1` prefix keeps the nonzero rule the SVG default gives, so rings and cutouts wind as drawn.
-The frame is the `viewBox`, or the width and height when a file declares none.
-The grasp rating alone uses this monochrome geometry because it paints partial stars with live theme brushes.

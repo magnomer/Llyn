@@ -22,6 +22,14 @@ The same rig posing as another process, its claim fake told to name that process
 
 Marks one draft of the rig's draft fake as what the next sweep drops.
 
+## `internal static LTombstone? TTombstoneRead(this LRig rig, long entryId)`
+
+The tombstone the rig's tombstone fake holds for that entry, or `null`.
+
+## `internal static long? TRevisionRead(this LRig rig)`
+
+The revision the rig's workspace row points at, or `null` before any was recorded.
+
 ## `internal static LClaimClerk TClaimClerkCreate(LRig rig)`
 
 The claim clerk over `rig`, with its issuer, chronicle and court built over the same rig.
@@ -93,7 +101,7 @@ Relays the sweep of the recording clerk.
 
 ## `internal static string TRecordingFormat(LRig rig, string path)`
 
-A recording path made workspace-relative through a trail clerk over `rig`.
+A recording path made workspace-relative through the trail of `rig`.
 
 ## `internal static LPronunciation TPronunciationSave(LRig rig, LPronunciation pronunciation)`
 
@@ -143,6 +151,6 @@ Relays the entry page of the portrait clerk.
 
 Relays the print of the portrait clerk.
 
-## `internal static LEntry TEntryClerkAdd(this LEntryClerk clerk, LEntry entry)`
+## `internal static LEntry TEntryClerkAdd(this LRig rig, LEntry entry)`
 
-Creates `entry` through the clerk with no forms and no speeches.
+Creates a bare entry with the headword and language of `entry`, as a translation link does.

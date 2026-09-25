@@ -28,17 +28,3 @@ Each stored position comes from that order, not from the position the caller set
 Returns the stored revision.
 The whole write is one transaction.
 An empty change list records an empty revision.
-
-## `public LRevision? LRevisionRead(long id)`
-
-Reads the revision for `id`, or `null` when no revision has that id.
-
-## `public LRevision? LRevisionLatestRead()`
-
-Reads the most recently opened revision, or `null` when the workspace has none yet.
-Ordering is by the stamped timestamp, then by id.
-So two revisions opened in the same tick still read back in one stable order.
-
-## `public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId)`
-
-Reads the changes recorded under `revisionId`, in the order they were recorded.

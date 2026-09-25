@@ -17,8 +17,8 @@ The epithet is the reading the pack names, empty when the setting is off or the 
 ## `internal static bool POccurrenceItemMatch(POccurrenceItem held, POccurrenceItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void POccurrenceItemSync(POccurrenceItem held, POccurrenceItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.

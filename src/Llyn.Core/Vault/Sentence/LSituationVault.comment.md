@@ -60,16 +60,6 @@ A Meaning is named by its title and, standing without one, by its definition.
 A Collocation is named by its title and, standing without one, by its expression.
 The Entry each side belongs to is read with it, so a row is legible without a second query.
 
-## `void LSituationDelete(long id);`
-
-Deletes the Situation identified by `id`.
-Guarded: while any Meaning or Collocation still references the Situation, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach every reference first.
-Deleting a Situation never deletes the rows that referenced it.
-Its Image and Video links go with it, and the Image and Video rows stay.
-The guard and the delete share one transaction, so nothing can attach the Situation between them.
-
 ## `void LSituationDelete(long id, bool detach);`
 
 Deletes the Situation, first dropping every reference to it when `detach` is asked for.

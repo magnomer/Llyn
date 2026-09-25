@@ -66,41 +66,6 @@ public sealed class TDraft
     }
 
     [Fact]
-    public void DraftMove_CardMoved_RenumbersAllCards()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LDraft started = engine.TEngineDraftStart("editor", null);
-        engine.TRequestContentApply(
-            started.LDraftId,
-            TInterface.TDraftNestedCreate("editor", "kindle").LDraftContent with
-            {
-                LEntryDraftMeanings =
-                [
-                    TInterface.TDraftCardCreate("first"),
-                    TInterface.TDraftCardCreate("second"),
-                    TInterface.TDraftCardCreate("third"),
-                ],
-            });
-
-        IReadOnlyList<LCardDraft> moved = engine.TEngineDraftMove(started.LDraftId, false, 0, 2);
-
-        Assert.Equal(
-            ["second", "third", "first"],
-            moved.Select(card => card.LCardDraftTitle.TStateValueShow()));
-        Assert.Equal([1, 2, 3], moved.Select(card => card.LCardDraftPosition));
-
-        LDraft? held = engine.TEngineDraftRead(started.LDraftId);
-
-        Assert.NotNull(held);
-        Assert.Equal(
-            ["second", "third", "first"],
-            held.LDraftContent.LEntryDraftMeanings.Select(card => card.LCardDraftTitle.TStateValueShow()));
-        Assert.Equal([1, 2, 3], held.LDraftContent.LEntryDraftMeanings.Select(card => card.LCardDraftPosition));
-    }
-
-    [Fact]
     public void DraftCheck_OnlyVideoAdded_ReportsChanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

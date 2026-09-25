@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -14,7 +15,6 @@ internal sealed class PKindredItem : INotifyPropertyChanged
     {
         PKindredItemRow = row;
         PKindredItemId = row.LVistaRowId;
-        PKindredItemHeadword = row.LVistaRowHeadword;
         PKindredItemName = row.LVistaRowName;
         PKindredItemEpithet = row.LVistaRowEpithet;
         PKindredItemFlag = PEnsign.PEnsignFind(row.LVistaRowLanguage);
@@ -22,8 +22,6 @@ internal sealed class PKindredItem : INotifyPropertyChanged
     }
 
     public long PKindredItemId { get; }
-
-    public string PKindredItemHeadword { get; }
 
     public string? PKindredItemEpithet { get; }
 
@@ -41,7 +39,7 @@ internal sealed class PKindredItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        return PSplice.PSpliceBuild(rows, row => new PKindredItem(row, row.LVistaRowChosen));
+        return LSplice.LSpliceBuild(rows, row => new PKindredItem(row, row.LVistaRowChosen));
     }
 
     internal static bool PKindredItemMatch(PKindredItem held, PKindredItem fresh)

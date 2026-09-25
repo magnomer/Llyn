@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -35,8 +36,20 @@ internal static partial class TInterface
     internal static bool TLocalizationDefaultCheck(string? language) =>
         LLocalization.LLocalizationDefaultCheck(language);
 
-    internal static IReadOnlyDictionary<string, string> TThemeColorRead() =>
-        LThemeLoader.LThemeLoaderLoad().LThemeColor;
+    internal static IReadOnlyDictionary<string, string> TThemeColorRead()
+    {
+        LTheme theme = LThemeLoader.LThemeLoaderLoad();
+        using Stream stream = typeof(LThemeLoader).Assembly
+            .GetManifestResourceStream("Llyn.Infrastructure.Themes.default.json")!;
+        using JsonDocument document = JsonDocument.Parse(stream);
+        Dictionary<string, string> colors = new(StringComparer.Ordinal);
+        foreach (JsonProperty color in document.RootElement.GetProperty("colors").EnumerateObject())
+        {
+            colors[color.Name] = theme.LThemeColorRead(color.Name);
+        }
+
+        return colors;
+    }
 
     internal static string TThemeColorRead(string name) =>
         LThemeLoader.LThemeLoaderLoad().LThemeColorRead(name);
@@ -72,9 +85,6 @@ internal static partial class TInterface
 
     internal static string TEnsignKeyFormat(string language, string variety) =>
         LEnsign.LEnsignKeyFormat(language, variety);
-
-    internal static string? TEnsignPathRead(this LEnsign ensign, string key) =>
-        ensign.LEnsignPathRead(key);
 
     internal static void TEnsignPathDelete(this LEnsign ensign, string path)
     {
@@ -141,8 +151,8 @@ internal static partial class TInterface
         LEpoch.LEpochResolve(epochs, caption);
 
     internal static LMentionResult TMentionResultCreate(
-        int offset, int length, LMention? stored, IReadOnlyList<LTranslationTarget> targets) =>
-        new(offset, length, stored, targets);
+        int offset, LMention? stored, IReadOnlyList<LTranslationTarget> targets) =>
+        new(offset, stored, targets);
 
     internal static LTranslationTarget TTranslationTargetCreate(long id, string headword, string language) =>
         new(id, headword, language);

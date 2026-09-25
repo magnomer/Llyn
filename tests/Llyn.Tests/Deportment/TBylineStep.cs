@@ -17,7 +17,7 @@ public sealed class TBylineStep
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;
@@ -99,7 +99,7 @@ public sealed class TBylineStep
         LShelf shelf = TShelfPrepare(engine);
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;

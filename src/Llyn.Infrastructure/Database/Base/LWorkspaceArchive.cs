@@ -56,7 +56,6 @@ public sealed class LWorkspaceArchive : LWorkspaceVault
             }
 
             state = new LWorkspaceState(
-                reader.GetInt64(0),
                 LWorkspaceArchiveResolve(reader, 1),
                 LWorkspaceArchiveResolve(reader, 2),
                 LWorkspaceArchiveResolve(reader, 3),

@@ -9,65 +9,46 @@ namespace Llyn.Tests;
 public sealed class TPronunciation
 {
     [Fact]
-    public void PronunciationCreate_WholeRowLife_ReadsBackEachStep()
+    public void EntrySave_WorkspaceAudio_StoresRelativeLoadsResolved()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = TPronunciationEntryCreate(engine);
-        LPronunciation stored = engine.TEnginePronunciationCreate(
-            TInterface.TPronunciationCreate(0, entry.LEntryId, "/wɜːd/", []));
-
-        Assert.NotEqual(0, stored.LPronunciationId);
-        Assert.Equal("/wɜːd/", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationIpa);
-
-        engine.TEnginePronunciationUpdate(stored with { LPronunciationIpa = "/wɝd/" });
-        Assert.Equal("/wɝd/", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationIpa);
-
-        engine.TEnginePronunciationDelete(stored.LPronunciationId);
-        Assert.Empty(engine.TEnginePronunciationRead(entry.LEntryId));
-    }
-
-    [Fact]
-    public void AudioSave_WorkspaceFile_StoresRelativeReadsResolved()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = TPronunciationEntryCreate(engine);
-        LPronunciation pronunciation = engine.TEnginePronunciationCreate(
-            TInterface.TPronunciationCreate(0, entry.LEntryId, "/wɜːd/", []));
 
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "English", "word.mp3");
-        engine.TEngineAudioSave(pronunciation.LPronunciationId, file, "Wikipedia");
+        LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
+            [TInterface.TPronunciationDraftCreate("/wɜːd/", "UK", file, "Wikipedia")]));
 
         Assert.Equal(
             Path.Combine("audio", "English", "word.mp3"),
             TPronunciationFileRead(workspace));
-        LPronunciationAudio? audio = engine.TEngineAudioRead(pronunciation.LPronunciationId);
-        Assert.Equal(file, audio?.LPronunciationAudioFile);
-        Assert.Equal("Wikipedia", audio?.LPronunciationAudioSource);
+        LPronunciationDraft loaded = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId));
+        Assert.Equal(file, loaded.LPronunciationDraftAudio);
+        Assert.Equal("Wikipedia", loaded.LPronunciationDraftSource);
 
-        engine.TEnginePronunciationDelete(pronunciation.LPronunciationId);
-        Assert.Null(engine.TEngineAudioRead(pronunciation.LPronunciationId));
+        engine.TEngineEntryUpdate(
+            entry.LEntryId, engine.TEngineEntryLoad(entry.LEntryId)! with { LEntryDraftPronunciations = [] });
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM pronunciation_audio;"));
     }
 
     [Fact]
-    public void NoteSave_CreateOrRewrite_KeepsExactlyOneNote()
+    public void NoteUpdate_CreateOrRewrite_KeepsExactlyOneNote()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TPronunciationEntryCreate(engine);
-        Assert.Null(engine.TEngineNoteRead(entry.LEntryId));
+        Assert.Equal(string.Empty, engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftNote);
 
-        engine.TEngineNoteSave(TInterface.TNoteCreate(entry.LEntryId, "first thoughts"));
-        engine.TEngineNoteSave(TInterface.TNoteCreate(entry.LEntryId, "second thoughts"));
-        Assert.Equal("second thoughts", engine.TEngineNoteRead(entry.LEntryId)?.LNoteText);
+        engine.TRequestEntryApply(
+            entry.LEntryId, draft => TInterface.TRequestNoteCreate(draft.LDraftId, "first thoughts"));
+        engine.TRequestEntryApply(
+            entry.LEntryId, draft => TInterface.TRequestNoteCreate(draft.LDraftId, "second thoughts"));
+        Assert.Equal("second thoughts", engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftNote);
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM note;"));
 
-        engine.TEngineNoteDelete(entry.LEntryId);
-        Assert.Null(engine.TEngineNoteRead(entry.LEntryId));
+        engine.TRequestEntryApply(
+            entry.LEntryId, draft => TInterface.TRequestNoteCreate(draft.LDraftId, string.Empty));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM note;"));
     }
 
     [Fact]
@@ -84,8 +65,8 @@ public sealed class TPronunciation
 
         Assert.Equal(
             [(0, "UK", "təˈmɑːtəʊ"), (1, "US", "təˈmeɪtoʊ")],
-            engine.TEnginePronunciationRead(entry.LEntryId)
-                .Select(row => (row.LPronunciationPosition, row.LPronunciationVariety, row.LPronunciationIpa)));
+            engine.TEntryPronunciationRead(entry.LEntryId)
+                .Select((row, index) => (index, row.LPronunciationDraftVariety, row.LPronunciationDraftIpa)));
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
@@ -120,9 +101,12 @@ public sealed class TPronunciation
 
         Assert.Equal(
             [(american, 0, "təˈmeɪtoʊ"), (british, 1, "təˈmɑːtoʊ")],
-            engine.TEnginePronunciationRead(entry.LEntryId)
-                .Select(row => (row.LPronunciationId, row.LPronunciationPosition, row.LPronunciationIpa)));
-        Assert.Equal(file, engine.TEngineAudioRead(british)?.LPronunciationAudioFile);
+            engine.TEntryPronunciationRead(entry.LEntryId)
+                .Select((row, index) => (row.LPronunciationDraftId, index, row.LPronunciationDraftIpa)));
+        Assert.Equal(
+            file,
+            engine.TEntryPronunciationRead(entry.LEntryId)
+                .Single(row => row.LPronunciationDraftId == british).LPronunciationDraftAudio);
         Assert.Equal("təˈmeɪtoʊ", engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftIpa);
     }
 
@@ -144,9 +128,9 @@ public sealed class TPronunciation
             LEntryDraftPronunciations = [loaded.LEntryDraftPronunciations[1]],
         });
 
-        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
-        Assert.Equal(0, kept.LPronunciationPosition);
-        Assert.Equal("US", kept.LPronunciationVariety);
+        LPronunciationDraft kept = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId));
+        Assert.Equal("US", kept.LPronunciationDraftVariety);
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM pronunciation WHERE position <> 0;"));
     }
 
     [Fact]
@@ -230,8 +214,8 @@ public sealed class TPronunciation
         engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, string.Empty, 0));
         LEntry entry = engine.TEngineDraftCommit(started.LDraftId);
 
-        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
-        Assert.True(string.IsNullOrEmpty(kept.LPronunciationIpa));
+        LPronunciationDraft kept = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId));
+        Assert.True(string.IsNullOrEmpty(kept.LPronunciationDraftIpa));
     }
 
     [Fact]
@@ -279,16 +263,16 @@ public sealed class TPronunciation
 
         LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
             [TInterface.TPronunciationDraftCreate("təˈmɑːtəʊ", "UK")]));
-        long stored = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationId;
+        long stored = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId)).LPronunciationDraftId;
         LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
 
         engine.TEngineRequestApply(TInterface.TPronunciationVarietyCreate(started.LDraftId, stored, "British"));
         engine.TEngineDraftCommit(started.LDraftId);
 
-        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
-        Assert.Equal(stored, kept.LPronunciationId);
-        Assert.Equal("British", kept.LPronunciationVariety);
-        Assert.Equal("təˈmɑːtəʊ", kept.LPronunciationIpa);
+        LPronunciationDraft kept = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId));
+        Assert.Equal(stored, kept.LPronunciationDraftId);
+        Assert.Equal("British", kept.LPronunciationDraftVariety);
+        Assert.Equal("təˈmɑːtəʊ", kept.LPronunciationDraftIpa);
     }
 
     [Fact]
@@ -308,9 +292,10 @@ public sealed class TPronunciation
                 [loaded.LEntryDraftPronunciations[0] with { LPronunciationDraftVariety = "British" }],
         });
 
-        Assert.Equal("British", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationVariety);
-        LRevision revision = Assert.IsType<LRevision>(engine.TEngineRevisionRead());
-        Assert.Contains(engine.TEngineChangeRead(revision.LRevisionId), change =>
+        Assert.Equal(
+            "British", Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId)).LPronunciationDraftVariety);
+        long revision = Assert.IsType<long>(engine.TEngineRevisionRead());
+        Assert.Contains(workspace.TRevisionChangeRead(revision), change =>
             change.LRevisionChangeKind == "update" && change.LRevisionChangeTarget == stored);
     }
 
@@ -322,7 +307,7 @@ public sealed class TPronunciation
 
         LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
             [TInterface.TPronunciationDraftCreate("təˈmɑːtəʊ", "UK")]));
-        long stored = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationId;
+        long stored = Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId)).LPronunciationDraftId;
         LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
         Assert.False(engine.TEngineDraftCheck(started.LDraftId));
 

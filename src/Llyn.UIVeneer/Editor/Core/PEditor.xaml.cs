@@ -119,11 +119,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _pDownloaderPlayer.Close();
     }
 
-    internal void PEditorEntryShow(long id)
-    {
-        _lEditor.LEditorOpen(id);
-    }
-
     internal void PEditorReset()
     {
         _lEditor.LEditorOpen(null);

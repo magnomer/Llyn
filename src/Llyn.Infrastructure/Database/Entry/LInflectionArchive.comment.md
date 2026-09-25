@@ -44,21 +44,6 @@ Existing inflection rows are cleared, their features cascade, and the new set is
 So reordering rewrites positions while the entry id stays fixed.
 The rows come back with their ids and positions.
 
-## `public void LInflectionDelete(long entryId, int position)`
-
-Deletes the single inflection at `position` under `entryId` and closes the gap it leaves.
-The inflections that remain keep their order and are renumbered `0 … n-1`.
-Their features move with them.
-Nothing happens when the entry has no inflection at that position.
-
-## `public void LInflectionMove(long entryId, int position, int target)`
-
-Moves the inflection at `position` under `entryId` to `target`.
-It rewrites the whole set so positions stay `0 … n-1`.
-Every feature follows its inflection.
-A target outside the set is clamped into it.
-Nothing moves when the entry has no inflection at that position.
-
 ## Inline notes
 
 ### `private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)`

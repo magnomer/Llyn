@@ -38,7 +38,7 @@ public partial class PTenor
     private void PDegreeHandle(object sender, RoutedEventArgs e)
     {
         PDegreeDropper.IsChecked = false;
-        _lTenor.LTenorDegreeSet(PSender.PSenderOrderRead(sender));
+        _lTenor.LTenorDegreeSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
@@ -48,7 +48,7 @@ public partial class PTenor
 
     private void PGrilleHandle(object sender, RoutedEventArgs e)
     {
-        _lTenor.LTenorGrilleSet(PChoice.PChoiceFilterRead(PGrilleList));
+        _lTenor.LTenorGrilleSet(LChoice.LChoiceFilterRead(PGrilleList));
         PGrilleRestore();
     }
 

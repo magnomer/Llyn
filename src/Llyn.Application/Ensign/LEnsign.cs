@@ -77,14 +77,6 @@ public sealed class LEnsign
         return kept;
     }
 
-    public string? LEnsignPathRead(string key)
-    {
-        lock (_lEnsignStore)
-        {
-            return _lEnsignStore.TryGetValue(key, out string? path) ? path : null;
-        }
-    }
-
     public void LEnsignPathDelete(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);

@@ -25,11 +25,6 @@ public sealed class LInflectionClerk
         _lInflectionClerkParadigms = paradigms;
     }
 
-    public IReadOnlyList<LInflection> LInflectionClerkRead(long entryId)
-    {
-        return _lInflectionClerkInflections.LInflectionRead(entryId);
-    }
-
     public void LInflectionClerkSet(long entryId, IReadOnlyList<LInflection> inflections)
     {
         ArgumentNullException.ThrowIfNull(inflections);
@@ -38,14 +33,6 @@ public sealed class LInflectionClerk
         _lInflectionClerkParadigms.LParadigmClerkUpdate(entryId);
         _lInflectionClerkLacunae.LLacunaDelete(entryId);
         _lInflectionClerkEntries.LEntryUpdatedSet(entryId);
-    }
-
-    public void LInflectionClerkAppend(long entryId, IReadOnlyList<LInflection> inflections)
-    {
-        ArgumentNullException.ThrowIfNull(inflections);
-        LInflectionClerkValidate(inflections);
-        _lInflectionClerkInflections.LInflectionAppend(entryId, inflections);
-        _lInflectionClerkParadigms.LParadigmClerkUpdate(entryId);
     }
 
     public void LInflectionClerkValidate(IReadOnlyList<LInflection> inflections)
@@ -72,19 +59,6 @@ public sealed class LInflectionClerk
         }
     }
 
-    public void LInflectionClerkMove(long entryId, int position, int target)
-    {
-        _lInflectionClerkInflections.LInflectionMove(entryId, position, target);
-        _lInflectionClerkEntries.LEntryUpdatedSet(entryId);
-    }
-
-    public void LInflectionClerkDelete(long entryId, int position)
-    {
-        _lInflectionClerkInflections.LInflectionDelete(entryId, position);
-        _lInflectionClerkLacunae.LLacunaDelete(entryId);
-        _lInflectionClerkEntries.LEntryUpdatedSet(entryId);
-    }
-
     public void LInflectionClerkReset(long entryId)
     {
         _lInflectionClerkLacunae.LLacunaDelete(entryId);
@@ -107,7 +81,6 @@ public sealed class LInflectionClerk
         LInflectionClerkValidate(current);
         inflections.LInflectionSet(entryId, current);
         changes.Add(new LRevisionChange(
-            0,
             entryId,
             "inflection",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

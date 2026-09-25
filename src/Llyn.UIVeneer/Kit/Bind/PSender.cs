@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Input;
-using Llyn.Core;
 
 namespace Llyn.UIVeneer;
 
@@ -21,11 +20,6 @@ internal static class PSender
     internal static string? PSenderTagRead(object sender)
     {
         return sender is FrameworkElement { Tag: string tag } ? tag : null;
-    }
-
-    internal static LCatalogOrder? PSenderOrderRead(object sender)
-    {
-        return sender is FrameworkElement { Tag: LCatalogOrder order } ? order : null;
     }
 
     internal static PSenderItem? PSenderParameterRead<PSenderItem>(ExecutedRoutedEventArgs e)

@@ -119,27 +119,6 @@ public sealed partial class LSituationArchive : LSituationVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LSituationTitleUpdate(long situationId, LStateValue title)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
-        ArgumentNullException.ThrowIfNull(title);
-
-        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText =
-                "UPDATE situation SET title_state = $titleState, title = $title WHERE situation_id = $id;";
-            LStateColumn.LStateColumnApply(command, "title", title);
-            command.Parameters.AddWithValue("$id", situationId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
-            }
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
     public int LSituationReferenceRead(long id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -255,11 +234,6 @@ public sealed partial class LSituationArchive : LSituationVault
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
-    }
-
-    public void LSituationDelete(long id)
-    {
-        LSituationDelete(id, false);
     }
 
     public void LSituationDelete(long id, bool detach)

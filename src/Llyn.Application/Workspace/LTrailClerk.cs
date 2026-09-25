@@ -17,8 +17,6 @@ public sealed class LTrailClerk
         _lTrailClerkWorkspace = rig.LRigWorkspace;
     }
 
-    public string LTrailClerkWorkspace => _lTrailClerkWorkspace;
-
     public string LWorkspaceFormat()
     {
         string name = _lTrailClerkTrail.LTrailNameRead(_lTrailClerkWorkspace);
@@ -120,11 +118,5 @@ public sealed class LTrailClerk
     {
         return LTrailClerkResolve(file) is { IsFile: true } resolved
             && _lTrailClerkUsher.LUsherPathExist(resolved.LocalPath);
-    }
-
-    public string LRecordingFormat(string path)
-    {
-        ArgumentNullException.ThrowIfNull(path);
-        return _lTrailClerkTrail.LTrailRelativeResolve(_lTrailClerkWorkspace, path) ?? path;
     }
 }

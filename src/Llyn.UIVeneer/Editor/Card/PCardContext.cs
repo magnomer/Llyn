@@ -119,11 +119,7 @@ internal sealed partial class PCard
 
     private static object PCardContextCreate(LSituationDraft draft)
     {
-        return new PContext(
-            draft.LSituationDraftTitle,
-            draft.LSituationDraftId,
-            draft.LSituationDraftDescription,
-            draft.LSituationDraftKind);
+        return new PContext(draft.LSituationDraftTitle, draft.LSituationDraftId);
     }
 
     private void PCardContextStart()

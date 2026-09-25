@@ -112,11 +112,11 @@ public sealed class TMarkupLink
             Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(glow.LEntryId)).LEntryDraftMeanings).LCardDraftId;
 
         string path = TMarkupSave(workspace, TMarkupOwn);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path),
             [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeReplace, glow.LEntryId)]);
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
         LCardDraft card = Assert.Single(
             Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(glow.LEntryId)).LEntryDraftMeanings);
         Assert.NotEqual(oldId, card.LCardDraftId);
@@ -132,18 +132,18 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TMarkupSave(workspace, TMarkupCross);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path),
             [
                 TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew),
                 TInterface.TMarkupIntakeCreate(1, LMarkupMode.LMarkupModeNew),
             ]);
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
         LEntryDraft ember = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(outcome.LMarkupOutcomeEntry[0].LEntryId));
+            engine.TEngineEntryLoad(outcome.TMarkupOutcomeEntry[0].LEntryId));
         LEntryDraft glow = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(outcome.LMarkupOutcomeEntry[1].LEntryId));
+            engine.TEngineEntryLoad(outcome.TMarkupOutcomeEntry[1].LEntryId));
         LCardDraft soft = Assert.Single(Assert.Single(glow.LEntryDraftMeanings).LCardDraftChild);
 
         LMentionDraft toGlow = Assert.Single(
@@ -161,14 +161,14 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TMarkupSave(workspace, TMarkupOwn.Replace("<sense>1</sense>", "<sense>4</sense>"));
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        LMarkupOmission omission = Assert.Single(outcome.LMarkupOutcomeOmission);
+        LMarkupOmission omission = Assert.Single(outcome.TMarkupOutcomeOmission);
         Assert.Contains("sense \"4\"", omission.LMarkupOmissionText);
         Assert.Equal(2, omission.LMarkupOmissionLine);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         LMentionDraft mention = Assert.Single(
             TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftMention);
         Assert.Equal(0, mention.LMentionDraftSense);
@@ -181,12 +181,12 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TMarkupSave(workspace, TMarkupOwn.Replace("<length>4</length>", "<length>40</length>"));
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        Assert.Contains("mention at 7", Assert.Single(outcome.LMarkupOutcomeOmission).LMarkupOmissionText);
+        Assert.Contains("mention at 7", Assert.Single(outcome.TMarkupOutcomeOmission).LMarkupOmissionText);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         Assert.Empty(TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftMention);
     }
 
@@ -197,12 +197,12 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TMarkupSave(workspace, TMarkupBare.Replace("<offset>7</offset>", "<offset>2147483647</offset>"));
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        Assert.Contains("mention at 2147483647", Assert.Single(outcome.LMarkupOutcomeOmission).LMarkupOmissionText);
+        Assert.Contains("mention at 2147483647", Assert.Single(outcome.TMarkupOutcomeOmission).LMarkupOmissionText);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         Assert.Empty(TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftMention);
     }
 
@@ -228,15 +228,15 @@ public sealed class TMarkupLink
             </llyn>
             """;
         string path = TMarkupSave(workspace, text);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        Assert.Equal(3, outcome.LMarkupOutcomeOmission.Count);
+        Assert.Equal(3, outcome.TMarkupOutcomeOmission.Count);
         Assert.All(
-            outcome.LMarkupOutcomeOmission,
+            outcome.TMarkupOutcomeOmission,
             omission => Assert.StartsWith("location", omission.LMarkupOmissionText));
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         Assert.Equal(string.Empty, Assert.Single(draft.LEntryDraftPronunciations).LPronunciationDraftAudio);
         LCardDraft card = Assert.Single(draft.LEntryDraftMeanings);
         Assert.Equal(
@@ -252,19 +252,19 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TMarkupSave(workspace, TMarkupBare);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         LMentionDraft mention = Assert.Single(
             TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftMention);
         Assert.Equal(0, mention.LMentionDraftEntry);
         Assert.Equal(7, mention.LMentionDraftOffset);
 
         string exported = Path.Combine(workspace.TWorkspaceFolder, "export.llx");
-        engine.TEngineMarkupExport([outcome.LMarkupOutcomeEntry[0].LEntryId], exported);
+        engine.TEngineMarkupExport([outcome.TMarkupOutcomeEntry[0].LEntryId], exported);
         LMarkupCard card = Assert.Single(
             Assert.Single(engine.TEngineMarkupRead(exported).LMarkupCargoEntry).LMarkupEntryMeaning);
         LMarkupMention written = Assert.Single(TExampleRead(card).LMarkupExampleMention);
@@ -307,11 +307,11 @@ public sealed class TMarkupLink
             "</example>",
             "<reference><kind>web</kind></reference></example>");
         string path = TMarkupSave(workspace, text);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
         LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId));
+            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
         long? cited = TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftReference.LStateAnchorId;
         Assert.NotNull(cited);
         Assert.NotEqual(blank.LReferenceId, cited);

@@ -25,8 +25,6 @@ The row itself does not say which kind it is, because the store it was read from
 **Parameters**
 
 - `LSentenceId` — Opaque, program-generated stable id of this owner's hold on the Example.
-- `LSentenceOwnerId` — The Meaning or Collocation holding the Example.
-- `LSentencePosition` — Where the row sits among the owner's Sentences, counted from zero.
 - `LSentenceExample` — The Example the row shows, and `null` when the row states a frame and no sentence.
 - `LSentenceParticle` — The frame's grammatical marker, and what is known about it.
 - `LSentenceDependence` — The role the frame fills, and what is known about it.

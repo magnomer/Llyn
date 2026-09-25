@@ -44,10 +44,6 @@ public sealed class TEngineXiaoyun
 
         IReadOnlyList<long> anchors =
             fanqie.TFanqieRead(language, character).Select(row => row.LFanqieRowId).ToList();
-        engine.TEngineReflexSet(
-            entry.LEntryId,
-            engine.TEngineReflexRead(entry.LEntryId)
-                .Select(reflex => reflex with { LReflexAnchors = anchors })
-                .ToList());
+        engine.TEntryAnchorApply(entry.LEntryId, anchors);
     }
 }

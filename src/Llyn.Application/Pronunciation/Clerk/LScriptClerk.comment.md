@@ -35,10 +35,6 @@ The stored images grouped by style in the pack's order.
 
 Whether a fetch is pending for any character of the entry.
 
-## `public async Task<IReadOnlyList<LScriptImage>> LScriptClerkFind(string character, string language, CancellationToken cancellation)`
-
-The images of one character fetched now across the styles.
-
 ## `public void LScriptClerkClear()`
 
 Cancels every pending fetch and forgets the misses.

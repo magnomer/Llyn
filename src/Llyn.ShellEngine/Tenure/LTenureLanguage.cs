@@ -26,9 +26,4 @@ public sealed partial class LTenure
         return _lEngine.LEngineReflex.LEngineReflexRead(LTenureLanguageRead()).Count > 0
             || LTenureRead()?.LDraftContent.LEntryDraftReflected == true;
     }
-
-    public bool LTenureChangeCheck()
-    {
-        return LTenureStateRead().LTenureStateChanged;
-    }
 }

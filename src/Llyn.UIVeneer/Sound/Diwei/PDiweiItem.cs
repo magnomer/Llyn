@@ -8,15 +8,12 @@ internal sealed class PDiweiItem
 {
     private PDiweiItem(LDiweiSection section)
     {
-        PDiweiItemHeading = section.LDiweiSectionHeading;
         PDiweiItemLabel = section.LDiweiSectionLabel;
         PDiweiItemLines = PDiweiLine.PDiweiLineBuild(section.LDiweiSectionLines);
         PDiweiItemTallies = PTally.PTallyBuild(section.LDiweiSectionTallies, section.LDiweiSectionRespelled);
         PDiweiItemSwitched = section.LDiweiSectionSwitched;
         PDiweiItemRespelled = section.LDiweiSectionRespelled;
     }
-
-    public string PDiweiItemHeading { get; }
 
     public string PDiweiItemLabel { get; }
 

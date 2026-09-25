@@ -14,7 +14,7 @@ The flag is resolved once for the language and handed to the row, not read from 
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The engine row carries it, and `PSplice` moves the mark in place, so the list keeps its scroll position.
+The engine row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `public string PInventoryItemName`
 
@@ -36,8 +36,8 @@ A plain copy loop, so the panel that asks for it carries no loop of its own.
 ## `internal static bool PInventoryItemMatch(PInventoryItem held, PInventoryItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void PInventoryItemSync(PInventoryItem held, PInventoryItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.

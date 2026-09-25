@@ -55,21 +55,9 @@ Every Author credited beside `authorId` on some Source, with how many Sources cr
 Folds the Author `dropped` into the Author `kept` and deletes the dropped row.
 Observers hear of both ids, because a panel standing on the dropped Author must move to the kept one.
 
-## `internal LAuthor LEngineAuthorCreate(LAuthor author)`
-
-Creates `author` and returns it with its assigned id, announcing it.
-
 ## `public LAuthor? LEngineAuthorRead(long id)`
 
 Reads the Author for `id`, or `null` when none has that id.
-
-## `public IReadOnlyList<LAuthor> LEngineAuthorRead()`
-
-Reads every Author the workspace holds, by name.
-
-## `public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)`
-
-Reads the Authors whose name the typed text matches, by name.
 
 ## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)`
 
@@ -80,26 +68,6 @@ No draft offers nothing.
 ## `public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)`
 
 Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.
-
-## `public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)`
-
-Reads the credits of every Reference at once, each in that Reference's own order.
-
-## `internal void LEngineAuthorUpdate(LAuthor author)`
-
-Renames the Author `author` identifies and announces it.
-
-## `internal void LEngineAuthorAttach(long referenceId, long authorId, int position)`
-
-Credits the Author on the Reference at `position` and announces the Author.
-
-## `internal void LEngineAuthorDetach(long referenceId, long authorId)`
-
-Removes one Reference's credit for an Author and announces the Author.
-
-## `internal void LEngineAuthorDelete(long id)`
-
-Deletes the Author identified by `id`, refused while any Reference still credits it.
 
 ## `internal void LEngineAuthorDelete(long id, bool detach)`
 

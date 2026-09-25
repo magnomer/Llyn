@@ -17,8 +17,6 @@ Renaming a value never touches it, and it resolves against nothing.
 
 **Parameters**
 
-- `LSpeechEntryId` — Parent entry id.
-- `LSpeechPosition` — Order within the parent entry.
 - `LSpeechValueId` — Linked `speech_value` row, or `null` when the assignment is custom text.
 - `LSpeechCustom` — The part of speech exactly as the user typed it.
   It is `null` when the row links a value instead.

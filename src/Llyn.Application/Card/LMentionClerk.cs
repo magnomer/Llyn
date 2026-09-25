@@ -47,7 +47,7 @@ public sealed class LMentionClerk
         {
             if (offset >= mention.LMentionOffset && offset < mention.LMentionOffset + mention.LMentionLength)
             {
-                return new LMentionResult(mention.LMentionOffset, mention.LMentionLength, mention, []);
+                return new LMentionResult(mention.LMentionOffset, mention, []);
             }
         }
 
@@ -66,7 +66,7 @@ public sealed class LMentionClerk
 
         if (length == 0)
         {
-            return new LMentionResult(start, 0, null, []);
+            return new LMentionResult(start, null, []);
         }
 
         string word = LMentionRuneFormat(runes, start, length);
@@ -76,7 +76,7 @@ public sealed class LMentionClerk
             found.Add(new LTranslationTarget(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }
 
-        return new LMentionResult(start, length, null, found);
+        return new LMentionResult(start, null, found);
     }
 
     public static IReadOnlyList<LMentionPiece> LMentionClerkDivide(string text, IReadOnlyList<LMention> mentions)

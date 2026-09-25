@@ -36,7 +36,6 @@ public sealed class LEngine : IDisposable
     private LEngineStaff _lEngineStaff;
     private string _lEngineFolder;
     private LDoctorRescue _lEngineRescue;
-    private LRealm _lEngineRealm;
 
     public LEngine(LRig rig)
     {
@@ -47,7 +46,6 @@ public sealed class LEngine : IDisposable
             rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
         LEngineSettingsHeld = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceSettingsRead();
         _lEngineRescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
-        _lEngineRealm = LWorkspaceClerk.LWorkspaceRealmRead(rig);
 
         LEngineVista = new LVistaFacade(this);
         LEngineDraft = new LDraftFacade(this);
@@ -103,22 +101,6 @@ public sealed class LEngine : IDisposable
         }
     }
 
-    internal long LEngineIdentityCreate()
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineStaff.LEngineStaffIdentity.LIdentityCreate();
-        }
-    }
-
-    internal LRealm LEngineRealmRead()
-    {
-        lock (LEngineGate)
-        {
-            return _lEngineRealm;
-        }
-    }
-
     public LDoctorRescue LEngineRescueRead()
     {
         lock (LEngineGate)
@@ -163,7 +145,6 @@ public sealed class LEngine : IDisposable
         lock (LEngineGate)
         {
             LDoctorRescue rescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
-            LRealm realm = LWorkspaceClerk.LWorkspaceRealmRead(rig);
             LSettings settings = LWorkspaceClerk.LWorkspaceSettingsRead(rig, LEngineSettingsHeld, out bool settled);
 
             foreach (long held in _lEngineStaff.LEngineStaffClaim.LClaimClerkHeld)
@@ -177,7 +158,6 @@ public sealed class LEngine : IDisposable
 
             LEngineSettingsHeld = settings;
             _lEngineRescue = rescue;
-            _lEngineRealm = realm;
             _lEngineFolder = rig.LRigWorkspace;
             _lEngineStaff = LEngineStaff.LEngineStaffBuild(
                 rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
@@ -200,11 +180,6 @@ public sealed class LEngine : IDisposable
         _lEngineStaff.LEngineStaffFanqie.LFanqieClerkClear();
         _lEngineStaff.LEngineStaffShengfu.LShengfuClerkClear();
         _lEngineStaff.LEngineStaffReflex.LReflexClerkClear();
-    }
-
-    internal static bool LEngineOwnerCheck(LOwner owner)
-    {
-        return LCardClerk.LCardOwnerCheck(owner);
     }
 
     internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)

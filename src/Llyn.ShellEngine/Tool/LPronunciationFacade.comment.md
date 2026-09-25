@@ -10,14 +10,6 @@ The session trove that remembers a lookup or harvest stays here, since a session
 
 Stores the engine and its gate.
 
-## `internal LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)`
-
-One pronunciation row created through the clerk.
-
-## `internal IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)`
-
-The stored pronunciation rows of an entry.
-
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)`
 
 The pronunciation catalog rows matching `query`, sorted.
@@ -29,34 +21,6 @@ The same rows with the language filter applied.
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)`
 
 The rows of a vista, twinned names and the chosen mark applied through the vista build.
-
-## `internal void LEnginePronunciationUpdate(LPronunciation pronunciation)`
-
-One row rewritten through the clerk.
-
-## `internal void LEnginePronunciationDelete(long id)`
-
-One row deleted through the clerk.
-
-## `internal void LEngineAudioSave(long pronunciationId, string file, string? source)`
-
-The recording of one row saved, stored workspace-relative.
-
-## `internal LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
-
-The recording of one row with its path made absolute through the recording clerk.
-
-## `internal void LEngineNoteSave(LNote note)`
-
-The note of an entry saved, normalised.
-
-## `internal LNote? LEngineNoteRead(long entryId)`
-
-The note of an entry.
-
-## `internal void LEngineNoteDelete(long entryId)`
-
-The note of an entry deleted.
 
 ## `public Task LEnginePronunciationFind(long session, string word, string language, Action<LLookupStep> sink, CancellationToken cancellation)`
 
@@ -104,22 +68,6 @@ The scheme names of a language.
 ## `internal Task LEngineTranscriptionFind(long session, string word, string language, string scheme, Action<LLookupStep> sink, CancellationToken cancellation)`
 
 The lookup of `word` under one scheme, replayed from the trove when the session already asked.
-
-## `internal IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
-
-The stored transcription rows of an entry.
-
-## `internal IReadOnlyList<LTranscription> LEngineTranscriptionSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
-
-The rows of an entry replaced.
-
-## `internal Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
-
-The frequencies of `word` fetched now.
-
-## `internal string? LEngineBandResolve(string language, string source, string raw)`
-
-The band of a raw figure under the source's declaration.
 
 ## `public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)`
 

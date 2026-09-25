@@ -53,16 +53,14 @@ public sealed class TEntrySave
             Assert.Single(TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase)
                 .TPronunciationRead(entry.LEntryId)).LPronunciationIpa);
 
-        LRevision? revision = TInterface.TRevisionArchiveCreate(workspace.TWorkspaceDatabase).TRevisionLatestRead();
+        long? revision = engine.TEngineRevisionRead();
         Assert.NotNull(revision);
-        LRevisionChange change = Assert.Single(
-            TInterface.TRevisionArchiveCreate(workspace.TWorkspaceDatabase).TRevisionChangeRead(revision.LRevisionId));
+        LRevisionChange change = Assert.Single(workspace.TRevisionChangeRead(revision.Value));
         Assert.Equal("create", change.LRevisionChangeKind);
         Assert.Equal(entry.LEntryId, change.LRevisionChangeTarget);
 
         LWorkspaceState state = TInterface.TWorkspaceArchiveCreate(workspace.TWorkspaceDatabase).TWorkspaceStateRead();
         Assert.Null(state.LWorkspaceStateLeft);
-        Assert.Equal(revision.LRevisionId, state.LWorkspaceStateRevision);
     }
 
     [Fact]

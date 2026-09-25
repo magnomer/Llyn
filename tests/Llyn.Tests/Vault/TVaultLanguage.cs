@@ -6,13 +6,12 @@ namespace Llyn.Tests;
 public sealed class TVaultLanguage
 {
     [Fact]
-    public void LanguageRead_ShippedPack_ReturnsNamedPack()
+    public void LanguageRead_ShippedPack_ReturnsItsSources()
     {
         LLanguageVault languages = TInterface.TLanguageVaultCreate();
 
         LLanguage pack = languages.TLanguageRead("English");
 
-        Assert.Equal("English", pack.LLanguageName);
         Assert.NotEmpty(pack.LLanguageLookupSources);
     }
 
@@ -34,7 +33,6 @@ public sealed class TVaultLanguage
 
         LLanguage pack = languages.TLanguageRead("Atlantean");
 
-        Assert.Equal("Atlantean", pack.LLanguageName);
         Assert.Empty(pack.LLanguageLookupSources);
         Assert.False(languages.TLanguageNameValidate("../English"));
     }

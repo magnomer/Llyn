@@ -3,7 +3,6 @@
 public sealed record LRig(
     LVault LRigVault,
     LDoctorVault LRigDoctor,
-    LRealmVault LRigRealm,
     LSettingsVault LRigSettings,
     LAuditVault LRigAudit,
     LPostureVault LRigPosture,

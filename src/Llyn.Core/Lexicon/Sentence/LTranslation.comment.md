@@ -10,4 +10,3 @@ Links are held in order on the card that carries them.
 **Parameters**
 
 - `LTranslationEntryId` — Id of the Entry this link points at.
-- `LTranslationPosition` — Order among the owning card's translations.

@@ -46,26 +46,6 @@ public sealed class LShengfuClerk
             : _lShengfuClerkLanguages.LLanguageCacheRead(language).LLanguageShengfu;
     }
 
-    public IReadOnlyList<LShengfu> LShengfuClerkRead(long entryId)
-    {
-        LEntry? entry;
-        lock (_lShengfuClerkGate)
-        {
-            entry = _lShengfuClerkEntries.LEntryRead(entryId);
-        }
-
-        if (entry is null || LShengfuRuleRead(entry.LEntryLanguage) is null)
-        {
-            return [];
-        }
-
-        lock (_lShengfuClerkGate)
-        {
-            return _lShengfuClerkShengfu.LShengfuScan(
-                entry.LEntryLanguage, LGlyph.LGlyphScan(entry.LEntryHeadword));
-        }
-    }
-
     public void LShengfuClerkStart(long entryId)
     {
         LEntry? entry;

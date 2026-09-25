@@ -28,8 +28,6 @@ public sealed class LDraftOutlet : LDraftPort
     public void LEngineObserverDetach(Action<LBulletin> observer) =>
         _lDraftOutletEngine.LEngineObserverDetach(observer);
 
-    public IReadOnlyList<LDraft> LEngineLeftoverRead() => _lDraftOutletEngine.LEngineDraft.LEngineLeftoverRead();
-
     public void LEngineLeftoverSweep() => _lDraftOutletEngine.LEngineDraft.LEngineLeftoverSweep();
 
     public LCourt LEngineCourtStart(long ownerId, string origin, string headword, string language) =>

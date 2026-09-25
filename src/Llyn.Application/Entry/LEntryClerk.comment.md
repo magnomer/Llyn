@@ -21,11 +21,6 @@ The ports are the root, the entries, the notes, the revisions, the tombstones an
 The eight clerks handed in write the parts of an entry a commit spans.
 The recording clerk resolves the recording paths of a loaded draft.
 
-## `public LEntry LEntryClerkCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
-
-Creates `entry` with `forms` and `speeches` as its ordered child rows.
-Returns the stored entry with its assigned id and timestamps.
-
 ## `public LEntry? LEntryClerkRead(long id)`
 
 Reads the entry for `id`, or `null` when no entry has that id.
@@ -62,55 +57,25 @@ Returns the entries carrying `tag`, matched by its id, ordered by headword.
 A zero id stands for no tag chosen and returns every entry.
 The overload takes a tag rather than text so the two searches cannot be confused.
 
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag, LCatalogFilter filter)`
-
-The entries carrying `tag` with those in a hidden language left out.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag, string query, LCatalogFilter filter)`
-
-The filtered entries carrying `tag` narrowed to those whose headword matches `query`.
-The match is the catalog match, so `*` and `?` work as in every search field.
-An empty or blank `query` narrows nothing.
-
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register)`
 
 Returns the entries marked with `register`, matched by its id, ordered by headword.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register, LCatalogFilter filter)`
-
-The entries marked with `register` with those in a hidden language left out.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register, string query, LCatalogFilter filter)`
-
-The filtered entries marked with `register` narrowed to those whose headword matches `query`.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation)`
 
 Returns the entries referencing `situation`, matched by its id, ordered by headword.
 A zero id stands for no situation chosen and returns every entry.
 
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation, string query, LCatalogFilter filter)`
-
-The entries referencing `situation`, those in a hidden language left out, narrowed to headwords matching `query`.
-
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(LExample example)`
 
 Returns the entries quoting `example`, matched by its id, ordered by headword.
 A zero id stands for no example chosen and returns every entry.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LExample example, string query, LCatalogFilter filter)`
-
-The entries quoting `example`, those in a hidden language left out, narrowed to headwords matching `query`.
 
 ## `public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference)`
 
 Returns the entries citing `reference`, matched by its id, ordered by headword.
 A card cites a Source through the Example it holds, so the walk goes through that Example.
 A zero id stands for no source chosen and returns every entry.
-
-## `public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference, string query, LCatalogFilter filter)`
-
-The entries citing `reference`, those in a hidden language left out, narrowed to headwords matching `query`.
 
 ## `public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, string query)`
 
@@ -145,10 +110,6 @@ No revision is recorded, because a rating is a reading mark and not an edit of t
 
 The epithet stored on the entry, or empty for an id no entry carries.
 
-## `public void LEntryEpithetSave(long entryId, string epithet)`
-
-Writes the derived epithet onto the entry.
-
 ## `public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)`
 
 The epithet of every listed entry that has one, keyed by id, in one statement.
@@ -160,20 +121,6 @@ How many entries the workspace holds.
 ## `public long LWorkspaceSizeRead()`
 
 The bytes of the main database file, for the status bar.
-
-## `public LTombstone? LTombstoneRead(long entryId)`
-
-Reads the tombstone left by deleting the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
-
-## `public LRevision? LRevisionRead()`
-
-Reads the revision the workspace row points at, or `null` when the workspace has none yet.
-The pointer is what every save and delete moves.
-The current revision is read from where it is recorded rather than guessed from the newest row.
-
-## `public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId)`
-
-Reads the changes recorded under `revisionId`, in the order recorded.
 
 ## `public static int LEntryGraspStep`
 
@@ -241,13 +188,6 @@ The regular flags are judged last, since the judgement reads the headword, the p
 Records one revision holding `changes` and points the workspace row at it.
 Every save and delete moves that pointer, so the current revision is read from where it is recorded.
 
-## `public void LEntryUpdatedSet(long entryId)`
-
-Moves the entry's `updated_utc` to now.
-Every seam that changes one part of an entry outside the draft path calls this.
-Otherwise the stamp would say the entry stood still while a card or a pronunciation moved.
-
 ## `private static void LHeadwordValidate(LEntryDraft draft)`
 
 Refuses a draft whose headword is blank, the one refusal both saves share.
-

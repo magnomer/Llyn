@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -26,7 +27,7 @@ public partial class PFavorite
     private void PSeriesHandle(object sender, RoutedEventArgs e)
     {
         PSeriesDropper.IsChecked = false;
-        _lFavorite.LFavoriteSeriesSet(PSender.PSenderOrderRead(sender));
+        _lFavorite.LFavoriteSeriesSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PSeriesGraspUpdate()
@@ -41,7 +42,7 @@ public partial class PFavorite
 
     private void PStrainerHandle(object sender, RoutedEventArgs e)
     {
-        _lFavorite.LFavoriteStrainerSet(PChoice.PChoiceFilterRead(PStrainerList));
+        _lFavorite.LFavoriteStrainerSet(LChoice.LChoiceFilterRead(PStrainerList));
         PStrainerRestore();
     }
 
@@ -118,7 +119,7 @@ public partial class PFavorite
                 row.LVistaRowChosen));
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pRosterList, fresh, PRosterItem.PRosterItemMatch, PRosterItem.PRosterItemSync);
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

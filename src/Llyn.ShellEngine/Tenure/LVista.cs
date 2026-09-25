@@ -242,17 +242,6 @@ public sealed class LVista
         }
     }
 
-    public void LVistaObserverDetach(Action<LBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        lock (_lVistaGate)
-        {
-            _lVistaObservers.RemoveAll(pair => pair.Item2 == observer);
-            _lVistaChosenObservers.RemoveAll(pair => pair.Item2 == observer);
-        }
-    }
-
     internal void LVistaBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectVista && bulletin.LBulletinId != LVistaId)

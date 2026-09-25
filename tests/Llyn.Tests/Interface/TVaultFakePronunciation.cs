@@ -34,7 +34,4 @@ internal sealed class TVaultFakePronunciation : LPronunciationVault
     public LPronunciationAudio? LPronunciationAudioRead(long pronunciationId) => null;
 
     public IReadOnlyList<string> LPronunciationAudioScan() => [];
-
-    public long? LPronunciationHolderRead(long id) =>
-        _tVaultFakeRows.TryGetValue(id, out LPronunciation? row) ? row.LPronunciationEntryId : null;
 }

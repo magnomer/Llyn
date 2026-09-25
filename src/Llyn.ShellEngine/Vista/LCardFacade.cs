@@ -18,22 +18,6 @@ internal sealed class LCardFacade
         _lCardFacadeGate = engine.LEngineGate;
     }
 
-    internal LMeaning LEngineMeaningCreate(LMeaning meaning)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkCreate(meaning);
-        }
-    }
-
-    public LMeaning? LEngineMeaningRead(long id)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkRead(id);
-        }
-    }
-
     public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)
     {
         lock (_lCardFacadeGate)
@@ -44,75 +28,6 @@ internal sealed class LCardFacade
             }
 
             return LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkScan(ownerId);
-        }
-    }
-
-    internal void LEngineMeaningUpdate(LMeaning meaning)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkUpdate(meaning);
-        }
-    }
-
-    internal void LEngineMeaningMove(long id, int position)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkMove(id, position);
-        }
-    }
-
-    internal void LEngineMeaningDelete(long id)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffMeaning.LMeaningClerkDelete(id);
-        }
-    }
-
-    internal LCollocation LEngineCollocationCreate(LCollocation collocation)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCard.LCollocationCreate(collocation);
-        }
-    }
-
-    internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            if (owner != LOwner.LOwnerEntry)
-            {
-                throw LEngine.LEngineOwnerRaise(owner);
-            }
-
-            return LCardFacadeStaff.LEngineStaffCard.LCollocationRead(ownerId);
-        }
-    }
-
-    internal void LEngineCollocationUpdate(LCollocation collocation)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffCard.LCollocationUpdate(collocation);
-        }
-    }
-
-    internal void LEngineCollocationMove(long id, int position)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffCard.LCollocationMove(id, position);
-        }
-    }
-
-    internal void LEngineCollocationDelete(long id)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffCard.LCollocationDelete(id);
         }
     }
 
@@ -152,24 +67,6 @@ internal sealed class LCardFacade
         return rows;
     }
 
-    internal IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffTag.LTagClerkRead(ownerId, LEngine.LEngineOwnerCheck(owner));
-        }
-    }
-
-    internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            bool collocation = LEngine.LEngineOwnerCheck(owner);
-            LCardFacadeStaff.LEngineStaffTag.LTagClerkSave(ownerId, written, collocation);
-            _lCardFacadeEngine.LEngineEntry.LEngineUpdatedSet(ownerId, collocation);
-        }
-    }
-
     public LTag LEngineTagCreate(string text)
     {
         LTag created;
@@ -180,34 +77,6 @@ internal sealed class LCardFacade
 
         _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectTag, created.LTagId);
         return created;
-    }
-
-    internal void LEngineTagChange(long tagId, string renamed)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffTag.LTagClerkChange(tagId, renamed);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
-    }
-
-    internal void LEngineTagDelete(long tagId)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffTag.LTagClerkDelete(tagId);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
-    }
-
-    internal IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkRead(ownerId, LEngine.LEngineOwnerCheck(owner));
-        }
     }
 
     public IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language)
@@ -256,58 +125,6 @@ internal sealed class LCardFacade
 
         _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
         return created;
-    }
-
-    internal void LEngineRegisterChange(long registerId, string renamed)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkChange(registerId, renamed);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
-    }
-
-    internal void LEngineRegisterDelete(long registerId)
-    {
-        lock (_lCardFacadeGate)
-        {
-            LCardFacadeStaff.LEngineStaffRegister.LRegisterClerkDelete(registerId);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
-    }
-
-    internal IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            bool collocation = LEngine.LEngineOwnerCheck(owner);
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkRead(ownerId, collocation);
-        }
-    }
-
-    internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)
-    {
-        lock (_lCardFacadeGate)
-        {
-            bool collocation = LEngine.LEngineOwnerCheck(owner);
-            LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkSave(ownerId, ids, collocation);
-            _lCardFacadeEngine.LEngineEntry.LEngineUpdatedSet(ownerId, collocation);
-        }
-    }
-
-    private void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, bool collocation)
-    {
-        LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkSave(ownerId, ids, collocation);
-    }
-
-    internal IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffTranslation.LTranslationClerkFind(query, entryId);
-        }
     }
 
     public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)

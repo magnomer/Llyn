@@ -37,12 +37,10 @@ public sealed class TSituationMedia
         Assert.Equal("00:10-00:40", read.LSituationVideo[0].LVideoDraftSpan.TStateValueShow());
         Assert.Equal(stored, read);
 
-        LImageArchive images = TInterface.TImageArchiveCreate(workspace.TWorkspaceDatabase);
-        Assert.Equal(1, images.TImageReferenceRead(stored.LSituationImage[0].LImageDraftId));
-        Assert.Equal(
-            1,
-            TInterface.TVideoArchiveCreate(workspace.TWorkspaceDatabase)
-                .TVideoReferenceRead(stored.LSituationVideo[0].LVideoDraftId));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            $"SELECT COUNT(*) FROM situation_image WHERE image_ref = {stored.LSituationImage[0].LImageDraftId};"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            $"SELECT COUNT(*) FROM situation_video WHERE video_ref = {stored.LSituationVideo[0].LVideoDraftId};"));
     }
 
     [Fact]
@@ -82,7 +80,8 @@ public sealed class TSituationMedia
 
         LImageArchive images = TInterface.TImageArchiveCreate(workspace.TWorkspaceDatabase);
         Assert.NotNull(images.TImageRead(droppedId));
-        Assert.Equal(0, images.TImageReferenceRead(droppedId));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            $"SELECT COUNT(*) FROM situation_image WHERE image_ref = {droppedId};"));
         Assert.NotNull(TInterface.TVideoArchiveCreate(workspace.TWorkspaceDatabase)
             .TVideoRead(stored.LSituationVideo[0].LVideoDraftId));
         Assert.Equal(0, workspace.TWorkspaceCountRead(
@@ -111,7 +110,12 @@ public sealed class TSituationMedia
             });
         LSituation third = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "bare", null, null));
 
-        IReadOnlyList<LSituation> read = engine.TEngineSituationRead();
+        IReadOnlyList<LSituation> read =
+        [
+            .. engine.TEngineSituationFind(string.Empty, LCatalogOrder.LCatalogOrderEarliest)
+                .Select(row => row.LCatalogSituationStored),
+        ];
+
 
         LSituation court = Assert.Single(read, row => row.LSituationId == first.LSituationId);
         Assert.Equal(
@@ -141,7 +145,7 @@ public sealed class TSituationMedia
                 LSituationVideo = [TInterface.TVideoDraftCreate("court.mp4")],
             });
 
-        engine.TEngineSituationDelete(stored.LSituationId);
+        engine.TEngineSituationDelete(stored.LSituationId, false);
 
         Assert.Null(engine.TEngineSituationRead(stored.LSituationId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation_image;"));

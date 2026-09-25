@@ -30,8 +30,3 @@ Passing the words in keeps export out of the interface layer without moving tran
 - `LPortraitLabelRegister` - the heading over register chips.
 - `LPortraitLabelTranslation` - the heading over translation links.
 - `LPortraitLabelTag` - the heading over tag chips.
-
-## `public static LPortraitLabel LPortraitLabelDefault`
-
-English words for a caller that has no localization at hand.
-Tests take these rather than pass empty strings.

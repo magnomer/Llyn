@@ -19,35 +19,11 @@ internal sealed class LEntryFacade
 
     private LEngineStaff LEntryFacadeStaff => _lEntryFacadeEngine.LEngineStaffHeld;
 
-    internal LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkCreate(entry, forms, speeches);
-        }
-    }
-
     public LEntry? LEngineEntryRead(long id)
     {
         lock (_lEntryFacadeGate)
         {
             return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkRead(id);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(string query)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(query);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(query, order);
         }
     }
 
@@ -67,43 +43,11 @@ internal sealed class LEntryFacade
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(tag, filter);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, string query, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(tag, query, filter);
-        }
-    }
-
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
     {
         lock (_lEntryFacadeGate)
         {
             return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(register);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(register, filter);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, string query, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(register, query, filter);
         }
     }
 
@@ -115,14 +59,6 @@ internal sealed class LEntryFacade
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation, string query, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(situation, query, filter);
-        }
-    }
-
     public IReadOnlyList<LEntry> LEngineEntryFind(LExample example)
     {
         lock (_lEntryFacadeGate)
@@ -131,27 +67,11 @@ internal sealed class LEntryFacade
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineEntryFind(LExample example, string query, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(example, query, filter);
-        }
-    }
-
     public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference)
     {
         lock (_lEntryFacadeGate)
         {
             return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(reference);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference, string query, LCatalogFilter filter)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkFind(reference, query, filter);
         }
     }
 
@@ -175,29 +95,6 @@ internal sealed class LEntryFacade
         return recorded;
     }
 
-    internal LTombstone? LEngineTombstoneRead(long entryId)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LTombstoneRead(entryId);
-        }
-    }
-
-    internal LRevision? LEngineRevisionRead()
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LRevisionRead();
-        }
-    }
-
-    internal IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LRevisionChangeRead(revisionId);
-        }
-    }
     public LGlyph? LEngineGlyphRead(string language)
     {
         if (string.IsNullOrWhiteSpace(language))
@@ -299,38 +196,6 @@ internal sealed class LEntryFacade
         {
             bool epithet = _lEntryFacadeEngine.LEngineSettingsHeld.LSettingsEpithet;
             return LEntryFacadeStaff.LEngineStaffUsage.LUsageClerkRead(id, owner, epithet);
-        }
-    }
-
-    internal LEntry LEngineEntrySave(LEntryDraft draft)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffOutcome.LOutcomeEntrySave(draft, []);
-        }
-    }
-
-    internal LEntry LEngineEntryUpdate(long id, LEntryDraft draft)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffOutcome.LOutcomeEntryUpdate(id, draft, []);
-        }
-    }
-
-    private void LEngineUpdatedSet(long entryId)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            LEntryFacadeStaff.LEngineStaffEntry.LEntryUpdatedSet(entryId);
-        }
-    }
-
-    internal void LEngineUpdatedSet(long ownerId, bool collocation)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            LEntryFacadeStaff.LEngineStaffCard.LCardUpdatedSet(ownerId, collocation);
         }
     }
 }

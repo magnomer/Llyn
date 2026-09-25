@@ -33,12 +33,12 @@ public sealed class LMeaningArchive : LMeaningVault
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                """
+                $"""
                 INSERT INTO sense (
-                    entry_parent, sense_parent, position, title_state, title,
+                    sense_id, entry_parent, sense_parent, position, title_state, title,
                     definition_state, definition)
                 VALUES (
-                    $entry, $parent, $position, $titleState, $title,
+                    {LSchemaCollocation.LSchemaCollocationSequence}, $entry, $parent, $position, $titleState, $title,
                     $definitionState, $definition)
                 RETURNING sense_id;
                 """;
@@ -162,26 +162,6 @@ public sealed class LMeaningArchive : LMeaningVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LMeaningMove(long id, int position)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        (long? entryId, long? parentId) = LMeaningHolderRead(connection, id);
-        if (entryId is null)
-        {
-            return;
-        }
-
-        IReadOnlyList<long> siblings = LMeaningSiblingRead(connection, entryId, parentId);
-        IReadOnlyList<long> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
-        LMeaningSiblingNormalize(connection, entryId, parentId, moved);
-
-        session.LDatabaseSessionCommit();
-    }
-
     public void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
@@ -224,14 +204,6 @@ public sealed class LMeaningArchive : LMeaningVault
             SELECT child.sense_id FROM sense child JOIN subtree ON child.sense_parent = subtree.sense_id
         )
         """;
-
-    public long? LMeaningHolderRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
-        return LMeaningHolderRead(session.LDatabaseSessionConnection, id).LMeaningEntry;
-    }
 
     private static (long? LMeaningEntry, long? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, long id)
     {

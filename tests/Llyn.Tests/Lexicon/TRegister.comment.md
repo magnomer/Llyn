@@ -52,16 +52,3 @@ It is listed with no marks counted, so the panel can select it at once.
 ## `public void RegisterCreate_WordingAlreadyOnShelf_ReturnsTheStoredRow()`
 
 A wording the shelf already holds, whatever its case, answers the stored row rather than a second one.
-
-## `public void RegisterChange_WrittenRow_RenamesItOnEveryCard()`
-
-A written Register is renamed once and every card marked with it follows, because a mark is a reference.
-
-## `public void RegisterDelete_LanguagePackRow_KeepsIt()`
-
-A row a language pack ships survives a delete, because the pack owns it and seeding would bring it back.
-
-## `public void RegisterDelete_LanguagePackRowOnCards_KeepsEveryMark()`
-
-A delete aimed at a shipped row must stop before it drops anything.
-Refusing only the final statement would leave the row standing with its mark stripped off every card.

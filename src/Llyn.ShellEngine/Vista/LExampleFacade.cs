@@ -18,27 +18,11 @@ internal sealed class LExampleFacade
 
     private LEngineStaff LExampleFacadeStaff => _lExampleFacadeEngine.LEngineStaffHeld;
 
-    internal LExample LEngineExampleCreate(LExample example)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkCreate(example);
-        }
-    }
-
     internal LExample? LEngineExampleRead(long id)
     {
         lock (_lExampleFacadeGate)
         {
             return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkRead(id);
-        }
-    }
-
-    internal IReadOnlyList<LExample> LEngineExampleRead()
-    {
-        lock (_lExampleFacadeGate)
-        {
-            return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkRead();
         }
     }
 
@@ -70,80 +54,6 @@ internal sealed class LExampleFacade
         }
 
         return rows;
-    }
-
-    internal IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            return LExampleFacadeStaff.LEngineStaffExample.LExampleClerkRead(ownerId, owner);
-        }
-    }
-
-    internal IReadOnlyList<LSentence> LEngineSentenceRead(long meaningId)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            return LExampleFacadeStaff.LEngineStaffExample.LSentenceRead(meaningId);
-        }
-    }
-
-    internal IReadOnlyList<LSentence> LEngineSentenceRead(long ownerId, LOwner owner)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            return LExampleFacadeStaff.LEngineStaffExample.LSentenceRead(ownerId, owner);
-        }
-    }
-
-    internal void LEngineExampleUpdate(LExample example)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkUpdate(example);
-        }
-    }
-
-    internal void LEngineExampleUpdate(long exampleId, LStateAnchor reference)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkUpdate(exampleId, reference);
-        }
-    }
-
-    internal void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkAttach(ownerId, exampleId, position, owner);
-        }
-    }
-
-    internal void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkDetach(ownerId, exampleId, owner);
-        }
-    }
-
-    internal void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffCard.LExampleRemove(ownerId, exampleId, owner);
-        }
-    }
-
-    internal void LEngineExampleDelete(long id)
-    {
-        lock (_lExampleFacadeGate)
-        {
-            LExampleFacadeStaff.LEngineStaffExample.LExampleClerkDelete(id);
-        }
-
-        _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 
     internal void LEngineExampleDelete(long id, bool detach)

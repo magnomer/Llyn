@@ -17,11 +17,6 @@ The span counts code points, as the stored row does.
 - `LMentionDraftEntry` — The Entry the word stands for, or zero when it stands for nothing.
 - `LMentionDraftSense` — The one Meaning the word is narrowed to, or zero when none is chosen.
 
-## `public static LMentionDraft LMentionDraftCreate(int start, int length, long entryId, long senseId)`
-
-A Mention drawn on a sentence with no id yet.
-The engine mints one before the row is held.
-
 ## `public static LMentionDraft LMentionDraftCreate(LMention mention)`
 
 The stored Mention as a draft, id kept.

@@ -11,8 +11,4 @@ public interface LInflectionVault
     IReadOnlyList<LInflection> LInflectionSet(long entryId, IReadOnlyList<LInflection> inflections);
 
     void LInflectionRegularSave(long inflectionId, bool regular);
-
-    void LInflectionDelete(long entryId, int position);
-
-    void LInflectionMove(long entryId, int position, int target);
 }

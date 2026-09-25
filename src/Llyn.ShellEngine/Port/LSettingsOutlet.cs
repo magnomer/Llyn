@@ -51,8 +51,6 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 
-    public LDoctorRescue LEngineRescueRead() => _lSettingsOutletEngine.LEngineRescueRead();
-
     public string? LEngineAuditRecord(Exception exception) => _lSettingsOutletEngine.LEngineAuditRecord(exception);
 
     public string? LEngineNoticeRead(Exception exception) => _lSettingsOutletEngine.LEngineNoticeRead(exception);

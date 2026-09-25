@@ -7,53 +7,25 @@ namespace Llyn.Tests;
 public sealed class TReference
 {
     [Fact]
-    public void ReferenceAttach_ExampleCitation_LimitsToOne()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
-        LReference grammar = TReferenceCreate(engine, "A Grammar");
-
-        LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(
-            0, "English", "he said the word", null, null));
-        engine.TEngineReferenceAttach(
-            example.LExampleId, dictionary.LReferenceId, 0, LOwner.LOwnerExample);
-        engine.TEngineReferenceAttach(example.LExampleId, grammar.LReferenceId, 0, LOwner.LOwnerExample);
-
-        Assert.Equal(
-            grammar.LReferenceId,
-            Assert.Single(engine.TEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample))
-                .LReferenceId);
-
-        engine.TEngineReferenceDetach(example.LExampleId, grammar.LReferenceId, LOwner.LOwnerExample);
-        Assert.Empty(engine.TEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample));
-    }
-
-    [Fact]
-    public void ReferenceDelete_CitedReference_RefusesUntilDetached()
+    public void ReferenceDelete_CitedReference_RefusesUnlessDetaching()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LReference reference = TReferenceCreate(engine, "A Dictionary");
-        LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(
-            0, "English", "he said the word", null, null));
-        engine.TEngineReferenceAttach(
-            example.LExampleId, reference.LReferenceId, 0, LOwner.LOwnerExample);
+        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+            0, "English", "he said the word", null, TInterface.TStateAnchorRead(reference.LReferenceId)));
 
         Assert.Throws<InvalidOperationException>(() =>
-            engine.TEngineReferenceDelete(reference.LReferenceId));
+            engine.TEngineReferenceDelete(reference.LReferenceId, false));
 
-        engine.TEngineReferenceDetach(example.LExampleId, reference.LReferenceId, LOwner.LOwnerExample);
-        engine.TEngineReferenceDelete(reference.LReferenceId);
+        engine.TEngineReferenceDelete(reference.LReferenceId, true);
         Assert.Null(engine.TEngineReferenceRead(reference.LReferenceId));
+        Assert.NotNull(engine.TEngineExampleRead(example.LExampleId));
     }
 
     [Fact]
-    public void AuthorDelete_CreditedAuthor_RefusesUntilDetached()
+    public void AuthorDelete_CreditedAuthor_RefusesUnlessDetaching()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,8 +34,8 @@ public sealed class TReference
         LAuthor first = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor second = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
 
-        engine.TEngineAuthorAttach(reference.LReferenceId, first.LAuthorId, 0);
-        engine.TEngineAuthorAttach(reference.LReferenceId, second.LAuthorId, 1);
+        engine.TRequestCreditApply(reference.LReferenceId, first.LAuthorId, 0);
+        engine.TRequestCreditApply(reference.LReferenceId, second.LAuthorId, 1);
 
         Assert.Equal(
             ["Kim", "Lee"],
@@ -75,14 +47,17 @@ public sealed class TReference
             "Kim Minji",
             engine.TEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference)[0].LAuthorName);
 
-        Assert.Throws<InvalidOperationException>(() => engine.TEngineAuthorDelete(first.LAuthorId));
-        engine.TEngineAuthorDetach(reference.LReferenceId, first.LAuthorId);
+        Assert.Throws<InvalidOperationException>(() => engine.TEngineAuthorDelete(first.LAuthorId, false));
         Assert.NotNull(engine.TEngineAuthorRead(first.LAuthorId));
 
-        engine.TEngineAuthorDelete(first.LAuthorId);
+        engine.TEngineAuthorDelete(first.LAuthorId, true);
         Assert.Null(engine.TEngineAuthorRead(first.LAuthorId));
+        Assert.Equal(
+            ["Lee"],
+            engine.TEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference)
+                .Select(author => author.LAuthorName));
 
-        engine.TEngineReferenceDelete(reference.LReferenceId);
+        engine.TEngineReferenceDelete(reference.LReferenceId, true);
         Assert.NotNull(engine.TEngineAuthorRead(second.LAuthorId));
     }
 
@@ -181,9 +156,9 @@ public sealed class TReference
 
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(grammar.LReferenceId, lee.LAuthorId, 1);
 
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "word",
@@ -248,7 +223,7 @@ public sealed class TReference
         LReference dictionary = TReferenceCreate(engine, "A Dictionary");
         LAuthor credited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
         LAuthor uncredited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, credited.LAuthorId, 0);
+        engine.TRequestCreditApply(dictionary.LReferenceId, credited.LAuthorId, 0);
 
         Assert.Empty(engine.TEngineUsageRead(credited.LAuthorId, LOwner.LOwnerAuthor));
         Assert.Empty(engine.TEngineUsageRead(uncredited.LAuthorId, LOwner.LOwnerAuthor));

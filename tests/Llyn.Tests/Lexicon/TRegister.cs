@@ -105,23 +105,6 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterDelete_LanguagePackRow_KeepsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["Formal"]));
-
-        LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
-        long packed = registers.TRegisterRead()
-            .First(row => row.LRegisterName.TStateValueShow() == "Informal")
-            .LRegisterId;
-        registers.TRegisterDelete(packed);
-
-        Assert.Contains(registers.TRegisterRead(), row => row.LRegisterName.TStateValueShow() == "Informal");
-    }
-
-    [Fact]
     public void RegisterFind_WorkspaceShelf_ReturnsMarkCounts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -205,43 +188,6 @@ public sealed class TRegister
 
         Assert.Equal(written.LRegisterId, again.LRegisterId);
         Assert.Single(engine.TEngineRegisterFind("gruff", "English"), row => !row.LRegisterBuiltin);
-    }
-
-    [Fact]
-    public void RegisterChange_WrittenRow_RenamesItOnEveryCard()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["gruff"]));
-
-        LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
-        LRegister written = Assert.Single(registers.TRegisterRead(), row => !row.LRegisterBuiltin);
-
-        engine.TEngineRegisterChange(written.LRegisterId, "blunt");
-
-        Assert.Equal(
-            "blunt",
-            registers.TRegisterRead(written.LRegisterId)?.LRegisterName.TStateValueShow());
-    }
-
-    [Fact]
-    public void RegisterDelete_LanguagePackRowOnCards_KeepsEveryMark()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["Formal"]));
-        LMeaning meaning = Assert.Single(
-            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
-
-        LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
-        long packed = registers.TRegisterRead()
-            .First(row => row.LRegisterName.TStateValueShow() == "Formal")
-            .LRegisterId;
-        registers.TRegisterDelete(packed, true);
-
-        Assert.Single(registers.TRegisterMeaningRead(meaning.LMeaningId));
     }
 
     private static LRegister TRegisterBlankCreate()

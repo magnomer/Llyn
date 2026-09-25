@@ -35,6 +35,15 @@ internal static partial class TInterface
     internal static void TDraftStaleSet(this LRig rig, long id) =>
         ((TVaultFakeDraft)rig.LRigDrafts).TDraftStaleSet(id);
 
+    internal static LTombstone? TTombstoneRead(this LRig rig, long entryId) =>
+        ((TVaultFakeTombstone)rig.LRigTombstones).TTombstoneRead(entryId);
+
+    internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(this LRig rig, long revisionId) =>
+        ((TVaultFakeRevision)rig.LRigRevisions).TRevisionChangeRead(revisionId);
+
+    internal static long? TRevisionRead(this LRig rig) =>
+        rig.LRigWorkspaces.LWorkspaceStateRead().LWorkspaceStateRevision;
+
     internal static LClaimClerk TClaimClerkCreate(LRig rig)
     {
         LIdentity identity = new(rig.LRigWorkspaces);
@@ -102,7 +111,7 @@ internal static partial class TInterface
         LRegisterClerk registers = new(rig);
         LTranslationClerk translations = new(rig);
         LExampleClerk examples = new(rig, new LReferenceClerk(rig));
-        LCardClerk cards = new(rig, tags, registers, translations, examples, new LSituationClerk(rig));
+        LCardClerk cards = new(rig, tags, registers, translations, examples);
         LParadigmClerk paradigms = new(rig);
         LLanguageCache languages = new(rig.LRigLanguages);
         LClaimClerk claims = TClaimClerkCreate(rig);
@@ -176,7 +185,8 @@ internal static partial class TInterface
         clerk.LRecordingClerkSweep();
     }
 
-    internal static string TRecordingFormat(LRig rig, string path) => new LTrailClerk(rig).LRecordingFormat(path);
+    internal static string TRecordingFormat(LRig rig, string path) =>
+        rig.LRigTrail.LTrailRelativeResolve(rig.LRigWorkspace, path) ?? path;
 
     internal static LPronunciation TPronunciationSave(LRig rig, LPronunciation pronunciation) =>
         rig.LRigPronunciations.LPronunciationCreate(pronunciation);
@@ -225,8 +235,8 @@ internal static partial class TInterface
     internal static LEntry? TTranslationClerkResolve(this LTranslationClerk clerk, string word, long? entryId) =>
         clerk.LTranslationClerkResolve(word, entryId);
 
-    internal static LEntry TEntryClerkAdd(this LEntryClerk clerk, LEntry entry) =>
-        clerk.LEntryClerkCreate(entry, [], []);
+    internal static LEntry TEntryClerkAdd(this LRig rig, LEntry entry) =>
+        new LTranslationClerk(rig).LTranslationClerkCreate(entry.LEntryHeadword, entry.LEntryLanguage);
 
     internal static LEntry? TEntryClerkRead(this LEntryClerk clerk, long id) => clerk.LEntryClerkRead(id);
 
@@ -235,11 +245,4 @@ internal static partial class TInterface
 
     internal static LRevision TEntryClerkDelete(this LEntryClerk clerk, long id) => clerk.LEntryClerkDelete(id);
 
-    internal static LTombstone? TEntryTombstoneRead(this LEntryClerk clerk, long entryId) =>
-        clerk.LTombstoneRead(entryId);
-
-    internal static LRevision? TEntryRevisionRead(this LEntryClerk clerk) => clerk.LRevisionRead();
-
-    internal static IReadOnlyList<LRevisionChange> TEntryChangeRead(this LEntryClerk clerk, long revisionId) =>
-        clerk.LRevisionChangeRead(revisionId);
 }

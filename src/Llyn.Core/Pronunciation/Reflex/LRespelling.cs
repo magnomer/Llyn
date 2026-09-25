@@ -6,7 +6,6 @@ using System.Text;
 namespace Llyn.Core;
 
 public sealed record LRespelling(
-    string LRespellingName,
     IReadOnlyList<string> LRespellingVarieties,
     IReadOnlyList<LRespellingRule> LRespellingRules)
 {

@@ -9,7 +9,6 @@ Nothing consumes the groups until the lookup applies them and the user switches 
 
 **Parameters**
 
-- `LRespellingName` — The name the pack gives the group, for reading the pack rather than for the engine.
 - `LRespellingVarieties` — The variety names the group applies to, compared ordinally against a candidate's tag.
   An empty list applies the group to every candidate, tagged or not.
   A non-empty list never matches an untagged candidate.

@@ -18,10 +18,6 @@ The shared panel state: the chosen row, the scribe mode, the bin and the leave g
 
 Whether the rows are ordered by grasp, in which case a grasp change re-sorts the list.
 
-## `public LVista? LFavoriteVista => _lFavoriteVista;`
-
-The vista, exposed for the window's export dialog alone, which names its file after the vista.
-
 ## `public long LFavoriteVoyageRead()`
 
 The Entry the panel stands on, as the station the window's trail records.

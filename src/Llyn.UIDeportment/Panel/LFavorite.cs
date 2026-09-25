@@ -56,8 +56,6 @@ public sealed class LFavorite
         LFavoriteEditor.LEditorOpen(id);
     }
 
-    public LVista? LFavoriteVista => _lFavoriteVista;
-
     public bool LFavoriteFiltered => _lFavoriteVista?.LVistaFiltered ?? false;
 
     public bool LFavoriteGraspOrdered => _lFavoriteVista?.LVistaOrderMatch(LCatalogOrder.LCatalogOrderGrasp) ?? false;

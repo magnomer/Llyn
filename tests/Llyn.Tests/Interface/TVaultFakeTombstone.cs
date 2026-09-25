@@ -15,5 +15,5 @@ internal sealed class TVaultFakeTombstone : LTombstoneVault
         return stone;
     }
 
-    public LTombstone? LTombstoneRead(long entryId) => _tVaultFakeRows.GetValueOrDefault(entryId);
+    internal LTombstone? TTombstoneRead(long entryId) => _tVaultFakeRows.GetValueOrDefault(entryId);
 }

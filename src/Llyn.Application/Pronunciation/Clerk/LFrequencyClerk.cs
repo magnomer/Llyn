@@ -45,22 +45,6 @@ public sealed class LFrequencyClerk
         _lFrequencyClerkBulletin = raise;
     }
 
-    public async Task<IReadOnlyList<LFrequency>> LFrequencyClerkFind(
-        string word, string language, CancellationToken cancellation)
-    {
-        (IReadOnlyList<LFrequency> found, _) = await LFrequencyClerkScan(word, language, cancellation)
-            .ConfigureAwait(false);
-        return found;
-    }
-
-    public string? LBandResolve(string language, string source, string raw)
-    {
-        ArgumentNullException.ThrowIfNull(raw);
-
-        LSourceSpec? spec = LSourceSpecFind(language, source);
-        return spec is null ? null : LBandResolve(spec, raw);
-    }
-
     public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)
     {
         LEntry? entry;

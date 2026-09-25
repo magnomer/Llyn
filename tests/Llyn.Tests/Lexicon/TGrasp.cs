@@ -17,17 +17,6 @@ public sealed class TGrasp
         Assert.Equal(expected, TInterface.TGraspCheck(grasp));
     }
 
-    [Theory]
-    [InlineData(0, "0")]
-    [InlineData(1, "0.5")]
-    [InlineData(4, "2")]
-    [InlineData(7, "3.5")]
-    [InlineData(10, "5")]
-    public void GraspFormat_HalfStepCount_RendersStars(int grasp, string expected)
-    {
-        Assert.Equal(expected, TInterface.TGraspFormat(grasp));
-    }
-
     [Fact]
     public void GraspSave_RatedEntry_ReadsBackAndRaisesBulletin()
     {
@@ -114,7 +103,8 @@ public sealed class TGrasp
         engine.TEngineFavoriteSave(entry.LEntryId);
         engine.TEngineGraspSave(entry.LEntryId, 5);
 
-        LCatalogFavorite favorite = Assert.Single(engine.TEngineFavoriteFind(string.Empty));
+        LCatalogFavorite favorite =
+            Assert.Single(engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderRecent));
 
         Assert.Equal(5, favorite.LCatalogFavoriteEntry.LEntryGrasp);
     }

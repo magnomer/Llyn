@@ -11,7 +11,6 @@ internal sealed class PUsageItem
     {
         PUsageItemId = usage.LUsageId;
         PUsageItemEntry = usage.LUsageEntry;
-        PUsageItemHeadword = usage.LUsageHeadword;
         PUsageItemName = usage.LUsageName;
         PUsageItemEpithet = epithet ?? string.Empty;
         PUsageItemLanguage = usage.LUsageLanguage;
@@ -26,8 +25,6 @@ internal sealed class PUsageItem
     public long PUsageItemId { get; }
 
     public long PUsageItemEntry { get; }
-
-    public string PUsageItemHeadword { get; }
 
     public string PUsageItemEpithet { get; }
 

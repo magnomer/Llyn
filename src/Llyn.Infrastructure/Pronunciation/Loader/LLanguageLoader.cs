@@ -198,7 +198,6 @@ public sealed partial class LLanguageLoader : LLanguageVault
     private static LLanguage LLanguageBlankCreate(string language)
     {
         return new LLanguage(
-            language,
             null,
             LLanguageFontBlank,
             LLanguageFontBlank,
@@ -214,7 +213,6 @@ public sealed partial class LLanguageLoader : LLanguageVault
         IReadOnlyList<LRespellingRule> spelling = LLanguageSpellingScan(root);
 
         return new LLanguage(
-            language,
             flag,
             LLanguageFontRead(root, LLanguageLoaderFont),
             LLanguageFontRead(root, LLanguageLoaderExample),
@@ -237,7 +235,6 @@ public sealed partial class LLanguageLoader : LLanguageVault
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderSilent),
             LLanguageReflexScan(root),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic),
-            root.ValueKind != JsonValueKind.Object || LLanguageListedRead(root),
             LLanguageAnatomyRead(language, root),
             LLanguageClassRead(language, root),
             LLanguageShengfuRead(root));

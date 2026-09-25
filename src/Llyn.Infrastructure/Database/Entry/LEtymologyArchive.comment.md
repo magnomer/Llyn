@@ -26,11 +26,6 @@ The spans are checked against the text before anything is written.
 Rewrites the entry's links as the ids given, numbering the positions from zero.
 A zero, a repeat and the entry itself are skipped rather than refused.
 
-## `public IReadOnlyList<LEntry> LEtymologySourceScan(long entryId)`
-
-The entries that name this one, whether through a link or through a span of their prose.
-One entry is listed once even when it names the target both ways.
-
 ## `private static IReadOnlyList<LMention> LEtymologyMentionRead(SqliteConnection connection, long etymologyId)`
 
 Reads the spans of one narrative in offset order.

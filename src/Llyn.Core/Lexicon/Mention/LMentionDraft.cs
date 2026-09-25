@@ -10,11 +10,6 @@ public sealed record LMentionDraft(
     long LMentionDraftEntry,
     long LMentionDraftSense = 0)
 {
-    public static LMentionDraft LMentionDraftCreate(int start, int length, long entryId, long senseId)
-    {
-        return new LMentionDraft(0, start, length, entryId, senseId);
-    }
-
     public static LMentionDraft LMentionDraftCreate(LMention mention)
     {
         return new LMentionDraft(

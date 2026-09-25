@@ -1,6 +1,7 @@
 ﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
+using Microsoft.Data.Sqlite;
 
 namespace Llyn.Tests;
 
@@ -47,10 +48,6 @@ internal static partial class TInterface
     internal static IReadOnlyList<LEtymon> TEtymonSet(
         this LEtymologyVault etymologyVault, long entryId, IReadOnlyList<long> targetIds) =>
         etymologyVault.LEtymologyEtymonSet(entryId, targetIds);
-
-    internal static IReadOnlyList<LEntry> TEtymologySourceScan(
-        this LEtymologyVault etymologyVault, long entryId) =>
-        etymologyVault.LEtymologySourceScan(entryId);
 
     internal static LShengfuArchive TShengfuArchiveCreate(LDatabase database) =>
         new(database);
@@ -150,9 +147,6 @@ internal static partial class TInterface
     internal static LImage? TImageRead(this LImageArchive imageArchive, long id) =>
         imageArchive.LImageRead(id);
 
-    internal static int TImageReferenceRead(this LImageArchive imageArchive, long id) =>
-        imageArchive.LImageReferenceRead(id);
-
     internal static void TInflectionAppend(
         this LInflectionArchive inflectionArchive,
         long entryId,
@@ -163,14 +157,6 @@ internal static partial class TInterface
 
     internal static LInflectionArchive TInflectionArchiveCreate(LDatabase database) =>
         new(database);
-
-    internal static void TInflectionDelete(
-        this LInflectionArchive inflectionArchive,
-        long entryId,
-        int position)
-    {
-        inflectionArchive.LInflectionDelete(entryId, position);
-    }
 
     internal static IReadOnlyList<LInflection> TInflectionRead(
         this LInflectionArchive inflectionArchive,
@@ -238,19 +224,38 @@ internal static partial class TInterface
     internal static LRevisionArchive TRevisionArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(
-        this LRevisionArchive revisionArchive,
-        long revisionId) =>
-        revisionArchive.LRevisionChangeRead(revisionId);
+    internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(this TWorkspace workspace, long revisionId)
+    {
+        using SqliteConnection connection = workspace.TWorkspaceConnectionRead();
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT target_ref, target_type, kind, summary
+            FROM revision_change WHERE revision_parent = $revision ORDER BY position;
+            """;
+        command.Parameters.AddWithValue("$revision", revisionId);
 
-    internal static LRevision? TRevisionLatestRead(this LRevisionArchive revisionArchive) =>
-        revisionArchive.LRevisionLatestRead();
+        List<LRevisionChange> changes = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            changes.Add(new LRevisionChange(
+                reader.GetInt64(0),
+                reader.GetString(1),
+                reader.GetString(2),
+                reader.IsDBNull(3) ? null : reader.GetString(3)));
+        }
 
-    internal static LRealm TRealmRead(LDatabase database) =>
-        new LRealmArchive(database).LRealmRead();
+        return changes;
+    }
 
-    internal static Guid TRealmValueRead(TWorkspace workspace) =>
-        TRealmRead(workspace.TWorkspaceDatabase).LRealmValue;
+    internal static Guid TRealmValueRead(TWorkspace workspace)
+    {
+        using SqliteConnection connection = workspace.TWorkspaceConnectionRead();
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT value FROM realm WHERE realm_id = 1;";
+        return new Guid((byte[])command.ExecuteScalar()!);
+    }
 
     internal static LSpeechArchive TSpeechArchiveCreate(LDatabase database) =>
         new(database);
@@ -309,9 +314,6 @@ internal static partial class TInterface
 
     internal static LVideo? TVideoRead(this LVideoArchive videoArchive, long id) =>
         videoArchive.LVideoRead(id);
-
-    internal static int TVideoReferenceRead(this LVideoArchive videoArchive, long id) =>
-        videoArchive.LVideoReferenceRead(id);
 
     internal static LWorkspaceArchive TWorkspaceArchiveCreate(LDatabase database) =>
         new(database);

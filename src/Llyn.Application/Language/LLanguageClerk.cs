@@ -47,12 +47,6 @@ public sealed class LLanguageClerk
         return language.Trim().Length > 0 && LLanguageClerkLoad(language).LLanguagePhonemic;
     }
 
-    public bool LLanguageNameValidate(string language)
-    {
-        ArgumentNullException.ThrowIfNull(language);
-        return _lLanguageClerkVault.LLanguageNameValidate(language);
-    }
-
     public Task<string?> LLanguageFlagRead(string language, CancellationToken cancellation)
     {
         return LLanguageFlagResolve(LLanguageClerkLoad(language).LLanguageFlag, cancellation);

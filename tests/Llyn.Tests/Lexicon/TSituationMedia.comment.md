@@ -19,7 +19,7 @@ What it leaves out is detached and renumbered around, and its record stays for w
 
 ## `public void SituationRead_ListWithMedia_GroupsEveryRowUnderItsOwner()`
 
-The list read fills media in two grouped queries rather than two per Situation.
+The catalog read fills media in two grouped queries rather than two per Situation.
 Three Situations with different media prove each row lands under its own owner and none leaks to a neighbour.
 
 ## `public void SituationDelete_WithMedia_DropsLinksAndKeepsRecords()`

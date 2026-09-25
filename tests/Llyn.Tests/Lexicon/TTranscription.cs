@@ -20,12 +20,11 @@ public sealed class TTranscription
                 TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
             ]));
 
-        Assert.Equal(
-            ["Jyutping", "Yale"],
-            engine.TEngineTranscriptionRead(entry.LEntryId).Select(row => row.LTranscriptionScheme));
-
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
+        Assert.Equal(
+            ["Jyutping", "Yale"],
+            loaded.LEntryDraftTranscriptions.Select(row => row.LTranscriptionDraftScheme));
         Assert.Equal(
             ["hoeng1 gong2", "hēung góng"],
             loaded.LEntryDraftTranscriptions.Select(row => row.LTranscriptionDraftText));
@@ -58,8 +57,9 @@ public sealed class TTranscription
 
         Assert.Equal(
             [(second, "Jyutping", "hēung góng"), (first, "Yale", "hoeng1 gong2")],
-            engine.TEngineTranscriptionRead(entry.LEntryId)
-                .Select(row => (row.LTranscriptionId, row.LTranscriptionScheme, row.LTranscriptionText)));
+            engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftTranscriptions
+                .Select(row => (
+                    row.LTranscriptionDraftId, row.LTranscriptionDraftScheme, row.LTranscriptionDraftText)));
     }
 
     [Fact]
@@ -77,9 +77,9 @@ public sealed class TTranscription
             LEntryDraftTranscriptions = [loaded.LEntryDraftTranscriptions[0] with { LTranscriptionDraftText = " " }],
         });
 
-        LTranscription kept = Assert.Single(engine.TEngineTranscriptionRead(entry.LEntryId));
-        Assert.Equal("Jyutping", kept.LTranscriptionScheme);
-        Assert.Equal(string.Empty, kept.LTranscriptionText);
+        LTranscriptionDraft kept = Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftTranscriptions);
+        Assert.Equal("Jyutping", kept.LTranscriptionDraftScheme);
+        Assert.Equal(string.Empty, kept.LTranscriptionDraftText);
     }
 
     [Fact]
@@ -94,8 +94,8 @@ public sealed class TTranscription
                 TInterface.TTranscriptionDraftCreate("Yale", string.Empty),
             ]));
 
-        LTranscription kept = Assert.Single(engine.TEngineTranscriptionRead(entry.LEntryId));
-        Assert.Equal("Yale", kept.LTranscriptionScheme);
+        LTranscriptionDraft kept = Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftTranscriptions);
+        Assert.Equal("Yale", kept.LTranscriptionDraftScheme);
     }
 
     [Fact]

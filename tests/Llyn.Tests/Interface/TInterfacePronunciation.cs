@@ -53,10 +53,9 @@ internal static partial class TInterface
         new LRespellingRule(pattern, replacement);
 
     internal static LRespelling TRespellingCreate(
-        string name,
         IReadOnlyList<string> varieties,
         IReadOnlyList<LRespellingRule> rules) =>
-        new LRespelling(name, varieties, rules);
+        new LRespelling(varieties, rules);
 
     internal static string TRespellingResolve(this LRespelling group, string phonetic, string variety) =>
         group.LRespellingResolve(phonetic, variety);

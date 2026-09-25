@@ -38,7 +38,7 @@ public sealed class LTranslationClerk
         {
             if (id > 0 && _lTranslationClerkEntries.LEntryRead(id) is not null)
             {
-                written.Add(new LTranslation(id, 0));
+                written.Add(new LTranslation(id));
             }
         }
 
@@ -123,7 +123,7 @@ public sealed class LTranslationClerk
             forms: [],
             speeches: []);
 
-        LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
+        LRevisionChange change = new(entry.LEntryId, "entry", "create", entry.LEntryHeadword);
         LRevision revision = _lTranslationClerkRevisions.LRevisionRecord([change]);
         LWorkspaceState state = _lTranslationClerkWorkspaces.LWorkspaceStateRead();
         _lTranslationClerkWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });

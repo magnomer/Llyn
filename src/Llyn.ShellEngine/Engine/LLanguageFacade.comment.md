@@ -10,10 +10,6 @@ The clerk is rebuilt with the workspace, since a pack's source lists belong to t
 The shell never reaches into the `languages/` folder itself.
 The script facades sit here too, since a script style is a fact of the pack.
 
-## `public LFont LEngineFontRead(string language)`
-
-The typography the pack declares for a headword, the role most callers want.
-
 ## `public LFont LEngineFontRead(string language, LFontRole role)`
 
 The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
@@ -100,10 +96,6 @@ The gate is taken only to read the clerk field, which a rig apply replaces.
 
 The script styles of a language.
 
-## `public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)`
-
-The stored script images of every character of an entry.
-
 ## `public void LEngineScriptStart(long entryId)`
 
 Starts the fetch of every character that has no images.
@@ -123,10 +115,6 @@ The images grouped by style.
 ## `public bool LEngineScriptCheck(long entryId)`
 
 Whether a fetch is pending for any character of the entry.
-
-## `internal Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(string character, string language, CancellationToken cancellation)`
-
-The images of one character fetched now.
 
 ## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
 

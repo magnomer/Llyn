@@ -11,23 +11,6 @@ internal static partial class TInterface
     internal static LSentenceOrder TSentenceOrderLoad(string language) =>
         LSentenceLoader.LSentenceLoaderLoad(language);
 
-    internal static void TSentenceMeaningAttach(
-        this LSentenceArchive sentenceArchive,
-        long meaningId,
-        long exampleId,
-        int position)
-    {
-        sentenceArchive.LSentenceMeaningAttach(meaningId, exampleId, position);
-    }
-
-    internal static void TSentenceMeaningDetach(
-        this LSentenceArchive sentenceArchive,
-        long meaningId,
-        long exampleId)
-    {
-        sentenceArchive.LSentenceMeaningDetach(meaningId, exampleId);
-    }
-
     internal static IReadOnlyList<long> TSentenceMeaningSave(
         this LSentenceArchive sentenceArchive,
         long meaningId,
@@ -50,23 +33,6 @@ internal static partial class TInterface
         this LSentenceArchive sentenceArchive,
         string language) =>
         sentenceArchive.LSentenceDependenceRead(language);
-
-    internal static void TSentenceCollocationAttach(
-        this LSentenceArchive sentenceArchive,
-        long collocationId,
-        long exampleId,
-        int position)
-    {
-        sentenceArchive.LSentenceCollocationAttach(collocationId, exampleId, position);
-    }
-
-    internal static void TSentenceCollocationDetach(
-        this LSentenceArchive sentenceArchive,
-        long collocationId,
-        long exampleId)
-    {
-        sentenceArchive.LSentenceCollocationDetach(collocationId, exampleId);
-    }
 
     internal static void TSentenceCollocationSave(
         this LSentenceArchive sentenceArchive,
@@ -94,9 +60,4 @@ internal static partial class TInterface
         long exampleId,
         IReadOnlyList<LMention> mentions) =>
         mentionArchive.LMentionExampleSave(exampleId, mentions);
-
-    internal static void TMentionCopy(this LMentionArchive mentionArchive, long fromId, long toId)
-    {
-        mentionArchive.LMentionExampleCopy(fromId, toId);
-    }
 }

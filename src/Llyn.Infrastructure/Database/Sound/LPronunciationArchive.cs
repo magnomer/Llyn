@@ -218,7 +218,7 @@ public sealed class LPronunciationArchive : LPronunciationVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT pronunciation_parent, file, site, added_utc
+            SELECT file, site
             FROM pronunciation_audio WHERE pronunciation_parent = $pronunciation;
             """;
         command.Parameters.AddWithValue("$pronunciation", pronunciationId);
@@ -229,11 +229,7 @@ public sealed class LPronunciationArchive : LPronunciationVault
             return null;
         }
 
-        return new LPronunciationAudio(
-            reader.GetInt64(0),
-            reader.GetString(1),
-            reader.IsDBNull(2) ? null : reader.GetString(2),
-            reader.GetString(3));
+        return new LPronunciationAudio(reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1));
     }
 
     public IReadOnlyList<string> LPronunciationAudioScan()
@@ -250,14 +246,6 @@ public sealed class LPronunciationArchive : LPronunciationVault
         }
 
         return files;
-    }
-
-    public long? LPronunciationHolderRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
-        return LPronunciationHolderRead(session.LDatabaseSessionConnection, id);
     }
 
     private static long? LPronunciationHolderRead(SqliteConnection connection, long id)

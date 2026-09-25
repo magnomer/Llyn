@@ -49,15 +49,6 @@ The kept Author is inserted past every live position first, so the renumbering n
 Throws when either id names no Author or both name the same one.
 The whole fold is one transaction, so no Reference is left crediting a deleted Author.
 
-## `void LAuthorDelete(long id);`
-
-Deletes the Author identified by `id`.
-Guarded: while any Reference still credits the Author, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach the Author from every Reference first.
-Deleting an Author never deletes a Reference.
-The guard and the delete share one transaction, so nothing can start crediting the Author between them.
-
 ## `void LAuthorDelete(long id, bool detach);`
 
 The same delete, with `detach` dropping every credit first.

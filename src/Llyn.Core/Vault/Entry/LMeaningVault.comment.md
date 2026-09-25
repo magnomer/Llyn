@@ -28,7 +28,7 @@ That is the one-row read a caller needs when it holds a Meaning id alone.
 
 Updates the title and definition of the meaning identified by `meaning`'s id.
 The id, entry, parent link, and position are untouched.
-Where a Meaning sits among its siblings is changed by `LMeaningMove`.
+Where a Meaning sits among its siblings is changed by `LMeaningOrderSet`.
 That method has to renumber the whole group.
 Throws when no meaning carries that id.
 
@@ -40,13 +40,6 @@ The unique sibling index rejects two rows sharing a place, so neither group is l
 A Meaning cannot be moved inside its own subtree, because a Meaning is not its own ancestor.
 Nothing happens when the row already sits under that parent.
 
-## `void LMeaningMove(long id, int position);`
-
-Moves the meaning identified by `id` to `position` among its siblings.
-It renumbers the whole group so positions stay `0 … n-1`.
-A position outside the group is clamped into it.
-Nothing moves when no meaning carries that id.
-
 ## `void LMeaningDelete(long id);`
 
 Deletes the meaning identified by `id` together with everything it owns.
@@ -56,11 +49,6 @@ It is also its example, tag, and situation association rows.
 Sibling and ancestor meanings are untouched and are renumbered so positions stay contiguous.
 The independent Examples, Tags, and Situations it referenced are left standing.
 Only the links go.
-
-## `long? LMeaningHolderRead(long id);`
-
-Which entry holds the meaning, or nothing when no row carries the id.
-The engine uses it to stamp the entry when a meaning changes on its own.
 
 ## `void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order);`
 

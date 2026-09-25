@@ -5,8 +5,6 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaEtymology
 {
-    public const long LSchemaEtymologyDeclared = 74;
-
     public static void LSchemaEtymologyCreate(SqliteConnection connection)
     {
         ArgumentNullException.ThrowIfNull(connection);

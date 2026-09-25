@@ -37,7 +37,7 @@ Each sealed facade holds the engine and uses its gate to call a clerk.
 Binds the engine to the ports of `rig`, already built over the workspace they stand on.
 It neither reads nor rewrites the recorded workspace pointer.
 Changing the user's workspace is `LEngineRigApply` with a rig over the new folder.
-The clerks are built first, then the settings, the rescue and the realm are read through them.
+The clerks are built first, then the settings and the rescue are read through them.
 The facades come last, so none of them can ever see an engine without its staff.
 A database this build can no longer read costs the user a launch rather than the program.
 
@@ -66,11 +66,6 @@ The three steps a bound workspace needs before the first read.
 The controlled vocabularies come from the language packs on disk and are written into the workspace.
 The 音韻地位 categories are derived again from the stored placements and the hypothesis on disk.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
-
-## `internal long LEngineIdentityCreate()`
-
-Issues the next temporary id for a draft row of the open workspace.
-The engine owns the issuer, because the floor it counts from belongs to the workspace and changes with it.
 
 ## `internal object LEngineGate`
 
@@ -105,10 +100,6 @@ Announces one stored change to every subscriber.
 The list is copied under the gate, then callbacks run outside it, so a subscriber can detach without disturbing iteration.
 Announcements happen when a stored record is finished, so an import announces once after all its records are written.
 
-## `internal LRealm LEngineRealmRead()`
-
-The realm of the open workspace, read once when the workspace opened.
-
 ## `public LDoctorRescue LEngineRescueRead()`
 
 Reports what the workspace doctor had to do to the database this engine opened.
@@ -138,7 +129,7 @@ The workspace clerk walks the inner chain, since the shells name no exception ty
 
 Moves the engine onto the workspace `rig` was built over, without touching the workspace pointer.
 The caller builds the rig and writes the pointer after.
-The new rig's rescue, realm and settings are read through the clerk's static open steps before anything here changes.
+The new rig's rescue and settings are read through the clerk's static open steps before anything here changes.
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
@@ -150,11 +141,6 @@ The move is then announced, so every surface holding a stored record learns that
 ## `private void LEngineFetchClear()`
 
 Cancels every pending fetch of the five fetching clerks, on a rig apply and on dispose.
-
-## `internal static bool LEngineOwnerCheck(LOwner owner)`
-
-Which of the two card sides an owner id names, through the card clerk.
-True is the Collocation side, and any other side throws as a caller mistake.
 
 ## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
 

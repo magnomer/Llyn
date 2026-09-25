@@ -4,7 +4,7 @@
 
 Covers the association a Meaning or a Collocation holds over an Example.
 That association carries data, so what is tested is the frame surviving a write and a read.
-It covers the order the owner gives its rows and the renumbering a detach forces.
+It covers the order the owner gives its rows.
 It covers what deleting an owner and deleting a cited Example each reach.
 
 ## `public void SentenceSave_Frame_ReadsItBack()`

@@ -31,12 +31,12 @@ public sealed class LCollocationArchive : LCollocationVault
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                """
+                $"""
                 INSERT INTO collocation (
-                    entry_parent, position, title_state, title,
+                    collocation_id, entry_parent, position, title_state, title,
                     expression_state, expression, meaning_state, meaning)
                 VALUES (
-                    $entry, $position, $titleState, $title,
+                    {LSchemaCollocation.LSchemaCollocationSequence}, $entry, $position, $titleState, $title,
                     $expressionState, $expression, $meaningState, $meaning)
                 RETURNING collocation_id;
                 """;
@@ -113,27 +113,6 @@ public sealed class LCollocationArchive : LCollocationVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LCollocationMove(long id, int position)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        long? entryId = LCollocationHolderRead(connection, id);
-        if (entryId is null)
-        {
-            return;
-        }
-
-        IReadOnlyList<long> order = LDatabaseOrder.LDatabaseOrderInsert(
-            LCollocationSiblingRead(connection, entryId), id, position);
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "collocation", "entry_parent = $owner", entryId, "collocation_id", order);
-
-        session.LDatabaseSessionCommit();
-    }
-
     public void LCollocationOrderSet(long entryId, IReadOnlyList<long> order)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
@@ -174,14 +153,6 @@ public sealed class LCollocationArchive : LCollocationVault
         }
 
         session.LDatabaseSessionCommit();
-    }
-
-    public long? LCollocationHolderRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
-        return LCollocationHolderRead(session.LDatabaseSessionConnection, id);
     }
 
     private static long? LCollocationHolderRead(SqliteConnection connection, long id)

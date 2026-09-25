@@ -14,13 +14,6 @@ The engine news the clerk with the rig, so a switched workspace starts with an e
 
 Reads the entry, inflection, lacuna, morphology and speech ports out of `rig`.
 
-## `public IReadOnlyList<LParadigmSlot> LParadigmClerkRead(long entryId)`
-
-Reads the expected forms of the entry identified by `entryId`, one slot per form, in part-of-speech order.
-The read never starts a fetch, because the caller decides when to ask the web.
-An entry the workspace does not hold answers an empty list.
-So does a headword whose parts of speech declare no paradigm, because it does not inflect.
-
 ## `public IReadOnlyList<LParadigmSlot> LParadigmClerkRead(LEntry entry)`
 
 The same read for an entry already in hand.

@@ -24,12 +24,6 @@ public sealed record LPronunciationDraft(
     public IReadOnlyList<LSyllable> LPronunciationDraftSyllables { get; init; } =
         LPronunciationDraftSyllables ?? [];
 
-    public static LPronunciationDraft? LPronunciationDraftCreate(string ipa, string audio, string? source)
-    {
-        LPronunciationDraft written = new(ipa, LPronunciationDraftAudio: audio, LPronunciationDraftSource: source);
-        return written.LPronunciationDraftEmpty ? null : written;
-    }
-
     public bool LPronunciationDraftNotated => LPronunciationDraftIpa.Length > 0;
 
     public string LPronunciationDraftRead(bool respelled)

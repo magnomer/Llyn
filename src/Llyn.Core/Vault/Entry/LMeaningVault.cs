@@ -14,11 +14,7 @@ public interface LMeaningVault
 
     void LMeaningParentUpdate(long id, long? parentId);
 
-    void LMeaningMove(long id, int position);
-
     void LMeaningDelete(long id);
-
-    long? LMeaningHolderRead(long id);
 
     void LMeaningOrderSet(long entryId, long? parentId, IReadOnlyList<long> order);
 }

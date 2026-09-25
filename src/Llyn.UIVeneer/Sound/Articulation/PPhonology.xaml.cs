@@ -141,7 +141,7 @@ public partial class PPhonology : UserControl
 
     private void PInventoryUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pInventoryList,
             PInventoryItem.PInventoryItemBuild(_lPhonology.LPhonologyRowsRead()),
             PInventoryItem.PInventoryItemMatch,
@@ -182,12 +182,12 @@ public partial class PPhonology : UserControl
     private void PSequenceHandle(object sender, RoutedEventArgs e)
     {
         PSequenceDropper.IsChecked = false;
-        _lPhonology.LPhonologyOrderSet(PSender.PSenderOrderRead(sender));
+        _lPhonology.LPhonologyOrderSet(LChoice.LChoiceOrderRead(sender));
     }
 
     private void PLensHandle(object sender, RoutedEventArgs e)
     {
-        _lPhonology.LPhonologyFilterSet(PChoice.PChoiceFilterRead(PLensList));
+        _lPhonology.LPhonologyFilterSet(LChoice.LChoiceFilterRead(PLensList));
         PLensUpdate();
     }
 

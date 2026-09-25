@@ -76,7 +76,7 @@ public sealed class THarvestStep
         List<LLookupStep> steps = [];
         LReceiver receiver = TInterface.TReceiverRespellingCreate(
             TInterface.TReceiverRelayCreate(steps.Add),
-            [TInterface.TRespellingCreate("British", ["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
+            [TInterface.TRespellingCreate(["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
 
         receiver.TReceiverCandidateAdd(TInterface.TCandidateCreate("Cambridge", "ˈhæpɪ", 2, true, "British"));
 

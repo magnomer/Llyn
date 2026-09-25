@@ -22,11 +22,3 @@ Binds the store to the workspace `database` it opens sessions through.
 Records that the Entry identified by `entryId` was deleted under `revisionId`.
 It is stamped with the current UTC time.
 Returns the stored tombstone.
-
-## `public LTombstone? LTombstoneRead(long entryId)`
-
-Reads the tombstone for the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
-
-## `public IReadOnlyList<LTombstone> LTombstoneRevisionRead(long revisionId)`
-
-Reads every tombstone filed under `revisionId`, oldest deletion first.

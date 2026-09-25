@@ -6,8 +6,8 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static LEtymology TEtymologyCreate(long entryId, string text, IReadOnlyList<LMention> mentions) =>
-        new(0, entryId, text, mentions);
+    internal static LEtymology TEtymologyCreate(string text, IReadOnlyList<LMention> mentions) =>
+        new(0, text, mentions);
 
     internal static LRequest TEtymologyTextCreate(long draftId, string text) =>
         new LRequestEtymologyText(draftId, text);

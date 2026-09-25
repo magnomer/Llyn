@@ -12,11 +12,5 @@ An entry without an etymology has no row at all.
 **Parameters**
 
 - `LEtymologyId` — Opaque, program-generated stable id, zero for a row the store has not written.
-- `LEtymologyEntryId` — The Entry whose origin this narrative explains.
 - `LEtymologyText` — The prose of the explanation, empty when the entry keeps links instead.
 - `LEtymologyMentions` — The spans of the text that name an Entry, held in offset order.
-
-## `public bool LEtymologyNarrated`
-
-Whether the row carries prose rather than nothing.
-A blank narrative is no narrative, and the store writes none for it.

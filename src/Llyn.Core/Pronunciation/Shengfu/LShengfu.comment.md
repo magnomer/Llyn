@@ -12,10 +12,6 @@ It hangs off no entry, because a character is shared by every entry written with
 - `LShengfuText` — The series as printed, with several joined by the rule's separator.
 - `LShengfuSource` — The source the series came from, printed nowhere and kept for provenance.
 
-## `public bool LShengfuWritten`
-
-True while the row carries a series to print.
-
 ## `public static string LShengfuTextFind(IReadOnlyList<LShengfu> rows, string character)`
 
 The series of that character among the rows, or empty when none was stored.

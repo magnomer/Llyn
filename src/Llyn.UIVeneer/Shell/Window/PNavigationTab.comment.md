@@ -50,30 +50,6 @@ Switches to the corpus panel and opens one Example there.
 
 Switches to the tenor panel and opens one Register there.
 
-## `internal bool PWindowSourceShow(long id)`
-
-Switches to the sources panel and reads one Source there.
-
-## `internal bool PWindowAuthorShow(long id)`
-
-Switches to the authors panel and reads one Author there.
-
-## `internal bool PWindowFavoriteShow(long id)`
-
-Switches to the favorites panel and reads one Entry there.
-
-## `internal bool PWindowInventoryShow(long id)`
-
-Switches to the phonology panel and reads one Entry there.
-
-## `internal bool PWindowXiaoyunShow(long id)`
-
-Switches to the yunjing panel and reads one Entry there.
-
-## `internal bool PWindowKindredShow(long id)`
-
-Switches to the xiesheng panel and reads one Entry there.
-
 ## `internal void PWindowDiweiShow(string language, string kind, string key)`
 
 Switches to the rime table and chooses the category a fanqie link names.

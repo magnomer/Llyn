@@ -105,7 +105,7 @@ public partial class PImprint : UserControl, PChronicleHost
 
     private void PAuthorUpdate()
     {
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pAuthorList,
             PAuthorItem.PAuthorItemBuild(_lImprint.LImprintCreditRead(), _lImprint.LImprintBlankAt),
             PAuthorItem.PAuthorItemMatch,

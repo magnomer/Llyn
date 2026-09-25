@@ -22,11 +22,6 @@ The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written link.
 A crash mid-write leaves the previous file intact.
 
-## `public LCourt? LCourtRead(long id)`
-
-The link stored under `id`, or `null` when no readable file holds it.
-A missing file and an unknown one are the same answer to the caller.
-
 ## `public IReadOnlyList<LCourt> LCourtScan()`
 
 Every link the court holds.

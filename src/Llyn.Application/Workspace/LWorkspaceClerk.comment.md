@@ -14,10 +14,6 @@ Reads the ports out of `rig` and keeps the clerks the refill writes through.
 
 The database made or repaired on `rig`, reported as a rescue.
 
-## `public static LRealm LWorkspaceRealmRead(LRig rig)`
-
-The realm of `rig`.
-
 ## `public static LSettings LWorkspaceSettingsRead(LRig rig, LSettings fallback, out bool settled)`
 
 The stored settings of `rig`, or `fallback` when none are stored yet.

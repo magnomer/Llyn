@@ -224,11 +224,6 @@ public sealed class LAuthorArchive : LAuthorVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LAuthorDelete(long id)
-    {
-        LAuthorDelete(id, false);
-    }
-
     public void LAuthorDelete(long id, bool detach)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

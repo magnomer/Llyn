@@ -17,8 +17,4 @@ public interface LTagVault
     long LTagResolve(string text);
 
     IReadOnlyList<LTag> LTagCatalogRead();
-
-    void LTagChange(long id, string renamed);
-
-    void LTagDelete(long id);
 }

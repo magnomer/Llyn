@@ -28,11 +28,6 @@ internal sealed class LLanguageFacade
         }
     }
 
-    public LFont LEngineFontRead(string language)
-    {
-        return LEngineFontRead(language, LFontRole.LFontRoleHeadword);
-    }
-
     public LFont LEngineFontRead(string language, LFontRole role)
     {
         LLanguage pack = LEngineLanguageLoad(language);
@@ -178,11 +173,6 @@ internal sealed class LLanguageFacade
         }
     }
 
-    public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)
-    {
-        return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkRead(entryId);
-    }
-
     public void LEngineScriptStart(long entryId)
     {
         LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkStart(entryId);
@@ -206,12 +196,6 @@ internal sealed class LLanguageFacade
     public bool LEngineScriptCheck(long entryId)
     {
         return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkCheck(entryId);
-    }
-
-    internal Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
-        string character, string language, CancellationToken cancellation)
-    {
-        return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkFind(character, language, cancellation);
     }
 
     private LEngineStaff LLanguageFacadeStaff => _lLanguageFacadeEngine.LEngineStaffHeld;

@@ -45,19 +45,6 @@ internal sealed class LFanqieFacade
         return null;
     }
 
-    public LHypothesis? LEngineHypothesisRead(string language)
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            return LFanqieFacadeStaff.LEngineStaffFanqie.LHypothesisRead(language);
-        }
-    }
-
-    public IReadOnlyList<LFanqieRow> LEngineFanqieRead(long entryId)
-    {
-        return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkRead(entryId);
-    }
-
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)
     {
         return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkDivide(entryId);
@@ -84,12 +71,6 @@ internal sealed class LFanqieFacade
     {
         return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkCheck(entryId)
             || LFanqieFacadeStaff.LEngineStaffShengfu.LShengfuClerkCheck(entryId);
-    }
-
-    internal Task<IReadOnlyList<LFanqieRow>> LEngineFanqieFind(
-        string character, string language, CancellationToken cancellation)
-    {
-        return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkFind(character, language, cancellation);
     }
 
     internal IReadOnlyList<LDiwei> LEngineDiweiRead(string language, string kind)
@@ -160,22 +141,6 @@ internal sealed class LFanqieFacade
         return [.. sorted.Select(row => row with { LDiweiChosen = vista.LVistaMatch(row.LDiweiId) })];
     }
 
-    public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            return LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiFanqieRead(diwei);
-        }
-    }
-
-    internal IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            return LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiClerkScan(language, diweiIds);
-        }
-    }
-
     public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(
         string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)
     {
@@ -212,22 +177,6 @@ internal sealed class LFanqieFacade
         }
 
         return LEngineXiaoyunFind(language, wanted, vista.LVistaQuery.Trim(), vista);
-    }
-
-    internal void LEngineDiweiRebuild()
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            LFanqieFacadeStaff.LEngineStaffFanqie.LDiweiApply();
-        }
-    }
-
-    public IReadOnlyList<LTally> LEngineTallyRead(LDiwei diwei)
-    {
-        lock (_lFanqieFacadeGate)
-        {
-            return LFanqieFacadeStaff.LEngineStaffDiwei.LTallyRead(diwei);
-        }
     }
 
     private LEngineStaff LFanqieFacadeStaff => _lFanqieFacadeEngine.LEngineStaffHeld;

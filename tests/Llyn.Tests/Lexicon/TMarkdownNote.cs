@@ -73,19 +73,20 @@ public sealed class TMarkdownNote
 
         LEntry entry = engine.TEngineEntrySave(TMarkdownNoteCreate("# Title \r\n\r\n- one  \r\n"));
 
-        Assert.Equal("# Title\n\n- one", engine.TEngineNoteRead(entry.LEntryId)?.LNoteText);
+        Assert.Equal("# Title\n\n- one", engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftNote);
     }
 
     [Fact]
-    public void NoteSave_WindowsLineEnds_StoresNormalizedMarkdown()
+    public void NoteUpdate_WindowsLineEnds_StoresNormalizedMarkdown()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = engine.TEngineEntrySave(TMarkdownNoteCreate(string.Empty));
-        engine.TEngineNoteSave(TInterface.TNoteCreate(entry.LEntryId, "one \r\ntwo\r\n\r\n"));
+        engine.TRequestEntryApply(entry.LEntryId, draft =>
+            TInterface.TRequestNoteCreate(draft.LDraftId, "one \r\ntwo\r\n\r\n"));
 
-        Assert.Equal("one\ntwo", engine.TEngineNoteRead(entry.LEntryId)?.LNoteText);
+        Assert.Equal("one\ntwo", engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftNote);
     }
 
     private static LEntryDraft TMarkdownNoteCreate(string note)

@@ -62,16 +62,6 @@ A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.
 
-## `public void LExampleDelete(long id)`
-
-Deletes the Example identified by `id`.
-Guarded: while any Meaning or Collocation still references the Example, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach every reference first.
-A Source the Example cited is left standing.
-Only the reference to it disappears with the row.
-The guard and the delete share one transaction, so nothing can attach the Example between them.
-
 ## `internal static LExample? LExampleSingleRead(SqliteConnection connection, long id)`
 
 Reads one Example on a connection the caller already holds.
@@ -110,4 +100,3 @@ Deletes the Example, clearing every reference to it first when `detach` is set.
 The clearing, the count and the delete share one session.
 So the row is judged against the references as they stand at that moment.
 The Source it cited is left standing, because a citation is a pointer and never ownership.
-

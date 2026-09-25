@@ -60,16 +60,6 @@ A caller that has just detached one reference reads this.
 It learns whether the row it detached from was the last one.
 No store of its own has to know which association tables exist.
 
-## `public void LSituationDelete(long id)`
-
-Deletes the Situation identified by `id`.
-Guarded: while any Meaning or Collocation still references the Situation, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Detach every reference first.
-Deleting a Situation never deletes the rows that referenced it.
-Its Image and Video links go with it, and the Image and Video rows stay.
-The guard and the delete share one transaction, so nothing can attach the Situation between them.
-
 ## Inline notes
 
 ### `private static int LSituationReferenceRead(SqliteConnection connection, long id)`

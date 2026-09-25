@@ -76,7 +76,7 @@ public sealed class TCatalogFavorite
         TCatalogFavoriteSave(engine, "stone", "English");
         TCatalogFavoriteSave(engine, "river", "English");
 
-        LCatalogFavorite stone = engine.TEngineFavoriteFind("stone").Single();
+        LCatalogFavorite stone = engine.TEngineFavoriteFind("stone", LCatalogOrder.LCatalogOrderRecent).Single();
         engine.TEngineGraspSave(stone.LCatalogFavoriteEntry.LEntryId, 7);
 
         Assert.Equal(

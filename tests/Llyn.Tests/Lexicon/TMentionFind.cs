@@ -21,7 +21,6 @@ public sealed class TMentionFind
         LMentionResult found = engine.TEngineMentionFind(stored.LExampleId, 15);
 
         Assert.Equal(10, found.LMentionResultOffset);
-        Assert.Equal(9, found.LMentionResultLength);
         Assert.Equal(0, found.LMentionResultStored!.LMentionEntryId);
         Assert.Empty(found.LMentionResultEntry);
         Assert.NotEqual(0, entryId);
@@ -39,7 +38,6 @@ public sealed class TMentionFind
         LMentionResult found = engine.TEngineMentionFind("she knelt to kindle the damp logs", "English", 15, []);
 
         Assert.Equal(13, found.LMentionResultOffset);
-        Assert.Equal(6, found.LMentionResultLength);
         Assert.Null(found.LMentionResultStored);
         Assert.Equal([second, first], found.LMentionResultEntry.Select(target => target.LTranslationTargetId));
     }
@@ -72,9 +70,8 @@ public sealed class TMentionFind
         LMentionResult blank = engine.TEngineMentionFind("she kindled the damp logs", "English", 3, []);
 
         Assert.Equal(4, found.LMentionResultOffset);
-        Assert.Equal(7, found.LMentionResultLength);
         Assert.Empty(found.LMentionResultEntry);
-        Assert.Equal(0, blank.LMentionResultLength);
+        Assert.Empty(blank.LMentionResultEntry);
     }
 
     [Fact]
@@ -89,10 +86,8 @@ public sealed class TMentionFind
         LMentionResult fallback = engine.TEngineMentionFind("私は日本語を話す", "Japanese", 6, []);
 
         Assert.Equal(2, found.LMentionResultOffset);
-        Assert.Equal(3, found.LMentionResultLength);
         Assert.Equal(longest, Assert.Single(found.LMentionResultEntry).LTranslationTargetId);
         Assert.Equal(6, fallback.LMentionResultOffset);
-        Assert.Equal(1, fallback.LMentionResultLength);
         Assert.Empty(fallback.LMentionResultEntry);
     }
 

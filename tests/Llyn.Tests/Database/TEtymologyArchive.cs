@@ -21,7 +21,6 @@ public sealed class TEtymologyArchive
         LEtymologyArchive archive = TInterface.TEtymologyArchiveCreate(workspace.TWorkspaceDatabase);
 
         archive.TEtymologySave(entryId, TInterface.TEtymologyCreate(
-            entryId,
             "From rinnan, crossed with iernan.",
             [TInterface.TMentionCreate(0, 20, 6, other), TInterface.TMentionCreate(0, 5, 6, source)]));
 
@@ -29,7 +28,6 @@ public sealed class TEtymologyArchive
         Assert.Equal("From rinnan, crossed with iernan.", stored.LEtymologyText);
         Assert.Equal([5, 20], stored.LEtymologyMentions.Select(static mention => mention.LMentionOffset));
         Assert.Equal([source, other], stored.LEtymologyMentions.Select(static mention => mention.LMentionEntryId));
-        Assert.True(stored.LEtymologyNarrated);
     }
 
     [Fact]
@@ -41,7 +39,7 @@ public sealed class TEtymologyArchive
         long entryId = TEtymologyEntryCreate(engine, "run");
         LEtymologyArchive archive = TInterface.TEtymologyArchiveCreate(workspace.TWorkspaceDatabase);
         archive.TEtymologySave(entryId, TInterface.TEtymologyCreate(
-            entryId, "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, source)]));
+            "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, source)]));
 
         Assert.Null(archive.TEtymologySave(entryId, null));
 
@@ -61,14 +59,13 @@ public sealed class TEtymologyArchive
         Assert.Throws<InvalidOperationException>(() => archive.TEtymologySave(
             entryId,
             TInterface.TEtymologyCreate(
-                entryId, "From rinnan.", [TInterface.TMentionCreate(0, 5, 40, source)])));
+                "From rinnan.", [TInterface.TMentionCreate(0, 5, 40, source)])));
         Assert.Throws<InvalidOperationException>(() => archive.TEtymologySave(
             entryId,
-            TInterface.TEtymologyCreate(entryId, "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, 0)])));
+            TInterface.TEtymologyCreate("From rinnan.", [TInterface.TMentionCreate(0, 5, 6, 0)])));
         Assert.Throws<InvalidOperationException>(() => archive.TEtymologySave(
             entryId,
             TInterface.TEtymologyCreate(
-                entryId,
                 "From rinnan.",
                 [TInterface.TMentionCreate(0, 0, 8, source), TInterface.TMentionCreate(0, 5, 6, source)])));
 
@@ -89,7 +86,6 @@ public sealed class TEtymologyArchive
             entryId, [second, first, second, entryId, 0]);
 
         Assert.Equal([second, first], written.Select(static etymon => etymon.LEtymonTargetId));
-        Assert.Equal([0, 1], written.Select(static etymon => etymon.LEtymonPosition));
         Assert.Equal([second, first], archive.TEtymonRead(entryId).Select(static row => row.LEtymonTargetId));
     }
 
@@ -108,26 +104,6 @@ public sealed class TEtymologyArchive
     }
 
     [Fact]
-    public void EtymologySourceScan_NamedEntry_ListsBothShapesOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long source = TEtymologyEntryCreate(engine, "rinnan");
-        long linked = TEtymologyEntryCreate(engine, "run");
-        long narrated = TEtymologyEntryCreate(engine, "runner");
-        LEtymologyArchive archive = TInterface.TEtymologyArchiveCreate(workspace.TWorkspaceDatabase);
-
-        archive.TEtymonSet(linked, [source]);
-        archive.TEtymologySave(narrated, TInterface.TEtymologyCreate(
-            narrated, "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, source)]));
-
-        Assert.Equal(
-            [linked, narrated],
-            archive.TEtymologySourceScan(source).Select(static entry => entry.LEntryId).Order());
-        Assert.Empty(archive.TEtymologySourceScan(linked));
-    }
-
-    [Fact]
     public void EntryDelete_NamedSource_TakesEveryLinkToItAway()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -137,7 +113,7 @@ public sealed class TEtymologyArchive
         LEtymologyArchive archive = TInterface.TEtymologyArchiveCreate(workspace.TWorkspaceDatabase);
         archive.TEtymonSet(entryId, [source]);
         archive.TEtymologySave(entryId, TInterface.TEtymologyCreate(
-            entryId, "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, source)]));
+            "From rinnan.", [TInterface.TMentionCreate(0, 5, 6, source)]));
 
         engine.TEngineEntryDelete(source);
 

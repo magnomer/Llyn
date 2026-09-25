@@ -16,12 +16,12 @@ public sealed class TMarkupImport
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TInterface.TMarkupSave(workspace, TInterface.TMarkupPair);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(2));
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(2));
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
-        Assert.Equal(2, outcome.LMarkupOutcomeEntry.Count);
-        LEntry ember = outcome.LMarkupOutcomeEntry[0];
-        LEntry braise = outcome.LMarkupOutcomeEntry[1];
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
+        Assert.Equal(2, outcome.TMarkupOutcomeEntry.Count);
+        LEntry ember = outcome.TMarkupOutcomeEntry[0];
+        LEntry braise = outcome.TMarkupOutcomeEntry[1];
 
         LEntryDraft emberDraft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         LEntryDraft braiseDraft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(braise.LEntryId));
@@ -39,10 +39,10 @@ public sealed class TMarkupImport
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         string path = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
 
-        LEntry ember = Assert.Single(outcome.LMarkupOutcomeEntry);
-        Assert.Contains("braise", Assert.Single(outcome.LMarkupOutcomeOmission).LMarkupOmissionText);
+        LEntry ember = Assert.Single(outcome.TMarkupOutcomeEntry);
+        Assert.Contains("braise", Assert.Single(outcome.TMarkupOutcomeOmission).LMarkupOmissionText);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         Assert.Empty(Assert.Single(draft.LEntryDraftMeanings).LCardDraftTranslation);
     }
@@ -59,10 +59,10 @@ public sealed class TMarkupImport
             TInterface.TEntryDraftCreate("Braise", "french", string.Empty, string.Empty, [], []));
 
         string path = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
 
-        LEntry ember = Assert.Single(outcome.LMarkupOutcomeEntry);
-        Assert.Contains("braise", Assert.Single(outcome.LMarkupOutcomeOmission).LMarkupOmissionText);
+        LEntry ember = Assert.Single(outcome.TMarkupOutcomeEntry);
+        Assert.Contains("braise", Assert.Single(outcome.TMarkupOutcomeOmission).LMarkupOmissionText);
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
         Assert.Empty(Assert.Single(draft.LEntryDraftMeanings).LCardDraftTranslation);
     }
@@ -130,7 +130,7 @@ public sealed class TMarkupImport
             LStateValue.LStateValueUnspecified,
             LStateMark.LStateMarkUnspecified));
         LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
-        engine.TEngineAuthorAttach(reference.LReferenceId, kim.LAuthorId, 0);
+        engine.TRequestCreditApply(reference.LReferenceId, kim.LAuthorId, 0);
 
         LSentenceDraft sentence = TInterface.TSentenceDraftCreate(
             TInterface.TStateValueCreate("The ember glows."),
@@ -169,10 +169,10 @@ public sealed class TMarkupImport
         engine.TEngineMarkupExport([ember.LEntryId], path);
         engine.TEngineEntryDelete(ember.LEntryId);
 
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
-        LEntry imported = Assert.Single(outcome.LMarkupOutcomeEntry);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
+        LEntry imported = Assert.Single(outcome.TMarkupOutcomeEntry);
         Assert.NotEqual(ember.LEntryId, imported.LEntryId);
         Assert.Equal("ember", imported.LEntryHeadword);
 

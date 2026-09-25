@@ -33,7 +33,7 @@ public sealed class TAutographUnion
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LAuthor adam = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         guild.TGuildRowSelect(ada.LAuthorId);
         guild.TGuildScribeSet(true);
 

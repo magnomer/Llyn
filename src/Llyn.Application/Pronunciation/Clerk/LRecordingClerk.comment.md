@@ -27,10 +27,6 @@ Stores a harvested recording under the workspace and answers its path.
 
 Fetches a recording to a playable local file without storing it.
 
-## `public string LRecordingClerkResolve(string file)`
-
-The stored recording path as an absolute local path.
-
 ## `public bool LRecordingClerkExist(string? file)`
 
 Whether the recording resolves to a file that exists.

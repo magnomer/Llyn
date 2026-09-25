@@ -112,7 +112,7 @@ public sealed partial class LEntryArchive : LEntryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_parent, position, speech_value_ref, custom_name
+            SELECT speech_value_ref, custom_name
             FROM part_of_speech WHERE entry_parent = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -122,10 +122,8 @@ public sealed partial class LEntryArchive : LEntryVault
         while (reader.Read())
         {
             speeches.Add(new LSpeech(
-                reader.GetInt64(0),
-                reader.GetInt32(1),
-                reader.IsDBNull(2) ? null : reader.GetInt64(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3)));
+                reader.IsDBNull(0) ? null : reader.GetInt64(0),
+                reader.IsDBNull(1) ? null : reader.GetString(1)));
         }
 
         return speeches;

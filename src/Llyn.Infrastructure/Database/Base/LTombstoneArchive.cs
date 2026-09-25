@@ -43,49 +43,4 @@ public sealed class LTombstoneArchive : LTombstoneVault
         session.LDatabaseSessionCommit();
         return stored;
     }
-
-    public LTombstone? LTombstoneRead(long entryId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-
-        using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            "SELECT entry_ref, revision_ref, deleted_utc FROM tombstone WHERE entry_ref = $entry;";
-        command.Parameters.AddWithValue("$entry", entryId);
-
-        using SqliteDataReader reader = command.ExecuteReader();
-        if (!reader.Read())
-        {
-            return null;
-        }
-
-        return new LTombstone(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2));
-    }
-
-    public IReadOnlyList<LTombstone> LTombstoneRevisionRead(long revisionId)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revisionId);
-
-        using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT entry_ref, revision_ref, deleted_utc
-            FROM tombstone WHERE revision_ref = $revision ORDER BY deleted_utc, entry_ref;
-            """;
-        command.Parameters.AddWithValue("$revision", revisionId);
-
-        List<LTombstone> tombstones = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            tombstones.Add(new LTombstone(
-                reader.GetInt64(0),
-                reader.GetInt64(1),
-                reader.GetString(2)));
-        }
-
-        return tombstones;
-    }
 }

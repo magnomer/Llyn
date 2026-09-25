@@ -19,9 +19,9 @@ public sealed class TAuthorAbsorb
         LAuthor dropped = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim M."));
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
 
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, lee.LAuthorId, 0);
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, dropped.LAuthorId, 1);
-        engine.TEngineAuthorAttach(grammar.LReferenceId, kept.LAuthorId, 0);
+        engine.TRequestCreditApply(dictionary.LReferenceId, lee.LAuthorId, 0);
+        engine.TRequestCreditApply(dictionary.LReferenceId, dropped.LAuthorId, 1);
+        engine.TRequestCreditApply(grammar.LReferenceId, kept.LAuthorId, 0);
 
         engine.TEngineAuthorAbsorb(kept.LAuthorId, dropped.LAuthorId);
 
@@ -48,9 +48,9 @@ public sealed class TAuthorAbsorb
         LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
         LAuthor kept = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
 
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, dropped.LAuthorId, 0);
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, lee.LAuthorId, 1);
-        engine.TEngineAuthorAttach(dictionary.LReferenceId, kept.LAuthorId, 2);
+        engine.TRequestCreditApply(dictionary.LReferenceId, dropped.LAuthorId, 0);
+        engine.TRequestCreditApply(dictionary.LReferenceId, lee.LAuthorId, 1);
+        engine.TRequestCreditApply(dictionary.LReferenceId, kept.LAuthorId, 2);
 
         engine.TEngineAuthorAbsorb(kept.LAuthorId, dropped.LAuthorId);
 

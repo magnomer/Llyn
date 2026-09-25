@@ -8,7 +8,6 @@ The switch flags say whether a respelling exists for the language and which set 
 A section is data once built, so the shells carry it without a projection.
 
 **Parameters**
-- `LDiweiSectionHeading`: the raw division or place name the rows were grouped under.
 - `LDiweiSectionLabel`: the localized heading, or the raw heading when no text is found.
 - `LDiweiSectionLines`: the lines in print order.
 - `LDiweiSectionTallies`: the tally lines under this heading that carry marks in the shown set.

@@ -4,10 +4,6 @@
 
 The etymology tables: what an entry says about where it came from.
 
-## `public const long LSchemaEtymologyDeclared = 74;`
-
-The first schema version whose workspaces carry an etymology at all.
-
 ## `public static void LSchemaEtymologyCreate(SqliteConnection connection)`
 
 Creates the `etymology`, `etymology_mention` and `etymon` tables when they are missing.

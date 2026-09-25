@@ -11,15 +11,11 @@ The glyph, grasp, epithet, establishment and usage reads sit here too, since eac
 
 Keeps the engine and its gate so entry calls share the engine's state and lock.
 
-## `internal LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)`
-
-Creates `entry` with `forms` and `speeches` as its ordered child rows, under the gate.
-
 ## `public LEntry? LEngineEntryRead(long id)`
 
 Reads the entry for `id`, or `null` when no entry has that id.
 
-## `public IReadOnlyList<LEntry> LEngineEntryFind(string query)`
+## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The clerk's search under the gate.
 Every other `LEngineEntryFind` overload is the same relay for the clerk's overload of the same shape.
@@ -33,18 +29,6 @@ The entry clerk resolves its recordings to absolute paths.
 
 The clerk's delete under the gate, then the entry bulletin raised outside it.
 Returns the recorded revision.
-
-## `internal LTombstone? LEngineTombstoneRead(long entryId)`
-
-Reads the tombstone left by deleting the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
-
-## `internal LRevision? LEngineRevisionRead()`
-
-Reads the revision the workspace row points at, or `null` when the workspace has none yet.
-
-## `internal IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)`
-
-Reads the changes recorded under `revisionId`, in the order recorded.
 
 ## `public LGlyph? LEngineGlyphRead(string language)`
 
@@ -91,22 +75,3 @@ The usage clerk's counts under the gate.
 ## `public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)`
 
 The usage clerk's itemized rows under the gate, with the epithet the settings ask for.
-
-## `internal LEntry LEngineEntrySave(LEntryDraft draft)`
-
-Saves the whole input form as one new entry through the outcome clerk.
-A blank headword is refused by the entry clerk before anything is written.
-
-## `internal LEntry LEngineEntryUpdate(long id, LEntryDraft draft)`
-
-Applies `draft` to the entry `id` names through the outcome clerk and answers the stored entry.
-An id no entry carries is refused before anything is written.
-
-## `private void LEngineUpdatedSet(long entryId)`
-
-Moves the entry's `updated_utc` to now, through the clerk.
-Every seam that changes one part of an entry outside the draft path calls this.
-
-## `internal void LEngineUpdatedSet(long ownerId, bool collocation)`
-
-The same, reached from a card rather than the entry, through the card clerk.

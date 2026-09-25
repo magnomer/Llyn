@@ -71,16 +71,6 @@ The generic overload and the name read forward the same way for the catalog part
 The epithet of every listed entry that has one, keyed by id, or nothing while the workspace hides epithets.
 Called under the lock.
 
-## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query)`
-
-Finds the marked entries whose headword carries the query, through the favorite clerk.
-An empty query returns every marked entry.
-
-## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)`
-
-The marked entries answering `query`, in `order`.
-The mark carries its own stamp, so ordering by the mark is not ordering by the entry.
-
 ## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The same list with the marked entries in a hidden language left out.

@@ -11,10 +11,6 @@ The same resolution serves recordings, images, videos and the markup import.
 
 Reads the trail, the usher and the workspace root out of `rig`.
 
-## `public string LTrailClerkWorkspace`
-
-The workspace root the clerk resolves against.
-
 ## `public string LWorkspaceFormat()`
 
 The workspace shown by its folder name, or by the full root when the name is empty.
@@ -62,8 +58,3 @@ The recording path as an absolute local path, or the text as given when it is no
 ## `public bool LRecordingExist(string? file)`
 
 Whether the recording resolves to a file that exists.
-
-## `public string LRecordingFormat(string path)`
-
-The recording path made relative to the workspace, so a moved workspace keeps its audio.
-A path outside the workspace is stored as given.

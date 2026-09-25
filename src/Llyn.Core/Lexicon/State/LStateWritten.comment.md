@@ -18,10 +18,6 @@ So a request carries one of these where a stored value would otherwise be built 
 
 A field with nothing written and no mark.
 
-## `public static LStateWritten LStateWrittenRead(LStateValue value)`
-
-The field a stored value stands as: its shown text, and the mark when it is unknown.
-
 ## `public LStateValue LStateWrittenResolve()`
 
 Reads the field as a value.

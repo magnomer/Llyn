@@ -153,33 +153,6 @@ public sealed class TMention
     }
 
     [Fact]
-    public void MentionCopy_ToAnotherExample_GivesTheSameSpansUnderNewIds()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
-        LMentionArchive mentions = TInterface.TMentionArchiveCreate(workspace.TWorkspaceDatabase);
-
-        (long entryId, long meaningId) = TMentionEntryCreate(workspace);
-        LExample source = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
-        LExample target = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "he said the word", null, null));
-        mentions.TMentionSave(
-            source.LExampleId,
-            [TInterface.TMentionCreate(0, 3, 4, entryId), TInterface.TMentionCreate(0, 12, 4, entryId, meaningId)]);
-
-        mentions.TMentionCopy(source.LExampleId, target.LExampleId);
-
-        IReadOnlyList<LMention> copied = mentions.TMentionRead(target.LExampleId);
-        IReadOnlyList<LMention> original = mentions.TMentionRead(source.LExampleId);
-        Assert.Equal(
-            original.Select(mention => mention with { LMentionId = 0 }),
-            copied.Select(mention => mention with { LMentionId = 0 }));
-        Assert.Empty(original.Select(mention => mention.LMentionId)
-            .Intersect(copied.Select(mention => mention.LMentionId)));
-    }
-
-    [Fact]
     public void SentenceMeaningRead_MentionedExamples_FillsEveryRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -198,9 +171,9 @@ public sealed class TMention
         sentences.TSentenceMeaningSave(
             meaningId,
             [
-                TInterface.TSentenceCreate(0, meaningId, 0, first, null, null),
-                TInterface.TSentenceCreate(0, meaningId, 1, null, "for", null),
-                TInterface.TSentenceCreate(0, meaningId, 2, second, null, null),
+                TInterface.TSentenceCreate(0, first, null, null),
+                TInterface.TSentenceCreate(0, null, "for", null),
+                TInterface.TSentenceCreate(0, second, null, null),
             ]);
 
         IReadOnlyList<LSentence> read = sentences.TSentenceMeaningRead(meaningId);

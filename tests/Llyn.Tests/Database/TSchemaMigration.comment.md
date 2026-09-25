@@ -24,6 +24,12 @@ Its new meaning is empty and its ownership flag is clear.
 A version-73 workspace has no etymology tables.
 The rebuild adds all three empty and carries every entry across.
 
+## `public void DatabaseCreate_CollocationSharingMeaningId_RenumbersItAndItsLinks()`
+
+An older workspace numbered Collocations apart from Meanings, so the first of each was number 1.
+The migration moves the Collocation above both sequences and its links and history follow it.
+The Meaning and a Collocation with a number of its own keep theirs.
+
 ## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
 
 A version-47 workspace has no Situation media tables.

@@ -10,7 +10,5 @@ Saving replaces whatever file the pronunciation had.
 
 **Parameters**
 
-- `LPronunciationAudioId` — Owning pronunciation id — the row's identity.
 - `LPronunciationAudioFile` — Audio file path, relative to the workspace folder.
 - `LPronunciationAudioSource` — Optional label of the source the recording came from.
-- `LPronunciationAudioAdded` — Time the file was recorded into the workspace, ISO 8601 UTC.

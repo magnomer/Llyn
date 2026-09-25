@@ -20,10 +20,6 @@ The shared panel state over the membership vista: the chosen entry, the scribe m
 Opens a blank entry in the editor.
 When a Tag is chosen, the new entry starts inside that Tag.
 
-## `public LVista? LTaxonomyMembershipVista => _lTaxonomyMembership;`
-
-The membership vista, exposed for the window's export dialog alone, which names its file after the vista.
-
 ## `public IReadOnlyList<LVistaRow> LTaxonomyMembershipRead()`
 
 The entries under the chosen Tag, or every entry while none is chosen, as the engine narrows them.

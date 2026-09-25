@@ -161,22 +161,6 @@ internal static class PChoice
         }
     }
 
-    internal static LCatalogFilter PChoiceFilterRead(Panel list)
-    {
-        ArgumentNullException.ThrowIfNull(list);
-
-        List<string> hidden = [];
-        foreach (object child in list.Children)
-        {
-            if (child is CheckBox { IsChecked: not true, Tag: string language })
-            {
-                hidden.Add(language);
-            }
-        }
-
-        return hidden.Count == 0 ? LCatalogFilter.LCatalogFilterEmpty : new LCatalogFilter(hidden);
-    }
-
     private static Grid PChoiceRowBuild(string language)
     {
         Grid row = new();

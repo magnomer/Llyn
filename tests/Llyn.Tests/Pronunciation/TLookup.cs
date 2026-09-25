@@ -108,7 +108,7 @@ public sealed class TLookup
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, " nǐ hǎo "))],
             null,
-            [TInterface.TRespellingCreate("Tidy", [], [TInterface.TRespellingRuleCreate("ǐ", "i")])],
+            [TInterface.TRespellingCreate([], [TInterface.TRespellingRuleCreate("ǐ", "i")])],
             true);
 
         IReadOnlyList<LCandidate> found = await lookup.TLookupStart(
@@ -123,7 +123,7 @@ public sealed class TLookup
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, "ˈhæpɪ"))],
             null,
-            [TInterface.TRespellingCreate("Tidy", [], [TInterface.TRespellingRuleCreate("ɪ$", "i")])]);
+            [TInterface.TRespellingCreate([], [TInterface.TRespellingRuleCreate("ɪ$", "i")])]);
         TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
 
         IReadOnlyList<LCandidate> found = await lookup.TLookupStart("happy", receiver, CancellationToken.None);
@@ -138,7 +138,7 @@ public sealed class TLookup
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, "hæt"))],
             [TInterface.TVarietyCreate("British"), TInterface.TVarietyCreate("American")],
-            [TInterface.TRespellingCreate("British", ["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
+            [TInterface.TRespellingCreate(["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
 
         IReadOnlyList<LCandidate> found = await lookup.TLookupStart(
             "hat", TPronunciationHelper.TReceiverCreate(), CancellationToken.None);
@@ -166,7 +166,7 @@ public sealed class TLookup
         TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
         LReceiver respelling = TInterface.TReceiverRespellingCreate(
             receiver,
-            [TInterface.TRespellingCreate("British", ["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
+            [TInterface.TRespellingCreate(["British"], [TInterface.TRespellingRuleCreate("æ", "a")])]);
         foreach (LCandidate candidate in held)
         {
             respelling.TReceiverCandidateAdd(candidate);

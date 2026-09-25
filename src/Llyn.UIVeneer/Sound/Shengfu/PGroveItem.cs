@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -34,7 +35,7 @@ internal sealed class PGroveItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        return PSplice.PSpliceBuild(rows, row => new PGroveItem(row, row.LStemChosen));
+        return LSplice.LSpliceBuild(rows, row => new PGroveItem(row, row.LStemChosen));
     }
 
     internal static bool PGroveItemMatch(PGroveItem held, PGroveItem fresh)

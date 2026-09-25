@@ -13,15 +13,6 @@ The source draft starts and commits here too, through the citation clerk.
 
 Stores the engine and its gate for reference operations.
 
-## `internal LReference LEngineReferenceCreate(LReference reference)`
-
-Creates `reference` and returns it with its assigned id.
-
-## `public LReference LEngineCitationCreate(string title)`
-
-Creates a Reference carrying nothing but `title`, for a citation typed where no stored Source answered.
-Observers hear of the new Reference at once, because every open citation catalogue must list it.
-
 ## `public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)`
 
 The Reference a typed citation names, found or created under one hold of the gate.
@@ -32,10 +23,6 @@ The clerk decides the match, and only a created Reference is announced.
 ## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.
-
-## `internal IReadOnlyList<LReference> LEngineReferenceRead()`
-
-Every Reference the workspace holds.
 
 ## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)`
 
@@ -50,27 +37,6 @@ Each row carries its chosen mark, true where its id is the one the vista stands 
 
 The found rows with their twin names numbered and the chosen one marked.
 The sources panel and the oeuvre list share it.
-
-## `internal IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)`
-
-Reads the single Reference the Example identified by `ownerId` cites, as a list of one or none.
-
-## `internal void LEngineReferenceUpdate(LReference reference)`
-
-Rewrites the fields of the Reference `reference` identifies.
-
-## `internal void LEngineReferenceAttach(long ownerId, long referenceId, int position, LOwner owner)`
-
-Cites the Reference identified by `referenceId` from the Example identified by `ownerId`.
-An Example holds one citation, so `position` orders nothing.
-
-## `internal void LEngineReferenceDetach(long ownerId, long referenceId, LOwner owner)`
-
-Clears the citation the Example identified by `ownerId` holds.
-
-## `internal void LEngineReferenceDelete(long id)`
-
-Deletes the Reference identified by `id`, refused while any Example still cites it, and announces it.
 
 ## `internal void LEngineReferenceDelete(long id, bool detach)`
 

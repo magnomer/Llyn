@@ -30,10 +30,6 @@ Binds the issuer to the workspace vault whose floor it lowers.
 The retired ids are ones a tenure still holds from a workspace the engine has left.
 Each workspace counts from its own floor, so the next one would otherwise issue those ids again.
 
-## `public long LIdentityFloor`
-
-The lowest id issued so far, read from the workspace row.
-
 ## `public long LIdentityCreate()`
 
 Issues the next temporary id.

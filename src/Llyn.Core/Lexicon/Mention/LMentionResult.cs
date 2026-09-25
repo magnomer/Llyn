@@ -4,7 +4,6 @@ namespace Llyn.Core;
 
 public sealed record LMentionResult(
     int LMentionResultOffset,
-    int LMentionResultLength,
     LMention? LMentionResultStored,
     IReadOnlyList<LTranslationTarget> LMentionResultEntry)
 {

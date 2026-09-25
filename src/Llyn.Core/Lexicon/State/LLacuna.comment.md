@@ -10,6 +10,4 @@ A hand edit of the entry's inflections deletes its lacunae, since the user's wor
 
 **Parameters**
 
-- `LLacunaEntryId` — The entry whose slot went unfilled.
 - `LLacunaMorphologyId` — The morphology value a reached source could not name, or `null` when no source was reached.
-- `LLacunaFetchedUtc` — Moment the web was asked, ISO 8601 UTC.

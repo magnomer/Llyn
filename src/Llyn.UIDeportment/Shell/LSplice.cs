@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Llyn.UIVeneer;
+namespace Llyn.UIDeportment;
 
-internal static class PSplice
+public static class LSplice
 {
-    internal static void PSpliceApply<PSpliceRow>(
-        ObservableCollection<PSpliceRow> held,
-        IReadOnlyList<PSpliceRow> fresh,
-        Func<PSpliceRow, PSpliceRow, bool> match,
-        Action<PSpliceRow, PSpliceRow> mark)
+    public static void LSpliceApply<LSpliceRow>(
+        ObservableCollection<LSpliceRow> held,
+        IReadOnlyList<LSpliceRow> fresh,
+        Func<LSpliceRow, LSpliceRow, bool> match,
+        Action<LSpliceRow, LSpliceRow> mark)
     {
         ArgumentNullException.ThrowIfNull(held);
         ArgumentNullException.ThrowIfNull(fresh);
         ArgumentNullException.ThrowIfNull(match);
         ArgumentNullException.ThrowIfNull(mark);
 
-        if (PSpliceMatchCheck(held, fresh, match))
+        if (LSpliceMatchCheck(held, fresh, match))
         {
             for (int index = 0; index < held.Count; index++)
             {
@@ -28,20 +28,20 @@ internal static class PSplice
         }
 
         held.Clear();
-        foreach (PSpliceRow row in fresh)
+        foreach (LSpliceRow row in fresh)
         {
             held.Add(row);
         }
     }
 
-    internal static IReadOnlyList<PSpliceItem> PSpliceBuild<PSpliceRow, PSpliceItem>(
-        IReadOnlyList<PSpliceRow> rows, Func<PSpliceRow, PSpliceItem> make)
+    public static IReadOnlyList<LSpliceItem> LSpliceBuild<LSpliceRow, LSpliceItem>(
+        IReadOnlyList<LSpliceRow> rows, Func<LSpliceRow, LSpliceItem> make)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(make);
 
-        List<PSpliceItem> built = new(rows.Count);
-        foreach (PSpliceRow row in rows)
+        List<LSpliceItem> built = new(rows.Count);
+        foreach (LSpliceRow row in rows)
         {
             built.Add(make(row));
         }
@@ -49,10 +49,10 @@ internal static class PSplice
         return built;
     }
 
-    private static bool PSpliceMatchCheck<PSpliceRow>(
-        ObservableCollection<PSpliceRow> held,
-        IReadOnlyList<PSpliceRow> fresh,
-        Func<PSpliceRow, PSpliceRow, bool> match)
+    private static bool LSpliceMatchCheck<LSpliceRow>(
+        ObservableCollection<LSpliceRow> held,
+        IReadOnlyList<LSpliceRow> fresh,
+        Func<LSpliceRow, LSpliceRow, bool> match)
     {
         if (held.Count != fresh.Count)
         {

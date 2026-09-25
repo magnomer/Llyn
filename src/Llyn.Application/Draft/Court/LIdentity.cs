@@ -16,8 +16,6 @@ public sealed class LIdentity
         _lIdentityRetired = retired ?? new HashSet<long>();
     }
 
-    public long LIdentityFloor => _lIdentityWorkspaces.LWorkspaceStateRead().LWorkspaceStateFloor;
-
     public long LIdentityCreate()
     {
         long id = _lIdentityWorkspaces.LWorkspaceFloorAdjust();

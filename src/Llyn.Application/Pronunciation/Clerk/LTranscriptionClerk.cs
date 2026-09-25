@@ -9,7 +9,6 @@ namespace Llyn.Application;
 
 public sealed class LTranscriptionClerk
 {
-    private readonly LEntryVault _lTranscriptionClerkEntries;
     private readonly LTranscriptionVault _lTranscriptionClerkTranscriptions;
     private readonly LSourceFactory _lTranscriptionClerkFactory;
     private readonly LLanguageCache _lTranscriptionClerkLanguages;
@@ -22,7 +21,6 @@ public sealed class LTranscriptionClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
-        _lTranscriptionClerkEntries = rig.LRigEntries;
         _lTranscriptionClerkTranscriptions = rig.LRigTranscriptions;
         _lTranscriptionClerkFactory = rig.LRigSources;
         _lTranscriptionClerkLanguages = languages;
@@ -92,21 +90,6 @@ public sealed class LTranscriptionClerk
             : receiver;
     }
 
-    public IReadOnlyList<LTranscription> LTranscriptionClerkRead(long entryId)
-    {
-        return _lTranscriptionClerkTranscriptions.LTranscriptionRead(entryId);
-    }
-
-    public IReadOnlyList<LTranscription> LTranscriptionClerkSet(
-        long entryId, IReadOnlyList<LTranscription> transcriptions)
-    {
-        ArgumentNullException.ThrowIfNull(transcriptions);
-        IReadOnlyList<LTranscription> saved =
-            _lTranscriptionClerkTranscriptions.LTranscriptionSet(entryId, transcriptions);
-        _lTranscriptionClerkEntries.LEntryUpdatedSet(entryId);
-        return saved;
-    }
-
     public void LTranscriptionClerkSync(
         long entryId,
         IReadOnlyList<LTranscriptionDraft> drafts,
@@ -141,7 +124,6 @@ public sealed class LTranscriptionClerk
         }
 
         changes?.Add(new LRevisionChange(
-            0,
             entryId,
             "transcription",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

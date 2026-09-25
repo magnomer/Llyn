@@ -126,19 +126,13 @@ public sealed class TAnatomy
                 TInterface.TReflexDraftCreate("Xiang", "", "lin¹³", respelling: "lin¹³"),
             ]));
 
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
+        IReadOnlyList<LReflexDraft> read = engine.TEntryReflexRead(entry.LEntryId);
         Assert.Equal(
             [("ㄹ", "ㅣ", "ㅁ", ""), ("r", "i", "mu", ""), ("l", "i", "n", "13")],
-            read.Select(row => TAnatomyIpaRead(row.LReflexAnatomy)));
+            read.Select(row => TAnatomyIpaRead(row.LReflexDraftAnatomy)));
         Assert.Equal(
             [("ㄹ", "ㅣ", "ㅁ", ""), ("r", "i", "mu", ""), ("l", "i", "n", "13")],
-            read.Select(row => TAnatomyRespellingRead(row.LReflexAnatomy)));
-
-        LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
-        Assert.NotNull(loaded);
-        Assert.Equal(
-            read.Select(row => row.LReflexAnatomy),
-            loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftAnatomy));
+            read.Select(row => TAnatomyRespellingRead(row.LReflexDraftAnatomy)));
     }
 
     [Fact]
@@ -156,8 +150,8 @@ public sealed class TAnatomy
             [],
             reflexes: [TInterface.TReflexDraftCreate("Korean", "", "림")]));
 
-        LReflex row = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
-        Assert.True(row.LReflexAnatomy.LAnatomyBlank);
+        LReflexDraft row = Assert.Single(engine.TEntryReflexRead(entry.LEntryId));
+        Assert.True(row.LReflexDraftAnatomy.LAnatomyBlank);
     }
 
     [Fact]

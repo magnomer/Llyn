@@ -76,32 +76,6 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void MeaningMove_AmongSiblings_RenumbersGroup()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
-
-        LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", 0, null, null), [], []);
-        LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "one"));
-        LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "two"));
-        LMeaning third = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "three"));
-
-        Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
-
-        meanings.TMeaningMove(third.LMeaningId, 0);
-
-        Assert.Equal(
-            [third.LMeaningId, first.LMeaningId, second.LMeaningId],
-            meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningId));
-        Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
-    }
-
-    [Fact]
     public void MeaningDelete_MiddleRow_ClosesPositionGap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -152,50 +126,6 @@ public sealed class TDatabaseSession
         Assert.Equal(
             [0, 1],
             TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaning.LMeaningId));
-    }
-
-    [Fact]
-    public void InflectionDelete_MiddleRow_RenumbersKeepsFeatures()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LInflectionArchive inflections = TInterface.TInflectionArchiveCreate(workspace.TWorkspaceDatabase);
-
-        LSpeechValue verb = TInterface.TSpeechArchiveCreate(workspace.TWorkspaceDatabase)
-            .TSpeechValueCreate(TInterface.TSpeechValueCreate("en", 1, "Verb", 0));
-        LMorphologyArchive morphology = TInterface.TMorphologyArchiveCreate(workspace.TWorkspaceDatabase);
-        LFeature tense = morphology.TFeatureCreate(
-            TInterface.TFeatureCreate(verb.LSpeechValueId, 1, "tense", 0));
-        LMorphology singular = morphology.TMorphologyCreate(
-            TInterface.TMorphologyCreate(tense.LFeatureId, 1, "singular", 0));
-        LMorphology past = morphology.TMorphologyCreate(
-            TInterface.TMorphologyCreate(tense.LFeatureId, 2, "past", 1));
-        LMorphology progressive = morphology.TMorphologyCreate(
-            TInterface.TMorphologyCreate(tense.LFeatureId, 3, "progressive", 2));
-
-        LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "run", "en", 0, null, null), [], []);
-        inflections.TInflectionAppend(entry.LEntryId,
-        [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "runs", null, null, [singular.LMorphologyId]),
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "ran", null, null, [past.LMorphologyId]),
-        ]);
-        inflections.TInflectionAppend(entry.LEntryId,
-        [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "running", null, null, [progressive.LMorphologyId]),
-        ]);
-
-        Assert.Equal(
-            ["runs", "ran", "running"],
-            inflections.TInflectionRead(entry.LEntryId).Select(inflection => inflection.LInflectionText));
-
-        inflections.TInflectionDelete(entry.LEntryId, 0);
-
-        IReadOnlyList<LInflection> remaining = inflections.TInflectionRead(entry.LEntryId);
-        Assert.Equal(["ran", "running"], remaining.Select(inflection => inflection.LInflectionText));
-        Assert.Equal([0, 1], remaining.Select(inflection => inflection.LInflectionPosition));
-        Assert.Equal(past.LMorphologyId, remaining[0].LInflectionMorphology[0]);
-        Assert.Equal(progressive.LMorphologyId, remaining[1].LInflectionMorphology[0]);
     }
 
     [Fact]

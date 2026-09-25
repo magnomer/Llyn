@@ -9,11 +9,3 @@ The persistence port for revisions, the recorded history of what changed in the 
 
 Records `changes` as one new revision stamped with the current time.
 Returns the stored revision with its id filled in.
-
-## `LRevision? LRevisionRead(long id);`
-
-Reads the revision with `id`, or `null` when none has that id.
-
-## `IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId);`
-
-Reads the changes of the revision in recorded order.

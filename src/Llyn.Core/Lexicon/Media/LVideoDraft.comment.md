@@ -19,11 +19,6 @@ Reading it as moments is the player's work, done where a span that says nothing 
 
 ## Inline notes
 
-### `public static LVideoDraft LVideoDraftCreate(LStateValue location)`
-
-A row that names a location and nothing else.
-Every reader that knew only locations still means exactly that.
-
 ### `public bool LVideoDraftEmpty`
 
 A row is empty when it names no film.

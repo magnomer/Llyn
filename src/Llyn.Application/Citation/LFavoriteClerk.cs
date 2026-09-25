@@ -14,11 +14,6 @@ public sealed class LFavoriteClerk
         _lFavoriteClerkFavorites = rig.LRigFavorites;
     }
 
-    public IReadOnlyList<LCatalogFavorite> LFavoriteClerkFind(string query)
-    {
-        return _lFavoriteClerkFavorites.LFavoriteFind(query);
-    }
-
     public IReadOnlyList<LCatalogFavorite> LFavoriteClerkFind(string query, LCatalogOrder order)
     {
         return LCatalogFavorite.LCatalogFavoriteSort(_lFavoriteClerkFavorites.LFavoriteFind(query), order);

@@ -24,18 +24,18 @@ public sealed class TEngineReflexStore
         LEntry entry = engine.TEngineEntrySave(
             TReflexFixture.TReflexDraftCreate("弄", pack.TLanguageFixtureName));
 
-        Assert.Empty(engine.TEngineReflexRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryReflexRead(entry.LEntryId));
         engine.TEngineReflexStart(entry.LEntryId);
 
         LBulletin raised = await observer.TReflexObserverRaised.WaitAsync(TReflexFixture.TReflexPatience);
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
         await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
 
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
+        IReadOnlyList<LReflexDraft> read = engine.TEntryReflexRead(entry.LEntryId);
         Assert.Equal(5, read.Count);
         Assert.Equal(("Japanese", "Kan-on", "ろう", "", true), TReflexFixture.TReflexRowRead(read[2]));
         Assert.Equal(("Mandarin", "", "nʊŋ⁵¹", "nòng", false), TReflexFixture.TReflexRowRead(read[3]));
-        Assert.Equal("Beijing", read[3].LReflexRegion);
+        Assert.Equal("Beijing", read[3].LReflexDraftRegion);
         Assert.Equal(5, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reflex;"));
     }
 
@@ -56,7 +56,7 @@ public sealed class TEngineReflexStore
         await Task.Delay(200);
 
         Assert.Equal(0, handler.TSourceHandlerCount);
-        Assert.Equal("롱", Assert.Single(engine.TEngineReflexRead(entry.LEntryId)).LReflexText);
+        Assert.Equal("롱", Assert.Single(engine.TEntryReflexRead(entry.LEntryId)).LReflexDraftText);
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public sealed class TEngineReflexStore
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
         await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
 
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
+        IReadOnlyList<LReflexDraft> read = engine.TEntryReflexRead(entry.LEntryId);
         Assert.Equal(5, read.Count);
         Assert.Equal(("Korean", "", "롱(농) | 희롱할", "", true), TReflexFixture.TReflexRowRead(read[0]));
     }
@@ -109,9 +109,9 @@ public sealed class TEngineReflexStore
         engine.TEngineReflexRebuild(entry.LEntryId);
         await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
 
-        LReflex rebuilt = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
-        Assert.Equal("hand typed", rebuilt.LReflexMeaning);
-        Assert.True(rebuilt.LReflexOwned);
+        LReflexDraft rebuilt = Assert.Single(engine.TEntryReflexRead(entry.LEntryId));
+        Assert.Equal("hand typed", rebuilt.LReflexDraftMeaning);
+        Assert.True(rebuilt.LReflexDraftOwned);
     }
 
     [Fact]
@@ -134,9 +134,9 @@ public sealed class TEngineReflexStore
         engine.TEngineReflexRebuild(entry.LEntryId);
         await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
 
-        LReflex rebuilt = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
-        Assert.Equal("corrected source", rebuilt.LReflexMeaning);
-        Assert.False(rebuilt.LReflexOwned);
+        LReflexDraft rebuilt = Assert.Single(engine.TEntryReflexRead(entry.LEntryId));
+        Assert.Equal("corrected source", rebuilt.LReflexDraftMeaning);
+        Assert.False(rebuilt.LReflexDraftOwned);
     }
 
     [Fact]
@@ -165,7 +165,8 @@ public sealed class TEngineReflexStore
 
         Assert.Equal(string.Empty, engine.TEngineEpithetRead(entry.LEntryId));
 
-        engine.TEngineReflexSet(entry.LEntryId, []);
+        engine.TEngineEntryUpdate(
+            entry.LEntryId, engine.TEngineEntryLoad(entry.LEntryId)! with { LEntryDraftReflexes = [] });
 
         Assert.Equal(
             string.Empty,
@@ -188,7 +189,7 @@ public sealed class TEngineReflexStore
         await Task.Delay(200);
 
         Assert.Equal(3, handler.TSourceHandlerCount);
-        Assert.Empty(engine.TEngineReflexRead(entry.LEntryId));
+        Assert.Empty(engine.TEntryReflexRead(entry.LEntryId));
     }
 
     [Fact]
@@ -244,7 +245,7 @@ public sealed class TEngineReflexStore
         using LEngine reopened = workspace.TWorkspaceEngineStart();
 
         Assert.Equal("악할 악", reopened.TEngineEpithetRead(id));
-        Assert.Equal(["", "tsiŋ³⁵"], reopened.TEngineReflexRead(id).Select(row => row.LReflexRespelling));
+        Assert.Equal(["", "tsiŋ³⁵"], reopened.TEntryReflexRead(id).Select(row => row.LReflexDraftRespelling));
     }
 
     private const string TReflexMeaningPack =

@@ -29,7 +29,7 @@ public partial class PRepertoire
     private void PTierHandle(object sender, RoutedEventArgs e)
     {
         PTierDropper.IsChecked = false;
-        _lRepertoire.LRepertoireAtlas.LAtlasTierSet(PSender.PSenderOrderRead(sender));
+        _lRepertoire.LRepertoireAtlas.LAtlasTierSet(LChoice.LChoiceOrderRead(sender));
     }
 
     internal async void PRepertoireVistaRestore()
@@ -107,7 +107,7 @@ public partial class PRepertoire
 
     private void PMeshHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireAtlas.LAtlasMeshSet(PChoice.PChoiceFilterRead(PMeshList));
+        _lRepertoire.LRepertoireAtlas.LAtlasMeshSet(LChoice.LChoiceFilterRead(PMeshList));
         PMeshRestore();
     }
 
@@ -142,7 +142,7 @@ public partial class PRepertoire
                 row.LCatalogSituationChosen));
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pAtlasList, fresh, PAtlasItem.PAtlasItemMatch, PAtlasItem.PAtlasItemSync);
 
         PAtlasEmpty.Visibility = PLook.PLookVisibleRead(_pAtlasList.Count == 0);

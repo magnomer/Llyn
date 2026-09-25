@@ -163,11 +163,11 @@ public sealed class TMarkupEtymology
         string path = workspace.TWorkspaceMarkupSave(text.Replace(
             "<headword>run</headword>", "<headword>runs</headword>", System.StringComparison.Ordinal));
         LMarkupCargo cargo = engine.TEngineMarkupRead(path);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             cargo, [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        Assert.Empty(outcome.LMarkupOutcomeOmission);
-        LEtymologyDraft etymology = TEtymologyRead(engine, Assert.Single(outcome.LMarkupOutcomeEntry).LEntryId);
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
+        LEtymologyDraft etymology = TEtymologyRead(engine, Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId);
         Assert.Equal("From rinnan.", etymology.LEtymologyDraftText);
         LMentionDraft mention = Assert.Single(etymology.LEtymologyDraftMentions);
         Assert.Equal((5, 6, source), (
@@ -194,11 +194,11 @@ public sealed class TMarkupEtymology
             + body
             + "\n  </entry>\n</llyn>");
         LMarkupCargo cargo = engine.TEngineMarkupRead(path);
-        LMarkupOutcome outcome = engine.TEngineMarkupImport(
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
             cargo, [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
 
-        omissions = outcome.LMarkupOutcomeOmission;
-        return Assert.Single(outcome.LMarkupOutcomeEntry);
+        omissions = outcome.TMarkupOutcomeOmission;
+        return Assert.Single(outcome.TMarkupOutcomeEntry);
     }
 
     private static void TEtymologyProseSave(

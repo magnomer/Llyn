@@ -36,7 +36,6 @@ public sealed class TRespelling
     public void RespellingResolve_TwoRules_RunsInWrittenOrder()
     {
         LRespelling group = TInterface.TRespellingCreate(
-            "Chain",
             [],
             [TInterface.TRespellingRuleCreate("ɛ", "e"), TInterface.TRespellingRuleCreate("eə", "eː")]);
 
@@ -47,7 +46,7 @@ public sealed class TRespelling
     public void RespellingResolve_ScopedGroup_SkipsOtherVarieties()
     {
         LRespelling group = TInterface.TRespellingCreate(
-            "British", ["British"], [TInterface.TRespellingRuleCreate("æ", "a")]);
+            ["British"], [TInterface.TRespellingRuleCreate("æ", "a")]);
 
         Assert.Equal("hæt", group.TRespellingResolve("hæt", string.Empty));
         Assert.Equal("hæt", group.TRespellingResolve("hæt", "American"));
@@ -58,7 +57,7 @@ public sealed class TRespelling
     public void RespellingResolve_UnscopedGroup_AppliesToEveryVariety()
     {
         LRespelling group = TInterface.TRespellingCreate(
-            "Shared", [], [TInterface.TRespellingRuleCreate("æ", "a")]);
+            [], [TInterface.TRespellingRuleCreate("æ", "a")]);
 
         Assert.Equal("hat", group.TRespellingResolve("hæt", string.Empty));
         Assert.Equal("hat", group.TRespellingResolve("hæt", "American"));
@@ -68,7 +67,7 @@ public sealed class TRespelling
     public void RespellingResolve_DecomposedInput_MatchesComposedPattern()
     {
         LRespelling group = TInterface.TRespellingCreate(
-            "Accent", [], [TInterface.TRespellingRuleCreate("é", "E")]);
+            [], [TInterface.TRespellingRuleCreate("é", "E")]);
 
         Assert.Equal("E", group.TRespellingResolve("é", string.Empty));
         Assert.Equal("E", group.TRespellingResolve("é", string.Empty));
@@ -79,8 +78,8 @@ public sealed class TRespelling
     {
         LRespelling[] groups =
         [
-            TInterface.TRespellingCreate("First", [], [TInterface.TRespellingRuleCreate("ɛ", "e")]),
-            TInterface.TRespellingCreate("Second", [], [TInterface.TRespellingRuleCreate("eə", "eː")]),
+            TInterface.TRespellingCreate([], [TInterface.TRespellingRuleCreate("ɛ", "e")]),
+            TInterface.TRespellingCreate([], [TInterface.TRespellingRuleCreate("eə", "eː")]),
         ];
 
         Assert.Equal("beː", TInterface.TRespellingScan(groups, "bɛə", string.Empty));

@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 
+using Llyn.UIDeportment;
+
 namespace Llyn.UIVeneer;
 
 public partial class PRepertoire
@@ -38,7 +40,7 @@ public partial class PRepertoire
             });
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pOccurrenceList, fresh, POccurrenceItem.POccurrenceItemMatch, POccurrenceItem.POccurrenceItemSync);
 
         POccurrenceEmpty.SetResourceReference(

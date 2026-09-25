@@ -198,13 +198,4 @@ public partial class PEditor
 
         _pAccentItem.Clear();
     }
-
-    private void PAccentClear()
-    {
-        PAccentRowClear();
-        _pAccentLanguage = string.Empty;
-        _pAccentFlagged = false;
-        _pAccentPrimary = string.Empty;
-        PAccentPrimaryShow();
-    }
 }

@@ -10,11 +10,7 @@ public interface LMorphologyVault
 
     IReadOnlyList<LFeature> LFeatureRead(long speechValueId);
 
-    LFeature? LFeatureFind(long speechValueId, string name);
-
     LMorphology? LMorphologyRead(long id);
-
-    IReadOnlyList<LMorphology> LMorphologyScan(long featureId);
 
     LMorphology? LMorphologyFind(long featureId, string name);
 

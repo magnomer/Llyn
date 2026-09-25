@@ -14,19 +14,10 @@ So the facade turns the owner into the flag the clerks take, and any other side 
 
 Stores the engine and its shared gate for this facade.
 
-## `internal LMeaning LEngineMeaningCreate(LMeaning meaning)`
-
-The meaning clerk's create under the gate.
-Every other Meaning and Collocation call is the same relay for the clerk member of the same shape.
-
 ## `public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)`
 
 Reads the Meanings of the Entry identified by `ownerId`, in stored order.
 Only an Entry holds Meanings, so any other owner is refused.
-
-## `internal IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)`
-
-Reads the Collocations of the Entry identified by `ownerId`, in stored order, on the same terms.
 
 ## `internal IReadOnlyList<LTag> LEngineTagRead()`
 
@@ -37,10 +28,6 @@ Reads every Tag the workspace holds, once each, in alphabetical order.
 The tags the taxonomy panel's vista lists, with the query and order read off the vista.
 The vista's filter hides languages from the entries of the chosen tag, not tags, so it is not applied here.
 A vista whose chosen tag no longer answers is deselected.
-
-## `internal void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)`
-
-Writes that card's whole Tag line and moves the holding Entry's updated stamp.
 
 ## `public LTag LEngineTagCreate(string text)`
 
@@ -59,14 +46,6 @@ The register clerk's create, then the register bulletin raised outside the gate.
 The announcement is raised either way, so the panel lists and selects the row.
 The rename and the delete raise the same bulletin whether or not the row moved.
 So a shown panel always re-reads.
-
-## `internal void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)`
-
-Writes that card's whole link line and moves the holding Entry's updated stamp.
-
-## `private void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, bool collocation)`
-
-The same line written from the draft translation part, which already holds the side as a flag.
 
 ## `public IReadOnlyList<LVistaRow> LEngineProspectFind(string query)`
 

@@ -15,7 +15,6 @@ internal static class TRigFake
         return new LRig(
             new TRigFakeVault(),
             new TRigFakeDoctor(),
-            new TRigFakeRealm(),
             new TRigFakeSettings(),
             TRigStubCreate<LAuditVault>(),
             new TPostureFake(),
@@ -104,11 +103,6 @@ internal static class TRigFake
     private sealed class TRigFakeDoctor : LDoctorVault
     {
         public LDoctorRescue LDoctorDatabaseCreate() => LDoctorRescue.LDoctorRescueHealthy;
-    }
-
-    private sealed class TRigFakeRealm : LRealmVault
-    {
-        public LRealm LRealmRead() => new(Guid.Empty);
     }
 
     private sealed class TRigFakeSettings : LSettingsVault

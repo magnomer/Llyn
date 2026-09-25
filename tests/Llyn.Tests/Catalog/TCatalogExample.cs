@@ -63,14 +63,13 @@ public sealed class TCatalogExample
         LExample quiet = TCatalogExampleCreate(engine, "quiet line", "English", null);
         LExample busy = TCatalogExampleCreate(engine, "busy line", "English", null);
 
-        LEntry first = TCatalogEntryCreate(engine, "apple");
-        LEntry second = TCatalogEntryCreate(engine, "stone");
-        long apple = engine.TEngineMeaningRead(first.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        long stone = engine.TEngineMeaningRead(second.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        LEntry apple = TCatalogEntryCreate(engine, "apple");
+        LEntry stone = TCatalogEntryCreate(engine, "stone");
 
-        engine.TEngineExampleAttach(apple, busy.LExampleId, 0, LOwner.LOwnerMeaning);
-        engine.TEngineExampleAttach(stone, busy.LExampleId, 0, LOwner.LOwnerMeaning);
-        engine.TEngineExampleAttach(apple, quiet.LExampleId, 1, LOwner.LOwnerMeaning);
+        engine.TRequestQuoteApply(apple.LEntryId, busy.LExampleId);
+        engine.TRequestQuoteApply(stone.LEntryId, busy.LExampleId);
+        engine.TRequestQuoteApply(apple.LEntryId, quiet.LExampleId);
+
 
         IReadOnlyList<LCatalogExample> read =
             engine.TEngineExampleFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);

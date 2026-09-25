@@ -11,10 +11,6 @@ A link waits here until the record it points at becomes real or is dropped.
 
 Stores `link` under its id, replacing whatever was there.
 
-## `LCourt? LCourtRead(long id);`
-
-The link stored under `id`, or `null` when none is readable.
-
 ## `IReadOnlyList<LCourt> LCourtScan();`
 
 Every readable link the court holds.

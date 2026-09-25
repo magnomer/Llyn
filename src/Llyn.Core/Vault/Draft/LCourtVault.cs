@@ -6,8 +6,6 @@ public interface LCourtVault
 {
     void LCourtSave(LCourt link);
 
-    LCourt? LCourtRead(long id);
-
     IReadOnlyList<LCourt> LCourtScan();
 
     void LCourtDelete(long id);

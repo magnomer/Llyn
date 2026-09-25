@@ -162,14 +162,6 @@ public sealed class LScriptClerk
         return false;
     }
 
-    public async Task<IReadOnlyList<LScriptImage>> LScriptClerkFind(
-        string character, string language, CancellationToken cancellation)
-    {
-        (IReadOnlyList<LScriptImage> found, _) =
-            await LScriptClerkScan(character, language, cancellation).ConfigureAwait(false);
-        return found;
-    }
-
     public void LScriptClerkClear()
     {
         lock (_lScriptClerkGate)

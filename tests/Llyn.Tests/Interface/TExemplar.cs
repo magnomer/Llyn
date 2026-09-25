@@ -51,7 +51,15 @@ internal static class TExemplar
         LEntry translation = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "Vorbild", "German", string.Empty, string.Empty, [TInterface.TCardCreate("exemplar", 1)], []));
         LEntry mention = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "pattern", TExemplarLanguage, string.Empty, string.Empty, [TInterface.TCardCreate("a model", 1)], []));
+            "pattern",
+            TExemplarLanguage,
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("a model", 1)],
+            [],
+            string.Empty,
+            null,
+            ["Noun", "Verb"]));
         long sense = engine.TEngineEntryLoad(mention.LEntryId)!.LEntryDraftMeanings[0].LCardDraftId;
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
@@ -63,14 +71,12 @@ internal static class TExemplar
             LStateValue.LStateValueUnspecified,
             LStateMark.LStateMarkUnspecified));
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Exemplar Author"));
-        engine.TEngineAuthorAttach(reference.LReferenceId, author.LAuthorId, 0);
+        engine.TRequestCreditApply(reference.LReferenceId, author.LAuthorId, 0);
 
-        LSpeechValue noun = engine.TEngineSpeechFind(TExemplarLanguage, "Noun")!;
-        LSpeechValue verb = engine.TEngineSpeechFind(TExemplarLanguage, "Verb")!;
-        LMorphology plural = engine.TEngineMorphologyFind(
-            engine.TEngineFeatureFind(noun.LSpeechValueId, "number")!.LFeatureId, "plural")!;
-        LMorphology past = engine.TEngineMorphologyFind(
-            engine.TEngineFeatureFind(verb.LSpeechValueId, "form")!.LFeatureId, "past")!;
+        LSpeechValue noun = engine.TSpeechValueFind(TExemplarLanguage, "Noun")!;
+        LSpeechValue verb = engine.TSpeechValueFind(TExemplarLanguage, "Verb")!;
+        LMorphology plural = engine.TParadigmMorphologyRead(mention.LEntryId, "plural");
+        LMorphology past = engine.TParadigmMorphologyRead(mention.LEntryId, "past");
 
         return new LEntryDraft(
             "exemplar",
@@ -141,7 +147,7 @@ internal static class TExemplar
                             "exemplar-situation-description",
                             "exemplar-situation-kind"),
                     ],
-                    [LRegisterDraft.LRegisterDraftCreate("Formal")],
+                    [TInterface.TRegisterDraftCreate("Formal")],
                     LCardDraftTranslation: [translation.LEntryId],
                     [LTagDraft.LTagDraftCreate("exemplar-tag")],
                     [new LImageDraft("https://example.org/exemplar-image.png")],

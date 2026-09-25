@@ -28,7 +28,6 @@ public sealed class TEnsign
         IReadOnlyList<LEnsignRow> kept = ensign.TEnsignPathAdd(age, missing, ["C:/flags/en.svg"]);
 
         Assert.Equal([TInterface.TEnsignRowCreate("English", "C:/flags/en.svg")], kept);
-        Assert.Equal("C:/flags/en.svg", ensign.TEnsignPathRead("English"));
         Assert.Empty(ensign.TEnsignMissingRead(["English"], out _));
     }
 
@@ -41,7 +40,6 @@ public sealed class TEnsign
         IReadOnlyList<LEnsignRow> kept = ensign.TEnsignPathAdd(age, missing, ["C:/flags/ko.svg"]);
 
         Assert.Empty(kept);
-        Assert.Null(ensign.TEnsignPathRead("Korean"));
         Assert.Empty(ensign.TEnsignMissingRead(["Korean"], out _));
     }
 
@@ -57,7 +55,6 @@ public sealed class TEnsign
         IReadOnlyList<LEnsignRow> kept = ensign.TEnsignPathAdd(age, missing, ["C:/flags/en.svg"]);
 
         Assert.Empty(kept);
-        Assert.Null(ensign.TEnsignPathRead("English"));
         Assert.Equal(["English"], ensign.TEnsignMissingRead(["English"], out _));
     }
 

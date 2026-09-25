@@ -22,29 +22,4 @@ public sealed record LPortraitLabel(
     string LPortraitLabelSituation,
     string LPortraitLabelRegister,
     string LPortraitLabelTranslation,
-    string LPortraitLabelTag)
-{
-    public static LPortraitLabel LPortraitLabelDefault { get; } = new(
-        "Unknown",
-        "Meaning",
-        "Meanings",
-        "Collocation",
-        "Collocations",
-        "Links here",
-        "Note",
-        "Forms",
-        "Paradigm",
-        "Frequency",
-        "Characters",
-        "Character forms",
-        "Rime books",
-        "Example",
-        "Gloss",
-        "Source",
-        "Mentions",
-        "Etymology",
-        "Situations",
-        "Registers",
-        "Translations",
-        "Tags");
-}
+    string LPortraitLabelTag);

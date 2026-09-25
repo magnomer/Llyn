@@ -10,7 +10,7 @@ A language with no readable flag leaves the image empty and shows none.
 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
-The engine row carries it, and `PSplice` moves the mark in place, so the list keeps its scroll position.
+The engine row carries it, and `LSplice` moves the mark in place, so the list keeps its scroll position.
 
 ## `public string PRosterItemName`
 
@@ -27,8 +27,8 @@ The epithet is the reading the pack names, empty when the setting is off or the 
 ## `internal static bool PRosterItemMatch(PRosterItem held, PRosterItem fresh)`
 
 Whether the two rows show the same values, the chosen mark left aside.
-`PSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
+`LSplice` keeps the held rows when every pair matches, so their containers survive a refresh.
 
 ## `internal static void PRosterItemSync(PRosterItem held, PRosterItem fresh)`
 
-Copies the chosen mark of the fresh row onto the held row that `PSplice` kept.
+Copies the chosen mark of the fresh row onto the held row that `LSplice` kept.

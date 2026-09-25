@@ -37,7 +37,7 @@ public partial class PTenor
             });
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pCohortList, fresh, PCohortItem.PCohortItemMatch, PCohortItem.PCohortItemSync);
 
         PCohortEmpty.SetResourceReference(

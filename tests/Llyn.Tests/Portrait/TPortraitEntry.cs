@@ -13,6 +13,7 @@ public sealed class TPortraitEntry
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
 
         LCardDraft meaning = TInterface.TCardDraftCreate(
             TInterface.TStateValueCreate("set alight"),

@@ -129,39 +129,11 @@ internal sealed class LAuthorFacade
         _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, kept);
     }
 
-    internal LAuthor LEngineAuthorCreate(LAuthor author)
-    {
-        LAuthor created;
-        lock (_lAuthorFacadeGate)
-        {
-            created = LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkCreate(author);
-        }
-
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
-        return created;
-    }
-
     public LAuthor? LEngineAuthorRead(long id)
     {
         lock (_lAuthorFacadeGate)
         {
             return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead(id);
-        }
-    }
-
-    public IReadOnlyList<LAuthor> LEngineAuthorRead()
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead();
-        }
-    }
-
-    public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkFind(query);
         }
     }
 
@@ -185,54 +157,6 @@ internal sealed class LAuthorFacade
         {
             return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead(ownerId, owner);
         }
-    }
-
-    public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkRead(owner);
-        }
-    }
-
-    internal void LEngineAuthorUpdate(LAuthor author)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkUpdate(author);
-        }
-
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
-    }
-
-    internal void LEngineAuthorAttach(long referenceId, long authorId, int position)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkAttach(referenceId, authorId, position);
-        }
-
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
-    }
-
-    internal void LEngineAuthorDetach(long referenceId, long authorId)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkDetach(referenceId, authorId);
-        }
-
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
-    }
-
-    internal void LEngineAuthorDelete(long id)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorClerkDelete(id);
-        }
-
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
     }
 
     internal void LEngineAuthorDelete(long id, bool detach)

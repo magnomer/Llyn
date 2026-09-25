@@ -239,7 +239,38 @@ internal static partial class TInterface
         return held;
     }
 
+    internal static LReference TRequestCreditApply(this LEngine engine, long referenceId, long authorId, int position)
+    {
+        LDraft started = engine.LEngineReference.LEngineReferenceStart("Reference", referenceId);
+        engine.LEngineRequest.LEngineRequestApply(TAuthorPickCreate(started.LDraftId, authorId, position));
+        return engine.LEngineReference.LEngineReferenceCommit(started.LDraftId);
+    }
+
+    internal static LEntry TRequestQuoteApply(this LEngine engine, long entryId, long exampleId)
+    {
+        LDraft held = engine.LEngineDraft.LEngineDraftStart("Input", entryId);
+        long draftId = held.LDraftId;
+        LCardDraft card = held.LDraftContent.LEntryDraftMeanings[0];
+        int position = card.LCardDraftSentence.Count;
+        held = engine.LEngineRequest.LEngineRequestApply(
+            new LRequestSentenceAddition(draftId, card.LCardDraftId, position));
+        long sentenceId =
+            TRequestCardFind(held.LDraftContent, card.LCardDraftId).LCardDraftSentence[position].LSentenceDraftId;
+        engine.LEngineRequest.LEngineRequestApply(
+            new LRequestSentenceExample(draftId, card.LCardDraftId, sentenceId, exampleId));
+        return engine.LEngineDraft.LEngineDraftCommit(draftId).LOutcomeEntry;
+    }
+
+    internal static LEntry TRequestEntryApply(this LEngine engine, long entryId, Func<LDraft, LRequest> request)
+    {
+        LDraft started = engine.LEngineDraft.LEngineDraftStart("Input", entryId);
+        engine.LEngineRequest.LEngineRequestApply(request(started));
+        return engine.LEngineDraft.LEngineDraftCommit(started.LDraftId).LOutcomeEntry;
+    }
+
     internal static LCardDraft TRequestCardFind(LEntryDraft content, long cardId)
+
+
     {
         return TRequestCardFind(content.LEntryDraftMeanings, cardId)
             ?? TRequestCardFind(content.LEntryDraftCollocations, cardId)

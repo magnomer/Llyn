@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,8 +9,6 @@ namespace Llyn.UIVeneer;
 
 public partial class PLibrary : UserControl
 {
-    private readonly ObservableCollection<PIndexItem> _pIndexList = [];
-
     private PWindow _pLibraryHost = null!;
 
     private LLibrary _lLibrary = null!;
@@ -32,12 +29,11 @@ public partial class PLibrary : UserControl
         _lLibrary.LLibraryFailed += host.PWindowFailureShow;
         _lLibrary.LLibraryEditor.LEditorStateChanged += PLibraryStoreUpdate;
         _lLibrary.LLibraryPanel.LPanelChanged += PLibraryModeUpdate;
-        _lLibrary.LLibraryPanel.LPanelRowsChanged += PIndexUpdate;
         _lLibrary.LLibraryPanel.LPanelCleared += PLibraryClearUpdate;
         _lLibrary.LLibraryPanel.LPanelDraftChanged += PLibraryEntryUpdate;
         _lLibrary.LLibraryPanel.LPanelFailed += host.PWindowFailureShow;
 
-        PIndex.ItemsSource = _pIndexList;
+        _lLibrary.LLibraryIndexAttach(PIndex, PIndexEmpty, PEnsign.PEnsignFind);
 
         PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorDisplay);
 
@@ -72,18 +68,9 @@ public partial class PLibrary : UserControl
             LSubject.LSubjectEntry, PObserver.PObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
-            POrderList,
-            "Order",
-            POrderHandle,
-            [
-                LCatalogOrder.LCatalogOrderHeadword,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderRecent,
-                LCatalogOrder.LCatalogOrderEarliest,
-            ]);
+        PChoice.PChoiceOrderBuild(POrderList, "Order", POrderHandle, LIndex.LIndexOrder);
         PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
-        PSieveUpdate();
+        _lLibrary.LLibrarySieveShow(PSieveMark);
 
         await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
 
@@ -148,16 +135,6 @@ public partial class PLibrary : UserControl
         PDisplay.PDisplayClose();
     }
 
-    private void PIndexUpdate()
-    {
-        PSplice.PSpliceApply(
-            _pIndexList,
-            PIndexItem.PIndexItemBuild(_lLibrary.LLibraryRowsRead()),
-            PIndexItem.PIndexItemMatch,
-            PIndexItem.PIndexItemSync);
-        PIndexEmpty.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryIndexEmpty);
-    }
-
     private void PLibraryModeUpdate()
     {
         PEditor.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryPanel.LPanelEditing);
@@ -176,11 +153,6 @@ public partial class PLibrary : UserControl
     private void PLibraryEntryUpdate(LDraft draft)
     {
         PDisplay.PDisplayShow(draft.LDraftContent);
-    }
-
-    private void PSieveUpdate()
-    {
-        PSieveMark.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibrarySieveActive);
     }
 
     private string? PLibraryMarkupOpen()
@@ -205,20 +177,18 @@ public partial class PLibrary : UserControl
 
     private void POrderHandle(object sender, RoutedEventArgs e)
     {
-        POrderDropper.IsChecked = false;
-        _lLibrary.LLibraryOrderSet(PSender.PSenderOrderRead(sender));
+        _lLibrary.LLibraryOrderHandle(sender, POrderDropper);
     }
 
     private void PSieveHandle(object sender, RoutedEventArgs e)
     {
-        _lLibrary.LLibrarySieveSet(PChoice.PChoiceFilterRead(PSieveList));
-        PSieveUpdate();
+        _lLibrary.LLibrarySieveHandle(PSieveList, PSieveMark);
     }
 
     private void PIndexHandle(object sender, RoutedEventArgs e)
     {
         _pLibraryHost.PVoyageRecord();
-        _lLibrary.LLibraryPanel.LPanelRowSelect(PSender.PSenderItemRead<PIndexItem>(sender)?.PIndexItemId);
+        _lLibrary.LLibraryIndexSelect(sender);
     }
 
     private void PLibraryFreshHandle(object sender, RoutedEventArgs e)

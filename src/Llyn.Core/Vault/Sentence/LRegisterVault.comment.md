@@ -39,25 +39,10 @@ Reads the Registers a Collocation is marked with, in the order that Collocation 
 Rewrites the visible name of a written Register and never its id.
 A row a language pack ships is left as it stands, because the pack owns its wording.
 
-## `int LRegisterReferenceRead(long id);`
-
-Counts how many Meanings and Collocations reference one Register.
-
 ## `IReadOnlyDictionary<long, int> LRegisterReferenceRead();`
 
 Counts every referenced Register in one read, so a shelf never asks once per row.
 A Register nothing references is absent rather than present as zero.
-
-## `void LRegisterDelete(long id);`
-
-Deletes a written Register that nothing references.
-
-## `void LRegisterDelete(long id, bool detach);`
-
-Deletes a written Register, first dropping every reference to it when `detach` is set.
-It refuses while any reference remains, so a delete is never silently partial.
-A row a language pack ships is left alone before anything is dropped, and not merely spared the final statement.
-Otherwise a delete aimed at a shipped row would strip its mark off every card and leave the row standing.
 
 ## `void LRegisterMeaningAttach(long meaningId, long registerId, int position);`
 

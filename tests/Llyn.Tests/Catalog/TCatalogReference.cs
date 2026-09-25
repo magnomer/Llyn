@@ -270,7 +270,7 @@ public sealed class TCatalogReference
     private static void TCatalogCreditAttach(LEngine engine, long referenceId, string name)
     {
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, name));
-        engine.TEngineAuthorAttach(referenceId, author.LAuthorId, 0);
+        engine.TRequestCreditApply(referenceId, author.LAuthorId, 0);
     }
 
     private static (long TCatalogReferenceCard, long TCatalogReferenceSentence) TCatalogSentenceAdd(

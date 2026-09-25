@@ -6,7 +6,7 @@ Covers reading entries back.
 That is listing and searching them by headword.
 It is also loading one whole entry into the draft it was saved from.
 The load is the inverse of the save.
-So what a test writes through `LEngineEntrySave` is exactly what comes back.
+So what a test writes through `TEngineEntrySave` is exactly what comes back.
 That is headword, language, pronunciation and note.
 It is also every card with its definition.
 It is also the whole ordered set of Examples, Situations and Tags it references.
@@ -69,7 +69,7 @@ Three tags and two examples on the one card, all five back in the order they wer
 
 The collocation card references its own sets on the same terms.
 
-### `LEntry stored = engine.LEngineEntrySave(new LEntryDraft(`
+### `LEntry stored = engine.TEngineEntrySave(new LEntryDraft(`
 
 A blank value in a list is not a row.
 An empty field detaches.

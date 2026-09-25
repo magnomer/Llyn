@@ -82,7 +82,3 @@ A row the user adds with the plus is not seeded, and stays even empty.
 Brings a shown row up to the draft row with the same id.
 A changed scheme is written onto the row, which relabels itself.
 A row with a text request waiting keeps its text, since the draft is about to become what it holds.
-
-## `private void PTranscriptionClear()`
-
-Empties the rows and hides the list when the form resets.

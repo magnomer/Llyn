@@ -23,24 +23,12 @@ Reads the Reference identified by `id`, or `null` when none exists.
 Reads every Reference the workspace holds, by title.
 The Sources panel browses the whole shelf, so it asks for it at once.
 
-## `LReference? LReferenceExampleRead(long exampleId);`
-
-Reads the single Reference an Example cites, or `null` when the Example cites none or does not exist.
-
 ## `void LReferenceUpdate(LReference reference);`
 
 Rewrites every field of the Reference identified by `reference`'s id, states and values alike.
 The id, the Authors credited, and every citation pointing at it are untouched.
 So an update never changes where the Reference appears or in what order.
 Throws when no Reference carries that id.
-
-## `void LReferenceDelete(long id);`
-
-Deletes the Reference identified by `id` together with the author links it owns.
-Guarded: while any Example still cites the Reference, nothing is deleted.
-An `InvalidOperationException` is thrown instead.
-Remove those citations first.
-The Authors it credited survive.
 
 ## `void LReferenceDelete(long id, bool detach);`
 
@@ -60,17 +48,6 @@ The Author row itself is untouched and stays available to every other Reference.
 
 Removes this Reference's credit for an Author.
 The Author and its other credits survive.
-
-## `void LReferenceExampleAttach(long exampleId, long referenceId);`
-
-Makes this Reference the single one an Example cites, replacing whatever it cited before.
-An Example holds one source column, so there is nothing to order and nothing to duplicate.
-The Reference is only pointed at, never owned.
-
-## `void LReferenceExampleDetach(long exampleId);`
-
-Clears the Reference an Example cites.
-Only the pointer is cleared: both the Example and the Reference stay exactly as they were.
 
 ## `IReadOnlyDictionary<long, int> LReferenceUsageRead();`
 

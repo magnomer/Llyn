@@ -80,8 +80,3 @@ A row whose respelled, phonemic or folded state no longer matches its language i
 Those states are fixed when the row is created.
 The anchors are taken from the draft as they are, since the engine holds them and the tick sent them.
 The tone is taken from the draft's anatomy the same way, since the engine cuts it.
-
-## `private void PReflexClear()`
-
-Drops every row and the fanqie rows held.
-The stack, the fetching line and the turning icon hide with them.

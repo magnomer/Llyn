@@ -154,36 +154,6 @@ public partial class PWindow
         return _lNavigation.LNavigationShow(PNavigationTenor, id);
     }
 
-    internal bool PWindowSourceShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationSource, id);
-    }
-
-    internal bool PWindowAuthorShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationGuild, id);
-    }
-
-    internal bool PWindowFavoriteShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationFavorite, id);
-    }
-
-    internal bool PWindowInventoryShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationPhonology, id);
-    }
-
-    internal bool PWindowXiaoyunShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationYunjing, id);
-    }
-
-    internal bool PWindowKindredShow(long id)
-    {
-        return _lNavigation.LNavigationShow(PNavigationXiesheng, id);
-    }
-
     internal void PWindowDiweiShow(string language, string kind, string key)
     {
         _lNavigation.LNavigationShow(PNavigationYunjing, () => PYunjing.PYunjingDiweiShow(language, kind, key));

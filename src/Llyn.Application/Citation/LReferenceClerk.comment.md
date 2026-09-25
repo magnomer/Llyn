@@ -45,11 +45,6 @@ Reads the Reference for `id`, or `null` when none has that id.
 
 Every Reference the workspace holds.
 
-## `public IReadOnlyList<LReference> LReferenceClerkRead(long ownerId, LOwner owner)`
-
-Reads the single Reference the Example identified by `ownerId` cites, as a list of one or none.
-Any side but an Example is refused.
-
 ## `public LPortraitPage? LReferenceClerkRead(long id, LPortraitLegend legend)`
 
 The page of one Source, or null when no Source has that id.
@@ -76,22 +71,6 @@ One read serves a whole catalog fill, because resolving a name per row would be 
 
 Rewrites the fields of the Reference `reference` identifies.
 
-## `public void LReferenceClerkAttach(long ownerId, long referenceId, LOwner owner)`
-
-Cites the Reference identified by `referenceId` from the Example identified by `ownerId`.
-Whatever it cited before is replaced.
-
-## `public void LReferenceClerkDetach(long ownerId, LOwner owner)`
-
-Clears the citation the Example identified by `ownerId` holds.
-The Reference and its other citations survive.
-
-## `public void LReferenceClerkDelete(long id)`
-
-Deletes the Reference identified by `id` together with the author credits it owns.
-Refused while any Example still cites it.
-The Authors it credited survive.
-
 ## `public void LReferenceClerkDelete(long id, bool detach)`
 
 The same delete, with `detach` clearing every citation first.
@@ -108,7 +87,3 @@ The author state counts too, because ruling the writers unknown is an edit nothi
 The title heads the page, and the kind and usage tally are the chips.
 Credited authors are joined on one line, and an unknown credit shows the mark alone.
 Year, address and note each take a section only when written or marked unknown.
-
-## `private static ArgumentOutOfRangeException LReferenceOwnerRaise(LOwner owner)`
-
-The refusal for a side that cites nothing.

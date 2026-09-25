@@ -28,12 +28,4 @@ public sealed record LSentenceDraft(
             LSentenceDraftDependence = LSentenceDraftDependence.LStateValueNormalize(),
         };
     }
-
-    public static LSentenceDraft LSentenceDraftCreate(string text)
-    {
-        return new LSentenceDraft(
-            LExampleDraft.LExampleDraftCreate(text),
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified);
-    }
 }

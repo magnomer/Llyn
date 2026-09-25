@@ -68,12 +68,6 @@ public sealed class LEntryClerk
         _lEntryClerkRecordings = recordings;
     }
 
-    public LEntry LEntryClerkCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
-    {
-        ArgumentNullException.ThrowIfNull(entry);
-        return _lEntryClerkEntries.LEntryCreate(entry, forms, speeches);
-    }
-
     public LEntry? LEntryClerkRead(long id)
     {
         return _lEntryClerkEntries.LEntryRead(id);
@@ -114,34 +108,10 @@ public sealed class LEntryClerk
         return _lEntryClerkEntries.LEntryTagFind(tag.LTagId);
     }
 
-    public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(LEntryClerkFind(tag), entry => entry.LEntryLanguage);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LTag tag, string query, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        return LEntryClerkMatch(LEntryClerkFind(tag, filter), query);
-    }
-
     public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register)
     {
         ArgumentNullException.ThrowIfNull(register);
         return _lEntryClerkEntries.LEntryRegisterFind(register.LRegisterId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(LEntryClerkFind(register), entry => entry.LEntryLanguage);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LRegister register, string query, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        return LEntryClerkMatch(LEntryClerkFind(register, filter), query);
     }
 
     public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation)
@@ -150,43 +120,16 @@ public sealed class LEntryClerk
         return _lEntryClerkEntries.LEntrySituationFind(situation.LSituationId);
     }
 
-    public IReadOnlyList<LEntry> LEntryClerkFind(LSituation situation, string query, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(filter);
-        return LEntryClerkMatch(
-            filter.LCatalogFilterApply(LEntryClerkFind(situation), entry => entry.LEntryLanguage),
-            query);
-    }
-
     public IReadOnlyList<LEntry> LEntryClerkFind(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);
         return _lEntryClerkEntries.LEntryExampleFind(example.LExampleId);
     }
 
-    public IReadOnlyList<LEntry> LEntryClerkFind(LExample example, string query, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(filter);
-        return LEntryClerkMatch(
-            filter.LCatalogFilterApply(LEntryClerkFind(example), entry => entry.LEntryLanguage),
-            query);
-    }
-
     public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference)
     {
         ArgumentNullException.ThrowIfNull(reference);
         return _lEntryClerkEntries.LEntryReferenceFind(reference.LReferenceId);
-    }
-
-    public IReadOnlyList<LEntry> LEntryClerkFind(LReference reference, string query, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(filter);
-        return LEntryClerkMatch(
-            filter.LCatalogFilterApply(LEntryClerkFind(reference), entry => entry.LEntryLanguage),
-            query);
     }
 
     public static IReadOnlyList<LEntry> LEntryClerkMatch(IReadOnlyList<LEntry> entries, string query)
@@ -209,7 +152,7 @@ public sealed class LEntryClerk
         LEntry? deleted = _lEntryClerkEntries.LEntryRead(id);
         _lEntryClerkEntries.LEntryDelete(id);
 
-        LRevisionChange change = new(0, id, "entry", "delete", deleted?.LEntryHeadword);
+        LRevisionChange change = new(id, "entry", "delete", deleted?.LEntryHeadword);
         LRevision revision = _lEntryClerkRevisions.LRevisionRecord([change]);
         _lEntryClerkTombstones.LTombstoneRecord(id, revision.LRevisionId);
         LWorkspaceState state = _lEntryClerkWorkspaces.LWorkspaceStateRead();
@@ -242,12 +185,6 @@ public sealed class LEntryClerk
         return entryId <= 0 ? string.Empty : _lEntryClerkEntries.LEntryEpithetRead(entryId);
     }
 
-    public void LEntryEpithetSave(long entryId, string epithet)
-    {
-        ArgumentNullException.ThrowIfNull(epithet);
-        _lEntryClerkEntries.LEntryEpithetSave(entryId, epithet);
-    }
-
     public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)
     {
         ArgumentNullException.ThrowIfNull(ids);
@@ -264,21 +201,6 @@ public sealed class LEntryClerk
         return _lEntryClerkWorkspaces.LWorkspaceSizeRead();
     }
 
-    public LTombstone? LTombstoneRead(long entryId)
-    {
-        return _lEntryClerkTombstones.LTombstoneRead(entryId);
-    }
-
-    public LRevision? LRevisionRead()
-    {
-        long? id = _lEntryClerkWorkspaces.LWorkspaceStateRead().LWorkspaceStateRevision;
-        return id is null ? null : _lEntryClerkRevisions.LRevisionRead(id.Value);
-    }
-
-    public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId)
-    {
-        return _lEntryClerkRevisions.LRevisionChangeRead(revisionId);
-    }
     public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(draft);
@@ -291,7 +213,7 @@ public sealed class LEntryClerk
         LEntry entry = _lEntryClerkEntries.LEntryCreate(
             new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null),
             forms: draft.LEntryDraftForms,
-            speeches: _lEntryClerkVocabulary.LSpeechResolve(0, language, draft.LEntryDraftSpeeches));
+            speeches: _lEntryClerkVocabulary.LSpeechResolve(language, draft.LEntryDraftSpeeches));
 
         if (draft.LEntryDraftInflections.Count > 0)
         {
@@ -331,7 +253,7 @@ public sealed class LEntryClerk
         LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, null);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
-        LRevisionRecord([new LRevisionChange(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
+        LRevisionRecord([new LRevisionChange(entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
 
         session.LVaultSessionCommit();
         return entry;
@@ -389,7 +311,7 @@ public sealed class LEntryClerk
         if (renamed)
         {
             _lEntryClerkFrequencies.LFrequencyClerkClear(id);
-            changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
+            changes.Add(new LRevisionChange(id, "entry", "update", draft.LEntryDraftHeadword));
         }
 
         _lEntryClerkMeanings.LMeaningClerkSave(id, draft.LEntryDraftMeanings, language, changes, identity);
@@ -423,11 +345,6 @@ public sealed class LEntryClerk
 
         session.LVaultSessionCommit();
         return revision;
-    }
-
-    public void LEntryUpdatedSet(long entryId)
-    {
-        _lEntryClerkEntries.LEntryUpdatedSet(entryId);
     }
 
     private static void LHeadwordValidate(LEntryDraft draft)

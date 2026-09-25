@@ -44,18 +44,6 @@ public sealed class LSituationClerk
         return _lSituationClerkSituations.LSituationRead(id);
     }
 
-    public IReadOnlyList<LSituation> LSituationClerkRead()
-    {
-        return _lSituationClerkSituations.LSituationRead();
-    }
-
-    public IReadOnlyList<LSituation> LSituationClerkRead(long ownerId, LOwner owner)
-    {
-        return LSituationOwnerCheck(owner)
-            ? _lSituationClerkSituations.LSituationCollocationRead(ownerId)
-            : _lSituationClerkSituations.LSituationMeaningRead(ownerId);
-    }
-
     public LPortraitPage? LSituationClerkRead(long id, LPortraitLegend legend)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -98,44 +86,6 @@ public sealed class LSituationClerk
         _lSituationClerkSituations.LSituationUpdate(situation);
         LSituationMediaSync(situation.LSituationId, situation);
         session.LVaultSessionCommit();
-    }
-
-    public void LSituationClerkAttach(long ownerId, long situationId, int position, LOwner owner)
-    {
-        if (LSituationOwnerCheck(owner))
-        {
-            _lSituationClerkSituations.LSituationCollocationAttach(ownerId, situationId, position);
-            return;
-        }
-
-        _lSituationClerkSituations.LSituationMeaningAttach(ownerId, situationId, position);
-    }
-
-    public void LSituationClerkDetach(long ownerId, long situationId, LOwner owner)
-    {
-        if (LSituationOwnerCheck(owner))
-        {
-            _lSituationClerkSituations.LSituationCollocationDetach(ownerId, situationId);
-            return;
-        }
-
-        _lSituationClerkSituations.LSituationMeaningDetach(ownerId, situationId);
-    }
-
-    public void LSituationClerkRemove(long ownerId, long situationId, LOwner owner)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
-
-        LSituationClerkDetach(ownerId, situationId, owner);
-        if (_lSituationClerkSituations.LSituationReferenceRead(situationId) == 0)
-        {
-            _lSituationClerkSituations.LSituationDelete(situationId);
-        }
-    }
-
-    public void LSituationClerkDelete(long id)
-    {
-        _lSituationClerkSituations.LSituationDelete(id);
     }
 
     public void LSituationClerkDelete(long id, bool detach)
@@ -214,16 +164,5 @@ public sealed class LSituationClerk
             written => LCardClerkField.LVideoResolve(videos, written, identity),
             rowId => videos.LVideoSituationDetach(situationId, rowId),
             (rowId, position) => videos.LVideoSituationAttach(situationId, rowId, position));
-    }
-
-    private static bool LSituationOwnerCheck(LOwner owner)
-    {
-        return owner switch
-        {
-            LOwner.LOwnerMeaning => false,
-            LOwner.LOwnerCollocation => true,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(owner), owner, "This entity has no reference from that kind of row."),
-        };
     }
 }

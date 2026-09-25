@@ -39,7 +39,7 @@ A note edit right after a headword edit is its own step, since the request types
 An edit right after an undo and redo is its own step even though the type and the moment match.
 Undo steps back to the redone draft, not past it.
 
-## `public void DraftMove_ThenUndo_RestoresOrder()`
+## `public void CardShift_ThenUndo_RestoresOrder()`
 
 A card move is an edit, so undo puts the cards back in their earlier order.
 The card ids are what is compared, since the move touched only their places.

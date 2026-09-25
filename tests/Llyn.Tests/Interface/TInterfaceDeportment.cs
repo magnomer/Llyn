@@ -366,6 +366,16 @@ internal static class TInterfaceDeportment
     internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TWindowMeaningSort(
         IReadOnlyList<LMeaning> meanings, string unknown) => LWindow.LWindowMeaningSort(meanings, unknown);
 
+    internal static IReadOnlyList<LIndexItem> TIndexItemBuild(IReadOnlyList<LVistaRow> rows) =>
+        LIndexItem.LIndexItemBuild(rows, static _ => null);
+
+    internal static bool TIndexItemMatch(LIndexItem held, LIndexItem fresh) => LIndexItem.LIndexItemMatch(held, fresh);
+
+    internal static void TIndexItemSync(LIndexItem held, LIndexItem fresh) => LIndexItem.LIndexItemSync(held, fresh);
+
+    internal static long? TIndexNeighbourFind(IReadOnlyList<LIndexItem> items, bool down) =>
+        LIndex.LIndexNeighbourFind(items, down);
+
     internal static bool TCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
         LCaret.LCaretKeyApply(key, caret, length, selection, remove, move, place);

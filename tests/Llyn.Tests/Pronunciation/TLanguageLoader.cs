@@ -35,9 +35,7 @@ public sealed class TLanguageLoader
     [Fact]
     public void LanguageLoad_UnlistedPack_ReadsUnlistedAndStaysOffTheList()
     {
-        Assert.False(TInterface.TLanguageLoad("Wu").LLanguageListed);
         Assert.True(TInterface.TLanguageLoad("Wu").LLanguagePhonemic);
-        Assert.True(TInterface.TLanguageLoad("Mandarin").LLanguageListed);
         Assert.DoesNotContain("Wu", TInterface.TLanguageScan());
         Assert.Contains("Mandarin", TInterface.TLanguageScan());
     }
@@ -57,9 +55,8 @@ public sealed class TLanguageLoader
         LLanguage language = TInterface.TLanguageLoad("English");
 
         Assert.Equal(
-            [("British", "British"), ("American", "American")],
-            language.LLanguageRespellings.Select(group =>
-                (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
+            ["British", "American"],
+            language.LLanguageRespellings.Select(group => string.Join(",", group.LRespellingVarieties)));
         Assert.All(language.LLanguageRespellings, group => Assert.NotEmpty(group.LRespellingRules));
         Assert.All(language.LLanguageRespellings, group => Assert.NotEmpty(group.LRespellingVarieties));
         Assert.Empty(language.LLanguageCleanups);
@@ -81,8 +78,12 @@ public sealed class TLanguageLoader
                 { "name": "American", "varieties": ["American"], "rules": [["ɝ", "ər"]] } ] }
             """);
 
-        Assert.Equal(["Tight"], language.LLanguageCleanups.Select(group => group.LRespellingName));
-        Assert.Equal(["British", "American"], language.LLanguageRespellings.Select(group => group.LRespellingName));
+        Assert.Equal(
+            ["British"],
+            language.LLanguageCleanups.Select(group => string.Join(",", group.LRespellingVarieties)));
+        Assert.Equal(
+            ["British", "American"],
+            language.LLanguageRespellings.Select(group => string.Join(",", group.LRespellingVarieties)));
     }
 
     [Fact]
@@ -94,8 +95,12 @@ public sealed class TLanguageLoader
               "respelling": [ { "name": "Shared", "rules": [["ɛ", "e"]] } ] }
             """);
 
-        Assert.Equal(["Loose"], language.LLanguageCleanups.Select(group => group.LRespellingName));
-        Assert.Equal(["Shared"], language.LLanguageRespellings.Select(group => group.LRespellingName));
+        Assert.Equal(
+            ["g"],
+            language.LLanguageCleanups.Select(group => group.LRespellingRules[0].LRespellingRulePattern));
+        Assert.Equal(
+            ["ɛ"],
+            language.LLanguageRespellings.Select(group => group.LRespellingRules[0].LRespellingRulePattern));
     }
 
     [Fact]
@@ -157,7 +162,6 @@ public sealed class TLanguageLoader
             """);
 
         LRespelling group = Assert.Single(language.LLanguageCleanups);
-        Assert.Equal("Sites", group.LRespellingName);
         Assert.Empty(group.LRespellingVarieties);
         Assert.Equal(
             [("g", "ɡ"), ("́", "ˈ")],
@@ -178,9 +182,8 @@ public sealed class TLanguageLoader
             """);
 
         Assert.Equal(
-            [("Good", ""), ("Last", "American")],
-            language.LLanguageRespellings.Select(group =>
-                (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
+            ["", "American"],
+            language.LLanguageRespellings.Select(group => string.Join(",", group.LRespellingVarieties)));
     }
 
     [Fact]

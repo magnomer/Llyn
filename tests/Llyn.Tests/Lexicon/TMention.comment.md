@@ -39,11 +39,6 @@ Deleting a referenced meaning clears only the sense link, retaining the mention 
 When Example text shrinks, mentions extending beyond its end are removed.
 Earlier spans remain.
 
-## `MentionCopy_ToAnotherExample_GivesTheSameSpansUnderNewIds()`
-
-Copying preserves span and link data while assigning fresh IDs.
-The copied IDs do not overlap the originals.
-
 ## `SentenceMeaningRead_MentionedExamples_FillsEveryRow()`
 
 Meaning-based sentence reads include mention data in each Example row, preserve non-Example rows, and retain sense links.

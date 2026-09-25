@@ -112,12 +112,6 @@ The display attaches its per-record redraws here, so another entry's favorite ma
 A bulletin with an id of zero or less names every record, so it is delivered whatever row is chosen.
 The chosen observers are reached after every plain observer, so a plain one that selects the stored row is honoured.
 
-## `public void LVistaObserverDetach(Action<LBulletin> observer)`
-
-Stops reaching `observer` from either list.
-Delegate equality is target plus method, so the delegate that was attached is the one found.
-A panel detaches its observers before it takes a replacement vista, so the old one falls silent.
-
 ## `internal void LVistaBulletinHandle(LBulletin bulletin)`
 
 The engine's announcement, forwarded to the observers whose subject it names.

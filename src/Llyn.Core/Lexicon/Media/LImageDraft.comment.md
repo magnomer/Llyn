@@ -16,11 +16,6 @@ The situation and the register drafts carry their row id for the same reason.
 
 ## Inline notes
 
-### `public static LImageDraft LImageDraftCreate(LStateValue location)`
-
-A row that names a location and no stored row.
-Every caller that knew only locations still means exactly that.
-
 ### `public bool LImageDraftEmpty`
 
 A row is empty when it names no picture.

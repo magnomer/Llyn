@@ -82,12 +82,6 @@ public sealed class LPosture : IDisposable
         return vista;
     }
 
-    public void LPostureWindowSave(LWindowState window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        LPostureChange(state => state with { LPostureStateWindow = window });
-    }
-
     public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)
     {
         ArgumentNullException.ThrowIfNull(window);

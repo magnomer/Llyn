@@ -13,8 +13,6 @@ internal sealed class TVaultFakeCourt : LCourtVault
         _tVaultFakeRows[link.LCourtId] = link;
     }
 
-    public LCourt? LCourtRead(long id) => _tVaultFakeRows.GetValueOrDefault(id);
-
     public IReadOnlyList<LCourt> LCourtScan() => [.. _tVaultFakeRows.Values.OrderBy(link => link.LCourtId)];
 
     public void LCourtDelete(long id)

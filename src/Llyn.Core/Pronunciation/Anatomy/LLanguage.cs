@@ -3,7 +3,6 @@
 namespace Llyn.Core;
 
 public sealed record LLanguage(
-    string LLanguageName,
     string? LLanguageFlag,
     LFont LLanguageFont,
     LFont LLanguageExample,
@@ -26,7 +25,6 @@ public sealed record LLanguage(
     bool LLanguageSilent = false,
     IReadOnlyList<LReflexRule>? LLanguageReflexRules = null,
     bool LLanguagePhonemic = false,
-    bool LLanguageListed = true,
     IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null,
     IReadOnlyList<LAnatomyTone>? LLanguageAnatomyTones = null,
     LShengfuRule? LLanguageShengfu = null)

@@ -16,8 +16,6 @@ public interface LDraftPort
 
     void LEngineObserverDetach(Action<LBulletin> observer);
 
-    IReadOnlyList<LDraft> LEngineLeftoverRead();
-
     void LEngineLeftoverSweep();
 
     LCourt LEngineCourtStart(long ownerId, string origin, string headword, string language);

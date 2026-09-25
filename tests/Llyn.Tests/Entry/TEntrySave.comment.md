@@ -18,7 +18,7 @@ The meanings land in card order, each at the position its card held.
 
 The collocation carries both of its fields: the expression and the meaning that explains it.
 
-### `LRevision? revision = new LRevisionArchive(workspace.TWorkspaceDatabase).LRevisionLatestRead();`
+### `long? revision = engine.TEngineRevisionRead();`
 
 The save is recorded as history and the workspace row is moved onto it.
 
@@ -26,7 +26,7 @@ The save is recorded as history and the workspace row is moved onto it.
 
 Each field became a row of its own that the card now references, not a column on the card.
 
-### `LEntry second = engine.LEngineEntrySave(draft);`
+### `LEntry second = engine.TEngineEntrySave(draft);`
 
 Saving the same text again matches nothing.
 Every non-empty field creates a new row.
@@ -42,11 +42,11 @@ It refuses to remove a list's last card.
 
 An entry with no cards loads as cleanly as it saved.
 
-### `LEntry entry = engine.LEngineEntrySave(new LEntryDraft(`
+### `LEntry entry = engine.TEngineEntrySave(new LEntryDraft(`
 
 A card of whitespace counts as blank, on the same terms a card field does.
 
-### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineEntrySave(`
+### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntrySave(`
 
 The refusal names its reason with a localization key.
 So the shell can present it in the interface language.

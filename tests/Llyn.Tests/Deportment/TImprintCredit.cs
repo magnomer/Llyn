@@ -31,7 +31,7 @@ public sealed class TImprintCredit
         LShelf shelf = TShelfPrepare(engine);
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;
@@ -62,8 +62,8 @@ public sealed class TImprintCredit
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LAuthor bob = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
-        engine.TEngineAuthorAttach(book.LReferenceId, ada.LAuthorId, 0);
-        engine.TEngineAuthorAttach(book.LReferenceId, bob.LAuthorId, 1);
+        engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
+        engine.TRequestCreditApply(book.LReferenceId, bob.LAuthorId, 1);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;
@@ -100,7 +100,7 @@ public sealed class TImprintCredit
         imprint.TImprintTitleSet("Book");
         imprint.TImprintSave();
 
-        Assert.Equal(["Ada"], engine.TEngineAuthorRead().Select(author => author.LAuthorName));
+        Assert.Equal(["Ada"], engine.TEngineAuthorFind(string.Empty).Select(author => author.LAuthorName));
     }
 
     private static LShelf TShelfPrepare(LEngine engine)

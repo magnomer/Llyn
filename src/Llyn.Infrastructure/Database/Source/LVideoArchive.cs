@@ -89,52 +89,6 @@ public sealed class LVideoArchive : LVideoVault
         session.LDatabaseSessionCommit();
     }
 
-    public int LVideoReferenceRead(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
-        return LVideoReferenceRead(session.LDatabaseSessionConnection, id);
-    }
-
-    private static int LVideoReferenceRead(SqliteConnection connection, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT
-                (SELECT COUNT(*) FROM sense_video WHERE video_ref = $id)
-                + (SELECT COUNT(*) FROM collocation_video WHERE video_ref = $id)
-                + (SELECT COUNT(*) FROM situation_video WHERE video_ref = $id);
-            """;
-        command.Parameters.AddWithValue("$id", id);
-        return Convert.ToInt32(command.ExecuteScalar());
-    }
-
-    public void LVideoDelete(long id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        int references = LVideoReferenceRead(connection, id);
-        if (references > 0)
-        {
-            throw new InvalidOperationException(
-                $"Video {id} is still referenced {references} time(s); detach every reference before deleting it.");
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM video WHERE video_id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
     public void LVideoMeaningAttach(long meaningId, long videoId, int position)
     {
         LVideoReferenceAttach("sense_video", "sense_parent", meaningId, videoId, position);

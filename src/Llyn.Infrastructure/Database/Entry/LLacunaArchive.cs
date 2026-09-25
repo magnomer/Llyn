@@ -23,17 +23,14 @@ public sealed class LLacunaArchive : LLacunaVault
         using LDatabaseSession session = _lLacunaArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT morphology_value_ref, fetched_utc FROM lacuna WHERE entry_parent = $id ORDER BY rowid;";
+            "SELECT morphology_value_ref FROM lacuna WHERE entry_parent = $id ORDER BY rowid;";
         command.Parameters.AddWithValue("$id", entryId);
 
         List<LLacuna> rows = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            rows.Add(new LLacuna(
-                entryId,
-                reader.IsDBNull(0) ? null : reader.GetInt64(0),
-                reader.GetString(1)));
+            rows.Add(new LLacuna(reader.IsDBNull(0) ? null : reader.GetInt64(0)));
         }
 
         return rows;

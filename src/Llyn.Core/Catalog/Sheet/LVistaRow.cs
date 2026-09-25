@@ -17,6 +17,7 @@ public sealed record LVistaRow(
         return LVistaRowId == other.LVistaRowId
             && string.Equals(LVistaRowHeadword, other.LVistaRowHeadword, StringComparison.Ordinal)
             && string.Equals(LVistaRowEpithet, other.LVistaRowEpithet, StringComparison.Ordinal)
-            && string.Equals(LVistaRowName, other.LVistaRowName, StringComparison.Ordinal);
+            && string.Equals(LVistaRowName, other.LVistaRowName, StringComparison.Ordinal)
+            && string.Equals(LVistaRowLanguage, other.LVistaRowLanguage, StringComparison.Ordinal);
     }
 }

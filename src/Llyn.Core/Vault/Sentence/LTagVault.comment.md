@@ -38,16 +38,3 @@ The id of the row reading `text`, created when no row reads it yet.
 
 Reads every Tag row, in alphabetical order.
 That is the Tag list itself.
-
-## `void LTagChange(long id, string renamed);`
-
-Renames a Tag everywhere it is linked by rewriting its one row.
-When another row already reads `renamed`, the two fold into that row.
-A card already carrying both keeps one link rather than gaining a duplicate.
-That card's order closes over the link that folded away.
-
-## `void LTagDelete(long id);`
-
-Unlinks a Tag from every card that carries it and closes the gap it leaves in each card's order.
-Then it deletes the row.
-Nothing else is deleted: a card that carried only this Tag stays, now carrying none.

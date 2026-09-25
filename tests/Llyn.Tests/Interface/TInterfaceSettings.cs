@@ -87,7 +87,7 @@ internal static partial class TInterface
 
     internal static void TPostureWindowSave(this LPosture posture, LWindowState window)
     {
-        posture.LPostureWindowSave(window);
+        posture.LPostureWindowDefer(window, false, 0);
     }
 
     internal static void TPostureVolumeSave(this LPosture posture, double volume)

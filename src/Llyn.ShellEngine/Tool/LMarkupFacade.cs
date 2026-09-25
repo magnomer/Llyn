@@ -52,12 +52,4 @@ internal sealed class LMarkupFacade
             return LMarkupFacadeStaff.LEngineStaffIntake.LMarkupClerkImport(cargo, intakes);
         }
     }
-
-    internal void LEngineMarkupExport(IReadOnlyList<long> ids, string path)
-    {
-        lock (_lMarkupFacadeGate)
-        {
-            LMarkupFacadeStaff.LEngineStaffMarkup.LMarkupClerkExport(ids, path);
-        }
-    }
 }

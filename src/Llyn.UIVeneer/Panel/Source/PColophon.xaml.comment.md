@@ -7,16 +7,6 @@ It draws the sheet it is handed and asks the engine for nothing.
 The owning panel decides what is read.
 The owning panel also decides when the control is shown, because only it knows what else stands in the cell.
 
-## `internal void PColophonAttach(PWindow host)`
-
-Binds the control to the window it reads localized text through.
-
-## `internal void PColophonShow(LReference reference, IReadOnlyList<LAuthor> credits, string tally)`
-
-Writes one Source onto the page with the credits the owner read for it and the tally sentence it composed.
-The Source composes its own sheet, localizing through the catalog, so the control branches on nothing.
-The credits come from the owner, because the catalog it browses already holds them for every row.
-
 ## `internal void PColophonShow(LColophon sheet)`
 
 Writes a composed sheet onto the page: one text and one look per field, and the page shown.

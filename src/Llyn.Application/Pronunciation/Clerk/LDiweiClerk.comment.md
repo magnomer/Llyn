@@ -25,10 +25,6 @@ The diwei of one kind with the given key.
 
 The fanqie rows filed under the diwei.
 
-## `public IReadOnlyList<long> LDiweiClerkScan(string language, IReadOnlyList<long> diweiIds)`
-
-The entry ids filed under all of the diwei.
-
 ## `public IReadOnlyList<LEntry> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds, string query)`
 
 The entries filed under all of the diwei that match `query`.

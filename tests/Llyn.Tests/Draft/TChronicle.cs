@@ -170,7 +170,7 @@ public sealed class TChronicle
     }
 
     [Fact]
-    public void DraftMove_ThenUndo_RestoresOrder()
+    public void CardShift_ThenUndo_RestoresOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,8 @@ public sealed class TChronicle
                 ],
             });
 
-        engine.TEngineDraftMove(started.LDraftId, false, 0, 2);
+        engine.TEngineRequestApply(TInterface.TRequestShiftCreate(
+            started.LDraftId, written.LDraftContent.LEntryDraftMeanings[0].LCardDraftId, 0, 2));
         LDraft? restored = engine.TEngineChronicleUndo(started.LDraftId);
 
         Assert.NotNull(restored);

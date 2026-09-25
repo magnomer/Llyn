@@ -14,11 +14,6 @@ The item the sender's data context holds when it is one of the asked type, else 
 
 The item the event's original source carries, for a click bubbled up to the list rather than the row.
 
-## `internal static LCatalogOrder? PSenderOrderRead(object sender)`
-
-The ordering a dropdown row carries as its tag, or null when the sender is not such a row.
-The deportment takes the null and does nothing, so the handler holds no branch.
-
 ## `internal static string? PSenderTagRead(object sender)`
 
 The string the sender's `Tag` holds, else null.

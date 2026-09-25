@@ -46,8 +46,6 @@ public partial class PWindow : Window
         Closed += PWindowExitHandle;
     }
 
-    internal int PWindowLeftover { get; private set; }
-
     internal PLayout PWindowLayout => _pLayout;
 
     internal LWindow PWindowDeportment => _lWindow;
@@ -65,7 +63,6 @@ public partial class PWindow : Window
 
         _lWindow.LWindowLeftoverSweep();
         _lWindow.LWindowRecordingSweep();
-        PWindowLeftover = _lWindow.LWindowLeftoverRead().Count;
 
         LWorkspaceState state = _lWindow.LWindowStateRead();
 

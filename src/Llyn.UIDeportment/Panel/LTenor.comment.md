@@ -20,10 +20,6 @@ The shared panel state over the cohort vista: the chosen entry, the scribe mode,
 Opens a blank entry in the editor.
 When a Register is chosen, the new entry starts inside that Register.
 
-## `public LVista? LTenorCohortVista => _lTenorCohort;`
-
-The cohort vista, exposed for the window's export dialog alone, which names its file after the vista.
-
 ## `public IReadOnlyList<LVistaRow> LTenorCohortRead()`
 
 The entries under the chosen Register, or every entry while none is chosen, as the engine narrows them.

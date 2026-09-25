@@ -6,7 +6,6 @@ namespace Llyn.Application;
 
 public sealed class LMeaningClerk
 {
-    private readonly LEntryVault _lMeaningClerkEntries;
     private readonly LMeaningVault _lMeaningClerkMeanings;
     private readonly LCardClerk _lMeaningClerkCards;
 
@@ -14,51 +13,13 @@ public sealed class LMeaningClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(cards);
-        _lMeaningClerkEntries = rig.LRigEntries;
         _lMeaningClerkMeanings = rig.LRigMeanings;
         _lMeaningClerkCards = cards;
-    }
-
-    public LMeaning LMeaningClerkCreate(LMeaning meaning)
-    {
-        ArgumentNullException.ThrowIfNull(meaning);
-        LMeaning created = _lMeaningClerkMeanings.LMeaningCreate(meaning);
-        _lMeaningClerkEntries.LEntryUpdatedSet(created.LMeaningEntryId);
-        return created;
-    }
-
-    public LMeaning? LMeaningClerkRead(long id)
-    {
-        return _lMeaningClerkMeanings.LMeaningSingleRead(id);
     }
 
     public IReadOnlyList<LMeaning> LMeaningClerkScan(long entryId)
     {
         return _lMeaningClerkMeanings.LMeaningRead(entryId);
-    }
-
-    public void LMeaningClerkUpdate(LMeaning meaning)
-    {
-        ArgumentNullException.ThrowIfNull(meaning);
-        _lMeaningClerkMeanings.LMeaningUpdate(meaning);
-        _lMeaningClerkEntries.LEntryUpdatedSet(meaning.LMeaningEntryId);
-    }
-
-    public void LMeaningClerkMove(long id, int position)
-    {
-        _lMeaningClerkMeanings.LMeaningMove(id, position);
-        _lMeaningClerkCards.LCardUpdatedSet(id, false);
-    }
-
-    public void LMeaningClerkDelete(long id)
-    {
-        LMeaningVault meanings = _lMeaningClerkMeanings;
-        long? entryId = meanings.LMeaningHolderRead(id);
-        meanings.LMeaningDelete(id);
-        if (entryId is long held)
-        {
-            _lMeaningClerkEntries.LEntryUpdatedSet(held);
-        }
     }
 
     public void LMeaningClerkCreate(
@@ -125,7 +86,7 @@ public sealed class LMeaningClerk
 
             gone.Add(dropped);
             changes.Add(new LRevisionChange(
-                0, dropped, "sense", "delete", row.LMeaningDefinition.LStateValueShow()));
+                dropped, "sense", "delete", row.LMeaningDefinition.LStateValueShow()));
             meanings.LMeaningDelete(dropped);
         }
 
@@ -181,7 +142,7 @@ public sealed class LMeaningClerk
                         LMeaningDefinition = card.LCardDraftMeaning,
                     });
                     changes.Add(new LRevisionChange(
-                        0, row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
+                        row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
                 }
 
                 rowId = row.LMeaningId;
@@ -196,7 +157,6 @@ public sealed class LMeaningClerk
                     card.LCardDraftTitle,
                     card.LCardDraftMeaning));
                 changes.Add(new LRevisionChange(
-                    0,
                     created.LMeaningId,
                     "sense",
                     "create",

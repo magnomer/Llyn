@@ -24,11 +24,6 @@ Existing rows are shelved by shifting their start far up, so the unique (example
 A row whose positive id survives is rewritten in place, the rest are inserted, and the shelf is deleted.
 This is the same shape as `LSentenceOwnerSave`.
 
-## `public void LMentionExampleCopy(long fromId, long toId)`
-
-Gives the Example `toId` a copy of every Mention of `fromId`, under new ids.
-The copy-on-write fork of a shared sentence uses it.
-
 ## `public IReadOnlyList<long> LMentionSenseClear(long meaningId)`
 
 Drops the sense from every Mention citing `meaningId`, so each lands on its entry alone.
@@ -60,10 +55,6 @@ So an Example insert and its Mentions commit together.
 Deletes every Mention whose span no longer fits the stored text.
 A text update calls it after the new text is written.
 The rows that still fit are kept, and nothing is shifted here.
-
-### `internal static void LMentionExampleClear(SqliteConnection connection, long exampleId)`
-
-Deletes every Mention of one Example.
 
 ### `private static int LMentionTextRead(SqliteConnection connection, long exampleId)`
 

@@ -126,8 +126,8 @@ public sealed class TVistaLoad
         LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Writer"));
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "",
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)], []));
-        long meaning = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        engine.TEngineExampleAttach(meaning, example.LExampleId, 0, LOwner.LOwnerMeaning);
+        engine.TRequestQuoteApply(entry.LEntryId, example.LExampleId);
+
 
         Assert.Null(TVistaDeleteRun(engine, "corpus", example.LExampleId));
         Assert.Null(engine.TEngineExampleRead(example.LExampleId));

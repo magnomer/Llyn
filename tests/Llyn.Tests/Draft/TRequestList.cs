@@ -247,7 +247,7 @@ public sealed class TRequestList
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
 
-        Assert.Empty(engine.TEngineExampleRead());
+        Assert.Empty(engine.TEngineExampleFind(string.Empty, LCatalogOrder.LCatalogOrderEarliest));
         Assert.Empty(engine.TEngineEntryLoad(stored.LEntryId)!.LEntryDraftMeanings[0].LCardDraftSentence);
     }
 

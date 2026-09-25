@@ -12,14 +12,6 @@ Reads the entry and frequency ports and the source factory out of `rig`.
 `settings` is read at fetch time, so a setting turned off mid-fetch discards the answer.
 `raise` publishes the bulletin when a fetch lands.
 
-## `public async Task<IReadOnlyList<LFrequency>> LFrequencyClerkFind(string word, string language, CancellationToken cancellation)`
-
-The frequencies of `word` fetched now, one row per source that answered.
-
-## `public string? LBandResolve(string language, string source, string raw)`
-
-The band of a raw figure under the source's declaration, or null when no band matches.
-
 ## `public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)`
 
 The stored rows of an entry, regraded under the current pack.

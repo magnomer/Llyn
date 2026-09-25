@@ -28,14 +28,6 @@ The row and its media are written in one session, so a failed picture leaves no 
 
 Reads the Situation for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LSituation> LSituationClerkRead()`
-
-Every Situation in the workspace, for the panel that browses the shelf itself.
-
-## `public IReadOnlyList<LSituation> LSituationClerkRead(long ownerId, LOwner owner)`
-
-Reads the Situations the Meaning or Collocation identified by `ownerId` references, in the order that side holds them.
-
 ## `public LPortraitPage? LSituationClerkRead(long id, LPortraitLegend legend)`
 
 The page of one Situation, or null when no Situation has that id.
@@ -50,29 +42,10 @@ A Situation is matched over its title, its description and its kind.
 
 Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
 
-## `public void LSituationClerkAttach(long ownerId, long situationId, int position, LOwner owner)`
-
-References the Situation from the Meaning or Collocation identified by `ownerId`, at `position`.
-The set is renumbered around it.
-
-## `public void LSituationClerkDetach(long ownerId, long situationId, LOwner owner)`
-
-Removes one side's reference to a Situation.
-The Situation and its other references survive.
-
-## `public void LSituationClerkRemove(long ownerId, long situationId, LOwner owner)`
-
-Removes one side's reference to a Situation and deletes the Situation when that was its last reference.
-The engine wraps the two in one session, so the row is judged against the references as they stand.
-
-## `public void LSituationClerkDelete(long id)`
-
-Deletes the Situation identified by `id`.
-Refused while any Meaning or Collocation still references it.
-
 ## `public void LSituationClerkDelete(long id, bool detach)`
 
-The same delete, with `detach` dropping every reference first.
+Deletes the Situation identified by `id`, with `detach` dropping every reference first.
+Without `detach` it is refused while any Meaning or Collocation still references the Situation.
 
 ## `public static bool LSituationClerkMatch(LSituation one, LSituation other)`
 
@@ -94,7 +67,3 @@ Settles the Situation's Images and Videos against what is attached, through the 
 A row with an id is that record, its location or span rewritten when it changed.
 One without becomes a fresh record.
 What the list no longer names is detached and keeps its record.
-
-## `private static bool LSituationOwnerCheck(LOwner owner)`
-
-Whether the side is a Collocation, a Meaning answering false and any other side refused.

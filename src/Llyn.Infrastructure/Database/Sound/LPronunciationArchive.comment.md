@@ -68,8 +68,3 @@ So the caller that knows the workspace resolves it against the folder in use now
 
 Every recording file the database names, as stored, in one statement.
 The sweep that drops orphaned recordings reads the kept set through it.
-
-## `public long? LPronunciationHolderRead(long id)`
-
-Which entry holds the pronunciation, or nothing when no row carries the id.
-The engine uses it to stamp the entry when a pronunciation or its recording changes on its own.

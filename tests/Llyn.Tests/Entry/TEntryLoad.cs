@@ -346,7 +346,7 @@ public sealed class TEntryLoad
     }
 
     [Fact]
-    public void EntryLoad_CardMoved_ReturnsStoredPosition()
+    public void EntryLoad_CardShifted_ReturnsStoredPosition()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -363,8 +363,11 @@ public sealed class TEntryLoad
             ],
             []));
 
-        IReadOnlyList<LMeaning> saved = engine.TEngineMeaningRead(stored.LEntryId, LOwner.LOwnerEntry);
-        engine.TEngineMeaningMove(saved[2].LMeaningId, 0);
+        LDraft started = engine.TEngineDraftStart("Input", stored.LEntryId);
+        engine.TEngineRequestApply(TInterface.TRequestShiftCreate(
+            started.LDraftId, started.LDraftContent.LEntryDraftMeanings[2].LCardDraftId, 0, 0));
+        engine.TEngineDraftCommit(started.LDraftId);
+
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(stored.LEntryId);
 

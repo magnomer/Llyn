@@ -55,16 +55,4 @@ public partial class PEditor
             PTranscriptionCreate,
             PTranscriptionUpdate);
     }
-
-    private void PGlyphClear()
-    {
-        foreach (PTranscriptionItem row in _pGlyphItem)
-        {
-            row.PropertyChanged -= PTranscriptionChangeHandle;
-        }
-
-        _pGlyphItem.Clear();
-        _pGlyph = null;
-        PGlyph.Visibility = Visibility.Collapsed;
-    }
 }

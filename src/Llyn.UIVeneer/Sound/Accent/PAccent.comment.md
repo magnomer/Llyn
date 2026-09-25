@@ -86,7 +86,3 @@ A load that fails leaves the labels standing.
 ## `private void PAccentRowClear()`
 
 Drops every row and stops listening to it, for a rebuild or a reset.
-
-## `private void PAccentClear()`
-
-Empties the rows and the primary chip when the form resets.

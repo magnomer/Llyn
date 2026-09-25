@@ -11,7 +11,7 @@ Detaching leaves the Register and its other references untouched.
 The name is unique, so one name is one row whoever wrote it.
 A row a language pack names carries the built in flag.
 A row the user wrote carries no flag, and its id is opaque.
-Only a written row may be renamed or deleted, which is why those statements name `builtin = 0`.
+Only a written row may be renamed, which is why that statement names `builtin = 0`.
 
 A referrer's order is a unique index.
 So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
@@ -59,25 +59,10 @@ Reads the Registers a Collocation is marked with, in the order that Collocation 
 Rewrites the visible name of a written Register and never its id.
 A row a language pack ships is left as it stands, because the pack owns its wording.
 
-## `public int LRegisterReferenceRead(long id)`
-
-Counts how many Meanings and Collocations reference one Register.
-
 ## `public IReadOnlyDictionary<string, int> LRegisterReferenceRead()`
 
 Counts every referenced Register in one read, so a shelf never asks once per row.
 A Register nothing references is absent rather than present as zero.
-
-## `public void LRegisterDelete(long id)`
-
-Deletes a written Register that nothing references.
-
-## `public void LRegisterDelete(long id, bool detach)`
-
-Deletes a written Register, first dropping every reference to it when `detach` is set.
-It refuses while any reference remains, so a delete is never silently partial.
-A row a language pack ships is left alone before anything is dropped, and not merely spared the final statement.
-Otherwise a delete aimed at a shipped row would strip its mark off every card and leave the row standing.
 
 ## `public void LRegisterMeaningAttach(long meaningId, long registerId, int position)`
 

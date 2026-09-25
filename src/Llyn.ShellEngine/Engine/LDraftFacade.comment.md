@@ -43,11 +43,6 @@ Adds the sentence request for one card that has none.
 Reads one held draft, or null when its file is gone or unknown.
 An id from a closed workspace is not a missing file and is refused rather than answered null.
 
-## `internal IReadOnlyList<LDraft> LEngineDraftScan()`
-
-Every held draft the folder still carries.
-This is what a session offers back after a crash.
-
 ## `public void LEngineDraftDelete(long id)`
 
 Removes one held draft with its claim, after the links that draft owns are settled.
@@ -95,13 +90,6 @@ Releasing it is how the stale set shrinks as the old tenures close.
 Cancels every unheld draft that says nothing its origin does not.
 A draft with no entry is cancelled when it is blank.
 One with an entry is cancelled when the citation clerk finds it equal to the entry.
-
-## `public IReadOnlyList<LDraft> LEngineLeftoverRead()`
-
-The held drafts nothing is still working on and that differ from the entry they opened from.
-A draft this engine started is claimed by an open window, and one another copy claims is passed over too.
-A claim naming a process that is gone is what a crash leaves behind.
-What remains is what a forced shutdown cost, counted at launch.
 
 ## `internal void LEngineDraftValidate(long id)`
 

@@ -29,6 +29,6 @@ public sealed class TVaultIdentity
         long later = TInterface.TIdentityCreate(workspaces).TIdentityCreate();
 
         Assert.True(later < earlier);
-        Assert.Equal(later, TInterface.TIdentityCreate(workspaces).LIdentityFloor);
+        Assert.Equal(later, workspace.TWorkspaceCountRead("SELECT identity_floor FROM workspace;"));
     }
 }

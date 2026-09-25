@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 
+using Llyn.UIDeportment;
+
 namespace Llyn.UIVeneer;
 
 public partial class PCorpus
@@ -38,7 +40,7 @@ public partial class PCorpus
             });
         }
 
-        PSplice.PSpliceApply(
+        LSplice.LSpliceApply(
             _pQuotationList, fresh, PQuotationItem.PQuotationItemMatch, PQuotationItem.PQuotationItemSync);
 
         PQuotationEmpty.SetResourceReference(

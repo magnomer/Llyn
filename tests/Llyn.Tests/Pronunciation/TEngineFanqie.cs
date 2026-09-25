@@ -91,10 +91,10 @@ public sealed class TEngineFanqie
     };
 
     [Fact]
-    public async Task FanqieFind_LineBook_ReadsPartsFromPlainTextUnderItsSource()
+    public async Task FanqieStart_LineBook_StoresPartsUnderItsSource()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         Dictionary<string, string> pages = new()
         {
             ["https://example.test/broad"] = TEngineFanqieBroad,
@@ -102,8 +102,7 @@ public sealed class TEngineFanqie
         };
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
 
-        IReadOnlyList<LFanqieRow> found = await engine.TEngineFanqieFind(
-            "吳", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFanqieRow> found = await TFanqieFetchRead(engine, "吳", pack.TLanguageFixtureName);
 
         Assert.Equal(["Kaom", "Wiki", "Wiki"], found.Select(row => row.LFanqieRowSource).ToList());
         Assert.Equal("知 東 三等平", found[1].LFanqieRowText);
@@ -153,10 +152,10 @@ public sealed class TEngineFanqie
     }
 
     [Fact]
-    public async Task FanqieFind_GroupedCell_ReadsEachGroupWithItsParts()
+    public async Task FanqieStart_GroupedCell_StoresEachGroupWithItsParts()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         Dictionary<string, string> pages = new(TEngineFanqiePages)
         {
             ["https://example.test/broad"] = TEngineFanqieGuan,
@@ -164,8 +163,7 @@ public sealed class TEngineFanqie
         };
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
 
-        IReadOnlyList<LFanqieRow> found = await engine.TEngineFanqieFind(
-            "官", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFanqieRow> found = await TFanqieFetchRead(engine, "官", pack.TLanguageFixtureName);
 
         Assert.Equal(2, found.Count);
         Assert.Equal("見 寒[桓] 一等平", found[0].LFanqieRowText);
@@ -179,15 +177,14 @@ public sealed class TEngineFanqie
     }
 
     [Fact]
-    public async Task FanqieFind_TwoBooks_ReadsMarkedCellsInPackOrder()
+    public async Task FanqieStart_TwoBooks_StoresMarkedCellsInPackOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(TEngineFanqiePages));
 
-        IReadOnlyList<LFanqieRow> found = await engine.TEngineFanqieFind(
-            "吳", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFanqieRow> found = await TFanqieFetchRead(engine, "吳", pack.TLanguageFixtureName);
 
         Assert.Equal(3, found.Count);
         Assert.Equal(("吳", "Broad", 0, "疑 模[模] 一等平"), TFanqieRowRead(found[0]));
@@ -200,18 +197,17 @@ public sealed class TEngineFanqie
     }
 
     [Fact]
-    public async Task FanqieFind_OneBookBusy_ReadsTheOther()
+    public async Task FanqieStart_OneBookBusy_StoresTheOther()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         Dictionary<string, string> pages = new(TEngineFanqiePages)
         {
             ["https://example.test/broad"] = "<div>Too fast</div>",
         };
         using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(pages));
 
-        IReadOnlyList<LFanqieRow> found = await engine.TEngineFanqieFind(
-            "吳", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LFanqieRow> found = await TFanqieFetchRead(engine, "吳", pack.TLanguageFixtureName);
 
         Assert.Equal(["Collected", "Collected"], found.Select(row => row.LFanqieRowBook).ToList());
     }
@@ -301,6 +297,15 @@ public sealed class TEngineFanqie
         Assert.Empty(engine.TEngineFanqieRead(entry.LEntryId));
         Assert.False(engine.TEngineFanqieCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);
+    }
+
+    private static async Task<IReadOnlyList<LFanqieRow>> TFanqieFetchRead(
+        LEngine engine, string headword, string language)
+    {
+        LEntry entry = engine.TEngineEntrySave(TFanqieDraftCreate(headword, language));
+        engine.TEngineFanqieStart(entry.LEntryId);
+        await TFanqieSettle(engine, entry.LEntryId);
+        return engine.TEngineFanqieRead(entry.LEntryId);
     }
 
     private static async Task TFanqieSettle(LEngine engine, long entryId)

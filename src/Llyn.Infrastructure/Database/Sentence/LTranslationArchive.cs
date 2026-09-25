@@ -227,14 +227,14 @@ public sealed class LTranslationArchive : LTranslationVault
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            $"SELECT entry_ref, position FROM {table} WHERE {column} = $referrer ORDER BY position;";
+            $"SELECT entry_ref FROM {table} WHERE {column} = $referrer ORDER BY position;";
         command.Parameters.AddWithValue("$referrer", referrerId);
 
         List<LTranslation> translations = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            translations.Add(new LTranslation(reader.GetInt64(0), reader.GetInt32(1)));
+            translations.Add(new LTranslation(reader.GetInt64(0)));
         }
 
         return translations;

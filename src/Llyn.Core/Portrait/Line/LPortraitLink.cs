@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace Llyn.Core;
 
 public sealed record LPortraitLink(
-    long LPortraitLinkId,
     string LPortraitLinkHeadword,
     string LPortraitLinkLanguage)
 {

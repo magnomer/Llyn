@@ -10,8 +10,6 @@ public sealed record LShengfu(
 {
     public string LShengfuSource { get; init; } = LShengfuSource ?? string.Empty;
 
-    public bool LShengfuWritten => LShengfuText.Length > 0;
-
     public static string LShengfuTextFind(IReadOnlyList<LShengfu> rows, string character)
     {
         ArgumentNullException.ThrowIfNull(rows);
