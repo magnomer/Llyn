@@ -276,12 +276,20 @@ internal static partial class TInterface
     internal static Uri? TEngineLocationRead(this LEngine engine, string location) =>
         engine.LEngineWorkspace.LEngineLocationRead(location);
 
-    internal static Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(this LEngine engine) =>
-        engine.LEngineLanguage.LEngineEnsignLoad();
+    internal static async Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(this LEngine engine)
+    {
+        List<LEnsignRow> kept = [];
+        await engine.LEngineLanguage.LEngineEnsignLoad((rows, _) => () => kept.AddRange(rows));
+        return kept;
+    }
 
-    internal static Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(
-        this LEngine engine, string language, IEnumerable<string> varieties) =>
-        engine.LEngineLanguage.LEngineEnsignLoad(language, varieties);
+    internal static async Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(
+        this LEngine engine, string language, IEnumerable<string> varieties)
+    {
+        List<LEnsignRow> kept = [];
+        await engine.LEngineLanguage.LEngineEnsignLoad(language, varieties, (rows, _) => () => kept.AddRange(rows));
+        return kept;
+    }
 
     internal static string TEngineWorkspaceFormat(this LEngine engine) =>
         engine.LEngineWorkspaceFormat();

@@ -46,12 +46,7 @@ public partial class PDisplay : UserControl
         lectern.LLecternSpeechAttach(PDisplaySpeechSection, PDisplaySpeech);
         lectern.LLecternNoteAttach(PDisplayNoteSection, PDisplayNote);
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-        lectern.LLecternPlayback.LLecternPlaybackAttach(
-            host.PWindowDeportment,
-            PPlaybackAction,
-            PPlayback,
-            PVolume,
-            PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogSet);
+        lectern.LLecternPlayback.LLecternPlaybackAttach(host.PWindowDeportment, PPlaybackAction, PPlayback, PVolume);
         lectern.LLecternAccent.LLecternAccentAttach(
             host.PWindowDeportment,
             PDisplayPronunciationSurface,
@@ -192,13 +187,13 @@ public partial class PDisplay : UserControl
 
     private void PDisplayMentionHandle(object? sender, PMentionArgument e)
     {
-        _pDisplayHost.PWindowMentionHandle(
+        _lLectern.LLecternCard.LLecternMentionFind(
             e.PMentionArgumentOrigin,
-            _lLectern.LLecternCard.LLecternMentionFind(
-                e.PMentionArgumentText,
-                e.PMentionArgumentLanguage,
-                e.PMentionArgumentOffset,
-                e.PMentionArgumentMention));
+            e.PMentionArgumentText,
+            e.PMentionArgumentLanguage,
+            e.PMentionArgumentOffset,
+            e.PMentionArgumentMention,
+            _pDisplayHost.PWindowMentionHandle);
     }
 
     internal void PDisplayCardScroll(long id)

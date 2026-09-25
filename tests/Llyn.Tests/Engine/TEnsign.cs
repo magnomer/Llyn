@@ -1,3 +1,4 @@
+using System.IO;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -81,9 +82,56 @@ public sealed class TEnsign
         TUsherFake usher = new();
         LEnsign ensign = TInterface.TEnsignCreate(usher);
 
-        ensign.TEnsignPathDelete("C:/flags/broken.svg");
+        ensign.TEnsignPathDelete("C:/flags/broken.svg", new FormatException());
 
         Assert.Equal(["C:/flags/broken.svg"], usher.TUsherDeleted);
+    }
+
+    [Fact]
+    public void EnsignPathDelete_LockedFile_DeletesNothing()
+    {
+        TUsherFake usher = new();
+        LEnsign ensign = TInterface.TEnsignCreate(usher);
+
+        ensign.TEnsignPathDelete("C:/flags/locked.svg", new IOException());
+
+        Assert.Empty(usher.TUsherDeleted);
+    }
+
+    [Fact]
+    public void EnsignPathAdd_ClearedDuringStore_CommitsNothing()
+    {
+        TUsherFake usher = new();
+        usher.TUsherPresent.Add("C:/flags/en.svg");
+        LEnsign ensign = TInterface.TEnsignCreate(usher);
+        string[] missing = ensign.TEnsignMissingRead(["English"], out int age);
+
+        IReadOnlyList<LEnsignRow> kept = ensign.TEnsignClearAdd(age, missing, ["C:/flags/en.svg"]);
+
+        Assert.Empty(kept);
+    }
+
+    [Fact]
+    public void EnsignPathAdd_UnevenPaths_Throws()
+    {
+        LEnsign ensign = TInterface.TEnsignCreate(new TUsherFake());
+        string[] missing = ensign.TEnsignMissingRead(["English", "Korean"], out int age);
+
+        Assert.Throws<ArgumentException>(() => ensign.TEnsignPathAdd(age, missing, ["C:/flags/en.svg"]));
+    }
+
+    [Fact]
+    public void EnsignPathDelete_KeptPath_AsksAgain()
+    {
+        TUsherFake usher = new();
+        usher.TUsherPresent.Add("C:/flags/en.svg");
+        LEnsign ensign = TInterface.TEnsignCreate(usher);
+        string[] missing = ensign.TEnsignMissingRead(["English"], out int age);
+        ensign.TEnsignPathAdd(age, missing, ["C:/flags/en.svg"]);
+
+        ensign.TEnsignPathDelete("C:/flags/en.svg", new IOException());
+
+        Assert.Equal(["English"], ensign.TEnsignMissingRead(["English"], out _));
     }
 
     private sealed class TUsherFake : LUsher
@@ -95,6 +143,8 @@ public sealed class TEnsign
         public bool LUsherPathExist(string? path) => path is not null && TUsherPresent.Contains(path);
 
         public void LUsherPathDelete(string path) => TUsherDeleted.Add(path);
+
+        public bool LUsherLockCheck(Exception exception) => exception is IOException;
 
         public void LUsherOpen(string target) => throw new NotSupportedException();
     }

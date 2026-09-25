@@ -225,28 +225,22 @@ internal sealed class LPronunciationFacade
         }
     }
 
-    public void LEngineRecordingPlay(string? file)
+    public int LEngineRecordingPlay(string? file, double volume)
     {
         lock (_lPronunciationFacadeGate)
         {
-            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkPlay(file);
+            return LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkPlay(file, volume);
         }
     }
 
-    public void LEngineRecordingStop()
+    public void LEngineRecordingStop(int ticket)
     {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkStop();
-        }
+        LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkStop(ticket);
     }
 
     public void LEngineVolumeSet(double volume)
     {
-        lock (_lPronunciationFacadeGate)
-        {
-            LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkAdjust(volume);
-        }
+        LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkAdjust(volume);
     }
 
     public IReadOnlyList<string> LEngineSchemeRead(string language)

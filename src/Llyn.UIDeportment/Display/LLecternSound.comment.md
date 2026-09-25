@@ -94,17 +94,19 @@ Rebuilds the transcription rows from the display's answer.
 Rebuilds the reflex rows from the written reflexes, folding the languages the pack folds away.
 The fold is applied last, from the shared state.
 
-## `private void LLecternAnchorShow()`
+## `private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)`
 
-Writes each reflex row's anchor label from the fanqie rows, under the shown headword.
+Writes each reflex row's anchor label from the rows of `groups`, under the shown headword.
+The caller hands in blocks it already divided, so the anchor never divides again.
 
 ## `private void LLecternPendingShow()`
 
 Shows the loading line while a reflex fill runs for the shown entry.
 
-## `private void LLecternFanqieShow()`
+## `private void LLecternFanqieShow(IReadOnlyList<LFanqieGroup> groups)`
 
-Rewrites the anchors, sets the glyph font and draws the fanqie groups and the reading.
+Rewrites the anchors, sets the glyph font and draws `groups` and the reading.
+The caller divides once and hands the blocks in, so the anchors and the rime share one division.
 
 ## `private void LLecternScriptShow()`
 

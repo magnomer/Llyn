@@ -1,11 +1,11 @@
 # Llyn.Host.csproj
 
-The composition root that will build the engine and the Conduct root and hand them to a UI.
-It holds no source yet and references nothing yet.
+The composition root that builds the engine and hands it to a UI.
+It builds the executable `Llyn.exe`, so the installed program keeps its name.
 
 ## Project ring
 
 It is the only project that may name every project and every Windows twin.
 It holds no behaviour, and each UI's entry point adds only what depends on its medium.
-It targets the Windows framework because it will wire the Windows twins.
-Until it takes over, `App.xaml.cs` in the veneer stays the composition root.
+It takes the veneer's framework, runtime identifiers and icon, since it is now the executable.
+It uses WPF because it starts the veneer's application on its own thread.

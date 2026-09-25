@@ -22,6 +22,8 @@ public sealed class LPosture : IDisposable
 
     private LPostureState _lPostureState = new();
 
+    private double _lPostureStored = 1;
+
     private CancellationTokenSource? _lPosturePending;
 
     public LPosture(LEngine engine)
@@ -44,11 +46,6 @@ public sealed class LPosture : IDisposable
     public bool LPostureModeMatch(string? mode)
     {
         return string.Equals(LPostureRead().LPostureStateMode, mode, StringComparison.Ordinal);
-    }
-
-    public bool LPostureVolumeMatch(double volume)
-    {
-        return LPostureRead().LPostureStateVolume == volume;
     }
 
     public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
@@ -106,15 +103,30 @@ public sealed class LPosture : IDisposable
         }
     }
 
-    public void LPostureVolumeSave(double volume)
+    public void LPostureVolumeSet(double volume)
     {
-        double level = Math.Clamp(volume, 0, 1);
-        if (LPostureVolumeMatch(level))
+        if (!double.IsFinite(volume))
         {
             return;
         }
 
-        LPostureChange(state => state with { LPostureStateVolume = level });
+        lock (_lPostureGate)
+        {
+            _lPostureState = _lPostureState with { LPostureStateVolume = Math.Clamp(volume, 0, 1) };
+        }
+    }
+
+    public void LPostureVolumeSave()
+    {
+        lock (_lPostureGate)
+        {
+            if (_lPostureState.LPostureStateVolume == _lPostureStored)
+            {
+                return;
+            }
+
+            LPostureSave();
+        }
     }
 
     public void LPostureModeSave(string mode)
@@ -267,6 +279,7 @@ public sealed class LPosture : IDisposable
             if (kept is not null)
             {
                 _lPostureState = kept;
+                _lPostureStored = kept.LPostureStateVolume;
                 return;
             }
 
@@ -340,5 +353,6 @@ public sealed class LPosture : IDisposable
     private void LPostureSave()
     {
         _lEngine.LEngineSettings.LEnginePostureSave(LPostureName, _lPostureState);
+        _lPostureStored = _lPostureState.LPostureStateVolume;
     }
 }

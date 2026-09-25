@@ -39,6 +39,11 @@ Takes the window deportment, the unselected notice, the page and the swath's cle
 The swath's clear is a seam, since the band a reader drags lies in the veneer.
 Showing or clearing an entry drops the band, since the text it spanned is gone.
 
+## `private bool LLecternAttachCheck()`
+
+Whether a view attached, false before `LLecternAttach`.
+An attached view with no compass throws, since the veneer skipped `LLecternCompassAttach`.
+
 ## `public void LLecternHeaderAttach(`
 
 Takes the headword, the language pill, the heart and the star row.
@@ -79,7 +84,8 @@ The header, sections and stamp empty, and the unselected notice takes the page.
 
 ## `public void LLecternClose()`
 
-Stops what the engine plays, since the view is going away.
+Stops this view's own play, since the view is going away.
+A sound another view started plays on.
 
 ## `public void LLecternFavoriteHandle()`
 
@@ -105,6 +111,7 @@ The headword takes the pack's font, so the two views never differ in family or s
 ## `private void LLecternEntryUpdate()`
 
 Reloads the chosen entry's draft and shows it again.
+A refused load leaves the view as it stands.
 
 ## `private void LLecternDraftShow(LEntryDraft? draft)`
 

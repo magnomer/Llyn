@@ -23,10 +23,11 @@ public sealed class LMediaOutlet : LMediaPort
     public bool LEngineRecordingExist(string? file) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingExist(file);
 
-    public void LEngineRecordingPlay(string? file) =>
-        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(file);
+    public int LEngineRecordingPlay(string? file, double volume) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(file, volume);
 
-    public void LEngineRecordingStop() => _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingStop();
+    public void LEngineRecordingStop(int ticket) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingStop(ticket);
 
     public void LEngineVolumeSet(double volume) => _lMediaOutletEngine.LEnginePronunciation.LEngineVolumeSet(volume);
 

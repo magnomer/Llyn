@@ -20,4 +20,4 @@ Raise it only when a check is added, removed, or changed in what it reports.
 
 Reads the generation the generated registry and each hand-written setting carry and compares it with this one.
 A mismatch means the tooling moved on while a file did not.
-The registry is fixed by running syncnames, and a setting file is fixed by editing it.
+The registry is fixed by regenerating it, and a setting file is fixed by editing it.

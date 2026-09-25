@@ -53,7 +53,6 @@ internal static class TAuditPlatformSetting
     {
         ["Unmapped"] = 0,
         ["Absent"] = 0,
-        ["Column"] = 4,
-        ["Analyzer"] = 4,
+        ["Column"] = 0,
     };
 }

@@ -15,6 +15,10 @@ True when a file is present at the path, false for a null path.
 
 Removes the file at the path, and stays quiet when the file is already gone or locked.
 
+## `bool LUsherLockCheck(Exception exception);`
+
+True when `exception` says the system would not open a file, rather than that its content was bad.
+
 ## `void LUsherOpen(string target);`
 
 Opens a folder or a web address for the user.

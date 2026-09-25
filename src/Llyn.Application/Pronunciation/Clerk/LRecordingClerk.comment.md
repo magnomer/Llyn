@@ -31,18 +31,32 @@ Fetches a recording to a playable local file without storing it.
 
 Whether the recording resolves to a file that exists.
 
-## `public void LRecordingClerkPlay(string? file)`
+## `public int LRecordingClerkPlay(string? file, double volume)`
 
-Plays the recording through the phonograph when it resolves to a file that exists.
+Plays the recording at `volume` through the phonograph when it resolves to a file that exists.
 A missing or unnamed file plays nothing, so the phonograph never opens a path that is not there.
+The file is resolved through the trail, so a relative path plays from the workspace root.
+Answers a fresh ticket naming this play, or zero when nothing played.
+A `volume` that is not a finite number keeps the current level.
+The app shares one phonograph, so a caller keeps its ticket to reach only its own play.
 
-## `public void LRecordingClerkStop()`
+## `public void LRecordingClerkStop(int ticket)`
 
-Stops whatever the phonograph plays.
+Stops the phonograph only while `ticket` names the latest play.
+A view clearing after another view played thus leaves that other sound running.
+
+## `public void LRecordingClerkClear()`
+
+Stops the phonograph whatever play is running.
+The engine calls it on the old clerk before a workspace switch.
+The phonograph outlives the clerk, so the old play would otherwise keep sounding.
+The new clerk's tickets start over, so no ticket from before could reach that play.
 
 ## `public void LRecordingClerkAdjust(double volume)`
 
 Sets the phonograph level, clamped so the player never takes a level outside zero to one.
+The app has one audio level, so a change reaches whatever plays.
+A `volume` that is not a finite number is ignored.
 
 ## `public LEntryDraft LRecordingClerkResolve(LEntryDraft draft)`
 

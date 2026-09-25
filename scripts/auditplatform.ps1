@@ -54,10 +54,15 @@ Write the report elsewhere and open it.
 #>
 #requires -Version 5.1
 # AUDITPLATFORM GENERATION 11 - auditplatform.ps1.
-# A generation names the set of checks the audit family applies. Every audit script shares one
-# generation number with the convention-test settings, and each refuses a configuration written at
-# another generation. Raise it only when the audited outcome changes, for the whole family at once.
-# Generation 11 reads the project files and the portable sources and reports eight kinds.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
+# Generation 11: the first generation of this audit. It reads the project files and the portable
+# sources and reports eight kinds.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -202,7 +207,7 @@ function Read-AuditConfig {
     }
 
     if ([int]$config.generation -ne $script:AuditGeneration) {
-        throw "The audit configuration is generation $($config.generation); this script is generation $script:AuditGeneration."
+        throw "The platform-audit configuration is generation $($config.generation) but this tooling is generation $script:AuditGeneration.`nA generation names the set of checks applied, so the two must match: $ConfigPath"
     }
 
     $names = @{}
@@ -636,7 +641,7 @@ foreach ($kind in $script:AuditKinds) {
 $report = New-Object System.Text.StringBuilder
 [void]$report.AppendLine("# Platform audit - $($config.project) $version")
 [void]$report.AppendLine()
-[void]$report.AppendLine("AUDITPLATFORM GENERATION $script:AuditGeneration")
+[void]$report.AppendLine("- Generation: $script:AuditGeneration")
 [void]$report.AppendLine()
 [void]$report.AppendLine('## Table')
 [void]$report.AppendLine()

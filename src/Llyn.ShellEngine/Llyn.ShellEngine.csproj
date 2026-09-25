@@ -3,6 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>CA1416</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
     <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />
   </ItemGroup>
 </Project>

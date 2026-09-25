@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeSpeech.xaml" />
+                <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeSpeech.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="Colophon.Title" TargetType="TextBlock" BasedOn="{StaticResource Theme.Page.Title}" />

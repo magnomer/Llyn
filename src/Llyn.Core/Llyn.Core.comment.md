@@ -6,3 +6,7 @@ Builds the domain model and application-facing contracts.
 
 Has no project references, keeping the core independent of outer layers.
 Grants internal access to Llyn.Tests for direct contract and model tests.
+
+## `<WarningsAsErrors>CA1416</WarningsAsErrors>`
+
+A Windows-only call turns the build red, so the platform stays out of Core.

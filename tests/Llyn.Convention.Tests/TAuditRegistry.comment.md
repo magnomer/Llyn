@@ -14,6 +14,6 @@ The same word stays a violation everywhere else.
 ## `public static TAuditRegistry TAuditLoad()`
 
 Builds the sets from the registry arrays of TAuditNameRegistry.cs, the one generated file in this project.
-That file is written by syncnames.ps1 from docs-internal and holds names only, never a setting.
-Run syncnames first: a test run before a sync audits against stale names.
+That file holds names only, never a setting.
+Regenerate it before the tests: a stale registry audits against stale names.
 File names in an exemption compare case-insensitively, since the file system does.

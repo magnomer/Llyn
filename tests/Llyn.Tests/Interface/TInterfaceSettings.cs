@@ -90,9 +90,15 @@ internal static partial class TInterface
         posture.LPostureWindowDefer(window, false, 0);
     }
 
+    internal static void TPostureVolumeSet(this LPosture posture, double volume)
+    {
+        posture.LPostureVolumeSet(volume);
+    }
+
     internal static void TPostureVolumeSave(this LPosture posture, double volume)
     {
-        posture.LPostureVolumeSave(volume);
+        posture.LPostureVolumeSet(volume);
+        posture.LPostureVolumeSave();
     }
 
     internal static void TPostureModeSave(this LPosture posture, string mode)

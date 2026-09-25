@@ -2,7 +2,7 @@
   "generation": 2,
   "project": "Llyn",
   "source": {
-    "project": "src/Llyn.UIVeneer/Llyn.UIVeneer.csproj",
+    "project": "src/Llyn.Host/Llyn.Host.csproj",
     "executable": "Llyn.exe",
     "historicalProjects": [
       "Llyn.UIVeneer",

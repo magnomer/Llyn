@@ -27,10 +27,6 @@ these actions on every run:
   5. Writes one Markdown report to {report.directory}\{prefix}{version}.md, which lists
      every hit with its verdict and the reason for it.
 
-A generation names the set of checks the audit applies. auditnames, auditlines,
-auditcomments and auditui share one generation number; the hand-written convention-test
-settings carry it and the tests refuse a setting written at another generation.
-
 Unlike the other audits, this script is not independent: the walk lives in the test
 project, so the script runs dotnet test and reads what the tests wrote. Everything
 project-specific lives in auditui.json. No external modules are required beyond the
@@ -104,6 +100,16 @@ auditui -NoBuild -Open
 .EXAMPLE
 auditui -Configuration Release
 #>
+# AUDITUI GENERATION 11 - auditui.ps1.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
+# Generation 11: the truth audit also checks that a deportment field reaches no request, keeps one
+# writer, holds no logic and treats no engine data.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,

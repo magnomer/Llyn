@@ -10,6 +10,7 @@ So the round trip is checked through the vista rather than the file.
 A typed query or a chosen row announces too, but moves no stored field, so nothing is written.
 An equal geometry saved twice writes the file once.
 An equal volume saved again writes nothing.
+A volume that is not a number is ignored and writes nothing.
 A workspace with only the legacy settings file is read once and its posture written beside it.
 A posture file standing beside the legacy one wins.
 A workspace moved onto keeps its own posture, and one without any inherits the posture held.

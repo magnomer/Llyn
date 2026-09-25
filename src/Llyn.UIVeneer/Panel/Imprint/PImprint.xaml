@@ -8,8 +8,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Editor/Core/PEditorPopup.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Imprint/PImprintCredit.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorPopup.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Imprint/PImprintCredit.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="Imprint.Title" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">

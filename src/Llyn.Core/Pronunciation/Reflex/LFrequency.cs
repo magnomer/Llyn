@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -18,7 +20,10 @@ public sealed record LFrequency(
 
     private const string LFrequencyRare = "Rare";
 
-    private static readonly string[] LFrequencyRanks = [LFrequencyRare, "Advanced", "Everyday", "Core"];
+    private static readonly string[] LFrequencyRanks =
+        [LFrequencyRare, .. LFrequencyBands.Select(static band => band.LFrequencyName).Reverse()];
+
+    public static IReadOnlyList<string> LFrequencyScale => LFrequencyRanks;
 
     public int LFrequencyRank => LFrequencyBand is null ? 0 : Array.IndexOf(LFrequencyRanks, LFrequencyBand) + 1;
 

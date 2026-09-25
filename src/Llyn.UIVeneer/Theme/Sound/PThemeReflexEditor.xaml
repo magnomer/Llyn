@@ -4,12 +4,12 @@
     xmlns:local="clr-namespace:Llyn.UIVeneer">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeAccent.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemeCommand.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeRebuild.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeReflex.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeAccent.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Control/PThemeCommand.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeRebuild.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeReflex.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Reflex.Anchoring" TargetType="Button">

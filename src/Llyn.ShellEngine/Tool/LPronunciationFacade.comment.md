@@ -61,17 +61,19 @@ Deletes every stored recording no row and no draft names.
 
 Whether the recording resolves to a file that exists.
 
-## `public void LEngineRecordingPlay(string? file)`
+## `public int LEngineRecordingPlay(string? file, double volume)`
 
-Plays the recording under the gate, and plays nothing for a file that does not exist.
+Plays the recording at `volume` under the gate, and plays nothing for a file that does not exist.
+Answers the play's ticket, or zero when nothing played.
 
-## `public void LEngineRecordingStop()`
+## `public void LEngineRecordingStop(int ticket)`
 
-Stops the playing recording under the gate.
+Stops the playing recording while `ticket` names it.
+It skips the gate, since it touches only the phonograph and never waits on a long engine call.
 
 ## `public void LEngineVolumeSet(double volume)`
 
-Sets the playing level under the gate.
+Sets the playing level without the gate, for the same reason as a stop.
 
 ## `public IReadOnlyList<string> LEngineSchemeRead(string language)`
 

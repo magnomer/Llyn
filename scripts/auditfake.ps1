@@ -54,10 +54,15 @@ Write the report elsewhere, show ten rows of each kind, open the report.
 #>
 #requires -Version 5.1
 # AUDITFAKE GENERATION 11 - auditfake.ps1.
-# A generation names the set of checks the audit family applies. auditnames, auditlines,
-# auditcomments, auditui, auditobject, auditstructure and auditfake share one generation number
-# with the convention-test settings, and each refuses a configuration written at another
-# generation. Raise it only when the audited outcome changes, for the whole family at once.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
+# Generation 11: the first generation of this audit. It binds the sources and the tests with Roslyn
+# and reports every member nothing live reads as Orphan, or only tests read as Tested.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -204,7 +209,7 @@ function Read-AuditConfig {
     }
 
     if ([int]$config.generation -ne $script:AuditGeneration) {
-        throw "The audit configuration is generation $($config.generation); this script is generation $script:AuditGeneration."
+        throw "The fake-audit configuration is generation $($config.generation) but this tooling is generation $script:AuditGeneration.`nA generation names the set of checks applied, so the two must match: $ConfigPath"
     }
 
     return $config

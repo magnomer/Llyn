@@ -152,6 +152,7 @@ public sealed class LEngine : IDisposable
                 LEngineDraftStale.Add(held);
             }
 
+            _lEngineStaff.LEngineStaffRecording.LRecordingClerkClear();
             LEngineFetchClear();
             _lEngineStaff.LEngineStaffEnsign.LEnsignClear();
             LEngineTrove.LTroveClear();

@@ -2,11 +2,11 @@
 //
 // AUDITNAMES GENERATION 11 - name registry for Llyn.
 // The only generated file in the convention-test project. It carries the registered bases,
-// verbs and exemptions from docs-internal and nothing else; every audit setting is hand-written
+// verbs and exemptions and nothing else; every audit setting is hand-written
 // tracked test code and must never be added here.
 //
-// Order: run syncnames first, then the convention tests. The tests compile against this file as
-// it is on disk, so a name registered in docs-internal is invisible to them until it is synced.
+// Order: regenerate it first, then run the convention tests. The tests compile against this file as
+// it is on disk, so a newly registered name is invisible to them until it is regenerated.
 
 namespace Convention.Tests;
 

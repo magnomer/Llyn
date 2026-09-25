@@ -39,11 +39,14 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 10 - auditstructure.ps1.
-# A generation names the set of checks the audit family applies. auditnames, auditlines,
-# auditcomments, auditui, auditobject and auditstructure share one generation number with the
-# convention-test settings, and each refuses a configuration written at another generation. Raise
-# it only when the audited outcome changes, for the whole family at once.
+# AUDITSTRUCTURE GENERATION 11 - auditstructure.ps1.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
 # Generation 10 binds the source with Roslyn and holds every ring to one reach: a ring names the
 # behaviour of the single ring the table lets it reach, carries the data of any inner ring, and
 # names nothing outward. A ring names only the framework namespaces its frame lists, and a pure
@@ -56,6 +59,9 @@ Audit a specific checkout and open the violation report.
 # above fails, a ceiling above the count is stale and fails too, so a ceiling only walks down. An
 # exemption clears a name only inside the file its row names, and a row that matched nothing is
 # reported as stale rather than pruned.
+# Generation 11: nothing the structure audit reports changes; the number rises with the truth audit,
+# which checks that a deportment field reaches no request, keeps one writer, holds no logic and
+# treats no engine data.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -190,6 +196,7 @@ $script:AuditSchema = [ordered]@{
     'ambient'                   = 'string[]'
     'checks.neighbour'          = 'string'
     'checks.reach'              = 'string'
+    'checks.cross'              = 'string'
     'checks.carry'              = 'string'
     'checks.outward'            = 'string'
     'checks.frame'              = 'string'
@@ -211,16 +218,18 @@ $script:RingSchema = [ordered]@{
     'reach' = 'string[]'
     'frame' = 'string[]'
     'pure'  = 'bool'
+    'cut'   = 'bool'
 }
 
 $script:Severities = @('violation', 'review', 'allow')
 
 # The order is the order the checks are reported in, heaviest first.
-$script:CheckOrder = @('outward', 'reach', 'frame', 'ambient', 'carry', 'neighbour', 'root')
+$script:CheckOrder = @('outward', 'reach', 'cross', 'frame', 'ambient', 'carry', 'neighbour', 'root')
 
 $script:CheckTitles = @{
     'outward'   = 'Outer ring named from an inner ring'
     'reach'     = 'Behaviour reached past the neighbour ring'
+    'cross'     = 'Name from below the cut inside a UI ring'
     'frame'     = 'Framework namespace outside the ring frame'
     'ambient'   = 'Ambient member touched from a pure ring'
     'carry'     = 'Data carried from a deeper ring'
@@ -428,7 +437,7 @@ function Read-AuditConfig {
     $ceilingsNode = Get-AuditNode -Document $config -Key 'ceilings'
     if ($ceilingsNode.Found -and (Test-AuditValue -Kind 'map[int]' -Value $ceilingsNode.Value)) {
         foreach ($property in $ceilingsNode.Value.PSObject.Properties) {
-            if ($property.Name -notmatch '^(outward|reach|frame|ambient|carry|neighbour|root):[^>]+>.+$') {
+            if ($property.Name -notmatch '^(outward|reach|cross|frame|ambient|carry|neighbour|root):[^>]+>.+$') {
                 [void]$problems.Add("ceiling '$($property.Name)' must be written as check:Ring>Target")
             }
         }
@@ -632,7 +641,8 @@ List<Ring> rings = config.GetProperty("rings").EnumerateArray()
         ring.GetProperty("path").GetString()!.Replace('\\', '/').Trim('/') + "/",
         ring.GetProperty("reach").EnumerateArray().Select(item => item.GetString()!).ToArray(),
         ring.GetProperty("frame").EnumerateArray().Select(item => item.GetString()!).ToArray(),
-        ring.GetProperty("pure").GetBoolean()))
+        ring.GetProperty("pure").GetBoolean(),
+        ring.GetProperty("cut").GetBoolean()))
     .ToList();
 HashSet<string> roots = config.GetProperty("root").EnumerateArray()
     .Select(item => item.GetString()!.Replace('\\', '/').Trim('/'))
@@ -839,6 +849,7 @@ Parallel.ForEach(trees, tree =>
         string check = isRoot ? "root"
             : ring.Reach.Contains(target.Name) ? "neighbour"
             : !inner[ring.Name].Contains(target.Name) ? "outward"
+            : ring.Cut && !target.Cut ? "cross"
             : IsData(type) ? "carry"
             : "reach";
         Add(line, check, target.Name, type.Name);
@@ -856,7 +867,7 @@ JsonSerializerOptions options = new() { WriteIndented = false };
 File.WriteAllText(outputPath, JsonSerializer.Serialize(all, options));
 return 0;
 
-sealed record Ring(string Name, string Path, string[] Reach, string[] Frame, bool Pure);
+sealed record Ring(string Name, string Path, string[] Reach, string[] Frame, bool Pure, bool Cut);
 
 sealed record Finding(string Path, int Line, string Ring, string Check, string Target, string Name, string Text);
 '@

@@ -48,18 +48,24 @@ public sealed class LEnsign
         }
     }
 
-    public IReadOnlyList<LEnsignRow> LEnsignPathAdd(
-        int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths)
+    public void LEnsignPathAdd(
+        int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths,
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
         ArgumentNullException.ThrowIfNull(keys);
         ArgumentNullException.ThrowIfNull(paths);
+        ArgumentNullException.ThrowIfNull(store);
+        if (keys.Count != paths.Count)
+        {
+            throw new ArgumentException("Every key needs one path.", nameof(paths));
+        }
 
         List<LEnsignRow> kept = [];
         lock (_lEnsignStore)
         {
             if (age != _lEnsignAge)
             {
-                return kept;
+                return;
             }
 
             for (int index = 0; index < keys.Count; index++)
@@ -74,12 +80,41 @@ public sealed class LEnsign
             }
         }
 
-        return kept;
+        if (kept.Count == 0)
+        {
+            return;
+        }
+
+        Action commit = store(kept, LEnsignPathDelete);
+        lock (_lEnsignStore)
+        {
+            if (age == _lEnsignAge)
+            {
+                commit();
+            }
+        }
     }
 
-    public void LEnsignPathDelete(string path)
+    public void LEnsignPathDelete(string path, Exception exception)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(exception);
+
+        lock (_lEnsignStore)
+        {
+            foreach (string key in _lEnsignStore
+                .Where(pair => string.Equals(pair.Value, path, StringComparison.Ordinal))
+                .Select(static pair => pair.Key)
+                .ToArray())
+            {
+                _lEnsignStore.Remove(key);
+            }
+        }
+
+        if (_lEnsignUsher.LUsherLockCheck(exception))
+        {
+            return;
+        }
 
         _lEnsignUsher.LUsherPathDelete(path);
     }

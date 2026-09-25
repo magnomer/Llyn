@@ -14,7 +14,8 @@ The sound half, which holds the shown draft, the fold state and every phonology 
 
 ## `public event Action<string, Exception>? LDisplayFailed;`
 
-Raised with the text key and the exception when a word lookup or a mark is refused.
+Raised with the text key and the exception when a word lookup, a mark or a load is refused.
+The sound half's failures arrive here too.
 The card deportment hands it to the window's notice.
 
 ## `public void LDisplayShow(LEntryDraft draft)`
@@ -32,6 +33,8 @@ The last grasp step, which the display's star control takes as its limit.
 ## `public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
 
 The compass labels made distinct, numbered in order where two sections share a name.
+A short answer is padded with the remaining labels, so every row the compass names has a name.
+A refused lookup raises `LDisplayFailed` and answers the plain labels.
 
 ## `public static string LDisplayTitleRead(LCardDraft card, string kind, string unknown)`
 
@@ -48,10 +51,11 @@ Whether `card` is the one with `id`, which a card scroll looks for.
 
 The wording of a grasp step, or empty while no entry is shown.
 
-## `public LEntryDraft? LDisplayDraftLoad()`
+## `public void LDisplayDraftLoad(Action<LEntryDraft?> show)`
 
-The chosen entry's draft reloaded from the vista, or null once the entry is gone.
-A refused load answers the shown draft, so the page keeps what it shows.
+Reloads the chosen entry's draft from the vista and hands it to `show`, or null once the entry is gone.
+A refused load calls nothing and raises `LDisplayFailed` with `Sound.LoadFailed`.
+The page keeps what it shows, so no draft is paired with an id it was not loaded for.
 
 ## `private LEntryDraft? _lDisplayLoaded;`
 
@@ -113,12 +117,22 @@ Whether an entry has any frequency to show, true when at least one source answer
 
 ## `public static int LDisplayBandResolve(IReadOnlyList<LFrequency> rows)`
 
-The star count of the first band any row carries in pack order, four for core, one for rare.
-Zero when no row carries a band or the band is not a ladder name.
+The star count of the first ladder band in pack order, the limit for core, one for rare.
+A band that is not a ladder name is passed over, so a later row can still name the band.
+Zero when no row carries a ladder band.
+
+## `public static int LDisplayBandLimit`
+
+The rung count of the ladder, which is the widest star row.
+
+## `public static int LDisplaySpareRead(int count)`
+
+The stars past `count` in a full row, never below zero.
 
 ## `public static string LDisplayBandRead(int count, string prefix)`
 
 The ladder name at a star count behind `prefix`, or the unknown name at zero.
+The ladder is `LFrequency.LFrequencyScale`, so the engine and the chip read one list.
 The chip passes the localization prefix for its name and the theme prefix for its brush.
 
 ## `public static string LDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once)`
@@ -143,8 +157,12 @@ Forwards to the sound half, since the editor asks whether the inflections are st
 
 ## `public IReadOnlyList<LUsage> LDisplayIncomingRead()`
 
-The usages pointing at the shown entry, each carrying the epithet of the entry that holds it.
-No entry shown, or a refused read, answers no usages.
+The usages pointing at the chosen entry, each carrying the epithet of the entry that holds it.
+It reads the live choice, as favorite, grasp, stamp and frequency do.
+No entry chosen answers no usages.
+A refused incoming read raises `LDisplayFailed` with `Display.IncomingFailed` and answers no usages.
+A refused epithet keeps its usage with an empty epithet, so one bad entry hides nothing else.
+Any refused epithet raises `Display.EpithetFailed` once, after every usage is read.
 
 ## `public static string LDisplayOwnerRead(LUsage usage)`
 
@@ -167,11 +185,12 @@ The sentence order of the shown draft's language, or the default when nothing is
 The byline of every Source, or none when the read is refused.
 It is read on every show, so a Source edited elsewhere reads fresh.
 
-## `public LMentionResult LDisplayMentionFind(`
+## `public void LDisplayMentionFind<LDisplayAnchor>(`
 
 What stands at `offset` of a clicked sentence, asked of the engine with its Mentions and language.
 A sentence carrying no language is read in the shown entry's language.
-A refused lookup raises `LDisplayFailed` and answers nothing found, so the click opens nothing.
+The answer goes to `show` with `anchor`, which runs only when the lookup succeeds.
+A refused lookup raises `LDisplayFailed` and never calls `show`, so the click opens nothing.
 
 ## `public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)`
 

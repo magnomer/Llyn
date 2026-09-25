@@ -24,6 +24,10 @@ public sealed class LDisplaySound
 
     private IReadOnlyList<LParadigmSlot> _lDisplaySoundParadigm = [];
 
+    private IReadOnlyList<LReflexDraft>? _lDisplaySoundReflex;
+
+    private int _lDisplaySoundTicket;
+
     public LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(entries);
@@ -43,12 +47,15 @@ public sealed class LDisplaySound
 
     public bool LDisplayFoldOpened => _lDisplaySoundOpened;
 
+    public event Action<string, Exception>? LDisplaySoundFailed;
+
     internal void LDisplaySoundShow(long? id, LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
         _lDisplaySoundEntry = id;
         _lDisplaySoundDraft = draft;
+        _lDisplaySoundReflex = null;
     }
 
     internal void LDisplaySoundClear()
@@ -56,7 +63,8 @@ public sealed class LDisplaySound
         _lDisplaySoundEntry = null;
         _lDisplaySoundDraft = null;
         _lDisplaySoundParadigm = [];
-        _lMediaPort.LEngineRecordingStop();
+        _lDisplaySoundReflex = null;
+        _lMediaPort.LEngineRecordingStop(_lDisplaySoundTicket);
     }
 
     public void LDisplayFoldSet(bool opened)
@@ -89,16 +97,17 @@ public sealed class LDisplaySound
 
         try
         {
-            _lDisplaySoundDraft = _lEntryPort.LEngineEntryLoad(shown) ?? _lDisplaySoundDraft;
+            _lDisplaySoundReflex = _lEntryPort.LEngineEntryLoad(shown)?.LEntryDraftReflexes ?? _lDisplaySoundReflex;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
         }
     }
 
     public IReadOnlyList<LReflexDraft> LDisplayReflexRead()
     {
-        return _lDisplaySoundDraft?.LEntryDraftReflexes
+        return (_lDisplaySoundReflex ?? _lDisplaySoundDraft?.LEntryDraftReflexes)?
             .Where(static reflex => reflex.LReflexDraftWritten)
             .ToList()
             ?? [];
@@ -144,9 +153,11 @@ public sealed class LDisplaySound
         return LDisplayListRead(_lPhonologyPort.LEngineFanqieDivide);
     }
 
-    public IReadOnlyList<LFanqieRow> LDisplayAnchorRead()
+    public static IReadOnlyList<LFanqieRow> LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
     {
-        return LDisplayFanqieDivide().SelectMany(static group => group.LFanqieGroupRows).ToList();
+        ArgumentNullException.ThrowIfNull(groups);
+
+        return groups.SelectMany(static group => group.LFanqieGroupRows).ToList();
     }
 
     public string LDisplayReadingRead()
@@ -218,13 +229,29 @@ public sealed class LDisplaySound
 
     public bool LDisplayTonalCheck()
     {
-        return _lDisplaySoundDraft is not null
-            && _lPhonologyPort.LEngineTonalCheck(_lDisplaySoundDraft.LEntryDraftLanguage);
+        try
+        {
+            return _lDisplaySoundDraft is not null
+                && _lPhonologyPort.LEngineTonalCheck(_lDisplaySoundDraft.LEntryDraftLanguage);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
+            return false;
+        }
     }
 
     public bool LDisplayFlaggedCheck()
     {
-        return _lDisplaySoundDraft is not null && _lPhonologyPort.LEngineFlaggedCheck(_lDisplaySoundDraft);
+        try
+        {
+            return _lDisplaySoundDraft is not null && _lPhonologyPort.LEngineFlaggedCheck(_lDisplaySoundDraft);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
+            return false;
+        }
     }
 
     public bool LDisplayFlaggedCheck(string language)
@@ -257,20 +284,44 @@ public sealed class LDisplaySound
 
     public LGlyph? LDisplayGlyphRead()
     {
-        return _lDisplaySoundDraft is null
-            ? null
-            : _lEntryPort.LEngineGlyphRead(_lDisplaySoundDraft.LEntryDraftLanguage);
+        try
+        {
+            return _lDisplaySoundDraft is null
+                ? null
+                : _lEntryPort.LEngineGlyphRead(_lDisplaySoundDraft.LEntryDraftLanguage);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
+            return null;
+        }
     }
 
     public IReadOnlyList<LGlyphCell> LDisplayGlyphDivide()
     {
-        return _lDisplaySoundDraft is null ? [] : _lEntryPort.LEngineGlyphDivide(_lDisplaySoundDraft);
+        try
+        {
+            return _lDisplaySoundDraft is null ? [] : _lEntryPort.LEngineGlyphDivide(_lDisplaySoundDraft);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
+            return [];
+        }
     }
 
     public bool LDisplayRecordingCheck()
     {
-        return _lDisplaySoundDraft is not null
-            && _lMediaPort.LEngineRecordingExist(_lDisplaySoundDraft.LEntryDraftAudio);
+        try
+        {
+            return _lDisplaySoundDraft is not null
+                && _lMediaPort.LEngineRecordingExist(_lDisplaySoundDraft.LEntryDraftAudio);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
+            return false;
+        }
     }
 
     public bool LDisplayAudibleCheck()
@@ -281,29 +332,31 @@ public sealed class LDisplaySound
                 ?? false);
     }
 
-    public void LDisplayRecordingPlay()
+    public void LDisplayRecordingPlay(double volume)
     {
         if (!LDisplayRecordingCheck())
         {
             return;
         }
 
-        _lMediaPort.LEngineRecordingPlay(_lDisplaySoundDraft!.LEntryDraftAudio);
+        LDisplayRecordingPlay(_lDisplaySoundDraft!.LEntryDraftAudio, volume);
     }
 
-    public void LDisplayRecordingPlay(string? file)
+    public void LDisplayRecordingPlay(string? file, double volume)
     {
-        _lMediaPort.LEngineRecordingPlay(file);
+        try
+        {
+            _lDisplaySoundTicket = _lMediaPort.LEngineRecordingPlay(file, volume);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Sound.PlayFailed", exception);
+        }
     }
 
     public void LDisplayPlaybackStop()
     {
-        _lMediaPort.LEngineRecordingStop();
-    }
-
-    public void LDisplayVolumeSet(double level)
-    {
-        _lMediaPort.LEngineVolumeSet(level);
+        _lMediaPort.LEngineRecordingStop(_lDisplaySoundTicket);
     }
 
     private IReadOnlyList<LDisplayItem> LDisplayListRead<LDisplayItem>(Func<long, IReadOnlyList<LDisplayItem>> read)

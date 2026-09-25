@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -9,8 +10,6 @@ namespace Llyn.Conduct;
 
 public sealed class LDisplay
 {
-    private static readonly string[] LDisplayBands = ["Rare", "Advanced", "Everyday", "Core"];
-
     private const string LDisplayUnknown = "Unknown";
 
     private readonly LEntryPort _lEntryPort;
@@ -28,6 +27,7 @@ public sealed class LDisplay
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
         LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
+        LDisplaySound.LDisplaySoundFailed += (key, exception) => LDisplayFailed?.Invoke(key, exception);
     }
 
     public LDisplaySound LDisplaySound { get; }
@@ -53,16 +53,22 @@ public sealed class LDisplay
         _lDisplayVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public LEntryDraft? LDisplayDraftLoad()
+    public void LDisplayDraftLoad(Action<LEntryDraft?> show)
     {
+        ArgumentNullException.ThrowIfNull(show);
+
+        LEntryDraft? draft;
         try
         {
-            return _lDisplayVista?.LVistaLoad()?.LDraftContent;
+            draft = _lDisplayVista?.LVistaLoad()?.LDraftContent;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            return LDisplaySound.LDisplayShown;
+            LDisplayFailed?.Invoke("Sound.LoadFailed", exception);
+            return;
         }
+
+        show(draft);
     }
 
     public LEntryDraft? LDisplayLoaded => _lDisplayLoaded;
@@ -139,7 +145,20 @@ public sealed class LDisplay
 
     public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)
     {
-        return _lEntryPort.LEngineNameResolve(labels);
+        ArgumentNullException.ThrowIfNull(labels);
+
+        IReadOnlyList<string> names;
+        try
+        {
+            names = _lEntryPort.LEngineNameResolve(labels);
+        }
+        catch (Exception exception)
+        {
+            LDisplayFailed?.Invoke("Display.NameFailed", exception);
+            return labels;
+        }
+
+        return names.Count >= labels.Count ? names : [.. names, .. labels.Skip(names.Count)];
     }
 
     public static string LDisplayTitleRead(LCardDraft card, string kind, string unknown)
@@ -278,7 +297,7 @@ public sealed class LDisplay
 
         foreach (LFrequency row in rows)
         {
-            if (row.LFrequencyBand is not null)
+            if (row.LFrequencyRank > 0)
             {
                 return row.LFrequencyRank;
             }
@@ -287,9 +306,16 @@ public sealed class LDisplay
         return 0;
     }
 
+    public static int LDisplayBandLimit => LFrequency.LFrequencyScale.Count;
+
+    public static int LDisplaySpareRead(int count)
+    {
+        return Math.Max(LDisplayBandLimit - count, 0);
+    }
+
     public static string LDisplayBandRead(int count, string prefix)
     {
-        return prefix + (count == 0 ? LDisplayUnknown : LDisplayBands[count - 1]);
+        return prefix + (count == 0 ? LDisplayUnknown : LFrequency.LFrequencyScale[count - 1]);
     }
 
     public static string LDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once)
@@ -315,25 +341,46 @@ public sealed class LDisplay
 
     public IReadOnlyList<LUsage> LDisplayIncomingRead()
     {
-        if (LDisplaySound.LDisplayEntry is not long id)
+        if (LDisplayChosen is not long id)
         {
             return [];
         }
 
+        IReadOnlyList<LUsage> incoming;
         try
         {
-            List<LUsage> usages = [];
-            foreach (LUsage usage in _lEntryPort.LEngineIncomingRead(id))
-            {
-                usages.Add(usage with { LUsageEpithet = _lEntryPort.LEngineEpithetRead(usage.LUsageEntry) });
-            }
-
-            return usages;
+            incoming = _lEntryPort.LEngineIncomingRead(id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            LDisplayFailed?.Invoke("Display.IncomingFailed", exception);
             return [];
         }
+
+        Exception? missed = null;
+        List<LUsage> usages = new(incoming.Count);
+        foreach (LUsage usage in incoming)
+        {
+            string epithet;
+            try
+            {
+                epithet = _lEntryPort.LEngineEpithetRead(usage.LUsageEntry);
+            }
+            catch (Exception exception)
+            {
+                epithet = string.Empty;
+                missed ??= exception;
+            }
+
+            usages.Add(usage with { LUsageEpithet = epithet });
+        }
+
+        if (missed is not null)
+        {
+            LDisplayFailed?.Invoke("Display.EpithetFailed", missed);
+        }
+
+        return usages;
     }
 
     public static string LDisplayOwnerRead(LUsage usage)
@@ -421,20 +468,30 @@ public sealed class LDisplay
         }
     }
 
-    public LMentionResult LDisplayMentionFind(
-        string text, string language, int offset, IReadOnlyList<LMention>? mentions)
+    public void LDisplayMentionFind<LDisplayAnchor>(
+        LDisplayAnchor anchor,
+        string text,
+        string language,
+        int offset,
+        IReadOnlyList<LMention>? mentions,
+        Action<LDisplayAnchor, LMentionResult> show)
     {
+        ArgumentNullException.ThrowIfNull(show);
+
         string shown = language.Length > 0
             ? language
             : LDisplaySound.LDisplayShown?.LEntryDraftLanguage ?? string.Empty;
+        LMentionResult result;
         try
         {
-            return _lEntryPort.LEngineMentionFind(text, shown, offset, mentions ?? []);
+            result = _lEntryPort.LEngineMentionFind(text, shown, offset, mentions ?? []);
         }
         catch (Exception exception)
         {
             LDisplayFailed?.Invoke("Mention.FindFailed", exception);
-            return new LMentionResult(offset, null, []);
+            return;
         }
+
+        show(anchor, result);
     }
 }

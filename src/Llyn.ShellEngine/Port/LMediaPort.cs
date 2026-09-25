@@ -13,9 +13,9 @@ public interface LMediaPort
 
     bool LEngineRecordingExist(string? file);
 
-    void LEngineRecordingPlay(string? file);
+    int LEngineRecordingPlay(string? file, double volume);
 
-    void LEngineRecordingStop();
+    void LEngineRecordingStop(int ticket);
 
     void LEngineVolumeSet(double volume);
 

@@ -16,12 +16,14 @@ The frequency row follows the parts of speech, in the order the sections stand o
 
 Takes the view's controls as handles and subscribes to them itself.
 The view, the header and the toggle re-place the contents, and scrolling syncs the current row.
+The toggle is set from `_lCompassOpened`, so the two start alike whatever the markup says.
 
 ## `private bool _lCompassOpened = true;`
 
 Whether the reader left the contents open, flipped on each press of the toggle.
 It starts open, as the toggle does in markup.
 Keeping it here means placing never reads the control.
+Each press writes it back to the toggle, so the control cannot drift from it.
 
 ## `private void LCompassRowCreate()`
 

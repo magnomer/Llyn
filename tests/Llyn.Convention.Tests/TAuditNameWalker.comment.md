@@ -2,7 +2,7 @@
 
 ## Generation
 
-AUDITNAMES GENERATION 10.
+AUDITNAMES GENERATION 11.
 
 A generation is not a revision count.
 It names functionality, not edits.
@@ -19,10 +19,10 @@ Neither shares code with the other, and that is the design.
 Both must be at the same generation, so both carry the number.
 A disagreement between them is a defect in one, for a person to read.
 
-Generation 8 holds every naming value in `TAuditNameSetting.cs`.
-That generated sidecar is one of three here that name a project, one per audit.
+Generation 8 holds every naming value in the hand-written `TAuditNameSetting.cs`.
+The registered names reach this project only through the generated `TAuditNameRegistry.cs`.
 Every other file in this project is identical in every project at this generation.
-Each sidecar is generated and committed, so this project builds on its own.
+Both files are committed, so this project builds on its own.
 
 Generation 8 checks missing prefix, component count, base registration, and verb ending.
 It exempts descriptive test methods under an all-or-nothing test-prefix consistency gate.
@@ -33,6 +33,9 @@ Generation 9 changes nothing the name audit reports.
 The number rises with the custody and strict audits, which share it.
 It does not audit the tooling's own files, and sources reach it through a `TAuditScope`.
 What says a specimen lies outside the audit lives in `TAuditNameFilter.cs`.
+
+Generation 11 changes nothing the name audit reports.
+The number rises with the truth audit, which gains four deportment-field checks.
 
 ## Inline notes
 

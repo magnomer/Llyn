@@ -31,21 +31,17 @@ public partial class PEditor
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDownloaderPlayer.Volume = e.NewValue;
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
+        _pEditorHost.PWindowDeportment.LWindowVolumeSet(e.NewValue);
     }
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
     {
-        if (_pEditorHost.PWindowDeportment.LWindowVolumeMatch(PVolume.Value))
-        {
-            return;
-        }
-
-        _pEditorHost.PWindowDeportment.LWindowVolumeSave(PVolume.Value);
+        _pEditorHost.PWindowDeportment.LWindowVolumeSave();
     }
 
     internal void PVolumeAttach()
     {
+        PVolume.ValueChanged += PVolumeHandle;
         PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
         PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
         PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
@@ -54,7 +50,7 @@ public partial class PEditor
     internal void PVolumeLoad()
     {
         PVolume.Value = _pEditorHost.PWindowDeportment.LWindowPostureRead().LPostureStateVolume;
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
+        _pDownloaderPlayer.Volume = PVolume.Value;
     }
 
     private void PEditorRecordingShow(LEntryDraft draft)

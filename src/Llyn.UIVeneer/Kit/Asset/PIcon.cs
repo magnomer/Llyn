@@ -198,7 +198,7 @@ public sealed class PIcon : MarkupExtension
         StreamResourceInfo? pngResource = null;
         if (!PIconVector.Contains(name))
         {
-            Uri pngUri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".png"));
+            Uri pngUri = new(string.Concat("pack://application:,,,/Llyn.UIVeneer;component/icons/", name, ".png"));
             try
             {
                 pngResource = System.Windows.Application.GetResourceStream(pngUri);
@@ -214,7 +214,7 @@ public sealed class PIcon : MarkupExtension
             return BitmapFrame.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
         }
 
-        Uri svgUri = new(string.Concat("pack://application:,,,/Llyn;component/icons/", name, ".svg"));
+        Uri svgUri = new(string.Concat("pack://application:,,,/Llyn.UIVeneer;component/icons/", name, ".svg"));
         StreamResourceInfo svgResource = System.Windows.Application.GetResourceStream(svgUri)
             ?? throw new FileNotFoundException(name);
         using Stream svgStream = svgResource.Stream;

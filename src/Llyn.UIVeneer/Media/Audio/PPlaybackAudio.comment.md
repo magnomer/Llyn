@@ -15,21 +15,23 @@ The volume tray is shared by every row, so whether it shows is decided here as w
 ## `private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)`
 
 Plays at the level the grip stands at, from the moment it is moved there.
+The level is set as the workspace's one audio level, so every other tray follows.
 
 ## `private void PVolumeSave(object sender, RoutedEventArgs e)`
 
-Writes the level down once the hand comes off the grip.
+Writes the workspace's level down once the hand comes off the grip.
 The level belongs to the workspace rather than to the form, so it outlives the entry being edited.
 
 ## `internal void PVolumeAttach()`
 
-Listens for the three gestures that end a change of volume.
+Follows the grip, and listens for the three gestures that end a change of volume.
+It runs once the host is attached, since the catalog binding moves the grip before that.
 Those are a finished drag, a click on the track and a released key.
 A drag that wrote on every step would put a file write behind every pixel of it.
 
 ## `internal void PVolumeLoad()`
 
-Puts the workspace's volume on the grip when the form is attached.
+Puts the workspace's volume on the grip and on the form's player when the form is attached.
 
 ## `private void PPlaybackTrayShow()`
 

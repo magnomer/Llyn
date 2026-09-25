@@ -4,16 +4,16 @@
     xmlns:local="clr-namespace:Llyn.UIVeneer">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayState.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplaySituation.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayRegister.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayTranslation.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayExample.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayTag.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Media/Image/PDisplayImage.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Media/Video/PDisplayVideo.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayMeaning.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Display/Template/PDisplayCollocation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayState.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplaySituation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayRegister.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayTranslation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayExample.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayTag.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Media/Image/PDisplayImage.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Media/Video/PDisplayVideo.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayMeaning.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayCollocation.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <local:PLinkConverter x:Key="Display.Card.Translation" />

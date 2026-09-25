@@ -69,7 +69,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PNoteContents.TextChanged += PNoteHandle;
         PEtymologyAttach();
         AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));
-        PVolumeAttach();
         _pDownloaderPlayer.MediaEnded += PClipEndHandle;
         _pDownloaderPlayer.MediaFailed += PClipEndHandle;
     }
@@ -101,6 +100,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PSentenceLoad();
         PSpeakerLoad();
         PCategoryLoad();
+        PVolumeAttach();
         PVolumeLoad();
     }
 

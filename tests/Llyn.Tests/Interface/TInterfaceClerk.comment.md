@@ -99,9 +99,17 @@ Relays the harvest of the recording clerk.
 
 Relays the sweep of the recording clerk.
 
-## `internal static void TRecordingClerkPlay(this LRecordingClerk clerk, string? file)`
+## `internal static int TRecordingClerkPlay(this LRecordingClerk clerk, string? file, double volume = 1)`
 
-Relays the playback of the recording clerk.
+Relays the playback of the recording clerk at `volume`, full by default, answering the play's ticket.
+
+## `internal static void TRecordingClerkAdjust(this LRecordingClerk clerk, double volume)`
+
+Relays the live volume change of the recording clerk.
+
+## `internal static void TRecordingClerkStop(this LRecordingClerk clerk, int ticket)`
+
+Relays the stop of the recording clerk for `ticket`.
 
 ## `internal static string TRecordingFormat(LRig rig, string path)`
 

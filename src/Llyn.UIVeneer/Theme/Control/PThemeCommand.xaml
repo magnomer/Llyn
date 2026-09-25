@@ -4,7 +4,7 @@
     xmlns:local="clr-namespace:Llyn.UIVeneer">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="Theme.Command.Fold" />

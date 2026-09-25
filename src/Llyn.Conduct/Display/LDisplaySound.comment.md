@@ -8,6 +8,8 @@ It holds the reflex fold state and makes every phonology read and fetch request 
 A read the engine refuses answers empty, so a section draws nothing rather than failing the page.
 Only the lectern's [sound](../../Llyn.UIDeportment/Display/LLecternSound.comment.md) and playback name it, so no veneer reaches Conduct.
 The engine owns the player, so the view holds no player of its own.
+It keeps its latest play's ticket, so it never stops another view's sound.
+The level is the workspace's one audio level, which the caller hands to each play.
 
 ## `public LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)`
 
@@ -25,21 +27,30 @@ The id of the shown entry, which every phonology read and fetch request is made 
 
 Whether the folded reflexes are shown, shared by the reading view and the editor.
 
+## `public event Action<string, Exception>? LDisplaySoundFailed;`
+
+Raised with the text key and the exception when a read the view cannot do without is refused.
+[LDisplay](LDisplay.comment.md) passes it on as its own failure.
+
 ## `internal void LDisplaySoundShow(long? id, LEntryDraft draft)`
 
 Holds `draft` and its entry `id` as the entry the verdicts and reads work on.
+Reflexes loaded for an earlier entry are dropped, so the rows follow the new draft.
 
 ## `internal void LDisplaySoundClear()`
 
-Drops the shown draft, its id and the slots read, and stops playback, since what played belonged to it.
+Drops the shown draft, its id, the slots and the loaded reflexes.
+It stops its own playback, and a sound another view started plays on.
 
 ## `public bool LDisplayTonalCheck()`
 
 Whether the shown draft's language marks tone, so the contour draws.
+A refused read raises `LDisplaySoundFailed` and answers false.
 
 ## `public bool LDisplayFlaggedCheck()`
 
 Whether the shown draft's varieties draw as flags rather than labels.
+A refused read raises `LDisplaySoundFailed` and answers false.
 
 ## `public bool LDisplayFlaggedCheck(string language)`
 
@@ -59,34 +70,36 @@ The row in the glyph scheme is left out, because the glyph row shows it as chara
 ## `public LGlyph? LDisplayGlyphRead()`
 
 The glyph section of the shown draft's language, or null when the pack declares none.
+A refused read raises `LDisplaySoundFailed` and answers null.
 
 ## `public IReadOnlyList<LGlyphCell> LDisplayGlyphDivide()`
 
 The cells of the shown draft's glyph row, as the engine divides it.
+A refused read raises `LDisplaySoundFailed` and answers no cells.
 
 ## `public bool LDisplayRecordingCheck()`
 
 Whether the shown draft owns a recording that is still on disk.
+A refused read raises `LDisplaySoundFailed` and answers false.
 
 ## `public bool LDisplayAudibleCheck()`
 
 Whether the shown draft's recording exists or any notated accent names an audio file.
+Only the recording check reaches the engine, and it already fails safely.
 
-## `public void LDisplayRecordingPlay()`
+## `public void LDisplayRecordingPlay(double volume)`
 
 Plays the shown draft's own recording, and does nothing when it has none.
 
-## `public void LDisplayRecordingPlay(string? file)`
+## `public void LDisplayRecordingPlay(string? file, double volume)`
 
-Plays an accent's recording, and the engine plays nothing for a file gone from disk.
+Plays an accent's recording at `volume`, and the engine plays nothing for a file gone from disk.
+The answered ticket is kept, so a later stop reaches this play alone.
+A refused play raises `LDisplaySoundFailed` with `Sound.PlayFailed` and keeps the old ticket.
 
 ## `public void LDisplayPlaybackStop()`
 
-Stops what the engine plays.
-
-## `public void LDisplayVolumeSet(double level)`
-
-Sets the level the engine plays at.
+Stops this view's play, and leaves a later play from another view running.
 
 ## `public void LDisplayFoldSet(bool opened)`
 
@@ -98,11 +111,14 @@ The languages `rules` fold away, compared by ordinal.
 
 ## `public void LDisplayReflexLoad()`
 
-Reloads the shown entry after a reflex fill, keeping the held draft when the read fails.
+Reloads the shown entry's reflexes after a reflex fill.
+Only the reflexes are kept, so every other read still works on the draft on screen.
+A refused read keeps the rows as they were and raises `LDisplaySoundFailed` with `Sound.LoadFailed`.
 
 ## `public IReadOnlyList<LReflexDraft> LDisplayReflexRead()`
 
-The shown draft's reflexes that are written, in the order the entry keeps them.
+The reflexes that are written, in the order the entry keeps them.
+Reflexes reloaded after a fill win over the shown draft's own.
 
 ## `public void LDisplayReflexStart(long? id)`
 
@@ -136,9 +152,10 @@ Asks the engine to fetch the shown entry's rime-book rows.
 
 The shown entry's fanqie blocks, as the engine divides them.
 
-## `public IReadOnlyList<LFanqieRow> LDisplayAnchorRead()`
+## `public static IReadOnlyList<LFanqieRow> LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)`
 
-The fanqie rows of every block in order, for the anchor text of the reflex rows.
+The fanqie rows of every block in `groups` in order, for the anchor text of the reflex rows.
+The caller passes blocks it already divided, so one show divides once.
 
 ## `public string LDisplayReadingRead()`
 

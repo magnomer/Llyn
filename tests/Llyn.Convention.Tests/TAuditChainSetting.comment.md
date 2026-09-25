@@ -13,6 +13,11 @@ A ring reaches its neighbour alone and carries the data of every ring inside it.
 The two adapters reach `Llyn.Core` as spokes, since the ports live there.
 The core reaches nothing.
 
+## `public static readonly string[] TAuditChainCut`
+
+The UI rings above the cut.
+A cut ring names only its neighbour and the other UI rings.
+
 ## `public static readonly string[] TAuditChainRoot`
 
 The composition root files, free of the chain.
@@ -23,6 +28,7 @@ The composition root files, free of the chain.
 For a `ring>neighbour` pair, the neighbour types the ring may name at all.
 The deportment names the engine only through the six ports and the four handles.
 Every other engine type is a helper the deportment may not reach.
+Both UI shells name Conduct only through the display handles.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditChainFloor`
 
@@ -40,7 +46,7 @@ A request record belongs to the application, so one in the core is misplaced.
 The file count each `kind:ring>target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
 Lower a ceiling when a ring sheds a file, never raise one to admit a new one.
-The engine's reach into the core is the bulk: every vault it calls belongs to a clerk.
+The `cross` pairs are the bulk, as the UI rings still name core data.
 
 ## `public static readonly string[] TAuditChainWaiver`
 

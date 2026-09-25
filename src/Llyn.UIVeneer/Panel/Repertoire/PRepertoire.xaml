@@ -8,10 +8,10 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Media/Image/PDisplayImage.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Media/Video/PDisplayVideo.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Vignette/PRepertoireVignette.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Vignette/PRepertoireScenario.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Image/PDisplayImage.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Video/PDisplayVideo.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Vignette/PRepertoireVignette.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Vignette/PRepertoireScenario.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>

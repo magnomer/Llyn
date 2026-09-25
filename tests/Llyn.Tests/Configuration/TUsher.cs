@@ -39,4 +39,21 @@ public sealed class TUsher
 
         Assert.False(File.Exists(path));
     }
+
+    [Fact]
+    public void UsherLockCheck_WrappedSharingFault_ReturnsTrue()
+    {
+        LUsher usher = TInterface.TUsherFileCreate();
+
+        Assert.True(usher.TUsherLockCheck(new InvalidOperationException("svg", new IOException())));
+    }
+
+    [Fact]
+    public void UsherLockCheck_MissingFile_ReturnsFalse()
+    {
+        LUsher usher = TInterface.TUsherFileCreate();
+
+        Assert.False(usher.TUsherLockCheck(new FileNotFoundException()));
+        Assert.False(usher.TUsherLockCheck(new FormatException()));
+    }
 }

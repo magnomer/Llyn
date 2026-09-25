@@ -82,6 +82,7 @@ public sealed class LCompass
         contents.ScrollChanged += LCompassScrollHandle;
         view.SizeChanged += LCompassSizeHandle;
         header.SizeChanged += LCompassSizeHandle;
+        toggle.IsChecked = _lCompassOpened;
         toggle.Click += LCompassSwitchHandle;
     }
 
@@ -304,6 +305,11 @@ public sealed class LCompass
     private void LCompassSwitchHandle(object sender, RoutedEventArgs e)
     {
         _lCompassOpened = !_lCompassOpened;
+        if (sender is ToggleButton toggle)
+        {
+            toggle.IsChecked = _lCompassOpened;
+        }
+
         LCompassPlace();
     }
 

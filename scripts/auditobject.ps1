@@ -56,13 +56,19 @@ auditobject -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows, open the report.
 #>
 #requires -Version 5.1
-# AUDITOBJECT GENERATION 10 - auditobject.ps1.
-# A generation names the set of checks the audit family applies. auditnames, auditlines,
-# auditcomments, auditui and auditobject share one generation number with the convention-test
-# settings, and each refuses a configuration written at another generation. Raise it only when the
-# audited outcome changes, for the whole family at once.
+# AUDITOBJECT GENERATION 11 - auditobject.ps1.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
 # Generation 9 merges partial types, counts parts, lines, members and state, measures shared state
 # and cross-part references, and computes member-graph components to grade each split type.
+# Generation 11: nothing the object audit reports changes; the number rises with the truth audit,
+# which checks that a deportment field reaches no request, keeps one writer, holds no logic and
+# treats no engine data.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -206,7 +212,7 @@ function Read-AuditConfig {
     }
 
     if ([int]$config.generation -ne $script:AuditGeneration) {
-        throw "The audit configuration is generation $($config.generation); this script is generation $script:AuditGeneration."
+        throw "The object-audit configuration is generation $($config.generation) but this tooling is generation $script:AuditGeneration.`nA generation names the set of checks applied, so the two must match: $ConfigPath"
     }
 
     return $config

@@ -44,11 +44,12 @@ public interface LSettingsPort
 
     LFont LEngineFontRead(string language, LFontRole role);
 
-    Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad();
+    Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
-    Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties);
-
-    void LEngineEnsignDelete(string path);
+    Task LEngineEnsignLoad(
+        string language,
+        IEnumerable<string> varieties,
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
     LEstablishment LEngineEstablishmentRead();
 

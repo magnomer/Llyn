@@ -7,9 +7,10 @@ public sealed class TAuditChain
 {
     private const string TAuditChainAudit = "AUDITCHAIN";
 
-    private static readonly string[] TAuditChainHeld = ["outward", "reach"];
+    private static readonly string[] TAuditChainHeld = ["outward", "reach", "cross", "expose"];
 
-    private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditChainHits = new(TAuditChainWalker.TAuditRun);
+    private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditChainHits =
+        new(() => [.. TAuditChainWalker.TAuditRun(), .. TAuditChainWalker.TAuditSurfaceScan()]);
 
     [Fact]
     public void AuditChain_Rings_ReachOneRing()
@@ -75,6 +76,24 @@ public sealed class TAuditChain
             TAuditChainAudit, TAuditChainHits.Value, "outward",
             TAuditChainSetting.TAuditChainCeiling, TAuditChainSetting.TAuditChainWaiver,
             "outer ring name(s) inside an inner ring");
+    }
+
+    [Fact]
+    public void AuditChain_Sources_CrossNoCut()
+    {
+        TAuditPair.TAuditPairCheck(
+            TAuditChainAudit, TAuditChainHits.Value, "cross",
+            TAuditChainSetting.TAuditChainCeiling, TAuditChainSetting.TAuditChainWaiver,
+            "name(s) from below the cut inside a UI ring");
+    }
+
+    [Fact]
+    public void AuditChain_SurfaceSignatures_NameNoDeeperType()
+    {
+        TAuditPair.TAuditPairCheck(
+            TAuditChainAudit, TAuditChainHits.Value, "expose",
+            TAuditChainSetting.TAuditChainCeiling, TAuditChainSetting.TAuditChainWaiver,
+            "surface signature type(s) from below Conduct");
     }
 
     [Fact]

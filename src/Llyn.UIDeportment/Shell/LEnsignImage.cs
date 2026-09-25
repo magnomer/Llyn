@@ -38,9 +38,9 @@ public static class LEnsignImage
         }
     }
 
-    public static DrawingImage? LEnsignResolve(LWindow window, string path)
+    public static DrawingImage? LEnsignResolve(string path, Action<string, Exception> delete)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(delete);
 
         try
         {
@@ -55,9 +55,9 @@ public static class LEnsignImage
             image.Freeze();
             return image;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            window.LWindowEnsignDelete(path);
+            delete(path, exception);
             return null;
         }
     }
@@ -69,8 +69,7 @@ public static class LEnsignImage
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            IReadOnlyList<LEnsignRow> kept = await window.LWindowEnsignLoad();
-            LEnsignStoreAdd(window, kept);
+            await window.LWindowEnsignLoad(LEnsignStoreAdd);
         }
         finally
         {
@@ -92,8 +91,7 @@ public static class LEnsignImage
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            IReadOnlyList<LEnsignRow> kept = await window.LWindowEnsignLoad(language, varieties);
-            LEnsignStoreAdd(window, kept);
+            await window.LWindowEnsignLoad(language, varieties, LEnsignStoreAdd);
         }
         finally
         {
@@ -101,13 +99,24 @@ public static class LEnsignImage
         }
     }
 
-    private static void LEnsignStoreAdd(LWindow window, IReadOnlyList<LEnsignRow> rows)
+    private static Action LEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)
+    {
+        List<KeyValuePair<string, ImageSource?>> resolved = new(rows.Count);
+        foreach (LEnsignRow row in rows)
+        {
+            resolved.Add(new(row.LEnsignRowKey, LEnsignResolve(row.LEnsignRowPath, delete)));
+        }
+
+        return () => LEnsignStoreCommit(resolved);
+    }
+
+    private static void LEnsignStoreCommit(List<KeyValuePair<string, ImageSource?>> resolved)
     {
         lock (LEnsignStore)
         {
-            foreach (LEnsignRow row in rows)
+            foreach (KeyValuePair<string, ImageSource?> drawing in resolved)
             {
-                LEnsignStore[row.LEnsignRowKey] = LEnsignResolve(window, row.LEnsignRowPath);
+                LEnsignStore[drawing.Key] = drawing.Value;
             }
         }
     }

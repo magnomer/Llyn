@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemePronunciation.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Volume.Tray" TargetType="Border">

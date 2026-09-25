@@ -1,5 +1,16 @@
 # Llyn.UIVeneer.csproj
 
+## `<ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />`
+
+The veneer is a library that names only the deportment.
+`Llyn.Host` builds the engine and runs the application, so the veneer names no lower project.
+
+## `<Page Include="App.xaml" />`
+
+`App.xaml` builds as a page, so the library carries no generated entry point.
+The host creates the application and calls its `InitializeComponent` itself.
+Every pack URI names `Llyn.UIVeneer` explicitly, since the application assembly is now the host.
+
 ## `<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />`
 
 Renders flag and interface SVGs into WPF drawings.

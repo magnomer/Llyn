@@ -18,9 +18,17 @@ internal static class TAuditChainSetting
         ["Llyn.Core.Windows"] = ["Llyn.Core"],
     };
 
+    public static readonly string[] TAuditChainCut =
+    [
+        "Llyn.UIVeneer",
+        "Llyn.UIDeportment",
+        "Llyn.UIDemeanor",
+        "Llyn.UITerminal",
+    ];
+
     public static readonly string[] TAuditChainRoot =
     [
-        "src/Llyn.UIVeneer/App.xaml.cs",
+        "src/Llyn.Host/LHost.cs",
         "src/Llyn.Infrastructure/LRigFactory.cs",
     ];
 
@@ -39,6 +47,18 @@ internal static class TAuditChainSetting
             "LForay",
             "LPosture",
         ],
+        ["Llyn.UIDeportment>Llyn.Conduct"] =
+        [
+            "LDisplay",
+            "LDisplaySound",
+            "LDisplayStamp",
+        ],
+        ["Llyn.UIDemeanor>Llyn.Conduct"] =
+        [
+            "LDisplay",
+            "LDisplaySound",
+            "LDisplayStamp",
+        ],
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainFloor = new Dictionary<string, int>
@@ -53,7 +73,15 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["reach:Llyn.UIDeportment>Llyn.ShellEngine"] = 27,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 7,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 49,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 27,
+        ["cross:Llyn.UIVeneer>Llyn.Application"] = 27,
+        ["cross:Llyn.UIVeneer>Llyn.Core"] = 129,
+        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 2,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 2,
+        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 2,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 2,
     };
 
     public static readonly string[] TAuditChainWaiver = [];

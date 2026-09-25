@@ -4,24 +4,24 @@
 
 The reading view's playback deportment, standing between the veneer and [LDisplaySound](../../Llyn.Conduct/Display/LDisplaySound.comment.md).
 It drives the play button, the volume tray and the slider the veneer hands over.
-The level is held by the workspace.
-This class reads it on every show and writes it when the hand leaves the grip.
+The level is the workspace's one audio level, held by the posture.
+Every move of the grip sets that level, and the hand leaving the grip writes it.
 It shares the display's sound with [LLecternSound](LLecternSound.comment.md), which draws the rows these buttons play.
 
 ## `public LLecternPlayback(LDisplaySound display)`
 
 Holds the display's sound, which owns the shown draft and plays through the engine.
 
-## `public void LLecternPlaybackAttach(LWindow window, UIElement action, UIElement tray, RangeBase volume, Action<double> volumeSeam)`
+## `public void LLecternPlaybackAttach(LWindow window, UIElement action, UIElement tray, RangeBase volume)`
 
-Holds the controls, hooks the slider and loads the stored level.
-`volumeSeam` carries each level to the shared catalog, so every other tray shows the same figure.
+Holds the controls, hooks the slider and puts the workspace's level on it.
+The veneer binds the slider to the shared catalog, so every other tray shows the same figure.
 
 ## `public void LLecternPlaybackShow()`
 
 Shows the play button while the shown draft owns a recording on disk.
 Shows the volume tray while that recording or any notated accent has audio.
-The stored level is read again, so a level the editor set is the level this view plays at.
+The level is read again, so the slider shows the level a workspace switch brought.
 
 ## `public void LLecternPlaybackClear()`
 
@@ -29,23 +29,24 @@ Hides the play button and the volume tray.
 
 ## `public void LLecternPlaybackHandle(object parameter)`
 
-Plays the recording of the accent row the command carries, and ignores anything else.
+Plays the recording of the accent row the command carries at the workspace's level, and ignores anything else.
 
 ## `public void LLecternActionHandle()`
 
-Plays the shown draft's own recording.
+Plays the shown draft's own recording at the workspace's level.
 
 ## `private void LLecternVolumeLoad()`
 
-Reads the stored level into the slider and hands it on as if the grip had moved.
+Reads the workspace's level into the slider.
+A level that differs moves the grip, which sets the same level back.
 
 ## `private void LLecternVolumeHandle(double level)`
 
-Follows the grip as it moves, so the sound changes under the hand.
+Sets the workspace's one level as the grip moves, so every audio view changes under the hand.
 
 ## `private void LLecternVolumeSave()`
 
-Writes the slider's level to the workspace, which skips a level already stored.
+Writes the workspace's level, which skips a level already written.
 
 ## Inline notes
 

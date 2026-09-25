@@ -6,7 +6,7 @@
     Title="{DynamicResource Customs.Title}"
     Width="820"
     MaxHeight="640"
-    Icon="pack://application:,,,/brand/icon.ico"
+    Icon="pack://application:,,,/Llyn.UIVeneer;component/brand/icon.ico"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     SizeToContent="Height"

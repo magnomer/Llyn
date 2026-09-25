@@ -131,6 +131,8 @@ $RECYCLE.BIN/
 !/scripts/test.json
 !/scripts/detector.ps1
 !/scripts/detector.json
+!/scripts/tracer.ps1
+!/scripts/tracer.json
 !/scripts/synccode.ps1
 !/scripts/clean.ps1
 !/scripts/zip.ps1

@@ -20,10 +20,11 @@ The engine has already forgotten the paths before it announces, so a surface rel
 The surfaces reload on the same announcement, and this store is the first subscriber.
 It is empty before they ask.
 
-## `public static DrawingImage? LEnsignResolve(LWindow window, string path)`
+## `public static DrawingImage? LEnsignResolve(string path, Action<string, Exception> delete)`
 
 Reads the flag at `path` as a drawing that is frozen and so may be shared across rows.
-A file that does not read, whatever the reader threw, is deleted through the engine and answered with nothing.
+A file that does not read is answered with nothing, and handed to `delete` with what the reader threw.
+The engine keeps a locked or refused file and deletes one whose content was bad.
 The file is a cache the workspace can fetch again, and a truncated one would otherwise fail every launch.
 
 ## `public static async Task LEnsignLoad(LWindow window)`
@@ -40,10 +41,18 @@ The same fill for the named varieties of `language`, each drawn under `language/
 The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
 It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
 
-## `private static void LEnsignStoreAdd(LWindow window, IReadOnlyList<LEnsignRow> rows)`
+## `private static Action LEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)`
 
-Draws every row the engine kept and stores the drawing under the row's key.
+Draws every row the engine kept and answers the commit that stores them.
 The drawing is made here rather than when a row asks, so a row never waits on a file.
+The engine calls it outside its lock, so parsing holds no lock at all.
+The drawing stays on the shell's thread, where the fill was awaited.
+
+## `private static void LEnsignStoreCommit(List<KeyValuePair<string, ImageSource?>> resolved)`
+
+Stores each drawing under its row's key.
+The engine runs it inside the cache's lock, only while the fill's workspace is current.
+So a workspace move cannot slip between the engine's check and this store.
 
 ## `public static void LEnsignFlagShow(Image flag, UIElement globe, string language)`
 

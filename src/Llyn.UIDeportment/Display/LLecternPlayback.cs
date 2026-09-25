@@ -18,8 +18,6 @@ public sealed class LLecternPlayback
 
     private RangeBase _lLecternPlaybackVolume = null!;
 
-    private Action<double> _lLecternPlaybackSeam = null!;
-
     public LLecternPlayback(LDisplaySound display)
     {
         ArgumentNullException.ThrowIfNull(display);
@@ -27,20 +25,17 @@ public sealed class LLecternPlayback
         _lLecternPlaybackDisplay = display;
     }
 
-    public void LLecternPlaybackAttach(
-        LWindow window, UIElement action, UIElement tray, RangeBase volume, Action<double> volumeSeam)
+    public void LLecternPlaybackAttach(LWindow window, UIElement action, UIElement tray, RangeBase volume)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(tray);
         ArgumentNullException.ThrowIfNull(volume);
-        ArgumentNullException.ThrowIfNull(volumeSeam);
 
         _lLecternPlaybackWindow = window;
         _lLecternPlaybackAction = action;
         _lLecternPlaybackTray = tray;
         _lLecternPlaybackVolume = volume;
-        _lLecternPlaybackSeam = volumeSeam;
 
         volume.ValueChanged += (_, e) => LLecternVolumeHandle(e.NewValue);
         volume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((_, _) => LLecternVolumeSave()));
@@ -73,28 +68,28 @@ public sealed class LLecternPlayback
             return;
         }
 
-        _lLecternPlaybackDisplay.LDisplayRecordingPlay(row.LAccentItemAudio);
+        _lLecternPlaybackDisplay.LDisplayRecordingPlay(
+            row.LAccentItemAudio, _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume);
     }
 
     public void LLecternActionHandle()
     {
-        _lLecternPlaybackDisplay.LDisplayRecordingPlay();
+        _lLecternPlaybackDisplay.LDisplayRecordingPlay(
+            _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume);
     }
 
     private void LLecternVolumeLoad()
     {
         _lLecternPlaybackVolume.Value = _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume;
-        LLecternVolumeHandle(_lLecternPlaybackVolume.Value);
     }
 
     private void LLecternVolumeHandle(double level)
     {
-        _lLecternPlaybackDisplay.LDisplayVolumeSet(level);
-        _lLecternPlaybackSeam(level);
+        _lLecternPlaybackWindow.LWindowVolumeSet(level);
     }
 
     private void LLecternVolumeSave()
     {
-        _lLecternPlaybackWindow.LWindowVolumeSave(_lLecternPlaybackVolume.Value);
+        _lLecternPlaybackWindow.LWindowVolumeSave();
     }
 }

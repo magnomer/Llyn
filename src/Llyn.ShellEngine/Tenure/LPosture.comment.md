@@ -20,10 +20,6 @@ The posture as it stands, read whole under the gate.
 
 Whether the tab named is the one stored as standing open.
 
-## `public bool LPostureVolumeMatch(double volume)`
-
-Whether the level given is the one stored, so an echoing slider writes nothing.
-
 ## `public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)`
 
 Starts the tab's vista on the order and filter stored under it, and on the stored split.
@@ -48,12 +44,17 @@ Waits out the delay, then writes unless a later call replaced or cancelled the w
 
 Cancels and releases the waiting write, if there is one.
 
-## `public void LPostureVolumeSave(double volume)`
+## `public void LPostureVolumeSet(double volume)`
 
-Stores how loud a pronunciation is played, clamped so no caller writes a level the player cannot take.
-A level already stored writes nothing, so no shell asks before it saves.
-Every view plays through the same level.
-A change made in one is the level the next one opens at.
+Sets the workspace's one audio level in memory, clamped so no caller holds a level the player cannot take.
+It is the single truth every audio slider and play reads, so no view keeps a level of its own.
+Nothing is written, so a drag costs no file write per step.
+A level that is not a finite number is ignored, so no save ever writes one.
+
+## `public void LPostureVolumeSave()`
+
+Writes the held level once a gesture ends.
+A level equal to the one last written writes nothing, so no shell asks before it saves.
 
 ## `public void LPostureModeSave(string mode)`
 

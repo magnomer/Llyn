@@ -148,7 +148,7 @@ public sealed class LLecternSound
 
         _lLecternSoundDisplay.LDisplayReflexLoad();
         LLecternReflexShow();
-        LLecternAnchorShow();
+        LLecternAnchorShow(_lLecternSoundDisplay.LDisplayFanqieDivide());
         LLecternPendingShow();
     }
 
@@ -156,7 +156,7 @@ public sealed class LLecternSound
     {
         if (_lLecternSoundDisplay.LDisplayEntry is not null)
         {
-            LLecternFanqieShow();
+            LLecternFanqieShow(_lLecternSoundDisplay.LDisplayFanqieDivide());
         }
     }
 
@@ -215,7 +215,7 @@ public sealed class LLecternSound
         _lLecternSoundDisplay.LDisplayScriptStart();
         LLecternScriptShow();
         _lLecternSoundDisplay.LDisplayFanqieStart();
-        LLecternFanqieShow();
+        LLecternFanqieShow(_lLecternSoundDisplay.LDisplayFanqieDivide());
     }
 
     public void LLecternSoundClear()
@@ -294,12 +294,12 @@ public sealed class LLecternSound
             _lLecternSoundReflex, _lLecternSoundFold, _lLecternSoundDisplay.LDisplayFoldOpened);
     }
 
-    private void LLecternAnchorShow()
+    private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)
     {
         LReflexItem.LReflexAnchorApply(
             _lLecternSoundWindow,
             _lLecternSoundReflex,
-            _lLecternSoundDisplay.LDisplayAnchorRead(),
+            LDisplaySound.LDisplayAnchorRead(groups),
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
     }
 
@@ -311,10 +311,9 @@ public sealed class LLecternSound
                 : Visibility.Collapsed;
     }
 
-    private void LLecternFanqieShow()
+    private void LLecternFanqieShow(IReadOnlyList<LFanqieGroup> groups)
     {
-        IReadOnlyList<LFanqieGroup> groups = _lLecternSoundDisplay.LDisplayFanqieDivide();
-        LLecternAnchorShow();
+        LLecternAnchorShow(groups);
         LFontFace.LFontApply(
             _lLecternSoundWindow,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,

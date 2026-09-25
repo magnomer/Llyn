@@ -60,6 +60,9 @@ internal static partial class TInterface
     internal static bool TUsherPathExist(this LUsher usher, string? path) =>
         usher.LUsherPathExist(path);
 
+    internal static bool TUsherLockCheck(this LUsher usher, Exception exception) =>
+        usher.LUsherLockCheck(exception);
+
     internal static void TUsherPathDelete(this LUsher usher, string path)
     {
         usher.LUsherPathDelete(path);
@@ -77,8 +80,24 @@ internal static partial class TInterface
         ensign.LEnsignMissingRead(keys, out age);
 
     internal static IReadOnlyList<LEnsignRow> TEnsignPathAdd(
-        this LEnsign ensign, int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths) =>
-        ensign.LEnsignPathAdd(age, keys, paths);
+        this LEnsign ensign, int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths)
+    {
+        List<LEnsignRow> kept = [];
+        ensign.LEnsignPathAdd(age, keys, paths, (rows, _) => () => kept.AddRange(rows));
+        return kept;
+    }
+
+    internal static IReadOnlyList<LEnsignRow> TEnsignClearAdd(
+        this LEnsign ensign, int age, IReadOnlyList<string> keys, IReadOnlyList<string?> paths)
+    {
+        List<LEnsignRow> kept = [];
+        ensign.LEnsignPathAdd(age, keys, paths, (rows, _) =>
+        {
+            ensign.LEnsignClear();
+            return () => kept.AddRange(rows);
+        });
+        return kept;
+    }
 
     internal static LEnsignRow TEnsignRowCreate(string key, string path) =>
         new(key, path);
@@ -86,9 +105,9 @@ internal static partial class TInterface
     internal static string TEnsignKeyFormat(string language, string variety) =>
         LEnsign.LEnsignKeyFormat(language, variety);
 
-    internal static void TEnsignPathDelete(this LEnsign ensign, string path)
+    internal static void TEnsignPathDelete(this LEnsign ensign, string path, Exception exception)
     {
-        ensign.LEnsignPathDelete(path);
+        ensign.LEnsignPathDelete(path, exception);
     }
 
     internal static LFanqieRow TFanqieRowCreate(

@@ -4,8 +4,8 @@
     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeInput.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeInput.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <sys:Double x:Key="Theme.Card.TitleSize">16</sys:Double>

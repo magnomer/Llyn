@@ -5,10 +5,10 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeAccent.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemeTranscription.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeAccent.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeTranscription.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="Theme.Glyph.Sourced" />

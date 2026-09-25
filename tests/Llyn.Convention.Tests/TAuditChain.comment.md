@@ -16,7 +16,7 @@ The kinds a ceiling is written for.
 
 ## `private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditChainHits`
 
-The hits, bound once and shared by every fact.
+The tree hits and the surface hits, bound once and shared by every fact.
 
 ## `public void AuditChain_Rings_ReachOneRing()`
 
@@ -33,6 +33,14 @@ Opening a vault session belongs to a clerk, and this fact fails the build if she
 ## `public void AuditChain_Sources_NameNoOuterRing()`
 
 No pair holds more files naming an outer ring than its ceiling.
+
+## `public void AuditChain_Sources_CrossNoCut()`
+
+No pair holds more files where a UI ring names a type from below the cut than its ceiling.
+
+## `public void AuditChain_SurfaceSignatures_NameNoDeeperType()`
+
+No pair holds more surface files whose signatures name a type below Conduct than its ceiling.
 
 ## `public void AuditChain_Sources_HoldSurface()`
 

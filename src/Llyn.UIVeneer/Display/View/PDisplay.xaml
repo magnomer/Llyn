@@ -7,8 +7,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Display/Template/PDisplayCard.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Display/Template/PDisplayUsage.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Display/Template/PDisplayCard.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Display/Template/PDisplayUsage.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -115,7 +115,8 @@
                             </Border>
 
                             <Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">
-                                <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" />
+                                <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}"
+                                    Value="{Binding PVolumeCatalogLevel, Source={x:Static local:PVolumeCatalog.PVolumeCatalogCurrent}, Mode=TwoWay}" />
                             </Border>
                         </StackPanel>
 

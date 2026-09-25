@@ -134,6 +134,7 @@ A folder that cannot be opened therefore leaves the old clerks and caches untouc
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
 The drafts this engine claimed are forgotten with the old folder and each id is marked stale.
+The old recording clerk stops its playback, since the shared phonograph outlives it.
 A shell still holding one is refused instead of writing here.
 The pending fetches of the old clerks are cancelled, and the flag cache and the trove are cleared.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.

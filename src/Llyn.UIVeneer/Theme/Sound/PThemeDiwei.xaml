@@ -5,8 +5,8 @@
     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePopup.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePopup.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <sys:Boolean x:Key="Theme.Diwei.Spoken">False</sys:Boolean>

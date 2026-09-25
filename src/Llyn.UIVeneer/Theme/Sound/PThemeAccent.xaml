@@ -4,10 +4,10 @@
     xmlns:local="clr-namespace:Llyn.UIVeneer">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemeInput.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Sound/PThemePronunciation.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Control/PThemePlayback.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeInput.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Control/PThemePlayback.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Accent.Tool" TargetType="Button" BasedOn="{StaticResource Theme.Playback.Action}">

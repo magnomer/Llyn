@@ -12,10 +12,6 @@ performs these actions on every run:
   4. Prints in-code comment lines found inside sources.
   5. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
 
-A generation names the set of checks the audit applies. auditnames, auditlines and
-auditcomments share one generation number; the hand-written convention-test settings
-carry it and the tests refuse a setting written at another generation.
-
 Everything project-specific lives in auditcomments.json. The script itself
 carries no project knowledge. No external modules or tools are required.
 
@@ -85,6 +81,17 @@ auditcomments -Depth 2
 .EXAMPLE
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
+# AUDITCOMMENTS GENERATION 11 - auditcomments.ps1.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
+# Generation 11: nothing the comment audit reports changes; the number rises with the truth audit,
+# which checks that a deportment field reaches no request, keeps one writer, holds no logic and
+# treats no engine data.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,

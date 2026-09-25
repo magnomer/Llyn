@@ -1,7 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>Llyn</AssemblyName>
+    <ApplicationIcon>..\..\assets\brand\icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
+    <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />
+    <ProjectReference Include="..\Llyn.Infrastructure\Llyn.Infrastructure.csproj" />
+    <ProjectReference Include="..\Llyn.Core.Windows\Llyn.Core.Windows.csproj" />
+    <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
+    <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
+    <ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />
+    <ProjectReference Include="..\Llyn.UIVeneer\Llyn.UIVeneer.csproj" />
+    <ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />
+    <ProjectReference Include="..\Llyn.UITerminal\Llyn.UITerminal.csproj" />
+  </ItemGroup>
 </Project>

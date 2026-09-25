@@ -73,9 +73,10 @@ Opens the entry that carries the clicked row, because that is where such a link 
 
 Opens the entry a source chip names, as a translation link does.
 
-## `public LMentionResult LLecternMentionFind(`
+## `public void LLecternMentionFind<LLecternAnchor>(`
 
 Forwards a clicked word to the display, which asks the engine what stands there.
+The display hands a found answer to `show` with `anchor`, and a failed lookup calls nothing.
 
 ## `public void LLecternCardScroll(long id)`
 

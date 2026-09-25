@@ -25,6 +25,11 @@ public sealed class LUsherShell : LUsher
         _lUsherInner.LUsherPathDelete(path);
     }
 
+    public bool LUsherLockCheck(Exception exception)
+    {
+        return _lUsherInner.LUsherLockCheck(exception);
+    }
+
     public void LUsherOpen(string target)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(target);

@@ -28,7 +28,7 @@ The walkers parse without symbols, so a branch would be skipped, and reflection 
 
 ## `public static readonly string[] TAuditBoundaryLoader`
 
-The two files that read embedded resources through the assembly, and so may name reflection.
+The one file that reads embedded resources through the assembly, and so may name reflection.
 
 ## `public const string TAuditBoundaryReflection`
 

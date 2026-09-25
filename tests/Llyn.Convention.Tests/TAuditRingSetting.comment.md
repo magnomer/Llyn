@@ -10,4 +10,4 @@ No script writes this file.
 Every `ProjectReference` under `src`, as project name to referenced project names.
 The fact holds the `.csproj` files to this table exactly, so a new edge is an edit here first.
 An edge is wider than a reach.
-The engine references the core to carry its records and reaches the application alone.
+The engine references the application alone and carries core records through it.

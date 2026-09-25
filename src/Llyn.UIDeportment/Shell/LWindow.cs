@@ -158,11 +158,6 @@ public sealed class LWindow : IDisposable
         return _lPosture.LPostureModeMatch(mode);
     }
 
-    public bool LWindowVolumeMatch(double volume)
-    {
-        return _lPosture.LPostureVolumeMatch(volume);
-    }
-
     public LVista LWindowVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
     {
         return _lPosture.LPostureVistaStart(tab, subject, fallback, blank);
@@ -173,9 +168,15 @@ public sealed class LWindow : IDisposable
         _lPosture.LPostureWindowDefer(window, minimized, delay);
     }
 
-    public void LWindowVolumeSave(double volume)
+    public void LWindowVolumeSet(double volume)
     {
-        _lPosture.LPostureVolumeSave(volume);
+        _lPosture.LPostureVolumeSet(volume);
+        _lMediaPort.LEngineVolumeSet(volume);
+    }
+
+    public void LWindowVolumeSave()
+    {
+        _lPosture.LPostureVolumeSave();
     }
 
     public void LWindowModeSave(string mode)
@@ -218,19 +219,17 @@ public sealed class LWindow : IDisposable
         return _lSettingsPort.LEngineFontRead(language, role);
     }
 
-    public Task<IReadOnlyList<LEnsignRow>> LWindowEnsignLoad()
+    public Task LWindowEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
-        return _lSettingsPort.LEngineEnsignLoad();
+        return _lSettingsPort.LEngineEnsignLoad(store);
     }
 
-    public Task<IReadOnlyList<LEnsignRow>> LWindowEnsignLoad(string language, IEnumerable<string> varieties)
+    public Task LWindowEnsignLoad(
+        string language,
+        IEnumerable<string> varieties,
+        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
     {
-        return _lSettingsPort.LEngineEnsignLoad(language, varieties);
-    }
-
-    public void LWindowEnsignDelete(string path)
-    {
-        _lSettingsPort.LEngineEnsignDelete(path);
+        return _lSettingsPort.LEngineEnsignLoad(language, varieties, store);
     }
 
     public bool LWindowRespellingCheck(string language)

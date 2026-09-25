@@ -84,6 +84,7 @@ So the click is handed to the lectern's card.
 Every sentence on every card raises the same bubbling event.
 One handler on the control above them all answers it, so a card template stays free of handlers.
 The lectern's card asks what stands at the offset, and the window decides what the answer opens.
+The window hears only a lookup that succeeded.
 
 ### `PDisplaySwath.PSwathAttach(PDisplayContents);`
 

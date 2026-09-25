@@ -33,6 +33,15 @@ Even then the bands must carry these four names and rank the source's levels ont
 
 The label past the last rung, fewer than one occurrence per million words.
 
+## `public static IReadOnlyList<string> LFrequencyScale`
+
+The band names from rare to core, so every reader of the ladder reads this one list.
+
+## `private static readonly string[] LFrequencyRanks`
+
+Rare followed by the ladder's names in reverse, built from `LFrequencyBands`.
+So each band name is spelled once, and the ranks cannot drift from the ladder.
+
 ## `public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)`
 
 Grades a raw figure on the shared ladder through the interval the source's pack figures describe.

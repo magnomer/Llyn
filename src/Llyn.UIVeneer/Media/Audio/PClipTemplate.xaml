@@ -5,8 +5,8 @@
     x:Class="Llyn.UIVeneer.PClipTemplate">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/Theme/Base/PThemePopup.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePopup.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Clip.Preview" TargetType="Button" BasedOn="{StaticResource Theme.Popup.IconAction}">

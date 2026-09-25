@@ -18,7 +18,8 @@
         "System.Diagnostics.CodeAnalysis",
         "System.Runtime.CompilerServices"
       ],
-      "pure": true
+      "pure": true,
+      "cut": false
     },
     {
       "name": "Application",
@@ -38,7 +39,8 @@
         "System.Diagnostics.CodeAnalysis",
         "System.Runtime.CompilerServices"
       ],
-      "pure": true
+      "pure": true,
+      "cut": false
     },
     {
       "name": "ShellEngine",
@@ -59,7 +61,8 @@
         "System.Runtime.CompilerServices",
         "System.Runtime.ExceptionServices"
       ],
-      "pure": true
+      "pure": true,
+      "cut": false
     },
     {
       "name": "Conduct",
@@ -80,7 +83,8 @@
         "System.Runtime.CompilerServices",
         "System.Runtime.ExceptionServices"
       ],
-      "pure": true
+      "pure": true,
+      "cut": false
     },
     {
       "name": "UIDeportment",
@@ -91,7 +95,8 @@
       "frame": [
         "*"
       ],
-      "pure": false
+      "pure": false,
+      "cut": true
     },
     {
       "name": "UIVeneer",
@@ -102,7 +107,32 @@
       "frame": [
         "*"
       ],
-      "pure": false
+      "pure": false,
+      "cut": true
+    },
+    {
+      "name": "UIDemeanor",
+      "path": "src/Llyn.UIDemeanor",
+      "reach": [
+        "Conduct"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false,
+      "cut": true
+    },
+    {
+      "name": "UITerminal",
+      "path": "src/Llyn.UITerminal",
+      "reach": [
+        "UIDemeanor"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false,
+      "cut": true
     },
     {
       "name": "Infrastructure",
@@ -113,7 +143,8 @@
       "frame": [
         "*"
       ],
-      "pure": false
+      "pure": false,
+      "cut": false
     },
     {
       "name": "CoreWindows",
@@ -124,11 +155,12 @@
       "frame": [
         "*"
       ],
-      "pure": false
+      "pure": false,
+      "cut": false
     }
   ],
   "root": [
-    "src/Llyn.UIVeneer/App.xaml.cs",
+    "src/Llyn.Host/LHost.cs",
     "src/Llyn.Infrastructure/LRigFactory.cs"
   ],
   "ambient": [
@@ -150,6 +182,7 @@
   "checks": {
     "neighbour": "allow",
     "reach": "violation",
+    "cross": "violation",
     "carry": "allow",
     "outward": "violation",
     "frame": "violation",
@@ -157,7 +190,11 @@
     "root": "allow"
   },
   "ceilings": {
-    "reach:UIDeportment>ShellEngine": 27
+    "cross:UIDeportment>Application": 7,
+    "cross:UIDeportment>Core": 49,
+    "cross:UIDeportment>ShellEngine": 27,
+    "cross:UIVeneer>Application": 27,
+    "cross:UIVeneer>Core": 129
   },
   "exempt": {},
   "sources": {

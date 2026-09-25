@@ -68,6 +68,58 @@ public sealed class TRecordingClerk
         Assert.Empty(workspace.TWorkspacePhonograph.TPhonographFakePlayed);
     }
 
+    [Fact]
+    public void RecordingClerkPlay_ExistingFile_PlaysTheResolvedPath()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRig rig = workspace.TWorkspaceRigCreate();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(rig);
+        string file = TRecordingFileSave(workspace, "kindle.mp3");
+
+        clerk.TRecordingClerkPlay(TInterface.TRecordingFormat(rig, file));
+
+        Assert.Equal(file, Assert.Single(workspace.TWorkspacePhonograph.TPhonographFakePlayed));
+    }
+
+    [Fact]
+    public void RecordingClerkPlay_LoudVolume_PlaysAtFullLevel()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+
+        clerk.TRecordingClerkPlay(TRecordingFileSave(workspace, "kindle.mp3"), 2);
+
+        Assert.Equal(1, workspace.TWorkspacePhonograph.TPhonographFakeVolume);
+    }
+
+    [Fact]
+    public void RecordingClerkAdjust_NegativeVolume_SetsSilence()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+
+        clerk.TRecordingClerkAdjust(-1);
+
+        Assert.Equal(0, workspace.TWorkspacePhonograph.TPhonographFakeVolume);
+    }
+
+    [Fact]
+    public void RecordingClerkStop_TicketOfAnEarlierPlay_LeavesTheLaterPlayRunning()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+        int earlier = clerk.TRecordingClerkPlay(TRecordingFileSave(workspace, "left.mp3"));
+        int later = clerk.TRecordingClerkPlay(TRecordingFileSave(workspace, "right.mp3"));
+
+        clerk.TRecordingClerkStop(earlier);
+
+        Assert.Equal(0, workspace.TWorkspacePhonograph.TPhonographFakeStopped);
+
+        clerk.TRecordingClerkStop(later);
+
+        Assert.Equal(1, workspace.TWorkspacePhonograph.TPhonographFakeStopped);
+    }
+
     private static string TRecordingFileSave(TWorkspace workspace, string name)
     {
         string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");

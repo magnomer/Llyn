@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{DynamicResource Terms.Product}"
-    Icon="pack://application:,,,/brand/icon.ico"
+    Icon="pack://application:,,,/Llyn.UIVeneer;component/brand/icon.ico"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     SizeToContent="WidthAndHeight"

@@ -16,6 +16,7 @@ public sealed class LRecordingClerk
     private readonly LTrailClerk _lRecordingClerkTrail;
     private readonly LClaimClerk _lRecordingClerkClaims;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lRecordingClerkSources = new(StringComparer.Ordinal);
+    private int _lRecordingClerkTicket;
 
     public LRecordingClerk(LRig rig, LLanguageCache languages, LTrailClerk trail, LClaimClerk claims)
     {
@@ -74,23 +75,44 @@ public sealed class LRecordingClerk
         return _lRecordingClerkTrail.LRecordingExist(file);
     }
 
-    public void LRecordingClerkPlay(string? file)
+    public int LRecordingClerkPlay(string? file, double volume)
     {
         if (!LRecordingClerkExist(file))
+        {
+            return 0;
+        }
+
+        if (double.IsFinite(volume))
+        {
+            _lRecordingClerkPhonograph.LPhonographVolumeSet(Math.Clamp(volume, 0, 1));
+        }
+
+        _lRecordingClerkPhonograph.LPhonographPlay(_lRecordingClerkTrail.LRecordingResolve(file!));
+        return ++_lRecordingClerkTicket;
+    }
+
+    public void LRecordingClerkStop(int ticket)
+    {
+        if (ticket != _lRecordingClerkTicket)
         {
             return;
         }
 
-        _lRecordingClerkPhonograph.LPhonographPlay(file!);
+        _lRecordingClerkPhonograph.LPhonographStop();
     }
 
-    public void LRecordingClerkStop()
+    public void LRecordingClerkClear()
     {
         _lRecordingClerkPhonograph.LPhonographStop();
     }
 
     public void LRecordingClerkAdjust(double volume)
     {
+        if (!double.IsFinite(volume))
+        {
+            return;
+        }
+
         _lRecordingClerkPhonograph.LPhonographVolumeSet(Math.Clamp(volume, 0, 1));
     }
 

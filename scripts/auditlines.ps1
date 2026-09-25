@@ -14,10 +14,6 @@ performs these actions on every run:
   7. Prints comment-file line totals for the same folders.
   8. Writes a Markdown source-line report to {report.directory}\{linesPrefix}{version}.md.
 
-A generation names the set of checks the audit applies. auditnames, auditlines and
-auditcomments share one generation number; the hand-written convention-test settings
-carry it and the tests refuse a setting written at another generation.
-
 Everything project-specific - source roots, counted extensions, comment-file
 pattern, excluded directory names, thresholds, report location, version file -
 lives in auditlines.json. The script itself carries no project knowledge.
@@ -94,6 +90,17 @@ auditlines -Extensions .cs, .xaml
 .EXAMPLE
 auditlines -SourceRoots .\src, .\tests
 #>
+# AUDITLINES GENERATION 11 - auditlines.ps1.
+# A generation is not a revision count. It names functionality, not edits, so editing one of these
+# files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
+# A generation names the set of checks the audit applies. Two projects on the same generation audit
+# the same things and their reports compare directly, whatever else differs between the files. A check
+# added, removed, or changed in what it reports is a new generation; wording, plumbing, and refactoring
+# leave it alone. Every audit script shares one generation number with the convention-test settings,
+# and each refuses a configuration written at another generation.
+# Generation 11: nothing the line audit reports changes; the number rises with the truth audit,
+# which checks that a deportment field reaches no request, keeps one writer, holds no logic and
+# treats no engine data.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,

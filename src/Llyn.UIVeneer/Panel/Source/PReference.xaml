@@ -8,8 +8,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Source/PReferenceShelf.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Source/PReferenceFootnote.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Source/PReferenceShelf.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Source/PReferenceFootnote.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="Theme.Shelf.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />

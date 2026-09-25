@@ -25,6 +25,24 @@ public sealed class LUsherFile : LUsher
         }
     }
 
+    public bool LUsherLockCheck(Exception exception)
+    {
+        for (Exception? current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is FileNotFoundException or DirectoryNotFoundException)
+            {
+                return false;
+            }
+
+            if (current is IOException or UnauthorizedAccessException)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void LUsherOpen(string target)
     {
         throw new NotSupportedException("A file usher opens no folder or address.");

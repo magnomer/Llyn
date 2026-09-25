@@ -45,7 +45,6 @@ internal static class TAuditBoundarySetting
     public static readonly string[] TAuditBoundaryLoader =
     [
         "LHeadquarter.cs",
-        "PThemeLoader.cs",
     ];
 
     public const string TAuditBoundaryReflection = @"\bSystem\.Reflection\b";

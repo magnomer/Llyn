@@ -47,7 +47,7 @@
       "Microsoft.NETCore.App",
       "Microsoft.WindowsDesktop.App"
     ],
-    "build": "src/Llyn.UIVeneer"
+    "build": "src/Llyn.Host"
   },
   "implicitUsings": [
     "System",

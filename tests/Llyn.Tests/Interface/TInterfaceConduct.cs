@@ -22,6 +22,18 @@ internal static class TInterfaceConduct
 
     internal static int TDisplayBandResolve(IReadOnlyList<LFrequency> rows) => LDisplay.LDisplayBandResolve(rows);
 
+    internal static string TDisplayBandRead(int count) => LDisplay.LDisplayBandRead(count, string.Empty);
+
+    internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
+        sound.LDisplaySoundShow(id, draft);
+
+    internal static void TDisplaySoundClear(this LDisplaySound sound) => sound.LDisplaySoundClear();
+
+    internal static void TDisplayReflexLoad(this LDisplaySound sound) => sound.LDisplayReflexLoad();
+
+    internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
+        sound.LDisplayReflexRead();
+
     internal static string TDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once) =>
         LDisplay.LDisplaySourceFormat(rows, once);
 }

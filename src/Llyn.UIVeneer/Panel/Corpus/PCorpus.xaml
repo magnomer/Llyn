@@ -8,8 +8,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Editor/Core/PEditorPopup.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Llyn;component/Panel/Corpus/PCorpusExcerpt.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorPopup.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Corpus/PCorpusExcerpt.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

@@ -9,8 +9,6 @@ namespace Llyn.UIDeportment;
 
 public static class LFrequencyLabel
 {
-    private const int LFrequencyLimit = 4;
-
     private const string LFrequencyEmpty = "Empty";
 
     private const char LFrequencyStar = '✦';
@@ -49,13 +47,9 @@ public static class LFrequencyLabel
         filled.SetResourceReference(TextElement.ForegroundProperty, brush);
         band.Inlines.Add(filled);
 
-        int rest = LFrequencyLimit - count;
-        if (rest > 0)
-        {
-            Run empty = new(new string(LFrequencyStar, rest));
-            empty.SetResourceReference(TextElement.ForegroundProperty, "Theme.Frequency." + LFrequencyEmpty);
-            band.Inlines.Add(empty);
-        }
+        Run empty = new(new string(LFrequencyStar, LDisplay.LDisplaySpareRead(count)));
+        empty.SetResourceReference(TextElement.ForegroundProperty, "Theme.Frequency." + LFrequencyEmpty);
+        band.Inlines.Add(empty);
 
         band.Visibility = Visibility.Visible;
     }

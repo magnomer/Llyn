@@ -56,20 +56,18 @@ Reports whether the pack declares the language silent, so the input panel knows 
 It reads the cached pack as `LEngineVarietyRead` does.
 A blank language has no pack and answers false, so an empty desk keeps its pronunciation rows.
 
-## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad()`
+## `public async Task LEngineEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 Fetches the flag of every language not yet asked of the cache, all at once, and records what came back.
-Answers the rows newly kept, so the shell draws only those and asks nothing about the rest.
-A fill that a workspace change outran records nothing and answers nothing.
+Hands the rows newly kept to `store`, so the shell draws only those and asks nothing about the rest.
+A fill that a workspace change outran records nothing and calls nothing.
+The cache is read once before the fetch and kept, since a workspace change builds a new one.
+Asking the staff again after the fetch would meet the new cache at a matching age.
+The fetch resumes on the caller's context, so the shell's seam runs on the shell's thread.
 
-## `public async Task<IReadOnlyList<LEnsignRow>> LEngineEnsignLoad(string language, IEnumerable<string> varieties)`
+## `public async Task LEngineEnsignLoad(string language, IEnumerable<string> varieties, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
 
 The same fill for the named varieties of one language, keyed `language/variety`.
-
-## `public void LEngineEnsignDelete(string path)`
-
-Drops a cached SVG the veneer's renderer could not read, through the engine's flag cache and its usher.
-The veneer asks here rather than deleting itself, so no file work happens above the engine.
 
 ## `private async Task<string?> LEngineEnsignRead(string language)`
 

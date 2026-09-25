@@ -61,6 +61,84 @@ internal static class TAuditChainWalker
             .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
     }
 
+    public static IReadOnlyList<TAuditHit> TAuditSurfaceScan()
+    {
+        Dictionary<string, HashSet<string>> inner = TAuditInnerRead();
+        List<TAuditHit> hits = [];
+        HashSet<string> taken = new(StringComparer.Ordinal);
+        foreach ((string pair, string[] surface) in TAuditChainSetting.TAuditChainSurface)
+        {
+            string ring = pair[..pair.IndexOf('>')];
+            string neighbour = pair[(pair.IndexOf('>') + 1)..];
+            if (!TAuditChainSetting.TAuditChainCut.Contains(ring, StringComparer.Ordinal))
+            {
+                continue;
+            }
+
+            IEnumerable<ISymbol> members = surface
+                .SelectMany(name => TAuditBinder.TAuditCompilation.GetSymbolsWithName(name, SymbolFilter.Type))
+                .OfType<INamedTypeSymbol>()
+                .Where(type => TAuditBinder.TAuditSourceRead(type) is { } source
+                    && TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys) == neighbour)
+                .SelectMany(type => type.GetMembers())
+                .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
+            foreach (ISymbol member in members)
+            {
+                Location? location = member.Locations.FirstOrDefault(place => place.IsInSource);
+                if (location is null)
+                {
+                    continue;
+                }
+
+                string relative = TAuditBinder.TAuditRelativeRead(location.SourceTree!.FilePath);
+                int line = location.GetLineSpan().StartLinePosition.Line + 1;
+                foreach (INamedTypeSymbol type in TAuditSignatureRead(member))
+                {
+                    string? source = TAuditBinder.TAuditSourceRead(type);
+                    string? target = source is null
+                        ? null
+                        : TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys);
+                    if (target is not null && inner[neighbour].Contains(target)
+                        && taken.Add($"{relative}|{line}|{ring}|{target}|{type.Name}"))
+                    {
+                        hits.Add(new TAuditHit(relative, line, ring, "expose", target, type.Name));
+                    }
+                }
+            }
+        }
+
+        return hits;
+    }
+
+    private static IEnumerable<INamedTypeSymbol> TAuditSignatureRead(ISymbol member)
+    {
+        IEnumerable<ITypeSymbol> types = member switch
+        {
+            IMethodSymbol { MethodKind: MethodKind.Ordinary or MethodKind.Constructor } method =>
+                method.Parameters.Select(parameter => parameter.Type).Prepend(method.ReturnType),
+            IPropertySymbol property => property.Parameters.Select(parameter => parameter.Type).Prepend(property.Type),
+            IEventSymbol handler => [handler.Type],
+            _ => [],
+        };
+        Stack<ITypeSymbol> pending = new(types);
+        while (pending.Count > 0)
+        {
+            ITypeSymbol type = pending.Pop();
+            if (type is IArrayTypeSymbol array)
+            {
+                pending.Push(array.ElementType);
+            }
+            else if (type is INamedTypeSymbol named)
+            {
+                yield return named.OriginalDefinition;
+                foreach (ITypeSymbol argument in named.TypeArguments)
+                {
+                    pending.Push(argument);
+                }
+            }
+        }
+    }
+
     private static Dictionary<string, HashSet<string>> TAuditInnerRead()
     {
         Dictionary<string, HashSet<string>> inner = new(StringComparer.Ordinal);
@@ -95,6 +173,7 @@ internal static class TAuditChainWalker
         HashSet<string> taken = new(StringComparer.Ordinal);
         bool isRoot = TAuditChainSetting.TAuditChainRoot.Contains(relative, StringComparer.OrdinalIgnoreCase);
         string[] reach = TAuditChainSetting.TAuditChainReach[ring];
+        bool isCut = TAuditChainSetting.TAuditChainCut.Contains(ring, StringComparer.Ordinal);
 
         foreach (SimpleNameSyntax name in model.SyntaxTree.GetRoot().DescendantNodes().OfType<SimpleNameSyntax>())
         {
@@ -121,6 +200,7 @@ internal static class TAuditChainWalker
             string kind = isRoot ? "root"
                 : reach.Contains(target, StringComparer.Ordinal) ? "neighbour"
                 : !inner[ring].Contains(target) ? "outward"
+                : isCut && !TAuditChainSetting.TAuditChainCut.Contains(target, StringComparer.Ordinal) ? "cross"
                 : TAuditBinder.TAuditDataCheck(type) ? "carry"
                 : "reach";
             int line = name.GetLocation().GetLineSpan().StartLinePosition.Line + 1;

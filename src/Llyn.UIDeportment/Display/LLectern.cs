@@ -108,6 +108,18 @@ public sealed class LLectern
         _lLecternSwath = swathSeam;
     }
 
+    private bool LLecternAttachCheck()
+    {
+        if (_lLecternSwath is null)
+        {
+            return false;
+        }
+
+        return LLecternCompass is null
+            ? throw new InvalidOperationException("LLecternCompassAttach must run before the lectern shows.")
+            : true;
+    }
+
     public void LLecternHeaderAttach(
         TextBlock headword,
         TextBlock language,
@@ -222,7 +234,7 @@ public sealed class LLectern
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        if (_lLecternSwath is null)
+        if (!LLecternAttachCheck())
         {
             return;
         }
@@ -258,7 +270,7 @@ public sealed class LLectern
 
     public void LLecternClear()
     {
-        if (_lLecternSwath is null)
+        if (!LLecternAttachCheck())
         {
             return;
         }
@@ -356,7 +368,7 @@ public sealed class LLectern
             return;
         }
 
-        LLecternDraftShow(_lLecternDisplay.LDisplayDraftLoad());
+        _lLecternDisplay.LDisplayDraftLoad(LLecternDraftShow);
     }
 
     private void LLecternDraftShow(LEntryDraft? draft)
