@@ -1,4 +1,4 @@
-﻿# LGlossVault.cs
+# LGlossVault.cs
 
 ## `public interface LGlossVault`
 

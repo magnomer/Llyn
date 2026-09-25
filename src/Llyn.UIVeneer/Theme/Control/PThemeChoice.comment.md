@@ -1,4 +1,4 @@
-﻿# PThemeChoice.xaml
+# PThemeChoice.xaml
 
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 

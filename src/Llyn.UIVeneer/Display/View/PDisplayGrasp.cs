@@ -9,24 +9,24 @@ public partial class PDisplay
     {
         try
         {
-            PDisplayGrasp.PGraspStep = _lDisplay.LDisplayGraspRead(id);
+            PDisplayGrasp.PGraspStep = _lLectern.LLecternGraspRead(id);
         }
         catch (Exception)
         {
             PDisplayGrasp.PGraspStep = 0;
         }
 
-        PDisplayGraspLabel.Text = _lDisplay.LDisplayGraspFormat(PDisplayGrasp.PGraspStep);
+        PDisplayGraspLabel.Text = _lLectern.LLecternGraspFormat(PDisplayGrasp.PGraspStep);
     }
 
     private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
     {
-        PDisplayGraspLabel.Text = _lDisplay.LDisplayGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
+        PDisplayGraspLabel.Text = _lLectern.LLecternGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
     }
 
     private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
     {
-        if (_lDisplay.LDisplayChosen is not long shown)
+        if (_lLectern.LLecternChosen is not long shown)
         {
             PDisplayGrasp.PGraspStep = 0;
             return;
@@ -34,7 +34,7 @@ public partial class PDisplay
 
         try
         {
-            _lDisplay.LDisplayGraspSave(shown, PDisplayGrasp.PGraspStep);
+            _lLectern.LLecternGraspSave(shown, PDisplayGrasp.PGraspStep);
         }
         catch (Exception exception)
         {

@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -8,9 +8,6 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static IReadOnlyList<long> TAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
-        LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
-
     internal static IReadOnlyList<LAnchorRow> TAnchorRowScan(
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes) =>
         LAnchor.LAnchorRowScan(rows, anchors, classes);

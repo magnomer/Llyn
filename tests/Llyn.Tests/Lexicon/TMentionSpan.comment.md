@@ -1,4 +1,4 @@
-﻿# TMentionSpan.cs
+# TMentionSpan.cs
 
 ## `public sealed class TMentionSpan`
 

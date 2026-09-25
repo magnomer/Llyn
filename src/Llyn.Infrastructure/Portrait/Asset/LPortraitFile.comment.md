@@ -1,4 +1,4 @@
-﻿# LPortraitFile.cs
+# LPortraitFile.cs
 
 ## `public sealed class LPortraitFile : LPortraitVault`
 

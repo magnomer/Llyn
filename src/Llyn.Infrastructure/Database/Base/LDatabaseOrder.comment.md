@@ -1,4 +1,4 @@
-﻿# LDatabaseOrder.cs
+# LDatabaseOrder.cs
 
 ## `public static class LDatabaseOrder`
 

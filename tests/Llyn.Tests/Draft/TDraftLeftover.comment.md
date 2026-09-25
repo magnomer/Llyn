@@ -1,4 +1,4 @@
-﻿# TDraftLeftover.cs
+# TDraftLeftover.cs
 
 ## `public sealed class TDraftLeftover`
 

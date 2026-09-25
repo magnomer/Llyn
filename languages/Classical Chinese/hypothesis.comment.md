@@ -1,4 +1,4 @@
-﻿# hypothesis.json
+# hypothesis.json
 
 ## file
 

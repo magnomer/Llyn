@@ -107,11 +107,6 @@ internal static class PEnsign
         }
     }
 
-    internal static string PEnsignVarietyFormat(string language, string variety)
-    {
-        return string.Concat(language, "/", variety);
-    }
-
     internal static void PEnsignFlagShow(Image flag, UIElement globe, string language)
     {
         ImageSource? found = PEnsignFind(language);

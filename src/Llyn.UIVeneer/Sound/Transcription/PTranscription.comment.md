@@ -1,4 +1,4 @@
-﻿# PTranscription.cs
+# PTranscription.cs
 
 ## `public partial class PEditor`
 
@@ -39,7 +39,7 @@ Opens the lookup menu under the row's own button, for that row and in that row's
 
 The first declared scheme no shown row carries, or nothing when all are taken.
 
-## `private PTranscriptionItem? PTranscriptionFind(long id)`
+## `private LTranscriptionItem? PTranscriptionFind(long id)`
 
 The shown row with one transcription id, or nothing when the draft no longer has it.
 The glyph row is searched too, because the lookup menu fills it through the same path.
@@ -77,7 +77,7 @@ So the schemes and the glyph section are read off the draft's language, not the 
 The row is asked for as seeded, so the engine ignores it while empty and the draft stays clean.
 A row the user adds with the plus is not seeded, and stays even empty.
 
-## `private PTranscriptionItem PTranscriptionUpdate(PTranscriptionItem row, LTranscriptionDraft spelled)`
+## `private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, LTranscriptionDraft spelled)`
 
 Brings a shown row up to the draft row with the same id.
 A changed scheme is written onto the row, which relabels itself.

@@ -1,4 +1,4 @@
-﻿# LExampleLink.cs
+# LExampleLink.cs
 
 ## `public sealed class LExampleLink`
 

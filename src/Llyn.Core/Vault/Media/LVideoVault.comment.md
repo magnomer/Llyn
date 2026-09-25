@@ -1,4 +1,4 @@
-﻿# LVideoVault.cs
+# LVideoVault.cs
 
 ## `public interface LVideoVault`
 

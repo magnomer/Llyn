@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using Llyn.Core;
@@ -14,7 +14,7 @@ public partial class PDisplay
         IReadOnlyList<LUsage> incoming;
         try
         {
-            incoming = _lDisplay.LDisplayIncomingRead(id);
+            incoming = _lLectern.LLecternIncomingRead(id);
         }
         catch (Exception)
         {
@@ -32,7 +32,7 @@ public partial class PDisplay
                 usage.LUsageCollocated ? collocation : meaning,
                 unknown,
                 string.Empty,
-                _lDisplay.LDisplayEpithetRead(usage.LUsageEntry)));
+                _lLectern.LLecternEpithetRead(usage.LUsageEntry)));
         }
 
         PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0

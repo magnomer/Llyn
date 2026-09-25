@@ -9,7 +9,7 @@ public partial class PDisplay
         PCitationConverter converter = PDisplayCitationRead();
         try
         {
-            converter.PCitationConverterShow(_lDisplay.LDisplayCitationRead());
+            converter.PCitationConverterShow(_lLectern.LLecternCitationRead());
         }
         catch (Exception)
         {

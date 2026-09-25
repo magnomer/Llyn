@@ -28,26 +28,4 @@ public sealed class TWindowMention
         Assert.Equal(4, pieces[1].LMentionPieceOffset);
         Assert.True(pieces[1].LMentionPieceStored!.LMentionLinked);
     }
-
-    [Fact]
-    public void WindowAnchorToggle_FakeDraftPort_ForwardsArguments()
-    {
-        List<(IReadOnlyList<long>, long, bool)> asked = [];
-        LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(
-            new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["LEngineAnchorToggle"] = args =>
-            {
-                asked.Add(((IReadOnlyList<long>)args![0]!, (long)args[1]!, (bool)args[2]!));
-                return TInterface.TAnchorToggle((IReadOnlyList<long>)args[0]!, (long)args[1]!, (bool)args[2]!);
-            },
-        });
-        LWindow window = TInterfaceDeportment.TWindowCreate(drafts);
-
-        IReadOnlyList<long> anchors = window.TWindowAnchorToggle([3], 5, true);
-
-        Assert.Equal([3, 5], anchors);
-        Assert.Single(asked);
-        Assert.Equal(5, asked[0].Item2);
-    }
 }

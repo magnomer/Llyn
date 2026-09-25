@@ -1,4 +1,4 @@
-﻿# LSentence.cs
+# LSentence.cs
 
 ## `public sealed record LSentence(`
 

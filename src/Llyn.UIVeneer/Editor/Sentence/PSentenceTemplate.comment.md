@@ -1,4 +1,4 @@
-﻿# PSentenceTemplate.xaml
+# PSentenceTemplate.xaml
 
 ## `Theme.Sentence.Row`
 

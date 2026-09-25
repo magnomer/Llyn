@@ -1,4 +1,4 @@
-﻿# LSituationVault.cs
+# LSituationVault.cs
 
 ## `public interface LSituationVault`
 

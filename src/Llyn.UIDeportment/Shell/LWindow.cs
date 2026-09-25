@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -287,11 +287,6 @@ public sealed class LWindow : IDisposable
     {
         LMentionDraft span = _lDraftPort.LEngineSpanRead(text, start, length);
         return (span.LMentionDraftOffset, span.LMentionDraftLength);
-    }
-
-    public IReadOnlyList<long> LWindowAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
-    {
-        return _lDraftPort.LEngineAnchorToggle(anchors, fanqieId, anchored);
     }
 
     public bool LWindowAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)

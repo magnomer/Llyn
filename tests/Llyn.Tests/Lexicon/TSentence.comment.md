@@ -1,4 +1,4 @@
-﻿# TSentence.cs
+# TSentence.cs
 
 ## `public sealed class TSentence`
 

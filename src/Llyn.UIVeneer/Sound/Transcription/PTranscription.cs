@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,11 +8,13 @@ using System.Windows.Input;
 using Llyn.Application;
 using Llyn.Core;
 
+using Llyn.UIDeportment;
+
 namespace Llyn.UIVeneer;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PTranscriptionItem> _pTranscriptionItem = [];
+    private readonly ObservableCollection<LTranscriptionItem> _pTranscriptionItem = [];
     private IReadOnlyList<string> _pTranscriptionSchemes = [];
 
     internal void PTranscriptionAddHandle(object sender, ExecutedRoutedEventArgs e)
@@ -23,7 +25,7 @@ public partial class PEditor
             return;
         }
 
-        int position = e.Parameter is PTranscriptionItem row
+        int position = e.Parameter is LTranscriptionItem row
             ? _pTranscriptionItem.IndexOf(row) + 1
             : _pTranscriptionItem.Count;
         PEditorRequestSend(new LRequestTranscriptionAddition(PEditorDraft, scheme, position));
@@ -36,20 +38,20 @@ public partial class PEditor
 
     internal void PTranscriptionRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PTranscriptionItem row)
+        if (e.Parameter is LTranscriptionItem row)
         {
-            PEditorRequestSend(new LRequestTranscriptionRemoval(PEditorDraft, row.PTranscriptionItemId));
+            PEditorRequestSend(new LRequestTranscriptionRemoval(PEditorDraft, row.LTranscriptionItemId));
         }
     }
 
     internal async void PTranscriptionNotationHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PTranscriptionItem row)
+        if (e.Parameter is LTranscriptionItem row)
         {
             await PNotationOpen(
                 e.OriginalSource as UIElement ?? PTranscription,
-                row.PTranscriptionItemId,
-                row.PTranscriptionItemScheme);
+                row.LTranscriptionItemId,
+                row.LTranscriptionItemScheme);
         }
     }
 
@@ -58,7 +60,7 @@ public partial class PEditor
         foreach (string scheme in _pTranscriptionSchemes)
         {
             if (_pTranscriptionItem.All(
-                row => !string.Equals(row.PTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
+                row => !string.Equals(row.LTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
             {
                 return scheme;
             }
@@ -67,19 +69,19 @@ public partial class PEditor
         return null;
     }
 
-    private PTranscriptionItem? PTranscriptionFind(long id)
+    private LTranscriptionItem? PTranscriptionFind(long id)
     {
-        foreach (PTranscriptionItem row in _pTranscriptionItem)
+        foreach (LTranscriptionItem row in _pTranscriptionItem)
         {
-            if (row.PTranscriptionItemId == id)
+            if (row.LTranscriptionItemId == id)
             {
                 return row;
             }
         }
 
-        foreach (PTranscriptionItem row in _pGlyphItem)
+        foreach (LTranscriptionItem row in _pGlyphItem)
         {
-            if (row.PTranscriptionItemId == id)
+            if (row.LTranscriptionItemId == id)
             {
                 return row;
             }
@@ -90,26 +92,26 @@ public partial class PEditor
 
     private void PTranscriptionChangeHandle(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is not PTranscriptionItem row)
+        if (sender is not LTranscriptionItem row)
         {
             return;
         }
 
         if (string.Equals(
-            e.PropertyName, nameof(PTranscriptionItem.PTranscriptionItemScheme), StringComparison.Ordinal))
+            e.PropertyName, nameof(LTranscriptionItem.LTranscriptionItemScheme), StringComparison.Ordinal))
         {
             PEditorRequestSend(
-                new LRequestTranscriptionScheme(PEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemScheme));
+                new LRequestTranscriptionScheme(PEditorDraft, row.LTranscriptionItemId, row.LTranscriptionItemScheme));
             return;
         }
 
-        if (!string.Equals(e.PropertyName, nameof(PTranscriptionItem.PTranscriptionItemText), StringComparison.Ordinal))
+        if (!string.Equals(e.PropertyName, nameof(LTranscriptionItem.LTranscriptionItemText), StringComparison.Ordinal))
         {
             return;
         }
 
         PEditorRequestDefer(
-            new LRequestTranscriptionText(PEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemText));
+            new LRequestTranscriptionText(PEditorDraft, row.LTranscriptionItemId, row.LTranscriptionItemText));
     }
 
     private void PTranscriptionShow(LEntryDraft draft)
@@ -120,14 +122,14 @@ public partial class PEditor
         PCard.PCardRowShow(
             _pTranscriptionItem,
             PTranscriptionScan(draft),
-            static row => row.PTranscriptionItemId,
+            static row => row.LTranscriptionItemId,
             static spelled => spelled.LTranscriptionDraftId,
             PTranscriptionCreate,
             PTranscriptionUpdate);
 
-        foreach (PTranscriptionItem row in _pTranscriptionItem)
+        foreach (LTranscriptionItem row in _pTranscriptionItem)
         {
-            row.PTranscriptionItemUpdate(_pTranscriptionSchemes, _pTranscriptionItem);
+            row.LTranscriptionItemUpdate(_pTranscriptionSchemes, _pTranscriptionItem);
         }
     }
 
@@ -145,17 +147,17 @@ public partial class PEditor
         return rows;
     }
 
-    private PTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)
+    private LTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)
     {
-        PTranscriptionItem row = PTranscriptionItem.PTranscriptionItemCreate(_pEditorHost, spelled);
+        LTranscriptionItem row = LTranscriptionItem.LTranscriptionItemCreate(spelled);
         row.PropertyChanged += PTranscriptionChangeHandle;
         return row;
     }
 
-    private PTranscriptionItem PTranscriptionUpdate(PTranscriptionItem row, LTranscriptionDraft spelled)
+    private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, LTranscriptionDraft spelled)
     {
-        row.PTranscriptionItemScheme = spelled.LTranscriptionDraftScheme;
-        row.PTranscriptionItemText = spelled.LTranscriptionDraftText;
+        row.LTranscriptionItemScheme = spelled.LTranscriptionDraftScheme;
+        row.LTranscriptionItemText = spelled.LTranscriptionDraftText;
         return row;
     }
 }

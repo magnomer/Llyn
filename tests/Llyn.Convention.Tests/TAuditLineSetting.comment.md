@@ -1,4 +1,4 @@
-﻿# TAuditLineSetting.cs
+# TAuditLineSetting.cs
 
 ## `internal static class TAuditLineSetting`
 

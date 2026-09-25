@@ -1,4 +1,4 @@
-﻿# LCourtArchive.cs
+# LCourtArchive.cs
 
 ## `public sealed class LCourtArchive : LCourtVault`
 

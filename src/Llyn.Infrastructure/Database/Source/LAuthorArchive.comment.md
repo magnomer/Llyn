@@ -1,4 +1,4 @@
-﻿# LAuthorArchive.cs
+# LAuthorArchive.cs
 
 ## `public sealed class LAuthorArchive`
 

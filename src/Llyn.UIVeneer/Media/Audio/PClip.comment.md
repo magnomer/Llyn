@@ -1,4 +1,4 @@
-﻿# PClip.cs
+# PClip.cs
 
 ## `public partial class PEditor`
 

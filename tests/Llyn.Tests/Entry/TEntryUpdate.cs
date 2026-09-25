@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;

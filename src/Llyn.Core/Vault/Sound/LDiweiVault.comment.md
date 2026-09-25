@@ -1,4 +1,4 @@
-﻿# LDiweiVault.cs
+# LDiweiVault.cs
 
 ## `public interface LDiweiVault`
 

@@ -1,4 +1,4 @@
-﻿# PThemePanel.xaml
+# PThemePanel.xaml
 
 ## `<Style x:Key="Theme.Panel.Surface" TargetType="Border">`
 

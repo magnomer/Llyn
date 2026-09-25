@@ -1,4 +1,4 @@
-﻿# LDraftArchive.cs
+# LDraftArchive.cs
 
 ## `public sealed class LDraftArchive : LDraftVault`
 

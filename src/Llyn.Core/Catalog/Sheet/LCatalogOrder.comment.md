@@ -1,4 +1,4 @@
-﻿# LCatalogOrder.cs
+# LCatalogOrder.cs
 
 ## `public enum LCatalogOrder`
 

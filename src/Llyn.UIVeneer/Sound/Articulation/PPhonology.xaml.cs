@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -37,7 +37,7 @@ public partial class PPhonology : UserControl
 
         PInventory.ItemsSource = _pInventoryList;
 
-        PDisplay.PDisplayAttach(host, _lPhonology.LPhonologyEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lPhonology.LPhonologyEditor.LEditorLectern);
 
         PEditor.PEditorAttach(host, _lPhonology.LPhonologyEditor);
 

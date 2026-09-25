@@ -1,4 +1,4 @@
-﻿# LRegisterVault.cs
+# LRegisterVault.cs
 
 ## `public interface LRegisterVault`
 

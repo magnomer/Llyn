@@ -1,4 +1,4 @@
-﻿# TDraftCancel.cs
+# TDraftCancel.cs
 
 ## `public sealed class TDraftCancel`
 

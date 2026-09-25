@@ -1,4 +1,4 @@
-﻿# LLanguageVault.cs
+# LLanguageVault.cs
 
 ## `public interface LLanguageVault`
 

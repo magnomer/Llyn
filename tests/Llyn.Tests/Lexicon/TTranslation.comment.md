@@ -1,4 +1,4 @@
-﻿# TTranslation.cs
+# TTranslation.cs
 
 ## `public sealed class TTranslation`
 

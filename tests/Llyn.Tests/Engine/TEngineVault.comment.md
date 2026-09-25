@@ -1,4 +1,4 @@
-﻿# TEngineVault.cs
+# TEngineVault.cs
 
 ## `public sealed class TEngineVault`
 

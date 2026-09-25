@@ -1,4 +1,4 @@
-﻿# PThemeFrequency.xaml
+# PThemeFrequency.xaml
 
 ## `<Style x:Key="Theme.Frequency.Chip" TargetType="Border">`
 

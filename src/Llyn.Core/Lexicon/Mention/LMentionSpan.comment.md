@@ -1,4 +1,4 @@
-﻿# LMentionSpan.cs
+# LMentionSpan.cs
 
 ## `public static class LMentionSpan`
 

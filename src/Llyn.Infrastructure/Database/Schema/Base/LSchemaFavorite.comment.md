@@ -1,4 +1,4 @@
-﻿# LSchemaFavorite.cs
+# LSchemaFavorite.cs
 
 ## `public static class LSchemaFavorite`
 

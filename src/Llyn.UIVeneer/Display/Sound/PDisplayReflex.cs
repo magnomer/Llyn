@@ -11,13 +11,13 @@ namespace Llyn.UIVeneer;
 
 public partial class PDisplay
 {
-    private readonly ObservableCollection<PReflexItem> _pDisplayReflex = [];
+    private readonly ObservableCollection<LReflexItem> _pDisplayReflex = [];
 
     private void PDisplayReflexStart(long id)
     {
         try
         {
-            _lDisplay.LDisplayReflexStart(id);
+            _lLectern.LLecternReflexStart(id);
         }
         catch (Exception)
         {
@@ -27,24 +27,25 @@ public partial class PDisplay
     private void PDisplayReflexShow(LEntryDraft draft)
     {
         _pDisplayReflex.Clear();
-        HashSet<string> folded = PReflexFoldRead(_pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
+        LWindow window = _pDisplayHost.PWindowDeportment;
+        HashSet<string> folded = LReflexItem.LReflexFoldRead(window, draft.LEntryDraftLanguage);
         foreach (LReflexDraft reflex in draft.LEntryDraftReflexes)
         {
             if (reflex.LReflexDraftWritten)
             {
-                _pDisplayReflex.Add(PReflexItemCreate(_pDisplayHost, reflex, folded));
+                _pDisplayReflex.Add(LReflexItem.LReflexItemCreate(window, reflex, folded));
             }
         }
 
-        PReflexLeadApply(_pDisplayReflex);
-        PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
+        LReflexItem.LReflexLeadApply(_pDisplayReflex);
+        LReflexItem.LReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lLectern.LLecternFoldOpened);
     }
 
     private void PReflexPendingShow(long id)
     {
         try
         {
-            PDisplayReflexLoading.Visibility = _lDisplay.LDisplayReflexCheck(id)
+            PDisplayReflexLoading.Visibility = _lLectern.LLecternReflexCheck(id)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
@@ -59,7 +60,7 @@ public partial class PDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _lDisplay.LDisplayEntryLoad(id);
+            draft = _lLectern.LLecternEntryLoad(id);
         }
         catch (Exception)
         {
@@ -70,7 +71,8 @@ public partial class PDisplay
         {
             PDisplayReflexShow(draft);
             LWindow window = _pDisplayHost.PWindowDeportment;
-            PReflexAnchorApply(window, _pDisplayReflex, _lDisplay.LDisplayAnchorRead(id), PDisplayHeadword.Text);
+            LReflexItem.LReflexAnchorApply(
+                window, _pDisplayReflex, _lLectern.LLecternAnchorRead(id), PDisplayHeadword.Text);
         }
 
         PReflexPendingShow(id);
@@ -78,74 +80,7 @@ public partial class PDisplay
 
     private void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lDisplay.LDisplayFoldSet(PLook.PLookCheckedRead(PDisplayReflexFold.IsChecked));
-        PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lDisplay.LDisplayFoldOpened);
-    }
-
-    internal static PReflexItem PReflexItemCreate(
-        PWindow host, LReflexDraft reflex, HashSet<string> folded)
-    {
-        string language = reflex.LReflexDraftLanguage.Trim();
-        return PReflexItem.PReflexItemCreate(
-            host,
-            reflex,
-            PRespelling.PRespellingRead(host.PWindowDeportment, language),
-            host.PWindowDeportment.LWindowPhonemicCheck(language),
-            folded.Contains(language));
-    }
-
-    internal static HashSet<string> PReflexFoldRead(LWindow window, string language)
-    {
-        HashSet<string> folded = new(StringComparer.Ordinal);
-        if (language.Trim().Length == 0)
-        {
-            return folded;
-        }
-
-        foreach (LReflexRule rule in window.LWindowReflexRead(language))
-        {
-            if (rule.LReflexRuleFolded)
-            {
-                folded.Add(rule.LReflexRuleLanguage);
-            }
-        }
-
-        return folded;
-    }
-
-    internal static void PReflexLeadApply(IReadOnlyList<PReflexItem> rows)
-    {
-        string? held = null;
-        foreach (PReflexItem row in rows)
-        {
-            bool lead = !string.Equals(held, row.PReflexItemLanguage, StringComparison.Ordinal);
-            row.PReflexItemLead = lead;
-            held = row.PReflexItemLanguage;
-        }
-    }
-
-    internal static void PReflexAnchorApply(
-        LWindow window, IReadOnlyList<PReflexItem> rows, IReadOnlyList<LFanqieRow> fanqie, string headword)
-    {
-        bool anchorable = window.LWindowAnchorCheck(fanqie, headword);
-        foreach (PReflexItem row in rows)
-        {
-            row.PReflexItemAnchorable = anchorable;
-            row.PReflexItemAnchor = window.LWindowAnchorFormat(
-                fanqie, row.PReflexItemAnchors, headword, PAnchorItem.PAnchorItemSeparator);
-        }
-    }
-
-    internal static void PReflexFoldApply(IReadOnlyList<PReflexItem> rows, ToggleButton fold, bool opened)
-    {
-        bool any = false;
-        foreach (PReflexItem row in rows)
-        {
-            any |= row.PReflexItemFolded;
-            row.PReflexItemHidden = PLook.PLookFirstRead(opened, false, row.PReflexItemFolded);
-        }
-
-        fold.IsChecked = PLook.PLookCheckedRead(opened);
-        fold.Visibility = PLook.PLookVisibleRead(any);
+        _lLectern.LLecternFoldSet(PLook.PLookCheckedRead(PDisplayReflexFold.IsChecked));
+        LReflexItem.LReflexFoldApply(_pDisplayReflex, PDisplayReflexFold, _lLectern.LLecternFoldOpened);
     }
 }

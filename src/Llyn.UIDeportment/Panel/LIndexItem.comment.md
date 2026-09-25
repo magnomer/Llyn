@@ -1,4 +1,4 @@
-﻿# LIndexItem.cs
+# LIndexItem.cs
 
 ## `public sealed class LIndexItem`
 

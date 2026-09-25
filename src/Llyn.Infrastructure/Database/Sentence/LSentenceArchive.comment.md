@@ -1,4 +1,4 @@
-﻿# LSentenceArchive.cs
+# LSentenceArchive.cs
 
 ## `public sealed class LSentenceArchive`
 

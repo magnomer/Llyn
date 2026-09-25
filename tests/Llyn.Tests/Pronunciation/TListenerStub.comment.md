@@ -1,4 +1,4 @@
-﻿# TListenerStub.cs
+# TListenerStub.cs
 
 ## `internal sealed class TListenerStub : LListener`
 

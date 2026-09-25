@@ -1,4 +1,4 @@
-﻿# vocabulary.json
+# vocabulary.json
 
 ## file
 

@@ -1,4 +1,4 @@
-﻿# TEntryLoad.cs
+# TEntryLoad.cs
 
 ## `public sealed class TEntryLoad`
 

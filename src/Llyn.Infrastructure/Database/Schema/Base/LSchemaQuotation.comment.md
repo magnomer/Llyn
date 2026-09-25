@@ -1,4 +1,4 @@
-﻿# LSchemaQuotation.cs
+# LSchemaQuotation.cs
 
 ## `public static class LSchemaQuotation`
 

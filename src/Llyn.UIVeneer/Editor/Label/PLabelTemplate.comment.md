@@ -1,4 +1,4 @@
-﻿# PLabelTemplate.xaml
+# PLabelTemplate.xaml
 
 ## `Theme.Label.Field`
 

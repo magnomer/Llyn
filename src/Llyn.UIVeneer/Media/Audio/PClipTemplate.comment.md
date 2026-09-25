@@ -1,4 +1,4 @@
-﻿# PClipTemplate.xaml
+# PClipTemplate.xaml
 
 ## `<Style x:Key="Theme.Clip.Preview" TargetType="Button" BasedOn="{StaticResource Theme.Popup.IconAction}">`
 

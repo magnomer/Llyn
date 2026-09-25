@@ -1,4 +1,4 @@
-﻿# LImageVault.cs
+# LImageVault.cs
 
 ## `public interface LImageVault`
 

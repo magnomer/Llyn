@@ -1,4 +1,4 @@
-﻿# PMeaningTemplate.xaml.cs
+# PMeaningTemplate.xaml.cs
 
 ## `public partial class PMeaningTemplate : ResourceDictionary`
 

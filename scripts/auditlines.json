@@ -1,0 +1,46 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "sources": {
+    "roots": [
+      "src",
+      "tests"
+    ],
+    "extensions": [
+      ".cs",
+      ".xaml",
+      ".csproj"
+    ],
+    "commentPattern": "*.comment.md",
+    "excludeSegments": [
+      ".git",
+      ".vs",
+      "bin",
+      "obj",
+      "artifacts",
+      "packages",
+      "node_modules",
+      "publish"
+    ]
+  },
+  "thresholds": {
+    "limit": 500,
+    "warning": 450
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "linesPrefix": "Lines-",
+    "filesPrefix": "Files-",
+    "depth": 1
+  },
+  "width": {
+    ".cs": 120,
+    ".xaml": 200
+  },
+  "hotspot": {
+    "commits": 30,
+    "top": 15
+  }
+}

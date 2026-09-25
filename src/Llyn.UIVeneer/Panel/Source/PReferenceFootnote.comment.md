@@ -1,4 +1,4 @@
-﻿# PReferenceFootnote.xaml
+# PReferenceFootnote.xaml
 
 ## `ResourceDictionary`
 

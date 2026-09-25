@@ -1,4 +1,4 @@
-﻿# PCollocationTemplate.xaml.cs
+# PCollocationTemplate.xaml.cs
 
 ## `public partial class PCollocationTemplate : ResourceDictionary`
 

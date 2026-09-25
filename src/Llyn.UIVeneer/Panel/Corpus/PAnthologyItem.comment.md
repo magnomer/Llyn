@@ -1,4 +1,4 @@
-﻿# PAnthologyItem.cs
+# PAnthologyItem.cs
 
 ## `internal sealed class PAnthologyItem`
 

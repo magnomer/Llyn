@@ -1,4 +1,4 @@
-﻿# LEntryLoader.cs
+# LEntryLoader.cs
 
 ## `public sealed class LEntryLoader`
 

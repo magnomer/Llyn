@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Core;
 using Llyn.ShellEngine;
+
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -104,9 +106,9 @@ public partial class PEditor
 
         return new PClipReading(
             recording,
-            PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
-            PAccentItem.PAccentFlagFind(
-                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety),
+            LAccentItem.LAccentLabelFormat(variety),
+            LAccentItem.LAccentFlagFind(
+                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety, PEnsign.PEnsignFind),
             action);
     }
 

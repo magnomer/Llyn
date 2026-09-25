@@ -1,4 +1,4 @@
-﻿# TChronicle.cs
+# TChronicle.cs
 
 ## `public sealed class TChronicle`
 

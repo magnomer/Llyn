@@ -1,4 +1,4 @@
-﻿# PDisplayCompass.xaml.cs
+# PDisplayCompass.xaml.cs
 
 ## `public partial class PDisplayCompass : ResourceDictionary`
 

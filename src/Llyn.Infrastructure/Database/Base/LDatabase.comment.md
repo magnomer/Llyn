@@ -1,4 +1,4 @@
-﻿# LDatabase.cs
+# LDatabase.cs
 
 ## `public sealed class LDatabase : LVault`
 

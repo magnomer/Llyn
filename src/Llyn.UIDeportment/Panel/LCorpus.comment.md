@@ -1,4 +1,4 @@
-﻿# LCorpus.cs
+# LCorpus.cs
 
 ## `public sealed class LCorpus`
 

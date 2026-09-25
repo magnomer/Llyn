@@ -1,4 +1,4 @@
-﻿# LReferenceUsage.cs
+# LReferenceUsage.cs
 
 ## `public sealed class LReferenceUsage`
 

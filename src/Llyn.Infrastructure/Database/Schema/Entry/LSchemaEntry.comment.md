@@ -1,4 +1,4 @@
-﻿# LSchemaEntry.cs
+# LSchemaEntry.cs
 
 ## `public static class LSchemaEntry`
 

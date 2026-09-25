@@ -1,4 +1,4 @@
-﻿# LLanguageLoader.cs
+# LLanguageLoader.cs
 
 ## `public sealed partial class LLanguageLoader : LLanguageVault`
 

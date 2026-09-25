@@ -41,11 +41,6 @@ public sealed class LReflexClerk
         _lReflexClerkBulletin = raise;
     }
 
-    public static IReadOnlyList<long> LReflexAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
-    {
-        return LAnchor.LAnchorToggle(anchors, fanqieId, anchored);
-    }
-
     public static bool LReflexAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
         return LAnchor.LAnchorMatch(one, other);

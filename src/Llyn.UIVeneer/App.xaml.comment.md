@@ -1,4 +1,4 @@
-﻿# App.xaml.cs
+# App.xaml.cs
 
 ## `private readonly LUsher _lBootstrapUsher = new LUsherShell(new LUsherFile());`
 

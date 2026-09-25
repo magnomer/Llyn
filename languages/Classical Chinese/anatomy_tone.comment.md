@@ -1,4 +1,4 @@
-﻿# anatomy_tone.json
+# anatomy_tone.json
 
 ## file
 

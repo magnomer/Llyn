@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;

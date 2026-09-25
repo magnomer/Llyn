@@ -1,4 +1,4 @@
-﻿# PTenorBrowse.cs
+# PTenorBrowse.cs
 
 ## `public partial class PTenor`
 

@@ -102,6 +102,7 @@ internal static class TAuditTruthSetting
         "LTenure",
         "LVista",
         "LPosture",
+        "LDisplay",
         "LWindow",
         "List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)>",
         "Action<LBulletin>",

@@ -1,4 +1,4 @@
-﻿# LExampleDraft.cs
+# LExampleDraft.cs
 
 ## `public sealed record LExampleDraft(`
 

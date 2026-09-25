@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
-    <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />
-    <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
+    <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
   </ItemGroup>
 </Project>

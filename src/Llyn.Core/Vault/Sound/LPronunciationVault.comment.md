@@ -1,4 +1,4 @@
-﻿# LPronunciationVault.cs
+# LPronunciationVault.cs
 
 ## `public interface LPronunciationVault`
 

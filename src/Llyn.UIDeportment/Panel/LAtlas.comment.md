@@ -1,4 +1,4 @@
-﻿# LAtlas.cs
+# LAtlas.cs
 
 ## `public sealed class LAtlas`
 

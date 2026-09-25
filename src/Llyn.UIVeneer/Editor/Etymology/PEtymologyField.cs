@@ -25,7 +25,7 @@ public partial class PEditor
     {
         PEtymologyField.PEtymologyLanguage = draft.LEntryDraftLanguage;
         PEtymologyField.PEtymologyText = draft.LEntryDraftEtymology.LEtymologyDraftText;
-        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorDisplay.LDisplayEtymonRead(draft));
+        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorLectern.LLecternEtymonRead(draft));
         PEtymologyField.PEtymologyMentionShow(
             _pEditorHost.PWindowDeportment,
             draft.LEntryDraftEtymology.LEtymologyDraftText,

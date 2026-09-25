@@ -27,7 +27,7 @@ public partial class PWing : UserControl
         _lWing.LWingDraftChanged += PWingDisplay.PDisplayShow;
         _lWing.LWingCleared += PWingDisplay.PDisplayClear;
 
-        PWingDisplay.PDisplayAttach(host, _lWing.LWingDisplay);
+        PWingDisplay.PDisplayAttach(host, _lWing.LWingLectern);
     }
 
     internal async void PWingRestore(string tab, long? id)

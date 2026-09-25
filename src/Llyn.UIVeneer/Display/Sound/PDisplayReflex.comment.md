@@ -42,34 +42,3 @@ The fetching line settles with the same bulletin, since the fill is over when it
 ## `private void PReflexFoldHandle(object sender, RoutedEventArgs e)`
 
 Opens or closes the fold as the toggle under the stack was pressed.
-
-## `internal static PReflexItem PReflexItemCreate(`
-
-A row for one draft reflex, asking the engine for its language's respelling state and phonemic flag.
-The row is folded when its language is in `folded`.
-Shared with the editor, whose rows are built by the same rule.
-
-## `internal static HashSet<string> PReflexFoldRead(LWindow window, string language)`
-
-The languages the pack of `language` folds away, read from its reflex rules.
-Empty for a blank language or a pack without rules.
-
-## `internal static void PReflexLeadApply(IReadOnlyList<PReflexItem> rows)`
-
-Marks each row that opens a run of one language as its lead, so the language prints once per run.
-Shared with the editor, whose rows lead by the same rule.
-
-## `internal static void PReflexAnchorApply(`
-
-Writes each row's anchor label from `fanqie`, and whether the row may be anchored at all.
-The engine decides both, so a row it refuses prints nothing.
-Shared by both panes, so the label reads the same in the editor and the reading view.
-
-## `internal static void PReflexFoldToggle(IReadOnlyList<PReflexItem> rows, ToggleButton fold)`
-
-Takes the fold state from the toggle and applies it to the rows.
-
-## `internal static void PReflexFoldApply(IReadOnlyList<PReflexItem> rows, ToggleButton fold)`
-
-Hides every folded row while the fold is closed and shows it while open.
-The toggle shows the state and is visible only when some row is folded.

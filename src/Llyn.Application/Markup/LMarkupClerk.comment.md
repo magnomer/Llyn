@@ -1,4 +1,4 @@
-﻿# LMarkupClerk.cs
+# LMarkupClerk.cs
 
 ## `public sealed class LMarkupClerk`
 

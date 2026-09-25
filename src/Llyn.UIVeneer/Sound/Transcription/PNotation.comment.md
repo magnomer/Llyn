@@ -1,4 +1,4 @@
-﻿# PNotation.cs
+# PNotation.cs
 
 ## `public partial class PEditor`
 

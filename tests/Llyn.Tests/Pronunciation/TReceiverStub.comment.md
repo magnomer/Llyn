@@ -1,4 +1,4 @@
-﻿# TReceiverStub.cs
+# TReceiverStub.cs
 
 ## `internal sealed class TReceiverStub`
 

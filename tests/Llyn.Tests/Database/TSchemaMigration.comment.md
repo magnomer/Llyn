@@ -1,4 +1,4 @@
-﻿# TSchemaMigration.cs
+# TSchemaMigration.cs
 
 ## `public sealed class TSchemaMigration`
 

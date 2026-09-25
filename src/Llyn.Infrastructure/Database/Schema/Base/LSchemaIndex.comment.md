@@ -1,4 +1,4 @@
-﻿# LSchemaIndex.cs
+# LSchemaIndex.cs
 
 ## `public static class LSchemaIndex`
 

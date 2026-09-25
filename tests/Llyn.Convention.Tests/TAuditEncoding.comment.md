@@ -2,8 +2,8 @@
 
 ## `public sealed class TAuditEncoding`
 
-Keeps every tracked text file readable as the bytes it claims to be.
-A tool writing through the wrong code page leaves a second mark, a raw control byte or doubled characters.
+Keeps every tracked text file in one form: UTF-8 with no byte order mark and LF line breaks.
+A tool writing through the wrong code page leaves a mark, a raw control byte or doubled characters.
 Each fact reads the raw bytes, never a decoded string, so the decoder cannot hide what it repaired.
 The kinds of file, the skipped names and the patterns live in `TAuditEncodingSetting`.
 
@@ -15,16 +15,15 @@ A decoder that throws on an invalid sequence instead of writing a replacement ch
 
 Decodes every file strictly and names the ones with a byte sequence that is not UTF-8.
 
-## `public void AuditEncoding_TrackedText_MarksOnceAtMost()`
+## `public void AuditEncoding_TrackedText_HoldsNoMark()`
 
-Names every file with a byte order mark anywhere but the first three bytes.
-A mark at the start is allowed.
-A mark after it means the file went twice through a writer that adds one.
+Names every file with a byte order mark anywhere, the first three bytes included.
+The repository writes UTF-8 without a mark, as `.editorconfig` declares for every editor.
 
-## `public void AuditEncoding_TrackedText_BreaksLinesOneWay()`
+## `public void AuditEncoding_TrackedText_BreaksLinesWithLf()`
 
-Names every file that holds both CRLF and LF, or a carriage return with no line feed after it.
-The repository holds both conventions and either is fine, but one file follows one of them.
+Names every file holding a carriage return, whether paired with a line feed or alone.
+The repository breaks lines with LF alone, in Git and in the working tree, as `.gitattributes` declares.
 
 ## `public void AuditEncoding_TrackedText_EndsWithNewline()`
 

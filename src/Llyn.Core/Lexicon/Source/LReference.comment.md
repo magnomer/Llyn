@@ -1,4 +1,4 @@
-﻿# LReference.cs
+# LReference.cs
 
 ## `public sealed record LReference(`
 

@@ -1,4 +1,4 @@
-﻿# LMentionArchive.cs
+# LMentionArchive.cs
 
 ## `public sealed class LMentionArchive`
 

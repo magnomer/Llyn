@@ -1,4 +1,4 @@
-﻿# LMeaningVault.cs
+# LMeaningVault.cs
 
 ## `public interface LMeaningVault`
 

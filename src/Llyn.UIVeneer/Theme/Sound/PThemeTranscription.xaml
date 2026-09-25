@@ -18,7 +18,7 @@
     </Style>
 
     <Style x:Key="Theme.Transcription.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Label}">
-        <Setter Property="Text" Value="{Binding PTranscriptionItemLabel}" />
+        <Setter Property="Text" Value="{Binding LTranscriptionItemLabel}" />
     </Style>
 
     <Style x:Key="Theme.Transcription.Option" TargetType="ComboBoxItem">
@@ -31,7 +31,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBoxItem">
                     <Border x:Name="PSchemeSurface" Padding="{TemplateBinding Padding}" Background="Transparent" CornerRadius="7">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding PTranscriptionChoiceLabel}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding LTranscriptionChoiceLabel}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
@@ -45,7 +45,7 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PTranscriptionChoiceTaken}" Value="True">
+            <DataTrigger Binding="{Binding LTranscriptionChoiceTaken}" Value="True">
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
         </Style.Triggers>
@@ -61,9 +61,9 @@
         <Setter Property="FontSize" Value="11" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="ItemsSource" Value="{Binding PTranscriptionItemChoice}" />
-        <Setter Property="SelectedValuePath" Value="PTranscriptionChoiceScheme" />
-        <Setter Property="SelectedValue" Value="{Binding PTranscriptionItemScheme, Mode=TwoWay}" />
+        <Setter Property="ItemsSource" Value="{Binding LTranscriptionItemChoice}" />
+        <Setter Property="SelectedValuePath" Value="LTranscriptionChoiceScheme" />
+        <Setter Property="SelectedValue" Value="{Binding LTranscriptionItemScheme, Mode=TwoWay}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource Theme.Transcription.Option}" />
         <Setter Property="ToolTip" Value="{DynamicResource Transcription.Title}" />
         <Setter Property="Template">
@@ -91,7 +91,7 @@
                                     VerticalAlignment="Center"
                                     FontSize="{TemplateBinding FontSize}"
                                     Foreground="{TemplateBinding Foreground}"
-                                    Text="{Binding PTranscriptionItemLabel}" />
+                                    Text="{Binding LTranscriptionItemLabel}" />
                                 <local:PIconImage
                                     x:Name="PSchemeChevron"
                                     Width="12"
@@ -131,9 +131,9 @@
     </Style>
 
     <Style x:Key="Theme.Transcription.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
-        <Setter Property="Text" Value="{Binding PTranscriptionItemText}" />
+        <Setter Property="Text" Value="{Binding LTranscriptionItemText}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PTranscriptionItemText}" Value="">
+            <DataTrigger Binding="{Binding LTranscriptionItemText}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Input.Transcription}" />
             </DataTrigger>
         </Style.Triggers>
@@ -163,7 +163,7 @@
                         <TextBox
                             Style="{StaticResource Theme.Pronunciation.Field}"
                             Tag="{DynamicResource Input.Transcription}"
-                            Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding LTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Button Style="{StaticResource Theme.Transcription.Phonetician}" />
                     <StackPanel Style="{StaticResource Theme.Accent.Control}">
@@ -186,7 +186,7 @@
                     <TextBlock Style="{StaticResource Theme.Transcription.Label}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PTranscriptionItemText}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding LTranscriptionItemText}" />
                 </StackPanel>
             </Grid>
         </Border>

@@ -1,4 +1,4 @@
-﻿# PTheme.xaml
+# PTheme.xaml
 
 ## `<ResourceDictionary.MergedDictionaries>`
 

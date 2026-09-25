@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Xunit;

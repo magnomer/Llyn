@@ -1,4 +1,4 @@
-﻿# PMembershipItem.cs
+# PMembershipItem.cs
 
 ## `internal sealed class PMembershipItem`
 

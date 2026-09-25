@@ -1,4 +1,4 @@
-﻿# PThemePronunciation.xaml
+# PThemePronunciation.xaml
 
 ## `<sys:Double x:Key="Theme.Pronunciation.Height">`
 

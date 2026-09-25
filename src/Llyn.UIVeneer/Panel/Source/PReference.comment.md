@@ -1,4 +1,4 @@
-﻿# PReference.xaml
+# PReference.xaml
 
 ## `<UserControl.Resources>`
 

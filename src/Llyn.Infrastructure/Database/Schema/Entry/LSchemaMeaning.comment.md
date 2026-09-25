@@ -1,4 +1,4 @@
-﻿# LSchemaMeaning.cs
+# LSchemaMeaning.cs
 
 ## `public static class LSchemaMeaning`
 

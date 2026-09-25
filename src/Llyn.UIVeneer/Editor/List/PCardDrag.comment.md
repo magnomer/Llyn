@@ -1,4 +1,4 @@
-﻿# PCardDrag.cs
+# PCardDrag.cs
 
 ## `public partial class PEditor`
 

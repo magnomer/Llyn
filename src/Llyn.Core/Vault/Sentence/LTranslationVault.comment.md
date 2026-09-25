@@ -1,4 +1,4 @@
-﻿# LTranslationVault.cs
+# LTranslationVault.cs
 
 ## `public interface LTranslationVault`
 

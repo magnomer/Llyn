@@ -1,4 +1,4 @@
-﻿# LMention.cs
+# LMention.cs
 
 ## `public sealed record LMention(`
 

@@ -1,4 +1,4 @@
-﻿namespace Convention.Tests;
+namespace Convention.Tests;
 
 internal static class TAuditCommentSetting
 {

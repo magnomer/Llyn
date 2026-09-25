@@ -1,4 +1,4 @@
-﻿# PThemeSearch.xaml
+# PThemeSearch.xaml
 
 ## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
 

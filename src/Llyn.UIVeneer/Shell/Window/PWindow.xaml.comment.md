@@ -1,4 +1,4 @@
-﻿# PWindow.xaml.cs
+# PWindow.xaml.cs
 
 ## `public partial class PWindow : Window`
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,7 +11,7 @@ public partial class PDisplay
     {
         try
         {
-            _lDisplay.LDisplayScriptStart(id);
+            _lLectern.LLecternScriptStart(id);
         }
         catch (Exception)
         {
@@ -22,21 +23,21 @@ public partial class PDisplay
         IReadOnlyList<LScriptGroup> groups;
         try
         {
-            groups = _lDisplay.LDisplayScriptDivide(id);
+            groups = _lLectern.LLecternScriptDivide(id);
         }
         catch (Exception)
         {
             groups = [];
         }
 
-        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayScript);
+        LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayScript);
         PDisplayScript.PScriptItems = PScriptItem.PScriptItemScan(groups);
-        PDisplayScript.PScriptPending = _lDisplay.LDisplayScriptCheck(id);
+        PDisplayScript.PScriptPending = _lLectern.LLecternScriptCheck(id);
     }
 
     private void PDisplayScriptClear()
     {
         PDisplayScript.PScriptItems = null;
-        PDisplayScript.PScriptPending = _lDisplay.LDisplayScriptCheck(null);
+        PDisplayScript.PScriptPending = _lLectern.LLecternScriptCheck(null);
     }
 }

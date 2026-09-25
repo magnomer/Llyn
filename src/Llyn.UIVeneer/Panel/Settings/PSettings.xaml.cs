@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.UIDeportment;

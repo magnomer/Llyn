@@ -1,4 +1,4 @@
-﻿# Llyn.Tests
+# Llyn.Tests
 
 Test layout and policy for the behaviour-focused test suite.
 

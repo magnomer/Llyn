@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -39,7 +40,7 @@ public sealed class LEditor
         _lPhonologyPort = phonology;
         _lSettingsPort = settings;
         LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
-        LEditorDisplay = new LDisplay(entries, phonology, settings);
+        LEditorLectern = new LLectern(new LDisplay(entries, phonology, settings));
         LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
         LEditorClip = new LClip();
         LEditorNotation = new LNotation();
@@ -61,7 +62,7 @@ public sealed class LEditor
 
     public LDesk LEditorDesk { get; }
 
-    public LDisplay LEditorDisplay { get; }
+    public LLectern LEditorLectern { get; }
 
     public LCard LEditorCard { get; }
 
@@ -134,11 +135,11 @@ public sealed class LEditor
 
     public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;
 
-    public bool LEditorFanqiePending => LEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
+    public bool LEditorFanqiePending => LEditorLectern.LLecternFanqieCheck(LEditorEntry);
 
-    public bool LEditorScriptPending => LEditorDisplay.LDisplayScriptCheck(LEditorEntry);
+    public bool LEditorScriptPending => LEditorLectern.LLecternScriptCheck(LEditorEntry);
 
-    public bool LEditorParadigmPending => LEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
+    public bool LEditorParadigmPending => LEditorLectern.LLecternParadigmCheck(LEditorEntry);
 
     public string LEditorParadigmLanguage => LParadigm.LParadigmLanguageRead(LEditorParadigmRead());
 
@@ -152,7 +153,7 @@ public sealed class LEditor
 
         _lEditorVista = vista;
         LEditorDesk.LDeskVistaRestore(vista);
-        LEditorDisplay.LDisplayVistaRestore(vista);
+        LEditorLectern.LLecternVistaRestore(vista);
     }
 
     public void LEditorVistaRestore(LWindow window)

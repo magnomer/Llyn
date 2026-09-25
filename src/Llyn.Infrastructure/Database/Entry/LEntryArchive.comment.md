@@ -1,4 +1,4 @@
-﻿# LEntryArchive.cs
+# LEntryArchive.cs
 
 ## `public sealed partial class LEntryArchive : LEntryVault`
 

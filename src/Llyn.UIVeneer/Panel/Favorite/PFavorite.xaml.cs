@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.UIDeportment;
@@ -33,7 +33,7 @@ public partial class PFavorite : UserControl
 
         PRoster.ItemsSource = _pRosterList;
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);
         PEditor.PEditorChronicleChanged += PFavoriteChronicleUpdate;

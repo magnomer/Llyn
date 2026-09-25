@@ -1,4 +1,4 @@
-﻿# PPlaybackAudio.cs
+# PPlaybackAudio.cs
 
 ## `public partial class PEditor`
 

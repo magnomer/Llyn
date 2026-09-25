@@ -25,6 +25,13 @@ public sealed record LFrequency(
 
     public string LFrequencyFigure => LFrequencyUnit is string unit ? unit + " " + LFrequencyRaw : LFrequencyRaw;
 
+    public static bool LFrequencyCheck(IReadOnlyList<LFrequency> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Count > 0;
+    }
+
     public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)
     {
         if (LFrequencyOnceRead(spec, raw) is not double interval)

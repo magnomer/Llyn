@@ -1,4 +1,4 @@
-﻿# PSCoinage.xaml
+# PSCoinage.xaml
 
 The dialog New opens when nothing in the taxonomy or tenor panel is chosen.
 A Tag or a Register is only a name, so an editor for one would hold one field.

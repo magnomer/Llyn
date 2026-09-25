@@ -1,4 +1,4 @@
-﻿# TState.cs
+# TState.cs
 
 ## `public sealed class TState`
 

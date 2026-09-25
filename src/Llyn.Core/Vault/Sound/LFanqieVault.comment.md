@@ -1,4 +1,4 @@
-﻿# LFanqieVault.cs
+# LFanqieVault.cs
 
 ## `public interface LFanqieVault`
 

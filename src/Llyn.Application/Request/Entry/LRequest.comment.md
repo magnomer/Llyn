@@ -1,4 +1,4 @@
-﻿# LRequest.cs
+# LRequest.cs
 
 ## `public abstract record LRequest(long LRequestDraftId);`
 

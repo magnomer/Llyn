@@ -1,4 +1,4 @@
-﻿# LCourt.cs
+# LCourt.cs
 
 ## `public sealed record LCourt(`
 

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>CA1416</WarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Llyn.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
+  </ItemGroup>
+</Project>

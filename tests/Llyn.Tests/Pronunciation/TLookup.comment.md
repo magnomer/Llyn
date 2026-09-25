@@ -1,4 +1,4 @@
-﻿# TLookup.cs
+# TLookup.cs
 
 ## `public sealed class TLookup`
 

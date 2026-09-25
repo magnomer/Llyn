@@ -1,4 +1,4 @@
-﻿# Test Naming Rules
+# Test Naming Rules
 
 This is the authoritative source for test method names in every suite under `tests/`.
 It sits beside `docs-internal/RulesName.md`, which governs the file and class names those methods live in.

@@ -1,4 +1,4 @@
-﻿# LVideoArchive.cs
+# LVideoArchive.cs
 
 ## `public sealed class LVideoArchive`
 

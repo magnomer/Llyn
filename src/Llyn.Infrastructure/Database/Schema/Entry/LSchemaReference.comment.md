@@ -1,4 +1,4 @@
-﻿# LSchemaReference.cs
+# LSchemaReference.cs
 
 ## `public static class LSchemaReference`
 

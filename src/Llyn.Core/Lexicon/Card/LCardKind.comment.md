@@ -1,4 +1,4 @@
-﻿# LCardKind.cs
+# LCardKind.cs
 
 ## `public enum LCardKind`
 

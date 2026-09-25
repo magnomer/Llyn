@@ -1,4 +1,4 @@
-﻿# LSchemaVersion.cs
+# LSchemaVersion.cs
 
 ## `public static class LSchemaVersion`
 

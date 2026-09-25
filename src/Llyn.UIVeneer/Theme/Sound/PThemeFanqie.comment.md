@@ -1,4 +1,4 @@
-﻿# PThemeFanqie.xaml
+# PThemeFanqie.xaml
 
 ## `<Style x:Key="Theme.Fanqie.Box" TargetType="Border">`
 
@@ -7,7 +7,7 @@ It takes the plain surface and a thin line, the same plate the script box uses.
 
 ## `<Style x:Key="Theme.Fanqie.Character" TargetType="TextBlock">`
 
-The character heading a group of blocks, inked and in the glyph font the box inherits from `PFontApply`.
+The character heading a group of blocks, inked and in the glyph font the box inherits from `LFontApply`.
 It collapses when empty, so a one-character headword leaves no column.
 
 ## `<Style x:Key="Theme.Fanqie.Chip" TargetType="Border">`
@@ -113,7 +113,7 @@ The localized word for the series inside the chip, in the interface font.
 
 ## `<Style x:Key="Theme.Fanqie.StemKey" TargetType="Button">`
 
-One series as a pressable chip, inked in the glyph font the box inherits from `PFontApply`.
+One series as a pressable chip, inked in the glyph font the box inherits from `LFontApply`.
 Pressing it opens that series in the xiesheng panel, as the initial and rime links open a cell.
 
 ## `<DataTemplate x:Key="Theme.Fanqie.StemChipItem">`

@@ -1,4 +1,4 @@
-﻿# LFanqieRow.cs
+# LFanqieRow.cs
 
 ## `public sealed record LFanqieRow(`
 

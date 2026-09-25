@@ -1,4 +1,4 @@
-﻿# PInventoryItem.cs
+# PInventoryItem.cs
 
 ## `internal sealed class PInventoryItem`
 

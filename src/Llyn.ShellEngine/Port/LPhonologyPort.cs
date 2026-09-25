@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -13,6 +13,8 @@ public interface LPhonologyPort
     void LEngineFanqieStart(long entryId);
 
     IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId);
+
+    string LEngineReadingRead(long entryId, string headword);
 
     void LEngineFanqieRebuild(long entryId);
 

@@ -1,4 +1,4 @@
-﻿# PDisplayIncoming.cs
+# PDisplayIncoming.cs
 
 ## `public partial class PDisplay`
 

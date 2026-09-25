@@ -1,4 +1,4 @@
-﻿# LFrequencyVault.cs
+# LFrequencyVault.cs
 
 ## `public interface LFrequencyVault`
 

@@ -40,8 +40,6 @@ public interface LDraftPort
 
     int LEngineOffsetRead(string text, int unit);
 
-    IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored);
-
     bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other);
 
     IReadOnlyList<LAnchorRow> LEngineAnchorScan(

@@ -1,4 +1,4 @@
-﻿# LAuthorVault.cs
+# LAuthorVault.cs
 
 ## `public interface LAuthorVault`
 

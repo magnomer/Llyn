@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -236,9 +236,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     {
         PSpeakerName.Text = _lEditor.LEditorLanguage;
         PSpeakerFlagUpdate();
-        PFont.PFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
-        PFont.PFontPlace(PHeadword, PHeadwordGhost);
-        PFont.PFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
+        LFontFace.LFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
+        LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
+        LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTonal;
         PPronunciation.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
         PAccent.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
@@ -360,7 +360,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorFrequencyUpdate()
     {
-        PFrequencyLabel.PFrequencyChipShow(
+        LFrequencyLabel.LFrequencyChipShow(
             PEditorFrequencySection,
             PEditorFrequencyChip,
             PEditorFrequency,
@@ -370,14 +370,14 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorParadigmUpdate()
     {
-        PFont.PFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorParadigmLanguage, PEditorParadigm);
+        LFontFace.LFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorParadigmLanguage, PEditorParadigm);
         PEditorParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
             _lEditor.LEditorParadigmRead(), _lEditor.LEditorParadigmPending, _lEditor.LEditorMorphology, true);
     }
 
     private void PEditorScriptUpdate()
     {
-        PFont.PFontApply(
+        LFontFace.LFontApply(
             _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorScript);
         PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
         PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
@@ -388,7 +388,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     private void PEditorFanqieUpdate()
     {
         PReflexAnchorShow();
-        PFont.PFontApply(
+        LFontFace.LFontApply(
             _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorFanqie);
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
         PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;

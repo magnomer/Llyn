@@ -1,4 +1,4 @@
-﻿# LSourceFactory.cs
+# LSourceFactory.cs
 
 ## `public interface LSourceFactory`
 

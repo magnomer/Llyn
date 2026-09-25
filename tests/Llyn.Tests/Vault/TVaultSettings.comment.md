@@ -1,4 +1,4 @@
-﻿# TVaultSettings.cs
+# TVaultSettings.cs
 
 ## `public sealed class TVaultSettings`
 

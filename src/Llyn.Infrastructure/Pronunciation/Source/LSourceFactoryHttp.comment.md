@@ -1,4 +1,4 @@
-﻿# LSourceFactoryHttp.cs
+# LSourceFactoryHttp.cs
 
 ## `public sealed class LSourceFactoryHttp : LSourceFactory`
 

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using Llyn.Core;
 using Llyn.Infrastructure;

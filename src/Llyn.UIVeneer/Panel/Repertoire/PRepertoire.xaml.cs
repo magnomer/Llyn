@@ -39,7 +39,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         PScenarioVideo.ItemsSource = _pScenarioVideo;
 
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-        PDisplay.PDisplayAttach(host, editor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, editor.LEditorLectern);
         PEditor.PEditorAttach(host, editor);
 
         LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;

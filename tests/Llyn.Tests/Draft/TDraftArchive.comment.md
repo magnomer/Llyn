@@ -1,4 +1,4 @@
-﻿# TDraftArchive.cs
+# TDraftArchive.cs
 
 ## `public sealed class TDraftArchive`
 

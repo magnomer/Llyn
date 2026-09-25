@@ -1,4 +1,4 @@
-﻿# PThemeMarker.xaml
+# PThemeMarker.xaml
 
 ## `<Style x:Key="Theme.Marker.Field" TargetType="Border">`
 

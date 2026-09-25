@@ -1,4 +1,4 @@
-﻿# LMorphologyVault.cs
+# LMorphologyVault.cs
 
 ## `public interface LMorphologyVault`
 

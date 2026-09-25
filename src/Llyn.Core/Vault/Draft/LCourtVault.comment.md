@@ -1,4 +1,4 @@
-﻿# LCourtVault.cs
+# LCourtVault.cs
 
 ## `public interface LCourtVault`
 

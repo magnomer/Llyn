@@ -1,4 +1,4 @@
-﻿# PQuotationItem.cs
+# PQuotationItem.cs
 
 ## `internal sealed class PQuotationItem`
 

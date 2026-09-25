@@ -1,4 +1,4 @@
-﻿# PStateConverter.cs
+# PStateConverter.cs
 
 ## `public sealed class PStateConverter`
 

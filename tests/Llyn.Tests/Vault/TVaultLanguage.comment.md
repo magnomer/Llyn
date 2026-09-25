@@ -1,4 +1,4 @@
-﻿# TVaultLanguage.cs
+# TVaultLanguage.cs
 
 ## `public sealed class TVaultLanguage`
 

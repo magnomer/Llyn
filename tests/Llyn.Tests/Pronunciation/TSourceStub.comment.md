@@ -1,4 +1,4 @@
-﻿# TSourceStub.cs
+# TSourceStub.cs
 
 ## `internal sealed class TSourceStub`
 

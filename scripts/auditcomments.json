@@ -1,0 +1,80 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "sources": {
+    "roots": [
+      "languages",
+      "localization",
+      "src",
+      "tests",
+      "themes"
+    ],
+    "files": [
+      "Directory.Build.props",
+      "Llyn.slnx",
+      "version.json"
+    ],
+    "commentPattern": "*.comment.md",
+    "pairs": {
+      ".xaml.cs": "{base}.xaml.comment.md",
+      ".cs": "{base}.comment.md",
+      ".xaml": "{base}.comment.md",
+      ".csproj": "{base}.comment.md",
+      ".json": "{base}.comment.md",
+      ".props": "{base}.comment.md",
+      ".slnx": "{base}.comment.md"
+    },
+    "excludeSegments": [
+      ".git",
+      ".vs",
+      "bin",
+      "obj",
+      "artifacts",
+      "packages",
+      "node_modules",
+      "publish"
+    ],
+    "excludeSuffixes": [
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ]
+  },
+  "rules": {
+    "maxWords": 20,
+    "forbidden": [
+      ";"
+    ],
+    "sentenceMarks": [
+      ".",
+      "!",
+      "?"
+    ]
+  },
+  "remark": {
+    "markers": {
+      ".cs": [
+        "//",
+        "/*"
+      ],
+      ".xaml": [
+        "<!--"
+      ],
+      ".props": [
+        "<!--"
+      ]
+    },
+    "exemptFiles": [
+      "TAuditNameRegistry.cs"
+    ]
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "Comments-",
+    "depth": 1
+  }
+}

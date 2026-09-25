@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -14,12 +15,12 @@ public sealed class PLocalizationCatalog : INotifyPropertyChanged
 
     internal static string PLocalizationTextRead(string key)
     {
-        return PLocalizationTextFind(key) ?? key;
+        return LLocalizationCatalog.LLocalizationTextRead(key);
     }
 
     internal static string? PLocalizationTextFind(string key)
     {
-        return System.Windows.Application.Current?.TryFindResource(key) as string;
+        return LLocalizationCatalog.LLocalizationTextFind(key);
     }
 
     internal static void PLocalizationCatalogApply(

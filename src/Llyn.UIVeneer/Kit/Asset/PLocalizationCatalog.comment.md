@@ -9,11 +9,12 @@ This one object stands in for the catalog and announces every key at once when t
 ## `internal static string PLocalizationTextRead(string key)`
 
 The localized text under `key`, or the key itself when no locale declares it.
+It hands the read to `LLocalizationCatalog`, which owns the lookup.
 
 ## `internal static string? PLocalizationTextFind(string key)`
 
 The localized text under `key`, or null when no locale declares it.
-The plain read answers the key itself on a miss, which a caller cannot tell from a translation.
+It hands the find to `LLocalizationCatalog`, which owns the lookup.
 
 ## `internal static void PLocalizationCatalogApply(ResourceDictionary resources, IReadOnlyDictionary<string, string> texts)`
 

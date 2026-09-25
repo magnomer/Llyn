@@ -1,4 +1,4 @@
-﻿# LReferenceArchive.cs
+# LReferenceArchive.cs
 
 ## `public sealed class LReferenceArchive`
 

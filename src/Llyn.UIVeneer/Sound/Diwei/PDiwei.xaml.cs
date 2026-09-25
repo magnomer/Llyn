@@ -26,9 +26,9 @@ public partial class PDiwei : UserControl
 
     internal void PDiweiShow(LDiweiPage page, string kind)
     {
-        PFont.PFontApply(_lWindow, page.LDiweiPageLanguage, PDiweiHeadword);
-        PFont.PFontPlace(PDiweiHeadword);
-        PFont.PFontApply(_lWindow, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
+        LFontFace.LFontApply(_lWindow, page.LDiweiPageLanguage, PDiweiHeadword);
+        LFontFace.LFontPlace(PDiweiHeadword);
+        LFontFace.LFontApply(_lWindow, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
         PDiweiHeadword.Text = page.LDiweiPageKey;
         PDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         PDiweiLanguage.Text = page.LDiweiPageLanguage;

@@ -1,4 +1,4 @@
-﻿# LSourceReader.cs
+# LSourceReader.cs
 
 ## `internal static class LSourceReader`
 

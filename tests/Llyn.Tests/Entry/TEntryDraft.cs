@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Llyn.Core;
 using Llyn.ShellEngine;

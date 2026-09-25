@@ -336,10 +336,6 @@ internal static class TInterfaceDeportment
         this LWindow window, string text, IReadOnlyList<LMention> mentions) =>
         window.LWindowMentionDivide(text, mentions);
 
-    internal static IReadOnlyList<long> TWindowAnchorToggle(
-        this LWindow window, IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
-        window.LWindowAnchorToggle(anchors, fanqieId, anchored);
-
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings) =>
         new(
             entries,

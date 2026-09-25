@@ -1,4 +1,4 @@
-﻿# LSourceGeneric.cs
+# LSourceGeneric.cs
 
 ## `public sealed class LSourceGeneric : LSource`
 

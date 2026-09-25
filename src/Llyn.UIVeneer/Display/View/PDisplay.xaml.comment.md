@@ -1,4 +1,4 @@
-﻿# PDisplay.xaml.cs
+# PDisplay.xaml.cs
 
 ## `public partial class PDisplay : UserControl`
 
@@ -8,9 +8,9 @@ It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
 Playback, heart, star row, paradigm box, announcements and incoming links each sit in a part of their own.
 
-## `internal void PDisplayAttach(PWindow host, LDisplay display)`
+## `internal void PDisplayAttach(PWindow host, LLectern lectern)`
 
-Puts the view on `display`, the deportment its owner built over the ports.
+Puts the view on `lectern`, the deportment its owner built over the ports.
 The deportment is asked for the linked headwords, the incoming cards and every fetched section.
 The window deportment is asked for the flag beside the language and the fonts.
 The window is held because an incoming row opens the entry it names.
@@ -95,7 +95,7 @@ The flag comes from `PEnsign`, which every tab holding a display reads too.
 The first call may await a fetch, so a later entry may be shown before it arrives.
 The language shown now is compared before the image is set.
 
-### `PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);`
+### `LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);`
 
 The reading view draws a headword exactly as the editor does.
 Both ask the same pack, so the two views never differ in family or size.

@@ -1,4 +1,4 @@
-﻿# LTagVault.cs
+# LTagVault.cs
 
 ## `public interface LTagVault`
 

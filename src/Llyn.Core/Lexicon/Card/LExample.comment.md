@@ -1,4 +1,4 @@
-﻿# LExample.cs
+# LExample.cs
 
 ## `public sealed record LExample(`
 

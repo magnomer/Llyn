@@ -1,4 +1,4 @@
-﻿# TInterfaceBoundary.cs
+# TInterfaceBoundary.cs
 
 ## `public sealed class TInterfaceBoundary`
 

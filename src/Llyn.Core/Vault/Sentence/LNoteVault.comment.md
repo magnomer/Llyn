@@ -1,4 +1,4 @@
-﻿# LNoteVault.cs
+# LNoteVault.cs
 
 ## `public interface LNoteVault`
 

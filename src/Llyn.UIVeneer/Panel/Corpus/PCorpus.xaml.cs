@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -40,7 +40,7 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
-        PDisplay.PDisplayAttach(host, editor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, editor.LEditorLectern);
         PEditor.PEditorAttach(host, editor);
 
         LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;

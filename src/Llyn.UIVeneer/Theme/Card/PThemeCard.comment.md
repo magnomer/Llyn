@@ -1,4 +1,4 @@
-﻿# PThemeCard.xaml
+# PThemeCard.xaml
 
 ## `<sys:Double x:Key="Theme.Card.TitleSize">`
 

@@ -1,4 +1,4 @@
-﻿# PProspectTemplate.xaml
+# PProspectTemplate.xaml
 
 ## `Theme.Prospect.Row`
 

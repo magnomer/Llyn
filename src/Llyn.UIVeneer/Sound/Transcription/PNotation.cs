@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Application;
 using Llyn.Core;
+using Llyn.UIDeportment;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
@@ -13,7 +14,7 @@ public partial class PEditor
 {
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
     private bool _pNotationSearching;
-    private PRespelling _pNotationRespelling = PRespelling.PRespellingPlain;
+    private LRespellingMark _pNotationRespelling = LRespellingMark.LRespellingMarkPlain;
 
     private async void PPhoneticianHandle(object sender, RoutedEventArgs e)
     {
@@ -62,7 +63,7 @@ public partial class PEditor
             if (PTranscriptionFind(id) is { } spelled)
             {
                 PEditorRequestSend(new LRequestTranscriptionText(
-                    PEditorDraft, spelled.PTranscriptionItemId, reading.PNotationReadingPhonetic));
+                    PEditorDraft, spelled.LTranscriptionItemId, reading.PNotationReadingPhonetic));
             }
 
             return;
@@ -105,9 +106,9 @@ public partial class PEditor
     {
         string variety = candidate.LCandidateVariety;
         string phonetic = candidate.LCandidatePhonetic ?? string.Empty;
-        string text = _pNotationRespelling.PRespellingTextRead(phonetic, candidate.LCandidateRespelling);
-        string opener = _pNotationRespelling.PRespellingOpener;
-        string closer = _pNotationRespelling.PRespellingCloser;
+        string text = _pNotationRespelling.LRespellingMarkResolve(phonetic, candidate.LCandidateRespelling);
+        string opener = _pNotationRespelling.LRespellingMarkOpener;
+        string closer = _pNotationRespelling.LRespellingMarkCloser;
         if (_lEditor.LEditorNotation.LNotationSchemed)
         {
             text = phonetic;
@@ -122,9 +123,12 @@ public partial class PEditor
 
         return new PNotationReading(
             variety,
-            PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
-            PAccentItem.PAccentFlagFind(
-                _lEditor.LEditorNotation.LNotationLanguage, _lEditor.LEditorNotation.LNotationFlagged, variety),
+            LAccentItem.LAccentLabelFormat(variety),
+            LAccentItem.LAccentFlagFind(
+                _lEditor.LEditorNotation.LNotationLanguage,
+                _lEditor.LEditorNotation.LNotationFlagged,
+                variety,
+                PEnsign.PEnsignFind),
             phonetic,
             text,
             opener,
@@ -147,7 +151,7 @@ public partial class PEditor
 
         try
         {
-            _pNotationRespelling = PRespelling.PRespellingRead(
+            _pNotationRespelling = LRespellingMark.LRespellingMarkRead(
                 _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
             if (scheme.Length == 0)
             {

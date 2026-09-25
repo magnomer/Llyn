@@ -1,4 +1,4 @@
-﻿# LIdentity.cs
+# LIdentity.cs
 
 ## `public sealed class LIdentity`
 

@@ -1,4 +1,4 @@
-﻿# TExample.cs
+# TExample.cs
 
 ## `public sealed class TExample`
 

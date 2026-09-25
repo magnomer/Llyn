@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,7 +42,7 @@ public partial class PXiesheng : UserControl
         PGrove.ItemsSource = _pGroveList;
         PKindred.ItemsSource = _pKindredList;
 
-        PDisplay.PDisplayAttach(host, _lXiesheng.LXieshengEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lXiesheng.LXieshengEditor.LEditorLectern);
         PXieshengStem.PStemAttach(host.PWindowDeportment);
         PXieshengStem.PStemEntryNotice = _lXiesheng.LXieshengGlyphSelect;
 

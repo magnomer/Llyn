@@ -1,4 +1,4 @@
-﻿# PRosterItem.cs
+# PRosterItem.cs
 
 ## `internal sealed class PRosterItem`
 

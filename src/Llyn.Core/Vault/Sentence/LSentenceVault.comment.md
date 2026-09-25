@@ -1,4 +1,4 @@
-﻿# LSentenceVault.cs
+# LSentenceVault.cs
 
 ## `public interface LSentenceVault`
 

@@ -1,4 +1,4 @@
-﻿# PDisplayMeaning.xaml
+# PDisplayMeaning.xaml
 
 ## `ResourceDictionary`
 

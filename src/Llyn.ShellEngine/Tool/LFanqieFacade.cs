@@ -50,6 +50,11 @@ internal sealed class LFanqieFacade
         return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkDivide(entryId);
     }
 
+    public string LEngineReadingRead(long entryId, string headword)
+    {
+        return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkFormat(entryId, headword);
+    }
+
     public void LEngineFanqieStart(long entryId)
     {
         LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkStart(entryId);

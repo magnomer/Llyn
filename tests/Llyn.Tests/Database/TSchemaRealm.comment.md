@@ -1,4 +1,4 @@
-﻿# TSchemaRealm.cs
+# TSchemaRealm.cs
 
 ## `public sealed class TSchemaRealm`
 

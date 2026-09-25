@@ -1,4 +1,4 @@
-﻿# TPronunciation.cs
+# TPronunciation.cs
 
 ## `public sealed class TPronunciation`
 

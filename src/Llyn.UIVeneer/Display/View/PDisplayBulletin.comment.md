@@ -1,4 +1,4 @@
-﻿# PDisplayBulletin.cs
+# PDisplayBulletin.cs
 
 ## `public partial class PDisplay`
 

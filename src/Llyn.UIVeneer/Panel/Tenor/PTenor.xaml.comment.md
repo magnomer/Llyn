@@ -1,4 +1,4 @@
-﻿# PTenor.xaml
+# PTenor.xaml
 
 ## `<Grid Margin="34,20,34,38">`
 

@@ -1,4 +1,4 @@
-﻿# PTaxonomyBrowse.cs
+# PTaxonomyBrowse.cs
 
 ## `public partial class PTaxonomy`
 

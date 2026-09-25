@@ -1,4 +1,4 @@
-﻿# LSchemaVideo.cs
+# LSchemaVideo.cs
 
 ## `public static class LSchemaVideo`
 

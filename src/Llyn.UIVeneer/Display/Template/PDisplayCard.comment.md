@@ -1,4 +1,4 @@
-﻿# PDisplayCard.xaml
+# PDisplayCard.xaml
 
 ## `ResourceDictionary`
 

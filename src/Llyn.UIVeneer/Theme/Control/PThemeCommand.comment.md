@@ -1,4 +1,4 @@
-﻿# PThemeCommand.xaml
+# PThemeCommand.xaml
 
 ## `<Style x:Key="Theme.Command.Group" TargetType="Border">`
 

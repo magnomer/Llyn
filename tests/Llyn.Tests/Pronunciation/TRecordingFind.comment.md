@@ -1,4 +1,4 @@
-﻿# TRecordingFind.cs
+# TRecordingFind.cs
 
 ## `public sealed class TRecordingFind`
 

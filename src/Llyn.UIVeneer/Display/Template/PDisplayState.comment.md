@@ -1,4 +1,4 @@
-﻿# PDisplayState.xaml
+# PDisplayState.xaml
 
 ## `ResourceDictionary`
 

@@ -1,0 +1,47 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "sources": {
+    "roots": [
+      "src"
+    ],
+    "extensions": [
+      ".cs"
+    ],
+    "excludeSegments": [
+      ".git",
+      "bin",
+      "obj",
+      "out",
+      "publish",
+      "snapshots",
+      "TestResults"
+    ],
+    "excludeSuffixes": [
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ],
+    "excludePrefixes": [
+      "TemporaryGeneratedFile_",
+      "GeneratedInternalTypeHelper"
+    ]
+  },
+  "thresholds": {
+    "lines": 500,
+    "members": 40,
+    "state": 12,
+    "weave": 0.75
+  },
+  "console": {
+    "top": 25
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditObject-"
+  }
+}

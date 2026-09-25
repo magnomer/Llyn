@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;

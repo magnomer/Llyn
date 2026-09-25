@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -35,7 +35,7 @@ public partial class PLibrary : UserControl
 
         _lLibrary.LLibraryIndexAttach(PIndex, PIndexEmpty, PEnsign.PEnsignFind);
 
-        PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorLectern);
 
         PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor);
 

@@ -1,4 +1,4 @@
-﻿# PThemeInput.xaml
+# PThemeInput.xaml
 
 ## `<Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Template}" />`
 

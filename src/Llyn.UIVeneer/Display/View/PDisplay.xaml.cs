@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -17,7 +17,7 @@ public partial class PDisplay : UserControl
 
     private PWindow _pDisplayHost = null!;
 
-    private LDisplay _lDisplay = null!;
+    private LLectern _lLectern = null!;
 
     public PDisplay()
     {
@@ -39,11 +39,11 @@ public partial class PDisplay : UserControl
         PCompassAttach();
     }
 
-    internal void PDisplayAttach(PWindow host, LDisplay display)
+    internal void PDisplayAttach(PWindow host, LLectern lectern)
     {
         _pDisplayHost = host;
-        _lDisplay = display;
-        PDisplayGrasp.PGraspLimit = display.LDisplayGraspStep;
+        _lLectern = lectern;
+        PDisplayGrasp.PGraspLimit = lectern.LLecternGraspStep;
         PMedia.PMediaAttach(this, host.PWindowDeportment);
 
         PVolumeLoad();
@@ -67,7 +67,7 @@ public partial class PDisplay : UserControl
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        if (_lDisplay.LDisplayChosen is not long id)
+        if (_lLectern.LLecternChosen is not long id)
         {
             PDisplayClear();
             return;
@@ -88,14 +88,14 @@ public partial class PDisplay : UserControl
         PDisplayReflexStart(id);
         PDisplayReflexShow(draft);
         PReflexPendingShow(id);
-        PRespelling respelling = PRespelling.PRespellingRead(
+        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(
             _pDisplayHost.PWindowDeportment, draft.LEntryDraftLanguage);
         PDisplayPronunciation.Text = draft.LEntryDraftPronunciation is LPronunciationDraft primary
-            ? respelling.PRespellingTextRead(primary)
+            ? respelling.LRespellingMarkResolve(primary)
             : string.Empty;
-        PDisplayPronunciationOpener.Text = respelling.PRespellingOpener;
-        PDisplayPronunciationCloser.Text = respelling.PRespellingCloser;
-        PDisplayContour.PContourTonal = _lDisplay.LDisplayTonalCheck(draft.LEntryDraftLanguage);
+        PDisplayPronunciationOpener.Text = respelling.LRespellingMarkOpener;
+        PDisplayPronunciationCloser.Text = respelling.LRespellingMarkCloser;
+        PDisplayContour.PContourTonal = _lLectern.LLecternTonalCheck(draft.LEntryDraftLanguage);
         PDisplayPronunciationSurface.Visibility = PDisplayPronunciation.Text.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
@@ -143,7 +143,7 @@ public partial class PDisplay : UserControl
         LEntry? entry;
         try
         {
-            entry = _lDisplay.LDisplayEntryRead(id);
+            entry = _lLectern.LLecternEntryRead(id);
         }
         catch (Exception)
         {
@@ -162,14 +162,14 @@ public partial class PDisplay : UserControl
         IReadOnlyList<LFrequency> frequency;
         try
         {
-            frequency = _lDisplay.LDisplayFrequencyRead(id);
+            frequency = _lLectern.LLecternFrequencyRead(id);
         }
         catch (Exception)
         {
             frequency = [];
         }
 
-        PFrequencyLabel.PFrequencyChipShow(
+        LFrequencyLabel.LFrequencyChipShow(
             PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand, frequency);
     }
 
@@ -239,7 +239,7 @@ public partial class PDisplay : UserControl
         PLinkConverter converter = PDisplayTranslationRead();
         try
         {
-            converter.PLinkConverterShow(_lDisplay.LDisplayTargetRead(draft));
+            converter.PLinkConverterShow(_lLectern.LLecternTargetRead(draft));
         }
         catch (Exception)
         {
@@ -282,7 +282,7 @@ public partial class PDisplay : UserControl
 
     private void PDisplayExampleShow(string language)
     {
-        PFont.PFontExampleApply(Resources, _pDisplayHost.PWindowDeportment, language);
+        LFontFace.LFontExampleApply(Resources, _pDisplayHost.PWindowDeportment, language);
     }
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
@@ -317,8 +317,8 @@ public partial class PDisplay : UserControl
     {
         PDisplayLanguage.Text = language;
         PDisplayLanguageFlag.Source = null;
-        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);
-        PFont.PFontPlace(PDisplayHeadword);
+        LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, PDisplayHeadword);
+        LFontFace.LFontPlace(PDisplayHeadword);
 
         await PEnsign.PEnsignLoad(_pDisplayHost.PWindowDeportment);
 

@@ -1,4 +1,4 @@
-﻿# PDisplayCompass.xaml
+# PDisplayCompass.xaml
 
 ## `ResourceDictionary`
 

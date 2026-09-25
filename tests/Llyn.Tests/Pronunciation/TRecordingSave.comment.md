@@ -1,4 +1,4 @@
-﻿# TRecordingSave.cs
+# TRecordingSave.cs
 
 ## `public sealed class TRecordingSave`
 

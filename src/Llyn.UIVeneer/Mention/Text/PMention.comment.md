@@ -1,4 +1,4 @@
-﻿# PMention.cs
+# PMention.cs
 
 ## `public sealed class PMention : TextBlock`
 

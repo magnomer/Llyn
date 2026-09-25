@@ -68,15 +68,14 @@ The fill reaches the draft through the engine and lands here by bulletin.
 The fetching line is shown at once, since the ask starts the fill before it returns.
 An unsaved entry has no id and is not asked.
 
-## `private PReflexItem PReflexCreate(LReflexDraft reflex)`
+## `private LReflexItem PReflexCreate(LReflexDraft reflex)`
 
 A row for a draft row, listened to for changes.
 It prints the form the switch picks for the row's own language.
 
-## `private PReflexItem PReflexUpdate(PReflexItem row, LReflexDraft reflex)`
+## `private LReflexItem PReflexUpdate(LReflexItem row, LReflexDraft reflex)`
 
 Brings a row up to the draft, leaving a field alone while its own request is still deferred.
-A row whose respelled, phonemic or folded state no longer matches its language is rebuilt.
+A row whose respelled, phonemic or folded state or whose anchors no longer match the draft is rebuilt.
 Those states are fixed when the row is created.
-The anchors are taken from the draft as they are, since the engine holds them and the tick sent them.
 The tone is taken from the draft's anatomy the same way, since the engine cuts it.

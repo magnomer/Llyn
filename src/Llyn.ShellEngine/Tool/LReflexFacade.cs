@@ -19,11 +19,6 @@ internal sealed class LReflexFacade
         _lReflexFacadeGate = engine.LEngineGate;
     }
 
-    public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)
-    {
-        return LReflexClerk.LReflexAnchorToggle(anchors, fanqieId, anchored);
-    }
-
     public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
         return LReflexClerk.LReflexAnchorMatch(one, other);

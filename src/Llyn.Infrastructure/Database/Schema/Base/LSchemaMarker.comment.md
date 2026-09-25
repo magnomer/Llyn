@@ -1,4 +1,4 @@
-﻿# LSchemaMarker.cs
+# LSchemaMarker.cs
 
 ## `public static class LSchemaMarker`
 

@@ -1,4 +1,4 @@
-﻿# LExampleArchive.cs
+# LExampleArchive.cs
 
 ## `public sealed class LExampleArchive`
 

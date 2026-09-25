@@ -1,4 +1,4 @@
-﻿# PThemePopup.xaml
+# PThemePopup.xaml
 
 ## `<Style x:Key="Theme.Popup.Surface" TargetType="Border">`
 

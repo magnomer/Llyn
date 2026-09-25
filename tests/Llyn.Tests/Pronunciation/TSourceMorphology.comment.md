@@ -1,4 +1,4 @@
-﻿# TSourceMorphology.cs
+# TSourceMorphology.cs
 
 ## `public sealed class TSourceMorphology`
 

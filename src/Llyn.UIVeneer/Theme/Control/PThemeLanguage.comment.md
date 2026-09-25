@@ -1,4 +1,4 @@
-﻿# PThemeLanguage.xaml
+# PThemeLanguage.xaml
 
 ## `<Thickness x:Key="Theme.Language.Inset">`
 

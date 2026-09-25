@@ -1,4 +1,4 @@
-﻿# PCorpusBrowse.cs
+# PCorpusBrowse.cs
 
 ## `public partial class PCorpus`
 

@@ -1,4 +1,4 @@
-﻿# LOccurrence.cs
+# LOccurrence.cs
 
 ## `public sealed class LOccurrence`
 

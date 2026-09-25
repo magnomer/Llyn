@@ -1,4 +1,4 @@
-﻿# PEditorField.xaml
+# PEditorField.xaml
 
 ## `ResourceDictionary`
 

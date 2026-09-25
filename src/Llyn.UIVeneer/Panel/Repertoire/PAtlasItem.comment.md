@@ -1,4 +1,4 @@
-﻿# PAtlasItem.cs
+# PAtlasItem.cs
 
 ## `internal sealed class PAtlasItem`
 

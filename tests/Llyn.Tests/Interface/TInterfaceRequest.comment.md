@@ -1,4 +1,4 @@
-﻿# TInterfaceRequest.cs
+# TInterfaceRequest.cs
 
 ## `internal static partial class TInterface`
 

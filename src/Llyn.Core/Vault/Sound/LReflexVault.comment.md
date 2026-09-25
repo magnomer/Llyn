@@ -1,4 +1,4 @@
-﻿# LReflexVault.cs
+# LReflexVault.cs
 
 ## `public interface LReflexVault`
 

@@ -1,4 +1,4 @@
-﻿# PFanqieLine.cs
+# PFanqieLine.cs
 
 ## `public sealed class PFanqieLine`
 

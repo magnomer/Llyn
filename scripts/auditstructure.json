@@ -1,0 +1,192 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "rings": [
+    {
+      "name": "Core",
+      "path": "src/Llyn.Core",
+      "reach": [],
+      "frame": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text",
+        "System.Text.RegularExpressions",
+        "System.Globalization",
+        "System.Threading",
+        "System.Threading.Tasks",
+        "System.Diagnostics.CodeAnalysis",
+        "System.Runtime.CompilerServices"
+      ],
+      "pure": true
+    },
+    {
+      "name": "Application",
+      "path": "src/Llyn.Application",
+      "reach": [
+        "Core"
+      ],
+      "frame": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text",
+        "System.Text.RegularExpressions",
+        "System.Globalization",
+        "System.Threading",
+        "System.Threading.Tasks",
+        "System.Diagnostics.CodeAnalysis",
+        "System.Runtime.CompilerServices"
+      ],
+      "pure": true
+    },
+    {
+      "name": "ShellEngine",
+      "path": "src/Llyn.ShellEngine",
+      "reach": [
+        "Application"
+      ],
+      "frame": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text",
+        "System.Text.RegularExpressions",
+        "System.Globalization",
+        "System.Threading",
+        "System.Threading.Tasks",
+        "System.Diagnostics.CodeAnalysis",
+        "System.Runtime.CompilerServices",
+        "System.Runtime.ExceptionServices"
+      ],
+      "pure": true
+    },
+    {
+      "name": "Conduct",
+      "path": "src/Llyn.Conduct",
+      "reach": [
+        "ShellEngine"
+      ],
+      "frame": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text",
+        "System.Text.RegularExpressions",
+        "System.Globalization",
+        "System.Threading",
+        "System.Threading.Tasks",
+        "System.Diagnostics.CodeAnalysis",
+        "System.Runtime.CompilerServices",
+        "System.Runtime.ExceptionServices"
+      ],
+      "pure": true
+    },
+    {
+      "name": "UIDeportment",
+      "path": "src/Llyn.UIDeportment",
+      "reach": [
+        "Conduct"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false
+    },
+    {
+      "name": "UIVeneer",
+      "path": "src/Llyn.UIVeneer",
+      "reach": [
+        "UIDeportment"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false
+    },
+    {
+      "name": "Infrastructure",
+      "path": "src/Llyn.Infrastructure",
+      "reach": [
+        "Core"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false
+    },
+    {
+      "name": "Media",
+      "path": "src/Llyn.Media",
+      "reach": [
+        "Core"
+      ],
+      "frame": [
+        "*"
+      ],
+      "pure": false
+    }
+  ],
+  "root": [
+    "src/Llyn.UIVeneer/App.xaml.cs",
+    "src/Llyn.Infrastructure/LRigFactory.cs"
+  ],
+  "ambient": [
+    "System.DateTime.Now",
+    "System.DateTime.UtcNow",
+    "System.DateTime.Today",
+    "System.DateTimeOffset.Now",
+    "System.DateTimeOffset.UtcNow",
+    "System.Environment",
+    "System.Guid.NewGuid",
+    "System.Random",
+    "System.Console",
+    "System.IO.File",
+    "System.IO.Directory",
+    "System.IO.Path",
+    "System.Diagnostics.Process",
+    "System.Diagnostics.Stopwatch"
+  ],
+  "checks": {
+    "neighbour": "allow",
+    "reach": "violation",
+    "carry": "allow",
+    "outward": "violation",
+    "frame": "violation",
+    "ambient": "violation",
+    "root": "allow"
+  },
+  "ceilings": {
+    "reach:UIDeportment>ShellEngine": 28
+  },
+  "exempt": {},
+  "sources": {
+    "include": [
+      "*.cs"
+    ],
+    "excludeSegments": [
+      ".git",
+      "bin",
+      "obj",
+      "out",
+      "publish",
+      "snapshots",
+      "TestResults"
+    ],
+    "excludeSuffixes": [
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ],
+    "excludePrefixes": [
+      "TemporaryGeneratedFile_",
+      "GeneratedInternalTypeHelper"
+    ]
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json"
+  }
+}

@@ -1,4 +1,4 @@
-﻿# LCatalogRegister.cs
+# LCatalogRegister.cs
 
 ## `public sealed record LCatalogRegister(`
 

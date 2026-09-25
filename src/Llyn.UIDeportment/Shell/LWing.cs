@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -31,7 +32,7 @@ public sealed class LWing
 
         _lEntryPort = entries;
         _lSettingsPort = settings;
-        LWingDisplay = new LDisplay(entries, phonology, settings);
+        LWingLectern = new LLectern(new LDisplay(entries, phonology, settings));
     }
 
     public event Action<string, Exception>? LWingFailed;
@@ -40,7 +41,7 @@ public sealed class LWing
 
     public event Action? LWingCleared;
 
-    public LDisplay LWingDisplay { get; }
+    public LLectern LWingLectern { get; }
 
     private bool LWingFiltered => _lWingVista?.LVistaFiltered ?? false;
 
@@ -53,7 +54,7 @@ public sealed class LWing
         ArgumentNullException.ThrowIfNull(vista);
 
         _lWingVista = vista;
-        LWingDisplay.LDisplayVistaRestore(vista);
+        LWingLectern.LLecternVistaRestore(vista);
     }
 
     private void LWingQuerySet(string query)

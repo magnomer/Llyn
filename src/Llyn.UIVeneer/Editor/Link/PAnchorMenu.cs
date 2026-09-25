@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Application;
 using Llyn.Core;
+
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -18,11 +20,11 @@ public partial class PEditor
 
     private const string PAnchorMenuMark = " ≈";
 
-    private PReflexItem? _pAnchorRow;
+    private LReflexItem? _pAnchorRow;
 
     internal void PReflexAnchorHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not PReflexItem row || e.OriginalSource is not UIElement anchor)
+        if (e.Parameter is not LReflexItem row || e.OriginalSource is not UIElement anchor)
         {
             return;
         }
@@ -34,16 +36,16 @@ public partial class PEditor
         PAnchor.IsOpen = true;
     }
 
-    private void PAnchorBuild(PReflexItem row)
+    private void PAnchorBuild(LReflexItem row)
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
             _pEditorHost.PWindowDeportment.LWindowAnchorScan(
                 _lEditor.LEditorAnchorRead(),
-                row.PReflexItemAnchors,
+                row.LReflexItemAnchors,
                 _lEditor.LEditorLanguage,
-                row.PReflexItemLanguage,
-                row.PReflexItemTone));
+                row.LReflexItemLanguage,
+                row.LReflexItemTone));
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)
         {
@@ -77,16 +79,13 @@ public partial class PEditor
 
     private void PAnchorTickHandle(object sender, RoutedEventArgs e)
     {
-        if (_pAnchorRow is not PReflexItem row || sender is not CheckBox { Tag: long fanqieId } box)
+        if (_pAnchorRow is not LReflexItem row || sender is not CheckBox { Tag: long fanqieId } box)
         {
             return;
         }
 
         bool anchored = box.IsChecked == true;
-        row.PReflexItemAnchors = _pEditorHost.PWindowDeportment.LWindowAnchorToggle(
-            row.PReflexItemAnchors, fanqieId, anchored);
-        PReflexAnchorShow();
-        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.PReflexItemId, fanqieId, anchored));
+        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.LReflexItemId, fanqieId, anchored));
     }
 
     private void PAnchorClosedHandle(object? sender, EventArgs e)

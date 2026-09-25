@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -13,14 +14,14 @@ public partial class PDisplay
         bool pending;
         try
         {
-            slots = _lDisplay.LDisplayParadigmShow(id);
-            enabled = _lDisplay.LDisplayMorphologyRead();
+            slots = _lLectern.LLecternParadigmShow(id);
+            enabled = _lLectern.LLecternMorphologyRead();
             if (enabled)
             {
-                _lDisplay.LDisplayInflectionStart(id);
+                _lLectern.LLecternInflectionStart(id);
             }
 
-            pending = _lDisplay.LDisplayInflectionCheck(id);
+            pending = _lLectern.LLecternInflectionCheck(id);
         }
         catch (Exception)
         {
@@ -35,7 +36,7 @@ public partial class PDisplay
             return;
         }
 
-        PFont.PFontApply(
+        LFontFace.LFontApply(
             _pDisplayHost.PWindowDeportment, slots[0].LParadigmSlotSpeech.LSpeechValueLanguage, PDisplayParadigm);
         PDisplayParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(slots, pending, enabled, false);
     }

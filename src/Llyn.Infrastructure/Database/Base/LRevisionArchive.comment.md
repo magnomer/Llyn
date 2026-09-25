@@ -1,4 +1,4 @@
-﻿# LRevisionArchive.cs
+# LRevisionArchive.cs
 
 ## `public sealed class LRevisionArchive : LRevisionVault`
 

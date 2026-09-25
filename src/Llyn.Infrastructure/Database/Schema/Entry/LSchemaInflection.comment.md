@@ -1,4 +1,4 @@
-﻿# LSchemaInflection.cs
+# LSchemaInflection.cs
 
 ## `public static class LSchemaInflection`
 

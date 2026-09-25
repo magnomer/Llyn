@@ -1,4 +1,4 @@
-﻿# LMentionVault.cs
+# LMentionVault.cs
 
 ## `public interface LMentionVault`
 

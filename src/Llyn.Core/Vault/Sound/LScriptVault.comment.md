@@ -1,4 +1,4 @@
-﻿# LScriptVault.cs
+# LScriptVault.cs
 
 ## `public interface LScriptVault`
 

@@ -1,4 +1,4 @@
-﻿# LPortraitVault.cs
+# LPortraitVault.cs
 
 ## `public interface LPortraitVault`
 

@@ -24,9 +24,9 @@ public partial class PStem : UserControl
 
     internal void PStemShow(LStemPage page)
     {
-        PFont.PFontApply(_lWindow, page.LStemPageLanguage, PStemHeadword);
-        PFont.PFontPlace(PStemHeadword);
-        PFont.PFontApply(_lWindow, page.LStemPageLanguage, LFontRole.LFontRoleGlyph, PStemList);
+        LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, PStemHeadword);
+        LFontFace.LFontPlace(PStemHeadword);
+        LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, LFontRole.LFontRoleGlyph, PStemList);
         PStemHeadword.Text = page.LStemPageKey;
         PStemLanguage.Text = page.LStemPageLanguage;
         PStemFlag.Source = PEnsign.PEnsignFind(page.LStemPageLanguage);

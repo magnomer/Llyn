@@ -1,4 +1,4 @@
-﻿# PDisplayTranslation.xaml
+# PDisplayTranslation.xaml
 
 ## `ResourceDictionary`
 

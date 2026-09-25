@@ -9,7 +9,7 @@ public partial class PDisplay
     {
         try
         {
-            PDisplayFavorite.IsChecked = _lDisplay.LDisplayFavoriteCheck(id);
+            PDisplayFavorite.IsChecked = _lLectern.LLecternFavoriteCheck(id);
         }
         catch (Exception)
         {
@@ -19,7 +19,7 @@ public partial class PDisplay
 
     private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        if (_lDisplay.LDisplayChosen is not long shown)
+        if (_lLectern.LLecternChosen is not long shown)
         {
             PDisplayFavorite.IsChecked = false;
             return;
@@ -30,11 +30,11 @@ public partial class PDisplay
         {
             if (marked)
             {
-                _lDisplay.LDisplayFavoriteSave(shown);
+                _lLectern.LLecternFavoriteSave(shown);
             }
             else
             {
-                _lDisplay.LDisplayFavoriteDelete(shown);
+                _lLectern.LLecternFavoriteDelete(shown);
             }
         }
         catch (Exception exception)

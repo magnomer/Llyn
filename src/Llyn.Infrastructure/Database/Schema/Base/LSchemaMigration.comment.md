@@ -1,4 +1,4 @@
-﻿# LSchemaMigration.cs
+# LSchemaMigration.cs
 
 ## `public static class LSchemaMigration`
 

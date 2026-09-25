@@ -1,4 +1,4 @@
-﻿# LRegisterArchive.cs
+# LRegisterArchive.cs
 
 ## `public sealed class LRegisterArchive`
 

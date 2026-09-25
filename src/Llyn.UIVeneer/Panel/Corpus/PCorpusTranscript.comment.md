@@ -1,4 +1,4 @@
-﻿# PCorpusTranscript.xaml
+# PCorpusTranscript.xaml
 
 ## `ResourceDictionary`
 

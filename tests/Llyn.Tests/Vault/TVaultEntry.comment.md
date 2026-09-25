@@ -1,4 +1,4 @@
-﻿# TVaultEntry.cs
+# TVaultEntry.cs
 
 ## `public sealed class TVaultEntry`
 

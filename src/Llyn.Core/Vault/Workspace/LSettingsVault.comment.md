@@ -1,4 +1,4 @@
-﻿# LSettingsVault.cs
+# LSettingsVault.cs
 
 ## `public interface LSettingsVault`
 

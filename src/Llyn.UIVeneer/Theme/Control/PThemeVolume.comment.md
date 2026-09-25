@@ -1,4 +1,4 @@
-﻿# PThemeVolume.xaml
+# PThemeVolume.xaml
 
 ## `<Style x:Key="Theme.Volume.Tray" TargetType="Border">`
 

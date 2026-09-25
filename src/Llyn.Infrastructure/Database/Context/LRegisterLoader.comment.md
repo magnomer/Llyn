@@ -1,4 +1,4 @@
-﻿# LRegisterLoader.cs
+# LRegisterLoader.cs
 
 ## `public static class LRegisterLoader`
 

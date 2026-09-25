@@ -1,4 +1,4 @@
-﻿# PDisplay.xaml
+# PDisplay.xaml
 
 ## `<UserControl.Resources>`
 

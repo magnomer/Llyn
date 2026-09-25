@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Core;
+
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -89,7 +91,7 @@ public partial class PEditor
     private void PPlaybackTrayShow()
     {
         bool audible = _pRecording is not null
-            || _pAccentItem.Any(static row => row.PAccentItemAudio.Length > 0);
+            || _pAccentItem.Any(static row => row.LAccentItemAudio.Length > 0);
         PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

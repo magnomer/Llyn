@@ -24,6 +24,9 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieDivide(entryId);
 
+    public string LEngineReadingRead(long entryId, string headword) =>
+        _lPhonologyOutletEngine.LEngineFanqie.LEngineReadingRead(entryId, headword);
+
     public void LEngineFanqieRebuild(long entryId) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieRebuild(entryId);
 

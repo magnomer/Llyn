@@ -1,4 +1,4 @@
-﻿# LTombstoneArchive.cs
+# LTombstoneArchive.cs
 
 ## `public sealed class LTombstoneArchive : LTombstoneVault`
 

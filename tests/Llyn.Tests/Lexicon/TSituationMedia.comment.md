@@ -1,4 +1,4 @@
-﻿# TSituationMedia.cs
+# TSituationMedia.cs
 
 ## `public sealed class TSituationMedia`
 

@@ -1,4 +1,4 @@
-﻿# TInterfacePronunciation.cs
+# TInterfacePronunciation.cs
 
 ## `internal static partial class TInterface`
 

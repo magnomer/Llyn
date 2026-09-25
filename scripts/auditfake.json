@@ -1,0 +1,70 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "sources": {
+    "roots": [
+      "src"
+    ],
+    "tests": [
+      "tests/Llyn.Tests"
+    ],
+    "extensions": [
+      ".cs"
+    ],
+    "markup": [
+      ".xaml"
+    ],
+    "excludeSegments": [
+      ".git",
+      "bin",
+      "obj",
+      "out",
+      "publish",
+      "snapshots",
+      "TestResults"
+    ],
+    "excludeSuffixes": [
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ],
+    "excludePrefixes": [
+      "TemporaryGeneratedFile_",
+      "GeneratedInternalTypeHelper"
+    ]
+  },
+  "generated": {
+    "roots": [
+      "src/Llyn.UIVeneer",
+      "src/Llyn.UIDeportment"
+    ],
+    "configuration": "Debug"
+  },
+  "references": {
+    "frameworks": [
+      "Microsoft.NETCore.App",
+      "Microsoft.WindowsDesktop.App"
+    ],
+    "build": "src/Llyn.UIVeneer"
+  },
+  "implicitUsings": [
+    "System",
+    "System.Collections.Generic",
+    "System.IO",
+    "System.Linq",
+    "System.Net.Http",
+    "System.Threading",
+    "System.Threading.Tasks"
+  ],
+  "console": {
+    "top": 25
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditFake-"
+  }
+}

@@ -45,11 +45,6 @@ It shares the gate with the language flags, so one fill runs at a time whichever
 Draws every row the engine kept and stores the drawing under the row's key.
 The drawing is made here rather than when a row asks, so a row never waits on a file.
 
-## `internal static string PEnsignVarietyFormat(string language, string variety)`
-
-The key a variety's flag is kept under, which is its language and its name joined by a slash.
-It is spelled here and in `LEnsign` alike, so a row asking for its flag hands no logic value down.
-
 ## `internal static void PEnsignFlagShow(Image flag, UIElement globe, string language)`
 
 Shows the language's flag in the image, or the globe when the pack draws none.
@@ -58,6 +53,7 @@ Shows the language's flag in the image, or the globe when the pack draws none.
 
 The drawing kept for `language`, or null when none was resolved for it.
 A `language/variety` key reads a variety's flag the same way.
+It is the flag seam every accent row is handed, so the deportment reads flags without owning the store.
 
 ## Inline notes
 

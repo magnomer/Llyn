@@ -30,9 +30,9 @@
     <Style x:Key="Theme.Glyph.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
         <Setter Property="FontFamily" Value="{DynamicResource Theme.Glyph.Family}" />
         <Setter Property="FontSize" Value="{DynamicResource Theme.Glyph.Size}" />
-        <Setter Property="Text" Value="{Binding PTranscriptionItemText}" />
+        <Setter Property="Text" Value="{Binding LTranscriptionItemText}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PTranscriptionItemText}" Value="">
+            <DataTrigger Binding="{Binding LTranscriptionItemText}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Input.Glyph}" />
             </DataTrigger>
         </Style.Triggers>
@@ -56,7 +56,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="Transparent" SnapsToDevicePixels="True">
-                        <TextBlock x:Name="PGlyphCharacter" VerticalAlignment="Center" Text="{Binding PGlyphItemText}" />
+                        <TextBlock x:Name="PGlyphCharacter" VerticalAlignment="Center" Text="{Binding LGlyphItemText}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -68,7 +68,7 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PGlyphItemLanguage}" Value="">
+            <DataTrigger Binding="{Binding LGlyphItemLanguage}" Value="">
                 <Setter Property="IsHitTestVisible" Value="False" />
                 <Setter Property="Cursor" Value="Arrow" />
                 <Setter Property="ToolTip" Value="{x:Null}" />
@@ -106,7 +106,7 @@
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
                     <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                         <TextBlock Style="{StaticResource Theme.Glyph.Measure}" />
-                        <TextBox Style="{StaticResource Theme.Glyph.Field}" Tag="{DynamicResource Input.Glyph}" Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Style="{StaticResource Theme.Glyph.Field}" Tag="{DynamicResource Input.Glyph}" Text="{Binding LTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Button Style="{StaticResource Theme.Glyph.Phonetician}" />
                 </StackPanel>

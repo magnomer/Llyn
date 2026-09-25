@@ -1,0 +1,75 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "projects": {
+    "root": "src",
+    "table": [
+      { "name": "Llyn.Core", "role": "portable" },
+      { "name": "Llyn.Core.Windows", "role": "twin", "half": "Llyn.Core" },
+      { "name": "Llyn.Application", "role": "portable" },
+      { "name": "Llyn.Infrastructure", "role": "portable" },
+      { "name": "Llyn.ShellEngine", "role": "portable" },
+      { "name": "Llyn.Conduct", "role": "portable" },
+      { "name": "Llyn.UIDeportment", "role": "twin", "half": "Llyn.Conduct" },
+      { "name": "Llyn.UIVeneer", "role": "twin", "half": "Llyn.Conduct" },
+      { "name": "Llyn.UITerminal", "role": "portable" },
+      { "name": "Llyn.Host", "role": "host" }
+    ]
+  },
+  "framework": {
+    "portable": "net10.0",
+    "twin": "net10.0-windows"
+  },
+  "analyzer": {
+    "rule": "CA1416"
+  },
+  "windows": {
+    "properties": [
+      "UseWPF",
+      "UseWindowsForms",
+      "UseWinUI"
+    ],
+    "packages": [
+      "Microsoft.Web.WebView2",
+      "Microsoft.WindowsAppSDK",
+      "Microsoft.Windows.Compatibility",
+      "SharpVectors.Wpf"
+    ],
+    "patterns": [
+      "\\bSystem\\.Windows\\b",
+      "\\bMicrosoft\\.Win32\\b",
+      "\\bWindows\\.(Win32|UI|Storage|Media|System|Foundation|Graphics|Devices)\\b",
+      "\\[\\s*(assembly\\s*:\\s*)?(DllImport|LibraryImport|SupportedOSPlatform)\\b",
+      "\\bOperatingSystem\\.IsWindows\\w*\\b",
+      "\\bRuntimeInformation\\.IsOSPlatform\\b"
+    ]
+  },
+  "sources": {
+    "extensions": [
+      ".cs",
+      ".xaml"
+    ],
+    "excludeSegments": [
+      ".git",
+      "bin",
+      "obj",
+      "out",
+      "publish",
+      "snapshots",
+      "TestResults"
+    ],
+    "excludeSuffixes": [
+      ".g.cs",
+      ".g.i.cs",
+      ".AssemblyInfo.cs",
+      ".GlobalUsings.g.cs",
+      ".Designer.cs"
+    ]
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "Platform-"
+  }
+}

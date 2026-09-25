@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 
 namespace Llyn.UIVeneer;
@@ -7,37 +7,37 @@ public partial class PDisplay
 {
     internal void PDisplayObserverAttach()
     {
-        _lDisplay.LDisplayChosenAttach(
+        _lLectern.LLecternChosenAttach(
             LSubject.LSubjectFavorite, PObserver.PObserverCreate(this, PDisplayFavoriteUpdate));
-        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PDisplayGraspUpdate));
-        _lDisplay.LDisplayChosenAttach(
+        _lLectern.LLecternChosenAttach(LSubject.LSubjectGrasp, PObserver.PObserverCreate(this, PDisplayGraspUpdate));
+        _lLectern.LLecternChosenAttach(
             LSubject.LSubjectFrequency, PObserver.PObserverCreate(this, PDisplayFrequencyUpdate));
-        _lDisplay.LDisplayChosenAttach(
+        _lLectern.LLecternChosenAttach(
             LSubject.LSubjectInflection, PObserver.PObserverCreate(this, PDisplayParadigmUpdate));
-        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PDisplayReflexUpdate));
-        _lDisplay.LDisplayChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternChosenAttach(LSubject.LSubjectReflex, PObserver.PObserverCreate(this, PDisplayReflexUpdate));
+        _lLectern.LLecternChosenAttach(LSubject.LSubjectEntry, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectScript, PObserver.PObserverCreate(this, PDisplayScriptUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectFanqie, PObserver.PObserverCreate(this, PDisplayFanqieUpdate));
-        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PDisplayClear));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(LSubject.LSubjectWorkspace, PObserver.PObserverCreate(this, PDisplayClear));
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectExample, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectSituation, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectReference, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(LSubject.LSubjectTag, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(LSubject.LSubjectAuthor, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
+        _lLectern.LLecternObserverAttach(LSubject.LSubjectTag, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectRegister, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
-        _lDisplay.LDisplayObserverAttach(
+        _lLectern.LLecternObserverAttach(
             LSubject.LSubjectSettings, PObserver.PObserverCreate(this, PDisplayEntryUpdate));
     }
 
     private void PDisplayFavoriteUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayFavoriteShow(shown);
         }
@@ -45,7 +45,7 @@ public partial class PDisplay
 
     private void PDisplayGraspUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayGraspShow(shown);
         }
@@ -53,7 +53,7 @@ public partial class PDisplay
 
     private void PDisplayFrequencyUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayFrequencyShow(shown);
         }
@@ -61,7 +61,7 @@ public partial class PDisplay
 
     private void PDisplayParadigmUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayParadigmShow(shown);
         }
@@ -69,7 +69,7 @@ public partial class PDisplay
 
     private void PDisplayReflexUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayReflexLoad(shown);
         }
@@ -77,7 +77,7 @@ public partial class PDisplay
 
     private void PDisplayScriptUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayScriptShow(shown, PDisplayLanguage.Text);
         }
@@ -85,7 +85,7 @@ public partial class PDisplay
 
     private void PDisplayFanqieUpdate()
     {
-        if (_lDisplay.LDisplayChosen is long shown)
+        if (_lLectern.LLecternChosen is long shown)
         {
             PDisplayFanqieShow(shown, PDisplayLanguage.Text);
         }
@@ -93,7 +93,7 @@ public partial class PDisplay
 
     private void PDisplayEntryUpdate()
     {
-        if (_lDisplay.LDisplayChosen is not long shown)
+        if (_lLectern.LLecternChosen is not long shown)
         {
             return;
         }
@@ -101,7 +101,7 @@ public partial class PDisplay
         LEntryDraft? draft;
         try
         {
-            draft = _lDisplay.LDisplayDraftLoad();
+            draft = _lLectern.LLecternDraftLoad();
         }
         catch (Exception)
         {

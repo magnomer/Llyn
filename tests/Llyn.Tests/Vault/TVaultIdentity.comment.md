@@ -1,4 +1,4 @@
-﻿# TVaultIdentity.cs
+# TVaultIdentity.cs
 
 ## `public sealed class TVaultIdentity`
 

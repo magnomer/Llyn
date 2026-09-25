@@ -1,4 +1,4 @@
-﻿# PShelfItem.cs
+# PShelfItem.cs
 
 ## `internal sealed class PShelfItem`
 

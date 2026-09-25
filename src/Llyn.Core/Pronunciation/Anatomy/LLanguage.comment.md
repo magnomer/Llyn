@@ -1,4 +1,4 @@
-﻿# LLanguage.cs
+# LLanguage.cs
 
 ## `public sealed record LLanguage(`
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,6 +107,11 @@ public sealed class LFanqieClerk
         IReadOnlyList<LShengfu> shengfu = LShengfuStoredScan(language, LFanqieRow.LFanqieCharacterScan(rows));
         return LFanqieGroup.LFanqieGroupScan(
             rows, LFanqieBookRead(language), shengfu, LShengfuSeparatorRead(language));
+    }
+
+    public string LFanqieClerkFormat(long entryId, string headword)
+    {
+        return LFanqieGroup.LFanqieReadingFormat(LFanqieClerkDivide(entryId), headword);
     }
 
     private string LShengfuSeparatorRead(string language)

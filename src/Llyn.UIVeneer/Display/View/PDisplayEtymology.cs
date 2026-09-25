@@ -11,7 +11,7 @@ public partial class PDisplay
     {
         PDisplayEtymology.PEtymologyLanguage = draft.LEntryDraftLanguage;
         PDisplayEtymology.PEtymologyText = draft.LEntryDraftEtymology.LEtymologyDraftText;
-        PDisplayEtymologyApply(draft, _lDisplay.LDisplayEtymonRead(draft));
+        PDisplayEtymologyApply(draft, _lLectern.LLecternEtymonRead(draft));
         PDisplayEtymologySection.Visibility = PLook.PLookVisibleRead(draft.LEntryDraftDerived);
     }
 
@@ -19,7 +19,7 @@ public partial class PDisplay
     {
         PDisplayEtymology.PEtymologySourceShow(etymons);
         PDisplayEtymology.Visibility = PLook.PLookVisibleRead(
-            LDisplay.LDisplayEtymologyCheck(draft.LEntryDraftEtymology.LEtymologyDraftText, etymons.Count));
+            LLectern.LLecternEtymologyCheck(draft.LEntryDraftEtymology.LEtymologyDraftText, etymons.Count));
     }
 
     private void PDisplayEtymologyHandle(object sender, ExecutedRoutedEventArgs e)

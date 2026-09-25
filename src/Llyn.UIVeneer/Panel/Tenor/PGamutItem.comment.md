@@ -1,4 +1,4 @@
-﻿# PGamutItem.cs
+# PGamutItem.cs
 
 ## `internal sealed class PGamutItem`
 

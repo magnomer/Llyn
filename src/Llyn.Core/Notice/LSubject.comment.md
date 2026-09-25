@@ -1,4 +1,4 @@
-﻿# LSubject.cs
+# LSubject.cs
 
 ## `public enum LSubject`
 

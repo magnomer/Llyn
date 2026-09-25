@@ -1,4 +1,4 @@
-﻿namespace Convention.Tests;
+namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
@@ -8,9 +8,9 @@ internal static class TAuditStrictSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 896,
-        ["Call"] = 4241,
-        ["Engine"] = 1999,
+        ["Storage"] = 846,
+        ["Call"] = 4070,
+        ["Engine"] = 1929,
         ["Reach"] = 64,
         ["Trigger"] = 385,
     };
@@ -68,6 +68,7 @@ internal static class TAuditStrictSetting
         "Llyn.Core",
         "Llyn.Application",
         "Llyn.ShellEngine",
+        "Llyn.Conduct",
         "Llyn.Infrastructure",
         "Llyn.Media",
     ];

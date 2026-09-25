@@ -1,4 +1,4 @@
-﻿# PCorpusQuotation.cs
+# PCorpusQuotation.cs
 
 ## `public partial class PCorpus`
 

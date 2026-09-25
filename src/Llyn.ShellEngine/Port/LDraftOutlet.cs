@@ -62,9 +62,6 @@ public sealed class LDraftOutlet : LDraftPort
     public int LEngineOffsetRead(string text, int unit) =>
         _lDraftOutletEngine.LEngineMention.LEngineOffsetRead(text, unit);
 
-    public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored) =>
-        _lDraftOutletEngine.LEngineReflex.LEngineAnchorToggle(anchors, fanqieId, anchored);
-
     public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other) =>
         _lDraftOutletEngine.LEngineReflex.LEngineAnchorMatch(one, other);
 

@@ -90,7 +90,7 @@ public sealed class PEtymology : ContentControl
 
         _pEtymologyField.ItemsSource = PEtymon.PEtymonBuild(etymons, _pEtymologyCaret);
         _pEtymologyField.Visibility = PLook.PLookVisibleRead(
-            LDisplay.LDisplayEtymonCheck(PEtymologyEditable, etymons.Count));
+            LLectern.LLecternEtymonCheck(PEtymologyEditable, etymons.Count));
     }
 
     internal void PEtymologyMentionShow(
@@ -124,7 +124,7 @@ public sealed class PEtymology : ContentControl
         PField.PFieldTextShow(_pEtymologyWrite, text);
 
         _pEtymologyCaret.PEtymonShown = editable;
-        _pEtymologyProse.Visibility = PLook.PLookVisibleRead(LDisplay.LDisplayNarrativeCheck(editable, text));
+        _pEtymologyProse.Visibility = PLook.PLookVisibleRead(LLectern.LLecternNarrativeCheck(editable, text));
         _pEtymologyWrite.Visibility = PLook.PLookVisibleRead(editable);
         _pEtymologyStrip.Visibility = PLook.PLookVisibleRead(editable);
     }

@@ -1,4 +1,4 @@
-﻿# TSourceGeneric.cs
+# TSourceGeneric.cs
 
 ## `public sealed class TSourceGeneric`
 

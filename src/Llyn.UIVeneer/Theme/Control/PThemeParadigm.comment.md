@@ -19,7 +19,7 @@ It pins the interface font for the same reason the part does.
 
 ## `<Style x:Key="Theme.Paradigm.Text" TargetType="TextBlock">`
 
-The form, inked and in the headword font the box inherits from `PFontApply`.
+The form, inked and in the headword font the box inherits from `LFontApply`.
 The size is fixed here, so the headword's own size does not carry into the rows.
 The text is set by the style rather than by the row, so a trigger can replace it.
 An empty form draws an ellipsis and says the lookup is off.

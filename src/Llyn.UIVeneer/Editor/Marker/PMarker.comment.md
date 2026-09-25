@@ -1,4 +1,4 @@
-﻿# PMarker.cs
+# PMarker.cs
 
 ## `public partial class PEditor`
 

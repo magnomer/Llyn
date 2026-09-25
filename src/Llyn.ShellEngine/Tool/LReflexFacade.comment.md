@@ -8,10 +8,6 @@ The engine's facade for reflex, wrapping the clerk's anchors, rules, rows, fetch
 
 The facade bound to its engine and the engine's gate.
 
-## `public IReadOnlyList<long> LEngineAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)`
-
-The anchor list with `fanqieId` added or removed.
-
 ## `public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
 
 Whether two anchor lists name the same rows.

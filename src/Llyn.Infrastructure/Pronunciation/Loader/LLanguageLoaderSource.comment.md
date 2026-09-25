@@ -1,4 +1,4 @@
-﻿# LLanguageLoaderSource.cs
+# LLanguageLoaderSource.cs
 
 ## `public static partial class LLanguageLoader`
 

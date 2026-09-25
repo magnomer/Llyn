@@ -1,4 +1,4 @@
-﻿# LSchema.cs
+# LSchema.cs
 
 ## `public static class LSchema`
 

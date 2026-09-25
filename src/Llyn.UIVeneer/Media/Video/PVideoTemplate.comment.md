@@ -1,4 +1,4 @@
-﻿# PVideoTemplate.xaml.cs
+# PVideoTemplate.xaml.cs
 
 ## `public partial class PVideoTemplate : ResourceDictionary`
 

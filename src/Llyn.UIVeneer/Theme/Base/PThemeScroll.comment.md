@@ -1,4 +1,4 @@
-﻿# PThemeScroll.xaml
+# PThemeScroll.xaml
 
 ## `<Style TargetType="ScrollBar">`
 

@@ -1,4 +1,4 @@
-﻿# LOwner.cs
+# LOwner.cs
 
 ## `public enum LOwner`
 

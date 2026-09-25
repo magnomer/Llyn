@@ -1,4 +1,4 @@
-﻿# LAuditVault.cs
+# LAuditVault.cs
 
 ## `public interface LAuditVault`
 

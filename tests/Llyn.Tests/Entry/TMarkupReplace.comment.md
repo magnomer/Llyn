@@ -1,4 +1,4 @@
-﻿# TMarkupReplace.cs
+# TMarkupReplace.cs
 
 ## `public sealed class TMarkupReplace`
 

@@ -1,4 +1,4 @@
-﻿# LSounding.cs
+# LSounding.cs
 
 The sound sheet of one held entry: its rime-book groups, its script rows and its paradigm slots.
 The editor owned all of this before, which left one deportment carrying two subjects at once.

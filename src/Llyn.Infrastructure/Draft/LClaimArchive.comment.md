@@ -1,4 +1,4 @@
-﻿# LClaimArchive.cs
+# LClaimArchive.cs
 
 ## `public sealed class LClaimArchive : LClaimVault`
 

@@ -11,10 +11,6 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 Reads the entry and reflex ports, the reflex source and the clock out of `rig`.
 The claim clerk supplies the held drafts a fetch fills.
 
-## `public static IReadOnlyList<long> LReflexAnchorToggle(IReadOnlyList<long> anchors, long fanqieId, bool anchored)`
-
-The anchor list with `fanqieId` added or removed.
-
 ## `public static bool LReflexAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
 
 Whether two anchor lists name the same rows.

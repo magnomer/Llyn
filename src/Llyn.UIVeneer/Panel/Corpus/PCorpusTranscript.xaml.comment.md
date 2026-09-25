@@ -1,4 +1,4 @@
-﻿# PCorpusTranscript.xaml.cs
+# PCorpusTranscript.xaml.cs
 
 ## `public partial class PCorpusTranscript : ResourceDictionary`
 

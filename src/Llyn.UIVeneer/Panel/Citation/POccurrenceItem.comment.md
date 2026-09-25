@@ -1,4 +1,4 @@
-﻿# POccurrenceItem.cs
+# POccurrenceItem.cs
 
 ## `internal sealed class POccurrenceItem`
 

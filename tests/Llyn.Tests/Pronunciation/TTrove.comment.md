@@ -1,4 +1,4 @@
-﻿# TTrove.cs
+# TTrove.cs
 
 ## `public sealed class TTrove`
 

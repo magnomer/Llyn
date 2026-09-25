@@ -13,7 +13,7 @@ Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, and what was waiting is written before the read.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
-## `private LRequest PAccentRequestCreate(PAccentItem row)`
+## `private LRequest PAccentRequestCreate(LAccentItem row)`
 
 The request a row's typed text becomes, a respelling request while respellings are shown and a reading request otherwise.
 The row prints the form the switch picks, so the text it holds belongs to that form.
@@ -45,7 +45,7 @@ A file gone from disk is cleared off the row instead, so the button stops offeri
 
 The button that raised the command, so the menu opens under it rather than under the list.
 
-## `private PAccentItem? PAccentFind(long id)`
+## `private LAccentItem? PAccentFind(long id)`
 
 The shown row with one pronunciation id, or nothing when the draft no longer has it.
 
@@ -65,7 +65,7 @@ The primary id is kept, so the primary row's own plus and minus reach the right 
 The primary variety chip is refreshed in the same pass.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
 
-## `private PAccentItem PAccentUpdate(PAccentItem row, LPronunciationDraft spoken)`
+## `private LAccentItem PAccentUpdate(LAccentItem row, LPronunciationDraft spoken)`
 
 Brings a shown row up to the draft row with the same id.
 A changed variety rebuilds the row, because its label and flag are fixed at creation.

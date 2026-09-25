@@ -4,19 +4,20 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PTranscriptionItem> _pGlyphItem = [];
+    private readonly ObservableCollection<LTranscriptionItem> _pGlyphItem = [];
     private LGlyph? _pGlyph;
 
     internal async void PGlyphNotationHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PTranscriptionItem row && _pGlyph is not null)
+        if (e.Parameter is LTranscriptionItem row && _pGlyph is not null)
         {
-            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.PTranscriptionItemId, _pGlyph.LGlyphName);
+            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.LTranscriptionItemId, _pGlyph.LGlyphName);
         }
     }
 
@@ -36,7 +37,7 @@ public partial class PEditor
         _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph?.LGlyphSourced ?? false;
-        PFont.PFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
+        LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
 
         List<LTranscriptionDraft> rows = [];
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
@@ -50,7 +51,7 @@ public partial class PEditor
         PCard.PCardRowShow(
             _pGlyphItem,
             rows,
-            static row => row.PTranscriptionItemId,
+            static row => row.LTranscriptionItemId,
             static spelled => spelled.LTranscriptionDraftId,
             PTranscriptionCreate,
             PTranscriptionUpdate);

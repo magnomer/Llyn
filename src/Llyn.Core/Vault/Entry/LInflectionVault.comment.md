@@ -1,4 +1,4 @@
-﻿# LInflectionVault.cs
+# LInflectionVault.cs
 
 ## `public interface LInflectionVault`
 

@@ -1,4 +1,4 @@
-﻿# PDisplayCollocation.xaml
+# PDisplayCollocation.xaml
 
 ## `ResourceDictionary`
 

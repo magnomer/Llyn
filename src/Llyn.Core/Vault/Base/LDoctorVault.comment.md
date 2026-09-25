@@ -1,4 +1,4 @@
-﻿# LDoctorVault.cs
+# LDoctorVault.cs
 
 ## `public interface LDoctorVault`
 

@@ -1,4 +1,4 @@
-﻿# PLinkTemplate.xaml
+# PLinkTemplate.xaml
 
 ## `Theme.Link.Field`
 

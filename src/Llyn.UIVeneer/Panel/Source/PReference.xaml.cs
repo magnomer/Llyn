@@ -49,7 +49,7 @@ public partial class PReference : UserControl
         PFootnote.ItemsSource = _pFootnoteList;
 
         PImprint.PImprintAttach(host, _lShelf.LShelfImprint);
-        PDisplay.PDisplayAttach(host, _lShelf.LShelfEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lShelf.LShelfEditor.LEditorLectern);
         PEditor.PEditorAttach(host, _lShelf.LShelfEditor);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PReferencePressHandle, PReferencePressCheck));

@@ -1,4 +1,4 @@
-﻿# TInterfaceDraft.cs
+# TInterfaceDraft.cs
 
 ## `internal static partial class TInterface`
 

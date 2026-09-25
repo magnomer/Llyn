@@ -1,4 +1,4 @@
-﻿# LLacunaVault.cs
+# LLacunaVault.cs
 
 ## `public interface LLacunaVault`
 

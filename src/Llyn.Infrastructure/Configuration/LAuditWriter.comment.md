@@ -1,4 +1,4 @@
-﻿# LAuditWriter.cs
+# LAuditWriter.cs
 
 ## `public sealed class LAuditWriter : LAuditVault`
 

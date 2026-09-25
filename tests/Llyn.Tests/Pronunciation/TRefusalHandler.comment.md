@@ -1,4 +1,4 @@
-﻿# TRefusalHandler.cs
+# TRefusalHandler.cs
 
 ## `internal sealed class TRefusalHandler`
 

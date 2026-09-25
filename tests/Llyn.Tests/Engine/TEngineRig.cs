@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 

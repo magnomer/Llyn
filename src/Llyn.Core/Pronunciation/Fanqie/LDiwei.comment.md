@@ -1,4 +1,4 @@
-﻿# LDiwei.cs
+# LDiwei.cs
 
 ## `public sealed record LDiwei(`
 

@@ -1,4 +1,4 @@
-﻿# LQuotation.cs
+# LQuotation.cs
 
 ## `public sealed class LQuotation`
 

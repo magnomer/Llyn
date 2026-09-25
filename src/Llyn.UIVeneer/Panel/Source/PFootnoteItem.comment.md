@@ -1,4 +1,4 @@
-﻿# PFootnoteItem.cs
+# PFootnoteItem.cs
 
 ## `internal sealed class PFootnoteItem`
 

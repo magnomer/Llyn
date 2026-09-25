@@ -1,4 +1,4 @@
-﻿# TInterfaceSettings.cs
+# TInterfaceSettings.cs
 
 ## `internal static partial class TInterface`
 

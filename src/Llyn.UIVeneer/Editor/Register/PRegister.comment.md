@@ -1,4 +1,4 @@
-﻿# PRegister.cs
+# PRegister.cs
 
 ## `internal sealed class PRegister`
 

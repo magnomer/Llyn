@@ -1,4 +1,4 @@
-﻿# LSourceReading.cs
+# LSourceReading.cs
 
 ## `public sealed record LSourceReading(`
 

@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Xunit;
 
 namespace Llyn.Tests;

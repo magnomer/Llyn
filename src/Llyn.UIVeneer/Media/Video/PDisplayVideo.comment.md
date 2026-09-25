@@ -1,4 +1,4 @@
-﻿# PDisplayVideo.xaml
+# PDisplayVideo.xaml
 
 ## `ResourceDictionary`
 

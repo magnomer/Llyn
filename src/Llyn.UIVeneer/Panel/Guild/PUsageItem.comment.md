@@ -1,4 +1,4 @@
-﻿# PUsageItem.cs
+# PUsageItem.cs
 
 ## `internal sealed class PUsageItem`
 

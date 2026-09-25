@@ -1,4 +1,4 @@
-﻿# TVaultFake.cs
+# TVaultFake.cs
 
 ## `internal sealed class TVaultFake : LEntryVault`
 

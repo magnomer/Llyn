@@ -1,4 +1,4 @@
-﻿# LSchemaImage.cs
+# LSchemaImage.cs
 
 ## `public static class LSchemaImage`
 

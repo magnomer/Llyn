@@ -9,7 +9,8 @@ internal static class TAuditChainSetting
         ["Llyn.Core"] = [],
         ["Llyn.Application"] = ["Llyn.Core"],
         ["Llyn.ShellEngine"] = ["Llyn.Application"],
-        ["Llyn.UIDeportment"] = ["Llyn.ShellEngine"],
+        ["Llyn.Conduct"] = ["Llyn.ShellEngine"],
+        ["Llyn.UIDeportment"] = ["Llyn.Conduct"],
         ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
         ["Llyn.Infrastructure"] = ["Llyn.Core"],
         ["Llyn.Media"] = ["Llyn.Core"],
@@ -23,7 +24,7 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainSurface = new Dictionary<string, string[]>
     {
-        ["Llyn.UIDeportment>Llyn.ShellEngine"] =
+        ["Llyn.Conduct>Llyn.ShellEngine"] =
         [
             "LDraftPort",
             "LEntryPort",
@@ -48,7 +49,10 @@ internal static class TAuditChainSetting
         ["Llyn.Core"] = [@"^LRequest"],
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>();
+    public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
+    {
+        ["reach:Llyn.UIDeportment>Llyn.ShellEngine"] = 28,
+    };
 
     public static readonly string[] TAuditChainWaiver = [];
 }

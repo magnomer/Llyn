@@ -1,4 +1,4 @@
-﻿# TReading.cs
+# TReading.cs
 
 ## `public sealed class TReading`
 

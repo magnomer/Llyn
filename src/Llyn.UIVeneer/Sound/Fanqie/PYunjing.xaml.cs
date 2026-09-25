@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -45,7 +45,7 @@ public partial class PYunjing : UserControl
         PYunmu.ItemsSource = _pYunmuList;
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
-        PDisplay.PDisplayAttach(host, _lYunjing.LYunjingEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lYunjing.LYunjingEditor.LEditorLectern);
         PYunjingDiwei.PDiweiAttach(host.PWindowDeportment);
         PYunjingDiwei.PDiweiEntryNotice = _lYunjing.LYunjingGlyphSelect;
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;

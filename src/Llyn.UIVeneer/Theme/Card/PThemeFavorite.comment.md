@@ -1,4 +1,4 @@
-﻿# PThemeFavorite.xaml
+# PThemeFavorite.xaml
 
 ## `<sys:Double x:Key="Theme.Favorite.Size">`
 

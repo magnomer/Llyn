@@ -1,4 +1,4 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public enum LCatalogOrder
 {

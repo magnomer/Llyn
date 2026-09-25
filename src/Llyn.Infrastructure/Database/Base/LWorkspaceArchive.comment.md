@@ -1,4 +1,4 @@
-﻿# LWorkspaceArchive.cs
+# LWorkspaceArchive.cs
 
 ## `public sealed class LWorkspaceArchive : LWorkspaceVault`
 

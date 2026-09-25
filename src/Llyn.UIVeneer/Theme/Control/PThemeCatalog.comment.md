@@ -1,4 +1,4 @@
-﻿# PThemeCatalog.xaml
+# PThemeCatalog.xaml
 
 ## `<Style x:Key="Theme.Catalog.Row" TargetType="Button">`
 

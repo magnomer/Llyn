@@ -1,4 +1,4 @@
-﻿# LFavoriteVault.cs
+# LFavoriteVault.cs
 
 ## `public interface LFavoriteVault`
 

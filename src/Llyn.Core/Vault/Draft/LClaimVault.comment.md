@@ -1,4 +1,4 @@
-﻿# LClaimVault.cs
+# LClaimVault.cs
 
 ## `public interface LClaimVault`
 

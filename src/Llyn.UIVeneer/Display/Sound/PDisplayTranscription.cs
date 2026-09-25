@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Llyn.Core;
+
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PDisplay
 {
-    private readonly ObservableCollection<PTranscriptionItem> _pDisplayTranscription = [];
+    private readonly ObservableCollection<LTranscriptionItem> _pDisplayTranscription = [];
 
     private void PDisplayTranscriptionShow(LEntryDraft draft)
     {
@@ -23,7 +25,7 @@ public partial class PDisplay
                 continue;
             }
 
-            _pDisplayTranscription.Add(PTranscriptionItem.PTranscriptionItemCreate(_pDisplayHost, spelled));
+            _pDisplayTranscription.Add(LTranscriptionItem.LTranscriptionItemCreate(spelled));
         }
     }
 }

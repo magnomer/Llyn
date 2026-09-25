@@ -27,6 +27,10 @@ The stored rows of every character of the entry, tone formatted by the localized
 The stored rows grouped by book in the pack's order.
 The stored phonetic series of each character rides on that character's first block.
 
+## `public string LFanqieClerkFormat(long entryId, string headword)`
+
+The headword's representative reading, formed from the blocks the entry divides into.
+
 ## `public void LFanqieClerkStart(long entryId)`
 
 Starts a fetch for every character of the entry that has no rows yet.

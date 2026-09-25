@@ -1,4 +1,4 @@
-﻿# LSpeechVault.cs
+# LSpeechVault.cs
 
 ## `public interface LSpeechVault`
 

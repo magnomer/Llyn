@@ -6,8 +6,6 @@ namespace Llyn.UIVeneer;
 
 internal sealed class PAnchorItem
 {
-    internal const string PAnchorItemSeparator = " · ";
-
     private PAnchorItem(LAnchorRow row)
     {
         PAnchorItemId = row.LAnchorRowFanqie.LFanqieRowId;

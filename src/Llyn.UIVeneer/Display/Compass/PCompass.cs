@@ -79,7 +79,7 @@ public partial class PDisplay
             labels.Add(row.PCompassItemLabel);
         }
 
-        IReadOnlyList<string> names = _lDisplay.LDisplayNameResolve(labels);
+        IReadOnlyList<string> names = _lLectern.LLecternNameResolve(labels);
         for (int index = 0; index < names.Count; index++)
         {
             _pCompassRows[index].PCompassItemName = names[index];

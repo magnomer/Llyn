@@ -1,0 +1,83 @@
+{
+  "generation": 11,
+  "project": "Llyn",
+  "test": {
+    "project": "tests/Llyn.Convention.Tests",
+    "configuration": "Debug",
+    "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict"
+  },
+  "sources": {
+    "veneer": "temp/audit/Strict-{version}.md",
+    "deportment": "temp/audit/Custody-{version}.md"
+  },
+  "veneer": {
+    "kinds": [ "Storage", "Call", "Engine", "Reach", "Trigger" ]
+  },
+  "deportment": {
+    "kinds": [ "Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Taint" ]
+  },
+  "triage": {
+    "rules": [
+      { "kinds": [ "Storage" ], "verdict": "violation", "why": "the veneer holds state" },
+      { "kinds": [ "Call" ], "verdict": "violation", "why": "the veneer does more than call a function" },
+      { "kinds": [ "Engine" ], "verdict": "violation", "why": "the veneer reaches the engine" },
+      { "kinds": [ "Reach" ], "verdict": "violation", "why": "the veneer markup reaches the engine" },
+      { "kinds": [ "Trigger" ], "verdict": "violation", "why": "the veneer markup branches or computes" },
+
+      { "kinds": [ "Argument", "Guard" ], "name": "Loading|Filling", "verdict": "allow", "why": "suppresses echo while the deportment fills the controls" },
+      { "kinds": [ "Argument", "Guard" ], "name": "Drag|Press|Seam", "verdict": "allow", "why": "holds a drag or a press in progress" },
+      { "kinds": [ "Argument", "Guard" ], "name": "Seen$", "verdict": "allow", "why": "loads a resource once" },
+      { "kinds": [ "Argument", "Guard" ], "name": "Host$", "verdict": "allow", "why": "asks the engine through the host handle" },
+      { "kinds": [ "Guard" ], "reason": "through local 'count'$", "verdict": "allow", "why": "moves through a popup list" },
+      { "kinds": [ "Argument" ], "reason": "^engine answer passed to", "verdict": "allow", "why": "relays an engine answer back to the engine" },
+      { "kinds": [ "Argument" ], "verdict": "violation", "why": "a value the deportment holds feeds a request" },
+
+      { "kinds": [ "Guard" ], "reason": "^engine answer decides", "verdict": "review", "why": "an engine answer gates a second request" },
+      { "kinds": [ "Guard" ], "reason": "^toggled around", "verdict": "review", "why": "a flag toggled around a request" },
+      { "kinds": [ "Guard" ], "name": "Row$|Accepted$", "verdict": "review", "why": "a popup or dialog context decides a request" },
+      { "kinds": [ "Guard" ], "verdict": "violation", "why": "a value the deportment holds decides a request" },
+
+      { "kinds": [ "Fork" ], "verdict": "violation", "why": "the engine and the deportment both write one field" },
+      { "kinds": [ "Mirror" ], "verdict": "violation", "why": "the deportment keeps a copy of engine state" },
+
+      { "kinds": [ "Mutation" ], "reason": "^reorders", "verdict": "review", "why": "the deportment reorders rows the engine ordered" },
+      { "kinds": [ "Mutation" ], "verdict": "violation", "why": "the deportment writes into engine data or a built request" },
+
+      { "kinds": [ "Shape" ], "reason": "^sends a second request", "verdict": "violation", "why": "one user act sends two requests" },
+      { "kinds": [ "Shape" ], "name": "Host$", "verdict": "allow", "why": "asks the engine through the host handle" },
+      { "kinds": [ "Shape" ], "line": "\\.Visibility == Visibility\\.Visible|\\.IsVisible\\b", "verdict": "violation", "why": "a panel's visibility stands in for a mode" },
+      { "kinds": [ "Shape" ], "line": "(Leave|Discard|Removal)Confirm\\(", "verdict": "allow", "why": "asks the user before leaving" },
+      { "kinds": [ "Shape" ], "line": "sender is (not )?FrameworkElement", "verdict": "allow", "why": "reads the row the user acted on" },
+      { "kinds": [ "Shape" ], "reason": "^control decides", "verdict": "review", "why": "a control's state gates a request" },
+      { "kinds": [ "Shape" ], "verdict": "violation", "why": "a timer or a deaf handler drives a request" },
+
+      { "kinds": [ "Treat", "Taint" ], "reason": "decides", "join": "line", "targets": [ "Treat", "Taint" ], "why": "condition judged at its operators" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\? Visibility\\.", "verdict": "allow", "why": "switches visibility" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\.IsOpen && L\\w+Handle\\(", "verdict": "allow", "why": "routes a key to an open popup" },
+      { "kinds": [ "Treat", "Taint" ], "name": "ShowDialog\\(|IsChecked == true|\\bcaret\\b|\\.Text\\.Length", "verdict": "allow", "why": "reads a control or a dialog result" },
+      { "kinds": [ "Treat", "Taint" ], "name": "(Count|Length) (==|!=|>|<=) 0\\b", "verdict": "allow", "why": "tests for emptiness" },
+      { "kinds": [ "Treat", "Taint" ], "name": "^\\w+ < [\\w.\\[\\]]+\\.(Count|Length)$", "verdict": "allow", "why": "bounds a loop over rows" },
+      { "kinds": [ "Treat", "Taint" ], "name": "Width|Height|Offset|Padding|Gap|Lead|Measure|Margin|SystemParameters|Math\\.(Round|Max|Min)", "verdict": "allow", "why": "computes layout" },
+      { "kinds": [ "Treat", "Taint" ], "name": "string\\.Equals\\(_l\\w+", "verdict": "violation", "why": "compares a deportment copy with the engine value" },
+      { "kinds": [ "Treat", "Taint" ], "reason": "queried by (Contains|Any|All|Where|First\\w*|Last\\w*|Single\\w*|Order\\w*|Select|Count|IndexOf)", "verdict": "review", "why": "searches rows in the deportment" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\.Count (==|!=|<|>|<=|>=) [\\w.\\[\\]]+\\.Count$", "verdict": "review", "why": "reconciles shown rows with new rows" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\.Count (==|!=|<|>|<=|>=) (?!0\\b)", "verdict": "violation", "why": "counts engine rows to decide" },
+      { "kinds": [ "Treat", "Taint" ], "name": "ParentId", "verdict": "violation", "why": "walks an engine tree in the deportment" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\bL\\w*(Mode\\w*|Kind)\\b", "verdict": "violation", "why": "branches on an engine mode or kind" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\bL\\w*Id\\b.*(==|!=)|(==|!=).*\\bL\\w*Id\\b", "verdict": "review", "why": "locates a row by its id" },
+      { "kinds": [ "Treat", "Taint" ], "name": "\\bL\\w*(Value|Language|Scheme)\\b.*(==|!=)|(==|!=).*\\bL\\w*(Value|Language|Scheme)\\b", "verdict": "review", "why": "compares engine values" },
+      { "kinds": [ "Treat", "Taint" ], "reason": " in [-+*/]", "name": "\\bL[A-Z]\\w+", "verdict": "review", "why": "arithmetic over engine fields" },
+      { "kinds": [ "Treat", "Taint" ], "reason": "decides", "name": "\\bL\\w+(Check|Match|Find|Resolve)\\(", "verdict": "review", "why": "a deportment predicate judges engine data" },
+      { "kinds": [ "Treat", "Taint" ], "reason": "^control input", "verdict": "review", "why": "matches typed input in the deportment" },
+      { "kinds": [ "Treat", "Taint" ], "reason": "decides", "verdict": "allow", "why": "branches on an engine verdict, a null test or a type pattern" },
+      { "kinds": [ "Treat", "Taint" ], "verdict": "review", "why": "computes over an engine value" }
+    ]
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "UI-",
+    "consoleFiles": 10
+  }
+}

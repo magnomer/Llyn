@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.UIDeportment;
@@ -34,7 +34,7 @@ public partial class PTaxonomy : UserControl
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
+        PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
         PEditor.PEditorAttach(host, _lEditor);
         PEditor.PEditorChronicleChanged += PTaxonomyChronicleUpdate;

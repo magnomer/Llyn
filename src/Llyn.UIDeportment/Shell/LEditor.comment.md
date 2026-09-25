@@ -1,4 +1,4 @@
-﻿# LEditor.cs
+# LEditor.cs
 
 ## `public sealed class LEditor`
 
@@ -29,7 +29,7 @@ The tenure stopped taking requests, announced once so the window can say so.
 
 A favourite, grasp or rime-book write was refused, announced under its own notice key.
 
-## `public LDisplay LEditorDisplay { get; }`
+## `public LLectern LEditorLectern { get; }`
 
 The reflex fold of the editor's own reflex block, kept the way the reading view keeps its own.
 The editor's reflex rows also start, check and rebuild their fetch through it, as the reading view does.

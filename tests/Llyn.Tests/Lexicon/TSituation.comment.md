@@ -1,4 +1,4 @@
-﻿# TSituation.cs
+# TSituation.cs
 
 ## `public sealed class TSituation`
 

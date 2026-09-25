@@ -1,4 +1,4 @@
-﻿# PEditor.xaml.cs
+# PEditor.xaml.cs
 
 ## `public partial class PEditor : UserControl`
 

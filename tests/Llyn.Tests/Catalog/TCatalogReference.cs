@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;

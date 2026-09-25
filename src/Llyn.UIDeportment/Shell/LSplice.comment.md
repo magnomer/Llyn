@@ -1,4 +1,4 @@
-﻿# LSplice.cs
+# LSplice.cs
 
 ## `public static class LSplice`
 

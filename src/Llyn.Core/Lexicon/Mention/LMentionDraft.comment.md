@@ -1,4 +1,4 @@
-﻿# LMentionDraft.cs
+# LMentionDraft.cs
 
 ## `public sealed record LMentionDraft(`
 

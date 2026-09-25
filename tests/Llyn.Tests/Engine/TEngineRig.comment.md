@@ -1,4 +1,4 @@
-﻿# TEngineRig.cs
+# TEngineRig.cs
 
 ## `public sealed class TEngineRig`
 

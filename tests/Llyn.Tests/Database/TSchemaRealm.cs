@@ -1,4 +1,4 @@
-﻿using Llyn.ShellEngine;
+using Llyn.ShellEngine;
 using Microsoft.Data.Sqlite;
 using Xunit;
 

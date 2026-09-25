@@ -1,4 +1,4 @@
-﻿# PThemePlayback.xaml
+# PThemePlayback.xaml
 
 ## `<Style x:Key="Theme.Playback.Action" TargetType="Button">`
 

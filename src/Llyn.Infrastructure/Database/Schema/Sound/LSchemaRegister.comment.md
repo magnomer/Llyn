@@ -1,4 +1,4 @@
-﻿# LSchemaRegister.cs
+# LSchemaRegister.cs
 
 ## `public static class LSchemaRegister`
 

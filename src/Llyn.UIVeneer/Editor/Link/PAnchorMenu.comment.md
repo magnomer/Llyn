@@ -19,7 +19,7 @@ The accent brush the estimate mark is drawn in.
 The mark appended after the label of an estimated placement, a space and `≈`.
 It stands at the end so the label reads as stored and the estimate reads as a comment on it.
 
-## `private PReflexItem? _pAnchorRow`
+## `private LReflexItem? _pAnchorRow`
 
 The reflex row the open popup edits, `null` while it is closed.
 
@@ -27,7 +27,7 @@ The reflex row the open popup edits, `null` while it is closed.
 
 Opens the popup under the label that was pressed, filled for the row the command carries.
 
-## `private void PAnchorBuild(PReflexItem row)`
+## `private void PAnchorBuild(LReflexItem row)`
 
 Fills the list with one tick row per stored placement, ticked where `row` is anchored.
 The engine marks each placement, reading the classes the row's tone may descend from under the entry language's tone rows.
@@ -39,7 +39,7 @@ The label of one tick row, with the estimate mark in the accent colour after an 
 
 ## `private void PAnchorTickHandle(object sender, RoutedEventArgs e)`
 
-Applies the tick to the row at once, so its label follows, then sends the anchor request to the engine.
+Sends the tick to the engine as an anchor request, and the row comes back rebuilt with its label.
 
 ## `private void PAnchorClosedHandle(object? sender, EventArgs e)`
 

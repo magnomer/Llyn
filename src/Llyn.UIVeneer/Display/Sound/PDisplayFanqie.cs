@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -10,7 +11,7 @@ public partial class PDisplay
     {
         try
         {
-            _lDisplay.LDisplayFanqieStart(id);
+            _lLectern.LLecternFanqieStart(id);
         }
         catch (Exception)
         {
@@ -22,7 +23,7 @@ public partial class PDisplay
         IReadOnlyList<LFanqieGroup> groups;
         try
         {
-            groups = _lDisplay.LDisplayFanqieDivide(id);
+            groups = _lLectern.LLecternFanqieDivide(id);
         }
         catch (Exception)
         {
@@ -35,10 +36,10 @@ public partial class PDisplay
             rows.AddRange(group.LFanqieGroupRows);
         }
 
-        PReflexAnchorApply(_pDisplayHost.PWindowDeportment, _pDisplayReflex, rows, PDisplayHeadword.Text);
-        PFont.PFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
+        LReflexItem.LReflexAnchorApply(_pDisplayHost.PWindowDeportment, _pDisplayReflex, rows, PDisplayHeadword.Text);
+        LFontFace.LFontApply(_pDisplayHost.PWindowDeportment, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(groups);
-        PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(id);
+        PDisplayFanqie.PFanqiePending = _lLectern.LLecternFanqieCheck(id);
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
         PDisplayFanqie.PFanqieStemNotice = key => _pDisplayHost.PWindowStemShow(language, key);
         PDisplayFanqie.PFanqieRepresentativeNotice = (fanqieId, rank) => PDisplayFanqieSet(id, fanqieId, rank);
@@ -49,7 +50,7 @@ public partial class PDisplay
     {
         try
         {
-            PDisplayReading.Text = _lDisplay.LDisplayReadingRead(id, PDisplayHeadword.Text);
+            PDisplayReading.Text = _lLectern.LLecternReadingRead(id, PDisplayHeadword.Text);
         }
         catch (Exception)
         {
@@ -61,7 +62,7 @@ public partial class PDisplay
     {
         try
         {
-            _lDisplay.LDisplayFanqieSet(id, fanqieId, rank);
+            _lLectern.LLecternFanqieSet(id, fanqieId, rank);
         }
         catch (Exception)
         {
@@ -71,7 +72,7 @@ public partial class PDisplay
     private void PDisplayFanqieClear()
     {
         PDisplayFanqie.PFanqieItems = null;
-        PDisplayFanqie.PFanqiePending = _lDisplay.LDisplayFanqieCheck(null);
+        PDisplayFanqie.PFanqiePending = _lLectern.LLecternFanqieCheck(null);
         PDisplayFanqie.PFanqieDiweiNotice = null;
         PDisplayFanqie.PFanqieStemNotice = null;
         PDisplayFanqie.PFanqieRepresentativeNotice = null;

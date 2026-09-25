@@ -1,4 +1,4 @@
-﻿# LTranscriptionVault.cs
+# LTranscriptionVault.cs
 
 ## `public interface LTranscriptionVault`
 

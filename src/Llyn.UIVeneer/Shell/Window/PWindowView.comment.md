@@ -1,4 +1,4 @@
-﻿# PWindowView.cs
+# PWindowView.cs
 
 ## `public partial class PWindow`
 

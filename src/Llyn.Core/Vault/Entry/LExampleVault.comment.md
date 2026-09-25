@@ -1,4 +1,4 @@
-﻿# LExampleVault.cs
+# LExampleVault.cs
 
 ## `public interface LExampleVault`
 

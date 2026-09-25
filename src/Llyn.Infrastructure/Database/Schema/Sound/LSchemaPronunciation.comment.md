@@ -1,4 +1,4 @@
-﻿# LSchemaPronunciation.cs
+# LSchemaPronunciation.cs
 
 ## `public static class LSchemaPronunciation`
 

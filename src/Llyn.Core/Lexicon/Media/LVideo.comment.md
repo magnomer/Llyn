@@ -1,4 +1,4 @@
-﻿# LVideo.cs
+# LVideo.cs
 
 ## `public sealed record LVideo(`
 

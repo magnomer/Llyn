@@ -1,4 +1,4 @@
-﻿using Llyn.Infrastructure;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Microsoft.Data.Sqlite;
 using Xunit;

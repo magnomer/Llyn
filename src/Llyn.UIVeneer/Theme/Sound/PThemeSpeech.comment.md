@@ -1,4 +1,4 @@
-﻿# PThemeSpeech.xaml
+# PThemeSpeech.xaml
 
 ## `<Style x:Key="Theme.Speech.Chip" TargetType="Border">`
 

@@ -1,4 +1,4 @@
-﻿# LAnthology.cs
+# LAnthology.cs
 
 ## `public sealed class LAnthology`
 

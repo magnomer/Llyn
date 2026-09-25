@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;

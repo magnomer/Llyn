@@ -1,4 +1,4 @@
-﻿# PTenorCohort.cs
+# PTenorCohort.cs
 
 ## `public partial class PTenor`
 

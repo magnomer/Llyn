@@ -1,4 +1,4 @@
-﻿# PCorpus.xaml
+# PCorpus.xaml
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 

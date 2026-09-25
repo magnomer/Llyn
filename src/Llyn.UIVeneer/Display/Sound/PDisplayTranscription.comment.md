@@ -1,4 +1,4 @@
-﻿# PDisplayTranscription.cs
+# PDisplayTranscription.cs
 
 ## `public partial class PDisplay`
 

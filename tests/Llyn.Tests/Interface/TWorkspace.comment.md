@@ -1,4 +1,4 @@
-﻿# TWorkspace.cs
+# TWorkspace.cs
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 

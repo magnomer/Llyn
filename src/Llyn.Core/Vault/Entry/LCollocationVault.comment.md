@@ -1,4 +1,4 @@
-﻿# LCollocationVault.cs
+# LCollocationVault.cs
 
 ## `public interface LCollocationVault`
 

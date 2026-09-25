@@ -1,4 +1,4 @@
-﻿# THarvest.cs
+# THarvest.cs
 
 ## `public sealed class THarvest`
 

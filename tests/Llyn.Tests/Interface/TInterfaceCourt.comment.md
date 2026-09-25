@@ -1,4 +1,4 @@
-﻿# TInterfaceCourt.cs
+# TInterfaceCourt.cs
 
 ## `internal static partial class TInterface`
 

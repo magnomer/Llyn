@@ -1,4 +1,4 @@
-﻿# LReferenceVault.cs
+# LReferenceVault.cs
 
 ## `public interface LReferenceVault`
 

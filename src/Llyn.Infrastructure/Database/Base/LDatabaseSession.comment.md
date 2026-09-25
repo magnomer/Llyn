@@ -1,4 +1,4 @@
-﻿# LDatabaseSession.cs
+# LDatabaseSession.cs
 
 ## `public sealed class LDatabaseSession : LVaultSession, IDisposable`
 

@@ -1,4 +1,4 @@
-﻿# TSourceHandler.cs
+# TSourceHandler.cs
 
 ## `internal sealed class TSourceHandler`
 

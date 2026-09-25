@@ -1,4 +1,4 @@
-﻿# LSchemaCollocation.cs
+# LSchemaCollocation.cs
 
 ## `public static class LSchemaCollocation`
 

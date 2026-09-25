@@ -8,66 +8,67 @@ using System.Windows;
 using System.Windows.Input;
 using Llyn.Application;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PAccentItem> _pAccentItem = [];
+    private readonly ObservableCollection<LAccentItem> _pAccentItem = [];
     private string _pAccentLanguage = string.Empty;
     private bool _pAccentFlagged;
     private string _pAccentPrimary = string.Empty;
-    private PRespelling _pAccentRespelling = PRespelling.PRespellingPlain;
+    private LRespellingMark _pAccentRespelling = LRespellingMark.LRespellingMarkPlain;
 
-    private LRequest PAccentRequestCreate(PAccentItem row)
+    private LRequest PAccentRequestCreate(LAccentItem row)
     {
-        return _pAccentRespelling.PRespellingShown
-            ? new LRequestPronunciationRespelling(PEditorDraft, row.PAccentItemId, row.PAccentItemText)
-            : new LRequestPronunciationIpa(PEditorDraft, row.PAccentItemId, row.PAccentItemText);
+        return _pAccentRespelling.LRespellingMarkShown
+            ? new LRequestPronunciationRespelling(PEditorDraft, row.LAccentItemId, row.LAccentItemText)
+            : new LRequestPronunciationIpa(PEditorDraft, row.LAccentItemId, row.LAccentItemText);
     }
 
     internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        int position = e.Parameter is PAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
+        int position = e.Parameter is LAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
         PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, position));
     }
 
     internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
         PEditorRequestSend(
-            new LRequestPronunciationRemoval(PEditorDraft, (e.Parameter as PAccentItem)?.PAccentItemId ?? 0));
+            new LRequestPronunciationRemoval(PEditorDraft, (e.Parameter as LAccentItem)?.LAccentItemId ?? 0));
     }
 
     internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PAccentItem row)
+        if (e.Parameter is LAccentItem row)
         {
-            await PNotationOpen(PAccentAnchorRead(e), row.PAccentItemId);
+            await PNotationOpen(PAccentAnchorRead(e), row.LAccentItemId);
         }
     }
 
     internal async void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PAccentItem row)
+        if (e.Parameter is LAccentItem row)
         {
-            await PClipOpen(PAccentAnchorRead(e), row.PAccentItemId);
+            await PClipOpen(PAccentAnchorRead(e), row.LAccentItemId);
         }
     }
 
     internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not PAccentItem row)
+        if (e.Parameter is not LAccentItem row)
         {
             return;
         }
 
-        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(row.PAccentItemAudio))
+        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(row.LAccentItemAudio))
         {
-            PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.PAccentItemId, string.Empty, null));
+            PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.LAccentItemId, string.Empty, null));
             return;
         }
 
-        _pDownloaderPlayer.Open(new Uri(row.PAccentItemAudio));
+        _pDownloaderPlayer.Open(new Uri(row.LAccentItemAudio));
         _pDownloaderPlayer.Play();
     }
 
@@ -76,11 +77,11 @@ public partial class PEditor
         return e.OriginalSource as UIElement ?? PAccent;
     }
 
-    private PAccentItem? PAccentFind(long id)
+    private LAccentItem? PAccentFind(long id)
     {
-        foreach (PAccentItem row in _pAccentItem)
+        foreach (LAccentItem row in _pAccentItem)
         {
-            if (row.PAccentItemId == id)
+            if (row.LAccentItemId == id)
             {
                 return row;
             }
@@ -91,8 +92,8 @@ public partial class PEditor
 
     private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is not PAccentItem row
-            || !string.Equals(e.PropertyName, nameof(PAccentItem.PAccentItemText), StringComparison.Ordinal))
+        if (sender is not LAccentItem row
+            || !string.Equals(e.PropertyName, nameof(LAccentItem.LAccentItemText), StringComparison.Ordinal))
         {
             return;
         }
@@ -107,7 +108,7 @@ public partial class PEditor
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
-        PRespelling respelling = PRespelling.PRespellingRead(_pEditorHost.PWindowDeportment, language);
+        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_pEditorHost.PWindowDeportment, language);
         if (respelling != _pAccentRespelling)
         {
             _pAccentRespelling = respelling;
@@ -117,7 +118,7 @@ public partial class PEditor
         PCard.PCardRowShow(
             _pAccentItem,
             draft.LEntryDraftAccents,
-            static row => row.PAccentItemId,
+            static row => row.LAccentItemId,
             static spoken => spoken.LPronunciationDraftId,
             PAccentCreate,
             PAccentUpdate);
@@ -126,33 +127,34 @@ public partial class PEditor
         _ = PAccentFlagLoad(language, flagged);
     }
 
-    private PAccentItem PAccentCreate(LPronunciationDraft spoken)
+    private LAccentItem PAccentCreate(LPronunciationDraft spoken)
     {
-        PAccentItem row = PAccentItem.PAccentItemCreate(
-            _pEditorHost, _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling);
+        LAccentItem row = LAccentItem.LAccentItemCreate(
+            _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling, PEnsign.PEnsignFind);
         row.PropertyChanged += PAccentChangeHandle;
         return row;
     }
 
-    private PAccentItem PAccentUpdate(PAccentItem row, LPronunciationDraft spoken)
+    private LAccentItem PAccentUpdate(LAccentItem row, LPronunciationDraft spoken)
     {
-        if (!spoken.LPronunciationDraftMatch(row.PAccentItemVariety))
+        if (!spoken.LPronunciationDraftMatch(row.LAccentItemVariety))
         {
             row.PropertyChanged -= PAccentChangeHandle;
             return PAccentCreate(spoken);
         }
 
-        row.PAccentItemText = _pAccentRespelling.PRespellingTextRead(spoken);
+        row.LAccentItemText = _pAccentRespelling.LRespellingMarkResolve(spoken);
 
-        row.PAccentItemAudio = spoken.LPronunciationDraftAudio;
+        row.LAccentItemAudio = spoken.LPronunciationDraftAudio;
         return row;
     }
 
     private void PAccentPrimaryShow()
     {
-        PPronunciationFlag.Source = PAccentItem.PAccentFlagFind(_pAccentLanguage, _pAccentFlagged, _pAccentPrimary);
+        PPronunciationFlag.Source = LAccentItem.LAccentFlagFind(
+            _pAccentLanguage, _pAccentFlagged, _pAccentPrimary, PEnsign.PEnsignFind);
         PPronunciationLabel.Text = PPronunciationFlag.Source is null
-            ? PAccentItem.PAccentLabelFormat(_pEditorHost, _pAccentPrimary)
+            ? LAccentItem.LAccentLabelFormat(_pAccentPrimary)
             : string.Empty;
     }
 
@@ -163,7 +165,7 @@ public partial class PEditor
             return;
         }
 
-        List<string> varieties = _pAccentItem.Select(static row => row.PAccentItemVariety).ToList();
+        List<string> varieties = _pAccentItem.Select(static row => row.LAccentItemVariety).ToList();
         varieties.Add(_pAccentPrimary);
 
         try
@@ -181,9 +183,9 @@ public partial class PEditor
             return;
         }
 
-        foreach (PAccentItem row in _pAccentItem)
+        foreach (LAccentItem row in _pAccentItem)
         {
-            row.PAccentFlagUpdate(language, flagged);
+            row.LAccentFlagUpdate(language, flagged, PEnsign.PEnsignFind);
         }
 
         PAccentPrimaryShow();
@@ -191,7 +193,7 @@ public partial class PEditor
 
     private void PAccentRowClear()
     {
-        foreach (PAccentItem row in _pAccentItem)
+        foreach (LAccentItem row in _pAccentItem)
         {
             row.PropertyChanged -= PAccentChangeHandle;
         }

@@ -1,4 +1,4 @@
-﻿# PRepertoireScenario.xaml
+# PRepertoireScenario.xaml
 
 ## `ResourceDictionary`
 

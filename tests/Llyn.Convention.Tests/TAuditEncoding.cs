@@ -42,59 +42,31 @@ public sealed class TAuditEncoding
     }
 
     [Fact]
-    public void AuditEncoding_TrackedText_MarksOnceAtMost()
+    public void AuditEncoding_TrackedText_HoldsNoMark()
     {
         List<string> hits = TAuditEncodingScan(static (_, bytes) =>
         {
-            int start = bytes.AsSpan().StartsWith(TAuditEncodingMark) ? TAuditEncodingMark.Length : 0;
-            int stray = bytes.AsSpan(start).IndexOf(TAuditEncodingMark);
-            return stray < 0 ? null : $"byte order mark at offset {start + stray}";
+            int offset = bytes.AsSpan().IndexOf(TAuditEncodingMark);
+            return offset < 0 ? null : $"byte order mark at offset {offset}";
         });
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditEncodingAudit,
-            $"{hits.Count} tracked file(s) carry a byte order mark past the first byte:\n{string.Join('\n', hits)}"));
+            $"{hits.Count} tracked file(s) carry a byte order mark:\n{string.Join('\n', hits)}"));
     }
 
     [Fact]
-    public void AuditEncoding_TrackedText_BreaksLinesOneWay()
+    public void AuditEncoding_TrackedText_BreaksLinesWithLf()
     {
         List<string> hits = TAuditEncodingScan(static (_, bytes) =>
         {
-            int paired = 0;
-            int bare = 0;
-            int lone = 0;
-            for (int index = 0; index < bytes.Length; index++)
-            {
-                if (bytes[index] == (byte)'\r')
-                {
-                    if (index + 1 < bytes.Length && bytes[index + 1] == (byte)'\n')
-                    {
-                        paired++;
-                        index++;
-                    }
-                    else
-                    {
-                        lone++;
-                    }
-                }
-                else if (bytes[index] == (byte)'\n')
-                {
-                    bare++;
-                }
-            }
-
-            if (lone > 0)
-            {
-                return $"{lone} lone carriage return(s)";
-            }
-
-            return paired > 0 && bare > 0 ? $"{paired} CRLF and {bare} LF" : null;
+            int returns = bytes.AsSpan().Count((byte)'\r');
+            return returns == 0 ? null : $"{returns} carriage return(s)";
         });
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditEncodingAudit,
-            $"{hits.Count} tracked file(s) mix their line breaks:\n{string.Join('\n', hits)}"));
+            $"{hits.Count} tracked file(s) break lines with a carriage return:\n{string.Join('\n', hits)}"));
     }
 
     [Fact]

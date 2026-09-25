@@ -1,4 +1,4 @@
-﻿# TPronunciationHelper.cs
+# TPronunciationHelper.cs
 
 ## `internal static class TPronunciationHelper`
 

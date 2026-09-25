@@ -51,8 +51,8 @@ internal static class TAuditPlatformSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditPlatformCeiling = new Dictionary<string, int>
     {
         ["Unmapped"] = 1,
-        ["Absent"] = 4,
-        ["Column"] = 7,
+        ["Absent"] = 1,
+        ["Column"] = 4,
         ["Analyzer"] = 4,
     };
 }

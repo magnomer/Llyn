@@ -8,7 +8,7 @@ It stretches across the view, unlike that box, so a long row of pictures wraps i
 
 ## `<Style x:Key="Theme.Script.Character" TargetType="TextBlock">`
 
-The character heading a group of rows, inked and in the glyph font the box inherits from `PFontApply`.
+The character heading a group of rows, inked and in the glyph font the box inherits from `LFontApply`.
 It collapses when empty, so a one-character headword leaves no column.
 
 ## `<Style x:Key="Theme.Script.Chip" TargetType="Border">`

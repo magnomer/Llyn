@@ -13,7 +13,7 @@
     <Style x:Key="Theme.Reflex.Surface" TargetType="Border" BasedOn="{StaticResource Theme.Pronunciation.Surface}">
         <Setter Property="Height" Value="31" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PReflexItemHidden}" Value="True">
+            <DataTrigger Binding="{Binding LReflexItemHidden}" Value="True">
                 <Setter Property="Visibility" Value="Hidden" />
                 <Setter Property="Height" Value="0" />
             </DataTrigger>
@@ -21,14 +21,14 @@
     </Style>
 
     <Style x:Key="Theme.Reflex.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Label}">
-        <Setter Property="Text" Value="{Binding PReflexItemLabel}" />
-        <Setter Property="ToolTip" Value="{Binding PReflexItemArea}" />
+        <Setter Property="Text" Value="{Binding LReflexItemLabel}" />
+        <Setter Property="ToolTip" Value="{Binding LReflexItemArea}" />
         <Setter Property="Visibility" Value="Visible" />
         <Style.Triggers>
             <Trigger Property="Text" Value="">
                 <Setter Property="Visibility" Value="Hidden" />
             </Trigger>
-            <DataTrigger Binding="{Binding PReflexItemArea}" Value="">
+            <DataTrigger Binding="{Binding LReflexItemArea}" Value="">
                 <Setter Property="ToolTip" Value="{x:Null}" />
             </DataTrigger>
         </Style.Triggers>
@@ -37,9 +37,9 @@
     <Style x:Key="Theme.Reflex.Text" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Text}">
         <Setter Property="Margin" Value="0,-3,0,3" />
         <Setter Property="MaxWidth" Value="420" />
-        <Setter Property="Text" Value="{Binding PReflexItemText}" />
+        <Setter Property="Text" Value="{Binding LReflexItemText}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PReflexItemMain}" Value="True">
+            <DataTrigger Binding="{Binding LReflexItemMain}" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
             </DataTrigger>
         </Style.Triggers>
@@ -51,7 +51,7 @@
             <Trigger Property="Text" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Trigger>
-            <DataTrigger Binding="{Binding PReflexItemMain}" Value="True">
+            <DataTrigger Binding="{Binding LReflexItemMain}" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
             </DataTrigger>
         </Style.Triggers>
@@ -106,7 +106,7 @@
         <Setter Property="Margin" Value="0,0,6,0" />
         <Setter Property="MaxWidth" Value="160" />
         <Setter Property="ToolTip" Value="{x:Null}" />
-        <Setter Property="Text" Value="{Binding PReflexItemTag}" />
+        <Setter Property="Text" Value="{Binding LReflexItemTag}" />
         <Style.Triggers>
             <Trigger Property="Text" Value="">
                 <Setter Property="Visibility" Value="Hidden" />
@@ -129,21 +129,21 @@
 
     <Style x:Key="Theme.Reflex.Romanization" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
         <Setter Property="Margin" Value="12,0,3,2" />
-        <Setter Property="Text" Value="{Binding PReflexItemRomanization}" />
+        <Setter Property="Text" Value="{Binding LReflexItemRomanization}" />
     </Style>
 
     <Style x:Key="Theme.Reflex.Meaning" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
-        <Setter Property="Text" Value="{Binding PReflexItemMeaning}" />
+        <Setter Property="Text" Value="{Binding LReflexItemMeaning}" />
     </Style>
 
     <Style x:Key="Theme.Reflex.Note" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
-        <Setter Property="Text" Value="{Binding PReflexItemNote}" />
+        <Setter Property="Text" Value="{Binding LReflexItemNote}" />
     </Style>
 
     <Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Minor}">
         <Setter Property="Margin" Value="12,0,3,2" />
         <Setter Property="MaxWidth" Value="520" />
-        <Setter Property="Text" Value="{Binding PReflexItemAnchor}" />
+        <Setter Property="Text" Value="{Binding LReflexItemAnchor}" />
         <Style.Triggers>
             <Trigger Property="Text" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -178,9 +178,9 @@
                     <TextBlock Style="{StaticResource Theme.Reflex.Tag}" />
                 </StackPanel>
                 <StackPanel Grid.Column="2" Margin="3,0" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemOpener}" />
+                    <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding LReflexItemOpener}" />
                     <TextBlock Style="{StaticResource Theme.Reflex.Text}" />
-                    <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemCloser}" />
+                    <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding LReflexItemCloser}" />
                 </StackPanel>
                 <Grid Grid.Column="3" Margin="12,0,3,2" MinWidth="12">
                     <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Romanization}" />

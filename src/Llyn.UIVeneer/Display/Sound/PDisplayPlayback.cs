@@ -5,6 +5,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using Llyn.UIDeportment;
+
 namespace Llyn.UIVeneer;
 
 public partial class PDisplay
@@ -34,7 +36,7 @@ public partial class PDisplay
     private void PDisplayPlaybackShow()
     {
         bool audible = _pDisplayRecording is not null
-            || _pDisplayAccent.Any(static row => row.PAccentItemAudio.Length > 0);
+            || _pDisplayAccent.Any(static row => row.LAccentItemAudio.Length > 0);
         PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 

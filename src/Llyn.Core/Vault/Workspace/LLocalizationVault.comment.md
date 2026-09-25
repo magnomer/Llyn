@@ -1,4 +1,4 @@
-﻿# LLocalizationVault.cs
+# LLocalizationVault.cs
 
 ## `public interface LLocalizationVault`
 

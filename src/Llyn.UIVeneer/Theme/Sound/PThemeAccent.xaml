@@ -33,7 +33,7 @@
         <Setter Property="ToolTip" Value="{DynamicResource Downloader.Play}" />
         <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandPlayback}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PAccentItemAudio}" Value="">
+            <DataTrigger Binding="{Binding LAccentItemAudio}" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
         </Style.Triggers>
@@ -52,18 +52,18 @@
     </Style>
 
     <Style x:Key="Theme.Accent.Flag" TargetType="Image" BasedOn="{StaticResource Theme.Pronunciation.Flag}">
-        <Setter Property="Source" Value="{Binding PAccentItemFlag}" />
+        <Setter Property="Source" Value="{Binding LAccentItemFlag}" />
     </Style>
 
     <Style x:Key="Theme.Accent.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Label}">
-        <Setter Property="Text" Value="{Binding PAccentItemLabel}" />
+        <Setter Property="Text" Value="{Binding LAccentItemLabel}" />
     </Style>
 
     <Style x:Key="Theme.Accent.Prompt" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Text}">
         <Setter Property="Margin" Value="0,-3,0,3" />
-        <Setter Property="Text" Value="{Binding PAccentItemText}" />
+        <Setter Property="Text" Value="{Binding LAccentItemText}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PAccentItemText}" Value="">
+            <DataTrigger Binding="{Binding LAccentItemText}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Input.Pronunciation}" />
                 <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
             </DataTrigger>
@@ -145,11 +145,11 @@
                     <TextBlock Style="{StaticResource Theme.Accent.Label}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemOpener}" />
-                    <Grid Background="Transparent" Style="{StaticResource Theme.Pronunciation.Cell}" Tag="Theme.Pronunciation.Field PAccentItemText Input.Pronunciation">
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding LAccentItemOpener}" />
+                    <Grid Background="Transparent" Style="{StaticResource Theme.Pronunciation.Cell}" Tag="Theme.Pronunciation.Field LAccentItemText Input.Pronunciation">
                         <TextBlock Style="{StaticResource Theme.Accent.Prompt}" />
                     </Grid>
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemCloser}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding LAccentItemCloser}" />
                     <Button Style="{StaticResource Theme.Accent.Playback}" />
                     <Button Style="{StaticResource Theme.Accent.Phonetician}" />
                     <Button Style="{StaticResource Theme.Accent.Downloader}" />
@@ -171,9 +171,9 @@
                     <TextBlock Style="{StaticResource Theme.Accent.Label}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemOpener}" />
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PAccentItemText}" />
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemCloser}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding LAccentItemOpener}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding LAccentItemText}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding LAccentItemCloser}" />
                     <Button Style="{StaticResource Theme.Accent.Playback}" />
                 </StackPanel>
             </Grid>
