@@ -9,6 +9,11 @@ Every request the veneer forwards ends in a notice, and the veneer writes its co
 The questions a panel asks the user leave through seams the veneer hands in, so no dialog is known here.
 The rows a tab lists are the tab's own, so this class only announces that they need re-reading.
 
+## `private readonly string _lPanelDeleteKey;`
+
+The localization key a refused delete is shown under, named by the deportment so the message names its record.
+A panel that never deletes still names the key of the record it lists.
+
 ## `private readonly Func<bool> _lPanelShownSeam;`
 
 Whether the panel's tab is the one in front, read from the veneer because only a control knows it.
@@ -52,13 +57,16 @@ The fresh step without the leave question, for a deportment that already asked f
 Sets the mode on the vista and announces the change, asking nothing.
 Public so a two-list deportment can carry the mode from one list to the other.
 
-## `public void LPanelRowShow(long? id)`
+## `public bool LPanelRowShow(long? id)`
 
 Selects and loads a row without the leave question, for a deportment that already asked.
+It answers whether the panel now holds the row.
+The vista restores its previous choice when the load throws, so a failed click changes nothing.
 
-## `private void LPanelDraftShow()`
+## `private bool LPanelDraftShow(Func<LDraft?> load)`
 
-Loads the chosen row after a click or a return to the display.
+Loads a row through the given load, after a click or a return to the display.
+A throw is announced and answers false, and the vista has already restored its prior choice.
 The vista drops a choice that no longer loads, so the chosen verdict decides the clear.
 No engine answer is branched on, and the loaded draft travels to the veneer inside the notice.
 
@@ -68,9 +76,14 @@ The chosen entry changed under the panel, so it is reloaded quietly and a vanish
 
 ## `public void LPanelEntryHandle(LBulletin bulletin)`
 
-Any stored entry re-lists the rows.
-A tab in front and in edit mode adopts the stored entry as its choice.
-That is how a fresh entry becomes the shown one.
+Any stored entry re-lists the rows and repaints the mode.
+A tab in front, in edit mode and with no chosen row adopts the stored entry as its choice.
+That is how a fresh entry becomes the shown one, while an entry under edit keeps its row.
+
+## `public void LPanelEntrySelect(LBulletin bulletin)`
+
+The adoption alone, for a two-list deportment whose rows already re-list on the same bulletin.
+It raises nothing, because the adopted entry's own bulletin reloads and repaints the panel next.
 
 ## `public long LPanelVoyageRead()`
 

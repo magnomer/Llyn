@@ -84,11 +84,9 @@ public partial class PRepertoire
         PScenarioImageShow(situation?.LSituationImage ?? []);
         PScenarioVideoShow(situation?.LSituationVideo ?? []);
 
-        PScenarioTally.Text = PRepertoireTallyRead(PScenarioSituationRead());
+        PScenarioTally.Text = PRepertoireTallyRead(PScenarioDesk.LDeskStoredRead());
 
         _pScenarioLoading = false;
-
-        PScenarioChangeUpdate();
     }
 
     private void PScenarioShow(LSituation situation)
@@ -103,8 +101,6 @@ public partial class PRepertoire
         PScenarioVideoShow(situation.LSituationVideo);
 
         _pScenarioLoading = false;
-
-        PScenarioChangeUpdate();
     }
 
     private void PScenarioFieldShow(TextBox field, LStateValue value, ref bool held)
@@ -128,24 +124,5 @@ public partial class PRepertoire
             new LStateWritten(PScenarioTitle.Text, _pScenarioTitleUnknown),
             new LStateWritten(PScenarioDescription.Text, _pScenarioDescriptionUnknown),
             new LStateWritten(PScenarioKind.Text, _pScenarioKindUnknown));
-    }
-
-    private void PScenarioStoreRun()
-    {
-        if (!PScenarioDesk.LDeskChangeCheck())
-        {
-            return;
-        }
-
-        PScenarioDesk.LDeskFinish(true);
-    }
-
-    private void PScenarioStoredShow(long situation)
-    {
-        _lRepertoire.LRepertoireSelect(situation);
-
-        PAtlasFind();
-        PRepertoireScribeShow(false);
-        PRepertoireShow(situation);
     }
 }

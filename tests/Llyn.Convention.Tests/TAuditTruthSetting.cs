@@ -1,8 +1,8 @@
-﻿namespace Convention.Tests;
+namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 10;
+    public const int TAuditGeneration = 11;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
@@ -19,7 +19,6 @@ internal static class TAuditTruthSetting
 
     public static readonly string[] TAuditTruthInclude =
     [
-        "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
     ];
 
@@ -110,11 +109,59 @@ internal static class TAuditTruthSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
     {
-        ["Argument"] = 105,
-        ["Guard"] = 78,
-        ["Fork"] = 14,
-        ["Mirror"] = 28,
-        ["Mutation"] = 13,
-        ["Shape"] = 59,
+        ["Argument"] = 0,
+        ["Guard"] = 0,
+        ["Fork"] = 0,
+        ["Mirror"] = 0,
+        ["Mutation"] = 1,
+        ["Shape"] = 0,
+        ["Treat"] = 14,
+        ["Taint"] = 4,
     };
+
+    public static readonly string[] TAuditTreatVerbs =
+    [
+        "Aggregate",
+        "All",
+        "Any",
+        "Average",
+        "Concat",
+        "Contains",
+        "Count",
+        "Distinct",
+        "DistinctBy",
+        "Except",
+        "First",
+        "FirstOrDefault",
+        "GroupBy",
+        "GroupJoin",
+        "Intersect",
+        "Join",
+        "Last",
+        "LastOrDefault",
+        "Max",
+        "MaxBy",
+        "Min",
+        "MinBy",
+        "OrderBy",
+        "OrderByDescending",
+        "Reverse",
+        "Select",
+        "SelectMany",
+        "Single",
+        "SingleOrDefault",
+        "Skip",
+        "SkipWhile",
+        "Sum",
+        "Take",
+        "TakeWhile",
+        "ThenBy",
+        "ThenByDescending",
+        "ToDictionary",
+        "ToHashSet",
+        "ToLookup",
+        "Union",
+        "Where",
+        "Zip",
+    ];
 }

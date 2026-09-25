@@ -32,7 +32,8 @@ public sealed class LLibrary
         _lPortraitPort = portraits;
         LLibraryEditor = editor;
         LLibraryPanel = new LPanel(
-            "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "List.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LLibraryPanel.LPanelCleared += LLibraryEditorClear;
         LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
     }

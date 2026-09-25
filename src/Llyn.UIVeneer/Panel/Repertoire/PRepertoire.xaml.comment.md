@@ -5,7 +5,8 @@
 The Repertoire panel: the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
 It holds the host and the engine the browsing side calls, and nothing else.
-The browsing behavior lives in `PRepertoireBrowse.cs`, one file per responsibility.
+The browsing behavior lives in `PRepertoireBrowse.cs` and the editing in `PRepertoireEditor.cs`, one file per responsibility.
+The held draft the editor writes into lives in `PRepertoireHold.cs`, apart from the controls it reads.
 It merges the card's picture and video row templates, answering their clicks as `PImageHost` and `PVideoHost`.
 Those answers live in `PRepertoireDialog.cs`.
 
@@ -15,27 +16,52 @@ Builds the panel's deportment and its editor over the engine's ports, and wires 
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
-The editor's change notice drives `PRepertoireStore`, as it drives the save button of the tenor panel.
-The editor is lent `PRepertoireBackward` and `PRepertoireForward` too, so the rail's undo and redo follow an open Entry.
+The engine's change notices drive the mode, and its row notices drive the two lists.
+Its scenario and situation notices paint the sheet, and its failures reach the window.
+A dropped inquest empties the inquest box and the language menu.
+The print and export commands are bound in code, so their checks never run before the engine exists.
 The window fills the situation catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
 
+## `private bool PRepertoireShownCheck()`
+
+Whether the panel is on screen, so the engine knows when a notice needs painting.
+
+## `private bool PRepertoireDiscardConfirm(Func<bool, bool> finish)`
+
+Asks the window whether unsaved work may be dropped before the engine moves on.
+A save runs the finish the deportment handed in, so the deportment decides what follows it.
+
+## `private bool PRepertoireRemovalConfirm(int usage)`
+
+Asks the window whether a Situation used this many times may be removed.
+
+## `private void POccurrenceDraftShow(LDraft draft)`
+
+Shows the occurrence's held entry in the display.
+
+## `private void PRepertoireModeUpdate()`
+
+Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.
+The scenario is live only while its desk runs.
+It ends by refreshing the rail's undo and redo.
+
 ## `internal void PRepertoireReset()`
 
-Drops the selection and reads the catalog again, for when the workspace underneath changed.
+Drops both selections through the deportment and reads the catalog again, for when the workspace underneath changed.
 
 ## `internal bool PRepertoireChangeCheck()`
 
-Whether the panel holds a draft the engine says differs from what is stored.
+Whether the editor holds work nothing has saved yet.
+The engine answers it against the held draft rather than the panel against a copy of a stored record.
 The window asks before anything can leave the panel.
-The answer is the engine's, so the panel decides nothing about what counts as a change.
-The entry editor answers while it is in front, and the Situation editor otherwise.
+The deportment asks the occurrence side and the atlas side, and each answers only while it edits.
 
 ## `internal bool PRepertoireDraftFinish(bool store)`
 
 Ends whichever draft is in front, committing it or discarding it.
-The entry editor finishes its own draft, and the Situation editor finishes its own.
+The deportment finishes the entry editor's draft while it is in front, and the held situation otherwise.
 
 ## `internal void PRepertoireClose()`
 
@@ -50,7 +76,7 @@ The button follows this answer on its own, so no panel state has to switch it.
 ## `private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the situation being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
+The deportment picks the page from the side it shows, and the engine builds it from stored rows.
 Nothing is read back from the screen.
 
 ## `private void PRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)`

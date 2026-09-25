@@ -54,23 +54,6 @@ Writes one field and its mark from a value, unless the field already reads that 
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
 
-New makes whatever the emptier panel would list.
+New makes whatever the emptier panel would list, and the deportment decides which.
 With no Example chosen and no Entry shown, it opens the editor on a sentence nothing has stored.
 With an Example chosen, or an Entry shown, it starts a new Entry instead.
-
-## `private void PTranscriptStoreRun()`
-
-Finishes the desk over the held sentence.
-It creates an Example the draft names none of and rewrites the one it names.
-The rail's save calls it, because the editor carries no save of its own.
-Anything still waiting to be pushed is pushed first, so the commit carries the last keystroke.
-An unchanged draft commits nothing, so a blank sentence is never stored by a stray save.
-The tenure finishes itself and answers the stored id, which the panel then shows.
-Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
-There is no discard: leaving the editor through the mode toggle asks about the draft instead.
-A halted tenure refuses to finish and the refusal is shown, since the draft misses the edits the flush dropped.
-
-## `private void PTranscriptStoredShow(long example)`
-
-Selects and shows the Example the desk just stored, back in the reading side.
-The desk announces the id on every finish that stored, the rail's save and the window's leave alike.

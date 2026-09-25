@@ -29,7 +29,8 @@ public sealed class LFootnote
         _lPortraitPort = portraits;
         LFootnoteEditor = editor;
         LFootnotePanel = new LPanel(
-            "List.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, static () => false);
+            "List.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, static () => false);
         LFootnotePanel.LPanelCleared += LFootnoteEditorClear;
         LFootnotePanel.LPanelEdited += LFootnoteEditorOpen;
         LFootnoteCreated += editor.LEditorReferenceAdd;

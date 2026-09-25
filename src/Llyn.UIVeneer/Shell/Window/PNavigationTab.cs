@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Llyn.Core;
+using Llyn.UIDeportment;
 
 namespace Llyn.UIVeneer;
 
@@ -9,106 +10,188 @@ public partial class PWindow
 {
     private void PNavigationHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not PTab selectedButton)
-        {
-            return;
-        }
-
-        foreach ((string mode, PTab button, Func<bool> draft, Func<bool, bool> leave) in PNavigationGuardRead())
-        {
-            if (!_lWindow.LWindowModeMatch(mode))
-            {
-                continue;
-            }
-
-            if (button != selectedButton && !PWindowDiscardConfirm(draft(), leave))
-            {
-                return;
-            }
-        }
-
-        foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
-        {
-            bool isSelected = button == selectedButton;
-            button.PTabChosen = isSelected;
-            panel.Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed;
-
-            if (isSelected)
-            {
-                _lWindow.LWindowModeSave(mode);
-            }
-        }
+        _lNavigation.LNavigationSelect(sender);
     }
 
-    internal void PNavigationRestore()
-    {
-        foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
-        {
-            if (!_lWindow.LWindowModeMatch(mode))
-            {
-                continue;
-            }
-
-            PNavigationHandle(button, new RoutedEventArgs());
-            scribe?.Invoke(_lWindow.LWindowPostureRead().LPostureStateSplit);
-            return;
-        }
-    }
-
-    private (string PNavigationMode, PTab PNavigationButton, Func<bool> PNavigationDraft,
-        Func<bool, bool> PNavigationLeave)[] PNavigationGuardRead()
+    private LTab[] PNavigationTabRead()
     {
         return
         [
-            ("Library", PNavigationLibrary, PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
-            ("Phonology", PNavigationPhonology, PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
-            ("Xiesheng", PNavigationXiesheng, PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
-            ("Yunjing", PNavigationYunjing, PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
-            ("Taxonomy", PNavigationTaxonomy, PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
-            ("Tenor", PNavigationTenor, PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
-            ("Repertoire", PNavigationRepertoire, PRepertoire.PRepertoireChangeCheck,
-                PRepertoire.PRepertoireDraftFinish),
-            ("Corpus", PNavigationCorpus, PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
-            ("Reference", PNavigationSource, PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
-            ("Guild", PNavigationGuild, PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish),
-            ("Favorite", PNavigationFavorite, PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
+            new LTab("Input", PNavigationInput, PInput),
+            new LTab("Library", PNavigationLibrary, PLibrary)
+            {
+                LTabLeave = PLibrary.PLibraryLeaveConfirm,
+                LTabScribe = PLibrary.PLibraryScribeRestore,
+                LTabStation = PLibrary.PLibraryVoyageRead,
+                LTabVoyage = PLibrary.PLibraryVoyageShow,
+                LTabArrival = PLibrary.PIndexEntryShow
+            },
+            new LTab("Phonology", PNavigationPhonology, PPhonology)
+            {
+                LTabLeave = PPhonology.PPhonologyLeaveConfirm,
+                LTabScribe = PPhonology.PPhonologyScribeRestore,
+                LTabStation = PPhonology.PPhonologyVoyageRead,
+                LTabVoyage = PPhonology.PPhonologyVoyageShow,
+                LTabArrival = PPhonology.PInventoryEntryShow
+            },
+            new LTab("Xiesheng", PNavigationXiesheng, PXiesheng)
+            {
+                LTabAllowed = PXiesheng.PXieshengCheck,
+                LTabLeave = PXiesheng.PXieshengLeaveConfirm,
+                LTabScribe = PXiesheng.PXieshengScribeRestore,
+                LTabStation = PXiesheng.PXieshengVoyageRead,
+                LTabVoyage = PXiesheng.PXieshengVoyageShow,
+                LTabArrival = PXiesheng.PKindredEntryShow
+            },
+            new LTab("Yunjing", PNavigationYunjing, PYunjing)
+            {
+                LTabAllowed = PYunjing.PYunjingCheck,
+                LTabLeave = PYunjing.PYunjingLeaveConfirm,
+                LTabScribe = PYunjing.PYunjingScribeRestore,
+                LTabStation = PYunjing.PYunjingVoyageRead,
+                LTabVoyage = PYunjing.PYunjingVoyageShow,
+                LTabArrival = PYunjing.PXiaoyunEntryShow
+            },
+            new LTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
+            {
+                LTabLeave = PTaxonomy.PTaxonomyLeaveConfirm,
+                LTabScribe = PTaxonomy.PTaxonomyScribeRestore,
+                LTabStation = PTaxonomy.PTaxonomyVoyageRead,
+                LTabVoyage = PTaxonomy.PTaxonomyVoyageShow,
+                LTabArrival = PTaxonomy.PDirectoryTagShow
+            },
+            new LTab("Tenor", PNavigationTenor, PTenor)
+            {
+                LTabLeave = PTenor.PTenorLeaveConfirm,
+                LTabScribe = PTenor.PTenorScribeRestore,
+                LTabStation = PTenor.PTenorVoyageRead,
+                LTabVoyage = PTenor.PTenorVoyageShow,
+                LTabArrival = PTenor.PGamutRegisterShow
+            },
+            new LTab("Repertoire", PNavigationRepertoire, PRepertoire)
+            {
+                LTabLeave = PRepertoire.PRepertoireLeaveConfirm,
+                LTabScribe = PRepertoire.PRepertoireScribeRestore,
+                LTabStation = PRepertoire.PRepertoireVoyageRead,
+                LTabVoyage = PRepertoire.PRepertoireVoyageShow,
+                LTabArrival = PRepertoire.PAtlasSituationShow
+            },
+            new LTab("Corpus", PNavigationCorpus, PCorpus)
+            {
+                LTabLeave = PCorpus.PCorpusLeaveConfirm,
+                LTabScribe = PCorpus.PCorpusScribeRestore,
+                LTabStation = PCorpus.PCorpusVoyageRead,
+                LTabVoyage = PCorpus.PCorpusVoyageShow,
+                LTabArrival = PCorpus.PAnthologyExampleShow
+            },
+            new LTab("Reference", PNavigationSource, PReference)
+            {
+                LTabLeave = PReference.PReferenceLeaveConfirm,
+                LTabScribe = PReference.PReferenceScribeRestore,
+                LTabStation = PReference.PReferenceVoyageRead,
+                LTabVoyage = PReference.PReferenceVoyageShow,
+                LTabArrival = PReference.PShelfSourceShow
+            },
+            new LTab("Guild", PNavigationGuild, PGuild)
+            {
+                LTabLeave = PGuild.PGuildLeaveConfirm,
+                LTabScribe = PGuild.PGuildScribeRestore,
+                LTabStation = PGuild.PGuildVoyageRead,
+                LTabVoyage = PGuild.PGuildVoyageShow,
+                LTabArrival = PGuild.PRollAuthorShow
+            },
+            new LTab("Favorite", PNavigationFavorite, PFavorite)
+            {
+                LTabLeave = PFavorite.PFavoriteLeaveConfirm,
+                LTabScribe = PFavorite.PFavoriteScribeRestore,
+                LTabStation = PFavorite.PFavoriteVoyageRead,
+                LTabVoyage = PFavorite.PFavoriteVoyageShow,
+                LTabArrival = PFavorite.PRosterEntryShow
+            },
+            new LTab("Duplex", PNavigationDuplex, PDuplex),
+            new LTab("Settings", PNavigationSettings, PSettings)
         ];
     }
 
-    private (string PNavigationMode, PTab PNavigationButton, FrameworkElement PNavigationPanel,
-        Action<bool>? PNavigationScribe)[] PNavigationTabRead()
+    internal void PVoyageRecord()
     {
-        return
-        [
-            ("Input", PNavigationInput, PInput, null),
-            ("Library", PNavigationLibrary, PLibrary, PLibrary.PLibraryScribeRestore),
-            ("Phonology", PNavigationPhonology, PPhonology, PPhonology.PPhonologyScribeRestore),
-            ("Xiesheng", PNavigationXiesheng, PXiesheng, PXiesheng.PXieshengScribeRestore),
-            ("Yunjing", PNavigationYunjing, PYunjing, PYunjing.PYunjingScribeRestore),
-            ("Taxonomy", PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyScribeRestore),
-            ("Tenor", PNavigationTenor, PTenor, PTenor.PTenorScribeRestore),
-            ("Repertoire", PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireScribeRestore),
-            ("Corpus", PNavigationCorpus, PCorpus, PCorpus.PCorpusScribeRestore),
-            ("Reference", PNavigationSource, PReference, PReference.PReferenceScribeRestore),
-            ("Guild", PNavigationGuild, PGuild, PGuild.PGuildScribeRestore),
-            ("Favorite", PNavigationFavorite, PFavorite, PFavorite.PFavoriteScribeRestore),
-            ("Duplex", PNavigationDuplex, PDuplex, null),
-            ("Settings", PNavigationSettings, PSettings, null)
-        ];
+        _lNavigation.LNavigationVoyage.LVoyageRecord();
+    }
+
+    internal void PVoyageRetreatRun()
+    {
+        _lNavigation.LNavigationVoyage.LVoyageRetreat();
+    }
+
+    internal void PVoyageAdvanceRun()
+    {
+        _lNavigation.LNavigationVoyage.LVoyageAdvance();
     }
 
     internal bool PWindowEntryShow(long id)
     {
         PMentionMenuHide();
-        if (!PLibrary.PLibraryLeaveConfirm())
-        {
-            return false;
-        }
+        return _lNavigation.LNavigationShow(PNavigationLibrary, id);
+    }
 
-        PVoyageRecord();
-        PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
-        PLibrary.PIndexEntryShow(id);
-        return true;
+    internal bool PWindowSituationShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationRepertoire, id);
+    }
+
+    internal bool PWindowTagShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationTaxonomy, id);
+    }
+
+    internal bool PWindowExampleShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationCorpus, id);
+    }
+
+    internal bool PWindowRegisterShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationTenor, id);
+    }
+
+    internal bool PWindowSourceShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationSource, id);
+    }
+
+    internal bool PWindowAuthorShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationGuild, id);
+    }
+
+    internal bool PWindowFavoriteShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationFavorite, id);
+    }
+
+    internal bool PWindowInventoryShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationPhonology, id);
+    }
+
+    internal bool PWindowXiaoyunShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationYunjing, id);
+    }
+
+    internal bool PWindowKindredShow(long id)
+    {
+        return _lNavigation.LNavigationShow(PNavigationXiesheng, id);
+    }
+
+    internal void PWindowDiweiShow(string language, string kind, string key)
+    {
+        _lNavigation.LNavigationShow(PNavigationYunjing, () => PYunjing.PYunjingDiweiShow(language, kind, key));
+    }
+
+    internal void PWindowStemShow(string language, string? key)
+    {
+        _lNavigation.LNavigationShow(PNavigationXiesheng, () => PXiesheng.PXieshengStemShow(language, key));
     }
 
     internal void PWindowMentionHandle(PMention anchor, LMentionResult result)
@@ -174,131 +257,5 @@ public partial class PWindow
     private void PMentionLeaveHandle(object? sender, EventArgs e)
     {
         PMentionMenuHide();
-    }
-
-    internal bool PWindowSituationShow(long id)
-    {
-        if (!PRepertoire.PRepertoireLeaveConfirm())
-        {
-            return false;
-        }
-
-        PVoyageRecord();
-        PNavigationHandle(PNavigationRepertoire, new RoutedEventArgs());
-        PRepertoire.PAtlasSituationShow(id);
-        return true;
-    }
-
-    internal bool PWindowTagShow(long id)
-    {
-        if (!PTaxonomy.PTaxonomyLeaveConfirm())
-        {
-            return false;
-        }
-
-        PVoyageRecord();
-        PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
-        PTaxonomy.PDirectoryTagShow(id);
-        return true;
-    }
-
-    internal bool PWindowExampleShow(long id)
-    {
-        if (!PCorpus.PCorpusLeaveConfirm())
-        {
-            return false;
-        }
-
-        PVoyageRecord();
-        PNavigationHandle(PNavigationCorpus, new RoutedEventArgs());
-        PCorpus.PAnthologyExampleShow(id);
-        return true;
-    }
-
-    internal bool PWindowRegisterShow(long id)
-    {
-        if (!PTenor.PTenorLeaveConfirm())
-        {
-            return false;
-        }
-
-        PVoyageRecord();
-        PNavigationHandle(PNavigationTenor, new RoutedEventArgs());
-        PTenor.PGamutRegisterShow(id);
-        return true;
-    }
-
-    private void PWindowStationOpen(PTab tab, Func<bool> leave, Action show)
-    {
-        if (!leave())
-        {
-            return;
-        }
-
-        PNavigationHandle(tab, new RoutedEventArgs());
-        show();
-    }
-
-    private bool PWindowStationShow(PTab tab, Func<bool> leave, Action show)
-    {
-        if (!leave())
-        {
-            return false;
-        }
-
-        PVoyageRecord();
-        PNavigationHandle(tab, new RoutedEventArgs());
-        show();
-        return true;
-    }
-
-    internal bool PWindowSourceShow(long id)
-    {
-        return PWindowStationShow(
-            PNavigationSource, PReferenceLeaveConfirm, () => PReference.PShelfSourceShow(id));
-    }
-
-    internal bool PWindowAuthorShow(long id)
-    {
-        return PWindowStationShow(PNavigationGuild, PGuildLeaveConfirm, () => PGuild.PRollAuthorShow(id));
-    }
-
-    internal bool PWindowFavoriteShow(long id)
-    {
-        return PWindowStationShow(
-            PNavigationFavorite, PFavorite.PFavoriteLeaveConfirm, () => PFavorite.PRosterEntryShow(id));
-    }
-
-    internal bool PWindowInventoryShow(long id)
-    {
-        return PWindowStationShow(
-            PNavigationPhonology, PPhonologyLeaveConfirm, () => PPhonology.PInventoryEntryShow(id));
-    }
-
-    internal bool PWindowXiaoyunShow(long id)
-    {
-        return PWindowStationShow(
-            PNavigationYunjing, PYunjing.PYunjingLeaveConfirm, () => PYunjing.PXiaoyunEntryShow(id));
-    }
-
-    internal bool PWindowKindredShow(long id)
-    {
-        return PWindowStationShow(
-            PNavigationXiesheng, PXiesheng.PXieshengLeaveConfirm, () => PXiesheng.PKindredEntryShow(id));
-    }
-
-    private bool PReferenceLeaveConfirm()
-    {
-        return PWindowDiscardConfirm(PReference.PReferenceChangeCheck(), PReference.PReferenceDraftFinish);
-    }
-
-    private bool PGuildLeaveConfirm()
-    {
-        return PWindowDiscardConfirm(PGuild.PGuildChangeCheck(), PGuild.PGuildDraftFinish);
-    }
-
-    private bool PPhonologyLeaveConfirm()
-    {
-        return PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck(), PPhonology.PPhonologyDraftFinish);
     }
 }

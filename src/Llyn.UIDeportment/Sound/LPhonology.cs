@@ -32,7 +32,8 @@ public sealed class LPhonology
         _lPortraitPort = portraits;
         LPhonologyEditor = editor;
         LPhonologyPanel = new LPanel(
-            "Sound.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Sound.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
         LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
     }

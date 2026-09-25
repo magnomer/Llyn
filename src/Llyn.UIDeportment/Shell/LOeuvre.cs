@@ -25,7 +25,8 @@ public sealed class LOeuvre
         _lEntryPort = entries;
         _lSettingsPort = settings;
         LOeuvrePanel = new LPanel(
-            "Source.LoadFailed", static () => false, shownSeam, static () => true, static () => false);
+            "Source.LoadFailed", "Source.DeleteFailed",
+            static () => false, shownSeam, static () => true, static () => false);
     }
 
     public LPanel LOeuvrePanel { get; }

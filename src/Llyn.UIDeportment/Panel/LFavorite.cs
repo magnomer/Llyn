@@ -36,7 +36,8 @@ public sealed class LFavorite
         LFavoriteEditor = editor;
 
         LFavoritePanel = new LPanel(
-            "Favorite.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Favorite.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
         LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
     }

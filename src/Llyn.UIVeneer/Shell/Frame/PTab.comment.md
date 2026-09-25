@@ -11,4 +11,4 @@ The colored mark shown in both the resting and chosen states.
 
 ## `public bool PTabChosen`
 
-Whether the tab's panel is the one shown, set by the window as the user moves between panels.
+Whether the tab's panel is the one shown, set by `LNavigation` as the user moves between panels.

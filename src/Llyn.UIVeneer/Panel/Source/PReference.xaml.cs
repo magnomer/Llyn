@@ -126,6 +126,11 @@ public partial class PReference : UserControl
         return _lShelf.LShelfDraftFinish(store);
     }
 
+    internal bool PReferenceLeaveConfirm()
+    {
+        return _lShelf.LShelfLeaveConfirm();
+    }
+
     internal void PReferenceScribeRestore(bool editing)
     {
         _lShelf.LShelfScribeRestore(editing);
@@ -265,10 +270,10 @@ public partial class PReference : UserControl
 
     internal void PShelfSourceShow(long id)
     {
-        _lShelf.LShelfRowSelect(id);
+        _lShelf.LShelfRowShow(id);
     }
 
-    private void PFootnoteHandle(object sender, RoutedEventArgs e)
+private void PFootnoteHandle(object sender, RoutedEventArgs e)
     {
         _lShelf.LShelfEntrySelect(PSender.PSenderSourceRead<PFootnoteItem>(e)?.PFootnoteItemId);
     }

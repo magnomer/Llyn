@@ -23,7 +23,7 @@ public partial class PCorpus
         IReadOnlyList<string> languages;
         try
         {
-            languages = _lCorpus.LCorpusLanguageRead();
+            languages = _lCorpus.LCorpusAnthology.LAnthologyLanguageRead();
         }
         catch (Exception)
         {
@@ -94,11 +94,9 @@ public partial class PCorpus
 
         PTranscriptMentionShow(example);
 
-        PTranscriptTally.Text = PCorpusTallyRead(PTranscriptExampleRead());
+        PTranscriptTally.Text = PCorpusTallyRead(PTranscriptDesk.LDeskStoredRead());
 
         _pTranscriptLoading = false;
-
-        PTranscriptChangeUpdate();
     }
 
     private void PTranscriptShow(LExample example)
@@ -124,8 +122,6 @@ public partial class PCorpus
         PTranscriptMentionShow(example);
 
         _pTranscriptLoading = false;
-
-        PTranscriptChangeUpdate();
     }
 
     private void PTranscriptFieldShow(TextBox field, LStateValue value, ref bool held)
@@ -143,39 +139,6 @@ public partial class PCorpus
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)
     {
-        if (!PCorpusLeaveConfirm())
-        {
-            return;
-        }
-
-        if (_lCorpus.LCorpusChosen is not null || _lCorpus.LCorpusQuotationChosen is not null)
-        {
-            PQuotationEntryCreate();
-            return;
-        }
-
-        PCorpusClear();
-        PCorpusScribeShow(true);
-        PTranscriptDraftShow(PTranscriptDraftStart(null));
-        PCorpusMode.IsEnabled = true;
-    }
-
-    private void PTranscriptStoreRun()
-    {
-        if (!PTranscriptDesk.LDeskChangeCheck())
-        {
-            return;
-        }
-
-        PTranscriptDesk.LDeskFinish(true);
-    }
-
-    private void PTranscriptStoredShow(long example)
-    {
-        _lCorpus.LCorpusSelect(example);
-
-        PAnthologyFind();
-        PCorpusScribeShow(false);
-        PAnthologyExampleShow(example);
+        _lCorpus.LCorpusFreshStart();
     }
 }

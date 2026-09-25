@@ -44,6 +44,7 @@ The entry the panel shows, as the station the window records before a jump away.
 ## `internal void PIndexEntryShow(long id)`
 
 Puts the whole right-hand side on one entry, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.
 
 ## `private bool PLibraryShownCheck()`
 

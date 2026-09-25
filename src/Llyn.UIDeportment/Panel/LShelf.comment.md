@@ -63,6 +63,10 @@ The draft arrives as a parameter from the notice, so the Source is never a local
 A click on the shelf: asks once for the tab, then opens the Source on the source side.
 The mode carries over, so a Source clicked while writing opens in the imprint.
 
+## `public void LShelfRowShow(long id)`
+
+A jump from another panel: opens the Source without asking, since the window has already asked.
+
 ## `private void LShelfSourceOpen(long? id, bool editing)`
 
 Clears the entry list, sets the carried mode, then loads the Source.

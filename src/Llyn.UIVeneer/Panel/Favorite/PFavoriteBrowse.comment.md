@@ -39,7 +39,8 @@ Selects the clicked entry, after the editor has been given the chance to keep un
 
 ## `internal void PRosterEntryShow(long id)`
 
-Selects the entry on the shared panel, which loads it and drives the display and any open editor from there.
+Shows the entry on the shared panel, which loads it and drives the display and any open editor from there.
+It asks nothing, because the window asks before it jumps.
 
 ## `private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)`
 

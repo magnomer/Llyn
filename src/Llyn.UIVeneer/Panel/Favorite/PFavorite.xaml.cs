@@ -46,7 +46,7 @@ public partial class PFavorite : UserControl
 
     internal void PFavoriteReset()
     {
-        _lFavorite.LFavoritePanel.LPanelReset();
+        _lFavorite.LFavoritePanel.LPanelClear();
     }
 
     internal bool PFavoriteDraftFinish(bool store)

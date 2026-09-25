@@ -14,7 +14,7 @@ The print and portrait command bindings are added last, so no can-execute query 
 
 ## `internal bool PYunjingCheck()`
 
-Whether any loaded language pack carries rime books, so the window knows to show the tab.
+Whether any loaded language pack carries rime books, so the navigation knows to show the tab.
 
 ## `internal void PYunjingVistaRestore()`
 
@@ -90,5 +90,5 @@ The Entry the panel shows, read off the yunjing panel as the station of this pan
 
 ## `internal void PXiaoyunEntryShow(long id)`
 
-Shows one Entry by id, the same selection a click on its xiaoyun row makes.
-The window's trail walks back into this panel through it.
+Shows one Entry by id, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.

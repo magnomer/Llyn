@@ -26,6 +26,8 @@ public sealed class LDesk
 
     private bool _lDeskFilling;
 
+    private bool _lDeskHalted;
+
     public LDesk(LDraftPort drafts, string scope, Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -47,6 +49,8 @@ public sealed class LDesk
 
     public event Action<string, Exception>? LDeskFailed;
 
+    public event Action<string>? LDeskRefused;
+
     public bool LDeskHeld => _lDeskTenure is not null;
 
     public bool LDeskFilling => _lDeskFilling;
@@ -61,6 +65,10 @@ public sealed class LDesk
         _lDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true, LTenureStateRefusal: null };
 
     public bool LDeskHalted => _lDeskTenure?.LTenureStateRead() is { LTenureStateHalted: true };
+
+    public bool LDeskRunning => LDeskHeld && !LDeskHalted;
+
+    private bool LDeskStalling => LDeskHalted && !_lDeskHalted;
 
     internal LTenure? LDeskTenure => _lDeskTenure;
 
@@ -96,6 +104,7 @@ public sealed class LDesk
         {
             LTenure started = start();
             _lDeskTenure = started;
+            _lDeskHalted = false;
             LDeskObserverApply(started);
             LDeskStarted?.Invoke();
         }
@@ -173,6 +182,18 @@ public sealed class LDesk
         return held.LTenureRead();
     }
 
+    public long? LDeskStoredRead()
+    {
+        try
+        {
+            return LDeskRead()?.LDraftStored;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
     public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)
     {
         return _lDeskTenure?.LTenureExampleRead(cardId, sentenceId)
@@ -227,6 +248,12 @@ public sealed class LDesk
 
     public void LDeskStateUpdate()
     {
+        if (LDeskStalling)
+        {
+            LDeskRefused?.Invoke(_lDeskScope + ".HoldFailed");
+        }
+
+        _lDeskHalted = LDeskHalted;
         LDeskStateChanged?.Invoke();
     }
 
@@ -304,15 +331,22 @@ public sealed class LDesk
 
     public bool LDeskFinish(bool store)
     {
+        return LDeskFinish(store, id => LDeskFinished?.Invoke(id));
+    }
+
+    public bool LDeskFinish(bool store, Action<long> stored)
+    {
+        ArgumentNullException.ThrowIfNull(stored);
+
         if (_lDeskTenure is not LTenure held)
         {
             return true;
         }
 
-        long? stored;
+        long? kept;
         try
         {
-            stored = held.LTenureFinish(store, LDeskUnreadableConfirm);
+            kept = held.LTenureFinish(store, LDeskUnreadableConfirm);
         }
         catch (Exception exception)
         {
@@ -322,9 +356,9 @@ public sealed class LDesk
 
         _lDeskTenure = null;
         LDeskStateChanged?.Invoke();
-        if (stored is long id)
+        if (kept is long id)
         {
-            LDeskFinished?.Invoke(id);
+            stored(id);
         }
 
         return true;

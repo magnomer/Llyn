@@ -272,7 +272,7 @@ public partial class PYunjing : UserControl
 
     internal void PXiaoyunEntryShow(long id)
     {
-        _lYunjing.LYunjingPanel.LPanelRowSelect(id);
+        _lYunjing.LYunjingPanel.LPanelRowShow(id);
     }
 
     private void PYunjingFreshHandle(object sender, RoutedEventArgs e)

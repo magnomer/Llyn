@@ -99,7 +99,7 @@ public partial class PLibrary : UserControl
     private async void PLibraryWorkspaceUpdate()
     {
         await PEnsign.PEnsignLoad(_pLibraryHost.PWindowDeportment);
-        _lLibrary.LLibraryPanel.LPanelReset();
+        _lLibrary.LLibraryPanel.LPanelClear();
     }
 
     internal bool PLibraryDraftFinish(bool store)
@@ -124,7 +124,7 @@ public partial class PLibrary : UserControl
 
     internal void PIndexEntryShow(long id)
     {
-        _lLibrary.LLibraryPanel.LPanelRowSelect(id);
+        _lLibrary.LLibraryPanel.LPanelRowShow(id);
     }
 
     private bool PLibraryShownCheck()

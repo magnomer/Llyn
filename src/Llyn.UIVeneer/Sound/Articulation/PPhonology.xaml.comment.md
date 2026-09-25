@@ -36,7 +36,11 @@ That is what the window asks before the workspace changes or the program closes.
 
 The shown seam: whether this tab is the one in front, which only the control knows.
 
-## `private bool PPhonologyLeaveConfirm()`
+## `internal bool PPhonologyLeaveConfirm()`
+
+The panel's question before its unsaved work goes out of sight, asked by the window.
+
+## `private bool PPhonologyDiscardConfirm()`
 
 The leave seam: the window's leave dialog over the editor's finish, asked only when the deportment found changes.
 
@@ -108,5 +112,5 @@ The Entry the panel shows, read off the phonology panel as the station of this p
 
 ## `internal void PInventoryEntryShow(long id)`
 
-Shows one Entry by id, the same selection a click on its inventory row makes.
-The window's trail walks back into this panel through it.
+Shows one Entry by id, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.

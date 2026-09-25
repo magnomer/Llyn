@@ -38,7 +38,8 @@ public sealed class LTenor
         LTenorEditor = editor;
 
         LTenorPanel = new LPanel(
-            "Register.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Register.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTenorPanel.LPanelCleared += LTenorEditorClear;
         LTenorPanel.LPanelEdited += LTenorEditorOpen;
     }

@@ -39,6 +39,7 @@ The leftovers are counted next, so the number describes the workspace as it was 
 The stored view state is read once here and applied after every panel is attached.
 Reading it once is what keeps the panels from each asking the workspace the same question.
 The status bar attaches after every panel, so its first reading already sees the drafts the panels opened.
+The navigation is built after every panel attaches.
 
 ## `internal PLayout PWindowLayout => _pLayout;`
 
@@ -73,21 +74,13 @@ The third is attestation: example, source, author.
 The fourth is the rime table, the one tool with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode, not a page.
 
-Above the first group sits the voyage strip.
-Its two buttons step back and forward through the records the reader has jumped between.
-They are sized to the tab strip and start disabled, there being nowhere to go before a jump.
-`PWindowVoyage.cs` keeps the trail and enables them.
+The rail's buttons are handed to `LNavigation`, which lights the chosen one.
 
 ## Inline notes
 
 ### `_lFootprint.LFootprintRestore();`
 
 Geometry is applied before any panel is attached, while the window is still unshown.
-
-### `PreviewKeyDown += PVoyageKeyHandle;`
-
-The voyage keys and mouse buttons are hooked on the window, beside the mention keys.
-Preview events see them before any panel does, so the trail answers from every page.
 
 ### `Resources.MergedDictionaries.Add(new PMentionMenuTemplate(this));`
 

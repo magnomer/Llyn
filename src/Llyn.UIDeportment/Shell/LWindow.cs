@@ -55,9 +55,13 @@ public sealed class LWindow : IDisposable
         return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, unreadableSeam);
     }
 
-    public LCorpus LWindowCorpusCreate(LEditor editor, Func<bool> unreadableSeam)
+    public LCorpus LWindowCorpusCreate(
+        LEditor editor, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
+        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
-        return new LCorpus(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, unreadableSeam);
+        return new LCorpus(
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor,
+            shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LFavorite LWindowFavoriteCreate(
@@ -103,9 +107,13 @@ public sealed class LWindow : IDisposable
             editor, shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
-    public LRepertoire LWindowRepertoireCreate(LEditor editor, Func<bool> unreadableSeam)
+    public LRepertoire LWindowRepertoireCreate(
+        LEditor editor, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
+        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
-        return new LRepertoire(_lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, unreadableSeam);
+        return new LRepertoire(
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor,
+            shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LTaxonomy LWindowTaxonomyCreate(
@@ -486,10 +494,5 @@ public sealed class LWindow : IDisposable
             rows.Add((meaning.LMeaningId, meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown, depth));
             LWindowMeaningAppend(rows, meanings, meaning.LMeaningId, depth + 1, unknown);
         }
-    }
-
-    public Task LWindowPortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)
-    {
-        return _lPortraitPort.LEnginePortraitExport(vista, path, format, label);
     }
 }

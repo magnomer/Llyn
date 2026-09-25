@@ -18,11 +18,11 @@ What was waiting is written before the read, so a redraw never lands over a newe
 
 Redraws the video rows the same way, location and span apart.
 
-## `private static PImage PScenarioImageCreate(LImageDraft draft)`
+## `private PImage PScenarioImageCreate(LImageDraft draft)`
 
 A picture row holding the engine's location, and nothing typed.
 
-## `private static PVideo PScenarioVideoCreate(LVideoDraft draft)`
+## `private PVideo PScenarioVideoCreate(LVideoDraft draft)`
 
 A video row holding the engine's location and span, and nothing typed.
 

@@ -25,6 +25,10 @@ Whether the edit area holds a name not yet saved.
 
 Finishes the held edit before the panel is left, saving it or dropping it as asked.
 
+## `internal bool PGuildLeaveConfirm()`
+
+The panel's question before its unsaved work goes out of sight, asked by the window.
+
 ## `internal void PGuildScribeRestore(bool editing)`
 
 Reopens the side the last session ended on.
@@ -127,5 +131,5 @@ The Author the panel shows, read off the guild panel as the station of this pane
 
 ## `internal void PRollAuthorShow(long id)`
 
-Shows one Author by id, the same selection a click on its roll row makes.
-The window's trail walks back into this panel through it.
+Shows one Author by id, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.

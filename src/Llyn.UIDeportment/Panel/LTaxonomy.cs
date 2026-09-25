@@ -38,7 +38,8 @@ public sealed class LTaxonomy
         LTaxonomyEditor = editor;
 
         LTaxonomyPanel = new LPanel(
-            "Tag.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Tag.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
         LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
     }

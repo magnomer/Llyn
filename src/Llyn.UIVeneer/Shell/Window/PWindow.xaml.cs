@@ -17,6 +17,8 @@ public partial class PWindow : Window
 
     private readonly LFootprint _lFootprint;
 
+    private LNavigation _lNavigation = null!;
+
     public PWindow(LWindow window, Action<string> workspaceOpener)
     {
         ArgumentNullException.ThrowIfNull(window);
@@ -33,8 +35,6 @@ public partial class PWindow : Window
         PMentionList.ItemsSource = _pMentionItem;
         PreviewKeyDown += PMentionKeyHandle;
         PreviewKeyDown += PChronicleKeyHandle;
-        PreviewKeyDown += PVoyageKeyHandle;
-        PreviewMouseDown += PVoyageMouseHandle;
         Deactivated += PMentionLeaveHandle;
 
         _lFootprint = new LFootprint(this, window);
@@ -73,9 +73,7 @@ public partial class PWindow : Window
         PLibrary.PLibraryAttach(this);
         PPhonology.PPhonologyAttach(this);
         PXiesheng.PXieshengAttach(this);
-        PNavigationXiesheng.Visibility = PXiesheng.PXieshengCheck() ? Visibility.Visible : Visibility.Collapsed;
         PYunjing.PYunjingAttach(this);
-        PNavigationYunjing.Visibility = PYunjing.PYunjingCheck() ? Visibility.Visible : Visibility.Collapsed;
         PTaxonomy.PTaxonomyAttach(this);
         PTenor.PTenorAttach(this);
         PRepertoire.PRepertoireAttach(this);
@@ -86,6 +84,7 @@ public partial class PWindow : Window
         PDuplex.PDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         PEstablishment.PEstablishmentAttach(this);
+        _lNavigation = new LNavigation(this, _lWindow, PTab.PTabChosenProperty, PNavigationTabRead());
 
         PWindowLayoutAttach();
 

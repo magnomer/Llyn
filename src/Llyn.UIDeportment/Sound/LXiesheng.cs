@@ -36,7 +36,8 @@ public sealed class LXiesheng
         _lPortraitPort = portraits;
         LXieshengEditor = editor;
         LXieshengPanel = new LPanel(
-            "Xiesheng.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Xiesheng.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LXieshengPanel.LPanelCleared += LXieshengEditorClear;
         LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
     }
@@ -184,7 +185,7 @@ public sealed class LXiesheng
     public void LXieshengReset()
     {
         _lGroveVista?.LVistaSelect(null);
-        LXieshengPanel.LPanelReset();
+        LXieshengPanel.LPanelClear();
         LXieshengChanged?.Invoke();
     }
 

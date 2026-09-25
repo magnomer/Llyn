@@ -11,7 +11,7 @@ It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the untitled text for the first so no row stands blank beside the next.
 
-## `internal PAtlasItem(LSituation situation, int usage, string unknown, string untitled)`
+## `internal PAtlasItem(LSituation situation, string name, int usage, string unknown, string untitled, bool chosen)`
 
 Builds the row from the stored Situation and the number of places referencing it.
 The two texts are handed in rather than read here.

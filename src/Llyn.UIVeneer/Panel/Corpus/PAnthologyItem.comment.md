@@ -12,7 +12,7 @@ It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the unwritten text for the first so no row stands blank beside the next.
 
-## `internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten)`
+## `internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten, bool chosen)`
 
 Builds the row from the stored Example and the number of places quoting it.
 The two texts are handed in rather than read here.

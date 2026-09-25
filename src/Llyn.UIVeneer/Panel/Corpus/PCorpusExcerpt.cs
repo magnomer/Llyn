@@ -14,6 +14,16 @@ public partial class PCorpus
             : value.LStateValueShown;
     }
 
+    private void PExcerptShow(LExample example)
+    {
+        PExcerptSentenceShow(example);
+        PExcerptLanguage.Text = example.LExampleLanguage;
+        PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
+        PExcerptGlossShow(example.LExampleGloss);
+        PExcerptCitationShow(example.LExampleSource);
+        PExcerptTally.Text = PCorpusTallyRead(_lCorpus.LCorpusAnthology.LAnthologyChosen);
+    }
+
     private void PExcerptSentenceShow(LExample example)
     {
         string? text = PExcerptTextRead(example.LExampleText);
@@ -36,7 +46,7 @@ public partial class PCorpus
 
     private void PExcerptMentionHandle(object? sender, PMentionArgument e)
     {
-        if (_lCorpus.LCorpusChosen is not long id)
+        if (_lCorpus.LCorpusAnthology.LAnthologyChosen is not long id)
         {
             return;
         }
@@ -49,7 +59,7 @@ public partial class PCorpus
         LMentionResult result;
         try
         {
-            result = _lCorpus.LCorpusMentionFind(id, e.PMentionArgumentOffset);
+            result = _lCorpus.LCorpusAnthology.LAnthologyMentionFind(id, e.PMentionArgumentOffset);
         }
         catch (Exception exception)
         {

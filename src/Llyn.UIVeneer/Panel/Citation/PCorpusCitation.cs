@@ -28,7 +28,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogReference> read;
         try
         {
-            read = _lCorpus.LCorpusReferenceFind();
+            read = _lCorpus.LCorpusAnthology.LAnthologyReferenceFind();
         }
         catch (Exception exception)
         {
@@ -169,7 +169,7 @@ public partial class PCorpus
         PCitationHide();
         try
         {
-            _lCorpus.LCorpusCitationSet(PCitationField.Text);
+            _lCorpus.LCorpusAnthology.LAnthologyCitationSet(PCitationField.Text);
         }
         catch (Exception exception)
         {
@@ -191,7 +191,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogReference> found;
         try
         {
-            found = _lCorpus.LCorpusReferenceFind(word);
+            found = _lCorpus.LCorpusAnthology.LAnthologyReferenceFind(word);
         }
         catch (Exception)
         {

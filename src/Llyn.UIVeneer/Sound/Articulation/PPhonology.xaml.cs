@@ -26,7 +26,7 @@ public partial class PPhonology : UserControl
         _lPhonology = host.PWindowDeportment.LWindowPhonologyCreate(
             host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
             PPhonologyShownCheck,
-            PPhonologyLeaveConfirm,
+            PPhonologyDiscardConfirm,
             host.PWindowDeleteConfirm);
         _lPhonology.LPhonologyEditor.LEditorStateChanged += PPhonologyStoreUpdate;
         _lPhonology.LPhonologyPanel.LPanelChanged += PPhonologyModeUpdate;
@@ -100,7 +100,7 @@ public partial class PPhonology : UserControl
     private async void PPhonologyWorkspaceUpdate()
     {
         await PEnsign.PEnsignLoad(_pPhonologyHost.PWindowDeportment);
-        _lPhonology.LPhonologyPanel.LPanelReset();
+        _lPhonology.LPhonologyPanel.LPanelClear();
     }
 
     internal bool PPhonologyDraftFinish(bool store)
@@ -118,7 +118,12 @@ public partial class PPhonology : UserControl
         return IsVisible;
     }
 
-    private bool PPhonologyLeaveConfirm()
+    internal bool PPhonologyLeaveConfirm()
+    {
+        return _lPhonology.LPhonologyPanel.LPanelLeaveConfirm();
+    }
+
+    private bool PPhonologyDiscardConfirm()
     {
         return _pPhonologyHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
     }
@@ -200,7 +205,7 @@ public partial class PPhonology : UserControl
 
     internal void PInventoryEntryShow(long id)
     {
-        _lPhonology.LPhonologyPanel.LPanelRowSelect(id);
+        _lPhonology.LPhonologyPanel.LPanelRowShow(id);
     }
 
     private void PPhonologyFreshHandle(object sender, RoutedEventArgs e)

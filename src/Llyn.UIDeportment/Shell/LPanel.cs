@@ -8,6 +8,8 @@ public sealed class LPanel
 {
     private readonly string _lPanelLoadKey;
 
+    private readonly string _lPanelDeleteKey;
+
     private readonly Func<bool> _lPanelChangeSeam;
 
     private readonly Func<bool> _lPanelShownSeam;
@@ -20,18 +22,21 @@ public sealed class LPanel
 
     public LPanel(
         string loadKey,
+        string deleteKey,
         Func<bool> changeSeam,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(loadKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(deleteKey);
         ArgumentNullException.ThrowIfNull(changeSeam);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(deleteSeam);
 
         _lPanelLoadKey = loadKey;
+        _lPanelDeleteKey = deleteKey;
         _lPanelChangeSeam = changeSeam;
         _lPanelShownSeam = shownSeam;
         _lPanelLeaveSeam = leaveSeam;
@@ -124,12 +129,6 @@ public sealed class LPanel
         return _lPanelDeleteSeam();
     }
 
-    public void LPanelReset()
-    {
-        LPanelClear();
-        LPanelRowsUpdate();
-    }
-
     public void LPanelClear()
     {
         _lPanelVista?.LVistaSelect(null);
@@ -194,7 +193,7 @@ public sealed class LPanel
         LPanelScribeShow(false);
         if (LPanelBinEnabled)
         {
-            LPanelDraftShow();
+            LPanelDraftShow(() => _lPanelVista?.LVistaLoad());
             return;
         }
 
@@ -243,30 +242,29 @@ public sealed class LPanel
         return _lPanelVista?.LVistaChosen ?? 0;
     }
 
-    public void LPanelRowShow(long? id)
+    public bool LPanelRowShow(long? id)
     {
-        _lPanelVista?.LVistaSelect(id);
-        LPanelDraftShow();
+        return LPanelDraftShow(() => _lPanelVista?.LVistaLoad(id));
     }
 
-    private void LPanelDraftShow()
+    private bool LPanelDraftShow(Func<LDraft?> load)
     {
         LDraft? draft;
         try
         {
-            draft = _lPanelVista?.LVistaLoad();
+            draft = load();
         }
         catch (Exception exception)
         {
             LPanelFailed?.Invoke(_lPanelLoadKey, exception);
-            return;
+            return false;
         }
 
         LPanelRowsUpdate();
         if (!LPanelBinEnabled)
         {
             LPanelClear();
-            return;
+            return false;
         }
 
         if (draft is LDraft loaded)
@@ -281,6 +279,8 @@ public sealed class LPanel
                 }
             }
         }
+
+        return true;
     }
 
     public void LPanelDraftUpdate()
@@ -310,21 +310,36 @@ public sealed class LPanel
 
     public void LPanelEntryHandle(LBulletin bulletin)
     {
-        ArgumentNullException.ThrowIfNull(bulletin);
-
-        if (bulletin.LBulletinStored)
-        {
-            if (LPanelShownCheck())
-            {
-                if (LPanelEditing)
-                {
-                    _lPanelVista?.LVistaSelect(bulletin.LBulletinId);
-                }
-            }
-        }
-
+        LPanelEntrySelect(bulletin);
         LPanelChanged?.Invoke();
         LPanelRowsUpdate();
+    }
+
+    public void LPanelEntrySelect(LBulletin bulletin)
+    {
+        ArgumentNullException.ThrowIfNull(bulletin);
+
+        if (!bulletin.LBulletinStored)
+        {
+            return;
+        }
+
+        if (LPanelBinEnabled)
+        {
+            return;
+        }
+
+        if (!LPanelEditing)
+        {
+            return;
+        }
+
+        if (!LPanelShownCheck())
+        {
+            return;
+        }
+
+        _lPanelVista?.LVistaSelect(bulletin.LBulletinId);
     }
 
     public void LPanelDelete()
@@ -340,7 +355,7 @@ public sealed class LPanel
         }
         catch (Exception exception)
         {
-            LPanelFailed?.Invoke("Scribe.DeleteFailed", exception);
+            LPanelFailed?.Invoke(_lPanelDeleteKey, exception);
             return;
         }
 

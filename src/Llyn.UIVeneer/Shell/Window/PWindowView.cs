@@ -21,6 +21,6 @@ public partial class PWindow
 
         PDuplex.PDuplexRestore(state);
 
-        PNavigationRestore();
+        _lNavigation.LNavigationRestore();
     }
 }

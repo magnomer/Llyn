@@ -49,7 +49,9 @@ public sealed class LGuild
         _lGuildRemovalSeam = removalSeam;
         _lGuildUnionSeam = unionSeam;
         LGuildAutograph = new LDesk(drafts, "Guild", unreadableSeam);
-        LGuildPanel = new LPanel("Guild.LoadFailed", LAutographChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
+        LGuildPanel = new LPanel(
+            "Guild.LoadFailed", "Guild.DeleteFailed",
+            LAutographChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
         LGuildOeuvre = new LOeuvre(entries, settings, shownSeam);
         LGuildPanel.LPanelRowsChanged += LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate;
         LGuildPanel.LPanelCleared += LGuildAutograph.LDeskCancel;
@@ -70,7 +72,7 @@ public sealed class LGuild
 
     public LDesk LGuildAutograph { get; }
 
-    public bool LGuildSourceSide => LGuildOeuvre.LOeuvrePanel.LPanelBinEnabled;
+    private bool LGuildSourceSide => LGuildOeuvre.LOeuvrePanel.LPanelBinEnabled;
 
     public bool LGuildColophonShown => LGuildSourceSide;
 
@@ -252,7 +254,7 @@ public sealed class LGuild
         return row?.LCatalogAuthorWork ?? 0;
     }
 
-    public void LGuildClear()
+    private void LGuildClear()
     {
         LGuildOeuvre.LOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelClear();
@@ -261,7 +263,7 @@ public sealed class LGuild
     public void LGuildReset()
     {
         LGuildOeuvre.LOeuvrePanel.LPanelClear();
-        LGuildPanel.LPanelReset();
+        LGuildPanel.LPanelClear();
     }
 
     public void LGuildCatalogUpdate()
@@ -292,6 +294,11 @@ public sealed class LGuild
             return;
         }
 
+        LGuildAuthorOpen(id, LGuildPanel.LPanelEditing);
+    }
+
+    public void LGuildRowShow(long id)
+    {
         LGuildAuthorOpen(id, LGuildPanel.LPanelEditing);
     }
 

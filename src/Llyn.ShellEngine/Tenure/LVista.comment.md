@@ -137,6 +137,15 @@ Loads the selected subject into a read-only snapshot without opening an editing 
 The snapshot carries its content in the matching draft member and has no draft identity.
 A stored choice that no longer loads is dropped here, so a panel never branches on the missing answer.
 
+## `public LDraft? LVistaLoad(long? id)`
+
+Selects the row and loads it, restoring the previous choice when the load throws.
+So a failed click leaves the panel where it stood, and no caller keeps the prior choice.
+
+## `public bool LVistaNarrowed`
+
+Whether the filter or the query narrows the rows, so a panel asks one question instead of combining two.
+
 ## `public static string LVistaFileRead(LVista? vista)`
 
 The file name an export of the vista's entry is offered under: the headword with barred characters replaced.

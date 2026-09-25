@@ -2,17 +2,17 @@
 
 internal static class TAuditStrictSetting
 {
-    public const int TAuditGeneration = 10;
+    public const int TAuditGeneration = 11;
     public const bool TAuditStrictEnforced = true;
-    public const string TAuditStrictReport = "temp/audit/Truth-{0}.md";
+    public const string TAuditStrictReport = "temp/audit/Strict-{0}.md";
 
     public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
     {
-        ["Storage"] = 175,
-        ["Flow"] = 921,
-        ["Treat"] = 81,
+        ["Storage"] = 916,
+        ["Call"] = 4339,
+        ["Engine"] = 2048,
         ["Reach"] = 64,
-        ["Taint"] = 97,
+        ["Trigger"] = 385,
     };
 
     public static readonly string[] TAuditReachInclude =
@@ -66,53 +66,25 @@ internal static class TAuditStrictSetting
     public static readonly string[] TAuditReachNamespaces =
     [
         "Llyn.Core",
+        "Llyn.Application",
         "Llyn.ShellEngine",
         "Llyn.Infrastructure",
+        "Llyn.Media",
     ];
 
-    public static readonly string[] TAuditTreatVerbs =
+    public static readonly string[] TAuditTriggerElements =
     [
-        "Aggregate",
-        "All",
-        "Any",
-        "Average",
-        "Concat",
-        "Contains",
-        "Count",
-        "Distinct",
-        "DistinctBy",
-        "Except",
-        "First",
-        "FirstOrDefault",
-        "GroupBy",
-        "GroupJoin",
-        "Intersect",
-        "Join",
-        "Last",
-        "LastOrDefault",
-        "Max",
-        "MaxBy",
-        "Min",
-        "MinBy",
-        "OrderBy",
-        "OrderByDescending",
-        "Reverse",
-        "Select",
-        "SelectMany",
-        "Single",
-        "SingleOrDefault",
-        "Skip",
-        "SkipWhile",
-        "Sum",
-        "Take",
-        "TakeWhile",
-        "ThenBy",
-        "ThenByDescending",
-        "ToDictionary",
-        "ToHashSet",
-        "ToLookup",
-        "Union",
-        "Where",
-        "Zip",
+        "DataTrigger",
+        "MultiDataTrigger",
+        "MultiTrigger",
+        "Trigger",
+    ];
+
+    public static readonly string[] TAuditTriggerSlots =
+    [
+        "Converter",
+        "FallbackValue",
+        "StringFormat",
+        "TargetNullValue",
     ];
 }

@@ -47,7 +47,8 @@ public sealed class LYunjing
         _lSettingsPort = settings;
         LYunjingEditor = editor;
         LYunjingPanel = new LPanel(
-            "Yunjing.LoadFailed", editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            "Yunjing.LoadFailed", "Scribe.DeleteFailed",
+            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LYunjingPanel.LPanelCleared += LYunjingEditorClear;
         LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
     }
@@ -235,7 +236,7 @@ public sealed class LYunjing
     {
         _lShengmuVista?.LVistaSelect(null);
         _lYunmuVista?.LVistaSelect(null);
-        LYunjingPanel.LPanelReset();
+        LYunjingPanel.LPanelClear();
         LYunjingChanged?.Invoke();
     }
 

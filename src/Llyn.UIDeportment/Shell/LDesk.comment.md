@@ -13,6 +13,11 @@ The only question it asks is whether an unreadable draft may be swept, through a
 Raised while the draft is being written into the controls, so the echo of that writing defers nothing.
 It is read through its verdict and never branched on by name, so the walker sees a verdict.
 
+## `private bool _lDeskHalted;`
+
+Whether the tenure was halted at the last bulletin.
+A start clears it.
+
 ## `public event Action? LDeskStarted;`
 
 A tenure was started, handed out so the veneer can attach its marshalling observers to it.
@@ -37,6 +42,12 @@ The tenure came, went, or changed, so the store and chronicle buttons are read a
 ## `public event Action<long>? LDeskFinished;`
 
 The draft was stored under this id, raised after the tenure has been let go.
+Only the finish without a stored action raises it.
+
+## `public event Action<string>? LDeskRefused;`
+
+The held tenure stopped taking requests.
+It carries the scope's `HoldFailed` key, and it fires once per halt.
 
 ## `public bool LDeskStored`
 
@@ -53,6 +64,14 @@ Whether the held draft has changed and nothing refuses its store.
 ## `public bool LDeskHalted`
 
 Whether the tenure has stopped taking requests, so the edit area should go dead.
+
+## `public bool LDeskRunning`
+
+A tenure is held and still takes requests, so its edit area stays live.
+
+## `private bool LDeskStalling`
+
+The tenure halted since the last bulletin.
 
 ## `internal LTenure? LDeskTenure`
 
@@ -78,6 +97,11 @@ The sink is the veneer's delegate over each step, handed through untouched.
 
 The held draft after the deferred requests have been applied, or null while nothing is held.
 
+## `public long? LDeskStoredRead()`
+
+The stored id the held draft stands on, or null for a fresh draft, no tenure or a failed read.
+A tally reads it, so a failed persist only blanks the count.
+
 ## `public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)`
 
 The Mention a selection in a sentence field lies inside, read from the held draft.
@@ -100,6 +124,10 @@ The completion runs inside the tenure's prepare turn, so the rows it adds raise 
 
 Announces the draft with the filling flag raised, so the controls' echo is ignored.
 
+## `public void LDeskStateUpdate()`
+
+Announces the change of state, after raising the refusal if the tenure just halted.
+
 ## `public void LDeskPersist()`
 
 Applies the deferred requests now, as a field is left, unless the controls are being filled.
@@ -121,6 +149,11 @@ Whether the held draft differs from what is stored, after the deferred requests 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.
 A refused store is announced under the scope's save key and keeps the tenure, so the user can read why.
 The unreadable seam travels into the finish, so the tenure asks before it sweeps and the desk decides nothing.
+
+## `public bool LDeskFinish(bool store, Action<long> stored)`
+
+Ends the tenure like `LDeskFinish(bool store)`, and hands a stored id to `stored` instead of the event.
+So a caller decides per finish what follows a store, without holding a flag.
 
 ## `public void LDeskCancel()`
 

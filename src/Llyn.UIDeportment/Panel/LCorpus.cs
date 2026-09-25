@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -9,15 +9,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class LCorpus
 {
-    private readonly LEntryPort _lEntryPort;
-
-    private readonly LPortraitPort _lPortraitPort;
-
-    private readonly LSettingsPort _lSettingsPort;
-
-    private LVista? _lCorpusVista;
-
-    private LVista? _lCorpusQuotation;
+    private readonly Func<Func<bool, bool>, bool> _lCorpusLeaveSeam;
 
     public LCorpus(
         LDraftPort drafts,
@@ -25,6 +17,9 @@ public sealed class LCorpus
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        Func<bool> shownSeam,
+        Func<Func<bool, bool>, bool> leaveSeam,
+        Func<int, bool> removalSeam,
         Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -32,161 +27,454 @@ public sealed class LCorpus
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(leaveSeam);
 
-        _lEntryPort = entries;
-        _lPortraitPort = portraits;
-        _lSettingsPort = settings;
+        _lCorpusLeaveSeam = leaveSeam;
         LCorpusEditor = editor;
         LCorpusDesk = new LDesk(drafts, "Example", unreadableSeam);
+        LCorpusAnthology = new LAnthology(
+            entries, portraits, settings, LCorpusDesk, shownSeam, LCorpusLeaveConfirm, removalSeam);
+        LCorpusQuotation = new LQuotation(
+            entries, portraits, editor.LEditorDesk.LDeskChangeCheck, shownSeam, LCorpusLeaveConfirm);
+        LCorpusAnthology.LAnthologyPanel.LPanelRowsChanged += LCorpusQuotation.LQuotationPanel.LPanelRowsUpdate;
+        LCorpusAnthology.LAnthologyPanel.LPanelEdited += LCorpusDraftOpen;
+        LCorpusAnthology.LAnthologyPanel.LPanelCleared += LCorpusDraftCancel;
+        LCorpusAnthology.LAnthologyPanel.LPanelDraftChanged += LCorpusExampleUpdate;
+        LCorpusQuotation.LQuotationPanel.LPanelEdited += LCorpusEditorOpen;
+        LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorClose;
+        LCorpusDesk.LDeskStateChanged += LCorpusStateUpdate;
+        editor.LEditorStateChanged += LCorpusStateUpdate;
     }
 
-    public LEditor LCorpusEditor { get; }
+    public event Action? LCorpusChanged;
+
+    public event Action<LExample?>? LCorpusTranscriptChanged;
+
+    public event Action<LExample>? LCorpusExampleChanged;
+
+    public event Action<string, Exception>? LCorpusFailed;
+
+    public event Action? LCorpusQueryCleared;
+
+    private LEditor LCorpusEditor { get; }
 
     public LDesk LCorpusDesk { get; }
 
-    public void LCorpusStart(long? id)
+    public LAnthology LCorpusAnthology { get; }
+
+    public LQuotation LCorpusQuotation { get; }
+
+    private bool LCorpusQuotationSide => LCorpusQuotation.LQuotationPanel.LPanelModeEnabled;
+
+    public bool LCorpusTranscriptShown => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.LPanelEditing;
+
+    public bool LCorpusExcerptShown => !LCorpusQuotationSide && !LCorpusAnthology.LAnthologyPanel.LPanelEditing;
+
+    public bool LCorpusDisplayShown => LCorpusQuotationSide && !LCorpusQuotation.LQuotationPanel.LPanelEditing;
+
+    public bool LCorpusEditorShown => LCorpusQuotation.LQuotationPanel.LPanelEditing;
+
+    public bool LCorpusExcerptHeld => LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+
+    public bool LCorpusExcerptBlank => !LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+
+    public bool LCorpusScribeChecked => LCorpusTranscriptShown || LCorpusEditorShown;
+
+    public bool LCorpusViewerChecked => !LCorpusScribeChecked;
+
+    public bool LCorpusModeEnabled => LCorpusQuotationSide || LCorpusAnthology.LAnthologyPanel.LPanelModeEnabled;
+
+    public bool LCorpusBinEnabled => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+
+    public bool LCorpusStoreEnabled => LCorpusEditorShown ? LCorpusEditor.LEditorStorable : LCorpusDesk.LDeskChanged;
+
+    public bool LCorpusPressAllowed => LCorpusDisplayShown || (LCorpusExcerptShown && LCorpusExcerptHeld);
+
+    public bool LCorpusPortraitAllowed => LCorpusDisplayShown;
+
+    private void LCorpusDraftStart(long? id)
     {
         LCorpusDesk.LDeskStart("Corpus", LSubject.LSubjectExample, id);
+        LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
     }
 
-    public LVista? LCorpusQuotationVista => _lCorpusQuotation;
+    private LExample? LCorpusTranscriptRead()
+    {
+        try
+        {
+            return LCorpusDesk.LDeskRead()?.LDraftExample;
+        }
+        catch (Exception exception)
+        {
+            LCorpusFailed?.Invoke("Example.HoldFailed", exception);
+            return null;
+        }
+    }
 
-    public long? LCorpusChosen => _lCorpusVista?.LVistaChosen;
+    private void LCorpusDraftOpen(long id)
+    {
+        LCorpusDraftStart(id);
+    }
 
-    public long? LCorpusQuotationChosen => _lCorpusQuotation?.LVistaChosen;
+    private void LCorpusDraftCancel()
+    {
+        LCorpusDesk.LDeskCancel();
+        LCorpusTranscriptChanged?.Invoke(null);
+    }
 
-    public bool LCorpusFiltered => _lCorpusVista?.LVistaFiltered ?? false;
+    private void LCorpusExampleUpdate(LDraft draft)
+    {
+        if (draft.LDraftExample is LExample example)
+        {
+            LCorpusExampleChanged?.Invoke(example);
+        }
+    }
+
+    private void LCorpusEditorOpen(long id)
+    {
+        LCorpusEditor.LEditorOpen(id);
+    }
+
+    private void LCorpusStateUpdate()
+    {
+        LCorpusChanged?.Invoke();
+    }
+
+    public void LCorpusExampleShow(long id)
+    {
+        bool editing = LCorpusScribeChecked;
+        LCorpusExampleShow(id, editing);
+        if (LCorpusExcerptHeld)
+        {
+            return;
+        }
+
+        if (!LCorpusAnthology.LAnthologyNarrowed)
+        {
+            return;
+        }
+
+        LCorpusQueryClear();
+        LCorpusExampleShow(id, editing);
+    }
+
+    private void LCorpusExampleShow(long id, bool editing)
+    {
+        LCorpusQuotation.LQuotationPanel.LPanelClear();
+        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(editing);
+        LCorpusAnthology.LAnthologyPanel.LPanelRowShow(id);
+    }
+
+    public void LCorpusSelect(long? id, Action record)
+    {
+        ArgumentNullException.ThrowIfNull(record);
+
+        if (id is not long chosen)
+        {
+            return;
+        }
+
+        bool editing = LCorpusScribeChecked;
+        if (!LCorpusLeaveConfirm(false))
+        {
+            return;
+        }
+
+        record();
+        LCorpusExampleShow(chosen, editing);
+    }
+
+    private void LCorpusQuotationOpen(long id, bool editing)
+    {
+        if (!LCorpusQuotation.LQuotationPanel.LPanelRowShow(id))
+        {
+            return;
+        }
+
+        LCorpusDesk.LDeskCancel();
+        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
+        if (editing)
+        {
+            LCorpusQuotation.LQuotationPanel.LPanelScribeSet(true);
+        }
+    }
+
+    public void LCorpusQuotationSelect(long? id)
+    {
+        if (id is not long chosen)
+        {
+            return;
+        }
+
+        bool editing = LCorpusScribeChecked;
+        if (!LCorpusLeaveConfirm())
+        {
+            return;
+        }
+
+        LCorpusQuotationOpen(chosen, editing);
+    }
+
+    public void LCorpusFreshStart()
+    {
+        if (!LCorpusLeaveConfirm())
+        {
+            return;
+        }
+
+        if (LCorpusRowHeld)
+        {
+            LCorpusQuotationCreate();
+            return;
+        }
+
+        LCorpusQuotation.LQuotationPanel.LPanelClear();
+        LCorpusAnthology.LAnthologyPanel.LPanelFreshOpen();
+        LCorpusDraftStart(null);
+    }
+
+    public void LCorpusScribeSet(bool editing)
+    {
+        if (LCorpusQuotationSide)
+        {
+            LCorpusQuotation.LQuotationPanel.LPanelScribeSet(editing);
+            if (!LCorpusQuotationSide)
+            {
+                LCorpusExampleRestore(editing);
+            }
+
+            return;
+        }
+
+        LCorpusAnthology.LAnthologyPanel.LPanelScribeSet(editing);
+        if (!LCorpusAnthology.LAnthologyPanel.LPanelEditing)
+        {
+            LCorpusDesk.LDeskCancel();
+        }
+    }
+
+    private void LCorpusExampleRestore(bool editing)
+    {
+        if (LCorpusAnthology.LAnthologyChosen is long chosen)
+        {
+            LCorpusExampleShow(chosen, editing);
+            return;
+        }
+
+        LCorpusClear();
+    }
+
+    public void LCorpusClear()
+    {
+        LCorpusQuotation.LQuotationPanel.LPanelClear();
+        LCorpusAnthology.LAnthologyPanel.LPanelClear();
+    }
+
+    public void LCorpusRowsApply(IReadOnlyList<LCatalogExample> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        if (!LCorpusRowShown)
+        {
+            return;
+        }
+
+        foreach (LCatalogExample row in rows)
+        {
+            if (row.LCatalogExampleChosen)
+            {
+                return;
+            }
+        }
+
+        LCorpusClear();
+    }
+
+    private bool LCorpusRowShown => LCorpusExcerptShown && LCorpusExcerptHeld;
+
+    private bool LCorpusRowHeld =>
+        LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled || LCorpusQuotation.LQuotationPanel.LPanelBinEnabled;
+
+    private void LCorpusQueryClear()
+    {
+        LCorpusAnthology.LAnthologyQuerySet(string.Empty);
+        LCorpusAnthology.LAnthologyGauzeSet(LCatalogFilter.LCatalogFilterEmpty);
+        LCorpusQueryCleared?.Invoke();
+    }
+
+    public void LCorpusSave()
+    {
+        if (LCorpusEditorShown)
+        {
+            LCorpusEditor.LEditorSave();
+            return;
+        }
+
+        if (LCorpusDesk.LDeskChangeCheck())
+        {
+            LCorpusDesk.LDeskFinish(true, LCorpusStoredShow);
+        }
+    }
+
+    private void LCorpusStoredShow(long id)
+    {
+        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
+        LCorpusExampleShow(id);
+    }
+
+    public void LCorpusDelete()
+    {
+        if (LCorpusQuotationSide)
+        {
+            return;
+        }
+
+        LCorpusAnthology.LAnthologyPanel.LPanelDelete();
+    }
+
+    private void LCorpusQuotationCreate()
+    {
+        long? chosen = LCorpusAnthology.LAnthologyChosen;
+        LCorpusDesk.LDeskCancel();
+        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
+        LCorpusQuotation.LQuotationPanel.LPanelFreshOpen();
+        LCorpusEditor.LEditorOpen(null);
+        if (chosen is long id)
+        {
+            LCorpusEditor.LEditorExampleAdd(id);
+        }
+    }
+
+    public bool LCorpusChangeCheck()
+    {
+        LPanel quotation = LCorpusQuotation.LQuotationPanel;
+        LPanel anthology = LCorpusAnthology.LAnthologyPanel;
+        return quotation.LPanelChangeCheck() || anthology.LPanelChangeCheck();
+    }
+
+    public bool LCorpusLeaveConfirm()
+    {
+        return LCorpusLeaveConfirm(true);
+    }
+
+    private bool LCorpusLeaveConfirm(bool shown)
+    {
+        if (!LCorpusChangeCheck())
+        {
+            return true;
+        }
+
+        if (shown)
+        {
+            return _lCorpusLeaveSeam(LCorpusDraftFinish);
+        }
+
+        return _lCorpusLeaveSeam(LCorpusDraftClose);
+    }
+
+    public void LCorpusEntryUpdate()
+    {
+        if (!LCorpusQuotation.LQuotationPanel.LPanelBinEnabled)
+        {
+            return;
+        }
+
+        bool editing = LCorpusScribeChecked;
+        LCorpusQuotation.LQuotationPanel.LPanelDraftUpdate();
+        if (LCorpusQuotationSide)
+        {
+            return;
+        }
+
+        LCorpusExampleRestore(editing);
+    }
+
+    public bool LCorpusDraftFinish(bool store)
+    {
+        return LCorpusEditorShown
+            ? LCorpusEditor.LEditorFinish(store)
+            : LCorpusDesk.LDeskFinish(store, LCorpusStoredShow);
+    }
+
+    private bool LCorpusDraftClose(bool store)
+    {
+        return LCorpusEditorShown ? LCorpusEditor.LEditorFinish(store) : LCorpusDesk.LDeskFinish(store);
+    }
+
+    public (bool LDeskBackward, bool LDeskForward) LCorpusChronicleRead()
+    {
+        return LCorpusEditorShown
+            ? LCorpusEditor.LEditorDesk.LDeskChronicleRead()
+            : LCorpusDesk.LDeskChronicleRead();
+    }
+
+    public void LCorpusUndo()
+    {
+        if (LCorpusEditorShown)
+        {
+            LCorpusEditor.LEditorDesk.LDeskUndo();
+            return;
+        }
+
+        LCorpusChronicleRun(LCorpusDesk.LDeskUndo);
+    }
+
+    public void LCorpusRedo()
+    {
+        if (LCorpusEditorShown)
+        {
+            LCorpusEditor.LEditorDesk.LDeskRedo();
+            return;
+        }
+
+        LCorpusChronicleRun(LCorpusDesk.LDeskRedo);
+    }
+
+    private void LCorpusChronicleRun(Action step)
+    {
+        try
+        {
+            step();
+        }
+        catch (Exception exception)
+        {
+            LCorpusFailed?.Invoke("Example.HoldFailed", exception);
+        }
+    }
+
+    public Task LCorpusPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)
+    {
+        if (LCorpusDisplayShown)
+        {
+            return LCorpusQuotation.LQuotationPortraitPrint(label, ticket);
+        }
+
+        if (LCorpusPressAllowed)
+        {
+            return LCorpusAnthology.LAnthologyPortraitPrint(legend, ticket);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task LCorpusPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    {
+        if (!LCorpusPortraitAllowed)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LCorpusQuotation.LQuotationPortraitExport(path, format, label);
+    }
 
     public void LCorpusVistaRestore(LVista vista, LVista quotation)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(quotation);
 
-        _lCorpusVista = vista;
-        _lCorpusQuotation = quotation;
+        LCorpusAnthology.LAnthologyVistaRestore(vista);
+        LCorpusQuotation.LQuotationVistaRestore(vista, quotation);
         LCorpusEditor.LEditorVistaRestore(quotation);
-    }
-
-    public void LCorpusQuerySet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _lCorpusVista?.LVistaQuerySet(query);
-    }
-
-    public void LCorpusRankSet(LCatalogOrder? order)
-    {
-        if (_lCorpusVista is not LVista vista)
-        {
-            return;
-        }
-
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
-    }
-
-    public void LCorpusGauzeSet(LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        _lCorpusVista?.LVistaFilterSet(filter);
-    }
-
-    public void LCorpusDredgeSet(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-
-        _lCorpusQuotation?.LVistaQuerySet(query);
-    }
-
-    public void LCorpusSelect(long? id)
-    {
-        _lCorpusVista?.LVistaSelect(id);
-    }
-
-    public void LCorpusQuotationSelect(long? id)
-    {
-        _lCorpusQuotation?.LVistaSelect(id);
-    }
-
-    public void LCorpusTranscriptSet(bool editing)
-    {
-        _lCorpusVista?.LVistaEditingSet(editing);
-    }
-
-    public void LCorpusEditorSet(bool editing)
-    {
-        _lCorpusQuotation?.LVistaEditingSet(editing);
-    }
-
-    public IReadOnlyList<LCatalogExample> LCorpusRowsRead(string unknown, string unwritten)
-    {
-        return _lCorpusVista is LVista vista ? _lEntryPort.LEngineExampleFind(vista, unknown, unwritten) : [];
-    }
-
-    public IReadOnlyDictionary<long, int> LCorpusUsageRead()
-    {
-        return _lEntryPort.LEngineUsageRead(LOwner.LOwnerExample);
-    }
-
-    public int LCorpusUsageRead(long? id)
-    {
-        return id is long stored ? LCorpusUsageRead().GetValueOrDefault(stored) : 0;
-    }
-
-    public IReadOnlyList<LVistaRow> LCorpusQuotationRead()
-    {
-        return _lEntryPort.LEngineEntryFind(_lCorpusVista, _lCorpusQuotation);
-    }
-
-    public LExample? LCorpusLoad()
-    {
-        return _lCorpusVista?.LVistaLoad()?.LDraftExample;
-    }
-
-    public LEntryDraft? LCorpusQuotationLoad()
-    {
-        return _lCorpusQuotation?.LVistaLoad()?.LDraftContent;
-    }
-
-    public void LCorpusDelete()
-    {
-        _lCorpusVista?.LVistaDelete();
-    }
-
-    public IReadOnlyList<LCatalogReference> LCorpusReferenceFind()
-    {
-        return _lEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
-    }
-
-    public IReadOnlyList<LCatalogReference> LCorpusReferenceFind(string word)
-    {
-        return _lEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
-    }
-
-    public void LCorpusCitationSet(string title)
-    {
-        LCorpusDesk.LDeskSend(new LRequestExampleReference(
-            LCorpusDesk.LDeskId, _lEntryPort.LEngineCitationResolve(LCorpusDesk.LDeskId, 0, 0, title)));
-    }
-
-    public LMentionResult LCorpusMentionFind(long id, int offset)
-    {
-        return _lEntryPort.LEngineMentionFind(id, offset);
-    }
-
-    public IReadOnlyList<string> LCorpusLanguageRead()
-    {
-        return _lSettingsPort.LEngineLanguageRead();
-    }
-
-    public Task LCorpusPortraitPrint(LPortraitLabel label, LPressTicket ticket)
-    {
-        return _lPortraitPort.LEnginePortraitPrint(_lCorpusQuotation, label, ticket);
-    }
-
-    public Task LCorpusPortraitPrint(LPortraitLegend legend, LPressTicket ticket)
-    {
-        return _lPortraitPort.LEnginePortraitPrint(_lCorpusVista, legend, ticket);
     }
 
     public void LCorpusVistaRestore(LWindow window)
@@ -196,39 +484,5 @@ public sealed class LCorpus
         LCorpusVistaRestore(
             window.LWindowVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
             window.LWindowVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
-    }
-
-    public void LCorpusObserverAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lCorpusVista?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LCorpusChosenAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lCorpusVista?.LVistaChosenAttach(subject, observer);
-    }
-
-    public void LCorpusQuotationAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lCorpusQuotation?.LVistaObserverAttach(subject, observer);
-    }
-
-    public void LCorpusEntryAttach(LSubject subject, Action<LBulletin> observer)
-    {
-        _lCorpusQuotation?.LVistaChosenAttach(subject, observer);
-    }
-
-    public LCatalogOrder LCorpusOrder => _lCorpusVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
-
-    public LCatalogFilter LCorpusFilter => _lCorpusVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
-
-    public string LCorpusFileRead()
-    {
-        return LVista.LVistaFileRead(_lCorpusQuotation);
-    }
-
-    public Task LCorpusPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
-    {
-        return _lPortraitPort.LEnginePortraitExport(_lCorpusQuotation, path, format, label);
     }
 }

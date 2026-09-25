@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -12,8 +13,6 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private LCorpus _lCorpus = null!;
 
-    private LEditor _lEditor = null!;
-
     public PCorpus()
     {
         InitializeComponent();
@@ -23,8 +22,13 @@ public partial class PCorpus : UserControl, PChronicleHost
     internal void PCorpusAttach(PWindow host)
     {
         _pCorpusHost = host;
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        _lCorpus = host.PWindowDeportment.LWindowCorpusCreate(_lEditor, host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lCorpus = host.PWindowDeportment.LWindowCorpusCreate(
+            editor,
+            PCorpusShownCheck,
+            PCorpusDiscardConfirm,
+            PCorpusRemovalConfirm,
+            host.PWindowUnreadableConfirm);
         PTranscriptDeskAttach();
 
         PAnthology.ItemsSource = _pAnthologyList;
@@ -36,35 +40,80 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
-        _lEditor.LEditorStateChanged += PCorpusStoreUpdate;
-        _lEditor.LEditorStateChanged += PChronicleUpdate;
-        PEditor.PEditorAttach(host, _lEditor);
+        PDisplay.PDisplayAttach(host, editor.LEditorDisplay);
+        PEditor.PEditorAttach(host, editor);
+
+        LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
+        LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
+        _lCorpus.LCorpusChanged += PCorpusModeUpdate;
+        _lCorpus.LCorpusTranscriptChanged += PTranscriptApply;
+        _lCorpus.LCorpusExampleChanged += PExcerptShow;
+        _lCorpus.LCorpusFailed += host.PWindowFailureShow;
+        _lCorpus.LCorpusQueryCleared += PQueryClear;
+        anthology.LPanelChanged += PCorpusModeUpdate;
+        anthology.LPanelRowsChanged += PAnthologyFind;
+        anthology.LPanelFailed += host.PWindowFailureShow;
+        quotation.LPanelChanged += PCorpusModeUpdate;
+        quotation.LPanelRowsChanged += PQuotationFind;
+        quotation.LPanelCleared += PDisplay.PDisplayClear;
+        quotation.LPanelDraftChanged += PQuotationDraftShow;
+        quotation.LPanelFailed += host.PWindowFailureShow;
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PCorpusPressHandle, PCorpusPressCheck));
+        CommandBindings.Add(new CommandBinding(
+            PDisplayCommand.PDisplayCommandPortrait, PCorpusPortraitHandle, PCorpusPortraitCheck));
     }
 
-    private void PCorpusStoreUpdate()
+    private bool PCorpusShownCheck()
     {
-        PCorpusStore.IsEnabled = _lEditor.LEditorStorable;
+        return IsVisible;
+    }
+
+    private bool PCorpusDiscardConfirm(Func<bool, bool> finish)
+    {
+        return _pCorpusHost.PWindowDiscardConfirm(true, finish);
+    }
+
+    private bool PCorpusRemovalConfirm(int usage)
+    {
+        return _pCorpusHost.PWindowRemovalConfirm(usage, "Example");
+    }
+
+    private void PQuotationDraftShow(LDraft draft)
+    {
+        PDisplay.PDisplayShow(draft.LDraftContent);
+    }
+
+    private void PCorpusModeUpdate()
+    {
+        PTranscript.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusTranscriptShown);
+        PExcerpt.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptShown);
+        PDisplay.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusDisplayShown);
+        PEditor.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusEditorShown);
+        PExcerptBody.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptHeld);
+        PExcerptUnselected.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptBlank);
+        PCorpusViewer.IsChecked = PLook.PLookCheckedRead(_lCorpus.LCorpusViewerChecked);
+        PCorpusScribe.IsChecked = PLook.PLookCheckedRead(_lCorpus.LCorpusScribeChecked);
+        PCorpusMode.IsEnabled = _lCorpus.LCorpusModeEnabled;
+        PCorpusBin.IsEnabled = _lCorpus.LCorpusBinEnabled;
+        PCorpusStore.IsEnabled = _lCorpus.LCorpusStoreEnabled;
+        PTranscript.IsEnabled = _lCorpus.LCorpusDesk.LDeskRunning;
+        PChronicleUpdate();
     }
 
     internal void PCorpusReset()
     {
-        PCorpusClear();
-        PAnthologyFind();
+        _lCorpus.LCorpusClear();
     }
 
     internal bool PCorpusChangeCheck()
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorChangeCheck()
-            : PTranscriptChangeCheck();
+        return _lCorpus.LCorpusChangeCheck();
     }
 
     internal bool PCorpusDraftFinish(bool store)
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorDraftFinish(store)
-            : PTranscriptDraftFinish(store);
+        return _lCorpus.LCorpusDraftFinish(store);
     }
 
     internal void PCorpusClose()
@@ -79,44 +128,24 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private void PCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_lCorpus?.LCorpusQuotationChosen is not null && PDisplay.Visibility == Visibility.Visible)
-            || (_lCorpus?.LCorpusChosen is not null && PExcerpt.Visibility == Visibility.Visible);
+        e.CanExecute = _lCorpus.LCorpusPressAllowed;
     }
 
     private async void PCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lCorpus.LCorpusQuotationChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pCorpusHost.PWindowPressRun(_lCorpus.LCorpusPortraitPrint);
-                return;
-            }
-        }
-
-        if (_lCorpus.LCorpusChosen is not null)
-        {
-            if (PExcerpt.Visibility == Visibility.Visible)
-            {
-                await _pCorpusHost.PWindowPressRun(
-                    ticket => _lCorpus.LCorpusPortraitPrint(_pCorpusHost.PWindowLegendRead("Example"), ticket));
-            }
-        }
+        await _pCorpusHost.PWindowPressRun(
+            (label, ticket) => _lCorpus.LCorpusPortraitPrint(
+                label, _pCorpusHost.PWindowLegendRead("Example"), ticket));
     }
 
     private void PCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lCorpus?.LCorpusQuotationChosen is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lCorpus.LCorpusPortraitAllowed;
     }
 
     private async void PCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lCorpus.LCorpusQuotationChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pCorpusHost.PWindowPortraitExport(_lCorpus.LCorpusFileRead(), _lCorpus.LCorpusPortraitExport);
-            }
-        }
+        await _pCorpusHost.PWindowPortraitExport(
+            _lCorpus.LCorpusQuotation.LQuotationFileRead(), _lCorpus.LCorpusPortraitExport);
     }
 }

@@ -64,6 +64,8 @@ public sealed class LVista
 
     public bool LVistaQueried => LVistaQuery.Trim().Length > 0;
 
+    public bool LVistaNarrowed => LVistaFiltered || LVistaQueried;
+
     public bool LVistaLeft => string.Equals(LVistaTab, "left", StringComparison.Ordinal);
 
     public bool LVistaInput => string.Equals(LVistaTab, "input", StringComparison.Ordinal);
@@ -77,6 +79,21 @@ public sealed class LVista
         }
 
         return draft;
+    }
+
+    public LDraft? LVistaLoad(long? id)
+    {
+        long? prior = LVistaChosen;
+        LVistaSelect(id);
+        try
+        {
+            return LVistaLoad();
+        }
+        catch (Exception)
+        {
+            LVistaSelect(prior);
+            throw;
+        }
     }
 
     public static string LVistaFileRead(LVista? vista)

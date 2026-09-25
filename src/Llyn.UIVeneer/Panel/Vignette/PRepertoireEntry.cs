@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIVeneer;
 
@@ -17,7 +16,7 @@ public partial class PRepertoire
         IReadOnlyList<LVistaRow> read;
         try
         {
-            read = _lRepertoire.LRepertoireOccurrenceRead();
+            read = _lRepertoire.LRepertoireOccurrence.LOccurrenceRowsRead();
         }
         catch (Exception exception)
         {
@@ -46,245 +45,20 @@ public partial class PRepertoire
             TextBlock.TextProperty,
             string.IsNullOrWhiteSpace(PSortie.Text) ? "Situation.Vacant" : "Situation.Unmatched");
         POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-
     }
 
     private void POccurrenceHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement row || row.DataContext is not POccurrenceItem item)
-        {
-            return;
-        }
-
-        if (!PRepertoireLeaveConfirm())
-        {
-            return;
-        }
-
-        POccurrenceEntryShow(item.POccurrenceItemId);
-    }
-
-    private void POccurrenceEntryShow(long id)
-    {
-        LEntryDraft? draft;
-        try
-        {
-            _lRepertoire.LRepertoireOccurrenceSelect(id);
-            draft = _lRepertoire.LRepertoireOccurrenceLoad();
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("List.LoadFailed", exception);
-            return;
-        }
-
-        if (draft is null)
-        {
-            POccurrenceEntryHide();
-            POccurrenceFind();
-            return;
-        }
-
-        bool editing = PScenario.Visibility == Visibility.Visible
-            || PEditor.Visibility == Visibility.Visible;
-        PScenarioDraftCancel();
-        PScenario.Visibility = Visibility.Collapsed;
-        PVignette.Visibility = Visibility.Collapsed;
-
-        _lRepertoire.LRepertoireOccurrenceSelect(id);
-        POccurrenceFind();
-        PDisplay.PDisplayShow(draft);
-        PRepertoireMode.IsEnabled = true;
-        PRepertoireBin.IsEnabled = false;
-
-        if (editing)
-        {
-            PEditor.PEditorEntryShow(id);
-        }
-
-        POccurrenceScribeShow(editing);
-    }
-
-    private void POccurrenceEntryCreate()
-    {
-        long? situation = _lRepertoire.LRepertoireChosen;
-
-        PScenarioDraftCancel();
-        PScenario.Visibility = Visibility.Collapsed;
-        PVignette.Visibility = Visibility.Collapsed;
-
-        _lRepertoire.LRepertoireOccurrenceSelect(null);
-        POccurrenceFind();
-        PDisplay.PDisplayClear();
-        PEditor.PEditorReset();
-        PRepertoireMode.IsEnabled = true;
-        PRepertoireBin.IsEnabled = false;
-        POccurrenceScribeShow(true);
-
-        if (situation is long id)
-        {
-            _lEditor.LEditorSituationAdd(id);
-        }
-    }
-
-    private void POccurrenceScribeHandle(bool editing)
-    {
-        if (_lRepertoire.LRepertoireOccurrenceChosen is not long id)
-        {
-            if (!editing)
-            {
-                POccurrenceScribeReset();
-            }
-
-            return;
-        }
-
-        if (editing == (PEditor.Visibility == Visibility.Visible))
-        {
-            return;
-        }
-
-        if (!editing)
-        {
-            if (!PRepertoireLeaveConfirm())
-            {
-                POccurrenceScribeShow(true);
-                return;
-            }
-
-            POccurrenceScribeShow(false);
-            POccurrenceEntryShow(id);
-            return;
-        }
-
-        PEditor.PEditorEntryShow(id);
-        POccurrenceScribeShow(true);
-    }
-
-    private void POccurrenceScribeReset()
-    {
-        if (!PRepertoireLeaveConfirm())
-        {
-            POccurrenceScribeShow(true);
-            return;
-        }
-
-        POccurrenceScribeShow(false);
-
-        if (_lRepertoire.LRepertoireOccurrenceChosen is long stored)
-        {
-            POccurrenceEntryShow(stored);
-            return;
-        }
-
-        PEditor.PEditorReset();
-
-        if (_lRepertoire.LRepertoireChosen is long kept)
-        {
-            PRepertoireShow(kept);
-            return;
-        }
-
-        PRepertoireClear();
-    }
-
-    private void POccurrenceScribeShow(bool editing)
-    {
-        _lRepertoire.LRepertoireEditorSet(editing);
-
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PRepertoireViewer.IsChecked = !editing;
-        PRepertoireScribe.IsChecked = editing;
-        PChronicleUpdate();
+        _lRepertoire.LRepertoireOccurrenceSelect(PSender.PSenderSourceRead<POccurrenceItem>(e)?.POccurrenceItemId);
     }
 
     private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
-        {
-            PEditor.PEditorEntrySave();
-            return;
-        }
-
-        PScenarioStoreRun();
-    }
-
-    private void POccurrenceEntryUpdate(LBulletin bulletin)
-    {
-        if (bulletin.LBulletinStored
-            && _lRepertoire.LRepertoireOccurrenceChosen is null
-            && IsVisible
-            && PEditor.Visibility == Visibility.Visible)
-        {
-            _lRepertoire.LRepertoireOccurrenceSelect(bulletin.LBulletinId);
-        }
-
-        PAtlasFind();
-    }
-
-    private void PRepertoireEntryUpdate()
-    {
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lRepertoire.LRepertoireOccurrenceLoad();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (draft is null)
-        {
-            if (_lRepertoire.LRepertoireChosen is long kept)
-            {
-                PRepertoireShow(kept);
-                return;
-            }
-
-            PRepertoireClear();
-            return;
-        }
-
-        PDisplay.PDisplayShow(draft);
-    }
-
-    private void POccurrenceEntryHide()
-    {
-        bool editing = PScenario.Visibility == Visibility.Visible
-            || PEditor.Visibility == Visibility.Visible;
-        if (PEditor.Visibility == Visibility.Visible)
-        {
-            PEditor.PEditorReset();
-        }
-
-        _lRepertoire.LRepertoireOccurrenceSelect(null);
-        POccurrenceFind();
-        PDisplay.PDisplayClear();
-        PDisplay.Visibility = Visibility.Collapsed;
-        PEditor.Visibility = Visibility.Collapsed;
-        PRepertoireScribeShow(editing);
-        PRepertoireMode.IsEnabled = _lRepertoire.LRepertoireChosen is not null;
-        PRepertoireBin.IsEnabled = _lRepertoire.LRepertoireChosen is not null;
+        _lRepertoire.LRepertoireSave();
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
     {
-        if (!PRepertoireLeaveConfirm())
-        {
-            return;
-        }
-
-        if (_lRepertoire.LRepertoireChosen is not null || _lRepertoire.LRepertoireOccurrenceChosen is not null)
-        {
-            POccurrenceEntryCreate();
-            return;
-        }
-
-        PRepertoireClear();
-        PRepertoireScribeShow(true);
-        PScenarioDraftShow(PScenarioDraftStart(null));
-        PRepertoireMode.IsEnabled = true;
+        _lRepertoire.LRepertoireFreshStart();
     }
 }

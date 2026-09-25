@@ -1,4 +1,5 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -12,8 +13,6 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private LRepertoire _lRepertoire = null!;
 
-    private LEditor _lEditor = null!;
-
     public PRepertoire()
     {
         InitializeComponent();
@@ -25,8 +24,13 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     internal void PRepertoireAttach(PWindow host)
     {
         _pRepertoireHost = host;
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        _lRepertoire = host.PWindowDeportment.LWindowRepertoireCreate(_lEditor, host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lRepertoire = host.PWindowDeportment.LWindowRepertoireCreate(
+            editor,
+            PRepertoireShownCheck,
+            PRepertoireDiscardConfirm,
+            PRepertoireRemovalConfirm,
+            host.PWindowUnreadableConfirm);
         PScenarioDeskAttach();
 
         PAtlas.ItemsSource = _pAtlasList;
@@ -35,35 +39,82 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         PScenarioVideo.ItemsSource = _pScenarioVideo;
 
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorDisplay);
-        _lEditor.LEditorStateChanged += PRepertoireStoreUpdate;
-        _lEditor.LEditorStateChanged += PChronicleUpdate;
-        PEditor.PEditorAttach(host, _lEditor);
+        PDisplay.PDisplayAttach(host, editor.LEditorDisplay);
+        PEditor.PEditorAttach(host, editor);
+
+        LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
+        LPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
+        _lRepertoire.LRepertoireChanged += PRepertoireModeUpdate;
+        _lRepertoire.LRepertoireScenarioChanged += PScenarioApply;
+        _lRepertoire.LRepertoireSituationChanged += PVignetteShow;
+        _lRepertoire.LRepertoireFailed += host.PWindowFailureShow;
+        _lRepertoire.LRepertoireInquestCleared += PInquestClear;
+        atlas.LPanelChanged += PRepertoireModeUpdate;
+        atlas.LPanelRowsChanged += PAtlasFind;
+        atlas.LPanelCleared += PVignetteClear;
+        atlas.LPanelFailed += host.PWindowFailureShow;
+        occurrence.LPanelChanged += PRepertoireModeUpdate;
+        occurrence.LPanelRowsChanged += POccurrenceFind;
+        occurrence.LPanelCleared += PDisplay.PDisplayClear;
+        occurrence.LPanelDraftChanged += POccurrenceDraftShow;
+        occurrence.LPanelFailed += host.PWindowFailureShow;
+
+        CommandBindings.Add(new CommandBinding(
+            ApplicationCommands.Print, PRepertoirePressHandle, PRepertoirePressCheck));
+        CommandBindings.Add(new CommandBinding(
+            PDisplayCommand.PDisplayCommandPortrait, PRepertoirePortraitHandle, PRepertoirePortraitCheck));
     }
 
-    private void PRepertoireStoreUpdate()
+    private bool PRepertoireShownCheck()
     {
-        PRepertoireStore.IsEnabled = _lEditor.LEditorStorable;
+        return IsVisible;
+    }
+
+    private bool PRepertoireDiscardConfirm(Func<bool, bool> finish)
+    {
+        return _pRepertoireHost.PWindowDiscardConfirm(true, finish);
+    }
+
+    private bool PRepertoireRemovalConfirm(int usage)
+    {
+        return _pRepertoireHost.PWindowRemovalConfirm(usage);
+    }
+
+    private void POccurrenceDraftShow(LDraft draft)
+    {
+        PDisplay.PDisplayShow(draft.LDraftContent);
+    }
+
+    private void PRepertoireModeUpdate()
+    {
+        PScenario.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireScenarioShown);
+        PVignette.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteShown);
+        PDisplay.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireDisplayShown);
+        PEditor.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireEditorShown);
+        PVignetteBody.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteHeld);
+        PVignetteUnselected.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteBlank);
+        PRepertoireViewer.IsChecked = PLook.PLookCheckedRead(_lRepertoire.LRepertoireViewerChecked);
+        PRepertoireScribe.IsChecked = PLook.PLookCheckedRead(_lRepertoire.LRepertoireScribeChecked);
+        PRepertoireMode.IsEnabled = _lRepertoire.LRepertoireModeEnabled;
+        PRepertoireBin.IsEnabled = _lRepertoire.LRepertoireBinEnabled;
+        PRepertoireStore.IsEnabled = _lRepertoire.LRepertoireStoreEnabled;
+        PScenario.IsEnabled = _lRepertoire.LRepertoireDesk.LDeskRunning;
+        PChronicleUpdate();
     }
 
     internal void PRepertoireReset()
     {
-        PRepertoireClear();
-        PAtlasFind();
+        _lRepertoire.LRepertoireClear();
     }
 
     internal bool PRepertoireChangeCheck()
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorChangeCheck()
-            : PScenarioChangeCheck();
+        return _lRepertoire.LRepertoireChangeCheck();
     }
 
     internal bool PRepertoireDraftFinish(bool store)
     {
-        return PEditor.Visibility == Visibility.Visible
-            ? PEditor.PEditorDraftFinish(store)
-            : PScenarioDraftFinish(store);
+        return _lRepertoire.LRepertoireDraftFinish(store);
     }
 
     internal void PRepertoireClose()
@@ -76,48 +127,24 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private void PRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = (_lRepertoire?.LRepertoireOccurrenceChosen is not null
-                        && PDisplay.Visibility == Visibility.Visible)
-            || (_lRepertoire?.LRepertoireChosen is not null && PVignette.Visibility == Visibility.Visible);
+        e.CanExecute = _lRepertoire.LRepertoirePressAllowed;
     }
 
     private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lRepertoire.LRepertoireOccurrenceChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pRepertoireHost.PWindowPressRun(_lRepertoire.LRepertoirePortraitPrint);
-                return;
-            }
-        }
-
-        if (_lRepertoire.LRepertoireChosen is not null)
-        {
-            if (PVignette.Visibility == Visibility.Visible)
-            {
-                await _pRepertoireHost.PWindowPressRun(
-                    ticket => _lRepertoire.LRepertoirePortraitPrint(
-                        _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
-            }
-        }
+        await _pRepertoireHost.PWindowPressRun(
+            (label, ticket) => _lRepertoire.LRepertoirePortraitPrint(
+                label, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
     }
 
     private void PRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lRepertoire?.LRepertoireOccurrenceChosen is not null
-                       && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _lRepertoire.LRepertoirePortraitAllowed;
     }
 
     private async void PRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_lRepertoire.LRepertoireOccurrenceChosen is not null)
-        {
-            if (PDisplay.Visibility == Visibility.Visible)
-            {
-                await _pRepertoireHost.PWindowPortraitExport(
-                    _lRepertoire.LRepertoireFileRead(), _lRepertoire.LRepertoirePortraitExport);
-            }
-        }
+        await _pRepertoireHost.PWindowPortraitExport(
+            _lRepertoire.LRepertoireOccurrence.LOccurrenceFileRead(), _lRepertoire.LRepertoirePortraitExport);
     }
 }

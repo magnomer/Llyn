@@ -232,7 +232,7 @@ public partial class PXiesheng : UserControl
 
     internal void PKindredEntryShow(long id)
     {
-        _lXiesheng.LXieshengPanel.LPanelRowSelect(id);
+        _lXiesheng.LXieshengPanel.LPanelRowShow(id);
     }
 
     private void PXieshengFreshHandle(object sender, RoutedEventArgs e)

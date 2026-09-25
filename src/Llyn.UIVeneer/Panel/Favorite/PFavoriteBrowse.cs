@@ -142,7 +142,7 @@ public partial class PFavorite
 
     internal void PRosterEntryShow(long id)
     {
-        _lFavorite.LFavoritePanel.LPanelRowSelect(id);
+        _lFavorite.LFavoritePanel.LPanelRowShow(id);
     }
 
     private void PFavoriteEntryUpdate(LDraft draft)

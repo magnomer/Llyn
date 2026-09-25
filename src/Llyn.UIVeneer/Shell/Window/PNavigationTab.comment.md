@@ -1,49 +1,90 @@
-﻿# PNavigationTab.cs
+# PNavigationTab.cs
 
 ## `public partial class PWindow`
 
-Which panel the window shows.
-The navigation buttons pick exactly one.
-The chosen tab is told so and swaps its outline mark for the filled one.
-Every other panel is collapsed out of the layout.
-The tab chosen is pushed downstream as it changes, so the window opens on it next time.
+The window's buttons and the jumps panels ask for.
+`LNavigation` decides which panel shows, so each member only hands the request over.
 
-## Inline notes
+## `private void PNavigationHandle(object sender, RoutedEventArgs e)`
 
-### `if (_lWindow.LWindowModeMatch("Library") && selectedButton != PNavigationLibrary && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck(), PLibrary.PLibraryDraftFinish))`
+A tab button click, handed to the navigation as the button pressed.
 
-Leaving the library panel while it is being written in is leaving the editing state.
-So it is asked about here.
-A tab that is switched away from keeps its editor.
-But the correction the user typed would sit out of sight until they came back.
-
-## `internal void PNavigationRestore()`
-
-Puts the window back on the tab the posture names.
-That tab goes back on the side it was left standing on.
-It goes through the ordinary tab switch, so the restored tab is selected exactly as a click selects it.
-A posture naming no tab leaves the window on the tab it opens with.
-So does one naming a tab this build no longer offers.
-
-## `private (string Mode, Button Button, FrameworkElement Panel, Action<bool>? Scribe)[] PNavigationTabRead()`
+## `private LTab[] PNavigationTabRead()`
 
 The tabs of the window, each with the name it is stored under.
-Each also carries the way to put it back on its editor.
-The switch and the restore read the same table.
-A tab cannot be stored under one name and restored under another.
-A tab holding no editor offers no way to restore one.
+The first tab is the one the window opens on.
+Input, dual panel and settings hold no station and ask nothing.
+Xiesheng and yunjing are offered only while a pack carries their tables.
+
+## `internal void PVoyageRecord()`
+
+Forwards a panel's own row click to the voyage, so the place left is recorded.
+
+## `internal void PVoyageRetreatRun()`
+
+Forwards a panel's retreat button to the voyage.
+
+## `internal void PVoyageAdvanceRun()`
+
+Forwards a panel's advance button to the voyage.
 
 ## `internal bool PWindowEntryShow(long id)`
 
 Switches to the library panel and opens one Entry there.
-It is the way a referring side listed under a shared record reaches the Entry holding it.
-Panel switching is the window's to do, so a panel asks for it rather than reaching into `PNavigation` itself.
-The library is asked first, because the tab guard above passes over a library that is already the target.
-Opening the entry would otherwise cancel the draft being written in that panel without a word.
-The place being left is recorded on the voyage trail once the library has agreed to be left.
-Recording after the guard means a cancelled jump leaves no station behind.
-The other four jumps below record the same way.
-The answer says whether the jump went, so the voyage trail can hold its place when the panel refused.
+Any open mention menu is closed first.
+The answer says whether the jump went.
+
+## `internal bool PWindowSituationShow(long id)`
+
+Switches to the repertoire panel and opens one Situation there.
+
+## `internal bool PWindowTagShow(long id)`
+
+Switches to the taxonomy panel and browses by one tag, named by its id.
+
+## `internal bool PWindowExampleShow(long id)`
+
+Switches to the corpus panel and opens one Example there.
+
+## `internal bool PWindowRegisterShow(long id)`
+
+Switches to the tenor panel and opens one Register there.
+
+## `internal bool PWindowSourceShow(long id)`
+
+Switches to the sources panel and reads one Source there.
+
+## `internal bool PWindowAuthorShow(long id)`
+
+Switches to the authors panel and reads one Author there.
+
+## `internal bool PWindowFavoriteShow(long id)`
+
+Switches to the favorites panel and reads one Entry there.
+
+## `internal bool PWindowInventoryShow(long id)`
+
+Switches to the phonology panel and reads one Entry there.
+
+## `internal bool PWindowXiaoyunShow(long id)`
+
+Switches to the yunjing panel and reads one Entry there.
+
+## `internal bool PWindowKindredShow(long id)`
+
+Switches to the xiesheng panel and reads one Entry there.
+
+## `internal void PWindowDiweiShow(string language, string kind, string key)`
+
+Switches to the rime table and chooses the category a fanqie link names.
+An unsaved rime table draft is confirmed before the switch.
+It leaves no voyage station.
+
+## `internal void PWindowStemShow(string language, string? key)`
+
+Switches to the xiesheng panel and opens the series a chip names.
+An unsaved draft in the panel stops the switch, as it does for a rime-table cell.
+It leaves no voyage station.
 
 ## `internal void PWindowMentionHandle(PMention anchor, LMentionResult result)`
 
@@ -74,49 +115,3 @@ The popup is declared once, in the editor, and the window is the only path betwe
 
 The menu closes when the window loses activation.
 A popup that stays open over another window would answer keys meant for that window.
-
-## `internal bool PWindowSituationShow(long id)`
-
-Switches to the repertoire panel and opens one Situation there.
-It is the way a situation chip read on a card reaches the record it names.
-The repertoire is asked first, for the reason the library is asked above.
-
-## `internal bool PWindowExampleShow(long id)`
-
-Switches to the corpus panel and opens one Example there.
-It is the way a citation row read on an author reaches the Example that cites the author's source.
-The corpus is asked first, for the reason the library is asked above.
-
-## `internal bool PWindowTagShow(long id)`
-
-Switches to the taxonomy panel and browses by one tag, named by its id.
-The taxonomy is asked first, for the reason the library is asked above.
-
-## `internal bool PWindowRegisterShow(long id)`
-
-Switches to the tenor panel and opens one Register there.
-The tenor is asked first, for the reason the library is asked above.
-
-Every browse-style panel that holds an editor is asked the same question before the tab changes.
-The list stays one guard per panel rather than one loop, because each panel names its own check.
-
-## `internal bool PWindowSourceShow(long id)`
-
-Jumps to the sources panel and reads one Source there.
-The panel is asked to part with an unsaved draft first, and a refusal stops the jump.
-
-## `internal bool PWindowAuthorShow(long id)`
-
-Jumps to the authors panel and reads one Author there, the mirror of the source jump.
-
-## `internal bool PWindowFavoriteShow(long id)`
-
-Jumps to the favorites panel and reads one Entry there.
-
-## `internal bool PWindowInventoryShow(long id)`
-
-Jumps to the phonology panel and reads one Entry there.
-
-## `internal bool PWindowXiaoyunShow(long id)`
-
-Jumps to the yunjing panel and reads one Entry there.

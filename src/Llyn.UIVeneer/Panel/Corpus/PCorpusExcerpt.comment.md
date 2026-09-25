@@ -11,6 +11,11 @@ A click on a word asks the engine what it names.
 The text a three-state value reads as, or null when it was never written.
 An unknown value reads the unknown mark, and whether it is unknown is the converter's to say.
 
+## `private void PExcerptShow(LExample example)`
+
+Paints the read page of an Example the engine announces.
+The tally counts the Example the anthology has chosen.
+
 ## `private void PExcerptSentenceShow(LExample example)`
 
 Writes the sentence at the head of the page, as a situation's title stands at the head of its page.

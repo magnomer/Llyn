@@ -17,7 +17,7 @@ Enables the save button while the editor holds something storable.
 
 ## `internal bool PXieshengCheck()`
 
-True while the tab may be shown at all, so the shell can hide its navigation button.
+True while the tab may be shown at all, so the navigation can hide its button.
 
 ## `internal void PXieshengVistaRestore()`
 
@@ -109,7 +109,8 @@ The entry the panel would return to, as the shell records a station.
 
 ## `internal void PKindredEntryShow(long id)`
 
-Opens that entry in the panel, as the shell sails back to a station.
+Opens that entry in the panel, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.
 
 ## `private void PXieshengFreshHandle(object sender, RoutedEventArgs e)`
 

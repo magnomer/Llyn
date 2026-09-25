@@ -12,6 +12,15 @@ What one stored field reads as, or null for one never written.
 A written value reads itself, and an unknown one reads the mark.
 Whether it is unknown is the converter's to say, as for a card field in the entry display.
 
+## `private void PVignetteShow(LSituation situation)`
+
+Paints the read page of a Situation the engine announces.
+The tally counts the Situation the atlas has chosen.
+
+## `private void PVignetteClear()`
+
+Empties the media lists when the atlas panel clears, so no video plays on after its Situation is gone.
+
 ## `private void PVignetteTitleShow(LStateValue value)`
 
 Draws the title in the headword's place.

@@ -45,7 +45,9 @@ public sealed class LShelf
         _lShelfRemovalSeam = removalSeam;
         LShelfEditor = editor;
         LShelfImprint = new LImprint(drafts, entries, settings, unreadableSeam);
-        LShelfPanel = new LPanel("Source.LoadFailed", LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
+        LShelfPanel = new LPanel(
+            "Source.LoadFailed", "Source.DeleteFailed",
+            LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
         LShelfFootnote = new LFootnote(entries, portraits, editor, shownSeam, leaveSeam);
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
         LShelfPanel.LPanelCleared += LShelfImprint.LImprintCancel;
@@ -67,7 +69,7 @@ public sealed class LShelf
 
     public bool LShelfEntrySide => LShelfFootnote.LFootnotePanel.LPanelModeEnabled;
 
-    public bool LShelfEditing =>
+    private bool LShelfEditing =>
         LShelfEntrySide ? LShelfFootnote.LFootnotePanel.LPanelEditing : LShelfPanel.LPanelEditing;
 
     public bool LShelfEditorShown => LShelfEntrySide && LShelfFootnote.LFootnotePanel.LPanelEditing;
@@ -257,6 +259,11 @@ public sealed class LShelf
         LShelfSourceOpen(id, LShelfEditing);
     }
 
+    public void LShelfRowShow(long id)
+    {
+        LShelfSourceOpen(id, LShelfEditing);
+    }
+
     private void LShelfSourceOpen(long? id, bool editing)
     {
         LShelfFootnote.LFootnotePanel.LPanelClear();
@@ -264,7 +271,7 @@ public sealed class LShelf
         LShelfPanel.LPanelRowShow(id);
     }
 
-    public void LShelfStoredShow(long id)
+    private void LShelfStoredShow(long id)
     {
         LShelfSourceOpen(id, false);
     }

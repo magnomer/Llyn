@@ -103,6 +103,11 @@ public partial class PGuild : UserControl
         return _lGuild.LGuildDraftFinish(store);
     }
 
+    internal bool PGuildLeaveConfirm()
+    {
+        return _lGuild.LGuildLeaveConfirm();
+    }
+
     internal void PGuildScribeRestore(bool editing)
     {
         _lGuild.LGuildScribeRestore(editing);
@@ -251,7 +256,7 @@ public partial class PGuild : UserControl
 
     internal void PRollAuthorShow(long id)
     {
-        _lGuild.LGuildRowSelect(id);
+        _lGuild.LGuildRowShow(id);
     }
 
     private void POeuvreHandle(object sender, RoutedEventArgs e)

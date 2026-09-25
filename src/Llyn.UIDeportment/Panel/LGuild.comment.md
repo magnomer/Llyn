@@ -18,7 +18,7 @@ A verdict moved without a panel notice, so the buttons and areas are read again.
 
 A request the deportment itself refused, named by the localization key the window shows.
 
-## `public bool LGuildSourceSide`
+## `private bool LGuildSourceSide`
 
 The source side is in front exactly when the oeuvre has a chosen row.
 
@@ -70,6 +70,10 @@ The colophon is reloaded only while a Source is in front, so no split preference
 
 A click on the roll or a fellow: asks once for the tab, then opens the Author on its side.
 The mode carries over, so an Author clicked while writing opens in the autograph.
+
+## `public void LGuildRowShow(long id)`
+
+A jump from another panel: opens the Author without asking, since the window has already asked.
 
 ## `private void LGuildAuthorOpen(long? id, bool editing)`
 

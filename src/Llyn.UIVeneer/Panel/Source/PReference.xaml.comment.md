@@ -36,6 +36,10 @@ Whether either edit area holds modifications that have not been stored, as the d
 Ends the draft of the area in front, committing it or discarding it.
 The side verdict picks the editor's or the imprint's finish, and its answer is passed back up.
 
+## `internal bool PReferenceLeaveConfirm()`
+
+The panel's question before its unsaved work goes out of sight, asked by the window.
+
 ## `private bool PReferenceDiscardConfirm()`
 
 The discard seam: the window's leave dialog over the finish of the area in front.
@@ -92,5 +96,5 @@ The Source the panel shows, read off the shelf panel as the station of this pane
 
 ## `internal void PShelfSourceShow(long id)`
 
-Shows one Source by id, the same selection a click on its shelf row makes.
-The window's trail walks back into this panel through it.
+Shows one Source by id, for a jump the window makes from another panel.
+It asks nothing, because the window asks before it jumps.

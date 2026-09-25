@@ -2,7 +2,7 @@
 
 internal static class TAuditEncodingSetting
 {
-    public const int TAuditGeneration = 10;
+    public const int TAuditGeneration = 11;
 
     public static readonly string[] TAuditEncodingInclude =
     [

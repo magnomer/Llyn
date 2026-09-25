@@ -14,6 +14,20 @@ public partial class PRepertoire
             : value.LStateValueShown;
     }
 
+    private void PVignetteShow(LSituation situation)
+    {
+        PVignetteTitleShow(situation.LSituationTitle);
+        PVignetteKindShow(situation.LSituationKind);
+        PVignetteDescriptionShow(situation.LSituationDescription);
+        PVignetteMediaShow(situation);
+        PVignetteTally.Text = PRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.LAtlasChosen);
+    }
+
+    private void PVignetteClear()
+    {
+        PVignetteMediaShow(null);
+    }
+
     private void PVignetteTitleShow(LStateValue value)
     {
         string? text = PVignetteTextRead(value);

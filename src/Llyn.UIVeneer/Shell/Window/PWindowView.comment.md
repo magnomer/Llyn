@@ -18,6 +18,7 @@ The child vista carries the chosen entry, which the display reads.
 It is also the Entry each duplex side stands on.
 It is also the tab standing open and whether that tab shows its editor.
 The vistas are handed over before the tab, so the opening panel lists in the ordering it was left in.
-A posture naming no tab leaves the window on the tab it opens with.
+A posture naming no tab leaves the window where it stands.
+A posture naming an unoffered tab opens the first.
 The same call puts the shell onto a workspace the user has just switched to.
 That workspace carries its own posture, and starting the vistas here spares every panel from asking.
