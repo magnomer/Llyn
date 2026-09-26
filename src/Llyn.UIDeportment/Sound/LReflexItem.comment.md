@@ -176,6 +176,21 @@ Writes one text field and raises its change, reporting whether anything changed.
 
 Raises the change of one property.
 
+## `internal static void LReflexItemApply(FrameworkElement container, object item, string? _)`
+
+Fills a row of `Theme.Reflex.Row` or `Theme.Reflex.Display` from the row's values.
+A row hidden under the fold is unseen and flat, yet still measured for the shared columns.
+The language carries the region as its tooltip, and no tooltip when the row names none.
+A row in common use draws its reading and slashes in the accent colour.
+The editor's reading cell names the accent field style for such a row, so its box opens accented.
+The fill also tags each side cell with its field order and the slot with `Theme.Reflex.Control`.
+Those order strings live here, so the Veneer markup carries none.
+The anchor button shows only for an anchorable row, its prompt standing in while no anchor is set.
+
+## `private static void LReflexTextApply(FrameworkElement container, string name, string text, bool main)`
+
+Sets one named text of a row, in the accent colour for a row in common use.
+
 ## Inline notes
 
 ### `private const string LReflexAnchorSeparator = " · ";`

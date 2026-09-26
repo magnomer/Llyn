@@ -1,6 +1,6 @@
 // Generated file. Do not edit by hand: every line is overwritten when it is rebuilt.
 //
-// AUDITNAMES GENERATION 12 - name registry for Llyn.
+// AUDITNAMES GENERATION 14 - name registry for Llyn.
 // The only generated file in the convention-test project. It carries the registered bases,
 // verbs and exemptions and nothing else; every audit setting is hand-written
 // tracked test code and must never be added here.
@@ -12,7 +12,7 @@ namespace Convention.Tests;
 
 internal static class TAuditNameRegistry
 {
-    public const int TAuditGeneration = 12;
+    public const int TAuditGeneration = 14;
 
     // AUDIT:SIDECAR:BASES:START
     public static readonly string[] TAuditBases =
@@ -23,6 +23,7 @@ internal static class TAuditNameRegistry
         "Answer",
         "Anthology",
         "Articulation",
+        "Athenaeum",
         "Atlas",
         "Audio",
         "Audit",
@@ -35,6 +36,7 @@ internal static class TAuditNameRegistry
         "Bulletin",
         "Byline",
         "Candidate",
+        "Canon",
         "Caption",
         "Card",
         "Caret",
@@ -57,6 +59,7 @@ internal static class TAuditNameRegistry
         "Contents",
         "Context",
         "Contour",
+        "Contract",
         "Corpus",
         "Court",
         "Customs",
@@ -91,6 +94,7 @@ internal static class TAuditNameRegistry
         "Favorite",
         "Feature",
         "Fellow",
+        "Fellowship",
         "Field",
         "Folio",
         "Font",
@@ -114,6 +118,8 @@ internal static class TAuditNameRegistry
         "Headline",
         "Headquarter",
         "Headword",
+        "Helm",
+        "Hoard",
         "Host",
         "House",
         "Hypothesis",
@@ -130,6 +136,7 @@ internal static class TAuditNameRegistry
         "Interface",
         "Inventory",
         "Keep",
+        "Keepsake",
         "Kindred",
         "Label",
         "Lacuna",
@@ -137,6 +144,7 @@ internal static class TAuditNameRegistry
         "Language",
         "Lattice",
         "Layout",
+        "Leaf",
         "Leave",
         "Lectern",
         "Ledger",
@@ -144,6 +152,7 @@ internal static class TAuditNameRegistry
         "Leftover",
         "Lens",
         "Library",
+        "Lineage",
         "Link",
         "Listener",
         "Localization",
@@ -155,6 +164,7 @@ internal static class TAuditNameRegistry
         "Markdown",
         "Marker",
         "Markup",
+        "Masthead",
         "Meaning",
         "Media",
         "Membership",
@@ -208,6 +218,7 @@ internal static class TAuditNameRegistry
         "Roll",
         "Roof",
         "Roster",
+        "Rubric",
         "Rummage",
         "Rung",
         "Scenario",
@@ -231,6 +242,8 @@ internal static class TAuditNameRegistry
         "Sieve",
         "Situation",
         "Slate",
+        "Slip",
+        "Sonance",
         "Sortie",
         "Sounding",
         "Source",
@@ -251,6 +264,7 @@ internal static class TAuditNameRegistry
         "Swath",
         "Syllable",
         "Tab",
+        "Tableau",
         "Tag",
         "Tally",
         "Target",
@@ -259,7 +273,9 @@ internal static class TAuditNameRegistry
         "Tenure",
         "Theme",
         "Tier",
+        "Timbre",
         "Title",
+        "Toll",
         "Tombstone",
         "Trail",
         "Transcript",
@@ -284,6 +300,7 @@ internal static class TAuditNameRegistry
         "Window",
         "Wing",
         "Winnow",
+        "Workbench",
         "Workspace",
         "Xiaoyun",
         "Xiesheng",

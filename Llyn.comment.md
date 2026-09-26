@@ -46,10 +46,15 @@ The audits and convention tests measure the lag as falling ceilings.
 
 ## `<Project Path="src/Llyn.UIVeneer/Llyn.UIVeneer.csproj" />`
 
-- Veneer is what the user sees: XAML, controls, visuals.
+- Veneer is what the user sees: pure XAML, themes and assets.
+- A visual that C# builds, draws, generates or selects is logic, and it lives in Deportment.
+- Veneer XAML carries no hook: no trigger, binding, converter, event attribute, command or `x:Static`.
+- Deportment sets every property, subscribes every event and switches every visual state.
+- A code-behind is a shell: a constructor that calls `InitializeComponent()` and hands the view to Deportment.
 - A Veneer member only calls a function.
   No exception.
-- No `if`, no loop, no operator, no pattern, no computation.
+- The Veneer defines no method, handler, helper, property or field.
+- No `if`, no loop, no operator, no pattern, no local, no computed argument.
   Veneer has no reason to hold logic.
 - Veneer names only Deportment.
 
@@ -77,6 +82,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - Deportment uses WPF freely.
   Nothing forbids it.
 - Deportment holds only what a GUI needs: visibility, focus, dispatcher, dialogs, drag, clipboard, printing.
+- Deportment also holds every visual written by logic: custom controls, converters, item models, commands, localization.
 - Deportment names only Conduct.
 
 ## `<Project Path="src/Llyn.UIDemeanor/Llyn.UIDemeanor.csproj" />`
@@ -264,6 +270,9 @@ The audits and convention tests measure the lag as falling ceilings.
 - Data was treated as free to travel from Core up to the Veneer.
   Wrong.
   It travels freely below Conduct and never crosses the cut.
+- Controls, converters and triggers were treated as Veneer structure.
+  Wrong.
+  What logic writes or manipulates is logic, and it lives in Deportment.
 
 ## Test projects
 

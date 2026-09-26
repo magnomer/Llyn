@@ -33,6 +33,9 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public string LEngineLocalizationRead() => _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationRead();
 
+    public IReadOnlyList<string> LEngineLocalizationScan() =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationScan();
+
     public string LEngineTextRead(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextRead(key);
 
     public string? LEngineTextFind(string key) => _lSettingsOutletEngine.LEngineSettings.LEngineTextFind(key);

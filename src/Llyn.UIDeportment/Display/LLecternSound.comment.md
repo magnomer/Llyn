@@ -14,9 +14,13 @@ The play button and the volume live on [LLecternPlayback](LLecternPlayback.comme
 Holds the window and the glyph section, and binds the transcription and glyph lists to their rows.
 `glyphSeam` opens a character's entry in a language, and the window owns it.
 
+The chip list is attached to `LGlyphItem.LGlyphItemApply`, which fills each chip.
+The transcription list is attached to `LTranscriptionItem.LTranscriptionItemApply` the same way.
+
 ## `public void LLecternReflexAttach(ItemsControl reflex, UIElement loading, ToggleButton fold)`
 
 Binds the reflex list to its rows and holds the loading line and the fold toggle.
+The list is attached to `LReflexItem.LReflexItemApply`, which fills each row.
 
 ## `public void LLecternFanqieAttach(DependencyObject fanqie, TextBlock reading, Action<IReadOnlyList<LFanqieGroup>, bool> fanqieSeam, Action<string, string, string> diweiSeam, Action<string, string?> stemSeam)`
 

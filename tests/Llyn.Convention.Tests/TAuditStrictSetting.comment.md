@@ -55,6 +55,7 @@ That work belongs below the UI, in the engine or in `LUsher`.
 ## `public static readonly string[] TAuditCatalogExempt`
 
 The surface files whose stream use is the framework's own: a resource stream, a bitmap decode, a browser page.
+Empty: the exempt files moved to Deportment in the Great Purge.
 
 ## `public static readonly string[] TAuditDiskPatterns`
 
@@ -78,3 +79,29 @@ The markup elements that branch on a condition or switch between visual states.
 
 The binding slots that convert, format, fall back, select a template or validate.
 Each is a computation in the markup, whether set as an attribute, inside an extension or as a property element.
+
+## `public static readonly string[] TAuditHookElements`
+
+The markup elements that bind a value, a command or an input to logic.
+
+## `public static readonly string[] TAuditHookSlots`
+
+The attributes that hook logic, whether set as an attribute, as a property element or through a `Setter`.
+The command slots, `DisplayMemberPath` and `SelectedValuePath` all name what code reads.
+
+## `public static readonly string[] TAuditHookLiterals`
+
+The attributes that hook only when set to a plain literal, directly or through a `Setter`.
+`Tag` is one, since code branches on a literal tag.
+A value opening a markup extension is left to the extension rules.
+The script reads the same list from `hookLiterals` in `auditui.json`.
+
+## `public static readonly string[] TAuditHookExtensions`
+
+The markup extensions that bind to logic or read a code member.
+A markup extension whose prefix maps a code namespace is a hook without being listed.
+
+## `public static readonly string[] TAuditHookTypes`
+
+The converter and selector types a markup element may not be.
+An element is one when its type or a base type is listed or implements a listed interface.

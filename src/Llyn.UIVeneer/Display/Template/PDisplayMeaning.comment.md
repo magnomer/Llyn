@@ -14,8 +14,11 @@ The reading view reserves the strip the writing view puts its handles in, and le
 A line must break at the same word in both modes.
 It only can if it is given the same width in both.
 
-### `<ResourceDictionary.MergedDictionaries>`
+### `<Border Style="{StaticResource Theme.Card.Position}">`
 
-The shared header, body and text styles are reached dynamically, through the display around this meaning card.
-A static reference would look only inside this file and fail while the card is being measured.
-The three-state reading cannot be reached that way, so it is merged in.
+The badge is the plain theme badge, since the reading view never opens a position.
+
+### `<TextBlock x:Name="PCardTitle" Grid.Column="1" Style="{DynamicResource Display.Card.Title}" />`
+
+The title, badge number and body texts are filled by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md).
+A card without a title shows its kind in `PCardCaption` instead.

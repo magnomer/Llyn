@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
@@ -34,22 +34,16 @@
                     <Grid>
                         <Border
                             x:Name="PSurface"
-                            Background="{TemplateBinding Background}"
                             CornerRadius="8"
                             SnapsToDevicePixels="True">
-                            <StackPanel Margin="{TemplateBinding Padding}" VerticalAlignment="Center" Orientation="Horizontal">
+                            <StackPanel x:Name="PSurfaceStack" VerticalAlignment="Center" Orientation="Horizontal">
                                 <local:PIconImage
+                                    x:Name="PSurfaceIcon"
                                     Width="32"
                                     Height="32"
                                     Margin="0,0,12,0"
-                                    VerticalAlignment="Center"
-                                    PIconSource="{TemplateBinding PTabIcon}" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="{TemplateBinding FontSize}"
-                                    FontWeight="{TemplateBinding FontWeight}"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Text="{TemplateBinding Content}" />
+                                    VerticalAlignment="Center" />
+                                <TextBlock x:Name="PSurfaceLabel" VerticalAlignment="Center" />
                             </StackPanel>
                         </Border>
                         <Rectangle
@@ -65,21 +59,6 @@
                             RadiusY="1.5"
                             SnapsToDevicePixels="True" />
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                        </Trigger>
-                        <Trigger Property="PTabChosen" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                            <Setter TargetName="PSurfaceBar" Property="Opacity" Value="1" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            <Setter Property="FontWeight" Value="SemiBold" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -98,22 +77,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                    <Border x:Name="PSurface" CornerRadius="8" SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.35" />
-                            <Setter Property="Cursor" Value="Arrow" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -11,17 +11,19 @@ The panel merges the vignette shapes too, so the reading side does not depend on
 
 The unseen twin that measures the kind.
 Its chip closes on the written kind, or on the placeholder while it is empty.
+The panel writes that text into `PScenarioMeasure` whenever the kind or its placeholder changes.
 Without it the chip in the editor stood at a fixed width the reading side never showed.
 
 ## `<Style x:Key="Theme.Scenario.Hint" TargetType="TextBlock">`
 
 The unseen twin that measures the empty title, copied from the entry editor's `Editor.Field.Hint`.
 It reads the field's own placeholder rather than one fixed word, because the placeholder changes with the state.
-It is written here rather than shared, because the entry editor's styles are bound to `PHeadword` by name.
+The panel copies the placeholder in and shows the twin only while the title is empty.
 
 ## `<Style x:Key="Theme.Scenario.Ghost" TargetType="TextBlock">`
 
 The unseen twin that measures the written title.
+The panel copies the title into it on every change.
 The head row closes on the text rather than on a fixed box.
 
 ## `<Style x:Key="Theme.Scenario.Kind" TargetType="TextBox">`

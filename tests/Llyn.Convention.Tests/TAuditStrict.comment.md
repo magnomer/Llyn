@@ -5,6 +5,8 @@
 The surface rules: a surface is what the user sees, and a surface member only calls a function.
 A surface holds no state, never branches or computes, and names only its driver.
 The rules hold the Veneer and UITerminal alike, and Host is held to construction and wiring.
+A surface type holds no member but a constructor, and its markup holds no hook into logic.
+The Veneer audit is the `Surface` facts, and it gates every batch of the Great Purge.
 While `TAuditStrictEnforced` is false every fact passes and reports as a warning.
 Enforced, a kind fails in any file whose count stands above its ledger ceiling.
 The ledger keys each ceiling by file, so each medium's lag is its own.
@@ -64,6 +66,24 @@ A markup line that maps a namespace below the driver, reads a constant from ther
 A markup trigger or visual state, or a binding slot that converts, formats, selects or validates.
 Each is a branch or a computation standing in the surface.
 
+## `public void AuditStrict_SurfaceMarkup_HookNever()`
+
+A markup line through which logic reaches the markup: a binding, a command, an input binding or a code reach.
+A code reach is `x:Static` or a markup extension whose prefix maps a code namespace.
+A command parameter or target, a display member path or a selected value path is a hook too.
+So is a literal `Tag`, since code reads it as a value to branch on.
+Each counts as an attribute or as the property a `Setter` names.
+A converter or a template or style selector declared in the markup is a hook too.
+Each line counts once, however many hooks it holds.
+`{StaticResource}`, `{DynamicResource}` and `{x:Type}` stay allowed.
+
+## `public void AuditStrict_SurfaceTypes_ShellOnly()`
+
+A surface member that is not a constructor: a method, property, event, indexer or operator.
+The shell only constructs, so every handler or helper belongs in Deportment.
+An event attribute in markup therefore shows as the missing handler it needs.
+Generated code is left out, as for every surface fact.
+
 ## `public void AuditStrict_SurfaceNames_HoldNoGlyph()`
 
 A surface identifier holding a character outside ASCII.
@@ -84,7 +104,7 @@ The console's reader and writer live in `System.IO` too, so the namespace alone 
 
 A surface line that reads a file, parses JSON, runs a regex, starts a process or starts a task.
 Each of those is work the engine or `LUsher` does, and the surface only asks for the answer.
-The files whose stream use is the framework's own are exempt by name.
+A file whose stream use is the framework's own may be exempt by name.
 
 ## `public void AuditStrict_Exempt_MatchesSource()`
 
@@ -117,7 +137,9 @@ No hit count is kept for these, since both start at zero and stay there.
 ## `private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers,`
 
 Enumerates the UI sources, the host sources and the surface markup with Git.
-It fails when any set is empty, then runs the three walkers once, with paths made repo-relative.
+It fails when the UI or host set is empty, since the audit would then pass vacuously.
+An empty markup set passes, since the Veneer gets its markup back one batch at a time.
+It then runs the three walkers once, with paths made repo-relative.
 
 ## `private static IReadOnlyList<string> TAuditScopeRead(string repoRoot, IReadOnlyList<string> include)`
 

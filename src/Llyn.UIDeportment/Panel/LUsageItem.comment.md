@@ -33,3 +33,8 @@ The labels read through `LLocalizationCatalog`, so the deportment words them wit
 
 Leads to the place: the Example when the usage quotes one, else the Entry.
 The window opens the place through the two seams, since the deportment cannot reach the window.
+
+## `internal static void LUsageItemApply(FrameworkElement container, object item, string? _)`
+
+Fills one citing place with its flag, name, epithet, title and kind.
+The epithet is led by an en space, as the other catalog rows set it apart.

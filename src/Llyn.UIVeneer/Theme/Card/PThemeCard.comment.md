@@ -48,6 +48,7 @@ The number in a card's badge, written into rather than only read.
 It stands read-only and untouched by the pointer until a double click opens it.
 The badge above it therefore keeps taking the drag that moves the card.
 The badge takes an accent ring while it is open, because a number being written must read as one.
+The card templates that draw the badge add the ring and the opening, since both follow the card.
 
 ## `<Style x:Key="Theme.Card.Handle" TargetType="Button">`
 
@@ -60,6 +61,7 @@ It carries a glyph rather than a drawing and holds no size of its own.
 It stands on the line's baseline as the text beside it does.
 A drawn mark of a fixed size sits where the row puts it.
 That is never quite where the eye reads the line.
+Deportment sets its padding and its hover and checked grounds through `PLook` rows on `PCardSurface`.
 
 ## `<Style x:Key="Theme.Card.Ghost" TargetType="TextBlock">`
 

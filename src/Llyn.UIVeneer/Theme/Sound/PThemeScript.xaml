@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
@@ -21,12 +21,6 @@
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="Margin" Value="0,0,14,0" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Text" Value="{Binding PScriptItemCharacter}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PScriptItemCharacter}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Script.Chip" TargetType="Border">
@@ -45,19 +39,11 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Text" Value="{Binding PScriptItemStyle}" />
     </Style>
 
     <Style x:Key="Theme.Script.Shape" TargetType="Rectangle">
         <Setter Property="Fill" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="Width" Value="{Binding PScriptImageWidth}" />
-        <Setter Property="Height" Value="{Binding PScriptImageHeight}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="OpacityMask">
-            <Setter.Value>
-                <ImageBrush ImageSource="{Binding PScriptImageSource}" Stretch="Uniform" />
-            </Setter.Value>
-        </Setter>
     </Style>
 
     <Style x:Key="Theme.Script.Caption" TargetType="TextBlock">
@@ -68,12 +54,6 @@
         <Setter Property="MaxWidth" Value="120" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Margin" Value="0,1,0,0" />
-        <Setter Property="Text" Value="{Binding PScriptImageCaption}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PScriptImageCaption}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Script.Epoch" TargetType="TextBlock">
@@ -84,13 +64,7 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="MaxWidth" Value="120" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Text" Value="{Binding PScriptImageEpoch}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PScriptImageEpoch}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Script.Gloss" TargetType="TextBlock">
@@ -98,12 +72,6 @@
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Margin" Value="0,2,0,6" />
-        <Setter Property="Text" Value="{Binding PScriptItemGloss}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PScriptItemGloss}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Script.Head" TargetType="TextBlock">
@@ -124,12 +92,12 @@
 
     <DataTemplate x:Key="Theme.Script.Picture">
         <StackPanel Margin="0,0,14,8" VerticalAlignment="Top">
-            <local:PImageLazy PImageLazyRow="{Binding}">
-                <Rectangle Style="{StaticResource Theme.Script.Shape}" />
+            <local:PImageLazy x:Name="PScriptLazy">
+                <Rectangle x:Name="PScriptShape" Style="{StaticResource Theme.Script.Shape}" />
             </local:PImageLazy>
             <StackPanel Margin="0,4,0,0">
-                <TextBlock Style="{StaticResource Theme.Script.Epoch}" />
-                <TextBlock Style="{StaticResource Theme.Script.Caption}" />
+                <TextBlock x:Name="PScriptEpoch" Style="{StaticResource Theme.Script.Epoch}" />
+                <TextBlock x:Name="PScriptCaption" Style="{StaticResource Theme.Script.Caption}" />
             </StackPanel>
         </StackPanel>
     </DataTemplate>
@@ -141,19 +109,19 @@
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PScriptStyle" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Style="{StaticResource Theme.Script.Character}" />
+            <TextBlock x:Name="PScriptCharacter" Style="{StaticResource Theme.Script.Character}" />
             <Border Grid.Column="1" Style="{StaticResource Theme.Script.Chip}">
-                <TextBlock Style="{StaticResource Theme.Script.Style}" />
+                <TextBlock x:Name="PScriptStyle" Style="{StaticResource Theme.Script.Style}" />
             </Border>
             <StackPanel Grid.Column="2">
-                <ItemsControl ItemTemplate="{StaticResource Theme.Script.Picture}" ItemsSource="{Binding PScriptItemImages}">
+                <ItemsControl x:Name="PScriptPictures" ItemTemplate="{StaticResource Theme.Script.Picture}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                <TextBlock Style="{StaticResource Theme.Script.Gloss}" />
+                <TextBlock x:Name="PScriptGloss" Style="{StaticResource Theme.Script.Gloss}" />
             </StackPanel>
         </Grid>
     </DataTemplate>

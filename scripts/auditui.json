@@ -1,5 +1,5 @@
 {
-  "generation": 12,
+  "generation": 14,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -42,11 +42,7 @@
       "\\bDirectory\\.\\w+\\(",
       "\\bPath\\.\\w+\\("
     ],
-    "catalogExempt": [
-      "PIcon.cs",
-      "PScreenBrowser.cs",
-      "PScriptImage.cs"
-    ],
+    "catalogExempt": [],
     "diskPatterns": [
       "\\bFile\\.\\w+\\(",
       "\\bDirectory\\.\\w+\\(",
@@ -93,6 +89,41 @@
       "ValidatesOnExceptions",
       "ValidatesOnNotifyDataErrors",
       "ValidationRules"
+    ],
+    "hookElements": [
+      "Binding",
+      "CommandBinding",
+      "InputBinding",
+      "KeyBinding",
+      "MouseBinding",
+      "MultiBinding",
+      "PLocalizationBinder",
+      "PriorityBinding",
+      "RelativeSource"
+    ],
+    "hookSlots": [
+      "Command",
+      "CommandParameter",
+      "CommandTarget",
+      "DisplayMemberPath",
+      "RelativeSource",
+      "SelectedValuePath"
+    ],
+    "hookExtensions": [
+      "Binding",
+      "MultiBinding",
+      "RelativeSource",
+      "TemplateBinding",
+      "x:Static"
+    ],
+    "hookTypes": [
+      "System.Windows.Controls.DataTemplateSelector",
+      "System.Windows.Controls.StyleSelector",
+      "System.Windows.Data.IMultiValueConverter",
+      "System.Windows.Data.IValueConverter"
+    ],
+    "hookLiterals": [
+      "Tag"
     ]
   },
   "truth": {

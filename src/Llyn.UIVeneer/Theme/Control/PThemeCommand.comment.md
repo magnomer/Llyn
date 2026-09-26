@@ -19,6 +19,7 @@ One command inside the tray, drawn for a button and for a mode radio alike.
 The icon is the button's Tag, masked into a rectangle that takes its colour from Foreground.
 A command with no Tag collapses the icon and keeps its word alone.
 The label is a TextBlock the template owns, because the app-wide TextBlock style outranks an inherited colour.
+Deportment fills the icon, the label and every state through `PLook` rows on the named parts.
 State is set on the button rather than on the surface, so a style below can overrule it.
 
 ## `<Style x:Key="Theme.Command.Primary" TargetType="Button">`
@@ -31,8 +32,3 @@ It drops to the quiet treatment when it cannot be pressed, because a filled slab
 The two halves of the reading and writing switch, which is a choice rather than two commands.
 The chosen half is tinted, so the panel says which half it is on before it is asked.
 A disabled switch keeps that tint, because the mode it stands on is still true.
-
-## `<BooleanToVisibilityConverter x:Key="Theme.Command.Fold" />`
-
-Shows a command group only while the mode button it is bound to is chosen.
-One rail slot holds both the trail pair and the chronicle pair this way.

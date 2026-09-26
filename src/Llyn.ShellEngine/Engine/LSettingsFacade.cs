@@ -69,6 +69,8 @@ internal sealed class LSettingsFacade
         return LLocalization.LLocalizationNormalize(LEngineSettingsRead().LSettingsLocalization);
     }
 
+    internal IReadOnlyList<string> LEngineLocalizationScan() => LLocalization.LLocalizationListedRead();
+
     internal string LEngineTextRead(string key) => LLocalization.LLocalizationTextRead(key);
 
     internal string? LEngineTextFind(string key) => LLocalization.LLocalizationTextFind(key);

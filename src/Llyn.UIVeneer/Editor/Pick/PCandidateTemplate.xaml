@@ -1,10 +1,9 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Llyn.UIVeneer.PCandidateTemplate">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <DataTemplate x:Key="Theme.Candidate.Row">
-        <Grid Background="Transparent" PreviewMouseLeftButtonDown="PCandidateHandle">
+        <Grid x:Name="PCandidateRow" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -14,12 +13,12 @@
                 FontSize="{DynamicResource Theme.Card.SituationSize}"
                 Foreground="{DynamicResource Theme.Ink}"
                 TextTrimming="CharacterEllipsis">
-                <Run Text="{Binding PCandidateItemLead, Mode=OneWay}" /><Run
+                <Run x:Name="PCandidateLead" /><Run
+                    x:Name="PCandidateMark"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource Theme.Accent}"
-                    Text="{Binding PCandidateItemMark, Mode=OneWay}" /><Run Text="{Binding PCandidateItemTail, Mode=OneWay}" />
+                    Foreground="{DynamicResource Theme.Accent}" /><Run x:Name="PCandidateTail" />
             </TextBlock>
-            <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PCandidateItemCount}" />
+            <TextBlock x:Name="PCandidateCount" Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" />
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

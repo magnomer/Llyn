@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Windows;
 
 namespace Llyn.UIDeportment;
 
@@ -17,6 +18,14 @@ public sealed class LTranscriptionChoice : INotifyPropertyChanged
     public string LTranscriptionChoiceScheme { get; }
 
     public string LTranscriptionChoiceLabel { get; }
+
+    internal static void LTranscriptionChoiceApply(FrameworkElement container, object item, string? _)
+    {
+        if (item is LTranscriptionChoice choice)
+        {
+            container.IsEnabled = !choice.LTranscriptionChoiceTaken;
+        }
+    }
 
     public bool LTranscriptionChoiceTaken
     {

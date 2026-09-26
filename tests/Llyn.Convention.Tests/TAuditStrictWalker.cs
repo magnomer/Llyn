@@ -51,6 +51,7 @@ internal static class TAuditStrictWalker
                 {
                     TAuditCallScan(part.Identifier.ValueText, part.Members, violations);
                     TAuditEngineScan(part, part.Identifier.ValueText, violations);
+                    TAuditShellScan(part, violations);
                 }
             }
         }
@@ -142,6 +143,22 @@ internal static class TAuditStrictWalker
                 $"{owner}.{parameter.Identifier.ValueText}",
                 "Storage",
                 "primary constructor parameter in a surface type"));
+        }
+    }
+
+    private static void TAuditShellScan(TypeDeclarationSyntax part, List<TViolation> violations)
+    {
+        string owner = part.Identifier.ValueText;
+        foreach (MemberDeclarationSyntax member in part.Members.Where(member =>
+                     member is BaseMethodDeclarationSyntax and not ConstructorDeclarationSyntax
+                         or BasePropertyDeclarationSyntax))
+        {
+            violations.Add(new TViolation(
+                member.SyntaxTree.FilePath,
+                TAuditLineRead(member),
+                $"{owner}.{TAuditMemberRead(member)}",
+                "Shell",
+                $"{member.Kind()} where only a constructor may stand"));
         }
     }
 

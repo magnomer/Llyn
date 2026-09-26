@@ -2,7 +2,7 @@
 
 ## `public static class LSCustoms`
 
-The customs window's deportment: what a Replace row would drop from the stored entry.
+The customs window's deportment: each row's starting intake, its readiness, and what a Replace would drop.
 
 ## `public static string LSCustomsLossResolve(LWindow? window, LMarkupMode mode, long target, string format)`
 
@@ -13,7 +13,7 @@ Blank for any other mode, and blank when the target cannot be read.
 ## `public static int LSCustomsCardScan(IReadOnlyList<LCardDraft> cards)`
 
 Counts the cards and every card nested under them.
-Nested meanings are counted too, since every one of them goes.
+Nested cards are counted too, since every one of them goes.
 
 ## `public static LMarkupIntake LSCustomsIntakeCreate(int index, IReadOnlyList<LEntry> candidates)`
 

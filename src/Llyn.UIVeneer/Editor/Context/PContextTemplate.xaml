@@ -1,32 +1,22 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
-    x:Class="Llyn.UIVeneer.PContextTemplate">
-
-    <local:PStateConverter x:Key="Theme.State.Show" />
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <DataTemplate x:Key="Theme.Context.Chip">
         <Border Margin="0,0,9,7" Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Situation}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
-                    <TextBlock.Text>
-                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PContextText" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PContextChipHandle">
+                <TextBlock x:Name="PContextName" VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}" />
+                <Button x:Name="PContextEraser" Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
                                 <local:PIconImage
+                                    x:Name="PContextIcon"
                                     Width="12"
                                     Height="12"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    PIconSource="{local:PIcon close, 12}" />
+                                    VerticalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>
@@ -37,26 +27,17 @@
 
     <DataTemplate x:Key="Theme.Context.Entry">
         <TextBox
+            x:Name="PContextEntry"
             MinWidth="128"
             Margin="9,0,9,7"
             Padding="0,5"
             VerticalContentAlignment="Center"
             FontSize="{DynamicResource Theme.Card.SituationSize}"
             Foreground="{DynamicResource Theme.Ink}"
-            LostKeyboardFocus="PContextCloseHandle"
-            PreviewKeyDown="PContextCaretHandle"
-            Style="{DynamicResource Theme.Input.Bare}"
-            Tag="{Binding PContextCaretHint}"
-            Text="{Binding PContextCaretText, UpdateSourceTrigger=PropertyChanged}" />
+            Style="{DynamicResource Theme.Input.Bare}" />
     </DataTemplate>
 
-    <local:PContextSelector
-        x:Key="Theme.Context.Item"
-        PContextSelectorChip="{StaticResource Theme.Context.Chip}"
-        PContextSelectorCaret="{StaticResource Theme.Context.Entry}" />
-
     <Style x:Key="Theme.Context.Field" TargetType="ItemsControl">
-        <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Context.Item}" />
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.SituationMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -68,7 +49,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ItemsControl">
-                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PContextFocusHandle">
+                    <Border x:Name="PContextFrame" Background="Transparent" Cursor="IBeam">
                         <ItemsPresenter />
                     </Border>
                 </ControlTemplate>

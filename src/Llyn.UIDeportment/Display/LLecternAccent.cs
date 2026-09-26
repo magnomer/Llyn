@@ -79,6 +79,7 @@ public sealed class LLecternAccent
         _lLecternAccentContour = contour;
         _lLecternAccentTonal = tonal;
         accents.ItemsSource = _lLecternAccentRow;
+        PLookItem.PLookItemAttach(accents, LAccentItem.LAccentItemApply);
     }
 
     public void LLecternAccentShow()

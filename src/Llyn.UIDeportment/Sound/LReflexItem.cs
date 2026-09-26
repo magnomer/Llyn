@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -230,6 +231,105 @@ public sealed class LReflexItem : INotifyPropertyChanged
     public string LReflexItemArea => _lReflexItemLead ? _lReflexItemRegion : string.Empty;
 
     public string LReflexItemTag => LReflexLabelFormat(_lReflexItemKind);
+
+    internal static void LReflexItemApply(FrameworkElement container, object item, string? _)
+    {
+        if (item is not LReflexItem row)
+        {
+            return;
+        }
+
+        if (PLook.PLookPartFind<Border>(container, "PReflexSurface") is Border surface)
+        {
+            surface.Visibility = row.LReflexItemHidden ? Visibility.Hidden : Visibility.Visible;
+            if (row.LReflexItemHidden)
+            {
+                surface.Height = 0;
+            }
+            else
+            {
+                surface.ClearValue(FrameworkElement.HeightProperty);
+            }
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PReflexLabel") is TextBlock label)
+        {
+            label.Text = row.LReflexItemLabel;
+            label.ToolTip = row.LReflexItemArea.Length > 0 ? row.LReflexItemArea : null;
+        }
+
+        LReflexTextApply(container, "PReflexTag", row.LReflexItemTag, false);
+        LReflexTextApply(container, "PReflexOpener", row.LReflexItemOpener, row.LReflexItemMain);
+        LReflexTextApply(container, "PReflexCloser", row.LReflexItemCloser, row.LReflexItemMain);
+        LReflexTextApply(container, "PReflexRomanization", row.LReflexItemRomanization, false);
+        LReflexTextApply(container, "PReflexMeaning", row.LReflexItemMeaning, false);
+        LReflexTextApply(container, "PReflexNote", row.LReflexItemNote, false);
+        LReflexTextApply(container, "PReflexAnchor", row.LReflexItemAnchor, false);
+        Grid? cell = PLook.PLookPartFind<Grid>(container, "PReflexCell");
+        if (cell is not null)
+        {
+            cell.Tag = row.LReflexItemMain
+                ? "Theme.Reflex.Lead LReflexItemText Input.Reflex"
+                : "Theme.Reflex.Field LReflexItemText Input.Reflex";
+            (string, string)[] asides =
+            [
+                ("PReflexLabel", "Theme.Reflex.Name LReflexItemHead"),
+                ("PReflexTag", "Theme.Reflex.Name LReflexItemKind"),
+                ("PReflexRomanization", "Theme.Reflex.Aside LReflexItemRomanization"),
+                ("PReflexMeaning", "Theme.Reflex.Aside LReflexItemMeaning Input.Meaning"),
+                ("PReflexNote", "Theme.Reflex.Aside LReflexItemNote"),
+            ];
+            foreach ((string name, string order) in asides)
+            {
+                if (PLook.PLookPartFind<TextBlock>(container, name)?.Parent is Grid aside)
+                {
+                    aside.Tag = order;
+                }
+            }
+
+            if (PLook.PLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
+            {
+                shelf.Tag = "Theme.Reflex.Control";
+            }
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PReflexText") is TextBlock text)
+        {
+            if (cell is null)
+            {
+                LReflexTextApply(container, "PReflexText", row.LReflexItemText, row.LReflexItemMain);
+            }
+            else
+            {
+                string? ink = PLook.PLookFirstRead<string?>(row.LReflexItemMain, "Theme.Accent", null);
+                PLook.PLookPromptApply(text, row.LReflexItemText, "Input.Reflex", ink);
+            }
+        }
+
+        if (PLook.PLookPartFind<Button>(container, "PReflexAnchoring") is Button anchoring)
+        {
+            anchoring.Visibility = PLook.PLookVisibleRead(row.LReflexItemAnchorable);
+            anchoring.Content = row.LReflexItemAnchor;
+        }
+    }
+
+    private static void LReflexTextApply(FrameworkElement container, string name, string text, bool main)
+    {
+        if (PLook.PLookPartFind<TextBlock>(container, name) is not TextBlock block)
+        {
+            return;
+        }
+
+        block.Text = text;
+        if (main)
+        {
+            block.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Accent");
+        }
+        else
+        {
+            block.ClearValue(TextBlock.ForegroundProperty);
+        }
+    }
 
     public static LReflexItem LReflexItemCreate(
         LWindow window, LReflexDraft draft, LRespellingMark respelling, bool phonemic, bool folded)

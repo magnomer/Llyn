@@ -1,8 +1,7 @@
 <UserControl
-    x:Class="Llyn.UIVeneer.PDuplex"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
     >
 
     <Grid Margin="34,20,34,38">

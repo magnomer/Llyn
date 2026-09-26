@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
-    public const int TAuditGeneration = 12;
+    public const int TAuditGeneration = 14;
     public const bool TAuditStrictEnforced = true;
     public const string TAuditStrictReport = "temp/audit/Strict-{0}.md";
     public const string TAuditLedgerFile = "TAuditStrictLedger";
@@ -55,12 +55,7 @@ internal static class TAuditStrictSetting
         @"\bPath\.\w+\(",
     ];
 
-    public static readonly string[] TAuditCatalogExempt =
-    [
-        "PIcon.cs",
-        "PScreenBrowser.cs",
-        "PScriptImage.cs",
-    ];
+    public static readonly string[] TAuditCatalogExempt = [];
 
     public static readonly string[] TAuditDiskPatterns =
     [
@@ -116,5 +111,50 @@ internal static class TAuditStrictSetting
         "ValidatesOnExceptions",
         "ValidatesOnNotifyDataErrors",
         "ValidationRules",
+    ];
+
+    public static readonly string[] TAuditHookElements =
+    [
+        "Binding",
+        "CommandBinding",
+        "InputBinding",
+        "KeyBinding",
+        "MouseBinding",
+        "MultiBinding",
+        "PLocalizationBinder",
+        "PriorityBinding",
+        "RelativeSource",
+    ];
+
+    public static readonly string[] TAuditHookSlots =
+    [
+        "Command",
+        "CommandParameter",
+        "CommandTarget",
+        "DisplayMemberPath",
+        "RelativeSource",
+        "SelectedValuePath",
+    ];
+
+    public static readonly string[] TAuditHookLiterals =
+    [
+        "Tag",
+    ];
+
+    public static readonly string[] TAuditHookExtensions =
+    [
+        "Binding",
+        "MultiBinding",
+        "RelativeSource",
+        "TemplateBinding",
+        "x:Static",
+    ];
+
+    public static readonly string[] TAuditHookTypes =
+    [
+        "System.Windows.Controls.DataTemplateSelector",
+        "System.Windows.Controls.StyleSelector",
+        "System.Windows.Data.IMultiValueConverter",
+        "System.Windows.Data.IValueConverter",
     ];
 }

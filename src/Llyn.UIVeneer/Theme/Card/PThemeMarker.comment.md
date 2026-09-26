@@ -5,6 +5,7 @@
 The pill a new part of speech is typed into, drawn as the chips beside it are drawn.
 It carries their height and their radius, so the row reads as chips ending in an empty one.
 The border is a hairline until pointed at or typed in, which is what tells the two apart.
+Deportment switches the border and the ground through `PLook` rows.
 
 ## `<Style x:Key="Theme.Marker.Text" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">`
 
@@ -18,6 +19,7 @@ It also heads a folded sound part, where it opens and shuts the part's body.
 The chevron turns over while the switch stands open, so it points the way the next click goes.
 The ground behind it warms to the soft accent, never the accent itself.
 The mark carries its own blue, so a full accent ground would swallow it whole.
+Deportment turns the chevron and warms the ground through `PLook` rows on `PSurface` and `PSurfaceMark`.
 
 ## `<Style x:Key="Theme.Marker.Menu" TargetType="Border">`
 

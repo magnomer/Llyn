@@ -1,5 +1,11 @@
 # PEditor.xaml
 
+## `UserControl`
+
+The shared editor as markup alone.
+The Deportment class of the same name loads it and drives every part.
+Every icon, click, command and popup link is set by that class, so the markup holds no hook.
+
 ## `<Grid UseLayoutRounding="False">`
 
 Keep Auto row sizes unrounded and round each section's contents like PDisplay.
@@ -26,31 +32,28 @@ The group is the command bar the browsing panels carry, so the two surfaces read
 A borderless tint is what this window gives a language pill and an open tab, not a button.
 They stand at 38 pixels inside the group, beside the headword they act on rather than over it.
 Each carries the icon its panel twin carries, a plus for a fresh form and a disk for a store.
+The editor sets those icons, since an icon lookup is code.
 A bin of one size and a diskette of another, beside labels of two lengths, left the pair looking lopsided.
 Both take the width of their label, so a longer language does not clip.
 
-## `<TextBlock`
-
-The part of speech as it stands, beside the field that sets it.
-The label is bound straight to the box.
-So it says what is typed while it is being typed, rather than after the entry is saved.
-
-## `<TextBox x:Name="PMarkerField" Width="212" MinHeight="40" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />`
+## `<TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />`
 
 Editable, not a chooser.
-The dropdown offers the language's presets and this box takes anything.
+The switch beside it opens the language's presets, and the box takes anything typed.
 So a part of speech no pack declares can still be written down.
+Each one written becomes a chip in the list before the field.
 
-## `<StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">`
+## `<StackPanel x:Name="PEditorSound"`
 
 The pronunciation rows, laid out as the reading view lays them out.
-The primary pronunciation stands on the first row with the volume tray beside it.
+The reflex block leads, shown only for a language that has one.
+The primary pronunciation follows on a row of its own with the volume tray beside it.
 Every further pronunciation stands on a row of its own beneath, in the accent list.
 The transcription rows follow beneath those, one per scheme, only for a language whose pack declares schemes.
 Every row, the primary one included, wears the same play, lookup and download buttons after its brackets.
 Every row ends with the plus and minus pair the example rows carry, shown on hover.
 The plus adds a row beneath and the minus drops the row.
-The row commands are bound here, above the primary row and the accent list.
+The editor binds the row commands on this panel, above the primary row and the accent list.
 So both reach the editor that owns the draft and the menus.
 Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
@@ -67,31 +70,31 @@ The rime-book placements of the entry, the same box the reading view shows, fold
 ## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
 
 The primary pronunciation: its variety as a flag or a label, then the bracketed field, then its buttons.
-The brackets are named so the code behind can turn them into slashes for a phonemic respelling.
+The brackets are named so the editor can turn them into slashes for a phonemic respelling.
 The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
 The buttons are the accent tool style, so the primary row reads as the further rows do.
 Play shows only while the row has a recording.
 Lookup and download open the editor's menus under the button pressed, for this row.
 The plus and minus carry no row, which the handlers read as the primary.
 
-## `<local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" ...>`
+## `<local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" />`
 
 The tone contour of the primary pronunciation, drawn beneath the chip when the chosen language is tonal.
-Its IPA is bound to the pronunciation field, so the picture follows every keystroke.
-The tonal flag is pushed by `PEditorContourApply` whenever the language changes.
+The editor copies the pronunciation field into its IPA on every keystroke, so the picture follows the typing.
+The editor sets the tonal flag whenever the language changes.
 
 ## `<Grid x:Name="PReflexBlock" Visibility="Collapsed">`
 
 The reflex block at the head of the reading stack.
-It holds the rows and the fetch-again button at their top right corner.
+It holds the rows, the fetching line and the fold switch.
 It stays collapsed until a draft in a language with reflex rules or reflex rows is rendered.
-`PReflexTable` is the stack of rows the button sits beside, sized by hand while a fetch runs.
+`PReflexTable` is the stack of rows, sized by hand while a fetch runs.
 `PReflexLoading` is the fetching line under the rows, shown only while a fetch runs.
-`PReflexRenewal` is the button itself, whose tag turns its icon while a fetch runs.
+`PReflexFold` shows or hides the folded rows, and stays hidden while no row is folded.
 `PAnchor` is the anchor dropdown, one popup for every row, targeted at the label that opened it.
 `PAnchorList` holds its tick rows and `PAnchorEmpty` the notice shown when the character has no placement.
 
-## `<ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
+## `<local:PReflexList x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
 
 The reflexes, one editable row each, drawn by the shared reflex template.
 
@@ -110,10 +113,11 @@ The glyph row, the traditional form of a Han-script headword, drawn by the glyph
 It stays collapsed until a draft in a language with a glyph section is rendered.
 Its tag says whether the section declares sources, and the template hides the lookup button when not.
 
-## `<Grid Margin="3,0,1,0">`
+## `<Grid Style="{StaticResource Theme.Pronunciation.Cell}">`
 
 The field and the unseen twin that measures it, stacked on the same cell.
 The twin decides the cell's width, so the brackets close on the text instead of on a fixed box.
+The editor writes the twin's text from the field, or the field's hint while it is empty.
 
 ## `<Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">`
 
@@ -123,6 +127,12 @@ It appears while any row has a recording and goes when none does.
 The volume is offered only while there is something to hear.
 The volume it shows is the workspace's own.
 A level set here is the level the reading view opens at.
+
+## `<Button x:Name="PReflexRenewal" Grid.Row="1" Style="{StaticResource Theme.Reflex.Rebuild}" Visibility="Collapsed" />`
+
+The fetch-again button, pinned to the top right of the sound rows.
+It sits outside the reflex block so the rows never push it down.
+The editor shows it with the block and sets its tag to turn the icon while a fetch runs.
 
 ## `<Popup x:Name="PNotation" ...>`
 

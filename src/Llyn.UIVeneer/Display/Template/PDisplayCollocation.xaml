@@ -1,11 +1,6 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
-
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Llyn.UIVeneer;component/Display/Template/PDisplayState.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <DataTemplate x:Key="Display.Collocation.Card">
         <Border Style="{DynamicResource Theme.Card.Shell}">
@@ -20,23 +15,16 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Style="{DynamicResource Theme.Card.Position}">
+                        <Border Style="{StaticResource Theme.Card.Position}">
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource Theme.Accent}"
-                                Text="{Binding LCardDraftPosition}" />
+                                x:Name="PCardRank"
+                                Foreground="{DynamicResource Theme.Accent}" />
                         </Border>
-                        <TextBlock Grid.Column="1" Style="{DynamicResource Display.Card.Title}">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                    <Binding Path="LCardDraftTitle" />
-                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Grid.Column="1" Style="{DynamicResource Display.Card.Kind}" Text="{DynamicResource Display.CollocationSingle}" />
+                        <TextBlock x:Name="PCardTitle" Grid.Column="1" Style="{DynamicResource Display.Card.Title}" />
+                        <TextBlock x:Name="PCardCaption" Grid.Column="1" Style="{DynamicResource Display.Card.Kind}" Text="{DynamicResource Display.CollocationSingle}" />
                     </Grid>
                 </Border>
                 <Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
@@ -45,23 +33,9 @@
                         <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Style="{DynamicResource Display.Card.Expression}">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                    <Binding Path="LCardDraftExpression" />
-                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Style="{DynamicResource Display.Card.Definition}">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                    <Binding Path="LCardDraftMeaning" />
-                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Display.Card.Body}" Focusable="False" />
+                        <TextBlock x:Name="PCardCollocation" Style="{DynamicResource Display.Card.Expression}" />
+                        <TextBlock x:Name="PCardMeaning" Style="{DynamicResource Display.Card.Definition}" />
+                        <ContentControl x:Name="PCardContents" ContentTemplate="{DynamicResource Display.Card.Body}" Focusable="False" />
                     </StackPanel>
                 </Grid>
             </Grid>

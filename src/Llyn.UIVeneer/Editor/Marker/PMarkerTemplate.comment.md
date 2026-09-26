@@ -1,8 +1,9 @@
 # PMarkerTemplate.xaml
 
-The speech marker chip displayed inside editor cards.
+The speech marker chip of the editor, as markup alone.
+The Deportment class of the same name loads it and forwards the chip's click to the editor.
 
 ## `Theme.Marker.Chip`
 
-Presents one speech marker as a compact interactive chip.
-Marker activation is delegated to the editor that owns the active card.
+Presents one speech marker as a compact chip with the button that removes it.
+The fill writes the name and sets the close icon.

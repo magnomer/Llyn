@@ -37,6 +37,18 @@ It announces only a real change, so a render writing the same text stays silent.
 The workspace file the row plays, blank while it has none.
 Blank is what collapses the play button.
 
+## `public bool LAccentItemPlayable`
+
+Whether the row holds audio, so its play button shows.
+
+## `internal static void LAccentItemApply(FrameworkElement container, object item, string? _)`
+
+Fills a row of `Theme.Accent.Row` or `Theme.Accent.Display`: flag, variety name, brackets, text and play button.
+The editor row's text shows the placeholder in the muted colour while the row is blank.
+It also tags the editor row's reading cell with the field order and its slot with `Theme.Accent.Slot`.
+Those order strings live here, so the Veneer markup carries none.
+It runs again on every change the row raises, so a typed pronunciation or a new flag shows at once.
+
 ## `public static LAccentItem LAccentItemCreate(`
 
 Builds the row for one draft pronunciation under the language it belongs to, printing the form `respelling` picks.

@@ -4,7 +4,7 @@ namespace Convention.Tests;
 
 public sealed class TAuditConvention
 {
-    public const int TAuditGeneration = 12;
+    public const int TAuditGeneration = 14;
 
     public static string TAuditReportFormat(string audit, string report)
     {

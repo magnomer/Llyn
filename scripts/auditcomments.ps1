@@ -5,7 +5,7 @@ Audits the comment files that accompany source files and the sources themselves 
 .DESCRIPTION
 Reads the project configuration from auditcomments.json next to this script, then
 performs these actions on every run:
-  1. Prints the counters, one per finding kind below.
+  1. Prints the Result table, one gate per finding kind below.
   2. Prints comment-file line totals for each folder under the source roots.
   3. Prints sources that have no comment file, and comment files that have no source.
   4. Prints comment lines that break the line rules: too many words, a forbidden
@@ -25,7 +25,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 auditcomments.json shape:
   {
-    "generation": 12,
+    "generation": 14,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -97,7 +97,7 @@ auditcomments -Segments 2
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 12 - auditcomments.ps1.
+# AUDITCOMMENTS GENERATION 14 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -111,6 +111,11 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # Generation 12: nothing the comment audit reports changes; the number rises with the convention tests,
 # which bind with no compile error, count chain ceilings in names, count a using or a call on a
 # deeper record as a reach, and exempt a contract name only where the type declares the interface.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -210,7 +215,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next
@@ -241,7 +246,9 @@ function Get-OrdinalKey {
 function Write-AuditLine {
     param(
         [Parameter(Position = 0)][AllowEmptyString()][string]$Text = '',
-        [ConsoleColor]$ForegroundColor
+        [ConsoleColor]$ForegroundColor,
+        [string]$Lead = '',
+        [ConsoleColor]$LeadColor = [ConsoleColor]::Gray
     )
 
     if ($script:PageLimit -gt 0) {
@@ -259,7 +266,11 @@ function Write-AuditLine {
         $script:PageCount += $rows
     }
 
-    if ($PSBoundParameters.ContainsKey('ForegroundColor')) {
+    if ($Lead -ne '') {
+        Write-Host $Lead -ForegroundColor $LeadColor -NoNewline
+        Write-Host $Text.Substring([Math]::Min($Lead.Length, $Text.Length))
+    }
+    elseif ($PSBoundParameters.ContainsKey('ForegroundColor')) {
         Write-Host $Text -ForegroundColor $ForegroundColor
     }
     else {
@@ -267,7 +278,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITCOMMENTS GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-AuditLine "AUDITCOMMENTS GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 
 function Get-ConfigNode {
@@ -509,8 +520,36 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-AuditLine ""
-    Write-AuditLine $Text
-    Write-AuditLine ('-' * $Text.Length)
+    Write-AuditLine $Text -ForegroundColor Blue
+    Write-AuditLine ('-' * $Text.Length) -ForegroundColor DarkGray
+}
+
+function Write-ResultTable {
+    param([Parameter(Mandatory = $true)][object[]]$Rows)
+
+    Write-SectionTitle 'Result'
+    $statusWidth = 6
+    $countWidth = [Math]::Max(5, ($Rows | ForEach-Object { (Format-Integer $_.Count).Length } | Measure-Object -Maximum).Maximum)
+    $gateWidth = [Math]::Max(4, ($Rows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+    $meaningWidth = [Math]::Max(7, ($Rows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+    Write-AuditLine ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+    Write-AuditLine (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+    foreach ($row in $Rows) {
+        $failing = $row.Count -gt 0
+        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $text = '{0}  {1}  {2}  {3}' -f $status.PadRight($statusWidth), (Format-Integer $row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
+        Write-AuditLine $text -Lead $status -LeadColor $(if ($failing) { 'Red' } else { 'Green' })
+    }
+
+    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    Write-AuditLine ''
+    if ($failed.Count -eq 0) {
+        Write-AuditLine ('PASS: all {0} gates at 0.' -f $Rows.Count) -ForegroundColor Green
+    }
+    else {
+        $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-AuditLine ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
+    }
 }
 
 function Format-Cell {
@@ -584,11 +623,11 @@ function Write-GroupedConsoleTable {
         [void]$rule.Append('-' * $column.Width)
     }
 
-    Write-AuditLine $upper.ToString().TrimEnd()
+    Write-AuditLine $upper.ToString().TrimEnd() -ForegroundColor Cyan
     if (@($Columns | Where-Object { -not [string]::IsNullOrEmpty($_.Group) }).Count -gt 0) {
-        Write-AuditLine $lower.ToString().TrimEnd()
+        Write-AuditLine $lower.ToString().TrimEnd() -ForegroundColor Cyan
     }
-    Write-AuditLine $rule.ToString()
+    Write-AuditLine $rule.ToString() -ForegroundColor Cyan
 
     $rowCount = $Columns[0].Values.Count
     for ($row = 0; $row -lt $rowCount; $row++) {
@@ -1038,19 +1077,15 @@ $generatedAt = Get-Date
 # Console output.
 Write-AuditLine ("Scanned: {0:N0} source files, {1:N0} comment files" -f $sourceFiles.Count, $commentFiles.Count) -ForegroundColor DarkGray
 
-$counterRows = @(
-    @('Sources without a comment file', $missingComments.Count),
-    @('Comment files without a source', $orphanComments.Count),
-    @('Comment lines breaking the line rules', $ruleHits.Count),
-    @('In-code comments', $remarkHits.Count),
-    @('Headings naming nothing in their source', $headingHits.Count),
-    @('Unreadable files', $readErrors.Count)
+$gateRows = @(
+    [pscustomobject]@{ Gate = 'Sources without a comment file'; Count = $missingComments.Count; Meaning = 'sources with no sidecar comment file'; Section = 'Sources without a comment file' },
+    [pscustomobject]@{ Gate = 'Comment files without a source'; Count = $orphanComments.Count; Meaning = 'comment files whose source is gone'; Section = 'Comment files without a source' },
+    [pscustomobject]@{ Gate = 'Comment lines breaking the line rules'; Count = $ruleHits.Count; Meaning = 'lines too long, multi-sentence or with a forbidden char'; Section = 'Comment lines breaking the line rules' },
+    [pscustomobject]@{ Gate = 'In-code comments'; Count = $remarkHits.Count; Meaning = 'comment lines left inside sources'; Section = 'In-code comments' },
+    [pscustomobject]@{ Gate = 'Headings naming nothing in their source'; Count = $headingHits.Count; Meaning = 'headings naming no identifier of their source'; Section = 'Headings naming nothing in their source' },
+    [pscustomobject]@{ Gate = 'Unreadable files'; Count = $readErrors.Count; Meaning = 'files the audit could not read'; Section = 'Unreadable files' }
 )
-$counterWidth = ($counterRows | ForEach-Object { $_[0].Length } | Measure-Object -Maximum).Maximum
-Write-SectionTitle "Counters"
-foreach ($counterRow in $counterRows) {
-    Write-AuditLine ("{0}  {1:N0}" -f $counterRow[0].PadRight($counterWidth), $counterRow[1])
-}
+Write-ResultTable -Rows $gateRows
 
 $tableRows = @($folderResults) + @([pscustomobject]@{
     Name = 'Total'

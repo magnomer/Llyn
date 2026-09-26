@@ -1,5 +1,11 @@
 # PContextTemplate.xaml
 
+## `ResourceDictionary`
+
+The Situation field of a card being written, as markup alone.
+The Deportment class of the same name loads this markup and forwards its events to the editor.
+The editor's card fill picks the chip or the entry for each item and fills the named parts.
+
 ## `Theme.Context.Field`
 
 The Situation field: a wrapping run of boxed Situations with the open entry after them.
@@ -8,8 +14,10 @@ The run wraps and the field grows with it.
 So a card that carries many Situations shows all of them instead of hiding them behind a scroll.
 A Situation is a chip on both sides of the card, so writing one looks like reading one.
 
+## `PContextFrame`
+
 The surface is the field, not the entry.
-A click on empty space inside it reaches the caret.
+A click on empty space inside it reaches the caret through the handler the card fill subscribes.
 
 ## `Theme.Context.Chip`
 
@@ -18,6 +26,7 @@ The wording reads the unknown mark when the store could not read it back.
 So a chip showing nothing else says which kind of empty it is.
 The chip carries its own cursor, so the field text cursor stops at its edge.
 A committed Situation is not text to edit, and its close button points at a click.
+The close icon is set by the fill, since an icon is drawn by code.
 
 ## `Theme.Context.Entry`
 
@@ -28,14 +37,4 @@ Its keys are read before the box reads them.
 The box would otherwise swallow the arrows for its own caret and the suggestion list would never see them.
 Its frame is drawn outward, so the entry is inset by that same amount.
 Its own room stands as tall as a chip stands.
-That counts the line a chip is drawn with and the entry is not.
-Otherwise the run grew by that line the moment a first Situation was committed.
-The whole card below stepped down with it.
 That way it opens where a chip opens and keeps a chip-wide gap after the run.
-
-## `PContextTemplate.xaml.cs`
-
-The dictionary forwards its events to the editor that owns the cards.
-The Tag, Example, Image and Video dictionaries do the same.
-The templates are shared by both card kinds.
-So the handling belongs to the one editor above them rather than to a copy inside each.

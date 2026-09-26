@@ -1,21 +1,16 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <Style x:Key="Display.Card.Picture" TargetType="ItemsControl">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.MediaMargin}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding LCardDraftImage.Count}" Value="0">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <DataTemplate x:Key="Display.Card.PictureLine">
-        <local:PImageLazy PImageLazyRow="{Binding}">
+        <local:PImageLazy x:Name="PImageHold">
             <Border Style="{DynamicResource Theme.Card.Preview}">
-                <Image Source="{Binding PImagePreview}" Stretch="Uniform" StretchDirection="DownOnly" />
+                <Image x:Name="PImagePreview" Stretch="Uniform" StretchDirection="DownOnly" />
             </Border>
         </local:PImageLazy>
     </DataTemplate>

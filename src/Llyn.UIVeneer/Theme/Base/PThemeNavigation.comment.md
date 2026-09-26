@@ -1,6 +1,7 @@
 # PThemeNavigation.xaml
 
 Shared focus, tab, voyage, divider, and spacing resources for navigation.
+Hover, press, chosen and disabled looks are switched by `PLook` in the deportment.
 
 ## `Theme.Navigation.Focus`
 

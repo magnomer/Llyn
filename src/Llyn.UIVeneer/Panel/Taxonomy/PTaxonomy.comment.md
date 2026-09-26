@@ -21,25 +21,8 @@ So the catalog here is a tag, and the entry list beside it is what that tag hold
 The sorting button and the search field are one control over the tag column.
 Their shared edge is the same as the catalog below.
 Both act on the tag catalog and nothing else.
-The membership list has no toolbar because it is not searched.
-It is what the chosen tag decides it is.
 
-## `<Canvas Width="16" Height="14">`
-
-Three centred descending bars: the funnel mark, drawn rather than fetched.
-The library panel's sorting mark is left-aligned, so the two panels are told apart at a glance.
-
-## `<DataTrigger Binding="{Binding PMembershipItemChosen}" Value="True">`
-
-The entry list is a catalog like the library's, so it is marked the same way.
-The row the reader stands on carries the mark and nothing else does.
-
-## `<DataTrigger Binding="{Binding PDirectoryItemChosen}" Value="True">`
-
-The chosen tag stays visible while the eye is on the entries beside it.
-Without it the membership list would show a filtered set with nothing on screen saying which filter.
-
-## `<Grid Grid.Row="1" Grid.Column="1" Margin="0,14,20,0">`
+## `<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">`
 
 The entry list is a bare catalog column, not a boxed surface.
 Both lists on this panel are asked the same kind of question, so both are drawn the same way.
@@ -52,11 +35,17 @@ Shown when the chosen tag holds no entry.
 It also stands while no tag is chosen and the workspace is empty.
 Either way there is nothing to read, which is what the line says.
 
-## `<StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">`
+## `<Border x:Name="PLattice" ... Style="{StaticResource Theme.Search.Bar}">`
+
+The search field and the language filter over the entry column.
+`PScout` narrows the entries under the chosen tag by typed text.
+`PLatticeDropper` opens the menu of loaded languages, and `PLatticeMark` shows while any is hidden.
+
+## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The same entry actions the library panel offers, over the same reader.
-Only New and the mode toggle are wired today.
-Export and Print are present as the requested mock-up controls.
+New, save, the trail and chronicle pairs, export, print and the mode toggle are all wired by the panel.
+Export and print act on the entry being read.
 
 ## Catalog spacing
 
@@ -64,3 +53,10 @@ The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
 Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
 The matching-entry column uses Theme.Catalog.Middle to measure its left gutter from the intervening seam.
+
+## Hooks
+
+The markup carries no hook.
+The Deportment class `PTaxonomy` sets icons, commands, clicks, popups and row fills.
+It also folds the two button pairs by mode.
+`PTaxonomyChronicle` starts collapsed because the reader is the side shown first.

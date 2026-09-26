@@ -12,6 +12,7 @@ It starts collapsed and the view shows it while a row has a recording.
 The two halves of the volume track, the taken one filled in the accent and the remaining one left clear.
 They are repeat buttons because that is what a WPF track is built from.
 A click on either walks the volume toward it.
+The slider names both, so a `PLook` row hands each its large-step command.
 
 ## `<Style x:Key="Theme.Volume.Thumb" TargetType="Thumb">`
 

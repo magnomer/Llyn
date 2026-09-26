@@ -34,3 +34,4 @@ The mark is left out when no icon is named.
 The label is left out when no content is named, so the control stands as a square mark alone.
 An open panel is shown by the soft accent ground the mode buttons use.
 The fold is a state and not an action.
+`PLook` in the deportment leaves out the mark and label and switches every look.

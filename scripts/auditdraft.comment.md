@@ -29,7 +29,7 @@ The records keep the order in which each type was first found, as the test's dic
 
 ## Checks
 
-| Counter | Hit |
+| Gate | Hit |
 |---|---|
 | Unnamed properties | A property a side neither names as a whole word nor waives. |
 | Stale waivers | A side waiver the side names anyway, or one naming no property. |
@@ -46,4 +46,4 @@ A side matching no file throws, since its pattern is stale.
 ## Output
 
 The console follows `report.md`, and every side hit starts with the side name.
-The exit code is 1 when any counter is above 0 and 0 otherwise.
+The exit code is 1 when any Result gate is above 0 and 0 otherwise.

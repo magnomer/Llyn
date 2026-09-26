@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditFrameSetting
 {
-    public const int TAuditGeneration = 12;
+    public const int TAuditGeneration = 14;
 
     public static readonly string[] TAuditFramePure =
     [

@@ -6,7 +6,6 @@ using Llyn.Core.Windows;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
-using Llyn.UIVeneer;
 
 int code = 1;
 Thread thread = new(() =>
@@ -16,7 +15,6 @@ Thread thread = new(() =>
     LPress press = new LPressBrowser();
     LPhonograph phonograph = new LPhonographMedia();
     PBootstrap application = new();
-    application.InitializeComponent();
     LBootstrap bootstrap = new(application, application.PBootstrapTextRead);
 
     bool themed = bootstrap.LBootstrapThemeApply(() => application.PBootstrapThemeApply(

@@ -16,7 +16,8 @@ Notation, clip and category lists all say this and nothing else about their cont
 ### `<Style x:Key="Editor.Popup.Frame" TargetType="Border">`
 
 The surface a caret's dropdown stands on, with the gutter its shadow needs.
-Only the width follows the caret it was opened from, so that stays in the markup.
+Only the width follows the caret it was opened from.
+The editor sets that width each time it places the dropdown.
 
 ### `<Style x:Key="Editor.Popup.List" TargetType="ListBox">`
 
@@ -27,8 +28,10 @@ The caret keeps the focus while its list is open.
 
 The translation row, drawn against a field several times a caret's size.
 It carries the height and the corner a reader of that panel expects.
+Its hover and pick fills are look rows on the part `PSurface`, not triggers.
 
 ### `<Style x:Key="Editor.Popup.Caret" TargetType="ListBoxItem">`
 
 The row a caret's dropdown carries, cut down from the translation row.
 Situation and slate lists are drawn against a short caret, so both take this one.
+It inherits the look rows of the translation row, since its surface part has the same name.

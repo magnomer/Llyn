@@ -24,6 +24,8 @@ public interface LSettingsPort
 
     string LEngineLocalizationRead();
 
+    IReadOnlyList<string> LEngineLocalizationScan();
+
     string LEngineTextRead(string key);
 
     string? LEngineTextFind(string key);

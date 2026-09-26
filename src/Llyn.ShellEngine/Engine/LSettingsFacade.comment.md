@@ -41,6 +41,10 @@ The localization table of `language`, through the workspace clerk.
 
 The stored interface language normalised to a listed one, so a deportment never names the localization.
 
+## `internal IReadOnlyList<string> LEngineLocalizationScan()`
+
+The interface languages the build embeds, as the localization catalog lists them.
+
 ## `internal string LEngineTextRead(string key)`
 
 The interface text under a key, or the key itself when none is loaded.

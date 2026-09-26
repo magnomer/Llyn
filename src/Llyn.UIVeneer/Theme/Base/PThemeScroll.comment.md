@@ -7,6 +7,7 @@ A page, a catalog, a popup and a text field all show the same thread.
 The two control templates are registered by PIndicator.
 WPF requires a PART_Track name.
 That name must stay out of the audited XAML naming surface.
+The sideways size and template are set by `PLook` in the deportment, not by a trigger.
 
 ## `<Style TargetType="ScrollViewer">`
 

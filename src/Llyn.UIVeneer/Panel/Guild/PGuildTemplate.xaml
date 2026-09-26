@@ -1,10 +1,10 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <DataTemplate x:Key="Guild.Roll.Card">
-        <Button Style="{DynamicResource Theme.Roll.Row}">
+        <Button x:Name="PRollRow" Style="{DynamicResource Theme.Catalog.Row}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -12,35 +12,35 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" PIconSource="{Binding PRollItemMark}" />
-                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" Text="{Binding PRollItemName}" />
-                <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" Text="{Binding PRollItemWork}" />
+                <local:PIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="PRollName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
+                <TextBlock x:Name="PRollWork" Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" />
                 <Border Grid.Column="3" Style="{DynamicResource Theme.Catalog.Pellet}" ToolTip="{DynamicResource Guild.Tally}">
-                    <TextBlock Style="{DynamicResource Theme.Catalog.Tally}" Text="{Binding PRollItemCount}" />
+                    <TextBlock x:Name="PRollCount" Style="{DynamicResource Theme.Catalog.Tally}" />
                 </Border>
             </Grid>
         </Button>
     </DataTemplate>
 
     <DataTemplate x:Key="Guild.Fellow.Card">
-        <Button Style="{DynamicResource Theme.Vita.Row}">
+        <Button Style="{DynamicResource Theme.Catalog.Row}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" PIconSource="{local:PIcon guild, 16}" />
-                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" Text="{Binding PFellowItemName}" />
+                <local:PIconImage x:Name="PFellowIcon" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="PFellowName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
                 <Border Grid.Column="2" Style="{DynamicResource Theme.Catalog.Pellet}" ToolTip="{DynamicResource Vita.Shared}">
-                    <TextBlock Style="{DynamicResource Theme.Catalog.Tally}" Text="{Binding PFellowItemCount}" />
+                    <TextBlock x:Name="PFellowCount" Style="{DynamicResource Theme.Catalog.Tally}" />
                 </Border>
             </Grid>
         </Button>
     </DataTemplate>
 
     <DataTemplate x:Key="Guild.Citation.Card">
-        <Button Style="{DynamicResource Theme.Vita.Row}">
+        <Button Style="{DynamicResource Theme.Catalog.Row}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -48,29 +48,29 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LUsageItemFlag}" Stretch="Uniform" />
-                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}"><Run Text="{Binding LUsageItemName, Mode=OneWay}" /><Run
-                    Style="{DynamicResource Theme.Catalog.Epithet}"
-                    Text="{Binding LUsageItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
-                <TextBlock Grid.Column="2" MaxWidth="220" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" Text="{Binding LUsageItemTitle}" />
+                <Image x:Name="PUsageFlag" Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Stretch="Uniform" />
+                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}"><Run x:Name="PUsageName" /><Run
+                    x:Name="PUsageEpithet"
+                    Style="{DynamicResource Theme.Catalog.Epithet}" /></TextBlock>
+                <TextBlock x:Name="PUsageTitle" Grid.Column="2" MaxWidth="220" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" />
                 <Border Grid.Column="3" Style="{DynamicResource Theme.Catalog.Pellet}">
-                    <TextBlock Style="{DynamicResource Theme.Catalog.Tally}" Text="{Binding LUsageItemOwner}" />
+                    <TextBlock x:Name="PUsageOwner" Style="{DynamicResource Theme.Catalog.Tally}" />
                 </Border>
             </Grid>
         </Button>
     </DataTemplate>
 
     <DataTemplate x:Key="Guild.Union.Card">
-        <Button Style="{DynamicResource Theme.Vita.Row}">
+        <Button x:Name="PRollRow" Style="{DynamicResource Theme.Catalog.Row}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" PIconSource="{local:PIcon guild, 16}" />
-                <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" Text="{Binding PRollItemName}" />
-                <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" Text="{Binding PRollItemWork}" />
+                <local:PIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="PRollName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
+                <TextBlock x:Name="PRollWork" Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" />
             </Grid>
         </Button>
     </DataTemplate>

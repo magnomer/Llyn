@@ -1,32 +1,22 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
-    x:Class="Llyn.UIVeneer.PRegisterTemplate">
-
-    <local:PStateConverter x:Key="Theme.State.Show" />
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <DataTemplate x:Key="Theme.Register.Chip">
         <Border Margin="0,0,9,7" Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Register}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}">
-                    <TextBlock.Text>
-                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PRegisterText" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PRegisterChipHandle">
+                <TextBlock x:Name="PRegisterName" VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}" />
+                <Button x:Name="PRegisterEraser" Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
                                 <local:PIconImage
+                                    x:Name="PRegisterIcon"
                                     Width="12"
                                     Height="12"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    PIconSource="{local:PIcon close, 12}" />
+                                    VerticalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>
@@ -37,26 +27,17 @@
 
     <DataTemplate x:Key="Theme.Register.Entry">
         <TextBox
+            x:Name="PRegisterEntry"
             MinWidth="128"
             Margin="9,0,9,7"
             Padding="0,5"
             VerticalContentAlignment="Center"
             FontSize="{DynamicResource Theme.Card.RegisterSize}"
             Foreground="{DynamicResource Theme.Ink}"
-            LostKeyboardFocus="PRegisterCloseHandle"
-            PreviewKeyDown="PRegisterCaretHandle"
-            Style="{DynamicResource Theme.Input.Bare}"
-            Tag="{Binding PRegisterCaretHint}"
-            Text="{Binding PRegisterCaretText, UpdateSourceTrigger=PropertyChanged}" />
+            Style="{DynamicResource Theme.Input.Bare}" />
     </DataTemplate>
 
-    <local:PRegisterSelector
-        x:Key="Theme.Register.Item"
-        PRegisterSelectorChip="{StaticResource Theme.Register.Chip}"
-        PRegisterSelectorCaret="{StaticResource Theme.Register.Entry}" />
-
     <Style x:Key="Theme.Register.Field" TargetType="ItemsControl">
-        <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Register.Item}" />
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.RegisterMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -68,7 +49,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ItemsControl">
-                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PRegisterFocusHandle">
+                    <Border x:Name="PRegisterFrame" Background="Transparent" Cursor="IBeam">
                         <ItemsPresenter />
                     </Border>
                 </ControlTemplate>

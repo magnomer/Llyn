@@ -11,8 +11,3 @@ The register row of a read-only card, from its panel down to the single chip.
 A register names the tone an entry is used in.
 It is therefore drawn as a chip and not as prose.
 It takes the helper colour rather than the situation colour, so the two rows are never read as one.
-
-### `<ResourceDictionary.MergedDictionaries>`
-
-The three-state reading is a binding converter, so no dynamic reference can carry it.
-This row merges its own copy of a converter that keeps nothing.

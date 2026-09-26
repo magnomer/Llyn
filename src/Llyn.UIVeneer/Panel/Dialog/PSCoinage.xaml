@@ -1,5 +1,4 @@
 <Window
-    x:Class="Llyn.UIVeneer.PSCoinage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{DynamicResource Terms.Product}"
@@ -16,14 +15,12 @@
         <TextBox
             x:Name="PSCoinageWording"
             Margin="0,14,0,0"
-            Style="{StaticResource Theme.Input.Field}"
-            TextChanged="PSCoinageWordingHandle" />
+            Style="{StaticResource Theme.Input.Field}" />
 
         <StackPanel Margin="0,26,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button
                 x:Name="PSCoinageMint"
                 MinWidth="88"
-                Click="PSCoinageMintHandle"
                 Content="{DynamicResource Coinage.Create}"
                 IsDefault="True"
                 IsEnabled="False"

@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Llyn.Core;
 
@@ -84,6 +86,60 @@ public sealed class LAccentItem : INotifyPropertyChanged
 
             _lAccentItemAudio = path;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LAccentItemAudio)));
+        }
+    }
+
+    public bool LAccentItemPlayable => _lAccentItemAudio.Length > 0;
+
+    internal static void LAccentItemApply(FrameworkElement container, object item, string? _)
+    {
+        if (item is not LAccentItem row)
+        {
+            return;
+        }
+
+        if (PLook.PLookPartFind<Image>(container, "PAccentFlag") is Image flag)
+        {
+            flag.Source = row.LAccentItemFlag;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PAccentLabel") is TextBlock label)
+        {
+            label.Text = row.LAccentItemLabel;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PAccentOpener") is TextBlock opener)
+        {
+            opener.Text = row.LAccentItemOpener;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PAccentCloser") is TextBlock closer)
+        {
+            closer.Text = row.LAccentItemCloser;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PAccentText") is TextBlock text)
+        {
+            text.Text = row.LAccentItemText;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PAccentPrompt") is TextBlock prompt)
+        {
+            PLook.PLookPromptApply(prompt, row.LAccentItemText, "Input.Pronunciation", null);
+            if (prompt.Parent is Grid cell)
+            {
+                cell.Tag = "Theme.Pronunciation.Field LAccentItemText Input.Pronunciation";
+            }
+
+            if (PLook.PLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
+            {
+                shelf.Tag = "Theme.Accent.Slot";
+            }
+        }
+
+        if (PLook.PLookPartFind<Button>(container, "PAccentPlayback") is Button playback)
+        {
+            playback.Visibility = PLook.PLookVisibleRead(row.LAccentItemPlayable);
         }
     }
 

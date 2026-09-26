@@ -69,7 +69,7 @@ auditplatform -ReportDirectory D:\temp\audit -Open
 Write the report elsewhere and open it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM GENERATION 12 - auditplatform.ps1.
+# AUDITPLATFORM GENERATION 14 - auditplatform.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -81,6 +81,11 @@ Write the report elsewhere and open it.
 # sources and reports eight kinds.
 # Generation 12: the audit reports the eleven kinds of the convention test, Suppress, Implicit and
 # Domain included, and judges the analyzer severity per file as the compiler does.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -118,21 +123,21 @@ KINDS
     Suppress, Implicit, Domain.
     See the script header for definitions.
 
-COUNTERS
+RESULT
     Above ceiling     Kinds whose hits exceed their ceiling while enforced is true.
     Stale ceilings    Written ceilings that sit above their kind's hits.
     Unreadable files  Source or configuration files that could not be read.
 
 EXIT CODES
     0   Every kind sits at or below its ceiling, no ceiling is stale, and every file was read.
-    1   A counter is above zero.
+    1   A Result gate is above zero.
 '@ | Write-Host
     exit 0
 }
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty',
     'Suppress', 'Implicit', 'Domain')
 
@@ -179,11 +184,13 @@ function Get-DistinctText {
 function Write-AuditLine {
     param(
         [Parameter(Position = 0)][AllowEmptyString()][string]$Text = '',
-        [ConsoleColor]$ForegroundColor
+        [ConsoleColor]$ForegroundColor,
+        [string]$Lead = '',
+        [ConsoleColor]$LeadColor = [ConsoleColor]::Gray
     )
 
     if ($script:PageLimit -gt 0) {
-        $rows = [Math]::Max(1, [Math]::Ceiling($Text.Length / [double]$script:PageWidth))
+        $rows = [Math]::Max(1, [Math]::Ceiling(($Lead.Length + $Text.Length) / [double]$script:PageWidth))
         if ($script:PageCount + $rows -gt $script:PageLimit -and $script:PageCount -gt 0) {
             $prompt = '-- More -- (any key: next page, Q: no more pauses)'
             Write-Host $prompt -ForegroundColor Yellow -NoNewline
@@ -197,7 +204,11 @@ function Write-AuditLine {
         $script:PageCount += $rows
     }
 
-    if ($PSBoundParameters.ContainsKey('ForegroundColor')) {
+    if ($Lead.Length -gt 0) {
+        Write-Host $Lead -ForegroundColor $LeadColor -NoNewline
+        Write-Host $Text
+    }
+    elseif ($PSBoundParameters.ContainsKey('ForegroundColor')) {
         Write-Host $Text -ForegroundColor $ForegroundColor
     }
     else {
@@ -205,7 +216,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITPLATFORM GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-AuditLine "AUDITPLATFORM GENERATION $script:AuditGeneration" -ForegroundColor Blue
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 function Resolve-ProjectRoot {
@@ -515,7 +526,7 @@ function Invoke-DomainHelper {
     [System.IO.Directory]::CreateDirectory($temporaryFolder) | Out-Null
     try {
         if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
-            Write-AuditLine 'Compiling the platform binder once for this helper text...' -ForegroundColor DarkGray
+            Write-AuditLine 'Compiling the platform binder once for this helper text...'
             if (Test-Path -LiteralPath $cacheParent) {
                 Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
             }
@@ -1161,19 +1172,36 @@ function Write-AuditSection {
     param([string]$Title)
 
     Write-AuditLine ''
-    Write-AuditLine $Title
-    Write-AuditLine ('-' * $Title.Length)
+    Write-AuditLine $Title -ForegroundColor Blue
+    Write-AuditLine ('-' * $Title.Length) -ForegroundColor DarkGray
 }
 
-$counterRows = @(
-    @('Above ceiling', $aboveCount),
-    @('Stale ceilings', $staleRows.Count),
-    @('Unreadable files', $script:ReadErrors.Count)
+$gateRows = @(
+    [pscustomobject]@{ Gate = 'Above ceiling'; Count = $aboveCount; Meaning = 'enforced kinds whose hits exceed their ceiling'; Section = 'Above ceiling' },
+    [pscustomobject]@{ Gate = 'Stale ceilings'; Count = $staleRows.Count; Meaning = 'ceilings set above their kind hits'; Section = 'Stale ceilings' },
+    [pscustomobject]@{ Gate = 'Unreadable files'; Count = $script:ReadErrors.Count; Meaning = 'files the audit could not read'; Section = 'Unreadable files' }
 )
-$counterWidth = @($counterRows | ForEach-Object { ([string]$_[0]).Length } | Measure-Object -Maximum)[0].Maximum
-Write-AuditSection -Title 'Counters'
-foreach ($counter in $counterRows) {
-    Write-AuditLine ("{0}  {1:N0}" -f ([string]$counter[0]).PadRight($counterWidth), [int]$counter[1])
+Write-AuditSection -Title 'Result'
+$statusWidth = 6
+$countWidth = [Math]::Max(5, @($gateRows | ForEach-Object { $_.Count.ToString('N0').Length } | Measure-Object -Maximum)[0].Maximum)
+$gateWidth = [Math]::Max(4, @($gateRows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum)[0].Maximum)
+$meaningWidth = [Math]::Max(7, @($gateRows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum)[0].Maximum)
+Write-AuditLine ("{0}  {1}  {2}  Meaning" -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+Write-AuditLine (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+foreach ($gate in $gateRows) {
+    $failing = $gate.Count -gt 0
+    $status = if ($failing) { 'FAIL' } else { 'OK' }
+    $text = "{0}  {1}  {2}  {3}" -f (" " * ($statusWidth - $status.Length)), $gate.Count.ToString('N0').PadLeft($countWidth), $gate.Gate.PadRight($gateWidth), $gate.Meaning
+    Write-AuditLine $text -Lead $status -LeadColor $(if ($failing) { 'Red' } else { 'Green' })
+}
+$failedGates = @($gateRows | Where-Object { $_.Count -gt 0 })
+Write-AuditLine ''
+if ($failedGates.Count -eq 0) {
+    Write-AuditLine ("PASS: all {0} gates at 0." -f $gateRows.Count) -ForegroundColor Green
+}
+else {
+    $failedSections = ($failedGates | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+    Write-AuditLine ("FAIL: {0} of {1} gates above 0. See {2}." -f $failedGates.Count, $gateRows.Count, $failedSections) -ForegroundColor Red
 }
 
 Write-AuditSection -Title 'Kinds'
@@ -1184,11 +1212,13 @@ $widths = @(for ($column = 0; $column -lt $kindHeader.Count; $column++) {
     @(@($kindHeader[$column]) + @($kindCells | ForEach-Object { [string]$_[$column] }) | ForEach-Object { $_.Length } | Measure-Object -Maximum)[0].Maximum
 })
 $rightAligned = @($false, $true, $true, $false)
+$kindLine = 0
 foreach ($cells in @(, $kindHeader) + @(, @($widths | ForEach-Object { '-' * $_ })) + $kindCells) {
     $parts = for ($column = 0; $column -lt $kindHeader.Count; $column++) {
         if ($rightAligned[$column]) { ([string]$cells[$column]).PadLeft($widths[$column]) } else { ([string]$cells[$column]).PadRight($widths[$column]) }
     }
-    Write-AuditLine (($parts -join '  ').TrimEnd())
+    if ($kindLine -eq 1) { Write-AuditLine (($parts -join '  ').TrimEnd()) -ForegroundColor Cyan } elseif ($kindLine -eq 0) { Write-AuditLine (($parts -join '  ').TrimEnd()) -ForegroundColor Cyan } else { Write-AuditLine (($parts -join '  ').TrimEnd()) }
+    $kindLine++
 }
 
 if ($aboveCount -gt 0) {

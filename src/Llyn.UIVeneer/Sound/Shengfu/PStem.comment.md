@@ -13,3 +13,4 @@ Stands in while the series holds no character to print.
 ## `<ItemsControl x:Name="PStemList"`
 
 One chip per member character, each opening the entry written with it.
+The chip command is bound by `PStem`, since the markup holds no command binding.

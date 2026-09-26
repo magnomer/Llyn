@@ -11,6 +11,7 @@ So nothing here calls `Shutdown` while the program is starting.
 
 The application is the one whose windows the fault handler counts and whose dispatcher it watches.
 The text seam reads the interface catalog, so every dialog speaks the language already applied.
+It attaches the visual-state handlers once, before any window loads.
 
 ## `private Func<Exception, string?> _lBootstrapAudit = _ => null;`
 

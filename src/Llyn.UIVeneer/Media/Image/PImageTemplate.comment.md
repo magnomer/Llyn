@@ -1,13 +1,19 @@
-# PImageTemplate.xaml.cs
+# PImageTemplate.xaml
 
-## `public partial class PImageTemplate : ResourceDictionary`
+## `ResourceDictionary`
 
-The picture row of a card as a template.
-It comes with the rules that hide an empty picture section.
-Those rules also hide a preview there is nothing to draw.
-A template lives in a dictionary rather than in the panel it fills.
-The events a row raises belong to whoever drew the row all the same.
-This class exists only to hand them back through `PImageHost`.
-The entry editor and the situation editor both implement that seam, so one template draws a picture row in either.
-The location field binds the row's value one way through the state converter.
-Typing leaves through whichever editor's text handler hears it bubble, so the row holds no copy.
+The picture row of a card being written, as markup alone.
+The Deportment class of the same name loads this markup and forwards the two clicks to its host.
+The entry editor and the situation editor both merge it, and each fills the named parts.
+
+## `<Style x:Key="Theme.Image.Preview" TargetType="Border">`
+
+The frame around a picture preview.
+The fill hides it while there is no picture to draw.
+
+## `<DataTemplate x:Key="Theme.Image.Row">`
+
+The preview, the location field with its browse button, and the remove handle in the gutter.
+The preview sits in the lazy loader, so a picture far below the view is not decoded yet.
+The handle panel starts hidden and shows while the pointer or the focus is inside the list.
+Typing in the location leaves through whichever editor's text handler hears it bubble.

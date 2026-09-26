@@ -26,6 +26,11 @@ Records the languages the build embeds, read off the localization port by whoeve
 The bootstrap sets it before the first catalog is applied, and the engine sets it again on construction.
 No language is named in code, so a new catalog file is listed without an edit here.
 
+## `public static IReadOnlyList<string> LLocalizationListedRead()`
+
+The languages the build carries a catalog for, read under the gate they are set under.
+The settings panel offers exactly these, so a new catalog file appears there without an edit.
+
 ## `public static string LLocalizationNormalize(string? language)`
 
 The stored language when it is one the catalog ships, else the default.

@@ -16,7 +16,7 @@ Left to size itself, the row would be the heart's height in one view and the sta
 The heart the favourite toggle carries, hollow until the entry is kept.
 A heart, not a star, because the stars beside it belong to the grasp row.
 It is drawn in the theme's favorite rose rather than the accent, for the same reason.
-It reads the toggle it sits in rather than a name, so the style needs no view around it.
+Deportment fills the heart through `PLook` rows on the toggle, keyed to the icon named `PFavoriteMark`.
 
 ## `<Style x:Key="Theme.Favorite.Mark" TargetType="ToggleButton">`
 
@@ -25,3 +25,4 @@ The heart's square, its gap after the pill and its centering are set here, once.
 The heart carries the mark alone, with no surface or border behind it.
 A framed button would read as a control among the headword's own text.
 Hover and press dim it instead, so the button still answers the pointer.
+Deportment sets that dimming and the padding through `PLook` rows.

@@ -8,7 +8,7 @@ Partial types are joined by symbol, and one surface part makes the whole type a 
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths, out List<string> veneers)`
 
-Groups every type of the UI sources, then scans storage, calls and depth per surface type.
+Groups every type of the UI sources, then scans storage, calls, depth and members per surface type.
 Every surface file is also scanned for glyphs, enums and delegates.
 Outside the surfaces only a mutable static field is a hit.
 The surface type names come back for the report.
@@ -28,6 +28,11 @@ An enum value that is not a literal is a computation.
 Every field, event field, auto-property and primary constructor parameter of a surface type is storage.
 A `readonly` or a wired `null!` field counts too, and a constant does not.
 In a driver type, every mutable static field is a static hit.
+
+## `private static void TAuditShellScan(TypeDeclarationSyntax part, List<TViolation> violations)`
+
+One Shell hit per method, operator, property, event or indexer the surface part declares.
+A constructor is the one member the shell keeps.
 
 ## `private static bool TAuditAutoCheck(PropertyDeclarationSyntax property)`
 

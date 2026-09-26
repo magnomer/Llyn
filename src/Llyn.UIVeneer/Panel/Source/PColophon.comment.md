@@ -22,3 +22,7 @@ The editing side still draws every slot, so the two kinds of empty are one toggl
 ## `<TextBlock x:Name="PColophonUnselected" ...>`
 
 The prompt shown while no Source is chosen, centred where the reading would stand.
+
+## `<UserControl>`
+
+The markup carries no class, and the colophon control loads it and fills its named parts.

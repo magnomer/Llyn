@@ -16,7 +16,7 @@ and the ceilings in auditui.ledger.json. The tests and this script audit the sam
 each tells the truth when the other is broken.
 
   Strict    the surfaces and the host: Storage, Static, Call, Depth, Reach, Trigger, Glyph, Wiring,
-            plus driver disk lines, surface catalog lines and their exemptions.
+            Hook, Shell, plus driver disk lines, surface catalog lines and their exemptions.
   Truth     the drivers: Argument, Guard, Fork, Mirror, Mutation, Shape, Treat, Glyph, Taint, Feed,
             Parity.
   Boundary  the guards that keep the walkers sound: state builds and compares, hidden code,
@@ -59,7 +59,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 12 - auditui.ps1.
+# AUDITUI GENERATION 14 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -72,6 +72,10 @@ auditui -Configuration Release
 # Generation 12: the audit is the standalone counterpart of the convention tests. It binds through the
 # shared binder of auditbinder.cs, walks with its own copy of the strict, truth and boundary walkers,
 # holds every hit against its own ledger, and counts every fact the tests gate.
+# Generation 13: the strict audit also counts every surface markup line that hooks logic into the
+# markup, and every surface member that is not a constructor. The veneer may hold no markup file.
+# Generation 14: the strict audit also counts a surface markup line that passes a command parameter,
+# a command target or a member path, or that sets a literal tag, as a hook.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -135,7 +139,7 @@ OPTIONS
         Display this help and exit without running the audit.
 
 OUTPUT
-    The console follows scripts\report.md: counters, hits by kind and one
+    The console follows scripts\report.md: result, hits by kind and one
     section per counter above zero.
     <report.directory>\<report.prefix>{version}.md lists every hit.
 
@@ -174,11 +178,11 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 
-Write-Host "AUDITUI GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-Host "AUDITUI GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 function Format-Count {
     param([long]$Value)
@@ -190,8 +194,8 @@ function Write-AuditSection {
     param([string]$Title)
 
     Write-Host ''
-    Write-Host $Title
-    Write-Host ('-' * $Title.Length)
+    Write-Host $Title -ForegroundColor Blue
+    Write-Host ('-' * $Title.Length) -ForegroundColor DarkGray
 }
 
 function Write-AuditTable {
@@ -211,8 +215,8 @@ function Write-AuditTable {
         }
         ($parts -join '  ').TrimEnd()
     }
-    Write-Host (& $format $Header)
-    Write-Host (($widths | ForEach-Object { '-' * $_ }) -join '  ')
+    Write-Host (& $format $Header) -ForegroundColor Cyan
+    Write-Host (($widths | ForEach-Object { '-' * $_ }) -join '  ') -ForegroundColor Cyan
     foreach ($row in $Rows) {
         Write-Host (& $format ([string[]]$row))
     }
@@ -434,7 +438,7 @@ internal sealed record LAuditKindRow(
 internal sealed class LAuditStrictRun
 {
     public static readonly string[] LAuditKinds =
-        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring"];
+        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring", "Hook", "Shell"];
 
     private static readonly Regex LAuditLiteralPattern = new(
         @"@?""(?:[^""\\]|\\.)*""|//.*$",
@@ -457,10 +461,10 @@ internal sealed class LAuditStrictRun
         IReadOnlyList<string> sources = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditTruthSetting.LAuditShellInclude);
         IReadOnlyList<string> hosts = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditStrictSetting.LAuditHostInclude);
         IReadOnlyList<string> markups = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditStrictSetting.LAuditReachInclude);
-        if (sources.Count == 0 || hosts.Count == 0 || markups.Count == 0)
+        if (sources.Count == 0 || hosts.Count == 0)
         {
             throw new InvalidOperationException(
-                "No tracked surface, host or markup file was enumerated, so the audit would pass vacuously.");
+                "No tracked shell or host file was enumerated, so the audit would pass vacuously.");
         }
 
         IReadOnlyList<LViolation> hits = LAuditStrictWalker.LAuditRun(sources, out List<string> veneers)
@@ -797,7 +801,7 @@ internal static class LAuditReport
     {
         StringBuilder text = new();
         text.Append($"# UI audit {version}\n\n");
-        text.Append($"- Generation: 12\n");
+        text.Append($"- Generation: 13\n");
         text.Append($"- Strict enforced: {LAuditStrictSetting.LAuditStrictEnforced}\n");
         text.Append($"- Truth enforced: {LAuditTruthSetting.LAuditTruthEnforced}\n");
         text.Append($"- Surface types: {strict.LAuditVeneers.Count}\n");
@@ -1217,7 +1221,8 @@ internal static class LAuditSettingRead
         [
             "enforced", "reachInclude", "veneerInclude", "deportmentInclude", "hostInclude", "deportmentNamespace",
             "queryTypes", "catalogPatterns", "catalogExempt", "diskPatterns", "diskExempt", "reachNamespaces",
-            "triggerElements", "triggerSlots"
+            "triggerElements", "triggerSlots", "hookElements", "hookSlots", "hookExtensions", "hookTypes",
+            "hookLiterals"
         ],
         ["truth"] =
         [
@@ -1277,6 +1282,11 @@ internal static class LAuditSettingRead
         LAuditStrictSetting.LAuditReachNamespaces = LAuditListRead(strict, "reachNamespaces");
         LAuditStrictSetting.LAuditTriggerElements = LAuditListRead(strict, "triggerElements");
         LAuditStrictSetting.LAuditTriggerSlots = LAuditListRead(strict, "triggerSlots");
+        LAuditStrictSetting.LAuditHookElements = LAuditListRead(strict, "hookElements");
+        LAuditStrictSetting.LAuditHookSlots = LAuditListRead(strict, "hookSlots");
+        LAuditStrictSetting.LAuditHookExtensions = LAuditListRead(strict, "hookExtensions");
+        LAuditStrictSetting.LAuditHookTypes = LAuditListRead(strict, "hookTypes");
+        LAuditStrictSetting.LAuditHookLiterals = LAuditListRead(strict, "hookLiterals");
 
         JsonElement truth = config.GetProperty("truth");
         LAuditTruthSetting.LAuditTruthEnforced = truth.GetProperty("enforced").GetBoolean();
@@ -1332,6 +1342,11 @@ internal static class LAuditStrictSetting
     public static string[] LAuditReachNamespaces = [];
     public static string[] LAuditTriggerElements = [];
     public static string[] LAuditTriggerSlots = [];
+    public static string[] LAuditHookElements = [];
+    public static string[] LAuditHookSlots = [];
+    public static string[] LAuditHookExtensions = [];
+    public static string[] LAuditHookTypes = [];
+    public static string[] LAuditHookLiterals = [];
 }
 
 internal static class LAuditTruthSetting
@@ -1435,6 +1450,7 @@ internal static class LAuditStrictWalker
                 {
                     LAuditCallScan(part.Identifier.ValueText, part.Members, violations);
                     LAuditEngineScan(part, part.Identifier.ValueText, violations);
+                    LAuditShellScan(part, violations);
                 }
             }
         }
@@ -1526,6 +1542,22 @@ internal static class LAuditStrictWalker
                 $"{owner}.{parameter.Identifier.ValueText}",
                 "Storage",
                 "primary constructor parameter in a surface type"));
+        }
+    }
+
+    private static void LAuditShellScan(TypeDeclarationSyntax part, List<LViolation> violations)
+    {
+        string owner = part.Identifier.ValueText;
+        foreach (MemberDeclarationSyntax member in part.Members.Where(member =>
+                     member is BaseMethodDeclarationSyntax and not ConstructorDeclarationSyntax
+                         or BasePropertyDeclarationSyntax))
+        {
+            violations.Add(new LViolation(
+                member.SyntaxTree.FilePath,
+                LAuditLineRead(member),
+                $"{owner}.{LAuditMemberRead(member)}",
+                "Shell",
+                $"{member.Kind()} where only a constructor may stand"));
         }
     }
 
@@ -1983,10 +2015,14 @@ internal static class LAuditReachWalker
     private static readonly Regex LAuditSlotPattern = new(
         $@"\b({string.Join('|', LAuditStrictSetting.LAuditTriggerSlots)})\s*=", RegexOptions.Compiled);
 
+    private static readonly Regex LAuditHookPattern = new(
+        @"\{\s*(?:([A-Za-z_][\w.]*):)?([A-Za-z_][\w.]*)", RegexOptions.Compiled);
+
     public static IReadOnlyList<LViolation> LAuditRun(IEnumerable<string> markupPaths)
     {
         List<LViolation> violations = [];
         IReadOnlySet<string> deportment = LAuditBind.LAuditDeportmentRead();
+        Dictionary<string, List<string>> spaces = LAuditSpaceRead();
         foreach (string path in markupPaths)
         {
             XDocument document;
@@ -2000,13 +2036,143 @@ internal static class LAuditReachWalker
                 continue;
             }
 
+            SortedDictionary<int, List<string>> hooks = [];
             foreach (XElement element in document.Descendants())
             {
                 LAuditElementScan(path, element, deportment, violations);
+                LAuditHookScan(element, spaces, hooks);
             }
+
+            violations.AddRange(hooks.Select(hook => new LViolation(
+                path, hook.Key, hook.Value[0], "Hook", $"line hooks logic into markup: {string.Join(", ", hook.Value)}")));
         }
 
         return violations;
+    }
+
+    private static void LAuditHookScan(
+        XElement element, Dictionary<string, List<string>> spaces, SortedDictionary<int, List<string>> hooks)
+    {
+        string name = element.Name.LocalName;
+        int line = ((IXmlLineInfo)element).LineNumber;
+        string property = name[(name.LastIndexOf('.') + 1)..];
+        if (LAuditStrictSetting.LAuditHookElements.Contains(name, StringComparer.Ordinal)
+            || (name.Contains('.', StringComparison.Ordinal)
+                && LAuditStrictSetting.LAuditHookSlots.Contains(property, StringComparer.Ordinal))
+            || LAuditHookCheck(element, spaces))
+        {
+            LAuditHookAdd(hooks, line, name);
+        }
+
+        foreach (XAttribute attribute in element.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
+        {
+            line = ((IXmlLineInfo)attribute).LineNumber;
+            if (LAuditStrictSetting.LAuditHookSlots.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
+            {
+                LAuditHookAdd(hooks, line, attribute.Name.LocalName);
+            }
+
+            string slot = (element.Attribute("Property")?.Value ?? string.Empty).Trim('(', ')');
+            slot = slot[(slot.LastIndexOf('.') + 1)..];
+            if (attribute.Name.LocalName == "Property"
+                && LAuditStrictSetting.LAuditHookSlots.Contains(slot, StringComparer.Ordinal))
+            {
+                LAuditHookAdd(hooks, line, slot);
+            }
+
+            bool literal = !attribute.Value.StartsWith('{');
+            if (literal
+                && (LAuditStrictSetting.LAuditHookLiterals.Contains(attribute.Name.LocalName, StringComparer.Ordinal)
+                    || (attribute.Name.LocalName == "Value"
+                        && LAuditStrictSetting.LAuditHookLiterals.Contains(slot, StringComparer.Ordinal))))
+            {
+                LAuditHookAdd(hooks, line, attribute.Name.LocalName == "Value" ? slot : attribute.Name.LocalName);
+            }
+
+            foreach (Match match in LAuditHookPattern.Matches(attribute.Value))
+            {
+                string prefix = match.Groups[1].Value;
+                string extension = prefix.Length == 0 ? match.Groups[2].Value : $"{prefix}:{match.Groups[2].Value}";
+                string space = prefix.Length == 0
+                    ? string.Empty
+                    : element.GetNamespaceOfPrefix(prefix)?.NamespaceName ?? string.Empty;
+                if (LAuditStrictSetting.LAuditHookExtensions.Contains(extension, StringComparer.Ordinal)
+                    || space.StartsWith("clr-namespace:", StringComparison.Ordinal))
+                {
+                    LAuditHookAdd(hooks, line, extension);
+                }
+            }
+        }
+    }
+
+    private static void LAuditHookAdd(SortedDictionary<int, List<string>> hooks, int line, string marker)
+    {
+        if (!hooks.TryGetValue(line, out List<string>? markers))
+        {
+            markers = [];
+            hooks[line] = markers;
+        }
+
+        markers.Add(marker);
+    }
+
+    private static bool LAuditHookCheck(XElement element, Dictionary<string, List<string>> spaces)
+    {
+        const string prefix = "clr-namespace:";
+        string name = element.Name.LocalName;
+        string uri = element.Name.NamespaceName;
+        if (name.Contains('.', StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        IEnumerable<string> candidates = uri.StartsWith(prefix, StringComparison.Ordinal)
+            ? [uri[prefix.Length..].Split(';')[0]]
+            : spaces.GetValueOrDefault(uri) ?? [];
+        foreach (string space in candidates)
+        {
+            for (INamedTypeSymbol? type = LAuditBind.LAuditCompilation.GetTypeByMetadataName($"{space}.{name}");
+                 type is not null;
+                 type = type.BaseType)
+            {
+                if (type.Interfaces.Append(type).Any(shape =>
+                        LAuditStrictSetting.LAuditHookTypes.Contains(shape.ToDisplayString(), StringComparer.Ordinal)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static Dictionary<string, List<string>> LAuditSpaceRead()
+    {
+        CSharpCompilation compilation = LAuditBind.LAuditCompilation;
+        Dictionary<string, List<string>> spaces = new(StringComparer.Ordinal);
+        IEnumerable<AttributeData> attributes = compilation.References
+            .Select(compilation.GetAssemblyOrModuleSymbol)
+            .OfType<IAssemblySymbol>()
+            .Append(compilation.Assembly)
+            .SelectMany(assembly => assembly.GetAttributes());
+        foreach (AttributeData attribute in attributes)
+        {
+            if (attribute.AttributeClass?.Name is not "XmlnsDefinitionAttribute"
+                || attribute.ConstructorArguments is not [{ Value: string uri }, { Value: string space }, ..])
+            {
+                continue;
+            }
+
+            if (!spaces.TryGetValue(uri, out List<string>? list))
+            {
+                list = [];
+                spaces[uri] = list;
+            }
+
+            list.Add(space);
+        }
+
+        return spaces;
     }
 
     private static void LAuditElementScan(
@@ -4163,7 +4329,7 @@ function Invoke-AuditHelper {
     $cacheFolder = Get-HelperCacheFolder -ProjectName $ProjectName -TargetFramework $TargetFramework -SdkVersion $sdkVersion
     $binaryPath = Join-Path (Join-Path $cacheFolder 'bin') 'AuditUi.dll'
     if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
-        Write-Host 'Compiling the UI walker once for this SDK...' -ForegroundColor DarkGray
+        Write-Host 'Compiling the UI walker once for this SDK...'
         $cacheParent = Split-Path -Parent $cacheFolder
         if (Test-Path -LiteralPath $cacheParent) {
             Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
@@ -4242,10 +4408,50 @@ $scannedCounts = @((Format-Count $scanned.surface), (Format-Count $scanned.host)
 Write-Host ('Scanned: {0} shell, {1} host, {2} markup and {3} driver files; {4} strict and {5} truth hits' -f $scannedCounts) -ForegroundColor DarkGray
 
 $counters = @($summary.counters)
-$labelWidth = ($counters | ForEach-Object { ([string]$_.label).Length } | Measure-Object -Maximum).Maximum
-Write-AuditSection 'Counters'
-foreach ($counter in $counters) {
-    Write-Host ('{0}  {1}' -f ([string]$counter.label).PadRight($labelWidth), (Format-Count ([long]$counter.value)))
+$meanings = @{
+    'Strict stale ceilings' = 'Strict ledger ceilings set above their hits'
+    'Strict unwalked files' = 'files the Strict walker did not cover'
+    'Driver disk lines' = 'disk access lines in deportment drivers'
+    'Surface catalog lines' = 'catalog lookup lines in veneer surfaces'
+    'Strict stale exemptions' = 'disk or catalog exemptions that match nothing'
+    'Truth stale ceilings' = 'Truth ledger ceilings set above their hits'
+    'Truth unwalked files' = 'files the Truth walker did not cover'
+    'Boundary state builds' = 'lines that build forbidden state types'
+    'Boundary state compares' = 'state comparisons outside converters'
+    'Boundary hidden lines' = 'lines that hide state behind visibility'
+    'Boundary reflections' = 'reflection calls outside loaders'
+    'Boundary skipped sources' = 'sources the boundary scan skipped'
+    'Boundary logic panels' = 'panels that carry logic'
+    'Boundary hold timers' = 'timers in hold files'
+    'Boundary stale rows' = 'boundary exemption rows that match nothing'
+}
+$gateRows = @(foreach ($counter in $counters) {
+    $label = [string]$counter.label
+    $meaning = if ($meanings.ContainsKey($label)) { $meanings[$label] }
+        elseif ($label -match '^(\w+) (\w+) over ceiling$') { '{0} {1} hits above the ledger ceiling' -f $Matches[1], $Matches[2] }
+        else { $label }
+    [pscustomobject]@{ Gate = $label; Count = [long]$counter.value; Meaning = $meaning; Section = $label }
+})
+Write-AuditSection 'Result'
+$statusWidth = 6
+$countWidth = [Math]::Max(5, ($gateRows | ForEach-Object { (Format-Count $_.Count).Length } | Measure-Object -Maximum).Maximum)
+$gateWidth = [Math]::Max(4, ($gateRows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+$meaningWidth = [Math]::Max(7, ($gateRows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+Write-Host ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+Write-Host (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+foreach ($gateRow in $gateRows) {
+    $failing = $gateRow.Count -gt 0
+    $status = if ($failing) { 'FAIL' } else { 'OK' }
+    Write-Host $status -NoNewline -ForegroundColor $(if ($failing) { 'Red' } else { 'Green' })
+    Write-Host ('{0}  {1}  {2}  {3}' -f ''.PadRight($statusWidth - $status.Length), (Format-Count $gateRow.Count).PadLeft($countWidth), $gateRow.Gate.PadRight($gateWidth), $gateRow.Meaning)
+}
+$failedGates = @($gateRows | Where-Object { $_.Count -gt 0 })
+Write-Host ''
+if ($failedGates.Count -eq 0) {
+    Write-Host ('PASS: all {0} gates at 0.' -f $gateRows.Count) -ForegroundColor Green
+}
+else {
+    Write-Host ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failedGates.Count, $gateRows.Count, (($failedGates | ForEach-Object { '"' + $_.Section + '"' }) -join ', ')) -ForegroundColor Red
 }
 
 Write-AuditSection 'Hits by kind'

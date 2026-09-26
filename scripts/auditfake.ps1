@@ -63,7 +63,7 @@ auditfake -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows of each kind, open the report.
 #>
 #requires -Version 5.1
-# AUDITFAKE GENERATION 12 - auditfake.ps1.
+# AUDITFAKE GENERATION 14 - auditfake.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -76,6 +76,11 @@ Write the report elsewhere, show ten rows of each kind, open the report.
 # Generation 12: the audit applies the rules of the convention test: class liveness, construction
 # as a use, holder ownership inside constructors and initializers, XML markup reading, and the
 # shared binder with no compile error.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -123,7 +128,7 @@ COUNTERS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -153,7 +158,9 @@ function Get-OrdinalKey {
 function Write-AuditLine {
     param(
         [Parameter(Position = 0)][AllowEmptyString()][string]$Text = '',
-        [ConsoleColor]$ForegroundColor
+        [ConsoleColor]$ForegroundColor,
+        [string]$Lead = '',
+        [ConsoleColor]$LeadColor = [ConsoleColor]::Gray
     )
 
     if ($script:PageLimit -gt 0) {
@@ -171,7 +178,11 @@ function Write-AuditLine {
         $script:PageCount += $rows
     }
 
-    if ($PSBoundParameters.ContainsKey('ForegroundColor')) {
+    if ($Lead -ne '') {
+        Write-Host $Lead -ForegroundColor $LeadColor -NoNewline
+        Write-Host $Text.Substring([Math]::Min($Lead.Length, $Text.Length))
+    }
+    elseif ($PSBoundParameters.ContainsKey('ForegroundColor')) {
         Write-Host $Text -ForegroundColor $ForegroundColor
     }
     else {
@@ -179,7 +190,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITFAKE GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-AuditLine "AUDITFAKE GENERATION $script:AuditGeneration" -ForegroundColor Blue
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 function Resolve-ProjectRoot {
@@ -456,23 +467,18 @@ List<string> stale = ceilings
 Console.WriteLine(
     $"Scanned: {binder.LAuditTrees.Count:N0} source files, {Take('T').Count:N0} test files, "
     + $"{Take('M').Count:N0} markup files, ceilings {(enforced ? "enforced" : "not enforced")}");
-Console.WriteLine();
-Console.WriteLine("Counters");
-Console.WriteLine("--------");
-Console.WriteLine($"Above ceiling   {above.Count:N0}");
-Console.WriteLine($"Stale ceilings  {stale.Count:N0}");
+Fake.WriteResult(
+[
+    ("Above ceiling", above.Count, "kinds whose hits exceed their enforced ceiling"),
+    ("Stale ceilings", stale.Count, "ceilings set above their current hits"),
+]);
 
-Console.WriteLine();
-Console.WriteLine("Members by kind");
-Console.WriteLine("---------------");
+Fake.WriteHeading("Members by kind");
 List<string[]> kindRows = ceilings
     .Select(pair => new[] { pair.Kind, Tally(pair.Kind).ToString("N0"), pair.Ceiling.ToString("N0") })
     .ToList();
 kindRows.Add(["Total", hits.Count.ToString("N0"), "-"]);
-foreach (string line in Fake.TextTable(["Kind", "Members", "Ceiling"], kindRows))
-{
-    Console.WriteLine(line);
-}
+Fake.WriteTable(Fake.TextTable(["Kind", "Members", "Ceiling"], kindRows));
 
 List<(string Title, List<string> Rows)> sections = ceilings
     .Select(pair => (pair.Kind, hits.Where(hit => hit.Kind == pair.Kind)
@@ -483,9 +489,7 @@ List<(string Title, List<string> Rows)> sections = ceilings
 foreach ((string title, List<string> rows) in sections.Where(section => section.Rows.Count > 0))
 {
     string heading = $"{title} ({rows.Count:N0})";
-    Console.WriteLine();
-    Console.WriteLine(heading);
-    Console.WriteLine(new string('-', heading.Length));
+    Fake.WriteHeading(heading);
     rows.Take(top).ToList().ForEach(Console.WriteLine);
     if (rows.Count > top)
     {
@@ -540,6 +544,41 @@ internal static class Fake
     public const string TypeMark = "T:";
 
     private const string RootReader = "";
+
+    public static void WriteHeading(string title)
+    {
+        Console.WriteLine();
+        Console.WriteLine(title);
+        Console.WriteLine(new string('-', title.Length));
+    }
+
+    public static void WriteTable(IEnumerable<string> lines)
+    {
+        foreach (string line in lines)
+        {
+            Console.WriteLine(line);
+        }
+    }
+
+    public static void WriteResult(List<(string Gate, int Count, string Meaning)> rows)
+    {
+        WriteHeading("Result");
+        int countWidth = Math.Max(5, rows.Max(row => row.Count.ToString("N0").Length));
+        int gateWidth = Math.Max(4, rows.Max(row => row.Gate.Length));
+        int meaningWidth = Math.Max(7, rows.Max(row => row.Meaning.Length));
+        Console.WriteLine($"{"Status",-6}  {"Count".PadLeft(countWidth)}  {"Gate".PadRight(gateWidth)}  Meaning");
+        Console.WriteLine($"{new string('-', 6)}  {new string('-', countWidth)}  {new string('-', gateWidth)}  {new string('-', meaningWidth)}");
+        foreach ((string gate, int count, string meaning) in rows)
+        {
+            Console.WriteLine($"{(count > 0 ? "FAIL" : "OK"),-6}  {count.ToString("N0").PadLeft(countWidth)}  {gate.PadRight(gateWidth)}  {meaning}");
+        }
+
+        List<string> failed = rows.Where(row => row.Count > 0).Select(row => $"\"{row.Gate}\"").ToList();
+        Console.WriteLine();
+        Console.WriteLine(failed.Count == 0
+            ? $"PASS: all {rows.Count} gates at 0."
+            : $"FAIL: {failed.Count} of {rows.Count} gates above 0. See {string.Join(", ", failed)}.");
+    }
 
     public static IEnumerable<string> TextTable(string[] header, List<string[]> rows)
     {
@@ -1000,7 +1039,7 @@ function Get-HelperBinary {
         return $binaryPath
     }
 
-    Write-AuditLine 'Compiling the fake binder once for this SDK...' -ForegroundColor DarkGray
+    Write-AuditLine 'Compiling the fake binder once for this SDK...'
     if (Test-Path -LiteralPath $cacheParent) {
         Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     }
@@ -1085,12 +1124,48 @@ try {
         throw "The fake audit failed.`n$($auditOutput -join [Environment]::NewLine)"
     }
 
-    foreach ($line in $auditOutput) {
-        $text = [string]$line
+    $relayLines = @($auditOutput | ForEach-Object { [string]$_ })
+    $headerRows = @{}
+    for ($index = 1; $index -lt $relayLines.Count; $index++) {
+        $rule = $relayLines[$index]
+        $above = $relayLines[$index - 1]
+        if ($rule -notmatch '^-+(  -+)*$' -or $above -eq '' -or $above -match '^-+(  -+)*$') { continue }
+        if ($rule -match '^-+$' -and $above.Length -eq $rule.Length) { continue }
+        $headerRows[$index - 1] = $true
+        if ($index -ge 2) {
+            $crown = $relayLines[$index - 2]
+            $prior = if ($index -ge 3) { $relayLines[$index - 3] } else { '' }
+            if ($crown -ne '' -and $crown -notmatch '^-+(  -+)*$' -and $prior -eq '') { $headerRows[$index - 2] = $true }
+        }
+    }
+    $inResult = $false
+    for ($index = 0; $index -lt $relayLines.Count; $index++) {
+        $text = $relayLines[$index]
+        $next = if ($index + 1 -lt $relayLines.Count) { $relayLines[$index + 1] } else { '' }
         if ($text.StartsWith('Scanned: ', [System.StringComparison]::Ordinal)) {
             Write-AuditLine $text -ForegroundColor DarkGray
         }
+        elseif ($text -ne '' -and $next -match '^-+$' -and $next.Length -eq $text.Length) {
+            $inResult = $text -eq 'Result'
+            Write-AuditLine $text -ForegroundColor Blue
+        }
+        elseif ($text -match '^-+(  -+)*$') {
+            Write-AuditLine $text -ForegroundColor $(if ($headerRows.ContainsKey($index - 1)) { 'Cyan' } else { 'DarkGray' })
+        }
+        elseif ($headerRows.ContainsKey($index)) {
+            Write-AuditLine $text -ForegroundColor Cyan
+        }
+        elseif ($inResult -and $text -match '^(OK|FAIL) ') {
+            Write-AuditLine $text -Lead $Matches[1] -LeadColor $(if ($Matches[1] -eq 'OK') { 'Green' } else { 'Red' })
+        }
+        elseif ($text.StartsWith('PASS: ', [System.StringComparison]::Ordinal)) {
+            Write-AuditLine $text -ForegroundColor Green
+        }
+        elseif ($text.StartsWith('FAIL: ', [System.StringComparison]::Ordinal)) {
+            Write-AuditLine $text -ForegroundColor Red
+        }
         else {
+            if ($text -eq '') { $inResult = $false }
             Write-AuditLine $text
         }
     }

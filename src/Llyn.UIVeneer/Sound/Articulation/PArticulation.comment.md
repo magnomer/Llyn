@@ -2,6 +2,9 @@
 
 ## `<UserControl.Resources>`
 
+The glyph chip carries no hover or pressed trigger.
+`PLookSound` lights it, once `PArticulation` registers these styles.
+
 One glyph is one borderless chip, and one header is one quiet label.
 A chart heading carries the helper ink.
 That is the one place the helper hue is written rather than laid down.

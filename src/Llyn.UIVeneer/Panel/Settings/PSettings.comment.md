@@ -1,34 +1,71 @@
-# PSettings.xaml.cs
+# PSettings.xaml
 
-## `public partial class PSettings : UserControl`
+## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
-The settings panel as a control: what it is made of, and the stored choices it opens on.
-What each choice costs — a catalog swap, a whole different workspace — lives in the files beside this one.
+The seams that part the setting catalog from the page of the chosen group.
+The row seam runs under the search field and is bled past the panel margin, as every tab does it.
+The column seam sits in the gutter and reaches the foot of the window.
 
-## `internal void PSettingsAttach(PWindow host)`
+## `<TextBox x:Name="PWinnow" ...>`
 
-Puts the panel to work on the window deportment and shows the choices already stored.
-The panel also listens for settings bulletins, which drive every redraw a saved choice needs.
+The search field over the catalog, a bare field with no ordering or filter button.
+Six groups need no ordering, and the text alone decides which rows stay.
 
-## `internal void PSettingsSync()`
+## `<ItemsControl x:Name="PLedger">`
 
-Aligns every control of the panel to the settings and workspace the engine now holds, and to the posture.
-It runs on attach and again after a workspace change, since the new workspace may carry other choices.
-Setting a control raises its change event, and the handler writes the value back to the engine.
-That write leaves the record equal, so the engine neither saves nor raises a bulletin.
-A stored language the interface does not carry is shown as English, the language the program opened in.
+The catalog of setting groups, one row each, the title over a summary of the values the group holds.
+Choosing a row swaps the page on the right and nothing else.
+A row uses `Theme.Catalog.Row`, the same accent edge the other catalogs paint, so the tab reads as one of them.
 
-## `private void PSettingsBulletinHandle(LBulletin bulletin)`
+## `<Border Grid.Row="1" Grid.Column="1" ... Style="{StaticResource Theme.Panel.Surface}">`
 
-Redraws the panel after the engine reports a settings change.
-The language catalog is applied from the record, so the interface follows whatever the engine holds.
-The ledger summaries are rewritten, since every one of them prints a stored choice.
-The linked switch is no settings field, so its handler links the tabs itself.
+The edit area, one page per group drawn in the same cell, only the chosen one visible.
+A page opens with its heading and purpose, then its rows parted by hairlines.
+Each row reads its label over its helper, with the control at the far end.
+No box is drawn around a page, because the surface it stands on is already the region.
+A page and its rules run the whole width of the surface, as a seam does.
+Each row caps its label column instead, so the control stands close after the text in a wide window.
+The filler column past the control takes the rest, which is why the rule can outrun the row.
 
-## Inline notes
+## `<Button x:Name="PDialFolder" ...>`
 
-### `private PWindow _pSettingsHost = null!;`
+The action that opens the workspace folder, set at the foot of the workspace page.
+It stands with the setting it acts on rather than in a command rail over every page.
+The negative margin lines its label up with the rows above, since the button pads its own text.
 
-The window this panel sits in.
-It is who asks before a workspace change throws typed work away.
-It also owns the other panels that change moves onto the new workspace.
+## `<Button x:Name="PDialWidth" ...>`
+
+The action that drops the stored panel widths, set at the foot of the layout page for the same reason.
+
+## `<Button x:Name="PWorkspaceDialog" ...>`
+
+The folder picker beside the path field, an icon action rather than a labelled button.
+The label survives as its tooltip.
+
+## `<ComboBox x:Name="PLocalization" ...>`
+
+The interface language box, empty in markup.
+The Deportment class fills one item per embedded catalog, so the markup names no language.
+
+## `<ToggleButton x:Name="PRespelling" ...>`
+
+Whether readings are shown and edited in the pack's respelling convention instead of as they came.
+Both forms are stored, so a flip redraws every open reading through a settings bulletin and refetches nothing.
+The switch keeps the check box's handler and its checked reading, only the drawing changed.
+
+## `<ToggleButton x:Name="PSettingsEpithet" ...>`
+
+The switch of the listing page: whether every list prints an entry's epithet after its headword.
+The epithet is the reading the language pack names, so a Han character lists as `弄 [희롱할 롱]`.
+
+## `<ToggleButton x:Name="PFrequency" ...>`
+
+Whether an entry's frequency is fetched from the pack's web source.
+It stands above the inflection switch in the same card, since both govern what a lookup fetches.
+A pack that declares no frequency source fetches nothing either way, so the switch costs nothing there.
+
+## Hooks
+
+The markup carries no hook.
+The Deportment class `PSettings` sets icons, clicks, text and key handlers, the language items and the row fills.
+It also names the language box's value path, since that path is read by reflection.

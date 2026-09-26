@@ -5,11 +5,11 @@ Counts source lines under the configured roots, prints the results, and creates 
 .DESCRIPTION
 Reads the project configuration from auditlines.json next to this script, then
 performs these actions on every run:
-  1. Prints the counters: each kind above its ceiling, stale ceilings, unreadable files.
+  1. Prints the result: each gate with its status and meaning, then the verdict.
   2. Prints the hits and the ceiling of each kind.
-  3. Prints line and size totals for each folder under the source roots.
+  3. Prints line and size totals for each folder under the source roots, and one row per tally root.
   4. Prints every counted file over the line limit, and every file in the warning band below it.
-  5. Prints every line over the width limit of its extension, and every line in the band below it.
+  5. Prints every line over the width limit of its extension; the band below it goes to the report only.
   6. Prints the files that gained the most lines over the last commits.
   7. Records both size bands to {report.directory}\{filesPrefix}{version}.md.
   8. Writes a Markdown source-line report to {report.directory}\{linesPrefix}{version}.md.
@@ -26,7 +26,7 @@ Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 12,
+    "generation": 14,
     "project": "Llyn",
     "enforced": true,
     "ceilings": { "Length": 0, "Width": 0 },
@@ -38,6 +38,7 @@ auditlines.json shape:
     "thresholds": { "limit": 500, "warning": 450, "band": 5 },
     "width": { ".cs": 120, ".xaml": 200 },
     "hotspot": { "commits": 30, "top": 15 },
+    "tally": { "roots": ["scripts"], "extensions": [".ps1", ".cs"] },
     "report": {
       "directory": "docs-work/audit",
       "versionFile": "version.json",
@@ -55,6 +56,8 @@ thresholds.band columns of it a warning. Warnings never gate.
 Enforced, a kind above its ceiling fails the run. A ceiling above its count is
 stale and fails the run even when the rules are not enforced.
 Hotspot reads git history for the files that gained the most lines.
+Tally counts its roots with its own extensions into the folder totals only,
+one row per root, never into the length or width gates or the extension totals.
 
 .PARAMETER ConfigPath
 Path to the JSON configuration. Defaults to auditlines.json next to this script.
@@ -102,7 +105,7 @@ auditlines -Extensions .cs, .xaml
 auditlines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 12 - auditlines.ps1.
+# AUDITLINES GENERATION 14 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -116,6 +119,11 @@ auditlines -SourceRoots .\src, .\tests
 # Generation 12: nothing the line audit reports changes; the number rises with the convention tests,
 # which bind with no compile error, count chain ceilings in names, count a using or a call on a
 # deeper record as a reach, and exempt a contract name only where the type declares the interface.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -157,9 +165,9 @@ SYNTAX
 CONFIGURATION
     All project-specific values live in auditlines.json next to the script:
     source roots, counted extensions, excluded directory names, thresholds,
-    width limits, enforcement and ceilings, report directory, version file
-    and key, and report file-name prefixes. Parameters below override it
-    per run.
+    width limits, enforcement and ceilings, tally roots and extensions,
+    report directory, version file and key, and report file-name prefixes.
+    Parameters below override it per run.
 
 CHECKS
     Length: a file over thresholds.limit lines is a hit, and a file over
@@ -169,7 +177,7 @@ CHECKS
         of 0 is a real limit, and an unlisted extension is not checked.
     Enforced, a kind above its ceiling fails. A ceiling above its count
     is stale and fails even when the rules are not enforced. Warnings,
-    folder totals and hotspots never fail. A configured root without a
+    folder totals, tally rows and hotspots never fail. A configured root without a
     directory, or a failing git, stops the audit with an error.
 
 OPTIONS
@@ -234,7 +242,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:ItemLimit = 40
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
@@ -266,7 +274,9 @@ function Get-OrdinalKey {
 function Write-AuditLine {
     param(
         [Parameter(Position = 0)][AllowEmptyString()][string]$Text = '',
-        [ConsoleColor]$ForegroundColor
+        [ConsoleColor]$ForegroundColor,
+        [string]$Lead = '',
+        [ConsoleColor]$LeadColor = [ConsoleColor]::Gray
     )
 
     if ($script:PageLimit -gt 0) {
@@ -284,7 +294,11 @@ function Write-AuditLine {
         $script:PageCount += $rows
     }
 
-    if ($PSBoundParameters.ContainsKey('ForegroundColor')) {
+    if ($Lead -ne '') {
+        Write-Host $Lead -ForegroundColor $LeadColor -NoNewline
+        Write-Host $Text.Substring([Math]::Min($Lead.Length, $Text.Length))
+    }
+    elseif ($PSBoundParameters.ContainsKey('ForegroundColor')) {
         Write-Host $Text -ForegroundColor $ForegroundColor
     }
     else {
@@ -292,7 +306,7 @@ function Write-AuditLine {
     }
 }
 
-Write-AuditLine "AUDITLINES GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-AuditLine "AUDITLINES GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 
 function Get-ConfigNode {
@@ -330,7 +344,8 @@ function Read-AuditConfig {
     $problems = [System.Collections.Generic.List[string]]::new()
     foreach ($key in @('generation', 'project', 'enforced', 'ceilings', 'sources.roots', 'sources.extensions', 'sources.excludeSegments',
                        'thresholds.limit', 'thresholds.warning', 'thresholds.band', 'width', 'hotspot.commits', 'hotspot.top',
-                       'report.directory', 'report.versionFile', 'report.versionKey', 'report.linesPrefix', 'report.filesPrefix', 'report.segments')) {
+                       'report.directory', 'report.versionFile', 'report.versionKey', 'report.linesPrefix', 'report.filesPrefix', 'report.segments',
+                       'tally.roots', 'tally.extensions')) {
         if ($null -eq (Get-ConfigNode -Document $config -Key $key)) {
             $problems.Add("missing key '$key'")
         }
@@ -468,11 +483,42 @@ function Test-IsExcludedPath {
 }
 
 function Write-SectionTitle {
-    param([Parameter(Mandatory = $true)][string]$Text)
+    param(
+        [Parameter(Mandatory = $true)][string]$Text,
+        [ConsoleColor]$Color = [ConsoleColor]::Blue
+    )
 
     Write-AuditLine ""
-    Write-AuditLine $Text
-    Write-AuditLine ('-' * $Text.Length)
+    Write-AuditLine $Text -ForegroundColor $Color
+    Write-AuditLine ('-' * $Text.Length) -ForegroundColor DarkGray
+}
+
+function Write-ResultTable {
+    param([Parameter(Mandatory = $true)][object[]]$Rows)
+
+    Write-SectionTitle "Result"
+    $statusWidth = 6
+    $countWidth = [Math]::Max(5, ($Rows | ForEach-Object { (Format-Integer $_.Count).Length } | Measure-Object -Maximum).Maximum)
+    $gateWidth = [Math]::Max(4, ($Rows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+    $meaningWidth = [Math]::Max(7, ($Rows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+    Write-AuditLine ("{0}  {1}  {2}  Meaning" -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+    Write-AuditLine (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+    foreach ($row in $Rows) {
+        $failing = $row.Count -gt 0
+        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $text = "{0}  {1}  {2}  {3}" -f $status.PadRight($statusWidth), (Format-Integer $row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
+        Write-AuditLine $text -Lead $status -LeadColor $(if ($failing) { 'Red' } else { 'Green' })
+    }
+
+    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    Write-AuditLine ""
+    if ($failed.Count -eq 0) {
+        Write-AuditLine ("PASS: all {0} gates at 0." -f $Rows.Count) -ForegroundColor Green
+    }
+    else {
+        $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-AuditLine ("FAIL: {0} of {1} gates above 0. See {2}." -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
+    }
 }
 
 function Format-Cell {
@@ -546,11 +592,11 @@ function Write-GroupedConsoleTable {
         [void]$rule.Append('-' * $column.Width)
     }
 
-    Write-AuditLine $upper.ToString().TrimEnd()
+    Write-AuditLine $upper.ToString().TrimEnd() -ForegroundColor Cyan
     if (@($Columns | Where-Object { -not [string]::IsNullOrEmpty($_.Group) }).Count -gt 0) {
-        Write-AuditLine $lower.ToString().TrimEnd()
+        Write-AuditLine $lower.ToString().TrimEnd() -ForegroundColor Cyan
     }
-    Write-AuditLine $rule.ToString()
+    Write-AuditLine $rule.ToString() -ForegroundColor Cyan
 
     $rowCount = $Columns[0].Values.Count
     for ($row = 0; $row -lt $rowCount; $row++) {
@@ -786,6 +832,55 @@ foreach ($fileFull in $sourcePaths) {
     $extensionTotals[$extensionKey].Lines += $fileLines
     $extensionTotals[$extensionKey].NonBlankLines += $fileNonBlankLines
 }
+
+# Tally roots join the folder totals as one row each, and never reach the gates or the extension totals.
+$tallyExtensions = @($config.tally.extensions | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_.Length -gt 0 } |
+    ForEach-Object { if ($_.StartsWith('.', [System.StringComparison]::Ordinal)) { $_ } else { '.' + $_ } })
+foreach ($tallyRoot in @($config.tally.roots)) {
+    if ([string]::IsNullOrWhiteSpace($tallyRoot) -or $tallyExtensions.Count -eq 0) { continue }
+
+    $tallyFull = Join-AuditPath -Root $repoRootFull -Relative $tallyRoot
+    if (-not [System.IO.Directory]::Exists($tallyFull)) {
+        throw "The configured tally root has no directory: $tallyFull"
+    }
+
+    $tallyName = (Get-RelativePathSafe -BasePath $repoRootFull -Path $tallyFull).Trim('/')
+    $tallyListing = Invoke-AuditGit -Arguments (@('-C', $repoRootFull, '-c', 'core.quotePath=false', 'ls-files', '--cached', '--others', '--exclude-standard', '--') +
+        @($tallyExtensions | ForEach-Object { ':(icase)' + $tallyName + '/*' + $_ }))
+    if ($tallyListing.ExitCode -ne 0) {
+        throw "Git could not enumerate the tally files under $tallyFull, so the audit cannot judge."
+    }
+
+    foreach ($entry in $tallyListing.Lines) {
+        $relative = ([string]$entry).Trim()
+        if ($relative.Length -eq 0 -or (Test-IsExcludedPath -Relative $relative -ExcludedNames $excludedNames)) { continue }
+
+        $full = [System.IO.Path]::Combine($repoRootFull, $relative.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+        if (-not [System.IO.File]::Exists($full) -or $sourceRelatives.ContainsKey($full)) { continue }
+
+        $file = [System.IO.FileInfo]::new($full)
+        [long]$fileLines = 0
+        [long]$fileNonBlankLines = 0
+        try {
+            foreach ($line in [System.IO.File]::ReadLines($full)) {
+                $fileLines++
+                if (-not [string]::IsNullOrWhiteSpace($line)) { $fileNonBlankLines++ }
+            }
+        }
+        catch {
+            $readErrors.Add("${relative}: $($_.Exception.Message)")
+            continue
+        }
+
+        if (-not $folderMap.Contains($tallyName)) { $folderMap[$tallyName] = New-FolderResult -Name $tallyName }
+        $folder = $folderMap[$tallyName]
+        $folder.Files++
+        $folder.Lines += $fileLines
+        $folder.NonBlankLines += $fileNonBlankLines
+        $folder.BlankLines += $fileLines - $fileNonBlankLines
+        $folder.Bytes += $file.Length
+    }
+}
 foreach ($entry in $folderMap.Values) { $folderResults.Add($entry) }
 
 if ($sourcePaths.Count -eq 0) {
@@ -1003,17 +1098,13 @@ if ($hotspotCommits -gt 0) {
 # Console output, from the widest view to the narrowest.
 Write-AuditLine ("Scanned: {0:N0} source files" -f $fileResults.Count) -ForegroundColor DarkGray
 
-$counterRows = @(
-    @('Length above ceiling', $lengthAbove),
-    @('Width above ceiling', $widthAbove),
-    @('Stale ceilings', $staleCeilings.Count),
-    @('Unreadable files', $readErrors.Count)
+$gateRows = @(
+    [pscustomobject]@{ Gate = 'Length above ceiling'; Count = $lengthAbove; Meaning = "files over $LimitThreshold lines beyond the Length ceiling"; Section = $overLimitTitle },
+    [pscustomobject]@{ Gate = 'Width above ceiling'; Count = $widthAbove; Meaning = 'lines over the width limit beyond the Width ceiling'; Section = $wideTitle },
+    [pscustomobject]@{ Gate = 'Stale ceilings'; Count = $staleCeilings.Count; Meaning = 'ceilings set above their hits'; Section = 'Ceilings' },
+    [pscustomobject]@{ Gate = 'Unreadable files'; Count = $readErrors.Count; Meaning = 'files the audit could not read'; Section = 'Unreadable files' }
 )
-$counterWidth = ($counterRows | ForEach-Object { $_[0].Length } | Measure-Object -Maximum).Maximum
-Write-SectionTitle "Counters"
-foreach ($counterRow in $counterRows) {
-    Write-AuditLine ("{0}  {1:N0}" -f $counterRow[0].PadRight($counterWidth), $counterRow[1])
-}
+Write-ResultTable -Rows $gateRows
 
 Write-SectionTitle "Ceilings"
 Write-GroupedConsoleTable -Columns @(
@@ -1022,7 +1113,7 @@ Write-GroupedConsoleTable -Columns @(
     (New-ConsoleColumn -Name 'Ceiling' -Values @($ceilingRows | ForEach-Object { Format-Integer $_.Ceiling }))
 )
 if (-not $enforced) {
-    Write-AuditLine "The line rules are not enforced, so hits above a ceiling do not fail the run."
+    Write-AuditLine "The line rules are not enforced, so hits above a ceiling do not fail the run." -ForegroundColor Yellow
 }
 
 $tableRows = @($folderResults) + @([pscustomobject]@{
@@ -1054,18 +1145,13 @@ if ($overLimitFiles.Count -gt 0) {
 }
 
 if ($warningFiles.Count -gt 0) {
-    Write-SectionTitle ("{0} ({1:N0})" -f $warningTitle, $warningFiles.Count)
+    Write-SectionTitle ("{0} ({1:N0})" -f $warningTitle, $warningFiles.Count) -Color Yellow
     Write-FileConsoleTable -Columns $warningColumns
 }
 
 if ($wideHits.Count -gt 0) {
     Write-SectionTitle ("{0} ({1:N0})" -f $wideTitle, $wideHits.Count)
     Write-WideConsoleTable -Items @($wideHits)
-}
-
-if ($wideWarnings.Count -gt 0) {
-    Write-SectionTitle ("{0} ({1:N0})" -f $wideWarningTitle, $wideWarnings.Count)
-    Write-WideConsoleTable -Items @($wideWarnings)
 }
 
 if ($hotspotCommits -gt 0) {

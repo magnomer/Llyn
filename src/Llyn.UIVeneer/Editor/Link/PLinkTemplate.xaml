@@ -1,25 +1,24 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
-    x:Class="Llyn.UIVeneer.PLinkTemplate">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <DataTemplate x:Key="Theme.Link.Chip">
         <Border Padding="10,5,5,5" Cursor="Arrow" Style="{DynamicResource Theme.Card.Pellet}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding LLinkChipFlag}" Stretch="Uniform" />
-                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding LLinkChipHeadword}" />
-                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding LLinkChipLanguage}" />
-                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PLinkDropHandle">
+                <Image x:Name="PLinkFlag" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Stretch="Uniform" />
+                <TextBlock x:Name="PLinkHeadword" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" />
+                <TextBlock x:Name="PLinkLanguage" Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" />
+                <Button x:Name="PLinkEraser" Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
                                 <local:PIconImage
+                                    x:Name="PLinkIcon"
                                     Width="12"
                                     Height="12"
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    PIconSource="{local:PIcon unlink, 12}" />
+                                    VerticalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>
@@ -30,26 +29,17 @@
 
     <DataTemplate x:Key="Theme.Link.Entry">
         <TextBox
+            x:Name="PLinkEntry"
             MinWidth="96"
             Margin="9,0,9,7"
             Padding="0,5"
             VerticalContentAlignment="Center"
             FontSize="13"
             Foreground="{DynamicResource Theme.Ink}"
-            PreviewKeyDown="PLinkCaretHandle"
-            LostKeyboardFocus="PLinkCloseHandle"
-            Style="{DynamicResource Theme.Input.Bare}"
-            Tag="{Binding PLinkCaretHint}"
-            Text="{Binding PLinkCaretText, UpdateSourceTrigger=PropertyChanged}" />
+            Style="{DynamicResource Theme.Input.Bare}" />
     </DataTemplate>
 
-    <local:PLinkSelector
-        x:Key="Theme.Link.Item"
-        PLinkSelectorChip="{StaticResource Theme.Link.Chip}"
-        PLinkSelectorCaret="{StaticResource Theme.Link.Entry}" />
-
     <Style x:Key="Theme.Link.Field" TargetType="ItemsControl">
-        <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Link.Item}" />
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipTightMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -61,7 +51,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ItemsControl">
-                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PLinkFocusHandle">
+                    <Border x:Name="PLinkFrame" Background="Transparent" Cursor="IBeam">
                         <ItemsPresenter />
                     </Border>
                 </ControlTemplate>

@@ -20,9 +20,10 @@ The chip and the toggle both fill it from these three styles, so their faces are
 
 The cell the flag, or the globe standing in for it, is drawn in, with the gap before the name.
 
-## `<Style x:Key="Theme.Language.Expand" TargetType="Path">`
+## `<Style x:Key="Theme.Language.Expand" TargetType="local:PIconImage">`
 
 The chevron that says the editor's pill opens a menu.
+Its icon is a `PLook` row, since the icon extension is logic.
 The reading view draws it hidden, so its pill keeps the chevron's room.
 The heart and the stars after the pill then stand still when the mode switches.
 

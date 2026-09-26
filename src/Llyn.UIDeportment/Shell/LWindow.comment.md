@@ -19,6 +19,10 @@ A panel hands in only its own seams and the editor it shares, and receives its d
 It keeps no state of its own.
 Panel state stays on each panel's deportment, and window geometry stays on the posture.
 
+## `public IReadOnlyList<string> LWindowLocalizationScan()`
+
+The interface languages the build embeds, which the settings panel lists in its language box.
+
 ## `public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)`
 
 A field's selection as a Mention span, measured by the engine in code points.

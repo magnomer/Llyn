@@ -9,7 +9,8 @@ The read area's own styles moved out with it into `PColophon.xaml`, where the re
 
 ## Inline notes
 
-### `<Button Style="{DynamicResource Theme.Footnote.Row}">`
+### `<Button x:Name="PFootnoteRow" Style="{DynamicResource Theme.Catalog.Row}">`
 
-The row style stays with the panel and is reached by name at runtime.
+The row wears the shared catalog row, reached by name at runtime.
 A style built on another cannot be resolved in a dictionary that stands on its own.
+Every part is named, and the panel fills it, marks the chosen row and takes its click.

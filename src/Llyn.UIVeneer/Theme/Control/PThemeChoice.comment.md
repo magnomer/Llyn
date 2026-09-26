@@ -12,7 +12,7 @@ They are Theme.Popup.RowSurface.
 ## `<Setter Property="Background" Value="{StaticResource Theme.Surface}" />`
 
 The rows sit on the panel's own ground, so they carry a card of their own.
-The hover trigger below still repaints it.
+The hover row in `PLook` still repaints it.
 
 ## `<Style x:Key="Theme.Choice.Filter" TargetType="CheckBox">`
 

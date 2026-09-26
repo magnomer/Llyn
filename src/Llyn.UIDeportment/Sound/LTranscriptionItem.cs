@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -89,6 +91,40 @@ public sealed class LTranscriptionItem : INotifyPropertyChanged
 
             choice.LTranscriptionChoiceTaken = taken;
         }
+    }
+
+    internal static void LTranscriptionItemApply(FrameworkElement container, object item, string? _)
+    {
+        if (item is not LTranscriptionItem row)
+        {
+            return;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionLabel") is TextBlock label)
+        {
+            label.Text = row.LTranscriptionItemLabel;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionText") is TextBlock text)
+        {
+            text.Text = row.LTranscriptionItemText;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionMeasure") is TextBlock measure)
+        {
+            LTranscriptionMeasureApply(measure, row.LTranscriptionItemText);
+        }
+    }
+
+    private static void LTranscriptionMeasureApply(TextBlock measure, string text)
+    {
+        if (text.Length == 0)
+        {
+            measure.SetResourceReference(TextBlock.TextProperty, "Input.Transcription");
+            return;
+        }
+
+        measure.Text = text;
     }
 
     public static LTranscriptionItem LTranscriptionItemCreate(LTranscriptionDraft spelled)

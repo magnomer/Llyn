@@ -1,10 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
-    x:Class="Llyn.UIVeneer.PImageTemplate">
-
-    <local:PStateConverter x:Key="Theme.State.Show" />
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <Style x:Key="Theme.Image.Preview" TargetType="Border">
         <Setter Property="Margin" Value="0,0,0,7" />
@@ -14,11 +11,6 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Line}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="9" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PImagePreview}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <DataTemplate x:Key="Theme.Image.Row">
@@ -29,9 +21,9 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <local:PImageLazy PImageLazyRow="{Binding}">
-                    <Border Style="{StaticResource Theme.Image.Preview}">
-                        <Image Source="{Binding PImagePreview}" Stretch="Uniform" StretchDirection="DownOnly" />
+                <local:PImageLazy x:Name="PImageHold">
+                    <Border x:Name="PImageFrame" Style="{StaticResource Theme.Image.Preview}">
+                        <Image x:Name="PImagePreview" Stretch="Uniform" StretchDirection="DownOnly" />
                     </Border>
                 </local:PImageLazy>
 
@@ -42,30 +34,22 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBox
+                        x:Name="PImageLocation"
                         Margin="0,6,16,0"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource Theme.Muted}"
-                        Style="{DynamicResource Theme.Input.Bare}"
-                        Text="{Binding PImageLocation, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
-                        <TextBox.Tag>
-                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                <Binding Path="PImageLocation" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Card.LocationHint" />
-                            </MultiBinding>
-                        </TextBox.Tag>
-                    </TextBox>
+                        Style="{DynamicResource Theme.Input.Bare}" />
 
-                    <Button Grid.Column="1" Height="20" Padding="8,0" Click="PImageOpenHandle" Foreground="{DynamicResource Theme.Accent}" Style="{DynamicResource Theme.Input.Pill}">
+                    <Button x:Name="PImageChooser" Grid.Column="1" Height="20" Padding="8,0" Foreground="{DynamicResource Theme.Accent}" Style="{DynamicResource Theme.Input.Pill}">
                         <TextBlock VerticalAlignment="Center" FontSize="11" Text="{DynamicResource Card.Browse}" />
                     </Button>
                 </Grid>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{DynamicResource Theme.Card.Control}">
-                <Button Click="PImageRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon remove, 12}" />
+            <StackPanel x:Name="PMediaControl" Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{StaticResource Theme.Card.Control}">
+                <Button x:Name="PImageEraser" Style="{DynamicResource Theme.Card.Handle}">
+                    <local:PIconImage x:Name="PImageRemoveIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

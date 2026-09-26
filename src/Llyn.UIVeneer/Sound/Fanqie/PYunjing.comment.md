@@ -32,6 +32,7 @@ The size is this panel's alone, and the entry column keeps the catalog size.
 ## `<DataTemplate x:Key="Theme.Yunjing.Cell">`
 
 One category row: its key and the count of entries under it, shared by the onset and rime columns.
+Its parts are named, and `PYunjingItem.PYunjingItemApply` fills them and marks the chosen row.
 
 ## `<local:PRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">`
 

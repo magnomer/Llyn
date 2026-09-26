@@ -27,6 +27,14 @@ public static class LLocalization
         }
     }
 
+    public static IReadOnlyList<string> LLocalizationListedRead()
+    {
+        lock (LLocalizationGate)
+        {
+            return LLocalizationListed;
+        }
+    }
+
     public static string LLocalizationNormalize(string? language)
     {
         return language is not null && LLocalizationListedCheck(language) ? language : LLocalizationDefault;

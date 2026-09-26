@@ -24,7 +24,7 @@ A path git lists twice is read once.
 
 ## Checks
 
-| Counter | Hit |
+| Gate | Hit |
 |---|---|
 | Invalid UTF-8 | The offset of the first ill-formed byte sequence. |
 | Byte order marks | The offset of the first mark, anywhere in the file. |
@@ -44,7 +44,7 @@ The ascii suffixes carry the rule the test writes inline for PowerShell scripts.
 ## Output
 
 The console follows `report.md`, and every hit prints as `path: reason`.
-The exit code is 1 when any counter is above 0 and 0 otherwise.
+The exit code is 1 when any Result gate is above 0 and 0 otherwise.
 
 ## Parity
 

@@ -1,5 +1,5 @@
 {
-  "generation": 12,
+  "generation": 14,
   "project": "Llyn",
   "enforced": true,
   "ceilings": {
@@ -47,5 +47,14 @@
   "hotspot": {
     "commits": 30,
     "top": 15
+  },
+  "tally": {
+    "roots": [
+      "scripts"
+    ],
+    "extensions": [
+      ".ps1",
+      ".cs"
+    ]
   }
 }

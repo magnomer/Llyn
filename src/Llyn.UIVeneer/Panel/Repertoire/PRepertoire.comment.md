@@ -31,7 +31,7 @@ One slot sits between save and export, and it holds whichever pair the mode asks
 Reading shows `PRepertoireEarlier` and `PRepertoireLater`, which walk the window's trail of records.
 Writing shows `PRepertoireBackward` and `PRepertoireForward`, which walk the chronicle of the editor in front.
 Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-Export and print are mock-up controls and are not wired.
+`PRepertoirePortrait` and `PRepertoirePress` carry the panel's export and print commands.
 
 ## `<ItemsControl x:Name="PAtlas">`
 
@@ -68,15 +68,15 @@ A never-written kind or description is not drawn at all, as an entry with no not
 A never-written title reads the untitled text in the muted colour, because the head of the page cannot be empty.
 The editing side still draws every slot, so the two kinds of empty are one toggle apart rather than lost.
 Under the description stand the pictures and then the videos, in the shapes a card draws them.
-`PVignettePicture` and `PVignetteVideo` share the card's line templates and converters, so the same picture reads the same everywhere.
+`PVignettePicture` and `PVignetteVideo` share the card's line templates, so the same picture reads the same everywhere.
 Either list hides itself while the Situation has none of that kind, as a card's does.
 
 ## `<ResourceDictionary.MergedDictionaries>`
 
 The card display's picture and video dictionaries, merged so the reading side draws media with the card's own templates.
 The panel's own shapes follow, the reading side in [PRepertoireVignette.xaml](PRepertoireVignette.comment.md) and the editing side in [PRepertoireScenario.xaml](PRepertoireScenario.comment.md).
-The two converters stay, because both sides of the panel read media through them.
 The editing side's row templates are merged from code instead, because they carry handlers this panel answers.
+All four dictionaries come from the Veneer.
 
 ## `<ItemsControl x:Name="POccurrence">`
 
@@ -104,7 +104,8 @@ Under the description stand `PScenarioImage` and `PScenarioVideo`, the card's ow
 They sit where the reading side draws the same media, and a gutter column keeps room for each row's remove.
 Each list hears the text changes bubbling from its rows.
 So a typed location reaches the panel without a row copy.
-The two add buttons after them are the card's, in the same icon group, the only buttons the editor carries.
+The two add buttons after them, `PScenarioPicture` and `PScenarioFilm`, are the card's.
+They sit in the same icon group and are the only buttons the editor carries.
 
 ## `<Button x:Name="PRepertoireBin" ...>`
 
@@ -117,3 +118,12 @@ It is disabled while an Entry or an unsaved Situation is.
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
 Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
+
+## Hooks
+
+The markup carries no hook.
+The Deportment class `PRepertoire` sets icons, commands, clicks, text changes, popups and row fills.
+It also folds `PRepertoireVoyage` and `PRepertoireChronicle` by mode.
+`PRepertoireChronicle` starts collapsed because the reader is the side shown first.
+The atlas and occurrence rows use `Theme.Catalog.Row` directly, and their fills mark the chosen row.
+The media lists are filled from code, and their styles hide an empty list through the look sheet.

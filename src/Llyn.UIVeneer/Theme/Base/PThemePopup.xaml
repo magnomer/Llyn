@@ -50,15 +50,6 @@
                 <TranslateTransform X="-84" />
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                <BeginStoryboard>
-                    <Storyboard RepeatBehavior="Forever">
-                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="-84" To="268" Duration="0:0:1.15" />
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Popup.RowSurface" TargetType="Border">
@@ -66,11 +57,6 @@
         <Setter Property="Padding" Value="10,0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="CornerRadius" Value="9" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Popup.RowChoice" TargetType="Button">
@@ -87,40 +73,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="PSurface"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="12">
-                        <TextBlock
-                            x:Name="PLabel"
-                            Margin="{TemplateBinding Padding}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="{TemplateBinding FontSize}"
-                            FontWeight="{TemplateBinding FontWeight}"
-                            Foreground="{TemplateBinding Foreground}"
-                            Text="{TemplateBinding Content}" />
+                    <Border x:Name="PSurface" CornerRadius="12">
+                        <TextBlock x:Name="PLabel" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PLabel" Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentPress}" />
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentPress}" />
-                            <Setter TargetName="PLabel" Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PSurface" Property="Background" Value="Transparent" />
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
-                            <Setter TargetName="PLabel" Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
-                            <Setter Property="Cursor" Value="Arrow" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -137,27 +92,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="PSurface"
-                        Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="13">
+                    <Border x:Name="PSurface" CornerRadius="13">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentPress}" />
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentPress}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -174,18 +111,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" CornerRadius="7">
+                    <Border x:Name="PSurface" CornerRadius="7">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

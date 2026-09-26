@@ -25,3 +25,10 @@ What differs between the panels is which entry is selected, not how it reads.
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
 Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
+
+## Hooks
+
+The markup carries no hook.
+The Deportment class `PFavorite` sets icons, commands, clicks, popups and row fills.
+It also folds the two button pairs by mode.
+`PFavoriteChronicle` starts collapsed because the reader is the side shown first.

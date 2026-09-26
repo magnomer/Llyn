@@ -42,7 +42,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 12 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 14 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -70,6 +70,11 @@ Audit a specific checkout and open the violation report.
 # ceiling in hits, counts a using of a deeper ring and a method call on a deeper record as a reach,
 # walks using static names, and adds the expose, surface, stray, banned, floor, table, hidden and
 # transitive checks.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -136,8 +141,8 @@ CONFIGURATION
     The script reads no convention test file and no test report.
 
 OUTPUT
-    The console follows scripts\report.md: scope, counters, findings by
-    check, pairs, then one list per counter above zero.
+    The console follows scripts\report.md: scope, result, findings by
+    check, pairs, then one list per gate above zero.
     <report folder>\AuditStructure-{version}.md
     <report folder>\AuditStructureViolated-{version}.md
 
@@ -159,7 +164,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
@@ -202,11 +207,13 @@ function Get-OrdinalSorted {
 function Write-AuditLine {
     param(
         [Parameter(Position = 0)][AllowEmptyString()][string]$Text = '',
-        [ConsoleColor]$ForegroundColor
+        [ConsoleColor]$ForegroundColor,
+        [string]$Lead = '',
+        [ConsoleColor]$LeadColor = [ConsoleColor]::Gray
     )
 
     if ($script:PageLimit -gt 0) {
-        $rows = [Math]::Max(1, [Math]::Ceiling($Text.Length / [double]$script:PageWidth))
+        $rows = [Math]::Max(1, [Math]::Ceiling(($Lead.Length + $Text.Length) / [double]$script:PageWidth))
         if ($script:PageCount + $rows -gt $script:PageLimit -and $script:PageCount -gt 0) {
             $prompt = '-- More -- (any key: next page, Q: no more pauses)'
             Write-Host $prompt -ForegroundColor Yellow -NoNewline
@@ -220,6 +227,9 @@ function Write-AuditLine {
         $script:PageCount += $rows
     }
 
+    if ($Lead.Length -gt 0) {
+        Write-Host $Lead -ForegroundColor $LeadColor -NoNewline
+    }
     if ($PSBoundParameters.ContainsKey('ForegroundColor')) {
         Write-Host $Text -ForegroundColor $ForegroundColor
     }
@@ -232,8 +242,36 @@ function Write-AuditSection {
     param([string]$Title)
 
     Write-AuditLine ''
-    Write-AuditLine $Title
-    Write-AuditLine ('-' * $Title.Length)
+    Write-AuditLine $Title -ForegroundColor Blue
+    Write-AuditLine ('-' * $Title.Length) -ForegroundColor DarkGray
+}
+
+function Write-AuditResult {
+    param([object[]]$Rows)
+
+    Write-AuditSection -Title 'Result'
+    $statusWidth = 6
+    $countWidth = [Math]::Max(5, ($Rows | ForEach-Object { $_.Count.ToString('N0').Length } | Measure-Object -Maximum).Maximum)
+    $gateWidth = [Math]::Max(4, ($Rows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+    $meaningWidth = [Math]::Max(7, ($Rows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+    Write-AuditLine ("{0}  {1}  {2}  Meaning" -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+    Write-AuditLine (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+    foreach ($row in $Rows) {
+        $failing = $row.Count -gt 0
+        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $text = "{0}  {1}  {2}  {3}" -f ''.PadRight($statusWidth - $status.Length), $row.Count.ToString('N0').PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
+        Write-AuditLine $text -Lead $status -LeadColor $(if ($failing) { 'Red' } else { 'Green' })
+    }
+
+    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    Write-AuditLine ''
+    if ($failed.Count -eq 0) {
+        Write-AuditLine ("PASS: all {0} gates at 0." -f $Rows.Count) -ForegroundColor Green
+    }
+    else {
+        $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-AuditLine ("FAIL: {0} of {1} gates above 0. See {2}." -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
+    }
 }
 
 function Write-AuditTable {
@@ -253,8 +291,8 @@ function Write-AuditTable {
         }
         ($parts -join '  ').TrimEnd()
     }
-    Write-AuditLine (& $format $Header)
-    Write-AuditLine (($widths | ForEach-Object { '-' * $_ }) -join '  ')
+    Write-AuditLine (& $format $Header) -ForegroundColor Cyan
+    Write-AuditLine (($widths | ForEach-Object { '-' * $_ }) -join '  ') -ForegroundColor Cyan
     foreach ($row in $Rows) {
         Write-AuditLine (& $format ([string[]]$row))
     }
@@ -279,7 +317,7 @@ function Write-AuditItems {
     }
 }
 
-Write-AuditLine "AUDITSTRUCTURE GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-AuditLine "AUDITSTRUCTURE GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 $script:ReportName = 'AuditStructure-{version}.md'
 $script:ViolationName = 'AuditStructureViolated-{version}.md'
@@ -1231,7 +1269,7 @@ function Invoke-AuditHelper {
         $cacheFolder = Get-HelperCacheFolder -ProjectName $ProjectName -TargetFramework $TargetFramework -SdkVersion $sdkVersion
         $binaryPath = Join-Path (Join-Path $cacheFolder 'bin') 'AuditStructure.dll'
         if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
-            Write-AuditLine 'Compiling the structure binder once for this SDK...' -ForegroundColor DarkGray
+            Write-AuditLine 'Compiling the structure binder once for this SDK...'
             $cacheParent = Split-Path -Parent $cacheFolder
             if (Test-Path -LiteralPath $cacheParent) {
                 Get-ChildItem -LiteralPath $cacheParent -Directory |
@@ -1713,13 +1751,21 @@ $violationTemporary = $violationPath + '.tmp'
 [System.IO.File]::Copy($violationTemporary, $violationPath, $true)
 Remove-Item -LiteralPath $reportTemporary, $violationTemporary -Force
 
-Write-AuditLine ''
-Write-AuditLine 'Counters'
-Write-AuditLine '--------'
-$labelWidth = ($counters.Keys | Measure-Object -Property Length -Maximum).Maximum
-foreach ($label in $counters.Keys) {
-    Write-AuditLine ($label.PadRight($labelWidth) + '  ' + $counters[$label].ToString('N0'))
+$meanings = @{
+    'Above ceiling'     = 'ring pairs with more hits than their ceiling'
+    'Stale ceilings'    = 'ring pairs with fewer hits than their ceiling'
+    'Stale exemptions'  = 'exemption rows that cleared no finding'
+    'Outside surface'   = 'names reached outside a pair''s listed surface'
+    'Stray types'       = 'types matching a home pattern found elsewhere'
+    'Banned words'      = 'banned names found in their folder'
+    'Thin rings'        = 'projects below their floor'
+    'Table drift'       = 'ring table rows that disagree with the projects'
+    'Hidden references' = 'references the table does not declare'
 }
+$gateRows = @(foreach ($label in $counters.Keys) {
+    [pscustomobject]@{ Gate = $label; Count = [int]$counters[$label]; Meaning = $meanings[$label]; Section = $label }
+})
+Write-AuditResult -Rows $gateRows
 
 Write-AuditSection -Title 'Findings by check'
 $checkRows = @($script:CheckOrder | ForEach-Object { , @($_, (Get-CheckGate -Check $_), $counts[$_].ToString('N0')) })

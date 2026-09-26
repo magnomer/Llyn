@@ -25,19 +25,20 @@ A script never writes a test file as part of an audit.
 ## Same truth
 
 Given the same tree, both sides reach the same verdict.
-They count the same hits, list the same hits, and word each hit the same way.
+They count the same hits and list the same hits.
 They enumerate the same files, through git with the same pathspecs, exclusions and order.
 They apply the same thresholds, ceilings, ledgers and enforced flags with the same meaning.
 The Roslyn helpers pin the same Roslyn version and target framework as the convention tests.
-A report may differ in layout, but never in the facts it states.
+Agreement covers results only, never presentation.
+Each side reports in its own style: headings, wording, colour, tables and order are its own.
 
 ## Allowed differences
 
-A difference is allowed only where one side technically cannot do what the other does.
+A difference in results is allowed only where one side technically cannot do what the other does.
 A config fault may throw in a script and fail as a fact in a test.
 A script may add views that gate nothing, such as totals, hotspots or at-limit names.
 A console list may be cut short, while the report file stays complete.
-Every allowed difference is written in the script header or the test sidecar.
+Every allowed difference in results is written in the script header or the test sidecar.
 
 ## Pairs
 

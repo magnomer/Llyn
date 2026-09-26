@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using Llyn.Core;
 
@@ -71,5 +74,38 @@ public sealed class LUsageItem
         }
 
         entrySeam(LUsageItemEntry);
+    }
+
+    internal static void LUsageItemApply(FrameworkElement container, object item, string? _)
+    {
+        if (item is not LUsageItem usage)
+        {
+            return;
+        }
+
+        if (PLook.PLookPartFind<Image>(container, "PUsageFlag") is Image flag)
+        {
+            flag.Source = usage.LUsageItemFlag;
+        }
+
+        if (PLook.PLookPartFind<Run>(container, "PUsageName") is Run name)
+        {
+            name.Text = usage.LUsageItemName;
+        }
+
+        if (PLook.PLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
+        {
+            epithet.Text = " " + usage.LUsageItemEpithet;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
+        {
+            title.Text = usage.LUsageItemTitle;
+        }
+
+        if (PLook.PLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
+        {
+            owner.Text = usage.LUsageItemOwner;
+        }
     }
 }

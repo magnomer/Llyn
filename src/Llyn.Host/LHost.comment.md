@@ -23,13 +23,10 @@ The file usher answers path facts and the shell usher adds the launch of a folde
 
 The engine prints through the rig, so no press is applied after construction.
 
-## `application.InitializeComponent();`
-
-Loads the base theme dictionary that `App.xaml` merges, before any resource is applied over it.
-
 ## `LBootstrap bootstrap = new(application, application.PBootstrapTextRead);`
 
-The deportment raises every dialog of the start, and the veneer only applies resources and shows the window.
+`LBootstrap` raises every dialog of the start.
+`PBootstrap` only applies resources and shows the window.
 
 ## `LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault)));`
 
@@ -43,7 +40,7 @@ The engine receives every adapter through the rig and references Infrastructure 
 
 ## `application.PBootstrapWindowShow(new PWindow(`
 
-The host creates the veneer's window too, so the veneer's bootstrap holds nothing but calls.
+The host creates the deportment's window too, so `PBootstrap` holds nothing but calls.
 
 ## `new LWindow(`
 

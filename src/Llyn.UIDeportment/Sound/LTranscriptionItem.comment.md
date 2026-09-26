@@ -28,6 +28,15 @@ They are rebuilt only when the pack's scheme count differs, which a language swi
 The transcription as typed or as the draft holds it.
 It announces only a real change, so a render writing the same text stays silent.
 
+## `internal static void LTranscriptionItemApply(FrameworkElement container, object item, string? _)`
+
+Fills the parts both views share: the scheme name, the text and the unseen measure twin.
+The editor's field and scheme dropdown are filled by `PEditor.PTranscriptionApply`, which calls this first.
+
+## `private static void LTranscriptionMeasureApply(TextBlock measure, string text)`
+
+Sizes the measure twin by the text, or by the placeholder while the row is blank.
+
 ## `public static LTranscriptionItem LTranscriptionItemCreate(LTranscriptionDraft spelled)`
 
 Builds the row for one draft transcription.

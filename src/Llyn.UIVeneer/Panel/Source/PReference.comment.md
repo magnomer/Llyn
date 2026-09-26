@@ -4,6 +4,7 @@
 
 The row and card templates the panel draws with live in `PReferenceShelf.xaml` and `PReferenceFootnote.xaml`.
 Only the styles built on another style stay here, because a dictionary standing on its own cannot resolve one.
+The rows wear `Theme.Catalog.Row` directly, and the panel marks the chosen one.
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -18,6 +19,7 @@ Neither seam encloses anything, which is the whole rule: a line marks a division
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the corpus panel arranges it.
 The catalog column takes 380, because a row carries a name over an author-and-year line.
+The dropdowns, icons and field events are wired by the panel, so every part carries a name.
 
 ## `<Border x:Name="PTrellis" ... Style="{StaticResource Theme.Search.Bar}">`
 
@@ -32,7 +34,7 @@ There is no ordering by kind of material, because no Source-type discriminator i
 Ordering by recency is not offered, because the `source` row carries no creation or modification time.
 A field standing Unspecified or Unknown still has a place in every ordering, ordered by its state.
 
-## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
+## `<local:PRail Grid.Row="0" Grid.Column="2" ...>`
 
 The action row of the panel.
 `PReferenceFresh` opens the edit area on a Source nothing cites yet.
@@ -40,16 +42,18 @@ That is the normal case, because a Source is written down first and cited afterw
 `PReferenceStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Source.
 It stands in the rail at all times, as the repertoire panel's save does.
 One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PReferenceEarlier` and `PReferenceLater`, which walk the window's trail of records.
-Writing shows `PReferenceBackward` and `PReferenceForward`, which walk the chronicle of the editor in front.
+Reading shows `PReferenceVoyage`, whose `PReferenceEarlier` and `PReferenceLater` walk the window's trail of records.
+Writing shows `PReferenceChronicle`, whose `PReferenceBackward` and `PReferenceForward` walk the editor's chronicle.
+`PReferenceChronicle` starts collapsed, because the panel opens reading.
 Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-Export and print are mock-up controls and are not wired.
+`PReferencePortrait` exports the Entry shown, and `PReferencePress` prints what is read.
+Every button is named, and the panel sets its icon, command and click from code.
 
-## `<ItemsControl x:Name="PShelf" Button.Click="PShelfHandle" ...>`
+## `<ItemsControl x:Name="PShelf" ...>`
 
 Every Source the workspace holds, including one nothing cites.
 The row itself is drawn by a template the merged dictionary holds.
-The click of every row is taken here, because a template in a dictionary can name no handler.
+The panel fills each row's named parts and takes each row's click.
 `PShelfEmpty` covers both an empty workspace and a search that matches nothing.
 
 ## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
@@ -71,17 +75,17 @@ The authors panel reads a Source through the same control, so the two panels can
 The mode toggle is not in here.
 It sits in the action row as it does in every built panel.
 
-## `<ItemsControl x:Name="PFootnote" Button.Click="PFootnoteHandle" ...>`
+## `<ItemsControl x:Name="PFootnote" ...>`
 
 The middle column: every Entry whose cards quote an Example citing the selected Source, one row per Entry.
 Only Entries are listed, so an Example citing the Source is reached through the Entry quoting it.
 While no Source is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
-The row is drawn by a template the merged dictionary holds, so the click is taken over the whole list.
+The row is drawn by a template the merged dictionary holds, and the panel fills it and takes its click.
 A Situation is not listed, because a Situation is written rather than quoted and cites no Source.
 Choosing a row shows that Entry in `PDisplay`, in place of the Source reading, without leaving the tab.
 The list is read-only, because a citation is set or cleared where it is held.
 
-## `<local:PImprint x:Name="PImprint" Margin="30,18,0,0" Visibility="Collapsed" />`
+## `<local:PImprint x:Name="PImprint" Margin="21,18,0,0" Visibility="Collapsed" />`
 
 The edit area, a control of its own and described in `PImprint.comment.md`.
 It sits over the read area in the same cell and at the same inset.
@@ -94,6 +98,7 @@ Deletes the shown Source, from the reading side or the editing side alike.
 It stands in the corner of the surface as the repertoire panel's bin does, apart from the browsing beside it.
 It is disabled while nothing is selected and while an Entry is shown.
 It is disabled too while the edit area stands on a Source nothing has stored yet.
+Its icon is the named `PReferenceBinIcon`, set by the panel.
 
 ## Catalog spacing
 

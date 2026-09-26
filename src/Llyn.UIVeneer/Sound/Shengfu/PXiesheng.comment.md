@@ -13,10 +13,12 @@ The search bar of the series column, with the ordering dropper beside the field.
 ## `<ItemsControl x:Name="PGrove"`
 
 The series of the language, each with the count of entries it reaches.
+Its parts are named, and `PGroveItem.PGroveItemApply` fills them and marks the chosen row.
 
 ## `<ItemsControl x:Name="PKindred"`
 
 The entries of the chosen series, each with its language flag and epithet.
+Its parts are named, and `PKindredItem.PKindredItemApply` fills them and marks the chosen row.
 
 ## `<local:PStem x:Name="PXieshengStem"`
 

@@ -1,45 +1,44 @@
-# PTenor.xaml.cs
+# PTenor.xaml
 
-## `public partial class PTenor : UserControl`
+## `<Grid Margin="34,20,34,38">`
 
-The tenor panel: the workspace browsed by the Registers its cards carry.
-It is the taxonomy panel's shape read through a different question, so it holds the same three columns.
-It owns a reader and an editor over one Entry, and answers the engine rather than its own visibility.
+Three columns, narrow to wide: the register catalog, the Entries marked with the chosen Register, then the reader.
+The taxonomy panel asks for an Entry by a label somebody put on one of its cards.
+This panel asks for it by how formal the wording on that card is.
+So the catalog here is a Register, and the entry list beside it is what carries that Register.
 
-## `internal void PTenorAttach(PWindow host)`
+## `<Border x:Name="PDegree" ...>`
 
-Binds the panel to the window, builds its deportment and its editor over the engine's ports, and wires their notices.
+The sorting button and the search field are one control over the register column.
+Both act on the register catalog and nothing else.
 
-## `internal void PTenorReset()`
+## The third ordering
 
-Empties the panel and rebuilds the catalog, for a workspace that has just moved.
+A register catalog offers most-marked-first, which the tag catalog does not.
+A Register carries a real count of the cards marked with it.
+It is therefore a question worth asking of the shelf.
+A tag catalog has no such count to sort on.
 
-## `internal bool PTenorDraftFinish(bool store)`
+## `<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">`
 
-Stores or discards a standing draft on the way out of the application.
+The entry list is a bare catalog column, not a boxed surface, exactly as the taxonomy panel draws it.
+Both lists on this panel are asked the same kind of question, so both are drawn the same way.
+Each row carries the flag, the headword and the language, in the library catalog's order.
 
-## `internal bool PTenorChangeCheck()`
+## `<Border x:Name="PGrille" ... Style="{StaticResource Theme.Search.Bar}">`
 
-Whether the editor is the shown side and is holding a change, so leaving would lose work.
+The search field and the language filter over the entry column.
+`PQuest` narrows the entries marked with the chosen Register by typed text.
+`PGrilleDropper` opens the menu of loaded languages, and `PGrilleMark` shows while any is hidden.
 
-## `internal void PTenorClose()`
+## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
-Stops listening and closes the reader and the editor.
+The entry actions over the reader, and the reader and editor toggle.
+Export and print stand here as on every panel that reads an entry.
 
-## `private void PTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## Hooks
 
-Whether the print and export buttons are live: exactly when an entry is read in the display.
-An editor on screen prints nothing, because what is printed is what is read.
-The buttons follow this answer on their own, so no panel state has to switch them.
-
-## `private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)`
-
-Prints the entry being read, as the engine portrays it.
-The panel names only the id it is showing, and the engine builds the page from stored rows.
-Nothing is read back from the screen.
-
-## `private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
-
-Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
-Nothing is read back from the screen.
+The markup carries no hook.
+The Deportment class `PTenor` sets icons, commands, clicks, popups and row fills.
+It also folds the two button pairs by mode.
+`PTenorChronicle` starts collapsed because the reader is the side shown first.

@@ -21,13 +21,14 @@ It pins the interface font for the same reason the part does.
 
 The form, inked and in the headword font the box inherits from `LFontApply`.
 The size is fixed here, so the headword's own size does not carry into the rows.
-The text is set by the style rather than by the row, so a trigger can replace it.
+The template carries no bindings, so `PParadigm` writes each row's text and marks.
 An empty form draws an ellipsis and says the lookup is off.
 A pending form draws the same ellipsis and says the form is being looked up.
 An unknown form draws a dash and says no source listed it.
-The unknown trigger stands last, so it wins over the empty one.
+The unknown mark wins over the empty one.
 
 ## `<DataTemplate x:Key="Theme.Paradigm.Row">`
 
 One row: part, name, and form in three columns.
 The part and name columns share their widths across rows, so the forms line up.
+Each text block is named, so Deportment finds it in a realized row.

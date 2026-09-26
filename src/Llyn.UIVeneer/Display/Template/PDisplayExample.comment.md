@@ -11,7 +11,7 @@ The example block of a read-only card, from its indent down to the single line.
 Examples are indented as a block, because they are evidence for the definition rather than a field of their own.
 Each line opens with a dot, so a reader counts examples without reading them.
 
-### `<TextBlock x:Name="PExampleFrame">`
+### `<TextBlock x:Name="PExampleFrame" Grid.Column="1" Style="{StaticResource Display.Card.ExampleFrame}" />`
 
 The frame is drawn in the interface face and the accent colour the example beside it never takes.
 A reader tells at a glance what the card writes and what the card only marks.
@@ -21,11 +21,10 @@ Its example begins where an unframed example begins on the writing side.
 A line set the same way in both views does not move.
 A reader who begins to write finds it unchanged.
 
-### `<local:PMention Grid.Column="2" ...>`
+### `<local:PMention x:Name="PExampleText" />`
 
 The sentence is drawn by the control that knows its words, so a reader can click one.
-Its text still comes through the frame converter in text mode, so the frame stays out of the sentence.
-Its Mentions come from the draft through `PMentionConverter`, since the control reads the stored shape.
+Its text, language and Mentions are set by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md), which keeps the frame out of the sentence.
 Its language is the Example's own, because the sentence may be written in a language the entry is not.
 Examples are drawn in the typography the language pack declares for them.
 Both modes read the same two keys, and each sets them on itself for the entry it shows.
@@ -41,22 +40,15 @@ The flag and the globe come from the shared Gloss theme, so both modes draw the 
 Its top margin equals the bottom margin the writing side's sentence field carries.
 So a Gloss sits the same distance under its sentence in both modes.
 
-### `<ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleGloss}" ...>`
+### `<ItemsControl x:Name="PExampleGloss" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />`
 
 The Glosses stand under the sentence, aligned with its first character rather than with the frame.
-They come from the draft through `PGlossConverter`, which wraps each in the row the editor already resolves a flag for.
+Its parts carry the editor's Gloss names, so the editor's row fill sets them.
 The list folds away when the Example carries none.
 
 ### `<Border Grid.Column="3" Margin="16,0,0,0">`
 
 The byline of the cited Source stands at the right end of the example line, as dictionaries print quotations.
-It reads through `PCitationConverter`, which the view fills once per shown entry.
 An example citing nothing collapses the column, so an uncited sentence runs to the edge.
-Its font, size and baseline drop are bound to the sentence element itself rather than to the resources.
+Its font, size and baseline drop are copied from the sentence element when the line is filled.
 So the byline sits on the sentence's baseline whatever font the language pack gave the sentence.
-
-### `<local:PSentenceConverter x:Key="Display.Card.Frame" />`
-
-The sentence order and the inset are read nowhere but here.
-They stand in this file so the example row can name them without reaching outside it.
-The display holds one of each, since this dictionary is merged once.

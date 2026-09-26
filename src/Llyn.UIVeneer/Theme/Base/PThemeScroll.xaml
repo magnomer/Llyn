@@ -9,15 +9,6 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Vertical.Template}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Style.Triggers>
-            <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="Width" Value="Auto" />
-                <Setter Property="MinWidth" Value="0" />
-                <Setter Property="Height" Value="14" />
-                <Setter Property="MinHeight" Value="14" />
-                <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Horizontal.Template}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style TargetType="ScrollViewer">

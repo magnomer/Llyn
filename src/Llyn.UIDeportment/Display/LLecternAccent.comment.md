@@ -10,6 +10,7 @@ Flags come from `LEnsignImage`, and the respelling from `LRespellingMark`.
 
 Holds the window, the pronunciation surface and its parts, and binds the accent list to its rows.
 `tonal` is the contour's own property, set as a value so no veneer type is named here.
+The accent list is attached to `LAccentItem.LAccentItemApply`, which fills each row.
 
 ## `public void LLecternAccentShow()`
 

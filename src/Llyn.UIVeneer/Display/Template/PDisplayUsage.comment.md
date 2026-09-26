@@ -4,6 +4,7 @@
 
 The shapes of the page around the card: the incoming rows above it and the stamps beneath it.
 Nothing here answers an event, so the dictionary is loose and merged beside the card shapes.
+The hover, press and empty states are rows of `PLookDisplay`, not triggers.
 
 ## `<Style x:Key="Theme.Usage.Row" TargetType="Button">`
 

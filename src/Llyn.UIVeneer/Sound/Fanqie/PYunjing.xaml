@@ -1,41 +1,24 @@
 <UserControl
-    x:Class="Llyn.UIVeneer.PYunjing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
     >
 
     <UserControl.Resources>
-        <Style x:Key="Theme.Yunjing.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PYunjingItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Theme.Xiaoyun.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PXiaoyunItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
         <Style x:Key="Theme.Yunjing.Key" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Title}">
             <Setter Property="FontSize" Value="26" />
         </Style>
 
         <DataTemplate x:Key="Theme.Yunjing.Cell">
-            <Button Click="PYunjingHandle" Style="{StaticResource Theme.Yunjing.Row}">
+            <Button x:Name="PYunjingRow" Style="{StaticResource Theme.Catalog.Row}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Yunjing.Key}" Text="{Binding PYunjingItemKey}" />
+                    <TextBlock x:Name="PYunjingKey" Grid.Column="0" Style="{StaticResource Theme.Yunjing.Key}" />
                     <Border Grid.Column="1" Style="{StaticResource Theme.Catalog.Pellet}">
-                        <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PYunjingItemCount}" />
+                        <TextBlock x:Name="PYunjingCount" Style="{StaticResource Theme.Catalog.Tally}" />
                     </Border>
                 </Grid>
             </Button>
@@ -76,22 +59,19 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Ladder.Title}">
-                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon sort, 24}" />
+                    <local:PIconImage x:Name="PLadderIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PPlumb"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Plumb.Search}"
-                    TextChanged="PPlumbHandle" />
+                    Tag="{DynamicResource Plumb.Search}" />
                 <Popup
                     x:Name="PLadderDropdown"
                     Width="252"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PLadderDropper}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PLadder}"
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
@@ -130,22 +110,19 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Stair.Title}">
-                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon sort, 24}" />
+                    <local:PIconImage x:Name="PStairIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PFathom"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Fathom.Search}"
-                    TextChanged="PFathomHandle" />
+                    Tag="{DynamicResource Fathom.Search}" />
                 <Popup
                     x:Name="PStairDropdown"
                     Width="252"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PStairDropper}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PStair}"
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
@@ -175,8 +152,7 @@
             <TextBox
                 x:Name="PBeacon"
                 Style="{StaticResource Theme.Search.Field}"
-                Tag="{DynamicResource Beacon.Search}"
-                TextChanged="PBeaconHandle" />
+                Tag="{DynamicResource Beacon.Search}" />
         </Border>
 
         <Grid Grid.Row="1" Grid.Column="2" Style="{StaticResource Theme.Catalog.Middle}">
@@ -184,16 +160,16 @@
                 <ItemsControl x:Name="PXiaoyun">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Click="PXiaoyunHandle" Style="{StaticResource Theme.Xiaoyun.Row}">
+                            <Button x:Name="PXiaoyunRow" Style="{StaticResource Theme.Catalog.Row}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PXiaoyunItemFlag}" Stretch="Uniform" />
-                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PXiaoyunItemName, Mode=OneWay}" /><Run
-                                        Style="{StaticResource Theme.Catalog.Epithet}"
-                                        Text="{Binding PXiaoyunItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
+                                    <Image x:Name="PXiaoyunFlag" Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run x:Name="PXiaoyunName" /><Run
+                                        x:Name="PXiaoyunEpithet"
+                                        Style="{StaticResource Theme.Catalog.Epithet}" /></TextBlock>
                                 </Grid>
                             </Button>
                         </DataTemplate>
@@ -211,65 +187,47 @@
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PYunjingFresh"
-                        Click="PYunjingFreshHandle"
                         Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon new, 24}" />
+                        Style="{StaticResource Theme.Command.Segment}" />
                     <Button
                         x:Name="PYunjingStore"
-                        Click="PYunjingStoreHandle"
                         Content="{DynamicResource Scribe.Save}"
                         IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}"
-                        Tag="{local:PIcon save, 24}" />
+                        Style="{StaticResource Theme.Command.Primary}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel
-                        Orientation="Horizontal"
-                        Visibility="{Binding IsChecked, ElementName=PYunjingViewer, Converter={StaticResource Theme.Command.Fold}}">
+                    <StackPanel x:Name="PYunjingVoyage" Orientation="Horizontal">
                         <Button
                             x:Name="PYunjingEarlier"
-                            Click="PYunjingRetreatHandle"
                             IsEnabled="False"
                             Style="{StaticResource Theme.Command.Segment}"
-                            Tag="{local:PIcon retreat, 24}"
                             ToolTip="{DynamicResource Voyage.Retreat}" />
                         <Button
                             x:Name="PYunjingLater"
-                            Click="PYunjingAdvanceHandle"
                             IsEnabled="False"
                             Style="{StaticResource Theme.Command.Segment}"
-                            Tag="{local:PIcon advance, 24}"
                             ToolTip="{DynamicResource Voyage.Advance}" />
                     </StackPanel>
-                    <StackPanel
-                        Orientation="Horizontal"
-                        Visibility="{Binding IsChecked, ElementName=PYunjingScribe, Converter={StaticResource Theme.Command.Fold}}">
+                    <StackPanel x:Name="PYunjingChronicle" Orientation="Horizontal" Visibility="Collapsed">
                         <Button
                             x:Name="PYunjingBackward"
-                            Click="PYunjingUndoHandle"
                             IsEnabled="False"
                             Style="{StaticResource Theme.Command.Segment}"
-                            Tag="{local:PIcon undo, 24}"
                             ToolTip="{DynamicResource Chronicle.Undo}" />
                         <Button
                             x:Name="PYunjingForward"
-                            Click="PYunjingRedoHandle"
                             IsEnabled="False"
                             Style="{StaticResource Theme.Command.Segment}"
-                            Tag="{local:PIcon redo, 24}"
                             ToolTip="{DynamicResource Chronicle.Redo}" />
                     </StackPanel>
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
-                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
+                        x:Name="PYunjingPortrait"
                         Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon export, 24}" />
+                        Style="{StaticResource Theme.Command.Segment}" />
                     <Button
-                        Command="ApplicationCommands.Print"
+                        x:Name="PYunjingPress"
                         Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon print, 24}" />
+                        Style="{StaticResource Theme.Command.Segment}" />
                 </StackPanel>
             </Border>
             <Border
@@ -279,19 +237,15 @@
                 <StackPanel Orientation="Horizontal">
                     <RadioButton
                         x:Name="PYunjingViewer"
-                        Click="PYunjingScribeHandle"
                         Content="{DynamicResource Scribe.View}"
                         GroupName="PYunjingMode"
                         IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}"
-                        Tag="{local:PIcon view, 24}" />
+                        Style="{StaticResource Theme.Command.Mode}" />
                     <RadioButton
                         x:Name="PYunjingScribe"
-                        Click="PYunjingScribeHandle"
                         Content="{DynamicResource Scribe.Edit}"
                         GroupName="PYunjingMode"
-                        Style="{StaticResource Theme.Command.Mode}"
-                        Tag="{local:PIcon edit, 24}" />
+                        Style="{StaticResource Theme.Command.Mode}" />
                 </StackPanel>
             </Border>
         </local:PRail>
@@ -309,11 +263,10 @@
                     Margin="0,17,26,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Click="PYunjingBinHandle"
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon delete, 24}" />
+                    <local:PIconImage x:Name="PYunjingBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

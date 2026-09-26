@@ -2,7 +2,7 @@
 
 ## Generation
 
-AUDITNAMES GENERATION 12.
+AUDITNAMES GENERATION 14.
 
 A generation is not a revision count.
 It names functionality, not edits.
@@ -41,6 +41,9 @@ Generation 12 exempts a framework contract name only when a part of the type dec
 The number also rises with every audit rebaselined against the structure report.
 It fails a name that does not split into prefix and PascalCase components, as the script does.
 It fails a type, delegate or event name that ends in a verb, as the script does.
+
+Generations 13 and 14 change nothing the name audit reports.
+The number rises with the UI audit, whose hook rule gains slots and a literal rule.
 
 ## `public static List<TSpecimen> TAuditSpecimenRead(IEnumerable<string> sourcePaths)`
 

@@ -4,14 +4,6 @@
 
     <Style x:Key="Theme.Anthology.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />
 
-    <Style x:Key="Theme.Anthology.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PAnthologyItemChosen}" Value="True">
-                <Setter Property="Tag" Value="Chosen" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style x:Key="Theme.Display.Value" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="TextWrapping" Value="Wrap" />
@@ -42,11 +34,6 @@
         <Setter Property="Margin" Value="0,0,8,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Stretch" Value="Uniform" />
-        <Style.Triggers>
-            <Trigger Property="Source" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Excerpt.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
@@ -55,13 +42,5 @@
 
     <Style x:Key="Theme.Excerpt.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-    </Style>
-
-    <Style x:Key="Theme.Quotation.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PQuotationItemChosen}" Value="True">
-                <Setter Property="Tag" Value="Chosen" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 </ResourceDictionary>

@@ -26,7 +26,7 @@ record include, the types, the waivers and the sides - lives in auditdraft.json.
 
 auditdraft.json shape:
   {
-    "generation": 12,
+    "generation": 14,
     "project": "Llyn",
     "records": {
       "include": ["src/Llyn.Core/Lexicon/*.cs"],
@@ -52,7 +52,7 @@ auditdraft
 Audit the current checkout.
 #>
 #requires -Version 5.1
-# AUDITDRAFT GENERATION 12 - auditdraft.ps1.
+# AUDITDRAFT GENERATION 14 - auditdraft.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -61,6 +61,11 @@ Audit the current checkout.
 # leave it alone. Every audit script shares one generation number with the convention-test settings,
 # and each refuses a configuration written at another generation.
 # Generation 12: the first generation of this audit. It reports the four facts of the convention test.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -86,12 +91,12 @@ CONFIGURATION
     the record include and types, the shared waiver, and each side with its
     include and its own waiver.
 
-COUNTERS
+RESULT
     Unnamed properties  A property a side neither names nor waives.
     Stale waivers       A side waiver the side names, or one naming no property.
     Unmatched settings  A type that is no record, or a shared waiver naming no property.
 
-    The exit code is 1 when any counter is above 0 and 0 otherwise.
+    The exit code is 1 when any Result gate is above 0 and 0 otherwise.
 
 OPTIONS
     -Root <path>
@@ -124,11 +129,11 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:TargetFramework = 'net10.0'
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
-Write-Host "AUDITDRAFT GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-Host "AUDITDRAFT GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 $script:HelperProject = @'
 <Project Sdk="Microsoft.NET.Sdk">
@@ -379,7 +384,7 @@ function Invoke-AuditHelper {
         $cacheFolder = Get-HelperCacheFolder -ProjectName $ProjectName -SdkVersion $sdkVersion
         $binaryPath = Join-Path (Join-Path $cacheFolder 'bin') 'AuditDraft.dll'
         if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
-            Write-Host 'Compiling the draft parser once for this SDK...' -ForegroundColor DarkGray
+            Write-Host 'Compiling the draft parser once for this SDK...'
             $cacheParent = Split-Path -Parent $cacheFolder
             if (Test-Path -LiteralPath $cacheParent) {
                 Get-ChildItem -LiteralPath $cacheParent -Directory |
@@ -441,8 +446,37 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-Host ''
-    Write-Host $Text
-    Write-Host ('-' * $Text.Length)
+    Write-Host $Text -ForegroundColor Blue
+    Write-Host ('-' * $Text.Length) -ForegroundColor DarkGray
+}
+
+function Write-ResultTable {
+    param([Parameter(Mandatory = $true)][object[]]$Rows)
+
+    Write-SectionTitle 'Result'
+    $statusWidth = 6
+    $countWidth = [Math]::Max(5, ($Rows | ForEach-Object { (Format-Integer $_.Count).Length } | Measure-Object -Maximum).Maximum)
+    $gateWidth = [Math]::Max(4, ($Rows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+    $meaningWidth = [Math]::Max(7, ($Rows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+    Write-Host ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+    Write-Host (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+    foreach ($row in $Rows) {
+        $failing = $row.Count -gt 0
+        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $text = '{0}  {1}  {2}  {3}' -f $status.PadRight($statusWidth), (Format-Integer $row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
+        Write-Host $status -ForegroundColor $(if ($failing) { 'Red' } else { 'Green' }) -NoNewline
+        Write-Host $text.Substring($status.Length)
+    }
+
+    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    Write-Host ''
+    if ($failed.Count -eq 0) {
+        Write-Host ('PASS: all {0} gates at 0.' -f $Rows.Count) -ForegroundColor Green
+    }
+    else {
+        $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-Host ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
+    }
 }
 
 function Format-Integer {
@@ -532,13 +566,17 @@ $kinds = @(
     @{ Label = 'Unmatched settings'; Hits = $unmatched }
 )
 
-$labelWidth = ($kinds | ForEach-Object { $_.Label.Length } | Measure-Object -Maximum).Maximum
-Write-SectionTitle 'Counters'
-$total = 0
-foreach ($kind in $kinds) {
-    $total += $kind.Hits.Count
-    Write-Host ('{0}  {1}' -f $kind.Label.PadRight($labelWidth), (Format-Integer $kind.Hits.Count))
+$meanings = @{
+    'Unnamed properties' = 'properties a side neither names nor waives'
+    'Stale waivers' = 'side waivers the side names, or naming no property'
+    'Unmatched settings' = 'types that are no record, or dead shared waivers'
 }
+$total = 0
+$gateRows = foreach ($kind in $kinds) {
+    $total += $kind.Hits.Count
+    [pscustomobject]@{ Gate = $kind.Label; Count = $kind.Hits.Count; Meaning = $meanings[$kind.Label]; Section = $kind.Label }
+}
+Write-ResultTable -Rows @($gateRows)
 
 foreach ($kind in $kinds) {
     if ($kind.Hits.Count -eq 0) { continue }

@@ -385,6 +385,11 @@ public sealed class LWindow : IDisposable
         return _lSettingsPort.LEngineLocalizationRead();
     }
 
+    public IReadOnlyList<string> LWindowLocalizationScan()
+    {
+        return _lSettingsPort.LEngineLocalizationScan();
+    }
+
     public IReadOnlyDictionary<string, string> LWindowLocalizationLoad(string language)
     {
         return _lSettingsPort.LEngineLocalizationLoad(language);

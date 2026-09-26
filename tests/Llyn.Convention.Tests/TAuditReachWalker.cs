@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Convention.Tests;
 
@@ -15,10 +17,14 @@ internal static class TAuditReachWalker
     private static readonly Regex TAuditSlotPattern = new(
         $@"\b({string.Join('|', TAuditStrictSetting.TAuditTriggerSlots)})\s*=", RegexOptions.Compiled);
 
+    private static readonly Regex TAuditHookPattern = new(
+        @"\{\s*(?:([A-Za-z_][\w.]*):)?([A-Za-z_][\w.]*)", RegexOptions.Compiled);
+
     public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> markupPaths)
     {
         List<TViolation> violations = [];
         IReadOnlySet<string> deportment = TAuditBinder.TAuditDeportmentRead();
+        Dictionary<string, List<string>> spaces = TAuditSpaceRead();
         foreach (string path in markupPaths)
         {
             XDocument document;
@@ -32,13 +38,147 @@ internal static class TAuditReachWalker
                 continue;
             }
 
+            SortedDictionary<int, List<string>> hooks = [];
             foreach (XElement element in document.Descendants())
             {
                 TAuditElementScan(path, element, deportment, violations);
+                TAuditHookScan(element, spaces, hooks);
             }
+
+            violations.AddRange(hooks.Select(hook => new TViolation(
+                path,
+                hook.Key,
+                hook.Value[0],
+                "Hook",
+                $"line hooks logic into markup: {string.Join(", ", hook.Value)}")));
         }
 
         return violations;
+    }
+
+    private static void TAuditHookScan(
+        XElement element, Dictionary<string, List<string>> spaces, SortedDictionary<int, List<string>> hooks)
+    {
+        string name = element.Name.LocalName;
+        int line = ((IXmlLineInfo)element).LineNumber;
+        string property = name[(name.LastIndexOf('.') + 1)..];
+        if (TAuditStrictSetting.TAuditHookElements.Contains(name, StringComparer.Ordinal)
+            || (name.Contains('.', StringComparison.Ordinal)
+                && TAuditStrictSetting.TAuditHookSlots.Contains(property, StringComparer.Ordinal))
+            || TAuditHookCheck(element, spaces))
+        {
+            TAuditHookAdd(hooks, line, name);
+        }
+
+        foreach (XAttribute attribute in element.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
+        {
+            line = ((IXmlLineInfo)attribute).LineNumber;
+            if (TAuditStrictSetting.TAuditHookSlots.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
+            {
+                TAuditHookAdd(hooks, line, attribute.Name.LocalName);
+            }
+
+            string slot = (element.Attribute("Property")?.Value ?? string.Empty).Trim('(', ')');
+            slot = slot[(slot.LastIndexOf('.') + 1)..];
+            if (attribute.Name.LocalName == "Property"
+                && TAuditStrictSetting.TAuditHookSlots.Contains(slot, StringComparer.Ordinal))
+            {
+                TAuditHookAdd(hooks, line, slot);
+            }
+
+            bool literal = !attribute.Value.StartsWith('{');
+            if (literal
+                && (TAuditStrictSetting.TAuditHookLiterals.Contains(attribute.Name.LocalName, StringComparer.Ordinal)
+                    || (attribute.Name.LocalName == "Value"
+                        && TAuditStrictSetting.TAuditHookLiterals.Contains(slot, StringComparer.Ordinal))))
+            {
+                TAuditHookAdd(hooks, line, attribute.Name.LocalName == "Value" ? slot : attribute.Name.LocalName);
+            }
+
+            foreach (Match match in TAuditHookPattern.Matches(attribute.Value))
+            {
+                string prefix = match.Groups[1].Value;
+                string extension = prefix.Length == 0 ? match.Groups[2].Value : $"{prefix}:{match.Groups[2].Value}";
+                string space = prefix.Length == 0
+                    ? string.Empty
+                    : element.GetNamespaceOfPrefix(prefix)?.NamespaceName ?? string.Empty;
+                if (TAuditStrictSetting.TAuditHookExtensions.Contains(extension, StringComparer.Ordinal)
+                    || space.StartsWith("clr-namespace:", StringComparison.Ordinal))
+                {
+                    TAuditHookAdd(hooks, line, extension);
+                }
+            }
+        }
+    }
+
+    private static void TAuditHookAdd(SortedDictionary<int, List<string>> hooks, int line, string marker)
+    {
+        if (!hooks.TryGetValue(line, out List<string>? markers))
+        {
+            markers = [];
+            hooks[line] = markers;
+        }
+
+        markers.Add(marker);
+    }
+
+    private static bool TAuditHookCheck(XElement element, Dictionary<string, List<string>> spaces)
+    {
+        const string prefix = "clr-namespace:";
+        string name = element.Name.LocalName;
+        string uri = element.Name.NamespaceName;
+        if (name.Contains('.', StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        IEnumerable<string> candidates = uri.StartsWith(prefix, StringComparison.Ordinal)
+            ? [uri[prefix.Length..].Split(';')[0]]
+            : spaces.GetValueOrDefault(uri) ?? [];
+        foreach (string space in candidates)
+        {
+            for (INamedTypeSymbol? type = TAuditBinder.TAuditCompilation.GetTypeByMetadataName($"{space}.{name}");
+                 type is not null;
+                 type = type.BaseType)
+            {
+                if (type.Interfaces.Append(type).Any(shape =>
+                        TAuditStrictSetting.TAuditHookTypes.Contains(shape.ToDisplayString(), StringComparer.Ordinal)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static Dictionary<string, List<string>> TAuditSpaceRead()
+    {
+        CSharpCompilation compilation = TAuditBinder.TAuditCompilation;
+        Dictionary<string, List<string>> spaces = new(StringComparer.Ordinal);
+        IEnumerable<AttributeData> attributes = compilation.References
+            .Select(compilation.GetAssemblyOrModuleSymbol)
+            .OfType<IAssemblySymbol>()
+            .Append(compilation.Assembly)
+            .SelectMany(assembly => assembly.GetAttributes());
+        foreach (AttributeData attribute in attributes)
+        {
+            if (attribute.AttributeClass?.Name is not "XmlnsDefinitionAttribute"
+                || attribute.ConstructorArguments is not [{ Value: string uri }, { Value: string space }, ..])
+            {
+                continue;
+            }
+
+            if (!spaces.TryGetValue(uri, out List<string>? list))
+            {
+                list = [];
+                spaces[uri] = list;
+            }
+
+            list.Add(space);
+        }
+
+        return spaces;
     }
 
     public static IReadOnlyList<string> TAuditControlRead(IEnumerable<string> markupPaths)

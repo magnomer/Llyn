@@ -13,6 +13,10 @@ Nothing here touches an entry or a draft.
 
 The interface strings of one language, parsed and ready for the resource dictionary.
 
+## `IReadOnlyList<string> LEngineLocalizationScan();`
+
+The interface languages the build embeds, so the language box lists no language named in markup.
+
 ## `string? LEngineAuditRecord(Exception exception);`
 
 Writes the failure to the audit log and returns the path written, or null when the log is unreachable.

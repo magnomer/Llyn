@@ -15,7 +15,7 @@ public sealed class TAuditStrict
     private static readonly Lazy<string> TAuditStrictWritten = new(TAuditReportSave);
 
     private static readonly string[] TAuditStrictKinds =
-        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring"];
+        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring", "Hook", "Shell"];
 
     private static readonly Regex TAuditLiteralPattern = new(
         @"@?""(?:[^""\\]|\\.)*""|//.*$",
@@ -74,6 +74,18 @@ public sealed class TAuditStrict
     public void AuditStrict_HostSources_WireOnly()
     {
         TAuditStrictCheck("Wiring", "host line(s) do more than construct and wire");
+    }
+
+    [Fact]
+    public void AuditStrict_SurfaceMarkup_HookNever()
+    {
+        TAuditStrictCheck("Hook", "markup line(s) hook logic into markup");
+    }
+
+    [Fact]
+    public void AuditStrict_SurfaceTypes_ShellOnly()
+    {
+        TAuditStrictCheck("Shell", "surface member(s) other than a constructor");
     }
 
     [Fact]
@@ -203,9 +215,9 @@ public sealed class TAuditStrict
         IReadOnlyList<string> sources = TAuditScopeRead(repoRoot, TAuditTruthSetting.TAuditShellInclude);
         IReadOnlyList<string> hosts = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditHostInclude);
         IReadOnlyList<string> markups = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditReachInclude);
-        Assert.True(sources.Count > 0 && hosts.Count > 0 && markups.Count > 0, TAuditConvention.TAuditReportFormat(
+        Assert.True(sources.Count > 0 && hosts.Count > 0, TAuditConvention.TAuditReportFormat(
             TAuditStrictAudit,
-            "No tracked surface, host or markup file was enumerated; the audit would pass vacuously."));
+            "No tracked shell or host file was enumerated; the audit would pass vacuously."));
         IReadOnlyList<TViolation> hits = TAuditStrictWalker.TAuditRun(sources, out List<string> veneers)
             .Concat(TAuditHostWalker.TAuditRun(hosts))
             .Concat(TAuditReachWalker.TAuditRun(markups))

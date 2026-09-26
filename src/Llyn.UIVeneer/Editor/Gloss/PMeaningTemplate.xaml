@@ -1,11 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer"
-    xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-    x:Class="Llyn.UIVeneer.PMeaningTemplate">
-
-    <local:PStateConverter x:Key="Theme.State.Show" />
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <DataTemplate x:Key="Theme.Meaning.Card">
         <Border Style="{DynamicResource Theme.Card.Shell}">
@@ -15,35 +11,24 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Border Style="{DynamicResource Theme.Card.Header}" Cursor="SizeAll" MouseLeftButtonDown="PCardDragHandle">
+                <Border x:Name="PCardHeader" Style="{DynamicResource Theme.Card.Header}" Cursor="SizeAll">
                     <Grid Style="{DynamicResource Theme.Card.Crown}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Style="{DynamicResource Theme.Card.Position}" ToolTip="{DynamicResource Card.PositionHint}" MouseLeftButtonDown="PCardPositionHandle">
-                            <TextBox
-                                KeyDown="PCardPositionAccept"
-                                LostFocus="PCardPositionCommit"
-                                Style="{DynamicResource Theme.Card.Ordinal}"
-                                Text="{Binding PCardPositionText, UpdateSourceTrigger=PropertyChanged}" />
+                        <Border x:Name="PCardPosition" Style="{StaticResource Theme.Card.Position}" ToolTip="{DynamicResource Card.PositionHint}">
+                            <TextBox x:Name="PCardPositionText" Style="{StaticResource Theme.Card.Ordinal}" />
                         </Border>
-                        <TextBox Grid.Column="1" Margin="0,0,34,0" Style="{DynamicResource Theme.Card.Title}" Text="{Binding PTitle, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
-                            <TextBox.Tag>
-                                <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                    <Binding Path="PTitle" />
-                                    <Binding Path="PCardTitle" />
-                                </MultiBinding>
-                            </TextBox.Tag>
-                        </TextBox>
+                        <TextBox x:Name="PTitle" Grid.Column="1" Margin="0,0,34,0" Style="{DynamicResource Theme.Card.Title}" />
                         <Button
+                            x:Name="PCardEraser"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Click="PCardHandle"
                             Style="{DynamicResource Theme.Card.Handle}">
-                            <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon close, 12}" />
+                            <local:PIconImage x:Name="PCardIcon" Width="12" Height="12" />
                         </Button>
                     </Grid>
                 </Border>
@@ -55,42 +40,34 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <TextBox Style="{DynamicResource Theme.Card.Meaning}" Text="{Binding PCardDefinition, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
-                            <TextBox.Tag>
-                                <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                    <Binding Path="PCardDefinition" />
-                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                                    <local:PLocalizationBinder PLocalizationBinderKey="Card.DefinitionHint" />
-                                </MultiBinding>
-                            </TextBox.Tag>
-                        </TextBox>
+                        <TextBox x:Name="PCardDefinition" Style="{DynamicResource Theme.Card.Meaning}" />
 
-                        <ItemsControl ItemsSource="{Binding PCardContext}" Style="{DynamicResource Theme.Context.Field}" />
+                        <ItemsControl x:Name="PCardContext" Style="{DynamicResource Theme.Context.Field}" />
 
-                        <ItemsControl ItemsSource="{Binding PCardRegister}" Style="{DynamicResource Theme.Register.Field}" />
+                        <ItemsControl x:Name="PCardRegister" Style="{DynamicResource Theme.Register.Field}" />
 
-                        <ItemsControl ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
+                        <ItemsControl x:Name="PCardLink" Style="{DynamicResource Theme.Link.Field}" />
 
                         <Border Style="{DynamicResource Theme.Card.Example}">
-                            <ItemsControl ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
+                            <ItemsControl x:Name="PCardSentence" ItemTemplate="{DynamicResource Theme.Sentence.Row}" />
                         </Border>
 
-                        <ItemsControl ItemsSource="{Binding PCardLabel}" Style="{DynamicResource Theme.Label.Field}" />
+                        <ItemsControl x:Name="PCardLabel" Style="{DynamicResource Theme.Label.Field}" />
 
-                        <ItemsControl ItemTemplate="{DynamicResource Theme.Image.Row}" ItemsSource="{Binding PCardImage}" Style="{DynamicResource Theme.Card.Media}" />
+                        <ItemsControl x:Name="PCardImage" ItemTemplate="{DynamicResource Theme.Image.Row}" Style="{DynamicResource Theme.Card.Media}" />
 
-                        <ItemsControl ItemTemplate="{DynamicResource Theme.Video.Row}" ItemsSource="{Binding PCardVideo}" Style="{DynamicResource Theme.Card.Media}" />
+                        <ItemsControl x:Name="PCardVideo" ItemTemplate="{DynamicResource Theme.Video.Row}" Style="{DynamicResource Theme.Card.Media}" />
 
                         <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{DynamicResource Theme.Command.Group}">
                             <StackPanel Orientation="Horizontal">
-                                <Button Click="PImageAddHandle" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
-                                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon image, 24}" />
+                                <Button x:Name="PCardImageChooser" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
+                                    <local:PIconImage x:Name="PCardImageIcon" Width="24" Height="24" />
                                 </Button>
 
                                 <Rectangle Style="{DynamicResource Theme.Command.Divider}" />
 
-                                <Button Click="PVideoAddHandle" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
-                                    <local:PIconImage Width="24" Height="24" PIconSource="{local:PIcon video, 24}" />
+                                <Button x:Name="PCardVideoChooser" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
+                                    <local:PIconImage x:Name="PCardVideoIcon" Width="24" Height="24" />
                                 </Button>
                             </StackPanel>
                         </Border>

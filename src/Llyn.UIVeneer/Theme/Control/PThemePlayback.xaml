@@ -21,24 +21,6 @@
                     <Border x:Name="PSurface" Background="Transparent" SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="1" />
-                            <Setter TargetName="PSurface" Property="RenderTransformOrigin" Value="0.5,0.5" />
-                            <Setter TargetName="PSurface" Property="RenderTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleX="0.88" ScaleY="0.88" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
-                            <Setter Property="Cursor" Value="Arrow" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

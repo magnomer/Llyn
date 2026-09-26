@@ -4,10 +4,11 @@
 
 The video row of a read-only card, from its panel down to the single screen.
 
-## Inline notes
+## `<Style x:Key="Display.Card.Video" TargetType="ItemsControl">`
 
-### `<DataTemplate x:Key="Display.Card.VideoLine">`
+The look sheet folds the panel away while the card carries no video.
 
-A clip is played by the same screen the writing side embeds, in the same frame a picture takes.
-The screen reads the row's location through the state converter, since the row holds the engine's value.
-Its volume is read off the shared catalog, so every screen in the app answers one control.
+## `<DataTemplate x:Key="Display.Card.VideoLine">`
+
+A clip plays in the same screen the writing side embeds, in the frame a picture takes.
+The frame turns the engine's row into a video, and the line fill sets the screen from it.

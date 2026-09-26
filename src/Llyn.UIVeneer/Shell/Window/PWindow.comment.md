@@ -1,6 +1,8 @@
 # PWindow.xaml
 
 The application window layout, including navigation, content panels, and mention menu.
+The markup carries no hook.
+`PWindow` in Deportment loads it, subscribes every event and sets every icon.
 
 ## `PRoof`
 

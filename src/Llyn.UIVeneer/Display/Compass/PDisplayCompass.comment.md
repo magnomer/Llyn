@@ -3,7 +3,8 @@
 ## `ResourceDictionary`
 
 The floating contents column of the entry page: its row, its number and the row template.
-The row answers a click the panel handles, so the dictionary carries a class and forwards to its host.
+The row answers a click the panel handles.
+The Deportment class of the same name loads this markup and forwards the click to its host.
 The host hands the click on to [LCompass](../../../Llyn.UIDeportment/Display/LCompass.comment.md).
 The panel adds it from code after its own markup is parsed, so the list reads the template dynamically.
 
@@ -20,3 +21,4 @@ It collapses when the heading carries no number.
 ## `<DataTemplate x:Key="Theme.Compass.Row">`
 
 The row itself, indented by the depth of its heading, with the name trimmed to one line.
+Its named parts are filled by the display, which also marks the current row `Chosen`.

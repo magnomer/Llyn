@@ -6,6 +6,7 @@ One row of a panel's catalog, drawn on nothing until it is pointed at.
 The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
 A row shows its subject over a quieter line of what tells it apart.
 The row the panel stands on is tagged as chosen by the panel.
+The tag is a `PLook` state, since the style carries no trigger.
 The tag paints the soft accent ground and turns the subject accent, as the reading compass marks its current row.
 One ground and one ink say chosen together, so no rail or edge repeats them.
 
@@ -13,7 +14,8 @@ One ground and one ink say chosen together, so no rail or edge repeats them.
 
 The epithet run after a listed headword: the reading the language pack names, such as `희롱할 롱` after `弄`.
 It sits on the headword's baseline, two steps smaller and muted, so the headword stays the row's one bold word.
-An en space leads it, carried by the binding's format, so an empty epithet leaves no visible gap.
+No binding fills it, since the row fill in the deportment writes its text.
+That fill prepends an en space, so the run needs no margin of its own.
 The row's title keeps its ellipsis, since both runs share one text block.
 
 ## `<Style x:Key="Theme.Catalog.Pellet" TargetType="Border">`

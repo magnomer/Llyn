@@ -9,7 +9,7 @@ It stretches across the view, unlike that box, so a long row of pictures wraps i
 ## `<Style x:Key="Theme.Script.Character" TargetType="TextBlock">`
 
 The character heading a group of rows, inked and in the glyph font the box inherits from `LFontApply`.
-It collapses when empty, so a one-character headword leaves no column.
+A `PLook` row collapses it when empty, so a one-character headword leaves no column.
 
 ## `<Style x:Key="Theme.Script.Chip" TargetType="Border">`
 
@@ -23,24 +23,24 @@ The style name inside the chip, in the interface font so the glyph font does not
 
 The glyph itself: a rectangle of the theme's ink masked by the picture.
 The stored picture is black on a clear ground, so as a mask it takes whatever ink the theme paints.
-Its width and height come from the item, which keeps the original's aspect at the drawn height.
+The picture fill sets its width, height and mask from the item, keeping the original's aspect.
 
 ## `<Style x:Key="Theme.Script.Caption" TargetType="TextBlock">`
 
 The caption under a picture, muted, centered and wrapped within a narrow width.
 It sits right under the age when there is one, so the two read as one caption of two lines.
-It collapses when empty.
+A `PLook` row collapses it when empty.
 
 ## `<Style x:Key="Theme.Script.Epoch" TargetType="TextBlock">`
 
 The age above the caption, drawn like it but semibold and in the interface font.
 The font is named here because the box inherits the glyph font, which is for the source's words, not ours.
-It collapses when the picture carries no age, or when no shipped language names the stored code.
+A `PLook` row collapses it when the age is blank, as when no shipped language names the stored code.
 
 ## `<Style x:Key="Theme.Script.Gloss" TargetType="TextBlock">`
 
 The gloss under a row's pictures, inked and wrapped.
-It collapses when empty.
+A `PLook` row collapses it when empty.
 
 ## `<Style x:Key="Theme.Script.Head" TargetType="TextBlock">`
 
@@ -56,8 +56,10 @@ It is the only content of the box while nothing is stored yet.
 One picture with its age and caption beneath, spaced from the next.
 The two lines sit in a panel of their own.
 The gap under the picture then stands whichever line is shown.
+`PScriptImage.PScriptImageApply` fills its named parts and hands the lazy loader its row.
 
 ## `<DataTemplate x:Key="Theme.Script.Row">`
 
 One row: the character column, the style chip, and the pictures wrapping in the rest with the gloss below.
 The first two columns share their widths across rows, so the chips line up.
+`PScriptItem.PScriptItemApply` fills its named parts and attaches the picture fill.

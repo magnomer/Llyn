@@ -21,6 +21,7 @@ public sealed class LBootstrap
 
         _lBootstrapApplication = application;
         _lBootstrapText = textSeam;
+        PLook.PLookStateAttach();
     }
 
     public bool LBootstrapThemeApply(Action themeSeam)

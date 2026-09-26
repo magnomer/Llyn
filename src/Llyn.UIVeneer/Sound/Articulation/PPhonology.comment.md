@@ -24,10 +24,10 @@ It carries the height, the corner and the marked label of the bar beside it.
 The row therefore reads as one control rather than two shapes.
 The aid is two full charts, so it is folded away until it is asked for.
 
-## `<UserControl.Resources>`
+## `<Rectangle x:Name="PArticulationSeam" ... Visibility="Collapsed" />`
 
-The fold is a binding rather than a handler.
-There is no state to keep, because the toggle already is the state.
+The seam and the aid start folded, because the toggle starts unchecked.
+`PPhonology` shows both when the toggle is checked, since the markup carries no fold binding.
 
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 

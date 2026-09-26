@@ -17,15 +17,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Background="{TemplateBinding Background}">
+                    <Border x:Name="PSurface">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -35,20 +29,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Background="{TemplateBinding Background}">
+                    <Border x:Name="PSurface">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningStrong}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningStrong}" />
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

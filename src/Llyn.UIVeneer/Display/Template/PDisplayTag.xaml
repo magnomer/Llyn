@@ -11,11 +11,6 @@
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding LCardDraftTag.Count}" Value="0">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Display.Card.TagLink" TargetType="Button">
@@ -27,14 +22,6 @@
                     <Border x:Name="PSurface" Style="{DynamicResource Theme.Card.Badge}">
                         <ContentPresenter />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.72" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -42,7 +29,7 @@
 
     <DataTemplate x:Key="Display.Card.TagChip">
         <Button Style="{StaticResource Display.Card.TagLink}">
-            <TextBlock FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding LTagDraftText}" />
+            <TextBlock x:Name="PTagLabel" FontSize="12" Foreground="{DynamicResource Theme.Muted}" />
         </Button>
     </DataTemplate>
 </ResourceDictionary>

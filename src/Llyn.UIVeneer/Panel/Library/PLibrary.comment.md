@@ -15,6 +15,13 @@ The bar owns the ground and the focus ring, so both children are drawn bare.
 Its outline shows only under the pointer or on focus.
 Its width is the index column's, so its edge is the same as the catalog below.
 The viewer deliberately has no control in this row.
+The dropdowns, icons and field events are wired by the panel, so every part carries a name.
+
+## `<ItemsControl x:Name="PIndex">`
+
+The entry catalog, one `Theme.Catalog.Row` per Entry.
+Its row parts are named, and the shared index fill paints them and marks the chosen row.
+The command row names its buttons, pairs and icons, and the panel sets each from code.
 
 ## `<local:PDisplay x:Name="PDisplay" />`
 

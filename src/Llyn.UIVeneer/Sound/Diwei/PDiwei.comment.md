@@ -1,6 +1,6 @@
 # PDiwei.xaml
 
-## `<UserControl x:Class="Llyn.UIVeneer.PDiwei"`
+## `<UserControl>`
 
 The category page of the rime table: a headword line for the category and the characters placed under it.
 It stands where the reading view stands and is shown in its place while a category is open.
@@ -12,3 +12,4 @@ Each line lays its parts out in a row, each part followed by its raised characte
 Clicking a part opens a popup listing those characters, each a chip opening its entry as the plate's chips do.
 A switch at the right end of every section heading picks IPA or respelling for those lines.
 The switches repeat one state, so any of them flips all, and they show only while respelling is on.
+The chip and switch commands are bound by `PDiwei`, since the markup holds no command binding.

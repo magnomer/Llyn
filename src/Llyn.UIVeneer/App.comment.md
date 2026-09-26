@@ -1,7 +1,8 @@
 # App.xaml
 
-Application-wide resources for the WPF shell.
+The application-wide resource merge, a plain dictionary with no class behind it.
 
-## `Application.Resources`
+## `<ResourceDictionary.MergedDictionaries>`
 
-Loads the base theme dictionary once for every window.
+Merges the base theme dictionary once for every window.
+`PBootstrap` in the deportment loads this file by pack URI in its constructor.

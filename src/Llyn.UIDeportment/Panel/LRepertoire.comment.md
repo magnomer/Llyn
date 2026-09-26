@@ -7,7 +7,7 @@ The situation list lives in the atlas, which holds the situation vista's panel s
 The occurrence list lives in the occurrence, whose rows follow the chosen Situation.
 The desk holds the situation tenure the scenario editor edits, under the `Situation` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
-The occurrence list's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The occurrence list's loads and clears go straight to the editor's lectern, so the panel control relays no draft.
 
 ## `private LEditor LRepertoireEditor { get; }`
 
@@ -16,7 +16,7 @@ The entry editor's deportment on the occurrence side, which takes the occurrence
 ## `public LDesk LRepertoireDesk { get; }`
 
 The desk over the situation draft, started by subject rather than by a vista.
-The veneer attaches its observers to the tenure the desk announces, as the entry editor does.
+The panel control attaches its observers to the tenure the desk announces, as the entry editor does.
 
 ## `public LAtlas LRepertoireAtlas { get; }`
 
@@ -24,7 +24,7 @@ The situation list, whose panel asks the desk whether the scenario holds unsaved
 
 ## `public event Action? LRepertoireChanged`
 
-Raised when the desk or the entry editor changes state, so the veneer refreshes the panel.
+Raised when the desk or the entry editor changes state, so the panel control refreshes its parts.
 
 ## `public event Action<LSituation?>? LRepertoireScenarioChanged`
 
@@ -40,7 +40,7 @@ Raised with a message key and the exception when a repertoire action fails.
 
 ## `public event Action? LRepertoireInquestCleared`
 
-Raised once an arrival drops the inquest and the language filter, so the veneer empties both controls.
+Raised once an arrival drops the inquest and the language filter, so the panel control empties both fields.
 
 ## `private void LRepertoireDraftStart(long? id)`
 
@@ -162,7 +162,7 @@ Clears both lists, also when the workspace changes under the panel.
 
 ## `public void LRepertoireRowsApply(IReadOnlyList<LCatalogSituation> rows)`
 
-Checks the rows the veneer has just applied, so a clear never re-enters a read in progress.
+Checks the rows the panel control has just applied, so a clear never re-enters a read in progress.
 A chosen Situation missing from them clears both lists while the vignette shows it.
 
 ## `private bool LRepertoireRowHeld`

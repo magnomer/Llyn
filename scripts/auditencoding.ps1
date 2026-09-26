@@ -25,7 +25,7 @@ Git is the only external tool required.
 
 auditencoding.json shape:
   {
-    "generation": 12,
+    "generation": 14,
     "project": "Llyn",
     "sources": {
       "include": ["*.cs", "*.md", "*.ps1"],
@@ -59,7 +59,7 @@ auditencoding -Root D:\temp\sample
 Audit another git working tree with this configuration.
 #>
 #requires -Version 5.1
-# AUDITENCODING GENERATION 12 - auditencoding.ps1.
+# AUDITENCODING GENERATION 14 - auditencoding.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -68,6 +68,11 @@ Audit another git working tree with this configuration.
 # leave it alone. Every audit script shares one generation number with the convention-test settings,
 # and each refuses a configuration written at another generation.
 # Generation 12: the first generation of this audit. It reports the eight kinds of the convention test.
+# Generation 13: nothing this audit reports changes; the number rises with the UI audit, which
+# counts every surface markup line that hooks logic into the markup and every surface member
+# that is not a constructor.
+# Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
+# also counts command parameters, member paths and literal tags in surface markup as hooks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -94,7 +99,7 @@ CONFIGURATION
     script: the git pathspecs, the excluded segments, the skipped names, the
     tabless and ascii suffixes and the control and mojibake patterns.
 
-COUNTERS
+RESULT
     Invalid UTF-8           A byte sequence that is not UTF-8.
     Byte order marks        A byte order mark anywhere in the file.
     Carriage returns        A carriage return, paired or alone.
@@ -104,7 +109,7 @@ COUNTERS
     Tabs in sources         A tab in a tabless file.
     Non-ASCII scripts       A byte outside ASCII in a script.
 
-    The exit code is 1 when any counter is above 0 and 0 otherwise.
+    The exit code is 1 when any Result gate is above 0 and 0 otherwise.
 
 OPTIONS
     -Root <path>
@@ -140,10 +145,10 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 12
+$script:AuditGeneration = 14
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
-Write-Host "AUDITENCODING GENERATION $script:AuditGeneration" -ForegroundColor Cyan
+Write-Host "AUDITENCODING GENERATION $script:AuditGeneration" -ForegroundColor Blue
 
 function Get-ConfigNode {
     param(
@@ -336,8 +341,37 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-Host ''
-    Write-Host $Text
-    Write-Host ('-' * $Text.Length)
+    Write-Host $Text -ForegroundColor Blue
+    Write-Host ('-' * $Text.Length) -ForegroundColor DarkGray
+}
+
+function Write-ResultTable {
+    param([Parameter(Mandatory = $true)][object[]]$Rows)
+
+    Write-SectionTitle 'Result'
+    $statusWidth = 6
+    $countWidth = [Math]::Max(5, ($Rows | ForEach-Object { (Format-Integer $_.Count).Length } | Measure-Object -Maximum).Maximum)
+    $gateWidth = [Math]::Max(4, ($Rows | ForEach-Object { $_.Gate.Length } | Measure-Object -Maximum).Maximum)
+    $meaningWidth = [Math]::Max(7, ($Rows | ForEach-Object { $_.Meaning.Length } | Measure-Object -Maximum).Maximum)
+    Write-Host ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
+    Write-Host (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
+    foreach ($row in $Rows) {
+        $failing = $row.Count -gt 0
+        $status = if ($failing) { 'FAIL' } else { 'OK' }
+        $text = '{0}  {1}  {2}  {3}' -f $status.PadRight($statusWidth), (Format-Integer $row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning
+        Write-Host $status -ForegroundColor $(if ($failing) { 'Red' } else { 'Green' }) -NoNewline
+        Write-Host $text.Substring($status.Length)
+    }
+
+    $failed = @($Rows | Where-Object { $_.Count -gt 0 })
+    Write-Host ''
+    if ($failed.Count -eq 0) {
+        Write-Host ('PASS: all {0} gates at 0.' -f $Rows.Count) -ForegroundColor Green
+    }
+    else {
+        $sections = ($failed | ForEach-Object { '"' + $_.Section + '"' }) -join ', '
+        Write-Host ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failed.Count, $Rows.Count, $sections) -ForegroundColor Red
+    }
 }
 
 function Format-Integer {
@@ -430,13 +464,22 @@ foreach ($file in $files) {
 
 Write-Host ('Scanned: {0} text files' -f (Format-Integer $files.Count)) -ForegroundColor DarkGray
 
-$labelWidth = ($kinds | ForEach-Object { $_.Label.Length } | Measure-Object -Maximum).Maximum
-Write-SectionTitle 'Counters'
-$total = 0
-foreach ($kind in $kinds) {
-    $total += $kind.Hits.Count
-    Write-Host ('{0}  {1}' -f $kind.Label.PadRight($labelWidth), (Format-Integer $kind.Hits.Count))
+$meanings = @{
+    'Invalid UTF-8' = 'files with a byte sequence that is not UTF-8'
+    'Byte order marks' = 'files with a byte order mark'
+    'Carriage returns' = 'files with a carriage return'
+    'Missing final newlines' = 'non-empty files not ending in a line feed'
+    'Control characters' = 'files with a raw control character'
+    'Double-encoded text' = 'files with UTF-8 read back through a single-byte page'
+    'Tabs in sources' = 'tabless files containing a tab'
+    'Non-ASCII scripts' = 'scripts with a byte outside ASCII'
 }
+$total = 0
+$gateRows = foreach ($kind in $kinds) {
+    $total += $kind.Hits.Count
+    [pscustomobject]@{ Gate = $kind.Label; Count = $kind.Hits.Count; Meaning = $meanings[$kind.Label]; Section = $kind.Label }
+}
+Write-ResultTable -Rows @($gateRows)
 
 foreach ($kind in $kinds) {
     if ($kind.Hits.Count -eq 0) { continue }

@@ -10,11 +10,10 @@ The field is the whole of the row's editing, so no menu stands apart from the li
 
 ## Inline notes
 
-### `<Button ... Tag="Earlier" />`
+### `<Button x:Name="PAuthorEarlier" ...>`
 
-Each row button says in its `Tag` which action it is.
-A dictionary carries no code, so the four cannot name four handlers.
-The edit area reads the `Tag` of whichever button raised the click.
+A dictionary carries no code, so the four row buttons name no handlers.
+The edit area maps the name of whichever button raised the click to its action.
 
 ### `<Style x:Key="Imprint.Credit.Field" ...>`
 
@@ -23,15 +22,16 @@ So the edit side reads as the view side does, with only the caret to tell them a
 
 ### `<Style x:Key="Imprint.Credit.Control" ...>`
 
-The handles stay hidden until the pointer or the caret is in the list, as an entry's sentence handles do.
+The handles stay hidden, and the edit area shows them while the pointer or caret is in the list.
 So the row at rest is the name alone, as the reading side shows it.
 
 ### `<Style x:Key="Imprint.Credit.Handle" ...>`
 
 A handle that cannot act is faded rather than hidden, so the row keeps its shape.
+The fade is a disabled state row of the look sheet, not a trigger here.
 The marks take the handle's own foreground, so the pointer over one lights it as the entry's handles light.
 
-### `Text="{Binding PAuthorItemName, Mode=OneWay}"`
+### `<TextBox x:Name="PAuthorName" ...>`
 
 The field shows the credited name, and typing over it changes nothing until it is entered.
-A changed credit list is a rebuilt list, so every field is refilled from its own row.
+The edit area fills the field from its row, and refills it only when the row's name changes.

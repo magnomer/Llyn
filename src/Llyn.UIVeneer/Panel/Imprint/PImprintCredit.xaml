@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIVeneer">
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <Style x:Key="Imprint.Credit.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
         <Setter Property="FontSize" Value="14" />
@@ -12,26 +12,11 @@
     <Style x:Key="Imprint.Credit.Control" TargetType="FrameworkElement">
         <Setter Property="Opacity" Value="0" />
         <Setter Property="IsHitTestVisible" Value="False" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
-                <Setter Property="Opacity" Value="1" />
-                <Setter Property="IsHitTestVisible" Value="True" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
-                <Setter Property="Opacity" Value="1" />
-                <Setter Property="IsHitTestVisible" Value="True" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Imprint.Credit.Handle" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
         <Setter Property="Margin" Value="4,0,0,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Style.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Opacity" Value="0.35" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <DataTemplate x:Key="Imprint.Credit.Card">
@@ -40,22 +25,22 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox Style="{StaticResource Imprint.Credit.Field}" Tag="{DynamicResource Source.AuthorName}" Text="{Binding PAuthorItemName, Mode=OneWay}" />
-            <StackPanel Grid.Column="1" Margin="8,0,0,0" Orientation="Horizontal">
+            <TextBox x:Name="PAuthorName" Style="{StaticResource Imprint.Credit.Field}" Tag="{DynamicResource Source.AuthorName}" />
+            <StackPanel x:Name="PAuthorShelf" Grid.Column="1" Margin="8,0,0,0" Orientation="Horizontal">
                 <StackPanel.Style>
                     <Style TargetType="StackPanel" BasedOn="{StaticResource Imprint.Credit.Control}" />
                 </StackPanel.Style>
-                <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Add" ToolTip="{DynamicResource Source.AuthorAdd}">
-                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon add, 12}" />
+                <Button x:Name="PAuthorAddition" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorAdd}">
+                    <local:PIconImage x:Name="PAuthorAdditionIcon" Width="12" Height="12" />
                 </Button>
-                <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}">
-                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon remove, 12}" />
+                <Button x:Name="PAuthorRemoval" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorRemove}">
+                    <local:PIconImage x:Name="PAuthorRemovalIcon" Width="12" Height="12" />
                 </Button>
-                <Button IsEnabled="{Binding PAuthorItemEarlier}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}">
-                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon earlier, 12}" />
+                <Button x:Name="PAuthorEarlier" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorEarlier}">
+                    <local:PIconImage x:Name="PAuthorEarlierIcon" Width="12" Height="12" />
                 </Button>
-                <Button IsEnabled="{Binding PAuthorItemLater}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}">
-                    <local:PIconImage Width="12" Height="12" PIconSource="{local:PIcon later, 12}" />
+                <Button x:Name="PAuthorLater" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorLater}">
+                    <local:PIconImage x:Name="PAuthorLaterIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

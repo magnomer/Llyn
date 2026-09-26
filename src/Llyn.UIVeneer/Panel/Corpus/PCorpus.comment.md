@@ -28,7 +28,7 @@ The orderings the catalog may be listed in, one radio row each, carrying its cho
 Ordering by recency is not offered, because the `example` row carries no creation or modification time.
 An Example whose text is unwritten still has a place in every ordering, ordered by its mark rather than dropped.
 
-## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
+## `<local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
 
 The action row of the panel.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
@@ -40,13 +40,9 @@ One slot sits between save and export, and it holds whichever pair the mode asks
 Reading shows `PCorpusEarlier` and `PCorpusLater`, which walk the window's trail of records.
 Writing shows `PCorpusBackward` and `PCorpusForward`, which walk the chronicle of the editor in front.
 Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-Export and print are mock-up controls and are not wired.
-
-## `<Grid x:Name="PTranscript">`
-
-The scribe binds the four Mention commands on its root.
-So the transcript's menu and its chip line reach the same handlers.
-The transcript field carries the shared linking menu, and the chip line stands right under it.
+The pairs stand in `PCorpusVoyage` and `PCorpusChronicle`, and the panel shows one per mode.
+Export and print are `PCorpusPortrait` and `PCorpusPress`, and the panel sets their commands.
+Every icon and click of the row is set by the panel, so the markup names each part.
 
 ## `<ItemsControl x:Name="PAnthology">`
 
@@ -58,6 +54,7 @@ A row says what the sentence is, not where it came from.
 The reading beside the catalog carries the Source, so nothing is lost by leaving it off the row.
 The translation is not shown here either.
 It is text of the sentence itself and says nothing about where the sentence is used.
+The row parts are named, and the panel fills them and marks the chosen row.
 
 ## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
 
@@ -97,13 +94,17 @@ The middle column: every Entry whose cards quote the selected Example, one row p
 An Entry quoting it from several cards is still one row.
 While no Example is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
 A row reads the flag, the headword and the language, as a cohort row does.
+Its parts are named, and the panel fills them as it fills the catalog rows.
 Choosing a row shows that Entry in `PDisplay`, in place of the Example reading, without leaving the tab.
 The list is read-only: a reference is added or dropped on the card holding it, never here.
 An Example nothing quotes shows the empty state rather than hiding the column.
 
-## `<Grid x:Name="PTranscript" Visibility="Collapsed">`
+## `<Grid x:Name="PTranscript" Margin="21,18,0,0" Visibility="Collapsed">`
 
 The editable view of the selected Example, laid out as the reading side lays it out.
+The panel adds the four Mention command bindings to this grid from code.
+So the transcript's menu and its chip line reach the same handlers.
+The transcript field carries the shared linking menu, and the chip line stands right under it.
 Every slot the reading side draws is drawn here in the same place.
 A bare field stands where the text stood.
 The sentence is written in the head of the page, with its Mention chips right under it.
@@ -120,8 +121,10 @@ That is how the entry editor's rows carry them.
 Plus adds a row after this one and minus drops this one.
 `PTranscriptSeed` stands in while there is no row.
 It is a bare field showing the placeholder whose focus or plus adds the first.
-`PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
-It is drawn as the text the reading side draws, with a small arrow that opens the shelf.
+Its plus stands in `PTranscriptShelf`, which the look sheet reveals under the pointer or focus.
+`PCitationSheet` is as wide as the field it opens under, and the panel sets that on opening.
+`PCitationField` holds the single Source the Example cites, a pointer that is cleared without touching the Source itself.
+It is drawn as the text the reading side draws, and typing into it opens `PCitationDrawer` with the matching Sources.
 The editor carries no buttons of its own.
 Save is the rail's `PCorpusStore`, delete is `PCorpusBin`, and there is no discard.
 That is how the repertoire panel arranges a Situation.

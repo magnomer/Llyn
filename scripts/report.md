@@ -9,9 +9,9 @@ An audit prints the levels it has in this order and skips the ones it lacks.
 
 | Level | Content |
 |---|---|
-| Title | `AUDITX GENERATION N` in cyan. |
+| Title | `AUDITX GENERATION N` in blue. |
 | Scope | One `Scanned:` line in dark gray naming what the run read. |
-| Counters | The `Counters` section with every gate number. |
+| Result | The `Result` section with every gate and the verdict. |
 | Group | Totals per folder, project, kind, reason, pair or verdict. |
 | File | Rows per file. |
 | Item | Single lines, names, members or hits. |
@@ -24,16 +24,33 @@ A heading is underlined with dashes of its own length.
 A list section heading ends with ` (N)`, where N counts every row, shown or not.
 A summary or ranking section heading carries no count.
 A group table that splits a whole ends with a `Total` row.
-A list section with nothing to list is left out, since its counter already reads 0.
+A list section with nothing to list is left out, since its gate already reads 0.
 A section cut short ends with `... and N more in the report.`
-Every line after the scope line prints in the default colour.
+Each colour has one meaning, and nothing else wears it.
 
-## Counters
+| Colour | Meaning | Where |
+|---|---|---|
+| Blue | Heading | The title line and every section heading. |
+| Cyan | Column | Every table header row and the dashed rule right below it. |
+| Dark gray | Frame | The scope line and every section heading's dashed underline. |
+| Green | Pass | The `OK` status word and the `PASS` verdict line. |
+| Red | Fail | The `FAIL` status word and the `FAIL` verdict line. |
+| Yellow | Warning | A warning line, a warning-band section heading, and the paging prompt. |
+| Default | Content | Table rows, meanings, counts, paths and `Report:` lines. |
 
-Every counter is a gate, so a done run shows every counter at 0.
-The audit exits 1 when any counter is above 0 and 0 otherwise.
-A counter row is the label, padded to the widest label, two spaces, and the number.
-A counter that lists findings carries the same label as its finding section.
+Colour marks a word or line only for its meaning, so a `Result` row colours its status word alone.
+
+## Result
+
+Every gate is one row of the `Result` table, so a done run shows every row at 0.
+The table has the columns `Status`, `Count`, `Gate` and `Meaning`.
+`Status` reads `OK` in green when the count is 0 and `FAIL` in red otherwise.
+`Gate` is the label of the gate, and a gate that lists findings carries its finding section's label.
+`Meaning` says in a few words what the gate counts.
+A verdict line follows the table after a blank line.
+It reads `PASS: all N gates at 0.` in green, or `FAIL: X of N gates above 0.` in red.
+A failing verdict names each failing gate's finding section after `See`.
+The audit exits 1 when any gate is above 0 and 0 otherwise.
 A number that gates nothing belongs in the scope line or a group section.
 
 ## Tables
@@ -47,4 +64,4 @@ Every count carries thousands separators, while a `path:line` location never doe
 
 A warning prints as a plain line and never through `Write-Warning`.
 A failure the audit cannot judge throws and exits with an error.
-`check.ps1` reads only the `Counters` section, so its rows are the whole contract.
+`check.ps1` reads only the `Status`, `Count` and `Gate` columns of the `Result` table, so they are the whole contract.

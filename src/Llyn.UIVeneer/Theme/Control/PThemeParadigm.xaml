@@ -23,11 +23,6 @@
         <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
         <Setter Property="Margin" Value="0,0,14,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Style.Triggers>
-            <Trigger Property="Text" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Paradigm.Name" TargetType="TextBlock">
@@ -42,34 +37,6 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Text" Value="{Binding PParadigmItemText}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PParadigmItemText}" Value="">
-                <Setter Property="Text" Value="…" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Absent}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PParadigmItemPending}" Value="True">
-                <Setter Property="Text" Value="…" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Pending}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PParadigmItemLost}" Value="True">
-                <Setter Property="Text" Value="…" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Lost}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PParadigmItemHeld}" Value="True">
-                <Setter Property="Text" Value="…" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Held}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PParadigmItemUnknown}" Value="True">
-                <Setter Property="Text" Value="—" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Unknown}" />
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <DataTemplate x:Key="Theme.Paradigm.Row">
@@ -79,9 +46,9 @@
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PParadigmName" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Style="{StaticResource Theme.Paradigm.Part}" Text="{Binding PParadigmItemPart}" />
-            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Paradigm.Name}" Text="{Binding PParadigmItemName}" />
-            <TextBlock Grid.Column="2" Style="{StaticResource Theme.Paradigm.Text}" />
+            <TextBlock x:Name="PParadigmPart" Style="{StaticResource Theme.Paradigm.Part}" />
+            <TextBlock x:Name="PParadigmName" Grid.Column="1" Style="{StaticResource Theme.Paradigm.Name}" />
+            <TextBlock x:Name="PParadigmText" Grid.Column="2" Style="{StaticResource Theme.Paradigm.Text}" />
         </Grid>
     </DataTemplate>
 

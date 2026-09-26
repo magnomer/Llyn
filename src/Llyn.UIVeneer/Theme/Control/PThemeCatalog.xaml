@@ -35,34 +35,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="PSurface"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="11">
-                        <ContentPresenter
-                            Margin="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="Center" />
+                    <Border x:Name="PSurface" CornerRadius="11">
+                        <ContentPresenter x:Name="PSurfaceContent" VerticalAlignment="Center" />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.78" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="Tag" Value="Chosen">
-                <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Catalog.Title" TargetType="TextBlock">
