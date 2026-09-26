@@ -4,7 +4,8 @@
 
 What says a specimen lies outside the audit.
 A name fixed from outside, by a framework contract, an override, an extern or an attribute, is skipped.
-A generated member is audited at the declaration it is built from, never at the generated name.
+A declaration marked as generated code is skipped.
+A name a source generator emits is built by the walker and audited at its declaration's line.
 The prefix read here decides which prefix a name carries, if any.
 The walker asks these questions and audits only what passes.
 

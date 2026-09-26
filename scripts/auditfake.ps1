@@ -19,12 +19,19 @@ A member read only by other fake members is fake too, so a whole dead chain is r
 just its head. A non-static class is tracked as well, though never reported: markup naming it as
 an element, a construction or a live subclass keeps it live, and a read inside a constructor or a
 field initializer belongs to the class. Markup is read as XML: attribute names and values and
-element names, never comments. These are the rules of the convention test TAuditFake. The console prints the counters and the first rows of each kind; a Markdown
-report with every hit is written to {report.directory}\{prefix}{version}.md.
+element names, never comments. These are the rules of the convention test TAuditFake.
+
+Each kind has a ceiling in ceilings. While enforced is true a kind counting above its ceiling
+fails. A ceiling above its count is stale and always fails, so a shed hit is locked in. The
+console prints the counters, the kinds and the first rows of each kind; a Markdown report with
+every hit is written to {report.directory}\{prefix}{version}.md, in the same form as the report
+of the convention test.
 
 Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
 sources, the generated code of every project and the host build output, with no compile error
 allowed. Build the solution first so the generated markup classes and the package assemblies exist.
+The scope line counts the source files the binder walked. The helper targets helper.framework,
+the framework of the convention tests, and is compiled once per text and SDK into the temp folder.
 
 Everything project-specific lives in auditfake.json next to this script. No project source is
 modified. Git and the .NET SDK are required.
@@ -106,6 +113,10 @@ OPTIONS
 KINDS
     Orphan  nothing live and no test reads the member.
     Tested  only tests read the member.
+
+COUNTERS
+    Above ceiling   kinds counting above their ceiling while enforced is true.
+    Stale ceilings  kinds counting below their ceiling, enforced or not.
 '@ | Write-Host
     exit 0
 }
@@ -201,7 +212,7 @@ function Read-AuditConfig {
     }
 
     $required = @(
-        'generation', 'project',
+        'generation', 'project', 'enforced', 'ceilings', 'helper.framework',
         'sources.roots', 'sources.tests', 'sources.extensions', 'sources.markup',
         'sources.excludeSegments', 'sources.excludeSuffixes', 'sources.excludePrefixes',
         'implicitUsings',
@@ -242,15 +253,15 @@ function Read-ProjectVersion {
     }
 
     $version = [string]$versionData.($Config.report.versionKey)
-    if ($version -notmatch '^\d+\.\d+\.\d+$') {
-        throw "Version must contain three numeric components: '$version'"
+    if ([string]::IsNullOrWhiteSpace($version)) {
+        return 'unknown'
     }
 
     return $version
 }
 
 function Test-ExcludedRelativePath {
-    param([string]$RelativePath, $Config, [string[]]$Extensions)
+    param([string]$RelativePath, $Config)
 
     $segments = $RelativePath -split '[\\/]'
     foreach ($segment in $segments) {
@@ -260,11 +271,6 @@ function Test-ExcludedRelativePath {
     }
 
     $fileName = $segments[$segments.Length - 1]
-    $extension = [System.IO.Path]::GetExtension($fileName)
-    if (-not ($Extensions -contains $extension)) {
-        return $true
-    }
-
     foreach ($suffix in $Config.sources.excludeSuffixes) {
         if ($fileName.EndsWith($suffix, [System.StringComparison]::OrdinalIgnoreCase)) {
             return $true
@@ -292,8 +298,13 @@ function Get-TrackedFiles {
         throw "The project root is not a Git working tree: $ProjectRoot"
     }
 
+    $pathspecs = @(foreach ($folder in $Roots) {
+            foreach ($extension in $Extensions) {
+                ':(icase)' + ([string]$folder).TrimEnd('/') + '/*' + $extension
+            }
+        })
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
-        'ls-files', '--cached', '--others', '--exclude-standard', '--') + @($Roots)
+        'ls-files', '--cached', '--others', '--exclude-standard', '--') + $pathspecs
     $nativePreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
@@ -309,7 +320,7 @@ function Get-TrackedFiles {
     foreach ($entry in $gitOutput) {
         $relativePath = ([string]$entry).Trim()
         if ([string]::IsNullOrWhiteSpace($relativePath) -or
-            (Test-ExcludedRelativePath -RelativePath $relativePath -Config $Config -Extensions $Extensions)) {
+            (Test-ExcludedRelativePath -RelativePath $relativePath -Config $Config)) {
             continue
         }
 
@@ -322,10 +333,7 @@ function Get-TrackedFiles {
     return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 }
 
-function Write-AuditHelper {
-    param([string]$HelperFolder, [string]$TargetFramework)
-
-    $projectContent = @'
+$script:HelperProject = @'
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -336,20 +344,12 @@ function Write-AuditHelper {
     <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis">
-      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp">
-      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
   </ItemGroup>
 </Project>
 '@
-    $projectContent = $projectContent.Replace('{TARGET_FRAMEWORK}', $TargetFramework)
 
-    $programContent = @'
+$script:HelperProgram = @'
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -384,8 +384,8 @@ List<string> Take(char tag) => manifest.TryGetValue(tag, out List<string>? list)
 CSharpParseOptions parseOptions = new(LanguageVersion.Preview, DocumentationMode.None, SourceCodeKind.Regular);
 SyntaxTree Parse(string path) => CSharpSyntaxTree.ParseText(File.ReadAllText(path), parseOptions, path);
 
-AuditBinder binder = AuditBinder.Bind(projectRoot, binderPath);
-CSharpCompilation source = binder.Compilation;
+LAuditBinder binder = LAuditBinder.LAuditBinderRead(projectRoot, binderPath);
+CSharpCompilation source = binder.LAuditCompilation;
 
 List<SyntaxTree> testTrees = Take('T').AsParallel().AsOrdered().Select(Parse).ToList();
 testTrees.Add(CSharpSyntaxTree.ParseText(string.Concat(implicitUsings.Select(space => $"global using {space};\n")), parseOptions));
@@ -408,7 +408,7 @@ HashSet<string> elements = nodes
     .ToHashSet(StringComparer.Ordinal);
 
 Dictionary<string, Member> members = new(StringComparer.Ordinal);
-foreach (SyntaxTree tree in binder.Tracked)
+foreach (SyntaxTree tree in binder.LAuditTrees)
 {
     Fake.ScanMembers(source.GetSemanticModel(tree, true), binder, members);
 }
@@ -438,35 +438,58 @@ List<Hit> hits = members.Values
     .ThenBy(hit => hit.Line)
     .ToList();
 
-string[] kinds = ["Orphan", "Tested"];
+int generation = config.GetProperty("generation").GetInt32();
+bool enforced = config.GetProperty("enforced").GetBoolean();
+List<(string Kind, int Ceiling)> ceilings = config.GetProperty("ceilings").EnumerateObject()
+    .Select(item => (item.Name, item.Value.GetInt32()))
+    .ToList();
+int Tally(string kind) => hits.Count(hit => hit.Kind == kind);
+List<string> above = ceilings
+    .Where(pair => enforced && Tally(pair.Kind) > pair.Ceiling)
+    .Select(pair => $"{pair.Kind}: {Tally(pair.Kind)} hit(s), ceiling {pair.Ceiling}")
+    .ToList();
+List<string> stale = ceilings
+    .Where(pair => Tally(pair.Kind) < pair.Ceiling)
+    .Select(pair => $"{pair.Kind}: {Tally(pair.Kind)} hit(s), ceiling {pair.Ceiling}")
+    .ToList();
+
+Console.WriteLine(
+    $"Scanned: {binder.LAuditTrees.Count:N0} source files, {Take('T').Count:N0} test files, "
+    + $"{Take('M').Count:N0} markup files, ceilings {(enforced ? "enforced" : "not enforced")}");
 Console.WriteLine();
 Console.WriteLine("Counters");
 Console.WriteLine("--------");
-foreach (string kind in kinds)
+Console.WriteLine($"Above ceiling   {above.Count:N0}");
+Console.WriteLine($"Stale ceilings  {stale.Count:N0}");
+
+Console.WriteLine();
+Console.WriteLine("Members by kind");
+Console.WriteLine("---------------");
+List<string[]> kindRows = ceilings
+    .Select(pair => new[] { pair.Kind, Tally(pair.Kind).ToString("N0"), pair.Ceiling.ToString("N0") })
+    .ToList();
+kindRows.Add(["Total", hits.Count.ToString("N0"), "-"]);
+foreach (string line in Fake.TextTable(["Kind", "Members", "Ceiling"], kindRows))
 {
-    Console.WriteLine($"{kind,-6}  {hits.Count(hit => hit.Kind == kind):N0}");
+    Console.WriteLine(line);
 }
 
-foreach (string kind in kinds)
+List<(string Title, List<string> Rows)> sections = ceilings
+    .Select(pair => (pair.Kind, hits.Where(hit => hit.Kind == pair.Kind)
+        .Select(hit => $"{hit.Path}:{hit.Line} {hit.Name}: {hit.Reason}").ToList()))
+    .Append(("Above ceiling", above))
+    .Append(("Stale ceilings", stale))
+    .ToList();
+foreach ((string title, List<string> rows) in sections.Where(section => section.Rows.Count > 0))
 {
-    List<Hit> ofKind = hits.Where(hit => hit.Kind == kind).ToList();
-    if (ofKind.Count == 0)
-    {
-        continue;
-    }
-
-    string heading = $"{kind} ({ofKind.Count:N0})";
+    string heading = $"{title} ({rows.Count:N0})";
     Console.WriteLine();
     Console.WriteLine(heading);
     Console.WriteLine(new string('-', heading.Length));
-    foreach (Hit hit in ofKind.Take(top))
+    rows.Take(top).ToList().ForEach(Console.WriteLine);
+    if (rows.Count > top)
     {
-        Console.WriteLine($"{hit.Path}:{hit.Line} {hit.Name}: {hit.Reason}");
-    }
-
-    if (ofKind.Count > top)
-    {
-        Console.WriteLine($"... and {ofKind.Count - top:N0} more in the report.");
+        Console.WriteLine($"... and {rows.Count - top:N0} more in the report.");
     }
 }
 
@@ -475,24 +498,32 @@ Console.WriteLine($"Report: {reportPath}");
 
 List<string> lines =
 [
-    $"# AuditFake {version}",
+    $"# Fake audit {version}",
     string.Empty,
-    $"Generated {DateTime.Now:yyyy-MM-dd HH:mm}. Members judged: {members.Count(pair => !pair.Key.StartsWith(Fake.TypeMark, StringComparison.Ordinal))}.",
-    string.Empty,
-    "A member is live when a live reader, a constructor, an override, generated code, markup or the serializer reads it.",
-    "A class is tracked as well: markup naming it, a construction or a live subclass keeps it live, and its dead members with it.",
-    "Orphan is read by nothing live. Tested is read only by tests.",
-    string.Empty,
-    "## Counters",
-    string.Empty,
+    $"- Generation: {generation}",
+    $"- Enforced: {enforced}",
 ];
-lines.AddRange(kinds.Select(kind => $"- {kind}: {hits.Count(hit => hit.Kind == kind)}"));
-foreach (string kind in kinds)
+lines.AddRange(ceilings.Select(pair => $"- {pair.Kind}: {Tally(pair.Kind)}, ceiling {pair.Ceiling}"));
+lines.Add($"- Above ceiling: {above.Count}");
+lines.Add($"- Stale ceilings: {stale.Count}");
+lines.Add(string.Empty);
+lines.Add("A member is live when a live reader, a constructor, an override, generated code, markup or "
+    + "the serializer reads it. Orphan is read by nothing live. Tested is read only by tests.");
+List<(string Title, List<string> Rows)> chapters = ceilings
+    .Select(pair => (pair.Kind, hits.Where(hit => hit.Kind == pair.Kind)
+        .Select(hit => $"- `{hit.Path}:{hit.Line}` `{hit.Name}`: {hit.Reason}").ToList()))
+    .Append(("Above ceiling", above.Select(row => "- " + row).ToList()))
+    .Append(("Stale ceilings", stale.Select(row => "- " + row).ToList()))
+    .ToList();
+foreach ((string title, List<string> rows) in chapters)
 {
     lines.Add(string.Empty);
-    lines.Add($"## {kind}");
-    lines.Add(string.Empty);
-    lines.AddRange(hits.Where(hit => hit.Kind == kind).Select(hit => $"- `{hit.Path}:{hit.Line}` `{hit.Name}`: {hit.Reason}"));
+    lines.Add($"## {title}");
+    if (rows.Count > 0)
+    {
+        lines.Add(string.Empty);
+        lines.AddRange(rows);
+    }
 }
 
 string? reportFolder = Path.GetDirectoryName(reportPath);
@@ -502,7 +533,7 @@ if (!string.IsNullOrWhiteSpace(reportFolder))
 }
 
 File.WriteAllText(reportPath, string.Join("\n", lines) + "\n", new UTF8Encoding(false));
-return hits.Count > 0 ? 3 : 0;
+return above.Count + stale.Count > 0 ? 3 : 0;
 
 internal static class Fake
 {
@@ -510,9 +541,22 @@ internal static class Fake
 
     private const string RootReader = "";
 
-    public static void ScanMembers(SemanticModel model, AuditBinder binder, Dictionary<string, Member> members)
+    public static IEnumerable<string> TextTable(string[] header, List<string[]> rows)
     {
-        string path = binder.Relative(model.SyntaxTree.FilePath);
+        int[] widths = header.Select((cell, column) => Math.Max(cell.Length, rows.Count == 0 ? 0 : rows.Max(row => row[column].Length))).ToArray();
+        bool[] numeric = header.Select((cell, column) => rows.Count > 0 && rows.All(row => row[column] == "-" || double.TryParse(row[column], out _))).ToArray();
+        string Line(string[] cells) => string.Join("  ", cells.Select((cell, column) => numeric[column] ? cell.PadLeft(widths[column]) : cell.PadRight(widths[column]))).TrimEnd();
+        yield return Line(header);
+        yield return string.Join("  ", widths.Select(width => new string('-', width)));
+        foreach (string[] row in rows)
+        {
+            yield return Line(row);
+        }
+    }
+
+    public static void ScanMembers(SemanticModel model, LAuditBinder binder, Dictionary<string, Member> members)
+    {
+        string path = binder.LAuditRelativeRead(model.SyntaxTree.FilePath);
         foreach (TypeDeclarationSyntax declaration in model.SyntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
         {
             if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol type || type.TypeKind == TypeKind.Enum)
@@ -926,12 +970,58 @@ internal sealed class Member(string key, string name, string path, int line, boo
 internal sealed record Hit(string Path, int Line, string Name, string Kind, string Reason);
 '@
 
-    $projectPath = Join-Path $HelperFolder 'AuditFake.Helper.csproj'
-    $programPath = Join-Path $HelperFolder 'Program.cs'
-    [System.IO.File]::WriteAllText($projectPath, $projectContent, [System.Text.UTF8Encoding]::new($false))
-    [System.IO.File]::WriteAllText($programPath, $programContent, [System.Text.UTF8Encoding]::new($false))
-    [System.IO.File]::Copy((Join-Path $PSScriptRoot 'auditbinder.cs'), (Join-Path $HelperFolder 'AuditBinder.cs'), $true)
-    return $projectPath
+function Get-HelperBinary {
+    param([string]$DotnetPath, [string]$ProjectName, [string]$TargetFramework)
+
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $sdkOutput = & $DotnetPath --version 2>&1
+    $ErrorActionPreference = $nativePreference
+    if ($LASTEXITCODE -ne 0) {
+        throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
+    }
+
+    $sdkVersion = ([string]($sdkOutput | Select-Object -First 1)).Trim()
+    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $binderSource + "`n" + $TargetFramework + "`n" + $sdkVersion
+        $digest = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($seed))
+    }
+    finally {
+        $sha.Dispose()
+    }
+
+    $hash = ([System.BitConverter]::ToString($digest) -replace '-', '').Substring(0, 16).ToLowerInvariant()
+    $cacheParent = Join-Path ([System.IO.Path]::GetTempPath()) ($ProjectName + '-AuditFake')
+    $cacheFolder = Join-Path $cacheParent $hash
+    $binaryPath = Join-Path (Join-Path $cacheFolder 'bin') 'AuditFake.Helper.dll'
+    if (Test-Path -LiteralPath $binaryPath -PathType Leaf) {
+        return $binaryPath
+    }
+
+    Write-AuditLine 'Compiling the fake binder once for this SDK...' -ForegroundColor DarkGray
+    if (Test-Path -LiteralPath $cacheParent) {
+        Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    $helperFolder = Join-Path $cacheFolder 'helper'
+    [System.IO.Directory]::CreateDirectory($helperFolder) | Out-Null
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    $projectPath = Join-Path $helperFolder 'AuditFake.Helper.csproj'
+    [System.IO.File]::WriteAllText($projectPath, $script:HelperProject.Replace('{TARGET_FRAMEWORK}', $TargetFramework), $encoding)
+    [System.IO.File]::WriteAllText((Join-Path $helperFolder 'Program.cs'), $script:HelperProgram, $encoding)
+    [System.IO.File]::WriteAllText((Join-Path $helperFolder 'AuditBinder.cs'), $binderSource, $encoding)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $buildOutput = & $DotnetPath build $projectPath --configuration Release --nologo --verbosity quiet --output (Join-Path $cacheFolder 'bin') 2>&1
+    $ErrorActionPreference = $nativePreference
+    if ($LASTEXITCODE -ne 0) {
+        Remove-Item -LiteralPath $cacheFolder -Recurse -Force -ErrorAction SilentlyContinue
+        throw "The fake binder could not be built.`n$($buildOutput -join [Environment]::NewLine)"
+    }
+
+    return $binaryPath
 }
 
 $projectRoot = Resolve-ProjectRoot -Path $Root
@@ -949,53 +1039,33 @@ if (-not [System.IO.Path]::IsPathRooted($reportFolder)) {
 }
 $reportPath = Join-Path $reportFolder ([string]$config.report.prefix + $version + '.md')
 
-[string[]]$sourceFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.roots -Extensions $config.sources.extensions)
 [string[]]$testFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.tests -Extensions $config.sources.extensions)
 [string[]]$markupFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.roots -Extensions $config.sources.markup)
-if ($sourceFiles.Length -eq 0 -or $testFiles.Length -eq 0) {
-    throw "No source or test files were found under: $projectRoot"
+if ($testFiles.Length -eq 0) {
+    throw "No tracked test file was enumerated, so the audit would pass vacuously: $projectRoot"
 }
-Write-AuditLine ("Scanned: {0:N0} source files, {1:N0} test files, {2:N0} markup files" -f
-    $sourceFiles.Length, $testFiles.Length, $markupFiles.Length) -ForegroundColor DarkGray
 
 $dotnet = Get-Command dotnet -ErrorAction SilentlyContinue
 if ($null -eq $dotnet) {
     throw 'The .NET SDK is required, but dotnet was not found on PATH.'
 }
 
-$nativePreference = $ErrorActionPreference
-$ErrorActionPreference = 'Continue'
-$sdkOutput = & $dotnet.Source --version 2>&1
-$ErrorActionPreference = $nativePreference
-if ($LASTEXITCODE -ne 0) {
-    throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
-}
-
-$sdkVersion = ([string]($sdkOutput | Select-Object -First 1)).Trim()
-if ($sdkVersion -notmatch '^(\d+)\.') {
-    throw "The .NET SDK version is not recognized: '$sdkVersion'"
-}
-
-$targetFramework = "net$($Matches[1]).0"
+$previousNoLogo = $env:DOTNET_NOLOGO
+$previousTelemetry = $env:DOTNET_CLI_TELEMETRY_OPTOUT
+$env:DOTNET_NOLOGO = '1'
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 $temporaryFolder = Join-Path ([System.IO.Path]::GetTempPath()) ($config.project + '-AuditFake-' + [Guid]::NewGuid().ToString('N'))
 [System.IO.Directory]::CreateDirectory($temporaryFolder) | Out-Null
 
 try {
+    $binaryPath = Get-HelperBinary -DotnetPath $dotnet.Source -ProjectName ([string]$config.project) -TargetFramework ([string]$config.helper.framework)
     $manifestPath = Join-Path $temporaryFolder 'sources.txt'
     $manifest = @($testFiles | ForEach-Object { "T|$_" }) +
         @($markupFiles | ForEach-Object { "M|$_" })
     [System.IO.File]::WriteAllLines($manifestPath, [string[]]$manifest, [System.Text.UTF8Encoding]::new($false))
 
-    $helperFolder = Join-Path $temporaryFolder 'helper'
-    [System.IO.Directory]::CreateDirectory($helperFolder) | Out-Null
-    $projectPath = Write-AuditHelper -HelperFolder $helperFolder -TargetFramework $targetFramework
-
     $arguments = @(
-        'run',
-        '--project', $projectPath,
-        '--configuration', 'Release',
-        '--no-launch-profile',
-        '--',
+        $binaryPath,
         $configPath,
         $projectRoot,
         $manifestPath,
@@ -1005,32 +1075,29 @@ try {
         (Join-Path $PSScriptRoot 'auditbinder.json')
     )
 
-    $previousNoLogo = $env:DOTNET_NOLOGO
-    $previousTelemetry = $env:DOTNET_CLI_TELEMETRY_OPTOUT
-    $env:DOTNET_NOLOGO = '1'
-    $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-
-    try {
-        $nativePreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Continue'
-        $auditOutput = & $dotnet.Source @arguments 2>&1
-        $ErrorActionPreference = $nativePreference
-        $auditExitCode = $LASTEXITCODE
-    }
-    finally {
-        $env:DOTNET_NOLOGO = $previousNoLogo
-        $env:DOTNET_CLI_TELEMETRY_OPTOUT = $previousTelemetry
-    }
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $auditOutput = & $dotnet.Source @arguments 2>&1
+    $ErrorActionPreference = $nativePreference
+    $auditExitCode = $LASTEXITCODE
 
     if ($auditExitCode -ne 0 -and $auditExitCode -ne 3) {
         throw "The fake audit failed.`n$($auditOutput -join [Environment]::NewLine)"
     }
 
     foreach ($line in $auditOutput) {
-        Write-AuditLine ([string]$line)
+        $text = [string]$line
+        if ($text.StartsWith('Scanned: ', [System.StringComparison]::Ordinal)) {
+            Write-AuditLine $text -ForegroundColor DarkGray
+        }
+        else {
+            Write-AuditLine $text
+        }
     }
 }
 finally {
+    $env:DOTNET_NOLOGO = $previousNoLogo
+    $env:DOTNET_CLI_TELEMETRY_OPTOUT = $previousTelemetry
     if (Test-Path -LiteralPath $temporaryFolder) {
         Remove-Item -LiteralPath $temporaryFolder -Recurse -Force -ErrorAction SilentlyContinue
     }

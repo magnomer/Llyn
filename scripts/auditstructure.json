@@ -1,10 +1,11 @@
 {
   "generation": 12,
   "project": "Llyn",
+  "framework": "net10.0",
+  "source": "src/",
   "rings": [
     {
       "name": "Llyn.Core",
-      "path": "src/Llyn.Core",
       "reach": [],
       "frame": [
         "System",
@@ -23,7 +24,6 @@
     },
     {
       "name": "Llyn.Application",
-      "path": "src/Llyn.Application",
       "reach": [
         "Llyn.Core"
       ],
@@ -44,7 +44,6 @@
     },
     {
       "name": "Llyn.ShellEngine",
-      "path": "src/Llyn.ShellEngine",
       "reach": [
         "Llyn.Application"
       ],
@@ -66,7 +65,6 @@
     },
     {
       "name": "Llyn.Conduct",
-      "path": "src/Llyn.Conduct",
       "reach": [
         "Llyn.ShellEngine"
       ],
@@ -88,78 +86,85 @@
     },
     {
       "name": "Llyn.UIDeportment",
-      "path": "src/Llyn.UIDeportment",
       "reach": [
         "Llyn.Conduct"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": true
     },
     {
       "name": "Llyn.UIVeneer",
-      "path": "src/Llyn.UIVeneer",
       "reach": [
         "Llyn.UIDeportment"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": true
     },
     {
       "name": "Llyn.UIDemeanor",
-      "path": "src/Llyn.UIDemeanor",
       "reach": [
         "Llyn.Conduct"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": true
     },
     {
       "name": "Llyn.UITerminal",
-      "path": "src/Llyn.UITerminal",
       "reach": [
         "Llyn.UIDemeanor"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": true
     },
     {
       "name": "Llyn.Infrastructure",
-      "path": "src/Llyn.Infrastructure",
       "reach": [
         "Llyn.Core"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": false
     },
     {
       "name": "Llyn.Core.Windows",
-      "path": "src/Llyn.Core.Windows",
       "reach": [
         "Llyn.Core"
       ],
-      "frame": [
-        "*"
-      ],
+      "frame": [],
       "pure": false,
       "cut": false
     }
   ],
-  "root": [],
+  "host": {
+    "name": "Llyn.Host",
+    "reach": [
+      "Llyn.Core",
+      "Llyn.Application",
+      "Llyn.Infrastructure",
+      "Llyn.Core.Windows",
+      "Llyn.ShellEngine",
+      "Llyn.Conduct",
+      "Llyn.UIDeportment",
+      "Llyn.UIVeneer",
+      "Llyn.UIDemeanor",
+      "Llyn.UITerminal"
+    ]
+  },
+  "shells": [
+    "src/Llyn.UIVeneer",
+    "src/Llyn.UIDeportment",
+    "src/Llyn.UITerminal",
+    "src/Llyn.UIDemeanor"
+  ],
+  "imports": [
+    "Directory.Build.props",
+    "Directory.Build.targets"
+  ],
+  "transitive": 4,
   "ambient": [
     "System.DateTime.Now",
     "System.DateTime.UtcNow",
@@ -176,22 +181,6 @@
     "System.Diagnostics.Process",
     "System.Diagnostics.Stopwatch"
   ],
-  "checks": {
-    "neighbour": "allow",
-    "reach": "violation",
-    "cross": "violation",
-    "carry": "allow",
-    "outward": "violation",
-    "frame": "violation",
-    "ambient": "violation",
-    "root": "allow",
-    "expose": "violation",
-    "surface": "violation",
-    "stray": "violation",
-    "banned": "violation",
-    "floor": "violation",
-    "table": "violation"
-  },
   "ceilings": {
     "cross:Llyn.UIDeportment>Llyn.Application": 44,
     "cross:Llyn.UIDeportment>Llyn.Core": 754,
@@ -243,31 +232,9 @@
       "LVaultSessionStart"
     ]
   },
-  "exempt": {},
-  "sources": {
-    "include": [
-      "*.cs"
-    ],
-    "excludeSegments": [
-      ".git",
-      "bin",
-      "obj",
-      "out",
-      "publish",
-      "snapshots",
-      "TestResults"
-    ],
-    "excludeSuffixes": [
-      ".g.cs",
-      ".g.i.cs",
-      ".AssemblyInfo.cs",
-      ".GlobalUsings.g.cs",
-      ".Designer.cs"
-    ],
-    "excludePrefixes": [
-      "TemporaryGeneratedFile_",
-      "GeneratedInternalTypeHelper"
-    ]
+  "exempt": {
+    "chain": [],
+    "frame": []
   },
   "report": {
     "directory": "docs-work/audit",

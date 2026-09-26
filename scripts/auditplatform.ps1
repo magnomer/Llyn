@@ -30,9 +30,17 @@ reads every project file under the configured root, and reports:
 The host may reference every project, so its edges are never reported. The layer chain itself is
 the structure audit's concern and is not repeated here.
 
+Project names, frameworks, package names, property names and rule codes compare without regard
+to case, as MSBuild and the compiler read them. Two project files that share one name stop the
+audit with an error, since no table row could tell them apart.
+
+Every kind has a ceiling in auditplatform.json, and an unwritten ceiling is zero. A kind above
+its ceiling fails the run while enforced is true. A written ceiling above its count is stale and
+always fails, so a ceiling only walks down. A file that cannot be read is counted and fails too.
+
 The report is written to the configured report folder as {prefix}{version}.md. Git and the
 .NET SDK are required, and the solution must be built so the binder finds the generated code.
-No project source is modified.
+The binder helper targets helper.framework from the configuration. No project source is modified.
 
 This script carries no project-specific value of its own. Everything a project chooses - the
 table, the frameworks, the analyzer rule, the Windows markers - lives in auditplatform.json.
@@ -109,6 +117,15 @@ KINDS
     Unmapped, Absent, Framework, Reference, Column, Analyzer, Windows, Empty,
     Suppress, Implicit, Domain.
     See the script header for definitions.
+
+COUNTERS
+    Above ceiling     Kinds whose hits exceed their ceiling while enforced is true.
+    Stale ceilings    Written ceilings that sit above their kind's hits.
+    Unreadable files  Source or configuration files that could not be read.
+
+EXIT CODES
+    0   Every kind sits at or below its ceiling, no ceiling is stale, and every file was read.
+    1   A counter is above zero.
 '@ | Write-Host
     exit 0
 }
@@ -142,6 +159,21 @@ function Get-OrdinalKey {
     # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
     param([string]$Text)
     return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
+
+function Get-DistinctText {
+    # Keeps the first spelling of every value and drops later ones that differ only in case.
+    param([string[]]$Values)
+
+    $seen = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::OrdinalIgnoreCase)
+    $kept = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($value in @($Values)) {
+        if ($seen.Add($value)) {
+            $kept.Add($value)
+        }
+    }
+
+    return @($kept.ToArray())
 }
 
 function Write-AuditLine {
@@ -206,12 +238,12 @@ function Read-AuditConfig {
     }
 
     $required = @(
-        'generation', 'project',
+        'generation', 'project', 'enforced', 'ceilings',
         'projects.root', 'projects.table',
-        'framework.portable', 'framework.twin',
+        'framework.portable', 'framework.twin', 'helper.framework',
         'analyzer.rule', 'analyzer.silencers', 'domain.exempt',
         'windows.properties', 'windows.packages', 'windows.patterns',
-        'sources.extensions', 'sources.excludeSegments', 'sources.excludeSuffixes',
+        'sources.extensions', 'sources.excludeSegments', 'sources.excludeSuffixes', 'sources.excludePrefixes',
         'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix'
     )
 
@@ -227,6 +259,18 @@ function Read-AuditConfig {
 
     if ([int]$config.generation -ne $script:AuditGeneration) {
         throw "The platform-audit configuration is generation $($config.generation) but this tooling is generation $script:AuditGeneration.`nA generation names the set of checks applied, so the two must match: $ConfigPath"
+    }
+
+    if ($config.enforced -isnot [bool]) {
+        throw "The audit configuration key 'enforced' must be true or false: $ConfigPath"
+    }
+    foreach ($ceiling in $config.ceilings.PSObject.Properties) {
+        if ($script:AuditKinds -cnotcontains $ceiling.Name) {
+            throw "The audit configuration writes a ceiling for the unknown kind '$($ceiling.Name)': $ConfigPath"
+        }
+        if (-not ($ceiling.Value -is [int] -or $ceiling.Value -is [long]) -or [long]$ceiling.Value -lt 0) {
+            throw "The ceiling of '$($ceiling.Name)' must be a whole number of zero or more: $ConfigPath"
+        }
     }
 
     $names = @{}
@@ -292,13 +336,14 @@ function Test-ExcludedRelativePath {
     }
 
     $fileName = $segments[$segments.Length - 1]
-    $extension = [System.IO.Path]::GetExtension($fileName)
-    if ($extension -ne '.csproj' -and -not ($Config.sources.extensions -contains $extension)) {
-        return $true
-    }
-
     foreach ($suffix in $Config.sources.excludeSuffixes) {
         if ($fileName.EndsWith($suffix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+    }
+
+    foreach ($prefix in $Config.sources.excludePrefixes) {
+        if ($fileName.StartsWith($prefix, [System.StringComparison]::Ordinal)) {
             return $true
         }
     }
@@ -318,8 +363,10 @@ function Get-TrackedFiles {
         throw "The project root is not a Git working tree: $ProjectRoot"
     }
 
-    $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
-        'ls-files', '--cached', '--others', '--exclude-standard', '--', [string]$Config.projects.root)
+    $rootPrefix = ([string]$Config.projects.root).Trim('/') + '/'
+    $pathspecs = @(@('.csproj') + @($Config.sources.extensions) | ForEach-Object { ':(icase)' + $rootPrefix + '*' + [string]$_ })
+    $lsArguments = @(@('-c', 'core.quotePath=false', '-C', $ProjectRoot,
+        'ls-files', '--cached', '--others', '--exclude-standard', '--') + $pathspecs)
     $nativePreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
@@ -371,14 +418,7 @@ $script:HelperProject = @'
     <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis">
-      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp">
-      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
   </ItemGroup>
 </Project>
 '@
@@ -393,20 +433,26 @@ if (args.Length != 4)
     return 2;
 }
 
-AuditBinder binder = AuditBinder.Bind(args[0], args[1]);
-Dictionary<string, SyntaxTree> trees = binder.Tracked
+LAuditBinder binder = LAuditBinder.LAuditBinderRead(args[0], args[1]);
+Dictionary<string, SyntaxTree> trees = binder.LAuditTrees
     .ToDictionary(tree => Path.GetFullPath(tree.FilePath), StringComparer.OrdinalIgnoreCase);
 List<string> rows = [];
-foreach (string job in File.ReadAllLines(args[2]).Where(line => line.Length > 0))
+string[] jobs = File.ReadAllLines(args[2]);
+for (int index = 0; index < jobs.Length; index++)
 {
-    string[] parts = job.Split('\t');
+    string[] parts = jobs[index].Split('\t');
+    if (parts.Length != 2)
+    {
+        continue;
+    }
+
     string portable = parts[0];
     if (!trees.TryGetValue(Path.GetFullPath(parts[1]), out SyntaxTree? tree))
     {
-        throw new InvalidOperationException($"The binder holds no tree for {parts[1]}.");
+        continue;
     }
 
-    SemanticModel model = binder.Compilation.GetSemanticModel(tree, true);
+    SemanticModel model = binder.LAuditCompilation.GetSemanticModel(tree, true);
     foreach (TypeDeclarationSyntax declared in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()
                  .Where(type => type.Parent is not TypeDeclarationSyntax))
     {
@@ -423,11 +469,11 @@ foreach (string job in File.ReadAllLines(args[2]).Where(line => line.Length > 0)
 
         bool ported = bases.Any(held =>
             held.OriginalDefinition.Locations.FirstOrDefault(location => location.IsInSource)?.SourceTree is SyntaxTree home
-            && binder.Relative(home.FilePath).StartsWith(portable, StringComparison.OrdinalIgnoreCase));
+            && binder.LAuditRelativeRead(home.FilePath).StartsWith(portable, StringComparison.OrdinalIgnoreCase));
         if (!ported)
         {
             int line = declared.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-            rows.Add(string.Join('\t', binder.Relative(tree.FilePath), line, type.Name));
+            rows.Add(string.Join('\t', index, binder.LAuditRelativeRead(tree.FilePath), line, type.Name));
         }
     }
 }
@@ -444,17 +490,13 @@ function Invoke-DomainHelper {
         throw 'The .NET SDK is required to bind the twins, but dotnet was not found on PATH.'
     }
 
-    $sdkVersion = ([string](& $dotnet.Source --version 2>$null | Select-Object -First 1)).Trim()
-    if ($LASTEXITCODE -ne 0 -or $sdkVersion -notmatch '^(\d+)\.') {
-        throw "The .NET SDK version could not be read: '$sdkVersion'"
-    }
-    $targetFramework = "net$($Matches[1]).0"
+    $targetFramework = [string]$config.helper.framework
     $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
     $binderConfig = Join-Path $PSScriptRoot 'auditbinder.json'
 
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try {
-        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $binderSource + "`n" + $targetFramework + "`n" + $sdkVersion
+        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $binderSource + "`n" + $targetFramework
         $digest = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($seed))
     }
     finally {
@@ -473,7 +515,7 @@ function Invoke-DomainHelper {
     [System.IO.Directory]::CreateDirectory($temporaryFolder) | Out-Null
     try {
         if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
-            Write-AuditLine 'Compiling the platform binder once for this SDK...' -ForegroundColor DarkGray
+            Write-AuditLine 'Compiling the platform binder once for this helper text...' -ForegroundColor DarkGray
             if (Test-Path -LiteralPath $cacheParent) {
                 Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
             }
@@ -521,18 +563,25 @@ function Read-XmlText {
     return $document
 }
 
+function Get-XmlElements {
+    # MSBuild reads property and item names without regard to case, so the element name matches alike.
+    param([xml]$Document, [string]$Element)
+
+    return @($Document.SelectNodes('//*') | Where-Object { [string]::Equals($_.LocalName, $Element, [System.StringComparison]::OrdinalIgnoreCase) })
+}
+
 function Get-XmlValues {
     param([xml]$Document, [string]$Element)
 
-    return @($Document.SelectNodes("//*[local-name()='$Element']") | ForEach-Object { [string]$_.InnerText.Trim() })
+    return @(Get-XmlElements -Document $Document -Element $Element | ForEach-Object { [string]$_.InnerText.Trim() })
 }
 
 function Get-XmlIncludes {
     param([xml]$Document, [string]$Element)
 
-    return @($Document.SelectNodes("//*[local-name()='$Element']") |
+    return @(Get-XmlElements -Document $Document -Element $Element |
         ForEach-Object { [string]$_.GetAttribute('Include') } |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        Where-Object { $_.Length -gt 0 })
 }
 
 function Get-ImportChain {
@@ -656,7 +705,7 @@ function Test-ListedRule {
     param([xml]$Document, [string]$Element, [string]$Rule)
 
     foreach ($value in (Get-XmlValues -Document $Document -Element $Element)) {
-        if (($value -split '[;,\s]+') -ccontains $Rule) {
+        if (@([regex]::Split($value, '[;,\s]+')) -contains $Rule) {
             return $true
         }
     }
@@ -722,12 +771,12 @@ function Read-ProjectFacts {
     $document = Read-XmlText -Path $fullPath
     $frameworks = @(@(Get-XmlValues -Document $document -Element 'TargetFramework') +
         @(Get-XmlValues -Document $document -Element 'TargetFrameworks') |
-        ForEach-Object { $_ -split ';' } |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
-    $references = @(Get-XmlIncludes -Document $document -Element 'ProjectReference' |
-        ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension(($_ -split '[\\/]')[-1]) } |
-        Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
-    $packages = @(Get-XmlIncludes -Document $document -Element 'PackageReference' | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
+        ForEach-Object { ([string]$_).Split([char]';') } |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { $_.Length -gt 0 })
+    $references = @(Get-DistinctText -Values @(Get-XmlIncludes -Document $document -Element 'ProjectReference' |
+        ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension(($_ -split '[\\/]')[-1]) }))
+    $packages = @(Get-DistinctText -Values @(Get-XmlIncludes -Document $document -Element 'PackageReference'))
 
     return [pscustomobject]@{
         Name       = [System.IO.Path]::GetFileNameWithoutExtension($RelativePath)
@@ -742,16 +791,21 @@ function Read-ProjectFacts {
 }
 
 $script:Hits = New-Object 'System.Collections.Generic.List[object]'
-$script:ReadErrors = New-Object 'System.Collections.Generic.List[string]'
+$script:ReadErrors = New-Object 'System.Collections.Generic.SortedDictionary[string,string]' ([System.StringComparer]::Ordinal)
 
 function Read-AuditLines {
+    # A file read many times is still one unreadable file, so the errors are keyed by path.
     param([Parameter(Mandatory = $true)][string]$Path)
 
     try {
         return , [System.IO.File]::ReadAllLines($Path)
     }
     catch {
-        $script:ReadErrors.Add("${Path}: $($_.Exception.Message)")
+        $failure = $_.Exception
+        if ($failure -is [System.Management.Automation.MethodInvocationException] -and $null -ne $failure.InnerException) {
+            $failure = $failure.InnerException
+        }
+        $script:ReadErrors[$Path] = $failure.Message
         return , @()
     }
 }
@@ -791,6 +845,21 @@ foreach ($row in @($config.projects.table)) {
     $table[[string]$row.name] = $row
 }
 
+$sharedNames = @{}
+foreach ($relativePath in $projectFiles) {
+    $name = [System.IO.Path]::GetFileNameWithoutExtension($relativePath)
+    if (-not $sharedNames.ContainsKey($name)) {
+        $sharedNames[$name] = New-Object 'System.Collections.Generic.List[string]'
+    }
+    $sharedNames[$name].Add($relativePath)
+}
+$twice = @($sharedNames.Keys | Where-Object { $sharedNames[$_].Count -gt 1 } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } | ForEach-Object {
+    $_ + ': ' + (@($sharedNames[$_] | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } }) -join ', ')
+})
+if ($twice.Count -gt 0) {
+    throw "Project files share one name, so the audit cannot tell them apart:`n$($twice -join "`n")"
+}
+
 $facts = @{}
 foreach ($relativePath in $projectFiles) {
     $fact = Read-ProjectFacts -ProjectRoot $projectRoot -RelativePath $relativePath
@@ -812,12 +881,13 @@ function Get-ProjectRole {
 function Get-ProjectColumn {
     param([string]$Name)
 
+    # A column is spelled as the table spells its portable half, whatever case the caller used.
     $role = Get-ProjectRole -Name $Name
     if ($role -eq 'twin') {
-        return [string]$table[$Name].half
+        return [string]$table[[string]$table[$Name].half].name
     }
     if ($role -eq 'portable') {
-        return $Name
+        return [string]$table[$Name].name
     }
     return ''
 }
@@ -830,7 +900,7 @@ function Test-WindowsProject {
     }
     if ($facts.ContainsKey($Name)) {
         foreach ($framework in $facts[$Name].Frameworks) {
-            if ($framework -match '-windows') {
+            if ($framework.IndexOf('-windows', [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
                 return $true
             }
         }
@@ -865,7 +935,7 @@ foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-Ord
     $frameworkText = ($fact.Frameworks -join ';')
 
     if ($role -eq 'portable') {
-        if ($fact.Frameworks.Length -ne 1 -or $fact.Frameworks[0] -ne $portableFramework) {
+        if ($fact.Frameworks.Length -ne 1 -or -not [string]::Equals($fact.Frameworks[0], $portableFramework, [System.StringComparison]::OrdinalIgnoreCase)) {
             Add-AuditHit -Kind 'Framework' -Project $name -Path $fact.Path -Line 0 -Detail "targets '$frameworkText', not exactly '$portableFramework'"
         }
 
@@ -879,7 +949,8 @@ foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-Ord
         $heldCode = @($sourceFiles | Where-Object {
             $_.StartsWith($fact.Folder + '/', [System.StringComparison]::Ordinal) -and $_.EndsWith('.cs', [System.StringComparison]::Ordinal)
         })
-        foreach ($source in $heldCode) {
+        $analyzerOrder = @($heldCode | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.ToUpperInvariant() } }, @{ Expression = { Get-OrdinalKey $_ } })
+        foreach ($source in $analyzerOrder) {
             $sourcePath = Join-Path $projectRoot ($source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))
             if (-not (Test-AnalyzerError -ProjectRoot $projectRoot -ProjectPath $fact.FullPath -SourcePath $sourcePath -Rule $rule)) {
                 Add-AuditHit -Kind 'Analyzer' -Project $name -Path $source -Line 0 -Detail "$rule is not an error here"
@@ -917,10 +988,8 @@ foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-Ord
         }
 
         foreach ($property in @($config.windows.properties)) {
-            foreach ($value in (Get-XmlValues -Document $fact.Document -Element ([string]$property))) {
-                if ($value -eq 'true') {
-                    Add-AuditHit -Kind 'Windows' -Project $name -Path $fact.Path -Line 0 -Detail "enables $property"
-                }
+            if (@(Get-XmlValues -Document $fact.Document -Element ([string]$property)) -contains 'true') {
+                Add-AuditHit -Kind 'Windows' -Project $name -Path $fact.Path -Line 0 -Detail "enables $property"
             }
         }
 
@@ -948,7 +1017,7 @@ foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-Ord
         }
     }
     elseif ($role -eq 'twin') {
-        if ($fact.Frameworks.Length -ne 1 -or -not $fact.Frameworks[0].StartsWith($twinFramework, [System.StringComparison]::Ordinal)) {
+        if ($fact.Frameworks.Length -ne 1 -or -not $fact.Frameworks[0].StartsWith($twinFramework, [System.StringComparison]::OrdinalIgnoreCase)) {
             Add-AuditHit -Kind 'Framework' -Project $name -Path $fact.Path -Line 0 -Detail "targets '$frameworkText', not '$twinFramework'"
         }
 
@@ -983,32 +1052,66 @@ foreach ($settings in @(@($projectFiles) + @($importFiles))) {
 }
 
 if ($domainJobs.Count -gt 0) {
-    $projectOf = @{}
-    foreach ($job in $domainJobs) { $projectOf[$job.Source] = $job }
+    # Each helper row names its job by index, so a file held by nested twins is credited to each of them.
     $jobLines = @($domainJobs | ForEach-Object { $_.Portable + "`t" + (Join-Path $projectRoot ($_.Source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))) })
     foreach ($row in (Invoke-DomainHelper -ProjectRoot $projectRoot -JobLines $jobLines)) {
         $parts = ([string]$row).Split("`t")
-        if ($parts.Length -ne 3) { continue }
-        $job = $projectOf[$parts[0]]
-        Add-AuditHit -Kind 'Domain' -Project $job.Project -Path $parts[0] -Line ([int]$parts[1]) -Detail "$($parts[2]) implements no port of $($job.Column), so it holds more than a Windows adaptation"
+        if ($parts.Length -ne 4) { continue }
+        $job = $domainJobs[[int]$parts[0]]
+        Add-AuditHit -Kind 'Domain' -Project $job.Project -Path $parts[1] -Line ([int]$parts[2]) -Detail "$($parts[3]) implements no port of $($job.Column), so it holds more than a Windows adaptation"
     }
 }
 
-$counts = [ordered]@{}
+$ceilings = @{}
+foreach ($property in $config.ceilings.PSObject.Properties) {
+    $ceilings[$property.Name] = [int]$property.Value
+}
+$enforced = [bool]$config.enforced
+
+$kindRows = New-Object 'System.Collections.Generic.List[object]'
 foreach ($kind in $script:AuditKinds) {
-    $counts[$kind] = @($script:Hits | Where-Object { $_.Kind -eq $kind }).Length
+    $kindHits = @($script:Hits | Where-Object { $_.Kind -eq $kind } |
+        Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Project } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Detail } })
+    $ceiling = if ($ceilings.ContainsKey($kind)) { $ceilings[$kind] } else { 0 }
+    $standing = if ($kindHits.Length -gt $ceiling) { 'above ceiling' } elseif ($kindHits.Length -lt $ceiling) { 'stale ceiling' } else { 'at ceiling' }
+    $kindRows.Add([pscustomobject]@{
+        Kind     = $kind
+        Hits     = $kindHits
+        Ceiling  = $ceiling
+        Written  = $ceilings.ContainsKey($kind)
+        Standing = $standing
+    })
+}
+$overRows = @($kindRows | Where-Object { $_.Standing -eq 'above ceiling' })
+$staleRows = @($kindRows | Where-Object { $_.Written -and $_.Standing -eq 'stale ceiling' })
+$aboveCount = if ($enforced) { $overRows.Count } else { 0 }
+
+function Get-HitWhere {
+    param($Hit, [string]$Quote)
+
+    if ($Hit.Path -eq '') {
+        return ''
+    }
+    if ($Hit.Line -gt 0) {
+        return " $Quote$($Hit.Path):$($Hit.Line)$Quote"
+    }
+    return " $Quote$($Hit.Path)$Quote"
 }
 
 $report = New-Object System.Text.StringBuilder
 [void]$report.AppendLine("# Platform audit - $($config.project) $version")
 [void]$report.AppendLine()
 [void]$report.AppendLine("- Generation: $script:AuditGeneration")
+[void]$report.AppendLine("- Enforced: $($enforced.ToString().ToLowerInvariant())")
+[void]$report.AppendLine("- Above ceiling: $aboveCount")
+[void]$report.AppendLine("- Stale ceilings: $($staleRows.Count)")
+[void]$report.AppendLine("- Unreadable files: $($script:ReadErrors.Count)")
 [void]$report.AppendLine()
 [void]$report.AppendLine('## Table')
 [void]$report.AppendLine()
 [void]$report.AppendLine('| Project | Role | Column | On disk | Targets | References |')
 [void]$report.AppendLine('|---|---|---|---|---|---|')
-$names = @(@($table.Keys) + @($facts.Keys) | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
+$names = @(Get-DistinctText -Values @(@($table.Keys) + @($facts.Keys)) | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } })
 foreach ($name in $names) {
     $role = Get-ProjectRole -Name $name
     $roleText = if ($role -eq '') { 'unmapped' } else { $role }
@@ -1021,24 +1124,31 @@ foreach ($name in $names) {
 [void]$report.AppendLine()
 [void]$report.AppendLine('## Counts')
 [void]$report.AppendLine()
-[void]$report.AppendLine('| Kind | Hits |')
-[void]$report.AppendLine('|---|---|')
-foreach ($kind in $script:AuditKinds) {
-    [void]$report.AppendLine("| $kind | $($counts[$kind]) |")
+[void]$report.AppendLine('| Kind | Hits | Ceiling | Standing |')
+[void]$report.AppendLine('|---|---|---|---|')
+foreach ($row in $kindRows) {
+    [void]$report.AppendLine("| $($row.Kind) | $($row.Hits.Length) | $($row.Ceiling) | $($row.Standing) |")
 }
-[void]$report.AppendLine("| Total | $($script:Hits.Count) |")
+[void]$report.AppendLine("| Total | $($script:Hits.Count) | | |")
 
-foreach ($kind in $script:AuditKinds) {
-    $kindHits = @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Project } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Detail } })
-    if ($kindHits.Length -eq 0) {
+foreach ($row in $kindRows) {
+    if ($row.Hits.Length -eq 0) {
         continue
     }
     [void]$report.AppendLine()
-    [void]$report.AppendLine("## $kind")
+    [void]$report.AppendLine("## $($row.Kind)")
     [void]$report.AppendLine()
-    foreach ($hit in $kindHits) {
-        $where = if ($hit.Path -eq '') { '' } elseif ($hit.Line -gt 0) { " ``$($hit.Path):$($hit.Line)``" } else { " ``$($hit.Path)``" }
-        [void]$report.AppendLine("- $($hit.Project)$where - $($hit.Detail)")
+    foreach ($hit in $row.Hits) {
+        [void]$report.AppendLine("- $($hit.Project)$(Get-HitWhere -Hit $hit -Quote '`') - $($hit.Detail)")
+    }
+}
+
+if ($script:ReadErrors.Count -gt 0) {
+    [void]$report.AppendLine()
+    [void]$report.AppendLine('## Unreadable files')
+    [void]$report.AppendLine()
+    foreach ($pair in $script:ReadErrors.GetEnumerator()) {
+        [void]$report.AppendLine("- ``$($pair.Key)``: $($pair.Value)")
     }
 }
 
@@ -1047,36 +1157,68 @@ $stagingPath = $reportPath + '.tmp'
 [System.IO.File]::WriteAllText($stagingPath, ($report.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 Move-Item -LiteralPath $stagingPath -Destination $reportPath -Force
 
-$counterWidth = @(@($script:AuditKinds) + 'Unreadable files' | ForEach-Object { $_.Length } | Measure-Object -Maximum)[0].Maximum
-Write-AuditLine ''
-Write-AuditLine 'Counters'
-Write-AuditLine '--------'
-foreach ($kind in $script:AuditKinds) {
-    Write-AuditLine ("{0}  {1:N0}" -f $kind.PadRight($counterWidth), $counts[$kind])
-}
-Write-AuditLine ("{0}  {1:N0}" -f 'Unreadable files'.PadRight($counterWidth), $script:ReadErrors.Count)
+function Write-AuditSection {
+    param([string]$Title)
 
-foreach ($kind in $script:AuditKinds) {
-    if ($counts[$kind] -eq 0) {
+    Write-AuditLine ''
+    Write-AuditLine $Title
+    Write-AuditLine ('-' * $Title.Length)
+}
+
+$counterRows = @(
+    @('Above ceiling', $aboveCount),
+    @('Stale ceilings', $staleRows.Count),
+    @('Unreadable files', $script:ReadErrors.Count)
+)
+$counterWidth = @($counterRows | ForEach-Object { ([string]$_[0]).Length } | Measure-Object -Maximum)[0].Maximum
+Write-AuditSection -Title 'Counters'
+foreach ($counter in $counterRows) {
+    Write-AuditLine ("{0}  {1:N0}" -f ([string]$counter[0]).PadRight($counterWidth), [int]$counter[1])
+}
+
+Write-AuditSection -Title 'Kinds'
+$kindCells = @($kindRows | ForEach-Object { , @($_.Kind, $_.Hits.Length.ToString('N0'), $_.Ceiling.ToString('N0'), $_.Standing) })
+$kindCells += , @('Total', $script:Hits.Count.ToString('N0'), '', '')
+$kindHeader = @('Kind', 'Hits', 'Ceiling', 'Standing')
+$widths = @(for ($column = 0; $column -lt $kindHeader.Count; $column++) {
+    @(@($kindHeader[$column]) + @($kindCells | ForEach-Object { [string]$_[$column] }) | ForEach-Object { $_.Length } | Measure-Object -Maximum)[0].Maximum
+})
+$rightAligned = @($false, $true, $true, $false)
+foreach ($cells in @(, $kindHeader) + @(, @($widths | ForEach-Object { '-' * $_ })) + $kindCells) {
+    $parts = for ($column = 0; $column -lt $kindHeader.Count; $column++) {
+        if ($rightAligned[$column]) { ([string]$cells[$column]).PadLeft($widths[$column]) } else { ([string]$cells[$column]).PadRight($widths[$column]) }
+    }
+    Write-AuditLine (($parts -join '  ').TrimEnd())
+}
+
+if ($aboveCount -gt 0) {
+    Write-AuditSection -Title "Above ceiling ($($aboveCount.ToString('N0')))"
+    foreach ($row in $overRows) {
+        Write-AuditLine "$($row.Kind): $($row.Hits.Length) hit(s), ceiling $($row.Ceiling)"
+    }
+}
+
+if ($staleRows.Count -gt 0) {
+    Write-AuditSection -Title "Stale ceilings ($($staleRows.Count.ToString('N0')))"
+    foreach ($row in $staleRows) {
+        Write-AuditLine "$($row.Kind): $($row.Hits.Length) hit(s), ceiling $($row.Ceiling)"
+    }
+}
+
+foreach ($row in $kindRows) {
+    if ($row.Hits.Length -eq 0) {
         continue
     }
-    $heading = "$kind ($($counts[$kind].ToString('N0')))"
-    Write-AuditLine ''
-    Write-AuditLine $heading
-    Write-AuditLine ('-' * $heading.Length)
-    foreach ($hit in @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Project } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Detail } })) {
-        $where = if ($hit.Line -gt 0) { " $($hit.Path):$($hit.Line)" } else { '' }
-        Write-AuditLine "$($hit.Project)$where - $($hit.Detail)"
+    Write-AuditSection -Title "$($row.Kind) ($($row.Hits.Length.ToString('N0')))"
+    foreach ($hit in $row.Hits) {
+        Write-AuditLine "$($hit.Project)$(Get-HitWhere -Hit $hit -Quote '') - $($hit.Detail)"
     }
 }
 
 if ($script:ReadErrors.Count -gt 0) {
-    $heading = "Unreadable files ($($script:ReadErrors.Count.ToString('N0')))"
-    Write-AuditLine ''
-    Write-AuditLine $heading
-    Write-AuditLine ('-' * $heading.Length)
-    foreach ($readError in $script:ReadErrors) {
-        Write-AuditLine $readError
+    Write-AuditSection -Title "Unreadable files ($($script:ReadErrors.Count.ToString('N0')))"
+    foreach ($pair in $script:ReadErrors.GetEnumerator()) {
+        Write-AuditLine "$($pair.Key): $($pair.Value)"
     }
 }
 
@@ -1087,7 +1229,7 @@ if ($Open -and (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
     Invoke-Item -LiteralPath $reportPath
 }
 
-if (($script:Hits.Count + $script:ReadErrors.Count) -gt 0) {
+if (($aboveCount + $staleRows.Count + $script:ReadErrors.Count) -gt 0) {
     exit 1
 }
 

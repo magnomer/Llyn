@@ -36,19 +36,35 @@ public sealed class TAuditFake
     [Fact]
     public void AuditFake_Ceiling_MatchesHits()
     {
-        List<string> stale = TAuditFakeSetting.TAuditFakeCeiling
-            .Where(pair => TAuditTallyRead(pair.Key) < pair.Value)
-            .Select(pair => $"  {pair.Key}: {TAuditTallyRead(pair.Key)} hit(s), ceiling {pair.Value}")
-            .ToList();
+        List<string> stale = TAuditStaleRead();
+        string report = TAuditFakeWritten.Value;
+        _tAuditOutput.WriteLine($"AUDITFAKE Stale ceilings: {stale.Count}. Report: {report}");
 
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITFAKE",
-            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n"
+            + string.Join('\n', stale.Select(row => "  " + row))));
     }
 
     private static int TAuditTallyRead(string kind)
     {
         return TAuditFakeRows.Value.Count(row => row.TViolationKind == kind);
+    }
+
+    private static List<string> TAuditStaleRead()
+    {
+        return TAuditFakeSetting.TAuditFakeCeiling
+            .Where(pair => TAuditTallyRead(pair.Key) < pair.Value)
+            .Select(pair => $"{pair.Key}: {TAuditTallyRead(pair.Key)} hit(s), ceiling {pair.Value}")
+            .ToList();
+    }
+
+    private static List<string> TAuditAboveRead()
+    {
+        return TAuditFakeSetting.TAuditFakeCeiling
+            .Where(pair => TAuditFakeSetting.TAuditFakeEnforced && TAuditTallyRead(pair.Key) > pair.Value)
+            .Select(pair => $"{pair.Key}: {TAuditTallyRead(pair.Key)} hit(s), ceiling {pair.Value}")
+            .ToList();
     }
 
     private void TAuditFakeCheck(string kind, string summary)
@@ -81,8 +97,8 @@ public sealed class TAuditFake
             [],
             TAuditFakeSetting.TAuditMarkupInclude,
             TAuditNameSetting.TAuditExcludedSegments,
-            [],
-            [],
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
             []));
         Assert.True(tests.Count > 0, TAuditConvention.TAuditReportFormat(
             "AUDITFAKE", "No tracked test file was enumerated; the audit would pass vacuously."));
@@ -109,32 +125,42 @@ public sealed class TAuditFake
         string path = Path.Combine(repoRoot, string.Format(TAuditFakeSetting.TAuditFakeReport, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
-        StringBuilder text = new();
-        text.AppendLine($"# Fake audit {version}");
-        text.AppendLine();
-        text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
-        text.AppendLine($"- Enforced: {TAuditFakeSetting.TAuditFakeEnforced}");
-        foreach (string kind in TAuditFakeSetting.TAuditFakeCeiling.Keys)
-        {
-            text.AppendLine($"- {kind}: {TAuditTallyRead(kind)}");
-        }
-
-        text.AppendLine();
-        text.AppendLine("A member is live when a live reader, a constructor, an override, generated code, markup or "
+        List<string> above = TAuditAboveRead();
+        List<string> stale = TAuditStaleRead();
+        List<string> text =
+        [
+            $"# Fake audit {version}",
+            "",
+            $"- Generation: {TAuditConvention.TAuditGeneration}",
+            $"- Enforced: {TAuditFakeSetting.TAuditFakeEnforced}",
+        ];
+        text.AddRange(TAuditFakeSetting.TAuditFakeCeiling
+            .Select(pair => $"- {pair.Key}: {TAuditTallyRead(pair.Key)}, ceiling {pair.Value}"));
+        text.Add($"- Above ceiling: {above.Count}");
+        text.Add($"- Stale ceilings: {stale.Count}");
+        text.Add("");
+        text.Add("A member is live when a live reader, a constructor, an override, generated code, markup or "
             + "the serializer reads it. Orphan is read by nothing live. Tested is read only by tests.");
-        foreach (string kind in TAuditFakeSetting.TAuditFakeCeiling.Keys)
+        List<(string TAuditTitle, List<string> TAuditLines)> chapters = TAuditFakeSetting.TAuditFakeCeiling.Keys
+            .Select(kind => (kind, rows.Where(row => row.TViolationKind == kind)
+                .Select(row => $"- `{row.TViolationPath}:{row.TViolationLine}` `{row.TViolationName}`: "
+                    + row.TViolationReason)
+                .ToList()))
+            .Append(("Above ceiling", above.Select(row => "- " + row).ToList()))
+            .Append(("Stale ceilings", stale.Select(row => "- " + row).ToList()))
+            .ToList();
+        foreach ((string title, List<string> lines) in chapters)
         {
-            text.AppendLine();
-            text.AppendLine($"## {kind}");
-            text.AppendLine();
-            foreach (TViolation row in rows.Where(row => row.TViolationKind == kind))
+            text.Add("");
+            text.Add($"## {title}");
+            if (lines.Count > 0)
             {
-                string place = $"{row.TViolationPath}:{row.TViolationLine}";
-                text.AppendLine($"- `{place}` `{row.TViolationName}`: {row.TViolationReason}");
+                text.Add("");
+                text.AddRange(lines);
             }
         }
 
-        File.WriteAllText(path, text.ToString());
+        File.WriteAllText(path, string.Join('\n', text) + "\n", new UTF8Encoding(false));
         return Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
     }
 }

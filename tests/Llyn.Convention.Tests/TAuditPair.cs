@@ -13,6 +13,7 @@ internal static class TAuditPair
         string summary)
     {
         List<string> over = [];
+        int pairs = 0;
         foreach (IGrouping<string, TAuditHit> pair in hits
                      .Where(hit => hit.TAuditHitKind == kind && hit.TAuditWaiverRead(waivers).Length == 0)
                      .GroupBy(hit => hit.TAuditPairRead(), StringComparer.Ordinal))
@@ -24,6 +25,7 @@ internal static class TAuditPair
                 continue;
             }
 
+            pairs++;
             over.Add($"  {pair.Key}: {names} name(s), ceiling {ceiling}");
             IOrderedEnumerable<TAuditHit> ordered = pair
                 .OrderBy(hit => hit.TAuditHitPath, StringComparer.Ordinal)
@@ -36,7 +38,7 @@ internal static class TAuditPair
 
         Assert.True(over.Count == 0, TAuditConvention.TAuditReportFormat(
             audit,
-            $"{over.Count} pair(s) hold {summary} above their ceiling:\n{string.Join('\n', over)}"));
+            $"{pairs} pair(s) hold {summary} above their ceiling:\n{string.Join('\n', over)}"));
     }
 
     public static void TAuditStaleCheck(

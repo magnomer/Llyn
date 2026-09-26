@@ -4,7 +4,7 @@
 
 Hand-written and tracked: the comment-audit rules and scope live here, not in a generated sidecar.
 auditcomments.ps1 reads its own tracked auditcomments.json and never writes this file.
-The audits read no script configuration, and `TAuditParity` fails when the two drift apart.
+The audits read no script configuration, and both copies change together as scripts/principles.md asks.
 
 ## `public static readonly string[] TAuditCommentFiles`
 

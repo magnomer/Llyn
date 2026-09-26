@@ -126,6 +126,12 @@ public sealed class TAuditLine
     private static IReadOnlyList<TAuditLineRow> TAuditLineRead()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
+        List<string> missing = TAuditLineSetting.TAuditLineRoots
+            .Where(root => !Directory.Exists(Path.Combine(repoRoot, root)))
+            .ToList();
+        Assert.True(missing.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITLINES", $"{missing.Count} configured root(s) have no directory: {string.Join(", ", missing)}."));
+
         TAuditScope scope = new(
             TAuditLineSetting.TAuditLineRoots,
             TAuditLineSetting.TAuditLineInclude,

@@ -1,6 +1,12 @@
 {
   "generation": 12,
   "project": "Llyn",
+  "enforced": true,
+  "ceilings": {
+    "Unmapped": 0,
+    "Absent": 0,
+    "Column": 0
+  },
   "projects": {
     "root": "src",
     "table": [
@@ -20,6 +26,9 @@
   "framework": {
     "portable": "net10.0",
     "twin": "net10.0-windows"
+  },
+  "helper": {
+    "framework": "net10.0"
   },
   "analyzer": {
     "rule": "CA1416",
@@ -77,6 +86,10 @@
       ".AssemblyInfo.cs",
       ".GlobalUsings.g.cs",
       ".Designer.cs"
+    ],
+    "excludePrefixes": [
+      "TemporaryGeneratedFile_",
+      "GeneratedInternalTypeHelper"
     ]
   },
   "report": {

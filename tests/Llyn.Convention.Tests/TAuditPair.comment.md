@@ -10,6 +10,7 @@ Each pair is held to the ceiling written for it.
 
 Counts the names of every pair under one kind and fails when a pair is above its ceiling.
 An unwritten ceiling is zero, and the hits of an over pair are listed under it.
+The message counts the pairs above their ceiling, not the lines listed.
 
 ## `public static void TAuditStaleCheck(string audit, IReadOnlyList<TAuditHit> hits, IReadOnlyList<string> kinds, IReadOnlyDictionary<string, int> ceilings, IReadOnlyList<string> waivers)`
 

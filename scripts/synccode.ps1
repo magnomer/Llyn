@@ -88,8 +88,12 @@ $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath ([System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')))
 
 function Read-Status {
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $json = codegraph status --json 2>$null
-    if (-not $json) { return $null }
+    $statusExit = $LASTEXITCODE
+    $ErrorActionPreference = $nativePreference
+    if ($statusExit -ne 0 -or -not $json) { return $null }
     return $json | ConvertFrom-Json
 }
 

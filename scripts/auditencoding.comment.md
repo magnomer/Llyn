@@ -1,0 +1,53 @@
+# auditencoding.ps1
+
+Checks every tracked text file for one encoding form, without the convention tests.
+It is the standalone counterpart of `TAuditEncoding` and reports the same hits.
+It runs in plain PowerShell with git alone, so it answers in a second or two.
+
+## Usage
+
+```
+auditencoding [-Root <path>] [-ConfigPath <path>] [-Help]
+```
+
+`-Root` audits another git working tree with the same configuration.
+`-ConfigPath` reads another configuration instead of `auditencoding.json`.
+
+## Scope
+
+Files come from `git ls-files --cached --others --exclude-standard`, as in the test.
+Each include is a git pathspec matched without case.
+A file under an excluded segment or with a skipped name drops out.
+Ignored files are never read, so the local scripts outside the allowlist stay out of scope.
+Files sort by full path, ordinal and without case, as the test sorts them.
+A path git lists twice is read once.
+
+## Checks
+
+| Counter | Hit |
+|---|---|
+| Invalid UTF-8 | The offset of the first ill-formed byte sequence. |
+| Byte order marks | The offset of the first mark, anywhere in the file. |
+| Carriage returns | The number of carriage returns. |
+| Missing final newlines | A non-empty file whose last byte is not a line feed. |
+| Control characters | The line of the first raw control character. |
+| Double-encoded text | The line of the first UTF-8 run read back through a single-byte page. |
+| Tabs in sources | The line of the first tab in a file with a tabless suffix. |
+| Non-ASCII scripts | The line of the first byte outside ASCII in a file with an ascii suffix. |
+
+## Settings
+
+`auditencoding.json` is copied by hand from `TAuditEncodingSetting`, and the two never read each other.
+The mojibake pattern writes `{trail}` where the setting splices in its trail class.
+The ascii suffixes carry the rule the test writes inline for PowerShell scripts.
+
+## Output
+
+The console follows `report.md`, and every hit prints as `path: reason`.
+The exit code is 1 when any counter is above 0 and 0 otherwise.
+
+## Parity
+
+The invalid offset is walked by hand, since .NET Framework counts its decoder index from an internal buffer.
+The walk reports the start of the ill-formed sequence, as the .NET decoder does in the test.
+Offsets and lines count bytes through the Latin-1 page, so each character is one byte.

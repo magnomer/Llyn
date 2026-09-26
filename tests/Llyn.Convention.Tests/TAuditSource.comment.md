@@ -20,7 +20,9 @@ The current version, for naming a report.
 ## `public static IReadOnlyList<string> TAuditFileRead(string repoRoot, TAuditScope scope)`
 
 Asks Git for the tracked and untracked files matching the scope's patterns without case.
+Git's output is read as UTF-8, so a path with non-ASCII letters is found, not skipped.
 Ignored files never appear, and a file deleted on disk is skipped.
+A path Git lists twice, as an unmerged path is, is kept once, compared without case.
 The rest is filtered by the scope and sorted for a stable report.
 
 ## `private static bool TAuditExcludedCheck(string relativePath, TAuditScope scope)`

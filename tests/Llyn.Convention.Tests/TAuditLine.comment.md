@@ -6,6 +6,7 @@ Holds every source file within the line limit and every line within the width li
 A file or line in the band below a limit prints as a warning and does not fail.
 Enforced, a kind fails when it counts above its ceiling.
 The advice printed with a hit says to reconsider the code, never to split or wrap it mechanically.
+Every hit, warning and ceiling matches auditlines.ps1 on the same tree, though neither reads the other.
 
 ## `private static readonly Lazy<IReadOnlyList<TAuditLineRow>> TAuditLineRows = new(TAuditLineRead);`
 
@@ -56,6 +57,7 @@ A failure carries the advice before the hits.
 
 ## `private static IReadOnlyList<TAuditLineRow> TAuditLineRead()`
 
+A configured root without a directory fails first, as it does in the script.
 Enumerates the sources with Git and reads every file once.
 Each row keeps the line count and every line inside the width band or above it.
 An empty enumeration fails rather than passing vacuously.

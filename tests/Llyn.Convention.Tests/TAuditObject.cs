@@ -20,72 +20,67 @@ public sealed class TAuditObject
     [Fact]
     public void AuditObject_SplitTypes_HoldNoMonolith()
     {
-        List<string> hits = TAuditObjectRows.Value
-            .Where(row => row.TAuditObjectMonolith)
-            .Select(row => $"  {row.TAuditObjectName}: {row.TAuditObjectParts.Count} parts, "
-                + $"{row.TAuditObjectLines} lines, {row.TAuditObjectCross} cross references, "
-                + $"weave {row.TAuditObjectFree:0.00} without hubs, density {row.TAuditObjectDensity:0.00}")
-            .ToList();
-        TAuditObjectCheck("Monolith", hits, "split type(s) are one object behind many files");
+        TAuditObjectCheck("Monolith", TAuditHitRead("Monolith"), "split type(s) are one object behind many parts");
     }
 
     [Fact]
     public void AuditObject_SingleTypes_HoldNoLarge()
     {
-        List<string> hits = TAuditObjectRows.Value
-            .Where(row => row.TAuditObjectLarge)
-            .Select(row => $"  {row.TAuditObjectName}: {row.TAuditObjectLines} lines, "
-                + $"{row.TAuditObjectMembers} members, {row.TAuditObjectState} state slots")
-            .ToList();
-        TAuditObjectCheck("Large", hits, "single-part type(s) are too large for one object");
+        TAuditObjectCheck("Large", TAuditHitRead("Large"), "single-part type(s) are too large for one object");
     }
 
     [Fact]
     public void AuditObject_State_HoldNoHub()
     {
-        List<string> hits = TAuditObjectRows.Value
-            .SelectMany(row => row.TAuditObjectHubs.Select(hub => $"  {row.TAuditObjectName}: {hub}"))
-            .ToList();
-        TAuditObjectCheck("Hub", hits, "state slot(s) are reached from many parts");
+        TAuditObjectCheck("Hub", TAuditHitRead("Hub"), "state slot(s) are reached from many parts");
     }
 
     [Fact]
     public void AuditObject_Parts_HoldWithinCeiling()
     {
-        List<string> over = TAuditPartRead()
-            .Where(pair => pair.Value > TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1))
-            .Select(pair => $"  {pair.Key}: {pair.Value} part(s), "
-                            + $"ceiling {TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1)}")
-            .ToList();
+        List<string> over = TAuditOverRead();
+        string report = TAuditObjectWritten.Value;
+        _tAuditOutput.WriteLine($"AUDITOBJECT Parts: {over.Count} type(s) above their part ceiling. Report: {report}");
 
         Assert.True(!TAuditObjectSetting.TAuditObjectEnforced || over.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT",
-            $"{over.Count} type(s) are split over more parts than their ceiling.\n{string.Join('\n', over)}"));
+            $"{over.Count} type(s) are split over more parts than their ceiling. See {report}\n"
+            + string.Join('\n', over.Select(row => "  " + row))));
     }
 
     [Fact]
     public void AuditObject_Ceiling_MatchesHits()
     {
-        Dictionary<string, int> counts = new(StringComparer.Ordinal)
-        {
-            ["Monolith"] = TAuditObjectRows.Value.Count(row => row.TAuditObjectMonolith),
-            ["Hub"] = TAuditObjectRows.Value.Sum(row => row.TAuditObjectHubs.Count),
-            ["Large"] = TAuditObjectRows.Value.Count(row => row.TAuditObjectLarge),
-        };
-        foreach ((string name, int parts) in TAuditPartRead())
-        {
-            counts[name] = parts;
-        }
-
-        List<string> stale = TAuditObjectSetting.TAuditObjectCeiling
-            .Concat(TAuditObjectSetting.TAuditPartCeiling)
-            .Where(pair => counts.GetValueOrDefault(pair.Key, 1) < pair.Value)
-            .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key, 1)} hit(s), ceiling {pair.Value}")
-            .ToList();
+        List<string> stale = TAuditStaleRead();
+        string report = TAuditObjectWritten.Value;
+        _tAuditOutput.WriteLine($"AUDITOBJECT Stale ceilings: {stale.Count}. Report: {report}");
 
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT",
-            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+            $"{stale.Count} ceiling(s) sit above the count and must be lowered. See {report}\n"
+            + string.Join('\n', stale.Select(row => "  " + row))));
+    }
+
+    private static List<string> TAuditHitRead(string kind)
+    {
+        IReadOnlyList<TAuditObjectRow> rows = TAuditObjectRows.Value;
+        return kind switch
+        {
+            "Monolith" => rows
+                .Where(row => row.TAuditObjectMonolith)
+                .Select(row => $"{row.TAuditObjectName}: {row.TAuditObjectParts.Count} parts, "
+                    + $"{row.TAuditObjectLines} lines, {row.TAuditObjectCross} cross references, "
+                    + $"weave {row.TAuditObjectFree:0.00} without hubs, density {row.TAuditObjectDensity:0.00}")
+                .ToList(),
+            "Hub" => rows
+                .SelectMany(row => row.TAuditObjectHubs.Select(hub => $"{row.TAuditObjectName}: {hub}"))
+                .ToList(),
+            _ => rows
+                .Where(row => row.TAuditObjectLarge)
+                .Select(row => $"{row.TAuditObjectName}: {row.TAuditObjectLines} lines, "
+                    + $"{row.TAuditObjectMembers} members, {row.TAuditObjectState} state slots")
+                .ToList(),
+        };
     }
 
     private static Dictionary<string, int> TAuditPartRead()
@@ -93,6 +88,40 @@ public sealed class TAuditObject
         return TAuditObjectRows.Value
             .Where(row => row.TAuditObjectParts.Count > 1)
             .ToDictionary(row => row.TAuditObjectName, row => row.TAuditObjectParts.Count, StringComparer.Ordinal);
+    }
+
+    private static List<string> TAuditOverRead()
+    {
+        return TAuditPartRead()
+            .Where(pair => pair.Value > TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1))
+            .Select(pair => $"{pair.Key}: {pair.Value} part(s), "
+                + $"ceiling {TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1)}")
+            .ToList();
+    }
+
+    private static List<string> TAuditAboveRead()
+    {
+        return TAuditObjectSetting.TAuditObjectCeiling
+            .Where(pair => TAuditHitRead(pair.Key).Count > pair.Value)
+            .Select(pair => $"{pair.Key}: {TAuditHitRead(pair.Key).Count} hit(s), ceiling {pair.Value}")
+            .Concat(TAuditOverRead())
+            .Where(_ => TAuditObjectSetting.TAuditObjectEnforced)
+            .ToList();
+    }
+
+    private static List<string> TAuditStaleRead()
+    {
+        Dictionary<string, int> counts = TAuditPartRead();
+        foreach (string kind in TAuditObjectSetting.TAuditObjectCeiling.Keys)
+        {
+            counts[kind] = TAuditHitRead(kind).Count;
+        }
+
+        return TAuditObjectSetting.TAuditObjectCeiling
+            .Concat(TAuditObjectSetting.TAuditPartCeiling)
+            .Where(pair => counts.GetValueOrDefault(pair.Key, 1) < pair.Value)
+            .Select(pair => $"{pair.Key}: {counts.GetValueOrDefault(pair.Key, 1)} hit(s), ceiling {pair.Value}")
+            .ToList();
     }
 
     private void TAuditObjectCheck(string kind, List<string> hits, string summary)
@@ -104,7 +133,8 @@ public sealed class TAuditObject
         bool held = !TAuditObjectSetting.TAuditObjectEnforced || hits.Count <= ceiling;
         Assert.True(held, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT",
-            $"{hits.Count} {summary}, above the ceiling of {ceiling}. See {report}\n{string.Join('\n', hits)}"));
+            $"{hits.Count} {summary}, above the ceiling of {ceiling}. See {report}\n"
+            + string.Join('\n', hits.Select(row => "  " + row))));
     }
 
     private static IReadOnlyList<TAuditObjectRow> TAuditObjectRead()
@@ -120,6 +150,8 @@ public sealed class TAuditObject
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
         Assert.True(sources.Count > 0, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT", "No tracked source file was enumerated; the audit would pass vacuously."));
+        Assert.True(TAuditBinder.TAuditWalkRead(sources).Count > 0, TAuditConvention.TAuditReportFormat(
+            "AUDITOBJECT", "No listed source file is bound, so the audit cannot judge."));
         return TAuditObjectWalker.TAuditRun(sources, repoRoot);
     }
 
@@ -132,17 +164,22 @@ public sealed class TAuditObject
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         List<TAuditObjectRow> split = rows.Where(row => row.TAuditObjectParts.Count > 1).ToList();
-        StringBuilder text = new();
-        text.AppendLine($"# Object audit {version}");
-        text.AppendLine();
-        text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
-        text.AppendLine($"- Enforced: {TAuditObjectSetting.TAuditObjectEnforced}");
-        text.AppendLine($"- Types: {rows.Count}, split over several files: {split.Count}");
-        text.AppendLine($"- Monolith: {rows.Count(row => row.TAuditObjectMonolith)}");
-        text.AppendLine($"- Hub: {rows.Sum(row => row.TAuditObjectHubs.Count)}");
-        text.AppendLine($"- Large: {rows.Count(row => row.TAuditObjectLarge)}");
-        text.AppendLine();
-        text.AppendLine("A monolith has at least "
+        List<string> above = TAuditAboveRead();
+        List<string> stale = TAuditStaleRead();
+        List<string> text =
+        [
+            $"# Object audit {version}",
+            "",
+            $"- Generation: {TAuditConvention.TAuditGeneration}",
+            $"- Enforced: {TAuditObjectSetting.TAuditObjectEnforced}",
+            $"- Types: {rows.Count}, split into several parts: {split.Count}",
+        ];
+        text.AddRange(TAuditObjectSetting.TAuditObjectCeiling
+            .Select(pair => $"- {pair.Key}: {TAuditHitRead(pair.Key).Count}, ceiling {pair.Value}"));
+        text.Add($"- Above ceiling: {above.Count}");
+        text.Add($"- Stale ceilings: {stale.Count}");
+        text.Add("");
+        text.Add("A monolith has at least "
             + $"{TAuditObjectSetting.TAuditPartLimit} parts and {TAuditObjectSetting.TAuditSpanLimit} lines, "
             + "and either "
             + $"its largest member component still spans {TAuditObjectSetting.TAuditWeaveLimit:0.00} of the parts once "
@@ -150,33 +187,36 @@ public sealed class TAuditObject
             + $"member. A hub is a state slot reached from {TAuditObjectSetting.TAuditHubReach} or more parts. "
             + $"A large type has one part and at least {TAuditObjectSetting.TAuditLargeLines} lines, "
             + $"{TAuditObjectSetting.TAuditLargeMembers} members "
-            + $"or {TAuditObjectSetting.TAuditLargeState} state slots.");
-        text.AppendLine();
-        text.AppendLine("## Split types");
-        text.AppendLine();
-        text.AppendLine(
-            "| Type | Parts | Lines | Members | State | Hubs | Cross | Weave | Free | Density | Monolith |");
-        text.AppendLine("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|");
-        foreach (TAuditObjectRow row in split)
-        {
-            text.AppendLine($"| `{row.TAuditObjectName}` | {row.TAuditObjectParts.Count} | {row.TAuditObjectLines} "
-                + $"| {row.TAuditObjectMembers} | {row.TAuditObjectState} | {row.TAuditObjectHubs.Count} "
-                + $"| {row.TAuditObjectCross} | {row.TAuditObjectWeave:0.00} | {row.TAuditObjectFree:0.00} "
-                + $"| {row.TAuditObjectDensity:0.00} | {(row.TAuditObjectMonolith ? "yes" : "")} |");
-        }
+            + $"or {TAuditObjectSetting.TAuditLargeState} state slots. "
+            + "A part is one declaration of the type, so one file may hold several parts.");
+        text.Add("");
+        text.Add("## Split types");
+        text.Add("");
+        text.Add("| Type | Parts | Lines | Members | State | Hubs | Cross | Weave | Free | Density | Monolith |");
+        text.Add("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|");
+        text.AddRange(split.Select(row => $"| `{row.TAuditObjectName}` | {row.TAuditObjectParts.Count} "
+            + $"| {row.TAuditObjectLines} | {row.TAuditObjectMembers} | {row.TAuditObjectState} "
+            + $"| {row.TAuditObjectHubs.Count} | {row.TAuditObjectCross} | {row.TAuditObjectWeave:0.00} "
+            + $"| {row.TAuditObjectFree:0.00} | {row.TAuditObjectDensity:0.00} "
+            + $"| {(row.TAuditObjectMonolith ? "yes" : "no")} |"));
 
-        text.AppendLine();
-        text.AppendLine("## Hubs");
-        text.AppendLine();
-        foreach (TAuditObjectRow row in rows.Where(row => row.TAuditObjectHubs.Count > 0))
+        List<(string TAuditTitle, List<string> TAuditLines)> chapters = TAuditObjectSetting.TAuditObjectCeiling.Keys
+            .Select(kind => (kind, TAuditHitRead(kind)))
+            .Append(("Above ceiling", above))
+            .Append(("Stale ceilings", stale))
+            .ToList();
+        foreach ((string title, List<string> lines) in chapters)
         {
-            foreach (string hub in row.TAuditObjectHubs)
+            text.Add("");
+            text.Add($"## {title}");
+            if (lines.Count > 0)
             {
-                text.AppendLine($"- `{row.TAuditObjectName}` {hub}");
+                text.Add("");
+                text.AddRange(lines.Select(line => "- " + line));
             }
         }
 
-        File.WriteAllText(path, text.ToString());
+        File.WriteAllText(path, string.Join('\n', text) + "\n", new UTF8Encoding(false));
         return Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
     }
 }

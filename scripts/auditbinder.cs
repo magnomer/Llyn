@@ -5,62 +5,62 @@ using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-internal sealed class AuditBinder
+internal sealed class LAuditBinder
 {
-    private static readonly CSharpParseOptions ParseOptions = new(
+    private static readonly CSharpParseOptions LAuditSyntaxOptions = new(
         languageVersion: LanguageVersion.Preview,
         documentationMode: DocumentationMode.None,
         kind: SourceCodeKind.Regular);
 
-    private AuditBinder(string root, CSharpCompilation compilation, IReadOnlyList<SyntaxTree> tracked)
+    private LAuditBinder(string root, CSharpCompilation compilation, IReadOnlyList<SyntaxTree> tracked)
     {
-        Root = root;
-        Compilation = compilation;
-        Tracked = tracked;
+        LAuditRoot = root;
+        LAuditCompilation = compilation;
+        LAuditTrees = tracked;
     }
 
-    public string Root { get; }
+    public string LAuditRoot { get; }
 
-    public CSharpCompilation Compilation { get; }
+    public CSharpCompilation LAuditCompilation { get; }
 
-    public IReadOnlyList<SyntaxTree> Tracked { get; }
+    public IReadOnlyList<SyntaxTree> LAuditTrees { get; }
 
-    public string Relative(string path) => Path.GetRelativePath(Root, path).Replace('\\', '/');
+    public string LAuditRelativeRead(string path) => Path.GetRelativePath(LAuditRoot, path).Replace('\\', '/');
 
-    public static AuditBinder Bind(string root, string configPath)
+    public static LAuditBinder LAuditBinderRead(string root, string configPath)
     {
         JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
         string source = config.GetProperty("source").GetString()!;
         string configuration = config.GetProperty("configuration").GetString()!;
         string reference = config.GetProperty("reference").GetString()!;
         string owned = config.GetProperty("project").GetString()!;
-        string[] packs = Strings(config, "packs");
-        string[] segments = Strings(config, "excludeSegments");
-        string[] suffixes = Strings(config, "excludeSuffixes");
-        string[] prefixes = Strings(config, "excludePrefixes");
+        string[] packs = LAuditListRead(config, "packs");
+        string[] segments = LAuditListRead(config, "excludeSegments");
+        string[] suffixes = LAuditListRead(config, "excludeSuffixes");
+        string[] prefixes = LAuditListRead(config, "excludePrefixes");
 
-        List<string> sources = Files(root, [source + "*.cs"], [], segments, suffixes, prefixes);
+        List<string> sources = LAuditFileRead(root, [source + "*.cs"], [], segments, suffixes, prefixes);
         if (sources.Count == 0)
         {
             throw new InvalidOperationException("No tracked source file was enumerated, so the binder would compile nothing.");
         }
 
-        List<string> projects = Files(root, [source + "*.csproj"], [], [], [], []);
+        List<string> projects = LAuditFileRead(root, [source + "*.csproj"], [], [], [], []);
         if (projects.Count == 0)
         {
             throw new InvalidOperationException("No tracked project file was enumerated, so the binder would compile nothing.");
         }
 
         List<SyntaxTree> trees = sources
-            .Concat(Generated(root, projects, configuration))
+            .Concat(LAuditGeneratedRead(root, projects, configuration))
             .AsParallel()
             .AsOrdered()
-            .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), ParseOptions, path))
+            .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), LAuditSyntaxOptions, path))
             .ToList();
         CSharpCompilation compilation = CSharpCompilation.Create(
-            "AuditBinder",
+            "LAuditBinder",
             trees,
-            References(root, packs, reference, configuration, owned),
+            LAuditReferenceRead(root, packs, reference, configuration, owned),
             new CSharpCompilationOptions(
                 OutputKind.ConsoleApplication,
                 allowUnsafe: true,
@@ -82,10 +82,10 @@ internal sealed class AuditBinder
                 .Contains("obj", StringComparer.Ordinal))
             .Where(tree => Path.GetFullPath(tree.FilePath).StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             .ToList();
-        return new AuditBinder(root, compilation, tracked);
+        return new LAuditBinder(root, compilation, tracked);
     }
 
-    public static List<string> Files(
+    public static List<string> LAuditFileRead(
         string root, IEnumerable<string> patterns, string[] roots, string[] segments, string[] suffixes, string[] prefixes)
     {
         ProcessStartInfo info = new("git")
@@ -122,7 +122,7 @@ internal sealed class AuditBinder
         foreach (string line in output.Split('\n'))
         {
             string relative = line.Trim();
-            if (relative.Length == 0 || Excluded(relative, roots, segments, suffixes, prefixes))
+            if (relative.Length == 0 || LAuditExcludedCheck(relative, roots, segments, suffixes, prefixes))
             {
                 continue;
             }
@@ -138,7 +138,7 @@ internal sealed class AuditBinder
         return files;
     }
 
-    private static bool Excluded(string relative, string[] roots, string[] segments, string[] suffixes, string[] prefixes)
+    private static bool LAuditExcludedCheck(string relative, string[] roots, string[] segments, string[] suffixes, string[] prefixes)
     {
         string normalized = relative.Replace('\\', '/');
         if (roots.Length > 0 && !roots.Any(root =>
@@ -158,7 +158,7 @@ internal sealed class AuditBinder
             || prefixes.Any(prefix => name.StartsWith(prefix, StringComparison.Ordinal));
     }
 
-    private static string Target(string project, string output, string configuration)
+    private static string LAuditTargetRead(string project, string output, string configuration)
     {
         string framework = XDocument.Load(project).Descendants()
             .Where(node => node.Name.LocalName == "TargetFramework")
@@ -167,12 +167,12 @@ internal sealed class AuditBinder
         return Path.Combine(Path.GetDirectoryName(project)!, output, configuration, framework);
     }
 
-    private static List<string> Generated(string root, IEnumerable<string> projects, string configuration)
+    private static List<string> LAuditGeneratedRead(string root, IEnumerable<string> projects, string configuration)
     {
         List<string> files = [];
         foreach (string project in projects)
         {
-            string folder = Target(project, "obj", configuration);
+            string folder = LAuditTargetRead(project, "obj", configuration);
             bool markup = Directory.EnumerateFiles(Path.GetDirectoryName(project)!, "*.xaml", SearchOption.AllDirectories)
                 .Any(path => !Path.GetRelativePath(root, path).Replace('\\', '/').Split('/')
                     .Contains("obj", StringComparer.Ordinal));
@@ -194,10 +194,10 @@ internal sealed class AuditBinder
         return files;
     }
 
-    private static List<MetadataReference> References(
+    private static List<MetadataReference> LAuditReferenceRead(
         string root, string[] packs, string reference, string configuration, string owned)
     {
-        Dictionary<string, (Version Version, string Path)> chosen = new(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, (Version LAuditVersion, string LAuditPath)> chosen = new(StringComparer.OrdinalIgnoreCase);
         string runtime = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
         string shared = Path.GetDirectoryName(Path.GetDirectoryName(runtime)!)!;
         foreach (string pack in packs)
@@ -211,13 +211,13 @@ internal sealed class AuditBinder
 
             foreach (string path in Directory.EnumerateFiles(folder, "*.dll"))
             {
-                Choose(chosen, path);
+                LAuditAssemblyAdd(chosen, path);
             }
         }
 
         string project = Path.Combine(
             root, reference.Replace('/', Path.DirectorySeparatorChar), Path.GetFileName(reference) + ".csproj");
-        string built = Target(project, "bin", configuration);
+        string built = LAuditTargetRead(project, "bin", configuration);
         if (!Directory.Exists(built))
         {
             throw new InvalidOperationException($"No build output under {built}; build the solution before the audit.");
@@ -229,14 +229,14 @@ internal sealed class AuditBinder
             if (!name.Equals(owned, StringComparison.OrdinalIgnoreCase)
                 && !name.StartsWith(owned + ".", StringComparison.OrdinalIgnoreCase))
             {
-                Choose(chosen, path);
+                LAuditAssemblyAdd(chosen, path);
             }
         }
 
-        return chosen.Values.Select(entry => (MetadataReference)MetadataReference.CreateFromFile(entry.Path)).ToList();
+        return chosen.Values.Select(entry => (MetadataReference)MetadataReference.CreateFromFile(entry.LAuditPath)).ToList();
     }
 
-    private static void Choose(Dictionary<string, (Version Version, string Path)> chosen, string path)
+    private static void LAuditAssemblyAdd(Dictionary<string, (Version LAuditVersion, string LAuditPath)> chosen, string path)
     {
         Version version;
         try
@@ -249,13 +249,13 @@ internal sealed class AuditBinder
         }
 
         string name = Path.GetFileNameWithoutExtension(path);
-        if (!chosen.TryGetValue(name, out (Version Version, string Path) known) || known.Version < version)
+        if (!chosen.TryGetValue(name, out (Version LAuditVersion, string LAuditPath) known) || known.LAuditVersion < version)
         {
             chosen[name] = (version, path);
         }
     }
 
-    private static string[] Strings(JsonElement config, string key)
+    private static string[] LAuditListRead(JsonElement config, string key)
     {
         return config.GetProperty(key).EnumerateArray().Select(item => item.GetString()!).ToArray();
     }

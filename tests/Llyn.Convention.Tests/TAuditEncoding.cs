@@ -32,7 +32,7 @@ public sealed class TAuditEncoding
             }
             catch (DecoderFallbackException exception)
             {
-                return exception.Message;
+                return $"invalid byte sequence at offset {exception.Index}";
             }
         });
 
@@ -114,6 +114,31 @@ public sealed class TAuditEncoding
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditEncodingAudit,
             $"{hits.Count} source file(s) hold a tab:\n{string.Join('\n', hits)}"));
+    }
+
+    [Fact]
+    public void AuditEncoding_Scripts_HoldOnlyAscii()
+    {
+        List<string> hits = TAuditEncodingScan(static (path, bytes) =>
+        {
+            if (!path.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            int offset = bytes.AsSpan().IndexOfAnyInRange((byte)0x80, (byte)0xFF);
+            if (offset < 0)
+            {
+                return null;
+            }
+
+            int line = bytes.AsSpan(0, offset).Count((byte)'\n') + 1;
+            return $"non-ASCII byte at line {line}";
+        });
+
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditEncodingAudit,
+            $"{hits.Count} script(s) hold a byte outside ASCII:\n{string.Join('\n', hits)}"));
     }
 
     private static string? TAuditLineFind(byte[] bytes, Regex pattern, string label)

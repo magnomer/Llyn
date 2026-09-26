@@ -22,7 +22,7 @@ The tree hits and the surface hits, bound once and shared by every fact.
 
 ## `public void AuditChain_Rings_ReachOneRing()`
 
-No ring reaches more than one ring, and every ring reached is declared.
+No ring reaches more than one ring or itself, and every ring reached is declared.
 
 ## `public void AuditChain_Reach_MatchesRingTable()`
 

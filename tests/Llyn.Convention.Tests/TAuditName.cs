@@ -57,14 +57,15 @@ public sealed class TAuditName
     private static string TViolationFormat(string repoRoot, IReadOnlyList<TViolation> violations)
     {
         IEnumerable<string> lines = violations
-            .OrderBy(violation => violation.TViolationPath, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(violation => violation.TViolationLine)
-            .Select(violation =>
-            {
-                string relative = Path.GetRelativePath(repoRoot, violation.TViolationPath).Replace('\\', '/');
-                return $"  {relative}:{violation.TViolationLine} [{violation.TViolationKind}] " +
-                       $"{violation.TViolationName} — {violation.TViolationReason}";
-            });
+            .Select(violation => (TViolationRelative:
+                Path.GetRelativePath(repoRoot, violation.TViolationPath).Replace('\\', '/'), TViolationItem: violation))
+            .OrderBy(entry => entry.TViolationRelative, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(entry => entry.TViolationItem.TViolationLine)
+            .ThenBy(entry => entry.TViolationItem.TViolationName, StringComparer.Ordinal)
+            .Select(entry =>
+                $"  {entry.TViolationRelative}:{entry.TViolationItem.TViolationLine} " +
+                $"[{entry.TViolationItem.TViolationKind}] {entry.TViolationItem.TViolationName} - " +
+                entry.TViolationItem.TViolationReason);
 
         return $"{violations.Count} non-conforming name(s):\n{string.Join('\n', lines)}";
     }

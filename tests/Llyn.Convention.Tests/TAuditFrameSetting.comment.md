@@ -4,7 +4,7 @@
 
 Hand-written and tracked: the pure rings, the frame, the ambient rows, the ceilings and the waivers.
 No script writes this file, and the frame fact reads no script configuration.
-`TAuditParity` holds it to the ring frames of scripts/auditstructure.json.
+Both copies change together, as scripts/principles.md asks.
 `auditstructure.json` holds its own copy of the ring frames for the structure script.
 
 ## `public static readonly string[] TAuditFramePure`

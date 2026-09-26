@@ -4,7 +4,7 @@
 
 Hand-written and tracked: the ring chain, its surfaces, its floors, its ceilings and its waivers.
 No script writes this file, and the chain fact reads no script configuration.
-`TAuditParity` holds it to scripts/auditstructure.json.
+`auditstructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The reach and the cut are tied to the ring table and the UI roots by facts, not by hand.
 
 ## `public const string TAuditChainHost = "Llyn.Host";`

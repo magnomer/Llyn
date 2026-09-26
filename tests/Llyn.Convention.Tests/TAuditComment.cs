@@ -87,7 +87,10 @@ public sealed class TAuditComment
             [],
             TAuditCommentSetting.TAuditCommentExempt);
         IEnumerable<string> sources = TAuditScanRead(repoRoot, scope).Concat(
-            TAuditCommentSetting.TAuditCommentFiles.Select(file => Path.Combine(repoRoot, file)));
+            TAuditCommentSetting.TAuditCommentFiles
+                .Where(file => !TAuditCommentSetting.TAuditCommentExempt.Contains(
+                    Path.GetFileName(file), StringComparer.OrdinalIgnoreCase))
+                .Select(file => Path.Combine(repoRoot, file)));
 
         List<string> hits = [];
         foreach (string path in sources)
@@ -198,7 +201,11 @@ public sealed class TAuditComment
             [],
             []);
         List<string> hits = [];
-        foreach (string comment in TAuditScanRead(repoRoot, scope))
+        IEnumerable<string> comments = TAuditScanRead(repoRoot, scope).Concat(
+            TAuditCommentSetting.TAuditCommentFiles
+                .Select(file => TAuditCommentRead(Path.Combine(repoRoot, file)))
+                .Where(File.Exists));
+        foreach (string comment in comments)
         {
             string stem = comment[..^TAuditCommentSetting.TAuditCommentPattern.TrimStart('*').Length];
             string[] sources = [.. TAuditCodeExtensions.Select(extension => stem + extension).Where(File.Exists)];
@@ -230,6 +237,15 @@ public sealed class TAuditComment
 
     private static IReadOnlyList<string> TAuditScanRead(string repoRoot, TAuditScope scope)
     {
+        List<string> missing = TAuditCommentSetting.TAuditCommentRoots
+            .Where(root => !Directory.Exists(Path.Combine(repoRoot, root)))
+            .Concat(TAuditCommentSetting.TAuditCommentFiles
+                .Where(file => !File.Exists(Path.Combine(repoRoot, file))))
+            .ToList();
+        Assert.True(missing.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITCOMMENTS",
+            $"{missing.Count} configured root(s) or file(s) do not exist: {string.Join(", ", missing)}."));
+
         IReadOnlyList<string> paths = TAuditSource.TAuditFileRead(repoRoot, scope);
         Assert.True(paths.Count > 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS", "No tracked file lies in the comment scope, so the audit cannot judge."));

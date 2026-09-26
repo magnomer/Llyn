@@ -241,8 +241,13 @@ function Invoke-ExecutionGit {
     $info.EnvironmentVariables['GIT_TERMINAL_PROMPT'] = '0'
     $info.EnvironmentVariables['GCM_INTERACTIVE'] = 'never'
     # Windows PowerShell 5.1 has no ArgumentList, so each argument is quoted into one line.
+    # CommandLineToArgvW rules: backslashes before a quote are doubled and the quote escaped,
+    # and trailing backslashes are doubled so they cannot escape the closing quote.
     $info.Arguments = ($Arguments | ForEach-Object {
-        if ($_ -match '[\s"]') { '"' + $_.Replace('"', '\"') + '"' } else { $_ }
+        if ($_.Length -eq 0 -or $_ -match '[\s"]') {
+            '"' + (($_ -replace '(\\*)"', '$1$1\"') -replace '(\\+)$', '$1$1') + '"'
+        }
+        else { $_ }
     }) -join ' '
 
     $process = [System.Diagnostics.Process]::Start($info)

@@ -14,6 +14,7 @@ A decoder that throws on an invalid sequence instead of writing a replacement ch
 ## `public void AuditEncoding_TrackedText_DecodesAsUtf8()`
 
 Decodes every file strictly and names the ones with a byte sequence that is not UTF-8.
+The reason gives the offset of the first bad byte, so the counterpart script prints the same line.
 
 ## `public void AuditEncoding_TrackedText_HoldsNoMark()`
 
@@ -43,6 +44,12 @@ A run of two doubled characters is required, so a stray accented letter before a
 
 Names every source or markup file holding a tab, which the editors here never write.
 A tab inside a literal is written as its escape.
+
+## `public void AuditEncoding_Scripts_HoldOnlyAscii()`
+
+Names every PowerShell script holding a byte outside ASCII, with the line of the first one.
+Windows PowerShell 5.1 reads a script without a mark in the ANSI page, so any other byte changes meaning.
+A script that needs such a character builds it from its code.
 
 ## `private static string? TAuditLineFind(byte[] bytes, Regex pattern, string label)`
 

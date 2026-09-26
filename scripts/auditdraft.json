@@ -1,0 +1,107 @@
+{
+  "generation": 12,
+  "project": "Llyn",
+  "records": {
+    "include": [
+      "src/Llyn.Core/Lexicon/*.cs"
+    ],
+    "types": [
+      "LCardDraft",
+      "LEntryDraft",
+      "LExampleDraft",
+      "LForm",
+      "LGlossDraft",
+      "LImageDraft",
+      "LInflection",
+      "LMentionDraft",
+      "LPronunciationDraft",
+      "LReflexDraft",
+      "LRegisterDraft",
+      "LSentenceDraft",
+      "LSituationDraft",
+      "LSpeechDraft",
+      "LSyllable",
+      "LTagDraft",
+      "LTranscriptionDraft",
+      "LVideoDraft"
+    ],
+    "waiver": [
+      "LCardDraftId",
+      "LCardDraftPosition",
+      "LExampleDraftId",
+      "LFormEntryId",
+      "LFormPosition",
+      "LGlossDraftId",
+      "LImageDraftId",
+      "LInflectionEntryId",
+      "LInflectionId",
+      "LInflectionPosition",
+      "LInflectionRegular",
+      "LMentionDraftId",
+      "LPronunciationDraftId",
+      "LPronunciationDraftSeeded",
+      "LReflexDraftAnatomy",
+      "LReflexDraftAnchors",
+      "LReflexDraftId",
+      "LRegisterDraftId",
+      "LSentenceDraftId",
+      "LSituationDraftId",
+      "LSpeechDraftCustom",
+      "LSyllablePosition",
+      "LSyllablePronunciationId",
+      "LTagDraftId",
+      "LTranscriptionDraftId",
+      "LTranscriptionDraftSeeded",
+      "LVideoDraftId"
+    ]
+  },
+  "sides": [
+    {
+      "name": "portrait",
+      "include": [
+        "src/Llyn.Core/Portrait/*.cs",
+        "src/Llyn.Application/Portrait/*.cs",
+        "src/Llyn.ShellEngine/Tool/LPortraitFacade.cs"
+      ],
+      "waiver": [
+        "LEntryDraftInflections",
+        "LInflectionMorphology",
+        "LInflectionSpeechId",
+        "LMentionDraftLength",
+        "LMentionDraftOffset",
+        "LMentionDraftSense",
+        "LPronunciationDraftAudio",
+        "LPronunciationDraftSource",
+        "LPronunciationDraftSyllables",
+        "LReflexDraftOwned",
+        "LSituationDraftDescription",
+        "LSituationDraftKind",
+        "LSpeechDraftName",
+        "LSpeechDraftValue",
+        "LSyllableCoda",
+        "LSyllableMedial",
+        "LSyllableNucleus",
+        "LSyllableOnset",
+        "LSyllableToneNumber",
+        "LSyllableTonePoints"
+      ]
+    },
+    {
+      "name": "markup",
+      "include": [
+        "src/Llyn.Core/Markup/*.cs",
+        "src/Llyn.Application/Markup/LMarkupClerk.cs"
+      ],
+      "waiver": [
+        "LSpeechDraftValue"
+      ]
+    },
+    {
+      "name": "exemplar",
+      "include": [
+        "tests/Llyn.Tests/Interface/TExemplar.cs"
+      ],
+      "waiver": []
+    }
+  ]
+}

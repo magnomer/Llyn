@@ -18,6 +18,10 @@ The console follows scripts\report.md: widest view first, empty lists left out.
 Everything project-specific lives in auditcomments.json. The script itself
 carries no project knowledge. Files come from git: tracked and untracked files,
 never ignored ones, as in the convention tests. Git is the only external tool required.
+Every path prints with forward slashes, and every list keeps the order of the
+convention tests: paths under the roots sorted without case, then the root-level files.
+A configured root or root-level file that does not exist stops the audit with an error.
+An unreadable file is reported once, under Unreadable files, and never as a missing pair.
 
 auditcomments.json shape:
   {
@@ -52,6 +56,9 @@ auditcomments.json shape:
 
 Pairs map a source suffix to the comment file it expects, where {base} is the
 file name with that suffix removed. Longer suffixes are matched first.
+Markers are looked for in every file whose extension declares them, paired or not,
+except the exempt files and the excluded suffixes. Headings are checked in every
+comment file the line rules read, the root-level ones included.
 
 Files lists single sources, relative to the repository root, audited beside the
 roots. They report under the (root) folder and are skipped when -SourceRoots is given.
@@ -142,6 +149,19 @@ CONFIGURATION
     exempt files, report location, version file and key. Parameters below
     override it per run.
 
+CHECKS
+    Pairs: every source under the roots and every root-level file needs its
+        comment file, and every comment file under the roots needs a source.
+    Line rules: every comment line holds one sentence, at most the word
+        limit, and none of the forbidden characters.
+    In-code comments: every file whose extension declares markers, paired
+        or not, carries none, exempt files and excluded suffixes aside.
+    Headings: every signature heading names an identifier of its source,
+        in every comment file the line rules read.
+    A configured root or root-level file that does not exist, or a failing
+    git, stops the audit with an error. Paths print with forward slashes
+    in the order of the convention tests.
+
 OPTIONS
     -ConfigPath <path>
         JSON configuration file. Defaults to .\auditcomments.json.
@@ -185,6 +205,10 @@ EXAMPLES
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Git writes UTF-8, so this process reads and writes UTF-8 and a non-ASCII path decodes alike on 5.1 and 7.
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$OutputEncoding = [Console]::OutputEncoding
 
 $script:AuditGeneration = 12
 
@@ -463,18 +487,16 @@ function Get-RelativePathSafe {
 
     $baseUri = [System.Uri]::new($baseFull)
     $pathUri = [System.Uri]::new([System.IO.Path]::GetFullPath($Path))
-    return [System.Uri]::UnescapeDataString($baseUri.MakeRelativeUri($pathUri).ToString()).Replace('/', [System.IO.Path]::DirectorySeparatorChar)
+    return [System.Uri]::UnescapeDataString($baseUri.MakeRelativeUri($pathUri).ToString()).Replace('\', '/')
 }
 
 function Test-IsExcludedPath {
     param(
-        [Parameter(Mandatory = $true)][string]$Path,
-        [Parameter(Mandatory = $true)][string]$FolderRoot,
+        [Parameter(Mandatory = $true)][string]$Relative,
         [Parameter(Mandatory = $true)][System.Collections.Generic.HashSet[string]]$ExcludedNames
     )
 
-    $relative = $Path.Substring($FolderRoot.Length).TrimStart([char[]]@('\', '/'))
-    foreach ($segment in ($relative -split '[\\/]')) {
+    foreach ($segment in $Relative.Split('/')) {
         if ($ExcludedNames.Contains($segment)) {
             return $true
         }
@@ -629,15 +651,14 @@ function Test-IsExcludedSuffix {
 function Get-FolderKey {
     param(
         [Parameter(Mandatory = $true)][string]$RootFull,
-        [Parameter(Mandatory = $true)][string]$FileFull
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$UnderRoot
     )
 
-    $directory = [System.IO.Path]::GetDirectoryName($FileFull)
-    $relative = $directory.Substring($RootFull.Length).TrimStart([char[]]@('\', '/'))
-    if ($relative.Length -eq 0) { return [System.IO.Path]::GetFileName($RootFull) }
-    $parts = @($relative -split '[\\/]')
+    $cut = $UnderRoot.LastIndexOf('/')
+    if ($cut -le 0) { return [System.IO.Path]::GetFileName($RootFull) }
+    $parts = @($UnderRoot.Substring(0, $cut).Split('/'))
     $take = [Math]::Min($Segments, $parts.Count)
-    return (($parts | Select-Object -First $take) -join '\')
+    return (($parts | Select-Object -First $take) -join '/')
 }
 
 function Get-PairFor {
@@ -694,12 +715,32 @@ function Test-CommentLine {
     return @($problems)
 }
 
+function Invoke-AuditGit {
+    param([Parameter(Mandatory = $true)][string[]]$Arguments)
+
+    # Windows PowerShell 5.1 turns any git stderr line into a terminating error under Stop, so git runs under Continue.
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $output = @(& git @Arguments 2>$null)
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $nativePreference
+    }
+
+    return [pscustomobject]@{ Lines = $output; ExitCode = $exitCode }
+}
+
 $sourceRootFulls = [System.Collections.Generic.List[string]]::new()
+$rootEntries = [System.Collections.Generic.List[object]]::new()
 foreach ($root in $SourceRoots) {
     if ([string]::IsNullOrWhiteSpace($root)) { continue }
     $rootFull = Join-AuditPath -Root $repoRootFull -Relative $root
-    if (-not [System.IO.Directory]::Exists($rootFull)) { throw "Source directory not found: $rootFull" }
+    if (-not [System.IO.Directory]::Exists($rootFull)) { throw "The configured source root has no directory: $rootFull" }
+    $rootRelative = (Get-RelativePathSafe -BasePath $repoRootFull -Path $rootFull).Trim('/')
     [void]$sourceRootFulls.Add($rootFull)
+    $rootEntries.Add([pscustomobject]@{ Full = $rootFull; Prefix = $(if ($rootRelative.Length -eq 0) { '' } else { $rootRelative + '/' }) })
 }
 
 if ($sourceRootFulls.Count -eq 0) { throw "At least one source root must be supplied." }
@@ -709,7 +750,7 @@ if (-not $PSBoundParameters.ContainsKey('SourceRoots')) {
     foreach ($entry in @($config.sources.files)) {
         if ([string]::IsNullOrWhiteSpace($entry)) { continue }
         $fileFull = Join-AuditPath -Root $repoRootFull -Relative $entry
-        if (-not [System.IO.File]::Exists($fileFull)) { throw "Source file not found: $fileFull" }
+        if (-not [System.IO.File]::Exists($fileFull)) { throw "The configured source file does not exist: $fileFull" }
         if ($null -eq (Get-PairFor -Name ([System.IO.Path]::GetFileName($fileFull)))) { throw "Source file has no pair: $fileFull" }
         [void]$sourceFileFulls.Add($fileFull)
     }
@@ -717,82 +758,128 @@ if (-not $PSBoundParameters.ContainsKey('SourceRoots')) {
 
 $sourceFiles = [System.Collections.Generic.List[object]]::new()
 $commentFiles = [System.Collections.Generic.List[object]]::new()
+$remarkFiles = [System.Collections.Generic.List[object]]::new()
 $readErrors = [System.Collections.Generic.List[string]]::new()
+$unreadable = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 
 function Measure-Lines {
-    param([Parameter(Mandatory = $true)][string]$Path)
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string]$Relative
+    )
 
     [long]$lines = 0
     [long]$nonBlank = 0
-    foreach ($line in [System.IO.File]::ReadLines($Path)) {
-        $lines++
-        if (-not [string]::IsNullOrWhiteSpace($line)) { $nonBlank++ }
-    }
-
-    return [pscustomobject]@{ Lines = $lines; NonBlank = $nonBlank }
-}
-
-foreach ($rootFull in $sourceRootFulls) {
-    $listed = & git -C $rootFull -c core.quotePath=false ls-files --cached --others --exclude-standard --full-name -- . 2>$null
-    if ($LASTEXITCODE -ne 0) {
-        throw "Git could not enumerate the files under $rootFull, so the audit cannot judge."
-    }
-
-    $files = @($listed | ForEach-Object {
-        $full = [System.IO.Path]::GetFullPath((Join-Path $repoRootFull ([string]$_)))
-        if ([System.IO.File]::Exists($full)) { [System.IO.FileInfo]::new($full) }
-    } | Where-Object {
-        -not (Test-IsExcludedPath -Path $_.FullName -FolderRoot $rootFull -ExcludedNames $excludedNames)
-    })
-
-    foreach ($file in $files) {
-        $relative = Get-RelativePathSafe -BasePath $repoRootFull -Path $file.FullName
-        $folder = Get-FolderKey -RootFull $rootFull -FileFull $file.FullName
-
-        if ($file.Name.EndsWith($commentSuffix, [System.StringComparison]::OrdinalIgnoreCase)) {
-            try { $count = Measure-Lines -Path $file.FullName }
-            catch { $readErrors.Add("$($file.FullName): $($_.Exception.Message)"); continue }
-            $commentFiles.Add([pscustomobject]@{
-                Full = $file.FullName; Relative = $relative; Folder = $folder; Name = $file.Name
-                Directory = $file.DirectoryName; Lines = $count.Lines; NonBlank = $count.NonBlank; Bytes = $file.Length
-            })
-            continue
+    try {
+        foreach ($line in [System.IO.File]::ReadLines($Path)) {
+            $lines++
+            if (-not [string]::IsNullOrWhiteSpace($line)) { $nonBlank++ }
         }
+    }
+    catch {
+        if ($unreadable.Add($Path)) { $readErrors.Add("${Relative}: $($_.Exception.Message)") }
+        return [pscustomobject]@{ Readable = $false; Lines = [long]0; NonBlank = [long]0 }
+    }
 
-        if (Test-IsExcludedSuffix -Name $file.Name) { continue }
-        $pair = Get-PairFor -Name $file.Name
-        if ($null -eq $pair) { continue }
+    return [pscustomobject]@{ Readable = $true; Lines = $lines; NonBlank = $nonBlank }
+}
 
-        try { $count = Measure-Lines -Path $file.FullName }
-        catch { $readErrors.Add("$($file.FullName): $($_.Exception.Message)"); continue }
-        $sourceFiles.Add([pscustomobject]@{
-            Full = $file.FullName; Relative = $relative; Folder = $folder; Name = $file.Name
-            Directory = $file.DirectoryName; Extension = $file.Extension.ToLowerInvariant()
-            Suffix = $pair.Suffix; Expected = $pair.Expected; Lines = $count.Lines; NonBlank = $count.NonBlank
-        })
+function Add-CommentFile {
+    param(
+        [Parameter(Mandatory = $true)][System.IO.FileInfo]$File,
+        [Parameter(Mandatory = $true)][string]$Relative,
+        [Parameter(Mandatory = $true)][string]$Folder
+    )
+
+    $count = Measure-Lines -Path $File.FullName -Relative $Relative
+    $commentFiles.Add([pscustomobject]@{
+        Full = $File.FullName; Relative = $Relative; Folder = $Folder; Name = $File.Name; Directory = $File.DirectoryName
+        Readable = $count.Readable; Lines = $count.Lines; NonBlank = $count.NonBlank; Bytes = $File.Length
+    })
+}
+
+function Add-SourceFile {
+    param(
+        [Parameter(Mandatory = $true)][System.IO.FileInfo]$File,
+        [Parameter(Mandatory = $true)][string]$Relative,
+        [Parameter(Mandatory = $true)][string]$Folder
+    )
+
+    if (-not (Test-IsExcludedSuffix -Name $File.Name)) {
+        $pair = Get-PairFor -Name $File.Name
+        if ($null -ne $pair) {
+            $count = Measure-Lines -Path $File.FullName -Relative $Relative
+            $sourceFiles.Add([pscustomobject]@{
+                Full = $File.FullName; Relative = $Relative; Folder = $Folder; Name = $File.Name; Directory = $File.DirectoryName
+                Suffix = $pair.Suffix; Expected = $pair.Expected; Lines = $count.Lines; NonBlank = $count.NonBlank
+            })
+        }
+    }
+
+    $extension = $File.Extension.ToLowerInvariant()
+    if ($markers.ContainsKey($extension) -and -not (Test-IsExcludedSuffix -Name $File.Name) -and -not $exemptFiles.Contains($File.Name)) {
+        $remarkFiles.Add([pscustomobject]@{ Full = $File.FullName; Relative = $Relative; Extension = $extension })
     }
 }
 
-foreach ($fileFull in $sourceFileFulls) {
-    $file = Get-Item -LiteralPath $fileFull
-    $pair = Get-PairFor -Name $file.Name
-    try { $count = Measure-Lines -Path $file.FullName }
-    catch { $readErrors.Add("$($file.FullName): $($_.Exception.Message)"); continue }
-    $sourceFiles.Add([pscustomobject]@{
-        Full = $file.FullName; Relative = (Get-RelativePathSafe -BasePath $repoRootFull -Path $file.FullName); Folder = "(root)"; Name = $file.Name
-        Directory = $file.DirectoryName; Extension = $file.Extension.ToLowerInvariant()
-        Suffix = $pair.Suffix; Expected = $pair.Expected; Lines = $count.Lines; NonBlank = $count.NonBlank
-    })
+# One listing from the repository root, filtered by root, so overlapping roots never count a file twice.
+$patterns = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+[void]$patterns.Add($commentSuffix)
+foreach ($pair in $pairs) { [void]$patterns.Add($pair.Suffix) }
+foreach ($extension in $markers.Keys) { [void]$patterns.Add([string]$extension) }
+$listArguments = @('-C', $repoRootFull, '-c', 'core.quotePath=false', 'ls-files', '--cached', '--others', '--exclude-standard', '--') +
+    @($patterns | ForEach-Object { ':(icase)*' + $_ })
+$listing = Invoke-AuditGit -Arguments $listArguments
+if ($listing.ExitCode -ne 0) {
+    throw "Git could not enumerate the files under $repoRootFull, so the audit cannot judge."
+}
 
-    $commentFull = Join-Path $file.DirectoryName $pair.Expected
-    if (-not [System.IO.File]::Exists($commentFull)) { continue }
-    $comment = Get-Item -LiteralPath $commentFull
-    try { $count = Measure-Lines -Path $comment.FullName }
-    catch { $readErrors.Add("$($comment.FullName): $($_.Exception.Message)"); continue }
-    $commentFiles.Add([pscustomobject]@{
-        Full = $comment.FullName; Relative = (Get-RelativePathSafe -BasePath $repoRootFull -Path $comment.FullName); Folder = "(root)"; Name = $comment.Name
-        Directory = $comment.DirectoryName; Lines = $count.Lines; NonBlank = $count.NonBlank; Bytes = $comment.Length
-    })
+$scanPaths = [System.Collections.Generic.List[string]]::new()
+$scanRelatives = @{}
+$scanFolders = @{}
+foreach ($entry in $listing.Lines) {
+    $relative = ([string]$entry).Trim()
+    if ($relative.Length -eq 0 -or (Test-IsExcludedPath -Relative $relative -ExcludedNames $excludedNames)) { continue }
+
+    $owner = $null
+    foreach ($candidate in $rootEntries) {
+        if ($candidate.Prefix.Length -eq 0 -or $relative.StartsWith($candidate.Prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $owner = $candidate
+            break
+        }
+    }
+    if ($null -eq $owner) { continue }
+
+    $full = [System.IO.Path]::Combine($repoRootFull, $relative.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+    if (-not [System.IO.File]::Exists($full)) { continue }
+
+    $scanPaths.Add($full)
+    $scanRelatives[$full] = $relative
+    $scanFolders[$full] = Get-FolderKey -RootFull $owner.Full -UnderRoot $relative.Substring($owner.Prefix.Length)
+}
+$scanPaths.Sort([System.StringComparer]::OrdinalIgnoreCase)
+
+foreach ($fileFull in $scanPaths) {
+    $file = [System.IO.FileInfo]::new($fileFull)
+    $relative = [string]$scanRelatives[$fileFull]
+    $folder = [string]$scanFolders[$fileFull]
+    if ($file.Name.EndsWith($commentSuffix, [System.StringComparison]::OrdinalIgnoreCase)) {
+        Add-CommentFile -File $file -Relative $relative -Folder $folder
+    }
+    else {
+        Add-SourceFile -File $file -Relative $relative -Folder $folder
+    }
+}
+
+$rootComments = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
+foreach ($fileFull in $sourceFileFulls) {
+    $file = [System.IO.FileInfo]::new($fileFull)
+    Add-SourceFile -File $file -Relative (Get-RelativePathSafe -BasePath $repoRootFull -Path $fileFull) -Folder "(root)"
+    $commentFull = Join-Path $file.DirectoryName (Get-PairFor -Name $file.Name).Expected
+    if ([System.IO.File]::Exists($commentFull)) { $rootComments.Add([System.IO.FileInfo]::new($commentFull)) }
+}
+foreach ($comment in $rootComments) {
+    Add-CommentFile -File $comment -Relative (Get-RelativePathSafe -BasePath $repoRootFull -Path $comment.FullName) -Folder "(root)"
 }
 
 if ($sourceFiles.Count -eq 0) {
@@ -837,14 +924,16 @@ foreach ($source in $sourceFiles) {
     [void]$expectedByDirectory[$source.Directory].Add($source.Expected)
 }
 
-$missingComments = @($sourceFiles | Where-Object { -not [System.IO.File]::Exists((Join-Path $_.Directory $_.Expected)) } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Relative } })
+# Every list keeps the enumeration order: paths sorted without case, then the root-level files, like the convention test.
+$missingComments = @($sourceFiles | Where-Object { -not [System.IO.File]::Exists((Join-Path $_.Directory $_.Expected)) })
 $orphanComments = @($commentFiles | Where-Object {
     -not ($expectedByDirectory.ContainsKey($_.Directory) -and $expectedByDirectory[$_.Directory].Contains($_.Name))
-} | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Relative } })
+})
 
 # Line rules inside comment files.
 $ruleHits = [System.Collections.Generic.List[object]]::new()
 foreach ($comment in $commentFiles) {
+    if (-not $comment.Readable) { continue }
     $number = 0
     foreach ($line in [System.IO.File]::ReadLines($comment.Full)) {
         $number++
@@ -859,12 +948,15 @@ foreach ($comment in $commentFiles) {
 $remarkHits = [System.Collections.Generic.List[object]]::new()
 $blockClosers = @{}
 foreach ($property in $config.remark.closers.PSObject.Properties) { $blockClosers[[string]$property.Name] = [string]$property.Value }
-foreach ($source in $sourceFiles) {
-    if (-not $markers.ContainsKey($source.Extension)) { continue }
-    if ($exemptFiles.Contains($source.Name)) { continue }
+foreach ($source in $remarkFiles) {
+    if ($unreadable.Contains($source.Full)) { continue }
     $tokens = $markers[$source.Extension]
     $number = 0
-    $content = [System.IO.File]::ReadAllText($source.Full)
+    try { $content = [System.IO.File]::ReadAllText($source.Full) }
+    catch {
+        if ($unreadable.Add($source.Full)) { $readErrors.Add("$($source.Relative): $($_.Exception.Message)") }
+        continue
+    }
     $stripped = if ($source.Extension -eq '.cs') { Remove-StringLiteral -Text $content } else { $content }
     $raw = $content -split "`n"
     $openToken = $null
@@ -895,6 +987,7 @@ $fileNamePattern = [System.Text.RegularExpressions.Regex]::new('^[\w.]+\.(cs|xam
 $genericPattern = [System.Text.RegularExpressions.Regex]::new('<[^<>]*>')
 $identifierPattern = [System.Text.RegularExpressions.Regex]::new('@?[A-Za-z_][A-Za-z0-9_]*')
 foreach ($comment in $commentFiles) {
+    if (-not $comment.Readable) { continue }
     $stem = $comment.Full.Substring(0, $comment.Full.Length - $commentSuffix.Length)
     $owners = @(@('', '.cs', '.xaml', '.xaml.cs') | ForEach-Object { $stem + $_ } | Where-Object { [System.IO.File]::Exists($_) })
     if ($owners.Count -eq 0 -or $exemptFiles.Contains([System.IO.Path]::GetFileName($owners[0]))) { continue }
@@ -905,7 +998,7 @@ foreach ($comment in $commentFiles) {
         $heading = $headingPattern.Match($line)
         if (-not $heading.Success) { continue }
         $span = $heading.Groups['span'].Value
-        if ($span.StartsWith('<') -or $fileNamePattern.IsMatch($span)) { continue }
+        if ($span.StartsWith('<', [System.StringComparison]::Ordinal) -or $fileNamePattern.IsMatch($span)) { continue }
         $stop = $span.IndexOfAny([char[]]@('(', '=', ';', '{', ':'))
         $head = if ($stop -lt 0) { $span } else { $span.Substring(0, $stop) }
         while ($genericPattern.IsMatch($head)) { $head = $genericPattern.Replace($head, '') }

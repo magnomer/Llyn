@@ -58,7 +58,7 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-All`, `-a` | Take every item instead of the default subset. | stop, test |
 | `-Force` | Kill a process at once instead of asking its window to close. | stop |
 | `-TimeoutSeconds` | Seconds to wait for a window to close before the kill. | stop |
-| `-NoBuild` | Skip the build and use the existing build output. | auditui, check, test |
+| `-NoBuild` | Skip the build and use the existing build output. | check, test |
 | `-NoRestore` | Skip the package restore. | test |
 | `-NoTest` | Skip the test run. | check |
 | `-NoAudit` | Skip the audits. | check |

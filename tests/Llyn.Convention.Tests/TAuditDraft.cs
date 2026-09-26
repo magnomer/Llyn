@@ -60,7 +60,7 @@ public sealed class TAuditDraft
         }
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITDRAFTS",
+            "AUDITDRAFT",
             $"{hits.Count} setting line(s) name nothing in the draft records.\n{string.Join('\n', hits)}"));
     }
 
@@ -115,7 +115,7 @@ public sealed class TAuditDraft
 
         string files = string.Join(' ', include);
         Assert.True(missing.Count == 0 && stale.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITDRAFTS",
+            "AUDITDRAFT",
             $"{missing.Count} draft propert(y/ies) unnamed in the {side} ({files}), "
             + $"{stale.Count} stale waiver line(s).\n"
             + string.Join('\n', missing.Concat(stale))));
@@ -153,7 +153,7 @@ public sealed class TAuditDraft
         TAuditScope scope = new([], include, [], [], [], []);
         IReadOnlyList<string> files = TAuditSource.TAuditFileRead(repoRoot, scope);
         Assert.True(files.Count > 0, TAuditConvention.TAuditReportFormat(
-            "AUDITDRAFTS", $"No tracked file matches {string.Join(' ', include)}."));
+            "AUDITDRAFT", $"No tracked file matches {string.Join(' ', include)}."));
         return string.Join('\n', files.Select(File.ReadAllText));
     }
 

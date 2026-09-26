@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 namespace Convention.Tests;
@@ -39,6 +40,8 @@ internal static class TAuditSource
             WorkingDirectory = repoRoot,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = new UTF8Encoding(false),
+            StandardErrorEncoding = new UTF8Encoding(false),
             UseShellExecute = false
         };
         foreach (string argument in new[]
@@ -66,6 +69,7 @@ internal static class TAuditSource
         }
 
         List<string> files = [];
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
         foreach (string line in output.Split('\n'))
         {
             string relative = line.Trim();
@@ -75,7 +79,7 @@ internal static class TAuditSource
             }
 
             string full = Path.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar));
-            if (!File.Exists(full))
+            if (!seen.Add(full) || !File.Exists(full))
             {
                 continue;
             }

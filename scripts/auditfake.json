@@ -1,6 +1,14 @@
 {
   "generation": 12,
   "project": "Llyn",
+  "enforced": true,
+  "ceilings": {
+    "Orphan": 0,
+    "Tested": 0
+  },
+  "helper": {
+    "framework": "net10.0"
+  },
   "sources": {
     "roots": [
       "src"
@@ -51,6 +59,6 @@
     "directory": "docs-work/audit",
     "versionFile": "version.json",
     "versionKey": "current-version",
-    "prefix": "AuditFake-"
+    "prefix": "Fake-"
   }
 }

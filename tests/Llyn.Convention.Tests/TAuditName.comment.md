@@ -17,4 +17,5 @@ Every registry exemption still spares a name in the sources, so a stale row is r
 
 ## `private static string TViolationFormat(string repoRoot, IReadOnlyList<TViolation> violations)`
 
-Sorts the violations by file and line and renders one line per violation.
+Sorts the violations by repo-relative path, then line, then name, as auditnames.ps1 sorts its hits.
+Renders one `path:line [Kind] Name - reason` line per violation, the same line the script prints.

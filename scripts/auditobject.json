@@ -1,6 +1,10 @@
 {
   "generation": 12,
   "project": "Llyn",
+  "enforced": true,
+  "helper": {
+    "framework": "net10.0"
+  },
   "sources": {
     "roots": [
       "src"
@@ -71,6 +75,6 @@
     "directory": "docs-work/audit",
     "versionFile": "version.json",
     "versionKey": "current-version",
-    "prefix": "AuditObject-"
+    "prefix": "Object-"
   }
 }

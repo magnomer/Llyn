@@ -25,6 +25,11 @@ public sealed class TAuditChain
                 wide.Add($"  {ring} reaches {string.Join(", ", reach)}");
             }
 
+            if (reach.Contains(ring, StringComparer.Ordinal))
+            {
+                wide.Add($"  {ring} reaches itself");
+            }
+
             IEnumerable<string> unknown = reach
                 .Where(target => !TAuditChainSetting.TAuditChainReach.ContainsKey(target));
             foreach (string target in unknown)
@@ -35,7 +40,8 @@ public sealed class TAuditChain
 
         Assert.True(wide.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditChainAudit,
-            $"{wide.Count} ring(s) reach more than one ring or an unknown one:\n{string.Join('\n', wide)}"));
+            $"{wide.Count} ring(s) reach more than one ring, themselves or an unknown one:\n"
+            + string.Join('\n', wide)));
     }
 
     [Fact]

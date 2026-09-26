@@ -5,6 +5,7 @@
 Keeps the project edges as written: every `ProjectReference` under `src` matches the ring table.
 What a source may name across an edge is the chain's concern, not this one.
 The project files are read as XML, so attribute order and quoting cannot hide an edge.
+The same edges are audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
 
 ## `private const string TAuditRingAudit = "AUDITRING";`
 

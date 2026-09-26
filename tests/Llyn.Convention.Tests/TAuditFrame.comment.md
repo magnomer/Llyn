@@ -5,6 +5,7 @@
 Keeps every pure ring inside its frame: what a ring may name outside the project.
 A pure ring names only the framework namespaces the frame lists and touches no ambient member.
 The clock, the environment, the disk and the console arrive through a port or not at all.
+The same frame is audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
 
 ## `private const string TAuditFrameAudit = "AUDITFRAME";`
 
@@ -20,15 +21,15 @@ The hits, bound once and shared by every fact.
 
 ## `public void AuditFrame_PureSources_StayInFrame()`
 
-No pair holds more files naming a namespace outside the frame than its ceiling.
+No pair holds more hits naming a namespace outside the frame than its ceiling.
 
 ## `public void AuditFrame_PureSources_TouchNoAmbient()`
 
-No pair holds more files touching an ambient member than its ceiling.
+No pair holds more hits touching an ambient member than its ceiling.
 
 ## `public void AuditFrame_Ceiling_MatchesHits()`
 
-No ceiling sits above its count, so a shed file lowers its ceiling.
+No ceiling sits above its count, so a shed hit lowers its ceiling.
 
 ## `public void AuditFrame_Waiver_MatchesSource()`
 

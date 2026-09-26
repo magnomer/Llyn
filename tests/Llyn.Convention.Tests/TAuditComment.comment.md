@@ -4,7 +4,7 @@
 
 Keeps prose in the comment files and out of the sources.
 Every rule value comes from `TAuditCommentSetting`, which mirrors scripts/auditcomments.json.
-The findings match auditcomments.ps1 on the same tree.
+The findings match auditcomments.ps1 on the same tree, in the same order, though neither reads the other.
 
 ## `public void AuditComment_CommentLines_KeepLineRules()`
 
@@ -19,7 +19,8 @@ Any hit names the file, line, and the rule it breaks.
 Scans every audited source and listed root-level file for the comment markers its extension declares.
 String and character literals are blanked first, so a `//` inside a URL does not count.
 Every line of an unclosed block comment counts until the line holding its closer.
-Files named in the exempt list are skipped, since the generated registry carries a header.
+Files named in the exempt list are skipped, root-level files too, since the generated registry carries a header.
+Every extension with markers is scanned, whether or not it pairs with a comment file.
 
 ## `public void AuditComment_Sources_CarryCommentFile()`
 
@@ -38,6 +39,7 @@ Every source that needs a comment file: the paired sources under the roots and t
 ## `public void AuditComment_Headings_NameMembers()`
 
 Every signature heading of a comment file names an identifier its source still holds.
+It reads the same comment files as the line rules, so the root-level ones count too.
 The source is the code or markup file the comment file sits beside, all of them when several share it.
 A heading that is a markup snippet or a file name is left out.
 A heading for a member that was renamed or deleted is otherwise never noticed.
@@ -45,6 +47,7 @@ A heading for a member that was renamed or deleted is otherwise never noticed.
 ## `private static IReadOnlyList<string> TAuditScanRead(string repoRoot, TAuditScope scope)`
 
 Every tracked file in the scope, read through `TAuditSource`.
+A configured root or root-level file that does not exist fails first, as it does in the script.
 An empty scope fails rather than passing vacuously.
 
 ## `private static string? TAuditMemberRead(string span)`

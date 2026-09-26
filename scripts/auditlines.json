@@ -1,6 +1,11 @@
 {
   "generation": 12,
   "project": "Llyn",
+  "enforced": true,
+  "ceilings": {
+    "Length": 0,
+    "Width": 0
+  },
   "sources": {
     "roots": [
       "src",
@@ -11,7 +16,6 @@
       ".xaml",
       ".csproj"
     ],
-    "commentPattern": "*.comment.md",
     "excludeSegments": [
       ".git",
       ".vs",
@@ -25,7 +29,8 @@
   },
   "thresholds": {
     "limit": 500,
-    "warning": 450
+    "warning": 450,
+    "band": 5
   },
   "report": {
     "directory": "docs-work/audit",

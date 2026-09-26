@@ -564,8 +564,11 @@ if ($null -eq $graft) {
 
 Push-Location $root
 try {
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     & $graft.Source grep --fixed $Name[0] --json *> $null
     $graftExit = $LASTEXITCODE
+    $ErrorActionPreference = $nativePreference
 }
 finally {
     Pop-Location
