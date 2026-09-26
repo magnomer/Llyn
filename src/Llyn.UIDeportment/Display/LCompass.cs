@@ -122,33 +122,33 @@ public sealed class LCompass
     private void LCompassRowCreate()
     {
         List<LCompassItem> rows = [];
-        string unknown = LLocalizationCatalog.LLocalizationTextRead("Display.Unknown");
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
 
-        LCompassSectionAdd(rows, _lCompassSpeech, LLocalizationCatalog.LLocalizationTextRead("Speech.Title"));
-        LCompassSectionAdd(rows, _lCompassFrequency, LLocalizationCatalog.LLocalizationTextRead("Frequency.Title"));
+        LCompassSectionAdd(rows, _lCompassSpeech, QLocalizationCatalog.QLocalizationTextRead("Speech.Title"));
+        LCompassSectionAdd(rows, _lCompassFrequency, QLocalizationCatalog.QLocalizationTextRead("Frequency.Title"));
 
         if (LCompassSectionAdd(
                 rows,
-                _lCompassMeaning, LLocalizationCatalog.LLocalizationTextRead("Display.MeaningPlural")))
+                _lCompassMeaning, QLocalizationCatalog.QLocalizationTextRead("Display.MeaningPlural")))
         {
             LCompassCardAdd(
                 rows,
-                _lCompassMeanings, LLocalizationCatalog.LLocalizationTextRead("Display.MeaningSingle"), unknown);
+                _lCompassMeanings, QLocalizationCatalog.QLocalizationTextRead("Display.MeaningSingle"), unknown);
         }
 
         if (LCompassSectionAdd(
                 rows,
-                _lCompassCollocation, LLocalizationCatalog.LLocalizationTextRead("Display.Collocation")))
+                _lCompassCollocation, QLocalizationCatalog.QLocalizationTextRead("Display.Collocation")))
         {
             LCompassCardAdd(
                 rows,
                 _lCompassCollocations,
-                LLocalizationCatalog.LLocalizationTextRead("Display.CollocationSingle"),
+                QLocalizationCatalog.QLocalizationTextRead("Display.CollocationSingle"),
                 unknown);
         }
 
-        LCompassSectionAdd(rows, _lCompassIncoming, LLocalizationCatalog.LLocalizationTextRead("Display.Translated"));
-        LCompassSectionAdd(rows, _lCompassNote, LLocalizationCatalog.LLocalizationTextRead("Display.Note"));
+        LCompassSectionAdd(rows, _lCompassIncoming, QLocalizationCatalog.QLocalizationTextRead("Display.Translated"));
+        LCompassSectionAdd(rows, _lCompassNote, QLocalizationCatalog.QLocalizationTextRead("Display.Note"));
 
         LCompassNameApply(rows);
 

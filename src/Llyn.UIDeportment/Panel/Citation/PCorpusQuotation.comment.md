@@ -31,6 +31,6 @@ The deportment asks about unsaved work first and cancels an open Example editor.
 ## `private void PQuotationApply(FrameworkElement container, object item, string? _)`
 
 Fills one quotation row from its item, the work its bindings did before.
-The row's tag reads Chosen on the chosen item and is cleared otherwise, which the look sheet paints.
+The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The epithet leads with an en space, which the binding's format supplied before.
 The click is subscribed once per row, removed first so a refill never doubles it.

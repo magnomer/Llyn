@@ -12,7 +12,7 @@ They are Theme.Popup.RowSurface.
 ## `<Setter Property="Background" Value="{StaticResource Theme.Surface}" />`
 
 The rows sit on the panel's own ground, so they carry a card of their own.
-The hover row in `PLook` still repaints it.
+The hover row in `QLook` still repaints it.
 
 ## `<Style x:Key="Theme.Choice.Filter" TargetType="CheckBox">`
 
@@ -27,3 +27,7 @@ They offer what the language has saved and are framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
 The frame is closed onto the text it rings, clearing it by a hairline and no more.
 A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.
+
+## `<Thickness x:Key="Theme.Choice.Switch.KnobInset">0,0,3,0</Thickness>`
+
+The knob's margin while a switch is on, so it rests against the right edge of the track.

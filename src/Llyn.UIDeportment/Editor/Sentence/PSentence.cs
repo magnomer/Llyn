@@ -197,23 +197,23 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        if (PLook.PLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
+        if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
         {
             opening.IsChecked = row.PSentenceFrameVisible;
-            opening.Visibility = PLook.PLookVisibleRead(!row.PSentenceFrameWritten);
+            opening.Visibility = QLook.QLookVisibleRead(!row.PSentenceFrameWritten);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSentenceSign") is TextBlock sign)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSentenceSign") is TextBlock sign)
         {
-            sign.Text = PLook.PLookFirstRead(row.PSentenceFrameVisible, "\u2212", "+");
+            sign.Text = QLook.QLookFirstRead(row.PSentenceFrameVisible, "\u2212", "+");
         }
 
-        if (PLook.PLookPartFind<StackPanel>(container, "PSentenceFrame") is StackPanel frame)
+        if (QLook.QLookPartFind<StackPanel>(container, "PSentenceFrame") is StackPanel frame)
         {
-            frame.Visibility = PLook.PLookVisibleRead(row.PSentenceFrameVisible);
+            frame.Visibility = QLook.QLookVisibleRead(row.PSentenceFrameVisible);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSentenceGap") is TextBlock gap)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSentenceGap") is TextBlock gap)
         {
             gap.Text = row.PSentenceFrameGap;
         }
@@ -226,93 +226,93 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             row.PSentenceDependence,
             row.PSentenceDependenceCatalog,
             "Card.DependenceHint");
-        if (PLook.PLookPartFind<Grid>(container, "PSentenceParticleField") is Grid particle)
+        if (QLook.QLookPartFind<Grid>(container, "PSentenceParticleField") is Grid particle)
         {
             Grid.SetColumn(particle, row.PSentenceParticleColumn);
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PSentenceDependenceField") is Grid dependence)
+        if (QLook.QLookPartFind<Grid>(container, "PSentenceDependenceField") is Grid dependence)
         {
             Grid.SetColumn(dependence, row.PSentenceDependenceColumn);
         }
 
-        PStateConverter state = new();
+        QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
-        if (PLook.PLookPartFind<TextBox>(container, "PSentenceText") is TextBox text)
+        if (QLook.QLookPartFind<TextBox>(container, "PSentenceText") is TextBox text)
         {
             text.Text = (string)state.Convert(row.PSentenceText, typeof(string), string.Empty, culture);
-            text.Tag = state.Convert(
+            text.SetValue(QField.QFieldHintProperty, state.Convert(
                 [
                     row.PSentenceText,
-                    PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-                    PLocalizationCatalog.PLocalizationTextRead("Card.ExampleHint"),
+                    QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+                    QLocalizationCatalog.QLocalizationTextRead("Card.ExampleHint"),
                 ],
                 typeof(string),
                 string.Empty,
-                culture);
+                culture));
             PSentenceLayoutApply(container, text);
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
+        if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
         {
             citation.Text = PSentenceCitationFind(row.PSentenceCitationCatalog, row.PSentenceCitation);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PSentenceGlossIcon") is PIconImage gloss)
+        if (QLook.QLookPartFind<QIconImage>(container, "PSentenceGlossIcon") is QIconImage gloss)
         {
-            gloss.PIconSource = PIcon.PIconResolve("gloss", 12);
+            gloss.QIconSource = QIcon.QIconResolve("gloss", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PSentenceAddIcon") is PIconImage add)
+        if (QLook.QLookPartFind<QIconImage>(container, "PSentenceAddIcon") is QIconImage add)
         {
-            add.PIconSource = PIcon.PIconResolve("add", 12);
+            add.QIconSource = QIcon.QIconResolve("add", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PSentenceRemoveIcon") is PIconImage remove)
+        if (QLook.QLookPartFind<QIconImage>(container, "PSentenceRemoveIcon") is QIconImage remove)
         {
-            remove.PIconSource = PIcon.PIconResolve("remove", 12);
+            remove.QIconSource = QIcon.QIconResolve("remove", 12);
         }
     }
 
     private static void PSentenceChoiceApply(
         FrameworkElement container, string name, LStateValue value, ObservableCollection<string> catalog, string hint)
     {
-        PStateConverter state = new();
+        QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
         string shown = (string)state.Convert(value, typeof(string), string.Empty, culture);
         object tag = state.Convert(
             [
                 value,
-                PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-                PLocalizationCatalog.PLocalizationTextRead(hint),
+                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+                QLocalizationCatalog.QLocalizationTextRead(hint),
             ],
             typeof(string),
             string.Empty,
             culture);
-        if (PLook.PLookPartFind<ComboBox>(container, name) is ComboBox choice)
+        if (QLook.QLookPartFind<ComboBox>(container, name) is ComboBox choice)
         {
             choice.ItemsSource = catalog;
             choice.Text = shown;
-            choice.Tag = tag;
+            choice.SetValue(QField.QFieldHintProperty, tag);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, name + "Ghost") is TextBlock ghost)
+        if (QLook.QLookPartFind<TextBlock>(container, name + "Ghost") is TextBlock ghost)
         {
             ghost.Text = shown;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, name + "Hint") is TextBlock prompt)
+        if (QLook.QLookPartFind<TextBlock>(container, name + "Hint") is TextBlock prompt)
         {
             prompt.Text = (string)tag;
-            prompt.Visibility = PLook.PLookVisibleRead(shown.Length == 0);
+            prompt.Visibility = QLook.QLookVisibleRead(shown.Length == 0);
         }
     }
 
     private static void PSentenceLayoutApply(FrameworkElement container, TextBox text)
     {
-        if (PLook.PLookPartFind<TextBlock>(container, "PSentenceLead") is not TextBlock lead
-            || PLook.PLookPartFind<Grid>(container, "PSentenceBody") is not Grid body
-            || PLook.PLookPartFind<TextBox>(container, "PSentenceCitation") is not TextBox citation
+        if (QLook.QLookPartFind<TextBlock>(container, "PSentenceLead") is not TextBlock lead
+            || QLook.QLookPartFind<Grid>(container, "PSentenceBody") is not Grid body
+            || QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is not TextBox citation
             || BindingOperations.IsDataBound(body, FrameworkElement.MarginProperty))
         {
             return;
@@ -320,7 +320,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
         foreach (FrameworkElement target in new FrameworkElement[] { body, citation })
         {
-            MultiBinding inset = new() { Converter = new PFontConverter() };
+            MultiBinding inset = new() { Converter = new QFontConverter() };
             inset.Bindings.Add(new Binding(nameof(TextBlock.FontFamily)) { Source = lead });
             inset.Bindings.Add(new Binding(nameof(TextBlock.FontSize)) { Source = lead });
             inset.Bindings.Add(new Binding(nameof(TextBox.FontFamily)) { Source = text });
@@ -332,8 +332,8 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         citation.SetBinding(Control.FontSizeProperty, new Binding(nameof(TextBox.FontSize)) { Source = text });
         foreach (string name in new[] { "PSentenceParticle", "PSentenceDependence" })
         {
-            if (PLook.PLookPartFind<ComboBox>(container, name) is ComboBox choice
-                && PLook.PLookPartFind<Grid>(container, name + "Field") is Grid field)
+            if (QLook.QLookPartFind<ComboBox>(container, name) is ComboBox choice
+                && QLook.QLookPartFind<Grid>(container, name + "Field") is Grid field)
             {
                 choice.SetBinding(
                     FrameworkElement.WidthProperty, new Binding(nameof(Grid.ActualWidth)) { Source = field });

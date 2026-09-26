@@ -30,7 +30,7 @@ Sets one chip row's items, folds it when empty and attaches its chip fill.
 ## `private void PLeafSentenceApply(FrameworkElement container, object item, string? _)`
 
 Fills one example line: the frame, the sentence, the byline and the Glosses.
-The sentence's top margin drops it to the frame's baseline, computed by `PFontConverter`.
+The sentence's top margin drops it to the frame's baseline, computed by `QFontConverter`.
 The margin is bound to both fonts, so a font the theme changes later moves the baseline too.
 The byline binds the sentence's margin, family and size, so both keep one baseline live.
 The Glosses reuse the editor's Gloss row fill, since their parts carry the same names.

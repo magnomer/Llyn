@@ -16,10 +16,10 @@ It is tinted while its menu stands open, so the tray says which picker is showin
 ## `<ControlTemplate x:Key="Theme.Command.Segment.Template" TargetType="ButtonBase">`
 
 One command inside the tray, drawn for a button and for a mode radio alike.
-The icon is the button's Tag, masked into a rectangle that takes its colour from Foreground.
-A command with no Tag collapses the icon and keeps its word alone.
+The icon is the button's `QLook.QLookIconProperty`, masked into a rectangle that takes its colour from Foreground.
+A command with no icon collapses the icon part and keeps its word alone.
 The label is a TextBlock the template owns, because the app-wide TextBlock style outranks an inherited colour.
-Deportment fills the icon, the label and every state through `PLook` rows on the named parts.
+Deportment fills the icon, the label and every state through `QLook` rows on the named parts.
 State is set on the button rather than on the surface, so a style below can overrule it.
 
 ## `<Style x:Key="Theme.Command.Primary" TargetType="Button">`

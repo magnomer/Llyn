@@ -22,7 +22,7 @@ public partial class PEditor
     private void PTranscriptionAttach()
     {
         PTranscription.ItemsSource = _pTranscriptionItem;
-        PLookItem.PLookItemAttach(PTranscription, PTranscriptionApply);
+        QLookItem.QLookItemAttach(PTranscription, PTranscriptionApply);
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PTranscriptionCommand.PTranscriptionCommandAddition, PTranscriptionAddHandle, PTranscriptionAddCheck));
         PEditorSound.CommandBindings.Add(new CommandBinding(
@@ -39,14 +39,15 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PTranscriptionField") is TextBox field)
+        if (QLook.QLookPartFind<TextBox>(container, "PTranscriptionField") is TextBox field)
         {
+            field.SetResourceReference(QField.QFieldHintProperty, "Input.Transcription");
             field.TextChanged -= PTranscriptionFieldHandle;
-            PField.PFieldTextShow(field, row.LTranscriptionItemText);
+            QField.QFieldTextShow(field, row.LTranscriptionItemText);
             field.TextChanged += PTranscriptionFieldHandle;
         }
 
-        if (PLook.PLookPartFind<ComboBox>(container, "PTranscriptionScheme") is not ComboBox scheme)
+        if (QLook.QLookPartFind<ComboBox>(container, "PTranscriptionScheme") is not ComboBox scheme)
         {
             return;
         }
@@ -57,8 +58,8 @@ public partial class PEditor
         scheme.ItemsSource = row.LTranscriptionItemChoice;
         scheme.SelectedValue = row.LTranscriptionItemScheme;
         scheme.SelectionChanged += PTranscriptionSchemeHandle;
-        PLookItem.PLookItemAttach(scheme, LTranscriptionChoice.LTranscriptionChoiceApply);
-        if (PLook.PLookPartFind<TextBlock>(scheme, "PSchemeName") is TextBlock label)
+        QLookItem.QLookItemAttach(scheme, LTranscriptionChoice.LTranscriptionChoiceApply);
+        if (QLook.QLookPartFind<TextBlock>(scheme, "PSchemeName") is TextBlock label)
         {
             label.Text = row.LTranscriptionItemLabel;
         }

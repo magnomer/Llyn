@@ -46,7 +46,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ContentPresenter VerticalAlignment="Center" />
-                            <local:PIconImage
+                            <local:QIconImage
                                 x:Name="PIndicator"
                                 Grid.Column="1"
                                 Width="12"
@@ -88,7 +88,7 @@
                                 BorderBrush="{StaticResource Theme.Line}"
                                 BorderThickness="1.3"
                                 CornerRadius="4">
-                                <local:PIconImage
+                                <local:QIconImage
                                     x:Name="PIndicatorMark"
                                     Width="12"
                                     Height="12"
@@ -195,5 +195,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Thickness x:Key="Theme.Choice.Switch.KnobInset">0,0,3,0</Thickness>
 
 </ResourceDictionary>

@@ -26,17 +26,17 @@ internal sealed class PTallyMark
     internal static void PTallyMarkApply(FrameworkElement container, object item, string? _)
     {
         if (item is not PTallyMark mark
-            || PLook.PLookPartFind<ToggleButton>(container, "PTallyDropper") is not ToggleButton dropper)
+            || QLook.QLookPartFind<ToggleButton>(container, "PTallyDropper") is not ToggleButton dropper)
         {
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(dropper, "PTallyPart") is TextBlock part)
+        if (QLook.QLookPartFind<TextBlock>(dropper, "PTallyPart") is TextBlock part)
         {
             part.Text = mark.PTallyMarkText;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(dropper, "PTallyCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(dropper, "PTallyCount") is TextBlock count)
         {
             count.Text = mark.PTallyMarkCount;
         }
@@ -45,14 +45,14 @@ internal sealed class PTallyMark
         dropper.Checked += PTallyDropHandle;
         dropper.Unchecked -= PTallyDropHandle;
         dropper.Unchecked += PTallyDropHandle;
-        if (PLook.PLookPartFind<Popup>(container, "PTallyPopup") is Popup popup)
+        if (QLook.QLookPartFind<Popup>(container, "PTallyPopup") is Popup popup)
         {
             popup.PlacementTarget = dropper;
             popup.Closed -= PTallyCloseHandle;
             popup.Closed += PTallyCloseHandle;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PTallyCharacters") is ItemsControl characters)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PTallyCharacters") is ItemsControl characters)
         {
             characters.ItemsSource = mark.PTallyMarkCharacters;
         }
@@ -69,7 +69,7 @@ internal sealed class PTallyMark
         {
             if (child is Popup popup)
             {
-                popup.IsOpen = PLook.PLookCheckedRead(dropper.IsChecked);
+                popup.IsOpen = QLook.QLookCheckedRead(dropper.IsChecked);
             }
         }
     }

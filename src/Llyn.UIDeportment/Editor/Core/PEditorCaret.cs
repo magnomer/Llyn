@@ -65,6 +65,6 @@ public partial class PEditor
 
     internal static bool PCaretKeyApply(
         TextBox box, Key key, Action<int> remove, Func<int, bool> move, Action place) =>
-        LCaret.LCaretKeyApply(
+        QCaret.QCaretKeyApply(
             key.ToString(), box.CaretIndex, box.Text.Length, box.SelectionLength, remove, move, place);
 }

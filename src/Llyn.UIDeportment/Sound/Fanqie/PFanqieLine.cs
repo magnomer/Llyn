@@ -76,10 +76,14 @@ public sealed class PFanqieLine
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PFanqieRepresentative") is Button representative)
+        if (QLook.QLookPartFind<Button>(container, "PFanqieRepresentative") is Button representative)
         {
             representative.Content = line.PFanqieLineOrder;
-            representative.Tag = !line.PFanqieLineMarked ? null : line.PFanqieLinePrimary ? "Marked" : "Faded";
+            representative.SetValue(
+                QLook.QLookCueProperty,
+                !line.PFanqieLineMarked ? QLookCue.QLookCueBase
+                : line.PFanqieLinePrimary ? QLookCue.QLookCueMarked
+                : QLookCue.QLookCueFaded);
         }
 
         PFanqieWordApply(container, "PFanqieInitial", line.PFanqieLineInitial);
@@ -92,12 +96,12 @@ public sealed class PFanqieLine
         PFanqieTextApply(container, "PFanqieTone", line.PFanqieLineTone);
         PFanqieTextApply(container, "PFanqieSpelling", line.PFanqieLineSpelling);
         PFanqieTextApply(container, "PFanqieText", line.PFanqieLineText);
-        if (PLook.PLookPartFind<Border>(container, "PFanqieMedial") is Border medial)
+        if (QLook.QLookPartFind<Border>(container, "PFanqieMedial") is Border medial)
         {
-            medial.Visibility = PLook.PLookVisibleRead(line.PFanqieLineMedial.Length > 0);
+            medial.Visibility = QLook.QLookVisibleRead(line.PFanqieLineMedial.Length > 0);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFanqieMedialText") is not TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFanqieMedialText") is not TextBlock text)
         {
             return;
         }
@@ -116,7 +120,7 @@ public sealed class PFanqieLine
 
     private static void PFanqieWordApply(FrameworkElement container, string name, string word)
     {
-        if (PLook.PLookPartFind<Button>(container, name) is Button link)
+        if (QLook.QLookPartFind<Button>(container, name) is Button link)
         {
             link.Content = word;
         }
@@ -124,7 +128,7 @@ public sealed class PFanqieLine
 
     private static void PFanqieTextApply(FrameworkElement container, string name, string text)
     {
-        if (PLook.PLookPartFind<TextBlock>(container, name) is TextBlock block)
+        if (QLook.QLookPartFind<TextBlock>(container, name) is TextBlock block)
         {
             block.Text = text;
         }

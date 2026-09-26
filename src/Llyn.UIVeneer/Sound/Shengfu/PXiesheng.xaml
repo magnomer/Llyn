@@ -57,14 +57,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Rung.Title}">
-                    <local:PIconImage x:Name="PRungIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PRungIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PLodestar"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Lodestar.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PRungDropdown"
                     Width="252"
@@ -98,8 +97,7 @@
             Style="{StaticResource Theme.Search.Bar}">
             <TextBox
                 x:Name="PSextant"
-                Style="{StaticResource Theme.Search.Field}"
-                Tag="{DynamicResource Sextant.Search}" />
+                Style="{StaticResource Theme.Search.Field}" />
         </Border>
 
         <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
@@ -213,7 +211,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PXieshengBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PXieshengBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

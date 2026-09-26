@@ -10,7 +10,7 @@ public partial class PCorpus
     private string? PExcerptTextRead(LStateValue value)
     {
         return value.LStateValueUncertain
-            ? PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")
+            ? QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")
             : value.LStateValueShown;
     }
 
@@ -28,7 +28,7 @@ public partial class PCorpus
     {
         string? text = PExcerptTextRead(example.LExampleText);
 
-        PExcerptText.PMentionText = text ?? PLocalizationCatalog.PLocalizationTextRead("Example.Unwritten");
+        PExcerptText.PMentionText = text ?? QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten");
         PExcerptText.PMentionLanguage = example.LExampleLanguage;
         PExcerptText.PMentionMention = example.LExampleText.LStateValueSound ? example.LExampleMention : [];
         PExcerptText.SetResourceReference(

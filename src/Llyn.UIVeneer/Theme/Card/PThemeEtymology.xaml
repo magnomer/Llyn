@@ -40,7 +40,7 @@
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Grid Background="Transparent">
-                                    <local:PIconImage
+                                    <local:QIconImage
                                         x:Name="PEtymonMark"
                                         Width="12"
                                         Height="12"
@@ -63,7 +63,7 @@
                 FontSize="13"
                 Foreground="{DynamicResource Theme.Ink}"
                 Style="{DynamicResource Theme.Input.Bare}"
-                Tag="{DynamicResource Input.EtymonHint}"
+
                 TextWrapping="NoWrap" />
         </Grid>
     </DataTemplate>

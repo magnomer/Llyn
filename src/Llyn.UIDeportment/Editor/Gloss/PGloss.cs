@@ -125,23 +125,23 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
 
         bool flagged = gloss.PGlossFlag is not null;
-        if (PLook.PLookPartFind<Image>(container, "PGlossFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PGlossFlag") is Image flag)
         {
             flag.Source = gloss.PGlossFlag;
-            flag.Visibility = PLook.PLookVisibleRead(flagged);
+            flag.Visibility = QLook.QLookVisibleRead(flagged);
         }
 
-        if (PLook.PLookPartFind<Ellipse>(container, "PGlossGlobe") is Ellipse globe)
+        if (QLook.QLookPartFind<Ellipse>(container, "PGlossGlobe") is Ellipse globe)
         {
-            globe.Visibility = PLook.PLookVisibleRead(!flagged);
+            globe.Visibility = QLook.QLookVisibleRead(!flagged);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGlossName") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGlossName") is TextBlock label)
         {
             PGlossNameApply(label, gloss.PGlossLanguage);
         }
 
-        ToggleButton? speaker = PLook.PLookPartFind<ToggleButton>(container, "PGlossSpeaker");
+        ToggleButton? speaker = QLook.QLookPartFind<ToggleButton>(container, "PGlossSpeaker");
         if (speaker is not null)
         {
             speaker.IsChecked = gloss.PGlossLanguageVisible;
@@ -149,7 +149,7 @@ internal sealed class PGloss : INotifyPropertyChanged
             speaker.Click += PGlossSpeakerHandle;
         }
 
-        if (PLook.PLookPartFind<Popup>(container, "PGlossPopup") is Popup popup)
+        if (QLook.QLookPartFind<Popup>(container, "PGlossPopup") is Popup popup)
         {
             popup.PlacementTarget = speaker;
             popup.IsOpen = gloss.PGlossLanguageVisible;
@@ -157,24 +157,24 @@ internal sealed class PGloss : INotifyPropertyChanged
             popup.Closed += PGlossPopupHandle;
         }
 
-        if (PLook.PLookPartFind<ListBox>(container, "PGlossList") is ListBox list)
+        if (QLook.QLookPartFind<ListBox>(container, "PGlossList") is ListBox list)
         {
             list.SelectionChanged -= PGlossListHandle;
             list.SelectedValuePath = nameof(PLanguageItem.PLanguageItemName);
             list.ItemsSource = gloss.PGlossLanguageCatalog;
             list.SelectedValue = gloss.PGlossLanguage;
             list.SelectionChanged += PGlossListHandle;
-            PLookItem.PLookItemAttach(list, PLanguageItem.PLanguageItemApply);
+            QLookItem.QLookItemAttach(list, PLanguageItem.PLanguageItemApply);
         }
 
         PGlossTextApply(container, gloss.PGlossText);
 
-        if (PLook.PLookPartFind<Button>(container, "PGlossBin") is Button bin)
+        if (QLook.QLookPartFind<Button>(container, "PGlossBin") is Button bin)
         {
             bin.CommandParameter = gloss;
-            if (bin.Content is PIconImage mark)
+            if (bin.Content is QIconImage mark)
             {
-                mark.PIconSource = PIcon.PIconResolve("close", 12);
+                mark.QIconSource = QIcon.QIconResolve("close", 12);
             }
         }
     }
@@ -194,17 +194,18 @@ internal sealed class PGloss : INotifyPropertyChanged
 
     private static void PGlossTextApply(FrameworkElement container, LStateValue text)
     {
-        PStateConverter state = new();
+        QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
-        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
-        if (PLook.PLookPartFind<TextBox>(container, "PGlossText") is TextBox field)
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        if (QLook.QLookPartFind<TextBox>(container, "PGlossText") is TextBox field)
         {
-            string hint = PLocalizationCatalog.PLocalizationTextRead("Example.Translation");
+            string hint = QLocalizationCatalog.QLocalizationTextRead("Example.Translation");
             field.SetValue(TextBox.TextProperty, state.Convert(text, typeof(string), string.Empty, culture));
-            field.Tag = state.Convert([text, unknown, hint], typeof(string), string.Empty, culture);
+            field.SetValue(
+                QField.QFieldHintProperty, state.Convert([text, unknown, hint], typeof(string), string.Empty, culture));
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGlossText") is TextBlock line)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGlossText") is TextBlock line)
         {
             line.SetValue(
                 TextBlock.TextProperty, state.Convert([text, unknown], typeof(string), string.Empty, culture));
@@ -215,7 +216,7 @@ internal sealed class PGloss : INotifyPropertyChanged
     {
         if (sender is ToggleButton { DataContext: PGloss gloss } speaker)
         {
-            gloss.PGlossLanguageVisible = PLook.PLookCheckedRead(speaker.IsChecked);
+            gloss.PGlossLanguageVisible = QLook.QLookCheckedRead(speaker.IsChecked);
         }
     }
 

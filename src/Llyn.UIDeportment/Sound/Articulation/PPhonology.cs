@@ -27,25 +27,26 @@ public class PPhonology : UserControl
         PPhonologyPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PPhonologyPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PSequenceDropper, PSequenceDropdown, PSequence);
-        PChoice.PChoiceDropperAttach(PLensDropper, PLensDropdown, PLensDropper);
+        QChoice.QChoiceDropperAttach(PSequenceDropper, PSequenceDropdown, PSequence);
+        QChoice.QChoiceDropperAttach(PLensDropper, PLensDropdown, PLensDropper);
 
-        PSequenceIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PLensIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PPhonologyBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PArticulationHelper.Tag = PIcon.PIconResolve("articulation", 24);
-        PPhonologyFresh.Tag = PIcon.PIconResolve("new", 24);
-        PPhonologyStore.Tag = PIcon.PIconResolve("save", 24);
-        PPhonologyEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PPhonologyLater.Tag = PIcon.PIconResolve("advance", 24);
-        PPhonologyBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PPhonologyForward.Tag = PIcon.PIconResolve("redo", 24);
-        PPhonologyPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PPhonologyPress.Tag = PIcon.PIconResolve("print", 24);
-        PPhonologyViewer.Tag = PIcon.PIconResolve("view", 24);
-        PPhonologyScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PSequenceIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PLensIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PPhonologyBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PProbe.SetResourceReference(QField.QFieldHintProperty, "Sound.Search");
+        PArticulationHelper.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("articulation", 24));
+        PPhonologyFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PPhonologyStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PPhonologyEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PPhonologyLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PPhonologyBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PPhonologyForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PPhonologyPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PPhonologyPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PPhonologyViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PPhonologyScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        PLookItem.PLookItemAttach(PInventory, PInventoryItem.PInventoryItemApply);
+        QLookItem.QLookItemAttach(PInventory, PInventoryItem.PInventoryItemApply);
         PInventory.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PInventoryHandle));
 
         PProbe.TextChanged += PProbeHandle;
@@ -68,13 +69,13 @@ public class PPhonology : UserControl
 
     private ToggleButton PSequenceDropper => (ToggleButton)FindName(nameof(PSequenceDropper));
 
-    private PIconImage PSequenceIcon => (PIconImage)FindName(nameof(PSequenceIcon));
+    private QIconImage PSequenceIcon => (QIconImage)FindName(nameof(PSequenceIcon));
 
     private TextBox PProbe => (TextBox)FindName(nameof(PProbe));
 
     private ToggleButton PLensDropper => (ToggleButton)FindName(nameof(PLensDropper));
 
-    private PIconImage PLensIcon => (PIconImage)FindName(nameof(PLensIcon));
+    private QIconImage PLensIcon => (QIconImage)FindName(nameof(PLensIcon));
 
     private FrameworkElement PLensMark => (FrameworkElement)FindName(nameof(PLensMark));
 
@@ -126,7 +127,7 @@ public class PPhonology : UserControl
 
     private Button PPhonologyBin => (Button)FindName(nameof(PPhonologyBin));
 
-    private PIconImage PPhonologyBinIcon => (PIconImage)FindName(nameof(PPhonologyBinIcon));
+    private QIconImage PPhonologyBinIcon => (QIconImage)FindName(nameof(PPhonologyBinIcon));
 
     internal void PPhonologyAttach(PWindow host)
     {
@@ -179,7 +180,7 @@ public class PPhonology : UserControl
             LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PSequenceList,
             "Sequence",
             PSequenceHandle,
@@ -189,12 +190,12 @@ public class PPhonology : UserControl
                 LCatalogOrder.LCatalogOrderSound,
                 LCatalogOrder.LCatalogOrderPending,
             ]);
-        PChoice.PChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
+        QChoice.QChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         PLensUpdate();
 
         await LEnsignImage.LEnsignLoad(_pPhonologyHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PLensList,
             _pPhonologyHost.PWindowDeportment.LWindowLanguageRead(),
             _lPhonology.LPhonologyPanel.LPanelFilter,
@@ -252,29 +253,29 @@ public class PPhonology : UserControl
             PInventoryItem.PInventoryItemBuild(_lPhonology.LPhonologyRowsRead()),
             PInventoryItem.PInventoryItemMatch,
             PInventoryItem.PInventoryItemSync);
-        PInventoryEmpty.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyInventoryEmpty);
+        PInventoryEmpty.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyInventoryEmpty);
     }
 
     private void PPhonologyModeUpdate()
     {
-        PEditor.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelEditing);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
-        PPhonologyViewer.IsChecked = PLook.PLookCheckedRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
-        PPhonologyScribe.IsChecked = PLook.PLookCheckedRead(_lPhonology.LPhonologyPanel.LPanelScribeChecked);
-        PPhonologyVoyage.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
-        PPhonologyChronicle.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelEditing);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
+        PPhonologyViewer.IsChecked = QLook.QLookCheckedRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
+        PPhonologyScribe.IsChecked = QLook.QLookCheckedRead(_lPhonology.LPhonologyPanel.LPanelScribeChecked);
+        PPhonologyVoyage.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelViewerChecked);
+        PPhonologyChronicle.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyPanel.LPanelScribeChecked);
         PPhonologyMode.IsEnabled = _lPhonology.LPhonologyPanel.LPanelModeEnabled;
         PPhonologyBin.IsEnabled = _lPhonology.LPhonologyPanel.LPanelBinEnabled;
     }
 
     private void PLensUpdate()
     {
-        PLensMark.Visibility = PLook.PLookVisibleRead(_lPhonology.LPhonologyFilterActive);
+        PLensMark.Visibility = QLook.QLookVisibleRead(_lPhonology.LPhonologyFilterActive);
     }
 
     private void PArticulationFoldHandle(object sender, RoutedEventArgs e)
     {
-        PArticulation.Visibility = PLook.PLookVisibleRead(PLook.PLookCheckedRead(PArticulationHelper.IsChecked));
+        PArticulation.Visibility = QLook.QLookVisibleRead(QLook.QLookCheckedRead(PArticulationHelper.IsChecked));
         PArticulationSeam.Visibility = PArticulation.Visibility;
     }
 
@@ -286,12 +287,12 @@ public class PPhonology : UserControl
     private void PSequenceHandle(object sender, RoutedEventArgs e)
     {
         PSequenceDropper.IsChecked = false;
-        _lPhonology.LPhonologyOrderSet(LChoice.LChoiceOrderRead(sender));
+        _lPhonology.LPhonologyOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PLensHandle(object sender, RoutedEventArgs e)
     {
-        _lPhonology.LPhonologyFilterSet(LChoice.LChoiceFilterRead(PLensList));
+        _lPhonology.LPhonologyFilterSet(QChoice.QChoiceFilterRead(PLensList));
         PLensUpdate();
     }
 
@@ -299,7 +300,7 @@ public class PPhonology : UserControl
     {
         _pPhonologyHost.PVoyageRecord();
         _lPhonology.LPhonologyPanel.LPanelRowSelect(
-            PSender.PSenderSourceRead<PInventoryItem>(e)?.PInventoryItemId);
+            QSender.QSenderSourceRead<PInventoryItem>(e)?.PInventoryItemId);
     }
 
     internal long PPhonologyVoyageRead()

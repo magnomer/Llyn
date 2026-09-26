@@ -75,7 +75,7 @@ The placement text as fetched, shown alone when the row carries no parts, and em
 ## `internal static void PFanqieRowApply(FrameworkElement container, object item, string? _)`
 
 Fills a line of `Theme.Fanqie.Line` from the line's values.
-The representative star reads `Marked` or `Faded` from its tag, and its content is the order.
+The representative star carries the `Marked` or `Faded` cue, and its content is the order.
 An initial or rime link with no text folds away through its empty state.
 A rounded medial is drawn in the warning colour and semibold.
 

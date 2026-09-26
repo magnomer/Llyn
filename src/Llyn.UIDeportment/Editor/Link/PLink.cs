@@ -18,9 +18,9 @@ public partial class PEditor
     {
         if (item is PLinkCaret caret)
         {
-            if (PLook.PLookPartFind<TextBox>(container, "PLinkEntry") is TextBox entry)
+            if (QLook.QLookPartFind<TextBox>(container, "PLinkEntry") is TextBox entry)
             {
-                entry.Tag = caret.PLinkCaretHint;
+                entry.SetValue(QField.QFieldHintProperty, caret.PLinkCaretHint);
                 entry.Text = caret.PLinkCaretText;
                 entry.PreviewKeyDown -= _pLinkTemplate.PLinkCaretHandle;
                 entry.PreviewKeyDown += _pLinkTemplate.PLinkCaretHandle;
@@ -36,28 +36,28 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PLinkFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PLinkFlag") is Image flag)
         {
             flag.Source = chip.LLinkChipFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
+        if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
         {
             headword.Text = chip.LLinkChipHeadword;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
         {
             language.Text = chip.LLinkChipLanguage;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PLinkEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PLinkEraser") is Button eraser)
         {
             eraser.Click -= _pLinkTemplate.PLinkDropHandle;
             eraser.Click += _pLinkTemplate.PLinkDropHandle;
-            if (PLook.PLookPartFind<PIconImage>(eraser, "PLinkIcon") is PIconImage icon)
+            if (QLook.QLookPartFind<QIconImage>(eraser, "PLinkIcon") is QIconImage icon)
             {
-                icon.PIconSource = PIcon.PIconResolve("unlink", 12);
+                icon.QIconSource = QIcon.QIconResolve("unlink", 12);
             }
         }
     }
@@ -69,8 +69,8 @@ public partial class PEditor
             PLinkSelectorChip = (DataTemplate)_pLinkTemplate["Theme.Link.Chip"],
             PLinkSelectorCaret = (DataTemplate)_pLinkTemplate["Theme.Link.Entry"],
         };
-        PLookItem.PLookItemAttach(list, PLinkApply);
-        if (PLook.PLookPartFind<Border>(list, "PLinkFrame") is Border frame)
+        QLookItem.QLookItemAttach(list, PLinkApply);
+        if (QLook.QLookPartFind<Border>(list, "PLinkFrame") is Border frame)
         {
             frame.MouseLeftButtonDown -= _pLinkTemplate.PLinkFocusHandle;
             frame.MouseLeftButtonDown += _pLinkTemplate.PLinkFocusHandle;

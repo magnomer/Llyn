@@ -106,29 +106,29 @@ public partial class PCorpus
     {
         PGloss.PGlossRowApply(container, item, change);
 
-        if (PLook.PLookPartFind<TextBox>(container, "PGlossText") is TextBox field)
+        if (QLook.QLookPartFind<TextBox>(container, "PGlossText") is TextBox field)
         {
             field.TextChanged -= _pCorpusTranscript.PTranscriptGlossHandle;
             field.TextChanged += _pCorpusTranscript.PTranscriptGlossHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PGlossAddition") is Button addition)
+        if (QLook.QLookPartFind<Button>(container, "PGlossAddition") is Button addition)
         {
             addition.Click -= _pCorpusTranscript.PGlossAddHandle;
             addition.Click += _pCorpusTranscript.PGlossAddHandle;
-            if (addition.Content is PIconImage mark)
+            if (addition.Content is QIconImage mark)
             {
-                mark.PIconSource = PIcon.PIconResolve("add", 12);
+                mark.QIconSource = QIcon.QIconResolve("add", 12);
             }
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PGlossRemoval") is Button removal)
+        if (QLook.QLookPartFind<Button>(container, "PGlossRemoval") is Button removal)
         {
             removal.Click -= _pCorpusTranscript.PGlossRemoveHandle;
             removal.Click += _pCorpusTranscript.PGlossRemoveHandle;
-            if (removal.Content is PIconImage mark)
+            if (removal.Content is QIconImage mark)
             {
-                mark.PIconSource = PIcon.PIconResolve("remove", 12);
+                mark.QIconSource = QIcon.QIconResolve("remove", 12);
             }
         }
     }

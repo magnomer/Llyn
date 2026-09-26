@@ -24,7 +24,7 @@ public partial class PEditor
     private void PSlateAttach()
     {
         PSlateList.ItemsSource = _pSlateItem;
-        PLookItem.PLookItemAttach(PSlateList, PSlateApply);
+        QLookItem.QLookItemAttach(PSlateList, PSlateApply);
         PSlate.CustomPopupPlacementCallback = PSlatePlace;
     }
 
@@ -35,22 +35,22 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PSlateLead") is Run lead)
+        if (QLook.QLookPartFind<Run>(container, "PSlateLead") is Run lead)
         {
             lead.Text = row.PSlateItemLead;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PSlateMark") is Run mark)
+        if (QLook.QLookPartFind<Run>(container, "PSlateMark") is Run mark)
         {
             mark.Text = row.PSlateItemMark;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PSlateTail") is Run tail)
+        if (QLook.QLookPartFind<Run>(container, "PSlateTail") is Run tail)
         {
             tail.Text = row.PSlateItemTail;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PSlateRow") is Grid surface)
+        if (QLook.QLookPartFind<Grid>(container, "PSlateRow") is Grid surface)
         {
             surface.PreviewMouseLeftButtonDown -= _pSlateTemplate.PSlateHandle;
             surface.PreviewMouseLeftButtonDown += _pSlateTemplate.PSlateHandle;
@@ -218,6 +218,6 @@ public partial class PEditor
         }
 
         box.ApplyTemplate();
-        return box.Template?.FindName(PField.PFieldSurfaceName, box) as FrameworkElement;
+        return box.Template?.FindName(QField.QFieldSurfaceName, box) as FrameworkElement;
     }
 }

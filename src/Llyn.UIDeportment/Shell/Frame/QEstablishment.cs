@@ -70,12 +70,12 @@ internal sealed class QEstablishment
             : Visibility.Collapsed;
         QEstablishmentUnsaved.Text = string.Format(
             CultureInfo.CurrentCulture,
-            PLocalizationCatalog.PLocalizationTextRead("Establishment.Unsaved"),
+            QLocalizationCatalog.QLocalizationTextRead("Establishment.Unsaved"),
             establishment.LEstablishmentUnsaved);
 
         QEstablishmentEntry.Text = string.Format(
             CultureInfo.CurrentCulture,
-            PLocalizationCatalog.PLocalizationTextRead(
+            QLocalizationCatalog.QLocalizationTextRead(
                 establishment.LEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry"),
             establishment.LEstablishmentEntry);
 
@@ -88,13 +88,13 @@ internal sealed class QEstablishment
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
-                PLocalizationCatalog.PLocalizationTextRead("Establishment.Megabyte"),
+                QLocalizationCatalog.QLocalizationTextRead("Establishment.Megabyte"),
                 ((double)bytes / QEstablishmentMegabyte).ToString("0.0", CultureInfo.CurrentCulture));
         }
 
         return string.Format(
             CultureInfo.CurrentCulture,
-            PLocalizationCatalog.PLocalizationTextRead("Establishment.Kilobyte"),
+            QLocalizationCatalog.QLocalizationTextRead("Establishment.Kilobyte"),
             (bytes + 1023) / 1024);
     }
 }

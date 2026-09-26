@@ -27,14 +27,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Order.Title}">
-                    <local:PIconImage x:Name="PWingOrderIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PWingOrderIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PWingQuery"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Duplex.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PWingSieveDropper"
@@ -42,7 +41,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Sieve.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PWingSieveIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PWingSieveIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PWingSieveMark"
                             Width="6"

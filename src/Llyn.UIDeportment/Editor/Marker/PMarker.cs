@@ -24,16 +24,17 @@ public partial class PEditor
 
     private ToggleButton PMarkerSwitch => (ToggleButton)FindName(nameof(PMarkerSwitch));
 
-    private PIconImage PMarkerIcon => (PIconImage)FindName(nameof(PMarkerIcon));
+    private QIconImage PMarkerIcon => (QIconImage)FindName(nameof(PMarkerIcon));
 
     private void PMarkerAttach()
     {
         PMarkerList.ItemsSource = _pMarkerChip;
-        PLookItem.PLookItemAttach(PMarkerList, PMarkerApply);
+        QLookItem.QLookItemAttach(PMarkerList, PMarkerApply);
         PMarker.SizeChanged += (_, e) => PMarkerList.MaxWidth = e.NewSize.Width;
+        PMarkerField.SetResourceReference(QField.QFieldHintProperty, "Speech.Title");
         PMarkerField.KeyDown += PMarkerFieldHandle;
         PMarkerField.TextChanged += PMarkerTextHandle;
-        PMarkerIcon.PIconSource = PIcon.PIconResolve("expand", 12);
+        PMarkerIcon.QIconSource = QIcon.QIconResolve("expand", 12);
     }
 
     private void PMarkerApply(FrameworkElement container, object item, string? _)
@@ -43,17 +44,17 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMarkerName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMarkerName") is TextBlock name)
         {
             name.Text = chip.PMarkerChipName;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PMarkerIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PMarkerIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("close", 12);
+            icon.QIconSource = QIcon.QIconResolve("close", 12);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PMarkerEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PMarkerEraser") is Button eraser)
         {
             eraser.Click -= _pMarkerTemplate.PMarkerChipHandle;
             eraser.Click += _pMarkerTemplate.PMarkerChipHandle;

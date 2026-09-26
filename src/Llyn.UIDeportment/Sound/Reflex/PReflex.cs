@@ -33,8 +33,8 @@ public partial class PEditor
     private void PReflexAttach()
     {
         PReflex.ItemsSource = _pReflexItem;
-        PLookItem.PLookItemAttach(PReflex, LReflexItem.LReflexItemApply);
-        PField.PFieldCellAttach(PReflex);
+        QLookItem.QLookItemAttach(PReflex, LReflexItem.LReflexItemApply);
+        QField.QFieldCellAttach(PReflex);
         PAccentControl.PAccentControlAttach(PReflex);
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PReflexCommand.PReflexCommandAddition, PReflexAddHandle));
@@ -136,7 +136,7 @@ public partial class PEditor
     private void PReflexShow(LEntryDraft draft)
     {
         string language = draft.LEntryDraftLanguage;
-        PReflexBlock.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorReflexShown);
+        PReflexBlock.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorReflexShown);
         PReflexRenewal.Visibility = PReflexBlock.Visibility;
 
         _pReflexFolded = LReflexItem.LReflexFoldRead(_pEditorHost.PWindowDeportment, language);
@@ -182,12 +182,14 @@ public partial class PEditor
         }
 
         PReflexLoading.Visibility = pending ? Visibility.Visible : Visibility.Collapsed;
-        PReflexRenewal.Tag = PLook.PLookFirstRead<string?>(pending, "Pending", null);
+        PReflexRenewal.SetValue(
+            QLook.QLookCueProperty,
+            QLook.QLookFirstRead(pending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
     }
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorLectern.LLecternFoldSet(PLook.PLookCheckedRead(PReflexFold.IsChecked));
+        _lEditor.LEditorLectern.LLecternFoldSet(QLook.QLookCheckedRead(PReflexFold.IsChecked));
         LReflexItem.LReflexFoldApply(_pReflexItem, PReflexFold, _lEditor.LEditorLectern.LLecternFoldOpened);
     }
 

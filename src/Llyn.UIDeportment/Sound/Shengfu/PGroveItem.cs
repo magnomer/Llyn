@@ -64,24 +64,24 @@ internal sealed class PGroveItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PGroveRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PGroveRow") is Button row)
         {
             if (grove.PGroveItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGroveKey") is TextBlock key)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGroveKey") is TextBlock key)
         {
             key.Text = grove.PGroveItemKey;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGroveCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGroveCount") is TextBlock count)
         {
             count.Text = grove.PGroveItemCount.ToString(CultureInfo.InvariantCulture);
         }

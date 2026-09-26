@@ -98,48 +98,50 @@ public sealed class LAccentItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PAccentFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PAccentFlag") is Image flag)
         {
             flag.Source = row.LAccentItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAccentLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAccentLabel") is TextBlock label)
         {
             label.Text = row.LAccentItemLabel;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAccentOpener") is TextBlock opener)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAccentOpener") is TextBlock opener)
         {
             opener.Text = row.LAccentItemOpener;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAccentCloser") is TextBlock closer)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAccentCloser") is TextBlock closer)
         {
             closer.Text = row.LAccentItemCloser;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAccentText") is TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAccentText") is TextBlock text)
         {
             text.Text = row.LAccentItemText;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAccentPrompt") is TextBlock prompt)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAccentPrompt") is TextBlock prompt)
         {
-            PLook.PLookPromptApply(prompt, row.LAccentItemText, "Input.Pronunciation", null);
+            QLook.QLookPromptApply(prompt, row.LAccentItemText, "Input.Pronunciation", null);
             if (prompt.Parent is Grid cell)
             {
-                cell.Tag = "Theme.Pronunciation.Field LAccentItemText Input.Pronunciation";
+                cell.SetValue(
+                    QField.QFieldCellProperty,
+                    new QField.QFieldCell("Theme.Pronunciation.Field", "LAccentItemText", "Input.Pronunciation"));
             }
 
-            if (PLook.PLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
+            if (QLook.QLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
             {
                 shelf.Tag = "Theme.Accent.Slot";
             }
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PAccentPlayback") is Button playback)
+        if (QLook.QLookPartFind<Button>(container, "PAccentPlayback") is Button playback)
         {
-            playback.Visibility = PLook.PLookVisibleRead(row.LAccentItemPlayable);
+            playback.Visibility = QLook.QLookVisibleRead(row.LAccentItemPlayable);
         }
     }
 
@@ -167,7 +169,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
     {
         return variety.Length == 0
             ? string.Empty
-            : LLocalizationCatalog.LLocalizationTextFind(string.Concat("Variety.", variety)) ?? variety;
+            : QLocalizationCatalog.QLocalizationTextFind(string.Concat("Variety.", variety)) ?? variety;
     }
 
     public static ImageSource? LAccentFlagFind(string language, bool flagged, string variety)

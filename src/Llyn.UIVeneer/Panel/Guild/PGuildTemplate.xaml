@@ -12,7 +12,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <local:QIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                 <TextBlock x:Name="PRollName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
                 <TextBlock x:Name="PRollWork" Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" />
                 <Border Grid.Column="3" Style="{DynamicResource Theme.Catalog.Pellet}" ToolTip="{DynamicResource Guild.Tally}">
@@ -30,7 +30,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage x:Name="PFellowIcon" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <local:QIconImage x:Name="PFellowIcon" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                 <TextBlock x:Name="PFellowName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
                 <Border Grid.Column="2" Style="{DynamicResource Theme.Catalog.Pellet}" ToolTip="{DynamicResource Vita.Shared}">
                     <TextBlock x:Name="PFellowCount" Style="{DynamicResource Theme.Catalog.Tally}" />
@@ -68,7 +68,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <local:QIconImage x:Name="PRollMark" Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
                 <TextBlock x:Name="PRollName" Grid.Column="1" Style="{DynamicResource Theme.Catalog.Title}" />
                 <TextBlock x:Name="PRollWork" Grid.Column="2" Margin="10,0,0,0" Style="{DynamicResource Theme.Catalog.Meta}" />
             </Grid>

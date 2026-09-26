@@ -51,7 +51,7 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
 
     public string PScriptImageEpoch => _pScriptImageEpoch.Length == 0
         ? string.Empty
-        : PLocalizationCatalog.PLocalizationTextFind(PScriptImageArea + _pScriptImageEpoch) ?? string.Empty;
+        : QLocalizationCatalog.QLocalizationTextFind(PScriptImageArea + _pScriptImageEpoch) ?? string.Empty;
 
     public double PScriptImageWidth { get; }
 
@@ -66,24 +66,24 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        if (PLook.PLookPartFind<PImageLazy>(container, "PScriptLazy") is PImageLazy lazy)
+        if (QLook.QLookPartFind<PImageLazy>(container, "PScriptLazy") is PImageLazy lazy)
         {
             lazy.PImageLazyRow = image;
         }
 
-        if (PLook.PLookPartFind<Rectangle>(container, "PScriptShape") is Rectangle shape)
+        if (QLook.QLookPartFind<Rectangle>(container, "PScriptShape") is Rectangle shape)
         {
             shape.Width = image.PScriptImageWidth;
             shape.Height = image.PScriptImageHeight;
             shape.OpacityMask = new ImageBrush(image.PScriptImageSource) { Stretch = Stretch.Uniform };
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PScriptEpoch") is TextBlock epoch)
+        if (QLook.QLookPartFind<TextBlock>(container, "PScriptEpoch") is TextBlock epoch)
         {
             epoch.Text = image.PScriptImageEpoch;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PScriptCaption") is TextBlock caption)
+        if (QLook.QLookPartFind<TextBlock>(container, "PScriptCaption") is TextBlock caption)
         {
             caption.Text = image.PScriptImageCaption;
         }

@@ -21,7 +21,7 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 Puts the panel to work on the window deportment and shows the choices already stored.
 The panel also listens for settings bulletins, which drive every redraw a saved choice needs.
 The language items are built first, so the ledger summary and the sync find the stored language.
-The ledger rows get their fill through `PLookItemAttach` before the catalog is built.
+The ledger rows get their fill through `QLookItemAttach` before the catalog is built.
 
 ## `private void PLocalizationBuild()`
 

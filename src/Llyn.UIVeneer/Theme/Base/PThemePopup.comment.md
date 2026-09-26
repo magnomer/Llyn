@@ -3,7 +3,7 @@
 ## `<Style x:Key="Theme.Popup.Surface" TargetType="Border">`
 
 The floating ground a picker popup stands on.
-Every row's hover, press and disabled look is switched by `PLook` in the deportment.
+Every row's hover, press and disabled look is switched by `QLook` in the deportment.
 It is the same white as a field, so the rows inside need no card of their own.
 The list reads as one surface instead of a stack of tiles.
 
@@ -23,7 +23,7 @@ The search running, as a hairline under the title rather than a box of its own.
 
 The sliding bar inside that hairline.
 The phonetician and the downloader run the same search, so they share one bar rather than declaring two.
-`PLook` starts the slide when the bar loads.
+`QLook` starts the slide when the bar loads.
 
 ## `<Style x:Key="Theme.Popup.RowSurface" TargetType="Border">`
 
@@ -44,3 +44,8 @@ It lights up the same way as every other row action when pointed at.
 
 A row's second action, carrying an icon instead of a word.
 Same quiet-until-pointed-at treatment as the taking button beside it.
+
+## `<DoubleAnimation x:Key="Theme.Popup.ProgressBar.Sweep"`
+
+The progress bar's sweep under its contract ID, which the deportment starts while the bar shows.
+It starts at the bar's resting offset, so the bar never jumps when the sweep begins.

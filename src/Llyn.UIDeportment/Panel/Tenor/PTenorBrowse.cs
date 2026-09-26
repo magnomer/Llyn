@@ -37,7 +37,7 @@ public partial class PTenor
     private void PDegreeHandle(object sender, RoutedEventArgs e)
     {
         PDegreeDropper.IsChecked = false;
-        _lTenor.LTenorDegreeSet(LChoice.LChoiceOrderRead(sender));
+        _lTenor.LTenorDegreeSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
@@ -47,7 +47,7 @@ public partial class PTenor
 
     private void PGrilleHandle(object sender, RoutedEventArgs e)
     {
-        _lTenor.LTenorGrilleSet(LChoice.LChoiceFilterRead(PGrilleList));
+        _lTenor.LTenorGrilleSet(QChoice.QChoiceFilterRead(PGrilleList));
         PGrilleRestore();
     }
 
@@ -68,7 +68,7 @@ public partial class PTenor
         _lTenor.LTenorObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PGamutFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PDegreeList,
             "Degree",
             PDegreeHandle,
@@ -77,12 +77,12 @@ public partial class PTenor
                 LCatalogOrder.LCatalogOrderReverse,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
+        QChoice.QChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
         PGrilleRestore();
 
         await LEnsignImage.LEnsignLoad(_pTenorHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(PGrilleList, _lTenor.LTenorLanguageRead(), _lTenor.LTenorFilter, PGrilleHandle);
+        QChoice.QChoiceFilterBuild(PGrilleList, _lTenor.LTenorLanguageRead(), _lTenor.LTenorFilter, PGrilleHandle);
         _lTenor.LTenorSoundingSet(PSounding.Text ?? string.Empty);
         _lTenor.LTenorQuestSet(PQuest.Text);
         PGamutFind();
@@ -144,32 +144,32 @@ public partial class PTenor
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PGamutRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PGamutRow") is Button row)
         {
             if (gamut.PGamutItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PGamutHandle;
             row.Click += PGamutHandle;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PGamutIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PGamutIcon") is QIconImage icon)
         {
-            icon.PIconSource = gamut.PGamutItemIcon;
+            icon.QIconSource = gamut.PGamutItemIcon;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGamutName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGamutName") is TextBlock name)
         {
             name.Text = gamut.PGamutItemName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGamutCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGamutCount") is TextBlock count)
         {
             count.Text = gamut.PGamutItemCount;
         }

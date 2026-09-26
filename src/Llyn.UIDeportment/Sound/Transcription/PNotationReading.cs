@@ -42,32 +42,32 @@ internal sealed class PNotationReading
 
         bool flagged = reading.PNotationReadingFlag is not null;
 
-        if (PLook.PLookPartFind<Grid>(container, "PNotationReadingCell") is Grid cell)
+        if (QLook.QLookPartFind<Grid>(container, "PNotationReadingCell") is Grid cell)
         {
             cell.ColumnDefinitions[0].SharedSizeGroup = "PNotationColumn"
                 + ItemsControl.GetAlternationIndex(container).ToString(CultureInfo.InvariantCulture);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PNotationSelector") is Button selector)
+        if (QLook.QLookPartFind<Button>(container, "PNotationSelector") is Button selector)
         {
             selector.ToolTip = flagged ? reading.PNotationReadingLabel : null;
             selector.Click -= select;
             selector.Click += select;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PNotationReadingFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PNotationReadingFlag") is Image flag)
         {
             flag.Source = reading.PNotationReadingFlag;
-            flag.Visibility = PLook.PLookVisibleRead(flagged);
+            flag.Visibility = QLook.QLookVisibleRead(flagged);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PNotationReadingLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PNotationReadingLabel") is TextBlock label)
         {
             label.Text = reading.PNotationReadingLabel;
-            label.Visibility = PLook.PLookVisibleRead(!flagged && reading.PNotationReadingLabel.Length > 0);
+            label.Visibility = QLook.QLookVisibleRead(!flagged && reading.PNotationReadingLabel.Length > 0);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PNotationReadingPhonetic") is TextBlock phonetic)
+        if (QLook.QLookPartFind<TextBlock>(container, "PNotationReadingPhonetic") is TextBlock phonetic)
         {
             phonetic.Text = reading.PNotationReadingOpener + reading.PNotationReadingText
                 + reading.PNotationReadingCloser;

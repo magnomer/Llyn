@@ -34,34 +34,34 @@ internal sealed class PDiweiItem
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PDiweiHead") is TextBlock head)
+        if (QLook.QLookPartFind<TextBlock>(container, "PDiweiHead") is TextBlock head)
         {
             head.Text = section.PDiweiItemLabel;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PDiweiSwitch") is Border choice)
+        if (QLook.QLookPartFind<Border>(container, "PDiweiSwitch") is Border choice)
         {
-            choice.Visibility = PLook.PLookVisibleRead(section.PDiweiItemSwitched);
+            choice.Visibility = QLook.QLookVisibleRead(section.PDiweiItemSwitched);
         }
 
         PDiweiChoiceApply(container, "PDiweiSpoken", !section.PDiweiItemRespelled);
         PDiweiChoiceApply(container, "PDiweiSpelled", section.PDiweiItemRespelled);
-        if (PLook.PLookPartFind<ItemsControl>(container, "PDiweiTally") is ItemsControl tally)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PDiweiTally") is ItemsControl tally)
         {
             tally.ItemsSource = section.PDiweiItemTallies;
-            PLookItem.PLookItemAttach(tally, PTally.PTallyApply);
+            QLookItem.QLookItemAttach(tally, PTally.PTallyApply);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PDiweiLines") is ItemsControl lines)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PDiweiLines") is ItemsControl lines)
         {
             lines.ItemsSource = section.PDiweiItemLines;
-            PLookItem.PLookItemAttach(lines, PDiweiLine.PDiweiLineApply);
+            QLookItem.QLookItemAttach(lines, PDiweiLine.PDiweiLineApply);
         }
     }
 
     private static void PDiweiChoiceApply(FrameworkElement container, string name, bool chosen)
     {
-        if (PLook.PLookPartFind<Button>(container, name) is not Button choice)
+        if (QLook.QLookPartFind<Button>(container, name) is not Button choice)
         {
             return;
         }

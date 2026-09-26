@@ -67,7 +67,7 @@ internal sealed class PMedia
         foreach (object item in list.Items)
         {
             if (list.ItemContainerGenerator.ContainerFromItem(item) is not FrameworkElement container
-                || PLook.PLookPartFind<FrameworkElement>(container, "PMediaControl") is not FrameworkElement control)
+                || QLook.QLookPartFind<FrameworkElement>(container, "PMediaControl") is not FrameworkElement control)
             {
                 continue;
             }

@@ -91,7 +91,7 @@ Nothing is read from the engine and nothing is fetched, because only the printed
 ## `private void PScriptStateApply()`
 
 Feeds the list and shows the loading line while pending.
-The regenerate button stands wherever one was handed over, and its tag reads `Pending` while a fetch runs.
+The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.
 

@@ -96,7 +96,7 @@ Redraws the box when any of its four properties change.
 ## `private void PFanqieStateApply()`
 
 Feeds the list and shows the loading line while pending.
-The regenerate button stands wherever one was handed over, and its tag reads `Pending` while a fetch runs.
+The regenerate button stands wherever one was handed over, and it carries the `Pending` cue while a fetch runs.
 The head shows only when folded, and the body only when open.
 The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.
 

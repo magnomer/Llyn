@@ -55,7 +55,7 @@ public partial class PCorpus
     {
         PLanguageItem.PLanguageItemApply(container, item, change);
 
-        if (PLook.PLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
+        if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
         {
             choice.Click -= _pCorpusTranscript.PSpeakerHandle;
             choice.Click += _pCorpusTranscript.PSpeakerHandle;
@@ -76,14 +76,14 @@ public partial class PCorpus
         }
 
         _pTranscriptTextUnknown = false;
-        PTranscriptText.Tag = PTranscriptHintRead(false);
+        PTranscriptText.SetValue(QField.QFieldHintProperty, PTranscriptHintRead(false));
         PTranscriptRequestDefer(
             new LRequestExampleText(PTranscriptDraft, new LStateWritten(PTranscriptText.Text, false)));
     }
 
     private string PTranscriptHintRead(bool unknown)
     {
-        return PLocalizationCatalog.PLocalizationTextRead(unknown ? "Display.Unknown" : "Example.Text");
+        return QLocalizationCatalog.QLocalizationTextRead(unknown ? "Display.Unknown" : "Example.Text");
     }
 
     private void PTranscriptApply(LExample? example)
@@ -92,7 +92,7 @@ public partial class PCorpus
 
         PTranscriptText.Text = example?.LExampleText.LStateValueShow() ?? string.Empty;
         _pTranscriptTextUnknown = example?.LExampleText.LStateValueUncertain ?? false;
-        PTranscriptText.Tag = PTranscriptHintRead(_pTranscriptTextUnknown);
+        PTranscriptText.SetValue(QField.QFieldHintProperty, PTranscriptHintRead(_pTranscriptTextUnknown));
 
         PTranscriptGlossShow(example);
 
@@ -145,7 +145,7 @@ public partial class PCorpus
         field.Text = value.LStateValueShow();
         bool uncertain = value.LStateValueUncertain;
         held = uncertain;
-        field.Tag = PTranscriptHintRead(held);
+        field.SetValue(QField.QFieldHintProperty, PTranscriptHintRead(held));
     }
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)

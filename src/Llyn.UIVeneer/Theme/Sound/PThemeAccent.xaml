@@ -17,7 +17,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:PIconImage x:Name="PSurfaceMark" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PSurfaceMark" Width="24" Height="24" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -66,7 +66,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:PIconImage x:Name="PSurfaceMark" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PSurfaceMark" Width="12" Height="12" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -77,7 +77,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:PIconImage x:Name="PSurfaceMark" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PSurfaceMark" Width="12" Height="12" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

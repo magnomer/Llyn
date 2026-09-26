@@ -31,4 +31,4 @@ The veneer holds only the empty slot the player is put into.
 
 Renders flag and interface SVGs into WPF drawings.
 WPF's bitmap decoders can't read SVG on their own.
-The icons it renders are embedded in the veneer, so `PIcon` reads them by pack URI.
+The icons it renders are embedded in the veneer, so `QIcon` reads them by pack URI.

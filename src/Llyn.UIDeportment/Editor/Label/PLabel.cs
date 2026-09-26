@@ -14,9 +14,9 @@ public partial class PEditor
     {
         if (item is PLabelCaret caret)
         {
-            if (PLook.PLookPartFind<TextBox>(container, "PLabelEntry") is TextBox entry)
+            if (QLook.QLookPartFind<TextBox>(container, "PLabelEntry") is TextBox entry)
             {
-                entry.Tag = caret.PLabelCaretHint;
+                entry.SetValue(QField.QFieldHintProperty, caret.PLabelCaretHint);
                 entry.Text = caret.PLabelCaretText;
                 entry.PreviewKeyDown -= _pLabelTemplate.PLabelCaretHandle;
                 entry.PreviewKeyDown += _pLabelTemplate.PLabelCaretHandle;
@@ -32,18 +32,18 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PLabelName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PLabelName") is TextBlock name)
         {
             name.Text = chip.PLabelChipName;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PLabelEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PLabelEraser") is Button eraser)
         {
             eraser.Click -= _pLabelTemplate.PLabelChipHandle;
             eraser.Click += _pLabelTemplate.PLabelChipHandle;
-            if (PLook.PLookPartFind<PIconImage>(eraser, "PLabelIcon") is PIconImage icon)
+            if (QLook.QLookPartFind<QIconImage>(eraser, "PLabelIcon") is QIconImage icon)
             {
-                icon.PIconSource = PIcon.PIconResolve("close", 12);
+                icon.QIconSource = QIcon.QIconResolve("close", 12);
             }
         }
     }
@@ -55,8 +55,8 @@ public partial class PEditor
             PLabelSelectorChip = (DataTemplate)_pLabelTemplate["Theme.Label.Chip"],
             PLabelSelectorCaret = (DataTemplate)_pLabelTemplate["Theme.Label.Entry"],
         };
-        PLookItem.PLookItemAttach(list, PLabelApply);
-        if (PLook.PLookPartFind<Border>(list, "PLabelFrame") is Border frame)
+        QLookItem.QLookItemAttach(list, PLabelApply);
+        if (QLook.QLookPartFind<Border>(list, "PLabelFrame") is Border frame)
         {
             frame.MouseLeftButtonDown -= _pLabelTemplate.PLabelFocusHandle;
             frame.MouseLeftButtonDown += _pLabelTemplate.PLabelFocusHandle;

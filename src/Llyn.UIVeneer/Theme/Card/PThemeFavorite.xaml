@@ -16,7 +16,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="Theme.Favorite.Icon" TargetType="local:PIconImage">
+    <Style x:Key="Theme.Favorite.Icon" TargetType="local:QIconImage">
         <Setter Property="Width" Value="24" />
         <Setter Property="Height" Value="24" />
     </Style>

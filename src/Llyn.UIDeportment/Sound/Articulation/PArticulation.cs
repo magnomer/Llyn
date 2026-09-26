@@ -20,7 +20,7 @@ public partial class PArticulation : UserControl
             new Uri("/Llyn.UIVeneer;component/Sound/Articulation/PArticulation.xaml", UriKind.Relative));
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
-        PLook.PLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface.Resources);
 
         PArticulationLane.SizeChanged += PArticulationLaneHandle;
 

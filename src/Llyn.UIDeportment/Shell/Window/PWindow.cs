@@ -53,20 +53,20 @@ public partial class PWindow
         ((Shape)PCaptionExit.Content).SetBinding(
             Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = PCaptionExit });
 
-        PNavigationInput.PTabIcon = PIcon.PIconResolve("input", 24);
-        PNavigationLibrary.PTabIcon = PIcon.PIconResolve("library", 24);
-        PNavigationFavorite.PTabIcon = PIcon.PIconResolve("favorite", 24);
-        PNavigationPhonology.PTabIcon = PIcon.PIconResolve("phonology", 24);
-        PNavigationRepertoire.PTabIcon = PIcon.PIconResolve("repertoire", 24);
-        PNavigationTenor.PTabIcon = PIcon.PIconResolve("tenor", 24);
-        PNavigationTaxonomy.PTabIcon = PIcon.PIconResolve("taxonomy", 24);
-        PNavigationCorpus.PTabIcon = PIcon.PIconResolve("corpus", 24);
-        PNavigationSource.PTabIcon = PIcon.PIconResolve("reference", 24);
-        PNavigationGuild.PTabIcon = PIcon.PIconResolve("guild", 24);
-        PNavigationXiesheng.PTabIcon = PIcon.PIconResolve("xiesheng", 24);
-        PNavigationYunjing.PTabIcon = PIcon.PIconResolve("yunjing", 24);
-        PNavigationDuplex.PTabIcon = PIcon.PIconResolve("duplex", 24);
-        PNavigationSettings.PTabIcon = PIcon.PIconResolve("settings", 24);
+        PNavigationInput.PTabIcon = QIcon.QIconResolve("input", 24);
+        PNavigationLibrary.PTabIcon = QIcon.QIconResolve("library", 24);
+        PNavigationFavorite.PTabIcon = QIcon.QIconResolve("favorite", 24);
+        PNavigationPhonology.PTabIcon = QIcon.QIconResolve("phonology", 24);
+        PNavigationRepertoire.PTabIcon = QIcon.QIconResolve("repertoire", 24);
+        PNavigationTenor.PTabIcon = QIcon.QIconResolve("tenor", 24);
+        PNavigationTaxonomy.PTabIcon = QIcon.QIconResolve("taxonomy", 24);
+        PNavigationCorpus.PTabIcon = QIcon.QIconResolve("corpus", 24);
+        PNavigationSource.PTabIcon = QIcon.QIconResolve("reference", 24);
+        PNavigationGuild.PTabIcon = QIcon.QIconResolve("guild", 24);
+        PNavigationXiesheng.PTabIcon = QIcon.QIconResolve("xiesheng", 24);
+        PNavigationYunjing.PTabIcon = QIcon.QIconResolve("yunjing", 24);
+        PNavigationDuplex.PTabIcon = QIcon.QIconResolve("duplex", 24);
+        PNavigationSettings.PTabIcon = QIcon.QIconResolve("settings", 24);
 
         PNavigationInput.Click += PNavigationHandle;
         PNavigationLibrary.Click += PNavigationHandle;
@@ -85,9 +85,9 @@ public partial class PWindow
 
         _pMentionMenuTemplate = new PMentionMenuTemplate(this);
         _pWindowSurface.Resources.MergedDictionaries.Add(_pMentionMenuTemplate);
-        PLook.PLookStyleAttach(_pMentionMenuTemplate);
+        QLook.QLookStyleAttach(_pMentionMenuTemplate);
         PMentionList.ItemsSource = _pMentionItem;
-        PLookItem.PLookItemAttach(PMentionList, PMentionRowApply);
+        QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
         _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
         _pWindowSurface.PreviewKeyDown += PChronicleKeyHandle;
         _pWindowSurface.Deactivated += PMentionLeaveHandle;

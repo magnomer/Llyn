@@ -71,9 +71,9 @@ internal sealed class LSettingsFacade
 
     internal IReadOnlyList<string> LEngineLocalizationScan() => LLocalization.LLocalizationListedRead();
 
-    internal string LEngineTextRead(string key) => LLocalization.LLocalizationTextRead(key);
+    internal string LEngineTextRead(string key) => LLocalization.QLocalizationTextRead(key);
 
-    internal string? LEngineTextFind(string key) => LLocalization.LLocalizationTextFind(key);
+    internal string? LEngineTextFind(string key) => LLocalization.QLocalizationTextFind(key);
 
     internal void LEngineLocalizationSave(string language)
     {

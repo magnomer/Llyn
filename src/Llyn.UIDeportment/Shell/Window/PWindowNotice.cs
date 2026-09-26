@@ -11,8 +11,8 @@ public partial class PWindow
     {
         MessageBox.Show(
             _pWindowSurface,
-            PLocalizationCatalog.PLocalizationTextRead(key),
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead(key),
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
     }
@@ -21,8 +21,8 @@ public partial class PWindow
     {
         return MessageBox.Show(
             _pWindowSurface,
-            PLocalizationCatalog.PLocalizationTextRead("Notice.UnreadableDrop"),
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead("Notice.UnreadableDrop"),
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
@@ -31,8 +31,8 @@ public partial class PWindow
     {
         MessageBox.Show(
             _pWindowSurface,
-            $"{PLocalizationCatalog.PLocalizationTextRead(key)}\n\n{PWindowDetailRead(exception)}",
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{PWindowDetailRead(exception)}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
     }
@@ -41,15 +41,15 @@ public partial class PWindow
     {
         if (_lWindow.LWindowNoticeRead(exception) is string reason)
         {
-            return PLocalizationCatalog.PLocalizationTextRead(reason);
+            return QLocalizationCatalog.QLocalizationTextRead(reason);
         }
 
-        string unexpected = PLocalizationCatalog.PLocalizationTextRead("Notice.Unexpected");
+        string unexpected = QLocalizationCatalog.QLocalizationTextRead("Notice.Unexpected");
         string? recorded = _lWindow.LWindowAuditRecord(exception);
 
         return recorded is null
             ? unexpected
-            : $"{unexpected}\n\n{PLocalizationCatalog.PLocalizationTextRead("Notice.Recorded")}\n{recorded}";
+            : $"{unexpected}\n\n{QLocalizationCatalog.QLocalizationTextRead("Notice.Recorded")}\n{recorded}";
     }
 
     private (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] PWindowEditorRead()
@@ -120,31 +120,31 @@ public partial class PWindow
     internal bool PWindowRemovalConfirm(int usage, string scope)
     {
         string count = string.Concat(
-            PLocalizationCatalog.PLocalizationTextRead($"{scope}.DetachCount"),
+            QLocalizationCatalog.QLocalizationTextRead($"{scope}.DetachCount"),
             " ",
             usage.ToString(CultureInfo.CurrentCulture));
 
         string question = usage > 0
-            ? $"{PLocalizationCatalog.PLocalizationTextRead($"{scope}.DetachConfirm")}\n\n{count}"
-            : PLocalizationCatalog.PLocalizationTextRead($"{scope}.DeleteConfirm");
+            ? $"{QLocalizationCatalog.QLocalizationTextRead($"{scope}.DetachConfirm")}\n\n{count}"
+            : QLocalizationCatalog.QLocalizationTextRead($"{scope}.DeleteConfirm");
 
         return MessageBox.Show(
             _pWindowSurface,
             question,
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
     internal bool PWindowUnionConfirm(string dropped, string kept)
     {
-        string confirm = PLocalizationCatalog.PLocalizationTextRead("Guild.MergeConfirm");
+        string confirm = QLocalizationCatalog.QLocalizationTextRead("Guild.MergeConfirm");
         string question = $"{confirm}\n\n{dropped.Trim()} \u2192 {kept.Trim()}";
 
         return MessageBox.Show(
             _pWindowSurface,
             question,
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
@@ -153,8 +153,8 @@ public partial class PWindow
     {
         return MessageBox.Show(
             _pWindowSurface,
-            PLocalizationCatalog.PLocalizationTextRead("Scribe.DeleteConfirm"),
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead("Scribe.DeleteConfirm"),
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }

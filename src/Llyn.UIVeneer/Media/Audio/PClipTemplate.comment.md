@@ -12,7 +12,7 @@ The play button of one recording, which also reports where its preview stands.
 Plain, it is the quiet icon button the popup uses elsewhere, lighting softly under the pointer.
 While the recording is fetched it fills orange, and while it sounds it fills blue, the glyph turning white.
 A refused recording fills in the warning colour.
-The editor tags the button with its state, and the look sheet paints the surface for each tag.
+The editor gives the button a cue for its state, and the look sheet paints the surface for each cue.
 The tagged fills win over the hover, so a filled button stays filled under the pointer.
 
 ## `<DataTemplate x:Key="Theme.Clip.Reading">`

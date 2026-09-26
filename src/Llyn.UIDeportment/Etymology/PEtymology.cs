@@ -46,17 +46,17 @@ public sealed class PEtymology : ContentControl
         _pEtymologyField.SetResourceReference(StyleProperty, "Theme.Etymology.Field");
         _pEtymologyField.SetResourceReference(
             ItemsControl.ItemTemplateProperty, "Theme.Etymology.Item");
-        PLookItem.PLookItemAttach(_pEtymologyField, PEtymologyItemApply);
+        QLookItem.QLookItemAttach(_pEtymologyField, PEtymologyItemApply);
 
         _pEtymologyProse.SetResourceReference(StyleProperty, "Theme.Etymology.Text");
         _pEtymologyWrite.SetResourceReference(StyleProperty, "Theme.Etymology.Prose");
-        _pEtymologyWrite.SetResourceReference(TagProperty, "Input.EtymologyHint");
+        _pEtymologyWrite.SetResourceReference(QField.QFieldHintProperty, "Input.EtymologyHint");
         _pEtymologyWrite.SetResourceReference(ContextMenuProperty, "Theme.Etymology.Menu");
 
         _pEtymologyStrip.ItemsSource = _pEtymologyLine.PMentionLineChip;
         _pEtymologyStrip.SetResourceReference(StyleProperty, "Theme.Mention.Line");
         _pEtymologyStrip.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Mention.Chip");
-        PLookItem.PLookItemAttach(_pEtymologyStrip, PMentionChip.PMentionChipApply);
+        QLookItem.QLookItemAttach(_pEtymologyStrip, PMentionChip.PMentionChipApply);
 
         _pEtymologyBody.Children.Add(_pEtymologyField);
         _pEtymologyBody.Children.Add(_pEtymologyProse);
@@ -99,7 +99,7 @@ public sealed class PEtymology : ContentControl
         ArgumentNullException.ThrowIfNull(etymons);
 
         _pEtymologyField.ItemsSource = PEtymon.PEtymonBuild(etymons, _pEtymologyCaret);
-        _pEtymologyField.Visibility = PLook.PLookVisibleRead(
+        _pEtymologyField.Visibility = QLook.QLookVisibleRead(
             LLectern.LLecternEtymonCheck(PEtymologyEditable, etymons.Count));
     }
 
@@ -115,7 +115,7 @@ public sealed class PEtymology : ContentControl
 
     protected override AutomationPeer OnCreateAutomationPeer()
     {
-        return new PSurfacePeer(this);
+        return new QSurfacePeer(this);
     }
 
     private static void PEtymologyStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -131,13 +131,13 @@ public sealed class PEtymology : ContentControl
         _pEtymologyProse.PMentionText = text;
         _pEtymologyProse.PMentionLanguage = PEtymologyLanguage;
 
-        PField.PFieldTextShow(_pEtymologyWrite, text);
+        QField.QFieldTextShow(_pEtymologyWrite, text);
 
         _pEtymologyCaret.PEtymonShown = editable;
-        _pEtymologyProse.Visibility = PLook.PLookVisibleRead(LLectern.LLecternNarrativeCheck(editable, text));
-        _pEtymologyWrite.Visibility = PLook.PLookVisibleRead(editable);
-        _pEtymologyStrip.Visibility = PLook.PLookVisibleRead(editable);
-        PLookItem.PLookItemApply(_pEtymologyField);
+        _pEtymologyProse.Visibility = QLook.QLookVisibleRead(LLectern.LLecternNarrativeCheck(editable, text));
+        _pEtymologyWrite.Visibility = QLook.QLookVisibleRead(editable);
+        _pEtymologyStrip.Visibility = QLook.QLookVisibleRead(editable);
+        QLookItem.QLookItemApply(_pEtymologyField);
     }
 
     private void PEtymologyItemApply(FrameworkElement container, object item, string? _)
@@ -155,49 +155,50 @@ public sealed class PEtymology : ContentControl
             descriptor.AddValueChanged(etymon, PEtymologyItemHandle);
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PEtymonChip") is Border chip)
+        if (QLook.QLookPartFind<Border>(container, "PEtymonChip") is Border chip)
         {
-            chip.Visibility = PLook.PLookVisibleRead(!etymon.PEtymonCaret);
+            chip.Visibility = QLook.QLookVisibleRead(!etymon.PEtymonCaret);
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PEtymonFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PEtymonFlag") is Image flag)
         {
             flag.Source = etymon.PEtymonFlag;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PEtymonEntry") is Button entry)
+        if (QLook.QLookPartFind<Button>(container, "PEtymonEntry") is Button entry)
         {
             entry.Command = PEtymologyCommand.PEtymologyCommandEntry;
             entry.CommandParameter = etymon.PEtymonId;
-            if (PLook.PLookPartFind<TextBlock>(entry, "PEtymonHeadword") is TextBlock headword)
+            if (QLook.QLookPartFind<TextBlock>(entry, "PEtymonHeadword") is TextBlock headword)
             {
                 headword.Text = etymon.PEtymonHeadword;
             }
 
-            if (PLook.PLookPartFind<TextBlock>(entry, "PEtymonLanguage") is TextBlock language)
+            if (QLook.QLookPartFind<TextBlock>(entry, "PEtymonLanguage") is TextBlock language)
             {
                 language.Text = etymon.PEtymonLanguage;
             }
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PEtymonRemoval") is Button removal)
+        if (QLook.QLookPartFind<Button>(container, "PEtymonRemoval") is Button removal)
         {
             removal.Command = PEtymologyCommand.PEtymologyCommandRemoval;
             removal.CommandParameter = etymon;
-            removal.Visibility = PLook.PLookVisibleRead(PEtymologyEditable);
-            if (PLook.PLookPartFind<PIconImage>(removal, "PEtymonMark") is PIconImage mark)
+            removal.Visibility = QLook.QLookVisibleRead(PEtymologyEditable);
+            if (QLook.QLookPartFind<QIconImage>(removal, "PEtymonMark") is QIconImage mark)
             {
-                mark.PIconSource = PIcon.PIconResolve("unlink", 12);
+                mark.QIconSource = QIcon.QIconResolve("unlink", 12);
             }
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PEtymonBox") is not TextBox box)
+        if (QLook.QLookPartFind<TextBox>(container, "PEtymonBox") is not TextBox box)
         {
             return;
         }
 
-        box.Visibility = PLook.PLookVisibleRead(etymon.PEtymonShown);
+        box.Visibility = QLook.QLookVisibleRead(etymon.PEtymonShown);
         box.Text = etymon.PEtymonText;
+        box.SetResourceReference(QField.QFieldHintProperty, "Input.EtymonHint");
 
         box.TextChanged -= PEtymologyBoxHandle;
         box.TextChanged += PEtymologyBoxHandle;
@@ -213,7 +214,7 @@ public sealed class PEtymology : ContentControl
 
     private void PEtymologyItemHandle(object? sender, EventArgs e)
     {
-        PLookItem.PLookItemApply(_pEtymologyField);
+        QLookItem.QLookItemApply(_pEtymologyField);
     }
 
     private static void PEtymologyBoxHandle(object sender, TextChangedEventArgs e)

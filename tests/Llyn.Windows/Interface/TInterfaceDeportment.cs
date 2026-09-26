@@ -355,7 +355,7 @@ internal static class TInterfaceDeportment
 
     internal static bool TCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
-        LCaret.LCaretKeyApply(key, caret, length, selection, remove, move, place);
+        QCaret.QCaretKeyApply(key, caret, length, selection, remove, move, place);
 
     internal static void TLecternFoldSet(this LLectern lectern, bool opened) => lectern.LLecternFoldSet(opened);
 

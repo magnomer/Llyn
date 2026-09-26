@@ -24,7 +24,7 @@ public partial class PEditor
     private void PCandidateAttach()
     {
         PCandidateList.ItemsSource = _pCandidateItem;
-        PLookItem.PLookItemAttach(PCandidateList, PCandidateApply);
+        QLookItem.QLookItemAttach(PCandidateList, PCandidateApply);
         PCandidate.CustomPopupPlacementCallback = PCandidatePlace;
     }
 
@@ -35,27 +35,27 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCandidateLead") is Run lead)
+        if (QLook.QLookPartFind<Run>(container, "PCandidateLead") is Run lead)
         {
             lead.Text = row.PCandidateItemLead;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCandidateMark") is Run mark)
+        if (QLook.QLookPartFind<Run>(container, "PCandidateMark") is Run mark)
         {
             mark.Text = row.PCandidateItemMark;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCandidateTail") is Run tail)
+        if (QLook.QLookPartFind<Run>(container, "PCandidateTail") is Run tail)
         {
             tail.Text = row.PCandidateItemTail;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCandidateCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCandidateCount") is TextBlock count)
         {
             count.Text = row.PCandidateItemCount;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PCandidateRow") is Grid surface)
+        if (QLook.QLookPartFind<Grid>(container, "PCandidateRow") is Grid surface)
         {
             surface.PreviewMouseLeftButtonDown -= _pCandidateTemplate.PCandidateHandle;
             surface.PreviewMouseLeftButtonDown += _pCandidateTemplate.PCandidateHandle;
@@ -371,6 +371,6 @@ public partial class PEditor
         }
 
         box.ApplyTemplate();
-        return box.Template?.FindName(PField.PFieldSurfaceName, box) as FrameworkElement;
+        return box.Template?.FindName(QField.QFieldSurfaceName, box) as FrameworkElement;
     }
 }

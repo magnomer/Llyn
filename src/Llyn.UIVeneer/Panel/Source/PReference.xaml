@@ -47,14 +47,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Grade.Title}">
-                    <local:PIconImage x:Name="PGradeIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PGradeIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PSurvey"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Source.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PGradeDropdown"
                     Width="238"
@@ -86,8 +85,7 @@
                 <TextBox
                     x:Name="PRummage"
                     Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Rummage.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PTrellisDropper"
@@ -95,7 +93,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Trellis.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PTrellisIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PTrellisIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PTrellisMark"
                             Width="6"
@@ -232,7 +230,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PReferenceBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PReferenceBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

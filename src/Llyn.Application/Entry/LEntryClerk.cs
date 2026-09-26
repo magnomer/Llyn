@@ -166,7 +166,7 @@ public sealed class LEntryClerk
 
     public static string LEntryGraspFormat(int step)
     {
-        return LLocalization.LLocalizationTextRead(LGrasp.LGraspKeyRead(step));
+        return LLocalization.QLocalizationTextRead(LGrasp.LGraspKeyRead(step));
     }
 
     public void LEntryGraspSet(long entryId, int grasp)

@@ -13,7 +13,7 @@ The constructor, the attach and the item fills do the wiring.
 
 Loads the view's markup from the Veneer and wears it as its content.
 The markup's name scope is copied onto the view, so its named parts answer `FindName`.
-It merges the contents dictionary and registers the styles of both for `PLook`.
+It merges the contents dictionary and registers the styles of both for `QLook`.
 It binds the etymon, playback and glyph commands and subscribes every event the markup named before.
 The volume slider binds two ways to the shared volume catalog, so every tray keeps one level.
 The contour's IPA binds to the pronunciation text, whichever form the chip prints.
@@ -51,7 +51,7 @@ The epithet keeps the en space its string format put before it.
 ## `private void PCompassApply(FrameworkElement container, object item, string? _)`
 
 Fills one contents row with its indent, number and name.
-The current row's tag reads `Chosen`, which `PLookDisplay` colours in the accent.
+The current row carries the `Chosen` cue, which `QLookDisplay` colours in the accent.
 The row's click is subscribed once to the contents dictionary's forwarder.
 
 ## `internal void PDisplayCardScroll(long id)`

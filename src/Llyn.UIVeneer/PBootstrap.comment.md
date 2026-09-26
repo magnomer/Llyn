@@ -12,6 +12,11 @@ The file is not named `App.xaml`, so no generated entry point competes with the 
 
 Merges the base theme dictionary once for every window.
 
+## `<sys:String x:Key="PIconRoot">pack://application:,,,/Llyn.UIVeneer;component/icons/</sys:String>`
+
+The folder the icon assets live in, under its contract ID.
+The deportment joins an icon name to it, so it never names the veneer itself.
+
 ## `<veneer:PWindow x:Key="PWindow" x:Shared="False" />`
 
 The main window under its contract ID.

@@ -100,17 +100,17 @@ public sealed class LTranscriptionItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PTranscriptionLabel") is TextBlock label)
         {
             label.Text = row.LTranscriptionItemLabel;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionText") is TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PTranscriptionText") is TextBlock text)
         {
             text.Text = row.LTranscriptionItemText;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PTranscriptionMeasure") is TextBlock measure)
+        if (QLook.QLookPartFind<TextBlock>(container, "PTranscriptionMeasure") is TextBlock measure)
         {
             LTranscriptionMeasureApply(measure, row.LTranscriptionItemText);
         }
@@ -143,6 +143,6 @@ public sealed class LTranscriptionItem : INotifyPropertyChanged
 
         return scheme.Length == 0
             ? string.Empty
-            : LLocalizationCatalog.LLocalizationTextFind(string.Concat("Scheme.", scheme)) ?? scheme;
+            : QLocalizationCatalog.QLocalizationTextFind(string.Concat("Scheme.", scheme)) ?? scheme;
     }
 }

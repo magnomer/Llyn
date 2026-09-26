@@ -81,28 +81,28 @@ public partial class PWindow
     internal LPortraitLabel PWindowLabelRead()
     {
         return new LPortraitLabel(
-            PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.MeaningSingle"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.MeaningPlural"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.CollocationSingle"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.Collocation"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.Translated"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.Note"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Form"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Paradigm"),
-            PLocalizationCatalog.PLocalizationTextRead("Frequency.Title"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Glyph"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.Script"),
-            PLocalizationCatalog.PLocalizationTextRead("Display.Fanqie"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Example"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Gloss"),
-            PLocalizationCatalog.PLocalizationTextRead("Reference.Title"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Mention"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Etymology"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Situation"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Register"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Translation"),
-            PLocalizationCatalog.PLocalizationTextRead("Portrait.Tag"));
+            QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.MeaningSingle"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.MeaningPlural"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.CollocationSingle"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Collocation"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Translated"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Note"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Form"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Paradigm"),
+            QLocalizationCatalog.QLocalizationTextRead("Frequency.Title"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Glyph"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Script"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Fanqie"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Example"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Gloss"),
+            QLocalizationCatalog.QLocalizationTextRead("Reference.Title"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Mention"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Etymology"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Situation"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Register"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Translation"),
+            QLocalizationCatalog.QLocalizationTextRead("Portrait.Tag"));
     }
 
     internal LPortraitLegend PWindowLegendRead(string realm)
@@ -110,23 +110,23 @@ public partial class PWindow
         Dictionary<LReferenceKind, string> kinds = [];
         foreach (LReferenceKind kind in System.Enum.GetValues<LReferenceKind>())
         {
-            kinds[kind] = PLocalizationCatalog.PLocalizationTextRead(LReference.LReferenceKindResolve(kind));
+            kinds[kind] = QLocalizationCatalog.QLocalizationTextRead(LReference.LReferenceKindResolve(kind));
         }
 
         return new LPortraitLegend(
-            PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-            PLocalizationCatalog.PLocalizationTextRead(realm == "Example" ? "Example.Unwritten" : realm + ".Untitled"),
-            PLocalizationCatalog.PLocalizationTextRead("Example.Unwritten"),
-            PLocalizationCatalog.PLocalizationTextRead(realm + ".UsageNone"),
-            PLocalizationCatalog.PLocalizationTextRead(realm + ".UsageOne"),
-            PLocalizationCatalog.PLocalizationTextRead(realm + ".UsageMany"),
-            PLocalizationCatalog.PLocalizationTextRead("Example.Translation"),
-            PLocalizationCatalog.PLocalizationTextRead("Reference.Title"),
-            PLocalizationCatalog.PLocalizationTextRead("Source.Author"),
-            PLocalizationCatalog.PLocalizationTextRead("Source.Year"),
-            PLocalizationCatalog.PLocalizationTextRead("Source.Url"),
-            PLocalizationCatalog.PLocalizationTextRead("Source.Note"),
-            PLocalizationCatalog.PLocalizationTextRead("Situation.Description"),
+            QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+            QLocalizationCatalog.QLocalizationTextRead(realm == "Example" ? "Example.Unwritten" : realm + ".Untitled"),
+            QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten"),
+            QLocalizationCatalog.QLocalizationTextRead(realm + ".UsageNone"),
+            QLocalizationCatalog.QLocalizationTextRead(realm + ".UsageOne"),
+            QLocalizationCatalog.QLocalizationTextRead(realm + ".UsageMany"),
+            QLocalizationCatalog.QLocalizationTextRead("Example.Translation"),
+            QLocalizationCatalog.QLocalizationTextRead("Reference.Title"),
+            QLocalizationCatalog.QLocalizationTextRead("Source.Author"),
+            QLocalizationCatalog.QLocalizationTextRead("Source.Year"),
+            QLocalizationCatalog.QLocalizationTextRead("Source.Url"),
+            QLocalizationCatalog.QLocalizationTextRead("Source.Note"),
+            QLocalizationCatalog.QLocalizationTextRead("Situation.Description"),
             kinds);
     }
 }

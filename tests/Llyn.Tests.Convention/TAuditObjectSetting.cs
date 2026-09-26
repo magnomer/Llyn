@@ -32,7 +32,6 @@ internal static class TAuditObjectSetting
         ["Llyn.UIDeportment.PCorpus"] = 9,
         ["Llyn.UIDeportment.PEditor"] = 29,
         ["Llyn.UIDeportment.PFavorite"] = 2,
-        ["Llyn.UIDeportment.PField"] = 2,
         ["Llyn.UIDeportment.PRepertoire"] = 7,
         ["Llyn.UIDeportment.PScreen"] = 5,
         ["Llyn.UIDeportment.PSentence"] = 3,

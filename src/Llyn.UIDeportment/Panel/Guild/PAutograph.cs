@@ -18,11 +18,13 @@ public class PAutograph : UserControl
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
 
+        PAutographName.SetResourceReference(QField.QFieldHintProperty, "Autograph.Name");
+        PAutographUnion.SetResourceReference(QField.QFieldHintProperty, "Autograph.UnionSearch");
         PAutographName.TextChanged += PAutographNameHandle;
         PAutographUnion.TextChanged += PAutographUnionHandle;
         PAutographUnionList.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PAutographUnionSelect));
 
-        PLookItem.PLookItemAttach(PAutographUnionList, PRollItem.PRollItemApply);
+        QLookItem.QLookItemAttach(PAutographUnionList, PRollItem.PRollItemApply);
     }
 
     private TextBox PAutographName => (TextBox)FindName(nameof(PAutographName));
@@ -57,8 +59,8 @@ public class PAutograph : UserControl
 
     internal void PAutographModeUpdate()
     {
-        PAutographUnionBody.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildUnionShown);
-        PAutographUnionNotice.Visibility = PLook.PLookVisibleRead(!_lGuild.LGuildUnionShown);
+        PAutographUnionBody.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildUnionShown);
+        PAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_lGuild.LGuildUnionShown);
     }
 
     private void PAutographObserverAttach(LDesk desk)
@@ -92,6 +94,6 @@ public class PAutograph : UserControl
 
     private void PAutographUnionSelect(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildUnionSelect(PSender.PSenderSourceRead<PRollItem>(e)?.PRollItemId);
+        _lGuild.LGuildUnionSelect(QSender.QSenderSourceRead<PRollItem>(e)?.PRollItemId);
     }
 }

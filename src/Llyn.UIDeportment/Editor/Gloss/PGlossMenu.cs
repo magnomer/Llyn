@@ -33,8 +33,8 @@ public partial class PEditor
     private void PSpeakerAttach()
     {
         PLanguageList.ItemsSource = _pLanguageItem;
-        PLookItem.PLookItemAttach(PLanguageList, PSpeakerApply);
-        PChoice.PChoiceDropperAttach(PSpeaker, PLanguage, PSpeaker);
+        QLookItem.QLookItemAttach(PLanguageList, PSpeakerApply);
+        QChoice.QChoiceDropperAttach(PSpeaker, PLanguage, PSpeaker);
     }
 
     internal async void PSpeakerLoad()
@@ -62,12 +62,12 @@ public partial class PEditor
         PLanguageItem.PLanguageItemApply(container, item, change);
 
         if (item is PLanguageItem language
-            && PLook.PLookPartFind<Ellipse>(container, "PSpeakerGlobe") is Ellipse globe)
+            && QLook.QLookPartFind<Ellipse>(container, "PSpeakerGlobe") is Ellipse globe)
         {
-            globe.Visibility = PLook.PLookVisibleRead(language.PLanguageItemFlag is null);
+            globe.Visibility = QLook.QLookVisibleRead(language.PLanguageItemFlag is null);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
+        if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
         {
             choice.Click -= _pLanguageTemplate.PSpeakerHandle;
             choice.Click += _pLanguageTemplate.PSpeakerHandle;

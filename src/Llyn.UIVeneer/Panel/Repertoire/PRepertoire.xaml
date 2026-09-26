@@ -48,7 +48,7 @@
                 Grid.Column="0"
                 Style="{StaticResource Theme.Search.Dropper}"
                 ToolTip="{DynamicResource Tier.Title}">
-                <local:PIconImage x:Name="PTierIcon" Width="24" Height="24" />
+                <local:QIconImage x:Name="PTierIcon" Width="24" Height="24" />
             </ToggleButton>
             <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
             <Popup
@@ -67,8 +67,7 @@
             <TextBox
                 x:Name="PInquest"
                 Grid.Column="2"
-                Style="{StaticResource Theme.Search.Field}"
-                Tag="{DynamicResource Situation.Search}" />
+                Style="{StaticResource Theme.Search.Field}" />
             </Grid>
         </Border>
 
@@ -87,8 +86,7 @@
                 <TextBox
                     x:Name="PSortie"
                     Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Sortie.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PMeshDropper"
@@ -96,7 +94,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Mesh.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PMeshIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PMeshIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PMeshMark"
                             Width="6"
@@ -204,7 +202,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <local:PIconImage
+                                    <local:QIconImage
                                         x:Name="PAtlasIcon"
                                         Grid.Column="0"
                                         Width="16"
@@ -370,13 +368,13 @@
                                     <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
                                         <StackPanel Orientation="Horizontal">
                                             <Button x:Name="PScenarioPicture" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
-                                                <local:PIconImage x:Name="PScenarioPictureIcon" Width="24" Height="24" />
+                                                <local:QIconImage x:Name="PScenarioPictureIcon" Width="24" Height="24" />
                                             </Button>
 
                                             <Rectangle Style="{StaticResource Theme.Command.Divider}" />
 
                                             <Button x:Name="PScenarioFilm" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
-                                                <local:PIconImage x:Name="PScenarioFilmIcon" Width="24" Height="24" />
+                                                <local:QIconImage x:Name="PScenarioFilmIcon" Width="24" Height="24" />
                                             </Button>
                                         </StackPanel>
                                     </Border>
@@ -394,7 +392,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PRepertoireBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PRepertoireBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

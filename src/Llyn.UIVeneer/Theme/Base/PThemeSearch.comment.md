@@ -34,4 +34,12 @@ The mark is left out when no icon is named.
 The label is left out when no content is named, so the control stands as a square mark alone.
 An open panel is shown by the soft accent ground the mode buttons use.
 The fold is a state and not an action.
-`PLook` in the deportment leaves out the mark and label and switches every look.
+`QLook` in the deportment leaves out the mark and label and switches every look.
+
+## `<Thickness x:Key="Theme.Search.Helper.MarkInset">0</Thickness>`
+
+The icon margin of a helper that carries no label, so the icon sits centred.
+
+## `<Thickness x:Key="Theme.Search.Helper.MuteInset">11,0,11,0</Thickness>`
+
+The padding of a helper that carries no label, even on both sides of its icon.

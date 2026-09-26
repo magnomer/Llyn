@@ -7,6 +7,6 @@ public sealed class PReflexList : ItemsControl
 {
     protected override AutomationPeer OnCreateAutomationPeer()
     {
-        return new PSurfacePeer(this);
+        return new QSurfacePeer(this);
     }
 }

@@ -17,4 +17,4 @@ Editing is the gesture on the text.
 
 Fills one chip of `Theme.Mention.Chip`: the word, the headword, the sense and the remove button.
 The button takes the unlink command with the chip as its parameter, and its cross icon.
-Every chip line attaches it through `PLookItem.PLookItemAttach`.
+Every chip line attaches it through `QLookItem.QLookItemAttach`.

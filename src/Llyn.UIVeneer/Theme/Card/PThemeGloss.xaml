@@ -63,7 +63,7 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Content">
             <Setter.Value>
-                <local:PIconImage Width="12" Height="12" />
+                <local:QIconImage Width="12" Height="12" />
             </Setter.Value>
         </Setter>
     </Style>

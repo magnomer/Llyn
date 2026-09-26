@@ -68,29 +68,29 @@ internal sealed class PKindredItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PKindredRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PKindredRow") is Button row)
         {
             if (kindred.PKindredItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PKindredFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PKindredFlag") is Image flag)
         {
             flag.Source = kindred.PKindredItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PKindredName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PKindredName") is Run name)
         {
             name.Text = kindred.PKindredItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PKindredEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PKindredEpithet") is Run epithet)
         {
             epithet.Text = " " + kindred.PKindredItemEpithet;
         }

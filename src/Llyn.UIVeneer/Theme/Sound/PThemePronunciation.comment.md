@@ -44,7 +44,7 @@ They are set in the muted ink, so they frame the reading without competing with 
 ## `<Style x:Key="Theme.Pronunciation.Flag" TargetType="Image">`
 
 The variety flag before the brackets.
-A `PLook` row in `PLookSound.cs` collapses it while no flag is set.
+A `QLook` row in `QLookSound.cs` collapses it while no flag is set.
 It is the size the lookup menu draws a flag at, so a taken reading keeps its flag's size.
 Its fourteen pixels center on a half pixel in the row, which rounds a pixel low.
 One pixel under it makes the slot even, so the flag's middle meets the bracket's middle.
@@ -52,7 +52,7 @@ One pixel under it makes the slot even, so the flag's middle meets the bracket's
 ## `<Style x:Key="Theme.Pronunciation.Label" TargetType="TextBlock">`
 
 The variety name before the brackets, in the small muted face.
-A `PLook` row collapses it while blank.
+A `QLook` row collapses it while blank.
 It stands in where the pack draws no flags or none resolves.
 
 ## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`

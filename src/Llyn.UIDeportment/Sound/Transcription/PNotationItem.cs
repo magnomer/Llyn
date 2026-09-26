@@ -87,27 +87,27 @@ internal sealed class PNotationItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PNotationSource") is TextBlock source)
+        if (QLook.QLookPartFind<TextBlock>(container, "PNotationSource") is TextBlock source)
         {
             source.Text = notation.PNotationItemSource;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PNotationReadingList") is ItemsControl list)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PNotationReadingList") is ItemsControl list)
         {
-            list.Visibility = PLook.PLookVisibleRead(notation.PNotationItemReady);
+            list.Visibility = QLook.QLookVisibleRead(notation.PNotationItemReady);
             if (!ReferenceEquals(list.ItemsSource, notation.PNotationItemReading))
             {
                 list.ItemsSource = notation.PNotationItemReading;
             }
 
-            PLookItem.PLookItemAttach(
+            QLookItem.QLookItemAttach(
                 list, (reading, row, _) => PNotationReading.PNotationReadingApply(reading, row, select));
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PNotationNote") is TextBlock note)
+        if (QLook.QLookPartFind<TextBlock>(container, "PNotationNote") is TextBlock note)
         {
             note.Text = notation.PNotationItemNotice;
-            note.Visibility = PLook.PLookVisibleRead(!notation.PNotationItemReady);
+            note.Visibility = QLook.QLookVisibleRead(!notation.PNotationItemReady);
         }
     }
 }

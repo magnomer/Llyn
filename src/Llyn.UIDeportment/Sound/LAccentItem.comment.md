@@ -45,7 +45,7 @@ Whether the row holds audio, so its play button shows.
 
 Fills a row of `Theme.Accent.Row` or `Theme.Accent.Display`: flag, variety name, brackets, text and play button.
 The editor row's text shows the placeholder in the muted colour while the row is blank.
-It also tags the editor row's reading cell with the field order and its slot with `Theme.Accent.Slot`.
+It also gives the editor row's reading cell its `QFieldCell` order and tags its slot with `Theme.Accent.Slot`.
 Those order strings live here, so the Veneer markup carries none.
 It runs again on every change the row raises, so a typed pronunciation or a new flag shows at once.
 

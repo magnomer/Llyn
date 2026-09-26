@@ -122,12 +122,12 @@ public sealed class LLibrary
         ArgumentNullException.ThrowIfNull(dropper);
 
         dropper.IsChecked = false;
-        LLibraryOrderSet(LChoice.LChoiceOrderRead(sender));
+        LLibraryOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     public void LLibrarySieveHandle(Panel list, UIElement mark)
     {
-        LLibrarySieveSet(LChoice.LChoiceFilterRead(list));
+        LLibrarySieveSet(QChoice.QChoiceFilterRead(list));
         LLibrarySieveShow(mark);
     }
 

@@ -11,7 +11,7 @@ public partial class PSettings
     {
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
-            Title = PLocalizationCatalog.PLocalizationTextRead("Settings.Workspace"),
+            Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Workspace"),
             InitialDirectory = PSettingsWindow.LWindowWorkspaceRead()
         };
 

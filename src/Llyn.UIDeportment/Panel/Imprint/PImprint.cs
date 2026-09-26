@@ -23,12 +23,12 @@ public class PImprint : UserControl, PChronicleHost
             new Uri("/Llyn.UIVeneer;component/Panel/Imprint/PImprint.xaml", UriKind.Relative));
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
-        PLook.PLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface.Resources);
 
         _pBylineTemplate = new PBylineTemplate(this);
         Resources.MergedDictionaries.Add(_pBylineTemplate);
 
-        PImprintKindIcon.PIconSource = PIcon.PIconResolve("expand", 12);
+        PImprintKindIcon.QIconSource = QIcon.QIconResolve("expand", 12);
 
         PImprintTitle.TextChanged += PImprintTitleHandle;
         PImprintYear.TextChanged += PImprintYearHandle;
@@ -43,18 +43,18 @@ public class PImprint : UserControl, PChronicleHost
         PAuthorCredit.MouseLeave += (_, _) => PAuthorShelfUpdate();
         PAuthorCredit.IsKeyboardFocusWithinChanged += (_, _) => PAuthorShelfUpdate();
 
-        PChoice.PChoiceDropperAttach(PImprintKind, PImprintKindMenu, PImprintKind);
+        QChoice.QChoiceDropperAttach(PImprintKind, PImprintKindMenu, PImprintKind);
 
         PAuthorCredit.ItemsSource = _pAuthorList;
-        PByline.CustomPopupPlacementCallback = PField.PFieldPopupPlace;
-        PChoice.PChoiceMenuBuild(PImprintKindList, PImprintKindHandle);
+        PByline.CustomPopupPlacementCallback = QField.QFieldPopupPlace;
+        QChoice.QChoiceMenuBuild(PImprintKindList, PImprintKindHandle, LReference.LReferenceKindMenu);
 
-        PLookItem.PLookItemAttach(PAuthorCredit, (container, item, change) =>
+        QLookItem.QLookItemAttach(PAuthorCredit, (container, item, change) =>
         {
             PAuthorItem.PAuthorItemApply(container, item, change);
             PAuthorShelfUpdate();
         });
-        PLookItem.PLookItemAttach(
+        QLookItem.QLookItemAttach(
             PBylineList,
             (container, item, _) =>PBylineItem.PBylineItemApply(container, item, _pBylineTemplate.PBylineHandle));
     }
@@ -65,7 +65,7 @@ public class PImprint : UserControl, PChronicleHost
 
     private TextBlock PImprintKindName => (TextBlock)FindName(nameof(PImprintKindName));
 
-    private PIconImage PImprintKindIcon => (PIconImage)FindName(nameof(PImprintKindIcon));
+    private QIconImage PImprintKindIcon => (QIconImage)FindName(nameof(PImprintKindIcon));
 
     private Popup PImprintKindMenu => (Popup)FindName(nameof(PImprintKindMenu));
 
@@ -107,13 +107,13 @@ public class PImprint : UserControl, PChronicleHost
     internal void PImprintClear()
     {
         PImprintTitle.Text = string.Empty;
-        PImprintTitle.SetResourceReference(TagProperty, "Source.Untitled");
+        PImprintTitle.SetResourceReference(QField.QFieldHintProperty, "Source.Untitled");
         PImprintYear.Text = string.Empty;
-        PImprintYear.SetResourceReference(TagProperty, "Source.Year");
+        PImprintYear.SetResourceReference(QField.QFieldHintProperty, "Source.Year");
         PImprintUrl.Text = string.Empty;
-        PImprintUrl.SetResourceReference(TagProperty, "Source.Url");
+        PImprintUrl.SetResourceReference(QField.QFieldHintProperty, "Source.Url");
         PImprintNote.Text = string.Empty;
-        PImprintNote.SetResourceReference(TagProperty, "Source.Note");
+        PImprintNote.SetResourceReference(QField.QFieldHintProperty, "Source.Note");
         PImprintKindShow(
             LReference.LReferenceKindResolve(LReferenceKind.LReferenceKindUnspecified),
             LReference.LReferenceKindFormat(LReferenceKind.LReferenceKindUnspecified));
@@ -150,13 +150,13 @@ public class PImprint : UserControl, PChronicleHost
     {
         LReference reference = _lImprint.LImprintReferenceRead(draft);
         PImprintTitle.Text = reference.LReferenceTitle.LStateValueShow();
-        PImprintTitle.SetResourceReference(TagProperty, reference.LReferenceTitleHint);
+        PImprintTitle.SetResourceReference(QField.QFieldHintProperty, reference.LReferenceTitleHint);
         PImprintYear.Text = reference.LReferenceYear.LStateValueShow();
-        PImprintYear.SetResourceReference(TagProperty, reference.LReferenceYearHint);
+        PImprintYear.SetResourceReference(QField.QFieldHintProperty, reference.LReferenceYearHint);
         PImprintUrl.Text = reference.LReferenceUrl.LStateValueShow();
-        PImprintUrl.SetResourceReference(TagProperty, reference.LReferenceUrlHint);
+        PImprintUrl.SetResourceReference(QField.QFieldHintProperty, reference.LReferenceUrlHint);
         PImprintNote.Text = reference.LReferenceNote.LStateValueShow();
-        PImprintNote.SetResourceReference(TagProperty, reference.LReferenceNoteHint);
+        PImprintNote.SetResourceReference(QField.QFieldHintProperty, reference.LReferenceNoteHint);
         PImprintKindShow(reference.LReferenceKindKey, reference.LReferenceKindTag);
         PImprintTallyShow();
     }
@@ -164,7 +164,7 @@ public class PImprint : UserControl, PChronicleHost
     private void PImprintKindShow(string key, string tag)
     {
         PImprintKindName.SetResourceReference(TextBlock.TextProperty, key);
-        PChoice.PChoiceMenuApply(PImprintKindList, tag);
+        QChoice.QChoiceMenuApply(PImprintKindList, tag);
     }
 
     private void PAuthorUpdate()
@@ -174,7 +174,7 @@ public class PImprint : UserControl, PChronicleHost
             PAuthorItem.PAuthorItemBuild(_lImprint.LImprintCreditRead(), _lImprint.LImprintBlankAt),
             PAuthorItem.PAuthorItemMatch,
             PAuthorItem.PAuthorItemSync);
-        PAuthorNotice.Visibility = PLook.PLookVisibleRead(!_lImprint.LImprintHeld);
+        PAuthorNotice.Visibility = QLook.QLookVisibleRead(!_lImprint.LImprintHeld);
     }
 
     private void PAuthorShelfUpdate()
@@ -183,7 +183,7 @@ public class PImprint : UserControl, PChronicleHost
         foreach (object item in PAuthorCredit.Items)
         {
             if (PAuthorCredit.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container
-                && PLook.PLookPartFind<FrameworkElement>(container, "PAuthorShelf") is FrameworkElement shelf)
+                && QLook.QLookPartFind<FrameworkElement>(container, "PAuthorShelf") is FrameworkElement shelf)
             {
                 shelf.Opacity = shown ? 1 : 0;
                 shelf.IsHitTestVisible = shown;
@@ -193,7 +193,7 @@ public class PImprint : UserControl, PChronicleHost
 
     private void PAuthorFocusDefer()
     {
-        PField.PFieldFocusDefer(PAuthorCredit, PAuthorItem.PAuthorItemFind(_pAuthorList));
+        QField.QFieldFocusDefer(PAuthorCredit, PAuthorItem.PAuthorItemFind(_pAuthorList));
     }
 
     private void PAuthorRestore()
@@ -204,7 +204,7 @@ public class PImprint : UserControl, PChronicleHost
     private void PBylineUpdate()
     {
         PBylineList.ItemsSource = PBylineItem.PBylineItemBuild(_lImprint.LBylineRowsRead(), _lImprint.LBylineWord);
-        PByline.PlacementTarget = PField.PFieldSurfaceFind(Keyboard.FocusedElement);
+        PByline.PlacementTarget = QField.QFieldSurfaceFind(Keyboard.FocusedElement);
         PBylineFrame.MinWidth = (PByline.PlacementTarget as FrameworkElement)?.ActualWidth ?? 0;
         PByline.IsOpen = _lImprint.LBylineShown;
         PBylineList.SelectedIndex = _lImprint.LBylineIndex;
@@ -234,7 +234,7 @@ public class PImprint : UserControl, PChronicleHost
     private void PImprintKindHandle(object sender, RoutedEventArgs e)
     {
         PImprintKind.IsChecked = false;
-        _lImprint.LImprintKindSet(PSender.PSenderTagRead(sender));
+        _lImprint.LImprintKindSet(QSender.QSenderTagRead(sender));
     }
 
     private void PAuthorCreditHandle(object sender, RoutedEventArgs e)
@@ -249,8 +249,8 @@ public class PImprint : UserControl, PChronicleHost
         };
         _lImprint.LImprintCreditApply(
             action,
-            PSender.PSenderSourceRead<PAuthorItem>(e)?.PAuthorItemPosition,
-            PSender.PSenderSourceRead<PAuthorItem>(e)?.PAuthorItemId);
+            QSender.QSenderSourceRead<PAuthorItem>(e)?.PAuthorItemPosition,
+            QSender.QSenderSourceRead<PAuthorItem>(e)?.PAuthorItemId);
     }
 
     private void PAuthorTextHandle(object sender, TextChangedEventArgs e)
@@ -263,9 +263,9 @@ public class PImprint : UserControl, PChronicleHost
     private void PAuthorKeyHandle(object sender, KeyEventArgs e)
     {
         e.Handled = _lImprint.LImprintKeyApply(
-            PSender.PSenderKeyRead(e),
-            PSender.PSenderSourceRead<PAuthorItem>(e)?.PAuthorItemPosition,
-            PSender.PSenderSourceRead<PAuthorItem>(e)?.PAuthorItemId,
+            QSender.QSenderKeyRead(e),
+            QSender.QSenderSourceRead<PAuthorItem>(e)?.PAuthorItemPosition,
+            QSender.QSenderSourceRead<PAuthorItem>(e)?.PAuthorItemId,
             (e.OriginalSource as TextBox)?.Text,
             PBylineItem.PBylineItemRead(PBylineList.SelectedItem));
     }
@@ -279,9 +279,9 @@ public class PImprint : UserControl, PChronicleHost
     internal void PBylineHandle(object sender, MouseButtonEventArgs e)
     {
         _lImprint.LBylineSelect(
-            PSender.PSenderItemRead<PBylineItem>(sender)?.PBylineItemId,
-            PSender.PSenderFocusRead<PAuthorItem>()?.PAuthorItemPosition,
-            PSender.PSenderFocusRead<PAuthorItem>()?.PAuthorItemId);
+            QSender.QSenderItemRead<PBylineItem>(sender)?.PBylineItemId,
+            QSender.QSenderFocusRead<PAuthorItem>()?.PAuthorItemPosition,
+            QSender.QSenderFocusRead<PAuthorItem>()?.PAuthorItemId);
         e.Handled = true;
     }
 }

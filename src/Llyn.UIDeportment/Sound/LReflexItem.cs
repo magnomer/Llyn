@@ -239,7 +239,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PReflexSurface") is Border surface)
+        if (QLook.QLookPartFind<Border>(container, "PReflexSurface") is Border surface)
         {
             surface.Visibility = row.LReflexItemHidden ? Visibility.Hidden : Visibility.Visible;
             if (row.LReflexItemHidden)
@@ -252,7 +252,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
             }
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PReflexLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PReflexLabel") is TextBlock label)
         {
             label.Text = row.LReflexItemLabel;
             label.ToolTip = row.LReflexItemArea.Length > 0 ? row.LReflexItemArea : null;
@@ -265,35 +265,37 @@ public sealed class LReflexItem : INotifyPropertyChanged
         LReflexTextApply(container, "PReflexMeaning", row.LReflexItemMeaning, false);
         LReflexTextApply(container, "PReflexNote", row.LReflexItemNote, false);
         LReflexTextApply(container, "PReflexAnchor", row.LReflexItemAnchor, false);
-        Grid? cell = PLook.PLookPartFind<Grid>(container, "PReflexCell");
+        Grid? cell = QLook.QLookPartFind<Grid>(container, "PReflexCell");
         if (cell is not null)
         {
-            cell.Tag = row.LReflexItemMain
-                ? "Theme.Reflex.Lead LReflexItemText Input.Reflex"
-                : "Theme.Reflex.Field LReflexItemText Input.Reflex";
-            (string, string)[] asides =
+            cell.SetValue(
+                QField.QFieldCellProperty,
+                row.LReflexItemMain
+                    ? new QField.QFieldCell("Theme.Reflex.Lead", "LReflexItemText", "Input.Reflex")
+                    : new QField.QFieldCell("Theme.Reflex.Field", "LReflexItemText", "Input.Reflex"));
+            (string, QField.QFieldCell)[] asides =
             [
-                ("PReflexLabel", "Theme.Reflex.Name LReflexItemHead"),
-                ("PReflexTag", "Theme.Reflex.Name LReflexItemKind"),
-                ("PReflexRomanization", "Theme.Reflex.Aside LReflexItemRomanization"),
-                ("PReflexMeaning", "Theme.Reflex.Aside LReflexItemMeaning Input.Meaning"),
-                ("PReflexNote", "Theme.Reflex.Aside LReflexItemNote"),
+                ("PReflexLabel", new("Theme.Reflex.Name", "LReflexItemHead", null)),
+                ("PReflexTag", new("Theme.Reflex.Name", "LReflexItemKind", null)),
+                ("PReflexRomanization", new("Theme.Reflex.Aside", "LReflexItemRomanization", null)),
+                ("PReflexMeaning", new("Theme.Reflex.Aside", "LReflexItemMeaning", "Input.Meaning")),
+                ("PReflexNote", new("Theme.Reflex.Aside", "LReflexItemNote", null)),
             ];
-            foreach ((string name, string order) in asides)
+            foreach ((string name, QField.QFieldCell order) in asides)
             {
-                if (PLook.PLookPartFind<TextBlock>(container, name)?.Parent is Grid aside)
+                if (QLook.QLookPartFind<TextBlock>(container, name)?.Parent is Grid aside)
                 {
-                    aside.Tag = order;
+                    aside.SetValue(QField.QFieldCellProperty, order);
                 }
             }
 
-            if (PLook.PLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
+            if (QLook.QLookPartFind<ContentControl>(container, "PAccentShelf") is ContentControl shelf)
             {
                 shelf.Tag = "Theme.Reflex.Control";
             }
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PReflexText") is TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PReflexText") is TextBlock text)
         {
             if (cell is null)
             {
@@ -301,21 +303,21 @@ public sealed class LReflexItem : INotifyPropertyChanged
             }
             else
             {
-                string? ink = PLook.PLookFirstRead<string?>(row.LReflexItemMain, "Theme.Accent", null);
-                PLook.PLookPromptApply(text, row.LReflexItemText, "Input.Reflex", ink);
+                string? ink = QLook.QLookFirstRead<string?>(row.LReflexItemMain, "Theme.Accent", null);
+                QLook.QLookPromptApply(text, row.LReflexItemText, "Input.Reflex", ink);
             }
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PReflexAnchoring") is Button anchoring)
+        if (QLook.QLookPartFind<Button>(container, "PReflexAnchoring") is Button anchoring)
         {
-            anchoring.Visibility = PLook.PLookVisibleRead(row.LReflexItemAnchorable);
+            anchoring.Visibility = QLook.QLookVisibleRead(row.LReflexItemAnchorable);
             anchoring.Content = row.LReflexItemAnchor;
         }
     }
 
     private static void LReflexTextApply(FrameworkElement container, string name, string text, bool main)
     {
-        if (PLook.PLookPartFind<TextBlock>(container, name) is not TextBlock block)
+        if (QLook.QLookPartFind<TextBlock>(container, name) is not TextBlock block)
         {
             return;
         }
@@ -406,7 +408,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
 
         return name.Length == 0
             ? string.Empty
-            : LLocalizationCatalog.LLocalizationTextFind(string.Concat("Reflex.", name)) ?? name;
+            : QLocalizationCatalog.QLocalizationTextFind(string.Concat("Reflex.", name)) ?? name;
     }
 
     public static HashSet<string> LReflexFoldRead(LWindow window, string language)

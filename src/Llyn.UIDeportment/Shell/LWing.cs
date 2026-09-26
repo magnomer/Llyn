@@ -82,12 +82,12 @@ public sealed class LWing
         ArgumentNullException.ThrowIfNull(dropper);
 
         dropper.IsChecked = false;
-        LWingOrderSet(LChoice.LChoiceOrderRead(sender));
+        LWingOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     public void LWingSieveHandle(Panel list, UIElement mark)
     {
-        LWingSieveSet(LChoice.LChoiceFilterRead(list));
+        LWingSieveSet(QChoice.QChoiceFilterRead(list));
         LWingSieveShow(mark);
     }
 

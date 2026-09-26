@@ -26,14 +26,14 @@ public static class LFrequencyLabel
 
         LFrequencyLabelShow(name, band, LDisplay.LDisplayBandResolve(rows));
         chip.ToolTip = LDisplay.LDisplaySourceFormat(
-            rows, LLocalizationCatalog.LLocalizationTextRead("Frequency.Once"));
+            rows, QLocalizationCatalog.QLocalizationTextRead("Frequency.Once"));
         section.Visibility = Visibility.Visible;
     }
 
     private static void LFrequencyLabelShow(TextBlock name, TextBlock band, int count)
     {
         string brush = LDisplay.LDisplayBandRead(count, "Theme.Frequency.");
-        name.Text = LLocalizationCatalog.LLocalizationTextRead(LDisplay.LDisplayBandRead(count, "Frequency."));
+        name.Text = QLocalizationCatalog.QLocalizationTextRead(LDisplay.LDisplayBandRead(count, "Frequency."));
         name.SetResourceReference(TextBlock.ForegroundProperty, brush);
 
         band.Inlines.Clear();

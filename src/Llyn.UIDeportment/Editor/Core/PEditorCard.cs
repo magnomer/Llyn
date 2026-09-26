@@ -128,7 +128,7 @@ public partial class PEditor
             return;
         }
 
-        string field = PField.PFieldPathRead(box);
+        string field = QField.QFieldPathRead(box);
         LStateWritten written = new(box.Text);
         switch (box.DataContext)
         {

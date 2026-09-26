@@ -23,8 +23,8 @@ public partial class PCorpus : UserControl, PChronicleHost
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
         _pCorpusTranscript = new PCorpusTranscript(this);
         Resources.MergedDictionaries.Add(_pCorpusTranscript);
-        PLook.PLookStyleAttach(surface.Resources);
-        PLook.PLookStyleAttach(Resources);
+        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(Resources);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PCorpusPressHandle, PCorpusPressCheck));
         CommandBindings.Add(new CommandBinding(
@@ -41,27 +41,30 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscript.CommandBindings.Add(new CommandBinding(
             PMentionCommand.PMentionCommandUnlink, PTranscriptUnlinkHandle, PTranscriptUnlinkCheck));
 
-        PChoice.PChoiceDropperAttach(PRankDropper, PRankDropdown, PRank);
-        PChoice.PChoiceDropperAttach(PGauzeDropper, PGauzeDropdown, PGauzeDropper);
-        PChoice.PChoiceDropperAttach(PSpeaker, PLanguage, PSpeaker);
+        QChoice.QChoiceDropperAttach(PRankDropper, PRankDropdown, PRank);
+        QChoice.QChoiceDropperAttach(PGauzeDropper, PGauzeDropdown, PGauzeDropper);
+        QChoice.QChoiceDropperAttach(PSpeaker, PLanguage, PSpeaker);
 
-        PRankIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PGauzeIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PSpeakerIcon.PIconSource = PIcon.PIconResolve("expand", 12);
-        PCorpusBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PCorpusFresh.Tag = PIcon.PIconResolve("new", 24);
-        PCorpusStore.Tag = PIcon.PIconResolve("save", 24);
-        PCorpusEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PCorpusLater.Tag = PIcon.PIconResolve("advance", 24);
-        PCorpusBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PCorpusForward.Tag = PIcon.PIconResolve("redo", 24);
-        PCorpusPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PCorpusPress.Tag = PIcon.PIconResolve("print", 24);
-        PCorpusViewer.Tag = PIcon.PIconResolve("view", 24);
-        PCorpusScribe.Tag = PIcon.PIconResolve("edit", 24);
-        if (PTranscriptAddition.Content is PIconImage addition)
+        PRankIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PGauzeIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PSpeakerIcon.QIconSource = QIcon.QIconResolve("expand", 12);
+        PCorpusBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PQuery.SetResourceReference(QField.QFieldHintProperty, "Example.Search");
+        PDredge.SetResourceReference(QField.QFieldHintProperty, "Dredge.Search");
+        PTranscriptSeedField.SetResourceReference(QField.QFieldHintProperty, "Example.Translation");
+        PCorpusFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PCorpusStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PCorpusEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PCorpusLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PCorpusBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PCorpusForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PCorpusPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PCorpusPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PCorpusViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PCorpusScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
+        if (PTranscriptAddition.Content is QIconImage addition)
         {
-            addition.PIconSource = PIcon.PIconResolve("add", 12);
+            addition.QIconSource = QIcon.QIconResolve("add", 12);
         }
 
         PQuery.TextChanged += PQueryHandle;
@@ -83,17 +86,17 @@ public partial class PCorpus : UserControl, PChronicleHost
         PCorpusBin.Click += PCorpusBinHandle;
         PTranscriptAddition.Click += PGlossAddHandle;
 
-        PLookItem.PLookItemAttach(PAnthology, PAnthologyApply);
-        PLookItem.PLookItemAttach(PQuotation, PQuotationApply);
-        PLookItem.PLookItemAttach(PCitationList, PCitationApply);
-        PLookItem.PLookItemAttach(PLanguageList, PSpeakerApply);
+        QLookItem.QLookItemAttach(PAnthology, PAnthologyApply);
+        QLookItem.QLookItemAttach(PQuotation, PQuotationApply);
+        QLookItem.QLookItemAttach(PCitationList, PCitationApply);
+        QLookItem.QLookItemAttach(PLanguageList, PSpeakerApply);
     }
 
     private Border PRank => (Border)FindName(nameof(PRank));
 
     private ToggleButton PRankDropper => (ToggleButton)FindName(nameof(PRankDropper));
 
-    private PIconImage PRankIcon => (PIconImage)FindName(nameof(PRankIcon));
+    private QIconImage PRankIcon => (QIconImage)FindName(nameof(PRankIcon));
 
     private TextBox PQuery => (TextBox)FindName(nameof(PQuery));
 
@@ -105,7 +108,7 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private ToggleButton PGauzeDropper => (ToggleButton)FindName(nameof(PGauzeDropper));
 
-    private PIconImage PGauzeIcon => (PIconImage)FindName(nameof(PGauzeIcon));
+    private QIconImage PGauzeIcon => (QIconImage)FindName(nameof(PGauzeIcon));
 
     private FrameworkElement PGauzeMark => (FrameworkElement)FindName(nameof(PGauzeMark));
 
@@ -185,7 +188,7 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private TextBlock PSpeakerName => (TextBlock)FindName(nameof(PSpeakerName));
 
-    private PIconImage PSpeakerIcon => (PIconImage)FindName(nameof(PSpeakerIcon));
+    private QIconImage PSpeakerIcon => (QIconImage)FindName(nameof(PSpeakerIcon));
 
     private Popup PLanguage => (Popup)FindName(nameof(PLanguage));
 
@@ -211,7 +214,7 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private Button PCorpusBin => (Button)FindName(nameof(PCorpusBin));
 
-    private PIconImage PCorpusBinIcon => (PIconImage)FindName(nameof(PCorpusBinIcon));
+    private QIconImage PCorpusBinIcon => (QIconImage)FindName(nameof(PCorpusBinIcon));
 
     internal void PCorpusAttach(PWindow host)
     {
@@ -233,9 +236,9 @@ public partial class PCorpus : UserControl, PChronicleHost
         PTranscriptMentionLine.ItemsSource = _pTranscriptChip.PMentionLineChip;
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
-        PLookItem.PLookItemAttach(PTranscriptMentionLine, PMentionChip.PMentionChipApply);
-        PLookItem.PLookItemAttach(PTranscriptGlossLine, PTranscriptGlossApply);
-        PLookItem.PLookItemAttach(PExcerptGloss, PGloss.PGlossRowApply);
+        QLookItem.QLookItemAttach(PTranscriptMentionLine, PMentionChip.PMentionChipApply);
+        QLookItem.QLookItemAttach(PTranscriptGlossLine, PTranscriptGlossApply);
+        QLookItem.QLookItemAttach(PExcerptGloss, PGloss.PGlossRowApply);
 
         PDisplay.PDisplayAttach(host, editor.LEditorLectern);
         PEditor.PEditorAttach(host, editor);
@@ -272,16 +275,16 @@ public partial class PCorpus : UserControl, PChronicleHost
 
     private void PCorpusModeUpdate()
     {
-        PTranscript.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusTranscriptShown);
-        PExcerpt.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptShown);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusDisplayShown);
-        PEditor.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusEditorShown);
-        PExcerptBody.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptHeld);
-        PExcerptUnselected.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusExcerptBlank);
-        PCorpusViewer.IsChecked = PLook.PLookCheckedRead(_lCorpus.LCorpusViewerChecked);
-        PCorpusScribe.IsChecked = PLook.PLookCheckedRead(_lCorpus.LCorpusScribeChecked);
-        PCorpusVoyage.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusViewerChecked);
-        PCorpusChronicle.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusScribeChecked);
+        PTranscript.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusTranscriptShown);
+        PExcerpt.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptShown);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusDisplayShown);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusEditorShown);
+        PExcerptBody.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptHeld);
+        PExcerptUnselected.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptBlank);
+        PCorpusViewer.IsChecked = QLook.QLookCheckedRead(_lCorpus.LCorpusViewerChecked);
+        PCorpusScribe.IsChecked = QLook.QLookCheckedRead(_lCorpus.LCorpusScribeChecked);
+        PCorpusVoyage.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusViewerChecked);
+        PCorpusChronicle.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusScribeChecked);
         PCorpusMode.IsEnabled = _lCorpus.LCorpusModeEnabled;
         PCorpusBin.IsEnabled = _lCorpus.LCorpusBinEnabled;
         PCorpusStore.IsEnabled = _lCorpus.LCorpusStoreEnabled;

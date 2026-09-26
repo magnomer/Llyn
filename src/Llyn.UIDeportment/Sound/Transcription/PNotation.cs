@@ -31,13 +31,13 @@ public partial class PEditor
     private void PNotationAttach()
     {
         PNotationList.ItemsSource = _pNotationItem;
-        PLookItem.PLookItemAttach(
+        QLookItem.QLookItemAttach(
             PNotationList,
             (container, item, _) => PNotationItem.PNotationItemApply(
                 container, item, _pNotationTemplate.PNotationSelectorHandle));
         PNotation.Closed += PNotationClosedHandle;
         PPhonetician.Click += PPhoneticianHandle;
-        PPhonetician.Tag = PIcon.PIconResolve("lookup", 24);
+        PPhonetician.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("lookup", 24));
     }
 
     private async void PPhoneticianHandle(object sender, RoutedEventArgs e)
@@ -221,7 +221,7 @@ public partial class PEditor
             return _pNotationItem[position];
         }
 
-        PNotationItem row = new(source, order, PLocalizationCatalog.PLocalizationTextRead("Phonetician.Searching"));
+        PNotationItem row = new(source, order, QLocalizationCatalog.QLocalizationTextRead("Phonetician.Searching"));
         _pNotationItem.Insert(position, row);
         return row;
     }
@@ -244,7 +244,7 @@ public partial class PEditor
             return;
         }
 
-        PNotationNotice.Text = PLocalizationCatalog.PLocalizationTextRead(
+        PNotationNotice.Text = QLocalizationCatalog.QLocalizationTextRead(
             _pNotationSearching ? "Phonetician.Searching"
             : scheme.Length > 0 ? "Transcription.Empty"
             : "Phonetician.Empty");
@@ -262,8 +262,8 @@ public partial class PEditor
         PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
             candidate,
             PNotationReadingCreate(candidate),
-            PLocalizationCatalog.PLocalizationTextRead("Phonetician.Missing"),
-            PLocalizationCatalog.PLocalizationTextRead("Phonetician.Broken"));
+            QLocalizationCatalog.QLocalizationTextRead("Phonetician.Missing"),
+            QLocalizationCatalog.QLocalizationTextRead("Phonetician.Broken"));
         PNotationUpdate();
     }
 

@@ -119,4 +119,11 @@
         </Setter>
     </Style>
 
+    <DoubleAnimation
+        x:Key="Theme.Popup.ProgressBar.Sweep"
+        From="-84"
+        RepeatBehavior="Forever"
+        To="268"
+        Duration="0:0:1.15" />
+
 </ResourceDictionary>

@@ -46,11 +46,11 @@ public class PStem : UserControl
         PStemLanguage.Text = page.LStemPageLanguage;
         PStemFlag.Source = LEnsignImage.LEnsignFind(page.LStemPageLanguage);
         PStemList.ItemsSource = page.LStemPageCharacters;
-        PStemEmpty.Visibility = PLook.PLookVisibleRead(page.LStemPageEmpty);
+        PStemEmpty.Visibility = QLook.QLookVisibleRead(page.LStemPageEmpty);
     }
 
     private void PStemEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        PStemEntryNotice?.Invoke(PSender.PSenderTextRead(e));
+        PStemEntryNotice?.Invoke(QSender.QSenderTextRead(e));
     }
 }

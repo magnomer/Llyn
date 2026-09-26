@@ -12,7 +12,7 @@ The muted line a series with no character prints.
 ## `<Style x:Key="Theme.Stem.Chip"`
 
 One member character as a pressable chip: accent-colored, underlined under the pointer.
-Its command, parameter, character and underline are `PLook` rows copied from the item it stands for.
+Its command, parameter, character and underline are `QLook` rows copied from the item it stands for.
 
 ## `<DataTemplate x:Key="Theme.Stem.Glyph"`
 

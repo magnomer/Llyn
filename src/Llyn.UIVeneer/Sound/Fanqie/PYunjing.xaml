@@ -59,14 +59,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Ladder.Title}">
-                    <local:PIconImage x:Name="PLadderIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PLadderIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PPlumb"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Plumb.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PLadderDropdown"
                     Width="252"
@@ -110,14 +109,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Stair.Title}">
-                    <local:PIconImage x:Name="PStairIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PStairIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PFathom"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Fathom.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PStairDropdown"
                     Width="252"
@@ -151,8 +149,7 @@
             Style="{StaticResource Theme.Search.Bar}">
             <TextBox
                 x:Name="PBeacon"
-                Style="{StaticResource Theme.Search.Field}"
-                Tag="{DynamicResource Beacon.Search}" />
+                Style="{StaticResource Theme.Search.Field}" />
         </Border>
 
         <Grid Grid.Row="1" Grid.Column="2" Style="{StaticResource Theme.Catalog.Middle}">
@@ -266,7 +263,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PYunjingBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PYunjingBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

@@ -77,34 +77,34 @@ internal sealed class PFootnoteItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PFootnoteRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PFootnoteRow") is Button row)
         {
             if (footnote.PFootnoteItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PFootnoteFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PFootnoteFlag") is Image flag)
         {
             flag.Source = footnote.PFootnoteItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PFootnoteName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PFootnoteName") is Run name)
         {
             name.Text = footnote.PFootnoteItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PFootnoteEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PFootnoteEpithet") is Run epithet)
         {
             epithet.Text = " " + footnote.PFootnoteItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFootnoteLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFootnoteLanguage") is TextBlock language)
         {
             language.Text = footnote.PFootnoteItemLanguage;
         }

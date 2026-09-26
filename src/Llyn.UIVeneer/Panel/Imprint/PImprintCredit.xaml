@@ -25,22 +25,22 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="PAuthorName" Style="{StaticResource Imprint.Credit.Field}" Tag="{DynamicResource Source.AuthorName}" />
+            <TextBox x:Name="PAuthorName" Style="{StaticResource Imprint.Credit.Field}" />
             <StackPanel x:Name="PAuthorShelf" Grid.Column="1" Margin="8,0,0,0" Orientation="Horizontal">
                 <StackPanel.Style>
                     <Style TargetType="StackPanel" BasedOn="{StaticResource Imprint.Credit.Control}" />
                 </StackPanel.Style>
                 <Button x:Name="PAuthorAddition" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorAdd}">
-                    <local:PIconImage x:Name="PAuthorAdditionIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PAuthorAdditionIcon" Width="12" Height="12" />
                 </Button>
                 <Button x:Name="PAuthorRemoval" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorRemove}">
-                    <local:PIconImage x:Name="PAuthorRemovalIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PAuthorRemovalIcon" Width="12" Height="12" />
                 </Button>
                 <Button x:Name="PAuthorEarlier" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorEarlier}">
-                    <local:PIconImage x:Name="PAuthorEarlierIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PAuthorEarlierIcon" Width="12" Height="12" />
                 </Button>
                 <Button x:Name="PAuthorLater" Style="{StaticResource Imprint.Credit.Handle}" ToolTip="{DynamicResource Source.AuthorLater}">
-                    <local:PIconImage x:Name="PAuthorLaterIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PAuthorLaterIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

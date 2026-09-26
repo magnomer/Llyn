@@ -57,8 +57,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         Resources.MergedDictionaries.Add(_pNotationTemplate);
         _pClipTemplate = new PClipTemplate(this);
         Resources.MergedDictionaries.Add(_pClipTemplate);
-        PLook.PLookStyleAttach(_pClipTemplate);
-        PLook.PLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(_pClipTemplate);
+        QLook.QLookStyleAttach(surface.Resources);
 
         PCardListAttach();
         PNotationAttach();
@@ -70,7 +70,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PClipAttach();
         PSpeakerAttach();
         PProspectList.ItemsSource = _pProspectItem;
-        PLookItem.PLookItemAttach(PProspectList, PProspectApply);
+        QLookItem.QLookItemAttach(PProspectList, PProspectApply);
         PCandidateAttach();
         PSlateAttach();
         PCategoryAttach();
@@ -79,24 +79,25 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
         PHeadword.TextChanged += PHeadwordHandle;
         PPronunciationField.TextChanged += PPronunciationHandle;
-        DependencyPropertyDescriptor.FromProperty(TagProperty, typeof(TextBox)).AddValueChanged(
-            PHeadword, (_, _) => PField.PFieldGhostShow(PHeadwordGhost, PHeadword));
-        DependencyPropertyDescriptor.FromProperty(TagProperty, typeof(TextBox)).AddValueChanged(
-            PPronunciationField, (_, _) => PField.PFieldGhostShow(PPronunciationMeasure, PPronunciationField));
+        QField.QFieldGhostAttach(PHeadwordGhost, PHeadword);
+        QField.QFieldGhostAttach(PPronunciationMeasure, PPronunciationField);
         PNoteContents.TextChanged += PNoteHandle;
         PEditorFavorite.Click += PEditorFavoriteHandle;
         PEditorGrasp.PGraspChanged += PEditorGraspHandle;
         PEditorGrasp.PGraspHovered += PEditorHoverHandle;
         PEditorBackward.Click += PEditorUndoHandle;
-        PEditorBackward.Tag = PIcon.PIconResolve("undo", 24);
+        PHeadword.SetResourceReference(QField.QFieldHintProperty, "Input.Headword");
+        PPronunciationField.SetResourceReference(QField.QFieldHintProperty, "Input.Pronunciation");
+        PNoteContents.SetResourceReference(QField.QFieldHintProperty, "Input.NoteHint");
+        PEditorBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
         PEditorForward.Click += PEditorRedoHandle;
-        PEditorForward.Tag = PIcon.PIconResolve("redo", 24);
+        PEditorForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
         PEditorDiscard.Click += PEditorDiscardHandle;
-        PEditorDiscard.Tag = PIcon.PIconResolve("new", 24);
+        PEditorDiscard.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
         PEditorStore.Click += PEditorStoreHandle;
-        PEditorStore.Tag = PIcon.PIconResolve("save", 24);
+        PEditorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
         PPlaybackAction.Click += PPlaybackActionHandle;
-        PPlaybackAction.Tag = PIcon.PIconResolve("play", 24);
+        PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
         PEtymologyAttach();
         AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));
         _pDownloaderPlayer.MediaEnded += PClipEndHandle;
@@ -190,7 +191,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     internal void PEditorVistaRestore()
     {
-        PEditorCommand.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorOwned);
+        PEditorCommand.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorOwned);
         _lEditor.LEditorOpen(null);
     }
 
@@ -293,10 +294,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorDraftShow(LEntryDraft draft)
     {
-        PField.PFieldTextShow(PHeadword, draft.LEntryDraftHeadword);
-        PPronunciationOpener.Text = PLook.PLookFirstRead(_lEditor.LEditorPhonemic, "/", "[");
-        PPronunciationCloser.Text = PLook.PLookFirstRead(_lEditor.LEditorPhonemic, "/", "]");
-        PField.PFieldTextShow(PPronunciationField, _lEditor.LEditorPronunciationRead());
+        QField.QFieldTextShow(PHeadword, draft.LEntryDraftHeadword);
+        PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "[");
+        PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "]");
+        QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorPronunciationRead());
         PAccentShow(draft);
         PGlyphShow(draft);
         PTranscriptionShow(draft);
@@ -310,7 +311,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets, draft.LEntryDraftLanguage);
 
         PEtymologyShow(draft);
-        PField.PFieldNoteShow(PNoteContents, draft.LEntryDraftNote);
+        QField.QFieldNoteShow(PNoteContents, draft.LEntryDraftNote);
         PEditorRecordingShow(draft);
         PPlaybackTrayShow();
         PReflexPrepare(draft);
@@ -324,21 +325,19 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
         LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTonal;
-        PPronunciation.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
-        PAccent.Visibility = PLook.PLookVisibleRead(_lEditor.LEditorSpoken);
+        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorSpoken);
+        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorSpoken);
         PSentenceFrameLoad(_lEditor.LEditorLanguage);
         PCategoryLoad();
     }
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)
     {
-        PField.PFieldGhostShow(PHeadwordGhost, PHeadword);
         _lEditor.LEditorHeadwordSet(PHeadword.Text);
     }
 
     private void PPronunciationHandle(object sender, TextChangedEventArgs e)
     {
-        PField.PFieldGhostShow(PPronunciationMeasure, PPronunciationField);
         PContour.PContourIpa = PPronunciationField.Text;
         _lEditor.LEditorPronunciationSet(PPronunciationField.Text);
     }
@@ -419,7 +418,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorFavoriteSet(PLook.PLookCheckedRead(PEditorFavorite.IsChecked));
+        _lEditor.LEditorFavoriteSet(QLook.QLookCheckedRead(PEditorFavorite.IsChecked));
     }
 
     private void PEditorGraspUpdate()
@@ -463,7 +462,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
         PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
         PEditorScript.PScriptRenewal =
-            PLook.PLookFirstRead<Action?>(_lEditor.LEditorScriptRebuildable, _lEditor.LEditorScriptRebuild, null);
+            QLook.QLookFirstRead<Action?>(_lEditor.LEditorScriptRebuildable, _lEditor.LEditorScriptRebuild, null);
     }
 
     private void PEditorFanqieUpdate()
@@ -474,7 +473,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
         PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;
         PEditorFanqie.PFanqieRenewal =
-            PLook.PLookFirstRead<Action?>(_lEditor.LEditorFanqieRebuildable, _lEditor.LEditorFanqieRebuild, null);
+            QLook.QLookFirstRead<Action?>(_lEditor.LEditorFanqieRebuildable, _lEditor.LEditorFanqieRebuild, null);
         PEditorFanqie.PFanqieDiweiNotice =
             (kind, key) => _pEditorHost.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
         PEditorFanqie.PFanqieRepresentativeNotice =

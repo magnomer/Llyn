@@ -38,8 +38,8 @@ internal sealed class PShelfItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(rows);
 
-        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
-        string unset = PLocalizationCatalog.PLocalizationTextRead("Source.Unset");
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        string unset = QLocalizationCatalog.QLocalizationTextRead("Source.Unset");
 
         List<PShelfItem> built = new(rows.Count);
         foreach (LCatalogReference row in rows)
@@ -86,39 +86,39 @@ internal sealed class PShelfItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PShelfRow") is Button button)
+        if (QLook.QLookPartFind<Button>(container, "PShelfRow") is Button button)
         {
             if (row.PShelfItemChosen)
             {
-                button.Tag = "Chosen";
+                button.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                button.ClearValue(FrameworkElement.TagProperty);
+                button.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PShelfIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PShelfIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("source", 16);
+            icon.QIconSource = QIcon.QIconResolve("source", 16);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PShelfName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PShelfName") is TextBlock name)
         {
             name.Text = row.PShelfItemName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PShelfAuthor") is TextBlock author)
+        if (QLook.QLookPartFind<TextBlock>(container, "PShelfAuthor") is TextBlock author)
         {
             author.Text = row.PShelfItemAuthor;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PShelfYear") is TextBlock year)
+        if (QLook.QLookPartFind<TextBlock>(container, "PShelfYear") is TextBlock year)
         {
             year.Text = row.PShelfItemYear;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PShelfCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PShelfCount") is TextBlock count)
         {
             count.Text = row.PShelfItemCount;
         }

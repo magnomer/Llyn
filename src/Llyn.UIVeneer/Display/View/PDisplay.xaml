@@ -48,7 +48,7 @@
                                     <Ellipse x:Name="PDisplayLanguageGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                                 </Grid>
                                 <TextBlock x:Name="PDisplayLanguage" Style="{StaticResource Theme.Language.Name}" />
-                                <local:PIconImage Style="{StaticResource Theme.Language.Expand}" Visibility="Hidden" />
+                                <local:QIconImage Style="{StaticResource Theme.Language.Expand}" Visibility="Hidden" />
                             </StackPanel>
                         </Border>
                         <StackPanel Grid.Column="2" Style="{StaticResource Theme.Favorite.Row}">
@@ -56,7 +56,7 @@
                                 x:Name="PDisplayFavorite"
                                 Style="{StaticResource Theme.Favorite.Mark}"
                                 ToolTip="{DynamicResource Favorite.Mark}">
-                                <local:PIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
+                                <local:QIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
                             </ToggleButton>
                             <local:PGrasp
                                 x:Name="PDisplayGrasp"
@@ -187,7 +187,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <Border Width="32" Height="32" Margin="0,0,12,0" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
-                                                <local:PIconImage
+                                                <local:QIconImage
                                                     x:Name="PUsageIcon"
                                                     Width="24"
                                                     Height="24"
@@ -260,7 +260,7 @@
                 IsChecked="True"
                 Style="{StaticResource Theme.Command.IconToggle}"
                 ToolTip="{DynamicResource Contents.Title}">
-                <local:PIconImage
+                <local:QIconImage
                     x:Name="PCompassIcon"
                     Width="24"
                     Height="24" />

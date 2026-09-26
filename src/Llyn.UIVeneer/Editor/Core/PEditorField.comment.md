@@ -9,7 +9,7 @@ Each is a rule about one box rather than a piece of the form's shape.
 
 ### `<Style x:Key="Editor.Field.Ghost" TargetType="TextBlock">`
 
-The unseen twin that measures the headword, standing in the same PGauge as the box.
+The unseen twin that measures the headword, standing in the same QGauge as the box.
 It alone is measured, so the cell closes on the text rather than on the box.
 A box measures wider than its text, by its caret and its scroll host.
 An empty box is measured by the word it asks for, so the row never closes on nothing.

@@ -23,7 +23,7 @@ public sealed class PVideoFrame : Decorator
             return;
         }
 
-        Visibility = PLook.PLookVisibleRead(!draft.LVideoDraftEmpty);
+        Visibility = QLook.QLookVisibleRead(!draft.LVideoDraftEmpty);
         if (PMedia.PMediaRead(this) is PMedia media)
         {
             DataContext = media.PMediaVideoCreate(draft);

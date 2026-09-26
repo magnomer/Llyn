@@ -28,20 +28,20 @@ internal sealed class PTally
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PTallyLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PTallyLanguage") is TextBlock language)
         {
             language.Text = tally.PTallyLanguage;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PTallyKind") is TextBlock kind)
+        if (QLook.QLookPartFind<TextBlock>(container, "PTallyKind") is TextBlock kind)
         {
             kind.Text = tally.PTallyKind;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PTallyMarks") is ItemsControl marks)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PTallyMarks") is ItemsControl marks)
         {
             marks.ItemsSource = tally.PTallyMarks;
-            PLookItem.PLookItemAttach(marks, PTallyMark.PTallyMarkApply);
+            QLookItem.QLookItemAttach(marks, PTallyMark.PTallyMarkApply);
         }
     }
 

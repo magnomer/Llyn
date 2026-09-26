@@ -69,37 +69,37 @@ public partial class PTaxonomy
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PMembershipRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PMembershipRow") is Button row)
         {
             if (membership.PMembershipItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PMembershipHandle;
             row.Click += PMembershipHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PMembershipFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PMembershipFlag") is Image flag)
         {
             flag.Source = membership.PMembershipItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PMembershipName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PMembershipName") is Run name)
         {
             name.Text = membership.PMembershipItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PMembershipEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PMembershipEpithet") is Run epithet)
         {
             epithet.Text = " " + membership.PMembershipItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMembershipLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMembershipLanguage") is TextBlock language)
         {
             language.Text = membership.PMembershipItemLanguage;
         }

@@ -56,23 +56,23 @@ internal sealed class PBylineItem
             return;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PBylineRow") is Grid row)
+        if (QLook.QLookPartFind<Grid>(container, "PBylineRow") is Grid row)
         {
             row.PreviewMouseLeftButtonDown -= press;
             row.PreviewMouseLeftButtonDown += press;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PBylineLead") is Run lead)
+        if (QLook.QLookPartFind<Run>(container, "PBylineLead") is Run lead)
         {
             lead.Text = byline.PBylineItemLead;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PBylineMark") is Run mark)
+        if (QLook.QLookPartFind<Run>(container, "PBylineMark") is Run mark)
         {
             mark.Text = byline.PBylineItemMark;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PBylineTail") is Run tail)
+        if (QLook.QLookPartFind<Run>(container, "PBylineTail") is Run tail)
         {
             tail.Text = byline.PBylineItemTail;
         }

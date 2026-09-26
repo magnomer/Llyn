@@ -17,18 +17,25 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:PIconImage
+                    <local:QIconImage
                         x:Name="PSurfaceMark"
                         Width="18"
                         Height="18"
                         RenderTransformOrigin="0.5,0.5">
-                        <local:PIconImage.RenderTransform>
+                        <local:QIconImage.RenderTransform>
                             <RotateTransform Angle="0" />
-                        </local:PIconImage.RenderTransform>
-                    </local:PIconImage>
+                        </local:QIconImage.RenderTransform>
+                    </local:QIconImage>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
+    <DoubleAnimation
+        x:Key="Theme.Sound.Rebuild.Spin"
+        From="0"
+        RepeatBehavior="Forever"
+        To="360"
+        Duration="0:0:1" />
 
 </ResourceDictionary>

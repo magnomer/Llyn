@@ -126,28 +126,28 @@ public partial class PCorpus
             return;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PCitationRow") is Grid row)
+        if (QLook.QLookPartFind<Grid>(container, "PCitationRow") is Grid row)
         {
             row.PreviewMouseLeftButtonDown -= _pCorpusTranscript.PCitationPickHandle;
             row.PreviewMouseLeftButtonDown += _pCorpusTranscript.PCitationPickHandle;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCitationLead") is Run lead)
+        if (QLook.QLookPartFind<Run>(container, "PCitationLead") is Run lead)
         {
             lead.Text = candidate.PCandidateItemLead;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCitationMark") is Run mark)
+        if (QLook.QLookPartFind<Run>(container, "PCitationMark") is Run mark)
         {
             mark.Text = candidate.PCandidateItemMark;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCitationTail") is Run tail)
+        if (QLook.QLookPartFind<Run>(container, "PCitationTail") is Run tail)
         {
             tail.Text = candidate.PCandidateItemTail;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCitationCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCitationCount") is TextBlock count)
         {
             count.Text = candidate.PCandidateItemCount;
         }
@@ -283,6 +283,6 @@ public partial class PCorpus
     private static FrameworkElement? PCitationFrameFind(TextBox box)
     {
         box.ApplyTemplate();
-        return box.Template?.FindName(PField.PFieldSurfaceName, box) as FrameworkElement;
+        return box.Template?.FindName(QField.QFieldSurfaceName, box) as FrameworkElement;
     }
 }

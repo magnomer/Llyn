@@ -28,22 +28,24 @@ public class PReference : UserControl
         PReferencePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PReferencePress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PGradeDropper, PGradeDropdown, PGrade);
-        PChoice.PChoiceDropperAttach(PTrellisDropper, PTrellisDropdown, PTrellisDropper);
+        QChoice.QChoiceDropperAttach(PGradeDropper, PGradeDropdown, PGrade);
+        QChoice.QChoiceDropperAttach(PTrellisDropper, PTrellisDropdown, PTrellisDropper);
 
-        PGradeIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PTrellisIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PReferenceBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PReferenceFresh.Tag = PIcon.PIconResolve("new", 24);
-        PReferenceStore.Tag = PIcon.PIconResolve("save", 24);
-        PReferenceEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PReferenceLater.Tag = PIcon.PIconResolve("advance", 24);
-        PReferenceBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PReferenceForward.Tag = PIcon.PIconResolve("redo", 24);
-        PReferencePortrait.Tag = PIcon.PIconResolve("export", 24);
-        PReferencePress.Tag = PIcon.PIconResolve("print", 24);
-        PReferenceViewer.Tag = PIcon.PIconResolve("view", 24);
-        PReferenceScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PGradeIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PTrellisIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PReferenceBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PSurvey.SetResourceReference(QField.QFieldHintProperty, "Source.Search");
+        PRummage.SetResourceReference(QField.QFieldHintProperty, "Rummage.Search");
+        PReferenceFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PReferenceStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PReferenceEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PReferenceLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PReferenceBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PReferenceForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PReferencePortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PReferencePress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PReferenceViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PReferenceScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PSurvey.TextChanged += PSurveyHandle;
         PRummage.TextChanged += PRummageHandle;
@@ -60,15 +62,15 @@ public class PReference : UserControl
         PShelf.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PShelfHandle));
         PFootnote.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PFootnoteHandle));
 
-        PLookItem.PLookItemAttach(PShelf, PShelfItem.PShelfItemApply);
-        PLookItem.PLookItemAttach(PFootnote, PFootnoteItem.PFootnoteItemApply);
+        QLookItem.QLookItemAttach(PShelf, PShelfItem.PShelfItemApply);
+        QLookItem.QLookItemAttach(PFootnote, PFootnoteItem.PFootnoteItemApply);
     }
 
     private Border PGrade => (Border)FindName(nameof(PGrade));
 
     private ToggleButton PGradeDropper => (ToggleButton)FindName(nameof(PGradeDropper));
 
-    private PIconImage PGradeIcon => (PIconImage)FindName(nameof(PGradeIcon));
+    private QIconImage PGradeIcon => (QIconImage)FindName(nameof(PGradeIcon));
 
     private TextBox PSurvey => (TextBox)FindName(nameof(PSurvey));
 
@@ -80,7 +82,7 @@ public class PReference : UserControl
 
     private ToggleButton PTrellisDropper => (ToggleButton)FindName(nameof(PTrellisDropper));
 
-    private PIconImage PTrellisIcon => (PIconImage)FindName(nameof(PTrellisIcon));
+    private QIconImage PTrellisIcon => (QIconImage)FindName(nameof(PTrellisIcon));
 
     private FrameworkElement PTrellisMark => (FrameworkElement)FindName(nameof(PTrellisMark));
 
@@ -132,7 +134,7 @@ public class PReference : UserControl
 
     private Button PReferenceBin => (Button)FindName(nameof(PReferenceBin));
 
-    private PIconImage PReferenceBinIcon => (PIconImage)FindName(nameof(PReferenceBinIcon));
+    private QIconImage PReferenceBinIcon => (QIconImage)FindName(nameof(PReferenceBinIcon));
 
     internal void PReferenceAttach(PWindow host)
     {
@@ -199,7 +201,7 @@ public class PReference : UserControl
             LObserver.LObserverCreate(this, _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PGradeList,
             "Grade",
             PGradeHandle,
@@ -209,12 +211,12 @@ public class PReference : UserControl
                 LCatalogOrder.LCatalogOrderAuthor,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
+        QChoice.QChoiceOrderApply(PGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
         PTrellisUpdate();
 
         await LEnsignImage.LEnsignLoad(_pReferenceHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PTrellisList,
             _pReferenceHost.PWindowDeportment.LWindowLanguageRead(),
             _lShelf.LShelfPanel.LPanelFilter,
@@ -275,7 +277,7 @@ public class PReference : UserControl
             PShelfItem.PShelfItemBuild(_lShelf.LShelfRowsRead()),
             PShelfItem.PShelfItemMatch,
             PShelfItem.PShelfItemSync);
-        PShelfEmpty.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfEmpty);
+        PShelfEmpty.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfEmpty);
         PColophon.PColophonTallyShow(_lShelf.LShelfTallyRead());
         PImprint.PImprintTallyShow();
     }
@@ -288,19 +290,19 @@ public class PReference : UserControl
             PFootnoteItem.PFootnoteItemMatch,
             PFootnoteItem.PFootnoteItemSync);
         PFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _lShelf.LShelfFootnote.LFootnoteEmptyKey);
-        PFootnoteEmpty.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfFootnote.LFootnoteEmpty);
+        PFootnoteEmpty.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfFootnote.LFootnoteEmpty);
     }
 
     private void PReferenceModeUpdate()
     {
-        PEditor.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfEditorShown);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfDisplayShown);
-        PImprint.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfImprintShown);
-        PColophon.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfColophonShown);
-        PReferenceViewer.IsChecked = PLook.PLookCheckedRead(_lShelf.LShelfViewerChecked);
-        PReferenceScribe.IsChecked = PLook.PLookCheckedRead(_lShelf.LShelfScribeChecked);
-        PReferenceVoyage.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfViewerChecked);
-        PReferenceChronicle.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfEditorShown);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfDisplayShown);
+        PImprint.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfImprintShown);
+        PColophon.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfColophonShown);
+        PReferenceViewer.IsChecked = QLook.QLookCheckedRead(_lShelf.LShelfViewerChecked);
+        PReferenceScribe.IsChecked = QLook.QLookCheckedRead(_lShelf.LShelfScribeChecked);
+        PReferenceVoyage.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfViewerChecked);
+        PReferenceChronicle.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfScribeChecked);
         PReferenceMode.IsEnabled = _lShelf.LShelfModeEnabled;
         PReferenceBin.IsEnabled = _lShelf.LShelfBinEnabled;
         PReferenceStore.IsEnabled = _lShelf.LShelfStoreEnabled;
@@ -337,7 +339,7 @@ public class PReference : UserControl
 
     private void PTrellisUpdate()
     {
-        PTrellisMark.Visibility = PLook.PLookVisibleRead(_lShelf.LShelfSieveActive);
+        PTrellisMark.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfSieveActive);
     }
 
     private void PSurveyHandle(object sender, TextChangedEventArgs e)
@@ -352,20 +354,20 @@ public class PReference : UserControl
 
     private void PTrellisHandle(object sender, RoutedEventArgs e)
     {
-        _lShelf.LShelfSieveSet(LChoice.LChoiceFilterRead(PTrellisList));
+        _lShelf.LShelfSieveSet(QChoice.QChoiceFilterRead(PTrellisList));
         PTrellisUpdate();
     }
 
     private void PGradeHandle(object sender, RoutedEventArgs e)
     {
         PGradeDropper.IsChecked = false;
-        _lShelf.LShelfOrderSet(LChoice.LChoiceOrderRead(sender));
+        _lShelf.LShelfOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PShelfHandle(object sender, RoutedEventArgs e)
     {
         _pReferenceHost.PVoyageRecord();
-        _lShelf.LShelfRowSelect(PSender.PSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
+        _lShelf.LShelfRowSelect(QSender.QSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
     }
 
     internal long PReferenceVoyageRead()
@@ -380,7 +382,7 @@ public class PReference : UserControl
 
     private void PFootnoteHandle(object sender, RoutedEventArgs e)
     {
-        _lShelf.LShelfEntrySelect(PSender.PSenderSourceRead<PFootnoteItem>(e)?.PFootnoteItemId);
+        _lShelf.LShelfEntrySelect(QSender.QSenderSourceRead<PFootnoteItem>(e)?.PFootnoteItemId);
     }
 
     private void PReferenceFreshHandle(object sender, RoutedEventArgs e)

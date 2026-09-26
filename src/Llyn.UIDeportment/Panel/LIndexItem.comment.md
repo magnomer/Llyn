@@ -43,5 +43,5 @@ It raises the change only when the mark moved, so untouched rows repaint nothing
 ## `internal static void LIndexItemApply(FrameworkElement container, object item, string? _)`
 
 Fills one index row from its item, the work its bindings did before.
-The row's tag reads Chosen on the chosen item and is cleared otherwise, which the look sheet paints.
+The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The library index and each duplex wing share this fill, and each subscribes its own click after it.

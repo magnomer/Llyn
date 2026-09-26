@@ -9,9 +9,9 @@ namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private const string PStackSelected = "Selected";
+    private const QLookCue PStackSelected = QLookCue.QLookCueSelected;
 
-    private const string PStackIdle = "Idle";
+    private const QLookCue PStackIdle = QLookCue.QLookCueIdle;
 
     private const double PStackSlide = 180;
 
@@ -39,10 +39,10 @@ public partial class PEditor
 
     private void PStackAttach()
     {
-        PStackMeaning.Tag = PStackSelected;
-        PStackCollocation.Tag = PStackIdle;
-        PStackEtymology.Tag = PStackIdle;
-        PStackNote.Tag = PStackIdle;
+        PStackMeaning.SetValue(QLook.QLookCueProperty, PStackSelected);
+        PStackCollocation.SetValue(QLook.QLookCueProperty, PStackIdle);
+        PStackEtymology.SetValue(QLook.QLookCueProperty, PStackIdle);
+        PStackNote.SetValue(QLook.QLookCueProperty, PStackIdle);
         PStack.Loaded += PStackPillHandle;
         PStackTabs.SizeChanged += PStackSizeHandle;
         PStackMeaning.Click += PStackHandle;
@@ -69,7 +69,7 @@ public partial class PEditor
         foreach ((Button button, FrameworkElement contents) in tabs)
         {
             bool isSelected = button == selectedButton;
-            button.Tag = isSelected ? PStackSelected : PStackIdle;
+            button.SetValue(QLook.QLookCueProperty, isSelected ? PStackSelected : PStackIdle);
             contents.Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -90,7 +90,7 @@ public partial class PEditor
     {
         Button? selected = PStackTabs.Children
             .OfType<Button>()
-            .FirstOrDefault(button => Equals(button.Tag, PStackSelected));
+            .FirstOrDefault(button => Equals(button.GetValue(QLook.QLookCueProperty), PStackSelected));
 
         if (selected is null || selected.ActualWidth <= 0)
         {

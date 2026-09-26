@@ -9,7 +9,7 @@ It stretches across the view, unlike that box, so a long row of pictures wraps i
 ## `<Style x:Key="Theme.Script.Character" TargetType="TextBlock">`
 
 The character heading a group of rows, inked and in the glyph font the box inherits from `LFontApply`.
-A `PLook` row collapses it when empty, so a one-character headword leaves no column.
+A `QLook` row collapses it when empty, so a one-character headword leaves no column.
 
 ## `<Style x:Key="Theme.Script.Chip" TargetType="Border">`
 
@@ -29,18 +29,18 @@ The picture fill sets its width, height and mask from the item, keeping the orig
 
 The caption under a picture, muted, centered and wrapped within a narrow width.
 It sits right under the age when there is one, so the two read as one caption of two lines.
-A `PLook` row collapses it when empty.
+A `QLook` row collapses it when empty.
 
 ## `<Style x:Key="Theme.Script.Epoch" TargetType="TextBlock">`
 
 The age above the caption, drawn like it but semibold and in the interface font.
 The font is named here because the box inherits the glyph font, which is for the source's words, not ours.
-A `PLook` row collapses it when the age is blank, as when no shipped language names the stored code.
+A `QLook` row collapses it when the age is blank, as when no shipped language names the stored code.
 
 ## `<Style x:Key="Theme.Script.Gloss" TargetType="TextBlock">`
 
 The gloss under a row's pictures, inked and wrapped.
-A `PLook` row collapses it when empty.
+A `QLook` row collapses it when empty.
 
 ## `<Style x:Key="Theme.Script.Head" TargetType="TextBlock">`
 

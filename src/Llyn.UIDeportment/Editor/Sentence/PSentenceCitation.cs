@@ -92,7 +92,7 @@ public partial class PEditor
 
             foreach (string name in new[] { "PSentenceControl", "PSentenceGlossControl" })
             {
-                if (PLook.PLookPartFind<FrameworkElement>(container, name) is not FrameworkElement control)
+                if (QLook.QLookPartFind<FrameworkElement>(container, name) is not FrameworkElement control)
                 {
                     continue;
                 }
@@ -109,9 +109,9 @@ public partial class PEditor
                 }
             }
 
-            if (PLook.PLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
+            if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
             {
-                citation.Opacity = PLook.PLookFirstRead(!shown && citation.Text.Length == 0, 0.0, 1.0);
+                citation.Opacity = QLook.QLookFirstRead(!shown && citation.Text.Length == 0, 0.0, 1.0);
             }
         }
     }

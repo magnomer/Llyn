@@ -27,22 +27,24 @@ public partial class PTaxonomy : UserControl
         PTaxonomyPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PTaxonomyPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PFunnelDropper, PFunnelDropdown, PFunnel);
-        PChoice.PChoiceDropperAttach(PLatticeDropper, PLatticeDropdown, PLatticeDropper);
+        QChoice.QChoiceDropperAttach(PFunnelDropper, PFunnelDropdown, PFunnel);
+        QChoice.QChoiceDropperAttach(PLatticeDropper, PLatticeDropdown, PLatticeDropper);
 
-        PFunnelIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PLatticeIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PTaxonomyBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PTaxonomyFresh.Tag = PIcon.PIconResolve("new", 24);
-        PTaxonomyStore.Tag = PIcon.PIconResolve("save", 24);
-        PTaxonomyEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PTaxonomyLater.Tag = PIcon.PIconResolve("advance", 24);
-        PTaxonomyBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PTaxonomyForward.Tag = PIcon.PIconResolve("redo", 24);
-        PTaxonomyPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PTaxonomyPress.Tag = PIcon.PIconResolve("print", 24);
-        PTaxonomyViewer.Tag = PIcon.PIconResolve("view", 24);
-        PTaxonomyScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PFunnelIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PLatticeIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PTaxonomyBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PExploration.SetResourceReference(QField.QFieldHintProperty, "Tag.Search");
+        PScout.SetResourceReference(QField.QFieldHintProperty, "Scout.Search");
+        PTaxonomyFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PTaxonomyStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PTaxonomyEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PTaxonomyLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PTaxonomyBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PTaxonomyForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PTaxonomyPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PTaxonomyPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PTaxonomyViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PTaxonomyScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PExploration.TextChanged += PExplorationHandle;
         PScout.TextChanged += PScoutHandle;
@@ -61,7 +63,7 @@ public partial class PTaxonomy : UserControl
 
     private ToggleButton PFunnelDropper => (ToggleButton)FindName(nameof(PFunnelDropper));
 
-    private PIconImage PFunnelIcon => (PIconImage)FindName(nameof(PFunnelIcon));
+    private QIconImage PFunnelIcon => (QIconImage)FindName(nameof(PFunnelIcon));
 
     private Popup PFunnelDropdown => (Popup)FindName(nameof(PFunnelDropdown));
 
@@ -81,7 +83,7 @@ public partial class PTaxonomy : UserControl
 
     private ToggleButton PLatticeDropper => (ToggleButton)FindName(nameof(PLatticeDropper));
 
-    private PIconImage PLatticeIcon => (PIconImage)FindName(nameof(PLatticeIcon));
+    private QIconImage PLatticeIcon => (QIconImage)FindName(nameof(PLatticeIcon));
 
     private FrameworkElement PLatticeMark => (FrameworkElement)FindName(nameof(PLatticeMark));
 
@@ -121,7 +123,7 @@ public partial class PTaxonomy : UserControl
 
     private Button PTaxonomyBin => (Button)FindName(nameof(PTaxonomyBin));
 
-    private PIconImage PTaxonomyBinIcon => (PIconImage)FindName(nameof(PTaxonomyBinIcon));
+    private QIconImage PTaxonomyBinIcon => (QIconImage)FindName(nameof(PTaxonomyBinIcon));
 
     internal void PTaxonomyAttach(PWindow host)
     {
@@ -136,8 +138,8 @@ public partial class PTaxonomy : UserControl
 
         PDirectory.ItemsSource = _pDirectoryList;
         PMembership.ItemsSource = _pMembershipList;
-        PLookItem.PLookItemAttach(PDirectory, PDirectoryApply);
-        PLookItem.PLookItemAttach(PMembership, PMembershipApply);
+        QLookItem.QLookItemAttach(PDirectory, PDirectoryApply);
+        QLookItem.QLookItemAttach(PMembership, PMembershipApply);
 
         PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
@@ -234,12 +236,12 @@ public partial class PTaxonomy : UserControl
     private void PTaxonomyModeUpdate()
     {
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
-        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
-        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PTaxonomyViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
-        PTaxonomyScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
-        PTaxonomyVoyage.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PTaxonomyChronicle.Visibility = PLook.PLookVisibleRead(panel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
+        PTaxonomyScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
+        PTaxonomyVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PTaxonomyChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
         PTaxonomyMode.IsEnabled = panel.LPanelModeEnabled;
         PTaxonomyBin.IsEnabled = panel.LPanelBinEnabled;
     }

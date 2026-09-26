@@ -38,13 +38,13 @@ public partial class PEditor
     internal void PImageApply(FrameworkElement container, object item, string? name)
     {
         PImage.PImageRowApply(container, item, name);
-        if (PLook.PLookPartFind<Button>(container, "PImageChooser") is Button open)
+        if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
         {
             open.Click -= _pImageTemplate.PImageOpenHandle;
             open.Click += _pImageTemplate.PImageOpenHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PImageEraser") is Button remove)
+        if (QLook.QLookPartFind<Button>(container, "PImageEraser") is Button remove)
         {
             remove.Click -= _pImageTemplate.PImageRemoveHandle;
             remove.Click += _pImageTemplate.PImageRemoveHandle;

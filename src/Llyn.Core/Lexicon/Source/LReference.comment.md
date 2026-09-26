@@ -72,6 +72,12 @@ The rule lives here because the example line, the citation field and its dropdow
 The read sheet of this Source, composed on the record so the page passes the Source nowhere.
 A Source handed as an argument would be an engine answer the page carried into a request.
 
+## `public static IReadOnlyList<LReferenceKind> LReferenceKindMenu { get; }`
+
+The order a kind menu offers the kinds in, with the unspecified kind first and the unknown kind last.
+It differs from the enum's order, which keeps unknown beside unspecified.
+Every medium lists the kinds alike, so the order lives with the kinds.
+
 ## `public static string LReferenceKindResolve(LReferenceKind kind)`
 
 The localization key a kind is labelled by, so every place that names a kind reads the same word.

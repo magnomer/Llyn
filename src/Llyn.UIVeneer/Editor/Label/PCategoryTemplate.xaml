@@ -18,7 +18,7 @@
                     Foreground="{DynamicResource Theme.Ink}"
                     TextTrimming="CharacterEllipsis" />
 
-                <local:PIconImage
+                <local:QIconImage
                     x:Name="PCategoryIcon"
                     Grid.Column="1"
                     Width="12"

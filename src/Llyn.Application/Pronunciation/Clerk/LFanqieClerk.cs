@@ -70,7 +70,7 @@ public sealed class LFanqieClerk
             return [];
         }
 
-        string pattern = LLocalization.LLocalizationTextFind(LFanqieClerkTone) ?? string.Empty;
+        string pattern = LLocalization.QLocalizationTextFind(LFanqieClerkTone) ?? string.Empty;
         List<LFanqieRow> rows = [];
         foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
         {

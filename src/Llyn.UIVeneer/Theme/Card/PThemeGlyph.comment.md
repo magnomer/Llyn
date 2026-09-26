@@ -21,7 +21,7 @@ The glyph size when the pack declares none, the size of the other reading rows.
 
 The lookup button of the glyph row, raising the glyph notation command so the menu opens in the glyph scheme.
 It hides when the section declares no sources, as a Japanese pack does, since a search would find nothing.
-The command is a `PLook` row, and the editor sets the visibility from the list tag.
+The command is a `QLook` row, and the editor sets the visibility from the list tag.
 
 ## `<Style x:Key="Theme.Glyph.Field" TargetType="TextBox">`
 
@@ -42,7 +42,7 @@ So a chip and the field's character render alike.
 No margin between chips, because the field runs its characters together and the row must match it.
 Its parameter is the character item, and the display resolves the entry when the command fires.
 A chip whose item carries no language is inert: no hand cursor, no tooltip, no hit test.
-The command and the hover are `PLook` rows, and the display fills the character and the parameter.
+The command and the hover are `QLook` rows, and the display fills the character and the parameter.
 
 ## `<Style x:Key="Theme.Glyph.Line" TargetType="ItemsControl">`
 
@@ -58,4 +58,4 @@ No plus or minus, because a language has one glyph row at most.
 ## `<DataTemplate x:Key="Theme.Glyph.Display">`
 
 One chip of the reading view.
-The display fills the named chip through `PLookItemAttach`.
+The display fills the named chip through `QLookItemAttach`.

@@ -61,7 +61,7 @@ It carries a glyph rather than a drawing and holds no size of its own.
 It stands on the line's baseline as the text beside it does.
 A drawn mark of a fixed size sits where the row puts it.
 That is never quite where the eye reads the line.
-Deportment sets its padding and its hover and checked grounds through `PLook` rows on `PCardSurface`.
+Deportment sets its padding and its hover and checked grounds through `QLook` rows on `PCardSurface`.
 
 ## `<Style x:Key="Theme.Card.Ghost" TargetType="TextBlock">`
 

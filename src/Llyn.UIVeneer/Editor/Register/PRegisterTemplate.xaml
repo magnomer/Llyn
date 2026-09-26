@@ -11,7 +11,7 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
-                                <local:PIconImage
+                                <local:QIconImage
                                     x:Name="PRegisterIcon"
                                     Width="12"
                                     Height="12"

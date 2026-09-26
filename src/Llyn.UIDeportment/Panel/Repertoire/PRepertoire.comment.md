@@ -27,7 +27,7 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
-The atlas and occurrence lists get their row fills through `PLookItemAttach`.
+The atlas and occurrence lists get their row fills through `QLookItemAttach`.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The engine's change notices drive the mode, and its row notices drive the two lists.
 Its scenario and situation notices paint the sheet, and its failures reach the window.

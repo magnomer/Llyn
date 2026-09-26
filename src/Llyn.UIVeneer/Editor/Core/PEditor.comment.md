@@ -36,7 +36,7 @@ The editor sets those icons, since an icon lookup is code.
 A bin of one size and a diskette of another, beside labels of two lengths, left the pair looking lopsided.
 Both take the width of their label, so a longer language does not clip.
 
-## `<TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />`
+## `<TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" />`
 
 Editable, not a chooser.
 The switch beside it opens the language's presets, and the box takes anything typed.
@@ -132,7 +132,7 @@ A level set here is the level the reading view opens at.
 
 The fetch-again button, pinned to the top right of the sound rows.
 It sits outside the reflex block so the rows never push it down.
-The editor shows it with the block and sets its tag to turn the icon while a fetch runs.
+The editor shows it with the block and sets its `Pending` cue to turn the icon while a fetch runs.
 
 ## `<Popup x:Name="PNotation" ...>`
 

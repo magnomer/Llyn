@@ -36,14 +36,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Funnel.Title}">
-                    <local:PIconImage x:Name="PFunnelIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PFunnelIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PExploration"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Tag.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PFunnelDropdown"
                     Width="252"
@@ -71,7 +70,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <local:PIconImage
+                                    <local:QIconImage
                                         x:Name="PDirectoryIcon"
                                         Grid.Column="0"
                                         Width="16"
@@ -135,8 +134,7 @@
                 <TextBox
                     x:Name="PScout"
                     Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Scout.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PLatticeDropper"
@@ -144,7 +142,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Lattice.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PLatticeIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PLatticeIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PLatticeMark"
                             Width="6"
@@ -253,7 +251,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PTaxonomyBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PTaxonomyBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

@@ -27,21 +27,23 @@ public class PGuild : UserControl
 
         PGuildPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PEchelonDropper, PEchelonDropdown, PEchelon);
-        PChoice.PChoiceDropperAttach(PLouverDropper, PLouverDropdown, PLouverDropper);
+        QChoice.QChoiceDropperAttach(PEchelonDropper, PEchelonDropdown, PEchelon);
+        QChoice.QChoiceDropperAttach(PLouverDropper, PLouverDropdown, PLouverDropper);
 
-        PEchelonIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PLouverIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PGuildBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PGuildFresh.Tag = PIcon.PIconResolve("new", 24);
-        PGuildStore.Tag = PIcon.PIconResolve("save", 24);
-        PGuildEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PGuildLater.Tag = PIcon.PIconResolve("advance", 24);
-        PGuildBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PGuildForward.Tag = PIcon.PIconResolve("redo", 24);
-        PGuildPress.Tag = PIcon.PIconResolve("print", 24);
-        PGuildViewer.Tag = PIcon.PIconResolve("view", 24);
-        PGuildScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PEchelonIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PLouverIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PGuildBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PMuster.SetResourceReference(QField.QFieldHintProperty, "Muster.Search");
+        PComb.SetResourceReference(QField.QFieldHintProperty, "Comb.Search");
+        PGuildFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PGuildStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PGuildEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PGuildLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PGuildBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PGuildForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PGuildPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PGuildViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PGuildScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PMuster.TextChanged += PMusterHandle;
         PComb.TextChanged += PCombHandle;
@@ -58,15 +60,15 @@ public class PGuild : UserControl
         PRoll.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PRollHandle));
         POeuvre.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(POeuvreHandle));
 
-        PLookItem.PLookItemAttach(PRoll, PRollItem.PRollItemApply);
-        PLookItem.PLookItemAttach(POeuvre, PShelfItem.PShelfItemApply);
+        QLookItem.QLookItemAttach(PRoll, PRollItem.PRollItemApply);
+        QLookItem.QLookItemAttach(POeuvre, PShelfItem.PShelfItemApply);
     }
 
     private Border PEchelon => (Border)FindName(nameof(PEchelon));
 
     private ToggleButton PEchelonDropper => (ToggleButton)FindName(nameof(PEchelonDropper));
 
-    private PIconImage PEchelonIcon => (PIconImage)FindName(nameof(PEchelonIcon));
+    private QIconImage PEchelonIcon => (QIconImage)FindName(nameof(PEchelonIcon));
 
     private TextBox PMuster => (TextBox)FindName(nameof(PMuster));
 
@@ -78,7 +80,7 @@ public class PGuild : UserControl
 
     private ToggleButton PLouverDropper => (ToggleButton)FindName(nameof(PLouverDropper));
 
-    private PIconImage PLouverIcon => (PIconImage)FindName(nameof(PLouverIcon));
+    private QIconImage PLouverIcon => (QIconImage)FindName(nameof(PLouverIcon));
 
     private FrameworkElement PLouverMark => (FrameworkElement)FindName(nameof(PLouverMark));
 
@@ -126,7 +128,7 @@ public class PGuild : UserControl
 
     private Button PGuildBin => (Button)FindName(nameof(PGuildBin));
 
-    private PIconImage PGuildBinIcon => (PIconImage)FindName(nameof(PGuildBinIcon));
+    private QIconImage PGuildBinIcon => (QIconImage)FindName(nameof(PGuildBinIcon));
 
     internal void PGuildAttach(PWindow host)
     {
@@ -177,7 +179,7 @@ public class PGuild : UserControl
             LSubject.LSubjectExample, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
             LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PEchelonList,
             "Echelon",
             PEchelonHandle,
@@ -187,8 +189,8 @@ public class PGuild : UserControl
                 LCatalogOrder.LCatalogOrderWork,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
-        PChoice.PChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
+        QChoice.QChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
+        QChoice.QChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
         PLouverUpdate();
         _lGuild.LGuildQuerySet(PMuster.Text);
         _lGuild.LGuildOeuvre.LOeuvreQuerySet(PComb.Text);
@@ -243,7 +245,7 @@ public class PGuild : UserControl
             PRollItem.PRollItemBuild(_lGuild.LGuildRollRead()),
             PRollItem.PRollItemMatch,
             PRollItem.PRollItemSync);
-        PRollEmpty.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildEmpty);
+        PRollEmpty.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildEmpty);
         PVitaUpdate();
     }
 
@@ -262,7 +264,7 @@ public class PGuild : UserControl
             PShelfItem.PShelfItemMatch,
             PShelfItem.PShelfItemSync);
         POeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _lGuild.LGuildOeuvre.LOeuvreEmptyKey);
-        POeuvreEmpty.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildOeuvre.LOeuvreEmpty);
+        POeuvreEmpty.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildOeuvre.LOeuvreEmpty);
         PColophon.PColophonTallyShow(_lGuild.LGuildOeuvre.LOeuvreTallyRead());
     }
 
@@ -273,13 +275,13 @@ public class PGuild : UserControl
 
     private void PGuildModeUpdate()
     {
-        PAutograph.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildAutographShown);
-        PVita.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildVitaShown);
-        PColophon.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildColophonShown);
-        PGuildViewer.IsChecked = PLook.PLookCheckedRead(_lGuild.LGuildViewerChecked);
-        PGuildScribe.IsChecked = PLook.PLookCheckedRead(_lGuild.LGuildScribeChecked);
-        PGuildVoyage.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildViewerChecked);
-        PGuildChronicle.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildScribeChecked);
+        PAutograph.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildAutographShown);
+        PVita.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildVitaShown);
+        PColophon.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildColophonShown);
+        PGuildViewer.IsChecked = QLook.QLookCheckedRead(_lGuild.LGuildViewerChecked);
+        PGuildScribe.IsChecked = QLook.QLookCheckedRead(_lGuild.LGuildScribeChecked);
+        PGuildVoyage.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildViewerChecked);
+        PGuildChronicle.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildScribeChecked);
         PGuildMode.IsEnabled = _lGuild.LGuildModeEnabled;
         PGuildBin.IsEnabled = _lGuild.LGuildBinEnabled;
         PGuildStore.IsEnabled = _lGuild.LGuildStoreEnabled;
@@ -288,7 +290,7 @@ public class PGuild : UserControl
 
     private void PLouverUpdate()
     {
-        PLouverMark.Visibility = PLook.PLookVisibleRead(_lGuild.LGuildLouverActive);
+        PLouverMark.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildLouverActive);
     }
 
     private void PMusterHandle(object sender, TextChangedEventArgs e)
@@ -304,19 +306,19 @@ public class PGuild : UserControl
     private void PEchelonHandle(object sender, RoutedEventArgs e)
     {
         PEchelonDropper.IsChecked = false;
-        _lGuild.LGuildOrderSet(LChoice.LChoiceOrderRead(sender));
+        _lGuild.LGuildOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PLouverHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildLouverSet(LChoice.LChoiceFilterRead(PLouverList));
+        _lGuild.LGuildLouverSet(QChoice.QChoiceFilterRead(PLouverList));
         PLouverUpdate();
     }
 
     private void PRollHandle(object sender, RoutedEventArgs e)
     {
         _pGuildHost.PVoyageRecord();
-        _lGuild.LGuildRowSelect(PSender.PSenderSourceRead<PRollItem>(e)?.PRollItemId);
+        _lGuild.LGuildRowSelect(QSender.QSenderSourceRead<PRollItem>(e)?.PRollItemId);
     }
 
     internal long PGuildVoyageRead()
@@ -331,7 +333,7 @@ public class PGuild : UserControl
 
     private void POeuvreHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildSourceSelect(PSender.PSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
+        _lGuild.LGuildSourceSelect(QSender.QSenderSourceRead<PShelfItem>(e)?.PShelfItemId);
     }
 
     private void PGuildFreshHandle(object sender, RoutedEventArgs e)

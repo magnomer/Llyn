@@ -47,8 +47,8 @@ public partial class PWindow
             "Mention.Sense",
             PMentionItem.PMentionItemCreate(
                 entryId,
-                LWindow.LWindowMeaningSort(meanings, PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")),
-                PLocalizationCatalog.PLocalizationTextRead("Mention.Whole")),
+                LWindow.LWindowMeaningSort(meanings, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")),
+                QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
             item => chosen(item.PMentionItemSense));
     }
 
@@ -59,31 +59,31 @@ public partial class PWindow
             return;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PMentionRow") is Grid row)
+        if (QLook.QLookPartFind<Grid>(container, "PMentionRow") is Grid row)
         {
             row.Margin = mention.PMentionItemIndent;
             row.MouseLeftButtonUp -= _pMentionMenuTemplate.PMentionMenuHandle;
             row.MouseLeftButtonUp += _pMentionMenuTemplate.PMentionMenuHandle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
         {
             name.Text = mention.PMentionItemName;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PMentionFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PMentionFlag") is Image flag)
         {
             flag.Source = mention.PMentionItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMentionLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMentionLanguage") is TextBlock language)
         {
             language.Text = mention.PMentionItemLanguage;
         }
 
-        if (PLook.PLookPartFind<StackPanel>(container, "PMentionOrigin") is StackPanel origin)
+        if (QLook.QLookPartFind<StackPanel>(container, "PMentionOrigin") is StackPanel origin)
         {
-            origin.Visibility = PLook.PLookVisibleRead(mention.PMentionItemLanguage.Length > 0);
+            origin.Visibility = QLook.QLookVisibleRead(mention.PMentionItemLanguage.Length > 0);
         }
     }
 

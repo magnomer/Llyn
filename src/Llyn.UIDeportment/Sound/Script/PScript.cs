@@ -44,7 +44,7 @@ public sealed class PScript : ContentControl
 
     protected override AutomationPeer OnCreateAutomationPeer()
     {
-        return new PSurfacePeer(this);
+        return new QSurfacePeer(this);
     }
 
     public PScript()
@@ -56,7 +56,7 @@ public sealed class PScript : ContentControl
         TextBlock label = new();
         label.SetResourceReference(StyleProperty, "Theme.Script.Head");
         label.SetResourceReference(TextBlock.TextProperty, "Display.Script");
-        PIconImage chevron = new() { Width = 12, Height = 12, PIconSource = PIcon.PIconResolve("expand", 12) };
+        QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _pScriptSwitch.Content = chevron;
         _pScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
         _pScriptSwitch.Checked += (_, _) => PScriptStateApply();
@@ -74,7 +74,7 @@ public sealed class PScript : ContentControl
 
         Grid.SetIsSharedSizeScope(_pScriptList, true);
         _pScriptList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Script.Row");
-        PLookItem.PLookItemAttach(_pScriptList, PScriptItem.PScriptItemApply);
+        QLookItem.QLookItemAttach(_pScriptList, PScriptItem.PScriptItemApply);
         _pScriptLoading.SetResourceReference(StyleProperty, "Theme.Script.Loading");
         _pScriptLoading.SetResourceReference(TextBlock.TextProperty, "Display.ScriptLoading");
         _pScriptBody.Children.Add(_pScriptList);
@@ -86,7 +86,7 @@ public sealed class PScript : ContentControl
         Border box = new() { Child = stack };
         box.SetResourceReference(StyleProperty, "Theme.Script.Box");
         Content = box;
-        PLocalizationCatalog.PLocalizationCatalogCurrent.PropertyChanged += PScriptLanguageHandle;
+        QLocalizationCatalog.QLocalizationCatalogCurrent.PropertyChanged += PScriptLanguageHandle;
         PScriptStateApply();
     }
 
@@ -147,8 +147,10 @@ public sealed class PScript : ContentControl
         bool filled = items is not null && items.Count > 0;
         _pScriptList.ItemsSource = filled ? items : null;
         _pScriptLoading.Visibility = PScriptPending ? Visibility.Visible : Visibility.Collapsed;
-        _pScriptRefresh.Visibility = PLook.PLookVisibleRead(PScriptRenewal is not null);
-        _pScriptRefresh.Tag = PLook.PLookFirstRead<string?>(PScriptPending, "Pending", null);
+        _pScriptRefresh.Visibility = QLook.QLookVisibleRead(PScriptRenewal is not null);
+        _pScriptRefresh.SetValue(
+            QLook.QLookCueProperty,
+            QLook.QLookFirstRead(PScriptPending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
         _pScriptHead.Visibility = PScriptFolded ? Visibility.Visible : Visibility.Collapsed;
         _pScriptBody.Visibility = !PScriptFolded || _pScriptSwitch.IsChecked == true
             ? Visibility.Visible

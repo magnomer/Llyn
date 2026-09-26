@@ -24,7 +24,7 @@ public sealed class PParadigm : ContentControl
 
         Grid.SetIsSharedSizeScope(_pParadigmList, true);
         _pParadigmList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Paradigm.Row");
-        PLookItem.PLookItemAttach(_pParadigmList, PParadigmItemApply);
+        QLookItem.QLookItemAttach(_pParadigmList, PParadigmItemApply);
 
         Border box = new() { Child = _pParadigmList };
         box.SetResourceReference(StyleProperty, "Theme.Paradigm.Box");

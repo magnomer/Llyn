@@ -135,7 +135,7 @@
 
     <Style x:Key="Theme.Fanqie.Text" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}" />
 
-    <Style x:Key="Theme.Fanqie.RepresentativeIcon" TargetType="local:PIconImage">
+    <Style x:Key="Theme.Fanqie.RepresentativeIcon" TargetType="local:QIconImage">
         <Setter Property="Width" Value="14" />
         <Setter Property="Height" Value="14" />
         <Setter Property="Opacity" Value="0" />
@@ -168,7 +168,7 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="PSurface" Background="Transparent">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <local:PIconImage x:Name="PFanqieStar" Style="{StaticResource Theme.Fanqie.RepresentativeIcon}" />
+                            <local:QIconImage x:Name="PFanqieStar" Style="{StaticResource Theme.Fanqie.RepresentativeIcon}" />
                             <TextBlock x:Name="PFanqieOrder" Style="{StaticResource Theme.Fanqie.RepresentativeOrder}" />
                         </StackPanel>
                     </Border>

@@ -51,7 +51,7 @@ public partial class PRepertoire
 
     private void POccurrenceHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireOccurrenceSelect(PSender.PSenderSourceRead<POccurrenceItem>(e)?.POccurrenceItemId);
+        _lRepertoire.LRepertoireOccurrenceSelect(QSender.QSenderSourceRead<POccurrenceItem>(e)?.POccurrenceItemId);
     }
 
     private void POccurrenceApply(FrameworkElement container, object item, string? _)
@@ -61,37 +61,37 @@ public partial class PRepertoire
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "POccurrenceRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "POccurrenceRow") is Button row)
         {
             if (occurrence.POccurrenceItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= POccurrenceHandle;
             row.Click += POccurrenceHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "POccurrenceFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "POccurrenceFlag") is Image flag)
         {
             flag.Source = occurrence.POccurrenceItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "POccurrenceName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "POccurrenceName") is Run name)
         {
             name.Text = occurrence.POccurrenceItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "POccurrenceEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "POccurrenceEpithet") is Run epithet)
         {
             epithet.Text = " " + occurrence.POccurrenceItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "POccurrenceLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "POccurrenceLanguage") is TextBlock language)
         {
             language.Text = occurrence.POccurrenceItemLanguage;
         }

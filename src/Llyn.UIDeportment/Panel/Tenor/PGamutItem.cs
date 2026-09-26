@@ -25,7 +25,7 @@ internal sealed class PGamutItem : INotifyPropertyChanged
     {
         PGamutItemId = id;
         PGamutItemName = name;
-        PGamutItemIcon = PIcon.PIconResolve(PGamutItemIcons.GetValueOrDefault(name.Trim(), "register"), 32);
+        PGamutItemIcon = QIcon.QIconResolve(PGamutItemIcons.GetValueOrDefault(name.Trim(), "register"), 32);
         PGamutItemUsage = usage;
         _pGamutItemChosen = chosen;
     }

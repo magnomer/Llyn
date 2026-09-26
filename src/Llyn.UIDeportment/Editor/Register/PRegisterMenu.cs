@@ -16,9 +16,9 @@ public partial class PEditor
     {
         if (item is PRegisterCaret caret)
         {
-            if (PLook.PLookPartFind<TextBox>(container, "PRegisterEntry") is TextBox entry)
+            if (QLook.QLookPartFind<TextBox>(container, "PRegisterEntry") is TextBox entry)
             {
-                entry.Tag = caret.PRegisterCaretHint;
+                entry.SetValue(QField.QFieldHintProperty, caret.PRegisterCaretHint);
                 entry.Text = caret.PRegisterCaretText;
                 entry.PreviewKeyDown -= _pRegisterTemplate.PRegisterCaretHandle;
                 entry.PreviewKeyDown += _pRegisterTemplate.PRegisterCaretHandle;
@@ -34,22 +34,22 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PRegisterName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PRegisterName") is TextBlock name)
         {
-            name.Text = (string)new PStateConverter().Convert(
-                [chip.PRegisterText, PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")],
+            name.Text = (string)new QStateConverter().Convert(
+                [chip.PRegisterText, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
                 typeof(string),
                 string.Empty,
                 CultureInfo.CurrentCulture);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PRegisterEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PRegisterEraser") is Button eraser)
         {
             eraser.Click -= _pRegisterTemplate.PRegisterChipHandle;
             eraser.Click += _pRegisterTemplate.PRegisterChipHandle;
-            if (PLook.PLookPartFind<PIconImage>(eraser, "PRegisterIcon") is PIconImage icon)
+            if (QLook.QLookPartFind<QIconImage>(eraser, "PRegisterIcon") is QIconImage icon)
             {
-                icon.PIconSource = PIcon.PIconResolve("close", 12);
+                icon.QIconSource = QIcon.QIconResolve("close", 12);
             }
         }
     }
@@ -61,8 +61,8 @@ public partial class PEditor
             PRegisterSelectorChip = (DataTemplate)_pRegisterTemplate["Theme.Register.Chip"],
             PRegisterSelectorCaret = (DataTemplate)_pRegisterTemplate["Theme.Register.Entry"],
         };
-        PLookItem.PLookItemAttach(list, PRegisterApply);
-        if (PLook.PLookPartFind<Border>(list, "PRegisterFrame") is Border frame)
+        QLookItem.QLookItemAttach(list, PRegisterApply);
+        if (QLook.QLookPartFind<Border>(list, "PRegisterFrame") is Border frame)
         {
             frame.MouseLeftButtonDown -= _pRegisterTemplate.PRegisterFocusHandle;
             frame.MouseLeftButtonDown += _pRegisterTemplate.PRegisterFocusHandle;

@@ -69,37 +69,37 @@ public partial class PTenor
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCohortRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PCohortRow") is Button row)
         {
             if (cohort.PCohortItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PCohortHandle;
             row.Click += PCohortHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PCohortFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PCohortFlag") is Image flag)
         {
             flag.Source = cohort.PCohortItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCohortName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PCohortName") is Run name)
         {
             name.Text = cohort.PCohortItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PCohortEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PCohortEpithet") is Run epithet)
         {
             epithet.Text = " " + cohort.PCohortItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCohortLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCohortLanguage") is TextBlock language)
         {
             language.Text = cohort.PCohortItemLanguage;
         }

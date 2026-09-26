@@ -47,7 +47,7 @@ Marking the row chosen is left to the card showing, so the first card marks its 
 ## `private void PLedgerApply(FrameworkElement container, object item, string? _)`
 
 Fills one ledger row from its item, the work its bindings did before.
-The row's tag reads Chosen on the chosen item and is cleared otherwise, which the look sheet paints.
+The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The click is subscribed once per row, removed first so a refill never doubles it.
 It runs again on every change the item raises, so a chosen row moves without a refill.
 A new title or summary on the item refills the row the same way.

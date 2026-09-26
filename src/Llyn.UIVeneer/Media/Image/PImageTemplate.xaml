@@ -49,7 +49,7 @@
 
             <StackPanel x:Name="PMediaControl" Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{StaticResource Theme.Card.Control}">
                 <Button x:Name="PImageEraser" Style="{DynamicResource Theme.Card.Handle}">
-                    <local:PIconImage x:Name="PImageRemoveIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PImageRemoveIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

@@ -29,8 +29,8 @@ public partial class PEditor
     private void PAccentAttach()
     {
         PAccent.ItemsSource = _pAccentItem;
-        PLookItem.PLookItemAttach(PAccent, LAccentItem.LAccentItemApply);
-        PField.PFieldCellAttach(PAccent);
+        QLookItem.QLookItemAttach(PAccent, LAccentItem.LAccentItemApply);
+        QField.QFieldCellAttach(PAccent);
         PAccentControl.PAccentControlAttach(PAccent);
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PAccentCommand.PAccentCommandAddition, PAccentAddHandle));

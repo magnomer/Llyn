@@ -59,15 +59,14 @@
             <TextBox
                 x:Name="PImprintTitle"
                 Margin="0,0,60,0"
-                Style="{StaticResource Imprint.Title}"
-                Tag="{DynamicResource Source.Untitled}" />
+                Style="{StaticResource Imprint.Title}" />
 
             <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
                 <Grid>
                     <ToggleButton x:Name="PImprintKind" Style="{StaticResource Imprint.Kind}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="PImprintKindName" Style="{StaticResource Theme.Speech.Name}" />
-                            <local:PIconImage x:Name="PImprintKindIcon" Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" />
+                            <local:QIconImage x:Name="PImprintKindIcon" Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" />
                         </StackPanel>
                     </ToggleButton>
                     <Popup
@@ -122,24 +121,21 @@
                 <TextBlock Style="{StaticResource Imprint.Heading}" Text="{DynamicResource Source.Year}" />
                 <TextBox
                     x:Name="PImprintYear"
-                    Style="{StaticResource Imprint.Field}"
-                    Tag="{DynamicResource Source.Year}" />
+                    Style="{StaticResource Imprint.Field}" />
             </StackPanel>
 
             <StackPanel Margin="0,28,0,0">
                 <TextBlock Style="{StaticResource Imprint.Heading}" Text="{DynamicResource Source.Url}" />
                 <TextBox
                     x:Name="PImprintUrl"
-                    Style="{StaticResource Imprint.Field}"
-                    Tag="{DynamicResource Source.Url}" />
+                    Style="{StaticResource Imprint.Field}" />
             </StackPanel>
 
             <StackPanel Margin="0,28,0,0">
                 <TextBlock Style="{StaticResource Imprint.Heading}" Text="{DynamicResource Source.Note}" />
                 <TextBox
                     x:Name="PImprintNote"
-                    Style="{StaticResource Imprint.Note}"
-                    Tag="{DynamicResource Source.Note}" />
+                    Style="{StaticResource Imprint.Note}" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

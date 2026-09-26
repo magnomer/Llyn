@@ -155,10 +155,10 @@ internal sealed partial class PCard : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(card);
 
-        PStateConverter state = new();
+        QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
-        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
-        if (PLook.PLookPartFind<Border>(container, "PCardPosition") is Border position)
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
             if (card.PCardPositionActive)
             {
@@ -170,7 +170,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
+        if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
             if (changed is null or nameof(PCardPositionText))
             {
@@ -189,57 +189,59 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PTitle") is TextBox title)
+        if (QLook.QLookPartFind<TextBox>(container, "PTitle") is TextBox title)
         {
             if (changed is null or nameof(PTitle))
             {
                 title.Text = (string)state.Convert(card.PTitle, typeof(string), string.Empty, culture);
             }
 
-            title.Tag = state.Convert([card.PTitle, card.PCardTitle], typeof(string), string.Empty, culture);
+            title.SetValue(
+                QField.QFieldHintProperty,
+                state.Convert([card.PTitle, card.PCardTitle], typeof(string), string.Empty, culture));
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
+        if (QLook.QLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
         {
             if (changed is null or nameof(PCardExpression))
             {
                 expression.Text = (string)state.Convert(card.PCardExpression, typeof(string), string.Empty, culture);
             }
 
-            expression.Tag = state.Convert(
-                [card.PCardExpression, unknown, PLocalizationCatalog.PLocalizationTextRead("Card.ExpressionHint")],
+            expression.SetValue(QField.QFieldHintProperty, state.Convert(
+                [card.PCardExpression, unknown, QLocalizationCatalog.QLocalizationTextRead("Card.ExpressionHint")],
                 typeof(string),
                 string.Empty,
-                culture);
+                culture));
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PCardDefinition") is TextBox definition)
+        if (QLook.QLookPartFind<TextBox>(container, "PCardDefinition") is TextBox definition)
         {
             if (changed is null or nameof(PCardDefinition))
             {
                 definition.Text = (string)state.Convert(card.PCardDefinition, typeof(string), string.Empty, culture);
             }
 
-            definition.Tag = state.Convert(
-                [card.PCardDefinition, unknown, PLocalizationCatalog.PLocalizationTextRead(hint)],
+            definition.SetValue(QField.QFieldHintProperty, state.Convert(
+                [card.PCardDefinition, unknown, QLocalizationCatalog.QLocalizationTextRead(hint)],
                 typeof(string),
                 string.Empty,
-                culture);
+                culture));
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PCardIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PCardIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("close", 12);
+            icon.QIconSource = QIcon.QIconResolve("close", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PCardImageIcon") is PIconImage image)
+        if (QLook.QLookPartFind<QIconImage>(container, "PCardImageIcon") is QIconImage image)
         {
-            image.PIconSource = PIcon.PIconResolve("image", 24);
+            image.QIconSource = QIcon.QIconResolve("image", 24);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PCardVideoIcon") is PIconImage video)
+        if (QLook.QLookPartFind<QIconImage>(container, "PCardVideoIcon") is QIconImage video)
         {
-            video.PIconSource = PIcon.PIconResolve("video", 24);
+            video.QIconSource = QIcon.QIconResolve("video", 24);
         }
     }
 

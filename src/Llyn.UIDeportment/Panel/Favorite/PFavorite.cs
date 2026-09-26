@@ -27,21 +27,22 @@ public partial class PFavorite : UserControl
         PFavoritePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PFavoritePress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PSeriesDropper, PSeriesDropdown, PSeries);
-        PChoice.PChoiceDropperAttach(PStrainerDropper, PStrainerDropdown, PStrainerDropper);
+        QChoice.QChoiceDropperAttach(PSeriesDropper, PSeriesDropdown, PSeries);
+        QChoice.QChoiceDropperAttach(PStrainerDropper, PStrainerDropdown, PStrainerDropper);
 
-        PSeriesIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PStrainerIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PFavoriteBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PFavoriteStore.Tag = PIcon.PIconResolve("save", 24);
-        PFavoriteEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PFavoriteLater.Tag = PIcon.PIconResolve("advance", 24);
-        PFavoriteBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PFavoriteForward.Tag = PIcon.PIconResolve("redo", 24);
-        PFavoritePortrait.Tag = PIcon.PIconResolve("export", 24);
-        PFavoritePress.Tag = PIcon.PIconResolve("print", 24);
-        PFavoriteViewer.Tag = PIcon.PIconResolve("view", 24);
-        PFavoriteScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PSeriesIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PStrainerIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PFavoriteBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PRecall.SetResourceReference(QField.QFieldHintProperty, "Favorite.Search");
+        PFavoriteStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PFavoriteEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PFavoriteLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PFavoriteBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PFavoriteForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PFavoritePortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PFavoritePress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PFavoriteViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PFavoriteScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PRecall.TextChanged += PRecallHandle;
         PFavoriteStore.Click += PFavoriteStoreHandle;
@@ -58,7 +59,7 @@ public partial class PFavorite : UserControl
 
     private ToggleButton PSeriesDropper => (ToggleButton)FindName(nameof(PSeriesDropper));
 
-    private PIconImage PSeriesIcon => (PIconImage)FindName(nameof(PSeriesIcon));
+    private QIconImage PSeriesIcon => (QIconImage)FindName(nameof(PSeriesIcon));
 
     private Popup PSeriesDropdown => (Popup)FindName(nameof(PSeriesDropdown));
 
@@ -68,7 +69,7 @@ public partial class PFavorite : UserControl
 
     private ToggleButton PStrainerDropper => (ToggleButton)FindName(nameof(PStrainerDropper));
 
-    private PIconImage PStrainerIcon => (PIconImage)FindName(nameof(PStrainerIcon));
+    private QIconImage PStrainerIcon => (QIconImage)FindName(nameof(PStrainerIcon));
 
     private FrameworkElement PStrainerMark => (FrameworkElement)FindName(nameof(PStrainerMark));
 
@@ -110,7 +111,7 @@ public partial class PFavorite : UserControl
 
     private Button PFavoriteBin => (Button)FindName(nameof(PFavoriteBin));
 
-    private PIconImage PFavoriteBinIcon => (PIconImage)FindName(nameof(PFavoriteBinIcon));
+    private QIconImage PFavoriteBinIcon => (QIconImage)FindName(nameof(PFavoriteBinIcon));
 
     internal void PFavoriteAttach(PWindow host)
     {
@@ -124,7 +125,7 @@ public partial class PFavorite : UserControl
         panel.LPanelFailed += host.PWindowFailureShow;
 
         PRoster.ItemsSource = _pRosterList;
-        PLookItem.PLookItemAttach(PRoster, PRosterApply);
+        QLookItem.QLookItemAttach(PRoster, PRosterApply);
 
         PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
@@ -219,12 +220,12 @@ public partial class PFavorite : UserControl
     private void PFavoriteModeUpdate()
     {
         LPanel panel = _lFavorite.LFavoritePanel;
-        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
-        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PFavoriteViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
-        PFavoriteScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
-        PFavoriteVoyage.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PFavoriteChronicle.Visibility = PLook.PLookVisibleRead(panel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PFavoriteViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
+        PFavoriteScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
+        PFavoriteVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PFavoriteChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
         PFavoriteMode.IsEnabled = panel.LPanelModeEnabled;
         PFavoriteBin.IsEnabled = panel.LPanelBinEnabled;
     }

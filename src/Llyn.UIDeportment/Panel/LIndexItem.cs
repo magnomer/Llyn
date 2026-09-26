@@ -77,34 +77,34 @@ public sealed class LIndexItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PIndexRow") is Button button)
+        if (QLook.QLookPartFind<Button>(container, "PIndexRow") is Button button)
         {
             if (row.LIndexItemChosen)
             {
-                button.Tag = "Chosen";
+                button.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                button.ClearValue(FrameworkElement.TagProperty);
+                button.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PIndexFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PIndexFlag") is Image flag)
         {
             flag.Source = row.LIndexItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PIndexName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PIndexName") is Run name)
         {
             name.Text = row.LIndexItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PIndexEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PIndexEpithet") is Run epithet)
         {
             epithet.Text = " " + row.LIndexItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PIndexLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PIndexLanguage") is TextBlock language)
         {
             language.Text = row.LIndexItemLanguage;
         }

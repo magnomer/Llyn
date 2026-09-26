@@ -20,7 +20,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
             new Uri("/Llyn.UIVeneer;component/Panel/Repertoire/PRepertoire.xaml", UriKind.Relative));
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
-        PLook.PLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(surface.Resources);
 
         _pImageTemplate = new PImageTemplate(this);
         Resources.MergedDictionaries.Add(_pImageTemplate);
@@ -34,24 +34,26 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         PRepertoirePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PRepertoirePress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PTierDropper, PTierDropdown, PTier);
-        PChoice.PChoiceDropperAttach(PMeshDropper, PMeshDropdown, PMeshDropper);
+        QChoice.QChoiceDropperAttach(PTierDropper, PTierDropdown, PTier);
+        QChoice.QChoiceDropperAttach(PMeshDropper, PMeshDropdown, PMeshDropper);
 
-        PTierIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PMeshIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PScenarioPictureIcon.PIconSource = PIcon.PIconResolve("image", 24);
-        PScenarioFilmIcon.PIconSource = PIcon.PIconResolve("video", 24);
-        PRepertoireBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PRepertoireFresh.Tag = PIcon.PIconResolve("new", 24);
-        PRepertoireStore.Tag = PIcon.PIconResolve("save", 24);
-        PRepertoireEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PRepertoireLater.Tag = PIcon.PIconResolve("advance", 24);
-        PRepertoireBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PRepertoireForward.Tag = PIcon.PIconResolve("redo", 24);
-        PRepertoirePortrait.Tag = PIcon.PIconResolve("export", 24);
-        PRepertoirePress.Tag = PIcon.PIconResolve("print", 24);
-        PRepertoireViewer.Tag = PIcon.PIconResolve("view", 24);
-        PRepertoireScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PTierIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PMeshIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PScenarioPictureIcon.QIconSource = QIcon.QIconResolve("image", 24);
+        PScenarioFilmIcon.QIconSource = QIcon.QIconResolve("video", 24);
+        PRepertoireBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PInquest.SetResourceReference(QField.QFieldHintProperty, "Situation.Search");
+        PSortie.SetResourceReference(QField.QFieldHintProperty, "Sortie.Search");
+        PRepertoireFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PRepertoireStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PRepertoireEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PRepertoireLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PRepertoireBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PRepertoireForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PRepertoirePortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PRepertoirePress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PRepertoireViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PRepertoireScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PInquest.TextChanged += PInquestHandle;
         PSortie.TextChanged += PSortieHandle;
@@ -77,7 +79,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private ToggleButton PTierDropper => (ToggleButton)FindName(nameof(PTierDropper));
 
-    private PIconImage PTierIcon => (PIconImage)FindName(nameof(PTierIcon));
+    private QIconImage PTierIcon => (QIconImage)FindName(nameof(PTierIcon));
 
     private Popup PTierDropdown => (Popup)FindName(nameof(PTierDropdown));
 
@@ -89,7 +91,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private ToggleButton PMeshDropper => (ToggleButton)FindName(nameof(PMeshDropper));
 
-    private PIconImage PMeshIcon => (PIconImage)FindName(nameof(PMeshIcon));
+    private QIconImage PMeshIcon => (QIconImage)FindName(nameof(PMeshIcon));
 
     private Ellipse PMeshMark => (Ellipse)FindName(nameof(PMeshMark));
 
@@ -179,15 +181,15 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private Button PScenarioPicture => (Button)FindName(nameof(PScenarioPicture));
 
-    private PIconImage PScenarioPictureIcon => (PIconImage)FindName(nameof(PScenarioPictureIcon));
+    private QIconImage PScenarioPictureIcon => (QIconImage)FindName(nameof(PScenarioPictureIcon));
 
     private Button PScenarioFilm => (Button)FindName(nameof(PScenarioFilm));
 
-    private PIconImage PScenarioFilmIcon => (PIconImage)FindName(nameof(PScenarioFilmIcon));
+    private QIconImage PScenarioFilmIcon => (QIconImage)FindName(nameof(PScenarioFilmIcon));
 
     private Button PRepertoireBin => (Button)FindName(nameof(PRepertoireBin));
 
-    private PIconImage PRepertoireBinIcon => (PIconImage)FindName(nameof(PRepertoireBinIcon));
+    private QIconImage PRepertoireBinIcon => (QIconImage)FindName(nameof(PRepertoireBinIcon));
 
     internal void PRepertoireAttach(PWindow host)
     {
@@ -205,12 +207,12 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         POccurrence.ItemsSource = _pOccurrenceList;
         PScenarioImage.ItemsSource = _pScenarioImage;
         PScenarioVideo.ItemsSource = _pScenarioVideo;
-        PLookItem.PLookItemAttach(PAtlas, PAtlasApply);
-        PLookItem.PLookItemAttach(POccurrence, POccurrenceApply);
-        PLookItem.PLookItemAttach(PScenarioImage, PImageApply);
-        PLookItem.PLookItemAttach(PScenarioVideo, PVideoApply);
-        PLookItem.PLookItemAttach(PVignettePicture, PImage.PImageLineApply);
-        PLookItem.PLookItemAttach(PVignetteVideo, PVideo.PVideoLineApply);
+        QLookItem.QLookItemAttach(PAtlas, PAtlasApply);
+        QLookItem.QLookItemAttach(POccurrence, POccurrenceApply);
+        QLookItem.QLookItemAttach(PScenarioImage, PImageApply);
+        QLookItem.QLookItemAttach(PScenarioVideo, PVideoApply);
+        QLookItem.QLookItemAttach(PVignettePicture, PImage.PImageLineApply);
+        QLookItem.QLookItemAttach(PVignetteVideo, PVideo.PVideoLineApply);
 
         PMedia.PMediaAttach(this, host.PWindowDeportment);
         PDisplay.PDisplayAttach(host, editor.LEditorLectern);
@@ -249,16 +251,16 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
 
     private void PRepertoireModeUpdate()
     {
-        PScenario.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireScenarioShown);
-        PVignette.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteShown);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireDisplayShown);
-        PEditor.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireEditorShown);
-        PVignetteBody.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteHeld);
-        PVignetteUnselected.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireVignetteBlank);
-        PRepertoireViewer.IsChecked = PLook.PLookCheckedRead(_lRepertoire.LRepertoireViewerChecked);
-        PRepertoireScribe.IsChecked = PLook.PLookCheckedRead(_lRepertoire.LRepertoireScribeChecked);
-        PRepertoireVoyage.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireViewerChecked);
-        PRepertoireChronicle.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireScribeChecked);
+        PScenario.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireScenarioShown);
+        PVignette.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireVignetteShown);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireDisplayShown);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireEditorShown);
+        PVignetteBody.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireVignetteHeld);
+        PVignetteUnselected.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireVignetteBlank);
+        PRepertoireViewer.IsChecked = QLook.QLookCheckedRead(_lRepertoire.LRepertoireViewerChecked);
+        PRepertoireScribe.IsChecked = QLook.QLookCheckedRead(_lRepertoire.LRepertoireScribeChecked);
+        PRepertoireVoyage.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireViewerChecked);
+        PRepertoireChronicle.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireScribeChecked);
         PRepertoireMode.IsEnabled = _lRepertoire.LRepertoireModeEnabled;
         PRepertoireBin.IsEnabled = _lRepertoire.LRepertoireBinEnabled;
         PRepertoireStore.IsEnabled = _lRepertoire.LRepertoireStoreEnabled;

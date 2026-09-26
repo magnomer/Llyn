@@ -92,12 +92,12 @@ public static class LLocalization
         return texts;
     }
 
-    public static string LLocalizationTextRead(string key)
+    public static string QLocalizationTextRead(string key)
     {
-        return LLocalizationTextFind(key) ?? key;
+        return QLocalizationTextFind(key) ?? key;
     }
 
-    public static string? LLocalizationTextFind(string key)
+    public static string? QLocalizationTextFind(string key)
     {
         ArgumentNullException.ThrowIfNull(key);
 

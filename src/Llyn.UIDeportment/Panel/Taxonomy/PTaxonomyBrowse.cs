@@ -40,12 +40,12 @@ public partial class PTaxonomy
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
         PFunnelDropper.IsChecked = false;
-        _lTaxonomy.LTaxonomyFunnelSet(LChoice.LChoiceOrderRead(sender));
+        _lTaxonomy.LTaxonomyFunnelSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PLatticeHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyLatticeSet(LChoice.LChoiceFilterRead(PLatticeList));
+        _lTaxonomy.LTaxonomyLatticeSet(QChoice.QChoiceFilterRead(PLatticeList));
         PLatticeRestore();
     }
 
@@ -66,7 +66,7 @@ public partial class PTaxonomy
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PDirectoryFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PFunnelList,
             "Funnel",
             PFunnelHandle,
@@ -74,12 +74,12 @@ public partial class PTaxonomy
                 LCatalogOrder.LCatalogOrderName,
                 LCatalogOrder.LCatalogOrderReverse,
             ]);
-        PChoice.PChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
+        QChoice.QChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         PLatticeRestore();
 
         await LEnsignImage.LEnsignLoad(_pTaxonomyHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PLatticeList, _lTaxonomy.LTaxonomyLanguageRead(), _lTaxonomy.LTaxonomyFilter, PLatticeHandle);
         _lTaxonomy.LTaxonomyExplorationSet(PExploration.Text ?? string.Empty);
         _lTaxonomy.LTaxonomyScoutSet(PScout.Text);
@@ -138,27 +138,27 @@ public partial class PTaxonomy
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PDirectoryRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PDirectoryRow") is Button row)
         {
             if (directory.PDirectoryItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PDirectoryHandle;
             row.Click += PDirectoryHandle;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PDirectoryIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PDirectoryIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("tag", 16);
+            icon.QIconSource = QIcon.QIconResolve("tag", 16);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PDirectoryText") is TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PDirectoryText") is TextBlock text)
         {
             text.Text = directory.PDirectoryItemText;
         }

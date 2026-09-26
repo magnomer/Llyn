@@ -27,7 +27,7 @@ The epithet the row prints after the headword, small and muted, in the reading t
 ## `public static IReadOnlyList<LUsageItem> LUsageItemBuild(IReadOnlyList<LUsage> usages)`
 
 A plain copy loop over the citing places, wording each owner and taking the epithet the row carries.
-The labels read through `LLocalizationCatalog`, so the deportment words them without the veneer.
+The labels read through `QLocalizationCatalog`, so the deportment words them without the veneer.
 
 ## `public void LUsageItemShow(Func<long, bool> exampleSeam, Func<long, bool> entrySeam)`
 

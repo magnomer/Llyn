@@ -51,7 +51,7 @@ public partial class PCorpus
 
     private void PQuotationHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusQuotationSelect(PSender.PSenderSourceRead<PQuotationItem>(e)?.PQuotationItemId);
+        _lCorpus.LCorpusQuotationSelect(QSender.QSenderSourceRead<PQuotationItem>(e)?.PQuotationItemId);
     }
 
     private void PQuotationApply(FrameworkElement container, object item, string? _)
@@ -61,37 +61,37 @@ public partial class PCorpus
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PQuotationRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PQuotationRow") is Button row)
         {
             if (quotation.PQuotationItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PQuotationHandle;
             row.Click += PQuotationHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PQuotationFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PQuotationFlag") is Image flag)
         {
             flag.Source = quotation.PQuotationItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PQuotationName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PQuotationName") is Run name)
         {
             name.Text = quotation.PQuotationItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PQuotationEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PQuotationEpithet") is Run epithet)
         {
             epithet.Text = " " + quotation.PQuotationItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PQuotationLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PQuotationLanguage") is TextBlock language)
         {
             language.Text = quotation.PQuotationItemLanguage;
         }

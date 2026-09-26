@@ -103,39 +103,39 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PInventoryRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PInventoryRow") is Button row)
         {
             if (inventory.PInventoryItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PInventoryFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PInventoryFlag") is Image flag)
         {
             flag.Source = inventory.PInventoryItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PInventoryPronunciation") is TextBlock pronunciation)
+        if (QLook.QLookPartFind<TextBlock>(container, "PInventoryPronunciation") is TextBlock pronunciation)
         {
             pronunciation.Text = inventory.PInventoryItemPronunciation;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PInventoryName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PInventoryName") is Run name)
         {
             name.Text = inventory.PInventoryItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PInventoryEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PInventoryEpithet") is Run epithet)
         {
             epithet.Text = " " + inventory.PInventoryItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PInventoryLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PInventoryLanguage") is TextBlock language)
         {
             language.Text = inventory.PInventoryItemLanguage;
         }

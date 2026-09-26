@@ -47,14 +47,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Echelon.Title}">
-                    <local:PIconImage x:Name="PEchelonIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PEchelonIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PMuster"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Muster.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PEchelonDropdown"
                     Width="238"
@@ -86,8 +85,7 @@
                 <TextBox
                     x:Name="PComb"
                     Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Comb.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PLouverDropper"
@@ -95,7 +93,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Louver.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PLouverIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PLouverIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PLouverMark"
                             Width="6"
@@ -226,7 +224,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PGuildBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PGuildBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

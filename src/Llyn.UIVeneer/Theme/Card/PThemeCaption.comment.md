@@ -1,7 +1,7 @@
 # PThemeCaption.xaml
 
 Styles the window caption buttons.
-Deportment switches their hover and press through `PLook` rows on the named surface.
+Deportment switches their hover and press through `QLook` rows on the named surface.
 
 ## `Theme.Caption.Button`
 

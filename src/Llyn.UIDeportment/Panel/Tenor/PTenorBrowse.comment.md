@@ -126,7 +126,7 @@ Zero says no Register is shown, so there is no place to come back to.
 ## `private void PGamutApply(FrameworkElement container, object item, string? _)`
 
 Fills one register row from its item, the work its bindings did before.
-The row's tag reads Chosen on the chosen item and is cleared otherwise, which the look sheet paints.
+The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The click is subscribed once per row, removed first so a refill never doubles it.
 It runs again on every change the item raises, so a chosen row moves without a refill.
 The chosen Register stays visible while the eye is on the Entries beside it.

@@ -16,9 +16,9 @@ public partial class PEditor
     {
         if (item is PContextCaret caret)
         {
-            if (PLook.PLookPartFind<TextBox>(container, "PContextEntry") is TextBox entry)
+            if (QLook.QLookPartFind<TextBox>(container, "PContextEntry") is TextBox entry)
             {
-                entry.Tag = caret.PContextCaretHint;
+                entry.SetValue(QField.QFieldHintProperty, caret.PContextCaretHint);
                 entry.Text = caret.PContextCaretText;
                 entry.PreviewKeyDown -= _pContextTemplate.PContextCaretHandle;
                 entry.PreviewKeyDown += _pContextTemplate.PContextCaretHandle;
@@ -34,22 +34,22 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PContextName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PContextName") is TextBlock name)
         {
-            name.Text = (string)new PStateConverter().Convert(
-                [chip.PContextText, PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")],
+            name.Text = (string)new QStateConverter().Convert(
+                [chip.PContextText, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
                 typeof(string),
                 string.Empty,
                 CultureInfo.CurrentCulture);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PContextEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PContextEraser") is Button eraser)
         {
             eraser.Click -= _pContextTemplate.PContextChipHandle;
             eraser.Click += _pContextTemplate.PContextChipHandle;
-            if (PLook.PLookPartFind<PIconImage>(eraser, "PContextIcon") is PIconImage icon)
+            if (QLook.QLookPartFind<QIconImage>(eraser, "PContextIcon") is QIconImage icon)
             {
-                icon.PIconSource = PIcon.PIconResolve("close", 12);
+                icon.QIconSource = QIcon.QIconResolve("close", 12);
             }
         }
     }
@@ -61,8 +61,8 @@ public partial class PEditor
             PContextSelectorChip = (DataTemplate)_pContextTemplate["Theme.Context.Chip"],
             PContextSelectorCaret = (DataTemplate)_pContextTemplate["Theme.Context.Entry"],
         };
-        PLookItem.PLookItemAttach(list, PContextApply);
-        if (PLook.PLookPartFind<Border>(list, "PContextFrame") is Border frame)
+        QLookItem.QLookItemAttach(list, PContextApply);
+        if (QLook.QLookPartFind<Border>(list, "PContextFrame") is Border frame)
         {
             frame.MouseLeftButtonDown -= _pContextTemplate.PContextFocusHandle;
             frame.MouseLeftButtonDown += _pContextTemplate.PContextFocusHandle;

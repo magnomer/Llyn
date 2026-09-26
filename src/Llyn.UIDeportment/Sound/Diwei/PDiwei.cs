@@ -20,7 +20,7 @@ public class PDiwei : UserControl
         CommandBindings.Add(new CommandBinding(PDiweiCommand.PDiweiCommandEntry, PDiweiEntryHandle));
         CommandBindings.Add(new CommandBinding(PDiweiCommand.PDiweiCommandSwitch, PDiweiSwitchHandle));
 
-        PLookItem.PLookItemAttach(PDiweiList, PDiweiItem.PDiweiItemApply);
+        QLookItem.QLookItemAttach(PDiweiList, PDiweiItem.PDiweiItemApply);
     }
 
     private TextBlock PDiweiHeadword => (TextBlock)FindName(nameof(PDiweiHeadword));
@@ -54,16 +54,16 @@ public class PDiwei : UserControl
         PDiweiLanguage.Text = page.LDiweiPageLanguage;
         PDiweiFlag.Source = LEnsignImage.LEnsignFind(page.LDiweiPageLanguage);
         PDiweiList.ItemsSource = PDiweiItem.PDiweiItemBuild(page.LDiweiPageSections);
-        PDiweiEmpty.Visibility = PLook.PLookVisibleRead(page.LDiweiPageEmpty);
+        PDiweiEmpty.Visibility = QLook.QLookVisibleRead(page.LDiweiPageEmpty);
     }
 
     private void PDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        PDiweiSwitchNotice?.Invoke(PSender.PSenderFlagRead(e));
+        PDiweiSwitchNotice?.Invoke(QSender.QSenderFlagRead(e));
     }
 
     private void PDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        PDiweiEntryNotice?.Invoke(PSender.PSenderTextRead(e));
+        PDiweiEntryNotice?.Invoke(QSender.QSenderTextRead(e));
     }
 }

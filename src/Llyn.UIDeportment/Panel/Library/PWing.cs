@@ -21,31 +21,32 @@ public class PWing : UserControl
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
 
-        PChoice.PChoiceDropperAttach(PWingOrderDropper, PWingOrderDropdown, PWingOrderDropper);
-        PChoice.PChoiceDropperAttach(PWingSieveDropper, PWingSieveDropdown, PWingSieveDropper);
+        PWingQuery.SetResourceReference(QField.QFieldHintProperty, "Duplex.Search");
+        QChoice.QChoiceDropperAttach(PWingOrderDropper, PWingOrderDropdown, PWingOrderDropper);
+        QChoice.QChoiceDropperAttach(PWingSieveDropper, PWingSieveDropdown, PWingSieveDropper);
 
-        PWingOrderIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PWingSieveIcon.PIconSource = PIcon.PIconResolve("filter", 24);
+        PWingOrderIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PWingSieveIcon.QIconSource = QIcon.QIconResolve("filter", 24);
 
         PWingQuery.LostKeyboardFocus += PWingLeaveHandle;
         PWingQuery.PreviewKeyDown += PWingKeyHandle;
         PWingQuery.TextChanged += PWingQueryHandle;
         PWingIndex.LostKeyboardFocus += PWingLeaveHandle;
 
-        PLookItem.PLookItemAttach(PWingIndex, PWingIndexApply);
+        QLookItem.QLookItemAttach(PWingIndex, PWingIndexApply);
         DependencyPropertyDescriptor.FromProperty(VisibilityProperty, typeof(ItemsControl))
             .AddValueChanged(PWingIndex, PWingTrayHandle);
     }
 
     private ToggleButton PWingOrderDropper => (ToggleButton)FindName(nameof(PWingOrderDropper));
 
-    private PIconImage PWingOrderIcon => (PIconImage)FindName(nameof(PWingOrderIcon));
+    private QIconImage PWingOrderIcon => (QIconImage)FindName(nameof(PWingOrderIcon));
 
     private TextBox PWingQuery => (TextBox)FindName(nameof(PWingQuery));
 
     private ToggleButton PWingSieveDropper => (ToggleButton)FindName(nameof(PWingSieveDropper));
 
-    private PIconImage PWingSieveIcon => (PIconImage)FindName(nameof(PWingSieveIcon));
+    private QIconImage PWingSieveIcon => (QIconImage)FindName(nameof(PWingSieveIcon));
 
     private FrameworkElement PWingSieveMark => (FrameworkElement)FindName(nameof(PWingSieveMark));
 
@@ -86,10 +87,10 @@ public class PWing : UserControl
         _lWing.LWingIndexClear();
         await LEnsignImage.LEnsignLoad(_pWingHost.PWindowDeportment);
 
-        PChoice.PChoiceOrderBuild(PWingOrderList, "Order", PWingOrderHandle, LIndex.LIndexOrder);
-        PChoice.PChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);
+        QChoice.QChoiceOrderBuild(PWingOrderList, "Order", PWingOrderHandle, LIndex.LIndexOrder);
+        QChoice.QChoiceOrderApply(PWingOrderDropdown, _lWing.LWingOrder);
         _lWing.LWingSieveShow(PWingSieveMark);
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PWingSieveList, _lWing.LWingLanguageRead(), _lWing.LWingFilter, PWingSieveHandle);
 
         PWingQuery.Text = string.Empty;
@@ -135,7 +136,7 @@ public class PWing : UserControl
     {
         LIndexItem.LIndexItemApply(container, item, change);
 
-        if (PLook.PLookPartFind<Button>(container, "PIndexRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PIndexRow") is Button row)
         {
             row.Click -= PWingIndexHandle;
             row.Click += PWingIndexHandle;

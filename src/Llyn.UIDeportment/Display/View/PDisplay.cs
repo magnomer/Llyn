@@ -27,8 +27,8 @@ public class PDisplay : UserControl
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
         _pDisplayCompass = new PDisplayCompass(this);
         Resources.MergedDictionaries.Add(_pDisplayCompass);
-        PLook.PLookStyleAttach(surface.Resources);
-        PLook.PLookStyleAttach(_pDisplayCompass);
+        QLook.QLookStyleAttach(surface.Resources);
+        QLook.QLookStyleAttach(_pDisplayCompass);
 
         PDisplaySwath.PSwathAttach(PDisplayContents);
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
@@ -46,8 +46,8 @@ public class PDisplay : UserControl
         PDisplayReflexFold.Checked += PReflexFoldHandle;
         PDisplayReflexFold.Unchecked += PReflexFoldHandle;
         PPlaybackAction.Click += PPlaybackActionHandle;
-        PPlaybackAction.Tag = PIcon.PIconResolve("play", 24);
-        PCompassIcon.PIconSource = PIcon.PIconResolve("compass", 24);
+        PPlaybackAction.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("play", 24));
+        PCompassIcon.QIconSource = QIcon.QIconResolve("compass", 24);
         PDisplayMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardHandle));
         PDisplayCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayCardHandle));
         PDisplayIncoming.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PDisplayIncomingHandle));
@@ -63,11 +63,11 @@ public class PDisplay : UserControl
             PContour.PContourIpaProperty,
             new Binding(nameof(TextBlock.Text)) { Source = PDisplayPronunciation });
 
-        PLookItem.PLookItemAttach(PDisplaySpeech, PSpeechApply);
-        PLookItem.PLookItemAttach(PDisplayMeaning, _pLeaf.PLeafCardApply);
-        PLookItem.PLookItemAttach(PDisplayCollocation, _pLeaf.PLeafCardApply);
-        PLookItem.PLookItemAttach(PDisplayIncoming, PUsageApply);
-        PLookItem.PLookItemAttach(PCompassList, PCompassApply);
+        QLookItem.QLookItemAttach(PDisplaySpeech, PSpeechApply);
+        QLookItem.QLookItemAttach(PDisplayMeaning, _pLeaf.PLeafCardApply);
+        QLookItem.QLookItemAttach(PDisplayCollocation, _pLeaf.PLeafCardApply);
+        QLookItem.QLookItemAttach(PDisplayIncoming, PUsageApply);
+        QLookItem.QLookItemAttach(PCompassList, PCompassApply);
     }
 
     private TextBlock PDisplayEmpty => (TextBlock)FindName(nameof(PDisplayEmpty));
@@ -186,7 +186,7 @@ public class PDisplay : UserControl
 
     private ItemsControl PCompassList => (ItemsControl)FindName(nameof(PCompassList));
 
-    private PIconImage PCompassIcon => (PIconImage)FindName(nameof(PCompassIcon));
+    private QIconImage PCompassIcon => (QIconImage)FindName(nameof(PCompassIcon));
 
     internal void PDisplayAttach(PWindow host, LLectern lectern)
     {
@@ -285,7 +285,7 @@ public class PDisplay : UserControl
 
     private void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternSound.LLecternFoldHandle(PLook.PLookCheckedRead(PDisplayReflexFold.IsChecked));
+        _lLectern.LLecternSound.LLecternFoldHandle(QLook.QLookCheckedRead(PDisplayReflexFold.IsChecked));
     }
 
     internal void PDisplayObserverAttach()
@@ -361,7 +361,7 @@ public class PDisplay : UserControl
 
     private static void PSpeechApply(FrameworkElement container, object item, string? _)
     {
-        if (item is string speech && PLook.PLookPartFind<TextBlock>(container, "PSpeechName") is TextBlock name)
+        if (item is string speech && QLook.QLookPartFind<TextBlock>(container, "PSpeechName") is TextBlock name)
         {
             name.Text = speech;
         }
@@ -374,37 +374,37 @@ public class PDisplay : UserControl
             return;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PUsageIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PUsageIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("incoming", 24);
+            icon.QIconSource = QIcon.QIconResolve("incoming", 24);
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PUsageName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PUsageName") is Run name)
         {
             name.Text = usage.LUsageItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
         {
             epithet.Text = "\u2002" + usage.LUsageItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
+        if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
         {
             title.Text = usage.LUsageItemTitle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
+        if (QLook.QLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
         {
             owner.Text = usage.LUsageItemOwner;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PUsageFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PUsageFlag") is Image flag)
         {
             flag.Source = usage.LUsageItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PUsageLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PUsageLanguage") is TextBlock language)
         {
             language.Text = usage.LUsageItemLanguage;
         }
@@ -417,32 +417,32 @@ public class PDisplay : UserControl
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCompassRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PCompassRow") is Button row)
         {
             if (compass.LCompassItemCurrent)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= _pDisplayCompass.PCompassRowHandle;
             row.Click += _pDisplayCompass.PCompassRowHandle;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PCompassIndent") is Grid indent)
+        if (QLook.QLookPartFind<Grid>(container, "PCompassIndent") is Grid indent)
         {
             indent.Margin = compass.LCompassItemIndent;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCompassNumber") is TextBlock number)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCompassNumber") is TextBlock number)
         {
             number.Text = compass.LCompassItemNumber;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCompassName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCompassName") is TextBlock name)
         {
             name.Text = compass.LCompassItemName;
         }

@@ -8,7 +8,7 @@
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <TextBlock x:Name="PMarkerName" Style="{DynamicResource Theme.Marker.Name}" />
                 <Button x:Name="PMarkerEraser" Style="{DynamicResource Theme.Marker.Remove}">
-                    <local:PIconImage
+                    <local:QIconImage
                         x:Name="PMarkerIcon"
                         Width="12"
                         Height="12" />

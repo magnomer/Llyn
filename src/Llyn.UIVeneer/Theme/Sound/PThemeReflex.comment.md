@@ -22,7 +22,7 @@ The row fill makes it unseen and flat while hidden under the fold, yet still mea
 ## `<Style x:Key="Theme.Reflex.Label" TargetType="TextBlock">`
 
 The language of a lead row, drawn as the variety name of a pronunciation row is drawn.
-Beneath the lead a `PLook` row hides it rather than collapsing it, so the shared column keeps its width.
+Beneath the lead a `QLook` row hides it rather than collapsing it, so the shared column keeps its width.
 The row fill gives it the region of the row as its tooltip, when the row names one.
 
 ## `<Style x:Key="Theme.Reflex.Text" TargetType="TextBlock">`
@@ -34,7 +34,7 @@ The weight is left alone because the faces the scripts fall back to carry no hea
 
 ## `<Style x:Key="Theme.Reflex.Edge" TargetType="TextBlock">`
 
-The slash before or after the reading of a phonemic language, collapsed by a `PLook` row when there is none.
+The slash before or after the reading of a phonemic language, collapsed by a `QLook` row when there is none.
 Both the editor and the reading view draw it in the reading's colour, as part of the reading.
 
 ## `<Style x:Key="Theme.Reflex.Fold" TargetType="ToggleButton">`
@@ -43,7 +43,7 @@ The small muted toggle under the stack that opens and closes the folded language
 It stands centred under the table, so both panels hold the table in a stack no wider than its rows.
 It reads `More readings` with a chevron, which turns over and reads `Fewer readings` while open.
 It lights in the accent under the pointer.
-Its icon, turn, label change and hover are `PLook` rows in `PLookSound.cs`.
+Its icon, turn, label change and hover are `QLook` rows in `QLookSound.cs`.
 
 ## `<Style x:Key="Theme.Reflex.Tag" TargetType="TextBlock">`
 
@@ -53,7 +53,7 @@ It is hidden rather than collapsed when blank, so the shared column keeps its wi
 ## `<Style x:Key="Theme.Reflex.Minor" TargetType="TextBlock">`
 
 The shared look of romanization, meaning, note and anchors after the reading.
-Meaning and note wear it directly, and a `PLook` row hides it while blank.
+Meaning and note wear it directly, and a `QLook` row hides it while blank.
 
 ## `<Style x:Key="Theme.Reflex.Romanization" TargetType="TextBlock">`
 
@@ -62,7 +62,7 @@ The romanization after the reading, drawn in the minor style.
 ## `<Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock">`
 
 The anchored placements after the note, drawn as the romanization is.
-A `PLook` row collapses it when the row is anchored to none.
+A `QLook` row collapses it when the row is anchored to none.
 Both modes draw it, so the placement stands at one place in the editor and the reading view.
 
 ## `<Style x:Key="Theme.Reflex.Loading" TargetType="TextBlock">`

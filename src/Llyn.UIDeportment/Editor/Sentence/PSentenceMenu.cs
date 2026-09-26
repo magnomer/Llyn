@@ -108,7 +108,7 @@ public partial class PEditor
         }
 
         PSentence.PSentenceRowApply(container, row);
-        if (PLook.PLookPartFind<Grid>(container, "PSentenceReach") is Grid reach && reach.CommandBindings.Count == 0)
+        if (QLook.QLookPartFind<Grid>(container, "PSentenceReach") is Grid reach && reach.CommandBindings.Count == 0)
         {
             reach.CommandBindings.Add(new CommandBinding(
                 PMentionCommand.PMentionCommandLink,
@@ -130,31 +130,31 @@ public partial class PEditor
                 PGlossCommand.PGlossCommandRemoval, _pSentenceTemplate.PGlossRemoveHandle));
         }
 
-        if (PLook.PLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
+        if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
         {
             opening.Click -= PSentenceFrameHandle;
             opening.Click += PSentenceFrameHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PSentenceAdder") is Button adder)
+        if (QLook.QLookPartFind<Button>(container, "PSentenceAdder") is Button adder)
         {
             adder.Click -= _pSentenceTemplate.PSentenceAddHandle;
             adder.Click += _pSentenceTemplate.PSentenceAddHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PSentenceEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PSentenceEraser") is Button eraser)
         {
             eraser.Click -= _pSentenceTemplate.PSentenceRemoveHandle;
             eraser.Click += _pSentenceTemplate.PSentenceRemoveHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PSentenceGlossChooser") is Button gloss)
+        if (QLook.QLookPartFind<Button>(container, "PSentenceGlossChooser") is Button gloss)
         {
             gloss.Click -= _pSentenceTemplate.PGlossAddHandle;
             gloss.Click += _pSentenceTemplate.PGlossAddHandle;
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
+        if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
         {
             citation.PreviewKeyDown -= _pSentenceTemplate.PCitationKeyHandle;
             citation.PreviewKeyDown += _pSentenceTemplate.PCitationKeyHandle;
@@ -162,16 +162,16 @@ public partial class PEditor
             citation.LostKeyboardFocus += _pSentenceTemplate.PCitationLeaveHandle;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PSentenceMentionLine") is ItemsControl mention)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceMentionLine") is ItemsControl mention)
         {
             mention.ItemsSource = row.PSentenceChip.PMentionLineChip;
-            PLookItem.PLookItemAttach(mention, PMentionChip.PMentionChipApply);
+            QLookItem.QLookItemAttach(mention, PMentionChip.PMentionChipApply);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PSentenceGlossLine") is ItemsControl glosses)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceGlossLine") is ItemsControl glosses)
         {
             glosses.ItemsSource = row.PSentenceGloss;
-            PLookItem.PLookItemAttach(glosses, PGloss.PGlossRowApply);
+            QLookItem.QLookItemAttach(glosses, PGloss.PGlossRowApply);
         }
 
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
@@ -184,7 +184,7 @@ public partial class PEditor
     {
         if (sender is ToggleButton { DataContext: PSentence row } opening)
         {
-            row.PSentenceFrameVisible = PLook.PLookCheckedRead(opening.IsChecked);
+            row.PSentenceFrameVisible = QLook.QLookCheckedRead(opening.IsChecked);
         }
     }
 
@@ -318,7 +318,7 @@ public partial class PEditor
 
     internal void PSentenceMentionShow(PCard card)
     {
-        string silent = PLocalizationCatalog.PLocalizationTextRead("Mention.Silent");
+        string silent = QLocalizationCatalog.QLocalizationTextRead("Mention.Silent");
         foreach (PSentence row in card.PCardSentence)
         {
             try

@@ -23,9 +23,10 @@ public partial class PSettings : UserControl
 
         PLocalization.SelectedValuePath = "Tag";
 
-        PWorkspaceDialogIcon.PIconSource = PIcon.PIconResolve("folder", 24);
-        PDialFolder.Tag = PIcon.PIconResolve("folder", 24);
-        PDialWidth.Tag = PIcon.PIconResolve("sort", 24);
+        PWorkspaceDialogIcon.QIconSource = QIcon.QIconResolve("folder", 24);
+        PWinnow.SetResourceReference(QField.QFieldHintProperty, "Settings.Search");
+        PDialFolder.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("folder", 24));
+        PDialWidth.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("sort", 24));
 
         PWinnow.TextChanged += PWinnowHandle;
         PWorkspacePath.KeyDown += PWorkspacePathHandle;
@@ -53,7 +54,7 @@ public partial class PSettings : UserControl
 
     private Button PWorkspaceDialog => (Button)FindName(nameof(PWorkspaceDialog));
 
-    private PIconImage PWorkspaceDialogIcon => (PIconImage)FindName(nameof(PWorkspaceDialogIcon));
+    private QIconImage PWorkspaceDialogIcon => (QIconImage)FindName(nameof(PWorkspaceDialogIcon));
 
     private Button PDialFolder => (Button)FindName(nameof(PDialFolder));
 
@@ -86,7 +87,7 @@ public partial class PSettings : UserControl
         _pSettingsHost = host;
         PLocalizationBuild();
         PSettingsWindow.LWindowObserverAttach(LObserver.LObserverCreate(this, PSettingsBulletinHandle));
-        PLookItem.PLookItemAttach(PLedger, PLedgerApply);
+        QLookItem.QLookItemAttach(PLedger, PLedgerApply);
 
         PSettingsSync();
         PLedgerBuild();

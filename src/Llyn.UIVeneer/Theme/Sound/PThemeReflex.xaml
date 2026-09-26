@@ -43,7 +43,7 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Border x:Name="PSurface" CornerRadius="6">
                         <StackPanel Orientation="Horizontal">
-                            <local:PIconImage
+                            <local:QIconImage
                                 x:Name="PSurfaceMark"
                                 Width="12"
                                 Height="12"

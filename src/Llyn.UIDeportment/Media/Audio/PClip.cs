@@ -32,10 +32,10 @@ public partial class PEditor
     private void PClipAttach()
     {
         PClipList.ItemsSource = _pClipItem;
-        PLookItem.PLookItemAttach(PClipList, PClipRowApply);
+        QLookItem.QLookItemAttach(PClipList, PClipRowApply);
         PClip.Closed += PClipClosedHandle;
         PDownloader.Click += PDownloaderHandle;
-        PDownloader.Tag = PIcon.PIconResolve("download", 24);
+        PDownloader.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("download", 24));
     }
 
     private async void PDownloaderHandle(object sender, RoutedEventArgs e)
@@ -111,7 +111,7 @@ public partial class PEditor
             return _pClipItem[position];
         }
 
-        PClipItem row = new(source, order, PLocalizationCatalog.PLocalizationTextRead("Downloader.Searching"));
+        PClipItem row = new(source, order, QLocalizationCatalog.QLocalizationTextRead("Downloader.Searching"));
         _pClipItem.Insert(position, row);
         return row;
     }
@@ -119,7 +119,7 @@ public partial class PEditor
     private PClipReading PClipReadingCreate(LRecording recording)
     {
         string variety = recording.LRecordingVariety;
-        string action = PLocalizationCatalog.PLocalizationTextRead("Downloader.Use");
+        string action = QLocalizationCatalog.QLocalizationTextRead("Downloader.Use");
         if (!recording.LRecordingRegional)
         {
             return new PClipReading(recording, string.Empty, null, action);
@@ -146,7 +146,7 @@ public partial class PEditor
             return;
         }
 
-        PClipNotice.Text = PLocalizationCatalog.PLocalizationTextRead(
+        PClipNotice.Text = QLocalizationCatalog.QLocalizationTextRead(
             _pClipSearching ? "Downloader.Searching" : "Downloader.Empty");
         PClipNotice.Visibility = Visibility.Visible;
     }
@@ -158,22 +158,22 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PClipOption") is TextBlock option)
+        if (QLook.QLookPartFind<TextBlock>(container, "PClipOption") is TextBlock option)
         {
             option.Text = clip.PClipItemSource;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PClipReadingList") is ItemsControl readings)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PClipReadingList") is ItemsControl readings)
         {
             readings.ItemsSource = clip.PClipItemReading;
-            readings.Visibility = PLook.PLookVisibleRead(clip.PClipItemReady);
-            PLookItem.PLookItemAttach(readings, PClipReadingApply);
+            readings.Visibility = QLook.QLookVisibleRead(clip.PClipItemReady);
+            QLookItem.QLookItemAttach(readings, PClipReadingApply);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PClipNote") is TextBlock note)
+        if (QLook.QLookPartFind<TextBlock>(container, "PClipNote") is TextBlock note)
         {
             note.Text = clip.PClipItemNotice;
-            note.Visibility = PLook.PLookVisibleRead(!clip.PClipItemReady);
+            note.Visibility = QLook.QLookVisibleRead(!clip.PClipItemReady);
         }
     }
 
@@ -184,42 +184,44 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<ColumnDefinition>(container, "PClipColumn") is ColumnDefinition column)
+        if (QLook.QLookPartFind<ColumnDefinition>(container, "PClipColumn") is ColumnDefinition column)
         {
             column.SharedSizeGroup = string.Concat(
                 "PClipColumn", ItemsControl.GetAlternationIndex(container).ToString(CultureInfo.InvariantCulture));
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PClipReadingFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PClipReadingFlag") is Image flag)
         {
             flag.Source = reading.PClipReadingFlag;
             flag.ToolTip = reading.PClipReadingLabel;
-            flag.Visibility = PLook.PLookVisibleRead(reading.PClipReadingFlag is not null);
+            flag.Visibility = QLook.QLookVisibleRead(reading.PClipReadingFlag is not null);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PClipReadingLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PClipReadingLabel") is TextBlock label)
         {
             label.Text = reading.PClipReadingLabel;
-            label.Visibility = PLook.PLookVisibleRead(
+            label.Visibility = QLook.QLookVisibleRead(
                 reading.PClipReadingFlag is null && reading.PClipReadingLabel.Length > 0);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PClipPreview") is Button preview)
+        if (QLook.QLookPartFind<Button>(container, "PClipPreview") is Button preview)
         {
-            preview.Tag = reading.PClipReadingPlaying ? "Playing"
-                : reading.PClipReadingFetching ? "Fetching"
-                : reading.PClipReadingRefused ? "Refused"
-                : null;
+            preview.SetValue(
+                QLook.QLookCueProperty,
+                reading.PClipReadingPlaying ? QLookCue.QLookCuePlaying
+                : reading.PClipReadingFetching ? QLookCue.QLookCueFetching
+                : reading.PClipReadingRefused ? QLookCue.QLookCueRefused
+                : QLookCue.QLookCueBase);
             preview.Click -= _pClipTemplate.PClipPreviewHandle;
             preview.Click += _pClipTemplate.PClipPreviewHandle;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PClipPreviewIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PClipPreviewIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("play", 24);
+            icon.QIconSource = QIcon.QIconResolve("play", 24);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PClipSelector") is Button selector)
+        if (QLook.QLookPartFind<Button>(container, "PClipSelector") is Button selector)
         {
             selector.Content = reading.PClipReadingAction;
             selector.IsEnabled = reading.PClipReadingReady;
@@ -287,13 +289,13 @@ public partial class PEditor
             return;
         }
 
-        reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Saving");
+        reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saving");
         reading.PClipReadingReady = false;
 
         try
         {
             bool attached = await _lEditor.LEditorClip.LClipRecordingSave(reading.PClipReadingModel);
-            reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Saved");
+            reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saved");
 
             if (!attached)
             {
@@ -309,7 +311,7 @@ public partial class PEditor
         }
         catch (Exception)
         {
-            reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Retry");
+            reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Retry");
             reading.PClipReadingReady = true;
         }
     }
@@ -325,8 +327,8 @@ public partial class PEditor
         PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
             recording,
             recording.LRecordingAddressed ? PClipReadingCreate(recording) : null,
-            PLocalizationCatalog.PLocalizationTextRead("Downloader.Missing"),
-            PLocalizationCatalog.PLocalizationTextRead("Downloader.Broken"));
+            QLocalizationCatalog.QLocalizationTextRead("Downloader.Missing"),
+            QLocalizationCatalog.QLocalizationTextRead("Downloader.Broken"));
         PClipUpdate();
     }
 

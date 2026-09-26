@@ -18,8 +18,8 @@ public partial class PWindow
             _pWindowSurface,
             PHeadquarter,
             e,
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
-            PLocalizationCatalog.PLocalizationTextRead("Headquarter.Version"));
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
+            QLocalizationCatalog.QLocalizationTextRead("Headquarter.Version"));
     }
 
     private void PHeadquarterExitHandle(object sender, MouseButtonEventArgs e)

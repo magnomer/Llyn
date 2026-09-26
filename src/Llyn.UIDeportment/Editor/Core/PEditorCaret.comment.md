@@ -25,5 +25,5 @@ So the first text box found under the field is the caret the user types into.
 
 ## `internal static bool PCaretKeyApply(TextBox box, Key key, Action<int> remove, Func<int, bool> move, Action place)`
 
-Reads the text box and forwards to `LCaret.LCaretKeyApply`, so the veneer holds no key branch.
+Reads the text box and forwards to `QCaret.QCaretKeyApply`, so the veneer holds no key branch.
 The key travels by name, since the deportment builds without WPF.

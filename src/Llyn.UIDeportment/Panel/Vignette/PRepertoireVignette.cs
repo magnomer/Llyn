@@ -10,7 +10,7 @@ public partial class PRepertoire
     private string? PVignetteTextRead(LStateValue value)
     {
         return value.LStateValueUncertain
-            ? PLocalizationCatalog.PLocalizationTextRead("Display.Unknown")
+            ? QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")
             : value.LStateValueShown;
     }
 
@@ -32,7 +32,7 @@ public partial class PRepertoire
     {
         string? text = PVignetteTextRead(value);
 
-        PVignetteTitle.Text = text ?? PLocalizationCatalog.PLocalizationTextRead("Situation.Untitled");
+        PVignetteTitle.Text = text ?? QLocalizationCatalog.QLocalizationTextRead("Situation.Untitled");
         PVignetteTitle.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
@@ -66,12 +66,12 @@ public partial class PRepertoire
 
         return count switch
         {
-            0 => PLocalizationCatalog.PLocalizationTextRead("Situation.UsageNone"),
-            1 => PLocalizationCatalog.PLocalizationTextRead("Situation.UsageOne"),
+            0 => QLocalizationCatalog.QLocalizationTextRead("Situation.UsageNone"),
+            1 => QLocalizationCatalog.QLocalizationTextRead("Situation.UsageOne"),
             _ => string.Concat(
                 count.ToString(CultureInfo.CurrentCulture),
                 " ",
-                PLocalizationCatalog.PLocalizationTextRead("Situation.UsageMany")),
+                QLocalizationCatalog.QLocalizationTextRead("Situation.UsageMany")),
         };
     }
 }

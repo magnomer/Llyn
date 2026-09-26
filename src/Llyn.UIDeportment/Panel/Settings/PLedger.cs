@@ -28,7 +28,7 @@ public partial class PSettings
 
     private string PLedgerTitleRead(string child)
     {
-        return PLocalizationCatalog.PLocalizationTextRead("Settings." + child);
+        return QLocalizationCatalog.QLocalizationTextRead("Settings." + child);
     }
 
     private string PLedgerMetaRead(string child)
@@ -48,22 +48,22 @@ public partial class PSettings
                     ?.Content as string ?? settings.LSettingsLocalization;
 
             case "Transcription":
-                return PLocalizationCatalog.PLocalizationTextRead(
+                return QLocalizationCatalog.QLocalizationTextRead(
                     settings.LSettingsRespelled ? "Settings.On" : "Settings.Off");
 
             case "Listing":
-                return PLocalizationCatalog.PLocalizationTextRead(
+                return QLocalizationCatalog.QLocalizationTextRead(
                     settings.LSettingsEpithet ? "Settings.On" : "Settings.Off");
 
             case "Web":
                 return string.Format(
                     CultureInfo.CurrentCulture,
-                    PLocalizationCatalog.PLocalizationTextRead("Settings.Tally"),
+                    QLocalizationCatalog.QLocalizationTextRead("Settings.Tally"),
                     settings.LSettingsOnline,
                     2);
 
             case "Layout":
-                return PLocalizationCatalog.PLocalizationTextRead(
+                return QLocalizationCatalog.QLocalizationTextRead(
                     PSettingsWindow.LWindowPostureRead().LPostureStateLinked
                         ? "Layout.LinkedMeta"
                         : "Layout.FreeMeta");
@@ -100,7 +100,7 @@ public partial class PSettings
             .Where(item => wanted.Length == 0 || keys[item.PLedgerItemChild]
                 .Prepend("Settings." + item.PLedgerItemChild + "Helper")
                 .Prepend("Settings." + item.PLedgerItemChild)
-                .Select(key => casing.ToLower(PLocalizationCatalog.PLocalizationTextRead(key)))
+                .Select(key => casing.ToLower(QLocalizationCatalog.QLocalizationTextRead(key)))
                 .Any(label => label.Contains(wanted, StringComparison.Ordinal)))
             .ToList();
 
@@ -125,27 +125,27 @@ public partial class PSettings
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PLedgerRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PLedgerRow") is Button row)
         {
             if (ledger.PLedgerItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PLedgerHandle;
             row.Click += PLedgerHandle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PLedgerTitle") is TextBlock title)
+        if (QLook.QLookPartFind<TextBlock>(container, "PLedgerTitle") is TextBlock title)
         {
             title.Text = ledger.PLedgerItemTitle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PLedgerMeta") is TextBlock meta)
+        if (QLook.QLookPartFind<TextBlock>(container, "PLedgerMeta") is TextBlock meta)
         {
             meta.Text = ledger.PLedgerItemMeta;
         }

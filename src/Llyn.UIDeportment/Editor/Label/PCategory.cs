@@ -23,8 +23,8 @@ public partial class PEditor
     private void PCategoryAttach()
     {
         PCategoryList.ItemsSource = _pCategoryItem;
-        PLookItem.PLookItemAttach(PCategoryList, PCategoryApply);
-        PChoice.PChoiceDropperAttach(PMarkerSwitch, PCategory, PMarkerSurface);
+        QLookItem.QLookItemAttach(PCategoryList, PCategoryApply);
+        QChoice.QChoiceDropperAttach(PMarkerSwitch, PCategory, PMarkerSurface);
     }
 
     private void PCategoryApply(FrameworkElement container, object item, string? _)
@@ -34,18 +34,18 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PCategoryName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PCategoryName") is TextBlock name)
         {
             name.Text = row.PCategoryItemName;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PCategoryIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PCategoryIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("check", 12);
-            icon.Visibility = PLook.PLookVisibleRead(row.PCategoryItemTaken);
+            icon.QIconSource = QIcon.QIconResolve("check", 12);
+            icon.Visibility = QLook.QLookVisibleRead(row.PCategoryItemTaken);
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCategoryChoice") is Button choice)
+        if (QLook.QLookPartFind<Button>(container, "PCategoryChoice") is Button choice)
         {
             choice.Click -= _pCategoryTemplate.PCategoryHandle;
             choice.Click += _pCategoryTemplate.PCategoryHandle;

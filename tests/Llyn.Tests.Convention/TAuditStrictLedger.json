@@ -21,7 +21,6 @@
     "src/Llyn.UIDeportment/Editor/Register/PRegisterTemplate.cs": 1,
     "src/Llyn.UIDeportment/Editor/Sentence/PCollocationTemplate.cs": 1,
     "src/Llyn.UIDeportment/Editor/Sentence/PSentenceTemplate.cs": 1,
-    "src/Llyn.UIDeportment/Kit/Asset/PIcon.cs": 2,
     "src/Llyn.UIDeportment/Media/Audio/PClipTemplate.cs": 1,
     "src/Llyn.UIDeportment/Media/Image/PImageTemplate.cs": 1,
     "src/Llyn.UIDeportment/Media/Video/PVideoTemplate.cs": 1,

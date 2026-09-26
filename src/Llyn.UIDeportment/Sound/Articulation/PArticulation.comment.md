@@ -9,7 +9,7 @@ The charts themselves are built in the two files beside this one.
 ## `public PArticulation()`
 
 Loads the aid's markup from the Veneer and wears it as its content, with the markup's name scope.
-It registers the markup's own styles with `PLook`, so the glyph chip lights on hover and press.
+It registers the markup's own styles with `QLook`, so the glyph chip lights on hover and press.
 It subscribes the lane's size change, then builds both charts.
 
 ## `private ScrollViewer PArticulationLane`

@@ -130,39 +130,40 @@ internal sealed class PAuthorItem : INotifyPropertyChanged
         }
 
         if (change is null or nameof(PAuthorItemName)
-            && PLook.PLookPartFind<TextBox>(container, "PAuthorName") is TextBox name)
+            && QLook.QLookPartFind<TextBox>(container, "PAuthorName") is TextBox name)
         {
             name.Text = author.PAuthorItemName;
+            name.SetResourceReference(QField.QFieldHintProperty, "Source.AuthorName");
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PAuthorEarlier") is Button earlier)
+        if (QLook.QLookPartFind<Button>(container, "PAuthorEarlier") is Button earlier)
         {
             earlier.IsEnabled = author.PAuthorItemEarlier;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PAuthorLater") is Button later)
+        if (QLook.QLookPartFind<Button>(container, "PAuthorLater") is Button later)
         {
             later.IsEnabled = author.PAuthorItemLater;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PAuthorAdditionIcon") is PIconImage addition)
+        if (QLook.QLookPartFind<QIconImage>(container, "PAuthorAdditionIcon") is QIconImage addition)
         {
-            addition.PIconSource = PIcon.PIconResolve("add", 12);
+            addition.QIconSource = QIcon.QIconResolve("add", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PAuthorRemovalIcon") is PIconImage removal)
+        if (QLook.QLookPartFind<QIconImage>(container, "PAuthorRemovalIcon") is QIconImage removal)
         {
-            removal.PIconSource = PIcon.PIconResolve("remove", 12);
+            removal.QIconSource = QIcon.QIconResolve("remove", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PAuthorEarlierIcon") is PIconImage earlierIcon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PAuthorEarlierIcon") is QIconImage earlierIcon)
         {
-            earlierIcon.PIconSource = PIcon.PIconResolve("earlier", 12);
+            earlierIcon.QIconSource = QIcon.QIconResolve("earlier", 12);
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PAuthorLaterIcon") is PIconImage laterIcon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PAuthorLaterIcon") is QIconImage laterIcon)
         {
-            laterIcon.PIconSource = PIcon.PIconResolve("later", 12);
+            laterIcon.QIconSource = QIcon.QIconResolve("later", 12);
         }
     }
 

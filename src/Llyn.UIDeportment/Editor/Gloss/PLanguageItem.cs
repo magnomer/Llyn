@@ -40,12 +40,12 @@ internal sealed class PLanguageItem
             return;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PGlossOptionFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PGlossOptionFlag") is Image flag)
         {
             flag.Source = language.PLanguageItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGlossOptionName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGlossOptionName") is TextBlock name)
         {
             name.Text = language.PLanguageItemName;
         }
@@ -53,6 +53,6 @@ internal sealed class PLanguageItem
 
     internal static string PLanguageNameRead(object sender)
     {
-        return PSender.PSenderItemRead<PLanguageItem>(sender)?.PLanguageItemName ?? string.Empty;
+        return QSender.QSenderItemRead<PLanguageItem>(sender)?.PLanguageItemName ?? string.Empty;
     }
 }

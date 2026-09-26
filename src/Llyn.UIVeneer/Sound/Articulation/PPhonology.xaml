@@ -49,14 +49,13 @@
                         Grid.Column="0"
                         Style="{StaticResource Theme.Search.Dropper}"
                         ToolTip="{DynamicResource Sequence.Title}">
-                        <local:PIconImage x:Name="PSequenceIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PSequenceIcon" Width="24" Height="24" />
                     </ToggleButton>
                     <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                     <TextBox
                         x:Name="PProbe"
                         Grid.Column="2"
-                        Style="{StaticResource Theme.Search.Field}"
-                        Tag="{DynamicResource Sound.Search}" />
+                        Style="{StaticResource Theme.Search.Field}" />
                     <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                     <ToggleButton
                         x:Name="PLensDropper"
@@ -64,7 +63,7 @@
                         Style="{StaticResource Theme.Search.Dropper}"
                         ToolTip="{DynamicResource Lens.Title}">
                         <Grid Width="24" Height="24">
-                            <local:PIconImage x:Name="PLensIcon" Width="24" Height="24" />
+                            <local:QIconImage x:Name="PLensIcon" Width="24" Height="24" />
                             <Ellipse
                                 x:Name="PLensMark"
                                 Width="6"
@@ -232,7 +231,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PPhonologyBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PPhonologyBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

@@ -49,21 +49,21 @@ public class PColophon : UserControl
         ArgumentNullException.ThrowIfNull(sheet);
 
         PColophonTitle.Text = sheet.LColophonTitle;
-        PField.PFieldPlaceholderShow(PColophonTitle, sheet.LColophonTitleFaint);
+        QField.QFieldPlaceholderShow(PColophonTitle, sheet.LColophonTitleFaint);
         PColophonKind.Text = sheet.LColophonKind;
-        PColophonChip.Visibility = PLook.PLookVisibleRead(sheet.LColophonKindShown);
+        PColophonChip.Visibility = QLook.QLookVisibleRead(sheet.LColophonKindShown);
         PColophonYear.Text = sheet.LColophonYear;
-        PField.PFieldPlaceholderShow(PColophonYear, sheet.LColophonYearFaint);
-        PColophonYearSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonYearShown);
+        QField.QFieldPlaceholderShow(PColophonYear, sheet.LColophonYearFaint);
+        PColophonYearSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonYearShown);
         PColophonUrl.Text = sheet.LColophonUrl;
-        PField.PFieldPlaceholderShow(PColophonUrl, sheet.LColophonUrlFaint);
-        PColophonUrlSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonUrlShown);
+        QField.QFieldPlaceholderShow(PColophonUrl, sheet.LColophonUrlFaint);
+        PColophonUrlSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonUrlShown);
         PColophonNote.Text = sheet.LColophonNote;
-        PField.PFieldPlaceholderShow(PColophonNote, sheet.LColophonNoteFaint);
-        PColophonNoteSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonNoteShown);
+        QField.QFieldPlaceholderShow(PColophonNote, sheet.LColophonNoteFaint);
+        PColophonNoteSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonNoteShown);
         PColophonAuthor.Text = sheet.LColophonAuthor;
-        PField.PFieldPlaceholderShow(PColophonAuthor, sheet.LColophonAuthorFaint);
-        PColophonAuthorSection.Visibility = PLook.PLookVisibleRead(sheet.LColophonAuthorShown);
+        QField.QFieldPlaceholderShow(PColophonAuthor, sheet.LColophonAuthorFaint);
+        PColophonAuthorSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonAuthorShown);
         PColophonTally.Text = sheet.LColophonTally;
 
         PColophonBody.Visibility = Visibility.Visible;

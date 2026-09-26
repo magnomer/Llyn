@@ -32,7 +32,7 @@ public partial class PEditor
             _pEditorHost.PWindowDeportment,
             draft.LEntryDraftEtymology.LEtymologyDraftText,
             draft.LEntryDraftEtymology.LEtymologyDraftMentions,
-            PLocalizationCatalog.PLocalizationTextRead("Mention.Silent"));
+            QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));
     }
 
     private void PEtymologyWriteHandle(object sender, TextChangedEventArgs e)

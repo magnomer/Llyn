@@ -38,13 +38,13 @@ public partial class PEditor
     internal void PVideoApply(FrameworkElement container, object item, string? name)
     {
         PVideo.PVideoRowApply(container, item, name);
-        if (PLook.PLookPartFind<Button>(container, "PVideoChooser") is Button open)
+        if (QLook.QLookPartFind<Button>(container, "PVideoChooser") is Button open)
         {
             open.Click -= _pVideoTemplate.PVideoOpenHandle;
             open.Click += _pVideoTemplate.PVideoOpenHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PVideoEraser") is Button remove)
+        if (QLook.QLookPartFind<Button>(container, "PVideoEraser") is Button remove)
         {
             remove.Click -= _pVideoTemplate.PVideoRemoveHandle;
             remove.Click += _pVideoTemplate.PVideoRemoveHandle;

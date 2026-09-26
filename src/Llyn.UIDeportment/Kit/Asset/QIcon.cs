@@ -1,0 +1,212 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Resources;
+using System.Xml.Linq;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
+
+namespace Llyn.UIDeportment;
+
+public static class QIcon
+{
+    private static readonly Dictionary<string, ImageSource> QIconStore = [];
+
+    private static readonly HashSet<string> QIconVector = new(StringComparer.Ordinal)
+    {
+        "add", "check", "close", "remove",
+    };
+
+    private static readonly Dictionary<ImageSource, ImageSource> QIconGrayStore = [];
+
+    [return: NotNullIfNotNull(nameof(name))]
+    internal static ImageSource? QIconResolve(string? name, double size, ImageSource? source = null, bool active = true)
+    {
+        if (source is not null)
+        {
+            if (active)
+            {
+                return source;
+            }
+
+            lock (QIconGrayStore)
+            {
+                if (QIconGrayStore.TryGetValue(source, out ImageSource? graySource))
+                {
+                    return graySource;
+                }
+
+                ImageSource grayImage;
+                if (source is DrawingImage drawingImage)
+                {
+                    Drawing drawing = drawingImage.Drawing.Clone();
+                    QImageApply(drawing);
+                    grayImage = new DrawingImage(drawing);
+                    grayImage.Freeze();
+                }
+                else if (source is BitmapSource bitmapSource)
+                {
+                    grayImage = QImageGrayCreate(bitmapSource);
+                }
+                else
+                {
+                    return source;
+                }
+
+                QIconGrayStore[source] = grayImage;
+                return grayImage;
+            }
+        }
+
+        if (name is null)
+        {
+            return null;
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(size);
+
+        lock (QIconStore)
+        {
+            if (QIconStore.TryGetValue(name, out ImageSource? cached))
+            {
+                return cached;
+            }
+
+            ImageSource image = QIconAssetLoad(name);
+            image.Freeze();
+            QIconStore[name] = image;
+            return image;
+        }
+
+        void QImageApply(Drawing drawing)
+        {
+            switch (drawing)
+            {
+                case DrawingGroup group:
+                    group.OpacityMask = QImageResolve(group.OpacityMask);
+                    foreach (Drawing child in group.Children)
+                    {
+                        QImageApply(child);
+                    }
+
+                    break;
+                case GeometryDrawing geometry:
+                    geometry.Brush = QImageResolve(geometry.Brush);
+                    if (geometry.Pen is Pen pen)
+                    {
+                        geometry.Pen = pen.Clone();
+                        geometry.Pen.Brush = QImageResolve(geometry.Pen.Brush);
+                    }
+
+                    break;
+                case GlyphRunDrawing glyph:
+                    glyph.ForegroundBrush = QImageResolve(glyph.ForegroundBrush);
+                    break;
+            }
+        }
+
+        Brush? QImageResolve(Brush? brush)
+        {
+            if (brush is SolidColorBrush solid)
+            {
+                SolidColorBrush gray = solid.Clone();
+                gray.Color = QGlyphResolve(gray.Color);
+                return gray;
+            }
+
+            if (brush is GradientBrush gradient)
+            {
+                GradientBrush gray = gradient.Clone();
+                foreach (GradientStop stop in gray.GradientStops)
+                {
+                    stop.Color = QGlyphResolve(stop.Color);
+                }
+
+                return gray;
+            }
+
+            if (brush is DrawingBrush drawingBrush)
+            {
+                DrawingBrush gray = drawingBrush.Clone();
+                QImageApply(gray.Drawing);
+                return gray;
+            }
+
+            return brush;
+        }
+
+        static Color QGlyphResolve(Color color)
+        {
+            byte gray = (byte)Math.Round((0.2126 * color.R) + (0.7152 * color.G) + (0.0722 * color.B));
+            return Color.FromArgb(color.A, gray, gray, gray);
+        }
+
+        static ImageSource QImageGrayCreate(BitmapSource source)
+        {
+            FormatConvertedBitmap bitmap = new(source, PixelFormats.Bgra32, null, 0);
+            int stride = bitmap.PixelWidth * 4;
+            byte[] pixels = new byte[stride * bitmap.PixelHeight];
+            bitmap.CopyPixels(pixels, stride, 0);
+            for (int index = 0; index < pixels.Length; index += 4)
+            {
+                byte gray = (byte)Math.Round(
+                    (0.2126 * pixels[index + 2]) + (0.7152 * pixels[index + 1]) + (0.0722 * pixels[index]));
+                pixels[index] = gray;
+                pixels[index + 1] = gray;
+                pixels[index + 2] = gray;
+            }
+
+            BitmapSource grayImage = BitmapSource.Create(
+                bitmap.PixelWidth,
+                bitmap.PixelHeight,
+                bitmap.DpiX,
+                bitmap.DpiY,
+                PixelFormats.Bgra32,
+                null,
+                pixels,
+                stride);
+            grayImage.Freeze();
+            return grayImage;
+        }
+    }
+
+    private static ImageSource QIconAssetLoad(string name)
+    {
+        string root = QContract.QContractSheetFind<string>("PIconRoot");
+        StreamResourceInfo? pngResource = null;
+        if (!QIconVector.Contains(name))
+        {
+            Uri pngUri = new(string.Concat(root, name, ".png"));
+            try
+            {
+                pngResource = System.Windows.Application.GetResourceStream(pngUri);
+            }
+            catch (IOException)
+            {
+            }
+        }
+
+        if (pngResource is not null)
+        {
+            using Stream stream = pngResource.Stream;
+            return BitmapFrame.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+        }
+
+        Uri svgUri = new(string.Concat(root, name, ".svg"));
+        StreamResourceInfo svgResource = System.Windows.Application.GetResourceStream(svgUri)
+            ?? throw new FileNotFoundException(name);
+        using Stream svgStream = svgResource.Stream;
+        using FileSvgReader reader = new(new WpfDrawingSettings
+        {
+            IncludeRuntime = false,
+            TextAsGeometry = true,
+        });
+        return new DrawingImage(reader.Read(svgStream) ?? throw new InvalidDataException(name));
+    }
+}

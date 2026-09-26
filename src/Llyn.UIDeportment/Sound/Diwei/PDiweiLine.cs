@@ -31,22 +31,22 @@ internal sealed class PDiweiLine
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PDiweiReading") is TextBlock reading)
+        if (QLook.QLookPartFind<TextBlock>(container, "PDiweiReading") is TextBlock reading)
         {
             reading.Text = line.PDiweiLineReading;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PDiweiLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PDiweiLabel") is TextBlock label)
         {
             label.Text = line.PDiweiLineLabel;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PDiweiRounded") is Border rounded)
+        if (QLook.QLookPartFind<Border>(container, "PDiweiRounded") is Border rounded)
         {
-            rounded.Visibility = PLook.PLookVisibleRead(line.PDiweiLineRounded);
+            rounded.Visibility = QLook.QLookVisibleRead(line.PDiweiLineRounded);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PDiweiCharacters") is ItemsControl characters)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PDiweiCharacters") is ItemsControl characters)
         {
             characters.ItemsSource = line.PDiweiLineCharacters;
         }

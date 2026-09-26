@@ -8,13 +8,13 @@ public sealed record LGlyphItem(string LGlyphItemText, string LGlyphItemLanguage
 {
     internal static void LGlyphItemApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not LGlyphItem glyph || PLook.PLookPartFind<Button>(container, "PGlyphChip") is not Button chip)
+        if (item is not LGlyphItem glyph || QLook.QLookPartFind<Button>(container, "PGlyphChip") is not Button chip)
         {
             return;
         }
 
         chip.CommandParameter = glyph;
-        if (PLook.PLookPartFind<TextBlock>(chip, "PGlyphCharacter") is TextBlock character)
+        if (QLook.QLookPartFind<TextBlock>(chip, "PGlyphCharacter") is TextBlock character)
         {
             character.Text = glyph.LGlyphItemText;
         }

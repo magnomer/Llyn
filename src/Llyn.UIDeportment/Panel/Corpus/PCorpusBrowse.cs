@@ -34,7 +34,7 @@ public partial class PCorpus
     private void PRankHandle(object sender, RoutedEventArgs e)
     {
         PRankDropper.IsChecked = false;
-        _lCorpus.LCorpusAnthology.LAnthologyRankSet(LChoice.LChoiceOrderRead(sender));
+        _lCorpus.LCorpusAnthology.LAnthologyRankSet(QChoice.QChoiceOrderRead(sender));
     }
 
     internal async void PCorpusVistaRestore()
@@ -44,7 +44,7 @@ public partial class PCorpus
         PCorpusObserverAttach();
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PRankList,
             "Rank",
             PRankHandle,
@@ -54,7 +54,7 @@ public partial class PCorpus
                 LCatalogOrder.LCatalogOrderSource,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PRankDropdown, anthology.LPanelOrder);
+        QChoice.QChoiceOrderApply(PRankDropdown, anthology.LPanelOrder);
         PGauzeRestore();
 
         await LEnsignImage.LEnsignLoad(_pCorpusHost.PWindowDeportment);
@@ -94,12 +94,12 @@ public partial class PCorpus
 
     private void PGauzeRestore()
     {
-        PGauzeMark.Visibility = PLook.PLookVisibleRead(_lCorpus.LCorpusAnthology.LAnthologyFiltered);
+        PGauzeMark.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusAnthology.LAnthologyFiltered);
     }
 
     private void PGauzeBuild()
     {
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PGauzeList,
             _lCorpus.LCorpusAnthology.LAnthologyLanguageRead(),
             _lCorpus.LCorpusAnthology.LAnthologyPanel.LPanelFilter,
@@ -120,7 +120,7 @@ public partial class PCorpus
 
     private void PGauzeHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusAnthology.LAnthologyGauzeSet(LChoice.LChoiceFilterRead(PGauzeList));
+        _lCorpus.LCorpusAnthology.LAnthologyGauzeSet(QChoice.QChoiceFilterRead(PGauzeList));
         PGauzeRestore();
     }
 
@@ -130,8 +130,8 @@ public partial class PCorpus
         try
         {
             read = _lCorpus.LCorpusAnthology.LAnthologyRowsRead(
-                PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-                PLocalizationCatalog.PLocalizationTextRead("Example.Unwritten"));
+                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+                QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten"));
             _pAnthologyCount = _lCorpus.LCorpusAnthology.LAnthologyUsageRead();
         }
         catch (Exception exception)
@@ -140,8 +140,8 @@ public partial class PCorpus
             return;
         }
 
-        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
-        string unwritten = PLocalizationCatalog.PLocalizationTextRead("Example.Unwritten");
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        string unwritten = QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten");
 
         List<PAnthologyItem> fresh = [];
         foreach (LCatalogExample row in read)
@@ -160,7 +160,7 @@ public partial class PCorpus
         LSplice.LSpliceApply(
             _pAnthologyList, fresh, PAnthologyItem.PAnthologyItemMatch, PAnthologyItem.PAnthologyItemSync);
 
-        PAnthologyEmpty.Visibility = PLook.PLookVisibleRead(_pAnthologyList.Count == 0);
+        PAnthologyEmpty.Visibility = QLook.QLookVisibleRead(_pAnthologyList.Count == 0);
 
         PExcerptTally.Text = PCorpusTallyRead(_lCorpus.LCorpusAnthology.LAnthologyChosen);
         PTranscriptTally.Text = PCorpusTallyRead(PTranscriptDesk.LDeskStoredRead());
@@ -170,7 +170,7 @@ public partial class PCorpus
     private void PAnthologyHandle(object sender, RoutedEventArgs e)
     {
         _lCorpus.LCorpusSelect(
-            PSender.PSenderSourceRead<PAnthologyItem>(e)?.PAnthologyItemId, _pCorpusHost.PVoyageRecord);
+            QSender.QSenderSourceRead<PAnthologyItem>(e)?.PAnthologyItemId, _pCorpusHost.PVoyageRecord);
     }
 
     private void PAnthologyApply(FrameworkElement container, object item, string? _)
@@ -180,37 +180,37 @@ public partial class PCorpus
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PAnthologyRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PAnthologyRow") is Button row)
         {
             if (anthology.PAnthologyItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PAnthologyHandle;
             row.Click += PAnthologyHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PAnthologyFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PAnthologyFlag") is Image flag)
         {
             flag.Source = anthology.PAnthologyItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAnthologyName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAnthologyName") is TextBlock name)
         {
             name.Text = anthology.PAnthologyItemName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAnthologyLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAnthologyLanguage") is TextBlock language)
         {
             language.Text = anthology.PAnthologyItemLanguage;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAnthologyCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAnthologyCount") is TextBlock count)
         {
             count.Text = anthology.PAnthologyItemCount;
         }
@@ -232,12 +232,12 @@ public partial class PCorpus
 
         return count switch
         {
-            0 => PLocalizationCatalog.PLocalizationTextRead("Example.UsageNone"),
-            1 => PLocalizationCatalog.PLocalizationTextRead("Example.UsageOne"),
+            0 => QLocalizationCatalog.QLocalizationTextRead("Example.UsageNone"),
+            1 => QLocalizationCatalog.QLocalizationTextRead("Example.UsageOne"),
             _ => string.Concat(
                 count.ToString(CultureInfo.CurrentCulture),
                 " ",
-                PLocalizationCatalog.PLocalizationTextRead("Example.UsageMany")),
+                QLocalizationCatalog.QLocalizationTextRead("Example.UsageMany")),
         };
     }
 

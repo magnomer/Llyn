@@ -123,7 +123,7 @@ public partial class PCorpus
                 _pCorpusHost.PWindowDeportment,
                 example.LExampleText.LStateValueShow(),
                 mentions,
-                PLocalizationCatalog.PLocalizationTextRead("Mention.Silent"));
+                QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));
         }
         catch (Exception exception)
         {

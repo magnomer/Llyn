@@ -12,17 +12,17 @@ The section fill shows it only while the switch is on, respelling being on for t
 ## `<Style x:Key="Theme.Diwei.Choice" TargetType="Button">`
 
 One half of the switch in muted text.
-Its switch command, padding, ground and hover are `PLook` rows.
+Its switch command, padding, ground and hover are `QLook` rows.
 
 ## `<Style x:Key="Theme.Diwei.Ipa" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Choice}">`
 
 The IPA half, which the section fill lights in the accent tint while the section prints the IPA set.
-A `PLook` row gives it `false` as the switch command's parameter.
+A `QLook` row gives it `false` as the switch command's parameter.
 
 ## `<Style x:Key="Theme.Diwei.Respelling" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Choice}">`
 
 The respelling half, which the section fill lights while the section prints the respelling set.
-A `PLook` row gives it `true` as the switch command's parameter.
+A `QLook` row gives it `true` as the switch command's parameter.
 
 ## `<Style x:Key="Theme.Diwei.Language" TargetType="TextBlock">`
 
@@ -43,7 +43,7 @@ The character count raised after the part text, small and in the accent colour, 
 ## `<Style x:Key="Theme.Diwei.Mark" TargetType="ToggleButton">`
 
 One mark: the part text and its count side by side, no box, a gap before the next mark.
-`PLook` rows underline it on hover and tint the part while checked, since a click lists the characters.
+`QLook` rows underline it on hover and tint the part while checked, since a click lists the characters.
 
 ## `<Style x:Key="Theme.Diwei.MarkPopup" TargetType="Popup">`
 
@@ -70,7 +70,7 @@ One tally line across shared columns: the language name, the kind, then its chip
 ## `<Style x:Key="Theme.Diwei.Tally" TargetType="ItemsControl">`
 
 The tally lines of a section between its heading and its plate.
-A `PLook` row collapses it while the section has none.
+A `QLook` row collapses it while the section has none.
 
 ## `<Style x:Key="Theme.Diwei.Head" TargetType="TextBlock">`
 
@@ -100,7 +100,7 @@ The 合 word, red semibold in the warning ink, the same mark the fanqie block dr
 ## `<Style x:Key="Theme.Diwei.Chip" TargetType="Button">`
 
 One character as a link back to its entry, in accent ink, as the glyph chips are.
-`PLook` rows give its entry command, parameter, text, ink and hover underline from the character it stands for.
+`QLook` rows give its entry command, parameter, text, ink and hover underline from the character it stands for.
 The word takes the button's ink itself, since the default text style would paint it black.
 
 ## `<DataTemplate x:Key="Theme.Diwei.Line">`

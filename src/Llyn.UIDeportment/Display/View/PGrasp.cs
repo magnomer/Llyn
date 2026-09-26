@@ -5,9 +5,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class PGrasp : FrameworkElement
 {
-    private static readonly ImageSource? PGraspStarImage = PIcon.PIconResolve("star", 16);
+    private static readonly ImageSource? PGraspStarImage = QIcon.QIconResolve("star", 16);
 
-    private static readonly ImageSource? PGraspGrayImage = PIcon.PIconResolve(null, 0, PGraspStarImage, false);
+    private static readonly ImageSource? PGraspGrayImage = QIcon.QIconResolve(null, 0, PGraspStarImage, false);
 
     public static readonly DependencyProperty PGraspLimitProperty = DependencyProperty.Register(
         nameof(PGraspLimit),

@@ -25,10 +25,10 @@ internal static partial class TInterface
         new LLocalizationLoader().LLocalizationScan();
 
     internal static string TLocalizationTextRead(string key) =>
-        LLocalization.LLocalizationTextRead(key);
+        LLocalization.QLocalizationTextRead(key);
 
     internal static string? TLocalizationTextFind(string key) =>
-        LLocalization.LLocalizationTextFind(key);
+        LLocalization.QLocalizationTextFind(key);
 
     internal static string TLocalizationNormalize(string? language) =>
         LLocalization.LLocalizationNormalize(language);

@@ -22,8 +22,8 @@ public class PVita : UserControl
         PFellow.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PFellowHandle));
         PVitaCitation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PVitaCitationHandle));
 
-        PLookItem.PLookItemAttach(PFellow, PFellowItem.PFellowItemApply);
-        PLookItem.PLookItemAttach(PVitaCitation, LUsageItem.LUsageItemApply);
+        QLookItem.QLookItemAttach(PFellow, PFellowItem.PFellowItemApply);
+        QLookItem.QLookItemAttach(PVitaCitation, LUsageItem.LUsageItemApply);
     }
 
     private StackPanel PVitaBody => (StackPanel)FindName(nameof(PVitaBody));
@@ -55,25 +55,25 @@ public class PVita : UserControl
         ArgumentNullException.ThrowIfNull(vita);
 
         PVitaName.Text = vita.LVitaName;
-        PField.PFieldPlaceholderShow(PVitaName, !vita.LVitaNamed);
+        QField.QFieldPlaceholderShow(PVitaName, !vita.LVitaNamed);
         PVitaWork.Text = vita.LVitaWork;
         PVitaTally.Text = vita.LVitaTally;
         PFellow.ItemsSource = PFellowItem.PFellowItemBuild(vita.LVitaFellows);
         PVitaCitation.ItemsSource = LUsageItem.LUsageItemBuild(vita.LVitaUsages);
-        PVitaFellowSection.Visibility = PLook.PLookVisibleRead(vita.LVitaFellowShown);
-        PVitaCitationSection.Visibility = PLook.PLookVisibleRead(vita.LVitaUsageShown);
-        PVitaBody.Visibility = PLook.PLookVisibleRead(held);
-        PVitaUnselected.Visibility = PLook.PLookVisibleRead(!held);
+        PVitaFellowSection.Visibility = QLook.QLookVisibleRead(vita.LVitaFellowShown);
+        PVitaCitationSection.Visibility = QLook.QLookVisibleRead(vita.LVitaUsageShown);
+        PVitaBody.Visibility = QLook.QLookVisibleRead(held);
+        PVitaUnselected.Visibility = QLook.QLookVisibleRead(!held);
     }
 
     private void PFellowHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildRowSelect(PSender.PSenderSourceRead<PFellowItem>(e)?.PFellowItemId);
+        _lGuild.LGuildRowSelect(QSender.QSenderSourceRead<PFellowItem>(e)?.PFellowItemId);
     }
 
     private void PVitaCitationHandle(object sender, RoutedEventArgs e)
     {
-        PSender.PSenderSourceRead<LUsageItem>(e)?.LUsageItemShow(
+        QSender.QSenderSourceRead<LUsageItem>(e)?.LUsageItemShow(
             _pVitaHost.PWindowExampleShow,
             _pVitaHost.PWindowEntryShow);
     }

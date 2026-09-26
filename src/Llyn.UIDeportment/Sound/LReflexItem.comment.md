@@ -183,7 +183,7 @@ A row hidden under the fold is unseen and flat, yet still measured for the share
 The language carries the region as its tooltip, and no tooltip when the row names none.
 A row in common use draws its reading and slashes in the accent colour.
 The editor's reading cell names the accent field style for such a row, so its box opens accented.
-The fill also tags each side cell with its field order and the slot with `Theme.Reflex.Control`.
+The fill also gives each side cell its `QFieldCell` order and tags the slot with `Theme.Reflex.Control`.
 Those order strings live here, so the Veneer markup carries none.
 The anchor button shows only for an anchorable row, its prompt standing in while no anchor is set.
 

@@ -59,13 +59,13 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 IsHitTestVisible="False" />
-                            <local:PIconImage
+                            <local:QIconImage
                                 Grid.Column="1"
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Center"
                                 Width="12"
                                 Height="12"
-                                PIconSource="pack://application:,,,/Llyn.UIVeneer;component/icons/expand.png"
+                                QIconSource="pack://application:,,,/Llyn.UIVeneer;component/icons/expand.png"
                                 IsHitTestVisible="False" />
                             <Popup
                                 x:Name="PART_Popup"

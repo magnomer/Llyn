@@ -37,7 +37,7 @@
                             CornerRadius="8"
                             SnapsToDevicePixels="True">
                             <StackPanel x:Name="PSurfaceStack" VerticalAlignment="Center" Orientation="Horizontal">
-                                <local:PIconImage
+                                <local:QIconImage
                                     x:Name="PSurfaceIcon"
                                     Width="32"
                                     Height="32"

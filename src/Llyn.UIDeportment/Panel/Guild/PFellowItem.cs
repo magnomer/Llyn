@@ -36,17 +36,17 @@ internal sealed class PFellowItem
             return;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PFellowIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PFellowIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("guild", 16);
+            icon.QIconSource = QIcon.QIconResolve("guild", 16);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFellowName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFellowName") is TextBlock name)
         {
             name.Text = fellow.PFellowItemName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFellowCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFellowCount") is TextBlock count)
         {
             count.Text = fellow.PFellowItemCount;
         }

@@ -84,29 +84,29 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PXiaoyunRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PXiaoyunRow") is Button row)
         {
             if (xiaoyun.PXiaoyunItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PXiaoyunFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PXiaoyunFlag") is Image flag)
         {
             flag.Source = xiaoyun.PXiaoyunItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PXiaoyunName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PXiaoyunName") is Run name)
         {
             name.Text = xiaoyun.PXiaoyunItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PXiaoyunEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PXiaoyunEpithet") is Run epithet)
         {
             epithet.Text = " " + xiaoyun.PXiaoyunItemEpithet;
         }

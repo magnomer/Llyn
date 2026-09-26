@@ -28,23 +28,25 @@ public class PXiesheng : UserControl
         PXieshengPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PXieshengPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PRungDropper, PRungDropdown, PRungBar);
+        QChoice.QChoiceDropperAttach(PRungDropper, PRungDropdown, PRungBar);
 
-        PRungIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PXieshengBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PXieshengFresh.Tag = PIcon.PIconResolve("new", 24);
-        PXieshengStore.Tag = PIcon.PIconResolve("save", 24);
-        PXieshengEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PXieshengLater.Tag = PIcon.PIconResolve("advance", 24);
-        PXieshengBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PXieshengForward.Tag = PIcon.PIconResolve("redo", 24);
-        PXieshengPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PXieshengPress.Tag = PIcon.PIconResolve("print", 24);
-        PXieshengViewer.Tag = PIcon.PIconResolve("view", 24);
-        PXieshengScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PRungIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PXieshengBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PLodestar.SetResourceReference(QField.QFieldHintProperty, "Lodestar.Search");
+        PSextant.SetResourceReference(QField.QFieldHintProperty, "Sextant.Search");
+        PXieshengFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PXieshengStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PXieshengEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PXieshengLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PXieshengBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PXieshengForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PXieshengPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PXieshengPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PXieshengViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PXieshengScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
-        PLookItem.PLookItemAttach(PGrove, PGroveItem.PGroveItemApply);
-        PLookItem.PLookItemAttach(PKindred, PKindredItem.PKindredItemApply);
+        QLookItem.QLookItemAttach(PGrove, PGroveItem.PGroveItemApply);
+        QLookItem.QLookItemAttach(PKindred, PKindredItem.PKindredItemApply);
         PGrove.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PGroveHandle));
         PKindred.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(PKindredHandle));
 
@@ -65,7 +67,7 @@ public class PXiesheng : UserControl
 
     private ToggleButton PRungDropper => (ToggleButton)FindName(nameof(PRungDropper));
 
-    private PIconImage PRungIcon => (PIconImage)FindName(nameof(PRungIcon));
+    private QIconImage PRungIcon => (QIconImage)FindName(nameof(PRungIcon));
 
     private TextBox PLodestar => (TextBox)FindName(nameof(PLodestar));
 
@@ -117,7 +119,7 @@ public class PXiesheng : UserControl
 
     private Button PXieshengBin => (Button)FindName(nameof(PXieshengBin));
 
-    private PIconImage PXieshengBinIcon => (PIconImage)FindName(nameof(PXieshengBinIcon));
+    private QIconImage PXieshengBinIcon => (QIconImage)FindName(nameof(PXieshengBinIcon));
 
     internal void PXieshengAttach(PWindow host)
     {
@@ -180,7 +182,7 @@ public class PXiesheng : UserControl
             LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PRungList,
             "Rung",
             PRungHandle,
@@ -189,7 +191,7 @@ public class PXiesheng : UserControl
                 LCatalogOrder.LCatalogOrderReverse,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PRungDropdown, _lXiesheng.LXieshengRung);
+        QChoice.QChoiceOrderApply(PRungDropdown, _lXiesheng.LXieshengRung);
         _lXiesheng.LXieshengLodestarSet(PLodestar.Text);
         _lXiesheng.LXieshengSextantSet(PSextant.Text);
         _lXiesheng.LXieshengRowsUpdate();
@@ -251,7 +253,7 @@ public class PXiesheng : UserControl
             PGroveItem.PGroveItemMatch,
             PGroveItem.PGroveItemSync);
         PGroveEmpty.SetResourceReference(TextBlock.TextProperty, _lXiesheng.LXieshengGroveKey);
-        PGroveEmpty.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengGroveEmpty);
+        PGroveEmpty.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengGroveEmpty);
         PStemUpdate();
         PXieshengModeUpdate();
     }
@@ -264,7 +266,7 @@ public class PXiesheng : UserControl
             PKindredItem.PKindredItemMatch,
             PKindredItem.PKindredItemSync);
         PKindredEmpty.SetResourceReference(TextBlock.TextProperty, _lXiesheng.LXieshengKindredKey);
-        PKindredEmpty.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengKindredEmpty);
+        PKindredEmpty.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengKindredEmpty);
     }
 
     private void PStemUpdate()
@@ -274,13 +276,13 @@ public class PXiesheng : UserControl
 
     private void PXieshengModeUpdate()
     {
-        PEditor.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengEditorShown);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengDisplayShown);
-        PXieshengStem.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengStemShown);
-        PXieshengViewer.IsChecked = PLook.PLookCheckedRead(_lXiesheng.LXieshengPanel.LPanelViewerChecked);
-        PXieshengScribe.IsChecked = PLook.PLookCheckedRead(_lXiesheng.LXieshengPanel.LPanelScribeChecked);
-        PXieshengVoyage.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengPanel.LPanelViewerChecked);
-        PXieshengChronicle.Visibility = PLook.PLookVisibleRead(_lXiesheng.LXieshengPanel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengEditorShown);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengDisplayShown);
+        PXieshengStem.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengStemShown);
+        PXieshengViewer.IsChecked = QLook.QLookCheckedRead(_lXiesheng.LXieshengPanel.LPanelViewerChecked);
+        PXieshengScribe.IsChecked = QLook.QLookCheckedRead(_lXiesheng.LXieshengPanel.LPanelScribeChecked);
+        PXieshengVoyage.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengPanel.LPanelViewerChecked);
+        PXieshengChronicle.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengPanel.LPanelScribeChecked);
         PXieshengMode.IsEnabled = _lXiesheng.LXieshengPanel.LPanelModeEnabled;
         PXieshengBin.IsEnabled = _lXiesheng.LXieshengPanel.LPanelBinEnabled;
     }
@@ -303,18 +305,18 @@ public class PXiesheng : UserControl
     private void PRungHandle(object sender, RoutedEventArgs e)
     {
         PRungDropper.IsChecked = false;
-        _lXiesheng.LXieshengRungSet(LChoice.LChoiceOrderRead(sender));
+        _lXiesheng.LXieshengRungSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PGroveHandle(object sender, RoutedEventArgs e)
     {
-        _lXiesheng.LXieshengStemSelect(PSender.PSenderSourceRead<PGroveItem>(e)?.PGroveItemId);
+        _lXiesheng.LXieshengStemSelect(QSender.QSenderSourceRead<PGroveItem>(e)?.PGroveItemId);
     }
 
     private void PKindredHandle(object sender, RoutedEventArgs e)
     {
         _pXieshengHost.PVoyageRecord();
-        _lXiesheng.LXieshengPanel.LPanelRowSelect(PSender.PSenderSourceRead<PKindredItem>(e)?.PKindredItemId);
+        _lXiesheng.LXieshengPanel.LPanelRowSelect(QSender.QSenderSourceRead<PKindredItem>(e)?.PKindredItemId);
     }
 
     internal long PXieshengVoyageRead()

@@ -55,7 +55,7 @@ public sealed class PImageLazy : Decorator
             return;
         }
 
-        Visibility = PLook.PLookVisibleRead(!draft.LImageDraftEmpty);
+        Visibility = QLook.QLookVisibleRead(!draft.LImageDraftEmpty);
         if (PMedia.PMediaRead(this) is PMedia media)
         {
             DataContext = media.PMediaImageCreate(draft);

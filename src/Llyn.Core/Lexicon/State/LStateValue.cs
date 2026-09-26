@@ -49,6 +49,13 @@ public sealed record LStateValue(
 
     public bool LStateValueLegible => LStateValueState == LState.LStateSpecified || LStateValueUnreadable;
 
+    public string LStateValueFormat(string mark, string hint, bool placeholder)
+    {
+        return LStateValueLegible
+            ? placeholder ? hint : LStateValueShow()
+            : LStateValueUncertain ? mark : hint;
+    }
+
     public bool LStateValueSound =>
         LStateValueState == LState.LStateSpecified && !LStateValueUnreadable && LStateValueShown is not null;
 

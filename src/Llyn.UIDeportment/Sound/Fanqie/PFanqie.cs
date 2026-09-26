@@ -44,7 +44,7 @@ public sealed class PFanqie : ContentControl
 
     protected override AutomationPeer OnCreateAutomationPeer()
     {
-        return new PSurfacePeer(this);
+        return new QSurfacePeer(this);
     }
 
     public PFanqie()
@@ -56,7 +56,7 @@ public sealed class PFanqie : ContentControl
         TextBlock label = new();
         label.SetResourceReference(StyleProperty, "Theme.Fanqie.Head");
         label.SetResourceReference(TextBlock.TextProperty, "Display.Fanqie");
-        PIconImage chevron = new() { Width = 12, Height = 12, PIconSource = PIcon.PIconResolve("expand", 12) };
+        QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _pFanqieSwitch.Content = chevron;
         _pFanqieSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
         _pFanqieSwitch.Checked += (_, _) => PFanqieStateApply();
@@ -82,7 +82,7 @@ public sealed class PFanqie : ContentControl
         _pFanqieList.CommandBindings.Add(
             new CommandBinding(PFanqieCommand.PFanqieCommandRepresentative, PFanqieRepresentativeHandle));
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
-        PLookItem.PLookItemAttach(_pFanqieList, PFanqieItem.PFanqieItemApply);
+        QLookItem.QLookItemAttach(_pFanqieList, PFanqieItem.PFanqieItemApply);
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
         _pFanqieBody.Children.Add(_pFanqieList);
@@ -158,12 +158,12 @@ public sealed class PFanqie : ContentControl
 
     private void PFanqieStemHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        PFanqieStemNotice?.Invoke(PSender.PSenderTextRead(e));
+        PFanqieStemNotice?.Invoke(QSender.QSenderTextRead(e));
     }
 
     private void PFanqieRepresentativeHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        PSender.PSenderParameterRead<PFanqieLine>(e)?.PFanqieLineApply(
+        QSender.QSenderParameterRead<PFanqieLine>(e)?.PFanqieLineApply(
             Keyboard.Modifiers.HasFlag(ModifierKeys.Control), PFanqieRepresentativeNotice);
     }
 
@@ -178,8 +178,10 @@ public sealed class PFanqie : ContentControl
         bool filled = items is not null && items.Count > 0;
         _pFanqieList.ItemsSource = filled ? items : null;
         _pFanqieLoading.Visibility = PFanqiePending ? Visibility.Visible : Visibility.Collapsed;
-        _pFanqieRefresh.Visibility = PLook.PLookVisibleRead(PFanqieRenewal is not null);
-        _pFanqieRefresh.Tag = PLook.PLookFirstRead<string?>(PFanqiePending, "Pending", null);
+        _pFanqieRefresh.Visibility = QLook.QLookVisibleRead(PFanqieRenewal is not null);
+        _pFanqieRefresh.SetValue(
+            QLook.QLookCueProperty,
+            QLook.QLookFirstRead(PFanqiePending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
         _pFanqieHead.Visibility = PFanqieFolded ? Visibility.Visible : Visibility.Collapsed;
         _pFanqieBody.Visibility = !PFanqieFolded || _pFanqieSwitch.IsChecked == true
             ? Visibility.Visible

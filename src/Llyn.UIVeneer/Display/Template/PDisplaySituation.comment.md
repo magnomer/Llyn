@@ -22,7 +22,7 @@ Translations and tags are read the same way, so no chip on a card is a dead end.
 
 Wears the chip border of the writing side.
 A chip that leads somewhere is still read as the same chip.
-The edge lights on hover and the chip dims while pressed, both switched by `PLookDisplay`.
+The edge lights on hover and the chip dims while pressed, both switched by `QLookDisplay`.
 That is the only sign the reading side gives that a chip is a link.
 The translation and tag chips take the same treatment over their own shells.
 The three read as one kind of link.

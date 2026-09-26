@@ -38,8 +38,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource Theme.Muted}"
-                        Style="{DynamicResource Theme.Input.Bare}"
-                        Tag="{DynamicResource Card.LocationHint}" />
+                        Style="{DynamicResource Theme.Input.Bare}" />
                     <TextBox
                         x:Name="PVideoTimestamp"
                         Grid.Column="1"
@@ -48,8 +47,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource Theme.Muted}"
-                        Style="{DynamicResource Theme.Input.Bare}"
-                        Tag="{DynamicResource Card.TimestampHint}" />
+                        Style="{DynamicResource Theme.Input.Bare}" />
 
                     <Button x:Name="PVideoChooser" Grid.Column="2" Height="20" Padding="8,0" Foreground="{DynamicResource Theme.Accent}" Style="{DynamicResource Theme.Input.Pill}">
                         <TextBlock VerticalAlignment="Center" FontSize="11" Text="{DynamicResource Card.Browse}" />
@@ -59,7 +57,7 @@
 
             <StackPanel x:Name="PMediaControl" Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{StaticResource Theme.Card.Control}">
                 <Button x:Name="PVideoEraser" Style="{DynamicResource Theme.Card.Handle}">
-                    <local:PIconImage x:Name="PVideoRemoveIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PVideoRemoveIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

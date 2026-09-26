@@ -6,7 +6,7 @@ One row of a panel's catalog, drawn on nothing until it is pointed at.
 The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
 A row shows its subject over a quieter line of what tells it apart.
 The row the panel stands on is tagged as chosen by the panel.
-The tag is a `PLook` state, since the style carries no trigger.
+The `Chosen` cue is a `QLook` state, since the style carries no trigger.
 The tag paints the soft accent ground and turns the subject accent, as the reading compass marks its current row.
 One ground and one ink say chosen together, so no rail or edge repeats them.
 

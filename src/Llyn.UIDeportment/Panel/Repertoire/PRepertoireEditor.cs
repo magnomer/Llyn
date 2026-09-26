@@ -24,7 +24,7 @@ public partial class PRepertoire
         }
 
         _pScenarioTitleUnknown = false;
-        PScenarioTitle.Tag = PScenarioHintRead(PScenarioTitle, false);
+        PScenarioTitle.SetValue(QField.QFieldHintProperty, PScenarioHintRead(PScenarioTitle, false));
         PScenarioHintApply();
         PScenarioChangeDefer();
     }
@@ -37,7 +37,7 @@ public partial class PRepertoire
         }
 
         _pScenarioKindUnknown = false;
-        PScenarioKind.Tag = PScenarioHintRead(PScenarioKind, false);
+        PScenarioKind.SetValue(QField.QFieldHintProperty, PScenarioHintRead(PScenarioKind, false));
         PScenarioMeasureApply();
         PScenarioChangeDefer();
     }
@@ -50,7 +50,7 @@ public partial class PRepertoire
         }
 
         _pScenarioDescriptionUnknown = false;
-        PScenarioDescription.Tag = PScenarioHintRead(PScenarioDescription, false);
+        PScenarioDescription.SetValue(QField.QFieldHintProperty, PScenarioHintRead(PScenarioDescription, false));
         PScenarioChangeDefer();
     }
 
@@ -64,19 +64,21 @@ public partial class PRepertoire
                     ? "Situation.Kind"
                     : "Situation.DescriptionHint";
 
-        return PLocalizationCatalog.PLocalizationTextRead(key);
+        return QLocalizationCatalog.QLocalizationTextRead(key);
     }
 
     private void PScenarioHintApply()
     {
-        PScenarioHint.Text = PScenarioTitle.Tag as string;
-        PScenarioHint.Visibility = PLook.PLookVisibleRead(PScenarioTitle.Text.Length == 0);
+        PScenarioHint.Text = (string)PScenarioTitle.GetValue(QField.QFieldHintProperty);
+        PScenarioHint.Visibility = QLook.QLookVisibleRead(PScenarioTitle.Text.Length == 0);
         PScenarioGhost.Text = PScenarioTitle.Text;
     }
 
     private void PScenarioMeasureApply()
     {
-        PScenarioMeasure.Text = PScenarioKind.Text.Length == 0 ? PScenarioKind.Tag as string : PScenarioKind.Text;
+        PScenarioMeasure.Text = PScenarioKind.Text.Length == 0
+            ? (string)PScenarioKind.GetValue(QField.QFieldHintProperty)
+            : PScenarioKind.Text;
     }
 
     private void PScenarioApply(LSituation? situation)
@@ -91,9 +93,10 @@ public partial class PRepertoire
         _pScenarioKindUnknown = situation?.LSituationKind.LStateValueUncertain ?? false;
         _pScenarioDescriptionUnknown = situation?.LSituationDescription.LStateValueUncertain ?? false;
 
-        PScenarioTitle.Tag = PScenarioHintRead(PScenarioTitle, _pScenarioTitleUnknown);
-        PScenarioKind.Tag = PScenarioHintRead(PScenarioKind, _pScenarioKindUnknown);
-        PScenarioDescription.Tag = PScenarioHintRead(PScenarioDescription, _pScenarioDescriptionUnknown);
+        PScenarioTitle.SetValue(QField.QFieldHintProperty, PScenarioHintRead(PScenarioTitle, _pScenarioTitleUnknown));
+        PScenarioKind.SetValue(QField.QFieldHintProperty, PScenarioHintRead(PScenarioKind, _pScenarioKindUnknown));
+        PScenarioDescription.SetValue(
+            QField.QFieldHintProperty, PScenarioHintRead(PScenarioDescription, _pScenarioDescriptionUnknown));
 
         PScenarioImageShow(situation?.LSituationImage ?? []);
         PScenarioVideoShow(situation?.LSituationVideo ?? []);
@@ -131,7 +134,7 @@ public partial class PRepertoire
         field.Text = value.LStateValueShow();
         bool uncertain = value.LStateValueUncertain;
         held = uncertain;
-        field.Tag = PScenarioHintRead(field, held);
+        field.SetValue(QField.QFieldHintProperty, PScenarioHintRead(field, held));
     }
 
     private LRequestSituationBody PScenarioRead(long draft)

@@ -238,7 +238,7 @@ public partial class PScreen : UserControl
     private void PScreenNoticeShow()
     {
         PScreenPage.Visibility = Visibility.Collapsed;
-        PScreenNotice.Text = PLocalizationCatalog.PLocalizationCatalogCurrent["Card.VideoFailed"];
+        PScreenNotice.Text = QLocalizationCatalog.QLocalizationCatalogCurrent["Card.VideoFailed"];
         PScreenNotice.Visibility = Visibility.Visible;
     }
 }

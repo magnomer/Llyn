@@ -4,17 +4,17 @@
 
 Every rail in the app is one design at one size, upright or sideways.
 A page, a catalog, a popup and a text field all show the same thread.
-The two control templates are registered by PIndicator.
+The two control templates are registered by QIndicator.
 WPF requires a PART_Track name.
 That name must stay out of the audited XAML naming surface.
-The sideways size and template are set by `PLook` in the deportment, not by a trigger.
+The sideways size and template are set by `QLook` in the deportment, not by a trigger.
 
 ## `<Style TargetType="ScrollViewer">`
 
 The lane template is the default for every scroll viewer, not an opt-in.
 A viewer the app never names, inside a dropdown or a text field, would otherwise keep the platform one.
 That is how a rail nobody styled used to appear over the content at a size nobody chose.
-PIndicator registers the template.
+QIndicator registers the template.
 
 ## `<Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer">`
 

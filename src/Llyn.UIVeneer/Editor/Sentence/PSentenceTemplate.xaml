@@ -101,7 +101,7 @@
                 <StackPanel Grid.Column="3" Margin="16,0,0,0" VerticalAlignment="Top" Orientation="Horizontal">
                     <Border x:Name="PSentenceGlossControl" Style="{StaticResource Theme.Card.Control}">
                         <Button x:Name="PSentenceGlossChooser" Style="{DynamicResource Theme.Card.Handle}" ToolTip="{DynamicResource Gloss.Add}">
-                            <local:PIconImage x:Name="PSentenceGlossIcon" Width="12" Height="12" />
+                            <local:QIconImage x:Name="PSentenceGlossIcon" Width="12" Height="12" />
                         </Button>
                     </Border>
                     <Border Margin="12,0,0,0">
@@ -112,10 +112,10 @@
 
             <StackPanel x:Name="PSentenceControl" Grid.Column="1" Margin="8,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{StaticResource Theme.Card.Control}">
                 <Button x:Name="PSentenceAdder" Style="{DynamicResource Theme.Card.Handle}">
-                    <local:PIconImage x:Name="PSentenceAddIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PSentenceAddIcon" Width="12" Height="12" />
                 </Button>
                 <Button x:Name="PSentenceEraser" Margin="4,0,0,0" Style="{DynamicResource Theme.Card.Handle}">
-                    <local:PIconImage x:Name="PSentenceRemoveIcon" Width="12" Height="12" />
+                    <local:QIconImage x:Name="PSentenceRemoveIcon" Width="12" Height="12" />
                 </Button>
             </StackPanel>
         </Grid>

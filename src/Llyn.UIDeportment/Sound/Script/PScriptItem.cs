@@ -31,25 +31,25 @@ internal sealed class PScriptItem
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PScriptCharacter") is TextBlock character)
+        if (QLook.QLookPartFind<TextBlock>(container, "PScriptCharacter") is TextBlock character)
         {
             character.Text = row.PScriptItemCharacter;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PScriptStyle") is TextBlock style)
+        if (QLook.QLookPartFind<TextBlock>(container, "PScriptStyle") is TextBlock style)
         {
             style.Text = row.PScriptItemStyle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PScriptGloss") is TextBlock gloss)
+        if (QLook.QLookPartFind<TextBlock>(container, "PScriptGloss") is TextBlock gloss)
         {
             gloss.Text = row.PScriptItemGloss;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PScriptPictures") is ItemsControl pictures)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PScriptPictures") is ItemsControl pictures)
         {
             pictures.ItemsSource = row.PScriptItemImages;
-            PLookItem.PLookItemAttach(pictures, PScriptImage.PScriptImageApply);
+            QLookItem.QLookItemAttach(pictures, PScriptImage.PScriptImageApply);
         }
     }
 

@@ -6,11 +6,11 @@ Which region of the editor is open.
 The tab strip picks one of meaning, collocation, etymology or note, and collapses the other three.
 The same selection shape as the navigation strip, over the editor's own contents rather than over the window's panels.
 
-### `private const string PStackSelected = "Selected";`
+### `private const QLookCue PStackSelected = QLookCue.QLookCueSelected;`
 
-Selection lives in each button's tag rather than in a swapped style.
+Selection lives in each button's cue rather than in a swapped style.
 A style swap rebuilds the template, which would drop any running animation and lose the hover state under the cursor.
-The tag also tells the template apart from a hover.
+The cue also tells the template apart from a hover.
 The selected tab never paints a hover fill over its own pill.
 
 ### `private void PStackPillPlace(bool glide)`
@@ -23,4 +23,4 @@ A click glides, and a layout change places the pill outright, since nothing move
 ## `private void PStackAttach()`
 
 Subscribes the tab strip's load, size and clicks, which the markup named.
-It first tags the meaning tab selected and the others idle, since the markup carries no tag.
+It first gives the meaning tab the selected cue and the others the idle cue, since the markup carries none.

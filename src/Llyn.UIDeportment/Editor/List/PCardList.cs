@@ -28,13 +28,13 @@ public partial class PEditor
     private void PCardListAttach()
     {
         PMeaningList.ItemsSource = _pMeaningList;
-        PLookItem.PLookItemAttach(PMeaningList, PMeaningApply);
+        QLookItem.QLookItemAttach(PMeaningList, PMeaningApply);
         PMeaningList.LostMouseCapture += PCardDragCancel;
         PMeaningList.MouseLeftButtonUp += PCardDragFinish;
         PMeaningList.MouseMove += PCardDragUpdate;
         PMeaningAddition.Click += PMeaningHandle;
         PCollocationList.ItemsSource = _pCollocationList;
-        PLookItem.PLookItemAttach(PCollocationList, PCollocationApply);
+        QLookItem.QLookItemAttach(PCollocationList, PCollocationApply);
         PCollocationList.LostMouseCapture += PCardDragCancel;
         PCollocationList.MouseLeftButtonUp += PCardDragFinish;
         PCollocationList.MouseMove += PCardDragUpdate;
@@ -50,19 +50,19 @@ public partial class PEditor
 
         PCard.PCardRowApply(container, card, "Card.DefinitionHint", changed);
         PCardApply(container, card);
-        if (PLook.PLookPartFind<Border>(container, "PCardHeader") is Border header)
+        if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
             header.MouseLeftButtonDown -= _pMeaningTemplate.PCardDragHandle;
             header.MouseLeftButtonDown += _pMeaningTemplate.PCardDragHandle;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PCardPosition") is Border position)
+        if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
             position.MouseLeftButtonDown -= _pMeaningTemplate.PCardPositionHandle;
             position.MouseLeftButtonDown += _pMeaningTemplate.PCardPositionHandle;
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
+        if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
             ordinal.KeyDown -= _pMeaningTemplate.PCardPositionAccept;
             ordinal.KeyDown += _pMeaningTemplate.PCardPositionAccept;
@@ -70,19 +70,19 @@ public partial class PEditor
             ordinal.LostFocus += _pMeaningTemplate.PCardPositionCommit;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PCardEraser") is Button eraser)
         {
             eraser.Click -= _pMeaningTemplate.PCardHandle;
             eraser.Click += _pMeaningTemplate.PCardHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardImageChooser") is Button image)
+        if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
             image.Click -= _pMeaningTemplate.PImageAddHandle;
             image.Click += _pMeaningTemplate.PImageAddHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
+        if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
             video.Click -= _pMeaningTemplate.PVideoAddHandle;
             video.Click += _pMeaningTemplate.PVideoAddHandle;
@@ -98,19 +98,19 @@ public partial class PEditor
 
         PCard.PCardRowApply(container, card, "Card.MeaningHint", changed);
         PCardApply(container, card);
-        if (PLook.PLookPartFind<Border>(container, "PCardHeader") is Border header)
+        if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
             header.MouseLeftButtonDown -= _pCollocationTemplate.PCardDragHandle;
             header.MouseLeftButtonDown += _pCollocationTemplate.PCardDragHandle;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PCardPosition") is Border position)
+        if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
             position.MouseLeftButtonDown -= _pCollocationTemplate.PCardPositionHandle;
             position.MouseLeftButtonDown += _pCollocationTemplate.PCardPositionHandle;
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
+        if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
             ordinal.KeyDown -= _pCollocationTemplate.PCardPositionAccept;
             ordinal.KeyDown += _pCollocationTemplate.PCardPositionAccept;
@@ -118,19 +118,19 @@ public partial class PEditor
             ordinal.LostFocus += _pCollocationTemplate.PCardPositionCommit;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardEraser") is Button eraser)
+        if (QLook.QLookPartFind<Button>(container, "PCardEraser") is Button eraser)
         {
             eraser.Click -= _pCollocationTemplate.PCardHandle;
             eraser.Click += _pCollocationTemplate.PCardHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardImageChooser") is Button image)
+        if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
             image.Click -= _pCollocationTemplate.PImageAddHandle;
             image.Click += _pCollocationTemplate.PImageAddHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
+        if (QLook.QLookPartFind<Button>(container, "PCardVideoChooser") is Button video)
         {
             video.Click -= _pCollocationTemplate.PVideoAddHandle;
             video.Click += _pCollocationTemplate.PVideoAddHandle;
@@ -139,47 +139,47 @@ public partial class PEditor
 
     private void PCardApply(FrameworkElement container, PCard card)
     {
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardContext") is ItemsControl context)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardContext") is ItemsControl context)
         {
             PContextFieldApply(context);
             context.ItemsSource = card.PCardContext;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardRegister") is ItemsControl register)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardRegister") is ItemsControl register)
         {
             PRegisterFieldApply(register);
             register.ItemsSource = card.PCardRegister;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardLink") is ItemsControl link)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardLink") is ItemsControl link)
         {
             PLinkFieldApply(link);
             link.ItemsSource = card.PCardLink;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardLabel") is ItemsControl label)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardLabel") is ItemsControl label)
         {
             PLabelFieldApply(label);
             label.ItemsSource = card.PCardLabel;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardSentence") is ItemsControl sentence)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardSentence") is ItemsControl sentence)
         {
             sentence.ItemsSource = card.PCardSentence;
-            PLookItem.PLookItemAttach(sentence, PSentenceApply);
+            QLookItem.QLookItemAttach(sentence, PSentenceApply);
             PSentenceRevealAttach(sentence);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardImage") is ItemsControl images)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardImage") is ItemsControl images)
         {
             images.ItemsSource = card.PCardImage;
-            PLookItem.PLookItemAttach(images, PImageApply);
+            QLookItem.QLookItemAttach(images, PImageApply);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PCardVideo") is ItemsControl videos)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardVideo") is ItemsControl videos)
         {
             videos.ItemsSource = card.PCardVideo;
-            PLookItem.PLookItemAttach(videos, PVideoApply);
+            QLookItem.QLookItemAttach(videos, PVideoApply);
         }
     }
 

@@ -27,23 +27,24 @@ public class PLibrary : UserControl
         PLibraryPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PLibraryPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(POrderDropper, POrderDropdown, POrder);
-        PChoice.PChoiceDropperAttach(PSieveDropper, PSieveDropdown, PSieveDropper);
+        QChoice.QChoiceDropperAttach(POrderDropper, POrderDropdown, POrder);
+        QChoice.QChoiceDropperAttach(PSieveDropper, PSieveDropdown, PSieveDropper);
 
-        POrderIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PSieveIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PLibraryBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PLibraryFresh.Tag = PIcon.PIconResolve("new", 24);
-        PLibraryStore.Tag = PIcon.PIconResolve("save", 24);
-        PLibraryEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PLibraryLater.Tag = PIcon.PIconResolve("advance", 24);
-        PLibraryBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PLibraryForward.Tag = PIcon.PIconResolve("redo", 24);
-        PLibraryMarkup.Tag = PIcon.PIconResolve("import", 24);
-        PLibraryPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PLibraryPress.Tag = PIcon.PIconResolve("print", 24);
-        PLibraryViewer.Tag = PIcon.PIconResolve("view", 24);
-        PLibraryScribe.Tag = PIcon.PIconResolve("edit", 24);
+        POrderIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PSieveIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PLibraryBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PInquiry.SetResourceReference(QField.QFieldHintProperty, "List.Search");
+        PLibraryFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PLibraryStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PLibraryEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PLibraryLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PLibraryBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PLibraryForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PLibraryMarkup.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("import", 24));
+        PLibraryPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PLibraryPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PLibraryViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PLibraryScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PInquiry.TextChanged += PInquiryHandle;
         PLibraryFresh.Click += PLibraryFreshHandle;
@@ -57,20 +58,20 @@ public class PLibrary : UserControl
         PLibraryScribe.Click += PLibraryScribeHandle;
         PLibraryBin.Click += PLibraryBinHandle;
 
-        PLookItem.PLookItemAttach(PIndex, PIndexApply);
+        QLookItem.QLookItemAttach(PIndex, PIndexApply);
     }
 
     private Border POrder => (Border)FindName(nameof(POrder));
 
     private ToggleButton POrderDropper => (ToggleButton)FindName(nameof(POrderDropper));
 
-    private PIconImage POrderIcon => (PIconImage)FindName(nameof(POrderIcon));
+    private QIconImage POrderIcon => (QIconImage)FindName(nameof(POrderIcon));
 
     private TextBox PInquiry => (TextBox)FindName(nameof(PInquiry));
 
     private ToggleButton PSieveDropper => (ToggleButton)FindName(nameof(PSieveDropper));
 
-    private PIconImage PSieveIcon => (PIconImage)FindName(nameof(PSieveIcon));
+    private QIconImage PSieveIcon => (QIconImage)FindName(nameof(PSieveIcon));
 
     private FrameworkElement PSieveMark => (FrameworkElement)FindName(nameof(PSieveMark));
 
@@ -120,7 +121,7 @@ public class PLibrary : UserControl
 
     private Button PLibraryBin => (Button)FindName(nameof(PLibraryBin));
 
-    private PIconImage PLibraryBinIcon => (PIconImage)FindName(nameof(PLibraryBinIcon));
+    private QIconImage PLibraryBinIcon => (QIconImage)FindName(nameof(PLibraryBinIcon));
 
     internal void PLibraryAttach(PWindow host)
     {
@@ -166,13 +167,13 @@ public class PLibrary : UserControl
             LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(POrderList, "Order", POrderHandle, LIndex.LIndexOrder);
-        PChoice.PChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
+        QChoice.QChoiceOrderBuild(POrderList, "Order", POrderHandle, LIndex.LIndexOrder);
+        QChoice.QChoiceOrderApply(POrderDropdown, _lLibrary.LLibraryPanel.LPanelOrder);
         _lLibrary.LLibrarySieveShow(PSieveMark);
 
         await LEnsignImage.LEnsignLoad(_pLibraryHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PSieveList,
             _pLibraryHost.PWindowDeportment.LWindowLanguageRead(),
             _lLibrary.LLibraryPanel.LPanelFilter,
@@ -235,12 +236,12 @@ public class PLibrary : UserControl
 
     private void PLibraryModeUpdate()
     {
-        PEditor.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryPanel.LPanelEditing);
-        PDisplay.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
-        PLibraryViewer.IsChecked = PLook.PLookCheckedRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
-        PLibraryScribe.IsChecked = PLook.PLookCheckedRead(_lLibrary.LLibraryPanel.LPanelScribeChecked);
-        PLibraryVoyage.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
-        PLibraryChronicle.Visibility = PLook.PLookVisibleRead(_lLibrary.LLibraryPanel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(_lLibrary.LLibraryPanel.LPanelEditing);
+        PDisplay.Visibility = QLook.QLookVisibleRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
+        PLibraryViewer.IsChecked = QLook.QLookCheckedRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
+        PLibraryScribe.IsChecked = QLook.QLookCheckedRead(_lLibrary.LLibraryPanel.LPanelScribeChecked);
+        PLibraryVoyage.Visibility = QLook.QLookVisibleRead(_lLibrary.LLibraryPanel.LPanelViewerChecked);
+        PLibraryChronicle.Visibility = QLook.QLookVisibleRead(_lLibrary.LLibraryPanel.LPanelScribeChecked);
         PLibraryMode.IsEnabled = _lLibrary.LLibraryPanel.LPanelModeEnabled;
         PLibraryBin.IsEnabled = _lLibrary.LLibraryPanel.LPanelBinEnabled;
     }
@@ -285,7 +286,7 @@ public class PLibrary : UserControl
     {
         LIndexItem.LIndexItemApply(container, item, change);
 
-        if (PLook.PLookPartFind<Button>(container, "PIndexRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PIndexRow") is Button row)
         {
             row.Click -= PIndexHandle;
             row.Click += PIndexHandle;

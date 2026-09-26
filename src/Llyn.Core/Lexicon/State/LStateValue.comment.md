@@ -65,6 +65,13 @@ So no reader can lose the distinction by accident.
 The text to show for the value, which is nothing at all unless the value states one or is unreadable.
 A caller that must tell an unknown value from an empty one reads the state instead.
 
+## `public string LStateValueFormat(string mark, string hint, bool placeholder)`
+
+The text a field shows for this value: the value, the unknown `mark`, or the `hint`.
+A legible value shows itself, or the `hint` when the caller asks for a placeholder.
+An unknown value shows the `mark`, and an empty one the `hint`.
+The choice reads the value's own state, so no driver branches on it.
+
 ## `public bool LStateValueEmpty`
 
 Whether nothing was ever recorded.

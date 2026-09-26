@@ -12,7 +12,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PIconImage
+                <local:QIconImage
                     x:Name="PShelfIcon"
                     Grid.Column="0"
                     Width="16"

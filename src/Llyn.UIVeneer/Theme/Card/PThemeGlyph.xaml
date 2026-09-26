@@ -80,7 +80,7 @@
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
                     <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                         <TextBlock x:Name="PGlyphMeasure" Style="{StaticResource Theme.Glyph.Measure}" />
-                        <TextBox x:Name="PGlyphField" Style="{StaticResource Theme.Glyph.Field}" Tag="{DynamicResource Input.Glyph}" />
+                        <TextBox x:Name="PGlyphField" Style="{StaticResource Theme.Glyph.Field}" />
                     </Grid>
                     <Button x:Name="PGlyphPhonetician" Style="{StaticResource Theme.Glyph.Phonetician}" />
                 </StackPanel>

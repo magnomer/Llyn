@@ -27,22 +27,24 @@ public partial class PTenor : UserControl
         PTenorPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PTenorPress.Command = ApplicationCommands.Print;
 
-        PChoice.PChoiceDropperAttach(PDegreeDropper, PDegreeDropdown, PDegree);
-        PChoice.PChoiceDropperAttach(PGrilleDropper, PGrilleDropdown, PGrilleDropper);
+        QChoice.QChoiceDropperAttach(PDegreeDropper, PDegreeDropdown, PDegree);
+        QChoice.QChoiceDropperAttach(PGrilleDropper, PGrilleDropdown, PGrilleDropper);
 
-        PDegreeIcon.PIconSource = PIcon.PIconResolve("sort", 24);
-        PGrilleIcon.PIconSource = PIcon.PIconResolve("filter", 24);
-        PTenorBinIcon.PIconSource = PIcon.PIconResolve("delete", 24);
-        PTenorFresh.Tag = PIcon.PIconResolve("new", 24);
-        PTenorStore.Tag = PIcon.PIconResolve("save", 24);
-        PTenorEarlier.Tag = PIcon.PIconResolve("retreat", 24);
-        PTenorLater.Tag = PIcon.PIconResolve("advance", 24);
-        PTenorBackward.Tag = PIcon.PIconResolve("undo", 24);
-        PTenorForward.Tag = PIcon.PIconResolve("redo", 24);
-        PTenorPortrait.Tag = PIcon.PIconResolve("export", 24);
-        PTenorPress.Tag = PIcon.PIconResolve("print", 24);
-        PTenorViewer.Tag = PIcon.PIconResolve("view", 24);
-        PTenorScribe.Tag = PIcon.PIconResolve("edit", 24);
+        PDegreeIcon.QIconSource = QIcon.QIconResolve("sort", 24);
+        PGrilleIcon.QIconSource = QIcon.QIconResolve("filter", 24);
+        PTenorBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
+        PSounding.SetResourceReference(QField.QFieldHintProperty, "Tag.Search");
+        PQuest.SetResourceReference(QField.QFieldHintProperty, "Quest.Search");
+        PTenorFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        PTenorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        PTenorEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
+        PTenorLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
+        PTenorBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
+        PTenorForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
+        PTenorPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
+        PTenorPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
+        PTenorViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
+        PTenorScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         PSounding.TextChanged += PSoundingHandle;
         PQuest.TextChanged += PQuestHandle;
@@ -61,7 +63,7 @@ public partial class PTenor : UserControl
 
     private ToggleButton PDegreeDropper => (ToggleButton)FindName(nameof(PDegreeDropper));
 
-    private PIconImage PDegreeIcon => (PIconImage)FindName(nameof(PDegreeIcon));
+    private QIconImage PDegreeIcon => (QIconImage)FindName(nameof(PDegreeIcon));
 
     private Popup PDegreeDropdown => (Popup)FindName(nameof(PDegreeDropdown));
 
@@ -81,7 +83,7 @@ public partial class PTenor : UserControl
 
     private ToggleButton PGrilleDropper => (ToggleButton)FindName(nameof(PGrilleDropper));
 
-    private PIconImage PGrilleIcon => (PIconImage)FindName(nameof(PGrilleIcon));
+    private QIconImage PGrilleIcon => (QIconImage)FindName(nameof(PGrilleIcon));
 
     private FrameworkElement PGrilleMark => (FrameworkElement)FindName(nameof(PGrilleMark));
 
@@ -121,7 +123,7 @@ public partial class PTenor : UserControl
 
     private Button PTenorBin => (Button)FindName(nameof(PTenorBin));
 
-    private PIconImage PTenorBinIcon => (PIconImage)FindName(nameof(PTenorBinIcon));
+    private QIconImage PTenorBinIcon => (QIconImage)FindName(nameof(PTenorBinIcon));
 
     internal void PTenorAttach(PWindow host)
     {
@@ -136,8 +138,8 @@ public partial class PTenor : UserControl
 
         PGamut.ItemsSource = _pGamutList;
         PCohort.ItemsSource = _pCohortList;
-        PLookItem.PLookItemAttach(PGamut, PGamutApply);
-        PLookItem.PLookItemAttach(PCohort, PCohortApply);
+        QLookItem.QLookItemAttach(PGamut, PGamutApply);
+        QLookItem.QLookItemAttach(PCohort, PCohortApply);
 
         PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
         _lEditor.LEditorStateChanged += PTenorStoreUpdate;
@@ -234,12 +236,12 @@ public partial class PTenor : UserControl
     private void PTenorModeUpdate()
     {
         LPanel panel = _lTenor.LTenorPanel;
-        PEditor.Visibility = PLook.PLookVisibleRead(panel.LPanelEditing);
-        PDisplay.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PTenorViewer.IsChecked = PLook.PLookCheckedRead(panel.LPanelViewerChecked);
-        PTenorScribe.IsChecked = PLook.PLookCheckedRead(panel.LPanelScribeChecked);
-        PTenorVoyage.Visibility = PLook.PLookVisibleRead(panel.LPanelViewerChecked);
-        PTenorChronicle.Visibility = PLook.PLookVisibleRead(panel.LPanelScribeChecked);
+        PEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
+        PDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
+        PTenorScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
+        PTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
+        PTenorChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
         PTenorMode.IsEnabled = panel.LPanelModeEnabled;
         PTenorBin.IsEnabled = panel.LPanelBinEnabled;
     }

@@ -31,8 +31,8 @@ internal sealed class QSCustoms
         _qsCustomsHost = host;
         _csCustoms = customs;
         QSCustomsList.ItemsSource = new ObservableCollection<QSCustomsItem>(items);
-        PLookItem.PLookItemAttach(QSCustomsList, QSCustomsRowApply);
-        PLookItem.PLookItemAttach(QSCustomsOmission, QSCustomsOmissionApply);
+        QLookItem.QLookItemAttach(QSCustomsList, QSCustomsRowApply);
+        QLookItem.QLookItemAttach(QSCustomsOmission, QSCustomsOmissionApply);
         QSCustomsAdmit.Click += QSCustomsAcceptHandle;
         QSCustomsQuit.Click += QSCustomsCancelHandle;
         QSCustomsDismiss.Click += QSCustomsCloseHandle;
@@ -152,32 +152,32 @@ internal sealed class QSCustoms
 
     private void QSCustomsRowApply(FrameworkElement container, QSCustomsItem row, CSCustomsRow state)
     {
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsNumber") is TextBlock number)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsNumber") is TextBlock number)
         {
             number.Text = row.QSCustomsItemNumber;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsHeadword") is TextBlock headword)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsHeadword") is TextBlock headword)
         {
             headword.Text = row.QSCustomsItemHeadword;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsLanguage") is TextBlock language)
         {
             language.Text = row.QSCustomsItemLanguage;
         }
 
-        if (PLook.PLookPartFind<ComboBox>(container, "PSCustomsMode") is ComboBox mode)
+        if (QLook.QLookPartFind<ComboBox>(container, "PSCustomsMode") is ComboBox mode)
         {
             QSCustomsModeApply(container, mode, state.CSCustomsRowMode);
         }
 
-        if (PLook.PLookPartFind<ComboBox>(container, "PSCustomsTarget") is ComboBox target)
+        if (QLook.QLookPartFind<ComboBox>(container, "PSCustomsTarget") is ComboBox target)
         {
             QSCustomsTargetApply(target, row, state);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsLoss") is TextBlock loss)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsLoss") is TextBlock loss)
         {
             loss.Text = QSCustomsLossFormat(_qsCustomsHost.PWindowDeportment.LWindowEntryLoad(state.CSCustomsRowLoss));
         }
@@ -188,7 +188,7 @@ internal sealed class QSCustoms
         mode.SelectionChanged -= QSCustomsModeHandle;
         foreach (KeyValuePair<string, CSCustomsMode> pair in QSCustomsChoice)
         {
-            if (PLook.PLookPartFind<ComboBoxItem>(container, pair.Key) is ComboBoxItem choice && pair.Value == chosen)
+            if (QLook.QLookPartFind<ComboBoxItem>(container, pair.Key) is ComboBoxItem choice && pair.Value == chosen)
             {
                 mode.SelectedItem = choice;
             }
@@ -204,7 +204,7 @@ internal sealed class QSCustoms
         if (!ReferenceEquals(target.ItemsSource, row.QSCustomsItemCandidate))
         {
             target.ItemsSource = row.QSCustomsItemCandidate;
-            PLookItem.PLookItemAttach(
+            QLookItem.QLookItemAttach(
                 target, (container, item, _) => QSCustomsCandidateApply(container, item, row.QSCustomsItemHeadword));
         }
 
@@ -226,12 +226,12 @@ internal sealed class QSCustoms
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsCandidateHeadword") is TextBlock shown)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsCandidateHeadword") is TextBlock shown)
         {
             shown.Text = headword;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsCandidateId") is TextBlock number)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsCandidateId") is TextBlock number)
         {
             number.Text = string.Concat("#", id.ToString(CultureInfo.CurrentCulture));
         }
@@ -244,12 +244,12 @@ internal sealed class QSCustoms
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsOmissionLine") is TextBlock line)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsOmissionLine") is TextBlock line)
         {
             line.Text = omission.Key;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PSCustomsOmissionText") is TextBlock text)
+        if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsOmissionText") is TextBlock text)
         {
             text.Text = omission.Value;
         }
@@ -263,7 +263,7 @@ internal sealed class QSCustoms
         }
 
         QSCustomsAdmit.IsEnabled = _csCustoms.CSCustomsModeSet(item.QSCustomsItemIndex, QSCustomsChoice[choice.Name]);
-        PLookItem.PLookItemApply(QSCustomsList);
+        QLookItem.QLookItemApply(QSCustomsList);
     }
 
     private void QSCustomsTargetHandle(object sender, SelectionChangedEventArgs e)
@@ -274,7 +274,7 @@ internal sealed class QSCustoms
         }
 
         QSCustomsAdmit.IsEnabled = _csCustoms.CSCustomsTargetSet(item.QSCustomsItemIndex, target);
-        PLookItem.PLookItemApply(QSCustomsList);
+        QLookItem.QLookItemApply(QSCustomsList);
     }
 
     private void QSCustomsAcceptHandle(object sender, RoutedEventArgs e)

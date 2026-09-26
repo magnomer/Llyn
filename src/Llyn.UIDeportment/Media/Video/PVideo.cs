@@ -154,34 +154,36 @@ internal sealed class PVideo : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PVideoSurface") is Border surface)
+        if (QLook.QLookPartFind<Border>(container, "PVideoSurface") is Border surface)
         {
-            surface.Visibility = PLook.PLookVisibleRead(row.PVideoPreview is not null);
+            surface.Visibility = QLook.QLookVisibleRead(row.PVideoPreview is not null);
         }
 
-        if (PLook.PLookPartFind<PScreen>(container, "PVideoScreen") is PScreen screen)
+        if (QLook.QLookPartFind<PScreen>(container, "PVideoScreen") is PScreen screen)
         {
             PVideoScreenApply(screen, row);
         }
 
-        PStateConverter state = new();
+        QStateConverter state = new();
         if (changed is null or nameof(PVideoLocation)
-            && PLook.PLookPartFind<TextBox>(container, "PVideoLocation") is TextBox location)
+            && QLook.QLookPartFind<TextBox>(container, "PVideoLocation") is TextBox location)
         {
             location.Text = (string)state.Convert(
                 row.PVideoLocation, typeof(string), string.Empty, CultureInfo.CurrentCulture);
+            location.SetResourceReference(QField.QFieldHintProperty, "Card.LocationHint");
         }
 
         if (changed is null or nameof(PVideoTimestamp)
-            && PLook.PLookPartFind<TextBox>(container, "PVideoTimestamp") is TextBox timestamp)
+            && QLook.QLookPartFind<TextBox>(container, "PVideoTimestamp") is TextBox timestamp)
         {
             timestamp.Text = (string)state.Convert(
                 row.PVideoTimestamp, typeof(string), string.Empty, CultureInfo.CurrentCulture);
+            timestamp.SetResourceReference(QField.QFieldHintProperty, "Card.TimestampHint");
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PVideoRemoveIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PVideoRemoveIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("remove", 12);
+            icon.QIconSource = QIcon.QIconResolve("remove", 12);
         }
 
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
@@ -192,7 +194,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     internal static void PVideoLineApply(FrameworkElement container, object item, string? _)
     {
-        if (PLook.PLookPartFind<PScreen>(container, "PVideoScreen") is PScreen { DataContext: PVideo row } screen)
+        if (QLook.QLookPartFind<PScreen>(container, "PVideoScreen") is PScreen { DataContext: PVideo row } screen)
         {
             PVideoScreenApply(screen, row);
         }

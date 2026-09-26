@@ -20,8 +20,8 @@ internal sealed class PRollItem : INotifyPropertyChanged
         PRollItemName = row.LCatalogAuthorName;
         PRollItemWork = work;
         PRollItemCount = row.LCatalogAuthorUsage.ToString(CultureInfo.CurrentCulture);
-        PRollItemMark = PIcon.PIconResolve(
-            PLook.PLookFirstRead(row.LCatalogAuthorStored.LAuthorStored, "guild", "unlink"), 16);
+        PRollItemMark = QIcon.QIconResolve(
+            QLook.QLookFirstRead(row.LCatalogAuthorStored.LAuthorStored, "guild", "unlink"), 16);
     }
 
     public long PRollItemId { get; }
@@ -43,7 +43,7 @@ internal sealed class PRollItem : INotifyPropertyChanged
         {
             built.Add(new PRollItem(
                 row,
-                LVita.LVitaWorkFormat(row.LCatalogAuthorWork, PLocalizationCatalog.PLocalizationTextRead),
+                LVita.LVitaWorkFormat(row.LCatalogAuthorWork, QLocalizationCatalog.QLocalizationTextRead),
                 row.LCatalogAuthorChosen));
         }
 
@@ -70,34 +70,34 @@ internal sealed class PRollItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PRollRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PRollRow") is Button row)
         {
             if (roll.PRollItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PRollMark") is PIconImage mark)
+        if (QLook.QLookPartFind<QIconImage>(container, "PRollMark") is QIconImage mark)
         {
-            mark.PIconSource = roll.PRollItemMark;
+            mark.QIconSource = roll.PRollItemMark;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PRollName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PRollName") is TextBlock name)
         {
             name.Text = roll.PRollItemName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PRollWork") is TextBlock work)
+        if (QLook.QLookPartFind<TextBlock>(container, "PRollWork") is TextBlock work)
         {
             work.Text = roll.PRollItemWork;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PRollCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PRollCount") is TextBlock count)
         {
             count.Text = roll.PRollItemCount;
         }

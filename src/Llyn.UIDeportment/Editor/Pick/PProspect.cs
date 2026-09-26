@@ -25,32 +25,32 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PProspectMark") is TextBlock mark)
+        if (QLook.QLookPartFind<TextBlock>(container, "PProspectMark") is TextBlock mark)
         {
-            mark.Visibility = PLook.PLookVisibleRead(row.PProspectItemFresh);
+            mark.Visibility = QLook.QLookVisibleRead(row.PProspectItemFresh);
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PProspectName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PProspectName") is Run name)
         {
             name.Text = row.PProspectItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PProspectEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PProspectEpithet") is Run epithet)
         {
             epithet.Text = "\u2002" + row.PProspectItemEpithet;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PProspectFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PProspectFlag") is Image flag)
         {
             flag.Source = row.PProspectItemFlag;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PProspectLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PProspectLanguage") is TextBlock language)
         {
             language.Text = row.PProspectItemLanguage;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PProspectRow") is Grid surface)
+        if (QLook.QLookPartFind<Grid>(container, "PProspectRow") is Grid surface)
         {
             surface.PreviewMouseLeftButtonDown -= _pProspectTemplate.PProspectHandle;
             surface.PreviewMouseLeftButtonDown += _pProspectTemplate.PProspectHandle;

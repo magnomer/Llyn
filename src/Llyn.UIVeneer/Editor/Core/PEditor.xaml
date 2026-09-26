@@ -43,16 +43,15 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <local:PGauge VerticalAlignment="Stretch">
+                    <local:QGauge VerticalAlignment="Stretch">
                         <TextBlock x:Name="PHeadwordGhost" Style="{StaticResource Editor.Field.Ghost}" />
                         <TextBox
                             x:Name="PHeadword"
                             Margin="-2,0,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Style="{StaticResource Theme.Input.Headword}"
-                            Tag="{DynamicResource Input.Headword}" />
-                    </local:PGauge>
+                            Style="{StaticResource Theme.Input.Headword}" />
+                    </local:QGauge>
                     <TextBlock x:Name="PEditorReading" Grid.Row="1" Style="{StaticResource Theme.Text.Reading}" />
 
                     <Grid Grid.Column="1" Margin="14,0,0,0">
@@ -63,7 +62,7 @@
                                     <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                                 </Grid>
                                 <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Language.Name}" />
-                                <local:PIconImage Style="{StaticResource Theme.Language.Expand}" />
+                                <local:QIconImage Style="{StaticResource Theme.Language.Expand}" />
                             </StackPanel>
                         </ToggleButton>
                         <Popup
@@ -85,7 +84,7 @@
                             x:Name="PEditorFavorite"
                             Style="{StaticResource Theme.Favorite.Mark}"
                             ToolTip="{DynamicResource Favorite.Mark}">
-                            <local:PIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
+                            <local:QIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
                         </ToggleButton>
                         <local:PGrasp x:Name="PEditorGrasp" Style="{StaticResource Theme.Grasp.Mark}" />
                         <TextBlock x:Name="PEditorGraspLabel" Style="{StaticResource Theme.Grasp.Label}" />
@@ -169,7 +168,7 @@
                                     <TextBlock x:Name="PPronunciationOpener" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                                     <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                                         <TextBlock x:Name="PPronunciationMeasure" Style="{StaticResource Theme.Pronunciation.Measure}" />
-                                        <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
+                                        <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" />
                                     </Grid>
                                     <TextBlock x:Name="PPronunciationCloser" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                                     <Button
@@ -217,9 +216,9 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
+                                    <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" />
                                     <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
-                                        <local:PIconImage x:Name="PMarkerIcon" Width="12" Height="12" />
+                                        <local:QIconImage x:Name="PMarkerIcon" Width="12" Height="12" />
                                     </ToggleButton>
                                 </Grid>
                             </Border>
@@ -319,8 +318,7 @@
                                     VerticalContentAlignment="Top"
                                     AcceptsReturn="True"
                                     TextWrapping="Wrap"
-                                    Style="{StaticResource Theme.Input.Field}"
-                                    Tag="{DynamicResource Input.NoteHint}" />
+                                    Style="{StaticResource Theme.Input.Field}" />
                             </Grid>
                         </Border>
                     </Grid>

@@ -62,10 +62,10 @@ The engine reads the embedded file through `LLocalizationLoader` in the infrastr
 A test hands in pairs it parsed the same way.
 The JSON never reaches this ring, so it opens, parses and closes nothing.
 
-## `public static string LLocalizationTextRead(string key)`
+## `public static string QLocalizationTextRead(string key)`
 
 The text of a key, or the key itself when the catalog lacks it.
 
-## `public static string? LLocalizationTextFind(string key)`
+## `public static string? QLocalizationTextFind(string key)`
 
 The text of a key, or null when the catalog lacks it.

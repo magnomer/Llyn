@@ -24,8 +24,7 @@
             Style="{StaticResource Theme.Search.Bar}">
             <TextBox
                 x:Name="PWinnow"
-                Style="{StaticResource Theme.Search.Field}"
-                Tag="{DynamicResource Settings.Search}" />
+                Style="{StaticResource Theme.Search.Field}" />
         </Border>
 
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
@@ -92,7 +91,7 @@
                                 VerticalAlignment="Center"
                                 Style="{StaticResource Theme.Input.Action}"
                                 ToolTip="{DynamicResource Workspace.Browse}">
-                                <local:PIconImage x:Name="PWorkspaceDialogIcon" Width="24" Height="24" />
+                                <local:QIconImage x:Name="PWorkspaceDialogIcon" Width="24" Height="24" />
                             </Button>
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8,0,0" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Workspace.Helper}" />
                         </Grid>

@@ -21,7 +21,7 @@ Rows sharing a headword are numbered afterwards, so the reader can tell them apa
 ## `private void PCohortApply(FrameworkElement container, object item, string? _)`
 
 Fills one entry row from its item, the work its bindings did before.
-The row's tag reads Chosen on the chosen item and is cleared otherwise, which the look sheet paints.
+The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The click is subscribed once per row, removed first so a refill never doubles it.
 It runs again on every change the item raises, so a chosen row moves without a refill.
 The epithet leads with an en space, as its string format did.

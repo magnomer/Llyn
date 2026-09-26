@@ -6,22 +6,22 @@ The pronunciation styles are merged, so a row reads exactly as the primary pronu
 ## `<Style x:Key="Theme.Accent.Tool" TargetType="Button">`
 
 The small icon button every pronunciation row wears.
-A `PLook` row draws the icon named in its tag, and gives the row as the command parameter.
+A `QLook` row draws the icon the button carries, and gives the row as the command parameter.
 It is the playback action's look, so the row's buttons match the play button beside them.
 The icon is drawn by a template, since one shared element could stand in only one row at a time.
 
 ## `<Style x:Key="Theme.Accent.Playback" TargetType="Button">`
 
-The play button of a row, whose command and icon are `PLook` rows.
+The play button of a row, whose command and icon are `QLook` rows.
 The row fill hides it while the row has no audio.
 
 ## `<Style x:Key="Theme.Accent.Phonetician" TargetType="Button">`
 
-The lookup button of a row, whose notation command and icon are `PLook` rows.
+The lookup button of a row, whose notation command and icon are `QLook` rows.
 
 ## `<Style x:Key="Theme.Accent.Downloader" TargetType="Button">`
 
-The download button of a row, whose clip command and icon are `PLook` rows.
+The download button of a row, whose clip command and icon are `QLook` rows.
 
 ## `<Style x:Key="Theme.Accent.Prompt" TargetType="TextBlock">`
 
@@ -37,24 +37,24 @@ Buttons rather than a width, because a width is a figure that drifts.
 ## `<Style x:Key="Theme.Accent.Control" TargetType="StackPanel">`
 
 The plus and minus pair of a row, unseen and untouchable by default.
-`PLook` rows on the row surface show the part named `PAccentShelf` on hover or focus.
+`QLook` rows on the row surface show the part named `PAccentShelf` on hover or focus.
 The pair reads as the example rows' pair does, so adding and dropping look the same everywhere.
 
 ## `<Style x:Key="Theme.Accent.Handle" TargetType="Button">`
 
 The bare small button the plus and the minus share.
-A `PLook` row gives it the row as the command parameter.
+A `QLook` row gives it the row as the command parameter.
 
 ## `<Style x:Key="Theme.Accent.Addition" TargetType="Button">`
 
 The plus that adds a blank row after this one.
-Its addition command and icon are `PLook` rows.
+Its addition command and icon are `QLook` rows.
 The plus is drawn by a template, since one shared element could stand in only one row at a time.
 
 ## `<Style x:Key="Theme.Accent.Remove" TargetType="Button">`
 
 The minus that drops a row.
-Its removal command and icon are `PLook` rows.
+Its removal command and icon are `QLook` rows.
 The minus is drawn by a template, since one shared element could stand in only one row at a time.
 
 ## `<DataTemplate x:Key="Theme.Accent.Slot">`

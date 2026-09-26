@@ -13,31 +13,31 @@ internal sealed record PMentionChip(
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMentionWord") is TextBlock word)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMentionWord") is TextBlock word)
         {
             word.Text = chip.PMentionChipWord;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
         {
             name.Text = chip.PMentionChipName;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PMentionSense") is TextBlock sense)
+        if (QLook.QLookPartFind<TextBlock>(container, "PMentionSense") is TextBlock sense)
         {
             sense.Text = chip.PMentionChipSense;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PMentionUnlink") is not Button unlink)
+        if (QLook.QLookPartFind<Button>(container, "PMentionUnlink") is not Button unlink)
         {
             return;
         }
 
         unlink.Command = PMentionCommand.PMentionCommandUnlink;
         unlink.CommandParameter = chip;
-        if (PLook.PLookPartFind<PIconImage>(unlink, "PMentionMark") is PIconImage mark)
+        if (QLook.QLookPartFind<QIconImage>(unlink, "PMentionMark") is QIconImage mark)
         {
-            mark.PIconSource = PIcon.PIconResolve("close", 12);
+            mark.QIconSource = QIcon.QIconResolve("close", 12);
         }
     }
 }

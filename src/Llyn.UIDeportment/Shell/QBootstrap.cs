@@ -12,7 +12,7 @@ public sealed class QBootstrap
 
     public QBootstrap()
     {
-        PLook.PLookStateAttach();
+        QLook.QLookStateAttach();
     }
 
     public bool QBootstrapThemeApply(
@@ -22,11 +22,11 @@ public sealed class QBootstrap
         {
             ResourceDictionary resources = System.Windows.Application.Current.Resources;
             Func<string, string> colorRead = colorSeam();
-            PLocalizationCatalog.PLocalizationCatalogApply(resources, catalogSeam());
-            PThemeLoader.PThemeLoaderApply(colorRead, resources);
-            PField.PFieldApply(resources);
-            PIndicator.PIndicatorApply(resources);
-            PCaret.PCaretHook();
+            QLocalizationCatalog.QLocalizationCatalogApply(resources, catalogSeam());
+            QTheme.QThemeApply(colorRead, resources);
+            QField.QFieldApply(resources);
+            QIndicator.QIndicatorApply(resources);
+            QCaret.QCaretHook();
             return true;
         }
         catch (Exception exception)
@@ -54,8 +54,8 @@ public sealed class QBootstrap
         {
             string key = busySeam(exception) ? "Workspace.Busy" : "Workspace.OpenFailed";
             MessageBox.Show(
-                $"{PLocalizationCatalog.PLocalizationTextRead(key)}\n\n{workspace}\n\n{exception.Message}",
-                PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+                $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{workspace}\n\n{exception.Message}",
+                QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             return null;
@@ -72,13 +72,13 @@ public sealed class QBootstrap
 
         try
         {
-            PLocalizationCatalog.PLocalizationCatalogApply(System.Windows.Application.Current.Resources, loadSeam());
+            QLocalizationCatalog.QLocalizationCatalogApply(System.Windows.Application.Current.Resources, loadSeam());
         }
         catch (Exception exception)
         {
             MessageBox.Show(
                 $"The application language could not be loaded.\n\n{exception.Message}",
-                PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+                QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
@@ -92,8 +92,8 @@ public sealed class QBootstrap
         }
 
         MessageBox.Show(
-            $"{PLocalizationCatalog.PLocalizationTextRead("Workspace.DatabaseReset")}\n\n{backup}\n\n{reason}",
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            $"{QLocalizationCatalog.QLocalizationTextRead("Workspace.DatabaseReset")}\n\n{backup}\n\n{reason}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
     }
@@ -120,8 +120,8 @@ public sealed class QBootstrap
         e.Handled = true;
 
         MessageBox.Show(
-            $"{PLocalizationCatalog.PLocalizationTextRead("Workspace.Fault")}\n\n{log}\n\n{e.Exception.Message}",
-            PLocalizationCatalog.PLocalizationTextRead("Terms.Product"),
+            $"{QLocalizationCatalog.QLocalizationTextRead("Workspace.Fault")}\n\n{log}\n\n{e.Exception.Message}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Error);
 

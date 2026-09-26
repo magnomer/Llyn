@@ -45,8 +45,7 @@
             <TextBox
                 x:Name="PAutographName"
                 Margin="0,0,60,0"
-                Style="{StaticResource Theme.Autograph.Title}"
-                Tag="{DynamicResource Autograph.Name}" />
+                Style="{StaticResource Theme.Autograph.Title}" />
 
             <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
                 <Border Style="{StaticResource Theme.Autograph.Tally}">
@@ -63,8 +62,7 @@
                     <StackPanel x:Name="PAutographUnionBody">
                         <TextBox
                             x:Name="PAutographUnion"
-                            Style="{StaticResource Theme.Autograph.Field}"
-                            Tag="{DynamicResource Autograph.UnionSearch}" />
+                            Style="{StaticResource Theme.Autograph.Field}" />
                         <ItemsControl
                             x:Name="PAutographUnionList"
                             Margin="-12,10,0,0"

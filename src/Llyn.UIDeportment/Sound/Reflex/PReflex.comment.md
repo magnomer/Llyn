@@ -54,7 +54,7 @@ Writes every row's anchor label from the fanqie rows held, under the headword as
 ## `internal void PReflexPendingShow()`
 
 Shows the fetching line and turns the fetch-again icon while the engine fills the entry.
-The icon turns while the button's tag reads `Pending`, through the rebuild style's rows.
+The icon turns while the button carries the `Pending` cue, through the rebuild style's rows.
 Both settle when the fill answers, which reaches here by the reflex bulletin.
 The held table size is let go once the fill is over, so the new rows size the table again.
 An unsaved entry has no fill and shows nothing.

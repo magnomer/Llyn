@@ -26,4 +26,6 @@
         </Setter>
     </Style>
 
+    <ScaleTransform x:Key="Theme.Playback.Action.PressScale" ScaleX="0.88" ScaleY="0.88" />
+
 </ResourceDictionary>

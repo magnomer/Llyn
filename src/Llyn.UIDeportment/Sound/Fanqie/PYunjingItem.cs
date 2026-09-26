@@ -80,24 +80,24 @@ internal sealed class PYunjingItem : INotifyPropertyChanged
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PYunjingRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PYunjingRow") is Button row)
         {
             if (yunjing.PYunjingItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(FrameworkElement.TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PYunjingKey") is TextBlock key)
+        if (QLook.QLookPartFind<TextBlock>(container, "PYunjingKey") is TextBlock key)
         {
             key.Text = yunjing.PYunjingItemKey;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PYunjingCount") is TextBlock count)
+        if (QLook.QLookPartFind<TextBlock>(container, "PYunjingCount") is TextBlock count)
         {
             count.Text = yunjing.PYunjingItemCount.ToString(CultureInfo.InvariantCulture);
         }

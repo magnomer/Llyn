@@ -39,40 +39,40 @@ internal sealed class PFanqieItem
             return;
         }
 
-        if (PLook.PLookPartFind<Grid>(container, "PFanqieStem") is Grid stem)
+        if (QLook.QLookPartFind<Grid>(container, "PFanqieStem") is Grid stem)
         {
-            stem.Visibility = PLook.PLookVisibleRead(row.PFanqieItemStems.Count > 0);
+            stem.Visibility = QLook.QLookVisibleRead(row.PFanqieItemStems.Count > 0);
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PFanqieStems") is ItemsControl stems)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PFanqieStems") is ItemsControl stems)
         {
             stems.ItemsSource = row.PFanqieItemStems;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFanqieCharacter") is TextBlock character)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFanqieCharacter") is TextBlock character)
         {
             character.Text = row.PFanqieItemCharacter;
         }
 
-        if (PLook.PLookPartFind<Border>(container, "PFanqieChip") is Border chip)
+        if (QLook.QLookPartFind<Border>(container, "PFanqieChip") is Border chip)
         {
             chip.Visibility = row.PFanqieItemBook.Length > 0 ? Visibility.Visible : Visibility.Hidden;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFanqieBook") is TextBlock book)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFanqieBook") is TextBlock book)
         {
             book.Text = row.PFanqieItemBook;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PFanqieSource") is TextBlock source)
+        if (QLook.QLookPartFind<TextBlock>(container, "PFanqieSource") is TextBlock source)
         {
             source.Text = row.PFanqieItemSource;
         }
 
-        if (PLook.PLookPartFind<ItemsControl>(container, "PFanqieLines") is ItemsControl lines)
+        if (QLook.QLookPartFind<ItemsControl>(container, "PFanqieLines") is ItemsControl lines)
         {
             lines.ItemsSource = row.PFanqieItemLines;
-            PLookItem.PLookItemAttach(lines, PFanqieLine.PFanqieRowApply);
+            QLookItem.QLookItemAttach(lines, PFanqieLine.PFanqieRowApply);
         }
     }
 

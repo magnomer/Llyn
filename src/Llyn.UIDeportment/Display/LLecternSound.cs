@@ -86,9 +86,9 @@ public sealed class LLecternSound
         _lLecternSoundStrip = glyph;
         _lLecternSoundOpening = glyphSeam;
         transcriptions.ItemsSource = _lLecternSoundTranscription;
-        PLookItem.PLookItemAttach(transcriptions, LTranscriptionItem.LTranscriptionItemApply);
+        QLookItem.QLookItemAttach(transcriptions, LTranscriptionItem.LTranscriptionItemApply);
         glyph.ItemsSource = _lLecternSoundGlyph;
-        PLookItem.PLookItemAttach(glyph, LGlyphItem.LGlyphItemApply);
+        QLookItem.QLookItemAttach(glyph, LGlyphItem.LGlyphItemApply);
     }
 
     public void LLecternReflexAttach(ItemsControl reflex, UIElement loading, ToggleButton fold)
@@ -100,7 +100,7 @@ public sealed class LLecternSound
         _lLecternSoundLoading = loading;
         _lLecternSoundFold = fold;
         reflex.ItemsSource = _lLecternSoundReflex;
-        PLookItem.PLookItemAttach(reflex, LReflexItem.LReflexItemApply);
+        QLookItem.QLookItemAttach(reflex, LReflexItem.LReflexItemApply);
     }
 
     public void LLecternFanqieAttach(

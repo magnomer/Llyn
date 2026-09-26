@@ -83,13 +83,13 @@ public partial class PRepertoire
     private void PImageApply(FrameworkElement container, object item, string? name)
     {
         PImage.PImageRowApply(container, item, name);
-        if (PLook.PLookPartFind<Button>(container, "PImageChooser") is Button open)
+        if (QLook.QLookPartFind<Button>(container, "PImageChooser") is Button open)
         {
             open.Click -= _pImageTemplate.PImageOpenHandle;
             open.Click += _pImageTemplate.PImageOpenHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PImageEraser") is Button remove)
+        if (QLook.QLookPartFind<Button>(container, "PImageEraser") is Button remove)
         {
             remove.Click -= _pImageTemplate.PImageRemoveHandle;
             remove.Click += _pImageTemplate.PImageRemoveHandle;
@@ -99,13 +99,13 @@ public partial class PRepertoire
     private void PVideoApply(FrameworkElement container, object item, string? name)
     {
         PVideo.PVideoRowApply(container, item, name);
-        if (PLook.PLookPartFind<Button>(container, "PVideoChooser") is Button open)
+        if (QLook.QLookPartFind<Button>(container, "PVideoChooser") is Button open)
         {
             open.Click -= _pVideoTemplate.PVideoOpenHandle;
             open.Click += _pVideoTemplate.PVideoOpenHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PVideoEraser") is Button remove)
+        if (QLook.QLookPartFind<Button>(container, "PVideoEraser") is Button remove)
         {
             remove.Click -= _pVideoTemplate.PVideoRemoveHandle;
             remove.Click += _pVideoTemplate.PVideoRemoveHandle;

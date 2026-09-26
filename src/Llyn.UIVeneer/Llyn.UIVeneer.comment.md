@@ -17,5 +17,5 @@ A page the deportment still loads by pack URI names `Llyn.UIVeneer` explicitly, 
 ## `<Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />`
 
 The multicolor 3D interface icons are embedded resources.
-`PIcon` converts each SVG into one cached drawing that preserves its fills, gradients, strokes, and opacity.
+`QIcon` converts each SVG into one cached drawing that preserves its fills, gradients, strokes, and opacity.
 The brand icon and image are embedded beside them for the windows' title bars.

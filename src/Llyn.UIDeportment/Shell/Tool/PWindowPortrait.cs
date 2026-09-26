@@ -23,12 +23,12 @@ public partial class PWindow
         List<string> filters = new List<string>();
         foreach ((string key, string suffix, LPortraitMedium _) in PWindowPortraitKinds)
         {
-            filters.Add($"{PLocalizationCatalog.PLocalizationTextRead(key)}|*{suffix}");
+            filters.Add($"{QLocalizationCatalog.QLocalizationTextRead(key)}|*{suffix}");
         }
 
         Microsoft.Win32.SaveFileDialog dialog = new()
         {
-            Title = PLocalizationCatalog.PLocalizationTextRead("Export.Title"),
+            Title = QLocalizationCatalog.QLocalizationTextRead("Export.Title"),
             Filter = string.Join("|", filters),
             FilterIndex = 2,
             AddExtension = true,

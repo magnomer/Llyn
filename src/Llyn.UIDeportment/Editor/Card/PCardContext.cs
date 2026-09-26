@@ -159,6 +159,6 @@ internal sealed partial class PCard
     {
         _pCardContextCaret.PContextCaretHint = PCardContext.Count > 1
             ? string.Empty
-            : PLocalizationCatalog.PLocalizationCatalogCurrent[PCardContextHint];
+            : QLocalizationCatalog.QLocalizationCatalogCurrent[PCardContextHint];
     }
 }

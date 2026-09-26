@@ -123,6 +123,20 @@ public sealed record LReference(
         };
     }
 
+    public static IReadOnlyList<LReferenceKind> LReferenceKindMenu { get; } =
+    [
+        LReferenceKind.LReferenceKindUnspecified,
+        LReferenceKind.LReferenceKindBook,
+        LReferenceKind.LReferenceKindJournal,
+        LReferenceKind.LReferenceKindArticle,
+        LReferenceKind.LReferenceKindWeb,
+        LReferenceKind.LReferenceKindVideo,
+        LReferenceKind.LReferenceKindAudio,
+        LReferenceKind.LReferenceKindPicture,
+        LReferenceKind.LReferenceKindOther,
+        LReferenceKind.LReferenceKindUnknown,
+    ];
+
     public static string LReferenceKindResolve(LReferenceKind kind)
     {
         return kind switch

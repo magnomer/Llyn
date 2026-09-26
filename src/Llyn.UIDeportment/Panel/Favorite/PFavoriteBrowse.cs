@@ -27,7 +27,7 @@ public partial class PFavorite
     private void PSeriesHandle(object sender, RoutedEventArgs e)
     {
         PSeriesDropper.IsChecked = false;
-        _lFavorite.LFavoriteSeriesSet(LChoice.LChoiceOrderRead(sender));
+        _lFavorite.LFavoriteSeriesSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void PSeriesGraspUpdate()
@@ -42,7 +42,7 @@ public partial class PFavorite
 
     private void PStrainerHandle(object sender, RoutedEventArgs e)
     {
-        _lFavorite.LFavoriteStrainerSet(LChoice.LChoiceFilterRead(PStrainerList));
+        _lFavorite.LFavoriteStrainerSet(QChoice.QChoiceFilterRead(PStrainerList));
         PStrainerRestore();
     }
 
@@ -67,7 +67,7 @@ public partial class PFavorite
             LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lFavorite.LFavoritePanel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PSeriesList,
             "Series",
             PSeriesHandle,
@@ -78,12 +78,12 @@ public partial class PFavorite
                 LCatalogOrder.LCatalogOrderMarked,
                 LCatalogOrder.LCatalogOrderGrasp,
             ]);
-        PChoice.PChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
+        QChoice.QChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
         PStrainerRestore();
 
         await LEnsignImage.LEnsignLoad(_pFavoriteHost.PWindowDeportment);
 
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PStrainerList, _lFavorite.LFavoriteLanguageRead(), _lFavorite.LFavoriteFilter, PStrainerHandle);
         _lFavorite.LFavoriteRecallSet(PRecall.Text ?? string.Empty);
         PRosterFind();
@@ -148,37 +148,37 @@ public partial class PFavorite
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PRosterRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PRosterRow") is Button row)
         {
             if (roster.PRosterItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PRosterHandle;
             row.Click += PRosterHandle;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PRosterFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PRosterFlag") is Image flag)
         {
             flag.Source = roster.PRosterItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PRosterName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PRosterName") is Run name)
         {
             name.Text = roster.PRosterItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PRosterEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PRosterEpithet") is Run epithet)
         {
             epithet.Text = " " + roster.PRosterItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PRosterLanguage") is TextBlock language)
+        if (QLook.QLookPartFind<TextBlock>(container, "PRosterLanguage") is TextBlock language)
         {
             language.Text = roster.PRosterItemLanguage;
         }

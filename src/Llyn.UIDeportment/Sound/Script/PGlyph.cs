@@ -18,7 +18,7 @@ public partial class PEditor
     private void PGlyphAttach()
     {
         PGlyph.ItemsSource = _pGlyphItem;
-        PLookItem.PLookItemAttach(PGlyph, PGlyphApply);
+        QLookItem.QLookItemAttach(PGlyph, PGlyphApply);
         PEditorSound.CommandBindings.Add(new CommandBinding(
             PGlyphCommand.PGlyphCommandNotation, PGlyphNotationHandle));
     }
@@ -38,26 +38,27 @@ public partial class PEditor
             return;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGlyphLabel") is TextBlock label)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGlyphLabel") is TextBlock label)
         {
             label.Text = row.LTranscriptionItemLabel;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PGlyphMeasure") is TextBlock measure)
+        if (QLook.QLookPartFind<TextBlock>(container, "PGlyphMeasure") is TextBlock measure)
         {
             PGlyphMeasureApply(measure, row.LTranscriptionItemText);
         }
 
-        if (PLook.PLookPartFind<TextBox>(container, "PGlyphField") is TextBox field)
+        if (QLook.QLookPartFind<TextBox>(container, "PGlyphField") is TextBox field)
         {
             field.Text = row.LTranscriptionItemText;
+            field.SetResourceReference(QField.QFieldHintProperty, "Input.Glyph");
             field.TextChanged -= PGlyphFieldHandle;
             field.TextChanged += PGlyphFieldHandle;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PGlyphPhonetician") is Button phonetician)
+        if (QLook.QLookPartFind<Button>(container, "PGlyphPhonetician") is Button phonetician)
         {
-            phonetician.Visibility = PLook.PLookVisibleRead(PGlyph.Tag is true);
+            phonetician.Visibility = QLook.QLookVisibleRead(PGlyph.Tag is true);
         }
     }
 
@@ -96,7 +97,7 @@ public partial class PEditor
         _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph?.LGlyphSourced ?? false;
-        PLookItem.PLookItemApply(PGlyph);
+        QLookItem.QLookItemApply(PGlyph);
         LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
 
         List<LTranscriptionDraft> rows = [];

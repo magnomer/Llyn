@@ -28,7 +28,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Style="{DynamicResource Theme.Card.Handle}">
-                            <local:PIconImage x:Name="PCardIcon" Width="12" Height="12" />
+                            <local:QIconImage x:Name="PCardIcon" Width="12" Height="12" />
                         </Button>
                     </Grid>
                 </Border>
@@ -63,13 +63,13 @@
                         <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{DynamicResource Theme.Command.Group}">
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="PCardImageChooser" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
-                                    <local:PIconImage x:Name="PCardImageIcon" Width="24" Height="24" />
+                                    <local:QIconImage x:Name="PCardImageIcon" Width="24" Height="24" />
                                 </Button>
 
                                 <Rectangle Style="{DynamicResource Theme.Command.Divider}" />
 
                                 <Button x:Name="PCardVideoChooser" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
-                                    <local:PIconImage x:Name="PCardVideoIcon" Width="24" Height="24" />
+                                    <local:QIconImage x:Name="PCardVideoIcon" Width="24" Height="24" />
                                 </Button>
                             </StackPanel>
                         </Border>

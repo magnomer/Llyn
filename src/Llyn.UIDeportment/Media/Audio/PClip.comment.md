@@ -105,7 +105,7 @@ It is called when a sound ends or fails, when another preview starts, and when t
 
 The player's end and failure both clear the mark, since either way nothing sounds any more.
 
-### `reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Saving");`
+### `reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saving");`
 
 The download is reported on the recording that was taken, not on the status card.
 That card belongs to the search.
@@ -131,7 +131,7 @@ An untagged recording sends nothing, and the row keeps whatever it had.
 
 Taking a recording closes the menu, the way taking a pronunciation candidate does.
 
-### `reading.PClipReadingAction = PLocalizationCatalog.PLocalizationTextRead("Downloader.Retry");`
+### `reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Retry");`
 
 A failed download leaves the row offering another try.
 
@@ -153,5 +153,5 @@ It attaches the reading fill to the row's own recording list.
 ## `private void PClipReadingApply(FrameworkElement container, object item, string? _)`
 
 Fills one recording, its flag or name, its play button and its taking button.
-The play button is tagged with the preview state, playing before fetching before refused.
+The play button carries the preview state as its cue, playing before fetching before refused.
 The column joins the shared size group of its place in the row.

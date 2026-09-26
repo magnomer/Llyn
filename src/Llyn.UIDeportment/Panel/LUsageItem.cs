@@ -47,10 +47,10 @@ public sealed class LUsageItem
     {
         ArgumentNullException.ThrowIfNull(usages);
 
-        string unknown = LLocalizationCatalog.LLocalizationTextRead("Display.Unknown");
-        string meaning = LLocalizationCatalog.LLocalizationTextRead("Display.MeaningSingle");
-        string collocation = LLocalizationCatalog.LLocalizationTextRead("Display.CollocationSingle");
-        string example = LLocalizationCatalog.LLocalizationTextRead("Vita.Example");
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        string meaning = QLocalizationCatalog.QLocalizationTextRead("Display.MeaningSingle");
+        string collocation = QLocalizationCatalog.QLocalizationTextRead("Display.CollocationSingle");
+        string example = QLocalizationCatalog.QLocalizationTextRead("Vita.Example");
 
         List<LUsageItem> built = new(usages.Count);
         foreach (LUsage usage in usages)
@@ -83,27 +83,27 @@ public sealed class LUsageItem
             return;
         }
 
-        if (PLook.PLookPartFind<Image>(container, "PUsageFlag") is Image flag)
+        if (QLook.QLookPartFind<Image>(container, "PUsageFlag") is Image flag)
         {
             flag.Source = usage.LUsageItemFlag;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PUsageName") is Run name)
+        if (QLook.QLookPartFind<Run>(container, "PUsageName") is Run name)
         {
             name.Text = usage.LUsageItemName;
         }
 
-        if (PLook.PLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
+        if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
         {
             epithet.Text = " " + usage.LUsageItemEpithet;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
+        if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
         {
             title.Text = usage.LUsageItemTitle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
+        if (QLook.QLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
         {
             owner.Text = usage.LUsageItemOwner;
         }

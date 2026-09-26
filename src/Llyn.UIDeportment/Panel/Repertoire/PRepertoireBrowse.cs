@@ -28,7 +28,7 @@ public partial class PRepertoire
     private void PTierHandle(object sender, RoutedEventArgs e)
     {
         PTierDropper.IsChecked = false;
-        _lRepertoire.LRepertoireAtlas.LAtlasTierSet(LChoice.LChoiceOrderRead(sender));
+        _lRepertoire.LRepertoireAtlas.LAtlasTierSet(QChoice.QChoiceOrderRead(sender));
     }
 
     internal async void PRepertoireVistaRestore()
@@ -38,7 +38,7 @@ public partial class PRepertoire
         PRepertoireObserverAttach();
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
-        PChoice.PChoiceOrderBuild(
+        QChoice.QChoiceOrderBuild(
             PTierList,
             "Tier",
             PTierHandle,
@@ -47,7 +47,7 @@ public partial class PRepertoire
                 LCatalogOrder.LCatalogOrderKind,
                 LCatalogOrder.LCatalogOrderUsage,
             ]);
-        PChoice.PChoiceOrderApply(PTierDropdown, atlas.LPanelOrder);
+        QChoice.QChoiceOrderApply(PTierDropdown, atlas.LPanelOrder);
         PMeshRestore();
 
         await LEnsignImage.LEnsignLoad(_pRepertoireHost.PWindowDeportment);
@@ -80,12 +80,12 @@ public partial class PRepertoire
 
     private void PMeshRestore()
     {
-        PMeshMark.Visibility = PLook.PLookVisibleRead(_lRepertoire.LRepertoireAtlas.LAtlasFiltered);
+        PMeshMark.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireAtlas.LAtlasFiltered);
     }
 
     private void PMeshBuild()
     {
-        PChoice.PChoiceFilterBuild(
+        QChoice.QChoiceFilterBuild(
             PMeshList,
             _lRepertoire.LRepertoireAtlas.LAtlasLanguageRead(),
             _lRepertoire.LRepertoireAtlas.LAtlasPanel.LPanelFilter,
@@ -106,7 +106,7 @@ public partial class PRepertoire
 
     private void PMeshHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireAtlas.LAtlasMeshSet(LChoice.LChoiceFilterRead(PMeshList));
+        _lRepertoire.LRepertoireAtlas.LAtlasMeshSet(QChoice.QChoiceFilterRead(PMeshList));
         PMeshRestore();
     }
 
@@ -116,8 +116,8 @@ public partial class PRepertoire
         try
         {
             read = _lRepertoire.LRepertoireAtlas.LAtlasRowsRead(
-                PLocalizationCatalog.PLocalizationTextRead("Display.Unknown"),
-                PLocalizationCatalog.PLocalizationTextRead("Situation.Untitled"));
+                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
+                QLocalizationCatalog.QLocalizationTextRead("Situation.Untitled"));
             _pAtlasCount = _lRepertoire.LRepertoireAtlas.LAtlasUsageRead();
         }
         catch (Exception exception)
@@ -126,8 +126,8 @@ public partial class PRepertoire
             return;
         }
 
-        string unknown = PLocalizationCatalog.PLocalizationTextRead("Display.Unknown");
-        string untitled = PLocalizationCatalog.PLocalizationTextRead("Situation.Untitled");
+        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
+        string untitled = QLocalizationCatalog.QLocalizationTextRead("Situation.Untitled");
 
         List<PAtlasItem> fresh = [];
         foreach (LCatalogSituation row in read)
@@ -144,7 +144,7 @@ public partial class PRepertoire
         LSplice.LSpliceApply(
             _pAtlasList, fresh, PAtlasItem.PAtlasItemMatch, PAtlasItem.PAtlasItemSync);
 
-        PAtlasEmpty.Visibility = PLook.PLookVisibleRead(_pAtlasList.Count == 0);
+        PAtlasEmpty.Visibility = QLook.QLookVisibleRead(_pAtlasList.Count == 0);
 
         PVignetteTally.Text = PRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.LAtlasChosen);
         PScenarioTally.Text = PRepertoireTallyRead(PScenarioDesk.LDeskStoredRead());
@@ -154,7 +154,7 @@ public partial class PRepertoire
     private void PAtlasHandle(object sender, RoutedEventArgs e)
     {
         _lRepertoire.LRepertoireSelect(
-            PSender.PSenderSourceRead<PAtlasItem>(e)?.PAtlasItemId, _pRepertoireHost.PVoyageRecord);
+            QSender.QSenderSourceRead<PAtlasItem>(e)?.PAtlasItemId, _pRepertoireHost.PVoyageRecord);
     }
 
     private void PAtlasApply(FrameworkElement container, object item, string? _)
@@ -164,37 +164,37 @@ public partial class PRepertoire
             return;
         }
 
-        if (PLook.PLookPartFind<Button>(container, "PAtlasRow") is Button row)
+        if (QLook.QLookPartFind<Button>(container, "PAtlasRow") is Button row)
         {
             if (atlas.PAtlasItemChosen)
             {
-                row.Tag = "Chosen";
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
             else
             {
-                row.ClearValue(TagProperty);
+                row.ClearValue(QLook.QLookCueProperty);
             }
 
             row.Click -= PAtlasHandle;
             row.Click += PAtlasHandle;
         }
 
-        if (PLook.PLookPartFind<PIconImage>(container, "PAtlasIcon") is PIconImage icon)
+        if (QLook.QLookPartFind<QIconImage>(container, "PAtlasIcon") is QIconImage icon)
         {
-            icon.PIconSource = PIcon.PIconResolve("situation", 16);
+            icon.QIconSource = QIcon.QIconResolve("situation", 16);
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAtlasTitle") is TextBlock title)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAtlasTitle") is TextBlock title)
         {
             title.Text = atlas.PAtlasItemTitle;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAtlasKind") is TextBlock kind)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAtlasKind") is TextBlock kind)
         {
             kind.Text = atlas.PAtlasItemKind;
         }
 
-        if (PLook.PLookPartFind<TextBlock>(container, "PAtlasTally") is TextBlock tally)
+        if (QLook.QLookPartFind<TextBlock>(container, "PAtlasTally") is TextBlock tally)
         {
             tally.Text = atlas.PAtlasItemCount;
         }

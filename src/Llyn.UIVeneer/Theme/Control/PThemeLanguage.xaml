@@ -37,7 +37,7 @@
         <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
     </Style>
 
-    <Style x:Key="Theme.Language.Expand" TargetType="local:PIconImage">
+    <Style x:Key="Theme.Language.Expand" TargetType="local:QIconImage">
         <Setter Property="Width" Value="12" />
         <Setter Property="Height" Value="12" />
         <Setter Property="Margin" Value="8,0,0,0" />

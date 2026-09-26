@@ -186,8 +186,8 @@ public sealed class LLecternCard
         {
             _lLecternCardUsage.Add(new LUsageItem(
                 usage,
-                LLocalizationCatalog.LLocalizationTextRead(LDisplay.LDisplayOwnerRead(usage)),
-                LLocalizationCatalog.LLocalizationTextRead("Display.Unknown"),
+                QLocalizationCatalog.QLocalizationTextRead(LDisplay.LDisplayOwnerRead(usage)),
+                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
                 string.Empty,
                 usage.LUsageEpithet));
         }

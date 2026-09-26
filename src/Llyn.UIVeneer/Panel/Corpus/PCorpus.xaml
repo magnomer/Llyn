@@ -45,14 +45,13 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Rank.Title}">
-                    <local:PIconImage x:Name="PRankIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PRankIcon" Width="24" Height="24" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PQuery"
                     Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Example.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Popup
                     x:Name="PRankDropdown"
                     Width="238"
@@ -84,8 +83,7 @@
                 <TextBox
                     x:Name="PDredge"
                     Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Field}"
-                    Tag="{DynamicResource Dredge.Search}" />
+                    Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
                 <ToggleButton
                     x:Name="PGauzeDropper"
@@ -93,7 +91,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Gauze.Title}">
                     <Grid Width="24" Height="24">
-                        <local:PIconImage x:Name="PGauzeIcon" Width="24" Height="24" />
+                        <local:QIconImage x:Name="PGauzeIcon" Width="24" Height="24" />
                         <Ellipse
                             x:Name="PGauzeMark"
                             Width="6"
@@ -320,7 +318,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Image x:Name="PSpeakerFlag" Style="{StaticResource Theme.Excerpt.Flag}" />
                                             <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Speech.Name}" />
-                                            <local:PIconImage
+                                            <local:QIconImage
                                                 x:Name="PSpeakerIcon"
                                                 Width="12"
                                                 Height="12"
@@ -358,11 +356,10 @@
                                             x:Name="PTranscriptSeedField"
                                             Grid.Column="1"
                                             Margin="0"
-                                            Style="{DynamicResource Theme.Transcript.Gloss}"
-                                            Tag="{DynamicResource Example.Translation}" />
+                                            Style="{DynamicResource Theme.Transcript.Gloss}" />
                                         <StackPanel x:Name="PTranscriptShelf" Grid.Column="2" Style="{DynamicResource Theme.Transcript.Control}">
                                             <Button x:Name="PTranscriptAddition" Style="{DynamicResource Theme.Transcript.Addition}">
-                                                <local:PIconImage Width="12" Height="12" />
+                                                <local:QIconImage Width="12" Height="12" />
                                             </Button>
                                         </StackPanel>
                                     </Grid>
@@ -404,7 +401,7 @@
                     IsEnabled="False"
                     Style="{StaticResource Theme.Input.Bin}"
                     ToolTip="{DynamicResource Scribe.Delete}">
-                    <local:PIconImage x:Name="PCorpusBinIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PCorpusBinIcon" Width="24" Height="24" />
                 </Button>
             </Grid>
         </Border>

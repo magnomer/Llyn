@@ -46,7 +46,7 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource Theme.Clip.Preview}"
                     ToolTip="{DynamicResource Downloader.Play}">
-                    <local:PIconImage x:Name="PClipPreviewIcon" Width="24" Height="24" />
+                    <local:QIconImage x:Name="PClipPreviewIcon" Width="24" Height="24" />
                 </Button>
                 <Button
                     x:Name="PClipSelector"

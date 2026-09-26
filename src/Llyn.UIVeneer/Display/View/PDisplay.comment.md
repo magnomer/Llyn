@@ -39,7 +39,7 @@ So the two views cannot place them apart.
 The heart stands beside the headword, so the mark is made where the entry is read.
 Every entry-browsing tab carries it, because the mark belongs to the entry and not to one panel.
 A filled heart says the entry is marked.
-The heart icon is named `PFavoriteMark`, so the toggle's `PLook` rows fill it hollow or filled.
+The heart icon is named `PFavoriteMark`, so the toggle's `QLook` rows fill it hollow or filled.
 
 ## `<local:PGrasp x:Name="PDisplayGrasp" ...>`
 

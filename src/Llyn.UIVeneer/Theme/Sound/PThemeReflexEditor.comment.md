@@ -9,8 +9,8 @@ So no measure style is declared here.
 
 The editor's hand on the anchors: the same anchor text made clickable, opening the dropdown through the command.
 The row fill sets the anchor text as its content and collapses it where anchoring is barred.
-`PLook` rows copy the content to the text, show the muted prompt while it is empty, and light the hover.
-Its command and parameter are `PLook` rows too.
+`QLook` rows copy the content to the text, show the muted prompt while it is empty, and light the hover.
+Its command and parameter are `QLook` rows too.
 
 ## `<Style x:Key="Theme.Reflex.Field" TargetType="TextBox">`
 
@@ -37,21 +37,21 @@ It overhangs its unseen twin as the language field does, for the same reason.
 ## `<Style x:Key="Theme.Reflex.Star" TargetType="Button">`
 
 The hover control marking a row as the reading in common use.
-Its command and star icon are `PLook` rows.
+Its command and star icon are `QLook` rows.
 
 ## `<Style x:Key="Theme.Reflex.Addition" TargetType="Button">`
 
-The hover plus adding a row after this one in the same language, its command a `PLook` row.
+The hover plus adding a row after this one in the same language, its command a `QLook` row.
 
 ## `<Style x:Key="Theme.Reflex.Remove" TargetType="Button">`
 
-The hover minus dropping this row, with the reflex command as a `PLook` row.
+The hover minus dropping this row, with the reflex command as a `QLook` row.
 
 ## `<Style x:Key="Theme.Reflex.Rebuild" TargetType="Button">`
 
 The button at the top right corner of the editor's reflex block that drops the rows and fetches them again.
-It is the shared regenerate button, placed here, with the renewal command as a `PLook` row.
-The editor sets the tag from the engine's fill state, so the mark turns as long as the fetch runs.
+It is the shared regenerate button, placed here, with the renewal command as a `QLook` row.
+The editor sets the cue from the engine's fill state, so the mark turns as long as the fetch runs.
 
 ## `<DataTemplate x:Key="Theme.Reflex.Control">`
 
