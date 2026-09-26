@@ -4,6 +4,8 @@
 
 Keeps every ring on the chain: which ring a ring may name.
 A ring reaches the one ring inside it, carries the data of any deeper ring and names nothing outward.
+Above the cut, a UI ring names only its neighbour, data included.
+A pair is counted in names, so a file already crossing cannot add crossings unseen.
 The same chain is audited by `auditstructure.ps1` from its own configuration, and neither reads the other.
 
 ## `private const string TAuditChainAudit = "AUDITCHAIN";`
@@ -22,25 +24,38 @@ The tree hits and the surface hits, bound once and shared by every fact.
 
 No ring reaches more than one ring, and every ring reached is declared.
 
+## `public void AuditChain_Reach_MatchesRingTable()`
+
+Every ring's reach equals its project references, and every walked ring is a project.
+A ring dropped from the reach table would stop being walked, so the table is tied to the projects.
+
+## `public void AuditChain_Cut_MatchesShellRoots()`
+
+The cut holds exactly the UI rings the driver and surface audits walk.
+
 ## `public void AuditChain_Sources_ReachNoDeeperRing()`
 
-No pair holds more files reaching behaviour past the neighbour than its ceiling.
+No pair holds more names reaching behaviour past the neighbour than its ceiling.
+A method called on a deeper record is behaviour, even though the record is data.
 
-## `public void AuditChain_ShellEngine_OpensNoVaultSession()`
+## `public void AuditChain_Folders_HoldNoBannedWord()`
 
-Opening a vault session belongs to a clerk, and this fact fails the build if shell code does it.
+No bound source under a folder of `TAuditChainBanned` names a word banned there.
+Opening a vault session belongs to a clerk, so the shell engine may not name it.
 
 ## `public void AuditChain_Sources_NameNoOuterRing()`
 
-No pair holds more files naming an outer ring than its ceiling.
+No pair holds more names from an outer ring than its ceiling.
 
 ## `public void AuditChain_Sources_CrossNoCut()`
 
-No pair holds more files where a UI ring names a type from below the cut than its ceiling.
+No pair holds more names a UI ring takes from below the cut than its ceiling.
+A `using` of a namespace below the cut counts as a name.
 
 ## `public void AuditChain_SurfaceSignatures_NameNoDeeperType()`
 
-No pair holds more surface files whose signatures name a type below Conduct than its ceiling.
+No pair holds more surface signature types from below Conduct than its ceiling.
+Methods, operators, conversions, properties, events, fields and nested public types are all read.
 
 ## `public void AuditChain_Sources_HoldSurface()`
 
@@ -57,7 +72,7 @@ No ring declares a type whose name matches a stray pattern written for it.
 
 ## `public void AuditChain_Ceiling_MatchesHits()`
 
-No ceiling sits above its count, so a shed file lowers its ceiling.
+No ceiling sits above its count, so a shed name lowers its ceiling.
 
 ## `public void AuditChain_Waiver_MatchesSource()`
 

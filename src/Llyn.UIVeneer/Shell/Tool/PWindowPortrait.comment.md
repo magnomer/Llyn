@@ -6,12 +6,12 @@ The window's part in exporting an entry: the file, the format and the words a do
 Every panel that shows an entry exports through here, so all offer the same formats and share one failure path.
 It renders nothing, opens no writer, and knows no file format.
 
-## `private static readonly IReadOnlyList<(string Key, string Suffix, LPortraitFormat Kind)> PWindowPortraitKinds`
+## `private static readonly IReadOnlyList<(string Key, string Suffix, LPortraitMedium Kind)> PWindowPortraitKinds`
 
 One row per offered format, keeping the dialog filter and the chosen format in step.
 The dialog returns a one-based index into this same list, so the two cannot drift apart.
 
-## `internal async Task PWindowPortraitExport(string file, Func<string, LPortraitFormat, LPortraitLabel, Task> export)`
+## `internal async Task PWindowPortraitExport(string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)`
 
 Asks the reader for a file and a format, then hands both to the panel's export with the window's labels.
 The panel names the default file after its chosen record and runs the export through its own deportment.

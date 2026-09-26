@@ -14,7 +14,3 @@ The target therefore skips that id, and its new draft reads normally.
 Cancelling the stale id releases it without touching any draft of the target.
 The move raises the workspace bulletin once to an attached observer.
 A setting saved after the move lands in the target, and the target reopens on it.
-
-## `private sealed class TWorkspaceObserver : LObserver`
-
-Collects every bulletin the engine raises, so a test can count them and read their subjects.

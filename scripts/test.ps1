@@ -27,8 +27,8 @@
     VSTest filter expression used to select tests.
 .PARAMETER Project
     Name of a single test project to run. Defaults to all. Overrides the scope switches.
-.PARAMETER Full
-    Run every test project, the convention project included. This is the default. Alias: -f.
+.PARAMETER All
+    Run every test project, the convention project included. This is the default. Alias: -a.
 .PARAMETER Convention
     Run the convention test project only. Alias: -c.
 .PARAMETER Main
@@ -109,8 +109,8 @@ param(
 
     [string]$Project,
 
-    [Alias('f')]
-    [switch]$Full,
+    [Alias('a')]
+    [switch]$All,
 
     [Alias('c')]
     [switch]$Convention,
@@ -147,7 +147,7 @@ SYNOPSIS
 
 SYNTAX
     test [<name> ...] [-Configuration <Debug|Release>] [-Filter <expression>]
-        [-Project <name>] [-Full | -Convention | -Main]
+        [-Project <name>] [-All | -Convention | -Main]
         [-NoBuild] [-NoRestore] [-List]
         [-Repeat <count>] [-Verbosity <level>]
         [-AdditionalArguments <arguments[]>] [-Help]
@@ -168,7 +168,7 @@ OPTIONS
         Run one test project under the tests folder. Defaults to all.
         Overrides the scope switches.
 
-    -Full, -f
+    -All, -a
         Run every test project, the convention project included. Default.
 
     -Convention, -c
@@ -244,6 +244,13 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
+
 function Read-TestConfig {
     $configPath = Join-Path $PSScriptRoot 'test.json'
     if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
@@ -257,17 +264,21 @@ function Read-TestConfig {
         throw "The test configuration is not valid JSON: $configPath`n$($_.Exception.Message)"
     }
 
-    foreach ($key in @('generation', 'project', 'tests', 'convention')) {
+    foreach ($key in @('generation', 'tests', 'convention')) {
         if (-not ($config.PSObject.Properties.Name -contains $key)) {
             throw "The test configuration must contain a $key property: $configPath"
         }
     }
 
+    if ([int]$config.generation -ne 3) {
+        throw "The test configuration is generation $($config.generation); this script is generation 3."
+    }
+
     return $config
 }
 
-if (@($Full, $Convention, $Main | Where-Object { $_ }).Count -gt 1) {
-    throw '-Full, -Convention and -Main cannot be combined.'
+if (@($All, $Convention, $Main | Where-Object { $_ }).Count -gt 1) {
+    throw '-All, -Convention and -Main cannot be combined.'
 }
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -281,7 +292,7 @@ if (-not (Test-Path -LiteralPath $testsRoot -PathType Container)) {
 $projects = @(
     Get-ChildItem -LiteralPath $testsRoot -Directory |
         ForEach-Object { Get-ChildItem -LiteralPath $_.FullName -Filter '*.csproj' -File } |
-        Sort-Object -Property Name
+        Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Name } }
 )
 
 if (-not [string]::IsNullOrWhiteSpace($Project)) {
@@ -331,9 +342,9 @@ if ($null -ne $Name -and $Name.Count -gt 0) {
                 continue
             }
 
-            $selection = @($selected | ForEach-Object { "FullyQualifiedName~.$($_.class).$($_.method)" } | Sort-Object -Unique) -join '|'
+            $selection = @($selected | ForEach-Object { "FullyQualifiedName~.$($_.class).$($_.method)" } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique) -join '|'
             if ($selection.Length -gt $selectionLimit) {
-                $selection = @($selected | ForEach-Object { "FullyQualifiedName~.$($_.class)." } | Sort-Object -Unique) -join '|'
+                $selection = @($selected | ForEach-Object { "FullyQualifiedName~.$($_.class)." } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique) -join '|'
             }
 
             if ($selection.Length -gt $selectionLimit) {

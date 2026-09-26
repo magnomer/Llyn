@@ -24,7 +24,7 @@ public static class LEntryClerkField
         return renewed;
     }
 
-    public static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    public static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(draft);
@@ -39,7 +39,7 @@ public static class LEntryClerkField
         }
 
         entries.LEntryFormSet(entryId, current);
-        changes.Add(new LRevisionChange(
+        changes.Add(new LRevisionDelta(
             entryId,
             "form",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
@@ -69,7 +69,7 @@ public static class LEntryClerkField
         return true;
     }
 
-    public static void LNoteUpdate(LNoteVault notes, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    public static void LNoteUpdate(LNoteVault notes, long entryId, LEntryDraft draft, List<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(notes);
         ArgumentNullException.ThrowIfNull(draft);
@@ -83,7 +83,7 @@ public static class LEntryClerkField
             if (stored is not null)
             {
                 notes.LNoteDelete(entryId);
-                changes.Add(new LRevisionChange(entryId, "note", "delete", null));
+                changes.Add(new LRevisionDelta(entryId, "note", "delete", null));
             }
 
             return;
@@ -95,6 +95,6 @@ public static class LEntryClerkField
         }
 
         notes.LNoteSave(new LNote(entryId, text));
-        changes.Add(new LRevisionChange(entryId, "note", stored is null ? "create" : "update", null));
+        changes.Add(new LRevisionDelta(entryId, "note", stored is null ? "create" : "update", null));
     }
 }

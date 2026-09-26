@@ -12,7 +12,7 @@
         snapshots/<version>/<project>-V<version>.zip
 
     Existing valid archives are skipped. A corrupt existing archive is
-    replaced automatically. Use -Force to replace every existing archive.
+    replaced automatically. Use -Rebuild to replace every existing archive.
 
     Set GITHUB_TOKEN in the environment when authenticated API access or a
     higher GitHub API rate limit is needed.
@@ -24,7 +24,7 @@
     GitHub repository in owner/name form. Defaults to the repository in snapshot.json.
 .PARAMETER SnapshotDirectory
     Destination for version directories and source ZIPs. Defaults to snapshots/.
-.PARAMETER Force
+.PARAMETER Rebuild
     Replace every existing archive, including archives that are already valid.
 .PARAMETER Threshold
     Save the exclusive version threshold to snapshot.json. Use 0 to download
@@ -35,7 +35,7 @@
     gitdownload
     Download missing or invalid archives from the default repository.
 .EXAMPLE
-    gitdownload -Force
+    gitdownload -Rebuild
     Redownload every version archive.
 .EXAMPLE
     gitdownload -Threshold 2.0.6920
@@ -59,7 +59,7 @@ param(
     [string]$Repository,
     [string]$SnapshotDirectory,
     [string]$Threshold,
-    [switch]$Force,
+    [switch]$Rebuild,
     [Alias('?')]
     [switch]$Help
 )
@@ -74,7 +74,7 @@ SYNOPSIS
 
 SYNTAX
     gitdownload [-Repository <owner/name>] [-SnapshotDirectory <path>]
-                      [-Threshold <version|0>] [-Force] [-Help]
+                      [-Threshold <version|0>] [-Rebuild] [-Help]
 
 OPTIONS
     -Repository <owner/name>
@@ -83,7 +83,7 @@ OPTIONS
     -SnapshotDirectory <path>
         Destination for version directories and source ZIPs. Default: snapshots/.
 
-    -Force
+    -Rebuild
         Replace every archive, including archives that are already valid.
 
     -Threshold <version|0>
@@ -97,7 +97,7 @@ EXAMPLES
     gitdownload
         Download missing or invalid archives from the default repository.
 
-    gitdownload -Force
+    gitdownload -Rebuild
         Redownload every version archive.
 
     gitdownload -Threshold 2.0.6920
@@ -135,6 +135,10 @@ function Read-SnapshotConfig {
         if (-not ($config.PSObject.Properties.Name -contains $key)) {
             throw "The snapshot configuration must contain a $key property: $configPath"
         }
+    }
+
+    if ([int]$config.generation -ne 1) {
+        throw "The snapshot configuration is generation $($config.generation); this script is generation 1."
     }
 
     return $config
@@ -322,14 +326,18 @@ function Get-VersionCommit {
                 continue
             }
 
-            $dateText = [string]$commit.commit.committer.date
-            if ([string]::IsNullOrWhiteSpace($dateText)) {
-                $dateText = [string]$commit.commit.author.date
+            # pwsh 7 reads an ISO date in JSON as a DateTime, while Windows PowerShell 5.1 keeps the text.
+            $dateValue = $commit.commit.committer.date
+            if ([string]::IsNullOrWhiteSpace([string]$dateValue)) {
+                $dateValue = $commit.commit.author.date
             }
 
             $commitDate = [DateTimeOffset]::MinValue
-            if (-not [string]::IsNullOrWhiteSpace($dateText)) {
-                [void][DateTimeOffset]::TryParse($dateText, [ref]$commitDate)
+            if ($dateValue -is [datetime]) {
+                $commitDate = [DateTimeOffset]::new($dateValue)
+            }
+            elseif (-not [string]::IsNullOrWhiteSpace([string]$dateValue)) {
+                [void][DateTimeOffset]::TryParse([string]$dateValue, [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::AssumeUniversal, [ref]$commitDate)
             }
 
             $versionByName[$version] = [PSCustomObject]@{
@@ -347,7 +355,7 @@ function Get-VersionCommit {
         $page++
     }
 
-    $versions = @($versionByName.Values | Sort-Object Date, Version)
+    $versions = @($versionByName.Values | Sort-Object -Property Date, @{ Expression = { [version]$_.Version } })
     if ($versions.Count -eq 0) {
         throw "No version-labelled commits were found in $Repository."
     }
@@ -398,7 +406,7 @@ function Save-VersionArchive {
     $archiveName = "$($config.project)-V$($VersionCommit.Version).zip"
     $archivePath = Join-Path $versionDirectory $archiveName
 
-    if ((Test-Path -LiteralPath $archivePath -PathType Leaf) -and -not $Force) {
+    if ((Test-Path -LiteralPath $archivePath -PathType Leaf) -and -not $Rebuild) {
         if (Test-ZipArchive -Path $archivePath) {
             return 'Existing'
         }
@@ -470,10 +478,10 @@ Write-Host "Versions:   $total"
 Write-Host "Destination: $snapshotRoot"
 Write-Host ""
 
+$activity = "Downloading $($config.project) Git snapshots"
 for ($index = 0; $index -lt $total; $index++) {
     $versionCommit = $versions[$index]
     $position = $index + 1
-    $activity = "Downloading $($config.project) Git snapshots"
     $status = "$position of $total - $($versionCommit.Version)"
     $percent = [int](($position / [double]$total) * 100)
 

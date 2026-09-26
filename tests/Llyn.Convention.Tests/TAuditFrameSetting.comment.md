@@ -4,17 +4,24 @@
 
 Hand-written and tracked: the pure rings, the frame, the ambient rows, the ceilings and the waivers.
 No script writes this file, and the frame fact reads no script configuration.
-The values mirror the ring frames in `auditstructure.json`, kept by hand.
+`TAuditParity` holds it to the ring frames of scripts/auditstructure.json.
+`auditstructure.json` holds its own copy of the ring frames for the structure script.
 
 ## `public static readonly string[] TAuditFramePure`
 
 The rings held to the frame and kept from every ambient member.
-The veneer, the deportment and the adapters are outside the chain's purity and name what they need.
+Conduct is one, since it uses no WPF and no console and serves both media.
+The surfaces, the drivers and the adapters are outside the chain's purity and name what they need.
 
 ## `public static readonly string[] TAuditFrameAllowed`
 
 The framework namespaces a pure ring may name.
 `System.IO`, `System.Xml`, `System.Reflection` and `System.Text.Json` are outside it and belong behind a port.
+
+## `public static readonly IReadOnlyDictionary<string, string[]> TAuditFrameExtra`
+
+The namespaces one pure ring adds to the shared frame, matching the ring frames of scripts/auditstructure.json.
+The shell engine and Conduct rethrow a captured exception, so only they name `System.Runtime.ExceptionServices`.
 
 ## `public static readonly string[] TAuditFrameAmbient`
 
@@ -23,9 +30,9 @@ A member matches when its full name equals a row or sits under it.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditFrameCeiling`
 
-The file count each `kind:ring>target` pair may hold.
+The name count each `kind:ring>target` pair may hold.
 A count above fails the fact, a ceiling above the count is stale and fails too.
-Lower a ceiling when a ring sheds a file, never raise one to admit a new one.
+Lower a ceiling when a ring sheds a name, never raise one to admit a new one.
 Empty since every frame and ambient break moved behind a port.
 It stays declared so the next break has a row to fail.
 

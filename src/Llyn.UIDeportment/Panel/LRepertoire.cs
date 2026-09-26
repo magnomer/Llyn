@@ -463,7 +463,7 @@ public sealed class LRepertoire
         return Task.CompletedTask;
     }
 
-    public Task LRepertoirePortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LRepertoirePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         if (!LRepertoirePortraitAllowed)
         {

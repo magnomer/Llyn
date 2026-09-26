@@ -363,7 +363,7 @@ public sealed class LYunjing
         return LVista.LVistaFileRead(LYunjingPanel.LPanelVista);
     }
 
-    public Task LYunjingPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LYunjingPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(LYunjingPanel.LPanelVista, path, format, label);
     }

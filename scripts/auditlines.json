@@ -1,5 +1,5 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "sources": {
     "roots": [
@@ -33,7 +33,7 @@
     "versionKey": "current-version",
     "linesPrefix": "Lines-",
     "filesPrefix": "Files-",
-    "depth": 1
+    "segments": 1
   },
   "width": {
     ".cs": 120,

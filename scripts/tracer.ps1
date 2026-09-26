@@ -45,15 +45,15 @@
     that can take it.
 .PARAMETER Depth
     Maximum number of hops to walk. Defaults to 0, which walks until nothing new turns up.
-.PARAMETER Out
+.PARAMETER OutputPath
     Write the Markdown to this file instead of the console.
 .PARAMETER Help
     Display this help and exit. The alias -? is supported.
 .EXAMPLE
-    tracer LLectern.Play -Value false
-    Follow false from every bool parameter of LLectern.Play.
+    tracer LCardClerkField.LCardValidate -Value false
+    Follow false from every bool parameter of LCardClerkField.LCardValidate.
 .EXAMPLE
-    tracer LScriptVault.LScriptSave -Value 'file:D:\sample.png' -Out trace.md
+    tracer LScriptVault.LScriptSave -Value 'file:D:\sample.png' -OutputPath trace.md
     Follow an image file from LScriptSave and write the trace to trace.md.
 #>
 #requires -Version 5.1
@@ -79,7 +79,7 @@ param(
     [ValidateRange(0, [int]::MaxValue)]
     [int]$Depth = 0,
 
-    [string]$Out = '',
+    [string]$OutputPath = '',
 
     [Alias('?')]
     [switch]$Help
@@ -94,7 +94,7 @@ SYNOPSIS
     Follow a value from the method it is injected into until nothing carries it on.
 
 SYNTAX
-    tracer <entry> -Value <value> [-Parameter <name>] [-Depth <hops>] [-Out <file>] [-Help]
+    tracer <entry> -Value <value> [-Parameter <name>] [-Depth <hops>] [-OutputPath <file>] [-Help]
 
 OPTIONS
     <entry>
@@ -109,7 +109,7 @@ OPTIONS
     -Depth <hops>
         Maximum number of hops to walk. Defaults to 0, no limit.
 
-    -Out <file>
+    -OutputPath <file>
         Write the Markdown to this file instead of the console.
 
     -Help, -?
@@ -122,10 +122,10 @@ ENDS
     Drop, Opaque, Control, Depth, Fail.
 
 EXAMPLES
-    tracer LLectern.Play -Value false
-        Follow false from every bool parameter of LLectern.Play.
+    tracer LCardClerkField.LCardValidate -Value false
+        Follow false from every bool parameter of LCardClerkField.LCardValidate.
 
-    tracer LScriptVault.LScriptSave -Value 'file:D:\sample.png' -Out trace.md
+    tracer LScriptVault.LScriptSave -Value 'file:D:\sample.png' -OutputPath trace.md
         Follow an image file from LScriptSave and write the trace to trace.md.
 '@ | Write-Host
     exit 0
@@ -137,6 +137,13 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
 
 function Read-TracerConfig {
     param([string]$ConfigPath)
@@ -217,7 +224,10 @@ function Get-TracerSources {
 
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
         'ls-files', '--cached', '--others', '--exclude-standard', '--') + @($Config.sources.roots)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
+    $ErrorActionPreference = $nativePreference
     if ($LASTEXITCODE -ne 0) {
         throw "Git could not enumerate source files.`n$($gitOutput -join [Environment]::NewLine)"
     }
@@ -236,7 +246,7 @@ function Get-TracerSources {
         }
     }
 
-    return @($files.ToArray() | Sort-Object -Unique)
+    return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 }
 
 function Get-TracerLatest {
@@ -589,7 +599,11 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
     readonly Dictionary<ISymbol, HashSet<ISymbol>> abstractions = new(SymbolEqualityComparer.Default);
     readonly Dictionary<string, Node> nodes = new(StringComparer.Ordinal);
     readonly Dictionary<string, bool> summaries = new(StringComparer.Ordinal);
+    readonly Dictionary<string, int> depths = new(StringComparer.Ordinal);
     readonly HashSet<(int, int, string)> edges = [];
+    readonly HashSet<string> active = new(StringComparer.Ordinal);
+    readonly HashSet<string> guesses = new(StringComparer.Ordinal);
+    bool stale;
     int limit;
 
     static ISymbol Norm(ISymbol symbol)
@@ -824,6 +838,24 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
     public Node Inject(Probe probe, List<IMethodSymbol> entries, string parameter, int depth)
     {
         limit = depth;
+        Node root;
+        do
+        {
+            nodes.Clear();
+            edges.Clear();
+            depths.Clear();
+            active.Clear();
+            guesses.Clear();
+            stale = false;
+            root = Pass(probe, entries, parameter);
+        }
+        while (stale);
+
+        return root;
+    }
+
+    Node Pass(Probe probe, List<IMethodSymbol> entries, string parameter)
+    {
         Node root = Lone($"value {probe.Raw} ({probe.Kind})", "input", "Drop");
         root.End = null;
         foreach (IMethodSymbol method in entries.SelectMany(item => Resolve(item) is { Count: > 0 } found ? found : [item]).Distinct<IMethodSymbol>(SymbolEqualityComparer.Default))
@@ -853,10 +885,10 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
         return root;
     }
 
-    Node Enter(IMethodSymbol method, string slot, Known known, Seed seed, string mode, int depth)
+    Node Enter(IMethodSymbol method, string slot, Known known, Seed seed, string mode, int depth, string? tag = null)
     {
         string text = known.Has ? "=" + known.Text : "";
-        string key = $"M|{mode}|{Id(method)}|{slot}|{text}";
+        string key = $"M|{mode}|{Id(method)}|{tag ?? slot}|{text}";
         Node node = Make(key, () => new Node(nodes.Count, $"{Named(method)}({slot}{text})", Place(method)));
         Analyze(method, node, seed, key, depth);
         return node;
@@ -864,12 +896,19 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
 
     bool Analyze(IMethodSymbol method, Node node, Seed seed, string key, int depth)
     {
-        if (summaries.TryGetValue(key, out bool known))
+        bool known = summaries.GetValueOrDefault(key);
+        if (depths.TryGetValue(key, out int seen) && (limit == 0 || seen <= depth))
         {
+            if (active.Contains(key))
+            {
+                guesses.Add(key);
+            }
+
             return known;
         }
 
-        summaries[key] = false;
+        summaries[key] = known;
+        depths[key] = depth;
         if (limit > 0 && depth > limit)
         {
             node.End = "Depth";
@@ -884,6 +923,7 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
             return false;
         }
 
+        bool entered = active.Add(key);
         do
         {
             frame.Changed = false;
@@ -894,9 +934,20 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
         }
         while (frame.Changed);
 
+        if (entered)
+        {
+            active.Remove(key);
+        }
+
+        frame.Returns |= known;
         if (frame.Returns && !frame.Bound)
         {
             Ascend(frame);
+        }
+
+        if (frame.Returns != known && guesses.Contains(key))
+        {
+            stale = true;
         }
 
         summaries[key] = frame.Returns;
@@ -952,7 +1003,7 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
             {
                 Seed seed = new();
                 seed.Results.UnionWith(targets);
-                Node child = Enter(caller, "result of " + Named(method), Known.Unknown, seed, "R", frame.Depth + 1);
+                Node child = Enter(caller, "result of " + Named(method), Known.Unknown, seed, "R", frame.Depth + 1, "result of " + Id(method));
                 Connect(frame.Node, child, "return");
             }
         }
@@ -981,15 +1032,16 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
         }
 
         string key = "S|" + Id(member);
-        bool fresh = !nodes.ContainsKey(key);
         Node node = Make(key, () => new Node(nodes.Count, Named(member), Place(member)));
         Connect(frame.Node, node, kind);
-        if (!fresh)
+        int depth = frame.Depth + 1;
+        if (depths.TryGetValue(key, out int before) && (limit == 0 || before <= depth))
         {
             return;
         }
 
-        if (limit > 0 && frame.Depth + 1 > limit)
+        depths[key] = depth;
+        if (limit > 0 && depth > limit)
         {
             node.End = "Depth";
             return;
@@ -1018,7 +1070,7 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
                 seed.Symbols[symbol] = Known.Unknown;
             }
 
-            Node child = Enter(reader, "reads " + member.Name, Known.Unknown, seed, "D", frame.Depth + 2);
+            Node child = Enter(reader, "reads " + member.Name, Known.Unknown, seed, "D", frame.Depth + 2, "reads " + Id(member));
             Connect(node, child, "read");
         }
 
@@ -1308,7 +1360,12 @@ sealed class Graph(CSharpCompilation compilation, string projectRoot, Regex laye
         {
             string label = definition.ContainingType?.TypeKind == TypeKind.Delegate ? "delegate " + definition.ContainingType.Name : Named(definition);
             Connect(frame.Node, Make("X|" + label, () => new Node(nodes.Count, label, "external") { End = "Opaque" }), kind);
-            frame.Calls[site] = Mention.Derived;
+            if (!frame.Calls.ContainsKey(site))
+            {
+                frame.Calls[site] = Mention.Derived;
+                frame.Changed = true;
+            }
+
             return;
         }
 
@@ -1625,7 +1682,10 @@ if ($null -eq $dotnet) {
     throw 'The .NET SDK is required, but dotnet was not found on PATH.'
 }
 
+$nativePreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 $sdkOutput = & $dotnet.Source --version 2>&1
+$ErrorActionPreference = $nativePreference
 if ($LASTEXITCODE -ne 0) {
     throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
 }
@@ -1650,14 +1710,14 @@ try {
     [System.IO.Directory]::CreateDirectory($helperFolder) | Out-Null
     $projectPath = Write-TracerHelper -HelperFolder $helperFolder -TargetFramework $targetFramework
 
-    $tracePath = if ([string]::IsNullOrWhiteSpace($Out)) {
+    $tracePath = if ([string]::IsNullOrWhiteSpace($OutputPath)) {
         Join-Path $temporaryFolder 'trace.md'
     }
-    elseif ([System.IO.Path]::IsPathRooted($Out)) {
-        $Out
+    elseif ([System.IO.Path]::IsPathRooted($OutputPath)) {
+        $OutputPath
     }
     else {
-        Join-Path (Get-Location).Path $Out
+        Join-Path (Get-Location).Path $OutputPath
     }
 
     $requestPath = Join-Path $temporaryFolder 'request.json'
@@ -1688,7 +1748,10 @@ try {
     $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 
     try {
+        $nativePreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
         $traceOutput = & $dotnet.Source @arguments 2>&1
+        $ErrorActionPreference = $nativePreference
         $traceExitCode = $LASTEXITCODE
     }
     finally {
@@ -1700,7 +1763,7 @@ try {
         throw "The trace failed.`n$($traceOutput -join [Environment]::NewLine)"
     }
 
-    if ([string]::IsNullOrWhiteSpace($Out)) {
+    if ([string]::IsNullOrWhiteSpace($OutputPath)) {
         [System.IO.File]::ReadAllText($tracePath, [System.Text.Encoding]::UTF8) | Write-Host
     }
     else {

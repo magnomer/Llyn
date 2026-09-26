@@ -12,18 +12,19 @@ data: that stays with the Conduct gates and the engine.
 
 Reads the project configuration from auditui.json next to this script, then performs
 these actions on every run:
-  1. Runs the two convention-test classes that walk the UI sources with Roslyn:
-     TAuditStrict (the surfaces: Storage, Call, Engine, Reach, Trigger)
-     and TAuditTruth (the drivers: the custody kinds, Treat and Taint).
-  2. Reads the two Markdown reports those tests write under temp/audit.
+  1. Runs the three convention-test classes that walk the UI sources with Roslyn:
+     TAuditStrict (the surfaces and the host: Storage, Static, Call, Depth, Reach, Trigger, Glyph, Wiring),
+     TAuditTruth (the drivers: the custody kinds, Treat, Glyph, Taint, Feed and Parity)
+     and TAuditBoundary (the guards that keep the walkers sound).
+  2. Reads the two Markdown reports those tests write, at sources.veneer and sources.deportment.
   3. Triages every hit into a verdict with the ordered rules of triage.rules:
        violation  a real issue: a surface does more than call, or a driver decides data
        review     may be real: a person has to look at the line
        covered    repeats an issue counted at another hit, named in its why
        allow      not an issue: a driver controls its medium
      Every surface hit is a violation, since a surface has no tolerated logic.
-  4. Prints a short console summary: the verdicts by kind, the violations by reason
-     and the files with the most violations.
+  4. Prints a short console summary following scripts\report.md: the counters, the
+     verdicts by kind, the violations by reason and the files with the most violations.
   5. Writes one Markdown report to {report.directory}\{prefix}{version}.md, which lists
      every hit with its verdict and the reason for it.
 
@@ -45,19 +46,19 @@ A hit no rule matches is a review.
 
 auditui.json shape:
   {
-    "generation": 11,
+    "generation": 12,
     "project": "Llyn",
     "test": {
       "project": "tests/Llyn.Convention.Tests",
       "configuration": "Debug",
-      "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict"
+      "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict|FullyQualifiedName~TAuditBoundary"
     },
     "sources": {
       "veneer": "temp/audit/Strict-{version}.md",
       "deportment": "temp/audit/Custody-{version}.md"
     },
-    "veneer": { "kinds": ["Storage", "Call", "Engine", "Reach", "Trigger"] },
-    "deportment": { "kinds": ["Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Taint"] },
+    "veneer": { "kinds": ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring"] },
+    "deportment": { "kinds": ["Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Glyph", "Taint", "Feed", "Parity"] },
     "triage": {
       "rules": [
         { "kinds": ["Call"], "verdict": "violation", "why": "the veneer does more than call a function" },
@@ -100,7 +101,8 @@ auditui -NoBuild -Open
 .EXAMPLE
 auditui -Configuration Release
 #>
-# AUDITUI GENERATION 11 - auditui.ps1.
+#requires -Version 5.1
+# AUDITUI GENERATION 12 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -110,6 +112,9 @@ auditui -Configuration Release
 # and each refuses a configuration written at another generation.
 # Generation 11: the truth audit also checks that a deportment field reaches no request, keeps one
 # writer, holds no logic and treats no engine data.
+# Generation 12: nothing the ui audit reports changes; the number rises with the convention tests,
+# which bind with no compile error, count chain ceilings in names, count a using or a call on a
+# deeper record as a reach, and exempt a contract name only where the type declares the interface.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -152,8 +157,8 @@ VERDICTS
     covered    Repeats an issue counted at another hit.
     allow      Not an issue: a driver controls its medium.
 
-    The console shows only the verdict counts, the violations by reason and
-    the files with the most violations. The Markdown report lists every hit.
+    The console shows the counters, the verdict counts, the reasons and the
+    files with the most violations. The Markdown report lists every hit.
 
 OPTIONS
     -ConfigPath <path>
@@ -197,13 +202,20 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 $script:Verdicts = @('violation', 'review', 'covered', 'allow')
 $script:VerdictRank = @{ 'violation' = 3; 'review' = 2; 'covered' = 1; 'allow' = 1 }
 $script:VerdictColor = @{ 'violation' = 'Red'; 'review' = 'Yellow'; 'covered' = 'DarkGray'; 'allow' = 'DarkGray' }
 
 Write-Host "AUDITUI GENERATION $script:AuditGeneration" -ForegroundColor Cyan
 
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
 
 function Get-ConfigNode {
     param(
@@ -335,8 +347,32 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-Host ""
-    Write-Host $Text -ForegroundColor Cyan
-    Write-Host ('-' * $Text.Length) -ForegroundColor DarkGray
+    Write-Host $Text
+    Write-Host ('-' * $Text.Length)
+}
+
+function Write-AuditTable {
+    param([string[]]$Header, [object[]]$Rows)
+
+    $widths = @(for ($column = 0; $column -lt $Header.Count; $column++) {
+        $cells = @($Header[$column]) + @($Rows | ForEach-Object { [string]$_[$column] })
+        ($cells | Measure-Object -Property Length -Maximum).Maximum
+    })
+    $numeric = @(for ($column = 0; $column -lt $Header.Count; $column++) {
+        $Rows.Count -gt 0 -and @($Rows | Where-Object { [string]$_[$column] -notmatch '^(-|-?[\d,]+(\.\d+)?( %)?)$' }).Count -eq 0
+    })
+    $format = {
+        param([string[]]$Cells)
+        $parts = for ($column = 0; $column -lt $Cells.Count; $column++) {
+            if ($numeric[$column]) { $Cells[$column].PadLeft($widths[$column]) } else { $Cells[$column].PadRight($widths[$column]) }
+        }
+        ($parts -join '  ').TrimEnd()
+    }
+    Write-Host (& $format $Header)
+    Write-Host (($widths | ForEach-Object { '-' * $_ }) -join '  ')
+    foreach ($row in $Rows) {
+        Write-Host (& $format ([string[]]$row))
+    }
 }
 
 # Version, read from the configured version file and key.
@@ -348,11 +384,11 @@ if ([System.IO.File]::Exists($versionPathFull)) {
         if (-not [string]::IsNullOrWhiteSpace([string]$versionValue)) { $version = [string]$versionValue }
     }
     catch {
-        Write-Warning "The version file is not valid JSON, using $version : $versionPathFull"
+        Write-Host "The version file is not valid JSON, using $version : $versionPathFull"
     }
 }
 else {
-    Write-Warning "The version file was not found, using $version : $versionPathFull"
+    Write-Host "The version file was not found, using $version : $versionPathFull"
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputPath)) {
@@ -383,21 +419,31 @@ $testArguments = [System.Collections.Generic.List[string]]::new()
 [void]$testArguments.Add('quiet')
 if ($NoBuild) { [void]$testArguments.Add('--no-build') }
 
-Write-SectionTitle "Convention tests"
-Write-Host "  dotnet $($testArguments -join ' ')" -ForegroundColor DarkGray
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+$nativePreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 $testOutput = & dotnet @testArguments 2>&1 | ForEach-Object { [string]$_ }
+$ErrorActionPreference = $nativePreference
 $testExit = $LASTEXITCODE
 $stopwatch.Stop()
 
-$testColor = if ($testExit -eq 0) { 'Green' } else { 'Red' }
-$testSummary = @($testOutput | Where-Object { $_ -match '^\s*(Passed!|Failed!|\uD1B5\uACFC!|\uC131\uACF5!|\uC2E4\uD328!|Test summary|Tests passed|Tests failed|error )' })
-foreach ($line in $testSummary) { Write-Host "  $($line.Trim())" -ForegroundColor $testColor }
-Write-Host ("  Exit code {0} after {1:0.0} s." -f $testExit, $stopwatch.Elapsed.TotalSeconds) -ForegroundColor $testColor
+# A summary line reads "<verdict>! - <failed>: N, <passed>: N, <skipped>: N, <total>: N" in any language.
+$testFailed = 0
+$testTotal = 0
+foreach ($line in $testOutput) {
+    if ($line -match '!\s+-\s+[^:]+:\s*(\d+),\s*[^:]+:\s*\d+,\s*[^:]+:\s*\d+,\s*[^:]+:\s*(\d+)') {
+        $testFailed += [int]$Matches[1]
+        $testTotal += [int]$Matches[2]
+    }
+}
+if ($testExit -ne 0 -and $testFailed -eq 0) {
+    $testFailed = 1
+}
+Write-Host ("Scanned: {0:N0} convention tests in {1:0.0} s" -f $testTotal, $stopwatch.Elapsed.TotalSeconds) -ForegroundColor DarkGray
 
 $missingReports = @(@($veneerPathFull, $deportmentPathFull) | Where-Object { -not [System.IO.File]::Exists($_) })
 if ($missingReports.Count -gt 0) {
-    foreach ($line in $testOutput) { Write-Host "  $line" -ForegroundColor DarkGray }
+    foreach ($line in $testOutput) { Write-Host $line }
     throw "The tests wrote no report at:`n  " + ($missingReports -join "`n  ")
 }
 
@@ -441,10 +487,17 @@ $allHits = @($veneer.Hits) + @($deportment.Hits)
 
 # The source line of every hit, so a rule can read the code the walker pointed at.
 $sourceLines = @{}
+$readErrors = [System.Collections.Generic.List[string]]::new()
 foreach ($hit in $allHits) {
     if (-not $sourceLines.ContainsKey($hit.Path)) {
         $sourceFull = Join-AuditPath -Root $repoRootFull -Relative $hit.Path
-        $sourceLines[$hit.Path] = if ([System.IO.File]::Exists($sourceFull)) { [System.IO.File]::ReadAllLines($sourceFull) } else { @() }
+        try {
+            $sourceLines[$hit.Path] = [System.IO.File]::ReadAllLines($sourceFull)
+        }
+        catch {
+            $readErrors.Add("$($hit.Path): $($_.Exception.Message)")
+            $sourceLines[$hit.Path] = @()
+        }
     }
     $lines = $sourceLines[$hit.Path]
     $text = if ($hit.Line -ge 1 -and $hit.Line -le $lines.Count) { $lines[$hit.Line - 1].Trim() } else { '' }
@@ -455,10 +508,10 @@ function Get-Count {
     param([Parameter(Mandatory = $true)]$Report, [Parameter(Mandatory = $true)][string]$Key)
 
     if ($Report.Bullets.ContainsKey($Key)) { return [int]$Report.Bullets[$Key] }
-    return 0
+    throw "The report holds no '$Key' line, so the count cannot be read."
 }
 
-$veneerCount = Get-Count -Report $veneer -Key 'Veneer types'
+$veneerCount = Get-Count -Report $veneer -Key 'Surface types'
 
 # Triage. A rule applies when its kinds hold the hit's kind and its reason, name and line
 # regexes, when given, all match. Plain rules settle a hit at once. A join rule defers the hit: line
@@ -542,8 +595,11 @@ $kindIndex = @{}
 for ($i = 0; $i -lt $kinds.Count; $i++) { $kindIndex[$kinds[$i]] = $i }
 $sortKey = @(
     @{ Expression = { $kindIndex[$_.Kind] } },
-    @{ Expression = { $_.Path } },
-    @{ Expression = { $_.Line } }
+    @{ Expression = { Get-OrdinalKey $_.Path } },
+    @{ Expression = { $_.Line } },
+    @{ Expression = { Get-OrdinalKey $_.Name } },
+    @{ Expression = { Get-OrdinalKey $_.Reason } },
+    @{ Expression = { Get-OrdinalKey $_.Why } }
 )
 $byVerdict = @{}
 foreach ($verdict in $script:Verdicts) { $byVerdict[$verdict] = @($allHits | Where-Object { $_.Verdict -eq $verdict } | Sort-Object -Property $sortKey) }
@@ -559,42 +615,58 @@ function Get-WhyGroup {
 
     return @($Items |
         Group-Object -Property @{ Expression = { ($_.Why -split ': ', 2)[0] } } |
-        Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, Name)
+        Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } })
 }
 
-# Console output: counts only. The report carries every hit.
+# Console output, from the widest view to the narrowest. The report carries every hit.
+$counterRows = @(
+    @('Failed tests', $testFailed),
+    @('Unreadable files', $readErrors.Count)
+)
+$counterWidth = ($counterRows | ForEach-Object { $_[0].Length } | Measure-Object -Maximum).Maximum
+Write-SectionTitle "Counters"
+foreach ($counterRow in $counterRows) {
+    Write-Host ("{0}  {1:N0}" -f $counterRow[0].PadRight($counterWidth), $counterRow[1])
+}
+
 Write-SectionTitle "Verdicts by kind"
-$kindWidth = [Math]::Max(16, ($kinds | ForEach-Object { "$_".Length } | Measure-Object -Maximum).Maximum + 10)
-Write-Host ("  {0}{1,10}{2,8}{3,9}{4,8}{5,8}" -f 'Kind'.PadRight($kindWidth), 'Violation', 'Review', 'Covered', 'Allow', 'Hits') -ForegroundColor Green
+$kindRows = [System.Collections.Generic.List[object]]::new()
 foreach ($kind in $kinds) {
     $audit = if ($veneerKinds -contains $kind) { 'Veneer' } else { 'Deportment' }
     $violation = Get-VerdictCount -Kind $kind -Verdict 'violation'
     $review = Get-VerdictCount -Kind $kind -Verdict 'review'
     $covered = Get-VerdictCount -Kind $kind -Verdict 'covered'
     $allow = Get-VerdictCount -Kind $kind -Verdict 'allow'
-    $color = if ($violation -gt 0) { 'Red' } elseif ($review -gt 0) { 'Yellow' } else { 'Gray' }
-    Write-Host ("  {0}{1,10}{2,8}{3,9}{4,8}{5,8}" -f "$audit $kind".PadRight($kindWidth), $violation, $review, $covered, $allow, ($violation + $review + $covered + $allow)) -ForegroundColor $color
+    $kindRows.Add(@("$audit $kind", (Format-Integer $violation), (Format-Integer $review), (Format-Integer $covered), (Format-Integer $allow), (Format-Integer ($violation + $review + $covered + $allow))))
 }
-Write-Host ("  {0}{1,10}{2,8}{3,9}{4,8}{5,8}" -f 'Total'.PadRight($kindWidth), $byVerdict['violation'].Count, $byVerdict['review'].Count, $byVerdict['covered'].Count, $byVerdict['allow'].Count, $allHits.Count) -ForegroundColor Cyan
+$kindRows.Add(@('Total', (Format-Integer $byVerdict['violation'].Count), (Format-Integer $byVerdict['review'].Count), (Format-Integer $byVerdict['covered'].Count), (Format-Integer $byVerdict['allow'].Count), (Format-Integer $allHits.Count)))
+Write-AuditTable -Header @('Kind', 'Violation', 'Review', 'Covered', 'Allow', 'Hits') -Rows $kindRows.ToArray()
 
 foreach ($verdict in @('violation', 'review')) {
-    $groups = Get-WhyGroup -Items $byVerdict[$verdict]
+    $groups = @(Get-WhyGroup -Items $byVerdict[$verdict])
+    if ($groups.Count -eq 0) { continue }
     $title = if ($verdict -eq 'violation') { 'Violations by reason' } else { 'Review by reason' }
-    Write-SectionTitle "$title ($($byVerdict[$verdict].Count))"
-    if ($groups.Count -eq 0) { Write-Host "  None." -ForegroundColor DarkGray; continue }
-    foreach ($group in $groups) {
-        Write-Host ("  {0,5}  {1}" -f $group.Count, $group.Name) -ForegroundColor $script:VerdictColor[$verdict]
+    Write-SectionTitle ("{0} ({1:N0})" -f $title, $groups.Count)
+    Write-AuditTable -Header @('Hits', 'Reason') -Rows @($groups | ForEach-Object { , @((Format-Integer $_.Count), $_.Name) })
+}
+
+$violationFiles = @($byVerdict['violation'] | Group-Object -Property Path | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } })
+if ($violationFiles.Count -gt 0) {
+    Write-SectionTitle ("Files with violations ({0:N0})" -f $violationFiles.Count)
+    Write-AuditTable -Header @('Violations', 'File') -Rows @($violationFiles | Select-Object -First $consoleFiles | ForEach-Object { , @((Format-Integer $_.Count), $_.Name) })
+    if ($violationFiles.Count -gt $consoleFiles) {
+        Write-Host ("... and {0:N0} more in the report." -f ($violationFiles.Count - $consoleFiles))
     }
 }
 
-$violationFiles = @($byVerdict['violation'] | Group-Object -Property Path | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, Name)
-Write-SectionTitle "Files with the most violations ($($violationFiles.Count) files)"
-if ($violationFiles.Count -eq 0) { Write-Host "  None." -ForegroundColor DarkGray }
-foreach ($group in @($violationFiles | Select-Object -First $consoleFiles)) {
-    Write-Host ("  {0,5}  {1}" -f $group.Count, $group.Name) -ForegroundColor Red
+if ($testFailed -gt 0) {
+    Write-SectionTitle ("Failed tests ({0:N0})" -f $testFailed)
+    foreach ($line in @($testOutput | Where-Object { $_.Trim() -ne '' })) { Write-Host $line.Trim() }
 }
-if ($violationFiles.Count -gt $consoleFiles) {
-    Write-Host ("  ... and {0} more files. The Markdown report lists every hit." -f ($violationFiles.Count - $consoleFiles)) -ForegroundColor DarkGray
+
+if ($readErrors.Count -gt 0) {
+    Write-SectionTitle ("Unreadable files ({0:N0})" -f $readErrors.Count)
+    foreach ($readError in $readErrors) { Write-Host $readError }
 }
 
 # Markdown output.
@@ -683,13 +755,13 @@ else {
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Veneer: types by member ($(Format-Integer $veneerCount))")
 [void]$report.AppendLine()
-[void]$report.AppendLine("A veneer type is any type declared under the veneer include. Storage is a field, an auto-property or a primary constructor parameter, Call a line that is not a plain call, Engine a line naming an engine symbol.")
+[void]$report.AppendLine("A veneer type is any type declared under the veneer include. Storage is a field, an auto-property or a primary constructor parameter, Call a line that is not a plain call, Depth a line naming a type from below the driver.")
 [void]$report.AppendLine()
 if ($veneer.Rows.Count -eq 0) { [void]$report.AppendLine("None.") }
 else {
-    [void]$report.AppendLine("| Type | Storage | Call | Engine | Total |")
+    [void]$report.AppendLine("| Type | Storage | Call | Depth | Total |")
     [void]$report.AppendLine("|------|--------:|-----:|-------:|------:|")
-    foreach ($row in @($veneer.Rows | Sort-Object -Property @{ Expression = { [int]$_[1] + [int]$_[2] + [int]$_[3] }; Descending = $true }, @{ Expression = { $_[0] } })) {
+    foreach ($row in @($veneer.Rows | Sort-Object -Property @{ Expression = { [int]$_[1] + [int]$_[2] + [int]$_[3] }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_[0] } })) {
         $total = [int]$row[1] + [int]$row[2] + [int]$row[3]
         [void]$report.AppendLine("| ``$(ConvertTo-MarkdownCell $row[0])`` | $(Format-Integer ([int]$row[1])) | $(Format-Integer ([int]$row[2])) | $(Format-Integer ([int]$row[3])) | $(Format-Integer $total) |")
     }
@@ -697,15 +769,16 @@ else {
 
 [System.IO.File]::WriteAllText($outputPathFull, ($report.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 Write-Host ""
-Write-Host ("Violations: {0}, review: {1}, covered: {2}, allowed: {3}, of {4} hit(s)." -f (Format-Integer $byVerdict['violation'].Count), (Format-Integer $byVerdict['review'].Count), (Format-Integer $byVerdict['covered'].Count), (Format-Integer $byVerdict['allow'].Count), (Format-Integer $allHits.Count)) -ForegroundColor $(if ($byVerdict['violation'].Count -gt 0) { 'Red' } else { 'Green' })
-Write-Host "Markdown report: $outputPathFull" -ForegroundColor Green
-
-if ($testExit -ne 0) {
-    Write-Warning "dotnet test returned $testExit. An enforced audit has hits over or under its ceiling, or the test project did not build."
-}
+Write-Host "Report: $outputPathFull"
+Write-Host "Report: $veneerPathFull"
+Write-Host "Report: $deportmentPathFull"
 
 if ($Open) {
     Start-Process -FilePath $outputPathFull
 }
 
-return
+if ($testExit -ne 0 -or $readErrors.Count -gt 0) {
+    exit 1
+}
+
+exit 0

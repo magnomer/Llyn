@@ -3,8 +3,8 @@
 ## `internal static class TAuditCommentSetting`
 
 Hand-written and tracked: the comment-audit rules and scope live here, not in a generated sidecar.
-auditcomments.ps1 reads its own gitignored auditcomments.json and never writes this file.
-Keep the two in agreement by hand, because the tests must depend on nothing untracked.
+auditcomments.ps1 reads its own tracked auditcomments.json and never writes this file.
+The audits read no script configuration, and `TAuditParity` fails when the two drift apart.
 
 ## `public static readonly string[] TAuditCommentFiles`
 
@@ -19,3 +19,15 @@ TAuditNameRegistry.cs is generated and carries a generated-file header, so it al
 
 Lists the source extensions that need paired comment files.
 Its patterns match the source pairs in scripts/auditcomments.json.
+
+## `public static readonly string[] TAuditCommentAbbreviations`
+
+Abbreviations whose full stop ends no sentence, matching `rules.abbreviations` in the script configuration.
+
+## `public static readonly Dictionary<string, string[]> TAuditCommentMarkers`
+
+The comment markers per source extension, matching `remark.markers` in the script configuration.
+
+## `public static readonly Dictionary<string, string> TAuditCommentClosers`
+
+The closer of each block marker, matching `remark.closers` in the script configuration.

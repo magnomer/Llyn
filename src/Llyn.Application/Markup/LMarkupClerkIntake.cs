@@ -85,7 +85,7 @@ public sealed class LMarkupClerkIntake
                 named[key] = named.ContainsKey(key) ? 0 : prepared[index];
             }
 
-            List<LRevisionChange> changes = [];
+            List<LRevisionDelta> changes = [];
             List<(LMarkupMention, int)> held = [];
             Dictionary<long, long> identity = [];
             for (int index = 0; index < entries.Count; index++)
@@ -117,7 +117,7 @@ public sealed class LMarkupClerkIntake
                         draft);
                 }
 
-                changes.Add(new LRevisionChange(
+                changes.Add(new LRevisionDelta(
                     id,
                     "entry",
                     mode == LMarkupMode.LMarkupModeNew ? "create" : "update",

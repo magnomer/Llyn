@@ -48,7 +48,7 @@ A draft linking a value row that is gone is refused rather than quietly dropped 
 A draft carrying only typed text is looked up in the language's vocabulary first.
 Text that names a value is filed under that row, and text that names none is kept as typed.
 
-## `public void LSpeechUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+## `public void LSpeechUpdate(long entryId, LEntryDraft draft, List<LRevisionDelta> changes)`
 
 The entry's part of speech reconciled to the draft.
 The assignments are one owned set with an (entry_parent, position) identity and nothing referencing them.

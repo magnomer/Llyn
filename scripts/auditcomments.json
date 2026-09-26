@@ -1,5 +1,5 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "sources": {
     "roots": [
@@ -51,6 +51,13 @@
       ".",
       "!",
       "?"
+    ],
+    "abbreviations": [
+      "e.g",
+      "i.e",
+      "etc",
+      "vs",
+      "cf"
     ]
   },
   "remark": {
@@ -64,7 +71,17 @@
       ],
       ".props": [
         "<!--"
+      ],
+      ".csproj": [
+        "<!--"
+      ],
+      ".slnx": [
+        "<!--"
       ]
+    },
+    "closers": {
+      "/*": "*/",
+      "<!--": "-->"
     },
     "exemptFiles": [
       "TAuditNameRegistry.cs"
@@ -75,6 +92,6 @@
     "versionFile": "version.json",
     "versionKey": "current-version",
     "prefix": "Comments-",
-    "depth": 1
+    "segments": 1
   }
 }

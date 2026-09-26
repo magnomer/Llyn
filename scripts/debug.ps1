@@ -136,7 +136,12 @@ try {
             $publishProperties)
     }
     finally {
-        & $clean -TempOnly
+        try {
+            & $clean -TempOnly
+        }
+        catch {
+            Write-Warning "Temporary cleanup failed: $($_.Exception.Message)"
+        }
     }
 
     if ($publish.ExitCode -ne 0) {

@@ -52,7 +52,7 @@ internal static class TAuditSource
 
         foreach (string pattern in scope.TAuditScopeInclude)
         {
-            info.ArgumentList.Add(pattern);
+            info.ArgumentList.Add(":(icase)" + pattern);
         }
 
         using Process process = Process.Start(info)
@@ -101,14 +101,14 @@ internal static class TAuditSource
 
         foreach (string segment in segments)
         {
-            if (scope.TAuditScopeSegments.Contains(segment, StringComparer.Ordinal))
+            if (scope.TAuditScopeSegments.Contains(segment, StringComparer.OrdinalIgnoreCase))
             {
                 return true;
             }
         }
 
         string fileName = segments[^1];
-        if (scope.TAuditScopeFiles.Contains(fileName, StringComparer.Ordinal))
+        if (scope.TAuditScopeFiles.Contains(fileName, StringComparer.OrdinalIgnoreCase))
         {
             return true;
         }

@@ -30,6 +30,17 @@ public sealed class TAuditObject
     }
 
     [Fact]
+    public void AuditObject_SingleTypes_HoldNoLarge()
+    {
+        List<string> hits = TAuditObjectRows.Value
+            .Where(row => row.TAuditObjectLarge)
+            .Select(row => $"  {row.TAuditObjectName}: {row.TAuditObjectLines} lines, "
+                + $"{row.TAuditObjectMembers} members, {row.TAuditObjectState} state slots")
+            .ToList();
+        TAuditObjectCheck("Large", hits, "single-part type(s) are too large for one object");
+    }
+
+    [Fact]
     public void AuditObject_State_HoldNoHub()
     {
         List<string> hits = TAuditObjectRows.Value
@@ -41,13 +52,13 @@ public sealed class TAuditObject
     [Fact]
     public void AuditObject_Parts_HoldWithinCeiling()
     {
-        Dictionary<string, int> parts = TAuditPartRead();
-        List<string> over = TAuditObjectSetting.TAuditPartCeiling
-            .Where(pair => parts.GetValueOrDefault(pair.Key) > pair.Value)
-            .Select(pair => $"  {pair.Key}: {parts.GetValueOrDefault(pair.Key)} part(s), ceiling {pair.Value}")
+        List<string> over = TAuditPartRead()
+            .Where(pair => pair.Value > TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1))
+            .Select(pair => $"  {pair.Key}: {pair.Value} part(s), "
+                            + $"ceiling {TAuditObjectSetting.TAuditPartCeiling.GetValueOrDefault(pair.Key, 1)}")
             .ToList();
 
-        Assert.True(over.Count == 0, TAuditConvention.TAuditReportFormat(
+        Assert.True(!TAuditObjectSetting.TAuditObjectEnforced || over.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITOBJECT",
             $"{over.Count} type(s) are split over more parts than their ceiling.\n{string.Join('\n', over)}"));
     }
@@ -59,6 +70,7 @@ public sealed class TAuditObject
         {
             ["Monolith"] = TAuditObjectRows.Value.Count(row => row.TAuditObjectMonolith),
             ["Hub"] = TAuditObjectRows.Value.Sum(row => row.TAuditObjectHubs.Count),
+            ["Large"] = TAuditObjectRows.Value.Count(row => row.TAuditObjectLarge),
         };
         foreach ((string name, int parts) in TAuditPartRead())
         {
@@ -67,8 +79,8 @@ public sealed class TAuditObject
 
         List<string> stale = TAuditObjectSetting.TAuditObjectCeiling
             .Concat(TAuditObjectSetting.TAuditPartCeiling)
-            .Where(pair => counts.GetValueOrDefault(pair.Key) < pair.Value)
-            .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key)} hit(s), ceiling {pair.Value}")
+            .Where(pair => counts.GetValueOrDefault(pair.Key, 1) < pair.Value)
+            .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key, 1)} hit(s), ceiling {pair.Value}")
             .ToList();
 
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
@@ -79,7 +91,7 @@ public sealed class TAuditObject
     private static Dictionary<string, int> TAuditPartRead()
     {
         return TAuditObjectRows.Value
-            .Where(row => TAuditObjectSetting.TAuditPartCeiling.ContainsKey(row.TAuditObjectName))
+            .Where(row => row.TAuditObjectParts.Count > 1)
             .ToDictionary(row => row.TAuditObjectName, row => row.TAuditObjectParts.Count, StringComparer.Ordinal);
     }
 
@@ -128,13 +140,17 @@ public sealed class TAuditObject
         text.AppendLine($"- Types: {rows.Count}, split over several files: {split.Count}");
         text.AppendLine($"- Monolith: {rows.Count(row => row.TAuditObjectMonolith)}");
         text.AppendLine($"- Hub: {rows.Sum(row => row.TAuditObjectHubs.Count)}");
+        text.AppendLine($"- Large: {rows.Count(row => row.TAuditObjectLarge)}");
         text.AppendLine();
         text.AppendLine("A monolith has at least "
-            + $"{TAuditObjectSetting.TAuditPartFloor} parts and {TAuditObjectSetting.TAuditLineFloor} lines, "
+            + $"{TAuditObjectSetting.TAuditPartLimit} parts and {TAuditObjectSetting.TAuditSpanLimit} lines, "
             + "and either "
-            + $"its largest member component still spans {TAuditObjectSetting.TAuditWeaveFloor:0.00} of the parts once "
-            + $"hub state is removed or it carries {TAuditObjectSetting.TAuditDensityFloor:0.00} cross references per "
-            + $"member. A hub is a state slot reached from {TAuditObjectSetting.TAuditHubReach} or more parts.");
+            + $"its largest member component still spans {TAuditObjectSetting.TAuditWeaveLimit:0.00} of the parts once "
+            + $"hub state is removed or it carries {TAuditObjectSetting.TAuditDensityLimit:0.00} cross references per "
+            + $"member. A hub is a state slot reached from {TAuditObjectSetting.TAuditHubReach} or more parts. "
+            + $"A large type has one part and at least {TAuditObjectSetting.TAuditLargeLines} lines, "
+            + $"{TAuditObjectSetting.TAuditLargeMembers} members "
+            + $"or {TAuditObjectSetting.TAuditLargeState} state slots.");
         text.AppendLine();
         text.AppendLine("## Split types");
         text.AppendLine();

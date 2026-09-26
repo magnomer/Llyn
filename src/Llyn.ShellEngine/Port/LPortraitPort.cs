@@ -10,7 +10,7 @@ public interface LPortraitPort
 
     Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket);
 
-    Task LEnginePortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label);
+    Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);
 
     Task<LMarkupCargo> LEngineMarkupStart(string path);
 

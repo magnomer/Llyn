@@ -100,10 +100,10 @@ public sealed record LDiwei(
             return index >= 0 ? index : LDiweiDivisions.Length;
         }
 
-        IReadOnlyList<LHypothesisPlace> places = hypothesis?.LHypothesisPlaces ?? [];
+        IReadOnlyList<LHypothesisLocus> places = hypothesis?.LHypothesisPlaces ?? [];
         for (int index = 0; index < places.Count; index++)
         {
-            if (string.Equals(places[index].LHypothesisPlaceName, heading, StringComparison.Ordinal))
+            if (string.Equals(places[index].LHypothesisLocusName, heading, StringComparison.Ordinal))
             {
                 return index;
             }

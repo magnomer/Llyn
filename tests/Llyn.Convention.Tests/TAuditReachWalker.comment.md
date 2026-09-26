@@ -2,10 +2,11 @@
 
 ## `internal static class TAuditReachWalker`
 
-Parses the veneer markup as XML and looks at every element, attribute and text node.
-A reach into logic is a Reach hit, and a trigger or a computing binding is a Trigger hit.
+Parses the surface markup as XML and looks at every element, attribute and text node.
+A reach below the driver is a Reach hit, and a trigger or a computing binding is a Trigger hit.
 A name that starts with `L` and a capital is a logic name, wherever it stands in a value.
-A name the Deportment namespace declares is the shell's own state and is not a reach.
+A name only the Deportment namespace declares is the driver's own and is not a reach.
+A binding without a logic name, such as `{Binding}`, is held by the feed rule on the driver side.
 
 ## `private static readonly Regex TAuditLogicPattern`
 
@@ -36,7 +37,7 @@ A namespace declaration goes to the namespace scan, the rest to the value scan.
 
 ## `private static void TAuditTriggerScan(string path, XElement element, List<TViolation> violations)`
 
-One hit for a trigger element, and one per computing slot in an attribute or a value.
+One hit for a trigger element, and one per computing slot in an attribute, a value or a property element.
 
 ## `private static void TAuditNamespaceScan(string path, int line, string value, List<TViolation> violations)`
 

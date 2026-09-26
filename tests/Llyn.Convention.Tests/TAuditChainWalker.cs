@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Convention.Tests;
@@ -80,7 +81,7 @@ internal static class TAuditChainWalker
                 .OfType<INamedTypeSymbol>()
                 .Where(type => TAuditBinder.TAuditSourceRead(type) is { } source
                     && TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys) == neighbour)
-                .SelectMany(type => type.GetMembers())
+                .SelectMany(TAuditPublicRead)
                 .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
             foreach (ISymbol member in members)
             {
@@ -110,14 +111,33 @@ internal static class TAuditChainWalker
         return hits;
     }
 
+    private static IEnumerable<ISymbol> TAuditPublicRead(INamedTypeSymbol type)
+    {
+        foreach (ISymbol member in type.GetMembers())
+        {
+            yield return member;
+            if (member is INamedTypeSymbol { DeclaredAccessibility: Accessibility.Public } nested)
+            {
+                foreach (ISymbol inner in TAuditPublicRead(nested))
+                {
+                    yield return inner;
+                }
+            }
+        }
+    }
+
     private static IEnumerable<INamedTypeSymbol> TAuditSignatureRead(ISymbol member)
     {
         IEnumerable<ITypeSymbol> types = member switch
         {
-            IMethodSymbol { MethodKind: MethodKind.Ordinary or MethodKind.Constructor } method =>
+            IMethodSymbol { AssociatedSymbol: null } method =>
                 method.Parameters.Select(parameter => parameter.Type).Prepend(method.ReturnType),
             IPropertySymbol property => property.Parameters.Select(parameter => parameter.Type).Prepend(property.Type),
             IEventSymbol handler => [handler.Type],
+            IFieldSymbol field => [field.Type],
+            INamedTypeSymbol nested => nested.BaseType is null
+                ? nested.Interfaces
+                : nested.Interfaces.Prepend(nested.BaseType),
             _ => [],
         };
         Stack<ITypeSymbol> pending = new(types);
@@ -171,13 +191,44 @@ internal static class TAuditChainWalker
     {
         List<TAuditHit> hits = [];
         HashSet<string> taken = new(StringComparer.Ordinal);
-        bool isRoot = TAuditChainSetting.TAuditChainRoot.Contains(relative, StringComparer.OrdinalIgnoreCase);
         string[] reach = TAuditChainSetting.TAuditChainReach[ring];
         bool isCut = TAuditChainSetting.TAuditChainCut.Contains(ring, StringComparer.Ordinal);
 
-        foreach (SimpleNameSyntax name in model.SyntaxTree.GetRoot().DescendantNodes().OfType<SimpleNameSyntax>())
+        void TAuditHitAdd(SyntaxNode name, string target, string label, bool data)
         {
-            if (TAuditBinder.TAuditHeaderCheck(name))
+            if (target == ring)
+            {
+                return;
+            }
+
+            string kind = reach.Contains(target, StringComparer.Ordinal) ? "neighbour"
+                : !inner[ring].Contains(target) ? "outward"
+                : isCut && !TAuditChainSetting.TAuditChainCut.Contains(target, StringComparer.Ordinal) ? "cross"
+                : data ? "carry"
+                : "reach";
+            int line = name.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+            if (taken.Add($"{line}|{kind}|{target}|{label}"))
+            {
+                hits.Add(new TAuditHit(relative, line, ring, kind, target, label));
+            }
+        }
+
+        SyntaxNode root = model.SyntaxTree.GetRoot();
+        foreach (UsingDirectiveSyntax directive in root.DescendantNodes().OfType<UsingDirectiveSyntax>())
+        {
+            if (directive.NamespaceOrType is { } named
+                && model.GetSymbolInfo(named).Symbol is INamespaceSymbol space
+                && TAuditSpaceRead(space.ToDisplayString()) is { } target
+                && !reach.Contains(target, StringComparer.Ordinal))
+            {
+                TAuditHitAdd(directive, target, "using " + space.ToDisplayString(), true);
+            }
+        }
+
+        foreach (SimpleNameSyntax name in root.DescendantNodes().OfType<SimpleNameSyntax>())
+        {
+            UsingDirectiveSyntax? header = name.FirstAncestorOrSelf<UsingDirectiveSyntax>();
+            if (TAuditBinder.TAuditHeaderCheck(name) && header?.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) != true)
             {
                 continue;
             }
@@ -192,24 +243,23 @@ internal static class TAuditChainWalker
             string? target = source is null
                 ? null
                 : TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys);
-            if (target is null || target == ring)
+            if (target is not null)
             {
-                continue;
-            }
-
-            string kind = isRoot ? "root"
-                : reach.Contains(target, StringComparer.Ordinal) ? "neighbour"
-                : !inner[ring].Contains(target) ? "outward"
-                : isCut && !TAuditChainSetting.TAuditChainCut.Contains(target, StringComparer.Ordinal) ? "cross"
-                : TAuditBinder.TAuditDataCheck(type) ? "carry"
-                : "reach";
-            int line = name.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-            if (taken.Add($"{line}|{kind}|{target}|{type.Name}"))
-            {
-                hits.Add(new TAuditHit(relative, line, ring, kind, target, type.Name));
+                bool behaviour = symbol is IMethodSymbol
+                {
+                    MethodKind: MethodKind.Ordinary or MethodKind.ReducedExtension
+                };
+                TAuditHitAdd(name, target, type.Name, TAuditBinder.TAuditDataCheck(type) && !behaviour);
             }
         }
 
         return hits;
+    }
+
+    private static string? TAuditSpaceRead(string space)
+    {
+        return TAuditChainSetting.TAuditChainReach.Keys
+            .Where(ring => space == ring || space.StartsWith(ring + ".", StringComparison.Ordinal))
+            .MaxBy(ring => ring.Length);
     }
 }

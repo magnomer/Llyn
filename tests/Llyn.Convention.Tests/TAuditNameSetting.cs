@@ -2,12 +2,11 @@ namespace Convention.Tests;
 
 internal static class TAuditNameSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const string TAuditProject = "Llyn";
     public const string TAuditTestPrefix = "T";
     public const string TAuditComponentPattern = "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+";
     public const int TAuditComponentLimit = 3;
-    public const int TAuditComponentReview = 3;
     public const string TAuditXamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
     public const string TAuditCancelArgument = "IncludeCancelCommand";
     public const string TAuditAsyncSuffix = "Async";
@@ -97,6 +96,15 @@ internal static class TAuditNameSetting
         "TupleElement",
         "TypeParameter",
         "AnonymousMember",
+        "ClassDeclaration",
+        "StructDeclaration",
+        "InterfaceDeclaration",
+        "RecordDeclaration",
+        "RecordStructDeclaration",
+        "EnumDeclaration",
+        "Delegate",
+        "Event",
+        "EventField",
     ];
 
     public static readonly string[] TAuditTestAttributes =

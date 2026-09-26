@@ -46,8 +46,8 @@ public sealed class TEntryClerk
         Assert.NotNull(stone);
         Assert.Equal(revision.LRevisionId, stone.LTombstoneRevisionId);
         Assert.Equal(revision.LRevisionId, rig.TRevisionRead());
-        LRevisionChange change = Assert.Single(rig.TRevisionChangeRead(revision.LRevisionId));
-        Assert.Equal("kindle", change.LRevisionChangeSummary);
+        LRevisionDelta change = Assert.Single(rig.TRevisionChangeRead(revision.LRevisionId));
+        Assert.Equal("kindle", change.LRevisionDeltaSummary);
     }
 
     [Fact]

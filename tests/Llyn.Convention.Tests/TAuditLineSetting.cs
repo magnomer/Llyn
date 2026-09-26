@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditLineSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const bool TAuditLineEnforced = true;
     public const int TAuditLineLimit = 500;
     public const int TAuditLineWarning = 450;
@@ -14,7 +14,8 @@ internal static class TAuditLineSetting
         ["Width"] = 0,
     };
 
-    public static readonly IReadOnlyDictionary<string, int> TAuditWidthLimit = new Dictionary<string, int>
+    public static readonly IReadOnlyDictionary<string, int> TAuditWidthLimit =
+        new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
     {
         [".cs"] = 120,
         [".xaml"] = 200,

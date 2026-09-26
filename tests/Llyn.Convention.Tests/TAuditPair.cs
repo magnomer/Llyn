@@ -17,14 +17,14 @@ internal static class TAuditPair
                      .Where(hit => hit.TAuditHitKind == kind && hit.TAuditWaiverRead(waivers).Length == 0)
                      .GroupBy(hit => hit.TAuditPairRead(), StringComparer.Ordinal))
         {
-            int files = pair.Select(hit => hit.TAuditHitPath).Distinct(StringComparer.Ordinal).Count();
+            int names = pair.Count();
             int ceiling = ceilings.GetValueOrDefault(pair.Key);
-            if (files <= ceiling)
+            if (names <= ceiling)
             {
                 continue;
             }
 
-            over.Add($"  {pair.Key}: {files} file(s), ceiling {ceiling}");
+            over.Add($"  {pair.Key}: {names} name(s), ceiling {ceiling}");
             IOrderedEnumerable<TAuditHit> ordered = pair
                 .OrderBy(hit => hit.TAuditHitPath, StringComparer.Ordinal)
                 .ThenBy(hit => hit.TAuditHitLine);
@@ -52,11 +52,11 @@ internal static class TAuditPair
             .GroupBy(hit => hit.TAuditPairRead(), StringComparer.Ordinal)
             .ToDictionary(
                 pair => pair.Key,
-                pair => pair.Select(hit => hit.TAuditHitPath).Distinct(StringComparer.Ordinal).Count(),
+                pair => pair.Count(),
                 StringComparer.Ordinal);
         List<string> stale = ceilings
             .Where(pair => counts.GetValueOrDefault(pair.Key) < pair.Value)
-            .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key)} file(s), ceiling {pair.Value}")
+            .Select(pair => $"  {pair.Key}: {counts.GetValueOrDefault(pair.Key)} name(s), ceiling {pair.Value}")
             .ToList();
 
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(

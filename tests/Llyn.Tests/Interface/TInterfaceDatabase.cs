@@ -224,7 +224,7 @@ internal static partial class TInterface
     internal static LRevisionArchive TRevisionArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(this TWorkspace workspace, long revisionId)
+    internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this TWorkspace workspace, long revisionId)
     {
         using SqliteConnection connection = workspace.TWorkspaceConnectionRead();
         using SqliteCommand command = connection.CreateCommand();
@@ -235,11 +235,11 @@ internal static partial class TInterface
             """;
         command.Parameters.AddWithValue("$revision", revisionId);
 
-        List<LRevisionChange> changes = [];
+        List<LRevisionDelta> changes = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            changes.Add(new LRevisionChange(
+            changes.Add(new LRevisionDelta(
                 reader.GetInt64(0),
                 reader.GetString(1),
                 reader.GetString(2),

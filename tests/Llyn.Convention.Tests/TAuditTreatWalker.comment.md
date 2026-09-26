@@ -2,11 +2,13 @@
 
 ## `internal static class TAuditTreatWalker`
 
-Finds the deportment lines that compute over engine data, since the deportment must not decide the data.
+Finds the driver lines that compute over engine data, since a driver must not decide the data.
+A value of a Conduct type is the driver's to reshape, so only types from below Conduct count.
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
 
-Scans every UI source for look-alike glyphs and every deportment source for treatment.
+Scans every driver source for look-alike glyphs and for treatment.
+A surface's glyphs are the surface audit's, under its own kind.
 
 ## `private static void TAuditTreatScan(SyntaxNode root, List<TViolation> violations)`
 
@@ -28,11 +30,6 @@ That comparison only skips a change that changes nothing, so it treats no logic.
 
 True when the unwrapped condition is one logic call, member or name.
 Asking the engine a question is not treating its data.
-
-## `private static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)`
-
-One hit per identifier holding a character outside ASCII.
-A look-alike glyph would let a name pass every prefix rule while reading as another.
 
 ## `private static int TAuditLineRead(SyntaxNode node)`
 

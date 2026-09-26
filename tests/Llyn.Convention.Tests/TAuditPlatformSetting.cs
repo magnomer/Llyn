@@ -2,17 +2,30 @@ namespace Convention.Tests;
 
 internal static class TAuditPlatformSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const bool TAuditPlatformEnforced = true;
     public const string TAuditPlatformRoot = "src/";
     public const string TAuditPlatformPortable = "net10.0";
     public const string TAuditPlatformTwin = "net10.0-windows";
     public const string TAuditPlatformRule = "CA1416";
 
+    public static readonly string[] TAuditPlatformShell = ["Llyn.Conduct"];
+
     public static readonly string[] TAuditPlatformKinds =
     [
         "Unmapped", "Absent", "Framework", "Reference", "Column", "Analyzer", "Windows", "Empty",
+        "Suppress", "Implicit", "Domain",
     ];
+
+    public static readonly IReadOnlyDictionary<string, string> TAuditPlatformSilencers =
+        new Dictionary<string, string>
+        {
+            ["AnalysisLevel"] = "none",
+            ["AnalysisMode"] = "None",
+            ["EnableNETAnalyzers"] = "false",
+            ["RunAnalyzers"] = "false",
+            ["RunAnalyzersDuringBuild"] = "false",
+        };
 
     public static readonly IReadOnlyDictionary<string, string> TAuditPlatformColumn = new Dictionary<string, string>
     {

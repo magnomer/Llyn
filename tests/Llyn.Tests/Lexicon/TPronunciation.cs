@@ -296,7 +296,7 @@ public sealed class TPronunciation
             "British", Assert.Single(engine.TEntryPronunciationRead(entry.LEntryId)).LPronunciationDraftVariety);
         long revision = Assert.IsType<long>(engine.TEngineRevisionRead());
         Assert.Contains(workspace.TRevisionChangeRead(revision), change =>
-            change.LRevisionChangeKind == "update" && change.LRevisionChangeTarget == stored);
+            change.LRevisionDeltaKind == "update" && change.LRevisionDeltaTarget == stored);
     }
 
     [Fact]

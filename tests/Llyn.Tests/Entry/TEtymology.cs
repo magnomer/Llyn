@@ -206,11 +206,11 @@ public sealed class TEtymology
         engine.TEngineDraftCommit(held.LDraftId);
 
         long revision = Assert.IsType<long>(engine.TEngineRevisionRead());
-        LRevisionChange change = Assert.Single(
+        LRevisionDelta change = Assert.Single(
             workspace.TRevisionChangeRead(revision),
-            static row => string.Equals(row.LRevisionChangeSubject, "etymology", StringComparison.Ordinal));
-        Assert.Equal("create", change.LRevisionChangeKind);
-        Assert.Equal("From rinnan.", change.LRevisionChangeSummary);
+            static row => string.Equals(row.LRevisionDeltaSubject, "etymology", StringComparison.Ordinal));
+        Assert.Equal("create", change.LRevisionDeltaKind);
+        Assert.Equal("From rinnan.", change.LRevisionDeltaSummary);
     }
 
     private static long TEtymologyEntryCreate(LEngine engine, string headword)

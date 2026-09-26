@@ -12,7 +12,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "input");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         editor.TEditorOpen(null);
 
         editor.TEditorHeadwordSet("salt");
@@ -28,7 +28,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "input");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         editor.TEditorOpen(null);
 
         editor.TEditorNoteSet("a note\r\n\n");
@@ -42,7 +42,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "input");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         editor.TEditorOpen(null);
         string before = editor.LEditorLanguage;
 
@@ -57,7 +57,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "input");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         bool filling = false;
         editor.LEditorDesk.LDeskDraftChanged += _ =>
         {

@@ -10,9 +10,7 @@ internal static partial class TAuditTruthWalker
     private static void TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)
     {
         TAuditSendNames = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
-        foreach (MemberDeclarationSyntax member in parts
-                     .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
-                     .SelectMany(part => part.Members))
+        foreach (MemberDeclarationSyntax member in TAuditScopeRead(parts))
         {
             if (member is not (MethodDeclarationSyntax or PropertyDeclarationSyntax)
                 || TAuditBinder.TAuditSymbolRead(member) is not { } symbol)
@@ -65,18 +63,20 @@ internal static partial class TAuditTruthWalker
 
         return (TAuditBinder.TAuditLogicCheck(callee)
                 && TAuditTruthSetting.TAuditSendRoots.Contains(callee.Name, StringComparer.Ordinal))
+               || TAuditGateCheck(callee)
                || (!direct && TAuditSendNames.Contains(callee));
+    }
+
+    private static bool TAuditGateCheck(ISymbol callee)
+    {
+        return callee is IMethodSymbol { MethodKind: MethodKind.Ordinary, IsStatic: false } method
+               && TAuditBinder.TAuditConductCheck(method.ContainingType);
     }
 
     private static void TAuditSequenceScan(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)
     {
-        foreach (MemberDeclarationSyntax scope in type.SelectMany(part => part.Members))
+        foreach (MemberDeclarationSyntax scope in TAuditScopeRead(type))
         {
-            if (scope is BaseTypeDeclarationSyntax or FieldDeclarationSyntax)
-            {
-                continue;
-            }
-
             List<SyntaxNode> sends = TAuditSendRead(scope, false);
             for (int later = 1; later < sends.Count; later++)
             {

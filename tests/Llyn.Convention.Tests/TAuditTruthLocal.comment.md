@@ -3,6 +3,7 @@
 ## `internal static partial class TAuditTruthWalker`
 
 The local half of the truth walker: what a member may not do with an engine answer it briefly holds.
+A Conduct type's member is an answer too, since a gate's verdict may not decide the next request.
 
 ## `private static void TAuditToggleCheck(`
 
@@ -27,7 +28,13 @@ A method that requests is a relay and is audited on its own.
 
 ## `private static void TAuditBaseCheck(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 
-A shell type deriving from a logic type holds logic by inheritance.
+A driver type deriving from or implementing a type from below Conduct holds logic by inheritance.
+Implementing a Conduct port is what a driver is for, so it is no hit.
+
+## `private static IEnumerable<MemberDeclarationSyntax> TAuditScopeRead(IReadOnlyList<TypeDeclarationSyntax> type)`
+
+Every member of a class and of the types nested in it, field declarations included.
+A lambda in a field initializer is scanned like a method body, so it cannot hide an answer.
 
 ## `private static void TAuditLocalScan(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 

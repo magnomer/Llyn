@@ -201,7 +201,7 @@ public sealed class LLibrary
         return LVista.LVistaFileRead(LLibraryPanel.LPanelVista);
     }
 
-    public Task LLibraryPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LLibraryPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(LLibraryPanel.LPanelVista, path, format, label);
     }

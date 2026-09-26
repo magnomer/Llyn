@@ -7,21 +7,21 @@ namespace Llyn.UIVeneer;
 
 public partial class PWindow
 {
-    private static readonly IReadOnlyList<(string PWindowKey, string PWindowSuffix, LPortraitFormat PWindowKind)>
+    private static readonly IReadOnlyList<(string PWindowKey, string PWindowSuffix, LPortraitMedium PWindowKind)>
         PWindowPortraitKinds =
         [
-            ("Export.Markup", ".llx", LPortraitFormat.LPortraitFormatMarkup),
-            ("Export.Html", ".html", LPortraitFormat.LPortraitFormatHtml),
-            ("Export.Markdown", ".md", LPortraitFormat.LPortraitFormatMarkdown),
-            ("Export.Docx", ".docx", LPortraitFormat.LPortraitFormatDocx),
-            ("Export.Pdf", ".pdf", LPortraitFormat.LPortraitFormatPdf),
+            ("Export.Markup", ".llx", LPortraitMedium.LPortraitMediumMarkup),
+            ("Export.Html", ".html", LPortraitMedium.LPortraitMediumHtml),
+            ("Export.Markdown", ".md", LPortraitMedium.LPortraitMediumMarkdown),
+            ("Export.Docx", ".docx", LPortraitMedium.LPortraitMediumDocx),
+            ("Export.Pdf", ".pdf", LPortraitMedium.LPortraitMediumPdf),
         ];
 
     internal async Task PWindowPortraitExport(
-        string file, Func<string, LPortraitFormat, LPortraitLabel, Task> export)
+        string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)
     {
         List<string> filters = new List<string>();
-        foreach ((string key, string suffix, LPortraitFormat _) in PWindowPortraitKinds)
+        foreach ((string key, string suffix, LPortraitMedium _) in PWindowPortraitKinds)
         {
             filters.Add($"{PLocalizationCatalog.PLocalizationTextRead(key)}|*{suffix}");
         }
@@ -41,7 +41,7 @@ public partial class PWindow
         }
 
         int chosen = Math.Clamp(dialog.FilterIndex - 1, 0, PWindowPortraitKinds.Count - 1);
-        LPortraitFormat format = PWindowPortraitKinds[chosen].PWindowKind;
+        LPortraitMedium format = PWindowPortraitKinds[chosen].PWindowKind;
 
         try
         {

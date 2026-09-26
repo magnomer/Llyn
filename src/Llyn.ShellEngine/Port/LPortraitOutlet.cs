@@ -21,7 +21,7 @@ public sealed class LPortraitOutlet : LPortraitPort
     public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket) =>
         _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitPrint(vista, legend, ticket);
 
-    public Task LEnginePortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label) =>
+    public Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label) =>
         _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);
 
     public Task<LMarkupCargo> LEngineMarkupStart(string path) =>

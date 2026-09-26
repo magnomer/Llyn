@@ -2,111 +2,148 @@
 
 ## `public sealed class TAuditRatchet`
 
-Holds the audit settings against the committed copy, so a gate can only tighten inside a working tree.
-A ceiling raised, a waiver row added or an enforcement switched off fails until the user commits it.
+Holds every audit setting against its committed copy, so a gate can only tighten inside a working tree.
+Every static field of every `TAudit*Setting.cs` file is held, and so is every `TAudit*Ledger.json` file.
+A loosened field fails until the user commits it.
 Only the user commits, so the diff that loosens a gate is always seen.
 The hold runs within one generation only.
-A new generation changes what the walk reports, so its ceilings and waivers are baselined afresh.
+A new generation changes what the walk reports, so every setting is baselined afresh.
+
+## `private const string TAuditSettingSuffix = "Setting.cs";`
+
+The file name ending of a held settings file.
+
+## `private const string TAuditLedgerSuffix = "Ledger.json";`
+
+The file name ending of a held ledger.
 
 ## `private static readonly string TAuditSettingFolder`
 
 The test project folder, named from the project so this file is the same in every project.
 
-## `private static readonly Regex TAuditCeilingPattern`
+## `private static readonly string TAuditConventionPath`
 
-A ceiling entry as it stands in a settings file.
-A key is anything but a quote, so a chain key with its colon, greater-than and dots is read whole.
-
-## `private static readonly Regex TAuditRowPattern`
-
-A `path:name` waiver row as it stands in a settings file.
-
-## `private static readonly Regex TAuditRolePattern`
-
-A dictionary entry whose value is a list of names, with the key and the list captured.
-
-## `private static readonly Regex TAuditQuotedPattern`
-
-One quoted name inside a captured list.
-
-## `private static readonly Regex TAuditEnforcedPattern`
-
-An enforcement flag as it stands in a settings file.
+The file whose committed generation decides whether the hold runs.
 
 ## `private static readonly Regex TAuditGenerationPattern`
 
-The generation constant as it stands in a settings file.
+The generation constant as it stands in the committed convention file.
 
-## `public void AuditRatchet_TruthCeiling_NeverRises()`
+## `private static readonly string[] TAuditCeilingSuffixes`
 
-No truth ceiling stands above its committed value.
+A field whose name ends in one of these holds numbers that may only fall.
+A slot missing from the working tree reads as zero, so dropping a slot tightens.
+A slot new in the working tree is compared with zero, so it may not admit a hit.
 
-## `public void AuditRatchet_StrictCeiling_NeverRises()`
+## `private static readonly string[] TAuditShrinkSuffixes`
 
-No strict ceiling stands above its committed value.
+A field whose name ends in one of these holds rows that may only be removed.
 
-## `public void AuditRatchet_ObjectCeiling_NeverRises()`
+## `private static readonly CSharpParseOptions TAuditSyntaxOptions`
 
-No object or part ceiling stands above its committed value.
+The parse options of the settings files, the same for the committed and the working copy.
 
-## `public void AuditRatchet_ChainCeiling_NeverRises()`
+## `public void AuditRatchet_Settings_NeverLoosen()`
 
-No chain ceiling stands above its committed value.
+Every held field keeps its direction against HEAD.
+A `Floor` field may only rise.
+So a `Floor` is only a minimum the code must keep, such as a ring's file count.
+A threshold whose rise spares more code ends in `Limit` instead, so it may only fall.
+An `Enforced` flag may only switch on.
+Every other field is fixed and may not change at all.
+A settings file or field added, removed or unreadable at HEAD fails too.
+So renaming a file or a field cannot free its ceilings.
+The hold fails outright when HEAD cannot be read, rather than passing on nothing.
 
-## `public void AuditRatchet_FrameCeiling_NeverRises()`
+## `public void AuditRatchet_SettingParse_MatchesRuntime()`
 
-No frame ceiling stands above its committed value.
+Every field the ratchet parses reads the same as its value at run time.
+An entry the parser cannot read, such as an expression that is not constant, fails here.
+Without this, a misread entry would let every later raise of it pass.
 
-## `public void AuditRatchet_LineCeiling_NeverRises()`
+## `private static IEnumerable<string> TAuditLoosenRead(`
 
-No line ceiling stands above its committed value.
+The loosenings of one field, chosen by the direction its name ending gives.
 
-## `public void AuditRatchet_ChainWaiver_NeverGrows()`
+## `private static IEnumerable<string> TAuditCeilingRead(`
 
-No chain waiver is missing from the committed waiver list.
+Every slot that moved the loose way, where `loose` is the sign of a loosening move.
+A ceiling loosens upward and a floor loosens downward.
 
-## `public void AuditRatchet_FrameWaiver_NeverGrows()`
+## `private static IEnumerable<string> TAuditShrinkRead(`
 
-No frame waiver is missing from the committed waiver list.
+Every row the working copy gained over the committed copy.
 
-## `public void AuditRatchet_ChainReach_NeverWidens()`
+## `private static IEnumerable<string> TAuditEnforcedRead(`
 
-No ring reaches a ring the committed chain did not let it reach.
-A reach dropped is a tightening and passes.
+A flag committed as true that is false in the working tree.
 
-## `public void AuditRatchet_ChainSurface_NeverWidens()`
+## `private static IEnumerable<string> TAuditFixedRead(`
 
-No surface admits a name the committed surface did not.
+Every slot whose rows differ, compared as sorted lists.
 
-## `public void AuditRatchet_FrameAllowed_NeverWidens()`
+## `private static decimal TAuditNumberRead(List<string>? items)`
 
-No namespace joins the frame without a commit.
+The single number a slot holds, or zero when it holds none.
 
-## `public void AuditRatchet_Enforced_NeverFlipsOff()`
+## `private static string TAuditNumberFormat(Dictionary<string, List<string>> values, string slot)`
 
-No enforcement flag committed as true is false in the working tree.
+The slot's value as the report shows it, or `absent`.
 
-## `private static void TAuditCeilingCheck(string path, IReadOnlyDictionary<string, int> current)`
+## `private static Dictionary<string, Dictionary<string, List<string>>?> TAuditValueRead(`
 
-Reads the committed ceilings and lists every kind whose current value is higher.
-A file not yet committed has nothing to hold against and passes.
+Every static field of the given files, keyed `Type.Field`, as slots of rows.
+The files are compiled together, so a constant naming another settings file resolves.
+A ledger is keyed by its file name and read as one field.
+A field that cannot be read maps to null.
 
-## `private static void TAuditRowCheck(string path, string block, IReadOnlyList<string> rows, string label)`
+## `private static Dictionary<string, List<string>>? TAuditExpressionRead(SemanticModel model, ExpressionSyntax value)`
 
-Reads the committed rows of one waiver block and lists every current row missing from it.
+One initializer as slots of rows.
+A constant is one row in the empty slot, and a list is its rows in the empty slot.
+A dictionary is one slot per key, in the indexer form or the pair form.
+Anything else is unreadable and maps to null.
 
-## `private static void TAuditListCheck(string path, string block, IReadOnlyDictionary<string, string[]> current, string label, string verb)`
+## `private static List<string>? TAuditListRead(SemanticModel model, ExpressionSyntax value)`
 
-Reads the committed lists of one dictionary block and lists every current name a key gained.
+The constant rows of a collection expression or an array, or null when any row is not constant.
 
-## `private static string TAuditBlockRead(string committed, string name)`
+## `private static Dictionary<string, List<string>>? TAuditLedgerParse(string text)`
 
-The text of one setting from its name to the end of its initializer.
+A ledger as one slot per kind and path, or null when the JSON does not parse.
 
-## `private static bool TAuditGenerationCheck(string committed)`
+## `private static Dictionary<string, List<string>>? TAuditRuntimeRead(object? value)`
 
-True when the committed settings were written at the running generation.
+A field's run-time value in the same slot shape the parser gives.
+
+## `private static string TAuditScalarFormat(object? value)`
+
+One value as invariant text, so the parsed and the run-time forms compare equal.
+
+## `private static List<MetadataReference> TAuditReferenceRead()`
+
+The runtime's own assemblies, enough to compile the settings files alone.
+
+## `private static IReadOnlyList<string> TAuditTreeRead()`
+
+The held file names in the working tree.
+
+## `private static IReadOnlyList<string> TAuditHeadRead()`
+
+The held file names at HEAD, failing when Git cannot list them.
+
+## `private static bool TAuditHeldCheck(string name)`
+
+True for a settings file or a ledger of the convention tests.
+
+## `private static string TAuditWorkingRead(string name)`
+
+The working copy of one held file.
 
 ## `private static string? TAuditCommittedRead(string path)`
 
 The file as `git show HEAD:` prints it, or null when it is not in HEAD.
+
+## `private static string? TAuditGitRead(params string[] arguments)`
+
+The output of one Git command, or null when it fails.

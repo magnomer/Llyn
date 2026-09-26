@@ -17,7 +17,7 @@ A card naming nothing is created, and a stored row the draft no longer names is 
 Reads the collocation, image, video, sentence and situation ports out of `rig`.
 The four clerks handed in write the lines a card carries.
 
-## `public void LCollocationSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionChange> changes, Dictionary<long, long> identity)`
+## `public void LCollocationSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 Reconciles the entry's Collocations to the cards the draft lists.
 A card naming a stored row of this entry updates that row when its text or its place moved.

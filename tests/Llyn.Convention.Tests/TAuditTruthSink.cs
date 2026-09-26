@@ -8,10 +8,15 @@ internal static partial class TAuditTruthWalker
 {
     private static (string TViolationKind, string TViolationReason)? TAuditSinkRead(SyntaxNode reference)
     {
-        if (reference.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == reference
-            || reference.Parent is ConditionalAccessExpressionSyntax { Expression: var target } && target == reference)
+        if (reference.Parent is MemberAccessExpressionSyntax { Expression: var owner } && owner == reference)
         {
             return null;
+        }
+
+        if (reference.Parent is ConditionalAccessExpressionSyntax { Expression: var target } access
+            && target == reference)
+        {
+            return TAuditRequestCheck(access.WhenNotNull) ? ("Guard", "decides a request through ?.") : null;
         }
 
         foreach (SyntaxNode ancestor in reference.Ancestors())
@@ -42,6 +47,29 @@ internal static partial class TAuditTruthWalker
                 case SwitchExpressionSyntax arms
                     when arms.GoverningExpression.Span.Contains(reference.Span) && TAuditRequestCheck(arms):
                     return ("Guard", "decides a request in a switch expression");
+                case WhileStatementSyntax loop
+                    when loop.Condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
+                    return ("Guard", "decides a request in a while");
+                case DoStatementSyntax loop
+                    when loop.Condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
+                    return ("Guard", "decides a request in a do");
+                case ForStatementSyntax { Condition: { } condition } loop
+                    when condition.Span.Contains(reference.Span) && TAuditRequestCheck(loop.Statement):
+                    return ("Guard", "decides a request in a for");
+                case WhenClauseSyntax { Parent: { } label } clause
+                    when TAuditRequestCheck(label.Parent is SwitchSectionSyntax section ? section : label)
+                         && clause.Condition.Span.Contains(reference.Span):
+                    return ("Guard", "decides a request in a when clause");
+                case CatchFilterClauseSyntax filter
+                    when filter.Parent is CatchClauseSyntax { Block: var handler } && TAuditRequestCheck(handler):
+                    return ("Guard", "decides a request in a catch filter");
+                case BinaryExpressionSyntax gate
+                    when (gate.IsKind(SyntaxKind.LogicalAndExpression)
+                          || gate.IsKind(SyntaxKind.LogicalOrExpression)
+                          || gate.IsKind(SyntaxKind.CoalesceExpression))
+                         && gate.Left.Span.Contains(reference.Span)
+                         && TAuditRequestCheck(gate.Right):
+                    return ("Guard", $"decides a request through {gate.OperatorToken.ValueText}");
             }
         }
 
@@ -99,13 +127,15 @@ internal static partial class TAuditTruthWalker
             return true;
         }
 
-        if (argument.NameColon is not null || argument.Parent is not BaseArgumentListSyntax list)
+        if (argument.Parent is not BaseArgumentListSyntax list)
         {
             return false;
         }
 
-        return TAuditHotNames.TryGetValue(callee, out HashSet<int>? hot)
-               && hot.Contains(list.Arguments.IndexOf(argument));
+        int index = argument.NameColon is { Name.Identifier.ValueText: var name }
+            ? (callee as IMethodSymbol)?.Parameters.FirstOrDefault(parameter => parameter.Name == name)?.Ordinal ?? -1
+            : list.Arguments.IndexOf(argument);
+        return TAuditHotNames.TryGetValue(callee, out HashSet<int>? hot) && hot.Contains(index);
     }
 
     private static ISymbol? TAuditCallRead(ExpressionSyntax call)
@@ -116,6 +146,29 @@ internal static partial class TAuditTruthWalker
             return null;
         }
 
-        return TAuditBinder.TAuditLogicCheck(callee) || TAuditRelayNames.Contains(callee) ? callee : null;
+        if (TAuditBinder.TAuditLogicCheck(callee) || TAuditRelayNames.Contains(callee))
+        {
+            return callee;
+        }
+
+        return TAuditDelegateRead(call) is { } held && TAuditRelayNames.Contains(held) ? held : null;
+    }
+
+    private static ISymbol? TAuditDelegateRead(ExpressionSyntax call)
+    {
+        if (call is not InvocationExpressionSyntax invocation)
+        {
+            return null;
+        }
+
+        ExpressionSyntax? target = invocation.Expression switch
+        {
+            MemberAccessExpressionSyntax { Name.Identifier.ValueText: "Invoke" } access => access.Expression,
+            MemberBindingExpressionSyntax { Name.Identifier.ValueText: "Invoke" }
+                => invocation.FirstAncestorOrSelf<ConditionalAccessExpressionSyntax>()?.Expression,
+            IdentifierNameSyntax or MemberAccessExpressionSyntax => invocation.Expression,
+            _ => null
+        };
+        return target is null ? null : TAuditBinder.TAuditSymbolRead(target);
     }
 }

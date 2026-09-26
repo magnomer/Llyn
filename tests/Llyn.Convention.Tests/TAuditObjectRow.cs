@@ -11,4 +11,5 @@ internal sealed record TAuditObjectRow(
     double TAuditObjectWeave,
     double TAuditObjectFree,
     double TAuditObjectDensity,
-    bool TAuditObjectMonolith);
+    bool TAuditObjectMonolith,
+    bool TAuditObjectLarge);

@@ -9,11 +9,11 @@ The settings and every waiver reason live in `TAuditDraftSetting`.
 
 ## `public void AuditDraft_Portrait_NamesEveryProperty()`
 
-The portrait side: the `Portrait` folders of the core and the application, and the `LEnginePortrait` files of the engine.
+The portrait side: the `Portrait` folders of the core and the application, and the engine's portrait facade.
 
 ## `public void AuditDraft_Markup_NamesEveryProperty()`
 
-The markup side: the `Markup` folder of the core and the engine loader.
+The markup side: the `Markup` folder of the core and the application's markup clerk.
 
 ## `public void AuditDraft_Exemplar_NamesEveryProperty()`
 

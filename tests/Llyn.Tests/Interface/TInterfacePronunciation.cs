@@ -348,17 +348,17 @@ internal static partial class TInterface
         IReadOnlyDictionary<string, string> initials,
         IReadOnlyDictionary<string, string> finals,
         IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones,
-        IReadOnlyList<LHypothesisPlace>? places = null) =>
+        IReadOnlyList<LHypothesisLocus>? places = null) =>
         new(initials, finals, tones, places);
 
-    internal static LHypothesisPlace THypothesisPlaceCreate(string name, IReadOnlyList<string> initials) =>
+    internal static LHypothesisLocus THypothesisPlaceCreate(string name, IReadOnlyList<string> initials) =>
         new(name, initials);
 
     internal static string? THypothesisInitialFind(this LHypothesis hypothesis, LFanqieRow row) =>
         hypothesis.LHypothesisInitialFind(row);
 
-    internal static LHypothesisPlace? THypothesisPlaceFind(this LHypothesis hypothesis, string initial) =>
-        hypothesis.LHypothesisPlaceFind(initial);
+    internal static LHypothesisLocus? THypothesisPlaceFind(this LHypothesis hypothesis, string initial) =>
+        hypothesis.LHypothesisLocusFind(initial);
 
     internal static int THypothesisRankRead(this LHypothesis hypothesis, string initial) =>
         hypothesis.LHypothesisRankRead(initial);

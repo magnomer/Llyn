@@ -247,6 +247,6 @@ Runs a scenario step and raises `LRepertoireFailed` with `Situation.HoldFailed` 
 
 Prints the entry on display, else the chosen Situation, else nothing.
 
-## `public Task LRepertoirePortraitExport(string path, LPortraitFormat format, LPortraitLabel label)`
+## `public Task LRepertoirePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)`
 
 Exports the entry on display, and does nothing otherwise.

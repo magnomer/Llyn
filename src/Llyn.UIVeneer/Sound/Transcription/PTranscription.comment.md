@@ -69,14 +69,6 @@ The draft's transcription rows without the glyph row of the language shown.
 The draft's transcription rows without the row in `glyph`'s scheme.
 The glyph form is stored as a transcription row, so this is where the two are told apart.
 
-## `private void PTranscriptionPrepare(LEntryDraft draft)`
-
-Asks for a row in the first declared scheme when the language has schemes and no transcription row exists.
-It runs before the render.
-So the schemes and the glyph section are read off the draft's language, not the form.
-The row is asked for as seeded, so the engine ignores it while empty and the draft stays clean.
-A row the user adds with the plus is not seeded, and stays even empty.
-
 ## `private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, LTranscriptionDraft spelled)`
 
 Brings a shown row up to the draft row with the same id.

@@ -6,13 +6,15 @@ Audit the ring chain of the source and report every dependency that steps past i
 Reads the ring table from auditstructure.json, enumerates the tracked source with Git, binds
 every file with Roslyn, and classifies every symbol one ring names from another ring. A ring may
 reach the one ring inside it that the table names for it; a data type of any inner ring may be
-carried across any depth; nothing outward is ever named. Outside the rings, each ring names only
+carried across any depth; nothing outward is ever named. A using of a deeper ring counts as data,
+and a method call on a deeper record counts as behaviour. Outside the rings, each ring names only
 the framework namespaces the table allows it, and a pure ring never touches an ambient member
 such as the clock, the environment or the file system.
 
 The reports are written to the configured report folder as AuditStructure-{version}.md and
-AuditStructureViolated-{version}.md. Git and the .NET SDK are required. No project source is
-modified.
+AuditStructureViolated-{version}.md. Git and the .NET SDK are required, and the solution must be
+built, since the shared binder of auditbinder.cs reads the generated code and the host build output
+and refuses to bind a tree with a compile error. No project source is modified.
 
 This script carries no project-specific value of its own, so the file is identical in every
 project at the same generation. Everything a project chooses - the rings, their reach, their
@@ -39,7 +41,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 11 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 12 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -55,13 +57,17 @@ Audit a specific checkout and open the violation report.
 # enum, a struct or a delegate named in a signature or passed through. The distinction is the
 # kind of the type named, read from the binder, not the position of the name in the line.
 # A configuration is total: a missing key is an error, never a default, and an unknown key is an
-# error rather than a silent no-op. A ceiling is the file count a violating pair may hold; a count
+# error rather than a silent no-op. A ceiling is the hit count a violating pair may hold; a count
 # above fails, a ceiling above the count is stale and fails too, so a ceiling only walks down. An
 # exemption clears a name only inside the file its row names, and a row that matched nothing is
-# reported as stale rather than pruned.
+# reported as stale and fails the run, never pruned.
 # Generation 11: nothing the structure audit reports changes; the number rises with the truth audit,
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
+# Generation 12: the audit reports what the convention tests report. It binds through the shared
+# binder of auditbinder.cs with no compile error, counts a ceiling in hits, counts a using of a
+# deeper ring and a method call on a deeper record as a reach, walks using static names, and adds
+# the expose, surface, stray, banned, floor and table checks.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -101,12 +107,13 @@ OPTIONS
         Display this help and exit without running the audit.
 
 OUTPUT
+    The console follows scripts\report.md: counters, findings by check, pairs.
     <report folder>\AuditStructure-{version}.md
     <report folder>\AuditStructureViolated-{version}.md
 
 EXIT STATUS
-    0   Every violating pair sits at its ceiling and no ceiling is stale.
-    1   At least one pair is above its ceiling, or a ceiling sits above its count.
+    0   Every violating pair sits at its ceiling, and no ceiling or exemption is stale.
+    1   A pair is above its ceiling, a ceiling sits above its count, or an exemption matched nothing.
 
 EXAMPLES
     auditstructure
@@ -127,8 +134,9 @@ if ([string]::IsNullOrWhiteSpace($Root)) {
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 $script:ConfigDocument = 'auditstructure.json'
+$script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
@@ -148,6 +156,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -179,6 +194,38 @@ function Write-AuditLine {
     }
 }
 
+function Write-AuditSection {
+    param([string]$Title)
+
+    Write-AuditLine ''
+    Write-AuditLine $Title
+    Write-AuditLine ('-' * $Title.Length)
+}
+
+function Write-AuditTable {
+    param([string[]]$Header, [object[]]$Rows)
+
+    $widths = @(for ($column = 0; $column -lt $Header.Count; $column++) {
+        $cells = @($Header[$column]) + @($Rows | ForEach-Object { [string]$_[$column] })
+        ($cells | Measure-Object -Property Length -Maximum).Maximum
+    })
+    $numeric = @(for ($column = 0; $column -lt $Header.Count; $column++) {
+        $Rows.Count -gt 0 -and @($Rows | Where-Object { [string]$_[$column] -notmatch '^(-|-?[\d,]+(\.\d+)?( %)?)$' }).Count -eq 0
+    })
+    $format = {
+        param([string[]]$Cells)
+        $parts = for ($column = 0; $column -lt $Cells.Count; $column++) {
+            if ($numeric[$column]) { $Cells[$column].PadLeft($widths[$column]) } else { $Cells[$column].PadRight($widths[$column]) }
+        }
+        ($parts -join '  ').TrimEnd()
+    }
+    Write-AuditLine (& $format $Header)
+    Write-AuditLine (($widths | ForEach-Object { '-' * $_ }) -join '  ')
+    foreach ($row in $Rows) {
+        Write-AuditLine (& $format ([string[]]$row))
+    }
+}
+
 Write-AuditLine "AUDITSTRUCTURE GENERATION $script:AuditGeneration" -ForegroundColor Cyan
 
 $script:ReportName = 'AuditStructure-{version}.md'
@@ -202,6 +249,16 @@ $script:AuditSchema = [ordered]@{
     'checks.frame'              = 'string'
     'checks.ambient'            = 'string'
     'checks.root'               = 'string'
+    'checks.expose'             = 'string'
+    'checks.surface'            = 'string'
+    'checks.stray'              = 'string'
+    'checks.banned'             = 'string'
+    'checks.floor'              = 'string'
+    'checks.table'              = 'string'
+    'surface'                   = 'map[]'
+    'stray'                     = 'map[]'
+    'banned'                    = 'map[]'
+    'floor'                     = 'map[int]'
     'ceilings'                  = 'map[int]'
     'exempt'                    = 'map[]'
     'sources.include'           = 'string[]'
@@ -224,12 +281,18 @@ $script:RingSchema = [ordered]@{
 $script:Severities = @('violation', 'review', 'allow')
 
 # The order is the order the checks are reported in, heaviest first.
-$script:CheckOrder = @('outward', 'reach', 'cross', 'frame', 'ambient', 'carry', 'neighbour', 'root')
+$script:CheckOrder = @('outward', 'reach', 'cross', 'expose', 'surface', 'frame', 'ambient', 'stray', 'banned', 'floor', 'table', 'carry', 'neighbour', 'root')
 
 $script:CheckTitles = @{
     'outward'   = 'Outer ring named from an inner ring'
     'reach'     = 'Behaviour reached past the neighbour ring'
     'cross'     = 'Name from below the cut inside a UI ring'
+    'expose'    = 'Surface signature naming a type from below its neighbour'
+    'surface'   = 'Neighbour name outside the surface the ring may reach'
+    'stray'     = 'Type declared in a ring that may not hold it'
+    'banned'    = 'Banned word inside a ring folder'
+    'floor'     = 'Ring holding fewer source files than its floor'
+    'table'     = 'Ring reach differing from its project references'
     'frame'     = 'Framework namespace outside the ring frame'
     'ambient'   = 'Ambient member touched from a pure ring'
     'carry'     = 'Data carried from a deeper ring'
@@ -432,12 +495,26 @@ function Read-AuditConfig {
                 }
             }
         }
+
+        $rootNode = Get-AuditNode -Document $config -Key 'root'
+        if ($rootNode.Found -and (Test-AuditValue -Kind 'string[]' -Value $rootNode.Value)) {
+            $ringPaths = @($ringsNode.Value | ForEach-Object { ([string]$_.path).Replace('\', '/').Trim('/') + '/' })
+            foreach ($entry in $rootNode.Value) {
+                $relative = ([string]$entry).Replace('\', '/').Trim('/')
+                if (-not @($ringPaths | Where-Object { $relative.StartsWith($_, [StringComparison]::OrdinalIgnoreCase) })) {
+                    [void]$problems.Add("root '$entry' sits inside no ring, so no check ever reads it")
+                }
+                elseif (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot $relative) -PathType Leaf)) {
+                    [void]$problems.Add("root '$entry' names no file")
+                }
+            }
+        }
     }
 
     $ceilingsNode = Get-AuditNode -Document $config -Key 'ceilings'
     if ($ceilingsNode.Found -and (Test-AuditValue -Kind 'map[int]' -Value $ceilingsNode.Value)) {
         foreach ($property in $ceilingsNode.Value.PSObject.Properties) {
-            if ($property.Name -notmatch '^(outward|reach|cross|frame|ambient|carry|neighbour|root):[^>]+>.+$') {
+            if ($property.Name -notmatch '^(outward|reach|cross|expose|surface|frame|ambient|stray|banned|floor|table|carry|neighbour|root):[^>]+>.+$') {
                 [void]$problems.Add("ceiling '$($property.Name)' must be written as check:Ring>Target")
             }
         }
@@ -527,7 +604,10 @@ function Get-ProjectSourceFiles {
 
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
         'ls-files', '--cached', '--others', '--exclude-standard', '--') + @($Config.sources.include)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
+    $ErrorActionPreference = $nativePreference
     $gitExitCode = $LASTEXITCODE
     if ($gitExitCode -ne 0) {
         throw "Git could not enumerate source files.`n$($gitOutput -join [Environment]::NewLine)"
@@ -552,7 +632,7 @@ function Get-ProjectSourceFiles {
         [void]$files.Add($relativePath)
     }
 
-    return @($files.ToArray() | Sort-Object -Unique)
+    return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 }
 
 function Get-PathRing {
@@ -619,37 +699,44 @@ $script:HelperProject = @'
 
 $script:HelperProgram = @'
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 if (args.Length != 4)
 {
-    Console.Error.WriteLine("usage: <config> <root> <manifest> <output>");
+    Console.Error.WriteLine("usage: <config> <root> <binder> <output>");
     return 2;
 }
 
 string configPath = args[0];
 string projectRoot = args[1];
-string manifestPath = args[2];
+string binderPath = args[2];
 string outputPath = args[3];
 
 JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
+string project = config.GetProperty("project").GetString()!;
 List<Ring> rings = config.GetProperty("rings").EnumerateArray()
     .Select(ring => new Ring(
         ring.GetProperty("name").GetString()!,
         ring.GetProperty("path").GetString()!.Replace('\\', '/').Trim('/') + "/",
-        ring.GetProperty("reach").EnumerateArray().Select(item => item.GetString()!).ToArray(),
-        ring.GetProperty("frame").EnumerateArray().Select(item => item.GetString()!).ToArray(),
+        Strings(ring.GetProperty("reach")),
+        Strings(ring.GetProperty("frame")),
         ring.GetProperty("pure").GetBoolean(),
         ring.GetProperty("cut").GetBoolean()))
     .ToList();
-HashSet<string> roots = config.GetProperty("root").EnumerateArray()
-    .Select(item => item.GetString()!.Replace('\\', '/').Trim('/'))
+HashSet<string> roots = Strings(config.GetProperty("root"))
+    .Select(item => item.Replace('\\', '/').Trim('/'))
     .ToHashSet(StringComparer.OrdinalIgnoreCase);
-string[] ambient = config.GetProperty("ambient").EnumerateArray().Select(item => item.GetString()!).ToArray();
+string[] ambient = Strings(config.GetProperty("ambient"));
+Dictionary<string, string[]> surfaces = Map(config.GetProperty("surface"));
+Dictionary<string, string[]> strays = Map(config.GetProperty("stray"));
+Dictionary<string, string[]> banned = Map(config.GetProperty("banned"));
+Dictionary<string, int> floors = config.GetProperty("floor").EnumerateObject()
+    .ToDictionary(item => item.Name, item => item.Value.GetInt32(), StringComparer.Ordinal);
 
-// The rings a ring may see at any depth: its reach, then the reach of that reach, and so on.
 Dictionary<string, HashSet<string>> inner = new(StringComparer.Ordinal);
 foreach (Ring ring in rings)
 {
@@ -663,50 +750,17 @@ foreach (Ring ring in rings)
             continue;
         }
 
-        Ring? next = rings.FirstOrDefault(candidate => candidate.Name == name);
-        if (next is not null)
+        foreach (string deeper in rings.FirstOrDefault(candidate => candidate.Name == name)?.Reach ?? [])
         {
-            foreach (string deeper in next.Reach)
-            {
-                pending.Enqueue(deeper);
-            }
+            pending.Enqueue(deeper);
         }
     }
 
     inner[ring.Name] = seen;
 }
 
-string[] files = File.ReadAllLines(manifestPath).Where(line => line.Length > 0).ToArray();
-CSharpParseOptions parseOptions = new(LanguageVersion.Preview);
-List<SyntaxTree> trees = files
-    .AsParallel()
-    .AsOrdered()
-    .Select(file => CSharpSyntaxTree.ParseText(File.ReadAllText(file), parseOptions, path: file))
-    .ToList();
-
-// The runtime's own assemblies give the binder the BCL, so a clock or a file call binds to its
-// namespace. A package the project references beyond that stays unbound, and its using directive
-// is the one place its namespace is still read.
-List<MetadataReference> references = [];
-if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trusted)
-{
-    foreach (string assemblyPath in trusted.Split(Path.PathSeparator))
-    {
-        try
-        {
-            references.Add(MetadataReference.CreateFromFile(assemblyPath));
-        }
-        catch (Exception)
-        {
-        }
-    }
-}
-
-CSharpCompilation compilation = CSharpCompilation.Create(
-    "AuditStructure",
-    trees,
-    references,
-    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+AuditBinder binder = AuditBinder.Bind(projectRoot, binderPath);
+CSharpCompilation compilation = binder.Compilation;
 
 System.Collections.Concurrent.ConcurrentDictionary<string, Ring?> ringOfPath = new(StringComparer.OrdinalIgnoreCase);
 Ring? RingOf(string relative) => ringOfPath.GetOrAdd(relative, key => rings
@@ -714,40 +768,49 @@ Ring? RingOf(string relative) => ringOfPath.GetOrAdd(relative, key => rings
     .OrderByDescending(candidate => candidate.Path.Length)
     .FirstOrDefault());
 
-string RelativeOf(string path) => Path.GetRelativePath(projectRoot, path).Replace('\\', '/');
+Ring? SpaceRing(string space) => rings
+    .Where(candidate => space == candidate.Name || space.StartsWith(candidate.Name + ".", StringComparison.Ordinal))
+    .MaxBy(candidate => candidate.Name.Length);
 
-// A type is data when a value of it is the whole of it: an enum, a struct, a record or a delegate.
-// A class or an interface is behaviour, and a static class is behaviour reached through its name.
+Ring? SourceRing(INamedTypeSymbol type)
+{
+    Location? source = type.Locations.FirstOrDefault(location => location.IsInSource);
+    return source?.SourceTree is null ? null : RingOf(binder.Relative(source.SourceTree.FilePath));
+}
+
 static bool IsData(INamedTypeSymbol type) =>
     type.TypeKind is TypeKind.Enum or TypeKind.Struct or TypeKind.Delegate || type.IsRecord;
 
-// The type a name stands for: the type itself, or the type owning the member the name picks. A
-// local or a parameter is a name the file gave itself, so its uses are not counted again; the
-// type was counted where it was declared, and a member call on it is counted through the member.
 static INamedTypeSymbol? TypeOf(ISymbol symbol) => symbol switch
 {
     IAliasSymbol alias => TypeOf(alias.Target),
     INamedTypeSymbol named => named.IsTupleType || named.IsAnonymousType ? null : named.OriginalDefinition,
     IArrayTypeSymbol array => TypeOf(array.ElementType),
-    INamespaceSymbol => null,
-    ITypeParameterSymbol => null,
-    ILocalSymbol => null,
-    IParameterSymbol => null,
-    IRangeVariableSymbol => null,
-    IDiscardSymbol => null,
-    ILabelSymbol => null,
-    IPreprocessingSymbol => null,
+    INamespaceSymbol or ITypeParameterSymbol or ILocalSymbol or IParameterSymbol => null,
+    IRangeVariableSymbol or IDiscardSymbol or ILabelSymbol or IPreprocessingSymbol => null,
     _ => symbol.ContainingType?.OriginalDefinition,
 };
+
+static bool IsHeader(SimpleNameSyntax name)
+{
+    SyntaxNode? parent = name.Parent;
+    if (parent is QualifiedNameSyntax qualified)
+    {
+        parent = qualified.Parent;
+    }
+
+    return parent is UsingDirectiveSyntax or NamespaceDeclarationSyntax or FileScopedNamespaceDeclarationSyntax;
+}
 
 static string NamespaceOf(INamespaceSymbol? space) =>
     space is null || space.IsGlobalNamespace ? "" : space.ToDisplayString();
 
-// Each tree binds on its own thread; the compilation is shared and safe to read from many.
+string LineText(SyntaxTree tree, int line) => line <= 0 ? "" : tree.GetText().Lines[line - 1].ToString().Trim();
+
 System.Collections.Concurrent.ConcurrentBag<List<Finding>> bags = [];
-Parallel.ForEach(trees, tree =>
+Parallel.ForEach(binder.Tracked, tree =>
 {
-    string relative = RelativeOf(tree.FilePath);
+    string relative = binder.Relative(tree.FilePath);
     Ring? ring = RingOf(relative);
     if (ring is null)
     {
@@ -755,66 +818,83 @@ Parallel.ForEach(trees, tree =>
     }
 
     List<Finding> findings = [];
-
     bool isRoot = roots.Contains(relative);
-    SemanticModel model = compilation.GetSemanticModel(tree);
-    Microsoft.CodeAnalysis.Text.SourceText text = tree.GetText();
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
     HashSet<string> taken = new(StringComparer.Ordinal);
 
     void Add(int line, string check, string target, string name)
     {
-        if (!taken.Add($"{line}|{check}|{target}|{name}"))
+        if (taken.Add($"{line}|{check}|{target}|{name}"))
+        {
+            findings.Add(new Finding(relative, line, ring.Name, check, target, name, LineText(tree, line)));
+        }
+    }
+
+    void Chain(int line, Ring target, string name, bool data)
+    {
+        if (target.Name == ring.Name)
         {
             return;
         }
 
-        findings.Add(new Finding(relative, line, ring.Name, check, target, name, text.Lines[line - 1].ToString().Trim()));
+        string check = isRoot ? "root"
+            : ring.Reach.Contains(target.Name) ? "neighbour"
+            : !inner[ring.Name].Contains(target.Name) ? "outward"
+            : ring.Cut && !target.Cut ? "cross"
+            : data ? "carry"
+            : "reach";
+        Add(line, check, target.Name, name);
     }
 
-    foreach (SyntaxNode node in tree.GetRoot().DescendantNodes())
+    SyntaxNode rootNode = tree.GetRoot();
+    foreach (UsingDirectiveSyntax directive in rootNode.DescendantNodes().OfType<UsingDirectiveSyntax>())
     {
-        int line = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-
-        if (node is UsingDirectiveSyntax directive && directive.Name is not null)
+        int line = directive.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+        if (directive.Name is not null)
         {
             string space = directive.Name.ToString();
-            if (!space.StartsWith(config.GetProperty("project").GetString()! + ".", StringComparison.Ordinal)
+            if (!space.StartsWith(project + ".", StringComparison.Ordinal)
                 && !ring.Frame.Contains("*")
                 && !ring.Frame.Contains(space))
             {
                 Add(line, "frame", space, space);
             }
-
-            continue;
         }
 
-        if (node is not SimpleNameSyntax name)
+        if (directive.NamespaceOrType is { } named
+            && model.GetSymbolInfo(named).Symbol is INamespaceSymbol spaceSymbol
+            && SpaceRing(spaceSymbol.ToDisplayString()) is { } target
+            && !ring.Reach.Contains(target.Name))
         {
-            continue;
+            Chain(line, target, "using " + spaceSymbol.ToDisplayString(), true);
         }
+    }
 
-        if (name.Parent is UsingDirectiveSyntax or NamespaceDeclarationSyntax or FileScopedNamespaceDeclarationSyntax
-            || (name.Parent is QualifiedNameSyntax qualified && qualified.Parent is UsingDirectiveSyntax or NamespaceDeclarationSyntax or FileScopedNamespaceDeclarationSyntax))
+    foreach (SimpleNameSyntax name in rootNode.DescendantNodes().OfType<SimpleNameSyntax>())
+    {
+        bool header = IsHeader(name);
+        bool held = name.FirstAncestorOrSelf<UsingDirectiveSyntax>()?.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) == true;
+        if (header && !held)
         {
             continue;
         }
 
         SymbolInfo info = model.GetSymbolInfo(name);
         ISymbol? symbol = info.Symbol ?? info.CandidateSymbols.FirstOrDefault();
-        if (symbol is null)
+        if (symbol is null || TypeOf(symbol) is not INamedTypeSymbol type)
         {
             continue;
         }
 
-        INamedTypeSymbol? type = TypeOf(symbol);
-        if (type is null)
-        {
-            continue;
-        }
-
+        int line = name.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
         Location? source = type.Locations.FirstOrDefault(location => location.IsInSource);
         if (source is null)
         {
+            if (header)
+            {
+                continue;
+            }
+
             string space = NamespaceOf(type.ContainingNamespace);
             if (space.Length > 0 && !ring.Frame.Contains("*") && !ring.Frame.Contains(space))
             {
@@ -840,25 +920,138 @@ Parallel.ForEach(trees, tree =>
             continue;
         }
 
-        Ring? target = RingOf(RelativeOf(source.SourceTree!.FilePath));
-        if (target is null || target.Name == ring.Name)
+        Ring? targetRing = RingOf(binder.Relative(source.SourceTree!.FilePath));
+        if (targetRing is null)
         {
             continue;
         }
 
-        string check = isRoot ? "root"
-            : ring.Reach.Contains(target.Name) ? "neighbour"
-            : !inner[ring.Name].Contains(target.Name) ? "outward"
-            : ring.Cut && !target.Cut ? "cross"
-            : IsData(type) ? "carry"
-            : "reach";
-        Add(line, check, target.Name, type.Name);
+        bool behaviour = symbol is IMethodSymbol { MethodKind: MethodKind.Ordinary or MethodKind.ReducedExtension };
+        Chain(line, targetRing, type.Name, IsData(type) && !behaviour);
+    }
+
+    foreach (BaseTypeDeclarationSyntax declaration in rootNode.DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
+    {
+        string declared = declaration.Identifier.Text;
+        foreach (string pattern in strays.GetValueOrDefault(ring.Name, []).Where(pattern => Regex.IsMatch(declared, pattern)))
+        {
+            int line = declaration.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+            Add(line, "stray", ring.Name, declared);
+        }
+    }
+
+    foreach ((string folder, string[] words) in banned)
+    {
+        if (!relative.StartsWith(folder.Trim('/') + "/", StringComparison.OrdinalIgnoreCase))
+        {
+            continue;
+        }
+
+        Microsoft.CodeAnalysis.Text.TextLineCollection lines = tree.GetText().Lines;
+        for (int index = 0; index < lines.Count; index++)
+        {
+            string text = lines[index].ToString();
+            foreach (string word in words.Where(word => text.Contains(word, StringComparison.Ordinal)))
+            {
+                Add(index + 1, "banned", ring.Name, word);
+            }
+        }
     }
 
     bags.Add(findings);
 });
 
-List<Finding> all = bags.SelectMany(bag => bag)
+List<Finding> all = bags.SelectMany(bag => bag).ToList();
+
+HashSet<string> exposed = new(StringComparer.Ordinal);
+foreach ((string pair, string[] surface) in surfaces)
+{
+    string ringName = pair[..pair.IndexOf('>')];
+    string neighbour = pair[(pair.IndexOf('>') + 1)..];
+    if (rings.FirstOrDefault(candidate => candidate.Name == ringName) is not { Cut: true })
+    {
+        continue;
+    }
+
+    IEnumerable<ISymbol> members = surface
+        .SelectMany(name => compilation.GetSymbolsWithName(name, SymbolFilter.Type))
+        .OfType<INamedTypeSymbol>()
+        .Where(type => SourceRing(type)?.Name == neighbour)
+        .SelectMany(PublicOf)
+        .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
+    foreach (ISymbol member in members)
+    {
+        Location? location = member.Locations.FirstOrDefault(place => place.IsInSource);
+        if (location is null)
+        {
+            continue;
+        }
+
+        string relative = binder.Relative(location.SourceTree!.FilePath);
+        int line = location.GetLineSpan().StartLinePosition.Line + 1;
+        foreach (INamedTypeSymbol type in SignatureOf(member))
+        {
+            if (SourceRing(type) is { } target && inner[neighbour].Contains(target.Name)
+                && exposed.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
+            {
+                all.Add(new Finding(relative, line, ringName, "expose", target.Name, type.Name,
+                    LineText(location.SourceTree, line)));
+            }
+        }
+    }
+}
+
+foreach (Finding finding in all.Where(finding => finding.Check == "neighbour").ToList())
+{
+    if (surfaces.TryGetValue($"{finding.Ring}>{finding.Target}", out string[]? surface)
+        && !surface.Contains(finding.Name, StringComparer.Ordinal))
+    {
+        all.Add(finding with { Check = "surface" });
+    }
+}
+
+Dictionary<string, int> files = binder.Tracked
+    .Select(tree => RingOf(binder.Relative(tree.FilePath))?.Name)
+    .Where(name => name is not null)
+    .GroupBy(name => name!, StringComparer.Ordinal)
+    .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+foreach ((string ringName, int floor) in floors)
+{
+    int count = files.GetValueOrDefault(ringName);
+    if (count < floor)
+    {
+        all.Add(new Finding("", 0, ringName, "floor", ringName, $"{count} source file(s), floor {floor}", ""));
+    }
+}
+
+foreach (Ring ring in rings)
+{
+    string folder = ring.Path.TrimEnd('/');
+    string projectFile = Path.Combine(projectRoot, folder.Replace('/', Path.DirectorySeparatorChar), Path.GetFileName(folder) + ".csproj");
+    if (!File.Exists(projectFile))
+    {
+        all.Add(new Finding(folder, 0, ring.Name, "table", ring.Name, "no project file at the ring path", ""));
+        continue;
+    }
+
+    string[] references = XDocument.Load(projectFile).Descendants()
+        .Where(node => node.Name.LocalName == "ProjectReference")
+        .Select(node => (string?)node.Attribute("Include") ?? "")
+        .Where(include => include.Length > 0)
+        .Select(include => Path.GetFileNameWithoutExtension(include.Replace('\\', '/').Split('/')[^1]))
+        .Select(name => rings.FirstOrDefault(candidate => Path.GetFileName(candidate.Path.TrimEnd('/')) == name)?.Name ?? name)
+        .Distinct(StringComparer.Ordinal)
+        .Order(StringComparer.Ordinal)
+        .ToArray();
+    if (!references.SequenceEqual(ring.Reach.Order(StringComparer.Ordinal), StringComparer.Ordinal))
+    {
+        string relative = binder.Relative(projectFile);
+        all.Add(new Finding(relative, 0, ring.Name, "table", ring.Name,
+            $"reaches [{string.Join(", ", ring.Reach)}] but references [{string.Join(", ", references)}]", ""));
+    }
+}
+
+all = all
     .OrderBy(finding => finding.Path, StringComparer.Ordinal)
     .ThenBy(finding => finding.Line)
     .ToList();
@@ -866,6 +1059,57 @@ List<Finding> all = bags.SelectMany(bag => bag)
 JsonSerializerOptions options = new() { WriteIndented = false };
 File.WriteAllText(outputPath, JsonSerializer.Serialize(all, options));
 return 0;
+
+static IEnumerable<ISymbol> PublicOf(INamedTypeSymbol type)
+{
+    foreach (ISymbol member in type.GetMembers())
+    {
+        yield return member;
+        if (member is INamedTypeSymbol { DeclaredAccessibility: Accessibility.Public } nested)
+        {
+            foreach (ISymbol deeper in PublicOf(nested))
+            {
+                yield return deeper;
+            }
+        }
+    }
+}
+
+static IEnumerable<INamedTypeSymbol> SignatureOf(ISymbol member)
+{
+    IEnumerable<ITypeSymbol> types = member switch
+    {
+        IMethodSymbol { AssociatedSymbol: null } method =>
+            method.Parameters.Select(parameter => parameter.Type).Prepend(method.ReturnType),
+        IPropertySymbol property => property.Parameters.Select(parameter => parameter.Type).Prepend(property.Type),
+        IEventSymbol handler => [handler.Type],
+        IFieldSymbol field => [field.Type],
+        INamedTypeSymbol nested => nested.BaseType is null ? nested.Interfaces : nested.Interfaces.Prepend(nested.BaseType),
+        _ => [],
+    };
+    Stack<ITypeSymbol> pending = new(types);
+    while (pending.Count > 0)
+    {
+        ITypeSymbol type = pending.Pop();
+        if (type is IArrayTypeSymbol array)
+        {
+            pending.Push(array.ElementType);
+        }
+        else if (type is INamedTypeSymbol named)
+        {
+            yield return named.OriginalDefinition;
+            foreach (ITypeSymbol argument in named.TypeArguments)
+            {
+                pending.Push(argument);
+            }
+        }
+    }
+}
+
+static string[] Strings(JsonElement element) => element.EnumerateArray().Select(item => item.GetString()!).ToArray();
+
+static Dictionary<string, string[]> Map(JsonElement element) => element.EnumerateObject()
+    .ToDictionary(item => item.Name, item => Strings(item.Value), StringComparer.Ordinal);
 
 sealed record Ring(string Name, string Path, string[] Reach, string[] Frame, bool Pure, bool Cut);
 
@@ -886,6 +1130,7 @@ function Write-AuditHelper {
     $encoding = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($projectPath, $script:HelperProject.Replace('{TARGET_FRAMEWORK}', $TargetFramework), $encoding)
     [System.IO.File]::WriteAllText($programPath, $script:HelperProgram, $encoding)
+    [System.IO.File]::WriteAllText((Join-Path $HelperFolder 'AuditBinder.cs'), $script:BinderSource, $encoding)
     return $projectPath
 }
 
@@ -901,7 +1146,7 @@ function Get-HelperCacheFolder {
 
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try {
-        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $TargetFramework + "`n" + $SdkVersion
+        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $script:BinderSource + "`n" + $TargetFramework + "`n" + $SdkVersion
         $digest = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($seed))
     }
     finally {
@@ -916,7 +1161,6 @@ function Invoke-AuditHelper {
     param(
         [Parameter(Mandatory = $true)][string]$ProjectRoot,
         [Parameter(Mandatory = $true)][string]$ConfigPath,
-        [Parameter(Mandatory = $true)][string[]]$SourcePaths,
         [Parameter(Mandatory = $true)][string]$ProjectName
     )
 
@@ -925,7 +1169,10 @@ function Invoke-AuditHelper {
         throw 'The .NET SDK is required, but dotnet was not found on PATH.'
     }
 
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $sdkOutput = & $dotnet.Source --version 2>&1
+    $ErrorActionPreference = $nativePreference
     if ($LASTEXITCODE -ne 0) {
         throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
     }
@@ -961,18 +1208,22 @@ function Invoke-AuditHelper {
             $projectPath = Write-AuditHelper -HelperFolder $helperFolder -TargetFramework $targetFramework
             $buildArguments = @('build', $projectPath, '--configuration', 'Release', '--nologo', '--verbosity', 'quiet',
                 '--output', (Join-Path $cacheFolder 'bin'))
+            $nativePreference = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'
             $buildOutput = & $dotnet.Source @buildArguments 2>&1
+            $ErrorActionPreference = $nativePreference
             if ($LASTEXITCODE -ne 0) {
                 Remove-Item -LiteralPath $cacheFolder -Recurse -Force -ErrorAction SilentlyContinue
                 throw "The structure binder could not be built.`n$($buildOutput -join [Environment]::NewLine)"
             }
         }
 
-        $manifestPath = Join-Path $temporaryFolder 'sources.txt'
         $outputPath = Join-Path $temporaryFolder 'findings.json'
-        [System.IO.File]::WriteAllLines($manifestPath, $SourcePaths, [System.Text.UTF8Encoding]::new($false))
 
-        $helperOutput = & $dotnet.Source $binaryPath $ConfigPath $ProjectRoot $manifestPath $outputPath 2>&1
+        $nativePreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        $helperOutput = & $dotnet.Source $binaryPath $ConfigPath $ProjectRoot (Join-Path $PSScriptRoot 'auditbinder.json') $outputPath 2>&1
+        $ErrorActionPreference = $nativePreference
         if ($LASTEXITCODE -ne 0) {
             throw "The structure binder failed.`n$($helperOutput -join [Environment]::NewLine)"
         }
@@ -1026,10 +1277,10 @@ if ($ringed.Count -eq 0) {
 }
 
 $auditedFiles = $ringed.Count
-Write-AuditLine "Source files: $auditedFiles" -ForegroundColor DarkGray
+Write-AuditLine ("Scanned: {0:N0} source files inside a ring" -f $auditedFiles) -ForegroundColor DarkGray
 
 $findings = New-Object 'System.Collections.Generic.List[object]'
-foreach ($finding in (Invoke-AuditHelper -ProjectRoot $projectRoot -ConfigPath $configPath -SourcePaths $ringed.ToArray() -ProjectName ([string]$config.project))) {
+foreach ($finding in (Invoke-AuditHelper -ProjectRoot $projectRoot -ConfigPath $configPath -ProjectName ([string]$config.project))) {
     [void]$findings.Add([pscustomobject]@{
         Path   = [string]$finding.Path
         Line   = [int]$finding.Line
@@ -1072,12 +1323,13 @@ foreach ($check in $script:CheckOrder) {
 
 $checkIndex = { [array]::IndexOf($script:CheckOrder, $_.Check) }
 $live = @($findings | Where-Object { -not $_.Exempt })
-$violations = @($live | Where-Object { $severityOf[$_.Check] -eq 'violation' } | Sort-Object -Property @{ Expression = $checkIndex }, Ring, Target, Path, Line, Name)
-$reviews = @($live | Where-Object { $severityOf[$_.Check] -eq 'review' } | Sort-Object -Property @{ Expression = $checkIndex }, Ring, Target, Path, Line, Name)
-$staleExempt = @($exemptRows | Where-Object { $_.Used -eq 0 } | Sort-Object Path, Name)
+$violations = @($live | Where-Object { $severityOf[$_.Check] -eq 'violation' } | Sort-Object -Property @{ Expression = $checkIndex }, @{ Expression = { Get-OrdinalKey $_.Ring } }, @{ Expression = { Get-OrdinalKey $_.Target } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Name } })
+$reviews = @($live | Where-Object { $severityOf[$_.Check] -eq 'review' } | Sort-Object -Property @{ Expression = $checkIndex }, @{ Expression = { Get-OrdinalKey $_.Ring } }, @{ Expression = { Get-OrdinalKey $_.Target } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Name } })
+$staleExempt = @($exemptRows | Where-Object { $_.Used -eq 0 } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Path } }, @{ Expression = { Get-OrdinalKey $_.Name } })
 
-# A pair is one check from one ring to one target. Its count is the number of files that hold it,
-# and a violating pair is held to the ceiling written for it, an unwritten ceiling being zero.
+# A pair is one check from one ring to one target. Its count is the number of distinct hits, one
+# per file, line, check, target and name, as in the convention tests. A violating pair is held to
+# the ceiling written for it, an unwritten ceiling being zero.
 $pairs = New-Object 'System.Collections.Generic.List[object]'
 foreach ($group in ($live | Group-Object -Property Check, Ring, Target)) {
     $first = $group.Group[0]
@@ -1118,9 +1370,9 @@ foreach ($property in $config.ceilings.PSObject.Properties) {
     }
 }
 
-$pairs = @($pairs | Sort-Object -Property @{ Expression = { [array]::IndexOf($script:CheckOrder, $_.Check) } }, Ring, Target)
-$overCeiling = @($pairs | Where-Object { $_.Severity -eq 'violation' -and $_.Files -gt $_.Ceiling })
-$staleCeiling = @($pairs | Where-Object { $_.Ceiling -gt 0 -and ($_.Severity -ne 'violation' -or $_.Files -lt $_.Ceiling) })
+$pairs = @($pairs | Sort-Object -Property @{ Expression = { [array]::IndexOf($script:CheckOrder, $_.Check) } }, @{ Expression = { Get-OrdinalKey $_.Ring } }, @{ Expression = { Get-OrdinalKey $_.Target } })
+$overCeiling = @($pairs | Where-Object { $_.Severity -eq 'violation' -and $_.Lines -gt $_.Ceiling })
+$staleCeiling = @($pairs | Where-Object { $_.Ceiling -gt 0 -and ($_.Severity -ne 'violation' -or $_.Lines -lt $_.Ceiling) })
 
 $reportFolder = Join-AuditPath -ProjectRoot $projectRoot -Relative $config.report.directory
 if (-not (Test-Path -LiteralPath $reportFolder -PathType Container)) {
@@ -1170,6 +1422,8 @@ foreach ($ring in $config.rings) {
 foreach ($check in $script:CheckOrder) {
     [void]$report.Add("| ``$check`` | $($script:CheckTitles[$check]) | $($severityOf[$check]) | $($counts[$check]) |")
 }
+$countTotal = ($script:CheckOrder | ForEach-Object { $counts[$_] } | Measure-Object -Sum).Sum
+[void]$report.Add("| Total | | | $countTotal |")
 
 [void]$report.Add('')
 [void]$report.Add('## Pairs')
@@ -1182,9 +1436,9 @@ else {
     [void]$report.Add('|---|---|---|---|---|---|---|')
     foreach ($pair in $pairs) {
         $standing = if ($pair.Severity -ne 'violation') { $pair.Severity }
-            elseif ($pair.Files -gt $pair.Ceiling) { 'above ceiling' }
-            elseif ($pair.Files -lt $pair.Ceiling) { 'stale ceiling' }
-            elseif ($pair.Files -eq 0) { 'clean' }
+            elseif ($pair.Lines -gt $pair.Ceiling) { 'above ceiling' }
+            elseif ($pair.Lines -lt $pair.Ceiling) { 'stale ceiling' }
+            elseif ($pair.Lines -eq 0) { 'clean' }
             else { 'at ceiling' }
         [void]$report.Add("| ``$($pair.Check)`` | ``$($pair.Ring)`` | ``$($pair.Target)`` | $($pair.Files) | $($pair.Lines) | $($pair.Ceiling) | $standing |")
     }
@@ -1200,7 +1454,7 @@ if ($named.Count -eq 0) {
 else {
     [void]$report.Add('| Name | Target | Lines | Files | Heaviest check |')
     [void]$report.Add('|---|---|---|---|---|')
-    $groups = @($named | Group-Object -Property Name, Target | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, Name)
+    $groups = @($named | Group-Object -Property Name, Target | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } })
     foreach ($group in $groups) {
         $first = $group.Group[0]
         $heaviest = @($group.Group | Sort-Object -Property @{ Expression = $checkIndex } | Select-Object -First 1).Check
@@ -1212,7 +1466,7 @@ else {
 [void]$report.Add('')
 [void]$report.Add('## Files')
 [void]$report.Add('')
-$fileGroups = @($named | Group-Object -Property Path | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, Name)
+$fileGroups = @($named | Group-Object -Property Path | Sort-Object -Property @{ Expression = { $_.Count }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } })
 if ($fileGroups.Count -eq 0) {
     [void]$report.Add('No file stepped past its ring.')
 }
@@ -1235,7 +1489,7 @@ if ($exemptRows.Count -eq 0) {
 else {
     [void]$report.Add('| File | Name | Cleared |')
     [void]$report.Add('|---|---|---|')
-    foreach ($row in ($exemptRows | Sort-Object Path, Name)) {
+    foreach ($row in ($exemptRows | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Path } }, @{ Expression = { Get-OrdinalKey $_.Name } })) {
         [void]$report.Add("| ``$($row.Path)`` | ``$($row.Name)`` | $($row.Used) |")
     }
 }
@@ -1265,16 +1519,16 @@ $violationReport = New-Object 'System.Collections.Generic.List[string]'
 [void]$violationReport.Add('')
 [void]$violationReport.Add('## Ceilings')
 [void]$violationReport.Add('')
-$held = @($pairs | Where-Object { $_.Severity -eq 'violation' -and ($_.Files -gt 0 -or $_.Ceiling -gt 0) })
+$held = @($pairs | Where-Object { $_.Severity -eq 'violation' -and ($_.Lines -gt 0 -or $_.Ceiling -gt 0) })
 if ($held.Count -eq 0) {
     [void]$violationReport.Add('No violating pair was found and no ceiling is written.')
 }
 else {
-    [void]$violationReport.Add('| Pair | Files | Ceiling | Standing |')
+    [void]$violationReport.Add('| Pair | Hits | Ceiling | Standing |')
     [void]$violationReport.Add('|---|---|---|---|')
     foreach ($pair in $held) {
-        $standing = if ($pair.Files -gt $pair.Ceiling) { 'above ceiling' } elseif ($pair.Files -lt $pair.Ceiling) { 'stale ceiling' } else { 'at ceiling' }
-        [void]$violationReport.Add("| ``$($pair.Key)`` | $($pair.Files) | $($pair.Ceiling) | $standing |")
+        $standing = if ($pair.Lines -gt $pair.Ceiling) { 'above ceiling' } elseif ($pair.Lines -lt $pair.Ceiling) { 'stale ceiling' } else { 'at ceiling' }
+        [void]$violationReport.Add("| ``$($pair.Key)`` | $($pair.Lines) | $($pair.Ceiling) | $standing |")
     }
 }
 
@@ -1329,38 +1583,53 @@ $violationTemporary = $violationPath + '.tmp'
 [System.IO.File]::Copy($violationTemporary, $violationPath, $true)
 Remove-Item -LiteralPath $reportTemporary, $violationTemporary -Force
 
-Write-AuditLine "Structure audit $version"
-Write-AuditLine "  Files audited      : $auditedFiles"
-foreach ($check in $script:CheckOrder) {
-    $label = $check.PadRight(19)
-    Write-AuditLine "  ${label}: $($counts[$check]) [$($severityOf[$check])]"
+Write-AuditLine ''
+Write-AuditLine 'Counters'
+Write-AuditLine '--------'
+Write-AuditLine ("Above ceiling   {0:N0}" -f $overCeiling.Count)
+Write-AuditLine ("Stale ceilings  {0:N0}" -f $staleCeiling.Count)
+
+Write-AuditSection -Title 'Findings by check'
+$checkRows = @($script:CheckOrder | ForEach-Object { , @($_, $severityOf[$_], $counts[$_].ToString('N0')) })
+$checkRows += , @('Total', '', $countTotal.ToString('N0'))
+Write-AuditTable -Header @('Check', 'Severity', 'Findings') -Rows $checkRows
+
+$shownPairs = @($pairs | Where-Object { $_.Severity -ne 'allow' })
+if ($shownPairs.Count -gt 0) {
+    Write-AuditSection -Title "Pairs ($($shownPairs.Count.ToString('N0')))"
+    $pairRows = @($shownPairs | ForEach-Object {
+        $standing = if ($_.Severity -eq 'review') { 'review' }
+            elseif ($_.Lines -gt $_.Ceiling) { 'above ceiling' }
+            elseif ($_.Lines -lt $_.Ceiling) { 'stale ceiling' }
+            else { 'at ceiling' }
+        , @($_.Key, $_.Files.ToString('N0'), $_.Lines.ToString('N0'), $_.Ceiling.ToString('N0'), $standing)
+    })
+    Write-AuditTable -Header @('Pair', 'Files', 'Lines', 'Ceiling', 'Standing') -Rows $pairRows
+}
+
+if ($reviews.Count -gt 0) {
+    Write-AuditSection -Title "Review items ($($reviews.Count.ToString('N0')))"
+    foreach ($finding in $reviews) {
+        Write-AuditLine "$($finding.Path):$($finding.Line) $($finding.Check) $($finding.Name)"
+    }
+}
+
+if ($staleExempt.Count -gt 0) {
+    Write-AuditSection -Title "Stale exemptions ($($staleExempt.Count.ToString('N0')))"
+    foreach ($row in $staleExempt) {
+        Write-AuditLine "$($row.Path) $($row.Name)"
+    }
 }
 
 Write-AuditLine ''
-Write-AuditLine '  Pair                                              Files  Lines  Ceiling  Standing'
-foreach ($pair in ($pairs | Where-Object { $_.Severity -ne 'allow' })) {
-    $standing = if ($pair.Severity -eq 'review') { 'review' }
-        elseif ($pair.Files -gt $pair.Ceiling) { 'ABOVE CEILING' }
-        elseif ($pair.Files -lt $pair.Ceiling) { 'STALE CEILING' }
-        else { 'at ceiling' }
-    $color = if ($standing -eq 'ABOVE CEILING' -or $standing -eq 'STALE CEILING') { 'Red' } elseif ($standing -eq 'review') { 'Yellow' } else { 'Gray' }
-    Write-AuditLine ("  {0,-49} {1,5}  {2,5}  {3,7}  {4}" -f $pair.Key, $pair.Files, $pair.Lines, $pair.Ceiling, $standing) -ForegroundColor $color
-}
-
-Write-AuditLine ''
-Write-AuditLine "  Violations         : $($violations.Count)"
-Write-AuditLine "  Review items       : $($reviews.Count)"
-Write-AuditLine "  Above ceiling      : $($overCeiling.Count)"
-Write-AuditLine "  Stale ceilings     : $($staleCeiling.Count)"
-Write-AuditLine "  Stale exemptions   : $($staleExempt.Count)"
-Write-AuditLine "  Report             : $reportPath"
-Write-AuditLine "  Violations report  : $violationPath"
+Write-AuditLine "Report: $reportPath"
+Write-AuditLine "Report: $violationPath"
 
 if ($Open) {
     Start-Process -FilePath $violationPath | Out-Null
 }
 
-if ($overCeiling.Count -gt 0 -or $staleCeiling.Count -gt 0) {
+if ($overCeiling.Count -gt 0 -or $staleCeiling.Count -gt 0 -or $staleExempt.Count -gt 0) {
     exit 1
 }
 

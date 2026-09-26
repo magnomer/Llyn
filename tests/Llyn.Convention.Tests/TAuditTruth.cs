@@ -7,14 +7,17 @@ namespace Convention.Tests;
 
 public sealed class TAuditTruth
 {
-    private static readonly Lazy<IReadOnlyList<TViolation>> TAuditTruthHits = new(TAuditTruthRead);
+    private const string TAuditTruthAudit = "AUDITTRUTH";
+
+    private static readonly Lazy<(IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditSources)>
+        TAuditTruthHits = new(TAuditTruthRead);
 
     private static readonly Lazy<string> TAuditTruthWritten = new(TAuditReportSave);
 
     private static readonly string[] TAuditTruthKinds =
-        ["Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Taint"];
+        ["Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Glyph", "Taint", "Feed", "Parity"];
 
-    private static readonly string[] TAuditLineKinds = ["Mutation", "Treat", "Taint"];
+    private static readonly string[] TAuditLineKinds = ["Mutation", "Treat", "Glyph", "Taint", "Feed", "Parity"];
 
     private readonly ITestOutputHelper _tAuditOutput;
 
@@ -24,81 +27,96 @@ public sealed class TAuditTruth
     }
 
     [Fact]
-    public void AuditTruth_DeportmentFields_ReachNoRequest()
+    public void AuditTruth_DriverFields_ReachNoRequest()
     {
-        TAuditTruthCheck("Argument", "deportment field(s) carry a value into an engine request");
-        TAuditTruthCheck("Guard", "deportment field(s) decide an engine request");
+        TAuditTruthCheck("Argument", "driver value(s) carried into a request");
+        TAuditTruthCheck("Guard", "driver value(s) or answer(s) decide a request");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentFields_KeepOneWriter()
+    public void AuditTruth_DriverFields_KeepOneWriter()
     {
-        TAuditTruthCheck("Fork", "deportment field(s) are written by the engine and by the deportment");
+        TAuditTruthCheck("Fork", "driver field(s) written by the engine and by the driver");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentFields_HoldNoLogic()
+    public void AuditTruth_DriverFields_HoldNoEngine()
     {
-        TAuditTruthCheck("Mirror", "deportment field(s) hold a logic value");
+        TAuditTruthCheck("Mirror", "driver field(s) hold a value from below Conduct");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentSources_MutateNoLogic()
+    public void AuditTruth_DriverSources_MutateNoLogic()
     {
-        TAuditTruthCheck("Mutation", "deportment line(s) assign a logic member");
+        TAuditTruthCheck("Mutation", "driver line(s) assign a logic member");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentShape_DrivesNoRequest()
+    public void AuditTruth_DriverShape_DrivesNoRequest()
     {
-        TAuditTruthCheck("Shape", "deportment control(s), timer(s) or handler(s) drive a request");
+        TAuditTruthCheck("Shape", "driver control(s), clock(s), handler(s) or second request(s)");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentSources_TreatNoData()
+    public void AuditTruth_DriverSources_TreatNoData()
     {
-        TAuditTruthCheck("Treat", "deportment line(s) compute over logic values");
+        TAuditTruthCheck("Treat", "driver line(s) compute over a value from below Conduct");
     }
 
     [Fact]
-    public void AuditTruth_DeportmentLocals_CarryNoData()
+    public void AuditTruth_DriverNames_HoldNoGlyph()
     {
-        TAuditTruthCheck("Taint", "deportment line(s) compute over a carried logic value or control text");
+        TAuditTruthCheck("Glyph", "driver identifier(s) carry a non-ASCII glyph");
     }
 
     [Fact]
-    public void AuditTruth_Ceiling_MatchesHits()
+    public void AuditTruth_DriverLocals_CarryNoData()
     {
-        List<string> stale = [];
-        foreach ((string kind, int ceiling) in TAuditTruthSetting.TAuditTruthCeiling)
-        {
-            int count = TAuditKindRead(kind);
-            if (count < ceiling)
-            {
-                stale.Add($"  {kind}: {count} hit(s), ceiling {ceiling}");
-            }
-        }
-
-        Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITTRUTH",
-            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+        TAuditTruthCheck("Taint", "driver line(s) compute over a carried value or medium input");
     }
 
-    private static int TAuditKindRead(string kind)
+    [Fact]
+    public void AuditTruth_DriverSources_FeedNoDeeperType()
     {
-        return TAuditTruthHits.Value.Count(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
+        TAuditTruthCheck("Feed", "driver line(s) hand the surface a type from below the cut");
+    }
+
+    [Fact]
+    public void AuditTruth_DriverGates_MatchAcrossMedia()
+    {
+        TAuditTruthCheck("Parity", "driver line(s) reach a Conduct member or port the other driver lacks");
+    }
+
+    [Fact]
+    public void AuditTruth_Ledger_MatchesHits()
+    {
+        TAuditLedger.TAuditStaleCheck(
+            TAuditTruthAudit, TAuditTruthSetting.TAuditLedgerFile, TAuditTruthKinds, TAuditTruthHits.Value.TAuditHits);
+    }
+
+    [Fact]
+    public void AuditTruth_Sources_WalkEveryFile()
+    {
+        TAuditBinder.TAuditCoverCheck(TAuditTruthAudit, TAuditTruthHits.Value.TAuditSources);
     }
 
     private void TAuditTruthCheck(string kind, string summary)
     {
-        int count = TAuditKindRead(kind);
-        int ceiling = TAuditTruthSetting.TAuditTruthCeiling.GetValueOrDefault(kind);
         string report = TAuditTruthWritten.Value;
-        _tAuditOutput.WriteLine($"AUDITTRUTH {kind}: {count} {summary}, ceiling {ceiling}. Report: {report}");
+        int count = TAuditLedger.TAuditLedgerCheck(
+            TAuditTruthAudit,
+            TAuditTruthSetting.TAuditLedgerFile,
+            kind,
+            TAuditTruthHits.Value.TAuditHits,
+            TAuditTruthSetting.TAuditTruthEnforced,
+            summary);
+        _tAuditOutput.WriteLine($"{TAuditTruthAudit} {kind}: {count} {summary}. Report: {report}");
+    }
 
-        Assert.True(!TAuditTruthSetting.TAuditTruthEnforced || count <= ceiling, TAuditConvention.TAuditReportFormat(
-            "AUDITTRUTH",
-            $"{count} {summary}, above the ceiling of {ceiling}. See {report}"));
+    private static int TAuditKindRead(string kind)
+    {
+        return TAuditTruthHits.Value.TAuditHits.Count(hit =>
+            string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
     }
 
     private static string TAuditReportSave()
@@ -107,10 +125,10 @@ public sealed class TAuditTruth
         string version = TAuditSource.TAuditVersionRead(repoRoot);
         string path = Path.Combine(repoRoot, string.Format(TAuditTruthSetting.TAuditTruthReport, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        IReadOnlyList<TViolation> hits = TAuditTruthHits.Value;
+        IReadOnlyList<TViolation> hits = TAuditTruthHits.Value.TAuditHits;
 
         StringBuilder text = new();
-        text.AppendLine($"# Deportment audit {version}");
+        text.AppendLine($"# Driver audit {version}");
         text.AppendLine();
         text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
         text.AppendLine($"- Enforced: {TAuditTruthSetting.TAuditTruthEnforced}");
@@ -140,14 +158,10 @@ public sealed class TAuditTruth
             text.AppendLine($"## {kind}");
             text.AppendLine();
             foreach (TViolation hit in hits
+                         .Where(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal))
                          .OrderBy(hit => hit.TViolationPath, StringComparer.Ordinal)
                          .ThenBy(hit => hit.TViolationLine))
             {
-                if (!string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
                 text.AppendLine(
                     $"- `{hit.TViolationPath}:{hit.TViolationLine}` `{hit.TViolationName}` {hit.TViolationReason}");
             }
@@ -157,22 +171,22 @@ public sealed class TAuditTruth
         return Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
     }
 
-    private static IReadOnlyList<TViolation> TAuditTruthRead()
+    private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditSources) TAuditTruthRead()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         TAuditScope scope = new(
             [],
-            TAuditTruthSetting.TAuditShellInclude,
+            TAuditTruthSetting.TAuditTruthInclude,
             TAuditNameSetting.TAuditExcludedSegments,
             TAuditNameSetting.TAuditExcludedSuffixes,
             TAuditNameSetting.TAuditExcludedPrefixes,
             []);
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
         Assert.True(sources.Count > 0, TAuditConvention.TAuditReportFormat(
-            "AUDITTRUTH", $"No tracked file matches {string.Join(' ', TAuditTruthSetting.TAuditShellInclude)}."));
+            TAuditTruthAudit, $"No tracked file matches {string.Join(' ', TAuditTruthSetting.TAuditTruthInclude)}."));
 
         IReadOnlySet<ISymbol> readers = TAuditTruthWalker.TAuditReaderRead(sources);
-        return TAuditTruthWalker.TAuditRun(sources)
+        List<TViolation> hits = TAuditTruthWalker.TAuditRun(sources)
             .Concat(TAuditTreatWalker.TAuditRun(sources))
             .Concat(TAuditTaintWalker.TAuditRun(sources, readers))
             .Select(hit => hit with
@@ -180,5 +194,6 @@ public sealed class TAuditTruth
                 TViolationPath = Path.GetRelativePath(repoRoot, hit.TViolationPath).Replace('\\', '/')
             })
             .ToList();
+        return (hits, sources);
     }
 }

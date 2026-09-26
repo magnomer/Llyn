@@ -2,7 +2,8 @@ namespace Convention.Tests;
 
 internal static class TAuditChainSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
+    public const string TAuditChainHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainReach = new Dictionary<string, string[]>
     {
@@ -24,12 +25,6 @@ internal static class TAuditChainSetting
         "Llyn.UIDeportment",
         "Llyn.UIDemeanor",
         "Llyn.UITerminal",
-    ];
-
-    public static readonly string[] TAuditChainRoot =
-    [
-        "src/Llyn.Host/LHost.cs",
-        "src/Llyn.Infrastructure/LRigFactory.cs",
     ];
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainSurface = new Dictionary<string, string[]>
@@ -71,17 +66,25 @@ internal static class TAuditChainSetting
         ["Llyn.Core"] = [@"^LRequest"],
     };
 
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditChainBanned = new Dictionary<string, string[]>
+    {
+        ["src/Llyn.ShellEngine"] = ["LVaultSessionStart"],
+    };
+
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 7,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 49,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 27,
-        ["cross:Llyn.UIVeneer>Llyn.Application"] = 27,
-        ["cross:Llyn.UIVeneer>Llyn.Core"] = 129,
-        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 2,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 2,
-        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 2,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 2,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 44,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 754,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 659,
+        ["cross:Llyn.UIVeneer>Llyn.Application"] = 128,
+        ["cross:Llyn.UIVeneer>Llyn.Core"] = 1330,
+        ["cross:Llyn.UIVeneer>Llyn.ShellEngine"] = 14,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 34,
+        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 9,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 34,
+        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 9,
+        ["reach:Llyn.Conduct>Llyn.Core"] = 1,
+        ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
     };
 
     public static readonly string[] TAuditChainWaiver = [];

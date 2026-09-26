@@ -5,7 +5,7 @@
 The seam that writes one entry's etymology when the entry is saved.
 It is where the two shapes are decided between, since only one of them may be stored.
 
-## `public static void LEtymologyUpdate(LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionChange>? changes)`
+## `public static void LEtymologyUpdate(LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionDelta>? changes)`
 
 Writes the draft's etymology and clears whichever shape the draft did not end in.
 A narrative wins when the prose is written, otherwise the links win when there are any.

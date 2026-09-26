@@ -16,12 +16,15 @@ the sources with Roslyn, binds the tests against them, and records who reads eve
       Tested  only tests read it
 
 A member read only by other fake members is fake too, so a whole dead chain is reported, not
-just its head. The console prints the counters and the first rows of each kind; a Markdown
+just its head. A non-static class is tracked as well, though never reported: markup naming it as
+an element, a construction or a live subclass keeps it live, and a read inside a constructor or a
+field initializer belongs to the class. Markup is read as XML: attribute names and values and
+element names, never comments. These are the rules of the convention test TAuditFake. The console prints the counters and the first rows of each kind; a Markdown
 report with every hit is written to {report.directory}\{prefix}{version}.md.
 
-Binding uses the .NET SDK's own Roslyn, the shared frameworks listed in the configuration and
-the package assemblies of the latest build output. Build the solution first so the generated
-markup classes and the package assemblies exist.
+Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
+sources, the generated code of every project and the host build output, with no compile error
+allowed. Build the solution first so the generated markup classes and the package assemblies exist.
 
 Everything project-specific lives in auditfake.json next to this script. No project source is
 modified. Git and the .NET SDK are required.
@@ -53,7 +56,7 @@ auditfake -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows of each kind, open the report.
 #>
 #requires -Version 5.1
-# AUDITFAKE GENERATION 11 - auditfake.ps1.
+# AUDITFAKE GENERATION 12 - auditfake.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -63,6 +66,9 @@ Write the report elsewhere, show ten rows of each kind, open the report.
 # and each refuses a configuration written at another generation.
 # Generation 11: the first generation of this audit. It binds the sources and the tests with Roslyn
 # and reports every member nothing live reads as Orphan, or only tests read as Tested.
+# Generation 12: the audit applies the rules of the convention test: class liveness, construction
+# as a use, holder ownership inside constructors and initializers, XML markup reading, and the
+# shared binder with no compile error.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -106,7 +112,7 @@ KINDS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -124,6 +130,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -191,8 +204,6 @@ function Read-AuditConfig {
         'generation', 'project',
         'sources.roots', 'sources.tests', 'sources.extensions', 'sources.markup',
         'sources.excludeSegments', 'sources.excludeSuffixes', 'sources.excludePrefixes',
-        'generated.roots', 'generated.configuration',
-        'references.frameworks', 'references.build',
         'implicitUsings',
         'console.top',
         'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix'
@@ -239,7 +250,7 @@ function Read-ProjectVersion {
 }
 
 function Test-ExcludedRelativePath {
-    param([string]$RelativePath, $Config, [string[]]$Extensions, [switch]$KeepGenerated)
+    param([string]$RelativePath, $Config, [string[]]$Extensions)
 
     $segments = $RelativePath -split '[\\/]'
     foreach ($segment in $segments) {
@@ -252,10 +263,6 @@ function Test-ExcludedRelativePath {
     $extension = [System.IO.Path]::GetExtension($fileName)
     if (-not ($Extensions -contains $extension)) {
         return $true
-    }
-
-    if ($KeepGenerated) {
-        return $false
     }
 
     foreach ($suffix in $Config.sources.excludeSuffixes) {
@@ -287,7 +294,10 @@ function Get-TrackedFiles {
 
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
         'ls-files', '--cached', '--others', '--exclude-standard', '--') + @($Roots)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
+    $ErrorActionPreference = $nativePreference
     if ($LASTEXITCODE -ne 0) {
         throw "Git could not enumerate source files.`n$($gitOutput -join [Environment]::NewLine)"
     }
@@ -309,56 +319,7 @@ function Get-TrackedFiles {
         }
     }
 
-    return @($files.ToArray() | Sort-Object -Unique)
-}
-
-function Get-LatestFolder {
-    param([string]$Folder)
-
-    if (-not (Test-Path -LiteralPath $Folder -PathType Container)) {
-        return $null
-    }
-
-    return Get-ChildItem -LiteralPath $Folder -Directory |
-        Sort-Object LastWriteTimeUtc -Descending |
-        Select-Object -First 1
-}
-
-function Get-GeneratedFiles {
-    param([string]$ProjectRoot, $Config)
-
-    $files = New-Object 'System.Collections.Generic.List[string]'
-    foreach ($root in $Config.generated.roots) {
-        $folder = Join-Path (Join-Path (Join-Path $ProjectRoot $root) 'obj') $Config.generated.configuration
-        $target = Get-LatestFolder -Folder $folder
-        if ($null -eq $target) {
-            continue
-        }
-
-        Get-ChildItem -LiteralPath $target.FullName -Filter '*.cs' -File -Recurse |
-            Where-Object { $_.Name -notlike '*_wpftmp*' -and $_.Name -notlike '*.g.i.cs' } |
-            ForEach-Object { $files.Add($_.FullName) }
-    }
-
-    return @($files.ToArray())
-}
-
-function Get-BuildReferences {
-    param([string]$ProjectRoot, $Config)
-
-    $folder = Join-Path (Join-Path (Join-Path $ProjectRoot $Config.references.build) 'bin') $Config.generated.configuration
-    $target = Get-LatestFolder -Folder $folder
-    if ($null -eq $target) {
-        throw "No build output under $folder; build the solution before the audit."
-    }
-
-    $project = [string]$Config.project
-    return @(Get-ChildItem -LiteralPath $target.FullName -Filter '*.dll' -File |
-        Where-Object {
-            $name = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
-            -not ($name -ieq $project -or $name.StartsWith($project + '.', [System.StringComparison]::OrdinalIgnoreCase))
-        } |
-        ForEach-Object { $_.FullName })
+    return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 }
 
 function Write-AuditHelper {
@@ -392,13 +353,14 @@ function Write-AuditHelper {
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-if (args.Length != 6)
+if (args.Length != 7)
 {
-    Console.Error.WriteLine("usage: <config> <root> <manifest> <version> <report> <top>");
+    Console.Error.WriteLine("usage: <config> <root> <manifest> <version> <report> <top> <binder>");
     return 2;
 }
 
@@ -408,10 +370,10 @@ string manifestPath = args[2];
 string version = args[3];
 string reportPath = args[4];
 int top = int.Parse(args[5]);
+string binderPath = args[6];
 
 JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
 string[] implicitUsings = config.GetProperty("implicitUsings").EnumerateArray().Select(item => item.GetString()!).ToArray();
-string[] frameworks = config.GetProperty("references").GetProperty("frameworks").EnumerateArray().Select(item => item.GetString()!).ToArray();
 
 Dictionary<char, List<string>> manifest = File.ReadAllLines(manifestPath)
     .Where(line => line.Length > 2)
@@ -422,68 +384,36 @@ List<string> Take(char tag) => manifest.TryGetValue(tag, out List<string>? list)
 CSharpParseOptions parseOptions = new(LanguageVersion.Preview, DocumentationMode.None, SourceCodeKind.Regular);
 SyntaxTree Parse(string path) => CSharpSyntaxTree.ParseText(File.ReadAllText(path), parseOptions, path);
 
-// The shared frameworks sit beside the runtime this helper runs on, under the same version folder.
-Dictionary<string, string> chosen = new(StringComparer.OrdinalIgnoreCase);
-string runtime = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-string shared = Path.GetDirectoryName(Path.GetDirectoryName(runtime)!)!;
-foreach (string pack in frameworks)
-{
-    string folder = Path.Combine(shared, pack, Path.GetFileName(runtime));
-    if (!Directory.Exists(folder))
-    {
-        Console.Error.WriteLine($"The shared framework '{pack}' is not installed at {folder}; its members stay unbound.");
-        continue;
-    }
-
-    foreach (string path in Directory.EnumerateFiles(folder, "*.dll"))
-    {
-        chosen.TryAdd(Path.GetFileNameWithoutExtension(path), path);
-    }
-}
-
-foreach (string path in Take('R'))
-{
-    chosen[Path.GetFileNameWithoutExtension(path)] = path;
-}
-
-List<MetadataReference> references = [];
-foreach (string path in chosen.Values)
-{
-    try
-    {
-        references.Add(MetadataReference.CreateFromFile(path));
-    }
-    catch (Exception exception) when (exception is IOException or BadImageFormatException)
-    {
-    }
-}
-
-List<SyntaxTree> tracked = Take('S').AsParallel().AsOrdered().Select(Parse).ToList();
-List<SyntaxTree> generated = Take('G').AsParallel().AsOrdered().Select(Parse).ToList();
-CSharpCompilation source = CSharpCompilation.Create(
-    "AuditFake",
-    tracked.Concat(generated),
-    references,
-    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true, nullableContextOptions: NullableContextOptions.Enable));
+AuditBinder binder = AuditBinder.Bind(projectRoot, binderPath);
+CSharpCompilation source = binder.Compilation;
 
 List<SyntaxTree> testTrees = Take('T').AsParallel().AsOrdered().Select(Parse).ToList();
 testTrees.Add(CSharpSyntaxTree.ParseText(string.Concat(implicitUsings.Select(space => $"global using {space};\n")), parseOptions));
 CSharpCompilation tests = CSharpCompilation.Create(
     "AuditFakeTests",
     testTrees,
-    references.Append(source.ToMetadataReference()),
+    source.References.Append(source.ToMetadataReference()),
     new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true, nullableContextOptions: NullableContextOptions.Enable));
 
 Regex word = new("[A-Za-z_][A-Za-z0-9_]*", RegexOptions.Compiled);
-HashSet<string> markup = Take('M')
-    .SelectMany(path => word.Matches(File.ReadAllText(path)).Select(match => match.Value))
+List<XElement> nodes = Take('M').SelectMany(path => XDocument.Load(path).Descendants()).ToList();
+HashSet<string> markup = nodes
+    .SelectMany(node => node.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
+    .SelectMany(attribute => word.Matches(attribute.Value).Select(match => match.Value).Append(attribute.Name.LocalName))
+    .Concat(nodes.Select(node => node.Name.LocalName[(node.Name.LocalName.LastIndexOf('.') + 1)..]))
+    .ToHashSet(StringComparer.Ordinal);
+HashSet<string> elements = nodes
+    .Select(node => node.Name.LocalName)
+    .Where(name => !name.Contains('.', StringComparison.Ordinal))
     .ToHashSet(StringComparer.Ordinal);
 
 Dictionary<string, Member> members = new(StringComparer.Ordinal);
-foreach (SyntaxTree tree in tracked)
+foreach (SyntaxTree tree in binder.Tracked)
 {
-    Fake.ScanMembers(source.GetSemanticModel(tree, true), projectRoot, members);
+    Fake.ScanMembers(source.GetSemanticModel(tree, true), binder, members);
 }
+
+Fake.AddLineage(source, members);
 
 HashSet<string> names = new(members.Values.Select(member => member.Name), StringComparer.Ordinal);
 HashSet<string> serialized = new(StringComparer.Ordinal);
@@ -499,36 +429,45 @@ foreach (SyntaxTree tree in tests.SyntaxTrees)
     Fake.ScanUses(tests.GetSemanticModel(tree, true), members, names, true);
 }
 
-Fake.MarkLive(members, markup, serialized);
+Fake.MarkLive(members, markup, elements, serialized);
 List<Hit> hits = members.Values
     .Where(member => !member.Live)
+    .Where(member => !member.Key.StartsWith(Fake.TypeMark, StringComparison.Ordinal))
     .Select(member => Fake.CreateHit(member, members))
     .OrderBy(hit => hit.Path, StringComparer.Ordinal)
     .ThenBy(hit => hit.Line)
     .ToList();
 
 string[] kinds = ["Orphan", "Tested"];
+Console.WriteLine();
+Console.WriteLine("Counters");
+Console.WriteLine("--------");
+foreach (string kind in kinds)
+{
+    Console.WriteLine($"{kind,-6}  {hits.Count(hit => hit.Kind == kind):N0}");
+}
+
 foreach (string kind in kinds)
 {
     List<Hit> ofKind = hits.Where(hit => hit.Kind == kind).ToList();
+    if (ofKind.Count == 0)
+    {
+        continue;
+    }
+
+    string heading = $"{kind} ({ofKind.Count:N0})";
     Console.WriteLine();
-    Console.WriteLine($"{kind}: {ofKind.Count}");
+    Console.WriteLine(heading);
+    Console.WriteLine(new string('-', heading.Length));
     foreach (Hit hit in ofKind.Take(top))
     {
-        Console.WriteLine($"  {hit.Path}:{hit.Line} {hit.Name}: {hit.Reason}");
+        Console.WriteLine($"{hit.Path}:{hit.Line} {hit.Name}: {hit.Reason}");
     }
 
     if (ofKind.Count > top)
     {
-        Console.WriteLine($"  ... {ofKind.Count - top} more in the report.");
+        Console.WriteLine($"... and {ofKind.Count - top:N0} more in the report.");
     }
-}
-
-Console.WriteLine();
-Console.WriteLine("Counters");
-foreach (string kind in kinds)
-{
-    Console.WriteLine($"  {kind,-7} {hits.Count(hit => hit.Kind == kind)}");
 }
 
 Console.WriteLine();
@@ -538,9 +477,10 @@ List<string> lines =
 [
     $"# AuditFake {version}",
     string.Empty,
-    $"Generated {DateTime.Now:yyyy-MM-dd HH:mm}. Members judged: {members.Count}.",
+    $"Generated {DateTime.Now:yyyy-MM-dd HH:mm}. Members judged: {members.Count(pair => !pair.Key.StartsWith(Fake.TypeMark, StringComparison.Ordinal))}.",
     string.Empty,
     "A member is live when a live reader, a constructor, an override, generated code, markup or the serializer reads it.",
+    "A class is tracked as well: markup naming it, a construction or a live subclass keeps it live, and its dead members with it.",
     "Orphan is read by nothing live. Tested is read only by tests.",
     string.Empty,
     "## Counters",
@@ -562,20 +502,27 @@ if (!string.IsNullOrWhiteSpace(reportFolder))
 }
 
 File.WriteAllText(reportPath, string.Join("\n", lines) + "\n", new UTF8Encoding(false));
-return 0;
+return hits.Count > 0 ? 3 : 0;
 
 internal static class Fake
 {
+    public const string TypeMark = "T:";
+
     private const string RootReader = "";
 
-    public static void ScanMembers(SemanticModel model, string projectRoot, Dictionary<string, Member> members)
+    public static void ScanMembers(SemanticModel model, AuditBinder binder, Dictionary<string, Member> members)
     {
-        string path = Path.GetRelativePath(projectRoot, model.SyntaxTree.FilePath).Replace('\\', '/');
+        string path = binder.Relative(model.SyntaxTree.FilePath);
         foreach (TypeDeclarationSyntax declaration in model.SyntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
         {
             if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol type || type.TypeKind == TypeKind.Enum)
             {
                 continue;
+            }
+
+            if (type is { TypeKind: TypeKind.Class, IsStatic: false })
+            {
+                Add(members, type, declaration, path, false);
             }
 
             if (declaration is RecordDeclarationSyntax { ParameterList: { } parameters })
@@ -602,6 +549,19 @@ internal static class Fake
         }
     }
 
+    public static void AddLineage(CSharpCompilation source, Dictionary<string, Member> members)
+    {
+        foreach (INamedTypeSymbol type in source.GetSymbolsWithName(_ => true, SymbolFilter.Type).OfType<INamedTypeSymbol>())
+        {
+            if (type.BaseType is { } parent
+                && members.TryGetValue(Key(parent), out Member? inherited)
+                && members.ContainsKey(Key(type)))
+            {
+                inherited.Readers.Add(Key(type));
+            }
+        }
+    }
+
     public static void ScanUses(SemanticModel model, Dictionary<string, Member> members, HashSet<string> names, bool test)
     {
         SyntaxNode root = model.SyntaxTree.GetRoot();
@@ -617,6 +577,14 @@ internal static class Fake
             foreach (ISymbol target in bound)
             {
                 AddUse(model, name, target, members, test);
+            }
+        }
+
+        foreach (SyntaxNode creation in root.DescendantNodes().Where(node => node is BaseObjectCreationExpressionSyntax or AttributeSyntax))
+        {
+            if (model.GetSymbolInfo(creation).Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor } built)
+            {
+                AddUse(model, creation, built.ContainingType, members, test);
             }
         }
 
@@ -650,7 +618,7 @@ internal static class Fake
         }
     }
 
-    public static void MarkLive(Dictionary<string, Member> members, HashSet<string> markup, HashSet<string> serialized)
+    public static void MarkLive(Dictionary<string, Member> members, HashSet<string> markup, HashSet<string> elements, HashSet<string> serialized)
     {
         Dictionary<string, List<Member>> dependents = new(StringComparer.Ordinal);
         Queue<Member> queue = new();
@@ -667,7 +635,8 @@ internal static class Fake
                 list.Add(member);
             }
 
-            if (markup.Contains(member.Name)
+            bool typed = member.Key.StartsWith(TypeMark, StringComparison.Ordinal);
+            if ((typed ? elements : markup).Contains(member.Name)
                 || serialized.Contains(member.Key)
                 || member.Readers.Any(reader => !members.ContainsKey(reader)))
             {
@@ -777,7 +746,7 @@ internal static class Fake
             return;
         }
 
-        string? owner = Owner(model, site);
+        string? owner = Owner(model, site, members);
         foreach (Member member in reached)
         {
             if (owner == member.Key || !IsRead(site, normal, member))
@@ -796,8 +765,6 @@ internal static class Fake
         }
     }
 
-    // A stored slot that is only assigned, incremented or passed out is written, not read.
-    // A field-like event is read only when a handler is added or removed.
     private static bool IsRead(SyntaxNode site, ISymbol target, Member member)
     {
         if (site is not ExpressionSyntax expression || target is IMethodSymbol)
@@ -844,7 +811,7 @@ internal static class Fake
         };
     }
 
-    private static string? Owner(SemanticModel model, SyntaxNode site)
+    private static string? Owner(SemanticModel model, SyntaxNode site, Dictionary<string, Member> members)
     {
         foreach (SyntaxNode ancestor in site.Ancestors())
         {
@@ -852,7 +819,15 @@ internal static class Fake
             {
                 case BaseMethodDeclarationSyntax or BasePropertyDeclarationSyntax:
                 case VariableDeclaratorSyntax { Parent.Parent: BaseFieldDeclarationSyntax }:
-                    return model.GetDeclaredSymbol(ancestor) is ISymbol owner ? Key(owner) : null;
+                    if (model.GetDeclaredSymbol(ancestor) is not ISymbol owner)
+                    {
+                        return null;
+                    }
+
+                    string key = Key(owner);
+                    string? holder = owner.ContainingType is { } type ? Key(type) : null;
+                    bool root = owner is IMethodSymbol { MethodKind: MethodKind.StaticConstructor };
+                    return members.ContainsKey(key) || root || holder is null || !members.ContainsKey(holder) ? key : holder;
                 case BaseTypeDeclarationSyntax:
                     return null;
             }
@@ -903,6 +878,7 @@ internal static class Fake
             return;
         }
 
+        serialized.Add(Key(named));
         foreach (IPropertySymbol property in named.GetMembers().OfType<IPropertySymbol>())
         {
             serialized.Add(Key(property));
@@ -928,7 +904,6 @@ internal static class Fake
         return symbol.OriginalDefinition;
     }
 
-    // The documentation id is the same in the source and the test compilation.
     private static string Key(ISymbol symbol)
     {
         ISymbol normal = Normal(symbol);
@@ -955,6 +930,7 @@ internal sealed record Hit(string Path, int Line, string Name, string Kind, stri
     $programPath = Join-Path $HelperFolder 'Program.cs'
     [System.IO.File]::WriteAllText($projectPath, $projectContent, [System.Text.UTF8Encoding]::new($false))
     [System.IO.File]::WriteAllText($programPath, $programContent, [System.Text.UTF8Encoding]::new($false))
+    [System.IO.File]::Copy((Join-Path $PSScriptRoot 'auditbinder.cs'), (Join-Path $HelperFolder 'AuditBinder.cs'), $true)
     return $projectPath
 }
 
@@ -976,20 +952,21 @@ $reportPath = Join-Path $reportFolder ([string]$config.report.prefix + $version 
 [string[]]$sourceFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.roots -Extensions $config.sources.extensions)
 [string[]]$testFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.tests -Extensions $config.sources.extensions)
 [string[]]$markupFiles = @(Get-TrackedFiles -ProjectRoot $projectRoot -Config $config -Roots $config.sources.roots -Extensions $config.sources.markup)
-[string[]]$generatedFiles = @(Get-GeneratedFiles -ProjectRoot $projectRoot -Config $config)
-[string[]]$referenceFiles = @(Get-BuildReferences -ProjectRoot $projectRoot -Config $config)
 if ($sourceFiles.Length -eq 0 -or $testFiles.Length -eq 0) {
     throw "No source or test files were found under: $projectRoot"
 }
-Write-AuditLine ("Source files: $($sourceFiles.Length), tests: $($testFiles.Length), markup: $($markupFiles.Length), " +
-    "generated: $($generatedFiles.Length), references: $($referenceFiles.Length)") -ForegroundColor DarkGray
+Write-AuditLine ("Scanned: {0:N0} source files, {1:N0} test files, {2:N0} markup files" -f
+    $sourceFiles.Length, $testFiles.Length, $markupFiles.Length) -ForegroundColor DarkGray
 
 $dotnet = Get-Command dotnet -ErrorAction SilentlyContinue
 if ($null -eq $dotnet) {
     throw 'The .NET SDK is required, but dotnet was not found on PATH.'
 }
 
+$nativePreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 $sdkOutput = & $dotnet.Source --version 2>&1
+$ErrorActionPreference = $nativePreference
 if ($LASTEXITCODE -ne 0) {
     throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
 }
@@ -1005,11 +982,8 @@ $temporaryFolder = Join-Path ([System.IO.Path]::GetTempPath()) ($config.project 
 
 try {
     $manifestPath = Join-Path $temporaryFolder 'sources.txt'
-    $manifest = @($sourceFiles | ForEach-Object { "S|$_" }) +
-        @($testFiles | ForEach-Object { "T|$_" }) +
-        @($markupFiles | ForEach-Object { "M|$_" }) +
-        @($generatedFiles | ForEach-Object { "G|$_" }) +
-        @($referenceFiles | ForEach-Object { "R|$_" })
+    $manifest = @($testFiles | ForEach-Object { "T|$_" }) +
+        @($markupFiles | ForEach-Object { "M|$_" })
     [System.IO.File]::WriteAllLines($manifestPath, [string[]]$manifest, [System.Text.UTF8Encoding]::new($false))
 
     $helperFolder = Join-Path $temporaryFolder 'helper'
@@ -1027,7 +1001,8 @@ try {
         $manifestPath,
         $version,
         $reportPath,
-        $Top
+        $Top,
+        (Join-Path $PSScriptRoot 'auditbinder.json')
     )
 
     $previousNoLogo = $env:DOTNET_NOLOGO
@@ -1036,7 +1011,10 @@ try {
     $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 
     try {
+        $nativePreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
         $auditOutput = & $dotnet.Source @arguments 2>&1
+        $ErrorActionPreference = $nativePreference
         $auditExitCode = $LASTEXITCODE
     }
     finally {
@@ -1044,7 +1022,7 @@ try {
         $env:DOTNET_CLI_TELEMETRY_OPTOUT = $previousTelemetry
     }
 
-    if ($auditExitCode -ne 0) {
+    if ($auditExitCode -ne 0 -and $auditExitCode -ne 3) {
         throw "The fake audit failed.`n$($auditOutput -join [Environment]::NewLine)"
     }
 
@@ -1061,3 +1039,5 @@ finally {
 if ($Open -and (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
     Invoke-Item -LiteralPath $reportPath
 }
+
+exit ([int]($auditExitCode -ne 0))

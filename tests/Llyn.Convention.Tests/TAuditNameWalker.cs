@@ -27,18 +27,7 @@ internal static class TAuditNameWalker
 
     public static IReadOnlyList<TViolation> TAuditRun(IEnumerable<string> sourcePaths, TAuditRegistry registry)
     {
-        List<TSpecimen> candidates = [];
-        foreach (string path in sourcePaths)
-        {
-            if (path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
-            {
-                TSpecimenCodeRead(path, candidates);
-            }
-            else if (path.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase))
-            {
-                TSpecimenMarkupRead(path, candidates);
-            }
-        }
+        List<TSpecimen> candidates = TAuditSpecimenRead(sourcePaths);
 
         bool anyTestPrefixed = candidates.Any(candidate =>
             string.Equals(candidate.TSpecimenKind, "TestMethod", StringComparison.Ordinal) &&
@@ -71,9 +60,30 @@ internal static class TAuditNameWalker
         return violations;
     }
 
-    private static void TSpecimenCodeRead(string path, List<TSpecimen> candidates)
+    public static List<TSpecimen> TAuditSpecimenRead(IEnumerable<string> sourcePaths)
     {
-        SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path);
+        List<TSpecimen> candidates = [];
+        List<SyntaxTree> trees = sourcePaths
+            .Where(path => path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+            .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path))
+            .ToList();
+        TAuditNameFilter.TAuditTypeScan(trees);
+        foreach (SyntaxTree tree in trees)
+        {
+            TSpecimenCodeRead(tree, candidates);
+        }
+
+        foreach (string path in sourcePaths.Where(path => path.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)))
+        {
+            TSpecimenMarkupRead(path, candidates);
+        }
+
+        return candidates;
+    }
+
+    private static void TSpecimenCodeRead(SyntaxTree tree, List<TSpecimen> candidates)
+    {
+        string path = tree.FilePath;
         SyntaxNode root = tree.GetRoot();
 
         foreach (SyntaxNode node in root.DescendantNodesAndSelf())
@@ -293,7 +303,7 @@ internal static class TAuditNameWalker
         string remainder = working[prefix.Length..];
         if (string.IsNullOrWhiteSpace(remainder))
         {
-            return null;
+            return "no base after the prefix";
         }
 
         List<string> components = [];
@@ -301,14 +311,14 @@ internal static class TAuditNameWalker
         {
             if (string.IsNullOrWhiteSpace(segment))
             {
-                return null;
+                return "an underscore leaves an empty component";
             }
 
             MatchCollection matches = TAuditComponentPattern.Matches(segment);
             string rebuilt = string.Concat(matches.Cast<Match>().Select(match => match.Value));
             if (!string.Equals(rebuilt, segment, StringComparison.Ordinal))
             {
-                return null;
+                return $"`{segment}` does not split into PascalCase components";
             }
 
             components.AddRange(matches.Cast<Match>().Select(match => match.Value));
@@ -316,33 +326,33 @@ internal static class TAuditNameWalker
 
         if (components.Count == 0)
         {
-            return null;
+            return "no base after the prefix";
         }
 
+        List<string> reasons = [];
         string baseName = components[0];
         if (!registry.TAuditBases.Contains(baseName))
         {
-            return $"unregistered base `{baseName}`";
+            reasons.Add($"unregistered base `{baseName}`");
         }
 
         string last = components[^1];
         bool lastIsVerb = registry.TAuditVerbs.Contains(last);
         if (TAuditMethodKinds.Contains(kind) && !lastIsVerb)
         {
-            return $"method does not end in a registered verb (`{last}`)";
+            reasons.Add($"method does not end in a registered verb (`{last}`)");
         }
-
-        if (TAuditDataKinds.Contains(kind) && lastIsVerb)
+        else if (TAuditDataKinds.Contains(kind) && lastIsVerb)
         {
-            return $"data or type name ends in a registered verb (`{last}`)";
+            reasons.Add($"data or type name ends in a registered verb (`{last}`)");
         }
 
         if (components.Count > TAuditNameSetting.TAuditComponentLimit)
         {
-            return $"{components.Count} components after the prefix " +
-                   $"(limit is {TAuditNameSetting.TAuditComponentLimit})";
+            reasons.Add($"{components.Count} components after the prefix " +
+                        $"(limit is {TAuditNameSetting.TAuditComponentLimit})");
         }
 
-        return null;
+        return reasons.Count == 0 ? null : string.Join(", ", reasons);
     }
 }

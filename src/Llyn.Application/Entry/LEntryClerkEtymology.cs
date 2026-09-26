@@ -7,7 +7,7 @@ namespace Llyn.Application;
 public static class LEntryClerkEtymology
 {
     public static void LEtymologyUpdate(
-        LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionChange>? changes)
+        LEtymologyVault etymologies, long entryId, LEntryDraft draft, List<LRevisionDelta>? changes)
     {
         ArgumentNullException.ThrowIfNull(etymologies);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
@@ -36,7 +36,7 @@ public static class LEntryClerkEtymology
             etymologies.LEtymologyEtymonSet(entryId, []);
         }
 
-        changes?.Add(new LRevisionChange(
+        changes?.Add(new LRevisionDelta(
             entryId,
             "etymology",
             current.LEtymologyDraftEmpty ? "delete" : stored.LEtymologyDraftEmpty ? "create" : "update",

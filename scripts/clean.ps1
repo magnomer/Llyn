@@ -3,7 +3,7 @@
     Remove generated build output and stale WPF temporary projects safely.
 .DESCRIPTION
     Deletes obj/, bin/, and TestResults/ directories outside the protected
-    top-level .git/, publish/, debug/, run/, and snapshots/ trees. The protected trees are
+    top-level .git/, build/, publish/, debug/, run/, and snapshots/ trees. The protected trees are
     never traversed, so immutable snapshots cannot be altered and cleanup time
     does not grow with the snapshot collection.
 
@@ -99,8 +99,15 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$protectedTopLevelNames = @('.git', 'publish', 'debug', 'run', 'snapshots')
+$protectedTopLevelNames = @('.git', 'build', 'publish', 'debug', 'run', 'snapshots')
 $generatedDirectoryNames = @('obj', 'bin', 'TestResults')
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
 
 function Read-SnapshotConfig {
     $configPath = Join-Path $PSScriptRoot 'snapshot.json'
@@ -119,6 +126,10 @@ function Read-SnapshotConfig {
         if (-not ($config.PSObject.Properties.Name -contains $key)) {
             throw "The snapshot configuration must contain a $key property: $configPath"
         }
+    }
+
+    if ([int]$config.generation -ne 1) {
+        throw "The snapshot configuration is generation $($config.generation); this script is generation 1."
     }
 
     return $config
@@ -148,7 +159,7 @@ function Get-WpfTempFile {
         )
     }
 
-    return @($files | Sort-Object FullName -Unique)
+    return @($files | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.FullName } } -Unique)
 }
 
 function Remove-WpfTempFile {
@@ -186,7 +197,7 @@ function Get-GeneratedDirectory {
     # directories are nested inside one another.
     return @(
         $targets |
-            Sort-Object -Property @{ Expression = { $_.FullName.Length }; Descending = $true }, @{ Expression = { $_.FullName }; Descending = $false } -Unique
+            Sort-Object -Property @{ Expression = { $_.FullName.Length }; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.FullName } } -Unique
     )
 }
 

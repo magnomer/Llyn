@@ -32,7 +32,7 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 
 The reflex rules the pack of `language` declares, or none for a blank language.
 
-## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionChange>? changes, Dictionary<long, long> identity)`
+## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionDelta>? changes, Dictionary<long, long> identity)`
 
 The reflexes of an entry reconciled to its draft, anatomies filled from the pack.
 An unchanged list writes nothing.

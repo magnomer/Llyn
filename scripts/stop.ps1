@@ -18,7 +18,7 @@
 .PARAMETER Version
     End only the instances of this major.minor.revision version. Omit it to end every instance.
 .PARAMETER All
-    Also end instances the ledger does not know, found by executable name under the project root.
+    Also end instances the ledger does not know, found by executable name under the project root. Alias: -a.
 .PARAMETER Force
     Kill at once instead of asking the main window to close first.
 .PARAMETER TimeoutSeconds
@@ -58,6 +58,7 @@ param(
     [Parameter(Position = 0)]
     [ValidatePattern('^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$')]
     [string]$Version,
+    [Alias('a')]
     [switch]$All,
     [switch]$Force,
     [ValidateRange(1, 300)]
@@ -81,7 +82,7 @@ OPTIONS
     <version>
         End only the instances of this major.minor.revision version.
 
-    -All
+    -All, -a
         Also end instances the ledger does not know, found by executable
         name under the project root.
 
@@ -146,8 +147,15 @@ if ($All) {
 # Rereading the ledger drops the entries whose process has now gone.
 $remaining = @(Get-ExecutionLaunches -ProjectRoot $root -Config $config)
 
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
+
 $reaped = 0
-foreach ($folder in ($folders | Sort-Object -Unique)) {
+foreach ($folder in ($folders | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)) {
     if (Test-Path -LiteralPath $folder -PathType Container) {
         $reaped += Remove-ExecutionDeadSlots -ProjectRoot $root -Config $config -Folder $folder
     }
@@ -178,7 +186,7 @@ if ($reaped -gt 0) {
 
 $fields['Duration'] = Format-ExecutionDuration -Elapsed ((Get-Date) - $started)
 
-foreach ($stoppedVersion in @($ended | Where-Object { $_.Version -ne '-' } | ForEach-Object { $_.Version } | Sort-Object -Unique)) {
+foreach ($stoppedVersion in @($ended | Where-Object { $_.Version -ne '-' } | ForEach-Object { $_.Version } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)) {
     $versionFields = [ordered]@{}
     $versionFields['PIDs'] = (@($ended | Where-Object { $_.Version -eq $stoppedVersion } | ForEach-Object { "$($_.PID) ($($_.How))" })) -join ', '
     foreach ($key in $fields.Keys) {

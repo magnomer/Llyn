@@ -2,10 +2,13 @@
 
 ## `internal static partial class TAuditTruthWalker`
 
-Compiles the shell sources and follows each mutable field to where its value goes, by symbol.
+Follows each driver field to where its value goes, by symbol.
 A settable property and a positional record parameter are followed the same way.
-Logic is what `TAuditBinder` says is logic: a symbol from a logic assembly or a value of such a type.
-Partial classes are joined by their type symbol, and a nested type is audited as part of its outermost class.
+Logic is what `TAuditBinder` says lies below the cut, Conduct's gates and the engine alike.
+A request is a call into logic or into a driver relay of one.
+A field holding a Conduct type is a handle, while a field holding an engine type is a mirror.
+Partial classes are joined by their type symbol.
+The field, local and sequence scans read nested types and field initializers with their outer class.
 
 ## `private static readonly object TAuditGate = new();`
 
@@ -28,11 +31,11 @@ A positional parameter carries both its parameter symbol and the property it gen
 
 ## `public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)`
 
-Compiles every file, scans the walked ones for mutation and shape, groups the outermost types, and checks every field.
+Scans every driver file for mutation, feed and shape, checks parity across the drivers, then checks every type.
 
 ## `public static IReadOnlySet<ISymbol> TAuditReaderRead(IReadOnlyList<string> sourcePaths)`
 
-The shell members that read logic or request, for the taint scan on the strict side.
+The driver members that read logic or request, for the taint scan.
 
 ## `private static Dictionary<INamedTypeSymbol, List<TypeDeclarationSyntax>> TAuditPartRead(`
 
@@ -41,10 +44,11 @@ Compiles, keeps the walked roots, builds the identifier index, groups the outerm
 ## `private static IEnumerable<TAuditTruthField> TAuditFieldRead(IReadOnlyList<TypeDeclarationSyntax> type)`
 
 The mutable fields, the settable properties and the positional record parameters of a class.
-A `readonly` or `const` field is a fixture only while nothing writes into it.
+A `readonly` or `const` field is a fixture only while nothing writes into it and it holds no engine type.
 A `static` field is shared and its writes are read in every file.
-A field or property initialised to `null!` is wired once after construction and is skipped as identity.
-A field or parameter typed as a listed handle grips the engine rather than holding a value, and is skipped.
+A field initialised to `null!` is audited like any other, since its type says what it holds.
+A field typed as a handle grips a gate rather than holding a value, and is skipped.
+A getter property that reads the field is followed as the field, so a guard cannot hide behind it.
 
 ## `private static bool TAuditFillCheck(HashSet<ISymbol> symbols, IReadOnlyList<TypeDeclarationSyntax> type)`
 
@@ -58,21 +62,13 @@ Every identifier resolving to one of the symbols, from the index.
 
 True when the node sits inside one of the class parts.
 
-## `private static bool TAuditHandleCheck(ITypeSymbol type)`
-
-True when the type, shown minimally and with any nullable mark dropped, is a listed handle.
-
 ## `private static bool TAuditFieldCheck(IdentifierNameSyntax identifier, HashSet<ISymbol> symbols)`
 
 True when the identifier resolves to one of the symbols.
 
-## `private static bool TAuditWiredCheck(ExpressionSyntax? value)`
-
-True for an initialiser of `null!`.
-
 ## `private static void TAuditFieldCheck(`
 
-A field whose type is logic is a mirror before any reference is read.
+A field whose type is from below Conduct is a mirror before any reference is read.
 A field typed `object` is a mirror too, since an untyped slot hides what it holds.
 A field whose name ends in `State` is a mirror too, since only the engine resolves a state.
 A `??=` whose right side requests caches the answer and is a mirror.

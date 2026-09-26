@@ -23,7 +23,7 @@ public sealed class TEditorClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", Task.CompletedTask));
         engine.TEngineDelaySet(0);
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "input");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         editor.TEditorOpen(null);
         editor.TEditorLanguageSet(pack.TLanguageFixtureName);
         editor.TEditorHeadwordSet("tomato");

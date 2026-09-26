@@ -2,9 +2,9 @@
 
 ## `internal static class TAuditTaintWalker`
 
-Follows a logic value into a local or a shell member and reports the line that computes over it.
+Follows an engine value into a local or a driver member and reports the line that computes over it.
 The treat rule sees only a line that names logic, so a value copied into a local escaped it.
-A control's input is followed the same way, since the shell passes it raw and never shapes it.
+A control's input and the console's input are followed the same way, since a driver passes them raw.
 
 ## `private const string TAuditLogicColour = "logic value";`
 
@@ -12,7 +12,7 @@ The colour a taint carries when it came from logic.
 
 ## `private const string TAuditTextColour = "control input";`
 
-The colour a taint carries when it came from an input member of a control.
+The colour a taint carries when it came from an input member of a control or a console read.
 
 ## `private static IReadOnlySet<ISymbol> TAuditReaderNames`
 
@@ -31,7 +31,7 @@ A hit is reported once per line and reason, with the first line of the node as i
 ## `private static Dictionary<ISymbol, string> TAuditTaintRead(MemberDeclarationSyntax member)`
 
 The locals of a member, by symbol, and the colour each carries.
-A parameter of logic type is tainted from the start.
+A parameter of a type from below Conduct is tainted from the start.
 An initialiser, an assignment, a loop variable and a pattern designation each carry the colour of their source.
 A local built from a tainted local is followed, so the hop count is not limited to one.
 
@@ -46,7 +46,7 @@ The colour an expression carries, or null when it is clean.
 ## `private static (string TViolationName, string TViolationColour)? TAuditTaintFind(`
 
 The first tainted name inside a node and its colour.
-A tainted local, a logic symbol, a reader member and an input member of a control-typed expression each count.
+A tainted local, an engine symbol, a reader member, a control input member and a console read each count.
 
 ## `private static bool TAuditConditionCheck(ExpressionSyntax condition)`
 

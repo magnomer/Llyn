@@ -112,6 +112,36 @@ public sealed class TAuditBoundary
             $"{hits.Count} hold line(s) keep a timer the tenure owns:\n{string.Join('\n', hits)}"));
     }
 
+    [Fact]
+    public void AuditBoundary_Exempt_MatchesSource()
+    {
+        List<string> stale = [];
+        HashSet<string> converters = TAuditUsedRead(TAuditBoundarySetting.TAuditBoundaryState);
+        stale.AddRange(TAuditBoundarySetting.TAuditBoundaryConverter
+            .Where(name => !converters.Contains(name))
+            .Select(name => $"  converter {name} compares no state"));
+        HashSet<string> loaders = TAuditUsedRead([TAuditBoundarySetting.TAuditBoundaryReflection]);
+        stale.AddRange(TAuditBoundarySetting.TAuditBoundaryLoader
+            .Where(name => !loaders.Contains(name))
+            .Select(name => $"  loader {name} reflects nothing"));
+        HashSet<string> names = TAuditUsedRead([string.Empty]);
+        stale.AddRange(TAuditBoundarySetting.TAuditBoundaryHold
+            .Where(pattern => !names.Any(name => Regex.IsMatch(name, pattern)))
+            .Select(pattern => $"  hold pattern {pattern} names no shell file"));
+
+        Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITBOUNDARY",
+            $"{stale.Count} boundary list row(s) spare or name nothing and must be removed:\n"
+            + string.Join('\n', stale)));
+    }
+
+    private static HashSet<string> TAuditUsedRead(IReadOnlyList<string> forbidden)
+    {
+        return TAuditBoundaryScan(static _ => true, forbidden)
+            .Select(hit => Path.GetFileName(hit.Trim().Split(':')[0]))
+            .ToHashSet(StringComparer.Ordinal);
+    }
+
     private static List<string> TAuditBoundaryScan(Func<string, bool> chosen, IReadOnlyList<string> forbidden)
     {
         string repoRoot = TAuditSource.TAuditRootRead();

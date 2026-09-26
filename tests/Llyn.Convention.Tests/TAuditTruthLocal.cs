@@ -89,7 +89,7 @@ internal static partial class TAuditTruthWalker
             foreach (BaseTypeSyntax baseType in part.BaseList?.Types ?? [])
             {
                 ITypeSymbol? symbol = TAuditBinder.TAuditTypeRead(baseType.Type);
-                if (symbol is null || !TAuditBinder.TAuditLogicCheck(symbol))
+                if (symbol is null || !TAuditBinder.TAuditEngineCheck(symbol))
                 {
                     continue;
                 }
@@ -104,15 +104,18 @@ internal static partial class TAuditTruthWalker
         }
     }
 
+    private static IEnumerable<MemberDeclarationSyntax> TAuditScopeRead(IReadOnlyList<TypeDeclarationSyntax> type)
+    {
+        return type
+            .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
+            .SelectMany(part => part.Members)
+            .Where(scope => scope is not BaseTypeDeclarationSyntax);
+    }
+
     private static void TAuditLocalScan(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)
     {
-        foreach (MemberDeclarationSyntax scope in type.SelectMany(part => part.Members))
+        foreach (MemberDeclarationSyntax scope in TAuditScopeRead(type))
         {
-            if (scope is BaseTypeDeclarationSyntax or FieldDeclarationSyntax)
-            {
-                continue;
-            }
-
             HashSet<ISymbol> answered = TAuditAnsweredRead(scope);
             if (answered.Count == 0)
             {
@@ -236,6 +239,7 @@ internal static partial class TAuditTruthWalker
             PropertyDeclarationSyntax property => property.Identifier.ValueText,
             ConstructorDeclarationSyntax constructor => constructor.Identifier.ValueText,
             EventDeclarationSyntax happening => happening.Identifier.ValueText,
+            BaseFieldDeclarationSyntax field => field.Declaration.Variables[0].Identifier.ValueText,
             _ => scope.Kind().ToString()
         };
     }

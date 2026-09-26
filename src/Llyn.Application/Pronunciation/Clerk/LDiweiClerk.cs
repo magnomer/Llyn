@@ -141,7 +141,7 @@ public sealed class LDiweiClerk
             return row.LFanqieRowDivision;
         }
 
-        return hypothesis?.LHypothesisPlaceFind(row.LFanqieRowInitial)?.LHypothesisPlaceName ?? string.Empty;
+        return hypothesis?.LHypothesisLocusFind(row.LFanqieRowInitial)?.LHypothesisLocusName ?? string.Empty;
     }
 
     private static void LTallyLoad(

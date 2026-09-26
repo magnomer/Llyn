@@ -15,20 +15,20 @@ public sealed class LPortraitFile : LPortraitVault
         _lPortraitFileTheme = theme;
     }
 
-    public void LPortraitSave(LPortraitPage page, LPortraitFormat format, string path)
+    public void LPortraitSave(LPortraitPage page, LPortraitMedium format, string path)
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         switch (format)
         {
-            case LPortraitFormat.LPortraitFormatHtml:
+            case LPortraitMedium.LPortraitMediumHtml:
                 File.WriteAllText(path, LPortraitSheetFormat(page), new UTF8Encoding(false));
                 return;
-            case LPortraitFormat.LPortraitFormatMarkdown:
+            case LPortraitMedium.LPortraitMediumMarkdown:
                 File.WriteAllText(path, LOutline.LOutlineFormat(page), new UTF8Encoding(false));
                 return;
-            case LPortraitFormat.LPortraitFormatDocx:
+            case LPortraitMedium.LPortraitMediumDocx:
                 LFolio.LFolioSave(page, _lPortraitFileTheme, path);
                 return;
             default:

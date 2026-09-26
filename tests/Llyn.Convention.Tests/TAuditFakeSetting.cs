@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditFakeSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const bool TAuditFakeEnforced = true;
     public const string TAuditFakeReport = "temp/audit/Fake-{0}.md";
 

@@ -35,7 +35,7 @@ Every other link a draft carries is checked before it is written, and an inflect
 
 Deletes the Entry's lacuna rows, so a form the web could not name before may be asked again.
 
-## `public void LInflectionClerkUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+## `public void LInflectionClerkUpdate(long entryId, LEntryDraft draft, List<LRevisionDelta> changes)`
 
 The inflections of the entry as the draft holds them, features and all.
 A feature list that differs at one place is a different inflection, so the whole set is rewritten.

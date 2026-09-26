@@ -111,7 +111,7 @@ internal static partial class TInterface
         engine.LEnginePortrait.LEnginePortraitPrint(vista, legend, ticket);
 
     internal static Task TEnginePortraitExport(this LEngine engine, LVista vista, string path,
-        LPortraitFormat format, LPortraitLabel label) =>
+        LPortraitMedium format, LPortraitLabel label) =>
         engine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);
 
     internal static IReadOnlyList<LVistaRow> TEngineProspectFind(this LEngine engine, string query) =>

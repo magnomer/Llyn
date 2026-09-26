@@ -118,6 +118,64 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
+
+function ConvertTo-DetectorJson {
+    # Written by hand because ConvertTo-Json lays out and escapes text differently in Windows
+    # PowerShell 5.1 and pwsh 7. This matches the pwsh 7 form, so both write the same text.
+    param($Value, [string]$Indent = '')
+
+    if ($null -eq $Value) { return 'null' }
+    if ($Value -is [bool]) { return $Value.ToString().ToLowerInvariant() }
+    if ($Value -is [string]) {
+        $builder = [System.Text.StringBuilder]::new('"')
+        foreach ($character in $Value.ToCharArray()) {
+            switch ([int]$character) {
+                0x22 { [void]$builder.Append('\"') }
+                0x5C { [void]$builder.Append('\\') }
+                0x08 { [void]$builder.Append('\b') }
+                0x09 { [void]$builder.Append('\t') }
+                0x0A { [void]$builder.Append('\n') }
+                0x0C { [void]$builder.Append('\f') }
+                0x0D { [void]$builder.Append('\r') }
+                default {
+                    if ([int]$character -lt 0x20) { [void]$builder.AppendFormat('\u{0:x4}', [int]$character) }
+                    else { [void]$builder.Append($character) }
+                }
+            }
+        }
+        return $builder.Append('"').ToString()
+    }
+    if ($Value -is [ValueType]) { return [System.Convert]::ToString($Value, [System.Globalization.CultureInfo]::InvariantCulture) }
+
+    $inner = $Indent + '  '
+    $members = [System.Collections.Generic.List[string]]::new()
+    if ($Value -is [System.Collections.IDictionary]) {
+        foreach ($key in $Value.Keys) {
+            $members.Add($inner + (ConvertTo-DetectorJson -Value ([string]$key)) + ': ' + (ConvertTo-DetectorJson -Value $Value[$key] -Indent $inner))
+        }
+        if ($members.Count -eq 0) { return '{}' }
+        return "{`n" + ($members -join ",`n") + "`n" + $Indent + '}'
+    }
+    if ($Value -is [System.Collections.IEnumerable]) {
+        foreach ($item in $Value) {
+            $members.Add($inner + (ConvertTo-DetectorJson -Value $item -Indent $inner))
+        }
+        if ($members.Count -eq 0) { return '[]' }
+        return "[`n" + ($members -join ",`n") + "`n" + $Indent + ']'
+    }
+    foreach ($property in $Value.PSObject.Properties) {
+        $members.Add($inner + (ConvertTo-DetectorJson -Value $property.Name) + ': ' + (ConvertTo-DetectorJson -Value $property.Value -Indent $inner))
+    }
+    if ($members.Count -eq 0) { return '{}' }
+    return "{`n" + ($members -join ",`n") + "`n" + $Indent + '}'
+}
+
 function Read-DetectorConfig {
     $configPath = Join-Path $PSScriptRoot 'detector.json'
     if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
@@ -131,10 +189,14 @@ function Read-DetectorConfig {
         throw "The detector configuration is not valid JSON: $configPath`n$($_.Exception.Message)"
     }
 
-    foreach ($key in @('generation', 'project', 'graft', 'markers', 'prefix', 'markup', 'wiring')) {
+    foreach ($key in @('generation', 'graft', 'markers', 'prefix', 'markup', 'wiring')) {
         if (-not ($config.PSObject.Properties.Name -contains $key)) {
             throw "The detector configuration must contain a $key property: $configPath"
         }
+    }
+
+    if ([int]$config.generation -ne 1) {
+        throw "The detector configuration is generation $($config.generation); this script is generation 1."
     }
 
     return $config
@@ -278,7 +340,7 @@ function Read-DetectorFields {
 
 function Read-DetectorMarkup {
     $classPattern = [regex]'x:Class="(?<type>[\w.]+)"'
-    $roots = @($sources | ForEach-Object { ($_.Path -split '/')[0] } | Sort-Object -Unique)
+    $roots = @($sources | ForEach-Object { ($_.Path -split '/')[0] } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 
     foreach ($folder in $roots) {
         $folderPath = Join-Path $root $folder
@@ -579,7 +641,7 @@ $affected = @(
             test  = $symbol.Test
         }
     }
-) | Sort-Object -Property path, start
+) | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.path } }, start
 
 $tests = @(
     foreach ($pair in $reached.GetEnumerator()) {
@@ -596,19 +658,19 @@ $tests = @(
             start   = $symbol.Start
         }
     }
-) | Sort-Object -Property project, class, method
+) | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.project } }, @{ Expression = { Get-OrdinalKey $_.class } }, @{ Expression = { Get-OrdinalKey $_.method } }
 
 $affected = @($affected)
 $tests = @($tests)
-$hops = if ($affected.Count -gt 0) { ($affected | Measure-Object -Property hop -Maximum).Maximum } else { 0 }
+$hops = if ($affected.Count -gt 0) { [int]($affected | Measure-Object -Property hop -Maximum).Maximum } else { 0 }
 
 if ($Json) {
-    [ordered]@{
+    ConvertTo-DetectorJson -Value ([ordered]@{
         seeds   = @($Name)
         hops    = $hops
         symbols = $affected
         tests   = $tests
-    } | ConvertTo-Json -Depth 4
+    })
     exit 0
 }
 

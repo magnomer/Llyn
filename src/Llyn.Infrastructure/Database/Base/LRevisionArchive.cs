@@ -16,7 +16,7 @@ public sealed class LRevisionArchive : LRevisionVault
         _lRevisionArchiveDatabase = database;
     }
 
-    public LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes)
+    public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(changes);
 
@@ -37,7 +37,7 @@ public sealed class LRevisionArchive : LRevisionVault
 
         for (int position = 0; position < changes.Count; position++)
         {
-            LRevisionChange change = changes[position];
+            LRevisionDelta change = changes[position];
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
@@ -46,10 +46,10 @@ public sealed class LRevisionArchive : LRevisionVault
                 """;
             command.Parameters.AddWithValue("$revision", stored.LRevisionId);
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$target", change.LRevisionChangeTarget);
-            command.Parameters.AddWithValue("$type", change.LRevisionChangeSubject);
-            command.Parameters.AddWithValue("$kind", change.LRevisionChangeKind);
-            command.Parameters.AddWithValue("$summary", (object?)change.LRevisionChangeSummary ?? DBNull.Value);
+            command.Parameters.AddWithValue("$target", change.LRevisionDeltaTarget);
+            command.Parameters.AddWithValue("$type", change.LRevisionDeltaSubject);
+            command.Parameters.AddWithValue("$kind", change.LRevisionDeltaKind);
+            command.Parameters.AddWithValue("$summary", (object?)change.LRevisionDeltaSummary ?? DBNull.Value);
             command.ExecuteNonQuery();
         }
 

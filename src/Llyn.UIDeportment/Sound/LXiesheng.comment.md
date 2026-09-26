@@ -166,7 +166,7 @@ Attaches an observer of that subject to the series column.
 
 Prints the entry the reader holds, doing nothing while there is none.
 
-## `public Task LXieshengPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)`
+## `public Task LXieshengPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)`
 
 Exports the entry the reader holds as a portrait file.
 

@@ -13,7 +13,7 @@ The note text parsed into blocks.
 
 The drafts with every positive id cleared, for a fresh entry that has no stored rows to match.
 
-## `public static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+## `public static void LFormUpdate(LEntryVault entries, long entryId, LEntryDraft draft, List<LRevisionDelta> changes)`
 
 The forms of an entry rewritten from the draft when they differ, with one change recorded.
 
@@ -21,7 +21,7 @@ The forms of an entry rewritten from the draft when they differ, with one change
 
 Whether two form lists say the same thing, in order.
 
-## `public static void LNoteUpdate(LNoteVault notes, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+## `public static void LNoteUpdate(LNoteVault notes, long entryId, LEntryDraft draft, List<LRevisionDelta> changes)`
 
 The note of an entry saved, rewritten or deleted to match the draft, with one change recorded.
 An unchanged note writes nothing.

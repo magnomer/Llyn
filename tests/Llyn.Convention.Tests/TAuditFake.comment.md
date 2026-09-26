@@ -17,7 +17,7 @@ The report is written once, on the first fact that runs.
 
 ## `private static readonly Regex TAuditMarkupWord`
 
-One identifier-shaped word in a markup file.
+One identifier-shaped word in a markup attribute value.
 
 ## `public TAuditFake(ITestOutputHelper output)`
 
@@ -47,8 +47,12 @@ Prints the count and fails when an enforced kind counts above its ceiling.
 
 ## `private static IReadOnlyList<TViolation> TAuditFakeRead()`
 
-Enumerates the tracked tests and markup, collects every markup word and runs the walker.
-An empty enumeration fails, since the audit would otherwise pass vacuously.
+Enumerates the tracked tests and markup and runs the walker.
+The markup words are the attribute names, the attribute values and the property element names.
+Text and comments are left out, so a word in prose keeps nothing alive.
+The element names are the types markup constructs.
+An empty test enumeration fails, since the audit would otherwise pass vacuously.
+A project without markup is audited all the same, as auditfake.ps1 does.
 
 ## `private static string TAuditReportSave()`
 

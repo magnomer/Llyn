@@ -13,7 +13,7 @@ The tracked text kinds, as Git pathspecs: sources, markup, prose, settings, proj
 ## `public static readonly string[] TAuditEncodingSkip`
 
 The tracked files left out by name.
-`version.json` is set by hand at each commit and its final newline is not the tooling's to demand.
+`version.json` is set by hand at each commit, so no encoding fact reads it at all.
 
 ## `public static readonly string[] TAuditEncodingTabless`
 

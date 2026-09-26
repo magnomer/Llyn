@@ -43,7 +43,7 @@ public sealed class LCardClerk
         long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
-        List<LRevisionChange> changes,
+        List<LRevisionDelta> changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(cards);
@@ -80,7 +80,7 @@ public sealed class LCardClerk
                 continue;
             }
 
-            changes.Add(new LRevisionChange(
+            changes.Add(new LRevisionDelta(
                 dropped,
                 "collocation",
                 "delete",
@@ -112,7 +112,7 @@ public sealed class LCardClerk
                         LCollocationExpression = card.LCardDraftExpression,
                         LCollocationMeaning = card.LCardDraftMeaning,
                     });
-                    changes.Add(new LRevisionChange(
+                    changes.Add(new LRevisionDelta(
                         row.LCollocationId,
                         "collocation",
                         "update",
@@ -124,7 +124,7 @@ public sealed class LCardClerk
             else
             {
                 rowId = LCollocationInsert(entryId, card, identity);
-                changes.Add(new LRevisionChange(
+                changes.Add(new LRevisionDelta(
                     rowId,
                     "collocation",
                     "create",

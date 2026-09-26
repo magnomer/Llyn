@@ -90,7 +90,7 @@ internal static class TAuditTaintWalker
         foreach (ParameterSyntax parameter in member.DescendantNodesAndSelf().OfType<ParameterSyntax>())
         {
             if (TAuditBinder.TAuditSymbolRead(parameter) is IParameterSymbol symbol
-                && TAuditBinder.TAuditLogicCheck(symbol.Type))
+                && TAuditBinder.TAuditEngineCheck(symbol.Type))
             {
                 tainted[symbol] = TAuditLogicColour;
             }
@@ -152,11 +152,15 @@ internal static class TAuditTaintWalker
                          && tainted.TryGetValue(symbol, out string? colour):
                     return (name.Identifier.ValueText, colour);
                 case IdentifierNameSyntax or MemberBindingExpressionSyntax
-                    when TAuditBinder.TAuditLogicCheck(child):
+                    when TAuditBinder.TAuditEngineCheck(child):
                     return (child.ToString(), TAuditLogicColour);
                 case IdentifierNameSyntax name
                     when TAuditBinder.TAuditSymbolRead(name) is { } symbol && TAuditReaderNames.Contains(symbol):
                     return (name.Identifier.ValueText, TAuditLogicColour);
+                case InvocationExpressionSyntax input
+                    when TAuditBinder.TAuditMemberCheck(
+                        TAuditBinder.TAuditSymbolRead(input), TAuditTruthSetting.TAuditConsoleInput):
+                    return (input.Expression.ToString(), TAuditTextColour);
                 case MemberAccessExpressionSyntax input
                     when TAuditTruthSetting.TAuditInputMembers.Contains(
                              input.Name.Identifier.ValueText, StringComparer.Ordinal)

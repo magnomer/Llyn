@@ -17,10 +17,6 @@ A reflex respelling written by hand stands until the text or the language change
 Rows saved without a respelling, pronunciation and reflex alike, have one derived and stored on the way in.
 A load reads the stored form back and derives nothing.
 
-## `private sealed class TRespellingObserver : LObserver`
-
-Records every bulletin subject the engine raises, so a flip of the switch can be seen.
-
 ## `private static LEntryDraft TRespellingDraftCreate(IReadOnlyList<LPronunciationDraft> pronunciations)`
 
 A Mandarin entry draft carrying the given pronunciation rows and one meaning.

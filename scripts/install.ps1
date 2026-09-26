@@ -89,10 +89,17 @@ exit /b %ERRORLEVEL%
 $Destination = [System.IO.Path]::GetFullPath($Destination)
 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
 
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
+}
+
 $scripts = @(
     Get-ChildItem -LiteralPath $PSScriptRoot -Filter '*.ps1' -File |
         Where-Object { $_.Name -notlike '*.config.ps1' } |
-        Sort-Object Name
+        Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Name } }
 )
 
 $content = $dispatcher -replace "`r?`n", "`r`n"

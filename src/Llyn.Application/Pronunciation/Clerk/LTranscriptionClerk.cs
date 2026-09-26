@@ -93,7 +93,7 @@ public sealed class LTranscriptionClerk
     public void LTranscriptionClerkSync(
         long entryId,
         IReadOnlyList<LTranscriptionDraft> drafts,
-        List<LRevisionChange>? changes,
+        List<LRevisionDelta>? changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -123,7 +123,7 @@ public sealed class LTranscriptionClerk
             LIdentity.LIdentityRecord(identity, written[index].LTranscriptionDraftId, saved[index].LTranscriptionId);
         }
 
-        changes?.Add(new LRevisionChange(
+        changes?.Add(new LRevisionDelta(
             entryId,
             "transcription",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

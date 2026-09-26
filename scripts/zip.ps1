@@ -114,6 +114,10 @@ function Read-SnapshotConfig {
         }
     }
 
+    if ([int]$config.generation -ne 1) {
+        throw "The snapshot configuration is generation $($config.generation); this script is generation 1."
+    }
+
     return $config
 }
 
@@ -168,8 +172,9 @@ function Get-GitVisiblePath {
     }
 
     try {
+        $errorTask = $process.StandardError.ReadToEndAsync()
         $output = $process.StandardOutput.ReadToEnd()
-        $errorText = $process.StandardError.ReadToEnd()
+        $errorText = $errorTask.GetAwaiter().GetResult()
         $process.WaitForExit()
 
         if ($process.ExitCode -ne 0) {
@@ -270,14 +275,22 @@ function Get-SnapshotSourceFingerprint {
         [object[]]$Files
     )
 
-    $records = foreach ($file in $Files) {
-        $hash = (Get-FileHash -LiteralPath $file.FullPath -Algorithm SHA256).Hash.ToLowerInvariant()
-        "$($file.Entry)`0$hash"
-    }
-
-    $payload = [System.Text.Encoding]::UTF8.GetBytes([string]::Join("`n", $records))
+    # Get-FileHash is left out: Windows PowerShell 5.1 defines it in a script module that fails to
+    # load when the session inherits the module path of pwsh 7.
     $sha256 = [System.Security.Cryptography.SHA256]::Create()
     try {
+        $records = foreach ($file in $Files) {
+            $stream = [System.IO.File]::OpenRead($file.FullPath)
+            try {
+                $hash = ([System.BitConverter]::ToString($sha256.ComputeHash($stream))).Replace('-', '').ToLowerInvariant()
+            }
+            finally {
+                $stream.Dispose()
+            }
+            "$($file.Entry)`0$hash"
+        }
+
+        $payload = [System.Text.Encoding]::UTF8.GetBytes([string]::Join("`n", $records))
         $digest = $sha256.ComputeHash($payload)
         return ([System.BitConverter]::ToString($digest)).Replace('-', '').ToLowerInvariant()
     }

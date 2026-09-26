@@ -7,12 +7,15 @@ namespace Convention.Tests;
 
 public sealed class TAuditStrict
 {
-    private static readonly Lazy<(IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers)>
-        TAuditStrictHits = new(TAuditStrictRead);
+    private const string TAuditStrictAudit = "AUDITSTRICT";
+
+    private static readonly Lazy<(IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers,
+        IReadOnlyList<string> TAuditSources)> TAuditStrictHits = new(TAuditStrictRead);
 
     private static readonly Lazy<string> TAuditStrictWritten = new(TAuditReportSave);
 
-    private static readonly string[] TAuditStrictKinds = ["Storage", "Call", "Engine", "Reach", "Trigger"];
+    private static readonly string[] TAuditStrictKinds =
+        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring"];
 
     private static readonly Regex TAuditLiteralPattern = new(
         @"@?""(?:[^""\\]|\\.)*""|//.*$",
@@ -26,50 +29,68 @@ public sealed class TAuditStrict
     }
 
     [Fact]
-    public void AuditStrict_VeneerFields_HoldNothing()
+    public void AuditStrict_SurfaceFields_HoldNothing()
     {
-        TAuditStrictCheck("Storage", "veneer field(s), property(ies) or parameter(s) hold state");
+        TAuditStrictCheck("Storage", "surface field(s), property(ies) or parameter(s) hold state");
     }
 
     [Fact]
-    public void AuditStrict_VeneerMembers_CallOnly()
+    public void AuditStrict_DriverStatics_HoldNothing()
     {
-        TAuditStrictCheck("Call", "veneer line(s) do more than call a function");
+        TAuditStrictCheck("Static", "driver static field(s) hold mutable state");
     }
 
     [Fact]
-    public void AuditStrict_VeneerSources_ReachNoEngine()
+    public void AuditStrict_SurfaceMembers_CallOnly()
     {
-        TAuditStrictCheck("Engine", "veneer line(s) reach the engine");
+        TAuditStrictCheck("Call", "surface line(s) do more than call a function");
     }
 
     [Fact]
-    public void AuditStrict_VeneerMarkup_ReachNoEngine()
+    public void AuditStrict_SurfaceSources_NameOnlyDriver()
     {
-        TAuditStrictCheck("Reach", "markup line(s) reach the engine");
+        TAuditStrictCheck("Depth", "surface line(s) name a type from below the driver");
     }
 
     [Fact]
-    public void AuditStrict_VeneerMarkup_BranchNever()
+    public void AuditStrict_SurfaceMarkup_NameOnlyDriver()
+    {
+        TAuditStrictCheck("Reach", "markup line(s) name a type from below the driver");
+    }
+
+    [Fact]
+    public void AuditStrict_SurfaceMarkup_BranchNever()
     {
         TAuditStrictCheck("Trigger", "markup line(s) branch or compute");
     }
 
     [Fact]
-    public void AuditStrict_DeportmentSources_ReachNoMarkup()
+    public void AuditStrict_SurfaceNames_HoldNoGlyph()
     {
-        List<string> hits = TAuditSourceScan(
-            TAuditStrictSetting.TAuditDeportmentInclude,
-            TAuditStrictSetting.TAuditMarkupPatterns,
-            TAuditStrictSetting.TAuditMarkupExempt);
-
-        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITSTRICT",
-            $"{hits.Count} deportment line(s) reach the file system:\n{string.Join('\n', hits)}"));
+        TAuditStrictCheck("Glyph", "surface identifier(s) carry a non-ASCII glyph");
     }
 
     [Fact]
-    public void AuditStrict_VeneerSources_HoldNoCatalog()
+    public void AuditStrict_HostSources_WireOnly()
+    {
+        TAuditStrictCheck("Wiring", "host line(s) do more than construct and wire");
+    }
+
+    [Fact]
+    public void AuditStrict_DriverSources_TouchNoDisk()
+    {
+        List<string> hits = TAuditSourceScan(
+            TAuditStrictSetting.TAuditDeportmentInclude,
+            TAuditStrictSetting.TAuditDiskPatterns,
+            TAuditStrictSetting.TAuditDiskExempt);
+
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditStrictAudit,
+            $"{hits.Count} driver line(s) reach the file system:\n{string.Join('\n', hits)}"));
+    }
+
+    [Fact]
+    public void AuditStrict_SurfaceSources_HoldNoCatalog()
     {
         List<string> hits = TAuditSourceScan(
             TAuditStrictSetting.TAuditVeneerInclude,
@@ -77,42 +98,65 @@ public sealed class TAuditStrict
             TAuditStrictSetting.TAuditCatalogExempt);
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITSTRICT",
-            $"{hits.Count} veneer line(s) do file, JSON, regex, process or task work:\n{string.Join('\n', hits)}"));
+            TAuditStrictAudit,
+            $"{hits.Count} surface line(s) do file, JSON, regex, process or task work:\n{string.Join('\n', hits)}"));
     }
 
     [Fact]
-    public void AuditStrict_Ceiling_MatchesHits()
+    public void AuditStrict_Exempt_MatchesSource()
     {
-        List<string> stale = [];
-        foreach ((string kind, int ceiling) in TAuditStrictSetting.TAuditStrictCeiling)
-        {
-            int count = TAuditStrictHits.Value.TAuditHits.Count(hit =>
-                string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
-            if (count < ceiling)
-            {
-                stale.Add($"  {kind}: {count} hit(s), ceiling {ceiling}");
-            }
-        }
+        List<string> stale = TAuditExemptRead(
+                TAuditStrictSetting.TAuditVeneerInclude,
+                TAuditStrictSetting.TAuditCatalogPatterns,
+                TAuditStrictSetting.TAuditCatalogExempt)
+            .Concat(TAuditExemptRead(
+                TAuditStrictSetting.TAuditDeportmentInclude,
+                TAuditStrictSetting.TAuditDiskPatterns,
+                TAuditStrictSetting.TAuditDiskExempt))
+            .ToList();
 
         Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
-            "AUDITSTRICT",
-            $"{stale.Count} ceiling(s) sit above the count and must be lowered.\n{string.Join('\n', stale)}"));
+            TAuditStrictAudit,
+            $"{stale.Count} exempt file(s) hold no line the exemption spares and must be removed:\n"
+            + string.Join('\n', stale)));
+    }
+
+    [Fact]
+    public void AuditStrict_Ledger_MatchesHits()
+    {
+        TAuditLedger.TAuditStaleCheck(
+            TAuditStrictAudit,
+            TAuditStrictSetting.TAuditLedgerFile,
+            TAuditStrictKinds,
+            TAuditStrictHits.Value.TAuditHits);
+    }
+
+    [Fact]
+    public void AuditStrict_Sources_WalkEveryFile()
+    {
+        TAuditBinder.TAuditCoverCheck(TAuditStrictAudit, TAuditStrictHits.Value.TAuditSources);
     }
 
     private void TAuditStrictCheck(string kind, string summary)
     {
-        List<TViolation> hits = TAuditStrictHits.Value.TAuditHits
-            .Where(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal))
-            .ToList();
         string report = TAuditStrictWritten.Value;
-        int ceiling = TAuditStrictSetting.TAuditStrictCeiling.GetValueOrDefault(kind);
-        _tAuditOutput.WriteLine($"AUDITSTRICT {kind}: {hits.Count} {summary}, ceiling {ceiling}. Report: {report}");
+        int count = TAuditLedger.TAuditLedgerCheck(
+            TAuditStrictAudit,
+            TAuditStrictSetting.TAuditLedgerFile,
+            kind,
+            TAuditStrictHits.Value.TAuditHits,
+            TAuditStrictSetting.TAuditStrictEnforced,
+            summary);
+        _tAuditOutput.WriteLine($"{TAuditStrictAudit} {kind}: {count} {summary}. Report: {report}");
+    }
 
-        bool held = !TAuditStrictSetting.TAuditStrictEnforced || hits.Count <= ceiling;
-        Assert.True(held, TAuditConvention.TAuditReportFormat(
-            "AUDITSTRICT",
-            $"{hits.Count} {summary}, above the ceiling of {ceiling}. See {report}"));
+    private static IEnumerable<string> TAuditExemptRead(
+        IReadOnlyList<string> include, IReadOnlyList<string> forbidden, IReadOnlyList<string> exempt)
+    {
+        HashSet<string> used = TAuditSourceScan(include, forbidden, [])
+            .Select(hit => Path.GetFileName(hit.Trim().Split(':')[0]))
+            .ToHashSet(StringComparer.Ordinal);
+        return exempt.Where(name => !used.Contains(name)).Select(name => $"  {name}");
     }
 
     private static List<string> TAuditSourceScan(
@@ -152,26 +196,18 @@ public sealed class TAuditStrict
         return hits;
     }
 
-    private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers) TAuditStrictRead()
+    private static (IReadOnlyList<TViolation> TAuditHits, IReadOnlyList<string> TAuditVeneers,
+        IReadOnlyList<string> TAuditSources) TAuditStrictRead()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
-        TAuditScope scope = new(
-            [],
-            TAuditTruthSetting.TAuditShellInclude,
-            TAuditNameSetting.TAuditExcludedSegments,
-            TAuditNameSetting.TAuditExcludedSuffixes,
-            TAuditNameSetting.TAuditExcludedPrefixes,
-            []);
-        IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
-        TAuditScope markup = new(
-            [],
-            TAuditStrictSetting.TAuditReachInclude,
-            TAuditNameSetting.TAuditExcludedSegments,
-            TAuditNameSetting.TAuditExcludedSuffixes,
-            TAuditNameSetting.TAuditExcludedPrefixes,
-            []);
-        IReadOnlyList<string> markups = TAuditSource.TAuditFileRead(repoRoot, markup);
+        IReadOnlyList<string> sources = TAuditScopeRead(repoRoot, TAuditTruthSetting.TAuditShellInclude);
+        IReadOnlyList<string> hosts = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditHostInclude);
+        IReadOnlyList<string> markups = TAuditScopeRead(repoRoot, TAuditStrictSetting.TAuditReachInclude);
+        Assert.True(sources.Count > 0 && hosts.Count > 0 && markups.Count > 0, TAuditConvention.TAuditReportFormat(
+            TAuditStrictAudit,
+            "No tracked surface, host or markup file was enumerated; the audit would pass vacuously."));
         IReadOnlyList<TViolation> hits = TAuditStrictWalker.TAuditRun(sources, out List<string> veneers)
+            .Concat(TAuditHostWalker.TAuditRun(hosts))
             .Concat(TAuditReachWalker.TAuditRun(markups))
             .Select(hit => hit with
             {
@@ -181,23 +217,34 @@ public sealed class TAuditStrict
             .ThenBy(hit => hit.TViolationLine)
             .ToList();
         veneers.Sort(StringComparer.Ordinal);
-        return (hits, veneers);
+        return (hits, veneers, [.. sources, .. hosts]);
+    }
+
+    private static IReadOnlyList<string> TAuditScopeRead(string repoRoot, IReadOnlyList<string> include)
+    {
+        return TAuditSource.TAuditFileRead(repoRoot, new TAuditScope(
+            [],
+            include,
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            []));
     }
 
     private static string TAuditReportSave()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
-        (IReadOnlyList<TViolation> hits, IReadOnlyList<string> veneers) = TAuditStrictHits.Value;
+        (IReadOnlyList<TViolation> hits, IReadOnlyList<string> veneers, _) = TAuditStrictHits.Value;
         string version = TAuditSource.TAuditVersionRead(repoRoot);
         string path = Path.Combine(repoRoot, string.Format(TAuditStrictSetting.TAuditStrictReport, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         StringBuilder text = new();
-        text.AppendLine($"# Veneer audit {version}");
+        text.AppendLine($"# Surface audit {version}");
         text.AppendLine();
         text.AppendLine($"- Generation: {TAuditConvention.TAuditGeneration}");
         text.AppendLine($"- Enforced: {TAuditStrictSetting.TAuditStrictEnforced}");
-        text.AppendLine($"- Veneer types: {veneers.Count}");
+        text.AppendLine($"- Surface types: {veneers.Count}");
         foreach (string kind in TAuditStrictKinds)
         {
             int count = hits.Count(hit => string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal));
@@ -205,16 +252,16 @@ public sealed class TAuditStrict
         }
 
         text.AppendLine();
-        text.AppendLine("## Veneer types by member");
+        text.AppendLine("## Surface types by member");
         text.AppendLine();
-        text.AppendLine("| Class | Storage | Call | Engine |");
+        text.AppendLine("| Class | Storage | Call | Depth |");
         text.AppendLine("|---|---|---|---|");
         foreach (string veneer in veneers)
         {
             int storage = TAuditClassRead(hits, veneer, "Storage");
             int call = TAuditClassRead(hits, veneer, "Call");
-            int engine = TAuditClassRead(hits, veneer, "Engine");
-            text.AppendLine($"| {veneer} | {storage} | {call} | {engine} |");
+            int depth = TAuditClassRead(hits, veneer, "Depth");
+            text.AppendLine($"| {veneer} | {storage} | {call} | {depth} |");
         }
 
         foreach (string kind in TAuditStrictKinds)
@@ -222,13 +269,9 @@ public sealed class TAuditStrict
             text.AppendLine();
             text.AppendLine($"## {kind}");
             text.AppendLine();
-            foreach (TViolation hit in hits)
+            foreach (TViolation hit in hits.Where(hit =>
+                         string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal)))
             {
-                if (!string.Equals(hit.TViolationKind, kind, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
                 text.AppendLine(
                     $"- `{hit.TViolationPath}:{hit.TViolationLine}` `{hit.TViolationName}` {hit.TViolationReason}");
             }

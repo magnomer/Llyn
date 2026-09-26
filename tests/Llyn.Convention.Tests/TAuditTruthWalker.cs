@@ -32,6 +32,7 @@ internal static partial class TAuditTruthWalker
                 TAuditShapeScan(root, violations);
             }
 
+            TAuditParityScan(violations);
             foreach (List<TypeDeclarationSyntax> type in parts.Values)
             {
                 TAuditBaseCheck(type, violations);
@@ -123,9 +124,8 @@ internal static partial class TAuditTruthWalker
                         continue;
                     }
 
-                    bool wired = TAuditWiredCheck(variable.Initializer?.Value);
-                    HashSet<ISymbol> symbols = new([symbol], SymbolEqualityComparer.Default);
-                    if (!wired && (!fixture || TAuditFillCheck(symbols, type)))
+                    HashSet<ISymbol> symbols = TAuditAliasRead(symbol, type);
+                    if (!fixture || TAuditBinder.TAuditEngineCheck(symbol.Type) || TAuditFillCheck(symbols, type))
                     {
                         yield return new TAuditTruthField(
                             symbols,
@@ -168,8 +168,8 @@ internal static partial class TAuditTruthWalker
                     accessor.IsKind(SyntaxKind.SetAccessorDeclaration)
                     || accessor.IsKind(SyntaxKind.InitAccessorDeclaration)) == true;
                 if (!settable
-                    || TAuditWiredCheck(property.Initializer?.Value)
-                    || TAuditBinder.TAuditSymbolRead(property) is not IPropertySymbol symbol)
+                    || TAuditBinder.TAuditSymbolRead(property) is not IPropertySymbol symbol
+                    || TAuditHandleCheck(symbol.Type))
                 {
                     continue;
                 }
@@ -203,32 +203,16 @@ internal static partial class TAuditTruthWalker
         return type.Any(part => part.SyntaxTree == node.SyntaxTree && part.Span.Contains(node.Span));
     }
 
-    private static bool TAuditHandleCheck(ITypeSymbol type)
-    {
-        string shown = type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
-        return TAuditTruthSetting.TAuditTruthHandles.Contains(shown, StringComparer.Ordinal)
-               || TAuditTruthSetting.TAuditTruthHandles.Contains(shown.TrimEnd('?'), StringComparer.Ordinal);
-    }
-
     private static bool TAuditFieldCheck(IdentifierNameSyntax identifier, HashSet<ISymbol> symbols)
     {
         ISymbol? symbol = TAuditBinder.TAuditSymbolRead(identifier);
         return symbol is not null && symbols.Contains(symbol);
     }
 
-    private static bool TAuditWiredCheck(ExpressionSyntax? value)
-    {
-        return value is PostfixUnaryExpressionSyntax
-        {
-            RawKind: (int)SyntaxKind.SuppressNullableWarningExpression,
-            Operand: LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NullLiteralExpression }
-        };
-    }
-
     private static void TAuditFieldCheck(
         TAuditTruthField field, IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)
     {
-        if (TAuditBinder.TAuditLogicCheck(field.TFieldType))
+        if (TAuditBinder.TAuditEngineCheck(field.TFieldType))
         {
             violations.Add(new TViolation(
                 field.TFieldPath,

@@ -145,12 +145,12 @@ public sealed class LPortraitClerk
             ]);
     }
 
-    public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitFormat format)
+    public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)
     {
         ArgumentNullException.ThrowIfNull(portrait);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-        if (format == LPortraitFormat.LPortraitFormatPdf)
+        if (format == LPortraitMedium.LPortraitMediumPdf)
         {
             await _lPortraitClerkPress.LPressSave(_lPortraitClerkPortraits.LPortraitSheetFormat(portrait), path)
                 .ConfigureAwait(false);

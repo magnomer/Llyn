@@ -5,12 +5,29 @@
 One Roslyn compilation of every tracked source under `src`, shared by every audit that binds.
 The chain, the frame and the shell walks read the same trees, so the bind is paid once.
 The shell's generated markup classes join the compilation, so an `x:Name` field binds like any other.
-Every referenced package is read from the build output and every framework pack from the runtime.
+`TAuditReference` supplies the references and the generated code.
+The compilation must hold no error, so an unbound name can never drop out of a walk unseen.
 Nothing here names a project: the folders, the exclusions and the project name come from the settings.
 
 ## `private const string TAuditBinderSource = "src/";`
 
 The folder every ring lives under.
+
+## `private const string TAuditShellSide = "shell";`
+
+The side of a type declared under a UI root.
+
+## `private const string TAuditConductSide = "conduct";`
+
+The side of a type declared in Conduct, the gates a driver is meant to hold.
+
+## `private const string TAuditEngineSide = "engine";`
+
+The side of a type declared in any other source, below Conduct.
+
+## `private static readonly string[] TAuditLogicSides`
+
+The sides below the cut, which a request reaches.
 
 ## `private static readonly CSharpParseOptions TAuditSyntaxOptions`
 
@@ -56,9 +73,13 @@ The semantic model of the tree a node belongs to.
 
 The roots of the tracked trees the given paths name, so a walker scans its own scope.
 
+## `public static void TAuditCoverCheck(string audit, IReadOnlyList<string> sourcePaths)`
+
+Fails when a tracked source is missing from the compiled trees, so a dropped file cannot pass unseen.
+
 ## `public static bool TAuditWalkCheck(SyntaxNode root)`
 
-True when the root's file sits under a folder the custody walk audits.
+True when the root's file sits under a folder the driver walk audits.
 
 ## `public static IReadOnlyList<string> TAuditRootRead(IEnumerable<string> patterns)`
 
@@ -110,19 +131,52 @@ True when the node's symbol or its type is logic.
 
 ## `public static bool TAuditLogicCheck(ISymbol? symbol)`
 
-True when the symbol is a logic type, a local or a parameter of one, or a member of one.
+True for a type below the cut, a member of one, or a local or parameter of one.
 
 ## `public static bool TAuditLogicCheck(ITypeSymbol? type)`
 
-True when the type, its element or any type argument is declared in a source outside the shell.
+True when the type, its element or any type argument is declared below the cut, Conduct included.
+
+## `public static bool TAuditEngineCheck(SyntaxNode node)`
+
+True when the node's symbol or its type is declared below Conduct.
+
+## `public static bool TAuditEngineCheck(ISymbol? symbol)`
+
+True for a type below Conduct, a member of one, or a local or parameter of one.
+
+## `public static bool TAuditEngineCheck(ITypeSymbol? type)`
+
+True when the type, its element or any type argument is declared below Conduct.
+
+## `public static bool TAuditConductCheck(ITypeSymbol? type)`
+
+True for a Conduct type whose type arguments are Conduct types too, which a driver may hold.
 
 ## `public static bool TAuditShellCheck(ITypeSymbol? type)`
 
-True when the type, its element or any type argument is declared in a shell source, generated ones included.
+True when the type, its element or any type argument is declared in a UI source, generated ones included.
+
+## `public static bool TAuditSurfaceCheck(ITypeSymbol? type)`
+
+True when the type is declared under a surface root.
+
+## `private static bool TAuditDepthCheck(ISymbol? symbol, string[] sides)`
+
+True when the symbol is a type on a given side, a member of one, or a local of one.
+A parameter counts as a local here.
+
+## `private static bool TAuditDepthCheck(ITypeSymbol? type, string[] sides)`
+
+True when the type, its element or any type argument is declared on one of the sides.
 
 ## `public static bool TAuditControlCheck(ITypeSymbol? type)`
 
 True when the type or any base of it is a listed control base.
+
+## `public static bool TAuditMemberCheck(ISymbol? symbol, IReadOnlyList<string> members)`
+
+True when the symbol's declaring type and name, joined by a dot, are in the list.
 
 ## `public static bool TAuditNamedCheck(ITypeSymbol? type, IReadOnlyList<string> names)`
 
@@ -135,11 +189,12 @@ The symbol's name, prefixed by its owning type's name when it has one.
 ## `public static IReadOnlySet<string> TAuditDeportmentRead()`
 
 Every type name and member name the deportment namespace declares, so a markup binding to one is not a reach.
+A name that a type below the cut also declares is removed, so a deeper binding cannot pass by coincidence.
 
-## `private static bool TAuditSideCheck(INamedTypeSymbol? type, bool shell)`
+## `private static string? TAuditSideRead(INamedTypeSymbol? type)`
 
-True when the type is declared in a source on the asked side of the shell line.
-A type from metadata sits on neither side.
+The side a type is declared on: shell, conduct or engine.
+A type from metadata sits on no side.
 
 ## `private static ISymbol? TAuditSymbolResolve(SyntaxNode node)`
 
@@ -153,13 +208,5 @@ The compilation's trees whose file sits under `src` and not under an `obj` folde
 
 Enumerates the sources with Git, adds the generated markup classes, parses and binds them.
 An empty enumeration fails rather than passing vacuously.
-
-## `private static List<string> TAuditGeneratedRead()`
-
-The generated `.cs` files of the newest `obj` output of each shell root, temp projects and `.g.i.cs` left out.
-
-## `private static List<MetadataReference> TAuditReferenceRead()`
-
-The runtime assemblies of each framework pack and every package library in the newest build output.
-The project's own assemblies are skipped, since their sources are in the compilation.
-Missing build output fails with the build step named.
+The sources compile as one program, since Host carries the entry point.
+Any compile error fails, since a stale or missing build would otherwise weaken every walk silently.

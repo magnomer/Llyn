@@ -5,11 +5,11 @@ Synchronize the repository's CodeGraph index and report what changed.
 
 .DESCRIPTION
 Displays the current CodeGraph index statistics, applies an incremental sync,
-then displays updated statistics and file, node, and edge deltas. Use -Full to
+then displays updated statistics and file, node, and edge deltas. Use -Rebuild to
 rebuild the entire index instead. The script requires the codegraph CLI and an
 initialized .codegraph directory.
 
-.PARAMETER Full
+.PARAMETER Rebuild
 Rebuild the complete index with codegraph index instead of applying an
 incremental codegraph sync.
 
@@ -21,13 +21,14 @@ synccode
 Synchronize pending repository changes into the index.
 
 .EXAMPLE
-synccode -Full
+synccode -Rebuild
 Rebuild the complete index.
 
 .NOTES
 This script carries no project-specific value, so the file is identical in
 every project at the same generation.
 #>
+#requires -Version 5.1
 # SNAPSHOT GENERATION 1 - synccode.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
@@ -41,8 +42,9 @@ every project at the same generation.
 # maintains the editor exclusions; synccode.ps1 syncs the CodeGraph index and reports the delta.
 # Every project-specific value lives in snapshot.json, so this file is identical in every project at
 # this generation.
+[CmdletBinding()]
 param(
-    [switch]$Full,
+    [switch]$Rebuild,
     [Alias('?')]
     [switch]$Help
 )
@@ -56,10 +58,10 @@ SYNOPSIS
     Synchronize the repository's CodeGraph index and report what changed.
 
 SYNTAX
-    synccode [-Full] [-Help]
+    synccode [-Rebuild] [-Help]
 
 OPTIONS
-    -Full
+    -Rebuild
         Rebuild the complete index with codegraph index. Without this option,
         the script applies an incremental codegraph sync.
 
@@ -70,7 +72,7 @@ EXAMPLES
     synccode
         Synchronize pending repository changes into the index.
 
-    synccode -Full
+    synccode -Rebuild
         Rebuild the complete index.
 
 NOTES
@@ -79,6 +81,7 @@ NOTES
     exit 0
 }
 
+Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # The codegraph CLI works on the current folder, so the project root is entered for the run.
@@ -129,16 +132,22 @@ if ($pending -gt 0) {
 
 # --- (2) Update ---
 Write-Host "`n[2] Updating" -ForegroundColor Cyan
-if ($Full) {
+if ($Rebuild) {
     Write-Host "  Full rebuild (codegraph index)..." -ForegroundColor DarkGray
     codegraph index
 } else {
     codegraph sync
 }
+if ($LASTEXITCODE -ne 0) {
+    throw "codegraph update failed ($LASTEXITCODE)."
+}
 
 # --- (3) After ---
 Write-Host "`n[3] New situation" -ForegroundColor Cyan
 $after = Read-Status
+if (-not $after) {
+    throw 'codegraph status failed after the update.'
+}
 Write-Stats $after
 Write-Host "  Delta:" -ForegroundColor Cyan
 Write-Delta $before.fileCount $after.fileCount 'files'

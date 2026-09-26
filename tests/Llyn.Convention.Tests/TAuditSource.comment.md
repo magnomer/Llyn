@@ -19,10 +19,11 @@ The current version, for naming a report.
 
 ## `public static IReadOnlyList<string> TAuditFileRead(string repoRoot, TAuditScope scope)`
 
-Asks Git for the tracked and untracked files matching the scope's patterns.
+Asks Git for the tracked and untracked files matching the scope's patterns without case.
 Ignored files never appear, and a file deleted on disk is skipped.
 The rest is filtered by the scope and sorted for a stable report.
 
 ## `private static bool TAuditExcludedCheck(string relativePath, TAuditScope scope)`
 
 Applies the roots, segments, files, suffixes, and prefixes of the scope in that order.
+Roots, segments, files and suffixes compare without case, as the audit scripts do.

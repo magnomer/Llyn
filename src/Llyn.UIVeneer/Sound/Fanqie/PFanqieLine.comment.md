@@ -5,11 +5,6 @@
 One placement drawn as one row of the fanqie block, its parts in shared columns.
 The columns read as a 音韻地位: reading, tone class, initial, rime, 重紐, 開合, division, tone and 反切.
 
-## `private const string PFanqieLineMark = "合";`
-
-The medial column's word for a rounded placement.
-It is drawn as a chip so it stands out as the site's colour did.
-
 ## `public int PFanqieLineRank`
 
 The line's place among the character's representative readings, one first, zero when unmarked.

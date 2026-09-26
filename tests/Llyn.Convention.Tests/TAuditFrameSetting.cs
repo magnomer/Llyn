@@ -2,13 +2,14 @@ namespace Convention.Tests;
 
 internal static class TAuditFrameSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
 
     public static readonly string[] TAuditFramePure =
     [
         "Llyn.Core",
         "Llyn.Application",
         "Llyn.ShellEngine",
+        "Llyn.Conduct",
     ];
 
     public static readonly string[] TAuditFrameAllowed =
@@ -23,8 +24,15 @@ internal static class TAuditFrameSetting
         "System.Threading.Tasks",
         "System.Diagnostics.CodeAnalysis",
         "System.Runtime.CompilerServices",
-        "System.Runtime.ExceptionServices",
     ];
+
+    public static readonly IReadOnlyDictionary<string, string[]> TAuditFrameExtra = new Dictionary<string, string[]>
+    {
+        ["Llyn.Core"] = [],
+        ["Llyn.Application"] = [],
+        ["Llyn.ShellEngine"] = ["System.Runtime.ExceptionServices"],
+        ["Llyn.Conduct"] = ["System.Runtime.ExceptionServices"],
+    };
 
     public static readonly string[] TAuditFrameAmbient =
     [

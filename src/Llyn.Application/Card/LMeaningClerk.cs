@@ -49,7 +49,7 @@ public sealed class LMeaningClerk
         long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
-        List<LRevisionChange> changes,
+        List<LRevisionDelta> changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(cards);
@@ -85,7 +85,7 @@ public sealed class LMeaningClerk
             }
 
             gone.Add(dropped);
-            changes.Add(new LRevisionChange(
+            changes.Add(new LRevisionDelta(
                 dropped, "sense", "delete", row.LMeaningDefinition.LStateValueShow()));
             meanings.LMeaningDelete(dropped);
         }
@@ -107,7 +107,7 @@ public sealed class LMeaningClerk
         long? parentId,
         IReadOnlyList<LCardDraft> cards,
         string language,
-        List<LRevisionChange> changes,
+        List<LRevisionDelta> changes,
         IReadOnlyDictionary<long, LMeaning> stored,
         ISet<long> gone,
         ISet<long> applied,
@@ -141,7 +141,7 @@ public sealed class LMeaningClerk
                         LMeaningTitle = card.LCardDraftTitle,
                         LMeaningDefinition = card.LCardDraftMeaning,
                     });
-                    changes.Add(new LRevisionChange(
+                    changes.Add(new LRevisionDelta(
                         row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
                 }
 
@@ -156,7 +156,7 @@ public sealed class LMeaningClerk
                     0,
                     card.LCardDraftTitle,
                     card.LCardDraftMeaning));
-                changes.Add(new LRevisionChange(
+                changes.Add(new LRevisionDelta(
                     created.LMeaningId,
                     "sense",
                     "create",

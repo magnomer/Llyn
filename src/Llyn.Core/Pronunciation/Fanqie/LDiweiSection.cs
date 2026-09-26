@@ -39,7 +39,7 @@ public sealed record LDiweiSection(
         foreach (LFanqieRow row in rows)
         {
             string heading = rime
-                ? hypothesis?.LHypothesisPlaceFind(row.LFanqieRowInitial)?.LHypothesisPlaceName ?? string.Empty
+                ? hypothesis?.LHypothesisLocusFind(row.LFanqieRowInitial)?.LHypothesisLocusName ?? string.Empty
                 : row.LFanqieRowDivision;
             if (!sections.TryGetValue(heading, out List<LDiweiLine>? placed))
             {

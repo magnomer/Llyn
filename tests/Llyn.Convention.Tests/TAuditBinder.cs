@@ -9,6 +9,14 @@ internal static class TAuditBinder
 {
     private const string TAuditBinderSource = "src/";
 
+    private const string TAuditShellSide = "shell";
+
+    private const string TAuditConductSide = "conduct";
+
+    private const string TAuditEngineSide = "engine";
+
+    private static readonly string[] TAuditLogicSides = [TAuditConductSide, TAuditEngineSide];
+
     private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
         languageVersion: LanguageVersion.Preview,
         documentationMode: DocumentationMode.None,
@@ -51,6 +59,18 @@ internal static class TAuditBinder
             .Where(tree => chosen.Contains(Path.GetFullPath(tree.FilePath)))
             .Select(tree => tree.GetRoot())
             .ToList();
+    }
+
+    public static void TAuditCoverCheck(string audit, IReadOnlyList<string> sourcePaths)
+    {
+        HashSet<string> walked = new(
+            TAuditTrees.Select(tree => Path.GetFullPath(tree.FilePath)), StringComparer.OrdinalIgnoreCase);
+        List<string> missed = sourcePaths
+            .Where(path => !walked.Contains(Path.GetFullPath(path)))
+            .Select(path => $"  {TAuditRelativeRead(path)}")
+            .ToList();
+        Assert.True(missed.Count == 0, TAuditConvention.TAuditReportFormat(
+            audit, $"{missed.Count} tracked source(s) never reach the walkers.\n{string.Join('\n', missed)}"));
     }
 
     public static bool TAuditWalkCheck(SyntaxNode root)
@@ -179,36 +199,55 @@ internal static class TAuditBinder
         return TAuditLogicCheck(symbol) || TAuditLogicCheck(TAuditTypeRead(node));
     }
 
-    public static bool TAuditLogicCheck(ISymbol? symbol)
+    public static bool TAuditLogicCheck(ISymbol? symbol) => TAuditDepthCheck(symbol, TAuditLogicSides);
+
+    public static bool TAuditLogicCheck(ITypeSymbol? type) => TAuditDepthCheck(type, TAuditLogicSides);
+
+    public static bool TAuditEngineCheck(SyntaxNode node)
+    {
+        return TAuditDepthCheck(TAuditSymbolRead(node), [TAuditEngineSide])
+               || TAuditDepthCheck(TAuditTypeRead(node), [TAuditEngineSide]);
+    }
+
+    public static bool TAuditEngineCheck(ISymbol? symbol) => TAuditDepthCheck(symbol, [TAuditEngineSide]);
+
+    public static bool TAuditEngineCheck(ITypeSymbol? type) => TAuditDepthCheck(type, [TAuditEngineSide]);
+
+    public static bool TAuditConductCheck(ITypeSymbol? type)
+    {
+        return type is INamedTypeSymbol named && TAuditSideRead(named) == TAuditConductSide
+               && named.TypeArguments.All(TAuditConductCheck);
+    }
+
+    public static bool TAuditShellCheck(ITypeSymbol? type) => TAuditDepthCheck(type, [TAuditShellSide]);
+
+    public static bool TAuditSurfaceCheck(ITypeSymbol? type)
+    {
+        string? source = type is INamedTypeSymbol named ? TAuditSourceRead(named.OriginalDefinition) : null;
+        return source is not null && TAuditRootRead(TAuditStrictSetting.TAuditVeneerInclude)
+            .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool TAuditDepthCheck(ISymbol? symbol, string[] sides)
     {
         return symbol switch
         {
             null => false,
-            ILocalSymbol local => TAuditLogicCheck(local.Type),
-            IParameterSymbol parameter => TAuditLogicCheck(parameter.Type),
-            ITypeSymbol type => TAuditLogicCheck(type),
-            _ => TAuditSideCheck(symbol.ContainingType, false)
+            ILocalSymbol local => TAuditDepthCheck(local.Type, sides),
+            IParameterSymbol parameter => TAuditDepthCheck(parameter.Type, sides),
+            ITypeSymbol type => TAuditDepthCheck(type, sides),
+            _ => sides.Contains(TAuditSideRead(symbol.ContainingType))
         };
     }
 
-    public static bool TAuditLogicCheck(ITypeSymbol? type)
+    private static bool TAuditDepthCheck(ITypeSymbol? type, string[] sides)
     {
         return type switch
         {
             null => false,
-            IArrayTypeSymbol array => TAuditLogicCheck(array.ElementType),
-            INamedTypeSymbol named => TAuditSideCheck(named, false) || named.TypeArguments.Any(TAuditLogicCheck),
-            _ => false
-        };
-    }
-
-    public static bool TAuditShellCheck(ITypeSymbol? type)
-    {
-        return type switch
-        {
-            null => false,
-            IArrayTypeSymbol array => TAuditShellCheck(array.ElementType),
-            INamedTypeSymbol named => TAuditSideCheck(named, true) || named.TypeArguments.Any(TAuditShellCheck),
+            IArrayTypeSymbol array => TAuditDepthCheck(array.ElementType, sides),
+            INamedTypeSymbol named => sides.Contains(TAuditSideRead(named))
+                                      || named.TypeArguments.Any(argument => TAuditDepthCheck(argument, sides)),
             _ => false
         };
     }
@@ -224,6 +263,13 @@ internal static class TAuditBinder
         }
 
         return false;
+    }
+
+    public static bool TAuditMemberCheck(ISymbol? symbol, IReadOnlyList<string> members)
+    {
+        return symbol?.ContainingType is { } owner
+               && members.Contains(
+                   $"{owner.OriginalDefinition.ToDisplayString()}.{symbol.Name}", StringComparer.Ordinal);
     }
 
     public static bool TAuditNamedCheck(ITypeSymbol? type, IReadOnlyList<string> names)
@@ -254,20 +300,41 @@ internal static class TAuditBinder
             names.UnionWith(type.GetMembers().Select(member => member.Name));
         }
 
+        Stack<INamespaceOrTypeSymbol> pending = new([TAuditBinderCompilation.Value.Assembly.GlobalNamespace]);
+        while (pending.TryPop(out INamespaceOrTypeSymbol? current))
+        {
+            foreach (INamespaceOrTypeSymbol child in current.GetMembers().OfType<INamespaceOrTypeSymbol>())
+            {
+                pending.Push(child);
+            }
+
+            if (current is INamedTypeSymbol deeper && TAuditLogicSides.Contains(TAuditSideRead(deeper)))
+            {
+                names.Remove(deeper.Name);
+                names.ExceptWith(deeper.GetMembers().Select(member => member.Name));
+            }
+        }
+
         return names;
     }
 
-    private static bool TAuditSideCheck(INamedTypeSymbol? type, bool shell)
+    private static string? TAuditSideRead(INamedTypeSymbol? type)
     {
         string? source = type is null ? null : TAuditSourceRead(type.OriginalDefinition);
         if (source is null)
         {
-            return false;
+            return null;
         }
 
-        bool inside = TAuditRootRead(TAuditTruthSetting.TAuditShellInclude)
-            .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase));
-        return inside == shell;
+        if (TAuditRootRead(TAuditTruthSetting.TAuditShellInclude)
+            .Any(folder => source.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
+        {
+            return TAuditShellSide;
+        }
+
+        return source.StartsWith(TAuditTruthSetting.TAuditConductRoot + "/", StringComparison.OrdinalIgnoreCase)
+            ? TAuditConductSide
+            : TAuditEngineSide;
     }
 
     private static ISymbol? TAuditSymbolResolve(SyntaxNode node)
@@ -306,92 +373,27 @@ internal static class TAuditBinder
             "AUDITBINDER", "No tracked source file was enumerated; every bound audit would pass vacuously."));
 
         List<SyntaxTree> trees = sources
-            .Concat(TAuditGeneratedRead())
+            .Concat(TAuditReference.TAuditGeneratedRead())
             .AsParallel()
             .AsOrdered()
             .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path))
             .ToList();
-        return CSharpCompilation.Create(
+        CSharpCompilation compilation = CSharpCompilation.Create(
             "AuditBinder",
             trees,
-            TAuditReferenceRead(),
+            TAuditReference.TAuditReferenceRead(),
             new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary,
+                OutputKind.ConsoleApplication,
                 allowUnsafe: true,
                 nullableContextOptions: NullableContextOptions.Enable));
-    }
-
-    private static List<string> TAuditGeneratedRead()
-    {
-        List<string> files = [];
-        foreach (string root in TAuditRootRead(TAuditTruthSetting.TAuditShellInclude))
-        {
-            string folder = Path.Combine(
-                TAuditRoot,
-                root.Replace('/', Path.DirectorySeparatorChar),
-                "obj",
-                TAuditTruthSetting.TAuditConfiguration);
-            if (!Directory.Exists(folder))
-            {
-                continue;
-            }
-
-            string? target = Directory.EnumerateDirectories(folder)
-                .OrderByDescending(Directory.GetLastWriteTimeUtc)
-                .FirstOrDefault();
-            if (target is null)
-            {
-                continue;
-            }
-
-            files.AddRange(Directory.EnumerateFiles(target, "*.cs", SearchOption.AllDirectories)
-                .Where(path => !Path.GetFileName(path).Contains("_wpftmp", StringComparison.Ordinal))
-                .Where(path => !path.EndsWith(".g.i.cs", StringComparison.OrdinalIgnoreCase)));
-        }
-
-        return files;
-    }
-
-    private static List<MetadataReference> TAuditReferenceRead()
-    {
-        Dictionary<string, string> chosen = new(StringComparer.OrdinalIgnoreCase);
-        string runtime = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-        string shared = Path.GetDirectoryName(Path.GetDirectoryName(runtime)!)!;
-        foreach (string pack in TAuditTruthSetting.TAuditFrameworkPacks)
-        {
-            string folder = Path.Combine(shared, pack, Path.GetFileName(runtime));
-            Assert.True(Directory.Exists(folder), TAuditConvention.TAuditReportFormat(
-                "AUDITBINDER",
-                $"The shared framework '{pack}' is not installed beside the test runtime at {folder}."));
-            foreach (string path in Directory.EnumerateFiles(folder, "*.dll"))
-            {
-                chosen.TryAdd(Path.GetFileNameWithoutExtension(path), path);
-            }
-        }
-
-        string output = Path.Combine(
-            TAuditRoot,
-            TAuditTruthSetting.TAuditReferenceRoot.Replace('/', Path.DirectorySeparatorChar),
-            "bin",
-            TAuditTruthSetting.TAuditConfiguration);
-        string? built = Directory.Exists(output)
-            ? Directory.EnumerateDirectories(output).OrderByDescending(Directory.GetLastWriteTimeUtc).FirstOrDefault()
-            : null;
-        Assert.True(built is not null, TAuditConvention.TAuditReportFormat(
-            "AUDITBINDER", $"No build output under {output}; build the solution before the audit."));
-        string project = TAuditNameSetting.TAuditProject;
-        foreach (string path in Directory.EnumerateFiles(built!, "*.dll"))
-        {
-            string name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals(project, StringComparison.OrdinalIgnoreCase)
-                || name.StartsWith(project + ".", StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            chosen[name] = path;
-        }
-
-        return chosen.Values.Select(path => (MetadataReference)MetadataReference.CreateFromFile(path)).ToList();
+        List<string> errors = compilation.GetDiagnostics()
+            .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+            .Select(diagnostic => $"  {diagnostic}")
+            .ToList();
+        Assert.True(errors.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITBINDER",
+            $"{errors.Count} compile error(s) in the bound sources; an unbound name would slip past every walker.\n"
+            + string.Join('\n', errors.Take(40))));
+        return compilation;
     }
 }

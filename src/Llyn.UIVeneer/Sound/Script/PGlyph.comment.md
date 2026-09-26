@@ -28,8 +28,3 @@ Renders the glyph row from the draft's row in the glyph scheme, keyed by its tra
 The pack's glyph section is asked once per render, and the row is shown only while the language declares one.
 The list's tag says whether the section declares sources, so the template can hide the lookup button.
 The glyph typography goes into the list's resources, so the field takes it and the scheme label does not.
-
-## `private void PGlyphPrepare(LEntryDraft draft)`
-
-Asks for a seeded row in the glyph scheme when the language declares one and the draft has none.
-It runs before the render, as the transcription rows' ask does, and costs nothing while left blank.

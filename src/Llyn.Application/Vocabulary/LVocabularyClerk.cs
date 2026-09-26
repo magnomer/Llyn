@@ -110,7 +110,7 @@ public sealed class LVocabularyClerk
         return speeches;
     }
 
-    public void LSpeechUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    public void LSpeechUpdate(long entryId, LEntryDraft draft, List<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(changes);
@@ -125,7 +125,7 @@ public sealed class LVocabularyClerk
         }
 
         entries.LEntrySpeechSet(entryId, current);
-        changes.Add(new LRevisionChange(
+        changes.Add(new LRevisionDelta(
             entryId,
             "speech",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

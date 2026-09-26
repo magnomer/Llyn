@@ -25,7 +25,7 @@ A child needs its parent's id, which only exists once the parent row is written.
 Each is appended within its own sibling group, so card order becomes stored position.
 An empty child is skipped on the same terms an empty card is.
 
-## `public void LMeaningClerkSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionChange> changes, Dictionary<long, long> identity)`
+## `public void LMeaningClerkSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 Reconciles the whole Meaning tree of one entry to the cards the draft holds.
 Every stored sense of the entry is read once, roots and children together.
@@ -35,7 +35,7 @@ So a child of a dropped parent is marked gone even when the draft still names it
 That card is then written as a new row rather than onto a row that no longer exists.
 The stored rows arrive parents first, so a parent is always marked before its children are read.
 
-## `private void LMeaningClerkApply(long entryId, long? parentId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionChange> changes, IReadOnlyDictionary<long, LMeaning> stored, ISet<long> gone, ISet<long> applied, Dictionary<long, long> identity)`
+## `private void LMeaningClerkApply(long entryId, long? parentId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, IReadOnlyDictionary<long, LMeaning> stored, ISet<long> gone, ISet<long> applied, Dictionary<long, long> identity)`
 
 Writes one sibling group and then, for each card in it, the group nested under that card.
 A card naming a stored row updates that row and keeps its id.

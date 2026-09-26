@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,6 +16,16 @@ public sealed class TAuditPlatform
     private static readonly string[] TAuditConfigNames = [".editorconfig", ".globalconfig"];
 
     private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditPlatformHits = new(TAuditPlatformRead);
+
+    private static readonly Regex TAuditPragmaPattern = new(
+        @"^\s*#\s*pragma\s+warning\s+disable\b", RegexOptions.Compiled);
+
+    private static readonly Regex TAuditBarePattern = new(@"disable\s*$", RegexOptions.Compiled);
+
+    private static readonly Regex TAuditSectionPattern = new(@"^\s*\[(?<glob>.+)\]\s*$", RegexOptions.Compiled);
+
+    private static readonly Regex TAuditPairPattern = new(
+        @"^\s*(?<key>[^=#;]+?)\s*=\s*(?<value>[^#;]*?)\s*$", RegexOptions.Compiled);
 
     private readonly ITestOutputHelper _tAuditOutput;
 
@@ -125,15 +137,19 @@ public sealed class TAuditPlatform
                     .Select(reference => new TAuditHit(
                         relative, 0, name, "Reference", reference, $"references the Windows project {reference}")));
 
-                if (!TAuditAnalyzerCheck(repoRoot, path))
+                foreach (string source in held.Where(source => source.EndsWith(".cs", StringComparison.Ordinal))
+                             .Where(source => !TAuditAnalyzerCheck(repoRoot, path, source))
+                             .Take(1))
                 {
                     hits.Add(new TAuditHit(
-                        relative, 0, name, "Analyzer", "",
-                        $"{TAuditPlatformSetting.TAuditPlatformRule} is not an error"));
+                        TAuditRelativeRead(repoRoot, source), 0, name, "Analyzer", "",
+                        $"{TAuditPlatformSetting.TAuditPlatformRule} is not an error here"));
                 }
 
+                hits.AddRange(TAuditSuppressRead(repoRoot, path, held, name));
+
                 hits.AddRange(TAuditPlatformSetting.TAuditPlatformProperties
-                    .Where(property => TAuditValueRead(document, property).Any(value => value == "true"))
+                    .Where(property => TAuditValueRead(document, property).Any(TAuditTrueCheck))
                     .Select(property => new TAuditHit(relative, 0, name, "Windows", property, $"enables {property}")));
                 hits.AddRange(TAuditIncludeRead(document, "PackageReference")
                     .Where(package => TAuditPlatformSetting.TAuditPlatformPackages.Contains(package))
@@ -159,10 +175,116 @@ public sealed class TAuditPlatform
                 {
                     hits.Add(new TAuditHit(relative, 0, name, "Empty", "", "the twin holds no source file"));
                 }
+
+                hits.AddRange(TAuditDomainRead(repoRoot, column, held, name));
+            }
+        }
+
+        foreach (string settings in projects.Values.Concat(TAuditImportRead(repoRoot)))
+        {
+            if (TAuditValueRead(XDocument.Load(settings), "ImplicitUsings")
+                .Any(value => TAuditTrueCheck(value) || value.Equals("enable", StringComparison.OrdinalIgnoreCase)))
+            {
+                hits.Add(new TAuditHit(
+                    TAuditRelativeRead(repoRoot, settings), 0, Path.GetFileNameWithoutExtension(settings), "Implicit",
+                    "", "turns implicit usings on, so the binder would miss their global usings"));
             }
         }
 
         return hits;
+    }
+
+    private static IEnumerable<string> TAuditImportRead(string repoRoot)
+    {
+        TAuditScope scope = new([], TAuditImportNames.Select(name => "*" + name).ToArray(), [], [], [], []);
+        return TAuditSource.TAuditFileRead(repoRoot, scope);
+    }
+
+    private static IEnumerable<TAuditHit> TAuditSuppressRead(
+        string repoRoot, string project, IEnumerable<string> held, string name)
+    {
+        string rule = TAuditPlatformSetting.TAuditPlatformRule;
+        XDocument[] documents = TAuditChainRead(repoRoot, project, TAuditImportNames)
+            .Append(project)
+            .Select(path => XDocument.Load(path))
+            .ToArray();
+        string relative = TAuditRelativeRead(repoRoot, project);
+        if (documents.Any(document => TAuditListCheck(document, "NoWarn", rule)))
+        {
+            yield return new TAuditHit(relative, 0, name, "Suppress", rule, $"NoWarn holds {rule}");
+        }
+
+        foreach ((string property, string value) in TAuditPlatformSetting.TAuditPlatformSilencers)
+        {
+            if (documents.Any(document => TAuditValueRead(document, property)
+                    .Any(found => found.Equals(value, StringComparison.OrdinalIgnoreCase))))
+            {
+                yield return new TAuditHit(relative, 0, name, "Suppress", property, $"{property} is {value}");
+            }
+        }
+
+        foreach (string source in held.Where(source => source.EndsWith(".cs", StringComparison.Ordinal)))
+        {
+            string[] lines = File.ReadAllLines(source);
+            for (int index = 0; index < lines.Length; index++)
+            {
+                string line = lines[index];
+                bool pragma = TAuditPragmaPattern.IsMatch(line)
+                              && (line.Contains(rule, StringComparison.Ordinal) || TAuditBarePattern.IsMatch(line));
+                bool attribute = line.Contains("SuppressMessage", StringComparison.Ordinal)
+                                 && line.Contains(rule, StringComparison.Ordinal);
+                if (pragma || attribute)
+                {
+                    yield return new TAuditHit(
+                        TAuditRelativeRead(repoRoot, source), index + 1, name, "Suppress", rule, line.Trim());
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<TAuditHit> TAuditDomainRead(
+        string repoRoot, string column, IEnumerable<string> held, string name)
+    {
+        if (TAuditPlatformSetting.TAuditPlatformShell.Contains(column, StringComparer.Ordinal))
+        {
+            yield break;
+        }
+
+        string portable = TAuditPlatformSetting.TAuditPlatformRoot + column + "/";
+        HashSet<string> files = new(held.Select(Path.GetFullPath), StringComparer.OrdinalIgnoreCase);
+        foreach (SyntaxTree tree in TAuditBinder.TAuditTrees.Where(tree =>
+                     files.Contains(Path.GetFullPath(tree.FilePath))))
+        {
+            foreach (TypeDeclarationSyntax declared in tree.GetRoot()
+                         .DescendantNodes().OfType<TypeDeclarationSyntax>()
+                         .Where(type => type.Parent is not TypeDeclarationSyntax))
+            {
+                if (TAuditBinder.TAuditSymbolRead(declared) is not INamedTypeSymbol type)
+                {
+                    continue;
+                }
+
+                IEnumerable<INamedTypeSymbol> bases = type.AllInterfaces;
+                for (INamedTypeSymbol? current = type.BaseType;
+                     current is not null;
+                     current = current.BaseType)
+                {
+                    bases = bases.Append(current);
+                }
+
+                if (!bases.Any(held => TAuditBinder.TAuditSourceRead(held.OriginalDefinition)
+                        ?.StartsWith(portable, StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    yield return new TAuditHit(
+                        TAuditRelativeRead(repoRoot, tree.FilePath),
+                        declared.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
+                        name,
+                        "Domain",
+                        type.Name,
+                        $"implements no port of {column}, so it holds more than a Windows adaptation");
+                }
+            }
+        }
     }
 
     private static IEnumerable<TAuditHit> TAuditSourceScan(string repoRoot, string source, string project)
@@ -196,19 +318,24 @@ public sealed class TAuditPlatform
                 .Any(framework => framework.Contains("-windows", StringComparison.Ordinal));
     }
 
-    private static bool TAuditAnalyzerCheck(string repoRoot, string project)
+    private static bool TAuditAnalyzerCheck(string repoRoot, string project, string source)
     {
         string rule = TAuditPlatformSetting.TAuditPlatformRule;
-        Regex severity = new(@"^\s*dotnet_diagnostic\." + Regex.Escape(rule) + @"\.severity\s*=\s*(?<level>\w+)");
-        foreach (string config in TAuditChainRead(repoRoot, project, TAuditConfigNames))
+        List<string> configs = TAuditChainRead(repoRoot, source, TAuditConfigNames).ToList();
+        List<string> editors = configs.Where(config => config.EndsWith(TAuditConfigNames[0], StringComparison.Ordinal))
+            .ToList();
+        int top = editors.FindIndex(config => File.ReadLines(config).Any(line =>
+            TAuditPairPattern.Match(line) is { Success: true } pair
+            && pair.Groups["key"].Value.Equals("root", StringComparison.OrdinalIgnoreCase)
+            && pair.Groups["value"].Value.Equals("true", StringComparison.OrdinalIgnoreCase)));
+        IEnumerable<string> ordered = configs
+            .Where(config => config.EndsWith(TAuditConfigNames[1], StringComparison.Ordinal))
+            .Reverse()
+            .Concat(editors.Take(top < 0 ? editors.Count : top + 1).Reverse());
+        string? level = null;
+        foreach (string config in ordered)
         {
-            Match? match = File.ReadLines(config)
-                .Select(line => severity.Match(line))
-                .FirstOrDefault(found => found.Success);
-            if (match is not null)
-            {
-                return match.Groups["level"].Value == "error";
-            }
+            level = TAuditLevelRead(config, source, $"dotnet_diagnostic.{rule}.severity") ?? level;
         }
 
         XDocument[] documents = TAuditChainRead(repoRoot, project, TAuditImportNames)
@@ -217,9 +344,72 @@ public sealed class TAuditPlatform
             .ToArray();
         bool listed = documents.Any(document => TAuditListCheck(document, "WarningsAsErrors", rule));
         bool spared = documents.Any(document => TAuditListCheck(document, "WarningsNotAsErrors", rule));
-        bool every = documents.Any(document =>
-            TAuditValueRead(document, "TreatWarningsAsErrors").Any(value => value == "true"));
-        return listed || (every && !spared);
+        bool every = documents.Any(document => TAuditValueRead(document, "TreatWarningsAsErrors").Any(TAuditTrueCheck));
+        bool escalated = listed || (every && !spared);
+        return level switch
+        {
+            null => escalated,
+            _ when level.Equals("error", StringComparison.OrdinalIgnoreCase) => true,
+            _ when level.Equals("warning", StringComparison.OrdinalIgnoreCase) => escalated,
+            _ => false,
+        };
+    }
+
+    private static bool TAuditTrueCheck(string value) => value.Equals("true", StringComparison.OrdinalIgnoreCase);
+
+    private static string? TAuditLevelRead(string config, string source, string key)
+    {
+        bool global = config.EndsWith(TAuditConfigNames[1], StringComparison.Ordinal);
+        string relative = Path.GetRelativePath(Path.GetDirectoryName(config)!, source).Replace('\\', '/');
+        bool applies = global;
+        string? level = null;
+        foreach (string line in File.ReadLines(config))
+        {
+            Match section = TAuditSectionPattern.Match(line);
+            if (section.Success)
+            {
+                applies = TAuditGlobCheck(section.Groups["glob"].Value, relative);
+                continue;
+            }
+
+            Match pair = TAuditPairPattern.Match(line);
+            if (applies && pair.Success && pair.Groups["key"].Value.Equals(key, StringComparison.OrdinalIgnoreCase))
+            {
+                level = pair.Groups["value"].Value;
+            }
+        }
+
+        return level;
+    }
+
+    private static bool TAuditGlobCheck(string glob, string relative)
+    {
+        string pattern = glob.Contains('/') ? glob.TrimStart('/') : "**/" + glob;
+        System.Text.StringBuilder text = new("^");
+        for (int index = 0; index < pattern.Length; index++)
+        {
+            char next = pattern[index];
+            if (next == '*' && index + 1 < pattern.Length && pattern[index + 1] == '*')
+            {
+                text.Append(index + 2 < pattern.Length && pattern[index + 2] == '/' ? "(?:.*/)?" : ".*");
+                index += index + 2 < pattern.Length && pattern[index + 2] == '/' ? 2 : 1;
+            }
+            else
+            {
+                text.Append(next switch
+                {
+                    '*' => "[^/]*",
+                    '?' => "[^/]",
+                    '{' => "(?:",
+                    '}' => ")",
+                    ',' => "|",
+                    '[' or ']' => next.ToString(),
+                    _ => Regex.Escape(next.ToString())
+                });
+            }
+        }
+
+        return Regex.IsMatch(relative, text.Append('$').ToString(), RegexOptions.IgnoreCase);
     }
 
     private static bool TAuditListCheck(XDocument document, string element, string rule)

@@ -6,11 +6,21 @@ Covers the engine's Register seam, which mirrors the Situation one on a card.
 It covers the two kinds of row that share the shelf.
 Those are the ones a language pack ships and the ones the user writes.
 
-## `public void RegisterSave_CardCarryingPresetNames_StoresLanguagePackRows()`
+## `public void RegisterSave_CardCarryingPresetNames_StoresBuiltinRows()`
 
 A card marked with names a language pack ships must reference that pack's rows rather than write new ones.
 The ids are fixed by the pack, so the same name in two workspaces means the same Register.
 The card's order is kept, because a mark is ordered on the reference and not on the row.
+
+## `public void RegisterSave_TwoPacksNamingOneName_ShareOneRow()`
+
+Two language packs shipping the same name must share one built-in row.
+Both entries are then found through that one row.
+
+## `public void RegisterSeed_NameTheUserWroteFirst_BecomesBuiltin()`
+
+A name the user wrote before any pack shipped it keeps its row when a pack later ships it.
+The row turns built-in in place, so every mark made on it survives.
 
 ## `public void RegisterSave_CardCarryingWrittenName_StoresWrittenRow()`
 
@@ -34,10 +44,10 @@ The panel browsing the shelf must see a Register nothing is marked with, which n
 It must also see the count on every row without asking once per row.
 Under the usage ordering the most-marked row leads, which is the whole reason that ordering exists.
 
-## `public void RegisterFind_ByLanguage_AnswersThePackName()`
+## `public void RegisterFind_ByLanguageName_AnswersNothing()`
 
-A shelf holding several packs is narrowed by naming a language, not only by naming a register.
-A row the user wrote belongs to no language, so it answers no such query.
+A query naming a language finds no row, because registers are found by their own wording.
+A language name is no register, so the shelf answers nothing for it.
 
 ## `public void EntryFind_ByRegister_ReturnsTheEntriesMarkedWithIt()`
 

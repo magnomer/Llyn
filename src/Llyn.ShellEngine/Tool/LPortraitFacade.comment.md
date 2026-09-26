@@ -18,7 +18,7 @@ The page of one entry, composed by the portrait clerk under the gate.
 The likeness of one example, source or situation, composed by the clerk of the realm `owner` names.
 Each realm is read under the engine's lock, so screen and page show one thing.
 A missing row is an error, because a caller asked to portray one that no longer stands.
-## `internal Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
+## `internal Task LEnginePortraitExport(long entryId, string path, LPortraitMedium format, LPortraitLabel label)`
 
 Markup is written through the markup clerk under the gate.
 Every other format composes the page and hands it to the portrait clerk, which prints a PDF through the press.
@@ -27,7 +27,7 @@ Every other format composes the page and hands it to the portrait clerk, which p
 
 The entry page handed to the press with the ticket.
 
-## `public Task LEnginePortraitExport(LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)`
+## `public Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label)`
 
 The export of the entry a vista has chosen, nothing when the vista holds no entry.
 

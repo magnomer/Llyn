@@ -14,16 +14,20 @@ object. This audit parses the source with Roslyn, merges the parts of every type
     One component spanning every part means the split is cosmetic. Several components each
     inside its own parts mean the type already has seams and could become separate classes.
 
-A verdict per type:
-  single    one part, within size thresholds
-  large     one part, over a size threshold
-  seamed    several parts, the largest component spans fewer parts than thresholds.weave allows
-  woven     several parts, the largest component spans most parts, within size thresholds
-  monolith  woven and over a size threshold
+A verdict per type, the same rules the convention test TAuditObject applies:
+  single    one part, within the size thresholds
+  large     one part, at thresholds.lines, thresholds.members or thresholds.state
+  split     several parts, not a monolith
+  monolith  at least thresholds.parts parts and thresholds.span lines, and either the largest
+            component spans thresholds.weave of the parts once hub state is removed or the
+            type carries thresholds.density cross references per member
+A hub is a state slot reached from thresholds.hub or more parts. The monolith, hub and large
+counts must equal their ceilings, and every split type must hold exactly the parts its row in
+parts names, an unnamed type holding one.
 
-Binding is done with the .NET SDK's own Roslyn on a compilation of the configured sources with
-the runtime assemblies referenced. Members of foreign frameworks stay unbound, which is fine:
-only references to the type's own members are counted. The console prints a ranked table; a
+Binding goes through the shared binder of auditbinder.cs and auditbinder.json: the tracked
+sources, the generated code and the host build output, with no compile error allowed. The
+solution must be built first. The console prints a ranked table; a
 Markdown report with per-part detail is written to {report.directory}\{prefix}{version}.md.
 
 Everything project-specific lives in auditobject.json next to this script. No project source
@@ -56,7 +60,7 @@ auditobject -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows, open the report.
 #>
 #requires -Version 5.1
-# AUDITOBJECT GENERATION 11 - auditobject.ps1.
+# AUDITOBJECT GENERATION 12 - auditobject.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -69,6 +73,8 @@ Write the report elsewhere, show ten rows, open the report.
 # Generation 11: nothing the object audit reports changes; the number rises with the truth audit,
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
+# Generation 12: the audit applies the rules of the convention test: the monolith rule with hubs and
+# density, the hub and large counts, and a part ceiling per split type, bound with no compile error.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -105,13 +111,14 @@ OPTIONS
 
 VERDICTS
     single, large, seamed, woven, monolith. See the script header for definitions.
+    The monolith and large counts are gated: each must equal its ceiling in the configuration.
 '@ | Write-Host
     exit 0
 }
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -129,6 +136,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -196,7 +210,9 @@ function Read-AuditConfig {
         'generation', 'project',
         'sources.roots', 'sources.extensions', 'sources.excludeSegments',
         'sources.excludeSuffixes', 'sources.excludePrefixes',
-        'thresholds.lines', 'thresholds.members', 'thresholds.state', 'thresholds.weave',
+        'thresholds.parts', 'thresholds.span', 'thresholds.hub', 'thresholds.weave', 'thresholds.density',
+        'thresholds.lines', 'thresholds.members', 'thresholds.state',
+        'ceiling.monolith', 'ceiling.hub', 'ceiling.large', 'parts',
         'console.top',
         'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix'
     )
@@ -286,7 +302,10 @@ function Get-ProjectSourceFiles {
 
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
         'ls-files', '--cached', '--others', '--exclude-standard', '--') + @($Config.sources.roots)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
+    $ErrorActionPreference = $nativePreference
     if ($LASTEXITCODE -ne 0) {
         throw "Git could not enumerate source files.`n$($gitOutput -join [Environment]::NewLine)"
     }
@@ -307,7 +326,7 @@ function Get-ProjectSourceFiles {
         }
     }
 
-    return @($files.ToArray() | Sort-Object -Unique)
+    return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 }
 
 function Write-AuditHelper {
@@ -344,9 +363,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-if (args.Length != 6)
+if (args.Length != 7)
 {
-    Console.Error.WriteLine("usage: <config> <root> <manifest> <version> <report> <top>");
+    Console.Error.WriteLine("usage: <config> <root> <manifest> <version> <report> <top> <binder>");
     return 2;
 }
 
@@ -356,42 +375,41 @@ string manifestPath = args[2];
 string version = args[3];
 string reportPath = args[4];
 int top = int.Parse(args[5]);
+string binderPath = args[6];
 
 JsonElement config = JsonDocument.Parse(File.ReadAllText(configPath)).RootElement;
 JsonElement thresholds = config.GetProperty("thresholds");
-int lineLimit = thresholds.GetProperty("lines").GetInt32();
-int memberLimit = thresholds.GetProperty("members").GetInt32();
-int stateLimit = thresholds.GetProperty("state").GetInt32();
-double weaveLimit = thresholds.GetProperty("weave").GetDouble();
-
-string[] files = File.ReadAllLines(manifestPath).Where(line => line.Length > 0).ToArray();
-CSharpParseOptions parseOptions = new(LanguageVersion.Preview);
-List<SyntaxTree> trees = files
-    .Select(file => CSharpSyntaxTree.ParseText(File.ReadAllText(file), parseOptions, path: file))
-    .ToList();
-
-// The runtime's own assemblies give the binder the BCL. Framework types the project references
-// beyond that stay unbound; only references to a type's own members are counted, so that is fine.
-List<MetadataReference> references = [];
-if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trusted)
+Limits limits = new(
+    thresholds.GetProperty("parts").GetInt32(),
+    thresholds.GetProperty("span").GetInt32(),
+    thresholds.GetProperty("hub").GetInt32(),
+    thresholds.GetProperty("weave").GetDouble(),
+    thresholds.GetProperty("density").GetDouble(),
+    thresholds.GetProperty("lines").GetInt32(),
+    thresholds.GetProperty("members").GetInt32(),
+    thresholds.GetProperty("state").GetInt32());
+JsonElement ceiling = config.GetProperty("ceiling");
+Dictionary<string, int> ceilings = new(StringComparer.Ordinal)
 {
-    foreach (string assemblyPath in trusted.Split(Path.PathSeparator))
-    {
-        try
-        {
-            references.Add(MetadataReference.CreateFromFile(assemblyPath));
-        }
-        catch (Exception)
-        {
-        }
-    }
-}
+    ["monolith"] = ceiling.GetProperty("monolith").GetInt32(),
+    ["hub"] = ceiling.GetProperty("hub").GetInt32(),
+    ["large"] = ceiling.GetProperty("large").GetInt32(),
+};
+Dictionary<string, int> partCeilings = config.GetProperty("parts").EnumerateObject()
+    .ToDictionary(item => item.Name, item => item.Value.GetInt32(), StringComparer.Ordinal);
 
-CSharpCompilation compilation = CSharpCompilation.Create(
-    "AuditObject",
-    trees,
-    references,
-    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+HashSet<string> chosen = File.ReadAllLines(manifestPath)
+    .Where(line => line.Length > 0)
+    .Select(line => Path.GetFullPath(Path.Combine(projectRoot, line)))
+    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+AuditBinder binder = AuditBinder.Bind(projectRoot, binderPath);
+CSharpCompilation compilation = binder.Compilation;
+List<SyntaxTree> trees = binder.Tracked.Where(tree => chosen.Contains(Path.GetFullPath(tree.FilePath))).ToList();
+if (trees.Count == 0)
+{
+    Console.Error.WriteLine("No listed source file is bound, so the audit cannot judge.");
+    return 2;
+}
 
 Dictionary<INamedTypeSymbol, TypeRecord> types = new(SymbolEqualityComparer.Default);
 
@@ -399,8 +417,8 @@ Dictionary<INamedTypeSymbol, TypeRecord> types = new(SymbolEqualityComparer.Defa
 // target regardless of which file declares it.
 foreach (SyntaxTree tree in trees)
 {
-    SemanticModel model = compilation.GetSemanticModel(tree);
-    string relative = Path.GetRelativePath(projectRoot, tree.FilePath).Replace('\\', '/');
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
+    string relative = binder.Relative(tree.FilePath);
     foreach (TypeDeclarationSyntax declaration in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
     {
         if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol typeSymbol)
@@ -444,7 +462,7 @@ foreach (SyntaxTree tree in trees)
 // edge from the enclosing member to the target. Self references are not edges.
 foreach (SyntaxTree tree in trees)
 {
-    SemanticModel model = compilation.GetSemanticModel(tree);
+    SemanticModel model = compilation.GetSemanticModel(tree, true);
     foreach (TypeDeclarationSyntax declaration in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
     {
         if (model.GetDeclaredSymbol(declaration) is not INamedTypeSymbol typeSymbol
@@ -504,41 +522,89 @@ foreach (SyntaxTree tree in trees)
 }
 
 List<TypeSummary> summaries = types.Values
-    .Where(type => type.Members.Count > 0 || type.Parts.Count > 1)
-    .Select(type => Summarize(type, lineLimit, memberLimit, stateLimit, weaveLimit))
+    .Where(type => type.Members.Count > 0)
+    .Select(type => Summarize(type, limits))
     .OrderByDescending(summary => summary.Lines)
+    .ThenBy(summary => summary.FullName, StringComparer.Ordinal)
     .ToList();
 
 List<TypeSummary> split = summaries.Where(summary => summary.Parts.Count > 1).ToList();
 List<TypeSummary> large = summaries.Where(summary => summary.Verdict == "large").ToList();
 
 Console.WriteLine();
-Console.WriteLine($"Split types: {split.Count} of {summaries.Count} types are declared in more than one file.");
+Console.WriteLine("Counters");
+Console.WriteLine("--------");
+int VerdictCount(string verdict) => verdict == "hub"
+    ? summaries.Sum(summary => summary.Hubs.Count)
+    : summaries.Count(summary => summary.Verdict == verdict);
+Dictionary<string, int> partCounts = split.ToDictionary(summary => summary.FullName, summary => summary.Parts.Count, StringComparer.Ordinal);
+List<string> partsOver = partCounts
+    .Where(pair => pair.Value > partCeilings.GetValueOrDefault(pair.Key, 1))
+    .Select(pair => $"{pair.Key}: {pair.Value} parts, ceiling {partCeilings.GetValueOrDefault(pair.Key, 1)}")
+    .ToList();
+List<string> partsStale = partCeilings
+    .Where(pair => partCounts.GetValueOrDefault(pair.Key, 1) < pair.Value)
+    .Select(pair => $"{pair.Key}: {partCounts.GetValueOrDefault(pair.Key, 1)} parts, ceiling {pair.Value}")
+    .ToList();
+int aboveCount = ceilings.Count(pair => VerdictCount(pair.Key) > pair.Value) + partsOver.Count;
+int staleCount = ceilings.Count(pair => VerdictCount(pair.Key) < pair.Value) + partsStale.Count;
+Console.WriteLine($"Above ceiling   {aboveCount:N0}");
+Console.WriteLine($"Stale ceilings  {staleCount:N0}");
+
 Console.WriteLine();
-string[] header = ["Type", "Parts", "Lines", "Members", "State", "Shared", "XRef", "Comp", "Weave", "Verdict"];
-List<string[]> rows = split.Take(top).Select(Row).ToList();
-foreach (string line in TextTable(header, rows))
+Console.WriteLine("Types by verdict");
+Console.WriteLine("----------------");
+List<string[]> verdictRows = new[] { "monolith", "hub", "large", "split", "single" }
+    .Select(verdict => new[]
+    {
+        verdict,
+        VerdictCount(verdict).ToString("N0"),
+        ceilings.TryGetValue(verdict, out int limit) ? limit.ToString("N0") : "-",
+    })
+    .ToList();
+verdictRows.Add(["Total", summaries.Count.ToString("N0"), "-"]);
+foreach (string line in TextTable(["Verdict", "Types", "Ceiling"], verdictRows))
 {
     Console.WriteLine(line);
 }
 
-if (split.Count > top)
+string[] header = ["Type", "Parts", "Lines", "Members", "State", "Shared", "Hubs", "XRef", "Comp", "Weave", "Free", "Density", "Verdict"];
+if (split.Count > 0)
 {
-    Console.WriteLine($"... {split.Count - top} more in the report.");
+    string splitHeading = $"Types declared in more than one file ({split.Count:N0})";
+    Console.WriteLine();
+    Console.WriteLine(splitHeading);
+    Console.WriteLine(new string('-', splitHeading.Length));
+    foreach (string line in TextTable(header, split.Take(top).Select(Row).ToList()))
+    {
+        Console.WriteLine(line);
+    }
+
+    if (split.Count > top)
+    {
+        Console.WriteLine($"... and {split.Count - top:N0} more in the report.");
+    }
 }
 
-Console.WriteLine();
-Console.WriteLine("Counters");
-foreach (string verdict in new[] { "monolith", "woven", "seamed", "large" })
+foreach ((string title, List<string> rows) in new[] { ("Parts above their ceiling", partsOver), ("Stale part ceilings", partsStale) })
 {
-    Console.WriteLine($"  {verdict,-9} {summaries.Count(summary => summary.Verdict == verdict)}");
+    if (rows.Count == 0)
+    {
+        continue;
+    }
+
+    string heading = $"{title} ({rows.Count:N0})";
+    Console.WriteLine();
+    Console.WriteLine(heading);
+    Console.WriteLine(new string('-', heading.Length));
+    rows.ForEach(Console.WriteLine);
 }
 
 Console.WriteLine();
 Console.WriteLine($"Report: {reportPath}");
 
-WriteReport(reportPath, version, summaries, split, large, header, lineLimit, memberLimit, stateLimit, weaveLimit);
-return 0;
+WriteReport(reportPath, version, summaries, split, large, header, limits);
+return aboveCount + staleCount > 0 ? 3 : 0;
 
 static IEnumerable<(ISymbol Symbol, bool State)> DeclaredMembers(SemanticModel model, MemberDeclarationSyntax member)
 {
@@ -580,7 +646,7 @@ static IEnumerable<(ISymbol Symbol, bool State)> DeclaredMembers(SemanticModel m
     }
 }
 
-static TypeSummary Summarize(TypeRecord type, int lineLimit, int memberLimit, int stateLimit, double weaveLimit)
+static TypeSummary Summarize(TypeRecord type, Limits limits)
 {
     MemberRecord[] members = type.Members.Values.ToArray();
     int[] parent = Enumerable.Range(0, members.Length).ToArray();
@@ -621,6 +687,8 @@ static TypeSummary Summarize(TypeRecord type, int lineLimit, int memberLimit, in
         .ToList();
 
     List<StateSummary> shared = [];
+    HashSet<MemberRecord> hubs = [];
+    List<string> hubNames = [];
     int stateCount = 0;
     foreach (MemberRecord member in members.Where(member => member.IsState))
     {
@@ -647,17 +715,26 @@ static TypeSummary Summarize(TypeRecord type, int lineLimit, int memberLimit, in
         {
             shared.Add(new StateSummary(member.Symbol.Name, member.IsStatic, touching.OrderBy(part => part.Index).ToArray()));
         }
+
+        if (touching.Count >= limits.Hub)
+        {
+            hubs.Add(member);
+            hubNames.Add($"`{member.Symbol.Name}` reaches {touching.Count} parts");
+        }
     }
 
     int lines = type.Parts.Sum(part => part.Lines);
-    int largestSpan = components.Count > 0 ? components[0].Parts.Length : 0;
-    double weave = type.Parts.Count > 0 ? largestSpan / (double)type.Parts.Count : 0;
-    bool oversized = lines >= lineLimit || members.Length >= memberLimit || stateCount >= stateLimit;
-    string verdict = type.Parts.Count == 1
+    int partCount = type.Parts.Count;
+    double weave = Weave(members, partCount, []);
+    double free = Weave(members, partCount, hubs);
+    double density = members.Length == 0 ? 0 : crossReferences / (double)members.Length;
+    bool monolith = partCount >= limits.Parts
+        && lines >= limits.Span
+        && (free >= limits.Weave || density >= limits.Density);
+    bool oversized = lines >= limits.Lines || members.Length >= limits.Members || stateCount >= limits.State;
+    string verdict = partCount == 1
         ? (oversized ? "large" : "single")
-        : weave >= weaveLimit
-            ? (oversized ? "monolith" : "woven")
-            : "seamed";
+        : monolith ? "monolith" : "split";
 
     return new TypeSummary(
         type.Symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
@@ -668,31 +745,73 @@ static TypeSummary Summarize(TypeRecord type, int lineLimit, int memberLimit, in
         members.Count(member => !member.IsStatic),
         stateCount,
         shared,
+        hubNames,
         crossReferences,
         components.Where(component => component.MemberCount > 1).ToList(),
         components.Count(component => component.MemberCount == 1),
         weave,
+        free,
+        density,
         verdict);
+}
+
+static double Weave(MemberRecord[] members, int partCount, HashSet<MemberRecord> excluded)
+{
+    if (partCount == 0 || members.Length == 0)
+    {
+        return 0;
+    }
+
+    int[] parent = Enumerable.Range(0, members.Length).ToArray();
+    int Find(int index)
+    {
+        while (parent[index] != index)
+        {
+            parent[index] = parent[parent[index]];
+            index = parent[index];
+        }
+        return index;
+    }
+
+    foreach (MemberRecord member in members.Where(member => !excluded.Contains(member)))
+    {
+        foreach (MemberRecord target in member.Uses.Where(target => !excluded.Contains(target)))
+        {
+            parent[Find(member.Index)] = Find(target.Index);
+        }
+    }
+
+    int widest = members
+        .Where(member => !excluded.Contains(member))
+        .GroupBy(member => Find(member.Index))
+        .Select(group => group.Select(member => member.Part).Distinct().Count())
+        .DefaultIfEmpty(0)
+        .Max();
+    return widest / (double)partCount;
 }
 
 static string[] Row(TypeSummary summary) =>
 [
     summary.Name,
-    summary.Parts.Count.ToString(),
-    summary.Lines.ToString(),
-    summary.MemberCount.ToString(),
-    summary.StateCount.ToString(),
-    summary.SharedState.Count.ToString(),
-    summary.CrossReferences.ToString(),
-    summary.Components.Count.ToString(),
+    summary.Parts.Count.ToString("N0"),
+    summary.Lines.ToString("N0"),
+    summary.MemberCount.ToString("N0"),
+    summary.StateCount.ToString("N0"),
+    summary.SharedState.Count.ToString("N0"),
+    summary.Hubs.Count.ToString("N0"),
+    summary.CrossReferences.ToString("N0"),
+    summary.Components.Count.ToString("N0"),
     summary.Weave.ToString("0.00"),
+    summary.Free.ToString("0.00"),
+    summary.Density.ToString("0.00"),
     summary.Verdict,
 ];
 
 static IEnumerable<string> TextTable(string[] header, List<string[]> rows)
 {
     int[] widths = header.Select((cell, column) => Math.Max(cell.Length, rows.Count == 0 ? 0 : rows.Max(row => row[column].Length))).ToArray();
-    string Line(string[] cells) => string.Join("  ", cells.Select((cell, column) => column == 0 ? cell.PadRight(widths[column]) : cell.PadLeft(widths[column])));
+    bool[] numeric = header.Select((cell, column) => rows.Count > 0 && rows.All(row => row[column] == "-" || double.TryParse(row[column], out _))).ToArray();
+    string Line(string[] cells) => string.Join("  ", cells.Select((cell, column) => numeric[column] ? cell.PadLeft(widths[column]) : cell.PadRight(widths[column]))).TrimEnd();
     yield return Line(header);
     yield return string.Join("  ", widths.Select(width => new string('-', width)));
     foreach (string[] row in rows)
@@ -721,10 +840,7 @@ static void WriteReport(
     List<TypeSummary> split,
     List<TypeSummary> large,
     string[] header,
-    int lineLimit,
-    int memberLimit,
-    int stateLimit,
-    double weaveLimit)
+    Limits limits)
 {
     List<string> lines =
     [
@@ -732,22 +848,28 @@ static void WriteReport(
         string.Empty,
         $"Generated {DateTime.Now:yyyy-MM-dd HH:mm}. Types parsed: {summaries.Count}. Split over several files: {split.Count}.",
         string.Empty,
-        "Thresholds: lines >= " + lineLimit + ", members >= " + memberLimit + ", state >= " + stateLimit
-            + ", weave >= " + weaveLimit.ToString("0.00") + ".",
+        $"A monolith has at least {limits.Parts} parts and {limits.Span} lines, and either its largest member component",
+        $"still spans {limits.Weave:0.00} of the parts once hub state is removed or it carries {limits.Density:0.00} cross references",
+        $"per member. A hub is a state slot reached from {limits.Hub} or more parts. A large type has one part and at least",
+        $"{limits.Lines} lines, {limits.Members} members or {limits.State} state slots.",
         string.Empty,
         "Columns: Parts = files declaring the type. Lines = summed declaration lines. Members = all declared members.",
         "State = fields, field-like events and auto-properties. Shared = state touched from more than one part.",
         "XRef = member references crossing from one part into another. Comp = connected components with more than one member.",
         "Weave = parts spanned by the largest component / parts. 1.00 means one component reaches every file.",
+        "Hubs = state slots reached from the hub count of parts. Free = weave once hubs are removed.",
+        "Density = cross references per member.",
         string.Empty,
         "## Counters",
         string.Empty,
     ];
 
-    foreach (string verdict in new[] { "monolith", "woven", "seamed", "large", "single" })
+    foreach (string verdict in new[] { "monolith", "large", "split", "single" })
     {
         lines.Add($"- {verdict}: {summaries.Count(summary => summary.Verdict == verdict)}");
     }
+
+    lines.Add($"- hub: {summaries.Sum(summary => summary.Hubs.Count)}");
 
     lines.Add(string.Empty);
     lines.Add("## Split types");
@@ -875,17 +997,23 @@ internal sealed record TypeSummary(
     int InstanceMembers,
     int StateCount,
     List<StateSummary> SharedState,
+    List<string> Hubs,
     int CrossReferences,
     List<ComponentSummary> Components,
     int LooseMembers,
     double Weave,
+    double Free,
+    double Density,
     string Verdict);
+
+internal sealed record Limits(int Parts, int Span, int Hub, double Weave, double Density, int Lines, int Members, int State);
 '@
 
     $projectPath = Join-Path $HelperFolder 'AuditObject.Helper.csproj'
     $programPath = Join-Path $HelperFolder 'Program.cs'
     [System.IO.File]::WriteAllText($projectPath, $projectContent, [System.Text.UTF8Encoding]::new($false))
     [System.IO.File]::WriteAllText($programPath, $programContent, [System.Text.UTF8Encoding]::new($false))
+    [System.IO.File]::Copy((Join-Path $PSScriptRoot 'auditbinder.cs'), (Join-Path $HelperFolder 'AuditBinder.cs'), $true)
     return $projectPath
 }
 
@@ -908,14 +1036,17 @@ $reportPath = Join-Path $reportFolder ([string]$config.report.prefix + $version 
 if ($sourceFiles.Length -eq 0) {
     throw "No source files were found under: $projectRoot"
 }
-Write-AuditLine "Source files: $($sourceFiles.Length)" -ForegroundColor DarkGray
+Write-AuditLine ("Scanned: {0:N0} source files" -f $sourceFiles.Length) -ForegroundColor DarkGray
 
 $dotnet = Get-Command dotnet -ErrorAction SilentlyContinue
 if ($null -eq $dotnet) {
     throw 'The .NET SDK is required, but dotnet was not found on PATH.'
 }
 
+$nativePreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 $sdkOutput = & $dotnet.Source --version 2>&1
+$ErrorActionPreference = $nativePreference
 if ($LASTEXITCODE -ne 0) {
     throw "The .NET SDK version could not be read.`n$($sdkOutput -join [Environment]::NewLine)"
 }
@@ -948,7 +1079,8 @@ try {
         $manifestPath,
         $version,
         $reportPath,
-        $Top
+        $Top,
+        (Join-Path $PSScriptRoot 'auditbinder.json')
     )
 
     $previousNoLogo = $env:DOTNET_NOLOGO
@@ -957,7 +1089,10 @@ try {
     $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 
     try {
+        $nativePreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
         $auditOutput = & $dotnet.Source @arguments 2>&1
+        $ErrorActionPreference = $nativePreference
         $auditExitCode = $LASTEXITCODE
     }
     finally {
@@ -965,7 +1100,7 @@ try {
         $env:DOTNET_CLI_TELEMETRY_OPTOUT = $previousTelemetry
     }
 
-    if ($auditExitCode -ne 0) {
+    if ($auditExitCode -ne 0 -and $auditExitCode -ne 3) {
         throw "The object audit failed.`n$($auditOutput -join [Environment]::NewLine)"
     }
 
@@ -982,3 +1117,5 @@ finally {
 if ($Open -and (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
     Invoke-Item -LiteralPath $reportPath
 }
+
+exit ([int]($auditExitCode -ne 0))

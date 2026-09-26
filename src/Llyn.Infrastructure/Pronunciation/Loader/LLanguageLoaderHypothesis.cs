@@ -69,9 +69,9 @@ public sealed partial class LLanguageLoader : LLanguageVault
         return new LHypothesis(initials, finals, LLanguageToneScan(section), LLanguagePlaceScan(section));
     }
 
-    private static IReadOnlyList<LHypothesisPlace> LLanguagePlaceScan(JsonElement section)
+    private static IReadOnlyList<LHypothesisLocus> LLanguagePlaceScan(JsonElement section)
     {
-        List<LHypothesisPlace> places = [];
+        List<LHypothesisLocus> places = [];
         if (!section.TryGetProperty("place", out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
         {
             return places;
@@ -79,7 +79,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
 
         foreach (JsonElement element in rows.EnumerateArray())
         {
-            LHypothesisPlace? place = LLanguagePlaceRead(element);
+            LHypothesisLocus? place = LLanguagePlaceRead(element);
             if (place is not null)
             {
                 places.Add(place);
@@ -89,7 +89,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
         return places;
     }
 
-    private static LHypothesisPlace? LLanguagePlaceRead(JsonElement element)
+    private static LHypothesisLocus? LLanguagePlaceRead(JsonElement element)
     {
         if (element.ValueKind != JsonValueKind.Object)
         {
@@ -114,7 +114,7 @@ public sealed partial class LLanguageLoader : LLanguageVault
             }
         }
 
-        return initials.Count > 0 ? new LHypothesisPlace(name, initials) : null;
+        return initials.Count > 0 ? new LHypothesisLocus(name, initials) : null;
     }
 
     private static IReadOnlyDictionary<string, string> LLanguageTableRead(JsonElement section, string key)

@@ -2,8 +2,8 @@
 
 ## `internal static partial class TAuditTruthWalker`
 
-The sequence half of the truth walker: one shell member may not dictate a run of requests.
-A gesture is one request, and the order of several is an engine decision.
+The sequence half of the truth walker: one driver member may not dictate a run of requests.
+One user action is one gate, and the order of several is a gate's decision.
 
 ## `private static HashSet<ISymbol> TAuditSendNames`
 
@@ -11,7 +11,7 @@ The members that send a request directly, read before the walk.
 
 ## `private static void TAuditSendResolve(IReadOnlyList<TypeDeclarationSyntax> parts)`
 
-Every method or property that reaches a send root or builds a request record.
+Every method or property that reaches a send root, calls a Conduct method or builds a request record.
 One hop only, so a member that merely shows or fills is not a sender.
 
 ## `private static List<SyntaxNode> TAuditSendRead(SyntaxNode scope, bool direct)`
@@ -22,7 +22,11 @@ A site nested inside another send counts once.
 
 ## `private static bool TAuditSendCheck(InvocationExpressionSyntax call, bool direct)`
 
-True when the callee is a send root, or a sender when the walk follows one hop.
+True when the callee is a send root, a Conduct method, or a sender when the walk follows one hop.
+
+## `private static bool TAuditGateCheck(ISymbol callee)`
+
+True for an instance method declared on a Conduct type, which is a gate call.
 
 ## `private static void TAuditSequenceScan(IReadOnlyList<TypeDeclarationSyntax> type, List<TViolation> violations)`
 

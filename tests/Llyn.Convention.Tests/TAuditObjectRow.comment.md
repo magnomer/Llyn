@@ -12,3 +12,4 @@ One type after its parts are merged, with the numbers the facts and the report r
 `TAuditObjectFree` is the same share once hub state is removed.
 `TAuditObjectDensity` is the cross references per member.
 `TAuditObjectMonolith` is the verdict the settings floors give.
+`TAuditObjectLarge` marks a single-part type at a large threshold.

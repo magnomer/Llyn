@@ -40,7 +40,7 @@ public sealed class LPronunciationClerk
     public void LPronunciationClerkSync(
         long entryId,
         IReadOnlyList<LPronunciationDraft> drafts,
-        List<LRevisionChange>? changes,
+        List<LRevisionDelta>? changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -73,7 +73,7 @@ public sealed class LPronunciationClerk
             if (!named.Contains(dropped))
             {
                 pronunciations.LPronunciationDelete(dropped);
-                changes?.Add(new LRevisionChange(dropped, "pronunciation", "delete", row.LPronunciationIpa));
+                changes?.Add(new LRevisionDelta(dropped, "pronunciation", "delete", row.LPronunciationIpa));
             }
         }
 
@@ -118,7 +118,7 @@ public sealed class LPronunciationClerk
     }
 
     private long LPronunciationClerkSave(
-        LPronunciation stored, LPronunciationDraft draft, List<LRevisionChange>? changes)
+        LPronunciation stored, LPronunciationDraft draft, List<LRevisionDelta>? changes)
     {
         LPronunciation current = stored with
         {
@@ -135,7 +135,7 @@ public sealed class LPronunciationClerk
         if (!LPronunciationClerkMatch(stored, current))
         {
             _lPronunciationClerkPronunciations.LPronunciationUpdate(current);
-            changes?.Add(new LRevisionChange(
+            changes?.Add(new LRevisionDelta(
                 stored.LPronunciationId, "pronunciation", "update", current.LPronunciationIpa));
         }
 
@@ -143,7 +143,7 @@ public sealed class LPronunciationClerk
     }
 
     private long LPronunciationClerkInsert(
-        long entryId, LPronunciationDraft draft, List<LRevisionChange>? changes, Dictionary<long, long> identity)
+        long entryId, LPronunciationDraft draft, List<LRevisionDelta>? changes, Dictionary<long, long> identity)
     {
         LPronunciation created = _lPronunciationClerkPronunciations.LPronunciationCreate(new LPronunciation(
             0,
@@ -155,12 +155,12 @@ public sealed class LPronunciationClerk
             draft.LPronunciationDraftRespelling.Length == 0 ? null : draft.LPronunciationDraftRespelling));
 
         LIdentity.LIdentityRecord(identity, draft.LPronunciationDraftId, created.LPronunciationId);
-        changes?.Add(new LRevisionChange(
+        changes?.Add(new LRevisionDelta(
             created.LPronunciationId, "pronunciation", "create", created.LPronunciationIpa));
         return created.LPronunciationId;
     }
 
-    private void LAudioSync(long pronunciationId, LPronunciationDraft draft, List<LRevisionChange>? changes)
+    private void LAudioSync(long pronunciationId, LPronunciationDraft draft, List<LRevisionDelta>? changes)
     {
         if (draft.LPronunciationDraftAudio.Length == 0)
         {
@@ -178,7 +178,7 @@ public sealed class LPronunciationClerk
         }
 
         pronunciations.LPronunciationAudioSave(pronunciationId, file, draft.LPronunciationDraftSource);
-        changes?.Add(new LRevisionChange(pronunciationId, "pronunciation", "update", file));
+        changes?.Add(new LRevisionDelta(pronunciationId, "pronunciation", "update", file));
     }
 
     private string LRecordingFormat(string path)

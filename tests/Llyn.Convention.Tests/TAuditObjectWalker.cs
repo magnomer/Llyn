@@ -6,31 +6,22 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectWalker
 {
-    private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
-        languageVersion: LanguageVersion.Preview,
-        documentationMode: DocumentationMode.None,
-        kind: SourceCodeKind.Regular);
-
     public static IReadOnlyList<TAuditObjectRow> TAuditRun(IReadOnlyList<string> sourcePaths, string repoRoot)
     {
-        List<SyntaxTree> trees = sourcePaths
-            .Select(path => CSharpSyntaxTree.ParseText(File.ReadAllText(path), TAuditSyntaxOptions, path))
+        HashSet<string> chosen = new(sourcePaths.Select(Path.GetFullPath), StringComparer.OrdinalIgnoreCase);
+        List<SyntaxTree> trees = TAuditBinder.TAuditTrees
+            .Where(tree => chosen.Contains(Path.GetFullPath(tree.FilePath)))
             .ToList();
-        CSharpCompilation compilation = CSharpCompilation.Create(
-            "AuditObject",
-            trees,
-            TAuditReferenceRead(),
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         Dictionary<INamedTypeSymbol, TAuditObjectType> types = new(SymbolEqualityComparer.Default);
         foreach (SyntaxTree tree in trees)
         {
-            TAuditMemberScan(compilation.GetSemanticModel(tree), repoRoot, types);
+            TAuditMemberScan(TAuditBinder.TAuditModelRead(tree), repoRoot, types);
         }
 
         foreach (SyntaxTree tree in trees)
         {
-            TAuditLinkScan(compilation.GetSemanticModel(tree), types);
+            TAuditLinkScan(TAuditBinder.TAuditModelRead(tree), types);
         }
 
         return types.Values
@@ -39,28 +30,6 @@ internal static class TAuditObjectWalker
             .OrderByDescending(row => row.TAuditObjectLines)
             .ThenBy(row => row.TAuditObjectName, StringComparer.Ordinal)
             .ToList();
-    }
-
-    public static List<MetadataReference> TAuditReferenceRead()
-    {
-        List<MetadataReference> references = [];
-        if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is not string trusted)
-        {
-            return references;
-        }
-
-        foreach (string path in trusted.Split(Path.PathSeparator))
-        {
-            try
-            {
-                references.Add(MetadataReference.CreateFromFile(path));
-            }
-            catch (Exception exception) when (exception is IOException or BadImageFormatException)
-            {
-            }
-        }
-
-        return references;
     }
 
     private static void TAuditMemberScan(
@@ -96,7 +65,6 @@ internal static class TAuditObjectWalker
 
                     type.TAuditTypeMembers.Add(
                         declared, new TAuditObjectMember(type.TAuditTypeMembers.Count, declared, part, state));
-                    part.TAuditPartCount++;
                 }
             }
         }
@@ -232,22 +200,28 @@ internal static class TAuditObjectWalker
         double weave = TAuditWeaveRead(members, partCount, []);
         double free = TAuditWeaveRead(members, partCount, hubs);
         double density = members.Count == 0 ? 0 : cross / (double)members.Count;
-        bool monolith = partCount >= TAuditObjectSetting.TAuditPartFloor
-            && lines >= TAuditObjectSetting.TAuditLineFloor
-            && (free >= TAuditObjectSetting.TAuditWeaveFloor || density >= TAuditObjectSetting.TAuditDensityFloor);
+        bool monolith = partCount >= TAuditObjectSetting.TAuditPartLimit
+            && lines >= TAuditObjectSetting.TAuditSpanLimit
+            && (free >= TAuditObjectSetting.TAuditWeaveLimit || density >= TAuditObjectSetting.TAuditDensityLimit);
+        int state = members.Count(member => member.TAuditMemberState);
+        bool large = partCount == 1
+            && (lines >= TAuditObjectSetting.TAuditLargeLines
+                || members.Count >= TAuditObjectSetting.TAuditLargeMembers
+                || state >= TAuditObjectSetting.TAuditLargeState);
 
         return new TAuditObjectRow(
             type.TAuditTypeSymbol.ToDisplayString(),
             type.TAuditTypeParts.Select(part => part.TAuditPartPath).ToList(),
             lines,
             members.Count,
-            members.Count(member => member.TAuditMemberState),
+            state,
             hubNames,
             cross,
             weave,
             free,
             density,
-            monolith);
+            monolith,
+            large);
     }
 
     private static double TAuditWeaveRead(

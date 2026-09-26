@@ -121,7 +121,7 @@ public sealed class THypothesis
     [InlineData("來", null, -1)]
     public void HypothesisPlaceFind_PackOrder_RanksAcrossPlaces(string initial, string? place, int rank)
     {
-        Assert.Equal(place, THypothesisTables.THypothesisPlaceFind(initial)?.LHypothesisPlaceName);
+        Assert.Equal(place, THypothesisTables.THypothesisPlaceFind(initial)?.LHypothesisLocusName);
         Assert.Equal(rank, THypothesisTables.THypothesisRankRead(initial));
     }
 

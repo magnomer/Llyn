@@ -38,7 +38,7 @@ internal static partial class TInterface
     internal static LTombstone? TTombstoneRead(this LRig rig, long entryId) =>
         ((TVaultFakeTombstone)rig.LRigTombstones).TTombstoneRead(entryId);
 
-    internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(this LRig rig, long revisionId) =>
+    internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this LRig rig, long revisionId) =>
         ((TVaultFakeRevision)rig.LRigRevisions).TRevisionChangeRead(revisionId);
 
     internal static long? TRevisionRead(this LRig rig) =>

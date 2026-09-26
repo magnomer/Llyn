@@ -1,5 +1,5 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "projects": {
     "root": "src",
@@ -22,7 +22,19 @@
     "twin": "net10.0-windows"
   },
   "analyzer": {
-    "rule": "CA1416"
+    "rule": "CA1416",
+    "silencers": {
+      "AnalysisLevel": "none",
+      "AnalysisMode": "None",
+      "EnableNETAnalyzers": "false",
+      "RunAnalyzers": "false",
+      "RunAnalyzersDuringBuild": "false"
+    }
+  },
+  "domain": {
+    "exempt": [
+      "Llyn.Conduct"
+    ]
   },
   "windows": {
     "properties": [

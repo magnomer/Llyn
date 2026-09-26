@@ -78,7 +78,7 @@ public sealed class LReflexClerk
         long entryId,
         string language,
         IReadOnlyList<LReflexDraft> drafts,
-        List<LRevisionChange>? changes,
+        List<LRevisionDelta>? changes,
         Dictionary<long, long> identity)
     {
         ArgumentNullException.ThrowIfNull(language);
@@ -117,7 +117,7 @@ public sealed class LReflexClerk
             return;
         }
 
-        changes?.Add(new LRevisionChange(
+        changes?.Add(new LRevisionDelta(
             entryId,
             "reflex",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

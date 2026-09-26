@@ -15,7 +15,7 @@ Reads the portrait port and the press out of `rig` and keeps the clerks each sec
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
 
-## `public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitFormat format)`
+## `public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)`
 
 A PDF goes through the press as rendered sheet HTML, every other format through the portrait port.
 

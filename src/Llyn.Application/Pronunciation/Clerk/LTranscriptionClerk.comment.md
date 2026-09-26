@@ -39,7 +39,7 @@ Hands every held candidate to `receiver` and finishes the lookup.
 
 A relay to `sink`, wrapped in a respelling receiver when `pack` declares respelling groups.
 
-## `public void LTranscriptionClerkSync(long entryId, IReadOnlyList<LTranscriptionDraft> drafts, List<LRevisionChange>? changes, Dictionary<long, long> identity)`
+## `public void LTranscriptionClerkSync(long entryId, IReadOnlyList<LTranscriptionDraft> drafts, List<LRevisionDelta>? changes, Dictionary<long, long> identity)`
 
 The transcriptions of an entry reconciled to its draft.
 An unchanged list writes nothing.

@@ -514,7 +514,12 @@ function Test-ExecutionLaunchAlive {
     }
 
     try {
-        $started = [datetime]::Parse([string]$Entry.started, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)
+        $started = if ($Entry.started -is [datetime]) {
+            $Entry.started
+        }
+        else {
+            [datetime]::Parse([string]$Entry.started, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)
+        }
         return [math]::Abs(($process.StartTime - $started).TotalSeconds) -lt 1
     }
     catch {

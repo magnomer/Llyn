@@ -168,7 +168,7 @@ public sealed class LTaxonomy
         return LVista.LVistaFileRead(_lTaxonomyMembership);
     }
 
-    public Task LTaxonomyPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LTaxonomyPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(_lTaxonomyMembership, path, format, label);
     }

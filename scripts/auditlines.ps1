@@ -5,31 +5,35 @@ Counts source lines under the configured roots, prints the results, and creates 
 .DESCRIPTION
 Reads the project configuration from auditlines.json next to this script, then
 performs these actions on every run:
-  1. Prints every counted file that reaches the line limit.
-  2. Prints every counted file in the warning band below the limit.
-  3. Records both inventories to {report.directory}\{filesPrefix}{version}.md.
-  4. Prints files with lines over the configured width, per extension.
-  5. Prints the files that gained the most lines over the last commits.
-  6. Prints line and size totals for each folder under the source roots.
-  7. Prints comment-file line totals for the same folders.
+  1. Prints the counters: files over the line limit, lines over the width, unreadable files.
+  2. Prints line and size totals for each folder under the source roots.
+  3. Prints every counted file that reaches the line limit.
+  4. Prints every counted file in the warning band below the limit.
+  5. Prints files with lines over the configured width, per extension.
+  6. Prints the files that gained the most lines over the last commits.
+  7. Records both size bands to {report.directory}\{filesPrefix}{version}.md.
   8. Writes a Markdown source-line report to {report.directory}\{linesPrefix}{version}.md.
+The console follows scripts\report.md: widest view first, empty lists left out.
+Comment-file totals print in auditcomments only.
 
 Everything project-specific - source roots, counted extensions, comment-file
 pattern, excluded directory names, thresholds, report location, version file -
 lives in auditlines.json. The script itself carries no project knowledge.
-No external modules or tools are required.
+Files come from git: tracked and untracked files, never ignored ones, as in the
+convention tests. Segments and extensions compare without case.
+Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 11,
+    "generation": 12,
     "project": "Llyn",
     "sources": {
-      "roots": ["src"],
+      "roots": ["src", "tests"],
       "extensions": [".cs", ".xaml", ".csproj"],
       "commentPattern": "*.comment.md",
-      "excludeSegments": [".git", "bin", "obj"]
+      "excludeSegments": [".git", ".vs", "bin", "obj", "artifacts", "packages", "node_modules", "publish"]
     },
-    "thresholds": { "limit": 500, "warning": 400 },
+    "thresholds": { "limit": 500, "warning": 450 },
     "width": { ".cs": 120, ".xaml": 200 },
     "hotspot": { "commits": 30, "top": 15 },
     "report": {
@@ -38,7 +42,7 @@ auditlines.json shape:
       "versionKey": "current-version",
       "linesPrefix": "Lines-",
       "filesPrefix": "Files-",
-      "depth": 1
+      "segments": 1
     }
   }
 
@@ -60,8 +64,8 @@ Overrides thresholds.limit for this run.
 .PARAMETER WarningThreshold
 Overrides thresholds.warning for this run.
 
-.PARAMETER Depth
-Overrides report.depth: how many path segments under a root form a folder row.
+.PARAMETER Segments
+Overrides report.segments: how many path segments under a root form a folder row.
 
 .PARAMETER Commits
 Overrides hotspot.commits: how many recent commits feed the hotspot table. 0 skips it.
@@ -90,7 +94,8 @@ auditlines -Extensions .cs, .xaml
 .EXAMPLE
 auditlines -SourceRoots .\src, .\tests
 #>
-# AUDITLINES GENERATION 11 - auditlines.ps1.
+#requires -Version 5.1
+# AUDITLINES GENERATION 12 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -101,6 +106,9 @@ auditlines -SourceRoots .\src, .\tests
 # Generation 11: nothing the line audit reports changes; the number rises with the truth audit,
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
+# Generation 12: nothing the line audit reports changes; the number rises with the convention tests,
+# which bind with no compile error, count chain ceilings in names, count a using or a call on a
+# deeper record as a reach, and exempt a contract name only where the type declares the interface.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -111,7 +119,7 @@ param(
     [ValidateRange(0, [int]::MaxValue)]
     [int]$WarningThreshold,
     [ValidateRange(1, 8)]
-    [int]$Depth,
+    [int]$Segments,
     [ValidateRange(0, [int]::MaxValue)]
     [int]$Commits,
     [string]$OutputPath,
@@ -136,7 +144,7 @@ SYNOPSIS
 SYNTAX
     auditlines [-ConfigPath <path>] [-SourceRoots <path[]>]
         [-Extensions <extension[]>] [-LimitThreshold <number>]
-        [-WarningThreshold <number>] [-Depth <number>] [-Commits <number>]
+        [-WarningThreshold <number>] [-Segments <number>] [-Commits <number>]
         [-OutputPath <path>] [-Open] [-NoPause] [-Help]
 
 CONFIGURATION
@@ -156,15 +164,15 @@ OPTIONS
         Extensions to count. Overrides sources.extensions.
 
     -LimitThreshold <number>
-        Line count a file must stay under. Overrides thresholds.limit.
+        Last line count that passes. Overrides thresholds.limit.
 
     -WarningThreshold <number>
-        Line count at which the warning band starts. Overrides
+        Last line count below the warning band. Overrides
         thresholds.warning.
 
-    -Depth <number>
+    -Segments <number>
         Path segments under a root that form a folder row. Overrides
-        report.depth. 1 lists projects, 2 lists their first-level folders.
+        report.segments. 1 lists projects, 2 lists their first-level folders.
 
     -Commits <number>
         Recent commits that feed the hotspot table. Overrides
@@ -203,7 +211,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next
@@ -222,6 +230,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -291,7 +306,7 @@ function Read-AuditConfig {
     $problems = [System.Collections.Generic.List[string]]::new()
     foreach ($key in @('generation', 'project', 'sources.roots', 'sources.extensions', 'sources.commentPattern', 'sources.excludeSegments',
                        'thresholds.limit', 'thresholds.warning', 'width', 'hotspot.commits', 'hotspot.top',
-                       'report.directory', 'report.versionFile', 'report.versionKey', 'report.linesPrefix', 'report.filesPrefix', 'report.depth')) {
+                       'report.directory', 'report.versionFile', 'report.versionKey', 'report.linesPrefix', 'report.filesPrefix', 'report.segments')) {
         if ($null -eq (Get-ConfigNode -Document $config -Key $key)) {
             $problems.Add("missing key '$key'")
         }
@@ -328,7 +343,7 @@ if (-not $PSBoundParameters.ContainsKey('SourceRoots')) { $SourceRoots = @($conf
 if (-not $PSBoundParameters.ContainsKey('Extensions')) { $Extensions = @($config.sources.extensions) }
 if (-not $PSBoundParameters.ContainsKey('LimitThreshold')) { $LimitThreshold = [int]$config.thresholds.limit }
 if (-not $PSBoundParameters.ContainsKey('WarningThreshold')) { $WarningThreshold = [int]$config.thresholds.warning }
-if (-not $PSBoundParameters.ContainsKey('Depth')) { $Depth = [int]$config.report.depth }
+if (-not $PSBoundParameters.ContainsKey('Segments')) { $Segments = [int]$config.report.segments }
 if (-not $PSBoundParameters.ContainsKey('Commits')) { $Commits = [int]$config.hotspot.commits }
 $hotspotCommits = $Commits
 $hotspotTop = [int]$config.hotspot.top
@@ -415,8 +430,8 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-AuditLine ""
-    Write-AuditLine $Text -ForegroundColor Cyan
-    Write-AuditLine ('-' * $Text.Length) -ForegroundColor DarkGray
+    Write-AuditLine $Text
+    Write-AuditLine ('-' * $Text.Length)
 }
 
 function Format-Cell {
@@ -490,10 +505,11 @@ function Write-GroupedConsoleTable {
         [void]$rule.Append('-' * $column.Width)
     }
 
-    Write-AuditLine ""
-    Write-AuditLine $upper.ToString() -ForegroundColor Green
-    Write-AuditLine $lower.ToString() -ForegroundColor Green
-    Write-AuditLine $rule.ToString() -ForegroundColor Green
+    Write-AuditLine $upper.ToString().TrimEnd()
+    if (@($Columns | Where-Object { -not [string]::IsNullOrEmpty($_.Group) }).Count -gt 0) {
+        Write-AuditLine $lower.ToString().TrimEnd()
+    }
+    Write-AuditLine $rule.ToString()
 
     $rowCount = $Columns[0].Values.Count
     for ($row = 0; $row -lt $rowCount; $row++) {
@@ -502,9 +518,8 @@ function Write-GroupedConsoleTable {
             if ($line.Length -gt 0) { [void]$line.Append($gap) }
             [void]$line.Append((Format-Cell -Text $column.Values[$row] -Width $column.Width -Right $column.Right))
         }
-        Write-AuditLine $line.ToString()
+        Write-AuditLine $line.ToString().TrimEnd()
     }
-    Write-AuditLine ""
 }
 
 function New-ConsoleColumn {
@@ -600,9 +615,9 @@ function Get-FolderKey {
     $directory = [System.IO.Path]::GetDirectoryName($FileFull)
     $relative = $directory.Substring($RootFull.Length).TrimStart([char[]]@('\', '/'))
     if ($relative.Length -eq 0) { return "(root)" }
-    $segments = @($relative -split '[\\/]')
-    $take = [Math]::Min($Depth, $segments.Count)
-    return (($segments | Select-Object -First $take) -join '\')
+    $parts = @($relative -split '[\\/]')
+    $take = [Math]::Min($Segments, $parts.Count)
+    return (($parts | Select-Object -First $take) -join '\')
 }
 
 function New-FolderResult {
@@ -624,9 +639,17 @@ function New-FolderResult {
 
 $folderMap = [ordered]@{}
 foreach ($rootFull in $sourceRootFulls) {
-    $files = Get-ChildItem -LiteralPath $rootFull -File -Recurse | Where-Object {
-        -not (Test-IsExcludedPath -Path $_.FullName -FolderRoot $rootFull -ExcludedNames $excludedNames)
+    $listed = & git -C $rootFull -c core.quotePath=false ls-files --cached --others --exclude-standard --full-name -- . 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Git could not enumerate the files under $rootFull, so the audit cannot judge."
     }
+
+    $files = @($listed | ForEach-Object {
+        $full = [System.IO.Path]::GetFullPath((Join-Path $repoRootFull ([string]$_)))
+        if ([System.IO.File]::Exists($full)) { [System.IO.FileInfo]::new($full) }
+    } | Where-Object {
+        -not (Test-IsExcludedPath -Path $_.FullName -FolderRoot $rootFull -ExcludedNames $excludedNames)
+    })
 
     foreach ($file in $files) {
         $isComment = $file.Name.EndsWith($commentSuffix, [System.StringComparison]::OrdinalIgnoreCase)
@@ -694,21 +717,25 @@ foreach ($rootFull in $sourceRootFulls) {
 }
 foreach ($entry in $folderMap.Values) { $folderResults.Add($entry) }
 
+if ($fileResults.Count -eq 0) {
+    throw "No source file was scanned under the configured roots, so the audit cannot judge."
+}
+
 $folderResults = @(
     $folderResults |
-        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = 'Name'; Descending = $false }
+        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } }
 )
 
 $fileResults = @(
     $fileResults |
-        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = 'RelativePath'; Descending = $false }
+        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.RelativePath } }
 )
 
-$overLimitFiles = @($fileResults | Where-Object { $_.Lines -ge $LimitThreshold })
-$warningFiles = @($fileResults | Where-Object { $_.Lines -ge $WarningThreshold -and $_.Lines -lt $LimitThreshold })
+$overLimitFiles = @($fileResults | Where-Object { $_.Lines -gt $LimitThreshold })
+$warningFiles = @($fileResults | Where-Object { $_.Lines -gt $WarningThreshold -and $_.Lines -le $LimitThreshold })
 
-$overLimitTitle = "Files at $LimitThreshold lines or more"
-$warningTitle = "Files at $WarningThreshold-$($LimitThreshold - 1) lines"
+$overLimitTitle = "Files over $LimitThreshold lines"
+$warningTitle = "Files at $($WarningThreshold + 1)-$LimitThreshold lines"
 
 [long]$totalLines = 0
 [long]$totalNonBlankLines = 0
@@ -731,7 +758,7 @@ foreach ($item in $folderResults) {
 
 $largestFolder = if ($folderResults.Count -gt 0) { $folderResults[0] } else { $null }
 $generatedAt = Get-Date
-$extensionLabel = (($normalizedExtensions | Sort-Object) -join ", ")
+$extensionLabel = (($normalizedExtensions | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } }) -join ", ")
 $blankLines = $totalLines - $totalNonBlankLines
 
 # Version, read from the configured version file and key.
@@ -745,11 +772,11 @@ if ([System.IO.File]::Exists($versionPathFull)) {
         }
     }
     catch {
-        Write-Warning "The version file is not valid JSON, using $version : $versionPathFull"
+        Write-AuditLine "The version file is not valid JSON, using $version : $versionPathFull"
     }
 }
 else {
-    Write-Warning "The version file was not found, using $version : $versionPathFull"
+    Write-AuditLine "The version file was not found, using $version : $versionPathFull"
 }
 
 $filesFileName = "{0}{1}.md" -f $filesPrefix, $version
@@ -771,9 +798,9 @@ function New-FileConsoleColumns {
     )
 
     return @(
-        (New-ConsoleColumn -Group 'Line' -Name 'Raw' -Values @($Items | ForEach-Object { Format-Integer $_.Lines })),
-        (New-ConsoleColumn -Group 'Line' -Name 'Non-blank' -Values @($Items | ForEach-Object { Format-Integer $_.NonBlankLines })),
-        (New-ConsoleColumn -Group 'Size' -Name 'Raw' -Values @($Items | ForEach-Object { Format-Integer $_.Bytes })),
+        (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($Items | ForEach-Object { Format-Integer $_.Lines })),
+        (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($Items | ForEach-Object { Format-Integer $_.NonBlankLines })),
+        (New-ConsoleColumn -Group 'Sizes' -Name 'Raw' -Values @($Items | ForEach-Object { Format-Integer $_.Bytes })),
         (New-ConsoleColumn -Name 'Location' -Right $false -Values @($Items | ForEach-Object { [string][System.IO.Path]::GetDirectoryName($_.RelativePath) })),
         (New-ConsoleColumn -Name 'File' -Right $false -Values @($Items | ForEach-Object { $_.Name }))
     )
@@ -783,11 +810,6 @@ function Write-FileConsoleTable {
     param(
         [Parameter(Mandatory = $true)][object[]]$Columns
     )
-
-    if ($Columns[0].Values.Count -eq 0) {
-        Write-AuditLine "None." -ForegroundColor DarkGray
-        return
-    }
 
     Write-GroupedConsoleTable -Columns $Columns
 }
@@ -810,17 +832,6 @@ function Add-FileMarkdownTable {
     }
 }
 
-# Console output: the two size bands (presented first).
-$overLimitColumns = New-FileConsoleColumns -Items $overLimitFiles
-$warningColumns = New-FileConsoleColumns -Items $warningFiles
-Sync-ConsoleColumnWidth -Tables @($overLimitColumns, $warningColumns)
-
-Write-SectionTitle $overLimitTitle
-Write-FileConsoleTable -Columns $overLimitColumns
-
-Write-SectionTitle $warningTitle
-Write-FileConsoleTable -Columns $warningColumns
-
 # Record both inventories to the report directory.
 [System.IO.Directory]::CreateDirectory($reportDirectoryFull) | Out-Null
 $filesPathFull = Join-Path $reportDirectoryFull $filesFileName
@@ -828,7 +839,7 @@ $filesPathFull = Join-Path $reportDirectoryFull $filesFileName
 $filesBuilder = [System.Text.StringBuilder]::new()
 [void]$filesBuilder.AppendLine("# Large file report - $version")
 [void]$filesBuilder.AppendLine()
-[void]$filesBuilder.AppendLine("Generated $($generatedAt.ToString('yyyy-MM-dd HH:mm:ss zzz')). $($overLimitFiles.Count) file(s) at $LimitThreshold lines or more, $($warningFiles.Count) file(s) in the $WarningThreshold-$($LimitThreshold - 1) line band.")
+[void]$filesBuilder.AppendLine("Generated $($generatedAt.ToString('yyyy-MM-dd HH:mm:ss zzz')). $($overLimitFiles.Count) file(s) over $LimitThreshold lines, $($warningFiles.Count) file(s) in the $($WarningThreshold + 1)-$LimitThreshold line band.")
 [void]$filesBuilder.AppendLine()
 [void]$filesBuilder.AppendLine("## $overLimitTitle")
 [void]$filesBuilder.AppendLine()
@@ -838,28 +849,16 @@ Add-FileMarkdownTable -Builder $filesBuilder -Items $overLimitFiles
 [void]$filesBuilder.AppendLine()
 Add-FileMarkdownTable -Builder $filesBuilder -Items $warningFiles
 [System.IO.File]::WriteAllText($filesPathFull, ($filesBuilder.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
-Write-AuditLine ""
-Write-AuditLine "Large-file report: $filesPathFull" -ForegroundColor Green
 
 # Lines over the configured width, per extension.
-$wideFiles = @($fileResults | Where-Object { $_.OverWidth -gt 0 } | Sort-Object -Property @{ Expression = 'OverWidth'; Descending = $true }, @{ Expression = 'RelativePath'; Descending = $false })
-$widthLabel = (($widthLimits.Keys | Sort-Object | ForEach-Object { "$_ $($widthLimits[$_])" }) -join ", ")
-$wideTitle = "Files with lines over the width limit ($widthLabel)"
-
-Write-SectionTitle $wideTitle
-if ($wideFiles.Count -eq 0) { Write-AuditLine "None." -ForegroundColor DarkGray }
-else {
-    Write-GroupedConsoleTable -Columns @(
-        (New-ConsoleColumn -Name 'Over' -Values @($wideFiles | ForEach-Object { Format-Integer $_.OverWidth })),
-        (New-ConsoleColumn -Name 'Widest' -Values @($wideFiles | ForEach-Object { Format-Integer $_.MaxWidth })),
-        (New-ConsoleColumn -Name 'Limit' -Values @($wideFiles | ForEach-Object { Format-Integer $_.WidthLimit })),
-        (New-ConsoleColumn -Name 'Location' -Right $false -Values @($wideFiles | ForEach-Object { [string][System.IO.Path]::GetDirectoryName($_.RelativePath) })),
-        (New-ConsoleColumn -Name 'File' -Right $false -Values @($wideFiles | ForEach-Object { $_.Name }))
-    )
-}
+$wideFiles = @($fileResults | Where-Object { $_.OverWidth -gt 0 } | Sort-Object -Property @{ Expression = 'OverWidth'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.RelativePath } })
+$widthLabel = (($widthLimits.Keys | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } | ForEach-Object { "$_ $($widthLimits[$_])" }) -join ", ")
+$wideTitle = "Files with lines over the width limit"
+[long]$wideLineCount = ($fileResults | Measure-Object -Property OverWidth -Sum).Sum
 
 # Hotspots: files that gained the most lines over the last commits, read from git.
 $hotspots = @()
+$hotspotNote = ''
 $hotspotTitle = "Hotspots over the last $hotspotCommits commit(s)"
 if ($hotspotCommits -gt 0) {
     $gitArguments = @('-C', $repoRootFull, '-c', 'core.quotepath=false', 'log', '--numstat', '--format=', "-n", "$hotspotCommits", '--') + @($sourceRootFulls)
@@ -879,15 +878,78 @@ if ($hotspotCommits -gt 0) {
             $growth[$path].Added += [long]$parts[0]
             $growth[$path].Deleted += [long]$parts[1]
         }
-        $hotspots = @($growth.Values | Sort-Object -Property @{ Expression = 'Added'; Descending = $true }, @{ Expression = 'Path'; Descending = $false } | Select-Object -First $hotspotTop)
+        $hotspots = @($growth.Values | Sort-Object -Property @{ Expression = 'Added'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Path } } | Select-Object -First $hotspotTop)
     }
     else {
-        Write-Warning "Git history could not be read, so hotspots are skipped."
+        $hotspotNote = "Git history could not be read, so hotspots are skipped."
     }
 
+}
+
+# Console output, from the widest view to the narrowest.
+Write-AuditLine ("Scanned: {0:N0} source files" -f $fileResults.Count) -ForegroundColor DarkGray
+
+$counterRows = @(
+    @($overLimitTitle, $overLimitFiles.Count),
+    @('Lines over the width limit', $wideLineCount),
+    @('Unreadable files', $readErrors.Count)
+)
+$counterWidth = ($counterRows | ForEach-Object { $_[0].Length } | Measure-Object -Maximum).Maximum
+Write-SectionTitle "Counters"
+foreach ($counterRow in $counterRows) {
+    Write-AuditLine ("{0}  {1:N0}" -f $counterRow[0].PadRight($counterWidth), $counterRow[1])
+}
+
+$tableRows = @($folderResults) + @([pscustomobject]@{
+    Name = 'Total'
+    Files = $totalFiles
+    Lines = $totalLines
+    NonBlankLines = [long](($folderResults | Measure-Object -Property NonBlankLines -Sum).Sum)
+    Bytes = $totalBytes
+})
+Write-SectionTitle "Source lines by folder"
+Write-GroupedConsoleTable -Columns @(
+    (New-ConsoleColumn -Name 'Folder' -Right $false -Values @($tableRows | ForEach-Object { $_.Name })),
+    (New-ConsoleColumn -Name 'Files' -Values @($tableRows | ForEach-Object { Format-Integer $_.Files })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($tableRows | ForEach-Object { Format-Integer $_.Lines })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($tableRows | ForEach-Object { Format-Integer $_.NonBlankLines })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalLines -gt 0) { ($_.Lines / [double]$totalLines) * 100.0 } else { 0.0 }) })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($tableRows | ForEach-Object { Format-Integer $_.Bytes })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalBytes -gt 0) { ($_.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }) })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($tableRows | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Bytes / [double]$_.Files) } else { 0 }) }))
+)
+
+$overLimitColumns = New-FileConsoleColumns -Items $overLimitFiles
+$warningColumns = New-FileConsoleColumns -Items $warningFiles
+Sync-ConsoleColumnWidth -Tables @($overLimitColumns, $warningColumns)
+
+if ($overLimitFiles.Count -gt 0) {
+    Write-SectionTitle ("{0} ({1:N0})" -f $overLimitTitle, $overLimitFiles.Count)
+    Write-FileConsoleTable -Columns $overLimitColumns
+}
+
+if ($warningFiles.Count -gt 0) {
+    Write-SectionTitle ("{0} ({1:N0})" -f $warningTitle, $warningFiles.Count)
+    Write-FileConsoleTable -Columns $warningColumns
+}
+
+if ($wideFiles.Count -gt 0) {
+    Write-SectionTitle ("{0} ({1:N0})" -f $wideTitle, $wideFiles.Count)
+    Write-GroupedConsoleTable -Columns @(
+        (New-ConsoleColumn -Name 'Over' -Values @($wideFiles | ForEach-Object { Format-Integer $_.OverWidth })),
+        (New-ConsoleColumn -Name 'Widest' -Values @($wideFiles | ForEach-Object { Format-Integer $_.MaxWidth })),
+        (New-ConsoleColumn -Name 'Limit' -Values @($wideFiles | ForEach-Object { Format-Integer $_.WidthLimit })),
+        (New-ConsoleColumn -Name 'Location' -Right $false -Values @($wideFiles | ForEach-Object { [string][System.IO.Path]::GetDirectoryName($_.RelativePath) })),
+        (New-ConsoleColumn -Name 'File' -Right $false -Values @($wideFiles | ForEach-Object { $_.Name }))
+    )
+}
+
+if ($hotspotCommits -gt 0) {
     Write-SectionTitle $hotspotTitle
-    if ($hotspots.Count -eq 0) { Write-AuditLine "None." -ForegroundColor DarkGray }
-    else {
+    if ($hotspotNote -ne '') {
+        Write-AuditLine $hotspotNote
+    }
+    elseif ($hotspots.Count -gt 0) {
         $currentLines = @{}
         foreach ($item in $fileResults) { $currentLines[$item.RelativePath.Replace('\', '/')] = $item.Lines }
         Write-GroupedConsoleTable -Columns @(
@@ -900,39 +962,10 @@ if ($hotspotCommits -gt 0) {
     }
 }
 
-# Console output: folder totals. Both tables are built first so shared columns align.
-$sourceFolderColumns = @(
-    (New-ConsoleColumn -Name 'Folder' -Right $false -Values @($folderResults | ForEach-Object { $_.Name })),
-    (New-ConsoleColumn -Name 'Files' -Values @($folderResults | ForEach-Object { Format-Integer $_.Files })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($folderResults | ForEach-Object { Format-Integer $_.Lines })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($folderResults | ForEach-Object { Format-Integer $_.NonBlankLines })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalLines -gt 0) { ($_.Lines / [double]$totalLines) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($folderResults | ForEach-Object { Format-Integer $_.Bytes })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalBytes -gt 0) { ($_.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($folderResults | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Bytes / [double]$_.Files) } else { 0 }) }))
-)
-
-$commentFolderColumns = @(
-    (New-ConsoleColumn -Name 'Folder' -Right $false -Values @($folderResults | ForEach-Object { $_.Name })),
-    (New-ConsoleColumn -Name 'Files' -Values @($folderResults | ForEach-Object { Format-Integer $_.CommentFiles })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($folderResults | ForEach-Object { Format-Integer $_.CommentLines })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($folderResults | ForEach-Object { Format-Integer $_.CommentNonBlankLines })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalCommentLines -gt 0) { ($_.CommentLines / [double]$totalCommentLines) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($folderResults | ForEach-Object { Format-Integer $_.CommentBytes })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalCommentBytes -gt 0) { ($_.CommentBytes / [double]$totalCommentBytes) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($folderResults | ForEach-Object { Format-Integer $(if ($_.CommentFiles -gt 0) { [Math]::Round($_.CommentBytes / [double]$_.CommentFiles) } else { 0 }) })),
-    (New-ConsoleColumn -Name 'Density' -Values @($folderResults | ForEach-Object { Format-Ratio $(if ($_.NonBlankLines -gt 0) { $_.CommentNonBlankLines / [double]$_.NonBlankLines } else { 0.0 }) }))
-)
-
-Sync-ConsoleColumnWidth -Tables @($sourceFolderColumns, $commentFolderColumns)
-
-Write-SectionTitle "Source lines by folder"
-Write-GroupedConsoleTable -Columns $sourceFolderColumns
-Write-AuditLine ("Total: {0:N0} lines in {1:N0} files." -f $totalLines, $totalFiles) -ForegroundColor Green
-
-Write-SectionTitle "Comment lines by folder"
-Write-GroupedConsoleTable -Columns $commentFolderColumns
-Write-AuditLine ("Total: {0:N0} comment lines in {1:N0} files." -f $totalCommentLines, $totalCommentFiles) -ForegroundColor Green
+if ($readErrors.Count -gt 0) {
+    Write-SectionTitle ("Unreadable files ({0:N0})" -f $readErrors.Count)
+    foreach ($readError in $readErrors) { Write-AuditLine $readError }
+}
 
 # Markdown output: repository summary, large files, folder totals, and extension totals.
 $reportBuilder = [System.Text.StringBuilder]::new()
@@ -941,8 +974,8 @@ $reportBuilder = [System.Text.StringBuilder]::new()
 [void]$reportBuilder.AppendLine("- Generated: $($generatedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))")
 [void]$reportBuilder.AppendLine("- Source roots: $(ConvertTo-MarkdownCell ($sourceRootFulls -join '; '))")
 [void]$reportBuilder.AppendLine("- Counted extensions: $(ConvertTo-MarkdownCell $extensionLabel)")
-[void]$reportBuilder.AppendLine("- Excluded directories: $(ConvertTo-MarkdownCell (($excludedNames | Sort-Object) -join ', '))")
-[void]$reportBuilder.AppendLine("- Folder depth: $Depth")
+[void]$reportBuilder.AppendLine("- Excluded directories: $(ConvertTo-MarkdownCell (($excludedNames | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } }) -join ', '))")
+[void]$reportBuilder.AppendLine("- Folder segments: $Segments")
 [void]$reportBuilder.AppendLine()
 [void]$reportBuilder.AppendLine("## Summary")
 [void]$reportBuilder.AppendLine()
@@ -958,7 +991,7 @@ $reportBuilder = [System.Text.StringBuilder]::new()
 [void]$reportBuilder.AppendLine("| Comment lines | $(Format-Integer $totalCommentLines) |")
 [void]$reportBuilder.AppendLine("| $overLimitTitle | $(Format-Integer $overLimitFiles.Count) |")
 [void]$reportBuilder.AppendLine("| $warningTitle | $(Format-Integer $warningFiles.Count) |")
-[void]$reportBuilder.AppendLine("| Files with lines over the width limit | $(Format-Integer $wideFiles.Count) |")
+[void]$reportBuilder.AppendLine("| Lines over the width limit | $(Format-Integer $wideLineCount) |")
 if ($null -ne $largestFolder) {
     [void]$reportBuilder.AppendLine("| Largest folder | $(ConvertTo-MarkdownCell $largestFolder.Name) ($(Format-Integer $largestFolder.Lines) lines) |")
 }
@@ -973,7 +1006,7 @@ Add-FileMarkdownTable -Builder $reportBuilder -Items $overLimitFiles
 [void]$reportBuilder.AppendLine()
 Add-FileMarkdownTable -Builder $reportBuilder -Items $warningFiles
 [void]$reportBuilder.AppendLine()
-[void]$reportBuilder.AppendLine("## $wideTitle")
+[void]$reportBuilder.AppendLine("## $wideTitle ($widthLabel)")
 [void]$reportBuilder.AppendLine()
 if ($wideFiles.Count -eq 0) { [void]$reportBuilder.AppendLine("None.") }
 else {
@@ -1029,7 +1062,7 @@ foreach ($item in $folderResults) {
 [void]$reportBuilder.AppendLine("|-----------|------:|------:|----------:|------:|------:|")
 $sortedExtensionTotals = @(
     $extensionTotals.Values |
-        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = 'Extension'; Descending = $false }
+        Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Extension } }
 )
 foreach ($item in $sortedExtensionTotals) {
     $share = if ($totalLines -gt 0) { ($item.Lines / [double]$totalLines) * 100.0 } else { 0.0 }
@@ -1048,13 +1081,15 @@ if ($readErrors.Count -gt 0) {
 [System.IO.File]::WriteAllText($outputPathFull, ($reportBuilder.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 
 Write-AuditLine ""
-Write-AuditLine "Markdown report: $outputPathFull" -ForegroundColor Green
-if ($readErrors.Count -gt 0) {
-    Write-Warning "$($readErrors.Count) file(s) could not be read. See the Markdown report for details."
-}
+Write-AuditLine "Report: $outputPathFull"
+Write-AuditLine "Report: $filesPathFull"
 
 if ($Open) {
     Start-Process -FilePath $outputPathFull
 }
 
-return
+if (($overLimitFiles.Count + $wideLineCount + $readErrors.Count) -gt 0) {
+    exit 1
+}
+
+exit 0

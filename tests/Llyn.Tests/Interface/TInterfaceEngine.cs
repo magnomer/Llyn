@@ -156,7 +156,7 @@ internal static partial class TInterface
         this LEngine engine,
         long entryId,
         string path,
-        LPortraitFormat format,
+        LPortraitMedium format,
         LPortraitLabel label) =>
         engine.LEnginePortrait.LEnginePortraitExport(entryId, path, format, label);
 

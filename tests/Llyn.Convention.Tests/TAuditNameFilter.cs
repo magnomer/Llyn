@@ -12,34 +12,89 @@ internal static class TAuditNameFilter
             entry => new HashSet<string>(entry.Value, StringComparer.Ordinal),
             StringComparer.Ordinal);
 
+    private static Dictionary<string, List<TypeDeclarationSyntax>> TAuditTypeParts = new(StringComparer.Ordinal);
+
+    private static Dictionary<string, List<string>> TAuditTypeKeys = new(StringComparer.Ordinal);
+
+    internal static void TAuditTypeScan(IEnumerable<SyntaxTree> trees)
+    {
+        Dictionary<string, List<TypeDeclarationSyntax>> parts = new(StringComparer.Ordinal);
+        Dictionary<string, List<string>> keys = new(StringComparer.Ordinal);
+        foreach (TypeDeclarationSyntax type in trees.SelectMany(tree =>
+                     tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()))
+        {
+            string key = TAuditKeyRead(type);
+            if (!parts.TryGetValue(key, out List<TypeDeclarationSyntax>? known))
+            {
+                known = [];
+                parts[key] = known;
+                string simple = type.Identifier.ValueText;
+                if (!keys.TryGetValue(simple, out List<string>? named))
+                {
+                    named = [];
+                    keys[simple] = named;
+                }
+
+                named.Add(key);
+            }
+
+            known.Add(type);
+        }
+
+        TAuditTypeParts = parts;
+        TAuditTypeKeys = keys;
+    }
+
     internal static bool TAuditContractCheck(SyntaxNode node, string name)
     {
-        for (SyntaxNode? current = node.Parent; current is not null; current = current.Parent)
+        TypeDeclarationSyntax? type = node.Ancestors().OfType<TypeDeclarationSyntax>().FirstOrDefault();
+        return type is not null
+            && TAuditContractFind(TAuditKeyRead(type), name, new HashSet<string>(StringComparer.Ordinal));
+    }
+
+    private static bool TAuditContractFind(string key, string name, HashSet<string> visited)
+    {
+        if (!visited.Add(key) || !TAuditTypeParts.TryGetValue(key, out List<TypeDeclarationSyntax>? parts))
         {
-            if (current is not TypeDeclarationSyntax type)
+            return false;
+        }
+
+        foreach (BaseTypeSyntax baseType in parts.SelectMany(part => part.BaseList?.Types ?? []))
+        {
+            string simple = TAuditInterfaceRead(baseType.Type);
+            if (TAuditFrameworkContracts.TryGetValue(simple, out HashSet<string>? members) && members.Contains(name))
             {
-                continue;
+                return true;
             }
 
-            bool nameIsContract = TAuditFrameworkContracts.Values.Any(members => members.Contains(name));
-
-            if (type.BaseList is not null)
+            if (TAuditTypeKeys.TryGetValue(simple, out List<string>? keys)
+                && keys.Any(baseKey => TAuditContractFind(baseKey, name, visited)))
             {
-                foreach (BaseTypeSyntax baseType in type.BaseList.Types)
-                {
-                    if (TAuditFrameworkContracts.TryGetValue(
-                            TAuditInterfaceRead(baseType.Type), out HashSet<string>? members) &&
-                        members.Contains(name))
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
-
-            return nameIsContract && type.Modifiers.Any(token => token.IsKind(SyntaxKind.PartialKeyword));
         }
 
         return false;
+    }
+
+    private static string TAuditKeyRead(TypeDeclarationSyntax type)
+    {
+        List<string> segments = [];
+        for (SyntaxNode? current = type; current is not null; current = current.Parent)
+        {
+            if (current is TypeDeclarationSyntax declaration)
+            {
+                int arity = declaration.TypeParameterList?.Parameters.Count ?? 0;
+                segments.Add($"{declaration.Identifier.ValueText}`{arity}");
+            }
+            else if (current is BaseNamespaceDeclarationSyntax space)
+            {
+                segments.Add(space.Name.ToString());
+            }
+        }
+
+        segments.Reverse();
+        return string.Join(".", segments);
     }
 
     private static string TAuditInterfaceRead(TypeSyntax type) => type switch

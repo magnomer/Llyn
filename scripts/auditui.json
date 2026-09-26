@@ -1,26 +1,31 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "test": {
     "project": "tests/Llyn.Convention.Tests",
     "configuration": "Debug",
-    "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict"
+    "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict|FullyQualifiedName~TAuditBoundary"
   },
   "sources": {
     "veneer": "temp/audit/Strict-{version}.md",
     "deportment": "temp/audit/Custody-{version}.md"
   },
   "veneer": {
-    "kinds": [ "Storage", "Call", "Engine", "Reach", "Trigger" ]
+    "kinds": [ "Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring" ]
   },
   "deportment": {
-    "kinds": [ "Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Taint" ]
+    "kinds": [ "Argument", "Guard", "Fork", "Mirror", "Mutation", "Shape", "Treat", "Glyph", "Taint", "Feed", "Parity" ]
   },
   "triage": {
     "rules": [
       { "kinds": [ "Storage" ], "verdict": "violation", "why": "the veneer holds state" },
       { "kinds": [ "Call" ], "verdict": "violation", "why": "the veneer does more than call a function" },
-      { "kinds": [ "Engine" ], "verdict": "violation", "why": "the veneer reaches the engine" },
+      { "kinds": [ "Static" ], "verdict": "violation", "why": "the driver holds mutable static state" },
+      { "kinds": [ "Depth" ], "verdict": "violation", "why": "the surface names a type from below its driver" },
+      { "kinds": [ "Glyph" ], "verdict": "violation", "why": "an identifier carries a non-ASCII glyph" },
+      { "kinds": [ "Wiring" ], "verdict": "violation", "why": "the host holds behaviour beyond construction and wiring" },
+      { "kinds": [ "Feed" ], "verdict": "violation", "why": "the driver hands its surface a type from below the cut" },
+      { "kinds": [ "Parity" ], "verdict": "review", "why": "one driver reaches a Conduct member or port the other lacks" },
       { "kinds": [ "Reach" ], "verdict": "violation", "why": "the veneer markup reaches the engine" },
       { "kinds": [ "Trigger" ], "verdict": "violation", "why": "the veneer markup branches or computes" },
 

@@ -1,5 +1,5 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "sources": {
     "roots": [
@@ -30,10 +30,39 @@
     ]
   },
   "thresholds": {
+    "parts": 5,
+    "span": 1000,
+    "hub": 5,
+    "weave": 0.75,
+    "density": 0.5,
     "lines": 500,
     "members": 40,
-    "state": 12,
-    "weave": 0.75
+    "state": 12
+  },
+  "ceiling": {
+    "monolith": 3,
+    "hub": 8,
+    "large": 43
+  },
+  "parts": {
+    "Llyn.Infrastructure.LEntryArchive": 2,
+    "Llyn.Infrastructure.LLanguageLoader": 10,
+    "Llyn.Infrastructure.LSituationArchive": 3,
+    "Llyn.ShellEngine.LTenure": 4,
+    "Llyn.UIVeneer.PArticulation": 3,
+    "Llyn.UIVeneer.PCard": 9,
+    "Llyn.UIVeneer.PCorpus": 9,
+    "Llyn.UIVeneer.PEditor": 29,
+    "Llyn.UIVeneer.PFavorite": 2,
+    "Llyn.UIVeneer.PField": 2,
+    "Llyn.UIVeneer.PRepertoire": 7,
+    "Llyn.UIVeneer.PScreen": 5,
+    "Llyn.UIVeneer.PSentence": 3,
+    "Llyn.UIVeneer.PSettings": 10,
+    "Llyn.UIVeneer.PSwath": 2,
+    "Llyn.UIVeneer.PTaxonomy": 3,
+    "Llyn.UIVeneer.PTenor": 3,
+    "Llyn.UIVeneer.PWindow": 11
   },
   "console": {
     "top": 25

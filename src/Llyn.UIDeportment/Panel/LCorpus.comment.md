@@ -247,6 +247,6 @@ Runs a transcript step and raises `LCorpusFailed` with `Example.HoldFailed` when
 
 Prints the entry on display, else the chosen Example, else nothing.
 
-## `public Task LCorpusPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)`
+## `public Task LCorpusPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)`
 
 Exports the entry on display, and does nothing otherwise.

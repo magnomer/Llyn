@@ -64,7 +64,7 @@ public sealed class LInflectionClerk
         _lInflectionClerkLacunae.LLacunaDelete(entryId);
     }
 
-    public void LInflectionClerkUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    public void LInflectionClerkUpdate(long entryId, LEntryDraft draft, List<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(changes);
@@ -80,7 +80,7 @@ public sealed class LInflectionClerk
 
         LInflectionClerkValidate(current);
         inflections.LInflectionSet(entryId, current);
-        changes.Add(new LRevisionChange(
+        changes.Add(new LRevisionDelta(
             entryId,
             "inflection",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",

@@ -2,24 +2,13 @@
 
 ## `internal static class TAuditObjectWalker`
 
-Compiles the sources with Roslyn, merges every partial type and measures how tightly its parts are woven.
-Binding uses the runtime assemblies alone, so framework members stay unbound.
-Only references to the type's own members are counted, so that loses nothing.
-
-## `private static readonly CSharpParseOptions TAuditSyntaxOptions`
-
-The parse options every source is read with.
+Merges every partial type of the bound sources and measures how tightly its parts are woven.
+Binding goes through `TAuditBinder`, the compilation every bound audit and scripts/auditbinder.cs share.
 
 ## `public static IReadOnlyList<TAuditObjectRow> TAuditRun(IReadOnlyList<string> sourcePaths, string repoRoot)`
 
-Parses every source, builds one compilation, registers members in a first pass and links them in a second.
+Takes the bound tree of every listed source, registers members in a first pass and links them in a second.
 Returns one row per type with members, largest first.
-
-## `public static List<MetadataReference> TAuditReferenceRead()`
-
-The runtime's trusted platform assemblies as metadata references.
-A file that is not a managed assembly is skipped.
-The chain walker binds against the same set.
 
 ## `private static void TAuditMemberScan(SemanticModel model, string repoRoot, Dictionary<INamedTypeSymbol, TAuditObjectType> types)`
 

@@ -44,13 +44,13 @@ internal sealed class LPortraitFacade
     }
 
     internal Task LEnginePortraitExport(
-        long entryId, string path, LPortraitFormat format, LPortraitLabel label)
+        long entryId, string path, LPortraitMedium format, LPortraitLabel label)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentNullException.ThrowIfNull(label);
 
-        if (format == LPortraitFormat.LPortraitFormatMarkup)
+        if (format == LPortraitMedium.LPortraitMediumMarkup)
         {
             lock (_lPortraitFacadeGate)
             {
@@ -75,7 +75,7 @@ internal sealed class LPortraitFacade
     }
 
     public Task LEnginePortraitExport(
-        LVista? vista, string path, LPortraitFormat format, LPortraitLabel label)
+        LVista? vista, string path, LPortraitMedium format, LPortraitLabel label)
     {
         return vista?.LVistaSubject == LSubject.LSubjectEntry && vista.LVistaChosen is long id
             ? LEnginePortraitExport(id, path, format, label)

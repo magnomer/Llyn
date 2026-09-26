@@ -2,7 +2,7 @@
 
 ## Generation
 
-AUDITNAMES GENERATION 11.
+AUDITNAMES GENERATION 12.
 
 A generation is not a revision count.
 It names functionality, not edits.
@@ -37,6 +37,16 @@ What says a specimen lies outside the audit lives in `TAuditNameFilter.cs`.
 Generation 11 changes nothing the name audit reports.
 The number rises with the truth audit, which gains four deportment-field checks.
 
+Generation 12 exempts a framework contract name only when a part of the type declares the interface.
+The number also rises with every audit rebaselined against the structure report.
+It fails a name that does not split into prefix and PascalCase components, as the script does.
+It fails a type, delegate or event name that ends in a verb, as the script does.
+
+## `public static List<TSpecimen> TAuditSpecimenRead(IEnumerable<string> sourcePaths)`
+
+Every name the sources declare, the markup's included.
+The code trees are parsed first, so the partial index sees every part before any name is judged.
+
 ## Inline notes
 
 ### `if (registry.TAuditExemptValidate(candidate.TSpecimenName, candidate.TSpecimenPath))`
@@ -67,3 +77,7 @@ Once any test method adopts T, every test method must carry it.
 ### `return "missing required prefix";`
 
 A codebase-owned name that survived the external/generated/framework-contract filters but carries no prefix is a violation, not something to skip.
+
+### `return "no base after the prefix";`
+
+A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` cannot slip through.

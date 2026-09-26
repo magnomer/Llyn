@@ -15,15 +15,23 @@ reads every project file under the configured root, and reports:
   Reference  a portable project that references a twin or any Windows project
   Column     a twin that references a project outside its own column: its portable half and
              the other twins of that half
-  Analyzer   a portable project where the platform analyzer rule is not an error
+  Analyzer   a portable project where the platform analyzer rule is not an error for one of
+             its C# files, judged per file through the .editorconfig and .globalconfig chain
+             (sections, root and precedence) and then the MSBuild warning properties
   Windows    a portable project that enables a Windows property, references a Windows package,
              or holds a source line that names a Windows API
   Empty      a twin that holds no source file
+  Suppress   a portable project that silences the analyzer rule: NoWarn, an analyzer switch,
+             a pragma or a SuppressMessage attribute
+  Implicit   a project or Directory.Build file that turns implicit usings on
+  Domain     a twin type that implements no port of its portable half, bound with Roslyn
+             through the shared binder in auditbinder.cs and auditbinder.json
 
 The host may reference every project, so its edges are never reported. The layer chain itself is
 the structure audit's concern and is not repeated here.
 
-The report is written to the configured report folder as {prefix}{version}.md. Git is required.
+The report is written to the configured report folder as {prefix}{version}.md. Git and the
+.NET SDK are required, and the solution must be built so the binder finds the generated code.
 No project source is modified.
 
 This script carries no project-specific value of its own. Everything a project chooses - the
@@ -53,7 +61,7 @@ auditplatform -ReportDirectory D:\temp\audit -Open
 Write the report elsewhere and open it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM GENERATION 11 - auditplatform.ps1.
+# AUDITPLATFORM GENERATION 12 - auditplatform.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -63,6 +71,8 @@ Write the report elsewhere and open it.
 # and each refuses a configuration written at another generation.
 # Generation 11: the first generation of this audit. It reads the project files and the portable
 # sources and reports eight kinds.
+# Generation 12: the audit reports the eleven kinds of the convention test, Suppress, Implicit and
+# Domain included, and judges the analyzer severity per file as the compiler does.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -96,7 +106,8 @@ OPTIONS
     -Help                    Show this help.
 
 KINDS
-    Unmapped, Absent, Framework, Reference, Column, Analyzer, Windows, Empty.
+    Unmapped, Absent, Framework, Reference, Column, Analyzer, Windows, Empty,
+    Suppress, Implicit, Domain.
     See the script header for definitions.
 '@ | Write-Host
     exit 0
@@ -104,8 +115,9 @@ KINDS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 11
-$script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty')
+$script:AuditGeneration = 12
+$script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty',
+    'Suppress', 'Implicit', 'Domain')
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
@@ -123,6 +135,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -190,7 +209,7 @@ function Read-AuditConfig {
         'generation', 'project',
         'projects.root', 'projects.table',
         'framework.portable', 'framework.twin',
-        'analyzer.rule',
+        'analyzer.rule', 'analyzer.silencers', 'domain.exempt',
         'windows.properties', 'windows.packages', 'windows.patterns',
         'sources.extensions', 'sources.excludeSegments', 'sources.excludeSuffixes',
         'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix'
@@ -301,7 +320,10 @@ function Get-TrackedFiles {
 
     $lsArguments = @('-c', 'core.quotePath=false', '-C', $ProjectRoot,
         'ls-files', '--cached', '--others', '--exclude-standard', '--', [string]$Config.projects.root)
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $gitOutput = & $git.Source @lsArguments 2>&1
+    $ErrorActionPreference = $nativePreference
     if ($LASTEXITCODE -ne 0) {
         throw "Git could not enumerate project files.`n$($gitOutput -join [Environment]::NewLine)"
     }
@@ -319,7 +341,177 @@ function Get-TrackedFiles {
         }
     }
 
-    return @($files.ToArray() | Sort-Object -Unique)
+    return @($files.ToArray() | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
+}
+
+function Get-GitFiles {
+    param([string]$ProjectRoot, [string[]]$Patterns)
+
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $gitOutput = & git -c core.quotePath=false -C $ProjectRoot ls-files --cached --others --exclude-standard -- @Patterns 2>&1
+    $ErrorActionPreference = $nativePreference
+    if ($LASTEXITCODE -ne 0) {
+        throw "Git could not enumerate files.`n$($gitOutput -join [Environment]::NewLine)"
+    }
+
+    return @($gitOutput | ForEach-Object { ([string]$_).Trim() } | Where-Object {
+        $_.Length -gt 0 -and (Test-Path -LiteralPath (Join-Path $ProjectRoot $_) -PathType Leaf)
+    })
+}
+
+$script:HelperProject = @'
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>{TARGET_FRAMEWORK}</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RestoreIgnoreFailedSources>true</RestoreIgnoreFailedSources>
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
+'@
+
+$script:HelperProgram = @'
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+if (args.Length != 4)
+{
+    Console.Error.WriteLine("usage: <root> <binder> <jobs> <output>");
+    return 2;
+}
+
+AuditBinder binder = AuditBinder.Bind(args[0], args[1]);
+Dictionary<string, SyntaxTree> trees = binder.Tracked
+    .ToDictionary(tree => Path.GetFullPath(tree.FilePath), StringComparer.OrdinalIgnoreCase);
+List<string> rows = [];
+foreach (string job in File.ReadAllLines(args[2]).Where(line => line.Length > 0))
+{
+    string[] parts = job.Split('\t');
+    string portable = parts[0];
+    if (!trees.TryGetValue(Path.GetFullPath(parts[1]), out SyntaxTree? tree))
+    {
+        throw new InvalidOperationException($"The binder holds no tree for {parts[1]}.");
+    }
+
+    SemanticModel model = binder.Compilation.GetSemanticModel(tree, true);
+    foreach (TypeDeclarationSyntax declared in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()
+                 .Where(type => type.Parent is not TypeDeclarationSyntax))
+    {
+        if (model.GetDeclaredSymbol(declared)?.OriginalDefinition is not INamedTypeSymbol type)
+        {
+            continue;
+        }
+
+        IEnumerable<INamedTypeSymbol> bases = type.AllInterfaces;
+        for (INamedTypeSymbol? current = type.BaseType; current is not null; current = current.BaseType)
+        {
+            bases = bases.Append(current);
+        }
+
+        bool ported = bases.Any(held =>
+            held.OriginalDefinition.Locations.FirstOrDefault(location => location.IsInSource)?.SourceTree is SyntaxTree home
+            && binder.Relative(home.FilePath).StartsWith(portable, StringComparison.OrdinalIgnoreCase));
+        if (!ported)
+        {
+            int line = declared.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+            rows.Add(string.Join('\t', binder.Relative(tree.FilePath), line, type.Name));
+        }
+    }
+}
+
+File.WriteAllLines(args[3], rows);
+return 0;
+'@
+
+function Invoke-DomainHelper {
+    param([string]$ProjectRoot, [string[]]$JobLines)
+
+    $dotnet = Get-Command dotnet -ErrorAction SilentlyContinue
+    if ($null -eq $dotnet) {
+        throw 'The .NET SDK is required to bind the twins, but dotnet was not found on PATH.'
+    }
+
+    $sdkVersion = ([string](& $dotnet.Source --version 2>$null | Select-Object -First 1)).Trim()
+    if ($LASTEXITCODE -ne 0 -or $sdkVersion -notmatch '^(\d+)\.') {
+        throw "The .NET SDK version could not be read: '$sdkVersion'"
+    }
+    $targetFramework = "net$($Matches[1]).0"
+    $binderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
+    $binderConfig = Join-Path $PSScriptRoot 'auditbinder.json'
+
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $seed = $script:HelperProject + "`n" + $script:HelperProgram + "`n" + $binderSource + "`n" + $targetFramework + "`n" + $sdkVersion
+        $digest = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($seed))
+    }
+    finally {
+        $sha.Dispose()
+    }
+    $hash = ([System.BitConverter]::ToString($digest) -replace '-', '').Substring(0, 16).ToLowerInvariant()
+    $cacheParent = Join-Path ([System.IO.Path]::GetTempPath()) ([string]$config.project + '-AuditPlatform')
+    $cacheFolder = Join-Path $cacheParent $hash
+    $binaryPath = Join-Path (Join-Path $cacheFolder 'bin') 'AuditPlatform.dll'
+
+    $previousNoLogo = $env:DOTNET_NOLOGO
+    $previousTelemetry = $env:DOTNET_CLI_TELEMETRY_OPTOUT
+    $env:DOTNET_NOLOGO = '1'
+    $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+    $temporaryFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([string]$config.project + '-AuditPlatform-' + [Guid]::NewGuid().ToString('N'))
+    [System.IO.Directory]::CreateDirectory($temporaryFolder) | Out-Null
+    try {
+        if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
+            Write-AuditLine 'Compiling the platform binder once for this SDK...' -ForegroundColor DarkGray
+            if (Test-Path -LiteralPath $cacheParent) {
+                Get-ChildItem -LiteralPath $cacheParent -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            $helperFolder = Join-Path $cacheFolder 'helper'
+            [System.IO.Directory]::CreateDirectory($helperFolder) | Out-Null
+            $encoding = New-Object System.Text.UTF8Encoding($false)
+            $projectPath = Join-Path $helperFolder 'AuditPlatform.csproj'
+            [System.IO.File]::WriteAllText($projectPath, $script:HelperProject.Replace('{TARGET_FRAMEWORK}', $targetFramework), $encoding)
+            [System.IO.File]::WriteAllText((Join-Path $helperFolder 'Program.cs'), $script:HelperProgram, $encoding)
+            [System.IO.File]::WriteAllText((Join-Path $helperFolder 'AuditBinder.cs'), $binderSource, $encoding)
+            $nativePreference = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'
+            $buildOutput = & $dotnet.Source build $projectPath --configuration Release --nologo --verbosity quiet --output (Join-Path $cacheFolder 'bin') 2>&1
+            $ErrorActionPreference = $nativePreference
+            if ($LASTEXITCODE -ne 0) {
+                Remove-Item -LiteralPath $cacheFolder -Recurse -Force -ErrorAction SilentlyContinue
+                throw "The platform binder could not be built.`n$($buildOutput -join [Environment]::NewLine)"
+            }
+        }
+
+        $jobsPath = Join-Path $temporaryFolder 'jobs.txt'
+        $outputPath = Join-Path $temporaryFolder 'domain.txt'
+        [System.IO.File]::WriteAllLines($jobsPath, $JobLines, [System.Text.UTF8Encoding]::new($false))
+        $nativePreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        $helperOutput = & $dotnet.Source $binaryPath $ProjectRoot $binderConfig $jobsPath $outputPath 2>&1
+        $ErrorActionPreference = $nativePreference
+        if ($LASTEXITCODE -ne 0) {
+            throw "The platform binder failed.`n$($helperOutput -join [Environment]::NewLine)"
+        }
+
+        return @([System.IO.File]::ReadAllLines($outputPath))
+    }
+    finally {
+        $env:DOTNET_NOLOGO = $previousNoLogo
+        $env:DOTNET_CLI_TELEMETRY_OPTOUT = $previousTelemetry
+        Remove-Item -LiteralPath $temporaryFolder -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 function Read-XmlText {
@@ -393,44 +585,134 @@ function Get-ConfigChain {
     return @($chain.ToArray())
 }
 
+function Test-GlobMatch {
+    param([string]$Glob, [string]$Relative)
+
+    $pattern = if ($Glob.Contains('/')) { $Glob.TrimStart('/') } else { '**/' + $Glob }
+    $text = New-Object System.Text.StringBuilder
+    [void]$text.Append('^')
+    for ($index = 0; $index -lt $pattern.Length; $index++) {
+        $next = [string]$pattern[$index]
+        if ($next -eq '*' -and $index + 1 -lt $pattern.Length -and [string]$pattern[$index + 1] -eq '*') {
+            $slash = $index + 2 -lt $pattern.Length -and [string]$pattern[$index + 2] -eq '/'
+            if ($slash) { [void]$text.Append('(?:.*/)?'); $index += 2 } else { [void]$text.Append('.*'); $index += 1 }
+            continue
+        }
+        $piece = switch -CaseSensitive ($next) {
+            '*' { '[^/]*' }
+            '?' { '[^/]' }
+            '{' { '(?:' }
+            '}' { ')' }
+            ',' { '|' }
+            '[' { '[' }
+            ']' { ']' }
+            default { [regex]::Escape($next) }
+        }
+        [void]$text.Append($piece)
+    }
+    [void]$text.Append('$')
+    return [regex]::IsMatch($Relative, $text.ToString(), [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+}
+
+$script:SectionPattern = [regex]::new('^\s*\[(?<glob>.+)\]\s*$')
+$script:PairPattern = [regex]::new('^\s*(?<key>[^=#;]+?)\s*=\s*(?<value>[^#;]*?)\s*$')
+
+function Get-ConfigLevel {
+    param([string]$ConfigPath, [string]$SourcePath, [string]$Key)
+
+    $applies = $ConfigPath.EndsWith('.globalconfig', [System.StringComparison]::Ordinal)
+    $configFolder = (Split-Path -Parent $ConfigPath).TrimEnd($script:PathSeparators)
+    $relative = $SourcePath.Substring($configFolder.Length).TrimStart($script:PathSeparators).Replace('\', '/')
+    $level = $null
+    foreach ($line in (Read-AuditLines -Path $ConfigPath)) {
+        $section = $script:SectionPattern.Match($line)
+        if ($section.Success) {
+            $applies = Test-GlobMatch -Glob $section.Groups['glob'].Value -Relative $relative
+            continue
+        }
+        $pair = $script:PairPattern.Match($line)
+        if ($applies -and $pair.Success -and $pair.Groups['key'].Value -eq $Key) {
+            $level = $pair.Groups['value'].Value
+        }
+    }
+
+    return $level
+}
+
+function Test-ConfigRoot {
+    param([string]$ConfigPath)
+
+    foreach ($line in (Read-AuditLines -Path $ConfigPath)) {
+        $pair = $script:PairPattern.Match($line)
+        if ($pair.Success -and $pair.Groups['key'].Value -eq 'root' -and $pair.Groups['value'].Value -eq 'true') {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Test-ListedRule {
+    param([xml]$Document, [string]$Element, [string]$Rule)
+
+    foreach ($value in (Get-XmlValues -Document $Document -Element $Element)) {
+        if (($value -split '[;,\s]+') -ccontains $Rule) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
 function Test-AnalyzerError {
-    param([string]$ProjectRoot, [string]$ProjectPath, [string]$Rule)
+    param([string]$ProjectRoot, [string]$ProjectPath, [string]$SourcePath, [string]$Rule)
 
-    $folder = Split-Path -Parent $ProjectPath
-    $asError = $false
-    $allAsErrors = $false
-    $notAsError = $false
+    $configs = @(Get-ConfigChain -ProjectRoot $ProjectRoot -ProjectFolder (Split-Path -Parent $SourcePath))
+    $editors = @($configs | Where-Object { $_.EndsWith('.editorconfig', [System.StringComparison]::Ordinal) })
+    $globals = @($configs | Where-Object { $_.EndsWith('.globalconfig', [System.StringComparison]::Ordinal) })
+    $kept = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($editor in $editors) {
+        $kept.Add($editor)
+        if (Test-ConfigRoot -ConfigPath $editor) {
+            break
+        }
+    }
+    [array]::Reverse($globals)
+    $nearest = $kept.ToArray()
+    [array]::Reverse($nearest)
 
-    foreach ($path in @(@(Get-ImportChain -ProjectRoot $ProjectRoot -ProjectFolder $folder) + $ProjectPath)) {
+    $level = $null
+    foreach ($config in @(@($globals) + @($nearest))) {
+        $found = Get-ConfigLevel -ConfigPath $config -SourcePath $SourcePath -Key "dotnet_diagnostic.$Rule.severity"
+        if ($null -ne $found) {
+            $level = $found
+        }
+    }
+
+    $listed = $false
+    $spared = $false
+    $every = $false
+    foreach ($path in @(@(Get-ImportChain -ProjectRoot $ProjectRoot -ProjectFolder (Split-Path -Parent $ProjectPath)) + $ProjectPath)) {
         $document = Read-XmlText -Path $path
-        foreach ($value in (Get-XmlValues -Document $document -Element 'WarningsAsErrors')) {
-            if (($value -split '[;,\s]+') -contains $Rule) {
-                $asError = $true
-            }
-        }
-        foreach ($value in (Get-XmlValues -Document $document -Element 'WarningsNotAsErrors')) {
-            if (($value -split '[;,\s]+') -contains $Rule) {
-                $notAsError = $true
-            }
-        }
+        if (Test-ListedRule -Document $document -Element 'WarningsAsErrors' -Rule $Rule) { $listed = $true }
+        if (Test-ListedRule -Document $document -Element 'WarningsNotAsErrors' -Rule $Rule) { $spared = $true }
         foreach ($value in (Get-XmlValues -Document $document -Element 'TreatWarningsAsErrors')) {
-            if ($value -eq 'true') {
-                $allAsErrors = $true
-            }
+            if ($value -eq 'true') { $every = $true }
         }
     }
 
-    $pattern = '^\s*dotnet_diagnostic\.' + [regex]::Escape($Rule) + '\.severity\s*=\s*(?<level>\w+)'
-    foreach ($path in (Get-ConfigChain -ProjectRoot $ProjectRoot -ProjectFolder $folder)) {
-        foreach ($line in [System.IO.File]::ReadAllLines($path)) {
-            $match = [regex]::Match($line, $pattern)
-            if ($match.Success) {
-                return $match.Groups['level'].Value -eq 'error'
-            }
-        }
+    $escalated = $listed -or ($every -and -not $spared)
+    if ($null -eq $level) {
+        return $escalated
+    }
+    if ($level -eq 'error') {
+        return $true
+    }
+    if ($level -eq 'warning') {
+        return $escalated
     }
 
-    return $asError -or ($allAsErrors -and -not $notAsError)
+    return $false
 }
 
 function Read-ProjectFacts {
@@ -444,8 +726,8 @@ function Read-ProjectFacts {
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
     $references = @(Get-XmlIncludes -Document $document -Element 'ProjectReference' |
         ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension(($_ -split '[\\/]')[-1]) } |
-        Sort-Object -Unique)
-    $packages = @(Get-XmlIncludes -Document $document -Element 'PackageReference' | Sort-Object -Unique)
+        Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
+    $packages = @(Get-XmlIncludes -Document $document -Element 'PackageReference' | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 
     return [pscustomobject]@{
         Name       = [System.IO.Path]::GetFileNameWithoutExtension($RelativePath)
@@ -460,6 +742,19 @@ function Read-ProjectFacts {
 }
 
 $script:Hits = New-Object 'System.Collections.Generic.List[object]'
+$script:ReadErrors = New-Object 'System.Collections.Generic.List[string]'
+
+function Read-AuditLines {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    try {
+        return , [System.IO.File]::ReadAllLines($Path)
+    }
+    catch {
+        $script:ReadErrors.Add("${Path}: $($_.Exception.Message)")
+        return , @()
+    }
+}
 
 function Add-AuditHit {
     param([string]$Kind, [string]$Project, [string]$Path, [int]$Line, [string]$Detail)
@@ -489,7 +784,7 @@ $reportPath = Join-Path $reportFolder ([string]$config.report.prefix + $version 
 if ($projectFiles.Length -eq 0) {
     throw "No project files were found under: $(Join-Path $projectRoot $config.projects.root)"
 }
-Write-AuditLine "Project files: $($projectFiles.Length)" -ForegroundColor DarkGray
+Write-AuditLine ("Scanned: {0:N0} project files" -f $projectFiles.Length) -ForegroundColor DarkGray
 
 $table = @{}
 foreach ($row in @($config.projects.table)) {
@@ -543,7 +838,7 @@ function Test-WindowsProject {
     return $false
 }
 
-foreach ($name in ($facts.Keys | Sort-Object)) {
+foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } })) {
     if (-not $table.ContainsKey($name)) {
         Add-AuditHit -Kind 'Unmapped' -Project $name -Path $facts[$name].Path -Line 0 -Detail 'the platform table does not name this project'
     }
@@ -557,9 +852,10 @@ foreach ($row in @($config.projects.table)) {
 }
 
 $sourceFiles = @($trackedFiles | Where-Object { -not $_.EndsWith('.csproj', [System.StringComparison]::OrdinalIgnoreCase) })
+$domainJobs = New-Object 'System.Collections.Generic.List[object]'
 $patterns = @($config.windows.patterns | ForEach-Object { [regex]::new([string]$_, [System.Text.RegularExpressions.RegexOptions]::Compiled) })
 
-foreach ($name in ($facts.Keys | Sort-Object)) {
+foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } })) {
     if (-not $table.ContainsKey($name)) {
         continue
     }
@@ -579,8 +875,45 @@ foreach ($name in ($facts.Keys | Sort-Object)) {
             }
         }
 
-        if (-not (Test-AnalyzerError -ProjectRoot $projectRoot -ProjectPath $fact.FullPath -Rule ([string]$config.analyzer.rule))) {
-            Add-AuditHit -Kind 'Analyzer' -Project $name -Path $fact.Path -Line 0 -Detail "$($config.analyzer.rule) is not an error"
+        $rule = [string]$config.analyzer.rule
+        $heldCode = @($sourceFiles | Where-Object {
+            $_.StartsWith($fact.Folder + '/', [System.StringComparison]::Ordinal) -and $_.EndsWith('.cs', [System.StringComparison]::Ordinal)
+        })
+        foreach ($source in $heldCode) {
+            $sourcePath = Join-Path $projectRoot ($source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))
+            if (-not (Test-AnalyzerError -ProjectRoot $projectRoot -ProjectPath $fact.FullPath -SourcePath $sourcePath -Rule $rule)) {
+                Add-AuditHit -Kind 'Analyzer' -Project $name -Path $source -Line 0 -Detail "$rule is not an error here"
+                break
+            }
+        }
+
+        $chainDocuments = @(@(Get-ImportChain -ProjectRoot $projectRoot -ProjectFolder (Split-Path -Parent $fact.FullPath)) + $fact.FullPath |
+            ForEach-Object { Read-XmlText -Path $_ })
+        if (@($chainDocuments | Where-Object { Test-ListedRule -Document $_ -Element 'NoWarn' -Rule $rule }).Count -gt 0) {
+            Add-AuditHit -Kind 'Suppress' -Project $name -Path $fact.Path -Line 0 -Detail "NoWarn holds $rule"
+        }
+        foreach ($silencer in $config.analyzer.silencers.PSObject.Properties) {
+            $silenced = $false
+            foreach ($document in $chainDocuments) {
+                foreach ($value in (Get-XmlValues -Document $document -Element $silencer.Name)) {
+                    if ($value -eq [string]$silencer.Value) { $silenced = $true }
+                }
+            }
+            if ($silenced) {
+                Add-AuditHit -Kind 'Suppress' -Project $name -Path $fact.Path -Line 0 -Detail "$($silencer.Name) is $($silencer.Value)"
+            }
+        }
+        foreach ($source in $heldCode) {
+            $sourcePath = Join-Path $projectRoot ($source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))
+            $lines = Read-AuditLines -Path $sourcePath
+            for ($index = 0; $index -lt $lines.Length; $index++) {
+                $line = $lines[$index]
+                $pragma = $line -cmatch '^\s*#\s*pragma\s+warning\s+disable\b' -and ($line.Contains($rule) -or $line -cmatch 'disable\s*$')
+                $attribute = $line.Contains('SuppressMessage') -and $line.Contains($rule)
+                if ($pragma -or $attribute) {
+                    Add-AuditHit -Kind 'Suppress' -Project $name -Path $source -Line ($index + 1) -Detail $line.Trim()
+                }
+            }
         }
 
         foreach ($property in @($config.windows.properties)) {
@@ -602,7 +935,7 @@ foreach ($name in ($facts.Keys | Sort-Object)) {
                 continue
             }
             $sourcePath = Join-Path $projectRoot ($source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))
-            $lines = [System.IO.File]::ReadAllLines($sourcePath)
+            $lines = Read-AuditLines -Path $sourcePath
             for ($index = 0; $index -lt $lines.Length; $index++) {
                 foreach ($pattern in $patterns) {
                     $match = $pattern.Match($lines[$index])
@@ -630,6 +963,34 @@ foreach ($name in ($facts.Keys | Sort-Object)) {
         if ($held.Length -eq 0) {
             Add-AuditHit -Kind 'Empty' -Project $name -Path $fact.Path -Line 0 -Detail 'the twin holds no source file'
         }
+
+        if (@($config.domain.exempt) -notcontains $column) {
+            $portablePath = ([string]$config.projects.root).Trim('/') + '/' + $column + '/'
+            foreach ($source in @($held | Where-Object { $_.EndsWith('.cs', [System.StringComparison]::Ordinal) })) {
+                $domainJobs.Add([pscustomobject]@{ Project = $name; Column = $column; Portable = $portablePath; Source = $source })
+            }
+        }
+    }
+}
+
+$importFiles = @(Get-GitFiles -ProjectRoot $projectRoot -Patterns @(':(icase)*Directory.Build.props', ':(icase)*Directory.Build.targets'))
+foreach ($settings in @(@($projectFiles) + @($importFiles))) {
+    $settingsPath = Join-Path $projectRoot ($settings.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))
+    $implicit = @(Get-XmlValues -Document (Read-XmlText -Path $settingsPath) -Element 'ImplicitUsings' | Where-Object { $_ -eq 'enable' -or $_ -eq 'true' })
+    if ($implicit.Count -gt 0) {
+        Add-AuditHit -Kind 'Implicit' -Project ([System.IO.Path]::GetFileNameWithoutExtension($settings)) -Path $settings -Line 0 -Detail 'turns implicit usings on, so the binder would miss their global usings'
+    }
+}
+
+if ($domainJobs.Count -gt 0) {
+    $projectOf = @{}
+    foreach ($job in $domainJobs) { $projectOf[$job.Source] = $job }
+    $jobLines = @($domainJobs | ForEach-Object { $_.Portable + "`t" + (Join-Path $projectRoot ($_.Source.Replace([char]'/', [System.IO.Path]::DirectorySeparatorChar))) })
+    foreach ($row in (Invoke-DomainHelper -ProjectRoot $projectRoot -JobLines $jobLines)) {
+        $parts = ([string]$row).Split("`t")
+        if ($parts.Length -ne 3) { continue }
+        $job = $projectOf[$parts[0]]
+        Add-AuditHit -Kind 'Domain' -Project $job.Project -Path $parts[0] -Line ([int]$parts[1]) -Detail "$($parts[2]) implements no port of $($job.Column), so it holds more than a Windows adaptation"
     }
 }
 
@@ -647,7 +1008,7 @@ $report = New-Object System.Text.StringBuilder
 [void]$report.AppendLine()
 [void]$report.AppendLine('| Project | Role | Column | On disk | Targets | References |')
 [void]$report.AppendLine('|---|---|---|---|---|---|')
-$names = @(@($table.Keys) + @($facts.Keys) | Sort-Object -Unique)
+$names = @(@($table.Keys) + @($facts.Keys) | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } } -Unique)
 foreach ($name in $names) {
     $role = Get-ProjectRole -Name $name
     $roleText = if ($role -eq '') { 'unmapped' } else { $role }
@@ -668,7 +1029,7 @@ foreach ($kind in $script:AuditKinds) {
 [void]$report.AppendLine("| Total | $($script:Hits.Count) |")
 
 foreach ($kind in $script:AuditKinds) {
-    $kindHits = @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object Project, Path, Line)
+    $kindHits = @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Project } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Detail } })
     if ($kindHits.Length -eq 0) {
         continue
     }
@@ -686,17 +1047,48 @@ $stagingPath = $reportPath + '.tmp'
 [System.IO.File]::WriteAllText($stagingPath, ($report.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 Move-Item -LiteralPath $stagingPath -Destination $reportPath -Force
 
+$counterWidth = @(@($script:AuditKinds) + 'Unreadable files' | ForEach-Object { $_.Length } | Measure-Object -Maximum)[0].Maximum
+Write-AuditLine ''
+Write-AuditLine 'Counters'
+Write-AuditLine '--------'
 foreach ($kind in $script:AuditKinds) {
-    $color = if ($counts[$kind] -eq 0) { 'Green' } else { 'Yellow' }
-    Write-AuditLine ("{0,-10} {1,4}" -f $kind, $counts[$kind]) -ForegroundColor $color
-    foreach ($hit in @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object Project, Path, Line)) {
+    Write-AuditLine ("{0}  {1:N0}" -f $kind.PadRight($counterWidth), $counts[$kind])
+}
+Write-AuditLine ("{0}  {1:N0}" -f 'Unreadable files'.PadRight($counterWidth), $script:ReadErrors.Count)
+
+foreach ($kind in $script:AuditKinds) {
+    if ($counts[$kind] -eq 0) {
+        continue
+    }
+    $heading = "$kind ($($counts[$kind].ToString('N0')))"
+    Write-AuditLine ''
+    Write-AuditLine $heading
+    Write-AuditLine ('-' * $heading.Length)
+    foreach ($hit in @($script:Hits | Where-Object { $_.Kind -eq $kind } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Project } }, @{ Expression = { Get-OrdinalKey $_.Path } }, Line, @{ Expression = { Get-OrdinalKey $_.Detail } })) {
         $where = if ($hit.Line -gt 0) { " $($hit.Path):$($hit.Line)" } else { '' }
-        Write-AuditLine "  $($hit.Project)$where - $($hit.Detail)" -ForegroundColor DarkGray
+        Write-AuditLine "$($hit.Project)$where - $($hit.Detail)"
     }
 }
-Write-AuditLine ("{0,-10} {1,4}" -f 'Total', $script:Hits.Count) -ForegroundColor Cyan
+
+if ($script:ReadErrors.Count -gt 0) {
+    $heading = "Unreadable files ($($script:ReadErrors.Count.ToString('N0')))"
+    Write-AuditLine ''
+    Write-AuditLine $heading
+    Write-AuditLine ('-' * $heading.Length)
+    foreach ($readError in $script:ReadErrors) {
+        Write-AuditLine $readError
+    }
+}
+
+Write-AuditLine ''
 Write-AuditLine "Report: $reportPath"
 
 if ($Open -and (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
     Invoke-Item -LiteralPath $reportPath
 }
+
+if (($script:Hits.Count + $script:ReadErrors.Count) -gt 0) {
+    exit 1
+}
+
+exit 0

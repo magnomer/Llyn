@@ -20,9 +20,10 @@ Walks one tree for the names bound to a type outside the sources.
 A namespace outside the frame is a `frame` hit and a member under an ambient row an `ambient` hit.
 One hit per line, kind and name, so a name used twice on a line counts once.
 
-## `private static bool TAuditOutsideCheck(string space)`
+## `private static bool TAuditOutsideCheck(string ring, string space)`
 
-True when the namespace is not in the frame, matched whole, so `System` never admits `System.IO`.
+True when the namespace is not in the shared frame nor the ring's extra frame.
+It matches whole, so `System` never admits `System.IO`.
 
 ## `private static string? TAuditAmbientRead(ISymbol symbol, INamedTypeSymbol type, string space)`
 

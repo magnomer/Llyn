@@ -132,7 +132,7 @@ public sealed class LFavorite
         return LVista.LVistaFileRead(_lFavoriteVista);
     }
 
-    public Task LFavoritePortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LFavoritePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(_lFavoriteVista, path, format, label);
     }

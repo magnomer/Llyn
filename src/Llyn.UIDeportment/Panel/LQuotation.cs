@@ -68,7 +68,7 @@ public sealed class LQuotation
         return _lPortraitPort.LEnginePortraitPrint(_lQuotationVista, label, ticket);
     }
 
-    public Task LQuotationPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LQuotationPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(_lQuotationVista, path, format, label);
     }

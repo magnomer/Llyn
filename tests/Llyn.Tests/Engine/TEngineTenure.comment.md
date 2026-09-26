@@ -67,7 +67,3 @@ The headword deferred after it still applies, and a draft bulletin is raised so 
 
 Finishing without storing cancels before the queue is written, so the discarded text never reaches the draft.
 No draft bulletin is raised, since nothing was applied.
-
-## `private sealed class TTenureObserver : LObserver`
-
-Collects the draft ids of every draft bulletin, so a fact can tell whether an apply happened.

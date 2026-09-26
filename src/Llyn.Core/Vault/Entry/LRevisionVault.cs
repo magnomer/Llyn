@@ -4,5 +4,5 @@ namespace Llyn.Core;
 
 public interface LRevisionVault
 {
-    LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes);
+    LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes);
 }

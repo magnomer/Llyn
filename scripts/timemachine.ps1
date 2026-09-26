@@ -115,7 +115,8 @@ SYNOPSIS
 
 SYNTAX
     timemachine [<version>] [-CurrentDestination <build|run|snapshots>]
-        [-WorkRoot <build|run>] [-MirrorCurrentSnapshot] [-Rebuild] [-NoLaunch] [-Help]
+        [-WorkRoot <build|run>] [-MirrorCurrentSnapshot] [-Rebuild] [-NoLaunch]
+        [-Invoker <script>] [-Help]
 
 OPTIONS
     <version>
@@ -141,6 +142,10 @@ OPTIONS
 
     -NoLaunch
         Build and install without starting the application.
+
+    -Invoker <script>
+        Name of the script that delegated here, written into the record.
+        Defaults to timemachine.ps1.
 
     -Help, -?
         Display this help and exit without building or launching.
@@ -361,8 +366,11 @@ try {
                     throw "git archive failed for commit $commit`:`n$($export.Error.Trim())"
                 }
 
+                # Expand-Archive is left out: Windows PowerShell 5.1 loads it from a script module,
+                # which resolves to the pwsh 7 copy when the session inherits the pwsh module path.
                 New-Item -ItemType Directory -Path $sourceDir -Force | Out-Null
-                Expand-Archive -LiteralPath $sourceArchive -DestinationPath $sourceDir
+                Add-Type -AssemblyName System.IO.Compression.FileSystem
+                [System.IO.Compression.ZipFile]::ExtractToDirectory($sourceArchive, $sourceDir)
 
                 # A historical commit may predate the current project name, so every configured
                 # historical project name is accepted, matched on both the file and its folder.

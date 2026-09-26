@@ -13,7 +13,7 @@ public sealed class TEditorSeed
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("botany");
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "membership");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "membership");
         editor.TEditorOpen(null);
 
         editor.TEditorTagAdd(tag.LTagId);
@@ -30,7 +30,7 @@ public sealed class TEditorSeed
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister register = engine.TEngineRegisterCreate("formal");
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "cohort");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "cohort");
         editor.TEditorOpen(null);
 
         editor.TEditorRegisterAdd(register.LRegisterId);
@@ -47,7 +47,7 @@ public sealed class TEditorSeed
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue text = TInterface.TStateValueCreate("at the market");
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "occurrence");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "occurrence");
         editor.TEditorOpen(null);
 
         editor.TEditorSituationAdd(situation.LSituationId);
@@ -64,7 +64,7 @@ public sealed class TEditorSeed
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
             0, "English", TInterface.TStateValueCreate("Water is wet."), null, LStateAnchor.LStateAnchorUnspecified));
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "quotation");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "quotation");
         editor.TEditorOpen(null);
 
         editor.TEditorExampleAdd(example.LExampleId);
@@ -80,7 +80,7 @@ public sealed class TEditorSeed
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LReference book = engine.TEngineCitationCreate("Book");
-        LEditor editor = TEditorOpen.TEditorPrepare(engine, "footnote");
+        LEditor editor = TEditorFixture.TEditorPrepare(engine, "footnote");
         editor.TEditorOpen(null);
 
         editor.TEditorReferenceAdd(book.LReferenceId);

@@ -8,11 +8,11 @@ public sealed record LHypothesis(
     IReadOnlyDictionary<string, string> LHypothesisInitials,
     IReadOnlyDictionary<string, string> LHypothesisFinals,
     IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> LHypothesisTones,
-    IReadOnlyList<LHypothesisPlace>? LHypothesisPlaces = null)
+    IReadOnlyList<LHypothesisLocus>? LHypothesisPlaces = null)
 {
     private const string LHypothesisRounded = "合";
 
-    public IReadOnlyList<LHypothesisPlace> LHypothesisPlaces { get; init; } = LHypothesisPlaces ?? [];
+    public IReadOnlyList<LHypothesisLocus> LHypothesisPlaces { get; init; } = LHypothesisPlaces ?? [];
 
     public LHypothesisSound? LHypothesisResolve(LFanqieRow row)
     {
@@ -55,13 +55,13 @@ public sealed record LHypothesis(
             : null;
     }
 
-    public LHypothesisPlace? LHypothesisPlaceFind(string initial)
+    public LHypothesisLocus? LHypothesisLocusFind(string initial)
     {
         ArgumentNullException.ThrowIfNull(initial);
 
-        foreach (LHypothesisPlace place in LHypothesisPlaces)
+        foreach (LHypothesisLocus place in LHypothesisPlaces)
         {
-            if (place.LHypothesisPlaceInitials.Contains(initial))
+            if (place.LHypothesisLocusInitials.Contains(initial))
             {
                 return place;
             }
@@ -75,9 +75,9 @@ public sealed record LHypothesis(
         ArgumentNullException.ThrowIfNull(initial);
 
         int rank = 0;
-        foreach (LHypothesisPlace place in LHypothesisPlaces)
+        foreach (LHypothesisLocus place in LHypothesisPlaces)
         {
-            foreach (string held in place.LHypothesisPlaceInitials)
+            foreach (string held in place.LHypothesisLocusInitials)
             {
                 if (string.Equals(held, initial, StringComparison.Ordinal))
                 {

@@ -1,6 +1,5 @@
 {
   "generation": 1,
-  "project": "Llyn",
   "graft": "graft",
   "markers": ["Fact", "Theory"],
   "prefix": "^[A-Z][A-Z]",

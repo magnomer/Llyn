@@ -168,7 +168,7 @@ public sealed class LTenor
         return LVista.LVistaFileRead(_lTenorCohort);
     }
 
-    public Task LTenorPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LTenorPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(_lTenorCohort, path, format, label);
     }

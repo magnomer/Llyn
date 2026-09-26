@@ -18,7 +18,9 @@ A bare name followed by `:` or `=` is a declaration or a named argument and is n
 
 ## `public static readonly string[] TAuditBoundaryConverter`
 
-The two files that may read a state apart, because showing a mark is their whole job.
+The files that may read a state apart.
+Empty, since no converter compares a state any more.
+A converter is still a surface type, so the strict audit counts every branch in it.
 
 ## `public static readonly string[] TAuditBoundaryHidden`
 

@@ -123,7 +123,7 @@ public sealed class LTranslationClerk
             forms: [],
             speeches: []);
 
-        LRevisionChange change = new(entry.LEntryId, "entry", "create", entry.LEntryHeadword);
+        LRevisionDelta change = new(entry.LEntryId, "entry", "create", entry.LEntryHeadword);
         LRevision revision = _lTranslationClerkRevisions.LRevisionRecord([change]);
         LWorkspaceState state = _lTranslationClerkWorkspaces.LWorkspaceStateRead();
         _lTranslationClerkWorkspaces.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });

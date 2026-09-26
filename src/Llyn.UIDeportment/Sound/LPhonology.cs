@@ -120,7 +120,7 @@ public sealed class LPhonology
         return LVista.LVistaFileRead(LPhonologyPanel.LPanelVista);
     }
 
-    public Task LPhonologyPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LPhonologyPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(LPhonologyPanel.LPanelVista, path, format, label);
     }

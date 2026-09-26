@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditCommentSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const int TAuditCommentWords = 20;
     public const string TAuditCommentPattern = "*.comment.md";
 
@@ -70,10 +70,27 @@ internal static class TAuditCommentSetting
         "TAuditNameRegistry.cs",
     ];
 
+    public static readonly string[] TAuditCommentAbbreviations =
+    [
+        "e.g",
+        "i.e",
+        "etc",
+        "vs",
+        "cf",
+    ];
+
     public static readonly Dictionary<string, string[]> TAuditCommentMarkers = new(StringComparer.OrdinalIgnoreCase)
     {
         [".cs"] = ["//", "/*"],
         [".xaml"] = ["<!--"],
         [".props"] = ["<!--"],
+        [".csproj"] = ["<!--"],
+        [".slnx"] = ["<!--"],
+    };
+
+    public static readonly Dictionary<string, string> TAuditCommentClosers = new(StringComparer.Ordinal)
+    {
+        ["/*"] = "*/",
+        ["<!--"] = "-->",
     };
 }

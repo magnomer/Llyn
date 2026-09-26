@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditBoundarySetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
 
     public static readonly string[] TAuditBoundaryForbidden =
     [
@@ -21,11 +21,7 @@ internal static class TAuditBoundarySetting
         @"\bLStateUnspecified\b(?!\s*[:=])",
     ];
 
-    public static readonly string[] TAuditBoundaryConverter =
-    [
-        "PStateConverter.cs",
-        "PSentenceConverter.cs",
-    ];
+    public static readonly string[] TAuditBoundaryConverter = [];
 
     public static readonly string[] TAuditBoundaryHidden =
     [

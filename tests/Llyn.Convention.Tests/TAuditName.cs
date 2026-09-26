@@ -27,6 +27,33 @@ public sealed class TAuditName
             "AUDITNAMES", TViolationFormat(repoRoot, violations)));
     }
 
+    [Fact]
+    public void AuditName_Exempt_MatchesSource()
+    {
+        TAuditRegistry registry = TAuditRegistry.TAuditLoad();
+        string repoRoot = TAuditSource.TAuditRootRead();
+        TAuditScope scope = new(
+            [],
+            TAuditNameSetting.TAuditSourceInclude,
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            TAuditNameSetting.TAuditSelfExcluded);
+        List<TSpecimen> specimens = TAuditNameWalker.TAuditSpecimenRead(TAuditSource.TAuditFileRead(repoRoot, scope));
+        List<string> stale = registry.TAuditExempt.Keys
+            .Where(name => !specimens.Any(specimen =>
+                string.Equals(specimen.TSpecimenName, name, StringComparison.Ordinal)
+                && registry.TAuditExemptValidate(name, specimen.TSpecimenPath)))
+            .Order(StringComparer.Ordinal)
+            .Select(name => $"  {name}")
+            .ToList();
+
+        Assert.True(stale.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITNAMES",
+            $"{stale.Count} registry exemption(s) spare no name in the sources and must be removed:\n"
+            + string.Join('\n', stale)));
+    }
+
     private static string TViolationFormat(string repoRoot, IReadOnlyList<TViolation> violations)
     {
         IEnumerable<string> lines = violations

@@ -456,7 +456,7 @@ public sealed class LShelf
         return LVista.LVistaFileRead(LShelfFootnote.LFootnotePanel.LPanelVista);
     }
 
-    public Task LShelfPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LShelfPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(LShelfFootnote.LFootnotePanel.LPanelVista, path, format, label);
     }

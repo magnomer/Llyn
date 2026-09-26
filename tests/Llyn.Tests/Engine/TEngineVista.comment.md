@@ -81,7 +81,3 @@ Stores one entry with one meaning in the given language, the least an entry need
 
 Stores one entry for the character, places the character under one onset, and anchors the entry's reflex to it.
 The anchor is what the onset's entry count is tallied over, so a placement alone counts nothing.
-
-## `private sealed class TVistaObserver : LObserver`
-
-Collects the ids of the vista bulletins raised, ignoring every other subject.

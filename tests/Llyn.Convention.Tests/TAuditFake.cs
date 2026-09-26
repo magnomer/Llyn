@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -83,13 +84,21 @@ public sealed class TAuditFake
             [],
             [],
             []));
-        Assert.True(tests.Count > 0 && markup.Count > 0, TAuditConvention.TAuditReportFormat(
-            "AUDITFAKE", "No tracked test or markup file was enumerated; the audit would pass vacuously."));
+        Assert.True(tests.Count > 0, TAuditConvention.TAuditReportFormat(
+            "AUDITFAKE", "No tracked test file was enumerated; the audit would pass vacuously."));
 
-        HashSet<string> words = markup
-            .SelectMany(path => TAuditMarkupWord.Matches(File.ReadAllText(path)).Select(match => match.Value))
+        List<XElement> nodes = markup.SelectMany(path => XDocument.Load(path).Descendants()).ToList();
+        HashSet<string> words = nodes
+            .SelectMany(node => node.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
+            .SelectMany(attribute => TAuditMarkupWord.Matches(attribute.Value).Select(match => match.Value)
+                .Append(attribute.Name.LocalName))
+            .Concat(nodes.Select(node => node.Name.LocalName[(node.Name.LocalName.LastIndexOf('.') + 1)..]))
             .ToHashSet(StringComparer.Ordinal);
-        return TAuditFakeWalker.TAuditRun(tests, words);
+        HashSet<string> elements = nodes
+            .Select(node => node.Name.LocalName)
+            .Where(name => !name.Contains('.', StringComparison.Ordinal))
+            .ToHashSet(StringComparer.Ordinal);
+        return TAuditFakeWalker.TAuditRun(tests, words, elements);
     }
 
     private static string TAuditReportSave()

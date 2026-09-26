@@ -5,40 +5,48 @@ Audits the comment files that accompany source files and the sources themselves 
 .DESCRIPTION
 Reads the project configuration from auditcomments.json next to this script, then
 performs these actions on every run:
-  1. Prints comment-file line totals for each folder under the source roots.
-  2. Prints sources that have no comment file, and comment files that have no source.
-  3. Prints comment lines that break the line rules: too many words, a forbidden
+  1. Prints the counters, one per finding kind below.
+  2. Prints comment-file line totals for each folder under the source roots.
+  3. Prints sources that have no comment file, and comment files that have no source.
+  4. Prints comment lines that break the line rules: too many words, a forbidden
      character, or more than one sentence.
-  4. Prints in-code comment lines found inside sources.
-  5. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
+  5. Prints in-code comment lines found inside sources, every line of a block comment included.
+  6. Prints signature headings that name no identifier of the source they describe.
+  7. Writes a Markdown report to {report.directory}\{prefix}{version}.md.
+The console follows scripts\report.md: widest view first, empty lists left out.
 
 Everything project-specific lives in auditcomments.json. The script itself
-carries no project knowledge. No external modules or tools are required.
+carries no project knowledge. Files come from git: tracked and untracked files,
+never ignored ones, as in the convention tests. Git is the only external tool required.
 
 auditcomments.json shape:
   {
-    "generation": 11,
+    "generation": 12,
     "project": "Llyn",
     "sources": {
-      "roots": ["src", "tests"],
-      "files": ["Directory.Build.props"],
+      "roots": ["languages", "localization", "src", "tests", "themes"],
+      "files": ["Directory.Build.props", "Llyn.slnx", "version.json"],
       "commentPattern": "*.comment.md",
-      "pairs": { ".xaml.cs": "{base}.comment.md", ".cs": "{base}.comment.md",
-                 ".xaml": "{base}.xaml.comment.md", ".csproj": "{base}.comment.md" },
+      "pairs": { ".xaml.cs": "{base}.xaml.comment.md", ".cs": "{base}.comment.md",
+                 ".xaml": "{base}.comment.md", ".csproj": "{base}.comment.md",
+                 ".json": "{base}.comment.md", ".props": "{base}.comment.md",
+                 ".slnx": "{base}.comment.md" },
       "excludeSegments": [".git", "bin", "obj"],
       "excludeSuffixes": [".g.cs", ".Designer.cs"]
     },
-    "rules": { "maxWords": 20, "forbidden": [";"], "sentenceMarks": [".", "!", "?"] },
+    "rules": { "maxWords": 20, "forbidden": [";"], "sentenceMarks": [".", "!", "?"],
+               "abbreviations": ["e.g", "i.e", "etc", "vs", "cf"] },
     "remark": {
-      "markers": { ".cs": ["//", "/*"], ".xaml": ["<!--"] },
-      "exemptFiles": ["TAuditSetting.cs"]
+      "markers": { ".cs": ["//", "/*"], ".xaml": ["<!--"], ".props": ["<!--"] },
+      "closers": { "/*": "*/", "<!--": "-->" },
+      "exemptFiles": ["TAuditNameRegistry.cs"]
     },
     "report": {
       "directory": "docs-work/audit",
       "versionFile": "version.json",
       "versionKey": "current-version",
       "prefix": "Comments-",
-      "depth": 1
+      "segments": 1
     }
   }
 
@@ -54,8 +62,8 @@ Path to the JSON configuration. Defaults to auditcomments.json next to this scri
 .PARAMETER SourceRoots
 Overrides sources.roots for this run.
 
-.PARAMETER Depth
-Overrides report.depth: how many path segments under a root form a folder row.
+.PARAMETER Segments
+Overrides report.segments: how many path segments under a root form a folder row.
 
 .PARAMETER MaxWords
 Overrides rules.maxWords for this run.
@@ -76,12 +84,13 @@ Display this help and exit without running the audit. The alias -? is supported.
 auditcomments
 
 .EXAMPLE
-auditcomments -Depth 2
+auditcomments -Segments 2
 
 .EXAMPLE
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
-# AUDITCOMMENTS GENERATION 11 - auditcomments.ps1.
+#requires -Version 5.1
+# AUDITCOMMENTS GENERATION 12 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -92,12 +101,15 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # Generation 11: nothing the comment audit reports changes; the number rises with the truth audit,
 # which checks that a deportment field reaches no request, keeps one writer, holds no logic and
 # treats no engine data.
+# Generation 12: nothing the comment audit reports changes; the number rises with the convention tests,
+# which bind with no compile error, count chain ceilings in names, count a using or a call on a
+# deeper record as a reach, and exempt a contract name only where the type declares the interface.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
     [string[]]$SourceRoots,
     [ValidateRange(1, 8)]
-    [int]$Depth,
+    [int]$Segments,
     [ValidateRange(1, [int]::MaxValue)]
     [int]$MaxWords,
     [string]$OutputPath,
@@ -120,7 +132,7 @@ SYNOPSIS
     Audit comment files and stray in-code comments, and create a Markdown report.
 
 SYNTAX
-    auditcomments [-ConfigPath <path>] [-SourceRoots <path[]>] [-Depth <number>]
+    auditcomments [-ConfigPath <path>] [-SourceRoots <path[]>] [-Segments <number>]
         [-MaxWords <number>] [-OutputPath <path>] [-Open] [-NoPause] [-Help]
 
 CONFIGURATION
@@ -137,9 +149,9 @@ OPTIONS
     -SourceRoots <path[]>
         Source directories to audit. Overrides sources.roots.
 
-    -Depth <number>
+    -Segments <number>
         Path segments under a root that form a folder row. Overrides
-        report.depth. 1 lists projects, 2 lists their first-level folders.
+        report.segments. 1 lists projects, 2 lists their first-level folders.
 
     -MaxWords <number>
         Word limit per comment line. Overrides rules.maxWords.
@@ -162,7 +174,7 @@ EXAMPLES
     auditcomments
         Audit with the configured settings.
 
-    auditcomments -Depth 2
+    auditcomments -Segments 2
         Break folder totals down one level further.
 
     auditcomments -SourceRoots .\src -MaxWords 25
@@ -174,7 +186,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$script:AuditGeneration = 11
+$script:AuditGeneration = 12
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next
@@ -193,6 +205,13 @@ if (-not $NoPause) {
     catch {
         $script:PageLimit = 0
     }
+}
+
+function Get-OrdinalKey {
+    # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
+    # Uppercase hexadecimal UTF-16 code units compare alike under every culture, so this key sorts ordinally.
+    param([string]$Text)
+    return [System.BitConverter]::ToString([System.Text.Encoding]::BigEndianUnicode.GetBytes($Text)).Replace('-', '')
 }
 
 function Write-AuditLine {
@@ -241,13 +260,73 @@ function Get-ConfigNode {
         $node = $node.$segment
     }
 
-    return $node
+    return , $node
+}
+
+function Get-ConfigLeaves {
+    param(
+        [Parameter(Mandatory = $true)]$Node,
+        [AllowEmptyString()][string]$Path = ''
+    )
+
+    $leaves = [System.Collections.Generic.List[string]]::new()
+    foreach ($property in $Node.PSObject.Properties) {
+        $child = if ($Path.Length -eq 0) { $property.Name } else { $Path + '.' + $property.Name }
+        if ($property.Value -is [System.Management.Automation.PSCustomObject] -and $child -notin @('sources.pairs', 'remark.markers', 'remark.closers')) {
+            foreach ($leaf in (Get-ConfigLeaves -Node $property.Value -Path $child)) { $leaves.Add($leaf) }
+        }
+        else {
+            $leaves.Add($child)
+        }
+    }
+
+    return , $leaves
+}
+
+function Test-ConfigValue {
+    param(
+        $Value,
+        [Parameter(Mandatory = $true)][string]$Kind
+    )
+
+    switch ($Kind) {
+        'string' { return $Value -is [string] -and -not [string]::IsNullOrWhiteSpace($Value) }
+        'int' { return ($Value -is [int] -or $Value -is [long]) -and $Value -ge 0 }
+        'strings' {
+            if ($null -eq $Value -or -not ($Value -is [System.Array])) { return $false }
+            foreach ($item in $Value) {
+                if (-not ($item -is [string]) -or [string]::IsNullOrWhiteSpace($item)) { return $false }
+            }
+            return $true
+        }
+        'map' {
+            if ($null -eq $Value -or -not ($Value -is [System.Management.Automation.PSCustomObject])) { return $false }
+            foreach ($property in $Value.PSObject.Properties) {
+                if (-not ($property.Value -is [string]) -or [string]::IsNullOrWhiteSpace($property.Value)) { return $false }
+            }
+            return $true
+        }
+        'mapStrings' {
+            if ($null -eq $Value -or -not ($Value -is [System.Management.Automation.PSCustomObject])) { return $false }
+            foreach ($property in $Value.PSObject.Properties) {
+                if (-not (Test-ConfigValue -Value $property.Value -Kind 'strings')) { return $false }
+            }
+            return $true
+        }
+        default { throw "Unknown schema kind: $Kind" }
+    }
+}
+
+function Resolve-UserPath {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    return $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
 }
 
 function Read-AuditConfig {
     param([Parameter(Mandatory = $true)][string]$Path)
 
-    $pathFull = [System.IO.Path]::GetFullPath($Path)
+    $pathFull = Resolve-UserPath -Path $Path
     if (-not (Test-Path -LiteralPath $pathFull -PathType Leaf)) {
         throw "The comment-audit configuration was not found: $pathFull"
     }
@@ -260,12 +339,28 @@ function Read-AuditConfig {
     }
 
     $problems = [System.Collections.Generic.List[string]]::new()
-    foreach ($key in @('generation', 'project', 'sources.roots', 'sources.files', 'sources.commentPattern', 'sources.pairs', 'sources.excludeSegments', 'sources.excludeSuffixes',
-                       'rules.maxWords', 'rules.forbidden', 'rules.sentenceMarks',
-                       'remark.markers', 'remark.exemptFiles',
-                       'report.directory', 'report.versionFile', 'report.versionKey', 'report.prefix', 'report.depth')) {
-        if ($null -eq (Get-ConfigNode -Document $config -Key $key)) {
+    $schema = [ordered]@{
+        'generation' = 'int'; 'project' = 'string'
+        'sources.roots' = 'strings'; 'sources.files' = 'strings'; 'sources.commentPattern' = 'string'; 'sources.pairs' = 'map'
+        'sources.excludeSegments' = 'strings'; 'sources.excludeSuffixes' = 'strings'
+        'rules.maxWords' = 'int'; 'rules.forbidden' = 'strings'; 'rules.sentenceMarks' = 'strings'; 'rules.abbreviations' = 'strings'
+        'remark.markers' = 'mapStrings'; 'remark.closers' = 'map'; 'remark.exemptFiles' = 'strings'
+        'report.directory' = 'string'; 'report.versionFile' = 'string'; 'report.versionKey' = 'string'; 'report.prefix' = 'string'; 'report.segments' = 'int'
+    }
+
+    $present = Get-ConfigLeaves -Node $config
+    foreach ($key in $schema.Keys) {
+        if ($key -notin $present) {
             $problems.Add("missing key '$key'")
+        }
+        elseif (-not (Test-ConfigValue -Value (Get-ConfigNode -Document $config -Key $key) -Kind $schema[$key])) {
+            $problems.Add("key '$key' is not a valid $($schema[$key])")
+        }
+    }
+
+    foreach ($key in $present) {
+        if (-not $schema.Contains($key)) {
+            $problems.Add("unknown key '$key'")
         }
     }
 
@@ -297,7 +392,7 @@ if ([int]$config.generation -ne $script:AuditGeneration) {
 }
 
 if (-not $PSBoundParameters.ContainsKey('SourceRoots')) { $SourceRoots = @($config.sources.roots) }
-if (-not $PSBoundParameters.ContainsKey('Depth')) { $Depth = [int]$config.report.depth }
+if (-not $PSBoundParameters.ContainsKey('Segments')) { $Segments = [int]$config.report.segments }
 if (-not $PSBoundParameters.ContainsKey('MaxWords')) { $MaxWords = [int]$config.rules.maxWords }
 
 $commentPattern = [string]$config.sources.commentPattern
@@ -392,8 +487,8 @@ function Write-SectionTitle {
     param([Parameter(Mandatory = $true)][string]$Text)
 
     Write-AuditLine ""
-    Write-AuditLine $Text -ForegroundColor Cyan
-    Write-AuditLine ('-' * $Text.Length) -ForegroundColor DarkGray
+    Write-AuditLine $Text
+    Write-AuditLine ('-' * $Text.Length)
 }
 
 function Format-Cell {
@@ -467,10 +562,11 @@ function Write-GroupedConsoleTable {
         [void]$rule.Append('-' * $column.Width)
     }
 
-    Write-AuditLine ""
-    Write-AuditLine $upper.ToString() -ForegroundColor Green
-    Write-AuditLine $lower.ToString() -ForegroundColor Green
-    Write-AuditLine $rule.ToString() -ForegroundColor Green
+    Write-AuditLine $upper.ToString().TrimEnd()
+    if (@($Columns | Where-Object { -not [string]::IsNullOrEmpty($_.Group) }).Count -gt 0) {
+        Write-AuditLine $lower.ToString().TrimEnd()
+    }
+    Write-AuditLine $rule.ToString()
 
     $rowCount = $Columns[0].Values.Count
     for ($row = 0; $row -lt $rowCount; $row++) {
@@ -479,9 +575,8 @@ function Write-GroupedConsoleTable {
             if ($line.Length -gt 0) { [void]$line.Append($gap) }
             [void]$line.Append((Format-Cell -Text $column.Values[$row] -Width $column.Width -Right $column.Right))
         }
-        Write-AuditLine $line.ToString()
+        Write-AuditLine $line.ToString().TrimEnd()
     }
-    Write-AuditLine ""
 }
 
 function New-ConsoleColumn {
@@ -540,9 +635,9 @@ function Get-FolderKey {
     $directory = [System.IO.Path]::GetDirectoryName($FileFull)
     $relative = $directory.Substring($RootFull.Length).TrimStart([char[]]@('\', '/'))
     if ($relative.Length -eq 0) { return [System.IO.Path]::GetFileName($RootFull) }
-    $segments = @($relative -split '[\\/]')
-    $take = [Math]::Min($Depth, $segments.Count)
-    return (($segments | Select-Object -First $take) -join '\')
+    $parts = @($relative -split '[\\/]')
+    $take = [Math]::Min($Segments, $parts.Count)
+    return (($parts | Select-Object -First $take) -join '\')
 }
 
 function Get-PairFor {
@@ -558,9 +653,11 @@ function Get-PairFor {
     return $null
 }
 
-$stringLiteralPattern = [System.Text.RegularExpressions.Regex]::new('(?:"{3,})[\s\S]*?"{3,}|(?:@\$?|\$@)"(?:[^"]|"")*"|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])''', [System.Text.RegularExpressions.RegexOptions]::Compiled)
+$stringLiteralPattern = [System.Text.RegularExpressions.Regex]::new('(?:"{3,})[\s\S]*?"{3,}|(?:@\$?|\$@)"(?:[^"]|"")*"|"(?:\\.|[^"\\\r\n])*"|''(?:\\.|[^''\\\r\n])''', [System.Text.RegularExpressions.RegexOptions]::Compiled)
 $codeSpanPattern = [System.Text.RegularExpressions.Regex]::new('`[^`]*`', [System.Text.RegularExpressions.RegexOptions]::Compiled)
-$sentencePattern = [System.Text.RegularExpressions.Regex]::new('[' + [System.Text.RegularExpressions.Regex]::Escape(-join $sentenceMarks) + ']\s+\p{Lu}', [System.Text.RegularExpressions.RegexOptions]::Compiled)
+$abbreviationAlternatives = (@($config.rules.abbreviations | ForEach-Object { [System.Text.RegularExpressions.Regex]::Escape([string]$_) }) -join '|')
+$abbreviationPattern = [System.Text.RegularExpressions.Regex]::new('(?<![\p{L}.])(?:' + $abbreviationAlternatives + ')\.', [System.Text.RegularExpressions.RegexOptions]::Compiled -bor [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+$sentencePattern = [System.Text.RegularExpressions.Regex]::new('[' + [System.Text.RegularExpressions.Regex]::Escape(-join $sentenceMarks) + ']\s+\p{L}', [System.Text.RegularExpressions.RegexOptions]::Compiled)
 
 function Remove-StringLiteral {
     param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Text)
@@ -576,19 +673,22 @@ function Test-CommentLine {
     param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Line)
 
     $text = $Line.Trim()
-    if ($text.Length -eq 0 -or $text.StartsWith('#')) { return @() }
+    $heading = $text -match '^#+\s*'
+    if ($heading) { $text = $text.Substring($Matches[0].Length) }
+    if ($text.Length -eq 0) { return @() }
     if ($text -match '^[-*>]\s+') { $text = $text.Substring($Matches[0].Length) }
 
+    $prose = $codeSpanPattern.Replace($text, '')
+    $counted = if ($heading) { $prose } else { $text }
     $problems = [System.Collections.Generic.List[string]]::new()
-    $words = @(@($text -split '\s+') | Where-Object { $_.Length -gt 0 }).Count
+    $words = @(@($counted -split '\s+') | Where-Object { $_.Length -gt 0 }).Count
     if ($words -gt $MaxWords) { $problems.Add("$words words") }
 
-    $prose = $codeSpanPattern.Replace($text, '')
     foreach ($token in $forbidden) {
         if ($prose.Contains($token)) { $problems.Add("forbidden '$token'") }
     }
 
-    $sentences = 1 + $sentencePattern.Matches($prose).Count
+    $sentences = 1 + $sentencePattern.Matches($abbreviationPattern.Replace($prose, 'abbr')).Count
     if ($sentences -gt 1) { $problems.Add("$sentences sentences") }
 
     return @($problems)
@@ -633,9 +733,17 @@ function Measure-Lines {
 }
 
 foreach ($rootFull in $sourceRootFulls) {
-    $files = Get-ChildItem -LiteralPath $rootFull -File -Recurse | Where-Object {
-        -not (Test-IsExcludedPath -Path $_.FullName -FolderRoot $rootFull -ExcludedNames $excludedNames)
+    $listed = & git -C $rootFull -c core.quotePath=false ls-files --cached --others --exclude-standard --full-name -- . 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Git could not enumerate the files under $rootFull, so the audit cannot judge."
     }
+
+    $files = @($listed | ForEach-Object {
+        $full = [System.IO.Path]::GetFullPath((Join-Path $repoRootFull ([string]$_)))
+        if ([System.IO.File]::Exists($full)) { [System.IO.FileInfo]::new($full) }
+    } | Where-Object {
+        -not (Test-IsExcludedPath -Path $_.FullName -FolderRoot $rootFull -ExcludedNames $excludedNames)
+    })
 
     foreach ($file in $files) {
         $relative = Get-RelativePathSafe -BasePath $repoRootFull -Path $file.FullName
@@ -687,6 +795,10 @@ foreach ($fileFull in $sourceFileFulls) {
     })
 }
 
+if ($sourceFiles.Count -eq 0) {
+    throw "No source file was scanned under the configured roots, so the audit cannot judge."
+}
+
 # Folder totals.
 $folderMap = [ordered]@{}
 foreach ($source in $sourceFiles) {
@@ -705,7 +817,7 @@ foreach ($comment in $commentFiles) {
     $folderMap[$comment.Folder].NonBlank += $comment.NonBlank
     $folderMap[$comment.Folder].Bytes += $comment.Bytes
 }
-$folderResults = @($folderMap.Values | Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = 'Name'; Descending = $false })
+$folderResults = @($folderMap.Values | Sort-Object -Property @{ Expression = 'Lines'; Descending = $true }, @{ Expression = { Get-OrdinalKey $_.Name } })
 
 [long]$totalLines = 0
 [long]$totalBytes = 0
@@ -725,10 +837,10 @@ foreach ($source in $sourceFiles) {
     [void]$expectedByDirectory[$source.Directory].Add($source.Expected)
 }
 
-$missingComments = @($sourceFiles | Where-Object { -not [System.IO.File]::Exists((Join-Path $_.Directory $_.Expected)) } | Sort-Object Relative)
+$missingComments = @($sourceFiles | Where-Object { -not [System.IO.File]::Exists((Join-Path $_.Directory $_.Expected)) } | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Relative } })
 $orphanComments = @($commentFiles | Where-Object {
     -not ($expectedByDirectory.ContainsKey($_.Directory) -and $expectedByDirectory[$_.Directory].Contains($_.Name))
-} | Sort-Object Relative)
+} | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Relative } })
 
 # Line rules inside comment files.
 $ruleHits = [System.Collections.Generic.List[object]]::new()
@@ -745,6 +857,8 @@ foreach ($comment in $commentFiles) {
 
 # In-code comments inside sources.
 $remarkHits = [System.Collections.Generic.List[object]]::new()
+$blockClosers = @{}
+foreach ($property in $config.remark.closers.PSObject.Properties) { $blockClosers[[string]$property.Name] = [string]$property.Value }
 foreach ($source in $sourceFiles) {
     if (-not $markers.ContainsKey($source.Extension)) { continue }
     if ($exemptFiles.Contains($source.Name)) { continue }
@@ -753,15 +867,53 @@ foreach ($source in $sourceFiles) {
     $content = [System.IO.File]::ReadAllText($source.Full)
     $stripped = if ($source.Extension -eq '.cs') { Remove-StringLiteral -Text $content } else { $content }
     $raw = $content -split "`n"
+    $openToken = $null
     foreach ($code in ($stripped -split "`n")) {
         $number++
         $line = if ($number -le $raw.Count) { $raw[$number - 1] } else { '' }
+        if ($null -ne $openToken) {
+            $remarkHits.Add([pscustomobject]@{ Relative = $source.Relative; Line = $number; Marker = $openToken; Text = $line.Trim() })
+            if ($code.IndexOf($blockClosers[$openToken], [System.StringComparison]::Ordinal) -ge 0) { $openToken = $null }
+            continue
+        }
         foreach ($token in $tokens) {
             $at = $code.IndexOf($token, [System.StringComparison]::Ordinal)
             if ($at -ge 0) {
                 $remarkHits.Add([pscustomobject]@{ Relative = $source.Relative; Line = $number; Marker = $token; Text = $line.Trim() })
+                if ($blockClosers.ContainsKey($token) -and $code.IndexOf($blockClosers[$token], $at + $token.Length, [System.StringComparison]::Ordinal) -lt 0) {
+                    $openToken = $token
+                }
                 break
             }
+        }
+    }
+}
+
+$headingHits = [System.Collections.Generic.List[object]]::new()
+$headingPattern = [System.Text.RegularExpressions.Regex]::new('^##\s+`(?<span>[^`]+)`\s*$')
+$fileNamePattern = [System.Text.RegularExpressions.Regex]::new('^[\w.]+\.(cs|xaml|json|csproj|props|slnx|md)$')
+$genericPattern = [System.Text.RegularExpressions.Regex]::new('<[^<>]*>')
+$identifierPattern = [System.Text.RegularExpressions.Regex]::new('@?[A-Za-z_][A-Za-z0-9_]*')
+foreach ($comment in $commentFiles) {
+    $stem = $comment.Full.Substring(0, $comment.Full.Length - $commentSuffix.Length)
+    $owners = @(@('', '.cs', '.xaml', '.xaml.cs') | ForEach-Object { $stem + $_ } | Where-Object { [System.IO.File]::Exists($_) })
+    if ($owners.Count -eq 0 -or $exemptFiles.Contains([System.IO.Path]::GetFileName($owners[0]))) { continue }
+    $ownerText = -join @($owners | ForEach-Object { [System.IO.File]::ReadAllText($_) })
+    $number = 0
+    foreach ($line in [System.IO.File]::ReadLines($comment.Full)) {
+        $number++
+        $heading = $headingPattern.Match($line)
+        if (-not $heading.Success) { continue }
+        $span = $heading.Groups['span'].Value
+        if ($span.StartsWith('<') -or $fileNamePattern.IsMatch($span)) { continue }
+        $stop = $span.IndexOfAny([char[]]@('(', '=', ';', '{', ':'))
+        $head = if ($stop -lt 0) { $span } else { $span.Substring(0, $stop) }
+        while ($genericPattern.IsMatch($head)) { $head = $genericPattern.Replace($head, '') }
+        $identifiers = $identifierPattern.Matches($head)
+        if ($identifiers.Count -eq 0) { continue }
+        $name = $identifiers[$identifiers.Count - 1].Value
+        if (-not [System.Text.RegularExpressions.Regex]::IsMatch($ownerText, '\b' + [System.Text.RegularExpressions.Regex]::Escape($name) + '\b')) {
+            $headingHits.Add([pscustomobject]@{ Relative = $comment.Relative; Line = $number; Problem = $name; Text = $line.Trim() })
         }
     }
 }
@@ -775,37 +927,60 @@ if ([System.IO.File]::Exists($versionPathFull)) {
         if (-not [string]::IsNullOrWhiteSpace([string]$versionValue)) { $version = [string]$versionValue }
     }
     catch {
-        Write-Warning "The version file is not valid JSON, using $version : $versionPathFull"
+        Write-AuditLine "The version file is not valid JSON, using $version : $versionPathFull"
     }
 }
 else {
-    Write-Warning "The version file was not found, using $version : $versionPathFull"
+    Write-AuditLine "The version file was not found, using $version : $versionPathFull"
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputPath)) {
     $OutputPath = Join-Path $reportDirectoryFull ("{0}{1}.md" -f $reportPrefix, $version)
 }
-$outputPathFull = [System.IO.Path]::GetFullPath($OutputPath)
+$outputPathFull = Resolve-UserPath -Path $OutputPath
 [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($outputPathFull)) | Out-Null
 
 $generatedAt = Get-Date
 
 # Console output.
+Write-AuditLine ("Scanned: {0:N0} source files, {1:N0} comment files" -f $sourceFiles.Count, $commentFiles.Count) -ForegroundColor DarkGray
+
+$counterRows = @(
+    @('Sources without a comment file', $missingComments.Count),
+    @('Comment files without a source', $orphanComments.Count),
+    @('Comment lines breaking the line rules', $ruleHits.Count),
+    @('In-code comments', $remarkHits.Count),
+    @('Headings naming nothing in their source', $headingHits.Count),
+    @('Unreadable files', $readErrors.Count)
+)
+$counterWidth = ($counterRows | ForEach-Object { $_[0].Length } | Measure-Object -Maximum).Maximum
+Write-SectionTitle "Counters"
+foreach ($counterRow in $counterRows) {
+    Write-AuditLine ("{0}  {1:N0}" -f $counterRow[0].PadRight($counterWidth), $counterRow[1])
+}
+
+$tableRows = @($folderResults) + @([pscustomobject]@{
+    Name = 'Total'
+    Files = $totalFiles
+    Lines = $totalLines
+    NonBlank = [long](($folderResults | Measure-Object -Property NonBlank -Sum).Sum)
+    Bytes = $totalBytes
+    SourceNonBlank = [long](($folderResults | Measure-Object -Property SourceNonBlank -Sum).Sum)
+})
 $folderColumns = @(
-    (New-ConsoleColumn -Name 'Folder' -Right $false -Values @($folderResults | ForEach-Object { $_.Name })),
-    (New-ConsoleColumn -Name 'Files' -Values @($folderResults | ForEach-Object { Format-Integer $_.Files })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($folderResults | ForEach-Object { Format-Integer $_.Lines })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($folderResults | ForEach-Object { Format-Integer $_.NonBlank })),
-    (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalLines -gt 0) { ($_.Lines / [double]$totalLines) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($folderResults | ForEach-Object { Format-Integer $_.Bytes })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($folderResults | ForEach-Object { Format-Percent $(if ($totalBytes -gt 0) { ($_.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }) })),
-    (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($folderResults | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Bytes / [double]$_.Files) } else { 0 }) })),
-    (New-ConsoleColumn -Name 'Density' -Values @($folderResults | ForEach-Object { Format-Ratio $(if ($_.SourceNonBlank -gt 0) { $_.NonBlank / [double]$_.SourceNonBlank } else { 0.0 }) }))
+    (New-ConsoleColumn -Name 'Folder' -Right $false -Values @($tableRows | ForEach-Object { $_.Name })),
+    (New-ConsoleColumn -Name 'Files' -Values @($tableRows | ForEach-Object { Format-Integer $_.Files })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($tableRows | ForEach-Object { Format-Integer $_.Lines })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($tableRows | ForEach-Object { Format-Integer $_.NonBlank })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalLines -gt 0) { ($_.Lines / [double]$totalLines) * 100.0 } else { 0.0 }) })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($tableRows | ForEach-Object { Format-Integer $_.Bytes })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalBytes -gt 0) { ($_.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }) })),
+    (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($tableRows | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Bytes / [double]$_.Files) } else { 0 }) })),
+    (New-ConsoleColumn -Name 'Density' -Values @($tableRows | ForEach-Object { Format-Ratio $(if ($_.SourceNonBlank -gt 0) { $_.NonBlank / [double]$_.SourceNonBlank } else { 0.0 }) }))
 )
 
 Write-SectionTitle "Comment lines by folder"
 Write-GroupedConsoleTable -Columns $folderColumns
-Write-AuditLine ("Total: {0:N0} comment lines in {1:N0} files." -f $totalLines, $totalFiles) -ForegroundColor Green
 
 function Write-HitTable {
     param(
@@ -813,32 +988,43 @@ function Write-HitTable {
         [Parameter(Mandatory = $true)][string]$Kind
     )
 
-    if ($Items.Count -eq 0) {
-        Write-AuditLine "None." -ForegroundColor DarkGray
-        return
-    }
-
     $columns = @(
-        (New-ConsoleColumn -Name 'Line' -Values @($Items | ForEach-Object { Format-Integer $_.Line })),
+        (New-ConsoleColumn -Name 'Line' -Values @($Items | ForEach-Object { [string]$_.Line })),
         (New-ConsoleColumn -Name $Kind -Right $false -Values @($Items | ForEach-Object { [string]$_.($Kind) })),
         (New-ConsoleColumn -Name 'File' -Right $false -Values @($Items | ForEach-Object { $_.Relative }))
     )
     Write-GroupedConsoleTable -Columns $columns
 }
 
-Write-SectionTitle "Sources without a comment file ($($missingComments.Count))"
-if ($missingComments.Count -eq 0) { Write-AuditLine "None." -ForegroundColor DarkGray }
-foreach ($item in $missingComments) { Write-AuditLine "  $($item.Relative)  ->  $($item.Expected)" }
+if ($missingComments.Count -gt 0) {
+    Write-SectionTitle ("Sources without a comment file ({0:N0})" -f $missingComments.Count)
+    foreach ($item in $missingComments) { Write-AuditLine "$($item.Relative) -> $($item.Expected)" }
+}
 
-Write-SectionTitle "Comment files without a source ($($orphanComments.Count))"
-if ($orphanComments.Count -eq 0) { Write-AuditLine "None." -ForegroundColor DarkGray }
-foreach ($item in $orphanComments) { Write-AuditLine "  $($item.Relative)" }
+if ($orphanComments.Count -gt 0) {
+    Write-SectionTitle ("Comment files without a source ({0:N0})" -f $orphanComments.Count)
+    foreach ($item in $orphanComments) { Write-AuditLine $item.Relative }
+}
 
-Write-SectionTitle "Comment lines breaking the line rules ($($ruleHits.Count))"
-Write-HitTable -Items @($ruleHits) -Kind 'Problem'
+if ($ruleHits.Count -gt 0) {
+    Write-SectionTitle ("Comment lines breaking the line rules ({0:N0})" -f $ruleHits.Count)
+    Write-HitTable -Items @($ruleHits) -Kind 'Problem'
+}
 
-Write-SectionTitle "In-code comments ($($remarkHits.Count))"
-Write-HitTable -Items @($remarkHits) -Kind 'Marker'
+if ($headingHits.Count -gt 0) {
+    Write-SectionTitle ("Headings naming nothing in their source ({0:N0})" -f $headingHits.Count)
+    Write-HitTable -Items @($headingHits) -Kind 'Problem'
+}
+
+if ($remarkHits.Count -gt 0) {
+    Write-SectionTitle ("In-code comments ({0:N0})" -f $remarkHits.Count)
+    Write-HitTable -Items @($remarkHits) -Kind 'Marker'
+}
+
+if ($readErrors.Count -gt 0) {
+    Write-SectionTitle ("Unreadable files ({0:N0})" -f $readErrors.Count)
+    foreach ($readError in $readErrors) { Write-AuditLine $readError }
+}
 
 # Markdown output.
 $report = [System.Text.StringBuilder]::new()
@@ -848,9 +1034,9 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("- Source roots: $(ConvertTo-MarkdownCell ($sourceRootFulls -join '; '))")
 [void]$report.AppendLine("- Source files: $(ConvertTo-MarkdownCell ($sourceFileFulls -join '; '))")
 [void]$report.AppendLine("- Comment pattern: ``$commentPattern``")
-[void]$report.AppendLine("- Folder depth: $Depth")
+[void]$report.AppendLine("- Folder segments: $Segments")
 [void]$report.AppendLine("- Line rules: at most $MaxWords words, one sentence, none of $(ConvertTo-MarkdownCell (($forbidden | ForEach-Object { '`' + $_ + '`' }) -join ' '))")
-[void]$report.AppendLine("- Excluded directories: $(ConvertTo-MarkdownCell (($excludedNames | Sort-Object) -join ', '))")
+[void]$report.AppendLine("- Excluded directories: $(ConvertTo-MarkdownCell (($excludedNames | Sort-Object -Property @{ Expression = { Get-OrdinalKey $_ } }) -join ', '))")
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Summary")
 [void]$report.AppendLine()
@@ -864,6 +1050,7 @@ $report = [System.Text.StringBuilder]::new()
 [void]$report.AppendLine("| Comment files without a source | $(Format-Integer $orphanComments.Count) |")
 [void]$report.AppendLine("| Lines breaking the line rules | $(Format-Integer $ruleHits.Count) |")
 [void]$report.AppendLine("| In-code comments | $(Format-Integer $remarkHits.Count) |")
+[void]$report.AppendLine("| Headings naming nothing in their source | $(Format-Integer $headingHits.Count) |")
 [void]$report.AppendLine()
 [void]$report.AppendLine("## Comment lines by folder")
 [void]$report.AppendLine()
@@ -911,21 +1098,21 @@ else {
 }
 if ($readErrors.Count -gt 0) {
     [void]$report.AppendLine()
-    [void]$report.AppendLine("## Read warnings")
+    [void]$report.AppendLine("## Read errors")
     [void]$report.AppendLine()
     foreach ($readError in $readErrors) { [void]$report.AppendLine("- $(ConvertTo-MarkdownCell $readError)") }
 }
 
 [System.IO.File]::WriteAllText($outputPathFull, ($report.ToString() -replace "`r`n", "`n"), [System.Text.UTF8Encoding]::new($false))
 Write-AuditLine ""
-Write-AuditLine "Markdown report: $outputPathFull" -ForegroundColor Green
-
-if ($readErrors.Count -gt 0) {
-    Write-Warning "$($readErrors.Count) file(s) could not be read. See the Markdown report for details."
-}
+Write-AuditLine "Report: $outputPathFull"
 
 if ($Open) {
     Start-Process -FilePath $outputPathFull
 }
 
-return
+if (($missingComments.Count + $orphanComments.Count + $ruleHits.Count + $remarkHits.Count + $headingHits.Count + $readErrors.Count) -gt 0) {
+    exit 1
+}
+
+exit 0

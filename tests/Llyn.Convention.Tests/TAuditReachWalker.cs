@@ -98,10 +98,17 @@ internal static class TAuditReachWalker
     private static void TAuditTriggerScan(string path, XElement element, List<TViolation> violations)
     {
         string name = element.Name.LocalName;
+        string property = name[(name.LastIndexOf('.') + 1)..];
         if (TAuditStrictSetting.TAuditTriggerElements.Contains(name, StringComparer.Ordinal))
         {
             violations.Add(new TViolation(
                 path, ((IXmlLineInfo)element).LineNumber, name, "Trigger", "markup branches on a condition"));
+        }
+        else if (name.Contains('.', StringComparison.Ordinal)
+                 && TAuditStrictSetting.TAuditTriggerSlots.Contains(property, StringComparer.Ordinal))
+        {
+            violations.Add(new TViolation(
+                path, ((IXmlLineInfo)element).LineNumber, name, "Trigger", $"property element {property} computes"));
         }
 
         foreach (XAttribute attribute in element.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))

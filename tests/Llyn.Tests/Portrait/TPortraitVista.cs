@@ -15,11 +15,11 @@ public sealed class TPortraitVista
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
         string path = Path.Combine(workspace.TWorkspaceFolder, "portrait.html");
         await engine.TEnginePortraitExport(
-            vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
+            vista, path, LPortraitMedium.LPortraitMediumHtml, TInterface.TPortraitLabelRead());
         Assert.False(File.Exists(path));
         vista.TVistaSelect(entry.LEntryId);
         await engine.TEnginePortraitExport(
-            vista, path, LPortraitFormat.LPortraitFormatHtml, TInterface.TPortraitLabelRead());
+            vista, path, LPortraitMedium.LPortraitMediumHtml, TInterface.TPortraitLabelRead());
         Assert.Contains("water", File.ReadAllText(path));
     }
 

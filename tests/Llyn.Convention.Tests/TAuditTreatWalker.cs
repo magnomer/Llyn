@@ -9,13 +9,10 @@ internal static class TAuditTreatWalker
     public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> sourcePaths)
     {
         List<TViolation> violations = [];
-        foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths))
+        foreach (SyntaxNode root in TAuditBinder.TAuditWalkRead(sourcePaths).Where(TAuditBinder.TAuditWalkCheck))
         {
-            TAuditGlyphScan(root, violations);
-            if (TAuditBinder.TAuditWalkCheck(root))
-            {
-                TAuditTreatScan(root, violations);
-            }
+            TAuditStrictWalker.TAuditGlyphScan(root, violations);
+            TAuditTreatScan(root, violations);
         }
 
         return violations;
@@ -47,7 +44,7 @@ internal static class TAuditTreatWalker
                     => $"logic value queried by {access.Name.Identifier.ValueText}",
                 CastExpressionSyntax cast when TAuditStrictWalker.TAuditDataCheck(cast.Expression)
                     => $"logic value cast to {cast.Type}",
-                TypeOfExpressionSyntax reflected when TAuditBinder.TAuditLogicCheck(reflected.Type)
+                TypeOfExpressionSyntax reflected when TAuditBinder.TAuditEngineCheck(reflected.Type)
                     => "logic type taken by typeof",
                 AttributeArgumentSyntax argument when TAuditStrictWalker.TAuditDataCheck(argument.Expression)
                     => "logic value in an attribute",
@@ -116,24 +113,6 @@ internal static class TAuditTreatWalker
         ExpressionSyntax core = TAuditStrictWalker.TAuditCoreRead(condition);
         return core is InvocationExpressionSyntax or MemberAccessExpressionSyntax or IdentifierNameSyntax
                && TAuditBinder.TAuditLogicCheck(TAuditBinder.TAuditSymbolRead(core));
-    }
-
-    private static void TAuditGlyphScan(SyntaxNode root, List<TViolation> violations)
-    {
-        foreach (SyntaxToken token in root.DescendantTokens())
-        {
-            if (!token.IsKind(SyntaxKind.IdentifierToken) || token.ValueText.All(char.IsAscii))
-            {
-                continue;
-            }
-
-            violations.Add(new TViolation(
-                root.SyntaxTree.FilePath,
-                TAuditLineRead(token.Parent ?? root),
-                token.ValueText,
-                "Treat",
-                "identifier carries a non-ASCII glyph"));
-        }
     }
 
     private static int TAuditLineRead(SyntaxNode node)

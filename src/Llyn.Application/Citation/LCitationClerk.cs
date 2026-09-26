@@ -367,7 +367,7 @@ public sealed class LCitationClerk
     private void LRevisionRecord(long target, string subject, bool fresh, string? summary)
     {
         _lCitationClerkEntries.LRevisionRecord(
-            [new LRevisionChange(target, subject, fresh ? "create" : "update", summary)]);
+            [new LRevisionDelta(target, subject, fresh ? "create" : "update", summary)]);
     }
 
     private LExample LExampleNormalize(LExample content)

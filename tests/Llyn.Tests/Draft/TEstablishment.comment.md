@@ -22,7 +22,3 @@ Committing moves the draft out of the unsaved count and into the entry count.
 
 Cancelling raises one draft bulletin carrying id zero, and the count read after it is zero.
 The bar listens for that bulletin, so a discard without it would leave the bar saying unsaved.
-
-## `private sealed class TEstablishmentObserver : LObserver`
-
-Collects every bulletin the engine raises, in order.

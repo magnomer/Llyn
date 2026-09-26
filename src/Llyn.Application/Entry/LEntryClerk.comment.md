@@ -162,7 +162,7 @@ A negative id is kept, because the identity map records what it became.
 The save of `draft` onto entry `id` with its revision recorded, in one session.
 A save that changed nothing records no revision.
 
-## `public LEntry LEntryClerkSave(long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionChange> changes)`
+## `public LEntry LEntryClerkSave(long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionDelta> changes)`
 
 Applies `draft` to the entry identified by `id` and returns the stored entry as it now stands.
 A blank headword is refused before any session opens, and the headword is trimmed.
@@ -183,7 +183,7 @@ A field that did not change writes no row and records no revision change.
 The lacuna rows go, because a hand edit is a reason to ask the web again.
 The regular flags are judged last, since the judgement reads the headword, the parts and the forms.
 
-## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes)`
+## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)`
 
 Records one revision holding `changes` and points the workspace row at it.
 Every save and delete moves that pointer, so the current revision is read from where it is recorded.

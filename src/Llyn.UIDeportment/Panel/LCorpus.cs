@@ -459,7 +459,7 @@ public sealed class LCorpus
         return Task.CompletedTask;
     }
 
-    public Task LCorpusPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LCorpusPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         if (!LCorpusPortraitAllowed)
         {

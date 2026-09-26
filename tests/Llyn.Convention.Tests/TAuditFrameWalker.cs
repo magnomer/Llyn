@@ -46,7 +46,7 @@ internal static class TAuditFrameWalker
             if (node is UsingDirectiveSyntax directive && directive.Name is not null)
             {
                 string named = directive.Name.ToString();
-                if (!named.StartsWith(TAuditFrameProject, StringComparison.Ordinal) && TAuditOutsideCheck(named))
+                if (!named.StartsWith(TAuditFrameProject, StringComparison.Ordinal) && TAuditOutsideCheck(ring, named))
                 {
                     TAuditHitAdd(line, "frame", named);
                 }
@@ -73,7 +73,7 @@ internal static class TAuditFrameWalker
             string space = type.ContainingNamespace is { IsGlobalNamespace: false } container
                 ? container.ToDisplayString()
                 : "";
-            if (space.Length > 0 && TAuditOutsideCheck(space))
+            if (space.Length > 0 && TAuditOutsideCheck(ring, space))
             {
                 TAuditHitAdd(line, "frame", space);
             }
@@ -88,8 +88,9 @@ internal static class TAuditFrameWalker
         return hits;
     }
 
-    private static bool TAuditOutsideCheck(string space) =>
-        !TAuditFrameSetting.TAuditFrameAllowed.Contains(space, StringComparer.Ordinal);
+    private static bool TAuditOutsideCheck(string ring, string space) =>
+        !TAuditFrameSetting.TAuditFrameAllowed.Contains(space, StringComparer.Ordinal)
+        && !TAuditFrameSetting.TAuditFrameExtra.GetValueOrDefault(ring, []).Contains(space, StringComparer.Ordinal);
 
     private static string? TAuditAmbientRead(ISymbol symbol, INamedTypeSymbol type, string space)
     {

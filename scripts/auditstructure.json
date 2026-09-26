@@ -1,9 +1,9 @@
 {
-  "generation": 11,
+  "generation": 12,
   "project": "Llyn",
   "rings": [
     {
-      "name": "Core",
+      "name": "Llyn.Core",
       "path": "src/Llyn.Core",
       "reach": [],
       "frame": [
@@ -22,10 +22,10 @@
       "cut": false
     },
     {
-      "name": "Application",
+      "name": "Llyn.Application",
       "path": "src/Llyn.Application",
       "reach": [
-        "Core"
+        "Llyn.Core"
       ],
       "frame": [
         "System",
@@ -43,10 +43,10 @@
       "cut": false
     },
     {
-      "name": "ShellEngine",
+      "name": "Llyn.ShellEngine",
       "path": "src/Llyn.ShellEngine",
       "reach": [
-        "Application"
+        "Llyn.Application"
       ],
       "frame": [
         "System",
@@ -65,10 +65,10 @@
       "cut": false
     },
     {
-      "name": "Conduct",
+      "name": "Llyn.Conduct",
       "path": "src/Llyn.Conduct",
       "reach": [
-        "ShellEngine"
+        "Llyn.ShellEngine"
       ],
       "frame": [
         "System",
@@ -87,10 +87,10 @@
       "cut": false
     },
     {
-      "name": "UIDeportment",
+      "name": "Llyn.UIDeportment",
       "path": "src/Llyn.UIDeportment",
       "reach": [
-        "Conduct"
+        "Llyn.Conduct"
       ],
       "frame": [
         "*"
@@ -99,10 +99,10 @@
       "cut": true
     },
     {
-      "name": "UIVeneer",
+      "name": "Llyn.UIVeneer",
       "path": "src/Llyn.UIVeneer",
       "reach": [
-        "UIDeportment"
+        "Llyn.UIDeportment"
       ],
       "frame": [
         "*"
@@ -111,10 +111,10 @@
       "cut": true
     },
     {
-      "name": "UIDemeanor",
+      "name": "Llyn.UIDemeanor",
       "path": "src/Llyn.UIDemeanor",
       "reach": [
-        "Conduct"
+        "Llyn.Conduct"
       ],
       "frame": [
         "*"
@@ -123,10 +123,10 @@
       "cut": true
     },
     {
-      "name": "UITerminal",
+      "name": "Llyn.UITerminal",
       "path": "src/Llyn.UITerminal",
       "reach": [
-        "UIDemeanor"
+        "Llyn.UIDemeanor"
       ],
       "frame": [
         "*"
@@ -135,10 +135,10 @@
       "cut": true
     },
     {
-      "name": "Infrastructure",
+      "name": "Llyn.Infrastructure",
       "path": "src/Llyn.Infrastructure",
       "reach": [
-        "Core"
+        "Llyn.Core"
       ],
       "frame": [
         "*"
@@ -147,10 +147,10 @@
       "cut": false
     },
     {
-      "name": "CoreWindows",
+      "name": "Llyn.Core.Windows",
       "path": "src/Llyn.Core.Windows",
       "reach": [
-        "Core"
+        "Llyn.Core"
       ],
       "frame": [
         "*"
@@ -159,10 +159,7 @@
       "cut": false
     }
   ],
-  "root": [
-    "src/Llyn.Host/LHost.cs",
-    "src/Llyn.Infrastructure/LRigFactory.cs"
-  ],
+  "root": [],
   "ambient": [
     "System.DateTime.Now",
     "System.DateTime.UtcNow",
@@ -187,14 +184,64 @@
     "outward": "violation",
     "frame": "violation",
     "ambient": "violation",
-    "root": "allow"
+    "root": "allow",
+    "expose": "violation",
+    "surface": "violation",
+    "stray": "violation",
+    "banned": "violation",
+    "floor": "violation",
+    "table": "violation"
   },
   "ceilings": {
-    "cross:UIDeportment>Application": 7,
-    "cross:UIDeportment>Core": 49,
-    "cross:UIDeportment>ShellEngine": 27,
-    "cross:UIVeneer>Application": 27,
-    "cross:UIVeneer>Core": 129
+    "cross:Llyn.UIDeportment>Llyn.Application": 44,
+    "cross:Llyn.UIDeportment>Llyn.Core": 754,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 659,
+    "cross:Llyn.UIVeneer>Llyn.Application": 128,
+    "cross:Llyn.UIVeneer>Llyn.Core": 1330,
+    "cross:Llyn.UIVeneer>Llyn.ShellEngine": 14,
+    "expose:Llyn.UIDemeanor>Llyn.Core": 34,
+    "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 9,
+    "expose:Llyn.UIDeportment>Llyn.Core": 34,
+    "expose:Llyn.UIDeportment>Llyn.ShellEngine": 9,
+    "reach:Llyn.Conduct>Llyn.Core": 1,
+    "reach:Llyn.ShellEngine>Llyn.Core": 15
+  },
+  "surface": {
+    "Llyn.Conduct>Llyn.ShellEngine": [
+      "LDraftPort",
+      "LEntryPort",
+      "LPhonologyPort",
+      "LSettingsPort",
+      "LMediaPort",
+      "LPortraitPort",
+      "LTenure",
+      "LVista",
+      "LForay",
+      "LPosture"
+    ],
+    "Llyn.UIDeportment>Llyn.Conduct": [
+      "LDisplay",
+      "LDisplaySound",
+      "LDisplayStamp"
+    ],
+    "Llyn.UIDemeanor>Llyn.Conduct": [
+      "LDisplay",
+      "LDisplaySound",
+      "LDisplayStamp"
+    ]
+  },
+  "floor": {
+    "Llyn.Application": 91
+  },
+  "stray": {
+    "Llyn.Core": [
+      "^LRequest"
+    ]
+  },
+  "banned": {
+    "src/Llyn.ShellEngine": [
+      "LVaultSessionStart"
+    ]
   },
   "exempt": {},
   "sources": {

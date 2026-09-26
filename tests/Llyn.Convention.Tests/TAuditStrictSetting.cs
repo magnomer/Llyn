@@ -2,18 +2,10 @@ namespace Convention.Tests;
 
 internal static class TAuditStrictSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const bool TAuditStrictEnforced = true;
     public const string TAuditStrictReport = "temp/audit/Strict-{0}.md";
-
-    public static readonly IReadOnlyDictionary<string, int> TAuditStrictCeiling = new Dictionary<string, int>
-    {
-        ["Storage"] = 800,
-        ["Call"] = 3682,
-        ["Engine"] = 1652,
-        ["Reach"] = 64,
-        ["Trigger"] = 383,
-    };
+    public const string TAuditLedgerFile = "TAuditStrictLedger";
 
     public static readonly string[] TAuditReachInclude =
     [
@@ -32,7 +24,19 @@ internal static class TAuditStrictSetting
         "src/Llyn.UIDemeanor/*.cs",
     ];
 
+    public static readonly string[] TAuditHostInclude =
+    [
+        "src/Llyn.Host/*.cs",
+    ];
+
     public const string TAuditDeportmentNamespace = "Llyn.UIDeportment";
+
+    public static readonly string[] TAuditQueryTypes =
+    [
+        "System.Linq.Enumerable",
+        "System.Linq.ParallelEnumerable",
+        "System.Linq.Queryable",
+    ];
 
     public static readonly string[] TAuditCatalogPatterns =
     [
@@ -58,12 +62,16 @@ internal static class TAuditStrictSetting
         "PScriptImage.cs",
     ];
 
-    public static readonly string[] TAuditMarkupPatterns =
+    public static readonly string[] TAuditDiskPatterns =
     [
-        @"\bSystem\.IO\b",
+        @"\bFile\.\w+\(",
+        @"\bDirectory\.\w+\(",
+        @"\bPath\.\w+\(",
+        @"\b(FileInfo|DirectoryInfo|DriveInfo|FileStream|FileSystemWatcher|FileSystemInfo)\b",
+        @"\bSystem\.IO\.(File|Directory|Path|Drive|FileSystem)",
     ];
 
-    public static readonly string[] TAuditMarkupExempt = [];
+    public static readonly string[] TAuditDiskExempt = [];
 
     public static readonly string[] TAuditReachNamespaces =
     [
@@ -78,16 +86,35 @@ internal static class TAuditStrictSetting
     public static readonly string[] TAuditTriggerElements =
     [
         "DataTrigger",
+        "EventTrigger",
         "MultiDataTrigger",
         "MultiTrigger",
         "Trigger",
+        "VisualState",
+        "VisualStateGroup",
+        "VisualStateManager.VisualStateGroups",
+        "VisualTransition",
     ];
 
     public static readonly string[] TAuditTriggerSlots =
     [
+        "CellTemplateSelector",
+        "ContentStringFormat",
+        "ContentTemplateSelector",
         "Converter",
         "FallbackValue",
+        "HeaderStringFormat",
+        "HeaderTemplateSelector",
+        "ItemContainerStyleSelector",
+        "ItemStringFormat",
+        "ItemTemplateSelector",
         "StringFormat",
+        "StyleSelector",
         "TargetNullValue",
+        "TemplateSelector",
+        "ValidatesOnDataErrors",
+        "ValidatesOnExceptions",
+        "ValidatesOnNotifyDataErrors",
+        "ValidationRules",
     ];
 }

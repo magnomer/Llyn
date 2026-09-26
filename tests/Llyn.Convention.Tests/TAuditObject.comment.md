@@ -19,6 +19,11 @@ The report is written once, on the first fact that runs.
 
 Keeps the runner's output so a passing fact can still print its count.
 
+## `public void AuditObject_SingleTypes_HoldNoLarge()`
+
+No more single-part types reach a large threshold than the `Large` ceiling allows.
+A large type is the monolith a split would hide, caught before it is split.
+
 ## `public void AuditObject_SplitTypes_HoldNoMonolith()`
 
 A split type that reaches both floors and is still one object once its hubs are lifted out.
@@ -31,7 +36,8 @@ Each hit names the type, the slot and how many parts reach it.
 
 ## `public void AuditObject_Parts_HoldWithinCeiling()`
 
-Every type with a part ceiling is split over no more parts than it.
+Every split type is spread over no more parts than its ceiling.
+A split type without a ceiling may hold one part, so a new partial split fails at once.
 
 ## `public void AuditObject_Ceiling_MatchesHits()`
 
@@ -40,7 +46,7 @@ This holds even when the object rules are not enforced.
 
 ## `private static Dictionary<string, int> TAuditPartRead()`
 
-The part count of every type a part ceiling names.
+The part count of every type split over more than one part.
 
 ## `private void TAuditObjectCheck(string kind, List<string> hits, string summary)`
 

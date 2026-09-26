@@ -152,7 +152,7 @@ public sealed class LEntryClerk
         LEntry? deleted = _lEntryClerkEntries.LEntryRead(id);
         _lEntryClerkEntries.LEntryDelete(id);
 
-        LRevisionChange change = new(id, "entry", "delete", deleted?.LEntryHeadword);
+        LRevisionDelta change = new(id, "entry", "delete", deleted?.LEntryHeadword);
         LRevision revision = _lEntryClerkRevisions.LRevisionRecord([change]);
         _lEntryClerkTombstones.LTombstoneRecord(id, revision.LRevisionId);
         LWorkspaceState state = _lEntryClerkWorkspaces.LWorkspaceStateRead();
@@ -253,7 +253,7 @@ public sealed class LEntryClerk
         LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, null);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
-        LRevisionRecord([new LRevisionChange(entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
+        LRevisionRecord([new LRevisionDelta(entry.LEntryId, "entry", "create", entry.LEntryHeadword)]);
 
         session.LVaultSessionCommit();
         return entry;
@@ -267,7 +267,7 @@ public sealed class LEntryClerk
 
         using LVaultSession session = _lEntryClerkVault.LVaultSessionStart();
 
-        List<LRevisionChange> changes = [];
+        List<LRevisionDelta> changes = [];
         LEntry updated = LEntryClerkSave(id, draft, identity, changes);
         if (changes.Count > 0)
         {
@@ -279,7 +279,7 @@ public sealed class LEntryClerk
     }
 
     public LEntry LEntryClerkSave(
-        long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionChange> changes)
+        long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionDelta> changes)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(draft);
@@ -311,7 +311,7 @@ public sealed class LEntryClerk
         if (renamed)
         {
             _lEntryClerkFrequencies.LFrequencyClerkClear(id);
-            changes.Add(new LRevisionChange(id, "entry", "update", draft.LEntryDraftHeadword));
+            changes.Add(new LRevisionDelta(id, "entry", "update", draft.LEntryDraftHeadword));
         }
 
         _lEntryClerkMeanings.LMeaningClerkSave(id, draft.LEntryDraftMeanings, language, changes, identity);
@@ -333,7 +333,7 @@ public sealed class LEntryClerk
         return updated;
     }
 
-    public LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes)
+    public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)
     {
         ArgumentNullException.ThrowIfNull(changes);
 

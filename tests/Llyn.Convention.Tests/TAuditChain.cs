@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Xunit;
 
 namespace Convention.Tests;
@@ -37,6 +39,42 @@ public sealed class TAuditChain
     }
 
     [Fact]
+    public void AuditChain_Reach_MatchesRingTable()
+    {
+        List<string> drift = [];
+        foreach ((string ring, string[] edges) in TAuditRingSetting.TAuditRingEdges.Where(pair =>
+                     pair.Key != TAuditChainSetting.TAuditChainHost))
+        {
+            string[] reach = TAuditChainSetting.TAuditChainReach.GetValueOrDefault(ring) ?? ["(absent)"];
+            if (!reach.Order(StringComparer.Ordinal).SequenceEqual(edges.Order(StringComparer.Ordinal)))
+            {
+                drift.Add($"  {ring} reaches [{string.Join(", ", reach)}] but references [{string.Join(", ", edges)}]");
+            }
+        }
+
+        drift.AddRange(TAuditChainSetting.TAuditChainReach.Keys
+            .Where(ring => !TAuditRingSetting.TAuditRingEdges.ContainsKey(ring))
+            .Select(ring => $"  {ring} is walked but is no project in the ring table"));
+        Assert.True(drift.Count == 0, TAuditConvention.TAuditReportFormat(
+            TAuditChainAudit,
+            $"{drift.Count} ring(s) walk a reach that differs from their project references:\n"
+            + string.Join('\n', drift)));
+    }
+
+    [Fact]
+    public void AuditChain_Cut_MatchesShellRoots()
+    {
+        string[] shells = TAuditBinder.TAuditRootRead(TAuditTruthSetting.TAuditShellInclude)
+            .Select(root => root[(root.LastIndexOf('/') + 1)..])
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        string[] cut = TAuditChainSetting.TAuditChainCut.Order(StringComparer.Ordinal).ToArray();
+        Assert.True(shells.SequenceEqual(cut, StringComparer.Ordinal), TAuditConvention.TAuditReportFormat(
+            TAuditChainAudit,
+            $"The cut holds [{string.Join(", ", cut)}] but the UI rings are [{string.Join(", ", shells)}]."));
+    }
+
+    [Fact]
     public void AuditChain_Sources_ReachNoDeeperRing()
     {
         TAuditPair.TAuditPairCheck(
@@ -46,27 +84,33 @@ public sealed class TAuditChain
     }
 
     [Fact]
-    public void AuditChain_ShellEngine_OpensNoVaultSession()
+    public void AuditChain_Folders_HoldNoBannedWord()
     {
-        string repoRoot = TAuditSource.TAuditRootRead();
-        TAuditScope scope = new(["src/Llyn.ShellEngine"], ["*.cs"], ["bin", "obj"], [], [], []);
         List<string> hits = [];
-        foreach (string path in TAuditSource.TAuditFileRead(repoRoot, scope))
+        foreach ((string folder, string[] words) in TAuditChainSetting.TAuditChainBanned)
         {
-            string[] lines = File.ReadAllLines(path);
-            for (int index = 0; index < lines.Length; index++)
+            foreach (SyntaxTree tree in TAuditBinder.TAuditTrees)
             {
-                if (lines[index].Contains("LVaultSessionStart", StringComparison.Ordinal))
+                string relative = TAuditBinder.TAuditRelativeRead(tree.FilePath);
+                if (!relative.StartsWith(folder.Trim('/') + "/", StringComparison.OrdinalIgnoreCase))
                 {
-                    string relative = Path.GetRelativePath(repoRoot, path).Replace('\\', '/');
-                    hits.Add($"  {relative}:{index + 1}");
+                    continue;
+                }
+
+                TextLineCollection lines = tree.GetText().Lines;
+                for (int index = 0; index < lines.Count; index++)
+                {
+                    string text = lines[index].ToString();
+                    hits.AddRange(words
+                        .Where(word => text.Contains(word, StringComparison.Ordinal))
+                        .Select(word => $"  {relative}:{index + 1} {word}"));
                 }
             }
         }
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditChainAudit,
-            $"{hits.Count} shell line(s) open a vault session, which belongs to a clerk:\n{string.Join('\n', hits)}"));
+            $"{hits.Count} line(s) name a word banned from their folder:\n{string.Join('\n', hits)}"));
     }
 
     [Fact]

@@ -1,16 +1,11 @@
 # PThemeEtymology.xaml
 
-## `Theme.Etymology.Chip`
-
-One source link: the flag, the headword and its language, with an unlink button only while the field is editable.
-
-## `Theme.Etymology.Entry`
-
-The entry a source word is typed into, which takes the word on Return.
-
 ## `Theme.Etymology.Item`
 
-Picks between the chip and the typing entry.
+Draws one source link as a chip, or the entry a source word is typed into.
+The chip holds the flag, the headword and its language.
+Its unlink button shows only while the field is editable.
+The entry takes the word on Return.
 
 ## `Theme.Etymology.Field`
 

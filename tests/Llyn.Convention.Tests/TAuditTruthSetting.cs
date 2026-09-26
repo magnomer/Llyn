@@ -2,14 +2,15 @@ namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 11;
+    public const int TAuditGeneration = 12;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
     public const string TAuditBulletinType = "LBulletin";
-    public const string TAuditObserverType = "LObserver";
     public const string TAuditConfiguration = "Debug";
-    public const string TAuditReferenceRoot = "src/Llyn.UIVeneer";
+    public const string TAuditReferenceRoot = "src/Llyn.Host";
+    public const string TAuditConductRoot = "src/Llyn.Conduct";
+    public const string TAuditLedgerFile = "TAuditTruthLedger";
 
     public static readonly string[] TAuditShellInclude =
     [
@@ -81,6 +82,27 @@ internal static class TAuditTruthSetting
         "Timer",
     ];
 
+    public static readonly string[] TAuditConsoleInput =
+    [
+        "System.Console.Read",
+        "System.Console.ReadKey",
+        "System.Console.ReadLine",
+        "System.IO.TextReader.Read",
+        "System.IO.TextReader.ReadLine",
+        "System.IO.TextReader.ReadLineAsync",
+        "System.IO.TextReader.ReadToEnd",
+    ];
+
+    public static readonly string[] TAuditDialogTypes =
+    [
+        "System.Windows.MessageBox",
+    ];
+
+    public static readonly string[] TAuditDelayMembers =
+    [
+        "System.Threading.Tasks.Task.Delay",
+    ];
+
     public static readonly string[] TAuditInputMembers =
     [
         "IsChecked",
@@ -94,35 +116,8 @@ internal static class TAuditTruthSetting
 
     public static readonly string[] TAuditTruthHandles =
     [
-        "LEngine",
-        "LDraftPort",
-        "LEntryPort",
-        "LPhonologyPort",
-        "LSettingsPort",
-        "LMediaPort",
-        "LPortraitPort",
-        "LForay",
-        "LTenure",
-        "LVista",
-        "LPosture",
-        "LDisplay",
-        "LDisplaySound",
         "LWindow",
-        "List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)>",
-        "Action<LBulletin>",
     ];
-
-    public static readonly IReadOnlyDictionary<string, int> TAuditTruthCeiling = new Dictionary<string, int>
-    {
-        ["Argument"] = 0,
-        ["Guard"] = 0,
-        ["Fork"] = 0,
-        ["Mirror"] = 0,
-        ["Mutation"] = 1,
-        ["Shape"] = 0,
-        ["Treat"] = 14,
-        ["Taint"] = 4,
-    };
 
     public static readonly string[] TAuditTreatVerbs =
     [

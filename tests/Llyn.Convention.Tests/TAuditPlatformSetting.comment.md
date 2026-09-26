@@ -28,6 +28,15 @@ The framework a twin targets, matched as a prefix so a Windows version may follo
 The platform analyzer rule that must be an error in every portable half.
 With it, a Windows API in a portable half fails the build.
 
+## `public static readonly string[] TAuditPlatformShell`
+
+The columns whose twins are the UI projects, which the domain rule leaves to the UI audits.
+It matches `domain.exempt` in scripts/auditplatform.json.
+
+## `public static readonly IReadOnlyDictionary<string, string> TAuditPlatformSilencers`
+
+The project properties, with the value that switches the platform analyzer off.
+
 ## `public static readonly string[] TAuditPlatformKinds`
 
 Every kind the walk reports, in report order.

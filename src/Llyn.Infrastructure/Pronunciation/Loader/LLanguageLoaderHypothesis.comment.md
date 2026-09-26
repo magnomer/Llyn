@@ -38,12 +38,12 @@ One class row: `onset` the pattern over the onset, `rewrite` the rules in respel
 A missing onset matches every onset, a missing rewrite leaves the syllable as joined.
 A row that is not an object, or whose onset pattern is broken, reads `null`.
 
-## `private static IReadOnlyList<LHypothesisPlace> LLanguagePlaceScan(JsonElement section)`
+## `private static IReadOnlyList<LHypothesisLocus> LLanguagePlaceScan(JsonElement section)`
 
 The `place` array: the articulatory places in file order, each read by the row reader below.
 A missing or malformed array reads as no places.
 
-## `private static LHypothesisPlace? LLanguagePlaceRead(JsonElement element)`
+## `private static LHypothesisLocus? LLanguagePlaceRead(JsonElement element)`
 
 One place: `name` its key and `initial` the initials it gathers, blanks and repeats dropped.
 A row without a name or without any initial reads `null`.

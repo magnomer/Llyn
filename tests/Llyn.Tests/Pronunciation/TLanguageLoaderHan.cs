@@ -66,8 +66,8 @@ public sealed class TLanguageLoaderHan
         Assert.Equal("4S", hypothesis.LHypothesisTones["上"][1].LHypothesisToneClass);
         Assert.Equal(
             ["labial", "dental", "retroflex", "palatal", "velar", "laryngeal", "other"],
-            hypothesis.LHypothesisPlaces.Select(place => place.LHypothesisPlaceName));
-        Assert.Equal(["明", "幫", "並", "滂"], hypothesis.LHypothesisPlaces[0].LHypothesisPlaceInitials);
+            hypothesis.LHypothesisPlaces.Select(place => place.LHypothesisLocusName));
+        Assert.Equal(["明", "幫", "並", "滂"], hypothesis.LHypothesisPlaces[0].LHypothesisLocusInitials);
         Assert.Null(TInterface.TLanguageLoad("English").LLanguageHypothesis);
     }
     [Fact]

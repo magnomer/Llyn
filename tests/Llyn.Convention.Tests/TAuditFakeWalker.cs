@@ -8,12 +8,15 @@ internal static class TAuditFakeWalker
 {
     private const string TAuditRootReader = "";
 
+    private const string TAuditTypeMark = "T:";
+
     private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
         languageVersion: LanguageVersion.Preview,
         documentationMode: DocumentationMode.None,
         kind: SourceCodeKind.Regular);
 
-    public static IReadOnlyList<TViolation> TAuditRun(IReadOnlyList<string> testPaths, IReadOnlySet<string> markup)
+    public static IReadOnlyList<TViolation> TAuditRun(
+        IReadOnlyList<string> testPaths, IReadOnlySet<string> markup, IReadOnlySet<string> elements)
     {
         Dictionary<string, TAuditFakeMember> members = new(StringComparer.Ordinal);
         foreach (SyntaxTree tree in TAuditBinder.TAuditTrees)
@@ -21,13 +24,15 @@ internal static class TAuditFakeWalker
             TAuditMemberScan(TAuditBinder.TAuditModelRead(tree), members);
         }
 
+        TAuditLineageAdd(members);
+
         HashSet<string> names = new(members.Values.Select(member => member.TAuditMemberName), StringComparer.Ordinal);
         HashSet<string> serialized = new(StringComparer.Ordinal);
         foreach (SyntaxTree tree in TAuditBinder.TAuditCompilation.SyntaxTrees)
         {
             SemanticModel model = TAuditBinder.TAuditModelRead(tree);
             TAuditUseScan(model, members, names, false);
-            TAuditPersistScan(model, serialized);
+            TAuditFakeSerial.TAuditPersistScan(model, serialized);
         }
 
         CSharpCompilation tests = TAuditTestCreate(testPaths);
@@ -36,9 +41,10 @@ internal static class TAuditFakeWalker
             TAuditUseScan(tests.GetSemanticModel(tree, true), members, names, true);
         }
 
-        TAuditLiveApply(members, markup, serialized);
+        TAuditLiveApply(members, markup, elements, serialized);
         return members.Values
             .Where(member => !member.TAuditMemberLive)
+            .Where(member => !member.TAuditMemberKey.StartsWith(TAuditTypeMark, StringComparison.Ordinal))
             .Select(member => TAuditRowCreate(member, members))
             .OrderBy(row => row.TViolationPath, StringComparer.Ordinal)
             .ThenBy(row => row.TViolationLine)
@@ -77,6 +83,11 @@ internal static class TAuditFakeWalker
                 continue;
             }
 
+            if (type is { TypeKind: TypeKind.Class, IsStatic: false })
+            {
+                TAuditMemberAdd(members, type, declaration, path, false);
+            }
+
             if (declaration is RecordDeclarationSyntax { ParameterList: { } parameters })
             {
                 foreach (ParameterSyntax parameter in parameters.Parameters)
@@ -113,6 +124,21 @@ internal static class TAuditFakeWalker
 
         int line = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
         members.Add(key, new TAuditFakeMember(key, symbol.Name, path, line, stored));
+    }
+
+    private static void TAuditLineageAdd(Dictionary<string, TAuditFakeMember> members)
+    {
+        foreach (INamedTypeSymbol type in TAuditBinder.TAuditCompilation
+                     .GetSymbolsWithName(_ => true, SymbolFilter.Type)
+                     .OfType<INamedTypeSymbol>())
+        {
+            if (type.BaseType is { } parent
+                && members.TryGetValue(TAuditKeyRead(parent), out TAuditFakeMember? inherited)
+                && members.ContainsKey(TAuditKeyRead(type)))
+            {
+                inherited.TAuditMemberReaders.Add(TAuditKeyRead(type));
+            }
+        }
     }
 
     private static IEnumerable<ISymbol> TAuditDeclaredRead(SemanticModel model, MemberDeclarationSyntax member)
@@ -193,6 +219,15 @@ internal static class TAuditFakeWalker
             }
         }
 
+        foreach (SyntaxNode creation in root.DescendantNodes().Where(node =>
+                     node is BaseObjectCreationExpressionSyntax or AttributeSyntax))
+        {
+            if (model.GetSymbolInfo(creation).Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor } built)
+            {
+                TAuditUseAdd(model, creation, built.ContainingType, members, test);
+            }
+        }
+
         foreach (CommonForEachStatementSyntax loop in root.DescendantNodes().OfType<CommonForEachStatementSyntax>())
         {
             ForEachStatementInfo info = model.GetForEachStatementInfo(loop);
@@ -222,7 +257,7 @@ internal static class TAuditFakeWalker
             return;
         }
 
-        string? owner = TAuditOwnerRead(model, site);
+        string? owner = TAuditOwnerRead(model, site, members);
         foreach (TAuditFakeMember member in reached)
         {
             if (owner == member.TAuditMemberKey || !TAuditReadCheck(site, normal, member))
@@ -287,7 +322,8 @@ internal static class TAuditFakeWalker
         };
     }
 
-    private static string? TAuditOwnerRead(SemanticModel model, SyntaxNode site)
+    private static string? TAuditOwnerRead(
+        SemanticModel model, SyntaxNode site, Dictionary<string, TAuditFakeMember> members)
     {
         foreach (SyntaxNode ancestor in site.Ancestors())
         {
@@ -295,7 +331,17 @@ internal static class TAuditFakeWalker
             {
                 case BaseMethodDeclarationSyntax or BasePropertyDeclarationSyntax:
                 case VariableDeclaratorSyntax { Parent.Parent: BaseFieldDeclarationSyntax }:
-                    return model.GetDeclaredSymbol(ancestor) is ISymbol owner ? TAuditKeyRead(owner) : null;
+                    if (model.GetDeclaredSymbol(ancestor) is not ISymbol owner)
+                    {
+                        return null;
+                    }
+
+                    string key = TAuditKeyRead(owner);
+                    string? holder = owner.ContainingType is { } type ? TAuditKeyRead(type) : null;
+                    bool root = owner is IMethodSymbol { MethodKind: MethodKind.StaticConstructor };
+                    return members.ContainsKey(key) || root || holder is null || !members.ContainsKey(holder)
+                        ? key
+                        : holder;
                 case BaseTypeDeclarationSyntax:
                     return null;
             }
@@ -318,63 +364,11 @@ internal static class TAuditFakeWalker
         return Path.GetFileName(site.SyntaxTree.FilePath);
     }
 
-    private static void TAuditPersistScan(SemanticModel model, HashSet<string> serialized)
-    {
-        foreach (InvocationExpressionSyntax call in
-                 model.SyntaxTree.GetRoot().DescendantNodes().OfType<InvocationExpressionSyntax>())
-        {
-            if (model.GetSymbolInfo(call).Symbol is not IMethodSymbol method
-                || method.ContainingType?.ToDisplayString() != "System.Text.Json.JsonSerializer")
-            {
-                continue;
-            }
-
-            IEnumerable<ITypeSymbol?> types = method.TypeArguments
-                .Concat(call.ArgumentList.Arguments.Select(argument => model.GetTypeInfo(argument.Expression).Type));
-            foreach (ITypeSymbol? type in types)
-            {
-                TAuditPersistAdd(type, serialized, new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default));
-            }
-        }
-    }
-
-    private static void TAuditPersistAdd(ITypeSymbol? type, HashSet<string> serialized, HashSet<ITypeSymbol> seen)
-    {
-        if (type is null || !seen.Add(type))
-        {
-            return;
-        }
-
-        if (type is IArrayTypeSymbol array)
-        {
-            TAuditPersistAdd(array.ElementType, serialized, seen);
-            return;
-        }
-
-        if (type is not INamedTypeSymbol named)
-        {
-            return;
-        }
-
-        foreach (ITypeSymbol argument in named.TypeArguments)
-        {
-            TAuditPersistAdd(argument, serialized, seen);
-        }
-
-        if (named.Locations.All(location => !location.IsInSource))
-        {
-            return;
-        }
-
-        foreach (IPropertySymbol property in named.GetMembers().OfType<IPropertySymbol>())
-        {
-            serialized.Add(TAuditKeyRead(property));
-            TAuditPersistAdd(property.Type, serialized, seen);
-        }
-    }
-
     private static void TAuditLiveApply(
-        Dictionary<string, TAuditFakeMember> members, IReadOnlySet<string> markup, HashSet<string> serialized)
+        Dictionary<string, TAuditFakeMember> members,
+        IReadOnlySet<string> markup,
+        IReadOnlySet<string> elements,
+        HashSet<string> serialized)
     {
         Dictionary<string, List<TAuditFakeMember>> dependents = new(StringComparer.Ordinal);
         Queue<TAuditFakeMember> queue = new();
@@ -391,7 +385,8 @@ internal static class TAuditFakeWalker
                 list.Add(member);
             }
 
-            if (markup.Contains(member.TAuditMemberName)
+            bool typed = member.TAuditMemberKey.StartsWith(TAuditTypeMark, StringComparison.Ordinal);
+            if ((typed ? elements : markup).Contains(member.TAuditMemberName)
                 || serialized.Contains(member.TAuditMemberKey)
                 || member.TAuditMemberReaders.Any(reader => !members.ContainsKey(reader)))
             {
@@ -459,7 +454,7 @@ internal static class TAuditFakeWalker
         return symbol.OriginalDefinition;
     }
 
-    private static string TAuditKeyRead(ISymbol symbol)
+    public static string TAuditKeyRead(ISymbol symbol)
     {
         ISymbol normal = TAuditNormalRead(symbol);
         return normal.GetDocumentationCommentId() ?? normal.ToDisplayString();

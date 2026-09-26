@@ -20,7 +20,7 @@ The caller hands the resulting change list to this store afterwards.
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes)`
+## `public LRevision LRevisionRecord(IReadOnlyList<LRevisionDelta> changes)`
 
 Opens a revision with a fresh opaque id and the current UTC timestamp.
 It records `changes` under it in list order.

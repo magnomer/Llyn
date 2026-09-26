@@ -68,7 +68,7 @@ public sealed class LOccurrence
         return _lPortraitPort.LEnginePortraitPrint(_lOccurrenceVista, label, ticket);
     }
 
-    public Task LOccurrencePortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LOccurrencePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(_lOccurrenceVista, path, format, label);
     }

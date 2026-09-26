@@ -268,7 +268,7 @@ public sealed class LXiesheng
         return _lPortraitPort.LEnginePortraitPrint(LXieshengPanel.LPanelVista, label, ticket);
     }
 
-    public Task LXieshengPortraitExport(string path, LPortraitFormat format, LPortraitLabel label)
+    public Task LXieshengPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(LXieshengPanel.LPanelVista, path, format, label);
     }

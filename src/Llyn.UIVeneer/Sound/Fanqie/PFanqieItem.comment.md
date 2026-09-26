@@ -1,6 +1,6 @@
 # PFanqieItem.cs
 
-## `public sealed class PFanqieItem`
+## `internal sealed class PFanqieItem`
 
 One block of the fanqie box: the placements of one character in one rime book from one source.
 They are drawn as [PFanqieLine](PFanqieLine.comment.md) rows in shared columns.
@@ -20,10 +20,10 @@ Empty when the block above already carries the same book from another source, so
 
 The site the lines came from, drawn as the chip at the right of the block.
 
-## `public string PFanqieItemShengfu`
+## `public IReadOnlyList<string> PFanqieItemStems`
 
-The character's phonetic series, drawn as the line above the book chip.
-Empty on every block but the character's first, so the line is drawn once.
+The character's phonetic series as separate keys, each drawn as a chip beside the book.
+Empty on every block but the character's first, so the chips are drawn once.
 
 ## `public IReadOnlyList<PFanqieLine> PFanqieItemLines`
 

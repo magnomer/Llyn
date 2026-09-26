@@ -16,7 +16,7 @@ A pack without the file carries `null`, and the fanqie box prints the placement 
 - `LHypothesisTones` — The class rows of each rime-book tone, keyed by the tone's character.
   Each row is one [LHypothesisTone](LHypothesisTone.comment.md): an onset pattern, its rewrites and its class label.
 - `LHypothesisPlaces` — The articulatory places the pack lists under `place`, in its order, empty when it lists none.
-  Each is one [LHypothesisPlace](LHypothesisPlace.comment.md): a name and the initials it gathers.
+  Each is one [LHypothesisLocus](LHypothesisLocus.comment.md): a name and the initials it gathers.
 
 ## `private const string LHypothesisRounded = "合";`
 
@@ -35,7 +35,7 @@ The box then falls back to the placement text.
 The onset alone, without final or tone, for a rime category page's reading column.
 `null` when the placement names no initial or the table lacks it.
 
-## `public LHypothesisPlace? LHypothesisPlaceFind(string initial)`
+## `public LHypothesisLocus? LHypothesisLocusFind(string initial)`
 
 The first place listing the initial, or `null` when none does.
 

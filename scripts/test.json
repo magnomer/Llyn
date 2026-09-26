@@ -1,6 +1,5 @@
 {
   "generation": 3,
-  "project": "Llyn",
   "tests": "tests",
   "convention": "Llyn.Convention.Tests"
 }
