@@ -6,6 +6,6 @@
     <WarningsAsErrors>CA1416</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Llyn.Tests" />
+    <InternalsVisibleTo Include="Llyn.Internal" />
   </ItemGroup>
 </Project>

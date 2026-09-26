@@ -10,6 +10,10 @@ It hosts the WebView2 player of `PScreen`, so it takes the Windows version WebVi
 Deportment names windows, controls and event arguments directly.
 It holds no markup, since every page and dictionary lives in the veneer.
 
+## `<InternalsVisibleTo Include="Llyn.Windows" />`
+
+Only the Windows behaviour tests can load Deportment, so only they reach its internals.
+
 ## `<ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />`
 
 Conduct is the only reference, and ShellEngine, Application and Core arrive through it.

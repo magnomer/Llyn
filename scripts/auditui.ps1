@@ -16,7 +16,8 @@ and the ceilings in auditui.ledger.json. The tests and this script audit the sam
 each tells the truth when the other is broken.
 
   Strict    the surfaces and the host: Storage, Static, Call, Depth, Reach, Trigger, Glyph, Wiring,
-            Hook, Shell, plus driver disk lines, surface catalog lines and their exemptions.
+            Hook, Shell, the drivers' Pack, Scaffold and Contract, plus driver disk lines, surface
+            catalog lines and their exemptions.
   Truth     the drivers: Argument, Guard, Fork, Mirror, Mutation, Shape, Treat, Glyph, Taint, Feed,
             Parity.
   Boundary  the guards that keep the walkers sound: state builds and compares, hidden code,
@@ -59,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 14 - auditui.ps1.
+# AUDITUI GENERATION 15 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -76,6 +77,9 @@ auditui -Configuration Release
 # markup, and every surface member that is not a constructor. The veneer may hold no markup file.
 # Generation 14: the strict audit also counts a surface markup line that passes a command parameter,
 # a command target or a member path, or that sets a literal tag, as a hook.
+# Generation 15: the strict audit also counts a driver line holding a pack URI or naming the surface,
+# a driver type deriving from a scaffold type, and a contract ID the surface markup never names.
+# An x:Class in surface markup is a hook unless it names a surface type.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -178,7 +182,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 14
+$script:AuditGeneration = 15
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 
@@ -438,7 +442,8 @@ internal sealed record LAuditKindRow(
 internal sealed class LAuditStrictRun
 {
     public static readonly string[] LAuditKinds =
-        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring", "Hook", "Shell"];
+        ["Storage", "Static", "Call", "Depth", "Reach", "Trigger", "Glyph", "Wiring", "Hook", "Shell", "Pack",
+            "Scaffold", "Contract"];
 
     private static readonly Regex LAuditLiteralPattern = new(
         @"@?""(?:[^""\\]|\\.)*""|//.*$",
@@ -461,6 +466,7 @@ internal sealed class LAuditStrictRun
         IReadOnlyList<string> sources = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditTruthSetting.LAuditShellInclude);
         IReadOnlyList<string> hosts = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditStrictSetting.LAuditHostInclude);
         IReadOnlyList<string> markups = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditStrictSetting.LAuditReachInclude);
+        IReadOnlyList<string> drivers = LAuditScopeSetting.LAuditFileRead(repoRoot, LAuditStrictSetting.LAuditDeportmentInclude);
         if (sources.Count == 0 || hosts.Count == 0)
         {
             throw new InvalidOperationException(
@@ -470,6 +476,7 @@ internal sealed class LAuditStrictRun
         IReadOnlyList<LViolation> hits = LAuditStrictWalker.LAuditRun(sources, out List<string> veneers)
             .Concat(LAuditHostWalker.LAuditRun(hosts))
             .Concat(LAuditReachWalker.LAuditRun(markups))
+            .Concat(LAuditContractWalker.LAuditRun(drivers, markups))
             .Select(hit => hit with
             {
                 LViolationPath = Path.GetRelativePath(repoRoot, hit.LViolationPath).Replace('\\', '/')
@@ -1222,7 +1229,7 @@ internal static class LAuditSettingRead
             "enforced", "reachInclude", "veneerInclude", "deportmentInclude", "hostInclude", "deportmentNamespace",
             "queryTypes", "catalogPatterns", "catalogExempt", "diskPatterns", "diskExempt", "reachNamespaces",
             "triggerElements", "triggerSlots", "hookElements", "hookSlots", "hookExtensions", "hookTypes",
-            "hookLiterals"
+            "hookLiterals", "veneerNamespace", "contractType", "packMarkers", "scaffoldTypes", "contractIds"
         ],
         ["truth"] =
         [
@@ -1287,6 +1294,11 @@ internal static class LAuditSettingRead
         LAuditStrictSetting.LAuditHookExtensions = LAuditListRead(strict, "hookExtensions");
         LAuditStrictSetting.LAuditHookTypes = LAuditListRead(strict, "hookTypes");
         LAuditStrictSetting.LAuditHookLiterals = LAuditListRead(strict, "hookLiterals");
+        LAuditStrictSetting.LAuditVeneerNamespace = strict.GetProperty("veneerNamespace").GetString()!;
+        LAuditStrictSetting.LAuditContractType = strict.GetProperty("contractType").GetString()!;
+        LAuditStrictSetting.LAuditPackMarkers = LAuditListRead(strict, "packMarkers");
+        LAuditStrictSetting.LAuditScaffoldTypes = LAuditListRead(strict, "scaffoldTypes");
+        LAuditStrictSetting.LAuditContractIds = LAuditListRead(strict, "contractIds");
 
         JsonElement truth = config.GetProperty("truth");
         LAuditTruthSetting.LAuditTruthEnforced = truth.GetProperty("enforced").GetBoolean();
@@ -1347,6 +1359,134 @@ internal static class LAuditStrictSetting
     public static string[] LAuditHookExtensions = [];
     public static string[] LAuditHookTypes = [];
     public static string[] LAuditHookLiterals = [];
+    public static string LAuditVeneerNamespace = "";
+    public static string LAuditContractType = "";
+    public static string[] LAuditPackMarkers = [];
+    public static string[] LAuditScaffoldTypes = [];
+    public static string[] LAuditContractIds = [];
+}
+
+internal static class LAuditContractWalker
+{
+    public static IReadOnlyList<LViolation> LAuditRun(
+        IReadOnlyList<string> driverPaths, IEnumerable<string> markupPaths)
+    {
+        List<LViolation> violations = [];
+        IReadOnlySet<string> ids = LAuditIdRead(markupPaths);
+        foreach (string path in driverPaths)
+        {
+            LAuditPackScan(path, violations);
+        }
+
+        foreach (SyntaxNode root in LAuditBind.LAuditWalkRead(driverPaths))
+        {
+            LAuditScaffoldScan(root, violations);
+            LAuditContractScan(root, ids, violations);
+        }
+
+        return violations;
+    }
+
+    private static void LAuditPackScan(string path, List<LViolation> violations)
+    {
+        string[] lines = File.ReadAllLines(path);
+        for (int index = 0; index < lines.Length; index++)
+        {
+            string? marker = LAuditStrictSetting.LAuditPackMarkers
+                .FirstOrDefault(item => lines[index].Contains(item, StringComparison.Ordinal));
+            if (marker is not null)
+            {
+                violations.Add(new LViolation(path, index + 1, marker, "Pack", "driver line names the surface"));
+            }
+        }
+    }
+
+    private static void LAuditScaffoldScan(SyntaxNode root, List<LViolation> violations)
+    {
+        foreach (TypeDeclarationSyntax type in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
+        {
+            if (LAuditBind.LAuditSymbolRead(type) is not INamedTypeSymbol symbol)
+            {
+                continue;
+            }
+
+            for (INamedTypeSymbol? shape = symbol.BaseType; shape is not null; shape = shape.BaseType)
+            {
+                string name = shape.OriginalDefinition.ToDisplayString();
+                if (LAuditStrictSetting.LAuditScaffoldTypes.Contains(name, StringComparer.Ordinal))
+                {
+                    violations.Add(new LViolation(
+                        type.SyntaxTree.FilePath,
+                        type.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
+                        type.Identifier.ValueText,
+                        "Scaffold",
+                        $"driver type derives from {name}"));
+                    break;
+                }
+            }
+        }
+    }
+
+    private static void LAuditContractScan(SyntaxNode root, IReadOnlySet<string> ids, List<LViolation> violations)
+    {
+        SemanticModel model = LAuditBind.LAuditModelRead(root);
+        foreach (InvocationExpressionSyntax call in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
+        {
+            if (model.GetSymbolInfo(call).Symbol is not IMethodSymbol method
+                || method.ContainingType?.Name != LAuditStrictSetting.LAuditContractType)
+            {
+                continue;
+            }
+
+            foreach (ArgumentSyntax argument in call.ArgumentList.Arguments)
+            {
+                if (model.GetTypeInfo(argument.Expression).ConvertedType?.SpecialType != SpecialType.System_String)
+                {
+                    continue;
+                }
+
+                int line = argument.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                Optional<object?> constant = model.GetConstantValue(argument.Expression);
+                if (constant is not { HasValue: true, Value: string id })
+                {
+                    violations.Add(new LViolation(
+                        call.SyntaxTree.FilePath, line, argument.Expression.ToString(), "Contract",
+                        "contract ID is not a constant"));
+                }
+                else if (!ids.Contains(id))
+                {
+                    violations.Add(new LViolation(
+                        call.SyntaxTree.FilePath, line, id, "Contract",
+                        "contract ID has no element or resource in the surface"));
+                }
+            }
+        }
+    }
+
+    private static IReadOnlySet<string> LAuditIdRead(IEnumerable<string> markupPaths)
+    {
+        HashSet<string> ids = new(StringComparer.Ordinal);
+        foreach (string path in markupPaths)
+        {
+            XDocument document;
+            try
+            {
+                document = XDocument.Load(path);
+            }
+            catch (XmlException)
+            {
+                continue;
+            }
+
+            ids.UnionWith(document.Descendants()
+                .SelectMany(element => element.Attributes())
+                .Where(attribute => !attribute.IsNamespaceDeclaration
+                    && LAuditStrictSetting.LAuditContractIds.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
+                .Select(attribute => attribute.Value));
+        }
+
+        return ids;
+    }
 }
 
 internal static class LAuditTruthSetting
@@ -2070,6 +2210,12 @@ internal static class LAuditReachWalker
             if (LAuditStrictSetting.LAuditHookSlots.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
             {
                 LAuditHookAdd(hooks, line, attribute.Name.LocalName);
+            }
+
+            string shell = LAuditStrictSetting.LAuditVeneerNamespace + ".";
+            if (attribute.Name.LocalName == "Class" && !attribute.Value.StartsWith(shell, StringComparison.Ordinal))
+            {
+                LAuditHookAdd(hooks, line, "x:Class");
             }
 
             string slot = (element.Attribute("Property")?.Value ?? string.Empty).Trim('(', ')');

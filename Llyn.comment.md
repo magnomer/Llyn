@@ -22,11 +22,11 @@ The audits and convention tests measure the lag as falling ceilings.
 - A rule stated for one surface holds for the other surface.
 - A rule stated for one driver holds for the other driver.
 
-| Role | GUI | CUI |
-|---|---|---|
-| Surface | `Llyn.UIVeneer` | `Llyn.UITerminal` |
-| Driver | `Llyn.UIDeportment` | `Llyn.UIDemeanor` |
-| Shared | `Llyn.Conduct` | `Llyn.Conduct` |
+| Role | GUI | CUI | Prefix |
+|---|---|---|---|
+| Surface | `Llyn.UIVeneer` | `Llyn.UITerminal` | `P` |
+| Driver | `Llyn.UIDeportment` | `Llyn.UIDemeanor` | `Q` |
+| Shared | `Llyn.Conduct` | `Llyn.Conduct` | `C` |
 
 ## Data and the cut
 
@@ -50,7 +50,8 @@ The audits and convention tests measure the lag as falling ceilings.
 - A visual that C# builds, draws, generates or selects is logic, and it lives in Deportment.
 - Veneer XAML carries no hook: no trigger, binding, converter, event attribute, command or `x:Static`.
 - Deportment sets every property, subscribes every event and switches every visual state.
-- A code-behind is a shell: a constructor that calls `InitializeComponent()` and hands the view to Deportment.
+- A code-behind is a shell: an `x:Class` constructor that only calls `InitializeComponent()`.
+- An `x:Class` naming a Veneer type is not a hook.
 - A Veneer member only calls a function.
   No exception.
 - The Veneer defines no method, handler, helper, property or field.
@@ -77,6 +78,8 @@ The audits and convention tests measure the lag as falling ceilings.
 ## `<Project Path="src/Llyn.UIDeportment/Llyn.UIDeportment.csproj" />`
 
 - Deportment is the only project that manipulates the Veneer.
+- Deportment is the master of the Veneer and owns the contract.
+- Deportment holds no scaffold and pulls every part by contract ID.
 - Deportment is not the Veneer.
   It is not what is shown to the user.
 - Deportment uses WPF freely.
@@ -108,6 +111,23 @@ The audits and convention tests measure the lag as falling ceilings.
 - Creating a new entry is one Conduct gate.
   Deportment and Demeanor both call it.
 - A behaviour found in one driver and absent from the other is either medium work or a leak.
+
+## Contract
+
+- Deportment is the master, and the Veneer is its subordinate.
+- Deportment owns the contract: the IDs of the roles it drives.
+- The Veneer supplies an element or a resource for every ID in the contract.
+- An element carries its ID as `x:Name`, and a resource carries it as `x:Key`.
+- The Veneer never announces, maps or injects a role.
+- Anything the Veneer asks of Deportment carries no role.
+- Deportment pulls each part by its ID.
+- Deportment never names the Veneer: no pack URI, no `Llyn.UIVeneer`.
+- The Veneer may offer a referent list, and Deportment never needs it.
+- The Veneer holds the scaffold: application, windows, pages, controls and resource dictionaries.
+- Each Veneer page has an `x:Class` shell whose constructor only calls `InitializeComponent()`.
+- Deportment holds no scaffold.
+- Deportment may draw.
+  A drawn leaf is a `Q` element, and the Veneer places it.
 
 ## `<Project Path="src/Llyn.Conduct/Llyn.Conduct.csproj" />`
 
@@ -273,6 +293,12 @@ The audits and convention tests measure the lag as falling ceilings.
 - Controls, converters and triggers were treated as Veneer structure.
   Wrong.
   What logic writes or manipulates is logic, and it lives in Deportment.
+- The Veneer was treated as holding no C#.
+  Wrong.
+  Each Veneer page keeps an `x:Class` shell that only calls `InitializeComponent()`.
+- Deportment was treated as loading the Veneer by pack URI.
+  Wrong.
+  The Veneer holds the scaffold, and Deportment pulls each part by contract ID.
 
 ## Test projects
 

@@ -25,7 +25,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 auditcomments.json shape:
   {
-    "generation": 14,
+    "generation": 15,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -97,7 +97,7 @@ auditcomments -Segments 2
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 14 - auditcomments.ps1.
+# AUDITCOMMENTS GENERATION 15 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -116,6 +116,8 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # that is not a constructor.
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
+# Generation 15: nothing this audit reports changes; the number rises with the name audit, which
+# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -215,7 +217,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 14
+$script:AuditGeneration = 15
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next

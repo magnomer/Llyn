@@ -1,5 +1,5 @@
 {
-  "generation": 14,
+  "generation": 15,
   "project": "Llyn",
   "helper": {
     "framework": "net10.0"
@@ -124,6 +124,24 @@
     ],
     "hookLiterals": [
       "Tag"
+    ],
+    "veneerNamespace": "Llyn.UIVeneer",
+    "contractType": "QContract",
+    "packMarkers": [
+      "pack://",
+      ";component/",
+      "Llyn.UIVeneer"
+    ],
+    "scaffoldTypes": [
+      "System.Windows.Application",
+      "System.Windows.Controls.ContentControl",
+      "System.Windows.Controls.ItemsControl",
+      "System.Windows.Controls.Page",
+      "System.Windows.ResourceDictionary"
+    ],
+    "contractIds": [
+      "Key",
+      "Name"
     ]
   },
   "truth": {

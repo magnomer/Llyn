@@ -6,6 +6,9 @@
     The test projects are discovered on disk, not through the solution. By
     default every project runs, the convention test project included. -Main
     skips the convention project and -Convention runs it alone.
+    -Platform picks the test project mapped to one platform in test.json; the
+    convention project still runs beside it unless -Main is given. A Windows
+    project on a host that is not Windows is skipped with a notice line.
     Given symbol names, only the tests a change inside those symbols can affect
     run: detector.ps1 finds them, and each test project runs with a filter that
     selects them. A project with no affected test is skipped. The convention
@@ -17,7 +20,7 @@
     code to the caller.
 
     Every project-specific value - project name, tests folder, convention
-    project - lives in test.json. This script carries none, so the file is
+    project, platform projects - lives in test.json. This script carries none, so the file is
     identical in every project at the same generation.
 .PARAMETER Name
     One or more symbol names. Runs only the tests a change inside them can affect. Positional.
@@ -26,7 +29,10 @@
 .PARAMETER Filter
     VSTest filter expression used to select tests.
 .PARAMETER Project
-    Name of a single test project to run. Defaults to all. Overrides the scope switches.
+    Name of a single test project to run. Defaults to all. Overrides the scope switches and -Platform.
+.PARAMETER Platform
+    All (default), Internal or Windows. A platform other than All runs only the test project test.json
+    maps to it, and the convention project unless -Main is given. Cannot be combined with -Convention.
 .PARAMETER All
     Run every test project, the convention project included. This is the default. Alias: -a.
 .PARAMETER Convention
@@ -63,6 +69,12 @@
     test -c
     Run the convention tests only.
 .EXAMPLE
+    test -Platform Internal
+    Run the portable tests and the convention tests.
+.EXAMPLE
+    test -Platform Windows -m
+    Run the Windows tests only.
+.EXAMPLE
     test -Configuration Release
     Run the Release test suite.
 .EXAMPLE
@@ -82,7 +94,7 @@
     Forward logger and results-directory options to dotnet test.
 #>
 #requires -Version 5.1
-# TEST GENERATION 3 - test.ps1.
+# TEST GENERATION 4 - test.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names how the family finds and runs the tests. Two projects on the same generation
@@ -95,6 +107,9 @@
 # each test project runs with a filter selecting them - by method, by class when the method filter
 # grows too long, whole when the class filter does too - a project with none is skipped, and the
 # convention project runs whole.
+# Generation 4: everything in generation 3; test.json maps each platform to one test project, -Platform
+# runs only that project beside the convention project, -Main still drops the convention project, and a
+# Windows project on a host that is not Windows is skipped with a notice line instead of failing.
 # Every project-specific value lives in test.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
@@ -108,6 +123,9 @@ param(
     [string]$Filter,
 
     [string]$Project,
+
+    [ValidateSet('All', 'Internal', 'Windows')]
+    [string]$Platform = 'All',
 
     [Alias('a')]
     [switch]$All,
@@ -147,7 +165,8 @@ SYNOPSIS
 
 SYNTAX
     test [<name> ...] [-Configuration <Debug|Release>] [-Filter <expression>]
-        [-Project <name>] [-All | -Convention | -Main]
+        [-Project <name>] [-Platform <All|Internal|Windows>]
+        [-All | -Convention | -Main]
         [-NoBuild] [-NoRestore] [-List]
         [-Repeat <count>] [-Verbosity <level>]
         [-AdditionalArguments <arguments[]>] [-Help]
@@ -166,7 +185,13 @@ OPTIONS
 
     -Project <name>
         Run one test project under the tests folder. Defaults to all.
-        Overrides the scope switches.
+        Overrides the scope switches and -Platform.
+
+    -Platform <All|Internal|Windows>
+        Run the test project test.json maps to the platform, and the
+        convention project unless -Main is given. Defaults to All, every
+        project. A Windows project on a host that is not Windows is skipped
+        with a notice line. Cannot be combined with -Convention.
 
     -All, -a
         Run every test project, the convention project included. Default.
@@ -213,6 +238,12 @@ EXAMPLES
 
     test -c
         Run the convention tests only.
+
+    test -Platform Internal
+        Run the portable tests and the convention tests.
+
+    test -Platform Windows -m
+        Run the Windows tests only.
 
     test -Configuration Release
         Run the Release test suite.
@@ -264,14 +295,14 @@ function Read-TestConfig {
         throw "The test configuration is not valid JSON: $configPath`n$($_.Exception.Message)"
     }
 
-    foreach ($key in @('generation', 'tests', 'convention')) {
+    foreach ($key in @('generation', 'tests', 'convention', 'platforms')) {
         if (-not ($config.PSObject.Properties.Name -contains $key)) {
             throw "The test configuration must contain a $key property: $configPath"
         }
     }
 
-    if ([int]$config.generation -ne 3) {
-        throw "The test configuration is generation $($config.generation); this script is generation 3."
+    if ([int]$config.generation -ne 4) {
+        throw "The test configuration is generation $($config.generation); this script is generation 4."
     }
 
     return $config
@@ -279,6 +310,10 @@ function Read-TestConfig {
 
 if (@($All, $Convention, $Main | Where-Object { $_ }).Count -gt 1) {
     throw '-All, -Convention and -Main cannot be combined.'
+}
+
+if ($Convention -and $Platform -ne 'All') {
+    throw '-Convention and -Platform cannot be combined.'
 }
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -307,8 +342,37 @@ elseif ($Convention) {
         throw "The convention test project was not found under tests: $($config.convention)"
     }
 }
-elseif ($Main) {
-    $projects = @($projects | Where-Object { $_.BaseName -ne [string]$config.convention })
+else {
+    if ($Platform -ne 'All') {
+        $mapped = $config.platforms.PSObject.Properties[$Platform]
+        if ($null -eq $mapped) {
+            throw "The test configuration maps no project to the platform: $Platform"
+        }
+
+        $platformProject = [string]$mapped.Value
+        if (@($projects | Where-Object { $_.BaseName -eq $platformProject }).Count -eq 0) {
+            throw "The $Platform test project was not found under tests: $platformProject"
+        }
+
+        $projects = @($projects | Where-Object { $_.BaseName -eq $platformProject -or $_.BaseName -eq [string]$config.convention })
+    }
+
+    if ($Main) {
+        $projects = @($projects | Where-Object { $_.BaseName -ne [string]$config.convention })
+    }
+}
+
+# A Windows test project targets a Windows framework, which builds and runs on Windows alone.
+$windowsMapped = $config.platforms.PSObject.Properties['Windows']
+if ($null -ne $windowsMapped -and [System.Environment]::OSVersion.Platform -ne [System.PlatformID]::Win32NT) {
+    $windowsProject = [string]$windowsMapped.Value
+    if (@($projects | Where-Object { $_.BaseName -eq $windowsProject }).Count -gt 0) {
+        Write-Host "$windowsProject is skipped: this host is not Windows."
+        $projects = @($projects | Where-Object { $_.BaseName -ne $windowsProject })
+        if ($projects.Count -eq 0) {
+            exit 0
+        }
+    }
 }
 
 if ($projects.Count -eq 0) {

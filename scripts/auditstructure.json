@@ -1,5 +1,5 @@
 {
-  "generation": 14,
+  "generation": 15,
   "project": "Llyn",
   "framework": "net10.0",
   "source": "src/",
@@ -182,12 +182,9 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 44,
-    "cross:Llyn.UIDeportment>Llyn.Core": 754,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 659,
-    "cross:Llyn.UIVeneer>Llyn.Application": 128,
-    "cross:Llyn.UIVeneer>Llyn.Core": 1330,
-    "cross:Llyn.UIVeneer>Llyn.ShellEngine": 14,
+    "cross:Llyn.UIDeportment>Llyn.Application": 172,
+    "cross:Llyn.UIDeportment>Llyn.Core": 2150,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 673,
     "expose:Llyn.UIDemeanor>Llyn.Core": 34,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 9,
     "expose:Llyn.UIDeportment>Llyn.Core": 34,

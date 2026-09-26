@@ -5,7 +5,7 @@ Builds the shell-facing engine that connects application workflows to the interf
 ## Project ring
 
 References Application alone and carries Core records through it.
-Grants internal access to Llyn.Tests for engine-level tests.
+Grants internal access to Llyn.Internal for engine-level tests.
 
 ## `<WarningsAsErrors>CA1416</WarningsAsErrors>`
 

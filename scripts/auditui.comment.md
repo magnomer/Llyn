@@ -22,7 +22,11 @@ It holds `Command`, `CommandParameter`, `CommandTarget`, `DisplayMemberPath`, `S
 `strict.hookLiterals` lists the attributes that hook only when their value is a plain literal.
 It holds `Tag`, since a literal tag is a value the code branches on.
 A markup extension value is left to the extension rules instead.
-Generation 14 added these slots and the literal rule, so every setting carries 14.
+Generation 14 added these slots and the literal rule.
+`strict.veneerNamespace` names the surface types, so an `x:Class` naming another type is a hook.
+`strict.packMarkers`, `strict.scaffoldTypes` and `strict.contractIds` drive the `Pack`, `Scaffold` and `Contract` kinds.
+`strict.contractType` names Deportment's door to the scaffold, whose string arguments are contract IDs.
+Generation 15 added these kinds, so every setting carries 15.
 `-Configuration` swaps the build output the binder reads through a copy of those settings.
 
 ## Verdict

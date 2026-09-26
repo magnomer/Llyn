@@ -63,7 +63,7 @@ auditfake -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows of each kind, open the report.
 #>
 #requires -Version 5.1
-# AUDITFAKE GENERATION 14 - auditfake.ps1.
+# AUDITFAKE GENERATION 15 - auditfake.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -81,6 +81,8 @@ Write the report elsewhere, show ten rows of each kind, open the report.
 # that is not a constructor.
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
+# Generation 15: nothing this audit reports changes; the number rises with the name audit, which
+# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -128,7 +130,7 @@ COUNTERS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 14
+$script:AuditGeneration = 15
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding

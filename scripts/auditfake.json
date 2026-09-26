@@ -1,5 +1,5 @@
 {
-  "generation": 14,
+  "generation": 15,
   "project": "Llyn",
   "enforced": true,
   "ceilings": {
@@ -14,7 +14,8 @@
       "src"
     ],
     "tests": [
-      "tests/Llyn.Tests"
+      "tests/Llyn.Internal",
+      "tests/Llyn.Windows"
     ],
     "extensions": [
       ".cs"

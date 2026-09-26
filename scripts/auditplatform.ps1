@@ -69,7 +69,7 @@ auditplatform -ReportDirectory D:\temp\audit -Open
 Write the report elsewhere and open it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM GENERATION 14 - auditplatform.ps1.
+# AUDITPLATFORM GENERATION 15 - auditplatform.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -86,6 +86,8 @@ Write the report elsewhere and open it.
 # that is not a constructor.
 # Generation 14: nothing this audit reports changes; the number rises with the UI audit, which
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
+# Generation 15: nothing this audit reports changes; the number rises with the name audit, which
+# counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -137,7 +139,7 @@ EXIT CODES
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 14
+$script:AuditGeneration = 15
 $script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty',
     'Suppress', 'Implicit', 'Domain')
 

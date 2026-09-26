@@ -1,6 +1,6 @@
 # Audit principles
 
-Every audit script in this folder has a counterpart among the convention tests in `tests/Llyn.Convention.Tests`.
+Every audit script in this folder has a counterpart among the convention tests in `tests/Llyn.Tests.Convention`.
 The two sides judge the same ground truth, but neither depends on the other.
 
 ## Principle

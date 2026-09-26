@@ -1,5 +1,5 @@
 {
-  "generation": 14,
+  "generation": 15,
   "project": "Llyn",
   "records": {
     "include": [
@@ -99,7 +99,7 @@
     {
       "name": "exemplar",
       "include": [
-        "tests/Llyn.Tests/Interface/TExemplar.cs"
+        "tests/Llyn.Internal/Interface/TExemplar.cs"
       ],
       "waiver": []
     }

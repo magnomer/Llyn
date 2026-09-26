@@ -1,5 +1,9 @@
 {
-  "generation": 3,
+  "generation": 4,
   "tests": "tests",
-  "convention": "Llyn.Convention.Tests"
+  "convention": "Llyn.Tests.Convention",
+  "platforms": {
+    "Internal": "Llyn.Internal",
+    "Windows": "Llyn.Windows"
+  }
 }
