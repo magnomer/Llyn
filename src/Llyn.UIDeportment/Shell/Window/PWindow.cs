@@ -20,6 +20,8 @@ public partial class PWindow
 
     private readonly LFootprint _lFootprint;
 
+    private readonly QEstablishment _qEstablishment;
+
     private LNavigation _lNavigation = null!;
 
     public PWindow(LWindow window, Action<string> workspaceOpener)
@@ -31,8 +33,9 @@ public partial class PWindow
         _pWindowWorkspaceOpener = workspaceOpener;
         _pLayout = new PLayout(window);
 
-        _pWindowSurface = (Window)System.Windows.Application.LoadComponent(
-            new Uri("/Llyn.UIVeneer;component/Shell/Window/PWindow.xaml", UriKind.Relative));
+        _pWindowSurface = QContract.QContractSheetFind<Window>("PWindow");
+        _qEstablishment = new QEstablishment(
+            QContract.QContractFind<FrameworkElement>(_pWindowSurface, "PEstablishment"));
         _pWindowSurface.Tag = this;
         _pWindowSurface.SetValue(PMention.PMentionWindowProperty, _lWindow);
 
@@ -148,8 +151,6 @@ public partial class PWindow
 
     private PSettings PSettings => (PSettings)_pWindowSurface.FindName(nameof(PSettings));
 
-    private PEstablishment PEstablishment => (PEstablishment)_pWindowSurface.FindName(nameof(PEstablishment));
-
     internal void PWindowWorkspaceChange(string path)
     {
         _pWindowWorkspaceOpener(path);
@@ -178,7 +179,7 @@ public partial class PWindow
         PFavorite.PFavoriteAttach(this);
         PDuplex.PDuplexAttach(this);
         PSettings.PSettingsAttach(this);
-        PEstablishment.PEstablishmentAttach(this);
+        _qEstablishment.QEstablishmentAttach(this);
         _lNavigation = new LNavigation(_pWindowSurface, _lWindow, PTab.PTabChosenProperty, PNavigationTabRead());
 
         PWindowLayoutAttach();
@@ -223,7 +224,7 @@ public partial class PWindow
         PGuild.PGuildClose();
         PFavorite.PFavoriteClose();
         PDuplex.PDuplexClose();
-        PEstablishment.PEstablishmentClose();
+        _qEstablishment.QEstablishmentClose();
         _lWindow.LWindowLeftoverSweep();
         _lWindow.Dispose();
     }

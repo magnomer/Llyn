@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditChainSetting
 {
-    public const int TAuditGeneration = 15;
+    public const int TAuditGeneration = 16;
     public const string TAuditChainHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainReach = new Dictionary<string, string[]>
@@ -47,12 +47,20 @@ internal static class TAuditChainSetting
             "LDisplay",
             "LDisplaySound",
             "LDisplayStamp",
+            "CSCoinage",
+            "CSCustoms",
+            "CSCustomsMode",
+            "CSCustomsRow",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
             "LDisplay",
             "LDisplaySound",
             "LDisplayStamp",
+            "CSCoinage",
+            "CSCustoms",
+            "CSCustomsMode",
+            "CSCustomsRow",
         ],
     };
 
@@ -74,7 +82,7 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 172,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 2150,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 2119,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 673,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 34,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 9,

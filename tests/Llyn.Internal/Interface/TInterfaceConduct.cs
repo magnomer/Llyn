@@ -36,4 +36,21 @@ internal static class TInterfaceConduct
 
     internal static string TDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once) =>
         LDisplay.LDisplaySourceFormat(rows, once);
+
+    internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) =>
+        CSCustoms.CSCustomsCardScan(cards, card => card.LCardDraftChild);
+
+    internal static CSCustoms TCustomsCreate(IReadOnlyList<IReadOnlyList<long>> candidates) => new(candidates);
+
+    internal static CSCustomsRow TCustomsRowRead(this CSCustoms customs, int row) => customs.CSCustomsRowRead(row);
+
+    internal static bool TCustomsModeSet(this CSCustoms customs, int row, CSCustomsMode mode) =>
+        customs.CSCustomsModeSet(row, mode);
+
+    internal static bool TCustomsTargetSet(this CSCustoms customs, int row, long target) =>
+        customs.CSCustomsTargetSet(row, target);
+
+    internal static bool TCustomsReadyCheck(this CSCustoms customs) => customs.CSCustomsReadyCheck();
+
+    internal static bool TCoinageWordingCheck(string? wording) => CSCoinage.CSCoinageWordingCheck(wording);
 }

@@ -6,6 +6,7 @@ using Llyn.Core.Windows;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
+using PBootstrap = Llyn.UIVeneer.PBootstrap;
 
 int code = 1;
 Thread thread = new(() =>
@@ -15,13 +16,13 @@ Thread thread = new(() =>
     LPress press = new LPressBrowser();
     LPhonograph phonograph = new LPhonographMedia();
     PBootstrap application = new();
-    LBootstrap bootstrap = new(application, application.PBootstrapTextRead);
+    QBootstrap bootstrap = new();
 
-    bool themed = bootstrap.LBootstrapThemeApply(() => application.PBootstrapThemeApply(
-        LThemeLoader.LThemeLoaderLoad().LThemeColorRead,
-        LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault)));
+    bool themed = bootstrap.QBootstrapThemeApply(
+        () => LThemeLoader.LThemeLoaderLoad().LThemeColorRead,
+        () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));
     LEngine? engine = themed
-        ? bootstrap.LBootstrapBuild(
+        ? bootstrap.QBootstrapBuild(
             LWorkspaceRoot.LWorkspaceRootRead,
             workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph)),
             LDoctor.LDoctorBusyCheck)
@@ -32,17 +33,16 @@ Thread thread = new(() =>
         return;
     }
 
-    bootstrap.LBootstrapFaultAttach(engine.LEngineAuditRecord);
+    bootstrap.QBootstrapFaultAttach(engine.LEngineAuditRecord);
     LSettingsOutlet settings = new(engine);
-    bootstrap.LBootstrapCatalogApply(
+    bootstrap.QBootstrapCatalogApply(
         () => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization),
         () => settings.LEngineLocalizationLoad(
-            LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)),
-        application.PBootstrapCatalogApply);
+            LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
     LDoctorRescue rescue = engine.LEngineRescueRead();
-    bootstrap.LBootstrapRescueShow(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
+    bootstrap.QBootstrapRescueShow(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
-    application.PBootstrapWindowShow(new PWindow(
+    bootstrap.QBootstrapWindowShow(new PWindow(
         new LWindow(
             new LPosture(engine),
             new LDraftOutlet(engine),

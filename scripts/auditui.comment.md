@@ -26,7 +26,8 @@ Generation 14 added these slots and the literal rule.
 `strict.veneerNamespace` names the surface types, so an `x:Class` naming another type is a hook.
 `strict.packMarkers`, `strict.scaffoldTypes` and `strict.contractIds` drive the `Pack`, `Scaffold` and `Contract` kinds.
 `strict.contractType` names Deportment's door to the scaffold, whose string arguments are contract IDs.
-Generation 15 added these kinds, so every setting carries 15.
+Generation 15 added these kinds.
+Generation 16 holds the first dialog gates in the Parity ledger, so every setting carries 16.
 `-Configuration` swaps the build output the binder reads through a copy of those settings.
 
 ## Verdict

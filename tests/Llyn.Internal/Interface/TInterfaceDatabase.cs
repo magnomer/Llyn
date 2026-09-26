@@ -136,7 +136,7 @@ internal static partial class TInterface
         exampleArchive.LExampleUpdate(example);
     }
 
-    private static long TInterfaceIdentity;
+    private static long TInterfaceIdentity = -1_000_000_000;
 
     internal static long TIdentityCreate() =>
         Interlocked.Decrement(ref TInterfaceIdentity);

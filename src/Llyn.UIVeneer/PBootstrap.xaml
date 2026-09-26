@@ -1,0 +1,18 @@
+<Application
+    x:Class="Llyn.UIVeneer.PBootstrap"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:veneer="clr-namespace:Llyn.UIVeneer">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <veneer:PWindow x:Key="PWindow" x:Shared="False" />
+            <veneer:PSCoinage x:Key="PSCoinage" x:Shared="False" />
+            <veneer:PSLeave x:Key="PSLeave" x:Shared="False" />
+            <veneer:PSCustoms x:Key="PSCustoms" x:Shared="False" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

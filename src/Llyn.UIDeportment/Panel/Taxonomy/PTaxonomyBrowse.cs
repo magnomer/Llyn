@@ -199,7 +199,7 @@ public partial class PTaxonomy
 
     private void PDirectoryTagCreate()
     {
-        if (PSCoinage.PSCoinageShow(_pTaxonomyHost.PWindowSurface, "Coinage.Tag") is not string text)
+        if (QSCoinage.QSCoinageShow(_pTaxonomyHost.PWindowSurface, "Coinage.Tag") is not string text)
         {
             return;
         }

@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditPlatformSetting
 {
-    public const int TAuditGeneration = 15;
+    public const int TAuditGeneration = 16;
     public const bool TAuditPlatformEnforced = true;
     public const string TAuditPlatformRoot = "src/";
     public const string TAuditPlatformPortable = "net10.0";

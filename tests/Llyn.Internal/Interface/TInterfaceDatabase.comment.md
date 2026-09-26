@@ -12,3 +12,9 @@ Each relay is transparent and carries no test logic of its own.
 ## `internal static Guid TRealmValueRead(TWorkspace workspace)`
 
 The realm value of a test workspace, which the migration and realm tests compare across a rebuild.
+
+## `private static long TInterfaceIdentity = -1_000_000_000;`
+
+The last temporary id a test built by hand.
+It starts far below the ids a fresh workspace issues, so a hand-built id never names a real draft row.
+A test counting on an unknown row would otherwise meet the row the engine just made, depending on test order.

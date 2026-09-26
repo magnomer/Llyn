@@ -3,7 +3,7 @@
 ## `public partial class PWindow`
 
 The window itself: what happens when it opens and when it closes.
-The window is the Veneer's markup, loaded and held in `_pWindowSurface`.
+The window is the veneer's `PWindow` page, pulled by contract ID and held in `_pWindowSurface`.
 The class is no window itself, so every window call goes through that field.
 Each panel is a control with its own markup and its own behaviour.
 This file only puts them to work on the workspace the engine opened.
@@ -15,7 +15,7 @@ Opens the window on its deportment, already built over an engine bound to a work
 No engine and no posture is constructed or named here.
 Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
-`LBootstrap` builds the engine, the posture and the deportment, and hands the deportment over.
+The host builds the engine, the posture and the deportment, and hands the deportment over.
 The window disposes the deportment when it closes, and the bootstrap disposes the engine on exit.
 The deportment is set as the mention attached property on the loaded window, so every mention block below inherits it.
 The loaded window carries the class in its `Tag`, so a control inside can find its host.
@@ -23,6 +23,10 @@ The roof, logo, menu lines, caption buttons and tab buttons are subscribed here 
 Each caption glyph strokes with its button's foreground through a binding set here.
 Each tab button's icon is resolved here.
 `workspaceOpener` is the bootstrap's own workspace change, since only it may build a rig for a new folder.
+
+## `private readonly QEstablishment _qEstablishment;`
+
+Drives the status bar, pulled from the window under the contract ID `PEstablishment`.
 
 ## `internal Window PWindowSurface => _pWindowSurface;`
 

@@ -2,7 +2,12 @@
 
 The application window layout, including navigation, content panels, and mention menu.
 The markup carries no hook.
-`PWindow` in Deportment loads it, subscribes every event and sets every icon.
+`PWindow` in Deportment pulls it by contract ID, subscribes every event and sets every icon.
+Its `x:Class` shell lets `PBootstrap.xaml` offer it as the `PWindow` resource.
+
+## `PEstablishment`
+
+The establishment strip, placed as the veneer's own `PEstablishment` page.
 
 ## `PRoof`
 

@@ -25,7 +25,7 @@ Git is the only external tool required.
 
 auditencoding.json shape:
   {
-    "generation": 15,
+    "generation": 16,
     "project": "Llyn",
     "sources": {
       "include": ["*.cs", "*.md", "*.ps1"],
@@ -59,7 +59,7 @@ auditencoding -Root D:\temp\sample
 Audit another git working tree with this configuration.
 #>
 #requires -Version 5.1
-# AUDITENCODING GENERATION 15 - auditencoding.ps1.
+# AUDITENCODING GENERATION 16 - auditencoding.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -75,6 +75,8 @@ Audit another git working tree with this configuration.
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
+# Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -147,7 +149,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 15
+$script:AuditGeneration = 16
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
 Write-Host "AUDITENCODING GENERATION $script:AuditGeneration" -ForegroundColor Blue

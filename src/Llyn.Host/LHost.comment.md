@@ -23,12 +23,17 @@ The file usher answers path facts and the shell usher adds the launch of a folde
 
 The engine prints through the rig, so no press is applied after construction.
 
-## `LBootstrap bootstrap = new(application, application.PBootstrapTextRead);`
+## `PBootstrap application = new();`
 
-`LBootstrap` raises every dialog of the start.
-`PBootstrap` only applies resources and shows the window.
+The veneer's application, which the host only creates and runs.
+Creating it makes it `Application.Current`, which is how the deportment reaches it.
 
-## `LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault)));`
+## `QBootstrap bootstrap = new();`
+
+`QBootstrap` applies resources, raises every dialog of the start, and shows the window.
+It pulls the application from `Application.Current`, so the host hands it nothing.
+
+## `() => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault));`
 
 The default catalog is applied before any engine exists, so the host opens it through the port itself.
 That load lists the embedded languages first, since it refuses a language the build does not embed.
@@ -38,9 +43,9 @@ That load lists the embedded languages first, since it refuses a language the bu
 The engine opens the workspace: settings, database file, and schema.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
 
-## `application.PBootstrapWindowShow(new PWindow(`
+## `bootstrap.QBootstrapWindowShow(new PWindow(`
 
-The host creates the deportment's window too, so `PBootstrap` holds nothing but calls.
+The host creates the deportment's window too, so `QBootstrap` builds nothing.
 
 ## `new LWindow(`
 

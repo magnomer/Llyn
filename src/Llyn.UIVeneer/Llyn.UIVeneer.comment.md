@@ -4,15 +4,15 @@
 
 The veneer is a library that names only the deportment.
 Every view, template and theme dictionary has returned from the purge, disentangled.
-The veneer holds no C# file, only pages and resources.
+The veneer holds pages and resources, and a page's only C# is its `x:Class` shell.
 `Llyn.Host` builds the engine and runs the application, so the veneer names no lower project.
 
-## `<Page Include="App.xaml" />`
+## `<ItemGroup>`
 
-`App.xaml` builds as a page, so the library carries no generated entry point.
-Every other markup file builds as a page by the default glob.
-None carries `x:Class`, since the deportment loads each one by pack URI.
-Every pack URI to a returned file names `Llyn.UIVeneer` explicitly, since the application assembly is the host.
+Every markup file builds as a page by the default glob, `PBootstrap.xaml` included.
+No file is named `App.xaml`, so the library carries no generated entry point.
+A page the deportment pulls by contract ID carries an `x:Class` shell.
+A page the deportment still loads by pack URI names `Llyn.UIVeneer` explicitly, since the application assembly is the host.
 
 ## `<Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />`
 

@@ -84,13 +84,13 @@ public partial class PWindow
         bool store;
         if (unsaved)
         {
-            PSLeaveAnswer answer = PSLeave.PSLeaveShow(_pWindowSurface);
-            if (answer == PSLeaveAnswer.PSLeaveAnswerStay)
+            QSLeaveAnswer answer = QSLeave.QSLeaveShow(_pWindowSurface);
+            if (answer == QSLeaveAnswer.QSLeaveAnswerStay)
             {
                 return false;
             }
 
-            store = answer == PSLeaveAnswer.PSLeaveAnswerStore;
+            store = answer == QSLeaveAnswer.QSLeaveAnswerStore;
         }
         else
         {
@@ -168,10 +168,10 @@ public partial class PWindow
             return true;
         }
 
-        return PSLeave.PSLeaveShow(_pWindowSurface) switch
+        return QSLeave.QSLeaveShow(_pWindowSurface) switch
         {
-            PSLeaveAnswer.PSLeaveAnswerStore => finish(true),
-            PSLeaveAnswer.PSLeaveAnswerDiscard => true,
+            QSLeaveAnswer.QSLeaveAnswerStore => finish(true),
+            QSLeaveAnswer.QSLeaveAnswerDiscard => true,
             _ => false,
         };
     }

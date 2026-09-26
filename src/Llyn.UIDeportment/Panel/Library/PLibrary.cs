@@ -252,13 +252,12 @@ public class PLibrary : UserControl
 
     private IReadOnlyList<LMarkupIntake>? PLibraryCustomsShow(LMarkupCargo cargo)
     {
-        return PSCustoms.PSCustomsShow(
-            _pLibraryHost.PWindowSurface, _pLibraryHost.PWindowDeportment, cargo.LMarkupCargoEntry);
+        return QSCustoms.QSCustomsShow(_pLibraryHost, cargo.LMarkupCargoEntry);
     }
 
     private void PLibraryOmissionShow(IReadOnlyList<LMarkupOmission> omissions)
     {
-        PSCustoms.PSCustomsOmissionShow(_pLibraryHost.PWindowSurface, omissions);
+        QSCustoms.QSCustomsOmissionShow(_pLibraryHost, omissions);
     }
 
     private void PInquiryHandle(object sender, TextChangedEventArgs e)

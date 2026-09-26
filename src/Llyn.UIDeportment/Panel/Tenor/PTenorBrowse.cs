@@ -210,7 +210,7 @@ public partial class PTenor
 
     private void PGamutRegisterCreate()
     {
-        if (PSCoinage.PSCoinageShow(_pTenorHost.PWindowSurface, "Coinage.Register") is not string name)
+        if (QSCoinage.QSCoinageShow(_pTenorHost.PWindowSurface, "Coinage.Register") is not string name)
         {
             return;
         }

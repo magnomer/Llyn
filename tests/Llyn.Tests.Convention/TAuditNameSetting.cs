@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditNameSetting
 {
-    public const int TAuditGeneration = 15;
+    public const int TAuditGeneration = 16;
     public const string TAuditProject = "Llyn";
     public const string TAuditTestPrefix = "T";
     public const string TAuditComponentPattern = "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+";
@@ -13,7 +13,7 @@ internal static class TAuditNameSetting
     public const string TAuditCommandSuffix = "Command";
     public const string TAuditCancelSuffix = "CancelCommand";
 
-    public const int TAuditPrefixCeiling = 331;
+    public const int TAuditPrefixCeiling = 322;
 
     public static readonly string[] TAuditPrefixes =
     [

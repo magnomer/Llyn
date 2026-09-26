@@ -14,11 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ApplicationDefinition Remove="App.xaml" />
-    <Page Include="App.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="..\..\assets\icons\**\*.png" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
     <Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
     <Resource Include="..\..\assets\brand\icon.png" Link="brand\icon.png" />
