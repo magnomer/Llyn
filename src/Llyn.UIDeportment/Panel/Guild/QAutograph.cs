@@ -88,7 +88,7 @@ internal sealed class QAutograph
 
     private void QAutographNameHandle(object sender, TextChangedEventArgs e)
     {
-        _lGuild.LGuildAutograph.LDeskQuill.QQuillAuthorSet(QAutographName.Text);
+        _lGuild.LGuildAutograph.LDeskQuill?.LQuillAuthorSet(QAutographName.Text);
     }
 
     private void QAutographUnionHandle(object sender, TextChangedEventArgs e)

@@ -15,7 +15,7 @@ The primary field also wears a variety chip here, because the chip is drawn from
 
 ## `private LRequest PAccentRequestCreate(LAccentItem row)`
 
-The request a row's typed text becomes, a respelling request while respellings are shown and a reading request otherwise.
+A row's typed text becomes a respelling request while the row prints its respelling, and a reading request otherwise.
 The row prints the form the switch picks, so the text it holds belongs to that form.
 
 ## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`

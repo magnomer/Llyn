@@ -24,7 +24,7 @@ public sealed class PMention : TextBlock
 
     public static readonly DependencyProperty PMentionMentionProperty = DependencyProperty.Register(
         nameof(PMentionMention),
-        typeof(IReadOnlyList<CMention>),
+        typeof(IReadOnlyList<CMentionMark>),
         typeof(PMention),
         new FrameworkPropertyMetadata(null, PMentionChangeHandle));
 
@@ -61,9 +61,9 @@ public sealed class PMention : TextBlock
         set => SetValue(PMentionTextProperty, value);
     }
 
-    public IReadOnlyList<CMention>? PMentionMention
+    public IReadOnlyList<CMentionMark>? PMentionMention
     {
-        get => (IReadOnlyList<CMention>?)GetValue(PMentionMentionProperty);
+        get => (IReadOnlyList<CMentionMark>?)GetValue(PMentionMentionProperty);
         set => SetValue(PMentionMentionProperty, value);
     }
 
@@ -99,24 +99,6 @@ public sealed class PMention : TextBlock
         RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset));
     }
 
-    internal void PMentionMarkShow(IReadOnlyList<PMentionMark> marks)
-    {
-        ArgumentNullException.ThrowIfNull(marks);
-
-        List<CMention> mentions = new(marks.Count);
-        foreach (PMentionMark mark in marks)
-        {
-            mentions.Add(new CMention(
-                mark.PMentionMarkId,
-                mark.PMentionMarkOffset,
-                mark.PMentionMarkLength,
-                mark.PMentionMarkEntry,
-                mark.PMentionMarkSense));
-        }
-
-        PMentionMention = mentions;
-    }
-
     internal Rect PMentionPieceRead(int offset)
     {
         if (PMentionWindow is not LWindow window)
@@ -141,7 +123,8 @@ public sealed class PMention : TextBlock
                 continue;
             }
 
-            int unit = window.LWindowUnitRead(run.Text, offset - piece.CMentionPieceOffset);
+            int unit = window.LWindowAtelier.CAtelierMention.CMentionUnitRead(
+                run.Text, offset - piece.CMentionPieceOffset);
             TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
             if (!found.IsEmpty)
@@ -173,7 +156,8 @@ public sealed class PMention : TextBlock
             return;
         }
 
-        foreach (CMentionPiece piece in window.LWindowMentionDivide(text, PMentionMention ?? []))
+        foreach (CMentionPiece piece in window.LWindowAtelier.CAtelierMention.CMentionDivide(
+                     text, PMentionMention ?? []))
         {
             Run run = new(piece.CMentionPieceText) { Tag = piece };
 
@@ -211,7 +195,8 @@ public sealed class PMention : TextBlock
         }
 
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
-        return PMentionOffsetRead(piece.CMentionPieceOffset, window.LWindowOffsetRead(run.Text, unit));
+        return PMentionOffsetRead(
+            piece.CMentionPieceOffset, window.LWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
     }
 
     private static void PMentionStyleApply(Run run, bool? linked)

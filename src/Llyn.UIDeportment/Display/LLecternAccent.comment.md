@@ -4,7 +4,7 @@
 
 The reading view's accent deportment, standing between the veneer and [LDisplaySound](../../Llyn.Conduct/Display/LDisplaySound.comment.md).
 It draws the primary pronunciation and the accent rows.
-Flags come from `LEnsignImage`, and the respelling from `LRespellingMark`.
+Flags come from `LEnsignImage`, and the respelling mark from `CRespelling`.
 
 ## `public void LLecternAccentAttach(LWindow window, UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty tonal)`
 
@@ -20,10 +20,11 @@ Draws the shown draft's language, flag verdict and primary pronunciation, handed
 
 Collapses the pronunciation surface and its label column, and empties the accent rows.
 
-## `private void LLecternAccentShow(string language, bool flagged, LPronunciationDraft? primary)`
+## `private void LLecternAccentShow(`
 
-Writes the primary pronunciation in its brackets and sets the contour's tone.
-Rebuilds the accent rows, asking the pack once whether varieties draw as flags.
+Writes the primary pronunciation in the brackets `respelling` chose and sets the contour's tone.
+Rebuilds the accent rows from `accents`, which the caller read once with the mark.
+The pack was asked once whether varieties draw as flags.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
 
 ## `private void LLecternSurfaceShow(string text)`

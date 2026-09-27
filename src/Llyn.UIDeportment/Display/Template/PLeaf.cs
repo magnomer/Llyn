@@ -158,8 +158,7 @@ internal sealed class PLeaf
         }
 
         text.PMentionLanguage = example?.LExampleDraftLanguage ?? string.Empty;
-        text.PMentionMention = (IReadOnlyList<CMention>)new PMentionConverter().Convert(
-            example?.LExampleDraftMention, typeof(IReadOnlyList<CMention>), null, culture);
+        text.PMentionMention = CMention.CMentionMarkRead(example?.LExampleDraftMention);
         text.PMentionText = (string)PLeafFrame.Convert(parts, typeof(string), "Text", culture);
         if (frame is not null)
         {

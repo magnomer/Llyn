@@ -15,7 +15,6 @@ public partial class PEditor
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
     private readonly PNotationTemplate _pNotationTemplate;
     private bool _pNotationSearching;
-    private LRespellingMark _pNotationRespelling = LRespellingMark.LRespellingMarkPlain;
 
     private Popup PNotation => (Popup)FindName(nameof(PNotation));
 
@@ -127,17 +126,20 @@ public partial class PEditor
 
     private PNotationReading PNotationReadingCreate(CCandidate candidate)
     {
+        return PNotationReadingCreate(
+            candidate,
+            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
+                _lEditor.LEditorLanguage, _lEditor.LEditorNotation.LNotationSchemed));
+    }
+
+    private PNotationReading PNotationReadingCreate(CCandidate candidate, CRespellingMark respelling)
+    {
         string variety = candidate.CCandidateVariety;
         string phonetic = candidate.CCandidatePhonetic ?? string.Empty;
-        string text = _pNotationRespelling.LRespellingMarkResolve(phonetic, candidate.CCandidateRespelling);
-        string opener = _pNotationRespelling.LRespellingMarkOpener;
-        string closer = _pNotationRespelling.LRespellingMarkCloser;
-        if (_lEditor.LEditorNotation.LNotationSchemed)
-        {
-            text = phonetic;
-            opener = string.Empty;
-            closer = string.Empty;
-        }
+        string text = CRespelling.CRespellingResolve(
+            respelling, candidate.CCandidatePhonetic ?? string.Empty, candidate.CCandidateRespelling);
+        string opener = respelling.CRespellingMarkOpener;
+        string closer = respelling.CRespellingMarkCloser;
 
         if (!candidate.CCandidateRegional)
         {
@@ -173,8 +175,6 @@ public partial class PEditor
 
         try
         {
-            _pNotationRespelling = LRespellingMark.LRespellingMarkRead(
-                _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
             if (scheme.Length == 0)
             {
                 if (_lEditor.LEditorFlagged)

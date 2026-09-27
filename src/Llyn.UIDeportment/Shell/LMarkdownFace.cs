@@ -19,7 +19,7 @@ public static class LMarkdownFace
         ArgumentNullException.ThrowIfNull(window);
 
         target.Children.Clear();
-        IReadOnlyList<CMarkdownBlock> blocks = window.LWindowMarkdownParse(markdown);
+        IReadOnlyList<CMarkdownBlock> blocks = window.LWindowAtelier.CAtelierMarkdown.CMarkdownParse(markdown);
         int place = 0;
         foreach (CMarkdownBlock block in blocks)
         {

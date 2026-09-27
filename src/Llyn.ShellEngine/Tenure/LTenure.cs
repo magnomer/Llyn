@@ -136,6 +136,50 @@ public sealed partial class LTenure
         }
     }
 
+    public void LTenureHeadwordSet(string text)
+    {
+        LTenureRequestDefer(new LRequestHeadword(LTenureId, text));
+    }
+
+    public void LTenureNoteSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        LTenureRequestDefer(new LRequestNote(LTenureId, text.TrimEnd('\r', '\n')));
+    }
+
+    public void LTenureLanguageSet(string language)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+
+        if (language.Length > 0)
+        {
+            LTenureRequestApply(new LRequestLanguage(LTenureId, language));
+        }
+    }
+
+    public void LTenureSpeechSet(IReadOnlyList<LSpeechDraft> speeches, bool deferred)
+    {
+        LRequestSpeech request = new(LTenureId, speeches);
+        if (deferred)
+        {
+            LTenureRequestDefer(request);
+            return;
+        }
+
+        LTenureRequestApply(request);
+    }
+
+    public void LTenureIpaSet(string text)
+    {
+        LTenureRequestDefer(new LRequestIpa(LTenureId, text));
+    }
+
+    public void LTenureRespellingSet(string text)
+    {
+        LTenureRequestDefer(new LRequestRespelling(LTenureId, text));
+    }
+
     public LDraft? LTenureUndo()
     {
         return LTenureRestore(_lEngine.LEngineRequest.LEngineChronicleUndo);

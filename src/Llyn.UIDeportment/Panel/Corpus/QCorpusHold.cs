@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -8,7 +9,7 @@ internal sealed partial class QCorpus
 {
     private LDesk QTranscriptDesk => _lCorpus.LCorpusDesk;
 
-    private QQuill QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;
+    private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;
 
     private void QTranscriptDeskAttach()
     {

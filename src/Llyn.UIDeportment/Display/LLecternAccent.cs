@@ -87,7 +87,10 @@ public sealed class LLecternAccent
         LLecternAccentShow(
             _lLecternAccentDisplay.LDisplayShown!.LEntryDraftLanguage,
             _lLecternAccentDisplay.LDisplayFlaggedCheck(),
-            _lLecternAccentDisplay.LDisplayShown!.LEntryDraftPronunciation);
+            _lLecternAccentDisplay.LDisplayShown!.LEntryDraftPronunciation,
+            _lLecternAccentWindow.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
+                _lLecternAccentDisplay.LDisplayShown!.LEntryDraftLanguage),
+            LSounding.LSoundingPronunciationRead(_lLecternAccentDisplay.LDisplayAccentRead()));
     }
 
     public void LLecternAccentClear()
@@ -98,20 +101,22 @@ public sealed class LLecternAccent
         LLecternPrimaryShow();
     }
 
-    private void LLecternAccentShow(string language, bool flagged, LPronunciationDraft? primary)
+    private void LLecternAccentShow(
+        string language,
+        bool flagged,
+        LPronunciationDraft? primary,
+        CRespellingMark respelling,
+        IReadOnlyList<CPronunciationDraft> accents)
     {
-        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_lLecternAccentWindow, language);
-
-        _lLecternAccentOpener.Text = respelling.LRespellingMarkOpener;
-        _lLecternAccentCloser.Text = respelling.LRespellingMarkCloser;
+        _lLecternAccentOpener.Text = respelling.CRespellingMarkOpener;
+        _lLecternAccentCloser.Text = respelling.CRespellingMarkCloser;
         _lLecternAccentContour.SetValue(_lLecternAccentTonal, _lLecternAccentDisplay.LDisplayTonalCheck());
         LLecternSurfaceShow(primary is null
             ? string.Empty
-            : respelling.LRespellingMarkResolve(LSounding.LSoundingPronunciationRead(primary)));
+            : CRespelling.CRespellingResolve(respelling, LSounding.LSoundingPronunciationRead(primary)));
 
         _lLecternAccentRow.Clear();
-        foreach (CPronunciationDraft spoken in LSounding.LSoundingPronunciationRead(
-            _lLecternAccentDisplay.LDisplayAccentRead()))
+        foreach (CPronunciationDraft spoken in accents)
         {
             _lLecternAccentRow.Add(LAccentItem.LAccentItemCreate(language, flagged, spoken, respelling));
         }

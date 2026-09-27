@@ -228,11 +228,18 @@ public partial class PEditor
 
     private LReflexItem PReflexUpdate(LReflexItem row, CReflexDraft reflex)
     {
+        return PReflexUpdate(
+            row,
+            reflex,
+            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingReflexRead(
+                reflex.CReflexDraftLanguage.Trim()));
+    }
+
+    private LReflexItem PReflexUpdate(LReflexItem row, CReflexDraft reflex, CRespellingMark respelling)
+    {
         string language = reflex.CReflexDraftLanguage.Trim();
-        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_pEditorHost.PWindowDeportment, language);
         if (!row.LReflexItemMatch(
-            respelling.LRespellingMarkShown,
-            _pEditorHost.PWindowDeportment.LWindowPhonemicCheck(language),
+            respelling,
             _pReflexFolded.Contains(language),
             reflex.CReflexDraftAnchors))
         {

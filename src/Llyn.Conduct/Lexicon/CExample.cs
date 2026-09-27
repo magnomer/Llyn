@@ -8,4 +8,4 @@ public sealed record CExample(
     long? CExampleSource,
     IReadOnlyList<CGlossDraft> CExampleGloss,
     IReadOnlyList<CMentionDraft> CExampleMention,
-    IReadOnlyList<CMention> CExampleExcerpt);
+    IReadOnlyList<CMentionMark> CExampleExcerpt);

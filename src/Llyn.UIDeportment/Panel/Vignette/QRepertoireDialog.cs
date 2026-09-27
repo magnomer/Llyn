@@ -60,7 +60,7 @@ internal sealed partial class QRepertoire
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PImage row } box)
         {
-            QScenarioDesk.LDeskEasel.QEaselImageSet(row.PImageId, box.Text, true);
+            QScenarioDesk.LDeskEasel?.LEaselImageSet(row.PImageId, box.Text, true);
         }
     }
 
@@ -68,7 +68,7 @@ internal sealed partial class QRepertoire
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
         {
-            QScenarioDesk.LDeskEasel.QEaselVideoSet(row.PVideoId, box.Text, true);
+            QScenarioDesk.LDeskEasel?.LEaselVideoSet(row.PVideoId, box.Text, true);
         }
     }
 
@@ -76,7 +76,7 @@ internal sealed partial class QRepertoire
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
         {
-            QScenarioDesk.LDeskEasel.QEaselSpanSet(row.PVideoId, box.Text);
+            QScenarioDesk.LDeskEasel?.LEaselSpanSet(row.PVideoId, box.Text);
         }
     }
 
@@ -129,19 +129,19 @@ internal sealed partial class QRepertoire
 
     private void QImageAddHandle(object sender, RoutedEventArgs e)
     {
-        QScenarioDesk.LDeskEasel.QEaselImageAdd(0, _qScenarioImage.Count);
+        QScenarioDesk.LDeskEasel?.LEaselImageAdd(0, _qScenarioImage.Count);
     }
 
     private void QVideoAddHandle(object sender, RoutedEventArgs e)
     {
-        QScenarioDesk.LDeskEasel.QEaselVideoAdd(0, _qScenarioVideo.Count);
+        QScenarioDesk.LDeskEasel?.LEaselVideoAdd(0, _qScenarioVideo.Count);
     }
 
     public void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
-            QScenarioDesk.LDeskEasel.QEaselImageRemove(0, row.PImageId);
+            QScenarioDesk.LDeskEasel?.LEaselImageRemove(0, row.PImageId);
         }
     }
 
@@ -149,7 +149,7 @@ internal sealed partial class QRepertoire
     {
         if (sender is FrameworkElement { DataContext: PVideo row })
         {
-            QScenarioDesk.LDeskEasel.QEaselVideoRemove(0, row.PVideoId);
+            QScenarioDesk.LDeskEasel?.LEaselVideoRemove(0, row.PVideoId);
         }
     }
 
@@ -168,7 +168,7 @@ internal sealed partial class QRepertoire
             return;
         }
 
-        QScenarioDesk.LDeskEasel.QEaselImageSet(image, chosen, false);
+        QScenarioDesk.LDeskEasel?.LEaselImageSet(image, chosen, false);
     }
 
     public void PVideoOpenHandle(object sender, RoutedEventArgs e)
@@ -186,6 +186,6 @@ internal sealed partial class QRepertoire
             return;
         }
 
-        QScenarioDesk.LDeskEasel.QEaselVideoSet(video, chosen, false);
+        QScenarioDesk.LDeskEasel?.LEaselVideoSet(video, chosen, false);
     }
 }

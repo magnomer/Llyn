@@ -127,7 +127,7 @@ internal sealed partial class QCorpus
     private void QCitationSet(long reference)
     {
         _qDrawer.QDrawerHide();
-        QTranscriptQuill.QQuillCitationSet(reference);
+        QTranscriptQuill?.LQuillReferenceSet(reference);
         QCitationUpdate();
     }
 

@@ -370,9 +370,6 @@ internal static class TInterfaceDeportment
     internal static LWindow TWindowCreate(LSettingsPort settings) =>
         TWindowCreate(TEngineFake.TEngineStubCreate<LDraftPort>(), settings);
 
-    internal static LWindow TWindowCreate(LDraftPort drafts) =>
-        TWindowCreate(drafts, TEngineFake.TEngineStubCreate<LSettingsPort>());
-
     internal static LWindow TWindowCreate(LDraftPort drafts, LSettingsPort settings) =>
         new(new CAtelier(
             new LPosture(TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild())),
@@ -399,12 +396,6 @@ internal static class TInterfaceDeportment
     internal static CFont TSoundingFontRead(LFont font) => LSounding.LSoundingFontRead(font);
 
     internal static CSettings TWorkspaceSettingsRead(LSettings settings) => QWorkspace.QWorkspaceSettingsRead(settings);
-
-    internal static CMarkdownBlock TWindowMarkdownRead(LMarkdownBlock block) => LWindow.LWindowMarkdownRead(block);
-
-    internal static IReadOnlyList<CMentionPiece> TWindowMentionDivide(
-        this LWindow window, string text, IReadOnlyList<CMention> mentions) =>
-        window.LWindowMentionDivide(text, mentions);
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
     {

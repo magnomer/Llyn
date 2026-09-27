@@ -268,7 +268,7 @@ public sealed class LLecternCard
         string text,
         string language,
         int offset,
-        IReadOnlyList<CMention>? mentions,
+        IReadOnlyList<CMentionMark>? mentions,
         Action<LLecternAnchor, CMentionResult> show)
     {
         ArgumentNullException.ThrowIfNull(show);
@@ -278,7 +278,7 @@ public sealed class LLecternCard
             text,
             language,
             offset,
-            mentions is null ? null : LWindow.LWindowMentionRead(mentions),
+            mentions is null ? null : CMention.CMentionRead(mentions),
             LLecternMentionShow);
 
         void LLecternMentionShow(LLecternAnchor shown, LMentionResult result)

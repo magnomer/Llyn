@@ -66,6 +66,6 @@ Maps what a click on a text found to its shape.
 The excerpt and the lectern both hand the window this shape, so the lectern calls it too.
 It sits here since `LCard` would become a Large type and `LWindow` has no room.
 
-## `private static CMention? LAnthologyMentionRead(LMention? mention)`
+## `private static CMentionMark? LAnthologyMentionRead(LMention? mention)`
 
 Maps the stored Mention under the click, and none to none.

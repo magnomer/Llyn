@@ -11,3 +11,9 @@ Each relay is transparent and carries no test logic of its own.
 
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
+
+## `internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)`
+
+Builds an atelier whose draft, entry and phonology ports answer from `answers`, for the text gates.
+The settings and portrait ports are outlets on `engine`, and the player is a stub.
+It adds the leftover sweep, so disposing the atelier needs no answer from the test.

@@ -44,7 +44,7 @@ The held draft was read again, so the name field shows its name.
 
 ## `private void QAutographNameHandle(object sender, TextChangedEventArgs e)`
 
-Every keystroke hands the name to the desk's `QQuill`, which defers it as the old raw request did.
+Every keystroke hands the name to the desk's `LQuill`, which defers it.
 
 ## `private void QAutographUnionHandle(object sender, TextChangedEventArgs e)`
 

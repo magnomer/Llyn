@@ -101,11 +101,11 @@ The primary reading as the field shows it, respelled when the pack respells and 
 
 ## `public void LEditorPronunciationSet(string text)`
 
-Defers the typed reading as a respelling or as a phonetic one, whichever the pack shows.
+Hands the typed reading to the tenure as a respelling or as a phonetic one, whichever the pack shows.
 
 ## `public void LEditorNoteSet(string text)`
 
-Defers the note without the trailing line breaks the box carries.
+Hands the typed note to the tenure, which trims it.
 
 ## `public void LEditorSave()`
 
@@ -133,6 +133,11 @@ Passes a sound sheet refusal on under the editor's own notice, so the window lis
 
 The held entry as the tenure reads it, without persisting a deferred edit.
 The draft, pronunciation and etymon reads share it, so the tenure is named once.
+
+## `internal LTenure? LEditorTenure`
+
+The held tenure for a field edit, or null while none is held or the desk fills its controls.
+The editor's surfaces edit through it, so no surface builds a request.
 
 ## `public IReadOnlyList<CTranslationTarget> LEditorEtymonRead()`
 

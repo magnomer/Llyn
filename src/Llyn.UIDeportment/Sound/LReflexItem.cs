@@ -13,6 +13,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     private const string LReflexAnchorSeparator = " · ";
 
     private readonly LWindow _lReflexItemWindow;
+    private readonly CRespellingMark _lReflexItemRespelling;
     private string _lReflexItemLanguage;
     private string _lReflexItemKind;
     private string _lReflexItemText;
@@ -36,13 +37,18 @@ public sealed class LReflexItem : INotifyPropertyChanged
         string meaning,
         string note,
         bool main,
-        bool respelled,
+        CRespellingMark respelling,
         string region,
-        bool phonemic,
         bool folded,
         IReadOnlyList<long> anchors)
     {
+        ArgumentNullException.ThrowIfNull(respelling);
+
         _lReflexItemWindow = window;
+        _lReflexItemRespelling = respelling;
+        LReflexItemRespelled = respelling.CRespellingMarkShown;
+        LReflexItemOpener = respelling.CRespellingMarkOpener;
+        LReflexItemCloser = respelling.CRespellingMarkCloser;
         LReflexItemAnchors = anchors;
         LReflexItemId = id;
         _lReflexItemLanguage = language;
@@ -53,8 +59,6 @@ public sealed class LReflexItem : INotifyPropertyChanged
         _lReflexItemNote = note;
         _lReflexItemRegion = region;
         _lReflexItemMain = main;
-        LReflexItemRespelled = respelled;
-        LReflexItemPhonemic = phonemic;
         LReflexItemFolded = folded;
         _lReflexItemHidden = folded;
     }
@@ -65,23 +69,20 @@ public sealed class LReflexItem : INotifyPropertyChanged
 
     public bool LReflexItemRespelled { get; }
 
-    public bool LReflexItemMatch(bool respelled, bool phonemic, bool folded, IReadOnlyList<long> anchors)
+    public bool LReflexItemMatch(CRespellingMark respelling, bool folded, IReadOnlyList<long> anchors)
     {
-        return LReflexItemRespelled == respelled
-            && LReflexItemPhonemic == phonemic
+        return _lReflexItemRespelling == respelling
             && LReflexItemFolded == folded
             && _lReflexItemWindow.LWindowAnchorMatch(LReflexItemAnchors, anchors);
     }
-
-    public bool LReflexItemPhonemic { get; }
 
     public bool LReflexItemFolded { get; }
 
     public string LReflexItemTone { get; set; } = string.Empty;
 
-    public string LReflexItemOpener => LReflexItemPhonemic ? "/" : string.Empty;
+    public string LReflexItemOpener { get; }
 
-    public string LReflexItemCloser => LReflexItemPhonemic ? "/" : string.Empty;
+    public string LReflexItemCloser { get; }
 
     public string LReflexItemLanguage
     {
@@ -333,7 +334,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     }
 
     public static LReflexItem LReflexItemCreate(
-        LWindow window, CReflexDraft draft, LRespellingMark respelling, bool phonemic, bool folded)
+        LWindow window, CReflexDraft draft, CRespellingMark respelling, bool folded)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(draft);
@@ -349,9 +350,8 @@ public sealed class LReflexItem : INotifyPropertyChanged
             draft.CReflexDraftMeaning,
             draft.CReflexDraftNote,
             draft.CReflexDraftMain,
-            respelling.LRespellingMarkShown,
+            respelling,
             draft.CReflexDraftRegion,
-            phonemic,
             folded,
             draft.CReflexDraftAnchors)
         {
@@ -388,17 +388,16 @@ public sealed class LReflexItem : INotifyPropertyChanged
         return LReflexItemCreate(
             window,
             reflex,
-            LRespellingMark.LRespellingMarkRead(window, language),
-            window.LWindowPhonemicCheck(language),
+            window.LWindowAtelier.CAtelierRespelling.CRespellingReflexRead(language),
             folded.Contains(language));
     }
 
-    public static string LReflexTextRead(CReflexDraft draft, LRespellingMark respelling)
+    public static string LReflexTextRead(CReflexDraft draft, CRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(respelling);
 
-        return respelling.LRespellingMarkResolve(draft.CReflexDraftText, draft.CReflexDraftRespelling);
+        return CRespelling.CRespellingResolve(respelling, draft.CReflexDraftText, draft.CReflexDraftRespelling);
     }
 
     public static string LReflexLabelFormat(string name)

@@ -19,12 +19,8 @@ The tally counts the Example the anthology has chosen.
 
 Writes the sentence at the head of the page, as a situation's title stands at the head of its page.
 A never-written sentence reads the unwritten text in the muted colour, because the head of the page cannot be empty.
-Its Mentions reach the mention text as Deportment's own rows, so the control is fed no Conduct shape.
+Its Mentions reach the mention text as they are stored.
 The controller's map leaves them out unless the text reads soundly, so the excerpt takes them as they come.
-
-## `private static List<PMentionMark> QExcerptMarkRead(IReadOnlyList<CMention> mentions)`
-
-Copies each stored Mention into a mark row, field for field.
 
 ## `private void QExcerptCitationShow(long? value)`
 

@@ -241,7 +241,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PEditorSpeechSend()
     {
-        PEditorRequestSend(new LRequestSpeech(PEditorDraft, PMarkerRead()));
+        _lEditor.LEditorTenure?.LTenureSpeechSet(PMarkerRead(), false);
     }
 
     private void PEditorObserverAttach(LDesk desk)

@@ -29,14 +29,11 @@ It is read from the switch and the row's own language.
 So a Korean row stays plain while a Mandarin row is respelled.
 A change of that state rebuilds the row.
 
-## `public bool LReflexItemMatch(bool respelled, bool phonemic, bool folded, IReadOnlyList<long> anchors)`
+## `public bool LReflexItemMatch(CRespellingMark respelling, bool folded, IReadOnlyList<long> anchors)`
 
-Whether the row was built under these three pack facts and these anchors, as the engine compares them.
+Whether the row was built under this respelling mark, this fold and these anchors.
+The anchors are compared as the engine compares them.
 A changed pack or anchor set rebuilds the row rather than patching it.
-
-## `public bool LReflexItemPhonemic { get; }`
-
-Whether the row's language is phonemic, fixed when the row is built, so its reading is drawn between slashes.
 
 ## `public bool LReflexItemFolded { get; }`
 
@@ -49,11 +46,11 @@ The anchor dropdown reads it to estimate which placements the reading descends f
 
 ## `public string LReflexItemOpener`
 
-The slash drawn before the reading of a phonemic language, or nothing.
+The opener `CRespelling` chose for the row's language, fixed when the row is built.
 
 ## `public string LReflexItemCloser`
 
-The slash drawn after the reading of a phonemic language, or nothing.
+The closer `CRespelling` chose for the row's language, fixed when the row is built.
 
 ## `public string LReflexItemText`
 
@@ -126,7 +123,7 @@ The localized kind, or nothing when the row has none.
 ## `public static LReflexItem LReflexItemCreate(`
 
 Builds the row for one draft reflex, printing the form `respelling` picks for the row's language.
-`phonemic` decides the slashes and `folded` whether the row starts hidden.
+The mark also carries the slashes, and `folded` decides whether the row starts hidden.
 
 ## `public static List<LReflexItem> LReflexItemScan(LWindow window, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)`
 
@@ -135,13 +132,13 @@ The reading view hands its reflexes in whole, so it never walks a draft itself.
 
 ## `public static LReflexItem LReflexItemCreate(LWindow window, CReflexDraft reflex, HashSet<string> folded)`
 
-A row for one draft reflex, asking the engine for its language's respelling state and phonemic flag.
+A row for one draft reflex, asking `CRespelling` for its language's reflex mark.
 The row is folded when its language is in `folded`.
 Shared by the reading view and the editor, whose rows are built by the same rule.
 
-## `public static string LReflexTextRead(CReflexDraft draft, LRespellingMark respelling)`
+## `public static string LReflexTextRead(CReflexDraft draft, CRespellingMark respelling)`
 
-The form of one draft reflex to print, its respelling while shown and filled and its reading otherwise.
+The form of one draft reflex to print, as `CRespelling` resolves it under the row's mark.
 
 ## `public static string LReflexLabelFormat(string name)`
 

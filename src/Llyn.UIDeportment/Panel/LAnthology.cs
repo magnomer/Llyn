@@ -192,13 +192,13 @@ public sealed class LAnthology
             LCard.LCardTargetRead(result.LMentionResultEntry));
     }
 
-    private static CMention? LAnthologyMentionRead(LMention? mention)
+    private static CMentionMark? LAnthologyMentionRead(LMention? mention)
     {
-        return mention is null ? null : LWindow.LWindowMentionRead([mention])[0];
+        return mention is null ? null : CMention.CMentionRead([mention])[0];
     }
 
-    private static IReadOnlyList<CMention> LAnthologyExcerptRead(bool sound, IReadOnlyList<LMention> mentions)
+    private static IReadOnlyList<CMentionMark> LAnthologyExcerptRead(bool sound, IReadOnlyList<LMention> mentions)
     {
-        return sound ? LWindow.LWindowMentionRead(mentions) : [];
+        return sound ? CMention.CMentionRead(mentions) : [];
     }
 }

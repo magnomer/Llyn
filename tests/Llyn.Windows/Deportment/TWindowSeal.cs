@@ -40,17 +40,4 @@ public sealed class TWindowSeal
         Assert.False(settings.CSettingsEpithet);
         Assert.Equal(2, settings.CSettingsOnline);
     }
-
-    [Fact]
-    public void WindowMarkdownRead_ListItem_CarriesTheEngineVerdicts()
-    {
-        IReadOnlyList<LMarkdownBlock> blocks = TInterface.TMarkdownParse("- **bold** item");
-
-        CMarkdownBlock block = TInterfaceDeportment.TWindowMarkdownRead(Assert.Single(blocks));
-
-        Assert.True(block.CMarkdownBlockListed);
-        Assert.False(block.CMarkdownBlockHeaded);
-        Assert.Equal("bold", block.CMarkdownBlockSpan[0].CMarkdownSpanText);
-        Assert.True(block.CMarkdownBlockSpan[0].CMarkdownSpanBold);
-    }
 }

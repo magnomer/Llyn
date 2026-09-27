@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -51,4 +52,34 @@ internal static partial class TInterface
 
     internal static long? TTenureFinish(this LTenure tenure, bool store) =>
         tenure.LTenureFinish(store, static () => false);
+
+    internal static void TTenureHeadwordSet(this LTenure tenure, string text)
+    {
+        tenure.LTenureHeadwordSet(text);
+    }
+
+    internal static void TTenureNoteSet(this LTenure tenure, string text)
+    {
+        tenure.LTenureNoteSet(text);
+    }
+
+    internal static void TTenureLanguageSet(this LTenure tenure, string language)
+    {
+        tenure.LTenureLanguageSet(language);
+    }
+
+    internal static void TTenureSpeechSet(this LTenure tenure, IReadOnlyList<LSpeechDraft> speeches, bool deferred)
+    {
+        tenure.LTenureSpeechSet(speeches, deferred);
+    }
+
+    internal static void TTenureIpaSet(this LTenure tenure, string text)
+    {
+        tenure.LTenureIpaSet(text);
+    }
+
+    internal static void TTenureRespellingSet(this LTenure tenure, string text)
+    {
+        tenure.LTenureRespellingSet(text);
+    }
 }

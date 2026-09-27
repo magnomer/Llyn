@@ -16,7 +16,7 @@ internal sealed class PMentionLine
         ArgumentNullException.ThrowIfNull(mentions);
 
         List<PMentionChip> wanted = new(mentions.Count);
-        foreach (CMentionLabel label in window.LWindowMentionResolve(text, mentions, silent))
+        foreach (CMentionLabel label in window.LWindowAtelier.CAtelierMention.CMentionResolve(text, mentions, silent))
         {
             wanted.Add(new PMentionChip(
                 label.CMentionLabelId, label.CMentionLabelWord, label.CMentionLabelName, label.CMentionLabelSense));

@@ -26,7 +26,7 @@ public sealed class TAnthologySeal
         Assert.Equal("a cat", held.CExampleText.CStateValueText);
         Assert.Equal(9, held.CExampleSource);
         Assert.Equal([40L], held.CExampleMention.Select(mention => mention.CMentionDraftEntry));
-        Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionEntry));
+        Assert.Equal([40L], held.CExampleExcerpt.Select(mention => mention.CMentionMarkEntry));
     }
 
     [Fact]
@@ -51,8 +51,8 @@ public sealed class TAnthologySeal
         CMentionResult held = TInterfaceGate.TAnthologyMentionRead(2, TInterface.TMentionCreate(1, 2, 3, 40, 7));
 
         Assert.Equal(2, held.CMentionResultOffset);
-        Assert.Equal(40, held.CMentionResultStored?.CMentionEntry);
-        Assert.Equal(7, held.CMentionResultStored?.CMentionSense);
+        Assert.Equal(40, held.CMentionResultStored?.CMentionMarkEntry);
+        Assert.Equal(7, held.CMentionResultStored?.CMentionMarkSense);
         Assert.False(held.CMentionResultSingle);
         Assert.Equal(0, held.CMentionResultFirst);
     }

@@ -15,7 +15,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
     private string _lAccentItemAudio;
 
     public LAccentItem(
-        long id, string variety, string name, ImageSource? flag, string text, string audio, LRespellingMark respelling)
+        long id, string variety, string name, ImageSource? flag, string text, string audio, CRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(respelling);
 
@@ -25,8 +25,9 @@ public sealed class LAccentItem : INotifyPropertyChanged
         _lAccentItemFlag = flag;
         _lAccentItemText = text;
         _lAccentItemAudio = audio;
-        LAccentItemOpener = respelling.LRespellingMarkOpener;
-        LAccentItemCloser = respelling.LRespellingMarkCloser;
+        LAccentItemRespelled = respelling.CRespellingMarkShown;
+        LAccentItemOpener = respelling.CRespellingMarkOpener;
+        LAccentItemCloser = respelling.CRespellingMarkCloser;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -52,6 +53,8 @@ public sealed class LAccentItem : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LAccentItemLabel)));
         }
     }
+
+    public bool LAccentItemRespelled { get; }
 
     public string LAccentItemOpener { get; }
 
@@ -149,7 +152,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
         string language,
         bool flagged,
         CPronunciationDraft spoken,
-        LRespellingMark respelling)
+        CRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(spoken);
         ArgumentNullException.ThrowIfNull(respelling);
@@ -160,7 +163,7 @@ public sealed class LAccentItem : INotifyPropertyChanged
             variety,
             LAccentLabelFormat(variety),
             LAccentFlagFind(language, flagged, variety),
-            respelling.LRespellingMarkResolve(spoken),
+            CRespelling.CRespellingResolve(respelling, spoken),
             spoken.CPronunciationDraftAudio,
             respelling);
     }

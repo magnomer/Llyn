@@ -18,6 +18,10 @@ public sealed class LDesk
 
     private LTenure? _lDeskTenure;
 
+    private LQuill? _lDeskQuill;
+
+    private LEasel? _lDeskEasel;
+
     private bool _lDeskFilling;
 
     private bool _lDeskHalted;
@@ -31,8 +35,6 @@ public sealed class LDesk
         _lDraftPort = drafts;
         _lDeskScope = scope;
         _lDeskUnreadableSeam = unreadableSeam;
-        LDeskQuill = new QQuill(this);
-        LDeskEasel = new QEasel(this);
         LDeskErrand = new QErrand(this);
         LDeskVigil = new QVigil(this);
     }
@@ -51,9 +53,9 @@ public sealed class LDesk
 
     public event Action<string>? LDeskRefused;
 
-    public QQuill LDeskQuill { get; }
+    internal LQuill? LDeskQuill => LDeskFilling ? null : _lDeskQuill;
 
-    public QEasel LDeskEasel { get; }
+    internal LEasel? LDeskEasel => LDeskFilling ? null : _lDeskEasel;
 
     internal QErrand LDeskErrand { get; }
 
@@ -114,6 +116,8 @@ public sealed class LDesk
         {
             LTenure started = start();
             _lDeskTenure = started;
+            _lDeskQuill = new LQuill(started);
+            _lDeskEasel = new LEasel(started);
             _lDeskHalted = false;
             LDeskVigil.QVigilApply(started);
             LDeskStarted?.Invoke();
@@ -320,6 +324,8 @@ public sealed class LDesk
         }
 
         _lDeskTenure = null;
+        _lDeskQuill = null;
+        _lDeskEasel = null;
         LDeskStateChanged?.Invoke();
         if (kept is long id)
         {
@@ -342,6 +348,8 @@ public sealed class LDesk
         }
 
         _lDeskTenure = null;
+        _lDeskQuill = null;
+        _lDeskEasel = null;
         held.LTenureCancel();
         LDeskStateChanged?.Invoke();
     }

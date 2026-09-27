@@ -49,7 +49,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptQuill.QQuillGlossChange(0, 0, gloss.PGlossId, CGlossField.CGlossFieldText, box.Text);
+        QTranscriptQuill?.LQuillGlossSet(0, 0, gloss.PGlossId, null, box.Text);
     }
 
     private void QGlossSpeakerHandle(object sender, SelectionChangedEventArgs e)
@@ -59,7 +59,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptQuill.QQuillGlossChange(0, 0, gloss.PGlossId, CGlossField.CGlossFieldLanguage, language);
+        QTranscriptQuill?.LQuillGlossSet(0, 0, gloss.PGlossId, language, null);
     }
 
     private void QGlossAddHandle(object sender, RoutedEventArgs e)
@@ -68,7 +68,7 @@ internal sealed partial class QCorpus
             ? _qTranscriptGloss.IndexOf(row) + 1
             : _qTranscriptGloss.Count;
 
-        QTranscriptQuill.QQuillGlossAdd(
+        QTranscriptQuill?.LQuillGlossAdd(
             0, 0, _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceGlossRead(), position);
     }
 
@@ -76,7 +76,7 @@ internal sealed partial class QCorpus
     {
         if (QSender.QSenderItemRead<PGloss>(sender) is PGloss gloss)
         {
-            QTranscriptQuill.QQuillGlossRemove(0, 0, gloss.PGlossId);
+            QTranscriptQuill?.LQuillGlossRemove(0, 0, gloss.PGlossId);
         }
     }
 
@@ -139,7 +139,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptQuill.QQuillGlossAdd(
+        QTranscriptQuill?.LQuillGlossAdd(
             0, 0, _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceGlossRead(), 0);
 
         QTranscriptGlossLine.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>

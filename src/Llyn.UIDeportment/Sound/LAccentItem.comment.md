@@ -18,6 +18,11 @@ Blank is what collapses the label, so a row never shows both.
 The variety's flag, or null while none is known.
 Setting it also announces the label, since the label yields to it.
 
+## `public bool LAccentItemRespelled { get; }`
+
+Whether the text is the row's respelling, fixed when the row is built.
+A typed change then becomes a respelling request rather than a reading request.
+
 ## `public string LAccentItemOpener`
 
 The bracket drawn before the text, fixed when the row is built.

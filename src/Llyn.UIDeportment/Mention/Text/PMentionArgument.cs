@@ -20,5 +20,5 @@ public sealed class PMentionArgument : RoutedEventArgs
 
     public string PMentionArgumentLanguage => PMentionArgumentOrigin.PMentionLanguage;
 
-    public IReadOnlyList<CMention>? PMentionArgumentMention => PMentionArgumentOrigin.PMentionMention;
+    public IReadOnlyList<CMentionMark>? PMentionArgumentMention => PMentionArgumentOrigin.PMentionMention;
 }

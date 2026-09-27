@@ -37,7 +37,7 @@ internal sealed partial class QCorpus
 
     private Action<long> QTranscriptLinkRead(int offset, int length)
     {
-        return entry => QTranscriptQuill.QQuillMentionAdd(0, 0, offset, length, entry);
+        return entry => QTranscriptQuill?.LQuillMentionAdd(0, 0, offset, length, entry);
     }
 
     private void QTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)
@@ -62,7 +62,7 @@ internal sealed partial class QCorpus
 
     private Action<long> QTranscriptSenseRead(long mention)
     {
-        return sense => QTranscriptQuill.QQuillMentionChange(0, 0, mention, sense);
+        return sense => QTranscriptQuill?.LQuillMentionSet(0, 0, mention, sense);
     }
 
     private void QTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)
@@ -82,7 +82,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptQuill.QQuillMentionAdd(
+        QTranscriptQuill?.LQuillMentionAdd(
             0, 0, selection.PMentionSelectionOffset, selection.PMentionSelectionLength, 0);
     }
 
@@ -100,13 +100,14 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptQuill.QQuillMentionRemove(0, 0, id);
+        QTranscriptQuill?.LQuillMentionRemove(0, 0, id);
     }
 
     private void QTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && _qCorpusHost.PWindowDeportment.LWindowSpanCheck(box.Text, box.SelectionStart, box.SelectionLength);
+            && _qCorpusHost.PWindowDeportment.LWindowAtelier.CAtelierMention.CMentionSpanCheck(
+                box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void QTranscriptSenseCheck(object sender, CanExecuteRoutedEventArgs e)

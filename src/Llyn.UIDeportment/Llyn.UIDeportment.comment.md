@@ -78,25 +78,25 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - An item model takes the chosen mark as a constructor parameter, so the mark has one kind of writer.
 - A template dictionary whose class only forwarded clicks dissolves into the page's merged dictionaries.
   The driver subscribes its own handlers on each realized part, as `QCorpus` does for the transcript.
-- A control fed a Conduct list takes Deportment rows instead, as the excerpt hands `PMention` its `PMentionMark` rows.
+- A control is fed the C record a gate returns, with no Deportment copy of it.
+  The excerpt hands `PMention` its `CMentionMark` rows as Conduct stored them.
 - A rule a controller would compute over engine rows sinks below Deportment.
   `CCitationRow.CCitationRowFind` splits the citation rows in Conduct, and `LEngineGlossRead` picks the gloss language in the engine.
 
 ## Gate holders
 
-A panel's edit requests become gates, held by the desk the draft sits on.
+A panel's edit requests are built in ShellEngine, over the tenure the desk holds.
 
-- `QQuill` gates text rows and `QEasel` images and videos.
-  `QQuill` also takes the Author name the guild types, through `QQuillAuthorSet`.
-  It also gates the corpus Example's text, language, citation, Gloss rows and Mentions.
-- A gate that changes one of several fields takes a Conduct field enum and branches with a `switch`.
-  `QChord` joins them for sound rows in job23.
-- `LDesk` builds each over itself and exposes it, as `LDeskQuill` and `LDeskEasel`.
-- They take `Q` while they live here, and become `C` in job44, once they sink into Conduct.
-- A gate takes ids, .NET values and Conduct shapes, and names no engine type in its public members.
-- It reads the draft from its desk without a flush, and builds the request and each written state inside.
+- `LQuill` builds text rows and `LEasel` images and videos, one member per field.
+  `LQuill` also takes the Author name the guild types, through `LQuillAuthorSet`.
+  It also builds the corpus Example's text, language, citation, Gloss rows and Mentions.
+- Which member runs for a field is the caller's decision.
+- `LDesk` builds both when a tenure starts and exposes them as `LDeskQuill` and `LDeskEasel`.
+  Each is null while no tenure is held or while the desk fills its controls.
+- A member takes ids and .NET values, and names no engine type in its parameters.
+- It reads the draft from its tenure without a flush, and builds the request and each written state inside.
 - It defers when the request it replaced was deferred, and sends otherwise.
-- A driver hands a gate its input and never builds a request.
+- A driver hands a member its input and never builds a request.
 - A driver over a veneer page answers the undo and redo keys through `QChronicle.QChronicleAttach`.
 - A row's buttons each subscribe to their own gate, as `QImprint` does for the four credit handles.
   No handler reads an action from a part's name.

@@ -18,7 +18,7 @@ public partial class PEditor
     private string _pAccentLanguage = string.Empty;
     private bool _pAccentFlagged;
     private string _pAccentPrimary = string.Empty;
-    private LRespellingMark _pAccentRespelling = LRespellingMark.LRespellingMarkPlain;
+    private CRespellingMark? _pAccentRespelling;
 
     private ItemsControl PAccent => (ItemsControl)FindName(nameof(PAccent));
 
@@ -46,7 +46,7 @@ public partial class PEditor
 
     private LRequest PAccentRequestCreate(LAccentItem row)
     {
-        return _pAccentRespelling.LRespellingMarkShown
+        return row.LAccentItemRespelled
             ? new LRequestPronunciationRespelling(PEditorDraft, row.LAccentItemId, row.LAccentItemText)
             : new LRequestPronunciationIpa(PEditorDraft, row.LAccentItemId, row.LAccentItemText);
     }
@@ -132,7 +132,8 @@ public partial class PEditor
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.CEntryDraftPronunciation?.CPronunciationDraftVariety ?? string.Empty;
-        LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_pEditorHost.PWindowDeportment, language);
+        CRespellingMark respelling =
+            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(language);
         if (respelling != _pAccentRespelling)
         {
             _pAccentRespelling = respelling;
@@ -154,7 +155,7 @@ public partial class PEditor
     private LAccentItem PAccentCreate(CPronunciationDraft spoken)
     {
         LAccentItem row = LAccentItem.LAccentItemCreate(
-            _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling);
+            _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling!);
         row.PropertyChanged += PAccentChangeHandle;
         return row;
     }
@@ -167,7 +168,7 @@ public partial class PEditor
             return PAccentCreate(spoken);
         }
 
-        row.LAccentItemText = _pAccentRespelling.LRespellingMarkResolve(spoken);
+        row.LAccentItemText = CRespelling.CRespellingResolve(_pAccentRespelling!, spoken);
 
         row.LAccentItemAudio = spoken.CPronunciationDraftAudio;
         return row;

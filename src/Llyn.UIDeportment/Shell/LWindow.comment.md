@@ -6,14 +6,13 @@ The deportment of the main window, shared by every panel through the window.
 It stands over Conduct's atelier, `CAtelier`, whose gates are the session's medium-free actions.
 It also builds `QPosture`, which keeps the GUI-only state through Deportment's Capsule.
 It forwards the engine facts a panel needs that belong to no one panel.
-Those are fonts, the respelling switches, the reflex rules and the pack facts the editor rows ask.
-It hands the veneer the pure text facts too: mention pieces, unit and offset conversion, anchors and markdown blocks.
+Those are fonts, the reflex rules, anchors and the pack facts the editor rows ask.
 The static veneer helpers take it instead of the engine, so no panel holds an engine for them.
 The panel factories went to `QForge`, which it builds over the root's ports and exposes.
 The settings, the folder and the stored-entry reads went to `QWorkspace`, which it builds and exposes.
 Each engine value is mapped once, by an internal static on the controller that owns the shape.
 Panel state stays on each panel's deportment, and window geometry stays on `QPosture`.
-The text services leave for Conduct in job02-02 and the rest in job03-04.
+The mention, markdown and respelling services now stand on `CAtelier`, and the rest leave in job03-04.
 
 ## `private readonly List<Action> _lWindowVistas`
 
@@ -54,24 +53,6 @@ Runs one deportment's restore and keeps it for the next workspace change.
 
 The interface languages the build embeds, which the settings panel lists in its language box.
 
-## `public IReadOnlyList<CMentionLabel> LWindowMentionResolve(string text, IReadOnlyList<CMentionDraft> mentions, string silent)`
-
-The chips of a mention line, each named by its linked headword or by `silent` when unlinked.
-
-## `public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)`
-
-A field's selection as a Mention span, measured by the engine in code points.
-
-## `public bool LWindowSpanCheck(string text, int start, int length)`
-
-Whether a field's selection spans any code point, so a link command may run.
-A driver asks this rather than measuring the span it read itself.
-
 ## `internal bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)`
 
 The anchor checks stay internal, since only the sound lectern calls them with the display's rows.
-
-## `internal static IReadOnlyList<CMention> LWindowMentionRead(IReadOnlyList<LMention> mentions)`
-
-The stored Mentions of a text as a mention text holds them.
-The overload taking the shapes maps them back for the engine's piece and find calls.

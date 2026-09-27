@@ -11,9 +11,10 @@ Every change goes through the desk's text gate, which defers typing and sends a 
 
 The desk holding the Example being edited, read off the deportment each time.
 
-## `private QQuill QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;`
+## `private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;`
 
-The desk's text gate, which builds every request the transcript makes.
+The desk's text edits, which build every request the transcript makes.
+It is null while no tenure is held or the desk fills its controls.
 
 ## `private void QTranscriptDeskAttach()`
 

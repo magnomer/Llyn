@@ -51,15 +51,24 @@ Only the finish without a stored action raises it.
 The held tenure stopped taking requests.
 It carries the scope's `HoldFailed` key, and it fires once per halt.
 
-## `public QQuill LDeskQuill { get; }`
+## `private LQuill? _lDeskQuill;`
 
-The gate for this desk's text rows, built over the desk itself.
-A driver reaches it through the desk, so no driver builds a text request.
+The text edits of the held tenure, built when a tenure starts and dropped when it ends.
 
-## `public QEasel LDeskEasel { get; }`
+## `private LEasel? _lDeskEasel;`
 
-The gate for this desk's image and video rows, built over the desk itself.
-A driver reaches it through the desk, so no driver builds a media request.
+The media edits of the held tenure, built when a tenure starts and dropped when it ends.
+
+## `internal LQuill? LDeskQuill`
+
+The held tenure's text edits, so no driver builds a text request.
+It is null while no tenure is held or while the desk fills its controls.
+A fill echoes values the draft already holds, so nothing is written back.
+
+## `internal LEasel? LDeskEasel`
+
+The held tenure's media edits, so no driver builds a media request.
+It is null while no tenure is held or while the desk fills its controls.
 
 ## `internal QErrand LDeskErrand { get; }`
 

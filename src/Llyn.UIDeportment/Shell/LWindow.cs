@@ -51,16 +51,6 @@ public sealed class LWindow
             LWindowAtelier.CAtelierSettingsPort.LEngineFontRead(language, (LFontRole)role));
     }
 
-    public bool LWindowRespellingCheck(string language)
-    {
-        return LWindowAtelier.CAtelierPhonologyPort.LEngineRespellingCheck(language);
-    }
-
-    public bool LWindowPhonemicCheck(string language)
-    {
-        return LWindowAtelier.CAtelierPhonologyPort.LEnginePhonemicCheck(language);
-    }
-
     public IReadOnlyList<CReflexRule> LWindowReflexRead(string language)
     {
         return LSounding.LSoundingRuleRead(LWindowAtelier.CAtelierPhonologyPort.LEngineReflexRead(language));
@@ -69,57 +59,6 @@ public sealed class LWindow
     public CSentenceOrder LWindowOrderRead(string language)
     {
         return LCard.LCardOrderRead(LWindowAtelier.CAtelierPhonologyPort.LEngineOrderRead(language));
-    }
-
-    public IReadOnlyList<CMentionLabel> LWindowMentionResolve(
-        string text, IReadOnlyList<CMentionDraft> mentions, string silent)
-    {
-        ArgumentNullException.ThrowIfNull(mentions);
-
-        List<LMentionDraft> drafts = new(mentions.Count);
-        foreach (CMentionDraft mention in mentions)
-        {
-            drafts.Add(new LMentionDraft(
-                mention.CMentionDraftId,
-                mention.CMentionDraftOffset,
-                mention.CMentionDraftLength,
-                mention.CMentionDraftEntry,
-                mention.CMentionDraftSense));
-        }
-
-        return LWindowLabelRead(LWindowAtelier.CAtelierEntryPort.LEngineMentionResolve(text, drafts), silent);
-    }
-
-    public IReadOnlyList<CMentionPiece> LWindowMentionDivide(string text, IReadOnlyList<CMention> mentions)
-    {
-        return LSplice.LSpliceBuild(
-            LWindowAtelier.CAtelierDraftPort.LEngineMentionDivide(text, LWindowMentionRead(mentions)),
-            static piece => new CMentionPiece(
-                piece.LMentionPieceOffset,
-                piece.LMentionPieceEnd,
-                piece.LMentionPieceText,
-                piece.LMentionPieceStored?.LMentionLinked));
-    }
-
-    public int LWindowUnitRead(string text, int offset)
-    {
-        return LWindowAtelier.CAtelierDraftPort.LEngineUnitRead(text, offset);
-    }
-
-    public int LWindowOffsetRead(string text, int unit)
-    {
-        return LWindowAtelier.CAtelierDraftPort.LEngineOffsetRead(text, unit);
-    }
-
-    public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)
-    {
-        LMentionDraft span = LWindowAtelier.CAtelierDraftPort.LEngineSpanRead(text, start, length);
-        return (span.LMentionDraftOffset, span.LMentionDraftLength);
-    }
-
-    public bool LWindowSpanCheck(string text, int start, int length)
-    {
-        return LWindowAtelier.CAtelierDraftPort.LEngineSpanCheck(text, start, length);
     }
 
     public bool LWindowAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
@@ -136,11 +75,6 @@ public sealed class LWindow
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
     {
         return LWindowAtelier.CAtelierDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator);
-    }
-
-    public IReadOnlyList<CMarkdownBlock> LWindowMarkdownParse(string? text)
-    {
-        return LSplice.LSpliceBuild(LWindowAtelier.CAtelierEntryPort.LEngineMarkdownParse(text), LWindowMarkdownRead);
     }
 
     public IReadOnlyList<string> LWindowSchemeRead(string language)
@@ -168,65 +102,5 @@ public sealed class LWindow
     public IReadOnlyList<string> LWindowLocalizationScan()
     {
         return LWindowAtelier.CAtelierSettingsPort.LEngineLocalizationScan();
-    }
-
-    private static IReadOnlyList<CMentionLabel> LWindowLabelRead(IReadOnlyList<LMentionLabel> labels, string silent)
-    {
-        List<CMentionLabel> read = new(labels.Count);
-        foreach (LMentionLabel label in labels)
-        {
-            read.Add(new CMentionLabel(
-                label.LMentionLabelId,
-                label.LMentionLabelWord,
-                label.LMentionLabelLinked ? label.LMentionLabelName : silent,
-                label.LMentionLabelSense));
-        }
-
-        return read;
-    }
-
-    internal static CMarkdownBlock LWindowMarkdownRead(LMarkdownBlock block)
-    {
-        return new CMarkdownBlock(
-            block.LMarkdownBlockHeaded,
-            block.LMarkdownBlockListed,
-            block.LMarkdownBlockQuoted,
-            block.LMarkdownBlockFenced,
-            block.LMarkdownBlockRuled,
-            block.LMarkdownBlockLevel,
-            block.LMarkdownBlockMark,
-            block.LMarkdownBlockText,
-            LSplice.LSpliceBuild(
-                block.LMarkdownBlockSpan,
-                static span => new CMarkdownSpan(
-                    span.LMarkdownSpanText,
-                    span.LMarkdownSpanBold,
-                    span.LMarkdownSpanItalic,
-                    span.LMarkdownSpanCode,
-                    span.LMarkdownSpanAddress)));
-    }
-
-    internal static IReadOnlyList<CMention> LWindowMentionRead(IReadOnlyList<LMention> mentions)
-    {
-        return LSplice.LSpliceBuild(
-            mentions,
-            static mention => new CMention(
-                mention.LMentionId,
-                mention.LMentionOffset,
-                mention.LMentionLength,
-                mention.LMentionEntryId,
-                mention.LMentionSenseId));
-    }
-
-    internal static IReadOnlyList<LMention> LWindowMentionRead(IReadOnlyList<CMention> mentions)
-    {
-        return LSplice.LSpliceBuild(
-            mentions,
-            static mention => new LMention(
-                mention.CMentionId,
-                mention.CMentionOffset,
-                mention.CMentionLength,
-                mention.CMentionEntry,
-                mention.CMentionSense));
     }
 }

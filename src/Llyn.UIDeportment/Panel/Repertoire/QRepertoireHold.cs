@@ -21,7 +21,7 @@ internal sealed partial class QRepertoire
 
     private void QScenarioChangeDefer()
     {
-        QScenarioDesk.LDeskQuill.QQuillSituationChange(
+        QScenarioDesk.LDeskQuill?.LQuillSituationSet(
             QScenarioTitle.Text, QScenarioDescription.Text, QScenarioKind.Text);
     }
 

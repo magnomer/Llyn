@@ -46,7 +46,7 @@ internal sealed partial class QCorpus
         }
 
         QSpeaker.IsChecked = false;
-        QTranscriptQuill.QQuillExampleChange(CExampleField.CExampleFieldLanguage, item.PLanguageItemName);
+        QTranscriptQuill?.LQuillSpeakerSet(item.PLanguageItemName);
     }
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)
@@ -69,7 +69,7 @@ internal sealed partial class QCorpus
     private void QTranscriptTextHandle(object sender, TextChangedEventArgs e)
     {
         QTranscriptText.SetValue(QField.QFieldHintProperty, QTranscriptHintRead(false));
-        QTranscriptQuill.QQuillExampleChange(CExampleField.CExampleFieldText, QTranscriptText.Text);
+        QTranscriptQuill?.LQuillExampleSet(QTranscriptText.Text);
     }
 
     private static string QTranscriptHintRead(bool unknown)

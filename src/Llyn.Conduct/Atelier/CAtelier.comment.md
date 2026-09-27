@@ -13,6 +13,18 @@ GUI-only state such as window geometry and panel widths never reaches it.
 Takes the posture and the six ports Host builds over one engine.
 It is internal, so no driver can build a root of its own.
 
+## `public CMention CAtelierMention { get; }`
+
+The mention gates, built once over this atelier's ports.
+
+## `public CMarkdown CAtelierMarkdown { get; }`
+
+The markdown gate, built once over this atelier's entry port.
+
+## `public CRespelling CAtelierRespelling { get; }`
+
+The respelling gates, built once over this atelier's phonology port.
+
 ## `internal LDraftPort CAtelierDraftPort { get; }`
 
 A transitional handle for the deportments not yet moved into Conduct.

@@ -107,5 +107,5 @@ Silence would have said a word is missing from a dictionary that was in fact dow
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
 Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.
-It prints the candidate's respelling while the switch shows respellings and its phonetic otherwise.
-It is bracketed for a pronunciation search, between slashes for a phonemic respelling, and bare for a transcription search.
+It asks `CRespelling` for the mark of the draft's language, handing it whether the search is schemed.
+The mark picks the respelling or the phonetic, and the brackets, slashes or bare form around it.

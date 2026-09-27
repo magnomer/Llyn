@@ -390,17 +390,17 @@ public partial class PWindow
 
         PMentionMenuHide();
 
-        if (result.CMentionResultStored is CMention stored)
+        if (result.CMentionResultStored is CMentionMark stored)
         {
-            if (stored.CMentionEntry == 0)
+            if (stored.CMentionMarkEntry == 0)
             {
                 return;
             }
 
-            PWindowEntryShow(stored.CMentionEntry);
-            if (stored.CMentionSense != 0)
+            PWindowEntryShow(stored.CMentionMarkEntry);
+            if (stored.CMentionMarkSense != 0)
             {
-                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.CMentionSense);
+                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.CMentionMarkSense);
             }
 
             return;

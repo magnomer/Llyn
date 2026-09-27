@@ -75,4 +75,17 @@ internal static class TInterfaceConduct
         new LPhonologyOutlet(engine),
         media,
         new LPortraitOutlet(engine));
+
+    internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)
+    {
+        answers["LEngineLeftoverSweep"] = _ => null;
+        return new CAtelier(
+            new LPosture(engine),
+            TEngineFake.TEngineCreate<LDraftPort>(answers),
+            TEngineFake.TEngineCreate<LEntryPort>(answers),
+            new LSettingsOutlet(engine),
+            TEngineFake.TEngineCreate<LPhonologyPort>(answers),
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            new LPortraitOutlet(engine));
+    }
 }

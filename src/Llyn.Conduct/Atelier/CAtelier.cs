@@ -32,7 +32,16 @@ public sealed class CAtelier : IDisposable
         CAtelierPhonologyPort = phonology;
         CAtelierMediaPort = media;
         CAtelierPortraitPort = portraits;
+        CAtelierMention = new CMention(this);
+        CAtelierMarkdown = new CMarkdown(this);
+        CAtelierRespelling = new CRespelling(this);
     }
+
+    public CMention CAtelierMention { get; }
+
+    public CMarkdown CAtelierMarkdown { get; }
+
+    public CRespelling CAtelierRespelling { get; }
 
     internal LDraftPort CAtelierDraftPort { get; }
 

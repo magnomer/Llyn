@@ -8,7 +8,8 @@ internal static class PMentionSelection
     internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(
         TextBox box, LWindow window)
     {
-        return window.LWindowSpanRead(box.Text, box.SelectionStart, box.SelectionLength);
+        return window.LWindowAtelier.CAtelierMention.CMentionSpanRead(
+            box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     internal static Rect PMentionSelectionPlace(TextBox box)

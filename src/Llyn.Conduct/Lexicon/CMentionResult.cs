@@ -4,7 +4,7 @@ namespace Llyn.Conduct;
 
 public sealed record CMentionResult(
     int CMentionResultOffset,
-    CMention? CMentionResultStored,
+    CMentionMark? CMentionResultStored,
     IReadOnlyList<CTranslationTarget> CMentionResultEntry)
 {
     public bool CMentionResultSingle => CMentionResultEntry.Count == 1;

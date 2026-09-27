@@ -99,6 +99,32 @@ For a change with no keystroke coming to end it, such as a chosen language or an
 Writes what is waiting now, in arrival order, and stops the wait.
 It takes the turn even when nothing waits, so the next draft read sees a flush in flight finished.
 
+## `public void LTenureHeadwordSet(string text)`
+
+Defers the typed headword.
+
+## `public void LTenureNoteSet(string text)`
+
+Defers the note without the trailing line breaks a text box carries.
+
+## `public void LTenureLanguageSet(string language)`
+
+Sends the chosen language at once.
+An empty choice changes nothing.
+
+## `public void LTenureSpeechSet(IReadOnlyList<LSpeechDraft> speeches, bool deferred)`
+
+Replaces the parts of speech as a whole list.
+Typing defers it, and a chip click sends it at once.
+
+## `public void LTenureIpaSet(string text)`
+
+Defers the typed phonetic reading of the primary pronunciation.
+
+## `public void LTenureRespellingSet(string text)`
+
+Defers the typed respelling of the primary pronunciation.
+
 ## `public LDraft? LTenureUndo()`
 
 Steps the draft one snapshot back, after writing what was waiting.

@@ -100,7 +100,7 @@ public partial class PEditor
         }
 
         PCategoryUpdate();
-        PEditorRequestDefer(new LRequestSpeech(PEditorDraft, PMarkerRead()));
+        _lEditor.LEditorTenure?.LTenureSpeechSet(PMarkerRead(), true);
 
         string typed = (PMarkerField.Text ?? string.Empty).Trim();
         PMarkerSwitch.IsChecked = typed.Length > 0 && _pCategoryItem.Count > 0;

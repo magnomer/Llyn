@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -31,26 +30,10 @@ internal sealed partial class QCorpus
 
         QExcerptText.PMentionText = text ?? QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten");
         QExcerptText.PMentionLanguage = example.CExampleLanguage;
-        QExcerptText.PMentionMarkShow(QExcerptMarkRead(example.CExampleExcerpt));
+        QExcerptText.PMentionMention = example.CExampleExcerpt;
         QExcerptText.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
-    }
-
-    private static List<PMentionMark> QExcerptMarkRead(IReadOnlyList<CMention> mentions)
-    {
-        List<PMentionMark> marks = new(mentions.Count);
-        foreach (CMention mention in mentions)
-        {
-            marks.Add(new PMentionMark(
-                mention.CMentionId,
-                mention.CMentionOffset,
-                mention.CMentionLength,
-                mention.CMentionEntry,
-                mention.CMentionSense));
-        }
-
-        return marks;
     }
 
     private void QExcerptCitationShow(long? value)

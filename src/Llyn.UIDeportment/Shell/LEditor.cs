@@ -105,6 +105,8 @@ public sealed class LEditor
 
     private LEntryDraft? LEditorContent => LEditorDesk.LDeskDraft?.LDraftContent;
 
+    internal LTenure? LEditorTenure => LEditorDesk.LDeskFilling ? null : LEditorDesk.LDeskTenure;
+
     private bool LEditorRestarting => LEditorFresh && LEditorOwned;
 
     private bool LEditorStalling => LEditorDesk.LDeskHalted && !LEditorHalted;
@@ -181,34 +183,28 @@ public sealed class LEditor
 
     public void LEditorHeadwordSet(string text)
     {
-        LEditorDesk.LDeskDefer(new LRequestHeadword(LEditorDesk.LDeskId, text));
+        LEditorTenure?.LTenureHeadwordSet(text);
     }
 
     public void LEditorPronunciationSet(string text)
     {
-        LEditorDesk.LDeskDefer(
-            LEditorTimbre.QTimbreRespelled
-                ? new LRequestRespelling(LEditorDesk.LDeskId, text)
-                : new LRequestIpa(LEditorDesk.LDeskId, text));
+        if (LEditorTimbre.QTimbreRespelled)
+        {
+            LEditorTenure?.LTenureRespellingSet(text);
+            return;
+        }
+
+        LEditorTenure?.LTenureIpaSet(text);
     }
 
     public void LEditorNoteSet(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
-        LEditorDesk.LDeskDefer(new LRequestNote(LEditorDesk.LDeskId, text.TrimEnd('\r', '\n')));
+        LEditorTenure?.LTenureNoteSet(text);
     }
 
     public void LEditorLanguageSet(string language)
     {
-        ArgumentNullException.ThrowIfNull(language);
-
-        if (language.Length == 0)
-        {
-            return;
-        }
-
-        LEditorDesk.LDeskSend(new LRequestLanguage(LEditorDesk.LDeskId, language));
+        LEditorTenure?.LTenureLanguageSet(language);
     }
 
     public void LEditorTagAdd(long id)
