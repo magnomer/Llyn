@@ -27,10 +27,10 @@ public sealed class TYunjingLanguage
         Assert.True(panel.LYunjingDiweiShown);
         Assert.False(panel.LYunjingDisplayShown);
         Assert.Equal(1, changed);
-        Assert.Equal(["來", "見"], panel.TYunjingShengmuRead().Select(row => row.LDiweiKey));
-        Assert.Equal([true, false], panel.TYunjingShengmuRead().Select(row => row.LDiweiChosen));
-        Assert.Equal(["寒 I"], panel.TYunjingYunmuRead().Select(row => row.LDiweiKey));
-        Assert.Equal(["爛"], panel.TYunjingXiaoyunRead().Select(row => row.LVistaRowHeadword));
+        Assert.Equal(["來", "見"], panel.TYunjingShengmuRead().Select(row => row.CDiweiKey));
+        Assert.Equal([true, false], panel.TYunjingShengmuRead().Select(row => row.CDiweiChosen));
+        Assert.Equal(["寒 I"], panel.TYunjingYunmuRead().Select(row => row.CDiweiKey));
+        Assert.Equal(["爛"], panel.TYunjingXiaoyunRead().Select(row => row.CVistaRowHeadword));
         Assert.False(panel.LYunjingXiaoyunEmpty);
         Assert.Equal("Yunjing.Shengmu", panel.LYunjingDiweiKey);
     }
@@ -49,7 +49,7 @@ public sealed class TYunjingLanguage
         Assert.True(panel.LYunjingDiweiShown);
         Assert.Equal("Yunjing.Yunmu", panel.LYunjingDiweiKey);
 
-        panel.TYunjingDiweiSelect(panel.TYunjingYunmuRead()[0].LDiweiId, true);
+        panel.TYunjingDiweiSelect(panel.TYunjingYunmuRead()[0].CDiweiId, true);
 
         Assert.False(panel.LYunjingDiweiShown);
         Assert.True(panel.LYunjingDisplayShown);

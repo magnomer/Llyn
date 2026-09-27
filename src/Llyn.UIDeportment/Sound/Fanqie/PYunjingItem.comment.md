@@ -7,7 +7,7 @@ Both columns share the row, since an initial and a rime are the same kind of thi
 The row remembers its side, so a click can say which column it came from.
 The mark saying whether the row is chosen is the one thing that changes after the row is built.
 
-## `internal static IReadOnlyList<PYunjingItem> PYunjingItemBuild(IReadOnlyList<LDiwei> rows)`
+## `internal static IReadOnlyList<PYunjingItem> PYunjingItemBuild(IReadOnlyList<CDiwei> rows)`
 
 A plain copy loop over one column's rows.
 

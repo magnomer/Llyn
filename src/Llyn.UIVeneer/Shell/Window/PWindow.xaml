@@ -182,8 +182,8 @@
                 <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Surface}">
                     <local:PInput x:Name="PInput" />
                     <veneer:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
-                    <local:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
-                    <local:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
+                    <veneer:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
+                    <veneer:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
                     <local:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
                     <veneer:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <veneer:PTenor x:Name="PTenor" Visibility="Collapsed" />

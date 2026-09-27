@@ -26,11 +26,6 @@ The window reads the legend, so the panel hands over no word of its own.
 Runs a legend print for a sealed panel that prints no label, such as the guild.
 The legend is worded for `realm` once the ticket is chosen.
 
-## `internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)`
-
-Prints through a panel not yet sealed that takes the labels too, wrapped the same way.
-It goes once every panel takes Conduct shapes.
-
 ## `internal CPressTicket? PWindowTicketRead()`
 
 Opens the printer dialog and returns what the reader chose, or null when they cancelled.

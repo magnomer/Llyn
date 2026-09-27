@@ -49,11 +49,6 @@ public partial class PWindow
         return PWindowPressRun((CPressTicket ticket) => print(PWindowLegendCreate(realm), ticket));
     }
 
-    internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)
-    {
-        return PWindowPressRun(QPortrait.QPortraitPressCreate(print));
-    }
-
     internal CPressTicket? PWindowTicketRead()
     {
         PrintDialog dialog = new()

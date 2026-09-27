@@ -27,7 +27,7 @@ The aid is two full charts, so it is folded away until it is asked for.
 ## `<Rectangle x:Name="PArticulationSeam" ... Visibility="Collapsed" />`
 
 The seam and the aid start folded, because the toggle starts unchecked.
-`PPhonology` shows both when the toggle is checked, since the markup carries no fold binding.
+`QPhonology` shows both when the toggle is checked, since the markup carries no fold binding.
 
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
@@ -39,7 +39,7 @@ Writing shows `PPhonologyBackward` and `PPhonologyForward`, which walk the chron
 Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
 The mode toggle stands there rather than inside the display, because the display is shared.
 
-## `<local:PArticulation ... Grid.ColumnSpan="2" />`
+## `<veneer:PArticulation ... Grid.ColumnSpan="2" />`
 
 The input aid spans both columns.
 It is bled to both panel edges like the seams.

@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -18,7 +19,7 @@ public sealed class TPhonologyRows
 
         Assert.Equal(
             ["water"],
-            panel.TPhonologyRowsRead().Select(row => row.LCatalogPronunciationEntry.LEntryHeadword));
+            panel.TPhonologyRowsRead().Select(row => row.CCatalogPronunciationEntry.CVistaRowHeadword));
         Assert.False(panel.LPhonologyInventoryEmpty);
     }
 
@@ -47,8 +48,22 @@ public sealed class TPhonologyRows
         panel.LPhonologyPanel.TPanelRowSelect(fire.LEntryId);
 
         Assert.Equal(["fire"], panel.TPhonologyRowsRead()
-            .Where(row => row.LCatalogPronunciationChosen)
-            .Select(row => row.LCatalogPronunciationEntry.LEntryHeadword));
+            .Where(row => row.CCatalogPronunciationEntry.CVistaRowChosen)
+            .Select(row => row.CCatalogPronunciationEntry.CVistaRowHeadword));
+    }
+
+    [Fact]
+    public void RowsRead_StoredEntry_CarriesSoundAndPlainEpithet()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LPhonology panel = TPhonologyPrepare(engine);
+
+        CCatalogPronunciation row = Assert.Single(panel.TPhonologyRowsRead());
+
+        Assert.Equal("ˈwɔːtə", row.CCatalogPronunciationSound);
+        Assert.Equal("English", row.CCatalogPronunciationEntry.CVistaRowLanguage);
+        Assert.NotNull(row.CCatalogPronunciationEntry.CVistaRowEpithet);
     }
 
     private static LPhonology TPhonologyPrepare(LEngine engine)

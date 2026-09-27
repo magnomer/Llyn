@@ -17,4 +17,4 @@ The spin is the veneer resource `Theme.Sound.Rebuild.Spin`, pulled by contract I
 The two switch halves send `false` and `true` as their parameter, so the markup holds no flag resource.
 A representative star reads the `Marked` or `Faded` cue, which the line fill sets.
 A link or anchor with empty content folds away or shows its prompt through the `Empty` state.
-The articulation glyph is a style local to its markup, which `PArticulation` registers itself.
+The articulation glyph is a style local to its markup, which `QArticulation` registers itself.

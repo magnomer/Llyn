@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -19,16 +20,16 @@ public sealed class TDiweiPage
         LYunjing panel = TYunjingLanguage.TYunjingPrepare(engine);
         panel.TYunjingDiweiShow(language, LDiwei.LDiweiInitial, "來");
 
-        LDiweiPage page = panel.TYunjingDiweiRead();
+        CDiweiPage page = panel.TYunjingDiweiRead();
 
-        Assert.Equal(language, page.LDiweiPageLanguage);
-        Assert.Equal("來", page.LDiweiPageKey);
-        Assert.False(page.LDiweiPageEmpty);
-        LDiweiSection section = Assert.Single(page.LDiweiPageSections);
-        Assert.Equal("一", section.LDiweiSectionLabel);
-        LDiweiLine line = Assert.Single(section.LDiweiSectionLines);
-        Assert.Equal("寒", line.LDiweiLineLabel);
-        Assert.Equal(["爛", "蘭"], line.LDiweiLineCharacters);
+        Assert.Equal(language, page.CDiweiPageLanguage);
+        Assert.Equal("來", page.CDiweiPageKey);
+        Assert.False(page.CDiweiPageEmpty);
+        CDiweiSection section = Assert.Single(page.CDiweiPageSections);
+        Assert.Equal("一", section.CDiweiSectionLabel);
+        CDiweiLine line = Assert.Single(section.CDiweiSectionLines);
+        Assert.Equal("寒", line.CDiweiLineLabel);
+        Assert.Equal(["爛", "蘭"], line.CDiweiLineCharacters);
     }
 
     [Fact]
@@ -39,7 +40,50 @@ public sealed class TDiweiPage
         LYunjing panel = TYunjingLanguage.TYunjingPrepare(engine);
 
         Assert.False(panel.LYunjingDiweiShown);
-        Assert.True(panel.TYunjingDiweiRead().LDiweiPageEmpty);
+        Assert.True(panel.TYunjingDiweiRead().CDiweiPageEmpty);
+    }
+
+    [Fact]
+    public void PageBuild_BlankPage_CarriesNoSection()
+    {
+        CDiweiPage page = TInterfaceGate.TYunjingPageBuild(TInterfaceGate.TDiweiPageBlank);
+
+        Assert.Empty(page.CDiweiPageKey);
+        Assert.Empty(page.CDiweiPageLanguage);
+        Assert.Empty(page.CDiweiPageSections);
+        Assert.True(page.CDiweiPageEmpty);
+    }
+
+    [Fact]
+    public void PageBuild_Section_KeepsLineAndSwitch()
+    {
+        CDiweiSection section = Assert.Single(
+            TInterfaceGate.TYunjingPageBuild(TInterfaceGate.TDiweiPageCreate(false)).CDiweiPageSections);
+
+        Assert.Equal("一", section.CDiweiSectionLabel);
+        Assert.True(section.CDiweiSectionSwitched);
+        Assert.False(section.CDiweiSectionRespelled);
+        CDiweiLine line = Assert.Single(section.CDiweiSectionLines);
+        Assert.Equal("/l/", line.CDiweiLineReading);
+        Assert.True(line.CDiweiLineRounded);
+        Assert.Equal(["爛", "蘭"], line.CDiweiLineCharacters);
+    }
+
+    [Theory]
+    [InlineData(false, "l", "爛")]
+    [InlineData(true, "L", "蘭")]
+    public void PageBuild_Tally_TakesTheChosenSet(bool respelled, string text, string character)
+    {
+        CDiweiSection section = Assert.Single(
+            TInterfaceGate.TYunjingPageBuild(TInterfaceGate.TDiweiPageCreate(respelled)).CDiweiPageSections);
+
+        CTally tally = Assert.Single(section.CDiweiSectionTallies);
+        Assert.Equal("Cantonese", tally.CTallyLanguage);
+        Assert.Equal("literary", tally.CTallyKind);
+        CTallyMark mark = Assert.Single(tally.CTallyMarks);
+        Assert.Equal(text, mark.CTallyMarkText);
+        Assert.Equal(1, mark.CTallyMarkCount);
+        Assert.Equal([character], mark.CTallyMarkCharacters);
     }
 
     [Fact]

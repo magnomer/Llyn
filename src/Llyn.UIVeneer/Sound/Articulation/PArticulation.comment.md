@@ -3,7 +3,7 @@
 ## `<UserControl.Resources>`
 
 The glyph chip carries no hover or pressed trigger.
-`QLookSound` lights it, once `PArticulation` registers these styles.
+`QLookSound` lights it, once `QArticulation` registers these styles.
 
 One glyph is one borderless chip, and one header is one quiet label.
 A chart heading carries the helper ink.

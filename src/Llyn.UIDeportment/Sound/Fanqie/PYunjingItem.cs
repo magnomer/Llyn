@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -12,13 +12,13 @@ internal sealed class PYunjingItem : INotifyPropertyChanged
 {
     private bool _pYunjingItemChosen;
 
-    internal PYunjingItem(LDiwei row, bool chosen)
+    internal PYunjingItem(CDiwei row, bool chosen)
     {
         _pYunjingItemChosen = chosen;
-        PYunjingItemId = row.LDiweiId;
-        PYunjingItemKey = row.LDiweiKey;
-        PYunjingItemCount = row.LDiweiCount;
-        PYunjingItemFinal = row.LDiweiFinal;
+        PYunjingItemId = row.CDiweiId;
+        PYunjingItemKey = row.CDiweiKey;
+        PYunjingItemCount = row.CDiweiCount;
+        PYunjingItemFinal = row.CDiweiFinal;
     }
 
     public long PYunjingItemId { get; }
@@ -47,14 +47,14 @@ internal sealed class PYunjingItem : INotifyPropertyChanged
         }
     }
 
-    internal static IReadOnlyList<PYunjingItem> PYunjingItemBuild(IReadOnlyList<LDiwei> rows)
+    internal static IReadOnlyList<PYunjingItem> PYunjingItemBuild(IReadOnlyList<CDiwei> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
         List<PYunjingItem> built = new(rows.Count);
-        foreach (LDiwei row in rows)
+        foreach (CDiwei row in rows)
         {
-            built.Add(new PYunjingItem(row, row.LDiweiChosen));
+            built.Add(new PYunjingItem(row, row.CDiweiChosen));
         }
 
         return built;

@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -13,14 +13,14 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 {
     private bool _pXiaoyunItemChosen;
 
-    internal PXiaoyunItem(LVistaRow row, bool chosen)
+    internal PXiaoyunItem(CVistaRow row, bool chosen)
     {
         _pXiaoyunItemChosen = chosen;
-        PXiaoyunItemId = row.LVistaRowId;
-        PXiaoyunItemHeadword = row.LVistaRowHeadword;
-        PXiaoyunItemName = row.LVistaRowName;
-        PXiaoyunItemEpithet = row.LVistaRowEpithet ?? string.Empty;
-        PXiaoyunItemFlag = LEnsignImage.LEnsignFind(row.LVistaRowLanguage);
+        PXiaoyunItemId = row.CVistaRowId;
+        PXiaoyunItemHeadword = row.CVistaRowHeadword;
+        PXiaoyunItemName = row.CVistaRowName;
+        PXiaoyunItemEpithet = row.CVistaRowEpithet;
+        PXiaoyunItemFlag = LEnsignImage.LEnsignFind(row.CVistaRowLanguage);
     }
 
     public long PXiaoyunItemId { get; }
@@ -33,14 +33,14 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 
     public ImageSource? PXiaoyunItemFlag { get; }
 
-    internal static IReadOnlyList<PXiaoyunItem> PXiaoyunItemBuild(IReadOnlyList<LVistaRow> rows)
+    internal static IReadOnlyList<PXiaoyunItem> PXiaoyunItemBuild(IReadOnlyList<CVistaRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
         List<PXiaoyunItem> built = new(rows.Count);
-        foreach (LVistaRow row in rows)
+        foreach (CVistaRow row in rows)
         {
-            built.Add(new PXiaoyunItem(row, row.LVistaRowChosen));
+            built.Add(new PXiaoyunItem(row, row.CVistaRowChosen));
         }
 
         return built;

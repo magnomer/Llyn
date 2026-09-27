@@ -41,9 +41,18 @@ The language the columns and the entry list are read for, derived as the class d
 
 One column's rows, empty while the tab is not allowed, since a language without books has no table.
 
-## `public LDiweiPage LYunjingDiweiRead()`
+## `public CDiweiPage LYunjingDiweiRead()`
 
 The page of the shown cell as the engine composes it, or the blank page while none is shown.
+
+## `internal static IReadOnlyList<CDiwei> LYunjingDiweiBuild(IReadOnlyList<LDiwei> rows)`
+
+The Conduct copy of the engine's cell rows, carrying each chosen mark.
+
+## `internal static CDiweiPage LYunjingPageBuild(LDiweiPage page)`
+
+The Conduct copy of the engine's cell page, sections, lines and tallies alike.
+Each tally keeps only the set its section chose, so the driver picks nothing.
 
 ## `public void LYunjingReset()`
 
@@ -78,3 +87,12 @@ The tally switch on the page: saves the chosen set and reads the page again.
 ## `public void LYunjingGlyphSelect(string? character)`
 
 A character on the page: asks about an unsaved entry first, then announces the glyph with the page's language.
+
+## `public void LYunjingShengmuAttach(CSubject subject, Action<CBulletin> observer)`
+
+Attaches an observer of that subject to the initial column, as the yunmu twin does for the rime column.
+The engine's subject and bulletin are mapped here, so the driver names neither.
+
+## `public Task LYunjingPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+
+Prints the entry list, the label and ticket mapped through `QPortrait`, as export maps its medium.

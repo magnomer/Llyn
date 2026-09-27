@@ -8,7 +8,7 @@ public partial class PWindow
     {
         PInput.PInputVistaRestore();
         _qLibrary.QLibraryVistaRestore();
-        PPhonology.PPhonologyVistaRestore();
+        _qPhonology.QPhonologyVistaRestore();
         _qFavorite.QFavoriteVistaRestore();
         _qTaxonomy.QTaxonomyVistaRestore();
         _qTenor.QTenorVistaRestore();
@@ -16,7 +16,7 @@ public partial class PWindow
         _qReference.QReferenceVistaRestore();
         _qCorpus.QCorpusVistaRestore();
         _qGuild.QGuildVistaRestore();
-        PXiesheng.PXieshengVistaRestore();
+        _qXiesheng.QXieshengVistaRestore();
         PYunjing.PYunjingVistaRestore();
 
         _qDuplex.QDuplexRestore(state);

@@ -21,7 +21,7 @@ public sealed class LXiesheng
 
     private int _lKindredCount;
 
-    public LXiesheng(
+    internal LXiesheng(
         LPhonologyPort phonology,
         LPortraitPort portraits,
         LEditor editor,
@@ -107,7 +107,7 @@ public sealed class LXiesheng
             window.LWindowVistaStart("kindred", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LXieshengVistaRestore(LVista grove, LVista kindred)
+    internal void LXieshengVistaRestore(LVista grove, LVista kindred)
     {
         ArgumentNullException.ThrowIfNull(grove);
         ArgumentNullException.ThrowIfNull(kindred);
@@ -118,11 +118,18 @@ public sealed class LXiesheng
         LXieshengEditor.LEditorVistaRestore(kindred);
     }
 
-    public IReadOnlyList<LStem> LXieshengGroveRead()
+    public IReadOnlyList<CStem> LXieshengGroveRead()
     {
-        IReadOnlyList<LStem> rows = LXieshengStemFind();
+        IReadOnlyList<CStem> rows = LXieshengGroveBuild(LXieshengStemFind());
         _lGroveCount = rows.Count;
         return rows;
+    }
+
+    internal static IReadOnlyList<CStem> LXieshengGroveBuild(IReadOnlyList<LStem> rows)
+    {
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CStem(row.LStemId, row.LStemKey, row.LStemCount, row.LStemChosen));
     }
 
     private IReadOnlyList<LStem> LXieshengStemFind()
@@ -135,9 +142,9 @@ public sealed class LXiesheng
         return LXieshengAllowed ? _lPhonologyPort.LEngineStemFind(vista, LXieshengLanguage) : [];
     }
 
-    public IReadOnlyList<LVistaRow> LXieshengKindredRead()
+    public IReadOnlyList<CVistaRow> LXieshengKindredRead()
     {
-        IReadOnlyList<LVistaRow> rows = LXieshengKindredFind();
+        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LXieshengKindredFind(), LPanel.LPanelRowRead);
         _lKindredCount = rows.Count;
         return rows;
     }
@@ -157,11 +164,19 @@ public sealed class LXiesheng
         return _lPhonologyPort.LEngineKindredFind(LXieshengLanguage, grove, vista);
     }
 
-    public LStemPage LXieshengStemRead()
+    public CStemPage LXieshengStemRead()
     {
-        return LXieshengStemShown
+        return LXieshengPageBuild(LXieshengStemShown
             ? _lPhonologyPort.LEngineStemResolve(_lGroveVista?.LVistaChosen)
-            : LStemPage.LStemPageBlank;
+            : LStemPage.LStemPageBlank);
+    }
+
+    internal static CStemPage LXieshengPageBuild(LStemPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+
+        return new CStemPage(
+            page.LStemPageLanguage, page.LStemPageKey, page.LStemPageCharacters, page.LStemPageEmpty);
     }
 
     public void LXieshengLodestarSet(string query)
@@ -257,24 +272,36 @@ public sealed class LXiesheng
         LXieshengGlyphChosen?.Invoke(character, LXieshengLanguage);
     }
 
-    public void LXieshengGroveAttach(LSubject subject, Action<LBulletin> observer)
+    public void LXieshengGroveAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lGroveVista?.LVistaObserverAttach(subject, observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lGroveVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LXieshengBulletinSend);
+
+        void LXieshengBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
-    public Task LXieshengPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LXieshengPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         if (!LXieshengPanel.LPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _lPortraitPort.LEnginePortraitPrint(LXieshengPanel.LPanelVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            LXieshengPanel.LPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    public Task LXieshengPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(LXieshengPanel.LPanelVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            LXieshengPanel.LPanelVista,
+            path,
+            QPortrait.QPortraitMediumRead(format),
+            QPortrait.QPortraitLabelRead(label));
     }
 
     public string LXieshengFileRead()

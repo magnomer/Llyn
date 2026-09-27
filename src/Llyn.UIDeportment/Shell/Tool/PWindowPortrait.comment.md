@@ -11,11 +11,6 @@ It renders nothing, opens no writer, and knows no file format.
 One row per offered format, keeping the dialog filter and the chosen format in step.
 The dialog returns a one-based index into this same list, so the two cannot drift apart.
 
-## `internal Task PWindowPortraitExport(string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)`
-
-Exports through a panel not yet sealed, whose export the panel controller wraps to take the shapes.
-It goes once every panel takes Conduct shapes.
-
 ## `internal async Task PWindowPortraitExport(string file, Func<string, CPortraitMedium, CPortraitLabel, Task> export)`
 
 Asks the reader for a file and a format, then hands both to the panel's export with the window's labels.

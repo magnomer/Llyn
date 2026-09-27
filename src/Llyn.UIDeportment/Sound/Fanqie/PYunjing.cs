@@ -17,6 +17,8 @@ public class PYunjing : UserControl
 
     private readonly ObservableCollection<PXiaoyunItem> _pXiaoyunList = [];
 
+    private readonly QDiwei _qDiwei;
+
     private PWindow _pYunjingHost = null!;
 
     private LYunjing _lYunjing = null!;
@@ -27,6 +29,7 @@ public class PYunjing : UserControl
             new Uri("/Llyn.UIVeneer;component/Sound/Fanqie/PYunjing.xaml", UriKind.Relative));
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
+        _qDiwei = new QDiwei(PYunjingDiwei);
 
         PYunjingPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         PYunjingPress.Command = ApplicationCommands.Print;
@@ -138,7 +141,7 @@ public class PYunjing : UserControl
 
     private PDisplay PDisplay => (PDisplay)FindName(nameof(PDisplay));
 
-    private PDiwei PYunjingDiwei => (PDiwei)FindName(nameof(PYunjingDiwei));
+    private UserControl PYunjingDiwei => (UserControl)FindName(nameof(PYunjingDiwei));
 
     private PEditor PEditor => (PEditor)FindName(nameof(PEditor));
 
@@ -170,9 +173,7 @@ public class PYunjing : UserControl
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
         PDisplay.PDisplayAttach(host, lectern);
-        PYunjingDiwei.PDiweiAttach(host.PWindowDeportment);
-        PYunjingDiwei.PDiweiEntryNotice = _lYunjing.LYunjingGlyphSelect;
-        PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
+        _qDiwei.QDiweiAttach(host.PWindowDeportment, _lYunjing);
 
         PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor, lectern);
 
@@ -196,17 +197,17 @@ public class PYunjing : UserControl
     internal void PYunjingVistaRestore()
     {
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingYunmuAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PYunjingWorkspaceUpdate));
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PYunjingWorkspaceUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
-            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         LPanel panel = _lYunjing.LYunjingPanel;
         panel.LPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
@@ -324,7 +325,7 @@ public class PYunjing : UserControl
 
     private void PDiweiUpdate()
     {
-        PYunjingDiwei.PDiweiShow(_lYunjing.LYunjingDiweiRead(), _lYunjing.LYunjingDiweiKey);
+        _qDiwei.QDiweiShow(_lYunjing.LYunjingDiweiRead(), _lYunjing.LYunjingDiweiKey);
     }
 
     private void PYunjingModeUpdate()

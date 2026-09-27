@@ -128,7 +128,7 @@ internal static class QLookSound
         new("Theme.Script.Epoch", QLookCue.QLookCueEmpty, null, UIElement.VisibilityProperty, Visibility.Collapsed),
         new("Theme.Script.Gloss", QLookCue.QLookCueEmpty, null, UIElement.VisibilityProperty, Visibility.Collapsed),
 
-        new("Theme.Stem.Chip", QLookCue.QLookCueBase, null, ButtonBase.CommandProperty, PStemCommand.PStemCommandEntry),
+        new("Theme.Stem.Chip", QLookCue.QLookCueBase, null, ButtonBase.CommandProperty, QStemCommand.QStemCommandEntry),
         new("Theme.Stem.Chip", QLookCue.QLookCueBase, null,
             ButtonBase.CommandParameterProperty, FrameworkElement.DataContextProperty),
         new("Theme.Stem.Chip", QLookCue.QLookCueBase, "PStemCharacter",
@@ -139,7 +139,7 @@ internal static class QLookSound
             TextBlock.TextDecorationsProperty, TextDecorations.Underline),
 
         new("Theme.Diwei.Choice", QLookCue.QLookCueBase, null,
-            ButtonBase.CommandProperty, PDiweiCommand.PDiweiCommandSwitch),
+            ButtonBase.CommandProperty, QDiweiCommand.QDiweiCommandSwitch),
         new("Theme.Diwei.Choice", QLookCue.QLookCueBase, "PSurface", Border.PaddingProperty, Control.PaddingProperty),
         new("Theme.Diwei.Choice", QLookCue.QLookCueBase, "PSurface",
             Border.BackgroundProperty, Control.BackgroundProperty),
@@ -151,7 +151,7 @@ internal static class QLookSound
         new("Theme.Diwei.Mark", QLookCue.QLookCueChecked, "PTallyPart", TextBlock.ForegroundProperty, "Theme.Accent"),
         new("Theme.Diwei.Tally", QLookCue.QLookCueEmpty, null, UIElement.VisibilityProperty, Visibility.Collapsed),
         new("Theme.Diwei.Chip", QLookCue.QLookCueBase, null,
-            ButtonBase.CommandProperty, PDiweiCommand.PDiweiCommandEntry),
+            ButtonBase.CommandProperty, QDiweiCommand.QDiweiCommandEntry),
         new("Theme.Diwei.Chip", QLookCue.QLookCueBase, null,
             ButtonBase.CommandParameterProperty, FrameworkElement.DataContextProperty),
         new("Theme.Diwei.Chip", QLookCue.QLookCueBase, "PDiweiCharacter",

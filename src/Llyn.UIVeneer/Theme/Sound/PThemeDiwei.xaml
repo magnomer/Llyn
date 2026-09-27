@@ -57,6 +57,16 @@
         <Setter Property="Content" Value="{DynamicResource Tally.Respelling}" />
     </Style>
 
+    <Style x:Key="Theme.Diwei.IpaChosen" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Ipa}">
+        <Setter Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}" />
+    </Style>
+
+    <Style x:Key="Theme.Diwei.RespellingChosen" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Respelling}">
+        <Setter Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}" />
+    </Style>
+
     <Style x:Key="Theme.Diwei.Language" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
         <Setter Property="FontSize" Value="13" />

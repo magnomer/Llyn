@@ -57,10 +57,10 @@ public partial class PWindow
         [
             (PInput.PInputChangeCheck, PInput.PInputDraftFinish),
             (_qLibrary.QLibraryChangeCheck, _qLibrary.QLibraryDraftFinish),
-            (PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
+            (_qPhonology.QPhonologyChangeCheck, _qPhonology.QPhonologyDraftFinish),
             (_qTaxonomy.QTaxonomyChangeCheck, _qTaxonomy.QTaxonomyDraftFinish),
             (_qTenor.QTenorChangeCheck, _qTenor.QTenorDraftFinish),
-            (PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
+            (_qXiesheng.QXieshengChangeCheck, _qXiesheng.QXieshengDraftFinish),
             (PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
             (_qFavorite.QFavoriteChangeCheck, _qFavorite.QFavoriteDraftFinish),
             (_qCorpus.QCorpusChangeCheck, _qCorpus.QCorpusDraftFinish),

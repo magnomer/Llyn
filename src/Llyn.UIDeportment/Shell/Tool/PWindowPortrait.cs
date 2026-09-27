@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -17,12 +16,6 @@ public partial class PWindow
             ("Export.Docx", ".docx", CPortraitMedium.CPortraitMediumDocx),
             ("Export.Pdf", ".pdf", CPortraitMedium.CPortraitMediumPdf),
         ];
-
-    internal Task PWindowPortraitExport(
-        string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)
-    {
-        return PWindowPortraitExport(file, QPortrait.QPortraitPortraitCreate(export));
-    }
 
     internal async Task PWindowPortraitExport(
         string file, Func<string, CPortraitMedium, CPortraitLabel, Task> export)

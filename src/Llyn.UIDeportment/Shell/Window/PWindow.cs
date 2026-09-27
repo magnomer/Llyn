@@ -34,6 +34,10 @@ public partial class PWindow
 
     private readonly QLibrary _qLibrary;
 
+    private readonly QPhonology _qPhonology;
+
+    private readonly QXiesheng _qXiesheng;
+
     private readonly QFavorite _qFavorite;
 
     private readonly QDuplex _qDuplex;
@@ -62,6 +66,8 @@ public partial class PWindow
         _qCorpus = new QCorpus(PCorpus);
         _qReference = new QReference(PReference);
         _qLibrary = new QLibrary(PLibrary);
+        _qPhonology = new QPhonology(PPhonology);
+        _qXiesheng = new QXiesheng(PXiesheng);
         _qFavorite = new QFavorite(PFavorite);
         _qDuplex = new QDuplex(PDuplex);
         _qGuild = new QGuild(PGuild);
@@ -157,9 +163,9 @@ public partial class PWindow
 
     private UserControl PLibrary => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PLibrary));
 
-    private PPhonology PPhonology => (PPhonology)_pWindowSurface.FindName(nameof(PPhonology));
+    private UserControl PPhonology => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PPhonology));
 
-    private PXiesheng PXiesheng => (PXiesheng)_pWindowSurface.FindName(nameof(PXiesheng));
+    private UserControl PXiesheng => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PXiesheng));
 
     private PYunjing PYunjing => (PYunjing)_pWindowSurface.FindName(nameof(PYunjing));
 
@@ -202,8 +208,8 @@ public partial class PWindow
 
         PInput.PInputAttach(this);
         _qLibrary.QLibraryAttach(this);
-        PPhonology.PPhonologyAttach(this);
-        PXiesheng.PXieshengAttach(this);
+        _qPhonology.QPhonologyAttach(this);
+        _qXiesheng.QXieshengAttach(this);
         PYunjing.PYunjingAttach(this);
         _qTaxonomy.QTaxonomyAttach(this);
         _qTenor.QTenorAttach(this);
@@ -225,8 +231,8 @@ public partial class PWindow
     private void PWindowLayoutAttach()
     {
         _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PPhonology.Content).Content, "phonology");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PXiesheng.Content).Content, "xiesheng");
+        _pLayout.PLayoutAttach((Grid)PPhonology.Content, "phonology");
+        _pLayout.PLayoutAttach((Grid)PXiesheng.Content, "xiesheng");
         _pLayout.PLayoutAttach((Grid)((UserControl)PYunjing.Content).Content, "yunjing");
         _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
         _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
@@ -306,8 +312,8 @@ public partial class PWindow
     {
         PInput.PInputClose();
         _qLibrary.QLibraryClose();
-        PPhonology.PPhonologyClose();
-        PXiesheng.PXieshengClose();
+        _qPhonology.QPhonologyClose();
+        _qXiesheng.QXieshengClose();
         PYunjing.PYunjingClose();
         _qTaxonomy.QTaxonomyClose();
         _qTenor.QTenorClose();

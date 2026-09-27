@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
 
@@ -60,17 +59,5 @@ internal static class QPortrait
             label.CPortraitLabelRegister,
             label.CPortraitLabelTranslation,
             label.CPortraitLabelTag);
-    }
-
-    internal static Func<CPortraitLabel, CPressTicket, Task> QPortraitPressCreate(
-        Func<LPortraitLabel, LPressTicket, Task> print)
-    {
-        return (label, ticket) => print(QPortraitLabelRead(label), QPortraitTicketRead(ticket));
-    }
-
-    internal static Func<string, CPortraitMedium, CPortraitLabel, Task> QPortraitPortraitCreate(
-        Func<string, LPortraitMedium, LPortraitLabel, Task> export)
-    {
-        return (path, format, label) => export(path, QPortraitMediumRead(format), QPortraitLabelRead(label));
     }
 }

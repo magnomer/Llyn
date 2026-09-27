@@ -29,7 +29,7 @@ public sealed class LYunjing
 
     private int _lXiaoyunCount;
 
-    public LYunjing(
+    internal LYunjing(
         LPhonologyPort phonology,
         LPortraitPort portraits,
         LSettingsPort settings,
@@ -116,7 +116,7 @@ public sealed class LYunjing
         ?? _lPhonologyPort.LEngineBookFind()
         ?? string.Empty;
 
-    public void LYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)
+    internal void LYunjingVistaRestore(LVista shengmu, LVista yunmu, LVista xiaoyun)
     {
         ArgumentNullException.ThrowIfNull(shengmu);
         ArgumentNullException.ThrowIfNull(yunmu);
@@ -129,18 +129,25 @@ public sealed class LYunjing
         LYunjingEditor.LEditorVistaRestore(xiaoyun);
     }
 
-    public IReadOnlyList<LDiwei> LYunjingShengmuRead()
+    public IReadOnlyList<CDiwei> LYunjingShengmuRead()
     {
-        IReadOnlyList<LDiwei> rows = LYunjingDiweiFind(_lShengmuVista, LDiwei.LDiweiInitial);
+        IReadOnlyList<CDiwei> rows = LYunjingDiweiBuild(LYunjingDiweiFind(_lShengmuVista, LDiwei.LDiweiInitial));
         _lShengmuCount = rows.Count;
         return rows;
     }
 
-    public IReadOnlyList<LDiwei> LYunjingYunmuRead()
+    public IReadOnlyList<CDiwei> LYunjingYunmuRead()
     {
-        IReadOnlyList<LDiwei> rows = LYunjingDiweiFind(_lYunmuVista, LDiwei.LDiweiRime);
+        IReadOnlyList<CDiwei> rows = LYunjingDiweiBuild(LYunjingDiweiFind(_lYunmuVista, LDiwei.LDiweiRime));
         _lYunmuCount = rows.Count;
         return rows;
+    }
+
+    internal static IReadOnlyList<CDiwei> LYunjingDiweiBuild(IReadOnlyList<LDiwei> rows)
+    {
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CDiwei(row.LDiweiId, row.LDiweiKey, row.LDiweiCount, row.LDiweiFinal, row.LDiweiChosen));
     }
 
     private IReadOnlyList<LDiwei> LYunjingDiweiFind(LVista? vista, string kind)
@@ -158,9 +165,9 @@ public sealed class LYunjing
         return _lPhonologyPort.LEngineDiweiFind(vista, LYunjingLanguage, kind);
     }
 
-    public IReadOnlyList<LVistaRow> LYunjingXiaoyunRead()
+    public IReadOnlyList<CVistaRow> LYunjingXiaoyunRead()
     {
-        IReadOnlyList<LVistaRow> rows = LYunjingXiaoyunFind();
+        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LYunjingXiaoyunFind(), LPanel.LPanelRowRead);
         _lXiaoyunCount = rows.Count;
         return rows;
     }
@@ -185,15 +192,52 @@ public sealed class LYunjing
         return _lPhonologyPort.LEngineXiaoyunFind(LYunjingLanguage, onset, rime, vista);
     }
 
-    public LDiweiPage LYunjingDiweiRead()
+    public CDiweiPage LYunjingDiweiRead()
     {
-        if (!LYunjingDiweiShown)
-        {
-            return LDiweiPage.LDiweiPageBlank;
-        }
+        return LYunjingPageBuild(LYunjingDiweiShown
+            ? _lPhonologyPort.LEngineDiweiResolve(LYunjingSideVista?.LVistaChosen, _lSettingsPort.LEngineTextFind)
+            : LDiweiPage.LDiweiPageBlank);
+    }
 
-        return _lPhonologyPort.LEngineDiweiResolve(
-            LYunjingSideVista?.LVistaChosen, _lSettingsPort.LEngineTextFind);
+    internal static CDiweiPage LYunjingPageBuild(LDiweiPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+
+        return new CDiweiPage(
+            page.LDiweiPageLanguage,
+            page.LDiweiPageKey,
+            LSplice.LSpliceBuild(page.LDiweiPageSections, LYunjingSectionBuild),
+            page.LDiweiPageEmpty);
+    }
+
+    private static CDiweiSection LYunjingSectionBuild(LDiweiSection section)
+    {
+        return new CDiweiSection(
+            section.LDiweiSectionLabel,
+            LSplice.LSpliceBuild(section.LDiweiSectionLines, LYunjingLineBuild),
+            LSplice.LSpliceBuild(
+                section.LDiweiSectionTallies, line => LYunjingTallyBuild(line, section.LDiweiSectionRespelled)),
+            section.LDiweiSectionSwitched,
+            section.LDiweiSectionRespelled);
+    }
+
+    private static CDiweiLine LYunjingLineBuild(LDiweiLine line)
+    {
+        return new CDiweiLine(
+            line.LDiweiLineReading, line.LDiweiLineLabel, line.LDiweiLineRounded, line.LDiweiLineCharacters);
+    }
+
+    private static CTally LYunjingTallyBuild(LTallyLine line, bool respelled)
+    {
+        return new CTally(
+            line.LTallyLineLanguage,
+            line.LTallyLineKind,
+            LSplice.LSpliceBuild(line.LTallyLineRead(respelled), LYunjingMarkBuild));
+    }
+
+    private static CTallyMark LYunjingMarkBuild(LTallyMark mark)
+    {
+        return new CTallyMark(mark.LTallyMarkText, mark.LTallyMarkCount, mark.LTallyMarkCharacters);
     }
 
     public void LYunjingPlumbSet(string query)
@@ -327,14 +371,15 @@ public sealed class LYunjing
         LYunjingGlyphChosen?.Invoke(character, LYunjingLanguage);
     }
 
-    public Task LYunjingPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LYunjingPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         if (!LYunjingPanel.LPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _lPortraitPort.LEnginePortraitPrint(LYunjingPanel.LPanelVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            LYunjingPanel.LPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LYunjingVistaRestore(LWindow window)
@@ -347,14 +392,26 @@ public sealed class LYunjing
             window.LWindowVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LYunjingShengmuAttach(LSubject subject, Action<LBulletin> observer)
+    public void LYunjingShengmuAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lShengmuVista?.LVistaObserverAttach(subject, observer);
+        LYunjingObserverAttach(_lShengmuVista, subject, observer);
     }
 
-    public void LYunjingYunmuAttach(LSubject subject, Action<LBulletin> observer)
+    public void LYunjingYunmuAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lYunmuVista?.LVistaObserverAttach(subject, observer);
+        LYunjingObserverAttach(_lYunmuVista, subject, observer);
+    }
+
+    private static void LYunjingObserverAttach(LVista? vista, CSubject subject, Action<CBulletin> observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        vista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LYunjingBulletinSend);
+
+        void LYunjingBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
     public CCatalogOrder LYunjingLadder =>
@@ -368,8 +425,12 @@ public sealed class LYunjing
         return LVista.LVistaFileRead(LYunjingPanel.LPanelVista);
     }
 
-    public Task LYunjingPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LYunjingPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(LYunjingPanel.LPanelVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            LYunjingPanel.LPanelVista,
+            path,
+            QPortrait.QPortraitMediumRead(format),
+            QPortrait.QPortraitLabelRead(label));
     }
 }

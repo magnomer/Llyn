@@ -1,5 +1,3 @@
-using System;
-
 namespace Llyn.Core;
 
 public sealed record LVistaRow(
@@ -8,16 +6,4 @@ public sealed record LVistaRow(
     string LVistaRowLanguage,
     string? LVistaRowEpithet,
     string LVistaRowName,
-    bool LVistaRowChosen)
-{
-    public bool LVistaRowMatch(LVistaRow other)
-    {
-        ArgumentNullException.ThrowIfNull(other);
-
-        return LVistaRowId == other.LVistaRowId
-            && string.Equals(LVistaRowHeadword, other.LVistaRowHeadword, StringComparison.Ordinal)
-            && string.Equals(LVistaRowEpithet, other.LVistaRowEpithet, StringComparison.Ordinal)
-            && string.Equals(LVistaRowName, other.LVistaRowName, StringComparison.Ordinal)
-            && string.Equals(LVistaRowLanguage, other.LVistaRowLanguage, StringComparison.Ordinal);
-    }
-}
+    bool LVistaRowChosen);

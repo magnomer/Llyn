@@ -16,13 +16,23 @@ Its switch command, padding, ground and hover are `QLook` rows.
 
 ## `<Style x:Key="Theme.Diwei.Ipa" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Choice}">`
 
-The IPA half, which the section fill lights in the accent tint while the section prints the IPA set.
+The IPA half at rest, swapped for its chosen style while the section prints the IPA set.
 A `QLook` row gives it `false` as the switch command's parameter.
 
 ## `<Style x:Key="Theme.Diwei.Respelling" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Choice}">`
 
-The respelling half, which the section fill lights while the section prints the respelling set.
+The respelling half at rest, swapped for its chosen style while the section prints the respelling set.
 A `QLook` row gives it `true` as the switch command's parameter.
+
+## `<Style x:Key="Theme.Diwei.IpaChosen" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Ipa}">`
+
+The IPA half in the accent ink and tint, worn while the section prints the IPA set.
+`QDiweiItem` pulls it by contract ID.
+
+## `<Style x:Key="Theme.Diwei.RespellingChosen" TargetType="Button" BasedOn="{StaticResource Theme.Diwei.Respelling}">`
+
+The respelling half in the accent ink and tint, worn while the section prints the respelling set.
+`QDiweiItem` pulls it by contract ID.
 
 ## `<Style x:Key="Theme.Diwei.Language" TargetType="TextBlock">`
 

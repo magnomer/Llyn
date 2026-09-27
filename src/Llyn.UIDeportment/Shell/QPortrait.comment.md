@@ -22,11 +22,3 @@ The local sheet is the engine's rule, so the driver only says it has no size.
 ## `internal static LPortraitLabel QPortraitLabelRead(CPortraitLabel label)`
 
 The engine label a driver's localized words stand for, copied word for word.
-
-## `internal static Func<CPortraitLabel, CPressTicket, Task> QPortraitPressCreate(`
-
-The same wrap for a print that takes the labels too.
-
-## `internal static Func<string, CPortraitMedium, CPortraitLabel, Task> QPortraitPortraitCreate(`
-
-The same wrap for an export, turning the format and the labels into the engine's own.

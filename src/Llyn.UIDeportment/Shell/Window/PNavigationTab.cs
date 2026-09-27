@@ -191,20 +191,20 @@ public partial class PWindow
             },
             new LTab("Phonology", PNavigationPhonology, PPhonology)
             {
-                LTabLeave = PPhonology.PPhonologyLeaveConfirm,
-                LTabScribe = PPhonology.PPhonologyScribeRestore,
-                LTabStation = PPhonology.PPhonologyVoyageRead,
-                LTabVoyage = PPhonology.PPhonologyVoyageShow,
-                LTabArrival = PPhonology.PInventoryEntryShow
+                LTabLeave = _qPhonology.QPhonologyLeaveConfirm,
+                LTabScribe = _qPhonology.QPhonologyScribeRestore,
+                LTabStation = _qPhonology.QPhonologyVoyageRead,
+                LTabVoyage = _qPhonology.QPhonologyVoyageShow,
+                LTabArrival = _qPhonology.QInventoryEntryShow
             },
             new LTab("Xiesheng", PNavigationXiesheng, PXiesheng)
             {
-                LTabAllowed = PXiesheng.PXieshengCheck,
-                LTabLeave = PXiesheng.PXieshengLeaveConfirm,
-                LTabScribe = PXiesheng.PXieshengScribeRestore,
-                LTabStation = PXiesheng.PXieshengVoyageRead,
-                LTabVoyage = PXiesheng.PXieshengVoyageShow,
-                LTabArrival = PXiesheng.PKindredEntryShow
+                LTabAllowed = _qXiesheng.QXieshengCheck,
+                LTabLeave = _qXiesheng.QXieshengLeaveConfirm,
+                LTabScribe = _qXiesheng.QXieshengScribeRestore,
+                LTabStation = _qXiesheng.QXieshengVoyageRead,
+                LTabVoyage = _qXiesheng.QXieshengVoyageShow,
+                LTabArrival = _qXiesheng.QKindredEntryShow
             },
             new LTab("Yunjing", PNavigationYunjing, PYunjing)
             {
@@ -379,7 +379,7 @@ public partial class PWindow
 
     internal void PWindowStemShow(string language, string? key)
     {
-        PNavigationShow(PNavigationXiesheng, () => PXiesheng.PXieshengStemShow(language, key));
+        PNavigationShow(PNavigationXiesheng, () => _qXiesheng.QXieshengStemShow(language, key));
     }
 
     internal void PWindowMentionHandle(PMention anchor, CMentionResult result)

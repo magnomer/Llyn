@@ -17,7 +17,7 @@ public sealed class LPhonology
 
     private int _lPhonologyCount;
 
-    public LPhonology(
+    internal LPhonology(
         LPhonologyPort phonology,
         LPortraitPort portraits,
         LEditor editor,
@@ -61,19 +61,36 @@ public sealed class LPhonology
 
     public bool LPhonologyFilterActive => _lPhonologyVista?.LVistaFiltered ?? false;
 
-    public void LPhonologyVistaRestore(LVista vista)
+    internal void LPhonologyVistaRestore(LVista vista)
     {
         _lPhonologyVista = vista;
         LPhonologyPanel.LPanelVistaRestore(vista);
         LPhonologyEditor.LEditorVistaRestore(vista);
     }
 
-    public IReadOnlyList<LCatalogPronunciation> LPhonologyRowsRead()
+    public IReadOnlyList<CCatalogPronunciation> LPhonologyRowsRead()
     {
-        IReadOnlyList<LCatalogPronunciation> rows =
-            _lPhonologyVista is LVista vista ? _lPhonologyPort.LEnginePronunciationFind(vista) : [];
+        IReadOnlyList<CCatalogPronunciation> rows = _lPhonologyVista is LVista vista
+            ? LPhonologyPronunciationRead(_lPhonologyPort.LEnginePronunciationFind(vista))
+            : [];
         _lPhonologyCount = rows.Count;
         return rows;
+    }
+
+    internal static IReadOnlyList<CCatalogPronunciation> LPhonologyPronunciationRead(
+        IReadOnlyList<LCatalogPronunciation> rows)
+    {
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CCatalogPronunciation(
+                new CVistaRow(
+                    row.LCatalogPronunciationEntry.LEntryId,
+                    row.LCatalogPronunciationEntry.LEntryHeadword,
+                    row.LCatalogPronunciationEntry.LEntryLanguage,
+                    row.LCatalogPronunciationEpithet ?? string.Empty,
+                    row.LCatalogPronunciationName,
+                    row.LCatalogPronunciationChosen),
+                row.LCatalogPronunciationSound));
     }
 
     public void LPhonologyQuerySet(string query)
@@ -100,14 +117,15 @@ public sealed class LPhonology
         _lPhonologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public Task LPhonologyPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LPhonologyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         if (_lPhonologyVista is not LVista vista)
         {
             return Task.CompletedTask;
         }
 
-        return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            vista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LPhonologyVistaRestore(LWindow window)
@@ -123,8 +141,12 @@ public sealed class LPhonology
         return LVista.LVistaFileRead(LPhonologyPanel.LPanelVista);
     }
 
-    public Task LPhonologyPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LPhonologyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(LPhonologyPanel.LPanelVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            LPhonologyPanel.LPanelVista,
+            path,
+            QPortrait.QPortraitMediumRead(format),
+            QPortrait.QPortraitLabelRead(label));
     }
 }

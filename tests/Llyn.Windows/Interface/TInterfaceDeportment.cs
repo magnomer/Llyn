@@ -250,7 +250,7 @@ internal static class TInterfaceDeportment
 
     internal static LCatalogTag TCatalogTagCreate(LTag tag, bool chosen) => new(tag, chosen);
 
-    internal static IReadOnlyList<LCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
+    internal static IReadOnlyList<CCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
         panel.LPhonologyRowsRead();
 
     internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
@@ -351,14 +351,14 @@ internal static class TInterfaceDeportment
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
         panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
 
-    internal static IReadOnlyList<LDiwei> TYunjingShengmuRead(this LYunjing panel) => panel.LYunjingShengmuRead();
+    internal static IReadOnlyList<CDiwei> TYunjingShengmuRead(this LYunjing panel) => panel.LYunjingShengmuRead();
 
-    internal static IReadOnlyList<LDiwei> TYunjingYunmuRead(this LYunjing panel) => panel.LYunjingYunmuRead();
+    internal static IReadOnlyList<CDiwei> TYunjingYunmuRead(this LYunjing panel) => panel.LYunjingYunmuRead();
 
-    internal static IReadOnlyList<LVistaRow> TYunjingXiaoyunRead(this LYunjing panel) =>
+    internal static IReadOnlyList<CVistaRow> TYunjingXiaoyunRead(this LYunjing panel) =>
         panel.LYunjingXiaoyunRead();
 
-    internal static LDiweiPage TYunjingDiweiRead(this LYunjing panel) => panel.LYunjingDiweiRead();
+    internal static CDiweiPage TYunjingDiweiRead(this LYunjing panel) => panel.LYunjingDiweiRead();
 
     internal static void TYunjingDiweiSelect(this LYunjing panel, long? id, bool? final) =>
         panel.LYunjingDiweiSelect(id, final);
