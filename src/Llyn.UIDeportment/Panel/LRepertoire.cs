@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,6 +18,7 @@ public sealed class LRepertoire
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam,
@@ -27,6 +29,7 @@ public sealed class LRepertoire
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
         ArgumentNullException.ThrowIfNull(leaveSeam);
 
         _lRepertoireLeaveSeam = leaveSeam;
@@ -43,8 +46,8 @@ public sealed class LRepertoire
         LRepertoireAtlas.LAtlasPanel.LPanelDraftChanged += LRepertoireSituationUpdate;
         LRepertoireOccurrence.LOccurrencePanel.LPanelEdited += LRepertoireEditorOpen;
         LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += editor.LEditorClose;
-        LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
-        LRepertoireOccurrence.LOccurrencePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += lectern.LLecternClear;
+        LRepertoireOccurrence.LOccurrencePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
         LRepertoireDesk.LDeskStateChanged += LRepertoireStateUpdate;
         editor.LEditorStateChanged += LRepertoireStateUpdate;
     }
@@ -100,11 +103,11 @@ public sealed class LRepertoire
 
     private void LRepertoireDraftStart(long? id)
     {
-        LRepertoireDesk.LDeskStart("Repertoire", LSubject.LSubjectSituation, id);
+        LRepertoireDesk.LDeskStart("Repertoire", CSubject.CSubjectSituation, id);
         LRepertoireScenarioChanged?.Invoke(LRepertoireScenarioRead());
     }
 
-    private LSituation? LRepertoireScenarioRead()
+    public LSituation? LRepertoireScenarioRead()
     {
         try
         {
@@ -304,7 +307,7 @@ public sealed class LRepertoire
     private void LRepertoireInquestClear()
     {
         LRepertoireAtlas.LAtlasInquestSet(string.Empty);
-        LRepertoireAtlas.LAtlasMeshSet(LCatalogFilter.LCatalogFilterEmpty);
+        LRepertoireAtlas.LAtlasMeshSet(new CCatalogFilter([]));
         LRepertoireInquestCleared?.Invoke();
     }
 

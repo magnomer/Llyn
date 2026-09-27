@@ -41,19 +41,14 @@ True when the form is unspecified, the lookup is on, no fetch is running, and a 
 The engine declines to fetch while the entry is held.
 The template then says the form is looked up once the entry is saved.
 
-## `internal static PParadigmItem PParadigmItemCreate(IReadOnlyList<LParadigmSlot> slots, bool grouped, bool pending, bool enabled, bool held)`
+## `internal static PParadigmItem PParadigmItemCreate(CParadigmSlot slot, bool pending, bool enabled, bool held)`
 
-Maps the first slot to the row's text and flags, naming every slot handed in.
-A slot with an inflection is filled, one the converter reads as unknown is marked, and any other is open.
-`grouped` says whether the row heads a part group and carries the part's name.
+Maps one paradigm row to its text and flags.
+A row with an inflected form is filled, an unknown one is marked, and any other is open.
 `pending` says whether the engine is fetching for this entry.
 `enabled` says whether the morphology switch is on, and `held` whether a draft holds the entry.
-All three are read once by the caller for every row.
 
-## `internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(IReadOnlyList<LParadigmSlot> slots, bool pending, bool enabled, bool held)`
+## `internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(IReadOnlyList<CParadigmSlot> slots, bool pending, bool enabled, bool held)`
 
-Turns the engine's slots into the rows one box draws.
-The reading view and the editor then fold and flag alike.
-Consecutive slots of one part sharing one stored form fold into one row.
-The part heads a row only when more than one part inflects, and only on its first row.
-
+Turns the shaped rows into the items one box draws.
+The engine already joined the slots, so the reading view and the editor draw alike.

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -39,13 +40,15 @@ internal static class TInterfaceDeportment
 
     internal static bool TEditorFinish(this LEditor editor, bool store) => editor.LEditorFinish(store);
 
-    internal static LEntryDraft? TEditorDraftRead(this LEditor editor) => editor.LEditorDraftRead();
+    internal static CEntryDraft? TEditorDraftRead(this LEditor editor) => editor.LEditorDraftRead();
 
-    internal static LClip TClipCreate() => new();
+    internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorDisplay);
 
-    internal static void TClipStepHandle(this LClip clip, LHarvestStep step) => clip.LClipStepHandle(step);
+    internal static LClip TClipCreate(LEngine engine) => new(TDeskCreate(engine, "Input", static () => false));
 
-    internal static void TEditorClipStart(this LEditor editor, string word, long target, Action<LHarvestStep> sink) =>
+    internal static void TClipStepHandle(this LClip clip, CHarvestStep step) => clip.LClipStepHandle(step);
+
+    internal static bool TEditorClipStart(this LEditor editor, string word, long target, Action<CHarvestStep> sink) =>
         editor.LEditorClipStart(word, target, sink);
 
     internal static string TEditorGraspFormat(this LEditor editor, int step) => editor.LEditorGraspFormat(step);
@@ -64,26 +67,34 @@ internal static class TInterfaceDeportment
 
     internal static void TEditorReferenceAdd(this LEditor editor, long id) => editor.LEditorReferenceAdd(id);
 
-    internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(
+    internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        LEditor editor = TEditorCreate(engine);
+        return new(
             new LPhonologyOutlet(engine),
             new LPortraitOutlet(engine),
-            TEditorCreate(engine),
+            editor,
+            TLecternCreate(editor),
             () => true,
             leaveSeam,
             deleteSeam);
+    }
 
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
-    internal static LLibrary TLibraryCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam) =>
-        new(
+    internal static LLibrary TLibraryCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    {
+        LEditor editor = TEditorCreate(engine);
+        return new(
             new LEntryOutlet(engine),
             new LPortraitOutlet(engine),
-            TEditorCreate(engine),
+            editor,
+            TLecternCreate(editor),
             () => true,
             leaveSeam,
             deleteSeam);
+    }
 
     internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
         panel.LLibraryVistaRestore(vista);
@@ -92,22 +103,26 @@ internal static class TInterfaceDeportment
 
     internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
 
-    internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(
+    internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam)
+    {
+        LEditor editor = TEditorCreate(engine);
+        return new(
             new LDraftOutlet(engine),
             new LEntryOutlet(engine),
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
-            TEditorCreate(engine),
+            editor,
+            TLecternCreate(editor),
             () => true,
             leaveSeam,
             _ => true,
             () => false);
+    }
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
         shelf.LShelfVistaRestore(vista, footnote);
 
-    internal static IReadOnlyList<LCatalogReference> TShelfRowsRead(this LShelf shelf) => shelf.LShelfRowsRead();
+    internal static IReadOnlyList<CCatalogReference> TShelfRowsRead(this LShelf shelf) => shelf.LShelfRowsRead();
 
     internal static void TShelfRowSelect(this LShelf shelf, long? id) => shelf.LShelfRowSelect(id);
 
@@ -119,16 +134,11 @@ internal static class TInterfaceDeportment
 
     internal static void TShelfDelete(this LShelf shelf) => shelf.LShelfDelete();
 
-    internal static LColophon TShelfColophonRead(this LShelf shelf, LDraft draft) => shelf.LShelfColophonRead(draft);
-
     internal static void TImprintOpen(this LImprint imprint, long? id) => imprint.LImprintOpen(id);
 
     internal static void TImprintCancel(this LImprint imprint) => imprint.LImprintCancel();
 
     internal static void TImprintSave(this LImprint imprint) => imprint.LImprintSave();
-
-    internal static LReference TImprintReferenceRead(this LImprint imprint, LDraft draft) =>
-        imprint.LImprintReferenceRead(draft);
 
     internal static string TImprintTallyRead(this LImprint imprint) => imprint.LImprintTallyRead();
 
@@ -166,6 +176,16 @@ internal static class TInterfaceDeportment
 
     internal static void TPanelDelete(this LPanel panel) => panel.LPanelDelete();
 
+    internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => LPanel.LPanelOrderRead(order);
+
+    internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => LPanel.LPanelOrderRead(order);
+
+    internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => LPanel.LPanelFilterRead(filter);
+
+    internal static LCatalogFilter TPanelFilterRead(CCatalogFilter filter) => LPanel.LPanelFilterRead(filter);
+
+    internal static LSubject TPanelSubjectRead(CSubject subject) => LPanel.LPanelSubjectRead(subject);
+
     internal static IReadOnlyList<LCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
         panel.LPhonologyRowsRead();
 
@@ -179,6 +199,22 @@ internal static class TInterfaceDeportment
     internal static void TDeskStart(this LDesk desk, long? id) => desk.LDeskStart(id);
 
     internal static LDraft? TDeskRead(this LDesk desk) => desk.LDeskRead();
+
+    internal static CRecording? TDeskRecordingRead(LRecording? recording) => LDesk.LDeskRecordingRead(recording);
+
+    internal static CStateValue TCardStateRead(LStateValue value) => LCard.LCardStateRead(value);
+
+    internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => LCard.LCardEntryRead(draft);
+
+    internal static IReadOnlyList<CParadigmSlot> TSoundingParadigmRead(IReadOnlyList<LParadigmSlot> slots) =>
+        LSounding.LSoundingParadigmRead(slots);
+
+    internal static CFrequency? TSoundingFrequencyRead(IReadOnlyList<LFrequency> rows, string once) =>
+        LSounding.LSoundingFrequencyRead(rows, once);
+
+    internal static LRecording TDeskRecordingRead(CRecording recording) => LDesk.LDeskRecordingRead(recording);
+
+    internal static CCandidate? TDeskCandidateRead(LCandidate? candidate) => LDesk.LDeskCandidateRead(candidate);
 
     internal static void TDeskDefer(this LDesk desk, LRequest request) => desk.LDeskDefer(request);
 
@@ -216,7 +252,7 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildQuerySet(this LGuild guild, string query) => guild.LGuildQuerySet(query);
 
-    internal static void TGuildOrderSet(this LGuild guild, LCatalogOrder? order) => guild.LGuildOrderSet(order);
+    internal static void TGuildOrderSet(this LGuild guild, CCatalogOrder? order) => guild.LGuildOrderSet(order);
 
     internal static void TGuildRowSelect(this LGuild guild, long? id) => guild.LGuildRowSelect(id);
 
@@ -232,20 +268,21 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildDelete(this LGuild guild) => guild.LGuildDelete();
 
-    internal static IReadOnlyList<LCatalogReference> TOeuvreRowsRead(this LOeuvre oeuvre) => oeuvre.LOeuvreRowsRead();
+    internal static IReadOnlyList<CCatalogReference> TOeuvreRowsRead(this LOeuvre oeuvre) => oeuvre.LOeuvreRowsRead();
 
-    internal static LColophon TOeuvreColophonRead(this LOeuvre oeuvre, LDraft draft) =>
-        oeuvre.LOeuvreColophonRead(draft);
-
-    internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam) =>
-        new(
+    internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam)
+    {
+        LEditor editor = TEditorCreate(engine);
+        return new(
             new LPhonologyOutlet(engine),
             new LPortraitOutlet(engine),
             new LSettingsOutlet(engine),
-            TEditorCreate(engine),
+            editor,
+            TLecternCreate(editor),
             () => true,
             leaveSeam,
             () => true);
+    }
 
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
         panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
@@ -316,21 +353,25 @@ internal static class TInterfaceDeportment
         this LWindow window, string text, IReadOnlyList<LMention> mentions) =>
         window.LWindowMentionDivide(text, mentions);
 
-    internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings) =>
-        new(
+    internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
+    {
+        LEditor editor = new(
+            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            entries,
+            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+            settings,
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            static () => false);
+        return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),
             settings,
-            new LEditor(
-                TEngineFake.TEngineStubCreate<LDraftPort>(),
-                entries,
-                TEngineFake.TEngineStubCreate<LPhonologyPort>(),
-                settings,
-                TEngineFake.TEngineStubCreate<LMediaPort>(),
-                static () => false),
+            editor,
+            TLecternCreate(editor),
             static () => true,
             static () => true,
             static () => true);
+    }
 
     internal static IReadOnlyList<LCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
 

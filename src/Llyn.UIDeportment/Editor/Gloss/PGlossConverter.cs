@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -19,7 +20,7 @@ internal sealed class PGlossConverter : IValueConverter
             return shown;
         }
 
-        foreach (LGlossDraft row in rows)
+        foreach (CGlossDraft row in LCard.LCardGlossRead([.. rows]))
         {
             shown.Add(new PGloss(PGlossConverterCatalog, row));
         }

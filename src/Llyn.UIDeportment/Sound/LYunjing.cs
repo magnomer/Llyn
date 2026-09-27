@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -33,6 +34,7 @@ public sealed class LYunjing
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -41,6 +43,7 @@ public sealed class LYunjing
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
@@ -51,8 +54,8 @@ public sealed class LYunjing
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LYunjingPanel.LPanelCleared += LYunjingEditorClear;
         LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
-        LYunjingPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LYunjingPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LYunjingPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LYunjingPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     private void LYunjingEditorClear()
@@ -214,24 +217,24 @@ public sealed class LYunjing
         _lXiaoyunVista?.LVistaQuerySet(query);
     }
 
-    public void LYunjingLadderSet(LCatalogOrder? order)
+    public void LYunjingLadderSet(CCatalogOrder? order)
     {
         LYunjingOrderSet(_lShengmuVista, order);
     }
 
-    public void LYunjingStairSet(LCatalogOrder? order)
+    public void LYunjingStairSet(CCatalogOrder? order)
     {
         LYunjingOrderSet(_lYunmuVista, order);
     }
 
-    private static void LYunjingOrderSet(LVista? vista, LCatalogOrder? order)
+    private static void LYunjingOrderSet(LVista? vista, CCatalogOrder? order)
     {
         if (vista is null)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LYunjingReset()
@@ -248,7 +251,7 @@ public sealed class LYunjing
         LYunjingPanel.LPanelRowsUpdate();
     }
 
-    public void LYunjingEntryHandle(LBulletin bulletin)
+    public void LYunjingEntryHandle(CBulletin bulletin)
     {
         LYunjingChanged?.Invoke();
         LYunjingPanel.LPanelEntryHandle(bulletin);
@@ -354,9 +357,11 @@ public sealed class LYunjing
         _lYunmuVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public LCatalogOrder LYunjingLadder => _lShengmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName;
+    public CCatalogOrder LYunjingLadder =>
+        LPanel.LPanelOrderRead(_lShengmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
-    public LCatalogOrder LYunjingStair => _lYunmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName;
+    public CCatalogOrder LYunjingStair =>
+        LPanel.LPanelOrderRead(_lYunmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
     public string LYunjingFileRead()
     {

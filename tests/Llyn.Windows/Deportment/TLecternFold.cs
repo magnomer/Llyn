@@ -15,7 +15,7 @@ public sealed class TLecternFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LLectern lectern = TInterfaceDeportment.TEditorCreate(engine).LEditorLectern;
+        LLectern lectern = TInterfaceDeportment.TLecternCreate(TInterfaceDeportment.TEditorCreate(engine));
         bool? shown = null;
         Exception? failure = null;
 

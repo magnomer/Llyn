@@ -1,4 +1,4 @@
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -16,9 +16,9 @@ public sealed record LRespellingMark(bool LRespellingMarkShown, bool LRespelling
         return new LRespellingMark(shown, shown && window.LWindowPhonemicCheck(language));
     }
 
-    public string LRespellingMarkResolve(LPronunciationDraft spoken)
+    public string LRespellingMarkResolve(CPronunciationDraft spoken)
     {
-        return LRespellingMarkResolve(spoken.LPronunciationDraftIpa, spoken.LPronunciationDraftRespelling);
+        return LRespellingMarkResolve(spoken.CPronunciationDraftIpa, spoken.CPronunciationDraftRespelling);
     }
 
     public string LRespellingMarkResolve(string phonetic, string? respelling)

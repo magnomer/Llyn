@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -87,14 +87,14 @@ public sealed class PEtymology : ContentControl
 
     internal TextBox PEtymologyBox => _pEtymologyWrite;
 
-    internal void PEtymologyShow(string language, string text, IReadOnlyList<LTranslationTarget> etymons)
+    internal void PEtymologyShow(string language, string text, IReadOnlyList<CTranslationTarget> etymons)
     {
         PEtymologyLanguage = language;
         PEtymologyText = text;
         PEtymologySourceShow(etymons);
     }
 
-    internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)
+    internal void PEtymologySourceShow(IReadOnlyList<CTranslationTarget> etymons)
     {
         ArgumentNullException.ThrowIfNull(etymons);
 
@@ -104,7 +104,7 @@ public sealed class PEtymology : ContentControl
     }
 
     internal void PEtymologyMentionShow(
-        LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)
+        LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(mentions);

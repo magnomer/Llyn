@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -13,22 +13,22 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
     private readonly LWindow _lWindow;
 
-    private LStateValue _pImageLocation;
+    private CStateValue _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
-    internal PImage(LWindow window, LImageDraft written)
+    internal PImage(LWindow window, CImageDraft written)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(written);
 
         _lWindow = window;
-        _pImageRow = written.LImageDraftId;
-        _pImageLocation = written.LImageDraftLocation;
+        _pImageRow = written.CImageDraftId;
+        _pImageLocation = written.CImageDraftLocation;
     }
 
-    public LStateValue PImageLocation
+    public CStateValue PImageLocation
     {
         get => _pImageLocation;
         private set
@@ -72,12 +72,12 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         PImagePreviewUpdate();
     }
 
-    internal void PImageShow(LImageDraft written)
+    internal void PImageShow(CImageDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
 
-        _pImageRow = written.LImageDraftId;
-        PImageLocation = written.LImageDraftLocation;
+        _pImageRow = written.CImageDraftId;
+        PImageLocation = written.CImageDraftLocation;
     }
 
     internal static string? PImageOpen(Window owner)
@@ -161,7 +161,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = _lWindow.LWindowLocationRead(_pImageLocation.LStateValueShow());
+        Uri? address = _lWindow.LWindowLocationRead(_pImageLocation.CStateValueText);
         if (address is null)
         {
             PImagePreview = null;

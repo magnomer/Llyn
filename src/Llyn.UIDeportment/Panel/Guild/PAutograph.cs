@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -65,8 +66,10 @@ public class PAutograph : UserControl
 
     private void PAutographObserverAttach(LDesk desk)
     {
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, LObserver.LObserverCreate(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(
+            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(
+            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskStateUpdate));
     }
 
     private void PAutographStartUpdate()
@@ -76,9 +79,9 @@ public class PAutograph : UserControl
         PAutographName.Focus();
     }
 
-    private void PAutographDraftUpdate(LDraft draft)
+    private void PAutographDraftUpdate(CDraft draft)
     {
-        PAutographName.Text = draft.LDraftAuthorName;
+        PAutographName.Text = draft.CDraftAuthorName;
     }
 
     private void PAutographNameHandle(object sender, TextChangedEventArgs e)

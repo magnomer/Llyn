@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -53,12 +53,12 @@ internal sealed class PScriptItem
         }
     }
 
-    internal static IReadOnlyList<PScriptItem> PScriptItemScan(IReadOnlyList<LScriptGroup> groups)
+    internal static IReadOnlyList<PScriptItem> PScriptItemScan(IReadOnlyList<CScriptGroup> groups)
     {
         ArgumentNullException.ThrowIfNull(groups);
 
         List<PScriptItem> items = new(groups.Count);
-        foreach (LScriptGroup group in groups)
+        foreach (CScriptGroup group in groups)
         {
             if (PScriptItemCreate(group) is PScriptItem item)
             {
@@ -69,10 +69,10 @@ internal sealed class PScriptItem
         return items;
     }
 
-    private static PScriptItem? PScriptItemCreate(LScriptGroup group)
+    private static PScriptItem? PScriptItemCreate(CScriptGroup group)
     {
         List<PScriptImage> pictures = [];
-        foreach (LScriptImage image in group.LScriptGroupImages)
+        foreach (CScriptImage image in group.CScriptGroupImages)
         {
             if (PScriptImage.PScriptImageCreate(image) is PScriptImage picture)
             {
@@ -82,6 +82,6 @@ internal sealed class PScriptItem
 
         return pictures.Count == 0
             ? null
-            : new PScriptItem(group.LScriptGroupHeading, group.LScriptGroupStyle, group.LScriptGroupGloss, pictures);
+            : new PScriptItem(group.CScriptGroupHeading, group.CScriptGroupStyle, group.CScriptGroupGloss, pictures);
     }
 }

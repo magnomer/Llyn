@@ -6,7 +6,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -290,7 +289,8 @@ public sealed class LLectern
         LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, string.Empty);
         _lLecternSpeech.ItemsSource = null;
         _lLecternSpeechSection.Visibility = Visibility.Collapsed;
-        LFrequencyLabel.LFrequencyChipShow(_lLecternFrequencySection, _lLecternChip, _lLecternName, _lLecternBand, []);
+        LFrequencyLabel.LFrequencyChipShow(
+            _lLecternFrequencySection, _lLecternChip, _lLecternName, _lLecternBand, null);
         _lLecternNoteSection.Visibility = Visibility.Collapsed;
         _lLecternStamp.Visibility = Visibility.Collapsed;
         _lLecternContents.Visibility = Visibility.Collapsed;
@@ -358,7 +358,9 @@ public sealed class LLectern
             _lLecternChip,
             _lLecternName,
             _lLecternBand,
-            _lLecternDisplay.LDisplayFrequencyRead());
+            LSounding.LSoundingFrequencyRead(
+                _lLecternDisplay.LDisplayFrequencyRead(),
+                QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
     }
 
     private void LLecternEntryUpdate()
@@ -395,9 +397,6 @@ public sealed class LLectern
     }
 
     public void LLecternFoldSet(bool opened) => _lLecternDisplay.LDisplaySound.LDisplayFoldSet(opened);
-
-    public IReadOnlyList<LTranslationTarget> LLecternEtymonRead(LEntryDraft draft) =>
-        _lLecternDisplay.LDisplayEtymonRead(draft);
 
     public static bool LLecternNarrativeCheck(bool editable, string text) =>
         LDisplay.LDisplayNarrativeCheck(editable, text);

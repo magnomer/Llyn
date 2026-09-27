@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -44,27 +44,27 @@ public class PColophon : UserControl
 
     private TextBlock PColophonUnselected => (TextBlock)FindName(nameof(PColophonUnselected));
 
-    internal void PColophonShow(LColophon sheet)
+    internal void PColophonShow(CColophon sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
 
-        PColophonTitle.Text = sheet.LColophonTitle;
-        QField.QFieldPlaceholderShow(PColophonTitle, sheet.LColophonTitleFaint);
-        PColophonKind.Text = sheet.LColophonKind;
-        PColophonChip.Visibility = QLook.QLookVisibleRead(sheet.LColophonKindShown);
-        PColophonYear.Text = sheet.LColophonYear;
-        QField.QFieldPlaceholderShow(PColophonYear, sheet.LColophonYearFaint);
-        PColophonYearSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonYearShown);
-        PColophonUrl.Text = sheet.LColophonUrl;
-        QField.QFieldPlaceholderShow(PColophonUrl, sheet.LColophonUrlFaint);
-        PColophonUrlSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonUrlShown);
-        PColophonNote.Text = sheet.LColophonNote;
-        QField.QFieldPlaceholderShow(PColophonNote, sheet.LColophonNoteFaint);
-        PColophonNoteSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonNoteShown);
-        PColophonAuthor.Text = sheet.LColophonAuthor;
-        QField.QFieldPlaceholderShow(PColophonAuthor, sheet.LColophonAuthorFaint);
-        PColophonAuthorSection.Visibility = QLook.QLookVisibleRead(sheet.LColophonAuthorShown);
-        PColophonTally.Text = sheet.LColophonTally;
+        PColophonTitle.Text = sheet.CColophonTitle;
+        QField.QFieldPlaceholderShow(PColophonTitle, sheet.CColophonTitleFaint);
+        PColophonKind.Text = sheet.CColophonKind;
+        PColophonChip.Visibility = QLook.QLookVisibleRead(sheet.CColophonKindShown);
+        PColophonYear.Text = sheet.CColophonYear;
+        QField.QFieldPlaceholderShow(PColophonYear, sheet.CColophonYearFaint);
+        PColophonYearSection.Visibility = QLook.QLookVisibleRead(sheet.CColophonYearShown);
+        PColophonUrl.Text = sheet.CColophonUrl;
+        QField.QFieldPlaceholderShow(PColophonUrl, sheet.CColophonUrlFaint);
+        PColophonUrlSection.Visibility = QLook.QLookVisibleRead(sheet.CColophonUrlShown);
+        PColophonNote.Text = sheet.CColophonNote;
+        QField.QFieldPlaceholderShow(PColophonNote, sheet.CColophonNoteFaint);
+        PColophonNoteSection.Visibility = QLook.QLookVisibleRead(sheet.CColophonNoteShown);
+        PColophonAuthor.Text = sheet.CColophonAuthor;
+        QField.QFieldPlaceholderShow(PColophonAuthor, sheet.CColophonAuthorFaint);
+        PColophonAuthorSection.Visibility = QLook.QLookVisibleRead(sheet.CColophonAuthorShown);
+        PColophonTally.Text = sheet.CColophonTally;
 
         PColophonBody.Visibility = Visibility.Visible;
         PColophonUnselected.Visibility = Visibility.Collapsed;

@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -49,22 +49,23 @@ public partial class PFavorite
     internal async void PFavoriteVistaRestore()
     {
         _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowDeportment);
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PFavoriteWorkspaceUpdate));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectGrasp, LObserver.LObserverCreate(this, PSeriesGraspUpdate));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lFavorite.LFavoritePanel.LPanelEntryHandle));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectFavorite, LObserver.LObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoritePanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PRosterFind));
-        _lFavorite.LFavoritePanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lFavorite.LFavoritePanel.LPanelDraftUpdate));
+        LPanel panel = _lFavorite.LFavoritePanel;
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, PRosterFind));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PFavoriteWorkspaceUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, PSeriesGraspUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectFavorite, LObserver.LObserverCreate<CBulletin>(this, PRosterFind));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PRosterFind));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, PRosterFind));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -72,11 +73,11 @@ public partial class PFavorite
             "Series",
             PSeriesHandle,
             [
-                LCatalogOrder.LCatalogOrderHeadword,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderLanguage,
-                LCatalogOrder.LCatalogOrderMarked,
-                LCatalogOrder.LCatalogOrderGrasp,
+                CCatalogOrder.CCatalogOrderHeadword,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderLanguage,
+                CCatalogOrder.CCatalogOrderMarked,
+                CCatalogOrder.CCatalogOrderGrasp,
             ]);
         QChoice.QChoiceOrderApply(PSeriesDropdown, _lFavorite.LFavoriteOrder);
         PStrainerRestore();

@@ -23,7 +23,7 @@ What is standing in the entry.
 
 How many chips stand before the caret, which is the place a new chip is asked for.
 
-## `internal void PCardRegisterShow(IReadOnlyList<LRegisterDraft> drafts)`
+## `internal void PCardRegisterShow(IReadOnlyList<CRegisterDraft> drafts)`
 
 Makes the chips show the engine's Registers, matched by id, replacing a chip whose name changed.
 

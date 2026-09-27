@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -25,7 +25,7 @@ internal sealed partial class PCard
     internal int PCardLinkPosition =>
         PCardRowResolve(PCardLink, _pCardLinkKey, PCardLink.IndexOf(_pCardLinkCaret));
 
-    internal void PCardLinkShow(IReadOnlyList<LTranslationTarget> targets)
+    internal void PCardLinkShow(IReadOnlyList<CTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
 
@@ -33,12 +33,12 @@ internal sealed partial class PCard
             PCardLink,
             targets,
             _pCardLinkKey,
-            static target => target.LTranslationTargetId,
+            static target => target.CTranslationTargetId,
             PCardLinkCreate,
             static (row, target) =>
                 row is LLinkChip chip
-                && string.Equals(chip.LLinkChipHeadword, target.LTranslationTargetHeadword, StringComparison.Ordinal)
-                && string.Equals(chip.LLinkChipLanguage, target.LTranslationTargetLanguage, StringComparison.Ordinal)
+                && string.Equals(chip.LLinkChipHeadword, target.CTranslationTargetHeadword, StringComparison.Ordinal)
+                && string.Equals(chip.LLinkChipLanguage, target.CTranslationTargetLanguage, StringComparison.Ordinal)
                     ? row
                     : PCardLinkCreate(target));
 
@@ -122,10 +122,10 @@ internal sealed partial class PCard
         }
     }
 
-    private static object PCardLinkCreate(LTranslationTarget target)
+    private static object PCardLinkCreate(CTranslationTarget target)
     {
         return new LLinkChip(
-            target.LTranslationTargetId, target.LTranslationTargetHeadword, target.LTranslationTargetLanguage);
+            target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage);
     }
 
     private void PCardLinkStart()

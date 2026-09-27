@@ -23,17 +23,32 @@ A start clears it.
 A tenure was started, handed out so the veneer can attach its marshalling observers to it.
 The observers the veneer registered are already on the new tenure when this fires.
 
-## `public void LDeskDraftAttach(LSubject subject, Action<LBulletin> observer)`
+## `private LForay? _lDeskRecording;`
+
+The recording search running over the held tenure, kept here so no driver ever holds it.
+`_lDeskTranscription` is the reading search, kept apart since the engine runs both kinds side by side.
+
+## `internal LDesk(LDraftPort drafts, string scope, Func<bool> unreadableSeam)`
+
+Only the controllers that own a desk build one, so the port never reaches a driver.
+
+## `public void LDeskDraftAttach(CSubject subject, Action<CBulletin> observer)`
 
 Registers an observer the desk puts on every tenure it starts, for the draft-level subjects.
-An observer is a delegate over a bulletin, forwarded as it came, so the desk holds no contract.
+An observer is a delegate over a Conduct bulletin, which the desk copies from each engine bulletin.
 The veneer registers once at attach time and never sees the tenure, which is what re-attaches per start.
 A tenure already held gets the observer at once.
 `LDeskObserverAttach` and `LDeskEntryAttach` do the same for the tenure-wide and entry-level subjects.
 
-## `public event Action<LDraft>? LDeskDraftChanged;`
+## `internal event Action<LDraft>? LDeskDraftPrepared;`
+
+The held draft was read again, handed whole to the controllers that own the desk.
+It fires before `LDeskDraftChanged`, so a controller's own announcement reaches its driver first.
+
+## `public event Action<CDraft>? LDeskDraftChanged;`
 
 The held draft was read again, so the edit area writes its controls from it.
+A driver receives only the Conduct copy.
 
 ## `public event Action? LDeskStateChanged;`
 
@@ -75,25 +90,53 @@ The tenure halted since the last bulletin.
 
 ## `internal LTenure? LDeskTenure`
 
-The held tenure, for the clip and notation deportments that start forays over it.
+The held tenure, for the editor that reads the draft's language and reflex state from it.
+
+## `internal LForay? LDeskRecording`
+
+The running recording search, read by the clip for its language, target and save.
+`LDeskTranscription` hands the reading search to the notation the same way.
+
+## `internal void LDeskVistaRestore(LVista vista)`
+
+Takes the vista a start runs over, handed on by the controller that owns the desk.
 
 ## `public void LDeskStart(long? id)`
 
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
 A refused start is announced under the scope's load key and leaves the desk empty.
 
-## `public void LDeskStart(string origin, LSubject subject, long? id)`
+## `public void LDeskStart(string origin, CSubject subject, long? id)`
 
 The same start for a desk that holds no vista, naming the origin and the subject itself.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 
-## `public LForay? LDeskRecordingStart(string word, long target, Action<LHarvestStep> sink)`
+## `public bool LDeskRecordingStart(string word, long target, Action<CHarvestStep> sink)`
 
-Starts a recording search over the held tenure, or nothing while none is held.
-The sink is the veneer's delegate over each step, handed through untouched.
+Starts a recording search over the held tenure and reports whether one started.
+Nothing starts while no tenure is held.
+The previous recording search is cancelled first.
+Each engine step reaches the sink as a Conduct copy.
 `LDeskTranscriptionStart` starts a reading search the same way, under one scheme.
 
-## `public LDraft? LDeskRead()`
+## `public void LDeskForayCancel()`
+
+Stops both searches.
+The clip and notation popups never stay open together, so stopping both stops only the one running.
+
+## `private static LForay? LDeskRecordingRun(LTenure? tenure, string word, long target, Action<LHarvestStep> sink)`
+
+Starts the search over the tenure handed in, or nothing when none is held.
+The tenure and the forays arrive as parameters, so no field decides the start.
+`LDeskTranscriptionRun` and `LDeskForayStop` take their handles the same way.
+
+## `internal static CRecording? LDeskRecordingRead(LRecording? recording)`
+
+Copies an engine recording into its Conduct shape, or none for none.
+The overload over `CRecording` copies it back, since the clip saves and plays what it listed.
+`LDeskCandidateRead` copies a reading out the same way.
+
+## `internal LDraft? LDeskRead()`
 
 The held draft after the deferred requests have been applied, or null while nothing is held.
 
@@ -102,7 +145,7 @@ The held draft after the deferred requests have been applied, or null while noth
 The stored id the held draft stands on, or null for a fresh draft, no tenure or a failed read.
 A tally reads it, so a failed persist only blanks the count.
 
-## `public LMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)`
+## `public CMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)`
 
 The Mention a selection in a sentence field lies inside, read from the held draft.
 The selection arrives as the field gives it, in UTF-16 units, and the engine measures it.
@@ -110,6 +153,10 @@ The find answers from what the engine holds, never from a list the shell keeps.
 It reads the draft without persisting, so a context menu asking many times sends nothing.
 The tenure keeps the draft it read until the next change, so command checks read no file per keystroke.
 A command about to act on the answer persists first, so pending typing cannot shift the offsets.
+
+## `private static CMentionDraft? LDeskMentionRead(LMentionDraft? found)`
+
+Shapes the found Mention through the card's map, or none when the selection lies in no Mention.
 
 ## `public void LDeskDraftUpdate()`
 

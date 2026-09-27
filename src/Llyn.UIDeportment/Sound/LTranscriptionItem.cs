@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -127,14 +127,14 @@ public sealed class LTranscriptionItem : INotifyPropertyChanged
         measure.Text = text;
     }
 
-    public static LTranscriptionItem LTranscriptionItemCreate(LTranscriptionDraft spelled)
+    public static LTranscriptionItem LTranscriptionItemCreate(CTranscriptionDraft spelled)
     {
         ArgumentNullException.ThrowIfNull(spelled);
 
         return new LTranscriptionItem(
-            spelled.LTranscriptionDraftId,
-            spelled.LTranscriptionDraftScheme,
-            spelled.LTranscriptionDraftText);
+            spelled.CTranscriptionDraftId,
+            spelled.CTranscriptionDraftScheme,
+            spelled.CTranscriptionDraftText);
     }
 
     public static string LTranscriptionLabelFormat(string scheme)

@@ -105,10 +105,13 @@ public sealed class LLecternAccent
         _lLecternAccentOpener.Text = respelling.LRespellingMarkOpener;
         _lLecternAccentCloser.Text = respelling.LRespellingMarkCloser;
         _lLecternAccentContour.SetValue(_lLecternAccentTonal, _lLecternAccentDisplay.LDisplayTonalCheck());
-        LLecternSurfaceShow(primary is null ? string.Empty : respelling.LRespellingMarkResolve(primary));
+        LLecternSurfaceShow(primary is null
+            ? string.Empty
+            : respelling.LRespellingMarkResolve(LSounding.LSoundingPronunciationRead(primary)));
 
         _lLecternAccentRow.Clear();
-        foreach (LPronunciationDraft spoken in _lLecternAccentDisplay.LDisplayAccentRead())
+        foreach (CPronunciationDraft spoken in LSounding.LSoundingPronunciationRead(
+            _lLecternAccentDisplay.LDisplayAccentRead()))
         {
             _lLecternAccentRow.Add(LAccentItem.LAccentItemCreate(language, flagged, spoken, respelling));
         }

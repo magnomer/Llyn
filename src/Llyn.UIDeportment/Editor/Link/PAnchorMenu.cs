@@ -7,7 +7,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Application;
-using Llyn.Core;
 
 
 namespace Llyn.UIDeportment;
@@ -51,12 +50,7 @@ public partial class PEditor
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
-            _pEditorHost.PWindowDeportment.LWindowAnchorScan(
-                _lEditor.LEditorAnchorRead(),
-                row.LReflexItemAnchors,
-                _lEditor.LEditorLanguage,
-                row.LReflexItemLanguage,
-                row.LReflexItemTone));
+            _lEditor.LEditorAnchorScan(row.LReflexItemAnchors, row.LReflexItemLanguage, row.LReflexItemTone));
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)
         {

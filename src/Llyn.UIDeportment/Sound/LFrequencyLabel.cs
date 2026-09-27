@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -14,9 +13,9 @@ public static class LFrequencyLabel
     private const char LFrequencyStar = '✦';
 
     public static void LFrequencyChipShow(
-        UIElement section, FrameworkElement chip, TextBlock name, TextBlock band, IReadOnlyList<LFrequency> rows)
+        UIElement section, FrameworkElement chip, TextBlock name, TextBlock band, CFrequency? frequency)
     {
-        if (!LDisplay.LDisplayFrequencyCheck(rows))
+        if (frequency is null)
         {
             name.Text = string.Empty;
             chip.ToolTip = null;
@@ -24,9 +23,8 @@ public static class LFrequencyLabel
             return;
         }
 
-        LFrequencyLabelShow(name, band, LDisplay.LDisplayBandResolve(rows));
-        chip.ToolTip = LDisplay.LDisplaySourceFormat(
-            rows, QLocalizationCatalog.QLocalizationTextRead("Frequency.Once"));
+        LFrequencyLabelShow(name, band, frequency.CFrequencyBand);
+        chip.ToolTip = frequency.CFrequencySource;
         section.Visibility = Visibility.Visible;
     }
 

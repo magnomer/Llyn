@@ -5,8 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -15,6 +15,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     private PWindow _pEditorHost = null!;
 
     private LEditor _lEditor = null!;
+
+    private LLectern _pEditorLectern = null!;
 
     public PEditor()
     {
@@ -160,13 +162,14 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private long PEditorDraft => _lEditor.LEditorDesk.LDeskId;
 
-    internal void PEditorAttach(PWindow host, LEditor editor)
+    internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)
     {
         _pEditorHost = host;
         _lEditor = editor;
+        _pEditorLectern = lectern;
         _lEditor.LEditorDesk.LDeskStarted += PEditorStartUpdate;
         PEditorObserverAttach(_lEditor.LEditorDesk);
-        _lEditor.LEditorDesk.LDeskDraftChanged += PEditorDraftUpdate;
+        _lEditor.LEditorDraftChanged += PEditorDraftShow;
         _lEditor.LEditorDesk.LDeskFailed += host.PWindowFailureShow;
         _lEditor.LEditorStateChanged += PEditorStateUpdate;
         _lEditor.LEditorStopped += PEditorStopUpdate;
@@ -263,16 +266,23 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorObserverAttach(LDesk desk)
     {
-        desk.LDeskEntryAttach(LSubject.LSubjectFrequency, LObserver.LObserverCreate(this, PEditorFrequencyUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectGrasp, LObserver.LObserverCreate(this, PEditorGraspUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectInflection, LObserver.LObserverCreate(this, PEditorParadigmUpdate));
-        desk.LDeskEntryAttach(LSubject.LSubjectReflex, LObserver.LObserverCreate(this, PReflexPendingShow));
-        desk.LDeskObserverAttach(LSubject.LSubjectScript, LObserver.LObserverCreate(this, PEditorScriptUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, PEditorFanqieUpdate));
-        desk.LDeskObserverAttach(LSubject.LSubjectReference, LObserver.LObserverCreate(this, PSentenceLoad));
-        desk.LDeskObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectTenure, LObserver.LObserverCreate(this, desk.LDeskStateUpdate));
-        desk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, desk.LDeskDraftUpdate));
+        desk.LDeskEntryAttach(
+            CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(this, PEditorFrequencyUpdate));
+        desk.LDeskEntryAttach(CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, PEditorGraspUpdate));
+        desk.LDeskEntryAttach(
+            CSubject.CSubjectInflection, LObserver.LObserverCreate<CBulletin>(this, PEditorParadigmUpdate));
+        desk.LDeskEntryAttach(CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PReflexPendingShow));
+        desk.LDeskObserverAttach(
+            CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(this, PEditorScriptUpdate));
+        desk.LDeskObserverAttach(
+            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(this, PEditorFanqieUpdate));
+        desk.LDeskObserverAttach(CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
+        desk.LDeskObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
+        desk.LDeskDraftAttach(
+            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskStateUpdate));
+        desk.LDeskDraftAttach(
+            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
     }
 
     private void PEditorStartUpdate()
@@ -287,14 +297,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PEditorFanqieUpdate();
     }
 
-    private void PEditorDraftUpdate(LDraft held)
+    private void PEditorDraftShow(CEntryDraft draft)
     {
-        PEditorDraftShow(held.LDraftContent);
-    }
-
-    private void PEditorDraftShow(LEntryDraft draft)
-    {
-        QField.QFieldTextShow(PHeadword, draft.LEntryDraftHeadword);
+        QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
         PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "[");
         PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "]");
         QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorPronunciationRead());
@@ -302,16 +307,16 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PGlyphShow(draft);
         PTranscriptionShow(draft);
         PReflexShow(draft);
-        PMarkerShow(draft.LEntryDraftSpeeches);
+        PMarkerShow(draft.CEntryDraftSpeeches);
         PEditorLanguageUpdate();
         PEditorReadingShow();
 
-        IReadOnlyDictionary<long, LTranslationTarget> targets = _lEditor.LEditorTargetRead();
-        PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets, draft.LEntryDraftLanguage);
-        PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets, draft.LEntryDraftLanguage);
+        IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorTargetRead();
+        PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets, draft.CEntryDraftLanguage);
+        PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations, targets, draft.CEntryDraftLanguage);
 
         PEtymologyShow(draft);
-        QField.QFieldNoteShow(PNoteContents, draft.LEntryDraftNote);
+        QField.QFieldNoteShow(PNoteContents, draft.CEntryDraftNote);
         PEditorRecordingShow(draft);
         PPlaybackTrayShow();
         PReflexPrepare(draft);
@@ -445,7 +450,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             PEditorFrequencyChip,
             PEditorFrequency,
             PEditorFrequencyBand,
-            _lEditor.LEditorFrequencyRead());
+            _lEditor.LEditorFrequencyRead(QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
     }
 
     private void PEditorParadigmUpdate()

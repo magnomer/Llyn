@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 

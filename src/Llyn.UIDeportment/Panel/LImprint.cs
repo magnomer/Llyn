@@ -36,10 +36,12 @@ public sealed class LImprint
         _lEntryPort = entries;
         _lSettingsPort = settings;
         LImprintDesk = new LDesk(drafts, "Source", unreadableSeam);
-        LImprintDesk.LDeskDraftChanged += LImprintDraftUpdate;
+        LImprintDesk.LDeskDraftPrepared += LImprintDraftUpdate;
     }
 
     public event Action? LImprintChanged;
+
+    public event Action<LReference>? LImprintReferenceChanged;
 
     public event Action? LImprintFocused;
 
@@ -92,12 +94,11 @@ public sealed class LImprint
     private void LImprintDraftUpdate(LDraft draft)
     {
         LImprintChanged?.Invoke();
+        LImprintReferenceChanged?.Invoke(LImprintReferenceRead(draft));
     }
 
-    public LReference LImprintReferenceRead(LDraft draft)
+    private static LReference LImprintReferenceRead(LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
         return draft.LDraftReference
             ?? throw new InvalidOperationException("The imprint draft holds no reference.");
     }

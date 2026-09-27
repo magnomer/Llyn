@@ -15,6 +15,11 @@ An empty record hides nothing, which is how every panel opens.
 
 The filter that hides nothing, shared so no panel builds its own.
 
+## `public static LCatalogFilter LCatalogFilterCreate(IReadOnlyList<string> hidden)`
+
+The filter hiding `hidden`, or the shared empty filter when it hides nothing.
+The vista skips an equal filter, so a menu that hides nothing again raises no notice.
+
 ## `public bool LCatalogFilterActive`
 
 Whether any language is hidden, which is what the panel marks its button with.

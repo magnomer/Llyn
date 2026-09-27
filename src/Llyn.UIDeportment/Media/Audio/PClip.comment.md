@@ -61,7 +61,7 @@ Rows stand where the language pack put the source, not where the network put it.
 Every source is asked at once, so a fast one would otherwise head a list the user did not order.
 A new row opens saying it is searching, so every declared source is visible before any of them answers.
 
-### `private PClipReading PClipReadingCreate(LRecording recording)`
+### `private PClipReading PClipReadingCreate(CRecording recording)`
 
 Builds the previewable, takeable entry for one recording that carries an address.
 Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.
@@ -135,7 +135,7 @@ Taking a recording closes the menu, the way taking a pronunciation candidate doe
 
 A failed download leaves the row offering another try.
 
-### `private void PClipRecordingHandle(LRecording recording)`
+### `private void PClipRecordingHandle(CRecording recording)`
 
 Handled the same way as lookup, each answer resolved into the row its source owns.
 A source may answer once per variety, and each answer with an address becomes one more recording on the row.

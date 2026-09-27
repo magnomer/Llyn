@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Windows;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 

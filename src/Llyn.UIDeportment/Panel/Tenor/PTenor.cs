@@ -129,8 +129,9 @@ public partial class PTenor : UserControl
     {
         _pTenorHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(_lEditor.LEditorDisplay);
         _lTenor = host.PWindowDeportment.LWindowTenorCreate(
-            _lEditor, PTenorShownCheck, PTenorDiscardConfirm, host.PWindowDeleteConfirm);
+            _lEditor, lectern, PTenorShownCheck, PTenorDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelChanged += PTenorModeUpdate;
         panel.LPanelRowsChanged += PCohortFind;
@@ -141,9 +142,9 @@ public partial class PTenor : UserControl
         QLookItem.QLookItemAttach(PGamut, PGamutApply);
         QLookItem.QLookItemAttach(PCohort, PCohortApply);
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
         _lEditor.LEditorStateChanged += PTenorStoreUpdate;
-        PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor, lectern);
         PEditor.PEditorChronicleChanged += PTenorChronicleUpdate;
     }
 

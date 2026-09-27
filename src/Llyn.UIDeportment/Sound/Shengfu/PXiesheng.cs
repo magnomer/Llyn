@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -124,8 +125,11 @@ public class PXiesheng : UserControl
     internal void PXieshengAttach(PWindow host)
     {
         _pXieshengHost = host;
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lXiesheng = host.PWindowDeportment.LWindowXieshengCreate(
-            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
+            editor,
+            lectern,
             PXieshengShownCheck,
             PXieshengDiscardConfirm,
             host.PWindowDeleteConfirm);
@@ -140,11 +144,11 @@ public class PXiesheng : UserControl
         PGrove.ItemsSource = _pGroveList;
         PKindred.ItemsSource = _pKindredList;
 
-        PDisplay.PDisplayAttach(host, _lXiesheng.LXieshengEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
         PXieshengStem.PStemAttach(host.PWindowDeportment);
         PXieshengStem.PStemEntryNotice = _lXiesheng.LXieshengGlyphSelect;
 
-        PEditor.PEditorAttach(host, _lXiesheng.LXieshengEditor);
+        PEditor.PEditorAttach(host, _lXiesheng.LXieshengEditor, lectern);
 
         PEditor.PEditorChronicleChanged += PXieshengChronicleUpdate;
 
@@ -174,12 +178,13 @@ public class PXiesheng : UserControl
             LSubject.LSubjectFanqie, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
         _lXiesheng.LXieshengGroveAttach(
             LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
-        _lXiesheng.LXieshengPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelRowsUpdate));
-        _lXiesheng.LXieshengPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lXiesheng.LXieshengEntryHandle));
-        _lXiesheng.LXieshengPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lXiesheng.LXieshengPanel.LPanelDraftUpdate));
+        LPanel panel = _lXiesheng.LXieshengPanel;
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lXiesheng.LXieshengEntryHandle));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -187,9 +192,9 @@ public class PXiesheng : UserControl
             "Rung",
             PRungHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PRungDropdown, _lXiesheng.LXieshengRung);
         _lXiesheng.LXieshengLodestarSet(PLodestar.Text);

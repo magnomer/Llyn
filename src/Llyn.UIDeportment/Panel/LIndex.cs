@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -27,12 +28,12 @@ public sealed class LIndex
         view.ItemsSource = _lIndexList;
     }
 
-    public static IReadOnlyList<LCatalogOrder> LIndexOrder { get; } =
+    public static IReadOnlyList<CCatalogOrder> LIndexOrder { get; } =
     [
-        LCatalogOrder.LCatalogOrderHeadword,
-        LCatalogOrder.LCatalogOrderReverse,
-        LCatalogOrder.LCatalogOrderRecent,
-        LCatalogOrder.LCatalogOrderEarliest,
+        CCatalogOrder.CCatalogOrderHeadword,
+        CCatalogOrder.CCatalogOrderReverse,
+        CCatalogOrder.CCatalogOrderRecent,
+        CCatalogOrder.CCatalogOrderEarliest,
     ];
 
     public bool LIndexShown { get; private set; }

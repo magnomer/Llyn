@@ -111,6 +111,59 @@ internal static class TAuditChainWalker
         return hits;
     }
 
+    public static IReadOnlyList<TAuditHit> TAuditSealScan()
+    {
+        Dictionary<string, HashSet<string>> inner = TAuditInnerRead();
+        List<TAuditHit> hits = [];
+        HashSet<string> taken = new(StringComparer.Ordinal);
+        foreach ((string ring, string[] prefixes) in TAuditChainSetting.TAuditSealPrefix)
+        {
+            if (TAuditChainSetting.TAuditChainReach.GetValueOrDefault(ring) is not [string neighbour])
+            {
+                continue;
+            }
+
+            IEnumerable<ISymbol> members = TAuditBinder.TAuditCompilation
+                .GetSymbolsWithName(name => TAuditSealCheck(name, prefixes), SymbolFilter.Type)
+                .OfType<INamedTypeSymbol>()
+                .Where(type => type.ContainingType is null && type.DeclaredAccessibility == Accessibility.Public
+                    && TAuditBinder.TAuditSourceRead(type) is { } source
+                    && TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys) == ring)
+                .SelectMany(TAuditPublicRead)
+                .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
+            foreach (ISymbol member in members)
+            {
+                Location? location = member.Locations.FirstOrDefault(place => place.IsInSource);
+                if (location is null)
+                {
+                    continue;
+                }
+
+                string relative = TAuditBinder.TAuditRelativeRead(location.SourceTree!.FilePath);
+                int line = location.GetLineSpan().StartLinePosition.Line + 1;
+                foreach (INamedTypeSymbol type in TAuditSignatureRead(member))
+                {
+                    string? source = TAuditBinder.TAuditSourceRead(type);
+                    string? target = source is null
+                        ? null
+                        : TAuditBinder.TAuditRingRead(source, TAuditChainSetting.TAuditChainReach.Keys);
+                    if (target is not null && inner[neighbour].Contains(target)
+                        && taken.Add($"{relative}|{line}|{ring}|{target}|{type.Name}"))
+                    {
+                        hits.Add(new TAuditHit(relative, line, ring, "seal", target, type.Name));
+                    }
+                }
+            }
+        }
+
+        return hits;
+    }
+
+    private static bool TAuditSealCheck(string name, string[] prefixes)
+    {
+        return prefixes.Any(prefix => name.StartsWith(prefix, StringComparison.Ordinal));
+    }
+
     private static IEnumerable<ISymbol> TAuditPublicRead(INamedTypeSymbol type)
     {
         foreach (ISymbol member in type.GetMembers())

@@ -6,9 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Llyn.Application;
-using Llyn.Core;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
+using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 

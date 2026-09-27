@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -37,13 +37,13 @@ internal sealed partial class PSentence
         return null;
     }
 
-    private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts)
+    private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)
     {
         PCard.PCardRowShow(
             PSentenceGloss,
             drafts,
             static row => row.PGlossId,
-            static draft => draft.LGlossDraftId,
+            static draft => draft.CGlossDraftId,
             PSentenceGlossCreate,
             (row, draft) =>
             {
@@ -52,7 +52,7 @@ internal sealed partial class PSentence
             });
     }
 
-    private PGloss PSentenceGlossCreate(LGlossDraft draft)
+    private PGloss PSentenceGlossCreate(CGlossDraft draft)
     {
         PGloss row = new(PSentenceLanguageCatalog, draft);
         row.PropertyChanged += PSentenceGlossChange;

@@ -87,7 +87,7 @@ Sets the text of one initial or rime link.
 
 Sets one named text of a line.
 
-## `internal static PFanqieLine PFanqieLineCreate(LFanqieRow row)`
+## `internal static PFanqieLine PFanqieLineCreate(CFanqieRow row)`
 
 Copies the columns from a stored row the engine already formatted.
 No hypothesis runs here, so drawing an entry derives nothing.

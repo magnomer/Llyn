@@ -1,4 +1,5 @@
 using System;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -49,13 +50,13 @@ public sealed class LPanel
 
     public event Action? LPanelCleared;
 
-    public event Action<LDraft>? LPanelDraftChanged;
+    internal event Action<LDraft>? LPanelDraftChanged;
 
     public event Action<long>? LPanelEdited;
 
     public event Action<string, Exception>? LPanelFailed;
 
-    public LVista? LPanelVista => _lPanelVista;
+    internal LVista? LPanelVista => _lPanelVista;
 
     public bool LPanelEditing => _lPanelVista?.LVistaEditing ?? false;
 
@@ -74,7 +75,7 @@ public sealed class LPanel
         LPanelRowsChanged?.Invoke();
     }
 
-    public void LPanelVistaRestore(LVista vista)
+    internal void LPanelVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -85,19 +86,35 @@ public sealed class LPanel
         }
     }
 
-    public void LPanelObserverAttach(LSubject subject, Action<LBulletin> observer)
+    public void LPanelObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lPanelVista?.LVistaObserverAttach(subject, observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lPanelVista?.LVistaObserverAttach(LPanelSubjectRead(subject), LPanelBulletinSend);
+
+        void LPanelBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
-    public void LPanelChosenAttach(LSubject subject, Action<LBulletin> observer)
+    public void LPanelChosenAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lPanelVista?.LVistaChosenAttach(subject, observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lPanelVista?.LVistaChosenAttach(LPanelSubjectRead(subject), LPanelBulletinSend);
+
+        void LPanelBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
-    public LCatalogOrder LPanelOrder => _lPanelVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    public CCatalogOrder LPanelOrder =>
+        LPanelOrderRead(_lPanelVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
-    public LCatalogFilter LPanelFilter => _lPanelVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    public CCatalogFilter LPanelFilter =>
+        LPanelFilterRead(_lPanelVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public bool LPanelChangeCheck()
     {
@@ -308,18 +325,18 @@ public sealed class LPanel
         }
     }
 
-    public void LPanelEntryHandle(LBulletin bulletin)
+    public void LPanelEntryHandle(CBulletin bulletin)
     {
         LPanelEntrySelect(bulletin);
         LPanelChanged?.Invoke();
         LPanelRowsUpdate();
     }
 
-    public void LPanelEntrySelect(LBulletin bulletin)
+    public void LPanelEntrySelect(CBulletin bulletin)
     {
         ArgumentNullException.ThrowIfNull(bulletin);
 
-        if (!bulletin.LBulletinStored)
+        if (!bulletin.CBulletinStored)
         {
             return;
         }
@@ -339,7 +356,7 @@ public sealed class LPanel
             return;
         }
 
-        _lPanelVista?.LVistaSelect(bulletin.LBulletinId);
+        _lPanelVista?.LVistaSelect(bulletin.CBulletinId);
     }
 
     public void LPanelDelete()
@@ -360,5 +377,34 @@ public sealed class LPanel
         }
 
         LPanelClear();
+    }
+
+    internal static CCatalogOrder LPanelOrderRead(LCatalogOrder order)
+    {
+        return (CCatalogOrder)order;
+    }
+
+    internal static LCatalogOrder? LPanelOrderRead(CCatalogOrder? order)
+    {
+        return (LCatalogOrder?)order;
+    }
+
+    internal static CCatalogFilter LPanelFilterRead(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        return new CCatalogFilter(filter.LCatalogFilterHidden);
+    }
+
+    internal static LCatalogFilter LPanelFilterRead(CCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        return LCatalogFilter.LCatalogFilterCreate(filter.CCatalogFilterHidden);
+    }
+
+    internal static LSubject LPanelSubjectRead(CSubject subject)
+    {
+        return (LSubject)subject;
     }
 }

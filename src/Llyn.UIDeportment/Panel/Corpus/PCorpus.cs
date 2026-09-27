@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -220,8 +219,10 @@ public partial class PCorpus : UserControl, PChronicleHost
     {
         _pCorpusHost = host;
         LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lCorpus = host.PWindowDeportment.LWindowCorpusCreate(
             editor,
+            lectern,
             PCorpusShownCheck,
             PCorpusDiscardConfirm,
             PCorpusRemovalConfirm,
@@ -240,8 +241,8 @@ public partial class PCorpus : UserControl, PChronicleHost
         QLookItem.QLookItemAttach(PTranscriptGlossLine, PTranscriptGlossApply);
         QLookItem.QLookItemAttach(PExcerptGloss, PGloss.PGlossRowApply);
 
-        PDisplay.PDisplayAttach(host, editor.LEditorLectern);
-        PEditor.PEditorAttach(host, editor);
+        PDisplay.PDisplayAttach(host, lectern);
+        PEditor.PEditorAttach(host, editor, lectern);
 
         LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
         LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;

@@ -10,6 +10,13 @@ public sealed record LCatalogFilter(IReadOnlyList<string> LCatalogFilterHidden)
 
     public bool LCatalogFilterActive => LCatalogFilterHidden.Count > 0;
 
+    public static LCatalogFilter LCatalogFilterCreate(IReadOnlyList<string> hidden)
+    {
+        ArgumentNullException.ThrowIfNull(hidden);
+
+        return hidden.Count == 0 ? LCatalogFilterEmpty : new LCatalogFilter(hidden);
+    }
+
     public bool LCatalogFilterMatch(string? language)
     {
         return !LCatalogFilterHidden.Contains(language ?? string.Empty, StringComparer.OrdinalIgnoreCase);

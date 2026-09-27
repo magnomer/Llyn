@@ -19,7 +19,7 @@ public sealed class TImprintField
         imprint.TImprintTitleSet("Book");
         imprint.TImprintYearSet(" ");
 
-        LReference held = imprint.TImprintReferenceRead(imprint.LImprintDesk.TDeskRead()!);
+        LReference held = imprint.LImprintDesk.TDeskRead()!.LDraftReference!;
         Assert.Equal("Book", held.LReferenceTitle.TStateValueShow());
         Assert.True(held.LReferenceYear.LStateValueEmpty);
         Assert.Equal("Source.Year", held.LReferenceYearHint);
@@ -39,7 +39,7 @@ public sealed class TImprintField
         imprint.TImprintKindSet("journal");
         imprint.TImprintKindSet(null);
 
-        LReference held = imprint.TImprintReferenceRead(imprint.LImprintDesk.TDeskRead()!);
+        LReference held = imprint.LImprintDesk.TDeskRead()!.LDraftReference!;
         Assert.Equal("journal", held.LReferenceKindTag);
         Assert.True(imprint.LImprintDesk.TDeskChronicleRead().LDeskBackward);
     }

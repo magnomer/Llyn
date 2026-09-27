@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -148,8 +149,11 @@ public class PYunjing : UserControl
     internal void PYunjingAttach(PWindow host)
     {
         _pYunjingHost = host;
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lYunjing = host.PWindowDeportment.LWindowYunjingCreate(
-            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
+            editor,
+            lectern,
             PYunjingShownCheck,
             PYunjingDiscardConfirm,
             host.PWindowDeleteConfirm);
@@ -165,12 +169,12 @@ public class PYunjing : UserControl
         PYunmu.ItemsSource = _pYunmuList;
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
-        PDisplay.PDisplayAttach(host, _lYunjing.LYunjingEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
         PYunjingDiwei.PDiweiAttach(host.PWindowDeportment);
         PYunjingDiwei.PDiweiEntryNotice = _lYunjing.LYunjingGlyphSelect;
         PYunjingDiwei.PDiweiSwitchNotice = _lYunjing.LYunjingTallySet;
 
-        PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor);
+        PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor, lectern);
 
         PEditor.PEditorChronicleChanged += PYunjingChronicleUpdate;
 
@@ -204,12 +208,13 @@ public class PYunjing : UserControl
             LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
             LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
-        _lYunjing.LYunjingPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingPanel.LPanelRowsUpdate));
-        _lYunjing.LYunjingPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lYunjing.LYunjingEntryHandle));
-        _lYunjing.LYunjingPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lYunjing.LYunjingPanel.LPanelDraftUpdate));
+        LPanel panel = _lYunjing.LYunjingPanel;
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingEntryHandle));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -217,9 +222,9 @@ public class PYunjing : UserControl
             "Ladder",
             PLadderHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PLadderDropdown, _lYunjing.LYunjingLadder);
         QChoice.QChoiceOrderBuild(
@@ -227,9 +232,9 @@ public class PYunjing : UserControl
             "Stair",
             PStairHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PStairDropdown, _lYunjing.LYunjingStair);
         _lYunjing.LYunjingPlumbSet(PPlumb.Text);

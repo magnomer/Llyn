@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Application;
-using Llyn.Core;
+using Llyn.Conduct;
 
 
 namespace Llyn.UIDeportment;
@@ -170,16 +170,16 @@ public partial class PEditor
             new LRequestTranscriptionText(PEditorDraft, row.LTranscriptionItemId, row.LTranscriptionItemText));
     }
 
-    private void PTranscriptionShow(LEntryDraft draft)
+    private void PTranscriptionShow(CEntryDraft draft)
     {
-        _pTranscriptionSchemes = _pEditorHost.PWindowDeportment.LWindowSchemeRead(draft.LEntryDraftLanguage);
+        _pTranscriptionSchemes = _pEditorHost.PWindowDeportment.LWindowSchemeRead(draft.CEntryDraftLanguage);
         PTranscription.Visibility = _pTranscriptionSchemes.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         PCard.PCardRowShow(
             _pTranscriptionItem,
             PTranscriptionScan(draft),
             static row => row.LTranscriptionItemId,
-            static spelled => spelled.LTranscriptionDraftId,
+            static spelled => spelled.CTranscriptionDraftId,
             PTranscriptionCreate,
             PTranscriptionUpdate);
 
@@ -189,12 +189,12 @@ public partial class PEditor
         }
     }
 
-    private IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft)
+    private IReadOnlyList<CTranscriptionDraft> PTranscriptionScan(CEntryDraft draft)
     {
-        List<LTranscriptionDraft> rows = [];
-        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
+        List<CTranscriptionDraft> rows = [];
+        foreach (CTranscriptionDraft spelled in draft.CEntryDraftTranscriptions)
         {
-            if (!PGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            if (!PGlyphSchemeCheck(spelled.CTranscriptionDraftScheme))
             {
                 rows.Add(spelled);
             }
@@ -203,17 +203,17 @@ public partial class PEditor
         return rows;
     }
 
-    private LTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)
+    private LTranscriptionItem PTranscriptionCreate(CTranscriptionDraft spelled)
     {
         LTranscriptionItem row = LTranscriptionItem.LTranscriptionItemCreate(spelled);
         row.PropertyChanged += PTranscriptionChangeHandle;
         return row;
     }
 
-    private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, LTranscriptionDraft spelled)
+    private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, CTranscriptionDraft spelled)
     {
-        row.LTranscriptionItemScheme = spelled.LTranscriptionDraftScheme;
-        row.LTranscriptionItemText = spelled.LTranscriptionDraftText;
+        row.LTranscriptionItemScheme = spelled.CTranscriptionDraftScheme;
+        row.LTranscriptionItemText = spelled.CTranscriptionDraftText;
         return row;
     }
 }

@@ -37,24 +37,7 @@ public sealed record LStateValue(
 
     public bool LStateValueUncertain => LStateValueState == LState.LStateUnknown;
 
-    public bool LStateValueMatch(string text)
-    {
-        return string.Equals(LStateValueShow(), text, StringComparison.Ordinal);
-    }
-
-    public bool LStateValueMatch(LStateValue? other)
-    {
-        return Equals(other);
-    }
-
     public bool LStateValueLegible => LStateValueState == LState.LStateSpecified || LStateValueUnreadable;
-
-    public string LStateValueFormat(string mark, string hint, bool placeholder)
-    {
-        return LStateValueLegible
-            ? placeholder ? hint : LStateValueShow()
-            : LStateValueUncertain ? mark : hint;
-    }
 
     public bool LStateValueSound =>
         LStateValueState == LState.LStateSpecified && !LStateValueUnreadable && LStateValueShown is not null;

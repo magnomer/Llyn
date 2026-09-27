@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -23,6 +24,7 @@ public sealed class LTaxonomy
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -31,6 +33,7 @@ public sealed class LTaxonomy
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
@@ -42,8 +45,8 @@ public sealed class LTaxonomy
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
         LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
-        LTaxonomyPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LTaxonomyPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LTaxonomyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LTaxonomyPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LTaxonomyEditor { get; }
@@ -91,21 +94,21 @@ public sealed class LTaxonomy
         _lTaxonomyVista?.LVistaQuerySet(query);
     }
 
-    public void LTaxonomyFunnelSet(LCatalogOrder? order)
+    public void LTaxonomyFunnelSet(CCatalogOrder? order)
     {
         if (_lTaxonomyVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LTaxonomyLatticeSet(LCatalogFilter filter)
+    public void LTaxonomyLatticeSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lTaxonomyVista?.LVistaFilterSet(filter);
+        _lTaxonomyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public void LTaxonomyScoutSet(string query)
@@ -159,9 +162,11 @@ public sealed class LTaxonomy
         _lTaxonomyVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public LCatalogOrder LTaxonomyOrder => _lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    public CCatalogOrder LTaxonomyOrder =>
+        LPanel.LPanelOrderRead(_lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
-    public LCatalogFilter LTaxonomyFilter => _lTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    public CCatalogFilter LTaxonomyFilter =>
+        LPanel.LPanelFilterRead(_lTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public string LTaxonomyFileRead()
     {

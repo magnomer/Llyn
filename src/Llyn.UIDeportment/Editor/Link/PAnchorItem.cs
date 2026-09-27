@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed class PAnchorItem
 {
-    private PAnchorItem(LAnchorRow row)
+    private PAnchorItem(CAnchorRow row)
     {
-        PAnchorItemId = row.LAnchorRowFanqie.LFanqieRowId;
-        PAnchorItemLabel = row.LAnchorRowFanqie.LFanqieRowSummary;
-        PAnchorItemAnchored = row.LAnchorRowHeld;
-        PAnchorItemEstimated = row.LAnchorRowEstimated;
+        PAnchorItemId = row.CAnchorRowId;
+        PAnchorItemLabel = row.CAnchorRowSummary;
+        PAnchorItemAnchored = row.CAnchorRowHeld;
+        PAnchorItemEstimated = row.CAnchorRowEstimated;
     }
 
     public long PAnchorItemId { get; }
@@ -22,12 +22,12 @@ internal sealed class PAnchorItem
 
     public bool PAnchorItemEstimated { get; }
 
-    internal static IReadOnlyList<PAnchorItem> PAnchorItemScan(IReadOnlyList<LAnchorRow> rows)
+    internal static IReadOnlyList<PAnchorItem> PAnchorItemScan(IReadOnlyList<CAnchorRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
         List<PAnchorItem> items = new(rows.Count);
-        foreach (LAnchorRow row in rows)
+        foreach (CAnchorRow row in rows)
         {
             items.Add(new PAnchorItem(row));
         }

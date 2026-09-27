@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -20,9 +20,9 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private int _pCardPosition;
     private string _pCardPositionText;
     private bool _pCardPositionActive;
-    private LStateValue _pTitle = LStateValue.LStateValueUnspecified;
-    private LStateValue _pCardDefinition = LStateValue.LStateValueUnspecified;
-    private LStateValue _pCardExpression = LStateValue.LStateValueUnspecified;
+    private CStateValue _pTitle = CStateValue.CStateValueEmpty;
+    private CStateValue _pCardDefinition = CStateValue.CStateValueEmpty;
+    private CStateValue _pCardExpression = CStateValue.CStateValueEmpty;
 
     internal PCard(
         LWindow window,
@@ -106,17 +106,17 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";
 
-    public LStateValue PTitle => _pTitle;
+    public CStateValue PTitle => _pTitle;
 
-    public LStateValue PCardDefinition => _pCardDefinition;
+    public CStateValue PCardDefinition => _pCardDefinition;
 
-    public LStateValue PCardExpression => _pCardExpression;
+    public CStateValue PCardExpression => _pCardExpression;
 
-    internal void PCardTitleShow(LStateValue value)
+    internal void PCardTitleShow(CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (_pTitle.LStateValueMatch(value))
+        if (_pTitle == value)
         {
             return;
         }
@@ -125,11 +125,11 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PTitle));
     }
 
-    internal void PCardDefinitionShow(LStateValue value)
+    internal void PCardDefinitionShow(CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (_pCardDefinition.LStateValueMatch(value))
+        if (_pCardDefinition == value)
         {
             return;
         }
@@ -138,11 +138,11 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PCardDefinition));
     }
 
-    internal void PCardExpressionShow(LStateValue value)
+    internal void PCardExpressionShow(CStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (_pCardExpression.LStateValueMatch(value))
+        if (_pCardExpression == value)
         {
             return;
         }

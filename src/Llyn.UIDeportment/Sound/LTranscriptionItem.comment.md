@@ -37,7 +37,7 @@ The editor's field and scheme dropdown are filled by `PEditor.PTranscriptionAppl
 
 Sizes the measure twin by the text, or by the placeholder while the row is blank.
 
-## `public static LTranscriptionItem LTranscriptionItemCreate(LTranscriptionDraft spelled)`
+## `public static LTranscriptionItem LTranscriptionItemCreate(CTranscriptionDraft spelled)`
 
 Builds the row for one draft transcription.
 

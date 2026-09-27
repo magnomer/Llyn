@@ -7,7 +7,7 @@ It holds no language of its own.
 The language of the page is the language of the chosen cell, else the first pack that carries rime books.
 The page opens on the column last clicked, kept as a side flag the engine is never told.
 The page is shown while that cell is chosen and the entry list has nothing chosen and is not writing.
-The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The panel's loads and clears go straight to the lectern its view hands in, so the veneer relays no draft.
 
 ## `public event Action? LYunjingChanged;`
 
@@ -54,7 +54,7 @@ The workspace changed: both columns stand on nothing and the entry list starts a
 Something the table is built from changed, so the columns are read before the entry list.
 The engine drops a chosen cell the columns no longer hold, so the columns must go first.
 
-## `public void LYunjingEntryHandle(LBulletin bulletin)`
+## `public void LYunjingEntryHandle(CBulletin bulletin)`
 
 A stored entry changes the cell counts as well as the entry list, so both are read again.
 

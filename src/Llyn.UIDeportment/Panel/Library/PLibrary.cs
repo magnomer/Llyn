@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -126,8 +127,11 @@ public class PLibrary : UserControl
     internal void PLibraryAttach(PWindow host)
     {
         _pLibraryHost = host;
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lLibrary = host.PWindowDeportment.LWindowLibraryCreate(
-            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
+            editor,
+            lectern,
             PLibraryShownCheck,
             PLibraryDiscardConfirm,
             host.PWindowDeleteConfirm);
@@ -138,9 +142,9 @@ public class PLibrary : UserControl
 
         _lLibrary.LLibraryIndexAttach(PIndex, PIndexEmpty);
 
-        PDisplay.PDisplayAttach(host, _lLibrary.LLibraryEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
 
-        PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor);
+        PEditor.PEditorAttach(host, _lLibrary.LLibraryEditor, lectern);
 
         PEditor.PEditorChronicleChanged += PLibraryChronicleUpdate;
     }
@@ -153,18 +157,19 @@ public class PLibrary : UserControl
     internal async void PLibraryVistaRestore()
     {
         _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowDeportment);
-        _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PLibraryWorkspaceUpdate));
-        _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelEntryHandle));
-        _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        _lLibrary.LLibraryPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelRowsUpdate));
-        _lLibrary.LLibraryPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lLibrary.LLibraryPanel.LPanelDraftUpdate));
+        LPanel panel = _lLibrary.LLibraryPanel;
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PLibraryWorkspaceUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(POrderList, "Order", POrderHandle, LIndex.LIndexOrder);

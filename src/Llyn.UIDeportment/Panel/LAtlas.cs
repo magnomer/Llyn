@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -65,21 +66,21 @@ public sealed class LAtlas
         _lAtlasVista?.LVistaQuerySet(inquest);
     }
 
-    public void LAtlasTierSet(LCatalogOrder? order)
+    public void LAtlasTierSet(CCatalogOrder? order)
     {
         if (_lAtlasVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LAtlasMeshSet(LCatalogFilter filter)
+    public void LAtlasMeshSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lAtlasVista?.LVistaFilterSet(filter);
+        _lAtlasVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public IReadOnlyList<LCatalogSituation> LAtlasRowsRead(string unknown, string untitled)

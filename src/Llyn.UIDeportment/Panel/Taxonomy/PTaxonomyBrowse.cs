@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -60,9 +60,10 @@ public partial class PTaxonomy
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PDirectoryFind));
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PMembershipFind));
-        panel.LPanelChosenAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, PMembershipFind));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PDirectoryFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
@@ -71,8 +72,8 @@ public partial class PTaxonomy
             "Funnel",
             PFunnelHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
             ]);
         QChoice.QChoiceOrderApply(PFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         PLatticeRestore();

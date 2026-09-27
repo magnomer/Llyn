@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -148,7 +149,7 @@ public class PGuild : UserControl
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelChanged += PGuildModeUpdate;
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsChanged += POeuvreUpdate;
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelCleared += PColophon.PColophonClear;
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelDraftChanged += PGuildSourceUpdate;
+        _lGuild.LGuildOeuvre.LOeuvreColophonChanged += PColophon.PColophonShow;
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
         PVita.PVitaAttach(host, _lGuild);
         PAutograph.PAutographAttach(_lGuild);
@@ -165,29 +166,29 @@ public class PGuild : UserControl
     {
         _lGuild.LGuildVistaRestore(_pGuildHost.PWindowDeportment);
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
-            LSubject.LSubjectVista,
-            LObserver.LObserverCreate(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
+            CSubject.CSubjectVista,
+            LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, _lGuild.LGuildReset));
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildReset));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectAuthor, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectReference, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectExample, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            CSubject.CSubjectExample, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildCatalogUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lGuild.LGuildCatalogUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildCatalogUpdate));
         QChoice.QChoiceOrderBuild(
             PEchelonList,
             "Echelon",
             PEchelonHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderWork,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderWork,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
         QChoice.QChoiceKindBuild(PLouverList, _lGuild.LGuildLouverRead(), PLouverHandle);
@@ -266,11 +267,6 @@ public class PGuild : UserControl
         POeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _lGuild.LGuildOeuvre.LOeuvreEmptyKey);
         POeuvreEmpty.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildOeuvre.LOeuvreEmpty);
         PColophon.PColophonTallyShow(_lGuild.LGuildOeuvre.LOeuvreTallyRead());
-    }
-
-    private void PGuildSourceUpdate(LDraft draft)
-    {
-        PColophon.PColophonShow(_lGuild.LGuildOeuvre.LOeuvreColophonRead(draft));
     }
 
     private void PGuildModeUpdate()

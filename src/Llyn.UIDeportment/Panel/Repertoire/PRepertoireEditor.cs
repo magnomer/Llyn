@@ -2,7 +2,6 @@ using System;
 using System.Windows.Controls;
 using Llyn.Application;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -98,8 +97,8 @@ public partial class PRepertoire
         PScenarioDescription.SetValue(
             QField.QFieldHintProperty, PScenarioHintRead(PScenarioDescription, _pScenarioDescriptionUnknown));
 
-        PScenarioImageShow(situation?.LSituationImage ?? []);
-        PScenarioVideoShow(situation?.LSituationVideo ?? []);
+        PScenarioImageShow(LCard.LCardImageRead(situation?.LSituationImage ?? []));
+        PScenarioVideoShow(LCard.LCardVideoRead(situation?.LSituationVideo ?? []));
 
         PScenarioTally.Text = PRepertoireTallyRead(PScenarioDesk.LDeskStoredRead());
         PScenarioHintApply();
@@ -116,8 +115,8 @@ public partial class PRepertoire
         PScenarioFieldShow(PScenarioKind, situation.LSituationKind, ref _pScenarioKindUnknown);
         PScenarioFieldShow(PScenarioDescription, situation.LSituationDescription, ref _pScenarioDescriptionUnknown);
 
-        PScenarioImageShow(situation.LSituationImage);
-        PScenarioVideoShow(situation.LSituationVideo);
+        PScenarioImageShow(LCard.LCardImageRead(situation.LSituationImage));
+        PScenarioVideoShow(LCard.LCardVideoRead(situation.LSituationVideo));
         PScenarioHintApply();
         PScenarioMeasureApply();
 

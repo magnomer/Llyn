@@ -27,7 +27,7 @@ The row says what was meant, not what could be reached.
 
 An empty row nothing has been written in, which is what the card's Extra row opens.
 
-## `internal PImage(LWindow window, LImageDraft written)`
+## `internal PImage(LWindow window, CImageDraft written)`
 
 The row for a stored Image, holding the location as the store knows it and the row it stands for.
 The row id is carried through untouched, so an edited location updates a picture rather than replacing it.
@@ -42,12 +42,12 @@ The element drawing the row has come into view, so the preview is loaded now.
 The first call loads and marks the row seen, and later edits to the location reload at once.
 A second call does nothing, since a seen row already keeps its preview current.
 
-## `public LStateValue PImageLocation`
+## `public CStateValue PImageLocation`
 
 The location as the draft holds it, set only from the draft.
 A changed location reloads the preview of a row already seen.
 
-## `internal void PImageShow(LImageDraft written)`
+## `internal void PImageShow(CImageDraft written)`
 
 Redraws the row from the engine's row where the location differs.
 The id is always taken.

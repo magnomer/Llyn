@@ -53,7 +53,7 @@ Fills a picture of `Theme.Script.Picture`: the lazy loader's row, the shape, the
 The shape takes the picture as its mask, so the glyph is drawn in the ink colour.
 It runs again when the picture decodes, since the row raises its source then.
 
-## `internal static PScriptImage? PScriptImageCreate(LScriptImage image)`
+## `internal static PScriptImage? PScriptImageCreate(CScriptImage image)`
 
 Reads the size from the stored bytes, or returns null when they are not a picture the framework can read.
 

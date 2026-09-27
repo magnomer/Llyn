@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -89,11 +89,11 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
         }
     }
 
-    internal static PScriptImage? PScriptImageCreate(LScriptImage image)
+    internal static PScriptImage? PScriptImageCreate(CScriptImage image)
     {
         ArgumentNullException.ThrowIfNull(image);
 
-        if (PScriptShapeRead(image.LScriptImageData) is not Size shape)
+        if (PScriptShapeRead(image.CScriptImageData) is not Size shape)
         {
             return null;
         }
@@ -102,7 +102,7 @@ internal sealed class PScriptImage : INotifyPropertyChanged, PImagePending
             ? Math.Round(PScriptImageMeasure * shape.Width / shape.Height)
             : PScriptImageMeasure;
         return new PScriptImage(
-            image.LScriptImageData, image.LScriptImageCaption, image.LScriptImageEpoch, width);
+            image.CScriptImageData, image.CScriptImageCaption, image.CScriptImageEpoch, width);
     }
 
     internal void PScriptImageUpdate()

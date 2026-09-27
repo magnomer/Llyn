@@ -1,65 +1,65 @@
 using System;
 using System.Threading.Tasks;
-using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public sealed class LClip
 {
-    private LForay? _lClipForay;
+    private readonly LDesk _lClipDesk;
+
+    internal LClip(LDesk desk)
+    {
+        ArgumentNullException.ThrowIfNull(desk);
+
+        _lClipDesk = desk;
+    }
 
     public event Action<string, int>? LClipSourceStarted;
 
-    public event Action<LRecording>? LClipRecordingAdded;
+    public event Action<CRecording>? LClipRecordingAdded;
 
     public event Action? LClipFinished;
 
-    public bool LClipHeld => _lClipForay is not null;
+    public bool LClipHeld => _lClipDesk.LDeskRecording is not null;
 
-    public string LClipLanguage => _lClipForay?.LForayLanguage ?? string.Empty;
+    public string LClipLanguage => _lClipDesk.LDeskRecording?.LForayLanguage ?? string.Empty;
 
-    public bool LClipFlagged => _lClipForay?.LForayFlagged ?? false;
+    public bool LClipFlagged => _lClipDesk.LDeskRecording?.LForayFlagged ?? false;
 
-    public bool LClipPrimary => _lClipForay?.LForayPrimary ?? false;
+    public bool LClipPrimary => _lClipDesk.LDeskRecording?.LForayPrimary ?? false;
 
-    public long LClipTarget => _lClipForay?.LForayTarget ?? 0;
-
-    public void LClipForaySet(LForay? foray)
-    {
-        LClipCancel();
-        _lClipForay = foray;
-    }
+    public long LClipTarget => _lClipDesk.LDeskRecording?.LForayTarget ?? 0;
 
     public void LClipCancel()
     {
-        _lClipForay?.LForayCancel();
-        _lClipForay = null;
+        _lClipDesk.LDeskForayCancel();
     }
 
-    public void LClipStepHandle(LHarvestStep step)
+    public void LClipStepHandle(CHarvestStep step)
     {
         ArgumentNullException.ThrowIfNull(step);
 
-        if (step.LHarvestStepRecording is LRecording recording)
+        if (step.CHarvestStepRecording is CRecording recording)
         {
             LClipRecordingAdded?.Invoke(recording);
             return;
         }
 
-        if (step.LHarvestStepEnded)
+        if (step.CHarvestStepEnded)
         {
             LClipFinished?.Invoke();
             return;
         }
 
-        LClipSourceStarted?.Invoke(step.LHarvestStepSource, step.LHarvestStepOrder);
+        LClipSourceStarted?.Invoke(step.CHarvestStepSource, step.CHarvestStepOrder);
     }
 
-    public Task<bool> LClipRecordingSave(LRecording recording)
+    public Task<bool> LClipRecordingSave(CRecording recording)
     {
         ArgumentNullException.ThrowIfNull(recording);
 
-        return _lClipForay?.LForayRecordingSave(recording) ?? Task.FromResult(false);
+        return _lClipDesk.LDeskRecording?.LForayRecordingSave(LDesk.LDeskRecordingRead(recording))
+            ?? Task.FromResult(false);
     }
 }

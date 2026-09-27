@@ -47,6 +47,6 @@ The play button fills with the warning colour while it is.
 So a host that refused is told apart from one that answered nothing.
 The next press on the same button clears it before fetching again.
 
-## `internal LRecording PClipReadingModel`
+## `internal CRecording PClipReadingModel`
 
 The recording this entry stands for, which is what preview fetches and taking saves.

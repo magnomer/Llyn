@@ -42,17 +42,17 @@ The language a span is resolved against.
 
 The narrative box, which the editor reads a selection from.
 
-## `internal void PEtymologyShow(string language, string text, IReadOnlyList<LTranslationTarget> etymons)`
+## `internal void PEtymologyShow(string language, string text, IReadOnlyList<CTranslationTarget> etymons)`
 
 Sets the language and the narrative, then draws the source links.
 The reading view's card deportment calls it as its seam.
 
-## `internal void PEtymologySourceShow(IReadOnlyList<LTranslationTarget> etymons)`
+## `internal void PEtymologySourceShow(IReadOnlyList<CTranslationTarget> etymons)`
 
 Draws the source links the engine already resolved to a headword and a language.
 The typing entry always closes the row, collapsed on the read side, so the row has one shape.
 
-## `internal void PEtymologyMentionShow(LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)`
+## `internal void PEtymologyMentionShow(LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)`
 
 Draws the spans as chips under the narrative box.
 Only the editor calls it, and it hands the window and the text in, so nothing is guessed.

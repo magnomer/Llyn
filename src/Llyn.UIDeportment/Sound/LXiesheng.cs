@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -24,6 +25,7 @@ public sealed class LXiesheng
         LPhonologyPort phonology,
         LPortraitPort portraits,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -31,6 +33,7 @@ public sealed class LXiesheng
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
@@ -40,8 +43,8 @@ public sealed class LXiesheng
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LXieshengPanel.LPanelCleared += LXieshengEditorClear;
         LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
-        LXieshengPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LXieshengPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LXieshengPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LXieshengPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     private void LXieshengEditorClear()
@@ -78,7 +81,8 @@ public sealed class LXiesheng
 
     public string LXieshengKindredKey => LXieshengStemChosen ? LXieshengVacantKey : "Xiesheng.KindredEmpty";
 
-    public LCatalogOrder LXieshengRung => _lGroveVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName;
+    public CCatalogOrder LXieshengRung =>
+        LPanel.LPanelOrderRead(_lGroveVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
     private string LXieshengVacantKey =>
         LXieshengSextantQueried ? "Xiesheng.KindredUnmatched" : "Xiesheng.KindredVacant";
@@ -174,14 +178,14 @@ public sealed class LXiesheng
         _lKindredVista?.LVistaQuerySet(query);
     }
 
-    public void LXieshengRungSet(LCatalogOrder? order)
+    public void LXieshengRungSet(CCatalogOrder? order)
     {
         if (_lGroveVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LXieshengReset()
@@ -197,7 +201,7 @@ public sealed class LXiesheng
         LXieshengPanel.LPanelRowsUpdate();
     }
 
-    public void LXieshengEntryHandle(LBulletin bulletin)
+    public void LXieshengEntryHandle(CBulletin bulletin)
     {
         LXieshengChanged?.Invoke();
         LXieshengPanel.LPanelEntryHandle(bulletin);

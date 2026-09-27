@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -27,17 +27,17 @@ internal sealed partial class PCard
     internal int PCardContextPosition =>
         PCardRowResolve(PCardContext, _pCardContextKey, PCardContext.IndexOf(_pCardContextCaret));
 
-    internal void PCardContextShow(IReadOnlyList<LSituationDraft> drafts)
+    internal void PCardContextShow(IReadOnlyList<CSituationDraft> drafts)
     {
         PCardRowShow(
             PCardContext,
             drafts,
             _pCardContextKey,
-            static draft => draft.LSituationDraftId,
+            static draft => draft.CSituationDraftId,
             PCardContextCreate,
             static (row, draft) =>
                 row is PContext chip
-                    ? draft.LSituationDraftTitle.LStateValueMatch(chip.PContextText) ? row : PCardContextCreate(draft)
+                    ? draft.CSituationDraftTitle == chip.PContextText ? row : PCardContextCreate(draft)
                     : PCardContextCreate(draft));
 
         PCardContextUpdate();
@@ -108,7 +108,7 @@ internal sealed partial class PCard
                 continue;
             }
 
-            if (chip.PContextText.LStateValueMatch(text))
+            if (string.Equals(chip.PContextText.CStateValueText, text, StringComparison.Ordinal))
             {
                 return true;
             }
@@ -117,9 +117,9 @@ internal sealed partial class PCard
         return false;
     }
 
-    private static object PCardContextCreate(LSituationDraft draft)
+    private static object PCardContextCreate(CSituationDraft draft)
     {
-        return new PContext(draft.LSituationDraftTitle, draft.LSituationDraftId);
+        return new PContext(draft.CSituationDraftTitle, draft.CSituationDraftId);
     }
 
     private void PCardContextStart()

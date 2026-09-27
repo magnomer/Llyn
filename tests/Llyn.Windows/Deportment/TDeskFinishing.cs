@@ -54,7 +54,7 @@ public sealed class TDeskFinishing
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         LDesk desk = TDeskPrepare(engine);
         string? shown = null;
-        desk.LDeskDraftChanged += draft => shown = draft.LDraftAuthorName;
+        desk.LDeskDraftChanged += draft => shown = draft.CDraftAuthorName;
 
         desk.TDeskStart(ada.LAuthorId);
 

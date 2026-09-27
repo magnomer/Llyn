@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -19,8 +20,8 @@ public sealed class TEditorSeed
         editor.TEditorTagAdd(tag.LTagId);
 
         Assert.Contains(
-            editor.TEditorDraftRead()?.LEntryDraftMeanings[0].LCardDraftTag ?? [],
-            row => row.LTagDraftId == tag.LTagId);
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
+            row => row.CTagDraftId == tag.LTagId);
         Assert.True(editor.LEditorChanged);
     }
 
@@ -36,8 +37,8 @@ public sealed class TEditorSeed
         editor.TEditorRegisterAdd(register.LRegisterId);
 
         Assert.Contains(
-            editor.TEditorDraftRead()?.LEntryDraftMeanings[0].LCardDraftRegister ?? [],
-            row => row.LRegisterDraftId == register.LRegisterId);
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
+            row => row.CRegisterDraftId == register.LRegisterId);
     }
 
     [Fact]
@@ -53,8 +54,8 @@ public sealed class TEditorSeed
         editor.TEditorSituationAdd(situation.LSituationId);
 
         Assert.Contains(
-            editor.TEditorDraftRead()?.LEntryDraftMeanings[0].LCardDraftSituation ?? [],
-            row => row.LSituationDraftId == situation.LSituationId);
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSituation ?? [],
+            row => row.CSituationDraftId == situation.LSituationId);
     }
 
     [Fact]
@@ -69,9 +70,9 @@ public sealed class TEditorSeed
 
         editor.TEditorExampleAdd(example.LExampleId);
 
-        LExampleDraft? cited =
-            editor.TEditorDraftRead()?.LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftExample;
-        Assert.Equal(example.LExampleId, cited?.LExampleDraftId);
+        CExampleDraft? cited =
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+        Assert.Equal("Water is wet.", cited?.CExampleDraftText.CStateValueText);
     }
 
     [Fact]
@@ -85,8 +86,8 @@ public sealed class TEditorSeed
 
         editor.TEditorReferenceAdd(book.LReferenceId);
 
-        LExampleDraft? cited =
-            editor.TEditorDraftRead()?.LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftExample;
-        Assert.True(cited?.LExampleDraftReference.TStateAnchorMatch(book.LReferenceId));
+        CExampleDraft? cited =
+            editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+        Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
     }
 }

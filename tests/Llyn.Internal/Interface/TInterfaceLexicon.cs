@@ -236,7 +236,7 @@ internal static partial class TInterface
 
     internal static LSentenceDraft TSentenceDraftCreate(string text) =>
         new(
-            LExampleDraft.LExampleDraftCreate(text),
+            TExampleDraftCreate(text),
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified);
 
@@ -259,7 +259,7 @@ internal static partial class TInterface
             dependence ?? LStateValue.LStateValueUnspecified);
 
     internal static LExampleDraft TExampleDraftCreate(string text) =>
-        LExampleDraft.LExampleDraftCreate(text);
+        new(LStateValue.LStateValueRead(text), 0, LStateAnchor.LStateAnchorUnspecified);
 
     internal static LForm TFormCreate(
         long entryId,

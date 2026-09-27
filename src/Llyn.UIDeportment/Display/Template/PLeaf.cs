@@ -26,7 +26,8 @@ internal sealed class PLeaf
         QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
         string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
-        string title = (string)state.Convert([card.LCardDraftTitle, unknown], typeof(string), string.Empty, culture);
+        string title = (string)state.Convert(
+            [LCard.LCardStateRead(card.LCardDraftTitle), unknown], typeof(string), string.Empty, culture);
         if (QLook.QLookPartFind<TextBlock>(container, "PCardRank") is TextBlock rank)
         {
             rank.Text = card.LCardDraftPosition.ToString(culture);
@@ -46,7 +47,7 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCollocation") is TextBlock expression)
         {
             string text = (string)state.Convert(
-                [card.LCardDraftExpression, unknown], typeof(string), string.Empty, culture);
+                [LCard.LCardStateRead(card.LCardDraftExpression), unknown], typeof(string), string.Empty, culture);
             expression.Text = text;
             expression.Visibility = QLook.QLookVisibleRead(text.Length > 0);
         }
@@ -54,7 +55,7 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
         {
             string text = (string)state.Convert(
-                [card.LCardDraftMeaning, unknown], typeof(string), string.Empty, culture);
+                [LCard.LCardStateRead(card.LCardDraftMeaning), unknown], typeof(string), string.Empty, culture);
             meaning.Text = text;
             meaning.Visibility = QLook.QLookVisibleRead(text.Length > 0);
         }
@@ -244,7 +245,7 @@ internal sealed class PLeaf
     private static string PLeafStateRead(LStateValue value)
     {
         return (string)new QStateConverter().Convert(
-            [value, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
+            [LCard.LCardStateRead(value), QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
             typeof(string),
             string.Empty,
             CultureInfo.CurrentCulture);

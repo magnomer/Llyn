@@ -100,7 +100,7 @@ The regenerate button stands wherever one was handed over, and it carries the `P
 The head shows only when folded, and the body only when open.
 The box itself is visible when it has blocks or a fetch runs, and collapsed otherwise.
 
-## `internal void PFanqieShow(IReadOnlyList<LFanqieGroup> groups, bool pending)`
+## `internal void PFanqieShow(IReadOnlyList<CFanqieGroup> groups, bool pending)`
 
 The seam the lectern's sound draws through, mapping the groups to blocks and setting whether a fetch runs.
 It only sets values, so the box redraws itself as for any other change.

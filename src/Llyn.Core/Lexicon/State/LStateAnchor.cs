@@ -28,11 +28,6 @@ public sealed record LStateAnchor(
 
     public bool LStateAnchorLinked => LStateAnchorShow() != 0;
 
-    public bool LStateAnchorMatch(long id)
-    {
-        return LStateAnchorShown == id;
-    }
-
     public LStateAnchor LStateAnchorNormalize()
     {
         return LStateAnchorUnreadable ? LStateAnchorUnspecified : this;

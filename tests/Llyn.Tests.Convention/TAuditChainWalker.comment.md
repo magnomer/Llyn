@@ -24,6 +24,17 @@ Each signature type from a ring below the neighbour is an `expose` hit.
 Nested public types are walked with their members.
 The hit sits at the member line and names the cut ring and the deeper ring.
 
+## `public static IReadOnlyList<TAuditHit> TAuditSealScan()`
+
+Walks every public member of each public top-level type a seal prefix names in its ring.
+Each signature type from a ring below the ring's neighbour is a `seal` hit.
+Nested public types are walked with their members, as the surface scan walks them.
+A ring that reaches more or fewer than one ring is skipped, since it has no single neighbour.
+
+## `private static bool TAuditSealCheck(string name, string[] prefixes)`
+
+Whether a type name starts with one of the ring's seal prefixes.
+
 ## `private static IEnumerable<ISymbol> TAuditPublicRead(INamedTypeSymbol type)`
 
 Every member of the type and of each public type nested in it.

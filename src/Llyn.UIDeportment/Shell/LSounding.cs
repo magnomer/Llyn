@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -9,18 +10,27 @@ public sealed class LSounding
 {
     private readonly LPhonologyPort _lPhonologyPort;
 
-    public LSounding(LPhonologyPort phonology)
+    private readonly LDraftPort _lDraftPort;
+
+    internal LSounding(LPhonologyPort phonology, LDraftPort drafts)
     {
         ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(drafts);
 
         _lPhonologyPort = phonology;
+        _lDraftPort = drafts;
     }
 
     public event Action? LSoundingChanged;
 
     public event Action<string, Exception>? LSoundingFailed;
 
-    public IReadOnlyList<LFanqieGroup> LSoundingFanqieRead(long? entry)
+    public IReadOnlyList<CFanqieGroup> LSoundingFanqieRead(long? entry)
+    {
+        return LSoundingFanqieRead(LSoundingFanqieFind(entry));
+    }
+
+    internal IReadOnlyList<LFanqieGroup> LSoundingFanqieFind(long? entry)
     {
         if (entry is not long id)
         {
@@ -40,13 +50,36 @@ public sealed class LSounding
 
     public string LSoundingReadingRead(long? entry, string headword)
     {
-        return LFanqieGroup.LFanqieReadingFormat(LSoundingFanqieRead(entry), headword);
+        return LFanqieGroup.LFanqieReadingFormat(LSoundingFanqieFind(entry), headword);
     }
 
-    public IReadOnlyList<LFanqieRow> LSoundingAnchorRead(long? entry)
+    internal bool LSoundingAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    {
+        return _lDraftPort.LEngineAnchorCheck(rows, headword);
+    }
+
+    internal string LSoundingAnchorFormat(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        return _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator);
+    }
+
+    internal IReadOnlyList<CAnchorRow> LSoundingAnchorScan(
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)
+    {
+        return LSplice.LSpliceBuild(
+            _lDraftPort.LEngineAnchorScan(rows, anchors, language, reflex, tone),
+            static row => new CAnchorRow(
+                row.LAnchorRowFanqie.LFanqieRowId,
+                row.LAnchorRowFanqie.LFanqieRowSummary,
+                row.LAnchorRowHeld,
+                row.LAnchorRowEstimated));
+    }
+
+    internal IReadOnlyList<LFanqieRow> LSoundingAnchorRead(long? entry)
     {
         List<LFanqieRow> rows = [];
-        foreach (LFanqieGroup group in LSoundingFanqieRead(entry))
+        foreach (LFanqieGroup group in LSoundingFanqieFind(entry))
         {
             rows.AddRange(group.LFanqieGroupRows);
         }
@@ -94,7 +127,7 @@ public sealed class LSounding
         LSoundingChanged?.Invoke();
     }
 
-    public IReadOnlyList<LScriptGroup> LSoundingScriptRead(long? entry)
+    public IReadOnlyList<CScriptGroup> LSoundingScriptRead(long? entry)
     {
         if (entry is not long id)
         {
@@ -104,7 +137,7 @@ public sealed class LSounding
         try
         {
             _lPhonologyPort.LEngineScriptStart(id);
-            return _lPhonologyPort.LEngineScriptDivide(id);
+            return LSoundingScriptRead(_lPhonologyPort.LEngineScriptDivide(id));
         }
         catch (Exception)
         {
@@ -132,7 +165,12 @@ public sealed class LSounding
         LSoundingChanged?.Invoke();
     }
 
-    public IReadOnlyList<LParadigmSlot> LSoundingParadigmRead(long? entry)
+    public IReadOnlyList<CParadigmSlot> LSoundingParadigmRead(long? entry)
+    {
+        return LSoundingParadigmRead(LSoundingParadigmFind(entry));
+    }
+
+    internal IReadOnlyList<LParadigmSlot> LSoundingParadigmFind(long? entry)
     {
         if (entry is not long id)
         {
@@ -147,5 +185,128 @@ public sealed class LSounding
         {
             return [];
         }
+    }
+
+    internal static IReadOnlyList<CFanqieGroup> LSoundingFanqieRead(IReadOnlyList<LFanqieGroup> groups)
+    {
+        return LSplice.LSpliceBuild(
+            groups,
+            static group => new CFanqieGroup(
+                group.LFanqieGroupHeading,
+                group.LFanqieGroupLabel,
+                group.LFanqieGroupSource,
+                group.LFanqieGroupStems,
+                LSplice.LSpliceBuild(group.LFanqieGroupRows, LSoundingRowRead)));
+    }
+
+    private static CFanqieRow LSoundingRowRead(LFanqieRow row)
+    {
+        return new CFanqieRow(
+            row.LFanqieRowId,
+            row.LFanqieRowRepresentative,
+            row.LFanqieRowMarked,
+            row.LFanqieRowPrimary,
+            row.LFanqieRowOrder,
+            row.LFanqieRowClosed,
+            row.LFanqieRowSlashed,
+            row.LFanqieRowLabel,
+            row.LFanqieRowInitial,
+            row.LFanqieRowCell,
+            row.LFanqieRowBracketed,
+            row.LFanqieRowKnotted,
+            row.LFanqieRowMedial,
+            row.LFanqieRowGraded,
+            row.LFanqieRowTone,
+            row.LFanqieRowSpelling,
+            row.LFanqieRowRemainder);
+    }
+
+    internal static IReadOnlyList<CScriptGroup> LSoundingScriptRead(IReadOnlyList<LScriptGroup> groups)
+    {
+        return LSplice.LSpliceBuild(
+            groups,
+            static group => new CScriptGroup(
+                group.LScriptGroupHeading,
+                group.LScriptGroupStyle,
+                group.LScriptGroupGloss,
+                LSplice.LSpliceBuild(group.LScriptGroupImages, LSoundingImageRead)));
+    }
+
+    private static CScriptImage LSoundingImageRead(LScriptImage image)
+    {
+        return new CScriptImage(image.LScriptImageData, image.LScriptImageCaption, image.LScriptImageEpoch);
+    }
+
+    internal static IReadOnlyList<CParadigmSlot> LSoundingParadigmRead(IReadOnlyList<LParadigmSlot> slots)
+    {
+        return LSplice.LSpliceBuild(LParadigmRow.LParadigmRowScan(slots), LSoundingSlotRead);
+    }
+
+    private static CParadigmSlot LSoundingSlotRead(LParadigmRow row)
+    {
+        return new CParadigmSlot(
+            row.LParadigmRowPart,
+            row.LParadigmRowName,
+            row.LParadigmRowFirst.LParadigmSlotInflection?.LInflectionText,
+            row.LParadigmRowFirst.LParadigmSlotUncertain);
+    }
+
+    internal static CFrequency? LSoundingFrequencyRead(IReadOnlyList<LFrequency> rows, string once)
+    {
+        return LDisplay.LDisplayFrequencyCheck(rows)
+            ? new CFrequency(LDisplay.LDisplayBandResolve(rows), LDisplay.LDisplaySourceFormat(rows, once))
+            : null;
+    }
+
+    internal static IReadOnlyList<CPronunciationDraft> LSoundingPronunciationRead(
+        IReadOnlyList<LPronunciationDraft> spoken)
+    {
+        return LSplice.LSpliceBuild(spoken, LSoundingPronunciationRead);
+    }
+
+    internal static CPronunciationDraft? LSoundingPrimaryRead(LPronunciationDraft? spoken)
+    {
+        return spoken is null ? null : LSoundingPronunciationRead(spoken);
+    }
+
+    internal static CPronunciationDraft LSoundingPronunciationRead(LPronunciationDraft spoken)
+    {
+        return new CPronunciationDraft(
+            spoken.LPronunciationDraftId,
+            spoken.LPronunciationDraftIpa,
+            spoken.LPronunciationDraftRespelling,
+            spoken.LPronunciationDraftVariety,
+            spoken.LPronunciationDraftAudio);
+    }
+
+    internal static IReadOnlyList<CTranscriptionDraft> LSoundingTranscriptionRead(
+        IReadOnlyList<LTranscriptionDraft> transcriptions)
+    {
+        return LSplice.LSpliceBuild(
+            transcriptions,
+            static row => new CTranscriptionDraft(
+                row.LTranscriptionDraftId, row.LTranscriptionDraftScheme, row.LTranscriptionDraftText));
+    }
+
+    internal static IReadOnlyList<CReflexDraft> LSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)
+    {
+        return LSplice.LSpliceBuild(reflexes, LSoundingReflexRead);
+    }
+
+    private static CReflexDraft LSoundingReflexRead(LReflexDraft reflex)
+    {
+        return new CReflexDraft(
+            reflex.LReflexDraftId,
+            reflex.LReflexDraftLanguage,
+            reflex.LReflexDraftKind,
+            reflex.LReflexDraftText,
+            reflex.LReflexDraftRespelling,
+            reflex.LReflexDraftRomanization,
+            reflex.LReflexDraftMeaning,
+            reflex.LReflexDraftNote,
+            reflex.LReflexDraftMain,
+            reflex.LReflexDraftRegion,
+            reflex.LReflexDraftAnchors,
+            reflex.LReflexDraftAnatomy.LAnatomyToneIpa);
     }
 }

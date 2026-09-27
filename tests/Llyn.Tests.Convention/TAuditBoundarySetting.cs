@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditBoundarySetting
 {
-    public const int TAuditGeneration = 16;
+    public const int TAuditGeneration = 17;
 
     public static readonly string[] TAuditBoundaryForbidden =
     [

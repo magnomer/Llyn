@@ -128,18 +128,18 @@ The localized kind, or nothing when the row has none.
 Builds the row for one draft reflex, printing the form `respelling` picks for the row's language.
 `phonemic` decides the slashes and `folded` whether the row starts hidden.
 
-## `public static List<LReflexItem> LReflexItemScan(LWindow window, IReadOnlyList<LReflexDraft> reflexes, HashSet<string> folded)`
+## `public static List<LReflexItem> LReflexItemScan(LWindow window, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)`
 
 The rows for `reflexes` in order, each built as the single form below builds it.
 The reading view hands its reflexes in whole, so it never walks a draft itself.
 
-## `public static LReflexItem LReflexItemCreate(LWindow window, LReflexDraft reflex, HashSet<string> folded)`
+## `public static LReflexItem LReflexItemCreate(LWindow window, CReflexDraft reflex, HashSet<string> folded)`
 
 A row for one draft reflex, asking the engine for its language's respelling state and phonemic flag.
 The row is folded when its language is in `folded`.
 Shared by the reading view and the editor, whose rows are built by the same rule.
 
-## `public static string LReflexTextRead(LReflexDraft draft, LRespellingMark respelling)`
+## `public static string LReflexTextRead(CReflexDraft draft, LRespellingMark respelling)`
 
 The form of one draft reflex to print, its respelling while shown and filled and its reading otherwise.
 
@@ -159,8 +159,8 @@ Shared by both panes, whose rows lead by the same rule.
 
 ## `public static void LReflexAnchorApply(`
 
-Writes each row's anchor label from `fanqie`, and whether the row may be anchored at all.
-The engine decides both, so a row it refuses prints nothing.
+Writes each row's anchor label through `format`, and whether the row may be anchored at all.
+The caller's gate decides both, so the fanqie rows never reach this item.
 Shared by both panes, so the label reads the same in the editor and the reading view.
 
 ## `public static void LReflexFoldApply(IReadOnlyList<LReflexItem> rows, ToggleButton fold, bool opened)`

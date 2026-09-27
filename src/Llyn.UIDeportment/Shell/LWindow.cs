@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -56,19 +57,19 @@ public sealed class LWindow : IDisposable
     }
 
     public LCorpus LWindowCorpusCreate(
-        LEditor editor, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
         return new LCorpus(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor,
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern,
             shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LFavorite LWindowFavoriteCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         return new LFavorite(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LGuild LWindowGuildCreate(
@@ -84,19 +85,20 @@ public sealed class LWindow : IDisposable
     }
 
     public LLibrary LWindowLibraryCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LLibrary(_lEntryPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+        return new LLibrary(_lEntryPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LPhonology LWindowPhonologyCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LPhonology(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+        return new LPhonology(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LShelf LWindowShelfCreate(
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
@@ -104,30 +106,30 @@ public sealed class LWindow : IDisposable
     {
         return new LShelf(
             _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort,
-            editor, shownSeam, leaveSeam, removalSeam, unreadableSeam);
+            editor, lectern, shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LRepertoire LWindowRepertoireCreate(
-        LEditor editor, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
         return new LRepertoire(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor,
+            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern,
             shownSeam, leaveSeam, removalSeam, unreadableSeam);
     }
 
     public LTaxonomy LWindowTaxonomyCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         return new LTaxonomy(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LTenor LWindowTenorCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         return new LTenor(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
+            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LWing LWindowWingCreate()
@@ -136,16 +138,16 @@ public sealed class LWindow : IDisposable
     }
 
     public LXiesheng LWindowXieshengCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, shownSeam, leaveSeam, deleteSeam);
+        return new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LYunjing LWindowYunjingCreate(
-        LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
+        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
         return new LYunjing(
-            _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, shownSeam, leaveSeam, deleteSeam);
+            _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
     }
 
     public LPostureState LWindowPostureRead()
@@ -257,14 +259,25 @@ public sealed class LWindow : IDisposable
         return _lMediaPort.LEngineRecordingExist(file);
     }
 
-    public LSentenceOrder LWindowOrderRead(string language)
+    public CSentenceOrder LWindowOrderRead(string language)
     {
-        return _lPhonologyPort.LEngineOrderRead(language);
+        return LCard.LCardOrderRead(_lPhonologyPort.LEngineOrderRead(language));
     }
 
-    public IReadOnlyList<LMentionLabel> LWindowMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
+    public IReadOnlyList<LMentionLabel> LWindowMentionResolve(string text, IReadOnlyList<CMentionDraft> mentions)
     {
-        return _lEntryPort.LEngineMentionResolve(text, mentions);
+        List<LMentionDraft> drafts = new(mentions.Count);
+        foreach (CMentionDraft mention in mentions)
+        {
+            drafts.Add(new LMentionDraft(
+                mention.CMentionDraftId,
+                mention.CMentionDraftOffset,
+                mention.CMentionDraftLength,
+                mention.CMentionDraftEntry,
+                mention.CMentionDraftSense));
+        }
+
+        return _lEntryPort.LEngineMentionResolve(text, drafts);
     }
 
     public IReadOnlyList<LMentionPiece> LWindowMentionDivide(string text, IReadOnlyList<LMention> mentions)
@@ -291,12 +304,6 @@ public sealed class LWindow : IDisposable
     public bool LWindowAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
         return _lDraftPort.LEngineAnchorMatch(one, other);
-    }
-
-    public IReadOnlyList<LAnchorRow> LWindowAnchorScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone)
-    {
-        return _lDraftPort.LEngineAnchorScan(rows, anchors, language, reflex, tone);
     }
 
     public bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
@@ -355,9 +362,9 @@ public sealed class LWindow : IDisposable
         return _lEntryPort.LEngineMarkupFind(entry);
     }
 
-    public Task<string> LWindowRecordingPrepare(LRecording recording, CancellationToken cancellation)
+    public Task<string> LWindowRecordingPrepare(CRecording recording, CancellationToken cancellation)
     {
-        return _lMediaPort.LEngineRecordingPrepare(recording, cancellation);
+        return _lMediaPort.LEngineRecordingPrepare(LDesk.LDeskRecordingRead(recording), cancellation);
     }
 
     public LSettings LWindowSettingsRead()

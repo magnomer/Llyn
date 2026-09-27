@@ -21,7 +21,7 @@ Holds the seams that fill the converters the card templates bind through.
 
 Binds the incoming list to its rows and holds the section that collapses when no entry links here.
 
-## `public void LLecternEtymologyAttach(UIElement etymology, UIElement section, Action<string, string, IReadOnlyList<LTranslationTarget>> etymologySeam)`
+## `public void LLecternEtymologyAttach(UIElement etymology, UIElement section, Action<string, string, IReadOnlyList<CTranslationTarget>> etymologySeam)`
 
 Holds the etymology field, its section and the seam that hands the field its language, narrative and links.
 

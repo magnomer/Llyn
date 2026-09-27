@@ -15,7 +15,7 @@ Only the index touches it, so no caller reads a control's state.
 
 The notice shown in place of rows when a request found nothing.
 
-## `public static IReadOnlyList<LCatalogOrder> LIndexOrder { get; } =`
+## `public static IReadOnlyList<CCatalogOrder> LIndexOrder { get; } =`
 
 The orderings an entry list offers, in the order its dropdown lists them.
 The Library panel and both wings share it, so no veneer names an engine ordering.

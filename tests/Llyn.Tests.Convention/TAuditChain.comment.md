@@ -18,7 +18,7 @@ The kinds a ceiling is written for.
 
 ## `private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditChainHits`
 
-The tree hits and the surface hits, bound once and shared by every fact.
+The tree hits, the surface hits and the seal hits, bound once and shared by every fact.
 
 ## `public void AuditChain_Rings_ReachOneRing()`
 
@@ -56,6 +56,11 @@ A `using` of a namespace below the cut counts as a name.
 
 No pair holds more surface signature types from below Conduct than its ceiling.
 Methods, operators, conversions, properties, events, fields and nested public types are all read.
+
+## `public void AuditChain_SealedSurface_NamesNoEngine()`
+
+No pair holds more sealed member types from below the neighbour than its ceiling.
+The ceilings fall as each job seals a controller, until none is left to count.
 
 ## `public void AuditChain_Sources_HoldSurface()`
 

@@ -136,7 +136,7 @@ internal static class TExemplar
                             LStateValue.LStateValueUnspecified,
                             LStateValue.LStateValueUnspecified),
                         new LSentenceDraft(
-                            LExampleDraft.LExampleDraftCreate("Every exemplar earns its name."),
+                            TInterface.TExampleDraftCreate("Every exemplar earns its name."),
                             "with",
                             "of"),
                     ],

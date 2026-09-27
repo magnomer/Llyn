@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -23,15 +23,15 @@ public partial class PEditor
         PEtymologyField.PEtymologyBox.TextChanged += PEtymologyWriteHandle;
     }
 
-    private void PEtymologyShow(LEntryDraft draft)
+    private void PEtymologyShow(CEntryDraft draft)
     {
-        PEtymologyField.PEtymologyLanguage = draft.LEntryDraftLanguage;
-        PEtymologyField.PEtymologyText = draft.LEntryDraftEtymology.LEtymologyDraftText;
-        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorLectern.LLecternEtymonRead(draft));
+        PEtymologyField.PEtymologyLanguage = draft.CEntryDraftLanguage;
+        PEtymologyField.PEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
+        PEtymologyField.PEtymologySourceShow(_lEditor.LEditorEtymonRead());
         PEtymologyField.PEtymologyMentionShow(
             _pEditorHost.PWindowDeportment,
-            draft.LEntryDraftEtymology.LEtymologyDraftText,
-            draft.LEntryDraftEtymology.LEtymologyDraftMentions,
+            draft.CEntryDraftEtymology.CEtymologyDraftText,
+            draft.CEntryDraftEtymology.CEtymologyDraftMentions,
             QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));
     }
 

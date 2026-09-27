@@ -53,4 +53,7 @@ internal static class TInterfaceConduct
     internal static bool TCustomsReadyCheck(this CSCustoms customs) => customs.CSCustomsReadyCheck();
 
     internal static bool TCoinageWordingCheck(string? wording) => CSCoinage.CSCoinageWordingCheck(wording);
+
+    internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>
+        filter.CCatalogFilterMatch(language);
 }

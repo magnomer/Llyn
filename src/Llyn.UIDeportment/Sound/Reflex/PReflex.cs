@@ -7,8 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Application;
-using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -85,7 +84,7 @@ public partial class PEditor
         PReflexTable.MinHeight = PReflexTable.ActualHeight;
         try
         {
-            _lEditor.LEditorLectern.LLecternReflexRebuild(entry);
+            _pEditorLectern.LLecternReflexRebuild(entry);
         }
         catch (Exception)
         {
@@ -133,9 +132,9 @@ public partial class PEditor
         PEditorRequestDefer(request);
     }
 
-    private void PReflexShow(LEntryDraft draft)
+    private void PReflexShow(CEntryDraft draft)
     {
-        string language = draft.LEntryDraftLanguage;
+        string language = draft.CEntryDraftLanguage;
         PReflexBlock.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorReflexShown);
         PReflexRenewal.Visibility = PReflexBlock.Visibility;
 
@@ -143,22 +142,25 @@ public partial class PEditor
 
         PCard.PCardRowShow(
             _pReflexItem,
-            draft.LEntryDraftReflexes,
+            draft.CEntryDraftReflexes,
             static row => row.LReflexItemId,
-            static reflex => reflex.LReflexDraftId,
+            static reflex => reflex.CReflexDraftId,
             PReflexCreate,
             PReflexUpdate);
 
         LReflexItem.LReflexLeadApply(_pReflexItem);
-        LReflexItem.LReflexFoldApply(_pReflexItem, PReflexFold, _lEditor.LEditorLectern.LLecternFoldOpened);
+        LReflexItem.LReflexFoldApply(_pReflexItem, PReflexFold, _pEditorLectern.LLecternFoldOpened);
         PReflexAnchorShow();
         PReflexPendingShow();
     }
 
     internal void PReflexAnchorShow()
     {
-        LWindow window = _pEditorHost.PWindowDeportment;
-        LReflexItem.LReflexAnchorApply(window, _pReflexItem, _lEditor.LEditorAnchorRead(), PHeadword.Text);
+        string headword = PHeadword.Text;
+        LReflexItem.LReflexAnchorApply(
+            _pReflexItem,
+            _lEditor.LEditorAnchorCheck(headword),
+            (anchors, separator) => _lEditor.LEditorAnchorFormat(anchors, headword, separator));
     }
 
     internal void PReflexPendingShow()
@@ -168,7 +170,7 @@ public partial class PEditor
         {
             try
             {
-                pending = _lEditor.LEditorLectern.LLecternReflexCheck(entry);
+                pending = _pEditorLectern.LLecternReflexCheck(entry);
             }
             catch (Exception)
             {
@@ -189,13 +191,13 @@ public partial class PEditor
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorLectern.LLecternFoldSet(QLook.QLookCheckedRead(PReflexFold.IsChecked));
-        LReflexItem.LReflexFoldApply(_pReflexItem, PReflexFold, _lEditor.LEditorLectern.LLecternFoldOpened);
+        _pEditorLectern.LLecternFoldSet(QLook.QLookCheckedRead(PReflexFold.IsChecked));
+        LReflexItem.LReflexFoldApply(_pReflexItem, PReflexFold, _pEditorLectern.LLecternFoldOpened);
     }
 
-    private void PReflexPrepare(LEntryDraft draft)
+    private void PReflexPrepare(CEntryDraft draft)
     {
-        if (draft.LEntryDraftReflected)
+        if (draft.CEntryDraftReflected)
         {
             return;
         }
@@ -208,7 +210,7 @@ public partial class PEditor
 
         try
         {
-            _lEditor.LEditorLectern.LLecternReflexStart(entry.Value);
+            _pEditorLectern.LLecternReflexStart(entry.Value);
         }
         catch (Exception)
         {
@@ -217,38 +219,38 @@ public partial class PEditor
         PReflexPendingShow();
     }
 
-    private LReflexItem PReflexCreate(LReflexDraft reflex)
+    private LReflexItem PReflexCreate(CReflexDraft reflex)
     {
         LReflexItem row = LReflexItem.LReflexItemCreate(_pEditorHost.PWindowDeportment, reflex, _pReflexFolded);
         row.PropertyChanged += PReflexChangeHandle;
         return row;
     }
 
-    private LReflexItem PReflexUpdate(LReflexItem row, LReflexDraft reflex)
+    private LReflexItem PReflexUpdate(LReflexItem row, CReflexDraft reflex)
     {
-        string language = reflex.LReflexDraftLanguage.Trim();
+        string language = reflex.CReflexDraftLanguage.Trim();
         LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_pEditorHost.PWindowDeportment, language);
         if (!row.LReflexItemMatch(
             respelling.LRespellingMarkShown,
             _pEditorHost.PWindowDeportment.LWindowPhonemicCheck(language),
             _pReflexFolded.Contains(language),
-            reflex.LReflexDraftAnchors))
+            reflex.CReflexDraftAnchors))
         {
             row.PropertyChanged -= PReflexChangeHandle;
             return PReflexCreate(reflex);
         }
 
-        row.LReflexItemMain = reflex.LReflexDraftMain;
+        row.LReflexItemMain = reflex.CReflexDraftMain;
 
-        row.LReflexItemLanguage = reflex.LReflexDraftLanguage;
-        row.LReflexItemKind = reflex.LReflexDraftKind;
+        row.LReflexItemLanguage = reflex.CReflexDraftLanguage;
+        row.LReflexItemKind = reflex.CReflexDraftKind;
         row.LReflexItemText = LReflexItem.LReflexTextRead(reflex, respelling);
-        row.LReflexItemRomanization = reflex.LReflexDraftRomanization;
-        row.LReflexItemMeaning = reflex.LReflexDraftMeaning;
-        row.LReflexItemNote = reflex.LReflexDraftNote;
-        row.LReflexItemRegion = reflex.LReflexDraftRegion;
+        row.LReflexItemRomanization = reflex.CReflexDraftRomanization;
+        row.LReflexItemMeaning = reflex.CReflexDraftMeaning;
+        row.LReflexItemNote = reflex.CReflexDraftNote;
+        row.LReflexItemRegion = reflex.CReflexDraftRegion;
 
-        row.LReflexItemTone = reflex.LReflexDraftAnatomy.LAnatomyToneIpa;
+        row.LReflexItemTone = reflex.CReflexDraftTone;
         return row;
     }
 }

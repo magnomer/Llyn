@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -114,7 +114,7 @@ public sealed class PScript : ContentControl
         set => SetValue(PScriptRenewalProperty, value);
     }
 
-    internal void PScriptShow(IReadOnlyList<LScriptGroup> groups, bool pending)
+    internal void PScriptShow(IReadOnlyList<CScriptGroup> groups, bool pending)
     {
         SetCurrentValue(PScriptItemsProperty, PScriptItem.PScriptItemScan(groups));
         SetCurrentValue(PScriptPendingProperty, pending);

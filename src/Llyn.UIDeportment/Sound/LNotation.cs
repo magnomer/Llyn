@@ -1,61 +1,60 @@
 using System;
-using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public sealed class LNotation
 {
-    private LForay? _lNotationForay;
+    private readonly LDesk _lNotationDesk;
+
+    internal LNotation(LDesk desk)
+    {
+        ArgumentNullException.ThrowIfNull(desk);
+
+        _lNotationDesk = desk;
+    }
 
     public event Action<string, int>? LNotationSourceStarted;
 
-    public event Action<LCandidate>? LNotationCandidateAdded;
+    public event Action<CCandidate>? LNotationCandidateAdded;
 
     public event Action? LNotationFinished;
 
-    public bool LNotationHeld => _lNotationForay is not null;
+    public bool LNotationHeld => _lNotationDesk.LDeskTranscription is not null;
 
-    public string LNotationLanguage => _lNotationForay?.LForayLanguage ?? string.Empty;
+    public string LNotationLanguage => _lNotationDesk.LDeskTranscription?.LForayLanguage ?? string.Empty;
 
-    public bool LNotationFlagged => _lNotationForay?.LForayFlagged ?? false;
+    public bool LNotationFlagged => _lNotationDesk.LDeskTranscription?.LForayFlagged ?? false;
 
-    public bool LNotationPrimary => _lNotationForay?.LForayPrimary ?? false;
+    public bool LNotationPrimary => _lNotationDesk.LDeskTranscription?.LForayPrimary ?? false;
 
-    public long LNotationTarget => _lNotationForay?.LForayTarget ?? 0;
+    public long LNotationTarget => _lNotationDesk.LDeskTranscription?.LForayTarget ?? 0;
 
-    public string LNotationScheme => _lNotationForay?.LForayScheme ?? string.Empty;
+    public string LNotationScheme => _lNotationDesk.LDeskTranscription?.LForayScheme ?? string.Empty;
 
-    public bool LNotationSchemed => _lNotationForay?.LForaySchemed ?? false;
+    public bool LNotationSchemed => _lNotationDesk.LDeskTranscription?.LForaySchemed ?? false;
 
-    public void LNotationForaySet(LForay? foray)
-    {
-        LNotationCancel();
-        _lNotationForay = foray;
-    }
-
-    public void LNotationStepHandle(LLookupStep step)
+    public void LNotationStepHandle(CLookupStep step)
     {
         ArgumentNullException.ThrowIfNull(step);
 
-        if (step.LLookupStepCandidate is LCandidate candidate)
+        if (step.CLookupStepCandidate is CCandidate candidate)
         {
             LNotationCandidateAdded?.Invoke(candidate);
             return;
         }
 
-        if (step.LLookupStepEnded)
+        if (step.CLookupStepEnded)
         {
             LNotationFinished?.Invoke();
             return;
         }
 
-        LNotationSourceStarted?.Invoke(step.LLookupStepSource, step.LLookupStepOrder);
+        LNotationSourceStarted?.Invoke(step.CLookupStepSource, step.CLookupStepOrder);
     }
 
     public void LNotationCancel()
     {
-        _lNotationForay?.LForayCancel();
-        _lNotationForay = null;
+        _lNotationDesk.LDeskForayCancel();
     }
 }

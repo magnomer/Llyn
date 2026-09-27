@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -195,8 +194,10 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     {
         _pRepertoireHost = host;
         LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lRepertoire = host.PWindowDeportment.LWindowRepertoireCreate(
             editor,
+            lectern,
             PRepertoireShownCheck,
             PRepertoireDiscardConfirm,
             PRepertoireRemovalConfirm,
@@ -215,8 +216,8 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
         QLookItem.QLookItemAttach(PVignetteVideo, PVideo.PVideoLineApply);
 
         PMedia.PMediaAttach(this, host.PWindowDeportment);
-        PDisplay.PDisplayAttach(host, editor.LEditorLectern);
-        PEditor.PEditorAttach(host, editor);
+        PDisplay.PDisplayAttach(host, lectern);
+        PEditor.PEditorAttach(host, editor, lectern);
 
         LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
         LPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;

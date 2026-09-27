@@ -34,11 +34,6 @@ A record compares a list by reference, which would make every load a change.
 
 The hash that agrees with that equality.
 
-## `public static LExampleDraft LExampleDraftCreate(string text)`
-
-A sentence written with nothing else said about it.
-It has no id yet, no rendering, no Source cited, and no language stated.
-
 ## `public LExampleDraft LExampleDraftNormalize()`
 
 The same example with every unreadable value dropped to unspecified and its Mentions sorted by start.

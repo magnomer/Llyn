@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -62,9 +62,10 @@ public partial class PTenor
         _lTenor.LTenorObserverAttach(LSubject.LSubjectSettings, LObserver.LObserverCreate(this, PGamutFind));
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PCohortFind));
-        panel.LPanelChosenAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, panel.LPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, PCohortFind));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         _lTenor.LTenorObserverAttach(LSubject.LSubjectEntry, LObserver.LObserverCreate(this, PGamutFind));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
@@ -73,9 +74,9 @@ public partial class PTenor
             "Degree",
             PDegreeHandle,
             [
-                LCatalogOrder.LCatalogOrderName,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PDegreeDropdown, _lTenor.LTenorOrder);
         PGrilleRestore();

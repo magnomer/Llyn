@@ -62,14 +62,6 @@ public sealed record LExampleDraft(
         return LMentionSpan.LMentionSpanFind(LExampleDraftMention, span);
     }
 
-    public static LExampleDraft LExampleDraftCreate(string text)
-    {
-        return new LExampleDraft(
-            LStateValue.LStateValueRead(text),
-            0,
-            LStateAnchor.LStateAnchorUnspecified);
-    }
-
     public static LExampleDraft LExampleDraftCreate(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);

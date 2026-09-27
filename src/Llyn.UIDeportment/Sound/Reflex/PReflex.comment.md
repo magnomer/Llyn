@@ -39,7 +39,7 @@ Romanization, meaning and note changes become their matching requests.
 Defers a request for the field that changed, so typing is sent in one piece.
 A language change also remarks the leads at once, so the language prints on the right row while typing.
 
-## `private void PReflexShow(LEntryDraft draft)`
+## `private void PReflexShow(CEntryDraft draft)`
 
 Rebuilds the rows from the draft, keeping a row that is still being typed into.
 The stack is shown when the language declares a rule or the draft carries a row, and hidden otherwise.
@@ -63,19 +63,19 @@ An unsaved entry has no fill and shows nothing.
 
 Opens or closes the fold as the toggle under the rows was pressed.
 
-## `private void PReflexPrepare(LEntryDraft draft)`
+## `private void PReflexPrepare(CEntryDraft draft)`
 
 Asks the engine to fill a stored entry that has no rows yet.
 The fill reaches the draft through the engine and lands here by bulletin.
 The fetching line is shown at once, since the ask starts the fill before it returns.
 An unsaved entry has no id and is not asked.
 
-## `private LReflexItem PReflexCreate(LReflexDraft reflex)`
+## `private LReflexItem PReflexCreate(CReflexDraft reflex)`
 
 A row for a draft row, listened to for changes.
 It prints the form the switch picks for the row's own language.
 
-## `private LReflexItem PReflexUpdate(LReflexItem row, LReflexDraft reflex)`
+## `private LReflexItem PReflexUpdate(LReflexItem row, CReflexDraft reflex)`
 
 Brings a row up to the draft, leaving a field alone while its own request is still deferred.
 A row whose respelled, phonemic or folded state or whose anchors no longer match the draft is rebuilt.

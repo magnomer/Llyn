@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -27,17 +27,17 @@ internal sealed partial class PCard
     internal int PCardLabelPosition =>
         PCardRowResolve(PCardLabel, _pCardLabelKey, PCardLabel.IndexOf(_pCardLabelCaret));
 
-    internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)
+    internal void PCardLabelShow(IReadOnlyList<CTagDraft> drafts)
     {
         PCardRowShow(
             PCardLabel,
             drafts,
             _pCardLabelKey,
-            static draft => draft.LTagDraftId,
+            static draft => draft.CTagDraftId,
             PCardLabelCreate,
             static (row, draft) =>
                 row is PLabelChip chip
-                && string.Equals(chip.PLabelChipName, draft.LTagDraftText.Trim(), StringComparison.Ordinal)
+                && string.Equals(chip.PLabelChipName, draft.CTagDraftText.Trim(), StringComparison.Ordinal)
                     ? row
                     : PCardLabelCreate(draft));
 
@@ -109,9 +109,9 @@ internal sealed partial class PCard
         return false;
     }
 
-    private static object PCardLabelCreate(LTagDraft draft)
+    private static object PCardLabelCreate(CTagDraft draft)
     {
-        return new PLabelChip(draft.LTagDraftId, draft.LTagDraftText.Trim());
+        return new PLabelChip(draft.CTagDraftId, draft.CTagDraftText.Trim());
     }
 
     private void PCardLabelStart()

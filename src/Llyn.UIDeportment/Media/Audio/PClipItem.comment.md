@@ -22,7 +22,7 @@ The one line a row without a recording says: searching, no entry, or failed to r
 Whether the row carries a recording the user can take now, which is what `PNotationItemReady` means on a pronunciation row.
 It is what the template switches the recordings and the notice on.
 
-## `internal void PClipItemShow(LRecording recording, PClipReading? reading, string missing, string broken)`
+## `internal void PClipItemShow(CRecording recording, PClipReading? reading, string missing, string broken)`
 
 Resolves the row from one thing its source said.
 A recording is appended and makes the row takeable.

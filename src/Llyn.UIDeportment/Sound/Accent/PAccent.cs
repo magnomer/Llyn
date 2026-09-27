@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Application;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -125,13 +125,13 @@ public partial class PEditor
         PEditorRequestDefer(PAccentRequestCreate(row));
     }
 
-    private void PAccentShow(LEntryDraft draft)
+    private void PAccentShow(CEntryDraft draft)
     {
-        string language = draft.LEntryDraftLanguage;
+        string language = draft.CEntryDraftLanguage;
         bool flagged = _lEditor.LEditorFlagged;
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
-        _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
+        _pAccentPrimary = draft.CEntryDraftPronunciation?.CPronunciationDraftVariety ?? string.Empty;
         LRespellingMark respelling = LRespellingMark.LRespellingMarkRead(_pEditorHost.PWindowDeportment, language);
         if (respelling != _pAccentRespelling)
         {
@@ -141,9 +141,9 @@ public partial class PEditor
 
         PCard.PCardRowShow(
             _pAccentItem,
-            draft.LEntryDraftAccents,
+            draft.CEntryDraftAccents,
             static row => row.LAccentItemId,
-            static spoken => spoken.LPronunciationDraftId,
+            static spoken => spoken.CPronunciationDraftId,
             PAccentCreate,
             PAccentUpdate);
 
@@ -151,7 +151,7 @@ public partial class PEditor
         _ = PAccentFlagLoad(language, flagged);
     }
 
-    private LAccentItem PAccentCreate(LPronunciationDraft spoken)
+    private LAccentItem PAccentCreate(CPronunciationDraft spoken)
     {
         LAccentItem row = LAccentItem.LAccentItemCreate(
             _pAccentLanguage, _pAccentFlagged, spoken, _pAccentRespelling);
@@ -159,9 +159,9 @@ public partial class PEditor
         return row;
     }
 
-    private LAccentItem PAccentUpdate(LAccentItem row, LPronunciationDraft spoken)
+    private LAccentItem PAccentUpdate(LAccentItem row, CPronunciationDraft spoken)
     {
-        if (!spoken.LPronunciationDraftMatch(row.LAccentItemVariety))
+        if (!string.Equals(spoken.CPronunciationDraftVariety, row.LAccentItemVariety, StringComparison.Ordinal))
         {
             row.PropertyChanged -= PAccentChangeHandle;
             return PAccentCreate(spoken);
@@ -169,7 +169,7 @@ public partial class PEditor
 
         row.LAccentItemText = _pAccentRespelling.LRespellingMarkResolve(spoken);
 
-        row.LAccentItemAudio = spoken.LPronunciationDraftAudio;
+        row.LAccentItemAudio = spoken.CPronunciationDraftAudio;
         return row;
     }
 

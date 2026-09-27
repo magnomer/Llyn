@@ -49,7 +49,7 @@ internal sealed class PCitationConverter : IValueConverter, IMultiValueConverter
         return values.Length > 1
             && values[0] is LStateAnchor anchor
             && values[1] is ObservableCollection<PCitationItem> catalog
-            ? PSentence.PSentenceCitationFind(catalog, anchor)
+            ? PSentence.PSentenceCitationFind(catalog, anchor.LStateAnchorShown)
             : string.Empty;
     }
 

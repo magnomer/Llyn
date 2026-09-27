@@ -62,19 +62,19 @@ public sealed class LWing
         _lWingVista?.LVistaQuerySet(query);
     }
 
-    private void LWingOrderSet(LCatalogOrder? order)
+    private void LWingOrderSet(CCatalogOrder? order)
     {
         if (_lWingVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    private void LWingSieveSet(LCatalogFilter filter)
+    private void LWingSieveSet(CCatalogFilter filter)
     {
-        _lWingVista?.LVistaFilterSet(filter);
+        _lWingVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public void LWingOrderHandle(object sender, ToggleButton dropper)
@@ -243,9 +243,11 @@ public sealed class LWing
         LWingEntrySave();
     }
 
-    public LCatalogOrder LWingOrder => _lWingVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    public CCatalogOrder LWingOrder =>
+        LPanel.LPanelOrderRead(_lWingVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
-    public LCatalogFilter LWingFilter => _lWingVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    public CCatalogFilter LWingFilter =>
+        LPanel.LPanelFilterRead(_lWingVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     private IReadOnlyList<LVistaRow> LWingRowsRead()
     {

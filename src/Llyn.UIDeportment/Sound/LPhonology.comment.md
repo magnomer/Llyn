@@ -6,7 +6,7 @@ The deportment of the phonology panel: the shared panel state and the pronunciat
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
-The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The panel's loads and clears go straight to the lectern its view hands in, so the veneer relays no draft.
 
 ## `public LEditor LPhonologyEditor { get; }`
 
@@ -20,7 +20,7 @@ How many rows the last read returned, so the empty notice is a verdict rather th
 
 The rows the engine returns for the vista, already filtered, sorted, twinned and marked.
 
-## `public void LPhonologyOrderSet(LCatalogOrder? order)`
+## `public void LPhonologyOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
 The veneer hands the enum its row carries, so no ordering is spelled or parsed.

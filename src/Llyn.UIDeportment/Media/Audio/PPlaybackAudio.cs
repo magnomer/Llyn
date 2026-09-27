@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 
 namespace Llyn.UIDeportment;
@@ -68,14 +68,14 @@ public partial class PEditor
         _pDownloaderPlayer.Volume = PVolume.Value;
     }
 
-    private void PEditorRecordingShow(LEntryDraft draft)
+    private void PEditorRecordingShow(CEntryDraft draft)
     {
-        if (string.Equals(_pRecording ?? string.Empty, draft.LEntryDraftAudio, StringComparison.Ordinal))
+        if (string.Equals(_pRecording ?? string.Empty, draft.CEntryDraftAudio, StringComparison.Ordinal))
         {
             return;
         }
 
-        PRecordingShow(draft.LEntryDraftAudio);
+        PRecordingShow(draft.CEntryDraftAudio);
     }
 
     private void PRecordingShow(string audio)

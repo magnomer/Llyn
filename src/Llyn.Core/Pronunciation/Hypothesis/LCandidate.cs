@@ -6,7 +6,4 @@ public sealed record LCandidate(
     int LCandidateOrder,
     bool LCandidateReached,
     string LCandidateVariety,
-    string? LCandidateRespelling = null)
-{
-    public bool LCandidateRegional => LCandidateVariety.Length > 0;
-}
+    string? LCandidateRespelling = null);

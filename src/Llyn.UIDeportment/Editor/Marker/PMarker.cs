@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -127,7 +128,7 @@ public partial class PEditor
         PEditorSpeechSend();
     }
 
-    private bool PMarkerMatch(IReadOnlyList<LSpeechDraft> speeches)
+    private bool PMarkerMatch(IReadOnlyList<CSpeechDraft> speeches)
     {
         IReadOnlyList<LSpeechDraft> shown = PMarkerRead();
         if (shown.Count != speeches.Count)
@@ -137,9 +138,9 @@ public partial class PEditor
 
         for (int index = 0; index < shown.Count; index++)
         {
-            if (shown[index].LSpeechDraftValue != speeches[index].LSpeechDraftValue
+            if (shown[index].LSpeechDraftValue != speeches[index].CSpeechDraftValue
                 || !string.Equals(
-                    shown[index].LSpeechDraftName, speeches[index].LSpeechDraftName, StringComparison.Ordinal))
+                    shown[index].LSpeechDraftName, speeches[index].CSpeechDraftName, StringComparison.Ordinal))
             {
                 return false;
             }
@@ -180,7 +181,7 @@ public partial class PEditor
         return drafts;
     }
 
-    private void PMarkerShow(IReadOnlyList<LSpeechDraft> speeches)
+    private void PMarkerShow(IReadOnlyList<CSpeechDraft> speeches)
     {
         if (PMarkerMatch(speeches))
         {
@@ -190,12 +191,12 @@ public partial class PEditor
         _pMarkerChip.Clear();
         PMarkerField.Text = string.Empty;
 
-        foreach (LSpeechDraft speech in speeches)
+        foreach (CSpeechDraft speech in speeches)
         {
-            string name = speech.LSpeechDraftName.Trim();
+            string name = speech.CSpeechDraftName.Trim();
             if (name.Length > 0 && !PMarkerFind(name))
             {
-                _pMarkerChip.Add(new PMarkerChip(speech.LSpeechDraftValue, name));
+                _pMarkerChip.Add(new PMarkerChip(speech.CSpeechDraftValue, name));
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -13,9 +14,10 @@ public partial class PRepertoire
 
     private void PScenarioDeskAttach()
     {
-        PScenarioDesk.LDeskDraftAttach(LSubject.LSubjectDraft, LObserver.LObserverCreate(this, PScenarioDraftRestore));
         PScenarioDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, LObserver.LObserverCreate(this, PScenarioDesk.LDeskStateUpdate));
+            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, PScenarioDraftRestore));
+        PScenarioDesk.LDeskDraftAttach(
+            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, PScenarioDesk.LDeskStateUpdate));
         PScenarioDesk.LDeskFailed += _pRepertoireHost.PWindowFailureShow;
         PScenarioDesk.LDeskRefused += _pRepertoireHost.PWindowFailureShow;
     }
@@ -52,16 +54,9 @@ public partial class PRepertoire
             return;
         }
 
-        try
+        if (_lRepertoire.LRepertoireScenarioRead() is LSituation situation)
         {
-            if (PScenarioDesk.LDeskRead()?.LDraftSituation is LSituation situation)
-            {
-                PScenarioShow(situation);
-            }
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
+            PScenarioShow(situation);
         }
     }
 

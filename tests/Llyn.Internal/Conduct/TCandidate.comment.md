@@ -1,0 +1,6 @@
+# TCandidate.cs
+
+## `public sealed class TCandidate`
+
+Covers the reading a driver lists in the notation popup.
+It is regional only while it names a variety.

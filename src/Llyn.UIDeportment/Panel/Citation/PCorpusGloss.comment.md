@@ -14,7 +14,7 @@ Hides the whole section when there is none, as a never-written field is not draw
 Redraws the edit rows from the held Example, keeping the rows whose ids survive.
 What is still waiting is written before the read, so a redraw never lands over a newer keystroke.
 
-## `private PGloss PTranscriptGlossCreate(LGlossDraft draft)`
+## `private PGloss PTranscriptGlossCreate(CGlossDraft draft)`
 
 One row, subscribed so its edits reach the panel.
 

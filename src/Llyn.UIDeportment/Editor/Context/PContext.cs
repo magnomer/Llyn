@@ -1,11 +1,11 @@
 using System;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed class PContext
 {
-    internal PContext(LStateValue text, long id)
+    internal PContext(CStateValue text, long id)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -15,5 +15,5 @@ internal sealed class PContext
 
     public long PContextId { get; }
 
-    public LStateValue PContextText { get; }
+    public CStateValue PContextText { get; }
 }

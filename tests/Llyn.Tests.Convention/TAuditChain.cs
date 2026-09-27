@@ -9,10 +9,15 @@ public sealed class TAuditChain
 {
     private const string TAuditChainAudit = "AUDITCHAIN";
 
-    private static readonly string[] TAuditChainHeld = ["outward", "reach", "cross", "expose"];
+    private static readonly string[] TAuditChainHeld = ["outward", "reach", "cross", "expose", "seal"];
 
     private static readonly Lazy<IReadOnlyList<TAuditHit>> TAuditChainHits =
-        new(() => [.. TAuditChainWalker.TAuditRun(), .. TAuditChainWalker.TAuditSurfaceScan()]);
+        new(() =>
+        [
+            .. TAuditChainWalker.TAuditRun(),
+            .. TAuditChainWalker.TAuditSurfaceScan(),
+            .. TAuditChainWalker.TAuditSealScan(),
+        ]);
 
     [Fact]
     public void AuditChain_Rings_ReachOneRing()
@@ -144,6 +149,15 @@ public sealed class TAuditChain
             TAuditChainAudit, TAuditChainHits.Value, "expose",
             TAuditChainSetting.TAuditChainCeiling, TAuditChainSetting.TAuditChainWaiver,
             "surface signature type(s) from below Conduct");
+    }
+
+    [Fact]
+    public void AuditChain_SealedSurface_NamesNoEngine()
+    {
+        TAuditPair.TAuditPairCheck(
+            TAuditChainAudit, TAuditChainHits.Value, "seal",
+            TAuditChainSetting.TAuditChainCeiling, TAuditChainSetting.TAuditChainWaiver,
+            "sealed member type(s) from below the neighbour ring");
     }
 
     [Fact]

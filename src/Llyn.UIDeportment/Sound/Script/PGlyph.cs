@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -91,19 +92,19 @@ public partial class PEditor
         return glyph is not null && string.Equals(scheme, glyph.LGlyphName, StringComparison.Ordinal);
     }
 
-    private void PGlyphShow(LEntryDraft draft)
+    private void PGlyphShow(CEntryDraft draft)
     {
-        string language = draft.LEntryDraftLanguage;
+        string language = draft.CEntryDraftLanguage;
         _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph?.LGlyphSourced ?? false;
         QLookItem.QLookItemApply(PGlyph);
         LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
 
-        List<LTranscriptionDraft> rows = [];
-        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
+        List<CTranscriptionDraft> rows = [];
+        foreach (CTranscriptionDraft spelled in draft.CEntryDraftTranscriptions)
         {
-            if (PGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            if (PGlyphSchemeCheck(spelled.CTranscriptionDraftScheme))
             {
                 rows.Add(spelled);
             }
@@ -113,7 +114,7 @@ public partial class PEditor
             _pGlyphItem,
             rows,
             static row => row.LTranscriptionItemId,
-            static spelled => spelled.LTranscriptionDraftId,
+            static spelled => spelled.CTranscriptionDraftId,
             PTranscriptionCreate,
             PTranscriptionUpdate);
     }

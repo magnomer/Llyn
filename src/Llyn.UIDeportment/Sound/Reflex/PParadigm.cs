@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -37,7 +37,7 @@ public sealed class PParadigm : ContentControl
         set => SetValue(PParadigmItemsProperty, value);
     }
 
-    internal void PParadigmShow(IReadOnlyList<LParadigmSlot> slots, bool pending, bool enabled)
+    internal void PParadigmShow(IReadOnlyList<CParadigmSlot> slots, bool pending, bool enabled)
     {
         SetCurrentValue(PParadigmItemsProperty, PParadigmItem.PParadigmItemScan(slots, pending, enabled, false));
     }

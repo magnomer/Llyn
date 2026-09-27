@@ -14,12 +14,12 @@ The editor sets it when it builds the card and turns the pick into a request.
 The card cannot send, because it holds no draft id.
 Typed text never comes this way, since a row holds no copy of what is typed.
 
-## `internal void PCardSentenceApply(LSentenceOrder order)`
+## `internal void PCardSentenceApply(CSentenceOrder order)`
 
 Hands the language pack's field order to every row the card holds.
 The card keeps no order of its own, so a row opened later reads the engine's when it is built.
 
-## `internal void PCardSentenceShow(IReadOnlyList<LSentenceDraft> drafts, string language)`
+## `internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, string language)`
 
 Makes the rows show the engine's rows, matched by sentence id.
 A field already reading what the engine holds is left alone.

@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -63,7 +64,7 @@ public sealed class TGuildRoll
         Assert.True(vita.LVitaNamed);
         Assert.Equal("Guild.WorkOne", vita.LVitaWork);
         Assert.Equal(["Bob"], vita.LVitaFellows.Select(fellow => fellow.LFellowName));
-        Assert.Equal(["Book"], guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.LCatalogReferenceName));
+        Assert.Equal(["Book"], guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
 
     [Fact]
@@ -79,7 +80,7 @@ public sealed class TGuildRoll
         Assert.False(guild.LGuildVitaHeld);
         Assert.False(guild.LGuildModeEnabled);
         Assert.False(guild.LGuildBinEnabled);
-        Assert.Contains("Orphan", guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.LCatalogReferenceName));
+        Assert.Contains("Orphan", guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
 
     [Fact]
@@ -91,9 +92,8 @@ public sealed class TGuildRoll
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
-        LColophon? shown = null;
-        guild.LGuildOeuvre.LOeuvrePanel.LPanelDraftChanged +=
-            draft => shown = guild.LGuildOeuvre.TOeuvreColophonRead(draft);
+        CColophon? shown = null;
+        guild.LGuildOeuvre.LOeuvreColophonChanged += colophon => shown = colophon;
         guild.TGuildRowSelect(ada.LAuthorId);
 
         guild.TGuildSourceSelect(book.LReferenceId);
@@ -102,7 +102,7 @@ public sealed class TGuildRoll
         Assert.False(guild.LGuildVitaShown);
         Assert.False(guild.LGuildModeEnabled);
         Assert.True(guild.LGuildPressAllowed);
-        Assert.Equal("Book", shown?.LColophonTitle);
+        Assert.Equal("Book", shown?.CColophonTitle);
     }
 
     private static LGuild TGuildPrepare(LEngine engine)

@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -19,7 +20,7 @@ public sealed class TEditorOpening
 
         Assert.True(editor.LEditorHeld);
         Assert.Equal(entry.LEntryId, editor.LEditorEntry);
-        Assert.Equal("water", editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.Equal("English", editor.LEditorLanguage);
         Assert.False(editor.LEditorOwned);
     }
@@ -37,7 +38,7 @@ public sealed class TEditorOpening
 
         Assert.True(editor.LEditorHeld);
         Assert.Null(editor.LEditorEntry);
-        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.True(editor.LEditorOwned);
     }
 
@@ -50,11 +51,11 @@ public sealed class TEditorOpening
 
         editor.TEditorOpen(null);
 
-        LEntryDraft? draft = editor.TEditorDraftRead();
+        CEntryDraft? draft = editor.TEditorDraftRead();
         Assert.NotNull(draft);
-        Assert.Single(draft.LEntryDraftMeanings);
-        Assert.Single(draft.LEntryDraftCollocations);
-        Assert.Single(draft.LEntryDraftMeanings[0].LCardDraftSentence);
+        Assert.Single(draft.CEntryDraftMeanings);
+        Assert.Single(draft.CEntryDraftCollocations);
+        Assert.Single(draft.CEntryDraftMeanings[0].CCardDraftSentence);
     }
 
     [Fact]
@@ -86,7 +87,7 @@ public sealed class TEditorOpening
         editor.TEditorSave();
 
         Assert.Equal(entry.LEntryId, editor.LEditorEntry);
-        Assert.Equal("waters", editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal("waters", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.False(editor.LEditorStorable);
     }
 
@@ -124,6 +125,6 @@ public sealed class TEditorOpening
         editor.TEditorReset();
 
         Assert.Equal(entry.LEntryId, editor.LEditorEntry);
-        Assert.Equal("water", editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 }

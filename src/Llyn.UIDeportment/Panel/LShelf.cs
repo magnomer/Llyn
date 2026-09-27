@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -25,6 +26,7 @@ public sealed class LShelf
     public LShelf(
         LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
@@ -35,6 +37,7 @@ public sealed class LShelf
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
         ArgumentNullException.ThrowIfNull(leaveSeam);
         ArgumentNullException.ThrowIfNull(removalSeam);
 
@@ -52,14 +55,17 @@ public sealed class LShelf
         LShelfPanel.LPanelRowsChanged += LShelfFootnote.LFootnotePanel.LPanelRowsUpdate;
         LShelfPanel.LPanelCleared += LShelfImprint.LImprintCancel;
         LShelfPanel.LPanelEdited += LShelfImprintOpen;
-        LShelfFootnote.LFootnotePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
-        LShelfFootnote.LFootnotePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LShelfPanel.LPanelDraftChanged += LShelfColophonUpdate;
+        LShelfFootnote.LFootnotePanel.LPanelCleared += lectern.LLecternClear;
+        LShelfFootnote.LFootnotePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
         LShelfImprint.LImprintDesk.LDeskFinished += LShelfStoredShow;
         LShelfImprint.LImprintDesk.LDeskStateChanged += LShelfStateUpdate;
         LShelfEditor.LEditorStateChanged += LShelfStateUpdate;
     }
 
     public event Action? LShelfChanged;
+
+    public event Action<CColophon>? LShelfColophonChanged;
 
     public LEditor LShelfEditor { get; }
 
@@ -119,9 +125,10 @@ public sealed class LShelf
         LShelfEditor.LEditorVistaRestore(footnote);
     }
 
-    public IReadOnlyList<LCatalogReference> LShelfRowsRead()
+    public IReadOnlyList<CCatalogReference> LShelfRowsRead()
     {
-        return LShelfRowsApply(_lShelfVista is LVista vista ? _lEntryPort.LEngineReferenceFind(vista) : []);
+        return LOeuvre.LOeuvreReferenceRead(
+            LShelfRowsApply(_lShelfVista is LVista vista ? _lEntryPort.LEngineReferenceFind(vista) : []));
     }
 
     private IReadOnlyList<LCatalogReference> LShelfRowsApply(IReadOnlyList<LCatalogReference> rows)
@@ -158,21 +165,21 @@ public sealed class LShelf
         _lShelfVista?.LVistaQuerySet(query);
     }
 
-    public void LShelfOrderSet(LCatalogOrder? order)
+    public void LShelfOrderSet(CCatalogOrder? order)
     {
         if (_lShelfVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LShelfSieveSet(LCatalogFilter filter)
+    public void LShelfSieveSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lShelfVista?.LVistaFilterSet(filter);
+        _lShelfVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public string LShelfTallyRead()
@@ -195,14 +202,10 @@ public sealed class LShelf
         return LReference.LReferenceUsageFormat(count, _lSettingsPort.LEngineTextRead);
     }
 
-    public LColophon LShelfColophonRead(LDraft draft)
+    private void LShelfColophonUpdate(LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        LReference reference = draft.LDraftReference
-            ?? throw new InvalidOperationException("The shelf draft holds no reference.");
-        return reference.LReferenceColophonRead(
-            draft.LDraftAuthor, LShelfTallyRead(), _lSettingsPort.LEngineTextRead);
+        LShelfColophonChanged?.Invoke(LOeuvre.LOeuvreColophonRead(
+            draft, LShelfTallyRead(), _lSettingsPort.LEngineTextRead, "The shelf draft holds no reference."));
     }
 
     public bool LShelfChangeCheck()

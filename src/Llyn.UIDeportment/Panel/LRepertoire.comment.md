@@ -7,7 +7,7 @@ The situation list lives in the atlas, which holds the situation vista's panel s
 The occurrence list lives in the occurrence, whose rows follow the chosen Situation.
 The desk holds the situation tenure the scenario editor edits, under the `Situation` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
-The occurrence list's loads and clears go straight to the editor's lectern, so the panel control relays no draft.
+The occurrence list's loads and clears go straight to its view's lectern, so no panel control relays a draft.
 
 ## `private LEditor LRepertoireEditor { get; }`
 
@@ -47,10 +47,11 @@ Raised once an arrival drops the inquest and the language filter, so the panel c
 Starts the desk on a stored Situation or on nothing, from the `Repertoire` origin the recovered draft names.
 It then announces the Situation the desk holds, which is null when the start was refused.
 
-## `private LSituation? LRepertoireScenarioRead()`
+## `public LSituation? LRepertoireScenarioRead()`
 
 Reads the Situation the desk holds, which persists the tenure first and so can throw.
 A throw raises `LRepertoireFailed` with `Situation.HoldFailed` and reads as null, so no click handler sees it.
+The veneer reads it on each draft bulletin, so the desk never hands it a draft.
 
 ## `private void LRepertoireDraftOpen(long id)`
 

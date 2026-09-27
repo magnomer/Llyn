@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -21,6 +22,7 @@ public sealed class LFavorite
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -29,6 +31,7 @@ public sealed class LFavorite
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
@@ -40,8 +43,8 @@ public sealed class LFavorite
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
         LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
-        LFavoritePanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LFavoritePanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LFavoritePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LFavoritePanel.LPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LFavoriteEditor { get; }
@@ -78,21 +81,21 @@ public sealed class LFavorite
         _lFavoriteVista?.LVistaQuerySet(query);
     }
 
-    public void LFavoriteSeriesSet(LCatalogOrder? order)
+    public void LFavoriteSeriesSet(CCatalogOrder? order)
     {
         if (_lFavoriteVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LFavoriteStrainerSet(LCatalogFilter filter)
+    public void LFavoriteStrainerSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lFavoriteVista?.LVistaFilterSet(filter);
+        _lFavoriteVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public IReadOnlyList<LVistaRow> LFavoriteRowsRead()
@@ -123,9 +126,11 @@ public sealed class LFavorite
         return _lFavoriteVista?.LVistaChosen ?? 0;
     }
 
-    public LCatalogOrder LFavoriteOrder => _lFavoriteVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    public CCatalogOrder LFavoriteOrder =>
+        LPanel.LPanelOrderRead(_lFavoriteVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
-    public LCatalogFilter LFavoriteFilter => _lFavoriteVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    public CCatalogFilter LFavoriteFilter =>
+        LPanel.LPanelFilterRead(_lFavoriteVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public string LFavoriteFileRead()
     {

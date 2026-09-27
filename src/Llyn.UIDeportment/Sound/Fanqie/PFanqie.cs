@@ -5,6 +5,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -127,7 +128,7 @@ public sealed class PFanqie : ContentControl
 
     internal Action<long, int>? PFanqieRepresentativeNotice { get; set; }
 
-    internal void PFanqieShow(IReadOnlyList<LFanqieGroup> groups, bool pending)
+    internal void PFanqieShow(IReadOnlyList<CFanqieGroup> groups, bool pending)
     {
         SetCurrentValue(PFanqieItemsProperty, PFanqieItem.PFanqieItemScan(groups));
         SetCurrentValue(PFanqiePendingProperty, pending);

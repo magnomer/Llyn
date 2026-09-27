@@ -96,14 +96,14 @@ It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing.
 The scheme names which empty notice, and comes from the opening before a foray exists and from the foray after.
 
-### `private void PNotationCandidateHandle(LCandidate candidate)`
+### `private void PNotationCandidateHandle(CCandidate candidate)`
 
 Each source answers exactly once here, whether it found a reading or not.
 The row is resolved in place rather than replaced, so it never jumps under the pointer.
 A source that was reached and had nothing reads differently from one that was never reached.
 Silence would have said a word is missing from a dictionary that was in fact down.
 
-### `private PNotationReading? PNotationReadingCreate(LCandidate candidate)`
+### `private PNotationReading? PNotationReadingCreate(CCandidate candidate)`
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
 Its label and flag are resolved as a pronunciation row resolves its own, under the draft's language of the moment.

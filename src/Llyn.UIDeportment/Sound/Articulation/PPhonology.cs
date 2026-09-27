@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -132,8 +132,11 @@ public class PPhonology : UserControl
     internal void PPhonologyAttach(PWindow host)
     {
         _pPhonologyHost = host;
+        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(editor.LEditorDisplay);
         _lPhonology = host.PWindowDeportment.LWindowPhonologyCreate(
-            host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm),
+            editor,
+            lectern,
             PPhonologyShownCheck,
             PPhonologyDiscardConfirm,
             host.PWindowDeleteConfirm);
@@ -144,9 +147,9 @@ public class PPhonology : UserControl
 
         PInventory.ItemsSource = _pInventoryList;
 
-        PDisplay.PDisplayAttach(host, _lPhonology.LPhonologyEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
 
-        PEditor.PEditorAttach(host, _lPhonology.LPhonologyEditor);
+        PEditor.PEditorAttach(host, _lPhonology.LPhonologyEditor, lectern);
 
         PEditor.PEditorChronicleChanged += PPhonologyChronicleUpdate;
 
@@ -166,18 +169,19 @@ public class PPhonology : UserControl
     internal async void PPhonologyVistaRestore()
     {
         _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowDeportment);
-        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PPhonologyWorkspaceUpdate));
-        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelEntryHandle));
-        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectReflex, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        _lPhonology.LPhonologyPanel.LPanelObserverAttach(
-            LSubject.LSubjectSettings, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelRowsUpdate));
-        _lPhonology.LPhonologyPanel.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lPhonology.LPhonologyPanel.LPanelDraftUpdate));
+        LPanel panel = _lPhonology.LPhonologyPanel;
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PPhonologyWorkspaceUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelEntryHandle));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
+        panel.LPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -185,10 +189,10 @@ public class PPhonology : UserControl
             "Sequence",
             PSequenceHandle,
             [
-                LCatalogOrder.LCatalogOrderHeadword,
-                LCatalogOrder.LCatalogOrderReverse,
-                LCatalogOrder.LCatalogOrderSound,
-                LCatalogOrder.LCatalogOrderPending,
+                CCatalogOrder.CCatalogOrderHeadword,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderSound,
+                CCatalogOrder.CCatalogOrderPending,
             ]);
         QChoice.QChoiceOrderApply(PSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         PLensUpdate();

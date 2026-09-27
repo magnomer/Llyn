@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -12,16 +12,15 @@ internal sealed class PShelfItem : INotifyPropertyChanged
 {
     private bool _pShelfItemChosen;
 
-    internal PShelfItem(LCatalogReference row, string unknown, string unset, bool chosen)
+    internal PShelfItem(CCatalogReference row, string unknown, string unset, bool chosen)
     {
         _pShelfItemChosen = chosen;
-        LReference reference = row.LCatalogReferenceStored;
 
-        PShelfItemId = reference.LReferenceId;
-        PShelfItemName = row.LCatalogReferenceName;
-        PShelfItemAuthor = PShelfCreditRead(reference, row.LCatalogReferenceCredit, unknown, unset);
-        PShelfItemYear = PShelfValueRead(reference.LReferenceYear, unknown) ?? unset;
-        PShelfItemCount = row.LCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
+        PShelfItemId = row.CCatalogReferenceId;
+        PShelfItemName = row.CCatalogReferenceName;
+        PShelfItemAuthor = PShelfValueRead(row.CCatalogReferenceCredit, unknown) ?? unset;
+        PShelfItemYear = PShelfValueRead(row.CCatalogReferenceYear, unknown) ?? unset;
+        PShelfItemCount = row.CCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
     }
 
     public long PShelfItemId { get; }
@@ -34,7 +33,7 @@ internal sealed class PShelfItem : INotifyPropertyChanged
 
     public string PShelfItemCount { get; }
 
-    internal static IReadOnlyList<PShelfItem> PShelfItemBuild(IReadOnlyList<LCatalogReference> rows)
+    internal static IReadOnlyList<PShelfItem> PShelfItemBuild(IReadOnlyList<CCatalogReference> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -42,27 +41,17 @@ internal sealed class PShelfItem : INotifyPropertyChanged
         string unset = QLocalizationCatalog.QLocalizationTextRead("Source.Unset");
 
         List<PShelfItem> built = new(rows.Count);
-        foreach (LCatalogReference row in rows)
+        foreach (CCatalogReference row in rows)
         {
-            built.Add(new PShelfItem(row, unknown, unset, row.LCatalogReferenceChosen));
+            built.Add(new PShelfItem(row, unknown, unset, row.CCatalogReferenceChosen));
         }
 
         return built;
     }
 
-    internal static string PShelfCreditRead(
-        LReference reference,
-        IReadOnlyList<LAuthor> credits,
-        string unknown,
-        string unset)
+    private static string? PShelfValueRead(CStateValue value, string unknown)
     {
-        return reference.LReferenceCreditRead(credits)
-            ?? (reference.LReferenceAuthorState.LStateMarkUncertain ? unknown : unset);
-    }
-
-    private static string? PShelfValueRead(LStateValue value, string unknown)
-    {
-        return value.LStateValueUncertain ? unknown : value.LStateValueShown;
+        return value.CStateValueUncertain ? unknown : value.CStateValueShown;
     }
 
     internal static bool PShelfItemMatch(PShelfItem held, PShelfItem fresh)

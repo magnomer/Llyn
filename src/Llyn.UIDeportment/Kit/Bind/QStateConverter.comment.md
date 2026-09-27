@@ -8,7 +8,7 @@ Nothing was ever recorded, or the user marked it as not known.
 This is what tells a reader which.
 The first shows nothing at all, or the hint a field invites with.
 The second shows the mark the interface language gives for it.
-It hands the choice to `LStateValueFormat`, so the value reads its own three states apart.
+It reads the value's own verdicts, legible and uncertain, so it never judges a state itself.
 A panel that must know whether a value is unknown asks the value's own verdict instead.
 
 ## `public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)`
@@ -20,6 +20,11 @@ An input field adds the hint it invites the user with third, and then the result
 A placeholder reads the mark for an unknown value and the hint for any other.
 The field's own text covers the placeholder while a value stands, so the value is never drawn twice.
 The mark and the hint both arrive as bindings, so a language change reaches text that has already been drawn.
+
+## `private static string QStateFormat(CStateValue state, string mark, string hint, bool placeholder)`
+
+A legible value shows its text, or the hint when a placeholder is asked for.
+An unknown value shows the mark, and an empty one the hint.
 
 ## `public object Convert(object value, Type targetType, object parameter, CultureInfo culture)`
 

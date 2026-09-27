@@ -20,7 +20,7 @@ A timestamp that cannot be read is not an error the user is stopped by.
 The row falls back to playing from the start.
 Half-typed text is a moment in the middle of typing.
 
-## `internal PVideo(LWindow window, LVideoDraft written)`
+## `internal PVideo(LWindow window, CVideoDraft written)`
 
 The row for a stored Video, holding the location and the span as the store knows them.
 The window resolves each location to the address the screen plays.
@@ -34,18 +34,18 @@ The id of the engine's row this one shows, which every request about it names.
 Asks the user for a video file on this machine and answers its path, or null when they chose none.
 It lives on the row for the reason the picture chooser lives on its row.
 
-## `internal void PVideoShow(LVideoDraft written)`
+## `internal void PVideoShow(CVideoDraft written)`
 
 Redraws the row from the engine's row, location and span apart, only where the field says something else.
 A field already reading what the engine holds is left alone.
 The id is always taken.
 
-## `public LStateValue PVideoLocation`
+## `public CStateValue PVideoLocation`
 
 The location as the draft holds it, set only from the draft.
 A changed location reads the address the screen plays again.
 
-## `public LStateValue PVideoTimestamp`
+## `public CStateValue PVideoTimestamp`
 
 The span as the draft holds it, set only from the draft.
 Nothing before the dash means from the start.

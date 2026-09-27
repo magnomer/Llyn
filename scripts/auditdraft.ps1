@@ -26,7 +26,7 @@ record include, the types, the waivers and the sides - lives in auditdraft.json.
 
 auditdraft.json shape:
   {
-    "generation": 16,
+    "generation": 17,
     "project": "Llyn",
     "records": {
       "include": ["src/Llyn.Core/Lexicon/*.cs"],
@@ -52,7 +52,7 @@ auditdraft
 Audit the current checkout.
 #>
 #requires -Version 5.1
-# AUDITDRAFT GENERATION 16 - auditdraft.ps1.
+# AUDITDRAFT GENERATION 17 - auditdraft.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -70,6 +70,8 @@ Audit the current checkout.
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
 # Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
+# seal check counts engine types on the public members of sealed Deportment types.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -133,7 +135,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 $script:TargetFramework = 'net10.0'
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 

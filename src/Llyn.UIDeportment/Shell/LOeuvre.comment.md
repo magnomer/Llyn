@@ -21,7 +21,26 @@ The rows cross as a parameter, so no local carries an engine answer into the cle
 
 The citation sentence for the chosen Source, composed from the usage the engine counts.
 
-## `public LColophon LOeuvreColophonRead(LDraft draft)`
+## `private void LOeuvreColophonUpdate(LDraft draft)`
 
-The read sheet of a loaded Source draft with the tally of the chosen row.
+Composes the read sheet of a loaded Source draft with the tally of the chosen row, and announces it.
+The draft passes only between controllers, so the view receives the sheet and never the draft.
 The draft arrives as a parameter from the notice, so the Source is never a local here.
+The shelf composes its sheet through the same map.
+
+## `public event Action<CColophon>? LOeuvreColophonChanged;`
+
+The sheet of the Source just loaded, for the guild view's colophon.
+
+## `internal static CColophon LOeuvreColophonRead(`
+
+Reads the sheet of a Source draft and shapes it, failing with the caller's message when no Source is held.
+The oeuvre and the shelf both call it, so the colophon map is declared once.
+
+## `internal static IReadOnlyList<CCatalogReference> LOeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)`
+
+The one map for reference rows, shared with the card, the anthology and the shelf.
+
+## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
+
+The authors as a written value, uncertain when the engine marks them unknown.

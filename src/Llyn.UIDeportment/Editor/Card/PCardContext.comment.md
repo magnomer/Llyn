@@ -31,7 +31,7 @@ What is standing in the entry.
 
 How many chips stand before the caret, which is the place a new chip is asked for.
 
-## `internal void PCardContextShow(IReadOnlyList<LSituationDraft> drafts)`
+## `internal void PCardContextShow(IReadOnlyList<CSituationDraft> drafts)`
 
 Makes the chips show the engine's Situations, matched by id.
 A chip whose title changed is replaced, since a chip is immutable.

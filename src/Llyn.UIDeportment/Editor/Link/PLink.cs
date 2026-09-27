@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Llyn.Application;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -94,7 +94,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LVistaRow> found;
+        IReadOnlyList<CVistaRow> found;
         try
         {
             found = _lEditor.LEditorCard.LCardProspectFind(word);
@@ -232,14 +232,7 @@ public partial class PEditor
 
         try
         {
-            LCourt? link = _lEditor.LEditorCard.LCardCourtFind(PEditorDraft, id);
-            if (link is null)
-            {
-                return;
-            }
-
-            _lEditor.LEditorCard.LCardCourtDelete(link.LCourtId);
-            _lEditor.LEditorCard.LCardDraftDelete(id);
+            _lEditor.LEditorCard.LCardCourtDelete(PEditorDraft, id);
         }
         catch (Exception)
         {
@@ -254,8 +247,8 @@ public partial class PEditor
             return false;
         }
 
-        LEntry? single;
-        IReadOnlyList<LVistaRow> found;
+        long? single;
+        IReadOnlyList<CVistaRow> found;
         try
         {
             long? entry = _lEditor.LEditorEntry;
@@ -271,7 +264,7 @@ public partial class PEditor
         if (single is not null && !offered)
         {
             PProspectHide();
-            return PLinkSend(card, single.LEntryId);
+            return PLinkSend(card, single.Value);
         }
 
         if (offered)

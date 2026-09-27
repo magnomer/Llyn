@@ -44,7 +44,7 @@ public sealed class LLecternCard
 
     private UIElement _lLecternCardOrigin = null!;
 
-    private Action<string, string, IReadOnlyList<LTranslationTarget>> _lLecternCardLineage = null!;
+    private Action<string, string, IReadOnlyList<CTranslationTarget>> _lLecternCardLineage = null!;
 
     private Func<long, bool> _lLecternCardEntry = null!;
 
@@ -116,7 +116,7 @@ public sealed class LLecternCard
     public void LLecternEtymologyAttach(
         UIElement etymology,
         UIElement section,
-        Action<string, string, IReadOnlyList<LTranslationTarget>> etymologySeam)
+        Action<string, string, IReadOnlyList<CTranslationTarget>> etymologySeam)
     {
         ArgumentNullException.ThrowIfNull(etymology);
         ArgumentNullException.ThrowIfNull(section);
@@ -198,7 +198,7 @@ public sealed class LLecternCard
     private void LLecternEtymologyShow(
         string language, string text, IReadOnlyList<LTranslationTarget> etymons, bool derived)
     {
-        _lLecternCardLineage(language, text, etymons);
+        _lLecternCardLineage(language, text, LCard.LCardTargetRead(etymons));
         _lLecternCardEtymology.Visibility = LDisplay.LDisplayEtymologyCheck(text, etymons.Count)
             ? Visibility.Visible
             : Visibility.Collapsed;

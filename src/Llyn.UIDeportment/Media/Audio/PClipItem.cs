@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -37,7 +37,7 @@ internal sealed class PClipItem : INotifyPropertyChanged
         private set => PClipItemChange(ref _pClipItemReady, value, nameof(PClipItemReady));
     }
 
-    internal void PClipItemShow(LRecording recording, PClipReading? reading, string missing, string broken)
+    internal void PClipItemShow(CRecording recording, PClipReading? reading, string missing, string broken)
     {
         if (reading is not null)
         {
@@ -52,7 +52,7 @@ internal sealed class PClipItem : INotifyPropertyChanged
             return;
         }
 
-        PClipItemNotice = recording.LRecordingReached ? missing : broken;
+        PClipItemNotice = recording.CRecordingReached ? missing : broken;
         PClipItemReady = false;
     }
 

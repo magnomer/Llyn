@@ -21,12 +21,12 @@ The side's search field, read on each keystroke and kept to tell a leave from a 
 
 Raised with the failure key when an entry load threw, so the veneer can report it.
 
-## `private void LWingOrderSet(LCatalogOrder? order)`
+## `private void LWingOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves it under the side's tab and announces it.
 A sender that is no order row hands null, which keeps the ordering it has.
 
-## `private void LWingSieveSet(LCatalogFilter filter)`
+## `private void LWingSieveSet(CCatalogFilter filter)`
 
 Hands the ticked languages to the vista, which saves and announces them.
 

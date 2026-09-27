@@ -35,7 +35,7 @@ Fills a block of `Theme.Fanqie.Row`: the stem line, character, book chip, source
 The stem line shows only while the block has stems, and the book chip keeps its room when blank.
 The line list is attached to `PFanqieLine.PFanqieRowApply`.
 
-## `internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<LFanqieGroup> groups)`
+## `internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<CFanqieGroup> groups)`
 
 One block per group the engine handed over, each line copied from its row.
 

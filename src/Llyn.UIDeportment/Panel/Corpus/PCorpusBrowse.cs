@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -49,10 +49,10 @@ public partial class PCorpus
             "Rank",
             PRankHandle,
             [
-                LCatalogOrder.LCatalogOrderText,
-                LCatalogOrder.LCatalogOrderLanguage,
-                LCatalogOrder.LCatalogOrderSource,
-                LCatalogOrder.LCatalogOrderUsage,
+                CCatalogOrder.CCatalogOrderText,
+                CCatalogOrder.CCatalogOrderLanguage,
+                CCatalogOrder.CCatalogOrderSource,
+                CCatalogOrder.CCatalogOrderUsage,
             ]);
         QChoice.QChoiceOrderApply(PRankDropdown, anthology.LPanelOrder);
         PGauzeRestore();
@@ -71,25 +71,25 @@ public partial class PCorpus
     {
         LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
         LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
-        Action<LBulletin> rows = LObserver.LObserverCreate(this, anthology.LPanelRowsUpdate);
-        Action<LBulletin> citation = LObserver.LObserverCreate(this, PCitationFind);
-        anthology.LPanelObserverAttach(LSubject.LSubjectVista, rows);
+        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(this, anthology.LPanelRowsUpdate);
+        Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(this, PCitationFind);
+        anthology.LPanelObserverAttach(CSubject.CSubjectVista, rows);
         anthology.LPanelObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PCorpusWorkspaceUpdate));
-        anthology.LPanelObserverAttach(LSubject.LSubjectExample, citation);
-        anthology.LPanelObserverAttach(LSubject.LSubjectExample, rows);
-        anthology.LPanelObserverAttach(LSubject.LSubjectReference, citation);
-        anthology.LPanelObserverAttach(LSubject.LSubjectReference, rows);
-        anthology.LPanelObserverAttach(LSubject.LSubjectReflex, rows);
-        anthology.LPanelObserverAttach(LSubject.LSubjectSettings, rows);
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PCorpusWorkspaceUpdate));
+        anthology.LPanelObserverAttach(CSubject.CSubjectExample, citation);
+        anthology.LPanelObserverAttach(CSubject.CSubjectExample, rows);
+        anthology.LPanelObserverAttach(CSubject.CSubjectReference, citation);
+        anthology.LPanelObserverAttach(CSubject.CSubjectReference, rows);
+        anthology.LPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        anthology.LPanelObserverAttach(CSubject.CSubjectSettings, rows);
         quotation.LPanelObserverAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, quotation.LPanelEntrySelect));
-        quotation.LPanelObserverAttach(LSubject.LSubjectEntry, citation);
-        quotation.LPanelObserverAttach(LSubject.LSubjectEntry, rows);
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, quotation.LPanelEntrySelect));
+        quotation.LPanelObserverAttach(CSubject.CSubjectEntry, citation);
+        quotation.LPanelObserverAttach(CSubject.CSubjectEntry, rows);
         quotation.LPanelChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(this, _lCorpus.LCorpusEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lCorpus.LCorpusEntryUpdate));
         quotation.LPanelObserverAttach(
-            LSubject.LSubjectVista, LObserver.LObserverCreate(this, quotation.LPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, quotation.LPanelRowsUpdate));
     }
 
     private void PGauzeRestore()

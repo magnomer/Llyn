@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Core;
+using Llyn.Conduct;
 
 
 namespace Llyn.UIDeportment;
@@ -83,7 +83,7 @@ public partial class PEditor
             }
 
             _lEditor.LEditorClipStart(
-                word, target, LObserver.LObserverCreate<LHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
+                word, target, LObserver.LObserverCreate<CHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
         }
         catch (Exception)
         {
@@ -116,11 +116,11 @@ public partial class PEditor
         return row;
     }
 
-    private PClipReading PClipReadingCreate(LRecording recording)
+    private PClipReading PClipReadingCreate(CRecording recording)
     {
-        string variety = recording.LRecordingVariety;
+        string variety = recording.CRecordingVariety;
         string action = QLocalizationCatalog.QLocalizationTextRead("Downloader.Use");
-        if (!recording.LRecordingRegional)
+        if (!recording.CRecordingRegional)
         {
             return new PClipReading(recording, string.Empty, null, action);
         }
@@ -303,7 +303,7 @@ public partial class PEditor
             }
 
             long id = _lEditor.LEditorClip.LClipPrimary
-                ? PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0
+                ? PNotationDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftId ?? 0
                 : _lEditor.LEditorClip.LClipTarget;
 
             PNotationVarietySend(id, reading.PClipReadingVariety);
@@ -322,11 +322,11 @@ public partial class PEditor
         PClipUpdate();
     }
 
-    private void PClipRecordingHandle(LRecording recording)
+    private void PClipRecordingHandle(CRecording recording)
     {
-        PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
+        PClipPlace(recording.CRecordingSource, recording.CRecordingOrder).PClipItemShow(
             recording,
-            recording.LRecordingAddressed ? PClipReadingCreate(recording) : null,
+            recording.CRecordingAddressed ? PClipReadingCreate(recording) : null,
             QLocalizationCatalog.QLocalizationTextRead("Downloader.Missing"),
             QLocalizationCatalog.QLocalizationTextRead("Downloader.Broken"));
         PClipUpdate();

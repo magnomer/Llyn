@@ -16,7 +16,7 @@ The markup's name scope is copied onto the control, so its named parts answer `F
 
 Each named part of the markup is read through `FindName`, so call sites keep the old generated names.
 
-## `internal void PColophonShow(LColophon sheet)`
+## `internal void PColophonShow(CColophon sheet)`
 
 Writes a composed sheet onto the page: one text and one look per field, and the page shown.
 A never-written field hides its heading, so a blank line never stands for two facts.

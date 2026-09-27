@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -12,7 +12,7 @@ internal sealed partial class PCard
 
     internal Action<PSentence, string>? PCardSentenceNotice { get; set; }
 
-    internal void PCardSentenceApply(LSentenceOrder order)
+    internal void PCardSentenceApply(CSentenceOrder order)
     {
         foreach (PSentence row in PCardSentence)
         {
@@ -20,13 +20,13 @@ internal sealed partial class PCard
         }
     }
 
-    internal void PCardSentenceShow(IReadOnlyList<LSentenceDraft> drafts, string language)
+    internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, string language)
     {
         PCardRowShow(
             PCardSentence,
             drafts,
             static row => row.PSentenceRow,
-            static draft => draft.LSentenceDraftId,
+            static draft => draft.CSentenceDraftId,
             draft => PCardSentenceCreate(draft, language),
             (row, draft) =>
             {
@@ -40,7 +40,7 @@ internal sealed partial class PCard
         return PCardSentence.IndexOf(row);
     }
 
-    private PSentence PCardSentenceCreate(LSentenceDraft draft, string language)
+    private PSentence PCardSentenceCreate(CSentenceDraft draft, string language)
     {
         PSentence row = new(_pCardCitation, _pCardParticle, _pCardDependence, _pCardLanguage, draft);
         row.PSentenceOrderApply(_pCardWindow.LWindowOrderRead(language));

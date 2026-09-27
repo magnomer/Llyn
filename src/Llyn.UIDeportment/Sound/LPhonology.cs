@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -20,6 +21,7 @@ public sealed class LPhonology
         LPhonologyPort phonology,
         LPortraitPort portraits,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -27,6 +29,7 @@ public sealed class LPhonology
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
@@ -36,8 +39,8 @@ public sealed class LPhonology
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
         LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
-        LPhonologyPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LPhonologyPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LPhonologyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LPhonologyPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LPhonologyEditor { get; }
@@ -80,21 +83,21 @@ public sealed class LPhonology
         _lPhonologyVista?.LVistaQuerySet(query);
     }
 
-    public void LPhonologyOrderSet(LCatalogOrder? order)
+    public void LPhonologyOrderSet(CCatalogOrder? order)
     {
         if (_lPhonologyVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LPhonologyFilterSet(LCatalogFilter filter)
+    public void LPhonologyFilterSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lPhonologyVista?.LVistaFilterSet(filter);
+        _lPhonologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public Task LPhonologyPortraitPrint(LPortraitLabel label, LPressTicket ticket)

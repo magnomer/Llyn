@@ -10,7 +10,7 @@ It is the yunjing deportment with one column instead of two, since a series name
 
 Takes the engine ports, the editor it shares with the panel, and the shell's three seams.
 The panel clears and opens the editor through the notices it raises.
-Its loads and clears also go straight to the editor's lectern, so the veneer relays no draft.
+Its loads and clears also go straight to the lectern its view hands in, so the veneer relays no draft.
 
 ## `private void LXieshengEditorClear()`
 
@@ -68,7 +68,7 @@ The localization key the empty series column prints, telling a narrowed column f
 
 The localization key the empty entry list prints, telling no series chosen from a series with nothing.
 
-## `public LCatalogOrder LXieshengRung`
+## `public CCatalogOrder LXieshengRung`
 
 The ordering the series column is listed in.
 
@@ -128,7 +128,7 @@ Narrows the series column to that query.
 
 Narrows the entry list to that query.
 
-## `public void LXieshengRungSet(LCatalogOrder? order)`
+## `public void LXieshengRungSet(CCatalogOrder? order)`
 
 Lists the series column in that ordering, keeping the one it has when none is named.
 
@@ -140,7 +140,7 @@ Unchooses the series and clears the panel, as a workspace changes.
 
 Copies the columns again and lets the panel refresh its own rows.
 
-## `public void LXieshengEntryHandle(LBulletin bulletin)`
+## `public void LXieshengEntryHandle(CBulletin bulletin)`
 
 Copies the columns again and hands the entry notice to the panel.
 

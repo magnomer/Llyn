@@ -1,31 +1,32 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public sealed class PFanqieLine
 {
-    private PFanqieLine(LFanqieRow row)
+    private PFanqieLine(CFanqieRow row)
     {
-        PFanqieLineId = row.LFanqieRowId;
-        PFanqieLineRank = row.LFanqieRowRepresentative;
-        PFanqieLineMarked = row.LFanqieRowMarked;
-        PFanqieLinePrimary = row.LFanqieRowPrimary;
-        PFanqieLineOrder = row.LFanqieRowOrder;
-        PFanqieLineRounded = row.LFanqieRowClosed;
-        PFanqieLineReading = row.LFanqieRowSlashed;
-        PFanqieLineLabel = row.LFanqieRowLabel;
-        PFanqieLineInitial = row.LFanqieRowInitial;
-        PFanqieLineYunmu = row.LFanqieRowCell;
-        PFanqieLineHeading = row.LFanqieRowBracketed;
-        PFanqieLineKnot = row.LFanqieRowKnotted;
-        PFanqieLineMedial = row.LFanqieRowMedial;
-        PFanqieLineDivision = row.LFanqieRowGraded;
-        PFanqieLineTone = row.LFanqieRowTone;
-        PFanqieLineSpelling = row.LFanqieRowSpelling;
-        PFanqieLineText = row.LFanqieRowRemainder;
+        PFanqieLineId = row.CFanqieRowId;
+        PFanqieLineRank = row.CFanqieRowRepresentative;
+        PFanqieLineMarked = row.CFanqieRowMarked;
+        PFanqieLinePrimary = row.CFanqieRowPrimary;
+        PFanqieLineOrder = row.CFanqieRowOrder;
+        PFanqieLineRounded = row.CFanqieRowClosed;
+        PFanqieLineReading = row.CFanqieRowSlashed;
+        PFanqieLineLabel = row.CFanqieRowLabel;
+        PFanqieLineInitial = row.CFanqieRowInitial;
+        PFanqieLineYunmu = row.CFanqieRowCell;
+        PFanqieLineHeading = row.CFanqieRowBracketed;
+        PFanqieLineKnot = row.CFanqieRowKnotted;
+        PFanqieLineMedial = row.CFanqieRowMedial;
+        PFanqieLineDivision = row.CFanqieRowGraded;
+        PFanqieLineTone = row.CFanqieRowTone;
+        PFanqieLineSpelling = row.CFanqieRowSpelling;
+        PFanqieLineText = row.CFanqieRowRemainder;
     }
 
     public long PFanqieLineId { get; }
@@ -62,7 +63,7 @@ public sealed class PFanqieLine
 
     public string PFanqieLineText { get; }
 
-    internal static PFanqieLine PFanqieLineCreate(LFanqieRow row)
+    internal static PFanqieLine PFanqieLineCreate(CFanqieRow row)
     {
         ArgumentNullException.ThrowIfNull(row);
 

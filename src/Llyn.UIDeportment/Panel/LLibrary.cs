@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -24,6 +25,7 @@ public sealed class LLibrary
         LEntryPort entries,
         LPortraitPort portraits,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -31,6 +33,7 @@ public sealed class LLibrary
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
@@ -40,8 +43,8 @@ public sealed class LLibrary
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LLibraryPanel.LPanelCleared += LLibraryEditorClear;
         LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
-        LLibraryPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LLibraryPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LLibraryPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LLibraryPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     public event Action<string, Exception>? LLibraryFailed;
@@ -102,19 +105,19 @@ public sealed class LLibrary
         _lLibraryVista?.LVistaQuerySet(query);
     }
 
-    private void LLibraryOrderSet(LCatalogOrder? order)
+    private void LLibraryOrderSet(CCatalogOrder? order)
     {
         if (_lLibraryVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    private void LLibrarySieveSet(LCatalogFilter filter)
+    private void LLibrarySieveSet(CCatalogFilter filter)
     {
-        _lLibraryVista?.LVistaFilterSet(filter);
+        _lLibraryVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public void LLibraryOrderHandle(object sender, ToggleButton dropper)

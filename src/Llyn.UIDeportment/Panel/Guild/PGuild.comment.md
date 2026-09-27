@@ -69,10 +69,6 @@ Reads the vita sheet once and hands it to the vita and to the autograph's count 
 
 Lists the oeuvre afresh with its empty text and refreshes the colophon's tally.
 
-## `private void PGuildSourceUpdate(LDraft draft)`
-
-A Source was loaded for the colophon, so its sheet is composed and shown.
-
 ## `private void PGuildModeUpdate()`
 
 Writes every visibility and enablement off the deportment's verdicts.

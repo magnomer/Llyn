@@ -27,9 +27,10 @@ The glyph, accent, transcription and reflex lists are attached to their row fill
 The pronunciation box, found by name.
 It is internal because the phonology panel attaches its probe to it.
 
-## `internal void PEditorAttach(PWindow host, LEditor editor)`
+## `internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)`
 
 Puts the editor to work on the deportment its tab built, and subscribes each notice to one control write.
+The view built `lectern` over the editor's display, and the reflex block keeps its fold there.
 The sentence frames, the language menu, the categories and the volume are loaded once here.
 They do not follow the draft, so no notice reloads them.
 
@@ -53,9 +54,9 @@ The desk's own draft and state updates ride the same observers, so they run on t
 A tenure started, so the card lists start empty.
 The entry sections are read again at once, since a bulletin comes only when they change.
 
-## `private void PEditorDraftUpdate(LDraft held)`
+## `private void PEditorDraftShow(CEntryDraft draft)`
 
-Writes every spine control from the draft the desk announced, then the card and sound parts from it.
+Writes every spine control from the entry the editor announced, then the card and sound parts from it.
 The text boxes are written through the guarded writes, so a box being typed into keeps its caret.
 
 ## `private void PEditorLanguageUpdate()`

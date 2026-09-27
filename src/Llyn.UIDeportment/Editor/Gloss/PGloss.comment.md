@@ -9,7 +9,7 @@ The row raises a property change for a language pick and lets its owner decide w
 What is typed into its text field leaves through the owner's own handler.
 So the row holds no copy of it.
 
-## `internal PGloss(ObservableCollection<PLanguageItem> catalog, LGlossDraft draft)`
+## `internal PGloss(ObservableCollection<PLanguageItem> catalog, CGlossDraft draft)`
 
 Takes the language catalog the picker offers and the draft row to show.
 
@@ -31,7 +31,7 @@ A null is ignored, because the picker's list clears its selection to null while 
 
 The flag of the chosen language, or null when none is chosen.
 
-## `public LStateValue PGlossText`
+## `public CStateValue PGlossText`
 
 The rendering as the draft holds it, set only from the draft.
 
@@ -39,7 +39,7 @@ The rendering as the draft holds it, set only from the draft.
 
 Whether the language picker is open.
 
-## `internal void PGlossShow(LGlossDraft draft)`
+## `internal void PGlossShow(CGlossDraft draft)`
 
 Redraws the row from the draft, leaving a field already reading what the engine holds alone.
 
@@ -57,7 +57,7 @@ The cross takes the row as its parameter and its icon.
 
 The language name, or the muted language label while none is chosen.
 
-## `private static void PGlossTextApply(FrameworkElement container, LStateValue text)`
+## `private static void PGlossTextApply(FrameworkElement container, CStateValue text)`
 
 Reads the text and its placeholder through the state converter's logic, as the bindings did.
 The unknown mark and the hint are read once per fill, so they do not follow a later language switch.

@@ -1,4 +1,4 @@
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -14,8 +14,8 @@ internal sealed class PCitationItem
 
     public string PCitationItemName { get; }
 
-    internal static PCitationItem PCitationItemCreate(LCatalogReference row)
+    internal static PCitationItem PCitationItemCreate(CCatalogReference row)
     {
-        return new PCitationItem(row.LCatalogReferenceStored.LReferenceId, row.LCatalogReferenceByline);
+        return new PCitationItem(row.CCatalogReferenceId, row.CCatalogReferenceByline);
     }
 }

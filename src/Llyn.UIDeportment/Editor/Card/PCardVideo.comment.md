@@ -7,7 +7,7 @@ A clip is an addition the user asks for.
 So a card starts with no row and offers none it is not given.
 The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)`
+## `internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows)`
 
 Makes the rows show the engine's Videos, matched by id.
 A field already reading what the engine holds is left alone.

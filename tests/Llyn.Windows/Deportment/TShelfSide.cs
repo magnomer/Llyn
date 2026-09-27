@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -14,18 +15,18 @@ public sealed class TShelfSide
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LShelf shelf = TShelfPrepare(engine);
         LReference book = engine.TEngineCitationCreate("Book");
-        LColophon? shown = null;
-        shelf.LShelfPanel.LPanelDraftChanged += draft => shown = shelf.TShelfColophonRead(draft);
+        CColophon? shown = null;
+        shelf.LShelfColophonChanged += colophon => shown = colophon;
 
         shelf.TShelfRowSelect(book.LReferenceId);
 
         Assert.False(shelf.LShelfEntrySide);
         Assert.True(shelf.LShelfColophonShown);
         Assert.True(shelf.LShelfBinEnabled);
-        Assert.Equal("Book", shown?.LColophonTitle);
+        Assert.Equal("Book", shown?.CColophonTitle);
         Assert.Equal(["Book"], shelf.TShelfRowsRead()
-            .Where(row => row.LCatalogReferenceChosen)
-            .Select(row => row.LCatalogReferenceName));
+            .Where(row => row.CCatalogReferenceChosen)
+            .Select(row => row.CCatalogReferenceName));
     }
 
     [Fact]
@@ -107,14 +108,14 @@ public sealed class TShelfSide
 
         shelf.TShelfDelete();
 
-        Assert.Contains(shelf.TShelfRowsRead(), row => row.LCatalogReferenceName == "Book");
+        Assert.Contains(shelf.TShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
 
         shelf.TShelfScribeSet(false);
         shelf.LShelfFootnote.LFootnotePanel.TPanelScribeSet(false);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfDelete();
 
-        Assert.DoesNotContain(shelf.TShelfRowsRead(), row => row.LCatalogReferenceName == "Book");
+        Assert.DoesNotContain(shelf.TShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
         Assert.False(shelf.LShelfBinEnabled);
     }
 

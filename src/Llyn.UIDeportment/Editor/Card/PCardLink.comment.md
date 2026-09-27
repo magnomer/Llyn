@@ -30,7 +30,7 @@ Where the entry's text goes as it is typed, so the editor can offer matching Ent
 
 How many chips stand before the caret, which is the place a new link is asked for.
 
-## `internal void PCardLinkShow(IReadOnlyList<LTranslationTarget> targets)`
+## `internal void PCardLinkShow(IReadOnlyList<CTranslationTarget> targets)`
 
 Makes the chips show the engine's links, matched by id.
 Each target carries the headword and language its id stands for, read once for the whole card.

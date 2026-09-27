@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -37,12 +38,12 @@ public partial class PCorpus
         }
 
         PTranscriptDesk.LDeskPersist();
-        if (PTranscriptMentionFind() is not LMentionDraft mention)
+        if (PTranscriptMentionFind() is not CMentionDraft mention)
         {
             return;
         }
 
-        if (!mention.LMentionDraftLinked)
+        if (!mention.CMentionDraftLinked)
         {
             return;
         }
@@ -50,9 +51,9 @@ public partial class PCorpus
         _pCorpusHost.PWindowSenseShow(
             PTranscriptText,
             PMentionSelection.PMentionSelectionPlace(PTranscriptText),
-            mention.LMentionDraftEntry,
+            mention.CMentionDraftEntry,
             senseId => PTranscriptRequestSend(
-                new LRequestMentionSense(PTranscriptDraft, 0, 0, mention.LMentionDraftId, senseId)));
+                new LRequestMentionSense(PTranscriptDraft, 0, 0, mention.CMentionDraftId, senseId)));
     }
 
     private void PTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)
@@ -72,7 +73,7 @@ public partial class PCorpus
         PTranscriptDesk.LDeskPersist();
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
-            : PTranscriptMentionFind()?.LMentionDraftId;
+            : PTranscriptMentionFind()?.CMentionDraftId;
         if (mentionId is not long id || PTranscriptDraft == 0)
         {
             return;
@@ -89,7 +90,7 @@ public partial class PCorpus
 
     private void PTranscriptSenseCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Source is TextBox && PTranscriptMentionFind() is { LMentionDraftEntry: not 0 };
+        e.CanExecute = e.Source is TextBox && PTranscriptMentionFind() is { CMentionDraftEntry: not 0 };
     }
 
     private void PTranscriptUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -97,7 +98,7 @@ public partial class PCorpus
         e.CanExecute = e.Parameter is PMentionChip || (e.Source is TextBox && PTranscriptMentionFind() is not null);
     }
 
-    private LMentionDraft? PTranscriptMentionFind()
+    private CMentionDraft? PTranscriptMentionFind()
     {
         return PTranscriptDesk.LDeskMentionFind(
             0, 0, PTranscriptText.Text, PTranscriptText.SelectionStart, PTranscriptText.SelectionLength);
@@ -105,10 +106,10 @@ public partial class PCorpus
 
     private void PTranscriptMentionShow(LExample? example)
     {
-        List<LMentionDraft> mentions = [];
+        List<CMentionDraft> mentions = [];
         foreach (LMention mention in example?.LExampleMention ?? [])
         {
-            mentions.Add(LMentionDraft.LMentionDraftCreate(mention));
+            mentions.Add(LCard.LCardMentionRead(LMentionDraft.LMentionDraftCreate(mention)));
         }
 
         if (example is null)

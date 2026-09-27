@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -23,6 +24,7 @@ public sealed class LTenor
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<bool> deleteSeam)
@@ -31,6 +33,7 @@ public sealed class LTenor
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
@@ -42,8 +45,8 @@ public sealed class LTenor
             editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTenorPanel.LPanelCleared += LTenorEditorClear;
         LTenorPanel.LPanelEdited += LTenorEditorOpen;
-        LTenorPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
-        LTenorPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
+        LTenorPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LTenorPanel.LPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LTenorEditor { get; }
@@ -91,21 +94,21 @@ public sealed class LTenor
         _lTenorVista?.LVistaQuerySet(query);
     }
 
-    public void LTenorDegreeSet(LCatalogOrder? order)
+    public void LTenorDegreeSet(CCatalogOrder? order)
     {
         if (_lTenorVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LTenorGrilleSet(LCatalogFilter filter)
+    public void LTenorGrilleSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lTenorVista?.LVistaFilterSet(filter);
+        _lTenorVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public void LTenorQuestSet(string query)
@@ -159,9 +162,11 @@ public sealed class LTenor
         _lTenorVista?.LVistaObserverAttach(subject, observer);
     }
 
-    public LCatalogOrder LTenorOrder => _lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    public CCatalogOrder LTenorOrder =>
+        LPanel.LPanelOrderRead(_lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
-    public LCatalogFilter LTenorFilter => _lTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    public CCatalogFilter LTenorFilter =>
+        LPanel.LPanelFilterRead(_lTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public string LTenorFileRead()
     {

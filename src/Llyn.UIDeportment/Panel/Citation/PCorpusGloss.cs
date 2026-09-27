@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -22,9 +23,15 @@ public partial class PCorpus
     private void PExcerptGlossShow(IReadOnlyList<LGloss> glosses)
     {
         _pExcerptGloss.Clear();
+        List<LGlossDraft> drafts = [];
         foreach (LGloss gloss in glosses)
         {
-            _pExcerptGloss.Add(new PGloss(_pLanguageItem, LGlossDraft.LGlossDraftCreate(gloss)));
+            drafts.Add(LGlossDraft.LGlossDraftCreate(gloss));
+        }
+
+        foreach (CGlossDraft draft in LCard.LCardGlossRead(drafts))
+        {
+            _pExcerptGloss.Add(new PGloss(_pLanguageItem, draft));
         }
 
         PExcerptGlossSection.Visibility = glosses.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -40,9 +47,9 @@ public partial class PCorpus
 
         PCard.PCardRowShow(
             _pTranscriptGloss,
-            drafts,
+            LCard.LCardGlossRead(drafts),
             static row => row.PGlossId,
-            static draft => draft.LGlossDraftId,
+            static draft => draft.CGlossDraftId,
             PTranscriptGlossCreate,
             (row, draft) =>
             {
@@ -53,7 +60,7 @@ public partial class PCorpus
         PTranscriptSeedShow();
     }
 
-    private PGloss PTranscriptGlossCreate(LGlossDraft draft)
+    private PGloss PTranscriptGlossCreate(CGlossDraft draft)
     {
         PGloss row = new(_pLanguageItem, draft);
         row.PropertyChanged += PTranscriptGlossChange;

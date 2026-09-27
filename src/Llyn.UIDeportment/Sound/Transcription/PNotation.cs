@@ -6,8 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
-using Llyn.Core;
-using Llyn.ShellEngine;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -96,7 +95,7 @@ public partial class PEditor
         if (_lEditor.LEditorNotation.LNotationPrimary)
         {
             PEditorRequestSend(new LRequestIpa(PEditorDraft, reading.PNotationReadingPhonetic));
-            id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
+            id = PNotationDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftId ?? 0;
         }
         else
         {
@@ -121,16 +120,16 @@ public partial class PEditor
         PEditorRequestSend(new LRequestPronunciationVariety(PEditorDraft, pronunciationId, variety));
     }
 
-    private LEntryDraft? PNotationDraftRead()
+    private CEntryDraft? PNotationDraftRead()
     {
         return _lEditor.LEditorDraftRead();
     }
 
-    private PNotationReading PNotationReadingCreate(LCandidate candidate)
+    private PNotationReading PNotationReadingCreate(CCandidate candidate)
     {
-        string variety = candidate.LCandidateVariety;
-        string phonetic = candidate.LCandidatePhonetic ?? string.Empty;
-        string text = _pNotationRespelling.LRespellingMarkResolve(phonetic, candidate.LCandidateRespelling);
+        string variety = candidate.CCandidateVariety;
+        string phonetic = candidate.CCandidatePhonetic ?? string.Empty;
+        string text = _pNotationRespelling.LRespellingMarkResolve(phonetic, candidate.CCandidateRespelling);
         string opener = _pNotationRespelling.LRespellingMarkOpener;
         string closer = _pNotationRespelling.LRespellingMarkCloser;
         if (_lEditor.LEditorNotation.LNotationSchemed)
@@ -140,7 +139,7 @@ public partial class PEditor
             closer = string.Empty;
         }
 
-        if (!candidate.LCandidateRegional)
+        if (!candidate.CCandidateRegional)
         {
             return new PNotationReading(variety, string.Empty, null, phonetic, text, opener, closer);
         }
@@ -193,7 +192,7 @@ public partial class PEditor
                 word,
                 target,
                 scheme,
-                LObserver.LObserverCreate<LLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
+                LObserver.LObserverCreate<CLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
         }
         catch (Exception)
         {
@@ -257,9 +256,9 @@ public partial class PEditor
         PNotationUpdate();
     }
 
-    private void PNotationCandidateHandle(LCandidate candidate)
+    private void PNotationCandidateHandle(CCandidate candidate)
     {
-        PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
+        PNotationPlace(candidate.CCandidateSource, candidate.CCandidateOrder).PNotationItemShow(
             candidate,
             PNotationReadingCreate(candidate),
             QLocalizationCatalog.QLocalizationTextRead("Phonetician.Missing"),

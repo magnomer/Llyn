@@ -18,6 +18,13 @@ public static class LObserver
         return LObserverCreate<LBulletin>(surface, _ => target());
     }
 
+    public static Action<LStep> LObserverCreate<LStep>(DispatcherObject surface, Action target)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        return LObserverCreate<LStep>(surface, _ => target());
+    }
+
     public static Action<LStep> LObserverCreate<LStep>(DispatcherObject surface, Action<LStep> target)
     {
         ArgumentNullException.ThrowIfNull(surface);

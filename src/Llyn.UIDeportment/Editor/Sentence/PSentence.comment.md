@@ -53,22 +53,22 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 The roles already saved for the language, shared by every row.
 Nothing ships one, so the list is empty until a user writes and saves one.
 
-## `internal void PSentenceOrderApply(LSentenceOrder order)`
+## `internal void PSentenceOrderApply(CSentenceOrder order)`
 
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `public LStateValue PSentenceText`
+## `public CStateValue PSentenceText`
 
 The sentence as the draft holds it, set only from the draft.
 The same holds for the marker and the role.
 
-## `public LStateAnchor PSentenceCitation`
+## `public long? PSentenceCitation`
 
 The Source the row cites, as the draft holds it.
 The field shows its byline through a lookup made when the field is drawn, so the row keeps no name.
 
-## `internal void PSentenceShow(LSentenceDraft draft)`
+## `internal void PSentenceShow(CSentenceDraft draft)`
 
 Redraws the row from the engine's row, field by field, only where the value changed.
 The Mentions are always taken, since the row only shows them and never types into them.
@@ -80,7 +80,7 @@ A field already reading what the engine holds is left alone, so the caret surviv
 Says the cited Source again, for when the list of Sources changed underneath the row.
 The field then looks the byline up afresh.
 
-## `internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, LStateAnchor anchor)`
+## `internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, long? anchor)`
 
 The `Author (Year)` line of the Source an anchor names, or nothing when it names none.
 The citation converter calls it when a field is drawn, and the editor when it compares a typed line.
@@ -124,6 +124,6 @@ The separator drawn between the marker and the role inside the frame.
 It is one space when both are written and nothing otherwise.
 The writing view spaces the frame exactly as the reading view does.
 
-## `private static bool PSentenceFrameCheck(LStateValue value)`
+## `private static bool PSentenceFrameCheck(CStateValue value)`
 
 Whether a frame field says anything: text, or the unknown mark.

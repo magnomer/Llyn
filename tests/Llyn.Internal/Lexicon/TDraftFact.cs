@@ -35,7 +35,6 @@ public sealed class TDraftFact
         Assert.Equal(["GA", "AU"], draft.LEntryDraftAccents.Select(spoken => spoken.LPronunciationDraftVariety));
         Assert.True(draft.LEntryDraftAccents[0].LPronunciationDraftNotated);
         Assert.False(draft.LEntryDraftAccents[1].LPronunciationDraftNotated);
-        Assert.True(draft.LEntryDraftAccents[0].TPronunciationDraftMatch("GA"));
         Assert.True(draft.LEntryDraftNoted);
     }
 
@@ -80,7 +79,6 @@ public sealed class TDraftFact
 
         Assert.Equal("wolf", written.LStateValueShown);
         Assert.True(written.LStateValueSound);
-        Assert.True(written.TStateValueMatch("wolf"));
         Assert.Null(LStateValue.LStateValueUnknown.LStateValueShown);
         Assert.True(LStateValue.LStateValueUnknown.LStateValueUncertain);
         Assert.Null(LStateValue.LStateValueUnspecified.LStateValueShown);
@@ -95,8 +93,6 @@ public sealed class TDraftFact
 
         Assert.Equal(42, linked.LStateAnchorShown);
         Assert.True(linked.LStateAnchorLinked);
-        Assert.True(linked.TStateAnchorMatch(42));
-        Assert.False(linked.TStateAnchorMatch(41));
         Assert.Null(LStateAnchor.LStateAnchorUnspecified.LStateAnchorShown);
         Assert.False(LStateAnchor.LStateAnchorUnspecified.LStateAnchorLinked);
     }

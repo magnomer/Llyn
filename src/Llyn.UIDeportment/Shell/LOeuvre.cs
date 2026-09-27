@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,7 +18,7 @@ public sealed class LOeuvre
 
     private int _lOeuvreCount;
 
-    public LOeuvre(LEntryPort entries, LSettingsPort settings, Func<bool> shownSeam)
+    internal LOeuvre(LEntryPort entries, LSettingsPort settings, Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(settings);
@@ -27,7 +28,10 @@ public sealed class LOeuvre
         LOeuvrePanel = new LPanel(
             "Source.LoadFailed", "Source.DeleteFailed",
             static () => false, shownSeam, static () => true, static () => false);
+        LOeuvrePanel.LPanelDraftChanged += LOeuvreColophonUpdate;
     }
+
+    public event Action<CColophon>? LOeuvreColophonChanged;
 
     public LPanel LOeuvrePanel { get; }
 
@@ -45,7 +49,7 @@ public sealed class LOeuvre
 
     private bool LOeuvreFiltered => _lOeuvreRoll?.LVistaFiltered ?? false;
 
-    public void LOeuvreVistaRestore(LVista roll, LVista vista)
+    internal void LOeuvreVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
@@ -55,9 +59,9 @@ public sealed class LOeuvre
         LOeuvrePanel.LPanelVistaRestore(vista);
     }
 
-    public IReadOnlyList<LCatalogReference> LOeuvreRowsRead()
+    public IReadOnlyList<CCatalogReference> LOeuvreRowsRead()
     {
-        return LOeuvreRowsApply(LOeuvreRowsFind());
+        return LOeuvreReferenceRead(LOeuvreRowsApply(LOeuvreRowsFind()));
     }
 
     private IReadOnlyList<LCatalogReference> LOeuvreRowsFind()
@@ -120,13 +124,59 @@ public sealed class LOeuvre
         return id is long stored ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored) : 0;
     }
 
-    public LColophon LOeuvreColophonRead(LDraft draft)
+    private void LOeuvreColophonUpdate(LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
+        LOeuvreColophonChanged?.Invoke(LOeuvreColophonRead(
+            draft, LOeuvreTallyRead(), _lSettingsPort.LEngineTextRead, "The oeuvre draft holds no reference."));
+    }
 
-        LReference reference = draft.LDraftReference
-            ?? throw new InvalidOperationException("The oeuvre draft holds no reference.");
-        return reference.LReferenceColophonRead(
-            draft.LDraftAuthor, LOeuvreTallyRead(), _lSettingsPort.LEngineTextRead);
+    internal static CColophon LOeuvreColophonRead(
+        LDraft draft, string tally, Func<string, string> localize, string missing)
+    {
+        return LOeuvreColophonRead((draft.LDraftReference ?? throw new InvalidOperationException(missing))
+            .LReferenceColophonRead(draft.LDraftAuthor, tally, localize));
+    }
+
+    private static CColophon LOeuvreColophonRead(LColophon sheet)
+    {
+        return new CColophon(
+            sheet.LColophonTitle,
+            sheet.LColophonTitleFaint,
+            sheet.LColophonKind,
+            sheet.LColophonKindShown,
+            sheet.LColophonYear,
+            sheet.LColophonYearFaint,
+            sheet.LColophonYearShown,
+            sheet.LColophonUrl,
+            sheet.LColophonUrlFaint,
+            sheet.LColophonUrlShown,
+            sheet.LColophonNote,
+            sheet.LColophonNoteFaint,
+            sheet.LColophonNoteShown,
+            sheet.LColophonAuthor,
+            sheet.LColophonAuthorFaint,
+            sheet.LColophonAuthorShown,
+            sheet.LColophonTally);
+    }
+
+    internal static IReadOnlyList<CCatalogReference> LOeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)
+    {
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CCatalogReference(
+                row.LCatalogReferenceStored.LReferenceId,
+                row.LCatalogReferenceName,
+                row.LCatalogReferenceByline,
+                LOeuvreCreditRead(
+                    row.LCatalogReferenceStored.LReferenceCreditRead(row.LCatalogReferenceCredit),
+                    row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkUncertain),
+                LCard.LCardStateRead(row.LCatalogReferenceStored.LReferenceYear),
+                row.LCatalogReferenceUsage,
+                row.LCatalogReferenceChosen));
+    }
+
+    private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)
+    {
+        return credit is null ? new CStateValue(string.Empty, uncertain, false) : new CStateValue(credit, false, true);
     }
 }

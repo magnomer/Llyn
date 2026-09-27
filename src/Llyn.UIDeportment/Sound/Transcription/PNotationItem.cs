@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -39,7 +39,7 @@ internal sealed class PNotationItem : INotifyPropertyChanged
         private set => PNotationItemChange(ref _pNotationItemReady, value, nameof(PNotationItemReady));
     }
 
-    internal void PNotationItemShow(LCandidate candidate, PNotationReading? reading, string missing, string broken)
+    internal void PNotationItemShow(CCandidate candidate, PNotationReading? reading, string missing, string broken)
     {
         if (reading is not null)
         {
@@ -54,7 +54,7 @@ internal sealed class PNotationItem : INotifyPropertyChanged
             return;
         }
 
-        PNotationItemNotice = candidate.LCandidateReached ? missing : broken;
+        PNotationItemNotice = candidate.CCandidateReached ? missing : broken;
         PNotationItemReady = false;
     }
 

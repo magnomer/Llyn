@@ -6,7 +6,7 @@ The deportment of the library panel: the shared panel state, the entry rows it b
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
-The panel's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The panel's loads and clears go straight to the lectern its view hands in, so the veneer relays no draft.
 
 ## `public event Action<string, Exception>? LLibraryFailed;`
 
@@ -44,12 +44,12 @@ Puts the panel on the entry of the clicked row, or on none when the sender carri
 The entry the panel shows, as the station the window records before a jump away.
 Zero says no entry is shown, so there is no place to come back to.
 
-## `private void LLibraryOrderSet(LCatalogOrder? order)`
+## `private void LLibraryOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
 A sender that is no order row hands null, which keeps the ordering it has.
 
-## `private void LLibrarySieveSet(LCatalogFilter filter)`
+## `private void LLibrarySieveSet(CCatalogFilter filter)`
 
 Hands the ticked languages to the vista, which saves and announces them.
 

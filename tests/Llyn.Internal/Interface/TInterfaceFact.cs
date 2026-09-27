@@ -176,15 +176,6 @@ internal static partial class TInterface
     internal static LTranslationTarget TTranslationTargetCreate(long id, string headword, string language) =>
         new(id, headword, language);
 
-    internal static bool TPronunciationDraftMatch(this LPronunciationDraft spoken, string variety) =>
-        spoken.LPronunciationDraftMatch(variety);
-
-    internal static bool TStateValueMatch(this LStateValue value, string text) =>
-        value.LStateValueMatch(text);
-
-    internal static bool TStateAnchorMatch(this LStateAnchor anchor, long id) =>
-        anchor.LStateAnchorMatch(id);
-
     internal static LStateAnchor TStateAnchorCreate(long id) =>
         LStateAnchor.LStateAnchorCreate(id);
 

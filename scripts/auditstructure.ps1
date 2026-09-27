@@ -42,7 +42,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 16 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 17 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -79,6 +79,8 @@ Audit a specific checkout and open the violation report.
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: the Conduct surface each driver may reach admits the first dialog gates, CSCoinage and
 # CSCustoms with its mode and row. The UI audit rises with it.
+# Generation 17: the seal check counts every public member of a sealed-prefix type in a UI ring that
+# names a type from below its neighbour. Each seal row names a ring and the type prefixes it seals.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -127,7 +129,7 @@ OPTIONS
 
 CHECKS
     Held by a ceiling, one per pair check:Ring>Target, counted in hits:
-        outward, reach, cross, expose, frame, ambient
+        outward, reach, cross, expose, seal, frame, ambient
     Held by the transitive ceiling, counted in cut projects:
         transitive
     Never allowed, failing on the first hit:
@@ -168,7 +170,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
@@ -343,6 +345,7 @@ $script:AuditSchema = [ordered]@{
     'imports'          = 'string[]'
     'ambient'          = 'string[]'
     'surface'          = 'map[]'
+    'seal'             = 'map[]'
     'stray'            = 'map[]'
     'banned'           = 'map[]'
     'floor'            = 'map[int]'
@@ -364,13 +367,13 @@ $script:RingSchema = [ordered]@{
 
 # A held check counts its hits per pair against a ceiling. A hard check allows no hit at all.
 # A reported check never gates. The transitive check counts cut projects against its own ceiling.
-$script:HeldChecks = @('outward', 'reach', 'cross', 'expose', 'frame', 'ambient')
+$script:HeldChecks = @('outward', 'reach', 'cross', 'expose', 'seal', 'frame', 'ambient')
 $script:HardChecks = @('surface', 'stray', 'banned', 'floor', 'table', 'hidden')
-$script:ChainChecks = @('neighbour', 'carry', 'outward', 'reach', 'cross', 'expose', 'surface')
+$script:ChainChecks = @('neighbour', 'carry', 'outward', 'reach', 'cross', 'expose', 'seal', 'surface')
 $script:FrameChecks = @('frame', 'ambient')
 
 # The order is the order the checks are reported in, heaviest first.
-$script:CheckOrder = @('outward', 'reach', 'cross', 'expose', 'frame', 'ambient', 'transitive',
+$script:CheckOrder = @('outward', 'reach', 'cross', 'expose', 'seal', 'frame', 'ambient', 'transitive',
     'surface', 'stray', 'banned', 'floor', 'table', 'hidden', 'carry', 'neighbour')
 
 $script:CheckTitles = @{
@@ -378,6 +381,7 @@ $script:CheckTitles = @{
     'reach'      = 'Behaviour reached past the neighbour ring'
     'cross'      = 'Name from below the cut inside a UI ring'
     'expose'     = 'Surface signature naming a type from below its neighbour'
+    'seal'       = 'Sealed member naming a type from below its neighbour'
     'frame'      = 'Framework namespace outside the frame of a pure ring'
     'ambient'    = 'Ambient member touched from a pure ring'
     'transitive' = 'Cut project compiling against rings past its neighbour'
@@ -613,6 +617,15 @@ function Read-AuditConfig {
             }
         }
 
+        $sealNode = Get-AuditNode -Document $config -Key 'seal'
+        if ($sealNode.Found -and (Test-AuditValue -Kind 'map[]' -Value $sealNode.Value)) {
+            foreach ($property in $sealNode.Value.PSObject.Properties) {
+                if (-not ($names -ccontains $property.Name)) {
+                    [void]$problems.Add("seal row '$($property.Name)' names an undeclared ring")
+                }
+            }
+        }
+
         $hostNode = Get-AuditNode -Document $config -Key 'host.name'
         if ($hostNode.Found -and $names -ccontains [string]$hostNode.Value) {
             [void]$problems.Add("host '$($hostNode.Value)' is also declared as a ring")
@@ -764,6 +777,7 @@ string[] hostReach = Strings(config.GetProperty("host").GetProperty("reach"));
 string[] imports = Strings(config.GetProperty("imports"));
 string[] ambient = Strings(config.GetProperty("ambient"));
 Dictionary<string, string[]> surfaces = Map(config.GetProperty("surface"));
+Dictionary<string, string[]> seals = Map(config.GetProperty("seal"));
 Dictionary<string, string[]> strays = Map(config.GetProperty("stray"));
 Dictionary<string, string[]> banned = Map(config.GetProperty("banned"));
 Dictionary<string, int> floors = config.GetProperty("floor").EnumerateObject()
@@ -1023,6 +1037,44 @@ foreach ((string pair, string[] surface) in surfaces)
                 && exposed.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
             {
                 all.Add(new Finding(relative, line, ringName, "expose", target.Name, type.Name,
+                    LineText(location.SourceTree, line)));
+            }
+        }
+    }
+}
+
+HashSet<string> sealedHits = new(StringComparer.Ordinal);
+foreach ((string ringName, string[] prefixes) in seals)
+{
+    if (rings.FirstOrDefault(candidate => candidate.Name == ringName) is not { Reach: [string neighbour] })
+    {
+        continue;
+    }
+
+    IEnumerable<ISymbol> members = compilation
+        .GetSymbolsWithName(
+            name => prefixes.Any(prefix => name.StartsWith(prefix, StringComparison.Ordinal)), SymbolFilter.Type)
+        .OfType<INamedTypeSymbol>()
+        .Where(type => type.ContainingType is null && type.DeclaredAccessibility == Accessibility.Public
+            && SourceRing(type)?.Name == ringName)
+        .SelectMany(PublicOf)
+        .Where(member => member.DeclaredAccessibility == Accessibility.Public && !member.IsImplicitlyDeclared);
+    foreach (ISymbol member in members)
+    {
+        Location? location = member.Locations.FirstOrDefault(place => place.IsInSource);
+        if (location is null)
+        {
+            continue;
+        }
+
+        string relative = binder.LAuditRelativeRead(location.SourceTree!.FilePath);
+        int line = location.GetLineSpan().StartLinePosition.Line + 1;
+        foreach (INamedTypeSymbol type in SignatureOf(member))
+        {
+            if (SourceRing(type) is { } target && inner[neighbour].Contains(target.Name)
+                && sealedHits.Add($"{relative}|{line}|{ringName}|{target.Name}|{type.Name}"))
+            {
+                all.Add(new Finding(relative, line, ringName, "seal", target.Name, type.Name,
                     LineText(location.SourceTree, line)));
             }
         }

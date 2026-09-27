@@ -1,11 +1,11 @@
 using System;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed class PRegister
 {
-    internal PRegister(LStateValue text, long id)
+    internal PRegister(CStateValue text, long id)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -15,5 +15,5 @@ internal sealed class PRegister
 
     public long PRegisterId { get; }
 
-    public LStateValue PRegisterText { get; }
+    public CStateValue PRegisterText { get; }
 }

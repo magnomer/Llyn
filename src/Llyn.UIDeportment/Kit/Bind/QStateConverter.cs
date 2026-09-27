@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -16,7 +16,17 @@ public sealed class QStateConverter : IMultiValueConverter, IValueConverter
         bool placeholder = values.Length > 2;
         string hint = placeholder && values[2] is string hinted ? hinted : string.Empty;
 
-        return values.FirstOrDefault() is LStateValue state ? state.LStateValueFormat(mark, hint, placeholder) : hint;
+        return values.FirstOrDefault() is CStateValue state ? QStateFormat(state, mark, hint, placeholder) : hint;
+    }
+
+    private static string QStateFormat(CStateValue state, string mark, string hint, bool placeholder)
+    {
+        if (state.CStateValueLegible)
+        {
+            return placeholder ? hint : state.CStateValueText;
+        }
+
+        return state.CStateValueUncertain ? mark : hint;
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -26,7 +36,7 @@ public sealed class QStateConverter : IMultiValueConverter, IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return value is LStateValue state ? state.LStateValueShow() : string.Empty;
+        return value is CStateValue state ? state.CStateValueText : string.Empty;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -7,7 +7,7 @@ That is the id the row cites when this one is picked, and the `Author (Year)` li
 The list is the workspace's whole shelf of Sources.
 So the same row object is offered to every Example and Situation row on the form.
 
-## `internal static PCitationItem PCitationItemCreate(LCatalogReference row)`
+## `internal static PCitationItem PCitationItemCreate(CCatalogReference row)`
 
 Reads a browsed Source into the row that offers it.
 The line is the byline the catalog row derived, which the record answers rather than this row.

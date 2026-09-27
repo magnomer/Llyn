@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -32,33 +32,32 @@ public sealed class PParadigmItem
 
     public bool PParadigmItemHeld { get; }
 
-    internal static PParadigmItem PParadigmItemCreate(LParadigmRow row, bool pending, bool enabled, bool held)
+    internal static PParadigmItem PParadigmItemCreate(CParadigmSlot slot, bool pending, bool enabled, bool held)
     {
-        ArgumentNullException.ThrowIfNull(row);
+        ArgumentNullException.ThrowIfNull(slot);
 
-        LParadigmSlot first = row.LParadigmRowFirst;
-        string part = row.LParadigmRowPart;
-        string name = row.LParadigmRowName;
-        if (first.LParadigmSlotInflection is LInflection inflection)
+        string part = slot.CParadigmSlotPart;
+        string name = slot.CParadigmSlotName;
+        if (slot.CParadigmSlotText is string text)
         {
-            return new PParadigmItem(part, name, inflection.LInflectionText, false, false, false, false);
+            return new PParadigmItem(part, name, text, false, false, false, false);
         }
 
-        return first.LParadigmSlotUncertain
+        return slot.CParadigmSlotUncertain
             ? new PParadigmItem(part, name, string.Empty, true, false, false, false)
             : new PParadigmItem(
                 part, name, string.Empty, false, pending, enabled && !pending && !held, enabled && !pending && held);
     }
 
     internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(
-        IReadOnlyList<LParadigmSlot> slots, bool pending, bool enabled, bool held)
+        IReadOnlyList<CParadigmSlot> slots, bool pending, bool enabled, bool held)
     {
         ArgumentNullException.ThrowIfNull(slots);
 
         List<PParadigmItem> items = new(slots.Count);
-        foreach (LParadigmRow row in LParadigmRow.LParadigmRowScan(slots))
+        foreach (CParadigmSlot slot in slots)
         {
-            items.Add(PParadigmItemCreate(row, pending, enabled, held));
+            items.Add(PParadigmItemCreate(slot, pending, enabled, held));
         }
 
         return items;

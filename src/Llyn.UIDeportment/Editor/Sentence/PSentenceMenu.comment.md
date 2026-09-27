@@ -58,6 +58,11 @@ Opens the window's Meaning menu on the Entry the Mention under the selection sta
 The chosen sense goes out as a request naming the Mention, and the redraw shows it on the chip.
 Pending typing is persisted first, so the Mention is found against the text the field shows.
 
+## `private void PSentenceSenseShow(TextBox box, PCard card, PSentence row, CMentionDraft? mention)`
+
+Opens the menu for the found Mention, and does nothing when it is missing or links no Entry.
+The Mention arrives as a parameter, so the handler branches on no engine answer.
+
 ## `internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Marks the selection as standing for nothing, which is an addition with Entry 0.

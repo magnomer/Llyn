@@ -129,8 +129,9 @@ public partial class PTaxonomy : UserControl
     {
         _pTaxonomyHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(_lEditor.LEditorDisplay);
         _lTaxonomy = host.PWindowDeportment.LWindowTaxonomyCreate(
-            _lEditor, PTaxonomyShownCheck, PTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
+            _lEditor, lectern, PTaxonomyShownCheck, PTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelChanged += PTaxonomyModeUpdate;
         panel.LPanelRowsChanged += PMembershipFind;
@@ -141,9 +142,9 @@ public partial class PTaxonomy : UserControl
         QLookItem.QLookItemAttach(PDirectory, PDirectoryApply);
         QLookItem.QLookItemAttach(PMembership, PMembershipApply);
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
         _lEditor.LEditorStateChanged += PTaxonomyStoreUpdate;
-        PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor, lectern);
         PEditor.PEditorChronicleChanged += PTaxonomyChronicleUpdate;
     }
 

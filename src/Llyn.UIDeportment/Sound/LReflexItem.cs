@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -334,7 +333,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     }
 
     public static LReflexItem LReflexItemCreate(
-        LWindow window, LReflexDraft draft, LRespellingMark respelling, bool phonemic, bool folded)
+        LWindow window, CReflexDraft draft, LRespellingMark respelling, bool phonemic, bool folded)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(draft);
@@ -342,31 +341,31 @@ public sealed class LReflexItem : INotifyPropertyChanged
 
         return new LReflexItem(
             window,
-            draft.LReflexDraftId,
-            draft.LReflexDraftLanguage,
-            draft.LReflexDraftKind,
+            draft.CReflexDraftId,
+            draft.CReflexDraftLanguage,
+            draft.CReflexDraftKind,
             LReflexTextRead(draft, respelling),
-            draft.LReflexDraftRomanization,
-            draft.LReflexDraftMeaning,
-            draft.LReflexDraftNote,
-            draft.LReflexDraftMain,
+            draft.CReflexDraftRomanization,
+            draft.CReflexDraftMeaning,
+            draft.CReflexDraftNote,
+            draft.CReflexDraftMain,
             respelling.LRespellingMarkShown,
-            draft.LReflexDraftRegion,
+            draft.CReflexDraftRegion,
             phonemic,
             folded,
-            draft.LReflexDraftAnchors)
+            draft.CReflexDraftAnchors)
         {
-            LReflexItemTone = draft.LReflexDraftAnatomy.LAnatomyToneIpa,
+            LReflexItemTone = draft.CReflexDraftTone,
         };
     }
 
     public static List<LReflexItem> LReflexItemScan(
-        LWindow window, IReadOnlyList<LReflexDraft> reflexes, HashSet<string> folded)
+        LWindow window, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)
     {
         ArgumentNullException.ThrowIfNull(reflexes);
 
         List<LReflexItem> rows = new(reflexes.Count);
-        foreach (LReflexDraft reflex in reflexes)
+        foreach (CReflexDraft reflex in reflexes)
         {
             rows.Add(LReflexItemCreate(window, reflex, folded));
         }
@@ -374,17 +373,17 @@ public sealed class LReflexItem : INotifyPropertyChanged
         return rows;
     }
 
-    public static LReflexItem LReflexItemCreate(LWindow window, LReflexDraft reflex, HashSet<string> folded)
+    public static LReflexItem LReflexItemCreate(LWindow window, CReflexDraft reflex, HashSet<string> folded)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(reflex);
         ArgumentNullException.ThrowIfNull(folded);
 
-        return LReflexItemCreate(window, reflex, folded, reflex.LReflexDraftLanguage.Trim());
+        return LReflexItemCreate(window, reflex, folded, reflex.CReflexDraftLanguage.Trim());
     }
 
     private static LReflexItem LReflexItemCreate(
-        LWindow window, LReflexDraft reflex, HashSet<string> folded, string language)
+        LWindow window, CReflexDraft reflex, HashSet<string> folded, string language)
     {
         return LReflexItemCreate(
             window,
@@ -394,12 +393,12 @@ public sealed class LReflexItem : INotifyPropertyChanged
             folded.Contains(language));
     }
 
-    public static string LReflexTextRead(LReflexDraft draft, LRespellingMark respelling)
+    public static string LReflexTextRead(CReflexDraft draft, LRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(respelling);
 
-        return respelling.LRespellingMarkResolve(draft.LReflexDraftText, draft.LReflexDraftRespelling);
+        return respelling.LRespellingMarkResolve(draft.CReflexDraftText, draft.CReflexDraftRespelling);
     }
 
     public static string LReflexLabelFormat(string name)
@@ -435,17 +434,15 @@ public sealed class LReflexItem : INotifyPropertyChanged
     }
 
     public static void LReflexAnchorApply(
-        LWindow window, IReadOnlyList<LReflexItem> rows, IReadOnlyList<LFanqieRow> fanqie, string headword)
+        IReadOnlyList<LReflexItem> rows, bool anchorable, Func<IReadOnlyList<long>, string, string> format)
     {
-        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(format);
 
-        bool anchorable = window.LWindowAnchorCheck(fanqie, headword);
         foreach (LReflexItem row in rows)
         {
             row.LReflexItemAnchorable = anchorable;
-            row.LReflexItemAnchor = window.LWindowAnchorFormat(
-                fanqie, row.LReflexItemAnchors, headword, LReflexAnchorSeparator);
+            row.LReflexItemAnchor = format(row.LReflexItemAnchors, LReflexAnchorSeparator);
         }
     }
 

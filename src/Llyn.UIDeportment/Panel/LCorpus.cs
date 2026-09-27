@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,6 +18,7 @@ public sealed class LCorpus
         LPortraitPort portraits,
         LSettingsPort settings,
         LEditor editor,
+        LLectern lectern,
         Func<bool> shownSeam,
         Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam,
@@ -27,6 +29,7 @@ public sealed class LCorpus
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(lectern);
         ArgumentNullException.ThrowIfNull(leaveSeam);
 
         _lCorpusLeaveSeam = leaveSeam;
@@ -42,8 +45,8 @@ public sealed class LCorpus
         LCorpusAnthology.LAnthologyPanel.LPanelDraftChanged += LCorpusExampleUpdate;
         LCorpusQuotation.LQuotationPanel.LPanelEdited += LCorpusEditorOpen;
         LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorClose;
-        LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorLectern.LLecternClear;
-        LCorpusQuotation.LQuotationPanel.LPanelDraftChanged += editor.LEditorLectern.LLecternDraftShow;
+        LCorpusQuotation.LQuotationPanel.LPanelCleared += lectern.LLecternClear;
+        LCorpusQuotation.LQuotationPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
         LCorpusDesk.LDeskStateChanged += LCorpusStateUpdate;
         editor.LEditorStateChanged += LCorpusStateUpdate;
     }
@@ -96,11 +99,11 @@ public sealed class LCorpus
 
     private void LCorpusDraftStart(long? id)
     {
-        LCorpusDesk.LDeskStart("Corpus", LSubject.LSubjectExample, id);
+        LCorpusDesk.LDeskStart("Corpus", CSubject.CSubjectExample, id);
         LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
     }
 
-    private LExample? LCorpusTranscriptRead()
+    public LExample? LCorpusTranscriptRead()
     {
         try
         {
@@ -300,7 +303,7 @@ public sealed class LCorpus
     private void LCorpusQueryClear()
     {
         LCorpusAnthology.LAnthologyQuerySet(string.Empty);
-        LCorpusAnthology.LAnthologyGauzeSet(LCatalogFilter.LCatalogFilterEmpty);
+        LCorpusAnthology.LAnthologyGauzeSet(new CCatalogFilter([]));
         LCorpusQueryCleared?.Invoke();
     }
 

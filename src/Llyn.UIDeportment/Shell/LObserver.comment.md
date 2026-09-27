@@ -21,6 +21,11 @@ A bulletin delegate for `surface`, running `target` on the thread that surface b
 A bulletin delegate for `surface` with a response that needs nothing from the bulletin.
 A list that re-reads itself whole on a subject is attached this way, with no wrapper method of its own.
 
+## `public static Action<LStep> LObserverCreate<LStep>(DispatcherObject surface, Action target)`
+
+A delegate over any record for `surface` with a response that needs nothing from the record.
+A view attaches a sealed panel's notice this way, naming the Conduct notice instead of the engine's.
+
 ## `public static Action<LStep> LObserverCreate<LStep>(DispatcherObject surface, Action<LStep> target)`
 
 A delegate over any record for `surface`, running `target` on the thread that surface belongs to.

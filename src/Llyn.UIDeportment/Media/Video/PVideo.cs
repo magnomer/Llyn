@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -12,27 +12,27 @@ internal sealed class PVideo : INotifyPropertyChanged
 {
     private readonly LWindow _lWindow;
 
-    private LStateValue _pVideoLocation = LStateValue.LStateValueUnspecified;
-    private LStateValue _pVideoTimestamp = LStateValue.LStateValueUnspecified;
+    private CStateValue _pVideoLocation = CStateValue.CStateValueEmpty;
+    private CStateValue _pVideoTimestamp = CStateValue.CStateValueEmpty;
     private Uri? _pVideoPreview;
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
     private bool _pVideoPlaying;
     private long _pVideoRow;
 
-    internal PVideo(LWindow window, LVideoDraft written)
+    internal PVideo(LWindow window, CVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(written);
 
         _lWindow = window;
-        _pVideoRow = written.LVideoDraftId;
+        _pVideoRow = written.CVideoDraftId;
 
-        PVideoLocation = written.LVideoDraftLocation;
-        PVideoTimestamp = written.LVideoDraftSpan;
+        PVideoLocation = written.CVideoDraftLocation;
+        PVideoTimestamp = written.CVideoDraftSpan;
     }
 
-    public LStateValue PVideoLocation
+    public CStateValue PVideoLocation
     {
         get => _pVideoLocation;
         private set
@@ -44,11 +44,11 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = _lWindow.LWindowLocationRead(value.LStateValueShow());
+            PVideoPreview = _lWindow.LWindowLocationRead(value.CStateValueText);
         }
     }
 
-    public LStateValue PVideoTimestamp
+    public CStateValue PVideoTimestamp
     {
         get => _pVideoTimestamp;
         private set
@@ -60,7 +60,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoTimestamp = value;
             PVideoRaise(nameof(PVideoTimestamp));
-            PVideoTimestampApply(value.LStateValueShow());
+            PVideoTimestampApply(value.CStateValueText);
         }
     }
 
@@ -138,13 +138,13 @@ internal sealed class PVideo : INotifyPropertyChanged
         return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
-    internal void PVideoShow(LVideoDraft written)
+    internal void PVideoShow(CVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
 
-        _pVideoRow = written.LVideoDraftId;
-        PVideoLocation = written.LVideoDraftLocation;
-        PVideoTimestamp = written.LVideoDraftSpan;
+        _pVideoRow = written.CVideoDraftId;
+        PVideoLocation = written.CVideoDraftLocation;
+        PVideoTimestamp = written.CVideoDraftSpan;
     }
 
     internal static void PVideoRowApply(FrameworkElement container, object item, string? changed)

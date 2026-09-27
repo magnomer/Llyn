@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -9,7 +10,7 @@ internal sealed class PMentionLine
 {
     public ObservableCollection<PMentionChip> PMentionLineChip { get; } = [];
 
-    internal void PMentionLineShow(LWindow window, string text, IReadOnlyList<LMentionDraft> mentions, string silent)
+    internal void PMentionLineShow(LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(text);

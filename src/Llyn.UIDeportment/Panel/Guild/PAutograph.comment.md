@@ -38,7 +38,7 @@ Registers the desk's own draft and state updates on it, marshalled to the window
 A tenure was started: the union field is emptied and the name takes focus.
 The desk's bulletins were registered on the desk at attach time, so nothing is attached here.
 
-## `private void PAutographDraftUpdate(LDraft draft)`
+## `private void PAutographDraftUpdate(CDraft draft)`
 
 The held draft was read again, so the name field shows its name.
 

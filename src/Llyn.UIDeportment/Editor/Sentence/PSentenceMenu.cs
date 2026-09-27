@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -24,7 +25,7 @@ public partial class PEditor
     {
         _pEditorCitation.Clear();
 
-        IReadOnlyList<LCatalogReference> references;
+        IReadOnlyList<CCatalogReference> references;
         try
         {
             references = _lEditor.LEditorCard.LCardReferenceFind();
@@ -35,7 +36,7 @@ public partial class PEditor
             references = [];
         }
 
-        foreach (LCatalogReference row in references)
+        foreach (CCatalogReference row in references)
         {
             _pEditorCitation.Add(PCitationItem.PCitationItemCreate(row));
         }
@@ -47,7 +48,7 @@ public partial class PEditor
     {
         string chosen = string.IsNullOrWhiteSpace(language) ? _lEditor.LEditorLanguage : language;
 
-        LSentenceOrder order = _lEditor.LEditorCard.LCardOrderRead(chosen);
+        CSentenceOrder order = _lEditor.LEditorCard.LCardOrderRead(chosen);
         PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
         PSentenceFrameShow(_pEditorDependence, PSentenceDependenceRead(chosen));
 
@@ -236,13 +237,17 @@ public partial class PEditor
     {
         _lEditor.LEditorDesk.LDeskPersist();
         if (e.Source is not TextBox { DataContext: PSentence row } box
-            || PCardSentenceFind(row) is not PCard card
-            || PSentenceMentionFind(box, card, row) is not LMentionDraft mention)
+            || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        if (!mention.LMentionDraftLinked)
+        PSentenceSenseShow(box, card, row, PSentenceMentionFind(box, card, row));
+    }
+
+    private void PSentenceSenseShow(TextBox box, PCard card, PSentence row, CMentionDraft? mention)
+    {
+        if (mention is not { CMentionDraftLinked: true })
         {
             return;
         }
@@ -252,9 +257,9 @@ public partial class PEditor
         _pEditorHost.PWindowSenseShow(
             box,
             PMentionSelection.PMentionSelectionPlace(box),
-            mention.LMentionDraftEntry,
+            mention.CMentionDraftEntry,
             senseId => PEditorRequestSend(
-                new LRequestMentionSense(PEditorDraft, cardId, rowId, mention.LMentionDraftId, senseId)));
+                new LRequestMentionSense(PEditorDraft, cardId, rowId, mention.CMentionDraftId, senseId)));
     }
 
     internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)
@@ -285,7 +290,7 @@ public partial class PEditor
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
             : e.Source is TextBox box
-                ? PSentenceMentionFind(box, card, row)?.LMentionDraftId
+                ? PSentenceMentionFind(box, card, row)?.CMentionDraftId
                 : null;
         if (mentionId is not long id)
         {
@@ -305,7 +310,7 @@ public partial class PEditor
     {
         e.CanExecute = e.Source is TextBox { DataContext: PSentence row } box
             && PCardSentenceFind(row) is PCard card
-            && PSentenceMentionFind(box, card, row) is { LMentionDraftEntry: not 0 };
+            && PSentenceMentionFind(box, card, row) is { CMentionDraftEntry: not 0 };
     }
 
     internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -333,7 +338,7 @@ public partial class PEditor
         }
     }
 
-    private LMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row)
+    private CMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row)
     {
         return _lEditor.LEditorDesk.LDeskMentionFind(
             card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);

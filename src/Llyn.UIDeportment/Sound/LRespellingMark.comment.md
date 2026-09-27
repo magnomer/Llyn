@@ -28,7 +28,7 @@ The bracket drawn after the reading, a slash for a phonemic respelling and a squ
 
 Reads the state for `language` from the engine, plain for a blank language.
 
-## `public string LRespellingMarkResolve(LPronunciationDraft spoken)`
+## `public string LRespellingMarkResolve(CPronunciationDraft spoken)`
 
 The form of one draft row to print, its respelling while shown and filled and its reading otherwise.
 A row stored before respellings were kept has none, and its reading stands in whatever the switch says.

@@ -23,7 +23,7 @@ What is standing in the entry.
 
 How many chips stand before the caret, which is the place a new chip is asked for.
 
-## `internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)`
+## `internal void PCardLabelShow(IReadOnlyList<CTagDraft> drafts)`
 
 Makes the chips show the engine's Tags, matched by id, replacing a chip whose text changed.
 

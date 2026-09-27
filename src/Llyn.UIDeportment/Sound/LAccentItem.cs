@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -148,20 +148,20 @@ public sealed class LAccentItem : INotifyPropertyChanged
     public static LAccentItem LAccentItemCreate(
         string language,
         bool flagged,
-        LPronunciationDraft spoken,
+        CPronunciationDraft spoken,
         LRespellingMark respelling)
     {
         ArgumentNullException.ThrowIfNull(spoken);
         ArgumentNullException.ThrowIfNull(respelling);
 
-        string variety = spoken.LPronunciationDraftVariety;
+        string variety = spoken.CPronunciationDraftVariety;
         return new LAccentItem(
-            spoken.LPronunciationDraftId,
+            spoken.CPronunciationDraftId,
             variety,
             LAccentLabelFormat(variety),
             LAccentFlagFind(language, flagged, variety),
             respelling.LRespellingMarkResolve(spoken),
-            spoken.LPronunciationDraftAudio,
+            spoken.CPronunciationDraftAudio,
             respelling);
     }
 

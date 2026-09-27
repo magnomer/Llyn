@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -27,17 +27,17 @@ internal sealed partial class PCard
     internal int PCardRegisterPosition =>
         PCardRowResolve(PCardRegister, _pCardRegisterKey, PCardRegister.IndexOf(_pCardRegisterCaret));
 
-    internal void PCardRegisterShow(IReadOnlyList<LRegisterDraft> drafts)
+    internal void PCardRegisterShow(IReadOnlyList<CRegisterDraft> drafts)
     {
         PCardRowShow(
             PCardRegister,
             drafts,
             _pCardRegisterKey,
-            static draft => draft.LRegisterDraftId,
+            static draft => draft.CRegisterDraftId,
             PCardRegisterCreate,
             static (row, draft) =>
                 row is PRegister chip
-                    ? draft.LRegisterDraftName.LStateValueMatch(chip.PRegisterText) ? row : PCardRegisterCreate(draft)
+                    ? draft.CRegisterDraftName == chip.PRegisterText ? row : PCardRegisterCreate(draft)
                     : PCardRegisterCreate(draft));
 
         PCardRegisterUpdate();
@@ -108,7 +108,7 @@ internal sealed partial class PCard
                 continue;
             }
 
-            if (chip.PRegisterText.LStateValueMatch(text))
+            if (string.Equals(chip.PRegisterText.CStateValueText, text, StringComparison.Ordinal))
             {
                 return true;
             }
@@ -117,9 +117,9 @@ internal sealed partial class PCard
         return false;
     }
 
-    private static object PCardRegisterCreate(LRegisterDraft draft)
+    private static object PCardRegisterCreate(CRegisterDraft draft)
     {
-        return new PRegister(draft.LRegisterDraftName, draft.LRegisterDraftId);
+        return new PRegister(draft.CRegisterDraftName, draft.CRegisterDraftId);
     }
 
     private void PCardRegisterStart()

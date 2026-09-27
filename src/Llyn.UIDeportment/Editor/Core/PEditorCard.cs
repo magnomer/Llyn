@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -12,14 +13,14 @@ public partial class PEditor
     private void PCardShow(
         ObservableCollection<PCard> cards,
         string prefix,
-        IReadOnlyList<LCardDraft> drafts,
-        IReadOnlyDictionary<long, LTranslationTarget> targets,
+        IReadOnlyList<CCardDraft> drafts,
+        IReadOnlyDictionary<long, CTranslationTarget> targets,
         string language)
     {
         List<PCard> shown = new(drafts.Count);
-        foreach (LCardDraft draft in drafts)
+        foreach (CCardDraft draft in drafts)
         {
-            PCard? card = PCardFind(cards, draft.LCardDraftId);
+            PCard? card = PCardFind(cards, draft.CCardDraftId);
             if (card is null || shown.Contains(card))
             {
                 card = PCardCreate(prefix, draft);
@@ -28,7 +29,7 @@ public partial class PEditor
 
             PCardTextShow(card, draft);
             PCardListShow(card, draft, targets, language);
-            card.PCardPosition = draft.LCardDraftPosition;
+            card.PCardPosition = draft.CCardDraftPosition;
             shown.Add(card);
         }
 
@@ -50,25 +51,25 @@ public partial class PEditor
         }
     }
 
-    private static void PCardTextShow(PCard card, LCardDraft draft)
+    private static void PCardTextShow(PCard card, CCardDraft draft)
     {
-        card.PCardTitleShow(draft.LCardDraftTitle);
-        card.PCardExpressionShow(draft.LCardDraftExpression);
-        card.PCardDefinitionShow(draft.LCardDraftMeaning);
+        card.PCardTitleShow(draft.CCardDraftTitle);
+        card.PCardExpressionShow(draft.CCardDraftExpression);
+        card.PCardDefinitionShow(draft.CCardDraftMeaning);
     }
 
-    private PCard PCardCreate(string prefix, LCardDraft draft)
+    private PCard PCardCreate(string prefix, CCardDraft draft)
     {
         PCard card = new(
             _pEditorHost.PWindowDeportment,
             prefix,
-            draft.LCardDraftPosition,
+            draft.CCardDraftPosition,
             _pEditorCitation,
             _pEditorParticle,
             _pEditorDependence,
             _pLanguageItem)
         {
-            PCardId = draft.LCardDraftId,
+            PCardId = draft.CCardDraftId,
         };
 
         PSentenceAttach(card);
@@ -80,16 +81,16 @@ public partial class PEditor
     }
 
     private void PCardListShow(
-        PCard card, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets, string language)
+        PCard card, CCardDraft draft, IReadOnlyDictionary<long, CTranslationTarget> targets, string language)
     {
-        card.PCardSentenceShow(draft.LCardDraftSentence, language);
+        card.PCardSentenceShow(draft.CCardDraftSentence, language);
         PSentenceMentionShow(card);
-        card.PCardContextShow(draft.LCardDraftSituation);
-        card.PCardRegisterShow(draft.LCardDraftRegister);
-        card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
-        card.PCardLabelShow(draft.LCardDraftTag);
-        card.PCardImageShow(draft.LCardDraftImage);
-        card.PCardVideoShow(draft.LCardDraftVideo);
+        card.PCardContextShow(draft.CCardDraftSituation);
+        card.PCardRegisterShow(draft.CCardDraftRegister);
+        card.PCardLinkShow(PCardTargetRead(targets, draft.CCardDraftTranslation));
+        card.PCardLabelShow(draft.CCardDraftTag);
+        card.PCardImageShow(draft.CCardDraftImage);
+        card.PCardVideoShow(draft.CCardDraftVideo);
     }
 
     private static PCard? PCardFind(IReadOnlyList<PCard> cards, long id)
@@ -105,13 +106,13 @@ public partial class PEditor
         return null;
     }
 
-    private static IReadOnlyList<LTranslationTarget> PCardTargetRead(
-        IReadOnlyDictionary<long, LTranslationTarget> targets, IReadOnlyList<long> ids)
+    private static IReadOnlyList<CTranslationTarget> PCardTargetRead(
+        IReadOnlyDictionary<long, CTranslationTarget> targets, IReadOnlyList<long> ids)
     {
-        List<LTranslationTarget> found = [];
+        List<CTranslationTarget> found = [];
         foreach (long id in ids)
         {
-            if (targets.GetValueOrDefault(id) is LTranslationTarget target)
+            if (targets.GetValueOrDefault(id) is CTranslationTarget target)
             {
                 found.Add(target);
             }

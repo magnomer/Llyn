@@ -65,7 +65,7 @@ A scheme change is sent at once because it is one pick, not a keystroke stream.
 The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
 The fill guard holds during a render, so a render writing a different text raises no request either.
 
-## `private void PTranscriptionShow(LEntryDraft draft)`
+## `private void PTranscriptionShow(CEntryDraft draft)`
 
 Renders every transcription as a row, keyed by the transcription id.
 The declared schemes are asked of the language pack once per render.
@@ -74,7 +74,7 @@ The list is shown only while there is one.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
 A row in the glyph scheme is left out, because the glyph row shows it beneath.
 
-## `private IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft)`
+## `private IReadOnlyList<CTranscriptionDraft> PTranscriptionScan(CEntryDraft draft)`
 
 The draft's transcription rows without the glyph row of the language shown.
 
@@ -83,7 +83,7 @@ The draft's transcription rows without the glyph row of the language shown.
 The draft's transcription rows without the row in `glyph`'s scheme.
 The glyph form is stored as a transcription row, so this is where the two are told apart.
 
-## `private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, LTranscriptionDraft spelled)`
+## `private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, CTranscriptionDraft spelled)`
 
 Brings a shown row up to the draft row with the same id.
 A changed scheme is written onto the row, which relabels itself.

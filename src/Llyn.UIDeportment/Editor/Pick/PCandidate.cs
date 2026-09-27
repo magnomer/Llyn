@@ -7,7 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -170,7 +170,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LRegister> found;
+        IReadOnlyList<CRegister> found;
         try
         {
             found = _lEditor.LEditorCard.LCardRegisterFind(word, _lEditor.LEditorLanguage);
@@ -182,15 +182,15 @@ public partial class PEditor
         }
 
         _pCandidateItem.Clear();
-        foreach (LRegister row in found)
+        foreach (CRegister row in found)
         {
-            string name = row.LRegisterName.LStateValueShow().Trim();
-            if (name.Length == 0 || card.PCardRegisterMatch(row.LRegisterId))
+            string name = row.CRegisterName.Trim();
+            if (name.Length == 0 || card.PCardRegisterMatch(row.CRegisterId))
             {
                 continue;
             }
 
-            _pCandidateItem.Add(new PCandidateItem(row.LRegisterId, name, 0, word));
+            _pCandidateItem.Add(new PCandidateItem(row.CRegisterId, name, 0, word));
 
             if (_pCandidateItem.Count == PCandidateLimit)
             {
@@ -225,7 +225,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LCatalogSituation> found;
+        IReadOnlyList<CCatalogSituation> found;
         try
         {
             found = _lEditor.LEditorCard.LCardSituationFind(word);
@@ -237,17 +237,16 @@ public partial class PEditor
         }
 
         _pCandidateItem.Clear();
-        foreach (LCatalogSituation row in found)
+        foreach (CCatalogSituation row in found)
         {
-            LSituation stored = row.LCatalogSituationStored;
-            string title = stored.LSituationTitle.LStateValueShow().Trim();
-            if (title.Length == 0 || card.PCardContextMatch(stored.LSituationId))
+            string title = row.CCatalogSituationTitle.Trim();
+            if (title.Length == 0 || card.PCardContextMatch(row.CCatalogSituationId))
             {
                 continue;
             }
 
             _pCandidateItem.Add(new PCandidateItem(
-                stored.LSituationId, title, row.LCatalogSituationUsage, word));
+                row.CCatalogSituationId, title, row.CCatalogSituationUsage, word));
 
             if (_pCandidateItem.Count == PCandidateLimit)
             {
@@ -283,7 +282,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LCatalogReference> found;
+        IReadOnlyList<CCatalogReference> found;
         try
         {
             found = _lEditor.LEditorCard.LCardReferenceFind(word);
@@ -295,12 +294,12 @@ public partial class PEditor
         }
 
         _pCandidateItem.Clear();
-        foreach (LCatalogReference reference in found)
+        foreach (CCatalogReference reference in found)
         {
             _pCandidateItem.Add(new PCandidateItem(
-                reference.LCatalogReferenceStored.LReferenceId,
-                reference.LCatalogReferenceByline,
-                reference.LCatalogReferenceUsage,
+                reference.CCatalogReferenceId,
+                reference.CCatalogReferenceByline,
+                reference.CCatalogReferenceUsage,
                 word));
 
             if (_pCandidateItem.Count == PCandidateLimit)

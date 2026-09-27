@@ -28,11 +28,11 @@ The decoded pictures of the row, in stored order.
 Fills a row of `Theme.Script.Row`: character, style chip, gloss and pictures.
 The picture list is attached to `PScriptImage.PScriptImageApply`.
 
-## `internal static IReadOnlyList<PScriptItem> PScriptItemScan(IReadOnlyList<LScriptGroup> groups)`
+## `internal static IReadOnlyList<PScriptItem> PScriptItemScan(IReadOnlyList<CScriptGroup> groups)`
 
 One block per group the engine handed over, skipping a group whose pictures all fail to decode.
 
-## `private static PScriptItem? PScriptItemCreate(LScriptGroup group)`
+## `private static PScriptItem? PScriptItemCreate(CScriptGroup group)`
 
 Decodes one group's pictures under the heading, style and gloss the engine chose.
 A group whose every picture fails to decode makes no row.

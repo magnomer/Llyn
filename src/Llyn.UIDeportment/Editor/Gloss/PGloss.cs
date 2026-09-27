@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -16,18 +16,18 @@ internal sealed class PGloss : INotifyPropertyChanged
     private readonly long _pGlossId;
     private string _pGlossLanguage;
     private ImageSource? _pGlossFlag;
-    private LStateValue _pGlossText;
+    private CStateValue _pGlossText;
     private bool _pGlossLanguageVisible;
 
-    internal PGloss(ObservableCollection<PLanguageItem> catalog, LGlossDraft draft)
+    internal PGloss(ObservableCollection<PLanguageItem> catalog, CGlossDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
         PGlossLanguageCatalog = catalog;
-        _pGlossId = draft.LGlossDraftId;
-        _pGlossLanguage = draft.LGlossDraftLanguage;
+        _pGlossId = draft.CGlossDraftId;
+        _pGlossLanguage = draft.CGlossDraftLanguage;
         _pGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
-        _pGlossText = draft.LGlossDraftText;
+        _pGlossText = draft.CGlossDraftText;
     }
 
     public ObservableCollection<PLanguageItem> PGlossLanguageCatalog { get; }
@@ -71,7 +71,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    public LStateValue PGlossText
+    public CStateValue PGlossText
     {
         get => _pGlossText;
         private set
@@ -101,18 +101,18 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    internal void PGlossShow(LGlossDraft draft)
+    internal void PGlossShow(CGlossDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        if (!string.Equals(_pGlossLanguage, draft.LGlossDraftLanguage, StringComparison.Ordinal))
+        if (!string.Equals(_pGlossLanguage, draft.CGlossDraftLanguage, StringComparison.Ordinal))
         {
-            _pGlossLanguage = draft.LGlossDraftLanguage;
+            _pGlossLanguage = draft.CGlossDraftLanguage;
             PGlossFlag = LEnsignImage.LEnsignFind(_pGlossLanguage);
             PGlossRaise(nameof(PGlossLanguage));
         }
 
-        PGlossText = draft.LGlossDraftText;
+        PGlossText = draft.CGlossDraftText;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -192,7 +192,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         label.ClearValue(TextBlock.ForegroundProperty);
     }
 
-    private static void PGlossTextApply(FrameworkElement container, LStateValue text)
+    private static void PGlossTextApply(FrameworkElement container, CStateValue text)
     {
         QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;

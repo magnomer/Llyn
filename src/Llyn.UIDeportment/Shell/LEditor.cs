@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -17,15 +18,13 @@ public sealed class LEditor
 
     private readonly LSettingsPort _lSettingsPort;
 
-    private readonly LDisplay _lEditorDisplay;
-
     private LVista? _lEditorVista;
 
     private bool _lEditorFresh;
 
     private bool _lEditorHalted;
 
-    public LEditor(
+    internal LEditor(
         LDraftPort drafts,
         LEntryPort entries,
         LPhonologyPort phonology,
@@ -44,18 +43,20 @@ public sealed class LEditor
         _lPhonologyPort = phonology;
         _lSettingsPort = settings;
         LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
-        _lEditorDisplay = new LDisplay(entries, phonology, settings, media);
-        LEditorLectern = new LLectern(_lEditorDisplay);
+        LEditorDisplay = new LDisplay(entries, phonology, settings, media);
         LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
-        LEditorClip = new LClip();
-        LEditorNotation = new LNotation();
-        LEditorSounding = new LSounding(phonology);
+        LEditorClip = new LClip(LEditorDesk);
+        LEditorNotation = new LNotation(LEditorDesk);
+        LEditorSounding = new LSounding(phonology, drafts);
         LEditorSounding.LSoundingFailed += LEditorFailureShow;
         LEditorDesk.LDeskStateChanged += LEditorStateUpdate;
         LEditorDesk.LDeskFinished += LEditorStoredShow;
+        LEditorDesk.LDeskDraftPrepared += LEditorDraftShow;
     }
 
     public event Action? LEditorStateChanged;
+
+    public event Action<CEntryDraft>? LEditorDraftChanged;
 
     public event Action? LEditorStopped;
 
@@ -67,7 +68,7 @@ public sealed class LEditor
 
     public LDesk LEditorDesk { get; }
 
-    public LLectern LEditorLectern { get; }
+    public LDisplay LEditorDisplay { get; }
 
     public LCard LEditorCard { get; }
 
@@ -140,25 +141,28 @@ public sealed class LEditor
 
     public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;
 
-    public bool LEditorFanqiePending => _lEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
+    public bool LEditorFanqiePending => LEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
 
-    public bool LEditorScriptPending => _lEditorDisplay.LDisplayScriptCheck(LEditorEntry);
+    public bool LEditorScriptPending => LEditorDisplay.LDisplayScriptCheck(LEditorEntry);
 
-    public bool LEditorParadigmPending => _lEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
+    public bool LEditorParadigmPending => LEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
 
-    public string LEditorParadigmLanguage => LParadigm.LParadigmLanguageRead(LEditorParadigmRead());
+    public string LEditorParadigmLanguage =>
+        LParadigm.LParadigmLanguageRead(LEditorSounding.LSoundingParadigmFind(LEditorEntry));
+
+    private LEntryDraft? LEditorContent => LEditorDesk.LDeskTenure?.LTenureRead()?.LDraftContent;
 
     private bool LEditorRestarting => LEditorFresh && LEditorOwned;
 
     private bool LEditorStalling => LEditorDesk.LDeskHalted && !LEditorHalted;
 
-    public void LEditorVistaRestore(LVista vista)
+    internal void LEditorVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
         _lEditorVista = vista;
         LEditorDesk.LDeskVistaRestore(vista);
-        _lEditorDisplay.LDisplayVistaRestore(vista);
+        LEditorDisplay.LDisplayVistaRestore(vista);
     }
 
     public void LEditorVistaRestore(LWindow window)
@@ -188,25 +192,36 @@ public sealed class LEditor
         LEditorDesk.LDeskCancel();
     }
 
-    public void LEditorClipStart(string word, long target, Action<LHarvestStep> sink)
+    public bool LEditorClipStart(string word, long target, Action<CHarvestStep> sink)
     {
-        LEditorClip.LClipForaySet(LEditorDesk.LDeskRecordingStart(word, target, sink));
+        return LEditorDesk.LDeskRecordingStart(word, target, sink);
     }
 
-    public void LEditorNotationStart(string word, long target, string scheme, Action<LLookupStep> sink)
+    public bool LEditorNotationStart(string word, long target, string scheme, Action<CLookupStep> sink)
     {
-        LEditorNotation.LNotationForaySet(LEditorDesk.LDeskTranscriptionStart(word, target, scheme, sink));
+        return LEditorDesk.LDeskTranscriptionStart(word, target, scheme, sink);
     }
 
-    public LEntryDraft? LEditorDraftRead()
+    private void LEditorDraftShow(LDraft draft)
     {
-        return LEditorDesk.LDeskTenure?.LTenureRead()?.LDraftContent;
+        LEditorDraftChanged?.Invoke(LCard.LCardEntryRead(draft.LDraftContent));
+    }
+
+    public CEntryDraft? LEditorDraftRead()
+    {
+        return LEditorContent is LEntryDraft draft ? LCard.LCardEntryRead(draft) : null;
     }
 
     public string LEditorPronunciationRead()
     {
-        return LEditorDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftRead(LEditorRespelled)
-            ?? string.Empty;
+        return LEditorContent?.LEntryDraftPronunciation?.LPronunciationDraftRead(LEditorRespelled) ?? string.Empty;
+    }
+
+    public IReadOnlyList<CTranslationTarget> LEditorEtymonRead()
+    {
+        return LEditorContent is LEntryDraft draft
+            ? LCard.LCardTargetRead(LEditorDisplay.LDisplayEtymonRead(draft))
+            : [];
     }
 
     public void LEditorHeadwordSet(string text)
@@ -395,36 +410,37 @@ public sealed class LEditor
             : _lEntryPort.LEngineGraspFormat(step);
     }
 
-    public IReadOnlyList<LFrequency> LEditorFrequencyRead()
+    public CFrequency? LEditorFrequencyRead(string once)
     {
         if (LEditorEntry is not long id)
         {
-            return [];
+            return null;
         }
 
         try
         {
-            return _lEntryPort.LEngineFrequencyRead(id);
+            return LSounding.LSoundingFrequencyRead(_lEntryPort.LEngineFrequencyRead(id), once);
         }
         catch (Exception)
         {
-            return [];
+            return null;
         }
     }
 
-    public IReadOnlyDictionary<long, LTranslationTarget> LEditorTargetRead()
+    public IReadOnlyDictionary<long, CTranslationTarget> LEditorTargetRead()
     {
         try
         {
-            return _lDraftPort.LEngineTargetFind(LEditorDesk.LDeskId);
+            return _lDraftPort.LEngineTargetFind(LEditorDesk.LDeskId)
+                .ToDictionary(pair => pair.Key, pair => LCard.LCardTargetRead([pair.Value])[0]);
         }
         catch (Exception)
         {
-            return new Dictionary<long, LTranslationTarget>();
+            return new Dictionary<long, CTranslationTarget>();
         }
     }
 
-    public IReadOnlyList<LFanqieGroup> LEditorFanqieRead()
+    public IReadOnlyList<CFanqieGroup> LEditorFanqieRead()
     {
         return LEditorSounding.LSoundingFanqieRead(LEditorEntry);
     }
@@ -434,9 +450,21 @@ public sealed class LEditor
         return LEditorSounding.LSoundingReadingRead(LEditorEntry, headword);
     }
 
-    public IReadOnlyList<LFanqieRow> LEditorAnchorRead()
+    public bool LEditorAnchorCheck(string headword)
     {
-        return LEditorSounding.LSoundingAnchorRead(LEditorEntry);
+        return LEditorSounding.LSoundingAnchorCheck(LEditorSounding.LSoundingAnchorRead(LEditorEntry), headword);
+    }
+
+    public string LEditorAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)
+    {
+        return LEditorSounding.LSoundingAnchorFormat(
+            LEditorSounding.LSoundingAnchorRead(LEditorEntry), anchors, headword, separator);
+    }
+
+    public IReadOnlyList<CAnchorRow> LEditorAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)
+    {
+        return LEditorSounding.LSoundingAnchorScan(
+            LEditorSounding.LSoundingAnchorRead(LEditorEntry), anchors, LEditorLanguage, reflex, tone);
     }
 
     public void LEditorFanqieRebuild()
@@ -449,7 +477,7 @@ public sealed class LEditor
         LEditorSounding.LSoundingFanqieSet(LEditorEntry, fanqieId, rank);
     }
 
-    public IReadOnlyList<LScriptGroup> LEditorScriptRead()
+    public IReadOnlyList<CScriptGroup> LEditorScriptRead()
     {
         return LEditorSounding.LSoundingScriptRead(LEditorEntry);
     }
@@ -459,7 +487,7 @@ public sealed class LEditor
         LEditorSounding.LSoundingScriptRebuild(LEditorEntry);
     }
 
-    public IReadOnlyList<LParadigmSlot> LEditorParadigmRead()
+    public IReadOnlyList<CParadigmSlot> LEditorParadigmRead()
     {
         return LEditorSounding.LSoundingParadigmRead(LEditorEntry);
     }

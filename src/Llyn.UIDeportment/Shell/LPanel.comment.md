@@ -9,6 +9,11 @@ Every request the veneer forwards ends in a notice, and the veneer writes its co
 The questions a panel asks the user leave through seams the veneer hands in, so no dialog is known here.
 The rows a tab lists are the tab's own, so this class only announces that they need re-reading.
 
+It is sealed: its public members name only .NET types and Conduct shapes.
+It maps each Conduct shape to the engine's type inside, so a driver never holds engine data.
+The vista and the loaded draft pass only between controllers, through internal members.
+That keeps the class ready to sink into Conduct, where the console driver can share it.
+
 ## `private readonly string _lPanelDeleteKey;`
 
 The localization key a refused delete is shown under, named by the deportment so the message names its record.
@@ -27,7 +32,13 @@ The editor must show this stored entry, raised only while the panel is in edit m
 
 A load or delete the engine refused, with the localization key the window shows it under.
 
-## `public void LPanelVistaRestore(LVista vista)`
+## `internal event Action<LDraft>? LPanelDraftChanged;`
+
+The draft just loaded, for the controllers that show it.
+It is internal because a draft is engine data, which a driver never receives.
+A controller that owes its view something from the draft raises its own event with that part.
+
+## `internal void LPanelVistaRestore(LVista vista)`
 
 Takes the vista the window started for the tab.
 A vista opens with the stored split, which no control yet shows, so the split is switched off here.
@@ -74,13 +85,31 @@ No engine answer is branched on, and the loaded draft travels to the veneer insi
 
 The chosen entry changed under the panel, so it is reloaded quietly and a vanished one clears the panel.
 
-## `public void LPanelEntryHandle(LBulletin bulletin)`
+## `public void LPanelObserverAttach(CSubject subject, Action<CBulletin> observer)`
+
+Attaches a view's observer to the vista's notices on `subject`.
+Each notice is copied into a Conduct notice inside the wrapper, before the observer sees it.
+The wrapped delegate is never detached, because the vista lives as long as the tab.
+
+## `public void LPanelChosenAttach(CSubject subject, Action<CBulletin> observer)`
+
+The same as `LPanelObserverAttach`, but only for notices about the chosen row.
+
+## `public CCatalogOrder LPanelOrder`
+
+The vista's ordering as a driver marks it in a menu, headword order before a vista arrives.
+
+## `public CCatalogFilter LPanelFilter`
+
+The vista's language filter as a driver ticks it in a menu, hiding nothing before a vista arrives.
+
+## `public void LPanelEntryHandle(CBulletin bulletin)`
 
 Any stored entry re-lists the rows and repaints the mode.
 A tab in front, in edit mode and with no chosen row adopts the stored entry as its choice.
 That is how a fresh entry becomes the shown one, while an entry under edit keeps its row.
 
-## `public void LPanelEntrySelect(LBulletin bulletin)`
+## `public void LPanelEntrySelect(CBulletin bulletin)`
 
 The adoption alone, for a two-list deportment whose rows already re-list on the same bulletin.
 It raises nothing, because the adopted entry's own bulletin reloads and repaints the panel next.
@@ -89,3 +118,29 @@ It raises nothing, because the adopted entry's own bulletin reloads and repaints
 
 The record the panel stands on, as the station the window's trail records.
 Zero says the panel stands on none, so there is no place to come back to.
+
+## `internal static CCatalogOrder LPanelOrderRead(LCatalogOrder order)`
+
+The Conduct mirror of an engine ordering, member for member.
+Every controller that shows an ordering maps it here, so the mirror has one home.
+It casts, since the mirror declares its members in the engine's order.
+A branch per member would decide nothing, and a test holds the order.
+
+## `internal static LCatalogOrder? LPanelOrderRead(CCatalogOrder? order)`
+
+The engine ordering a driver's choice stands for, or null when the driver chose none.
+A setter keeps the vista's ordering on null, so the view's handler holds no branch.
+
+## `internal static CCatalogFilter LPanelFilterRead(LCatalogFilter filter)`
+
+The Conduct copy of an engine filter, carrying its hidden languages.
+
+## `internal static LCatalogFilter LPanelFilterRead(CCatalogFilter filter)`
+
+The engine filter a driver's ticks stand for.
+The engine builds it, so a filter hiding nothing is its shared empty filter.
+
+## `internal static LSubject LPanelSubjectRead(CSubject subject)`
+
+The engine subject a driver's subject names, cast member for member like the ordering.
+It is internal so the test that holds the member order can reach it.

@@ -9,20 +9,20 @@ A Situation has no card, so every request names card zero and the engine routes 
 Every request goes through the tenure, which keys what waits by `LRequestKey`.
 So the panel keeps no map of its own of which row is still waiting.
 
-## `private void PScenarioImageShow(IReadOnlyList<LImageDraft> rows)`
+## `private void PScenarioImageShow(IReadOnlyList<CImageDraft> rows)`
 
 Redraws the picture rows from the held Situation, adding, dropping, and moving rows to match.
 What was waiting is written before the read, so a redraw never lands over a newer keystroke.
 
-## `private void PScenarioVideoShow(IReadOnlyList<LVideoDraft> rows)`
+## `private void PScenarioVideoShow(IReadOnlyList<CVideoDraft> rows)`
 
 Redraws the video rows the same way, location and span apart.
 
-## `private PImage PScenarioImageCreate(LImageDraft draft)`
+## `private PImage PScenarioImageCreate(CImageDraft draft)`
 
 A picture row holding the engine's location, and nothing typed.
 
-## `private PVideo PScenarioVideoCreate(LVideoDraft draft)`
+## `private PVideo PScenarioVideoCreate(CVideoDraft draft)`
 
 A video row holding the engine's location and span, and nothing typed.
 

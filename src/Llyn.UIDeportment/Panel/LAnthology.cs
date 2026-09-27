@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -69,21 +70,21 @@ public sealed class LAnthology
         _lAnthologyVista?.LVistaQuerySet(query);
     }
 
-    public void LAnthologyRankSet(LCatalogOrder? order)
+    public void LAnthologyRankSet(CCatalogOrder? order)
     {
         if (_lAnthologyVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public void LAnthologyGauzeSet(LCatalogFilter filter)
+    public void LAnthologyGauzeSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lAnthologyVista?.LVistaFilterSet(filter);
+        _lAnthologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public IReadOnlyList<LCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
@@ -121,14 +122,15 @@ public sealed class LAnthology
         return _lPortraitPort.LEnginePortraitPrint(_lAnthologyVista, legend, ticket);
     }
 
-    public IReadOnlyList<LCatalogReference> LAnthologyReferenceFind()
+    public IReadOnlyList<CCatalogReference> LAnthologyReferenceFind()
     {
-        return _lEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
+        return LOeuvre.LOeuvreReferenceRead(
+            _lEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor));
     }
 
-    public IReadOnlyList<LCatalogReference> LAnthologyReferenceFind(string word)
+    public IReadOnlyList<CCatalogReference> LAnthologyReferenceFind(string word)
     {
-        return _lEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
+        return LOeuvre.LOeuvreReferenceRead(_lEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage));
     }
 
     public void LAnthologyCitationSet(string title)

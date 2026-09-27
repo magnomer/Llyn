@@ -19,11 +19,11 @@ The row raises its property change under it, and the editor reads the Gloss and 
 Splits a field name of that shape back into the Gloss it names and the property.
 Any other field gives null.
 
-## `private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts)`
+## `private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)`
 
 Redraws the rows from the drafts, keeping the rows whose ids survive.
 
-## `private PGloss PSentenceGlossCreate(LGlossDraft draft)`
+## `private PGloss PSentenceGlossCreate(CGlossDraft draft)`
 
 One row, subscribed so its edits reach the card.
 

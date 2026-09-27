@@ -26,7 +26,7 @@ Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 16,
+    "generation": 17,
     "project": "Llyn",
     "enforced": true,
     "ceilings": { "Length": 0, "Width": 0 },
@@ -105,7 +105,7 @@ auditlines -Extensions .cs, .xaml
 auditlines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 16 - auditlines.ps1.
+# AUDITLINES GENERATION 17 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -128,6 +128,8 @@ auditlines -SourceRoots .\src, .\tests
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
 # Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
+# seal check counts engine types on the public members of sealed Deportment types.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -246,7 +248,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 16
+$script:AuditGeneration = 17
 $script:ItemLimit = 40
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
@@ -1134,6 +1136,7 @@ Write-GroupedConsoleTable -Columns @(
     (New-ConsoleColumn -Group 'Lines' -Name 'Raw' -Values @($tableRows | ForEach-Object { Format-Integer $_.Lines })),
     (New-ConsoleColumn -Group 'Lines' -Name 'Non-blank' -Values @($tableRows | ForEach-Object { Format-Integer $_.NonBlankLines })),
     (New-ConsoleColumn -Group 'Lines' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalLines -gt 0) { ($_.Lines / [double]$totalLines) * 100.0 } else { 0.0 }) })),
+    (New-ConsoleColumn -Group 'Lines' -Name 'Average' -Values @($tableRows | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Lines / [double]$_.Files) } else { 0 }) })),
     (New-ConsoleColumn -Group 'Sizes' -Name 'Total' -Values @($tableRows | ForEach-Object { Format-Integer $_.Bytes })),
     (New-ConsoleColumn -Group 'Sizes' -Name 'Share' -Values @($tableRows | ForEach-Object { Format-Percent $(if ($totalBytes -gt 0) { ($_.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }) })),
     (New-ConsoleColumn -Group 'Sizes' -Name 'Average' -Values @($tableRows | ForEach-Object { Format-Integer $(if ($_.Files -gt 0) { [Math]::Round($_.Bytes / [double]$_.Files) } else { 0 }) }))
@@ -1254,13 +1257,14 @@ if ($hotspotCommits -gt 0) {
 }
 [void]$reportBuilder.AppendLine("## Lines by source folder")
 [void]$reportBuilder.AppendLine()
-[void]$reportBuilder.AppendLine("| Folder | Files | Lines | Non-blank | Share | Bytes | Size share | Average bytes |")
-[void]$reportBuilder.AppendLine("|--------|------:|------:|----------:|------:|------:|-----------:|--------------:|")
+[void]$reportBuilder.AppendLine("| Folder | Files | Lines | Non-blank | Share | Average lines | Bytes | Size share | Average bytes |")
+[void]$reportBuilder.AppendLine("|--------|------:|------:|----------:|------:|--------------:|------:|-----------:|--------------:|")
 foreach ($item in $folderResults) {
     $share = if ($totalLines -gt 0) { ($item.Lines / [double]$totalLines) * 100.0 } else { 0.0 }
     $sizeShare = if ($totalBytes -gt 0) { ($item.Bytes / [double]$totalBytes) * 100.0 } else { 0.0 }
     $averageSize = if ($item.Files -gt 0) { $item.Bytes / [double]$item.Files } else { 0.0 }
-    [void]$reportBuilder.AppendLine("| $(ConvertTo-MarkdownCell $item.Name) | $(Format-Integer $item.Files) | $(Format-Integer $item.Lines) | $(Format-Integer $item.NonBlankLines) | $(Format-Percent $share) | $(Format-Integer $item.Bytes) | $(Format-Percent $sizeShare) | $([Math]::Round($averageSize).ToString('N0', [System.Globalization.CultureInfo]::InvariantCulture)) |")
+    $averageLines = if ($item.Files -gt 0) { $item.Lines / [double]$item.Files } else { 0.0 }
+    [void]$reportBuilder.AppendLine("| $(ConvertTo-MarkdownCell $item.Name) | $(Format-Integer $item.Files) | $(Format-Integer $item.Lines) | $(Format-Integer $item.NonBlankLines) | $(Format-Percent $share) | $([Math]::Round($averageLines).ToString('N0', [System.Globalization.CultureInfo]::InvariantCulture)) | $(Format-Integer $item.Bytes) | $(Format-Percent $sizeShare) | $([Math]::Round($averageSize).ToString('N0', [System.Globalization.CultureInfo]::InvariantCulture)) |")
 }
 [void]$reportBuilder.AppendLine()
 [void]$reportBuilder.AppendLine("## Lines by extension")

@@ -12,7 +12,7 @@ The entry edit area is still a veneer hold, so its change answer arrives through
 The unreadable seam is the window's sweep question, passed on to the imprint's desk.
 The leave seam is the window's discard dialog, asked once for the whole tab before any switch of side.
 The removal seam is the window's delete question, worded by how many rows still cite the Source.
-The citing entries' loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The citing entries' loads and clears go straight to its view's lectern, so the veneer relays no draft.
 
 ## `public event Action? LShelfChanged;`
 
@@ -54,10 +54,15 @@ The rows cross as a parameter, so no local carries an engine answer into the cle
 The citation sentence for one Source, composed from the usage the engine counts.
 The page asks it by the chosen row.
 
-## `public LColophon LShelfColophonRead(LDraft draft)`
+## `private void LShelfColophonUpdate(LDraft draft)`
 
-The read sheet of a loaded Source draft with the tally of the chosen row.
+Composes the read sheet of a loaded Source draft with the tally of the chosen row, and announces it.
+The draft passes only between controllers, so the view receives the sheet and never the draft.
 The draft arrives as a parameter from the notice, so the Source is never a local here.
+
+## `public event Action<CColophon>? LShelfColophonChanged;`
+
+The sheet of the Source just loaded, for the view's colophon.
 
 ## `public void LShelfRowSelect(long? id)`
 

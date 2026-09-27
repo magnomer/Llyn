@@ -41,7 +41,7 @@ public sealed class LLecternSound
 
     private TextBlock _lLecternSoundReading = null!;
 
-    private Action<IReadOnlyList<LFanqieGroup>, bool> _lLecternSoundRime = null!;
+    private Action<IReadOnlyList<CFanqieGroup>, bool> _lLecternSoundRime = null!;
 
     private Action<string, string, string> _lLecternSoundDiwei = null!;
 
@@ -49,11 +49,11 @@ public sealed class LLecternSound
 
     private DependencyObject _lLecternSoundScript = null!;
 
-    private Action<IReadOnlyList<LScriptGroup>, bool> _lLecternSoundWriting = null!;
+    private Action<IReadOnlyList<CScriptGroup>, bool> _lLecternSoundWriting = null!;
 
     private DependencyObject _lLecternSoundParadigm = null!;
 
-    private Action<IReadOnlyList<LParadigmSlot>, bool, bool> _lLecternSoundInflection = null!;
+    private Action<IReadOnlyList<CParadigmSlot>, bool, bool> _lLecternSoundInflection = null!;
 
     public LLecternSound(LDisplaySound display)
     {
@@ -106,7 +106,7 @@ public sealed class LLecternSound
     public void LLecternFanqieAttach(
         DependencyObject fanqie,
         TextBlock reading,
-        Action<IReadOnlyList<LFanqieGroup>, bool> fanqieSeam,
+        Action<IReadOnlyList<CFanqieGroup>, bool> fanqieSeam,
         Action<string, string, string> diweiSeam,
         Action<string, string?> stemSeam)
     {
@@ -123,7 +123,7 @@ public sealed class LLecternSound
         _lLecternSoundStem = stemSeam;
     }
 
-    public void LLecternScriptAttach(DependencyObject script, Action<IReadOnlyList<LScriptGroup>, bool> scriptSeam)
+    public void LLecternScriptAttach(DependencyObject script, Action<IReadOnlyList<CScriptGroup>, bool> scriptSeam)
     {
         ArgumentNullException.ThrowIfNull(script);
         ArgumentNullException.ThrowIfNull(scriptSeam);
@@ -133,7 +133,7 @@ public sealed class LLecternSound
     }
 
     public void LLecternParadigmAttach(
-        DependencyObject paradigm, Action<IReadOnlyList<LParadigmSlot>, bool, bool> paradigmSeam)
+        DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>, bool, bool> paradigmSeam)
     {
         ArgumentNullException.ThrowIfNull(paradigm);
         ArgumentNullException.ThrowIfNull(paradigmSeam);
@@ -151,7 +151,9 @@ public sealed class LLecternSound
 
         _lLecternSoundDisplay.LDisplayReflexLoad();
         LLecternReflexShow();
-        LLecternAnchorShow(_lLecternSoundDisplay.LDisplayFanqieDivide());
+        LLecternAnchorShow(
+            LDisplaySound.LDisplayAnchorRead(_lLecternSoundDisplay.LDisplayFanqieDivide()),
+            _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
         LLecternPendingShow();
     }
 
@@ -275,7 +277,8 @@ public sealed class LLecternSound
     private void LLecternTranscriptionShow()
     {
         _lLecternSoundTranscription.Clear();
-        foreach (LTranscriptionDraft spelled in _lLecternSoundDisplay.LDisplayTranscriptionRead())
+        foreach (CTranscriptionDraft spelled in LSounding.LSoundingTranscriptionRead(
+            _lLecternSoundDisplay.LDisplayTranscriptionRead()))
         {
             _lLecternSoundTranscription.Add(LTranscriptionItem.LTranscriptionItemCreate(spelled));
         }
@@ -287,7 +290,7 @@ public sealed class LLecternSound
         HashSet<string> folded = LReflexItem.LReflexFoldRead(
             _lLecternSoundWindow, _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
         foreach (LReflexItem row in LReflexItem.LReflexItemScan(
-            _lLecternSoundWindow, _lLecternSoundDisplay.LDisplayReflexRead(), folded))
+            _lLecternSoundWindow, LSounding.LSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
         {
             _lLecternSoundReflex.Add(row);
         }
@@ -297,13 +300,12 @@ public sealed class LLecternSound
             _lLecternSoundReflex, _lLecternSoundFold, _lLecternSoundDisplay.LDisplayFoldOpened);
     }
 
-    private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)
+    private void LLecternAnchorShow(IReadOnlyList<LFanqieRow> fanqie, string headword)
     {
         LReflexItem.LReflexAnchorApply(
-            _lLecternSoundWindow,
             _lLecternSoundReflex,
-            LDisplaySound.LDisplayAnchorRead(groups),
-            _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
+            _lLecternSoundWindow.LWindowAnchorCheck(fanqie, headword),
+            (anchors, separator) => _lLecternSoundWindow.LWindowAnchorFormat(fanqie, anchors, headword, separator));
     }
 
     private void LLecternPendingShow()
@@ -316,13 +318,16 @@ public sealed class LLecternSound
 
     private void LLecternFanqieShow(IReadOnlyList<LFanqieGroup> groups)
     {
-        LLecternAnchorShow(groups);
+        LLecternAnchorShow(
+            LDisplaySound.LDisplayAnchorRead(groups), _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
         LFontFace.LFontApply(
             _lLecternSoundWindow,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
             LFontRole.LFontRoleGlyph,
             _lLecternSoundFanqie);
-        _lLecternSoundRime(groups, _lLecternSoundDisplay.LDisplayFanqieCheck(_lLecternSoundDisplay.LDisplayEntry));
+        _lLecternSoundRime(
+            LSounding.LSoundingFanqieRead(groups),
+            _lLecternSoundDisplay.LDisplayFanqieCheck(_lLecternSoundDisplay.LDisplayEntry));
         _lLecternSoundReading.Text = _lLecternSoundDisplay.LDisplayReadingRead();
     }
 
@@ -334,13 +339,14 @@ public sealed class LLecternSound
             LFontRole.LFontRoleGlyph,
             _lLecternSoundScript);
         _lLecternSoundWriting(
-            _lLecternSoundDisplay.LDisplayScriptDivide(),
+            LSounding.LSoundingScriptRead(_lLecternSoundDisplay.LDisplayScriptDivide()),
             _lLecternSoundDisplay.LDisplayScriptCheck(_lLecternSoundDisplay.LDisplayEntry));
     }
 
     private void LLecternParadigmShow()
     {
-        IReadOnlyList<LParadigmSlot> slots = _lLecternSoundDisplay.LDisplayParadigmRead();
+        IReadOnlyList<CParadigmSlot> slots =
+            LSounding.LSoundingParadigmRead(_lLecternSoundDisplay.LDisplayParadigmRead());
         _lLecternSoundDisplay.LDisplayInflectionStart();
         LFontFace.LFontApply(
             _lLecternSoundWindow, _lLecternSoundDisplay.LDisplayLanguageRead(), _lLecternSoundParadigm);

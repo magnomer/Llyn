@@ -28,7 +28,14 @@ A cut ring names only its neighbour, and nothing from below the cut crosses into
 For a `ring>neighbour` pair, the neighbour types the ring may name at all.
 Conduct names ShellEngine through the six `L*Port` interfaces, which ShellEngine declares, and four handles.
 Every other engine type is a helper Conduct may not reach.
-Both drivers name Conduct only through the display types.
+Both drivers name Conduct only through the display types, the dialog gates and the shapes sealed controllers hand over.
+
+## `public static readonly IReadOnlyDictionary<string, string[]> TAuditSealPrefix`
+
+For a UI ring, the type prefixes it seals.
+A public type of that ring whose name starts with one is a sealed controller.
+Its public members may name no type from below the ring's neighbour.
+Deportment seals `L`, the medium-free controllers that later sink into Conduct.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditChainFloor`
 

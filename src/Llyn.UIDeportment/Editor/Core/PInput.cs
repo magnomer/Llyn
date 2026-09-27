@@ -28,7 +28,7 @@ public class PInput : UserControl
         _pInputHost = host;
 
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
-        PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor, new LLectern(_lEditor.LEditorDisplay));
 
         _pInputObserver = LObserver.LObserverCreate(this, PInputBulletinHandle);
         host.PWindowDeportment.LWindowObserverAttach(_pInputObserver);

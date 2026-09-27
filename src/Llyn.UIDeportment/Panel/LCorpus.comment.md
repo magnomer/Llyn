@@ -7,7 +7,7 @@ The example list lives in the anthology, which holds the example vista's panel s
 The quotation list lives in the quotation, whose rows follow the chosen Example.
 The desk holds the example tenure the transcript editor edits, under the `Example` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
-The quotation list's loads and clears go straight to the editor's lectern, so the veneer relays no draft.
+The quotation list's loads and clears go straight to its view's lectern, so the veneer relays no draft.
 
 ## `private LEditor LCorpusEditor { get; }`
 
@@ -47,10 +47,11 @@ Raised once an arrival drops the query and the language filter, so the veneer em
 Starts the desk on a stored Example or on nothing, from the `Corpus` origin the recovered draft names.
 It then announces the Example the desk holds, which is null when the start was refused.
 
-## `private LExample? LCorpusTranscriptRead()`
+## `public LExample? LCorpusTranscriptRead()`
 
 Reads the Example the desk holds, which persists the tenure first and so can throw.
 A throw raises `LCorpusFailed` with `Example.HoldFailed` and reads as null, so no click handler sees it.
+The veneer reads it on each draft bulletin, so the desk never hands it a draft.
 
 ## `private void LCorpusDraftOpen(long id)`
 

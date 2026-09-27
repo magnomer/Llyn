@@ -54,10 +54,15 @@ Drops the held draft and closes the byline, then raises both notices so the vene
 
 Stores the draft only when it differs from what is stored, so an idle store keeps the editor open.
 
-## `public LReference LImprintReferenceRead(LDraft draft)`
+## `public event Action<LReference>? LImprintReferenceChanged;`
 
-The Source inside a draft notice, which the veneer writes its fields from.
-The draft arrives as a parameter, so the Source is never a local in the veneer.
+The Source inside the draft the desk just prepared, which the veneer writes its fields from.
+It fires after `LImprintChanged`, as the veneer's own handler did before.
+
+## `private static LReference LImprintReferenceRead(LDraft draft)`
+
+The Source inside a prepared draft.
+An imprint draft always holds one, so a missing Source throws.
 
 ## `public string LImprintTallyRead()`
 

@@ -22,17 +22,17 @@ The transcription list is attached to `LTranscriptionItem.LTranscriptionItemAppl
 Binds the reflex list to its rows and holds the loading line and the fold toggle.
 The list is attached to `LReflexItem.LReflexItemApply`, which fills each row.
 
-## `public void LLecternFanqieAttach(DependencyObject fanqie, TextBlock reading, Action<IReadOnlyList<LFanqieGroup>, bool> fanqieSeam, Action<string, string, string> diweiSeam, Action<string, string?> stemSeam)`
+## `public void LLecternFanqieAttach(DependencyObject fanqie, TextBlock reading, Action<IReadOnlyList<CFanqieGroup>, bool> fanqieSeam, Action<string, string, string> diweiSeam, Action<string, string?> stemSeam)`
 
 Holds the fanqie box for its font, the reading line and the seams the box and the window own.
 `fanqieSeam` draws the groups and the pending state, so no veneer type is named here.
 `diweiSeam` and `stemSeam` open a category or a stem in the shown entry's language.
 
-## `public void LLecternScriptAttach(DependencyObject script, Action<IReadOnlyList<LScriptGroup>, bool> scriptSeam)`
+## `public void LLecternScriptAttach(DependencyObject script, Action<IReadOnlyList<CScriptGroup>, bool> scriptSeam)`
 
 Holds the script box for its font and the seam that draws its groups.
 
-## `public void LLecternParadigmAttach(DependencyObject paradigm, Action<IReadOnlyList<LParadigmSlot>, bool, bool> paradigmSeam)`
+## `public void LLecternParadigmAttach(DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>, bool, bool> paradigmSeam)`
 
 Holds the paradigm box for its font and the seam that draws its slots.
 
@@ -98,10 +98,10 @@ Rebuilds the transcription rows from the display's answer.
 Rebuilds the reflex rows from the written reflexes, folding the languages the pack folds away.
 The fold is applied last, from the shared state.
 
-## `private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)`
+## `private void LLecternAnchorShow(IReadOnlyList<LFanqieRow> fanqie, string headword)`
 
-Writes each reflex row's anchor label from the rows of `groups`, under the shown headword.
-The caller hands in blocks it already divided, so the anchor never divides again.
+Writes each reflex row's anchor label from `fanqie`, under `headword`.
+The caller reads both inline, so no engine answer sits in a local.
 
 ## `private void LLecternPendingShow()`
 

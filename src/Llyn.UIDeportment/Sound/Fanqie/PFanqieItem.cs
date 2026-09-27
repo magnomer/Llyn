@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -76,24 +76,24 @@ internal sealed class PFanqieItem
         }
     }
 
-    internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<LFanqieGroup> groups)
+    internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<CFanqieGroup> groups)
     {
         ArgumentNullException.ThrowIfNull(groups);
 
         List<PFanqieItem> items = new(groups.Count);
-        foreach (LFanqieGroup group in groups)
+        foreach (CFanqieGroup group in groups)
         {
-            List<PFanqieLine> lines = new(group.LFanqieGroupRows.Count);
-            foreach (LFanqieRow row in group.LFanqieGroupRows)
+            List<PFanqieLine> lines = new(group.CFanqieGroupRows.Count);
+            foreach (CFanqieRow row in group.CFanqieGroupRows)
             {
                 lines.Add(PFanqieLine.PFanqieLineCreate(row));
             }
 
             items.Add(new PFanqieItem(
-                group.LFanqieGroupHeading,
-                group.LFanqieGroupLabel,
-                group.LFanqieGroupSource,
-                group.LFanqieGroupStems,
+                group.CFanqieGroupHeading,
+                group.CFanqieGroupLabel,
+                group.CFanqieGroupSource,
+                group.CFanqieGroupStems,
                 lines));
         }
 

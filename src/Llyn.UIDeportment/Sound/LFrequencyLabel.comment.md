@@ -16,8 +16,8 @@ A four-pointed star, so the row cannot be mistaken for the five-pointed grasp st
 
 ## `public static void LFrequencyChipShow(`
 
-Fills one whole frequency section from the engine's rows: the chip's name, star row and source tooltip.
-An empty row list collapses the section, so both surfaces hide it the same way.
+Fills one whole frequency section from its shape: the chip's name, star row and source tooltip.
+A null frequency collapses the section, so both surfaces hide it the same way.
 
 ## `private static void LFrequencyLabelShow(TextBlock name, TextBlock band, int count)`
 

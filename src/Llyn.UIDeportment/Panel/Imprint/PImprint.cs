@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIDeportment;
 
@@ -97,10 +97,12 @@ public class PImprint : UserControl, PChronicleHost
         _lImprint.LImprintReverted += PAuthorRestore;
         _lImprint.LBylineChanged += PBylineUpdate;
         _lImprint.LImprintDesk.LDeskDraftAttach(
-            LSubject.LSubjectDraft, LObserver.LObserverCreate(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
+            CSubject.CSubjectDraft,
+            LObserver.LObserverCreate<CBulletin>(this, _lImprint.LImprintDesk.LDeskDraftUpdate));
         _lImprint.LImprintDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, LObserver.LObserverCreate(this, _lImprint.LImprintDesk.LDeskStateUpdate));
-        _lImprint.LImprintDesk.LDeskDraftChanged += PImprintDraftUpdate;
+            CSubject.CSubjectTenure,
+            LObserver.LObserverCreate<CBulletin>(this, _lImprint.LImprintDesk.LDeskStateUpdate));
+        _lImprint.LImprintReferenceChanged += PImprintDraftUpdate;
         _lImprint.LImprintDesk.LDeskFailed += host.PWindowFailureShow;
     }
 
@@ -146,9 +148,8 @@ public class PImprint : UserControl, PChronicleHost
         _lImprint.LImprintDesk.LDeskStateUpdate();
     }
 
-    private void PImprintDraftUpdate(LDraft draft)
+    private void PImprintDraftUpdate(LReference reference)
     {
-        LReference reference = _lImprint.LImprintReferenceRead(draft);
         PImprintTitle.Text = reference.LReferenceTitle.LStateValueShow();
         PImprintTitle.SetResourceReference(QField.QFieldHintProperty, reference.LReferenceTitleHint);
         PImprintYear.Text = reference.LReferenceYear.LStateValueShow();

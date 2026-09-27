@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -202,26 +203,26 @@ public sealed class LGuild
         _lGuildVista?.LVistaQuerySet(query);
     }
 
-    public void LGuildOrderSet(LCatalogOrder? order)
+    public void LGuildOrderSet(CCatalogOrder? order)
     {
         if (_lGuildVista is not LVista vista)
         {
             return;
         }
 
-        vista.LVistaOrderSet(order ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    public LCatalogFilter LGuildLouverRead()
+    public CCatalogFilter LGuildLouverRead()
     {
-        return _lGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+        return LPanel.LPanelFilterRead(_lGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
     }
 
-    public void LGuildLouverSet(LCatalogFilter filter)
+    public void LGuildLouverSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lGuildVista?.LVistaFilterSet(filter);
+        _lGuildVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
     public bool LGuildChangeCheck()

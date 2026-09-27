@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -8,13 +8,13 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PVideo> PCardVideo { get; } = [];
 
-    internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)
+    internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows)
     {
         PCardRowShow(
             PCardVideo,
             rows,
             static row => row.PVideoId,
-            static draft => draft.LVideoDraftId,
+            static draft => draft.CVideoDraftId,
             PCardVideoCreate,
             (row, draft) =>
             {
@@ -23,7 +23,7 @@ internal sealed partial class PCard
             });
     }
 
-    private PVideo PCardVideoCreate(LVideoDraft draft)
+    private PVideo PCardVideoCreate(CVideoDraft draft)
     {
         return new PVideo(_pCardWindow, draft);
     }

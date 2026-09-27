@@ -6,16 +6,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed partial class PSentence : INotifyPropertyChanged
 {
-    private LStateValue _pSentenceText;
-    private LStateAnchor _pSentenceCitation;
-    private LStateValue _pSentenceParticle;
-    private LStateValue _pSentenceDependence;
+    private CStateValue _pSentenceText;
+    private long? _pSentenceCitation;
+    private CStateValue _pSentenceParticle;
+    private CStateValue _pSentenceDependence;
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
@@ -26,24 +26,23 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages,
-        LSentenceDraft draft)
+        CSentenceDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        LExampleDraft example = draft.LSentenceDraftExample
-            ?? LExampleDraft.LExampleDraftCreate(string.Empty);
+        CExampleDraft? example = draft.CSentenceDraftExample;
 
         PSentenceCitationCatalog = catalog;
         PSentenceParticleCatalog = particles;
         PSentenceDependenceCatalog = dependences;
         PSentenceLanguageCatalog = languages;
-        _pSentenceRow = draft.LSentenceDraftId;
-        _pSentenceText = example.LExampleDraftText;
-        _pSentenceCitation = example.LExampleDraftReference;
-        _pSentenceParticle = draft.LSentenceDraftParticle;
-        _pSentenceDependence = draft.LSentenceDraftDependence;
-        _pSentenceMention = example.LExampleDraftMention;
-        PSentenceGlossShow(example.LExampleDraftGloss);
+        _pSentenceRow = draft.CSentenceDraftId;
+        _pSentenceText = example?.CExampleDraftText ?? CStateValue.CStateValueEmpty;
+        PSentenceCitation = example?.CExampleDraftReference;
+        _pSentenceParticle = draft.CSentenceDraftParticle;
+        _pSentenceDependence = draft.CSentenceDraftDependence;
+        _pSentenceMention = example?.CExampleDraftMention ?? [];
+        PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
@@ -56,7 +55,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
     internal long PSentenceRow => _pSentenceRow;
 
-    public LStateValue PSentenceText
+    public CStateValue PSentenceText
     {
         get => _pSentenceText;
         private set
@@ -71,7 +70,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    public LStateAnchor PSentenceCitation
+    public long? PSentenceCitation
     {
         get => _pSentenceCitation;
         private set
@@ -86,7 +85,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    public LStateValue PSentenceParticle
+    public CStateValue PSentenceParticle
     {
         get => _pSentenceParticle;
         private set
@@ -102,7 +101,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    public LStateValue PSentenceDependence
+    public CStateValue PSentenceDependence
     {
         get => _pSentenceDependence;
         private set
@@ -164,28 +163,27 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    internal void PSentenceOrderApply(LSentenceOrder order)
+    internal void PSentenceOrderApply(CSentenceOrder order)
     {
         ArgumentNullException.ThrowIfNull(order);
 
-        PSentenceParticleColumn = order.LSentenceOrderParticle * 2;
-        PSentenceDependenceColumn = order.LSentenceOrderDependence * 2;
+        PSentenceParticleColumn = order.CSentenceOrderParticle * 2;
+        PSentenceDependenceColumn = order.CSentenceOrderDependence * 2;
     }
 
-    internal void PSentenceShow(LSentenceDraft draft)
+    internal void PSentenceShow(CSentenceDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        LExampleDraft example = draft.LSentenceDraftExample
-            ?? LExampleDraft.LExampleDraftCreate(string.Empty);
+        CExampleDraft? example = draft.CSentenceDraftExample;
 
-        _pSentenceRow = draft.LSentenceDraftId;
-        _pSentenceMention = example.LExampleDraftMention;
-        PSentenceGlossShow(example.LExampleDraftGloss);
-        PSentenceText = example.LExampleDraftText;
-        PSentenceCitation = example.LExampleDraftReference;
-        PSentenceParticle = draft.LSentenceDraftParticle;
-        PSentenceDependence = draft.LSentenceDraftDependence;
+        _pSentenceRow = draft.CSentenceDraftId;
+        _pSentenceMention = example?.CExampleDraftMention ?? [];
+        PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
+        PSentenceText = example?.CExampleDraftText ?? CStateValue.CStateValueEmpty;
+        PSentenceCitation = example?.CExampleDraftReference;
+        PSentenceParticle = draft.CSentenceDraftParticle;
+        PSentenceDependence = draft.CSentenceDraftDependence;
     }
 
     internal void PSentenceCitationShow()
@@ -275,7 +273,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     private static void PSentenceChoiceApply(
-        FrameworkElement container, string name, LStateValue value, ObservableCollection<string> catalog, string hint)
+        FrameworkElement container, string name, CStateValue value, ObservableCollection<string> catalog, string hint)
     {
         QStateConverter state = new();
         CultureInfo culture = CultureInfo.CurrentCulture;
@@ -343,19 +341,18 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, LStateAnchor anchor)
+    internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, long? anchor)
     {
         ArgumentNullException.ThrowIfNull(catalog);
-        ArgumentNullException.ThrowIfNull(anchor);
 
-        if (!anchor.LStateAnchorLinked)
+        if (anchor is not long id)
         {
             return string.Empty;
         }
 
         foreach (PCitationItem row in catalog)
         {
-            if (anchor.LStateAnchorMatch(row.PCitationItemId))
+            if (row.PCitationItemId == id)
             {
                 return row.PCitationItemName;
             }
@@ -366,9 +363,9 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private static bool PSentenceFrameCheck(LStateValue value)
+    private static bool PSentenceFrameCheck(CStateValue value)
     {
-        return value.LStateValueUncertain || value.LStateValueShown is not null;
+        return value.CStateValueUncertain || value.CStateValueShown is not null;
     }
 
     private void PSentenceFrameRaise()

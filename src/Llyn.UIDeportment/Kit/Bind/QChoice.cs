@@ -1,18 +1,42 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 internal static class QChoice
 {
+    private static readonly IReadOnlyDictionary<CCatalogOrder, string> QChoiceWord =
+        new Dictionary<CCatalogOrder, string>
+        {
+            [CCatalogOrder.CCatalogOrderName] = "Name",
+            [CCatalogOrder.CCatalogOrderHeadword] = "Headword",
+            [CCatalogOrder.CCatalogOrderReverse] = "Reverse",
+            [CCatalogOrder.CCatalogOrderRecent] = "Recent",
+            [CCatalogOrder.CCatalogOrderEarliest] = "Earliest",
+            [CCatalogOrder.CCatalogOrderYear] = "Year",
+            [CCatalogOrder.CCatalogOrderAuthor] = "Author",
+            [CCatalogOrder.CCatalogOrderUsage] = "Usage",
+            [CCatalogOrder.CCatalogOrderLanguage] = "Language",
+            [CCatalogOrder.CCatalogOrderMarked] = "Marked",
+            [CCatalogOrder.CCatalogOrderText] = "Text",
+            [CCatalogOrder.CCatalogOrderSource] = "Source",
+            [CCatalogOrder.CCatalogOrderKind] = "Kind",
+            [CCatalogOrder.CCatalogOrderSound] = "Sound",
+            [CCatalogOrder.CCatalogOrderPending] = "Pending",
+            [CCatalogOrder.CCatalogOrderWork] = "Work",
+            [CCatalogOrder.CCatalogOrderGrasp] = "Grasp",
+        };
+
     internal static void QChoiceOrderBuild(
-        Panel list, string prefix, RoutedEventHandler handler, IReadOnlyList<LCatalogOrder> orders)
+        Panel list, string prefix, RoutedEventHandler handler, IReadOnlyList<CCatalogOrder> orders)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(prefix);
@@ -20,16 +44,15 @@ internal static class QChoice
         ArgumentNullException.ThrowIfNull(orders);
 
         list.Children.Clear();
-        foreach (LCatalogOrder order in orders)
+        foreach (CCatalogOrder order in orders)
         {
             RadioButton choice = new()
             {
                 GroupName = list.Name,
-                Tag = LCatalog.LCatalogOrderFormat(order),
+                Tag = QChoiceWord[order],
             };
             choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
-            choice.SetResourceReference(
-                ContentControl.ContentProperty, QChoiceKeyRead(prefix, LCatalog.LCatalogOrderFormat(order)));
+            choice.SetResourceReference(ContentControl.ContentProperty, QChoiceKeyRead(prefix, QChoiceWord[order]));
             choice.Click += handler;
             list.Children.Add(choice);
         }
@@ -46,17 +69,17 @@ internal static class QChoice
         dropdown.Closed += (_, _) => dropper.IsChecked = false;
     }
 
-    internal static void QChoiceOrderApply(Popup dropdown, LCatalogOrder order)
+    internal static void QChoiceOrderApply(Popup dropdown, CCatalogOrder order)
     {
         ArgumentNullException.ThrowIfNull(dropdown);
 
-        QChoiceWordApply(dropdown, LCatalog.LCatalogOrderFormat(order));
+        QChoiceWordApply(dropdown, QChoiceWord[order]);
     }
 
     internal static void QChoiceFilterBuild(
         Panel list,
         IReadOnlyList<string> languages,
-        LCatalogFilter filter,
+        CCatalogFilter filter,
         RoutedEventHandler handler)
     {
         ArgumentNullException.ThrowIfNull(list);
@@ -71,7 +94,7 @@ internal static class QChoice
             {
                 Style = (Style)list.FindResource("Theme.Choice.Filter"),
                 Tag = language,
-                IsChecked = filter.LCatalogFilterMatch(language),
+                IsChecked = filter.CCatalogFilterMatch(language),
                 Content = QChoiceRowBuild(language),
             };
             box.Click += handler;
@@ -79,7 +102,7 @@ internal static class QChoice
         }
     }
 
-    internal static void QChoiceKindBuild(Panel list, LCatalogFilter filter, RoutedEventHandler handler)
+    internal static void QChoiceKindBuild(Panel list, CCatalogFilter filter, RoutedEventHandler handler)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(filter);
@@ -92,7 +115,7 @@ internal static class QChoice
             {
                 Style = (Style)list.FindResource("Theme.Choice.Filter"),
                 Tag = LReference.LReferenceKindFormat(kind),
-                IsChecked = filter.LCatalogFilterMatch(LReference.LReferenceKindFormat(kind)),
+                IsChecked = filter.CCatalogFilterMatch(LReference.LReferenceKindFormat(kind)),
             };
             box.SetResourceReference(ContentControl.ContentProperty, LReference.LReferenceKindResolve(kind));
             box.Click += handler;
@@ -134,7 +157,7 @@ internal static class QChoice
         }
     }
 
-    internal static LCatalogFilter QChoiceFilterRead(Panel list)
+    internal static CCatalogFilter QChoiceFilterRead(Panel list)
     {
         ArgumentNullException.ThrowIfNull(list);
 
@@ -147,13 +170,13 @@ internal static class QChoice
             }
         }
 
-        return hidden.Count == 0 ? LCatalogFilter.LCatalogFilterEmpty : new LCatalogFilter(hidden);
+        return new CCatalogFilter(hidden);
     }
 
-    internal static LCatalogOrder? QChoiceOrderRead(object sender)
+    internal static CCatalogOrder? QChoiceOrderRead(object sender)
     {
         return sender is RadioButton { Tag: string word }
-            ? LCatalog.LCatalogOrderParse(word, LCatalogOrder.LCatalogOrderName)
+            ? QChoiceWord.FirstOrDefault(pair => pair.Value == word).Key
             : null;
     }
 

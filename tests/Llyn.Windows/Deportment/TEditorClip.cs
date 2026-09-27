@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -27,7 +28,7 @@ public sealed class TEditorClip
         editor.TEditorOpen(null);
         editor.TEditorLanguageSet(pack.TLanguageFixtureName);
         editor.TEditorHeadwordSet("tomato");
-        List<LHarvestStep> steps = [];
+        List<CHarvestStep> steps = [];
         TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         editor.TEditorClipStart("tomato", 0, step =>
@@ -37,7 +38,7 @@ public sealed class TEditorClip
                 steps.Add(step);
             }
 
-            if (step.LHarvestStepEnded)
+            if (step.CHarvestStepEnded)
             {
                 finished.TrySetResult();
             }
@@ -45,26 +46,28 @@ public sealed class TEditorClip
         await finished.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.Equal(
-            [LHarvestKind.LHarvestKindSource, LHarvestKind.LHarvestKindRecording, LHarvestKind.LHarvestKindEnd],
-            steps.Select(step => step.LHarvestStepKind));
-        Assert.Equal("Tagged", steps[0].LHarvestStepSource);
-        Assert.Equal("https://example.test/gb.mp3", steps[1].LHarvestStepRecording?.LRecordingAddress);
+            [(false, false), (true, false), (false, true)],
+            steps.Select(step => (step.CHarvestStepRecording is not null, step.CHarvestStepEnded)));
+        Assert.Equal("Tagged", steps[0].CHarvestStepSource);
+        Assert.Equal("https://example.test/gb.mp3", steps[1].CHarvestStepRecording?.CRecordingAddress);
         editor.TEditorFinish(false);
     }
 
     [Fact]
     public void ClipStepHandle_ThreeSteps_RaisesOneNoticeEach()
     {
-        LClip clip = TInterfaceDeportment.TClipCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LClip clip = TInterfaceDeportment.TClipCreate(engine);
         List<string> notices = [];
         clip.LClipSourceStarted += (source, order) => notices.Add($"source {source} {order}");
-        clip.LClipRecordingAdded += recording => notices.Add($"recording {recording.LRecordingAddress}");
+        clip.LClipRecordingAdded += recording => notices.Add($"recording {recording.CRecordingAddress}");
         clip.LClipFinished += () => notices.Add("end");
-        LRecording recording = TInterface.TRecordingCreate("Tagged", "https://example.test/gb.mp3", 0, true, "British");
+        CRecording recording = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
 
-        clip.TClipStepHandle(TInterface.THarvestStepCreate(LHarvestKind.LHarvestKindSource, "Tagged", 0, null));
-        clip.TClipStepHandle(TInterface.THarvestStepCreate(LHarvestKind.LHarvestKindRecording, "Tagged", 0, recording));
-        clip.TClipStepHandle(TInterface.THarvestStepCreate(LHarvestKind.LHarvestKindEnd, string.Empty, 0, null));
+        clip.TClipStepHandle(new CHarvestStep("Tagged", 0, null, false));
+        clip.TClipStepHandle(new CHarvestStep("Tagged", 0, recording, false));
+        clip.TClipStepHandle(new CHarvestStep(string.Empty, 0, null, true));
 
         Assert.Equal(["source Tagged 0", "recording https://example.test/gb.mp3", "end"], notices);
     }

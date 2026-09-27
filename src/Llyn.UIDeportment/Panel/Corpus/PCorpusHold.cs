@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -14,9 +15,9 @@ public partial class PCorpus
     private void PTranscriptDeskAttach()
     {
         PTranscriptDesk.LDeskDraftAttach(
-            LSubject.LSubjectDraft, LObserver.LObserverCreate(this, PTranscriptDraftRestore));
+            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, PTranscriptDraftRestore));
         PTranscriptDesk.LDeskDraftAttach(
-            LSubject.LSubjectTenure, LObserver.LObserverCreate(this, PTranscriptDesk.LDeskStateUpdate));
+            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, PTranscriptDesk.LDeskStateUpdate));
         PTranscriptDesk.LDeskFailed += _pCorpusHost.PWindowFailureShow;
         PTranscriptDesk.LDeskRefused += _pCorpusHost.PWindowFailureShow;
     }
@@ -43,16 +44,9 @@ public partial class PCorpus
             return;
         }
 
-        try
+        if (_lCorpus.LCorpusTranscriptRead() is LExample sentence)
         {
-            if (PTranscriptDesk.LDeskRead()?.LDraftExample is LExample sentence)
-            {
-                PTranscriptShow(sentence);
-            }
-        }
-        catch (Exception exception)
-        {
-            _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
+            PTranscriptShow(sentence);
         }
     }
 

@@ -7,7 +7,7 @@ using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -138,7 +138,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LTag> found;
+        IReadOnlyList<CTag> found;
         try
         {
             found = _lEditor.LEditorCard.LCardTagFind(word);
@@ -150,15 +150,15 @@ public partial class PEditor
         }
 
         _pSlateItem.Clear();
-        foreach (LTag tag in found)
+        foreach (CTag tag in found)
         {
-            string written = tag.LTagText.Trim();
+            string written = tag.CTagText.Trim();
             if (written.Length == 0 || card.PCardLabelCheck(written))
             {
                 continue;
             }
 
-            _pSlateItem.Add(new PSlateItem(tag.LTagId, written, word));
+            _pSlateItem.Add(new PSlateItem(tag.CTagId, written, word));
 
             if (_pSlateItem.Count == PSlateLimit)
             {

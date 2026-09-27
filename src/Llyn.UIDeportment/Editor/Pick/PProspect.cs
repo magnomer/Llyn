@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -118,7 +118,7 @@ public partial class PEditor
             return;
         }
 
-        IReadOnlyList<LVistaRow> found;
+        IReadOnlyList<CVistaRow> found;
         try
         {
             found = _lEditor.LEditorCard.LCardProspectFind(word);
@@ -132,14 +132,14 @@ public partial class PEditor
         PProspectHide();
 
         List<PProspectItem> stored = new(found.Count);
-        foreach (LVistaRow entry in found)
+        foreach (CVistaRow entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LVistaRowId,
-                entry.LVistaRowHeadword,
-                entry.LVistaRowLanguage,
+                entry.CVistaRowId,
+                entry.CVistaRowHeadword,
+                entry.CVistaRowLanguage,
                 false,
-                entry.LVistaRowEpithet ?? string.Empty, entry.LVistaRowName));
+                entry.CVistaRowEpithet, entry.CVistaRowName));
         }
 
         foreach (PProspectItem item in stored)
@@ -193,10 +193,10 @@ public partial class PEditor
             return;
         }
 
-        LCourt link;
+        long target;
         try
         {
-            link = _lEditor.LEditorCard.LCardCourtStart(
+            target = _lEditor.LEditorCard.LCardCourtStart(
                 PEditorDraft,
                 _lEditor.LEditorOrigin,
                 item.PProspectItemHeadword,
@@ -209,12 +209,12 @@ public partial class PEditor
             return;
         }
 
-        PLinkSend(card, link.LCourtTargetId);
+        PLinkSend(card, target);
         card.PCardLinkClear();
         PProspectHide();
     }
 
-    private void PProspectShow(PCard card, string word, IReadOnlyList<LVistaRow> found, bool chosen)
+    private void PProspectShow(PCard card, string word, IReadOnlyList<CVistaRow> found, bool chosen)
     {
         _pProspectItem.Clear();
         _pProspectChosen = null;
@@ -222,14 +222,14 @@ public partial class PEditor
         PProspect.VerticalOffset = 0;
 
         List<PProspectItem> stored = new(found.Count);
-        foreach (LVistaRow entry in found)
+        foreach (CVistaRow entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LVistaRowId,
-                entry.LVistaRowHeadword,
-                entry.LVistaRowLanguage,
+                entry.CVistaRowId,
+                entry.CVistaRowHeadword,
+                entry.CVistaRowLanguage,
                 false,
-                entry.LVistaRowEpithet ?? string.Empty, entry.LVistaRowName));
+                entry.CVistaRowEpithet, entry.CVistaRowName));
         }
 
         long? self = _lEditor.LEditorEntry;

@@ -117,8 +117,9 @@ public partial class PFavorite : UserControl
     {
         _pFavoriteHost = host;
         _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LLectern lectern = new(_lEditor.LEditorDisplay);
         _lFavorite = host.PWindowDeportment.LWindowFavoriteCreate(
-            _lEditor, PFavoriteShownCheck, PFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
+            _lEditor, lectern, PFavoriteShownCheck, PFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lFavorite.LFavoritePanel;
         panel.LPanelChanged += PFavoriteModeUpdate;
         panel.LPanelRowsChanged += PRosterFind;
@@ -127,9 +128,9 @@ public partial class PFavorite : UserControl
         PRoster.ItemsSource = _pRosterList;
         QLookItem.QLookItemAttach(PRoster, PRosterApply);
 
-        PDisplay.PDisplayAttach(host, _lEditor.LEditorLectern);
+        PDisplay.PDisplayAttach(host, lectern);
         _lEditor.LEditorStateChanged += PFavoriteStoreUpdate;
-        PEditor.PEditorAttach(host, _lEditor);
+        PEditor.PEditorAttach(host, _lEditor, lectern);
         PEditor.PEditorChronicleChanged += PFavoriteChronicleUpdate;
     }
 

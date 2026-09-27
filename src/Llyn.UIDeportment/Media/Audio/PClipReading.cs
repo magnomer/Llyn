@@ -1,13 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed class PClipReading : INotifyPropertyChanged
 {
-    private readonly LRecording _lRecording;
+    private readonly CRecording _cRecording;
 
     private string _pClipReadingAction;
     private bool _pClipReadingReady = true;
@@ -15,10 +15,10 @@ internal sealed class PClipReading : INotifyPropertyChanged
     private bool _pClipReadingPlaying;
     private bool _pClipReadingRefused;
 
-    internal PClipReading(LRecording recording, string label, ImageSource? flag, string action)
+    internal PClipReading(CRecording recording, string label, ImageSource? flag, string action)
     {
-        _lRecording = recording;
-        PClipReadingVariety = recording.LRecordingVariety;
+        _cRecording = recording;
+        PClipReadingVariety = recording.CRecordingVariety;
         PClipReadingLabel = label;
         PClipReadingFlag = flag;
         _pClipReadingAction = action;
@@ -107,5 +107,5 @@ internal sealed class PClipReading : INotifyPropertyChanged
         }
     }
 
-    internal LRecording PClipReadingModel => _lRecording;
+    internal CRecording PClipReadingModel => _cRecording;
 }

@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Llyn.Application;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -26,7 +26,7 @@ public partial class PCorpus
     {
         _pCitationCatalog.Clear();
 
-        IReadOnlyList<LCatalogReference> read;
+        IReadOnlyList<CCatalogReference> read;
         try
         {
             read = _lCorpus.LCorpusAnthology.LAnthologyReferenceFind();
@@ -37,7 +37,7 @@ public partial class PCorpus
             read = [];
         }
 
-        foreach (LCatalogReference row in read)
+        foreach (CCatalogReference row in read)
         {
             _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(row));
         }
@@ -223,7 +223,7 @@ public partial class PCorpus
             return;
         }
 
-        IReadOnlyList<LCatalogReference> found;
+        IReadOnlyList<CCatalogReference> found;
         try
         {
             found = _lCorpus.LCorpusAnthology.LAnthologyReferenceFind(word);
@@ -235,12 +235,12 @@ public partial class PCorpus
         }
 
         _pCitationItem.Clear();
-        foreach (LCatalogReference reference in found)
+        foreach (CCatalogReference reference in found)
         {
             _pCitationItem.Add(new PCandidateItem(
-                reference.LCatalogReferenceStored.LReferenceId,
-                reference.LCatalogReferenceByline,
-                reference.LCatalogReferenceUsage,
+                reference.CCatalogReferenceId,
+                reference.CCatalogReferenceByline,
+                reference.CCatalogReferenceUsage,
                 word));
 
             if (_pCitationItem.Count == PCitationLimit)

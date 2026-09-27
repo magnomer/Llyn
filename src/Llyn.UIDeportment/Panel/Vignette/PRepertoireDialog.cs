@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -17,13 +18,13 @@ public partial class PRepertoire
 
     private readonly PVideoTemplate _pVideoTemplate;
 
-    private void PScenarioImageShow(IReadOnlyList<LImageDraft> rows)
+    private void PScenarioImageShow(IReadOnlyList<CImageDraft> rows)
     {
         PCard.PCardRowShow(
             _pScenarioImage,
             rows,
             static row => row.PImageId,
-            static draft => draft.LImageDraftId,
+            static draft => draft.CImageDraftId,
             PScenarioImageCreate,
             (row, draft) =>
             {
@@ -32,13 +33,13 @@ public partial class PRepertoire
             });
     }
 
-    private void PScenarioVideoShow(IReadOnlyList<LVideoDraft> rows)
+    private void PScenarioVideoShow(IReadOnlyList<CVideoDraft> rows)
     {
         PCard.PCardRowShow(
             _pScenarioVideo,
             rows,
             static row => row.PVideoId,
-            static draft => draft.LVideoDraftId,
+            static draft => draft.CVideoDraftId,
             PScenarioVideoCreate,
             (row, draft) =>
             {
@@ -47,12 +48,12 @@ public partial class PRepertoire
             });
     }
 
-    private PImage PScenarioImageCreate(LImageDraft draft)
+    private PImage PScenarioImageCreate(CImageDraft draft)
     {
         return new PImage(_pRepertoireHost.PWindowDeportment, draft);
     }
 
-    private PVideo PScenarioVideoCreate(LVideoDraft draft)
+    private PVideo PScenarioVideoCreate(CVideoDraft draft)
     {
         return new PVideo(_pRepertoireHost.PWindowDeportment, draft);
     }

@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -18,7 +19,7 @@ public sealed class TEditorField
         editor.TEditorHeadwordSet("salt");
         editor.TEditorPersist();
 
-        Assert.Equal("salt", editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal("salt", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.True(editor.LEditorChanged);
         Assert.True(editor.LEditorStorable);
     }
@@ -34,7 +35,7 @@ public sealed class TEditorField
         editor.TEditorNoteSet("a note\r\n\n");
         editor.TEditorPersist();
 
-        Assert.Equal("a note", editor.TEditorDraftRead()?.LEntryDraftNote);
+        Assert.Equal("a note", editor.TEditorDraftRead()?.CEntryDraftNote);
     }
 
     [Fact]
@@ -69,6 +70,6 @@ public sealed class TEditorField
         editor.TEditorPersist();
 
         Assert.True(filling);
-        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.LEntryDraftHeadword);
+        Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 }
