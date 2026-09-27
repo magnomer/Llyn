@@ -20,7 +20,7 @@ A timestamp that cannot be read is not an error the user is stopped by.
 The row falls back to playing from the start.
 Half-typed text is a moment in the middle of typing.
 
-## `internal PVideo(LWindow window, CVideoDraft written)`
+## `internal PVideo(CAtelier atelier, CVideoDraft written)`
 
 The row for a stored Video, holding the location and the span as the store knows them.
 The window resolves each location to the address the screen plays.

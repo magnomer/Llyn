@@ -15,7 +15,7 @@ internal sealed partial class QTaxonomy
 
     private async void QTaxonomyWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier);
         QTaxonomyReset();
     }
 
@@ -82,7 +82,7 @@ internal sealed partial class QTaxonomy
         QChoice.QChoiceOrderApply(QFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
         QLatticeRestore();
 
-        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QLatticeList, _lTaxonomy.LTaxonomyLanguageRead(), _lTaxonomy.LTaxonomyFilter, QLatticeHandle);

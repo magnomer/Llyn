@@ -15,12 +15,12 @@ Its constructor and vista restore take engine types, so they stay internal.
 
 The entry editor's deportment on the quotation side, which takes the quotation vista when the panel's vistas are restored.
 
-## `public LDesk LCorpusDesk { get; }`
+## `public CDesk LCorpusDesk { get; }`
 
 The desk over the example draft, started by subject rather than by a vista.
 The veneer attaches its observers to the tenure the desk announces, as the entry editor does.
 
-## `public QSession LCorpusSession { get; }`
+## `public CSession LCorpusSession { get; }`
 
 The draft session over the desk, which defers to the entry editor while it shows.
 The views save, undo and redo through it, and a leave finishes through it.
@@ -128,7 +128,7 @@ The anthology panel loads the row, clears a vanished one and restarts the transc
 Shows the clicked Example once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
 The voyage is recorded only after the user agreed, so a refused leave keeps the Forward history.
-A save from the dialog finishes through `QSessionClose`, so the Example loads once.
+A save from the dialog finishes through `CSessionClose`, so the Example loads once.
 
 ## `private void LCorpusQuotationOpen(long id, bool editing)`
 

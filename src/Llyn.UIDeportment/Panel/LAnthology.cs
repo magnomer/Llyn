@@ -16,14 +16,14 @@ public sealed class LAnthology
 
     private readonly Func<int, bool> _lAnthologyRemovalSeam;
 
-    private readonly LDesk _lAnthologyDesk;
+    private readonly CDesk _lAnthologyDesk;
 
     private LVista? _lAnthologyVista;
 
     internal LAnthology(
         LEntryPort entries,
         LPortraitPort portraits,
-        LDesk desk,
+        CDesk desk,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam)
@@ -39,7 +39,7 @@ public sealed class LAnthology
         _lAnthologyRemovalSeam = removalSeam;
         LAnthologyPanel = new LPanel(
             "Example.LoadFailed", "Example.DeleteFailed",
-            desk.LDeskChangeCheck, shownSeam, leaveSeam, LAnthologyDeleteConfirm);
+            desk.CDeskChangeCheck, shownSeam, leaveSeam, LAnthologyDeleteConfirm);
     }
 
     public LPanel LAnthologyPanel { get; }
@@ -138,8 +138,8 @@ public sealed class LAnthology
 
     public void LAnthologyCitationSet(string title)
     {
-        _lAnthologyDesk.LDeskSend(new LRequestExampleReference(
-            _lAnthologyDesk.LDeskId, _lEntryPort.LEngineCitationResolve(_lAnthologyDesk.LDeskId, 0, 0, title)));
+        _lAnthologyDesk.CDeskSend(new LRequestExampleReference(
+            _lAnthologyDesk.CDeskId, _lEntryPort.LEngineCitationResolve(_lAnthologyDesk.CDeskId, 0, 0, title)));
     }
 
     public bool LAnthologyTextCheck(string text, CStateValue value)

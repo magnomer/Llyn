@@ -6,16 +6,16 @@ namespace Llyn.UIDeportment;
 
 public partial class PSettings
 {
-    private (string PDialChild, StackPanel PDialPage, string[] PDialKeys)[] PDialTableRead()
+    private (string PDialChild, StackPanel PDialPage)[] PDialTableRead()
     {
         return
         [
-            ("Workspace", PDialWorkspace, ["Workspace.Helper"]),
-            ("Language", PDialLanguage, []),
-            ("Transcription", PDialTranscription, ["Respelling.Switch", "Respelling.Helper"]),
-            ("Listing", PDialListing, ["Epithet.Switch", "Epithet.Helper"]),
-            ("Web", PDialWeb, ["Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"]),
-            ("Layout", PDialLayout, ["Layout.Linked", "Layout.LinkedHelper"])
+            ("Workspace", PDialWorkspace),
+            ("Language", PDialLanguage),
+            ("Transcription", PDialTranscription),
+            ("Listing", PDialListing),
+            ("Web", PDialWeb),
+            ("Layout", PDialLayout)
         ];
     }
 
@@ -26,7 +26,7 @@ public partial class PSettings
             item.PLedgerItemChosen = string.Equals(item.PLedgerItemChild, child, StringComparison.Ordinal);
         }
 
-        foreach ((string name, StackPanel page, _) in PDialTableRead())
+        foreach ((string name, StackPanel page) in PDialTableRead())
         {
             page.Visibility = string.Equals(name, child, StringComparison.Ordinal)
                 ? Visibility.Visible
@@ -38,8 +38,7 @@ public partial class PSettings
     {
         try
         {
-            PSettingsWindow.LWindowWorkspace.QWorkspaceLocationOpen(
-                PSettingsWindow.LWindowWorkspace.QWorkspacePathRead());
+            PSettingsAtelier.CAtelierLocationOpen(_pSettingsState.CLedgerStatePath);
         }
         catch (Exception exception)
         {
@@ -49,7 +48,6 @@ public partial class PSettings
 
     private void PDialWidthHandle(object sender, RoutedEventArgs e)
     {
-        PSettingsWindow.LWindowPosture.QPostureLayoutReset();
-        _pSettingsHost.PWindowLayout.PLayoutReset();
+        PSettingsPosture.QPostureLayoutReset();
     }
 }

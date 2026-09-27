@@ -10,7 +10,7 @@ The rows still need the engine to turn a location into an address, and this carr
 
 Attached and inherited, so one write on the view's root reaches every template under it.
 
-## `internal static void PMediaAttach(DependencyObject root, LWindow window)`
+## `internal static void PMediaAttach(DependencyObject root, CAtelier atelier)`
 
 Puts one maker on the view's root, made over the engine the view was attached to.
 

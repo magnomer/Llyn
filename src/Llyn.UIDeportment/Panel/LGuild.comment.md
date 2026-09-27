@@ -20,7 +20,7 @@ A verdict moved without a panel notice, so the buttons and areas are read again.
 
 A request the deportment itself refused, named by the localization key the window shows.
 
-## `public QSession LGuildSession { get; }`
+## `public CSession LGuildSession { get; }`
 
 The draft session over the autograph, which the views save, undo and redo through.
 A save refuses a blank name through `LGuildAutographCheck` before the engine is asked.

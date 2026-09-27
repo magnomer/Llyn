@@ -40,7 +40,7 @@ public sealed class LXiesheng
         LXieshengEditor = editor;
         LXieshengPanel = new LPanel(
             "Xiesheng.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LXieshengPanel.LPanelCleared += LXieshengEditorClear;
         LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
         LXieshengPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -98,13 +98,13 @@ public sealed class LXiesheng
         ?? _lPhonologyPort.LEngineStemFind()
         ?? string.Empty;
 
-    internal void LXieshengVistaRestore(LWindow window)
+    internal void LXieshengVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LXieshengVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart("grove", null, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart("grove", null, CCatalogOrder.CCatalogOrderName),
+            atelier.CAtelierVistaStart(
                 "kindred", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

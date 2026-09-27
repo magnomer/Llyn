@@ -51,7 +51,7 @@ public sealed class LYunjing
         LYunjingEditor = editor;
         LYunjingPanel = new LPanel(
             "Yunjing.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LYunjingPanel.LPanelCleared += LYunjingEditorClear;
         LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
         LYunjingPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -382,14 +382,14 @@ public sealed class LYunjing
             LYunjingPanel.LPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    internal void LYunjingVistaRestore(LWindow window)
+    internal void LYunjingVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LYunjingVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart("yunjing", null, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart("yunmu", null, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart("yunjing", null, CCatalogOrder.CCatalogOrderName),
+            atelier.CAtelierVistaStart("yunmu", null, CCatalogOrder.CCatalogOrderName),
+            atelier.CAtelierVistaStart(
                 "xiaoyun", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

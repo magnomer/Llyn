@@ -152,15 +152,15 @@ internal sealed class QReference
     internal void QReferenceAttach(PWindow host)
     {
         _qReferenceHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lShelf = host.PWindowDeportment.LWindowForge.QForgeShelfCreate(
+        _lShelf = host.PWindowForge.QForgeShelfCreate(
             editor,
             lectern,
             QReferenceShownCheck,
             QReferenceDiscardConfirm,
             QReferenceRemovalConfirm,
-            host.PWindowUnreadableConfirm);
+            host.PWindowEnvoy);
         _lShelf.LShelfChanged += QReferenceModeUpdate;
         _lShelf.LShelfPanel.LPanelChanged += QReferenceModeUpdate;
         _lShelf.LShelfPanel.LPanelRowsChanged += QShelfUpdate;
@@ -197,7 +197,7 @@ internal sealed class QReference
         shelf.LPanelObserverAttach(
             CSubject.CSubjectAuthor,
             LObserver.LObserverCreate<CBulletin>(
-                _qReferenceSurface, _lShelf.LShelfImprint.LImprintDesk.LDeskDraftUpdate));
+                _qReferenceSurface, _lShelf.LShelfImprint.LImprintDesk.CDeskDraftUpdate));
         shelf.LPanelObserverAttach(
             CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
         shelf.LPanelObserverAttach(
@@ -227,11 +227,11 @@ internal sealed class QReference
         QChoice.QChoiceOrderApply(QGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
         QTrellisUpdate();
 
-        await LEnsignImage.LEnsignLoad(_qReferenceHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qReferenceHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QTrellisList,
-            _qReferenceHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
+            _qReferenceHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
             _lShelf.LShelfPanel.LPanelFilter,
             QTrellisHandle);
         _lShelf.LShelfQuerySet(QSurvey.Text);

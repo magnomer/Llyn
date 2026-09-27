@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PRespellingHandle(object sender, RoutedEventArgs e)
     {
-        PSettingsWindow.LWindowWorkspace.QWorkspaceRespellingSave(PRespelling.IsChecked == true);
+        PSettingsAtelier.CAtelierLedger.CLedgerRespellingSave(PRespelling.IsChecked == true);
     }
 }

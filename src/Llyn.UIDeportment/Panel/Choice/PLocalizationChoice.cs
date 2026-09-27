@@ -11,15 +11,6 @@ public partial class PSettings
             return;
         }
 
-        PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationSave(language);
-    }
-
-    private void PLocalizationApply(string language)
-    {
-        QLocalizationCatalog.QLocalizationCatalogApply(
-            System.Windows.Application.Current.Resources,
-            PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationLoad(language));
-        PLedgerTitleApply();
-        PLedgerMetaApply();
+        PSettingsAtelier.CAtelierLedger.CLedgerLocalizationSave(language);
     }
 }

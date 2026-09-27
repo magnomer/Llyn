@@ -6,7 +6,7 @@ Puts a language pack's declared typography onto the surfaces that show its words
 The editor field and the reading view are given the same record, so a headword looks the same in both.
 A pack that declares nothing clears the local value, so the theme's own family and size stand.
 
-### `public static void LFontApply(LWindow window, string language, params DependencyObject[] surfaces)`
+### `public static void LFontApply(CAtelier atelier, string language, params DependencyObject[] surfaces)`
 
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
@@ -22,7 +22,7 @@ The family reports its baseline as a fraction of the size, and the top margin fi
 The surface must be top-aligned inside a row of fixed minimum height for the margin to mean anything.
 Called after `LFontApply`, because the family it reads is the one just put on.
 
-### `public static void LFontGlyphApply(ResourceDictionary resources, LWindow window, string language)`
+### `public static void LFontGlyphApply(ResourceDictionary resources, CAtelier atelier, string language)`
 
 Puts the typography a pack declares for its glyph row into the resources of the row's list.
 Only the glyph value reads those keys, so the row's label keeps the theme face.
@@ -33,7 +33,7 @@ The editor field and the reading chips read the same two keys.
 So both draw the characters at one size in one face.
 A part the pack leaves out has its key removed, so the theme's default in `PThemeGlyph.xaml` stands.
 
-### `public static void LFontExampleApply(ResourceDictionary resources, LWindow window, string language)`
+### `public static void LFontExampleApply(ResourceDictionary resources, CAtelier atelier, string language)`
 
 Puts the typography a pack declares for its example sentences, and for the Glosses under them, into card resources.
 Example lines are drawn inside item templates, so they are reached through resources rather than one line at a time.
@@ -46,7 +46,7 @@ A part the pack leaves out has its key removed, so the theme's own value stands.
 A pack writes its slant as a word, `italic` or `oblique`.
 Any other word, or none, is answered with nothing, so the theme's upright stands.
 
-### `private static CFont LFontRoleRead(LWindow window, string language, CFontRole role)`
+### `private static CFont LFontRoleRead(CAtelier atelier, string language, CFontRole role)`
 
 A pack that is missing or unknown must not stop a headword from being drawn.
 So a failed read is answered with a blank record and the theme's own typography.

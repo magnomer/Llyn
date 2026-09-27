@@ -11,7 +11,7 @@ It names no WPF type, so the entry list, the droppers and the sieve mark live in
 
 ## `internal LLibrary(`
 
-Only the window deportment builds it over the engine's ports, so no view names a port.
+Only the panel factory builds it over the engine's ports, so no view names a port.
 
 ## `public event Action<string, Exception>? LLibraryFailed;`
 
@@ -29,7 +29,7 @@ Whether the vista hides any language, which the view shows as the mark on the si
 ## `internal void LLibraryVistaRestore(LVista vista)`
 
 Hands the vista to the panel state and the editor.
-It stays internal, so only the window deportment and the Windows tests pass an engine vista.
+It stays internal, so only the atelier's vista restore and the Windows tests pass an engine vista.
 
 ## `public IReadOnlyList<CVistaRow> LLibraryRowsRead()`
 

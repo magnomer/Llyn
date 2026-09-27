@@ -128,7 +128,7 @@ public partial class PEditor
     {
         return PNotationReadingCreate(
             candidate,
-            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
+            _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
                 _lEditor.LEditorLanguage, _lEditor.LEditorNotation.LNotationSchemed));
     }
 
@@ -179,7 +179,7 @@ public partial class PEditor
             {
                 if (_lEditor.LEditorFlagged)
                 {
-                    await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
+                    await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowAtelier, _lEditor);
                 }
 
                 if (!PNotation.IsOpen)

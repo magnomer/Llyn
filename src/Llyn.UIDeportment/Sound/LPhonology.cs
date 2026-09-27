@@ -36,7 +36,7 @@ public sealed class LPhonology
         LPhonologyEditor = editor;
         LPhonologyPanel = new LPanel(
             "Sound.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
         LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
         LPhonologyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -128,12 +128,12 @@ public sealed class LPhonology
             vista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    internal void LPhonologyVistaRestore(LWindow window)
+    internal void LPhonologyVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LPhonologyVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

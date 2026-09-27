@@ -40,7 +40,7 @@ public sealed class LFavorite
 
         LFavoritePanel = new LPanel(
             "Favorite.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
         LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
         LFavoritePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -126,12 +126,12 @@ public sealed class LFavorite
             _lFavoriteVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    internal void LFavoriteVistaRestore(LWindow window)
+    internal void LFavoriteVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LFavoriteVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "favorite", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

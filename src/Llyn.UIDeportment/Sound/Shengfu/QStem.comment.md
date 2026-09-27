@@ -14,9 +14,9 @@ Takes the veneer page as its surface and binds the entry command the character c
 
 Each named part of the page is pulled through `QContract.QContractFind`.
 
-## `internal void QStemAttach(LWindow window, LXiesheng xiesheng)`
+## `internal void QStemAttach(CAtelier atelier, LXiesheng xiesheng)`
 
-Keeps the window deportment the fonts of a language are read from, and the panel deportment a chip asks.
+Keeps the atelier the fonts of a language are read from, and the panel deportment a chip asks.
 
 ## `internal void QStemShow(CStemPage page)`
 

@@ -31,6 +31,13 @@ public sealed record LDraft(
         return LAuthorRow.LAuthorRowCreate(LDraftAuthor);
     }
 
+    public LMentionDraft? LDraftMentionFind(long cardId, long sentenceId, LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        return LDraftExampleRead(cardId, sentenceId)?.LExampleDraftFind(span);
+    }
+
     public LExampleDraft? LDraftExampleRead(long cardId, long sentenceId)
     {
         if (cardId == 0 && sentenceId == 0)

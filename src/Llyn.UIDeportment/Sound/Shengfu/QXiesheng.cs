@@ -133,9 +133,9 @@ internal sealed class QXiesheng
     internal void QXieshengAttach(PWindow host)
     {
         _qXieshengHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lXiesheng = host.PWindowDeportment.LWindowForge.QForgeXieshengCreate(
+        _lXiesheng = host.PWindowForge.QForgeXieshengCreate(
             editor,
             lectern,
             QXieshengShownCheck,
@@ -153,7 +153,7 @@ internal sealed class QXiesheng
         QKindred.ItemsSource = _qKindredList;
 
         QXieshengDisplay.PDisplayAttach(host, lectern);
-        _qStem.QStemAttach(host.PWindowDeportment, _lXiesheng);
+        _qStem.QStemAttach(host.PWindowAtelier, _lXiesheng);
 
         QXieshengEditor.PEditorAttach(host, _lXiesheng.LXieshengEditor, lectern);
 
@@ -207,7 +207,7 @@ internal sealed class QXiesheng
 
     private async void QXieshengWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qXieshengHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qXieshengHost.PWindowAtelier);
         _lXiesheng.LXieshengReset();
     }
 

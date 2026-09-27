@@ -54,7 +54,7 @@ public sealed class QTimbre
 
     private string QTimbreLanguage => _qTimbreEditor.LEditorLanguage;
 
-    private long? QTimbreEntry => _qTimbreEditor.LEditorDesk.LDeskStoredRead();
+    private long? QTimbreEntry => _qTimbreEditor.LEditorDesk.CDeskStoredRead();
 
     public IReadOnlyList<CFanqieGroup> QTimbreFanqieRead()
     {

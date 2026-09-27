@@ -5,17 +5,18 @@
 The one control that draws a sentence a reader may click word by word.
 It knows where every Mention lies and reports a click as a code-point offset.
 It never talks to the engine.
-The window deportment reaches it as an inherited attached property the window sets once on itself.
+The host window reaches it as an inherited attached property the window sets once on itself.
 Through it the block divides the text into pieces and converts between code points and UTF-16 units.
 A block not yet under the window draws the plain text and reports no offset.
 The host that placed it asks the engine what the offset means and decides what to open.
 So the display panel and the corpus panel draw a sentence the same way.
 Each answers a click in its own way.
 
-### `public static readonly DependencyProperty PMentionWindowProperty`
+### `public static readonly DependencyProperty PMentionHostProperty`
 
-The window deportment, inherited down the tree from the window so a block inside a template still finds it.
-A change redraws the block, since the pieces come from the deportment.
+The host window, inherited down the tree so a block inside a template still finds it.
+The block reads the host's atelier for its mention gates, so no surface is handed a Conduct object.
+A change redraws the block, since the pieces come from those gates.
 
 ### `public static readonly DependencyProperty PMentionTextProperty`
 

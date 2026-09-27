@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -12,6 +13,7 @@ internal static class TInterfaceConduct
     internal static string TDisplayStampFormat(string? utc) => LDisplay.LDisplayStampFormat(utc);
 
     internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
+        new LDraftOutlet(engine),
         new LEntryOutlet(engine),
         new LPhonologyOutlet(engine),
         new LMediaOutlet(engine),
@@ -64,6 +66,17 @@ internal static class TInterfaceConduct
         IReadOnlyList<CCatalogReference> found, string word, long? source) =>
         CCitationRow.CCitationRowFind(found, word, source);
 
+    internal static LFont TFontCreate(string family, double size) => new(family, size);
+
+    internal static CAtelier TAtelierCreate(LEngine engine) => new(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        new LEntryOutlet(engine),
+        new LSettingsOutlet(engine),
+        new LPhonologyOutlet(engine),
+        TEngineFake.TEngineStubCreate<LMediaPort>(),
+        new LPortraitOutlet(engine));
+
     internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(
         new LPosture(engine),
         TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -74,6 +87,20 @@ internal static class TInterfaceConduct
         new LSettingsOutlet(engine),
         new LPhonologyOutlet(engine),
         media,
+        new LPortraitOutlet(engine));
+
+    internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings) => new(
+        new LPosture(engine),
+        TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineLeftoverSweep"] = _ => null,
+            ["LEngineObserverAttach"] = _ => null,
+            ["LEngineObserverDetach"] = _ => null,
+        }),
+        new LEntryOutlet(engine),
+        settings,
+        new LPhonologyOutlet(engine),
+        TEngineFake.TEngineStubCreate<LMediaPort>(),
         new LPortraitOutlet(engine));
 
     internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)
@@ -88,4 +115,57 @@ internal static class TInterfaceConduct
             TEngineFake.TEngineStubCreate<LMediaPort>(),
             new LPortraitOutlet(engine));
     }
+
+    internal static CEnvoy TEnvoyCreate(bool? answer, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyConfirm"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return answer ?? false;
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+            ["CEnvoyLeaveConfirm"] = _ =>
+            {
+                asked.Add("Leave");
+                return answer;
+            },
+        });
+
+    internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy) =>
+        new(new LDraftOutlet(engine), scope, envoy);
+
+    internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy, string origin, CSubject subject) =>
+        new(new LDraftOutlet(engine), scope, envoy, origin, subject);
+
+    internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
+
+    internal static void TDeskDefer(this CDesk desk, LRequest request) => desk.CDeskDefer(request);
+
+    internal static LDraft? TDeskRead(this CDesk desk) => desk.CDeskRead();
+
+    internal static CRecording? TErrandRecordingRead(LRecording? recording) => CErrand.CErrandRecordingRead(recording);
+
+    internal static LRecording TErrandRecordingRead(CRecording recording) => CErrand.CErrandRecordingRead(recording);
+
+    internal static CCandidate? TErrandCandidateRead(LCandidate? candidate) => CErrand.CErrandCandidateRead(candidate);
+
+    internal static CSession TSessionCreate(
+        CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam) =>
+        new(
+            desk, pending, null, static () => false, static _ => true, readySeam, storedSeam);
+
+    internal static CSession TSessionCreate(CDesk desk, CDesk editor, Func<bool> shownSeam, List<string> seen) =>
+        new(
+            desk, [], editor, shownSeam,
+            store =>
+            {
+                seen.Add(store ? "Finish" : "Drop");
+                return true;
+            },
+            static () => true, static _ => { });
 }

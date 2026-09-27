@@ -26,7 +26,7 @@ public partial class PEditor
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
         if (_pRecording is null
-            || !_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(_pRecording))
+            || !_pEditorHost.PWindowAtelier.CAtelierRecordingExist(_pRecording))
         {
             PRecordingClear();
             return;
@@ -39,7 +39,7 @@ public partial class PEditor
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDownloaderPlayer.Volume = e.NewValue;
-        _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
+        _pEditorHost.PWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
     }
 
@@ -50,7 +50,7 @@ public partial class PEditor
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
     {
-        _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeSet(PVolume.Value, true);
+        _pEditorHost.PWindowAtelier.CAtelierVolumeSet(PVolume.Value, true);
     }
 
     internal void PVolumeAttach()
@@ -65,7 +65,7 @@ public partial class PEditor
 
     internal void PVolumeLoad()
     {
-        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeRead();
+        PVolume.Value = _pEditorHost.PWindowAtelier.CAtelierVolumeRead();
         _pDownloaderPlayer.Volume = PVolume.Value;
     }
 
@@ -81,7 +81,7 @@ public partial class PEditor
 
     private void PRecordingShow(string audio)
     {
-        if (!_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(audio))
+        if (!_pEditorHost.PWindowAtelier.CAtelierRecordingExist(audio))
         {
             PRecordingClear();
             return;

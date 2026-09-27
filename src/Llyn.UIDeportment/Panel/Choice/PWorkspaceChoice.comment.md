@@ -24,37 +24,33 @@ The field therefore never shows a path that is not the workspace.
 
 ## `private void PWorkspaceApply(string chosen)`
 
-Moves onto `chosen` once the user has agreed to lose the form.
-The panel controls, the language, the panel widths and the view are then aligned to the workspace moved onto.
-The window deportment restarts every panel's vista before the view is restored over them.
+Hands `chosen` to `CAtelierWorkspaceChange`, which trims it, checks it and asks to lose the form.
+The gate answers the view state of the workspace moved onto, or nothing when no move was made.
+The ledger repaints this panel on the engine's workspace bulletin, so nothing here reads the settings again.
+The widths, every panel's vistas and the view are then put on the workspace moved onto.
 The widths are reset before restoring, so a workspace without stored widths opens at the markup widths.
 
 ## Inline notes
 
-### `if (!_pSettingsHost.PWindowDiscardConfirm())`
-
-Changing the workspace throws the form away with it.
-The user must say so before it happens.
-
-### `PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();`
-
-An unusable path leaves the previous workspace in place.
-Permission and invalid characters are such faults.
-Restore the field so it keeps showing the folder actually in use.
-The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
-
-### `_pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowWorkspace.QWorkspaceStateRead());`
-
-The new workspace carries its own view state.
-The shell is put onto it as well as onto its database.
-Restoring an ordering re-lists the catalog it orders.
-Each panel ends on the new workspace's order rather than the old one's.
-That is all this handler does after the change.
-Emptying and re-reading is the engine's announcement, not a list kept here.
-
-### `_pSettingsHost.PWindowWorkspaceChange(path);`
+### `state = PSettingsAtelier.CAtelierWorkspaceChange(chosen, _pSettingsHost.PWindowEnvoy);`
 
 The new workspace has its own database.
 So everything on screen came from a database that is no longer open.
 It carries ids that mean nothing here.
 The engine says so once, and every panel empties its form, its list, and its display on hearing it.
+The envoy asks the user first, since changing the workspace throws the form away with it.
+
+### `PWorkspacePath.Text = _pSettingsState.CLedgerStatePath;`
+
+An unusable path leaves the previous workspace in place.
+Permission and invalid characters are such faults.
+Restore the field to the folder last painted, so it keeps showing the folder actually in use.
+The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
+A blank path, the same path or a declined question also restores the field, and reports nothing.
+
+### `_pSettingsHost.PWindowViewRestore(state);`
+
+The new workspace carries its own view state.
+The shell is put onto it as well as onto its database.
+Restoring an ordering re-lists the catalog it orders.
+Each panel ends on the new workspace's order rather than the old one's.

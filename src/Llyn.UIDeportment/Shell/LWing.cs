@@ -8,22 +8,23 @@ namespace Llyn.UIDeportment;
 
 public sealed class LWing
 {
-    private readonly LWindow _lWingWindow;
+    private readonly CAtelier _lWingAtelier;
 
     private readonly LDisplay _lWingDisplay;
 
     private LVista? _lWingVista;
 
-    internal LWing(LWindow window)
+    internal LWing(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        _lWingWindow = window;
+        _lWingAtelier = atelier;
         _lWingDisplay = new LDisplay(
-            window.LWindowAtelier.CAtelierEntryPort,
-            window.LWindowAtelier.CAtelierPhonologyPort,
-            window.LWindowAtelier.CAtelierSettingsPort,
-            window.LWindowAtelier.CAtelierMediaPort);
+            atelier.CAtelierDraftPort,
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPhonologyPort,
+            atelier.CAtelierSettingsPort,
+            atelier.CAtelierMediaPort);
         LWingLectern = new LLectern(_lWingDisplay);
     }
 
@@ -74,12 +75,12 @@ public sealed class LWing
         _lWingVista?.LVistaSelect(id);
     }
 
-    internal void LWingVistaRestore(LWindow window, string tab)
+    internal void LWingVistaRestore(CAtelier atelier, string tab)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LWingVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 tab, CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true));
     }
 
@@ -139,13 +140,13 @@ public sealed class LWing
     {
         return _lWingVista is LVista vista
             ? LSplice.LSpliceBuild(
-                _lWingWindow.LWindowAtelier.CAtelierEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+                _lWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
             : [];
     }
 
     public IReadOnlyList<string> LWingLanguageRead()
     {
-        return _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLanguageRead();
+        return _lWingAtelier.CAtelierSettingsPort.LEngineLanguageRead();
     }
 
     private void LWingEntrySave()
@@ -154,11 +155,11 @@ public sealed class LWing
         {
             if (vista.LVistaLeft)
             {
-                _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLeftSave(vista.LVistaChosen);
+                _lWingAtelier.CAtelierSettingsPort.LEngineLeftSave(vista.LVistaChosen);
                 return;
             }
         }
 
-        _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineRightSave(_lWingVista?.LVistaChosen);
+        _lWingAtelier.CAtelierSettingsPort.LEngineRightSave(_lWingVista?.LVistaChosen);
     }
 }

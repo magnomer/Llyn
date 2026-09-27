@@ -14,7 +14,7 @@ internal sealed partial class QFavorite
 
     private async void QFavoriteWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier);
         QFavoriteReset();
     }
 
@@ -76,7 +76,7 @@ internal sealed partial class QFavorite
         QChoice.QChoiceOrderApply(QSeriesDropdown, _lFavorite.LFavoriteOrder);
         QStrainerRestore();
 
-        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qFavoriteHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QStrainerList, _lFavorite.LFavoriteLanguageRead(), _lFavorite.LFavoriteFilter, QStrainerHandle);

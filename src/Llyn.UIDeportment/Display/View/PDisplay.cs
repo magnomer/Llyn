@@ -192,7 +192,7 @@ public class PDisplay : UserControl
     {
         _pDisplayHost = host;
         _lLectern = lectern;
-        lectern.LLecternAttach(host.PWindowDeportment, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
+        lectern.LLecternAttach(host.PWindowAtelier, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
         lectern.LLecternHeaderAttach(
             PDisplayHeadword,
             PDisplayLanguage,
@@ -208,10 +208,10 @@ public class PDisplay : UserControl
             PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand);
         lectern.LLecternSpeechAttach(PDisplaySpeechSection, PDisplaySpeech);
         lectern.LLecternNoteAttach(PDisplayNoteSection, PDisplayNote);
-        PMedia.PMediaAttach(this, host.PWindowDeportment);
-        lectern.LLecternPlayback.LLecternPlaybackAttach(host.PWindowDeportment, PPlaybackAction, PPlayback, PVolume);
+        PMedia.PMediaAttach(this, host.PWindowAtelier);
+        lectern.LLecternPlayback.LLecternPlaybackAttach(host.PWindowAtelier, PPlaybackAction, PPlayback, PVolume);
         lectern.LLecternAccent.LLecternAccentAttach(
-            host.PWindowDeportment,
+            host.PWindowAtelier,
             PDisplayPronunciationSurface,
             PDisplayPronunciationLead,
             PDisplayPronunciationFlag,
@@ -223,7 +223,7 @@ public class PDisplay : UserControl
             PDisplayContour,
             PContour.PContourTonalProperty);
         lectern.LLecternSound.LLecternGlyphAttach(
-            host.PWindowDeportment,
+            host.PWindowAtelier,
             PDisplayTranscription,
             PDisplayGlyphSection,
             PDisplayGlyphLead,
@@ -251,7 +251,7 @@ public class PDisplay : UserControl
             PDisplayIncomingSection,
             PDisplayNoteSection);
         lectern.LLecternCard.LLecternCardAttach(
-            host.PWindowDeportment,
+            host.PWindowAtelier,
             Resources,
             PDisplayMeaning,
             PDisplayMeaningSection,

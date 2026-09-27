@@ -95,11 +95,11 @@ public partial class PEditor
     private void PGlyphShow(CEntryDraft draft)
     {
         string language = draft.CEntryDraftLanguage;
-        _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
+        _pGlyph = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph?.CGlyphSourced ?? false;
         QLookItem.QLookItemApply(PGlyph);
-        LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
+        LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowAtelier, language);
 
         List<CTranscriptionDraft> rows = [];
         foreach (CTranscriptionDraft spelled in draft.CEntryDraftTranscriptions)

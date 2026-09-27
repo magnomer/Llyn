@@ -6,11 +6,6 @@ namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    internal bool PWindowUnreadableConfirm()
-    {
-        return PWindowEnvoy.CEnvoyConfirm("Notice.UnreadableDrop");
-    }
-
     internal void PWindowFailureShow(string key, Exception exception)
     {
         MessageBox.Show(
@@ -23,77 +18,51 @@ public partial class PWindow
 
     private string PWindowDetailRead(Exception exception)
     {
-        if (_lWindow.LWindowWorkspace.QWorkspaceNoticeRead(exception) is string reason)
+        if (PWindowAtelier.CAtelierLedger.CLedgerNoticeRead(exception) is string reason)
         {
             return QLocalizationCatalog.QLocalizationTextRead(reason);
         }
 
         string unexpected = QLocalizationCatalog.QLocalizationTextRead("Notice.Unexpected");
-        string? recorded = _lWindow.LWindowWorkspace.QWorkspaceAuditRecord(exception);
+        string? recorded = PWindowAtelier.CAtelierLedger.CLedgerAuditRecord(exception);
 
         return recorded is null
             ? unexpected
             : $"{unexpected}\n\n{QLocalizationCatalog.QLocalizationTextRead("Notice.Recorded")}\n{recorded}";
     }
 
-    private (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] PWindowEditorRead()
-    {
-        return
-        [
-            (PInput.PInputChangeCheck, PInput.PInputDraftFinish),
-            (_qLibrary.QLibraryChangeCheck, _qLibrary.QLibraryDraftFinish),
-            (_qPhonology.QPhonologyChangeCheck, _qPhonology.QPhonologyDraftFinish),
-            (_qTaxonomy.QTaxonomyChangeCheck, _qTaxonomy.QTaxonomyDraftFinish),
-            (_qTenor.QTenorChangeCheck, _qTenor.QTenorDraftFinish),
-            (_qXiesheng.QXieshengChangeCheck, _qXiesheng.QXieshengDraftFinish),
-            (PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
-            (_qFavorite.QFavoriteChangeCheck, _qFavorite.QFavoriteDraftFinish),
-            (_qCorpus.QCorpusChangeCheck, _qCorpus.QCorpusDraftFinish),
-            (_qRepertoire.QRepertoireChangeCheck, _qRepertoire.QRepertoireDraftFinish),
-            (_qReference.QReferenceChangeCheck, _qReference.QReferenceDraftFinish),
-            (_qGuild.QGuildChangeCheck, _qGuild.QGuildDraftFinish)
-        ];
-    }
-
     internal bool PWindowDiscardConfirm()
     {
-        (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] editors = PWindowEditorRead();
-
-        bool unsaved = false;
-        foreach ((Func<bool> check, Func<bool, bool> _) in editors)
-        {
-            unsaved |= check();
-        }
-
-        bool store;
-        if (unsaved)
-        {
-            QSLeaveAnswer answer = QSLeave.QSLeaveShow(_pWindowSurface);
-            if (answer == QSLeaveAnswer.QSLeaveAnswerStay)
-            {
-                return false;
-            }
-
-            store = answer == QSLeaveAnswer.QSLeaveAnswerStore;
-        }
-        else
-        {
-            store = false;
-        }
-
-        return PWindowDraftFinish(editors, store);
-    }
-
-    private bool PWindowDraftFinish(
-        (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] editors, bool store)
-    {
-        bool finished = true;
-        foreach ((Func<bool> _, Func<bool, bool> finish) in editors)
-        {
-            finished &= finish(store);
-        }
-
-        return finished;
+        return PWindowAtelier.CAtelierQuitConfirm(
+            [
+                PInput.PInputChangeCheck,
+                _qLibrary.QLibraryChangeCheck,
+                _qPhonology.QPhonologyChangeCheck,
+                _qTaxonomy.QTaxonomyChangeCheck,
+                _qTenor.QTenorChangeCheck,
+                _qXiesheng.QXieshengChangeCheck,
+                PYunjing.PYunjingChangeCheck,
+                _qFavorite.QFavoriteChangeCheck,
+                _qCorpus.QCorpusChangeCheck,
+                _qRepertoire.QRepertoireChangeCheck,
+                _qReference.QReferenceChangeCheck,
+                _qGuild.QGuildChangeCheck,
+            ],
+            [
+                PInput.PInputDraftFinish,
+                _qLibrary.QLibraryDraftFinish,
+                _qPhonology.QPhonologyDraftFinish,
+                _qTaxonomy.QTaxonomyDraftFinish,
+                _qTenor.QTenorDraftFinish,
+                _qXiesheng.QXieshengDraftFinish,
+                PYunjing.PYunjingDraftFinish,
+                _qFavorite.QFavoriteDraftFinish,
+                _qCorpus.QCorpusDraftFinish,
+                _qRepertoire.QRepertoireDraftFinish,
+                _qReference.QReferenceDraftFinish,
+                _qGuild.QGuildDraftFinish,
+            ],
+            PWindowEnvoy);
     }
 
     internal bool PWindowRemovalConfirm(int usage)

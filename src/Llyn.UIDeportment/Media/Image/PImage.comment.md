@@ -27,7 +27,7 @@ The row says what was meant, not what could be reached.
 
 An empty row nothing has been written in, which is what the card's Extra row opens.
 
-## `internal PImage(LWindow window, CImageDraft written)`
+## `internal PImage(CAtelier atelier, CImageDraft written)`
 
 The row for a stored Image, holding the location as the store knows it and the row it stands for.
 The row id is carried through untouched, so an edited location updates a picture rather than replacing it.
@@ -57,9 +57,9 @@ The id is always taken.
 Asks the user for a picture file on this machine and answers its path, or null when they chose none.
 It lives on the row because every editor drawing the row offers the same chooser.
 
-## `private readonly LWindow _lWindow;`
+## `private readonly CAtelier _pImageAtelier;`
 
-The window deportment the row asks to turn what was typed into an address.
+The atelier the row asks to turn what was typed into an address.
 It is handed in by whoever builds the row.
 The engine settles what may be reached, so a relative path means the same thing here as on import.
 A local file passes only when it exists, which the engine checks, so the row touches no disk.

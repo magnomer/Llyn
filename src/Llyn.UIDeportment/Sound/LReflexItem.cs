@@ -12,7 +12,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
 {
     private const string LReflexAnchorSeparator = " · ";
 
-    private readonly LWindow _lReflexItemWindow;
+    private readonly CAtelier _lReflexItemAtelier;
     private readonly CRespellingMark _lReflexItemRespelling;
     private string _lReflexItemLanguage;
     private string _lReflexItemKind;
@@ -28,7 +28,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     private bool _lReflexItemAnchorable;
 
     public LReflexItem(
-        LWindow window,
+        CAtelier atelier,
         long id,
         string language,
         string kind,
@@ -44,7 +44,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(respelling);
 
-        _lReflexItemWindow = window;
+        _lReflexItemAtelier = atelier;
         _lReflexItemRespelling = respelling;
         LReflexItemRespelled = respelling.CRespellingMarkShown;
         LReflexItemOpener = respelling.CRespellingMarkOpener;
@@ -73,7 +73,7 @@ public sealed class LReflexItem : INotifyPropertyChanged
     {
         return _lReflexItemRespelling == respelling
             && LReflexItemFolded == folded
-            && _lReflexItemWindow.LWindowAnchorMatch(LReflexItemAnchors, anchors);
+            && _lReflexItemAtelier.CAtelierCatalog.CCatalogAnchorMatch(LReflexItemAnchors, anchors);
     }
 
     public bool LReflexItemFolded { get; }
@@ -334,14 +334,14 @@ public sealed class LReflexItem : INotifyPropertyChanged
     }
 
     public static LReflexItem LReflexItemCreate(
-        LWindow window, CReflexDraft draft, CRespellingMark respelling, bool folded)
+        CAtelier atelier, CReflexDraft draft, CRespellingMark respelling, bool folded)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(respelling);
 
         return new LReflexItem(
-            window,
+            atelier,
             draft.CReflexDraftId,
             draft.CReflexDraftLanguage,
             draft.CReflexDraftKind,
@@ -360,35 +360,35 @@ public sealed class LReflexItem : INotifyPropertyChanged
     }
 
     public static List<LReflexItem> LReflexItemScan(
-        LWindow window, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)
+        CAtelier atelier, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)
     {
         ArgumentNullException.ThrowIfNull(reflexes);
 
         List<LReflexItem> rows = new(reflexes.Count);
         foreach (CReflexDraft reflex in reflexes)
         {
-            rows.Add(LReflexItemCreate(window, reflex, folded));
+            rows.Add(LReflexItemCreate(atelier, reflex, folded));
         }
 
         return rows;
     }
 
-    public static LReflexItem LReflexItemCreate(LWindow window, CReflexDraft reflex, HashSet<string> folded)
+    public static LReflexItem LReflexItemCreate(CAtelier atelier, CReflexDraft reflex, HashSet<string> folded)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(reflex);
         ArgumentNullException.ThrowIfNull(folded);
 
-        return LReflexItemCreate(window, reflex, folded, reflex.CReflexDraftLanguage.Trim());
+        return LReflexItemCreate(atelier, reflex, folded, reflex.CReflexDraftLanguage.Trim());
     }
 
     private static LReflexItem LReflexItemCreate(
-        LWindow window, CReflexDraft reflex, HashSet<string> folded, string language)
+        CAtelier atelier, CReflexDraft reflex, HashSet<string> folded, string language)
     {
         return LReflexItemCreate(
-            window,
+            atelier,
             reflex,
-            window.LWindowAtelier.CAtelierRespelling.CRespellingReflexRead(language),
+            atelier.CAtelierRespelling.CRespellingReflexRead(language),
             folded.Contains(language));
     }
 
@@ -409,14 +409,14 @@ public sealed class LReflexItem : INotifyPropertyChanged
             : QLocalizationCatalog.QLocalizationTextFind(string.Concat("Reflex.", name)) ?? name;
     }
 
-    public static HashSet<string> LReflexFoldRead(LWindow window, string language)
+    public static HashSet<string> LReflexFoldRead(CAtelier atelier, string language)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(language);
 
         return language.Trim().Length == 0
             ? new HashSet<string>(StringComparer.Ordinal)
-            : LDisplaySound.LDisplayFoldScan(window.LWindowReflexRead(language));
+            : LDisplaySound.LDisplayFoldScan(atelier.CAtelierCatalog.CCatalogReflexRead(language));
     }
 
     public static void LReflexLeadApply(IReadOnlyList<LReflexItem> rows)

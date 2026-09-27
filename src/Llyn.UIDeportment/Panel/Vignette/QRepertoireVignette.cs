@@ -51,7 +51,7 @@ internal sealed partial class QRepertoire
     {
         string? text = QVignetteTextRead(value);
 
-        LMarkdownFace.LMarkdownShow(QVignetteDescription, text, _qRepertoireHost.PWindowDeportment);
+        LMarkdownFace.LMarkdownShow(QVignetteDescription, text, _qRepertoireHost.PWindowAtelier);
         QVignetteDescriptionSection.Visibility = QLook.QLookVisibleRead(text is not null);
     }
 

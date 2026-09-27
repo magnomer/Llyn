@@ -34,7 +34,7 @@ public sealed class LLibrary
         LLibraryEditor = editor;
         LLibraryPanel = new LPanel(
             "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LLibraryPanel.LPanelCleared += LLibraryEditorClear;
         LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
         LLibraryPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -190,12 +190,12 @@ public sealed class LLibrary
             static omission => new CMarkupOmission(omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
     }
 
-    internal void LLibraryVistaRestore(LWindow window)
+    internal void LLibraryVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LLibraryVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

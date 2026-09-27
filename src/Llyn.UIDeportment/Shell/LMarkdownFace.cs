@@ -13,38 +13,38 @@ public static class LMarkdownFace
 {
     private static readonly FontFamily LMarkdownMono = new("Consolas");
 
-    public static void LMarkdownShow(Panel target, string? markdown, LWindow window)
+    public static void LMarkdownShow(Panel target, string? markdown, CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(target);
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         target.Children.Clear();
-        IReadOnlyList<CMarkdownBlock> blocks = window.LWindowAtelier.CAtelierMarkdown.CMarkdownParse(markdown);
+        IReadOnlyList<CMarkdownBlock> blocks = atelier.CAtelierMarkdown.CMarkdownParse(markdown);
         int place = 0;
         foreach (CMarkdownBlock block in blocks)
         {
-            FrameworkElement element = LMarkdownBlockBuild(block, window);
+            FrameworkElement element = LMarkdownBlockBuild(block, atelier);
             element.Margin = new Thickness(0, place == 0 ? 0 : LMarkdownGapRead(block), 0, 0);
             target.Children.Add(element);
             place++;
         }
     }
 
-    private static FrameworkElement LMarkdownBlockBuild(CMarkdownBlock block, LWindow window)
+    private static FrameworkElement LMarkdownBlockBuild(CMarkdownBlock block, CAtelier atelier)
     {
         if (block.CMarkdownBlockHeaded)
         {
-            return LMarkdownHeadingBuild(block, window);
+            return LMarkdownHeadingBuild(block, atelier);
         }
 
         if (block.CMarkdownBlockListed)
         {
-            return LMarkdownItemBuild(block, window);
+            return LMarkdownItemBuild(block, atelier);
         }
 
         if (block.CMarkdownBlockQuoted)
         {
-            return LMarkdownQuoteBuild(block, window);
+            return LMarkdownQuoteBuild(block, atelier);
         }
 
         if (block.CMarkdownBlockFenced)
@@ -57,7 +57,7 @@ public static class LMarkdownFace
             return LMarkdownRuleBuild();
         }
 
-        return LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
+        return LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
     }
 
     private static double LMarkdownGapRead(CMarkdownBlock block)
@@ -76,7 +76,7 @@ public static class LMarkdownFace
     }
 
     private static TextBlock LMarkdownTextBuild(
-        IReadOnlyList<CMarkdownSpan> spans, double size, LWindow window)
+        IReadOnlyList<CMarkdownSpan> spans, double size, CAtelier atelier)
     {
         TextBlock text = new TextBlock
         {
@@ -87,13 +87,13 @@ public static class LMarkdownFace
 
         foreach (CMarkdownSpan span in spans)
         {
-            text.Inlines.Add(LMarkdownSpanBuild(span, window));
+            text.Inlines.Add(LMarkdownSpanBuild(span, atelier));
         }
 
         return text;
     }
 
-    private static Inline LMarkdownSpanBuild(CMarkdownSpan span, LWindow window)
+    private static Inline LMarkdownSpanBuild(CMarkdownSpan span, CAtelier atelier)
     {
         Run run = new Run(span.CMarkdownSpanText);
 
@@ -126,20 +126,20 @@ public static class LMarkdownFace
         };
         link.RequestNavigate += (_, e) =>
         {
-            window.LWindowWorkspace.QWorkspaceLocationOpen(e.Uri.AbsoluteUri);
+            atelier.CAtelierLocationOpen(e.Uri.AbsoluteUri);
             e.Handled = true;
         };
         return link;
     }
 
-    private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, LWindow window)
+    private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, CAtelier atelier)
     {
-        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 15, window);
+        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 15, atelier);
         text.FontWeight = FontWeights.SemiBold;
         return text;
     }
 
-    private static Grid LMarkdownItemBuild(CMarkdownBlock block, LWindow window)
+    private static Grid LMarkdownItemBuild(CMarkdownBlock block, CAtelier atelier)
     {
         Grid row = new Grid { Margin = new Thickness(LMarkdownIndentRead(block.CMarkdownBlockLevel), 0, 0, 0) };
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
@@ -152,7 +152,7 @@ public static class LMarkdownFace
             LineHeight = 21,
             Foreground = LMarkdownBrushRead("Theme.Muted"),
         };
-        TextBlock body = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
+        TextBlock body = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
         Grid.SetColumn(body, 1);
 
         row.Children.Add(lead);
@@ -160,9 +160,9 @@ public static class LMarkdownFace
         return row;
     }
 
-    private static Border LMarkdownQuoteBuild(CMarkdownBlock block, LWindow window)
+    private static Border LMarkdownQuoteBuild(CMarkdownBlock block, CAtelier atelier)
     {
-        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
+        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, atelier);
         text.Foreground = LMarkdownBrushRead("Theme.Muted");
 
         return new Border

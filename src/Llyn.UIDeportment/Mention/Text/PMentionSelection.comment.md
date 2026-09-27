@@ -5,7 +5,7 @@
 Reads what the user has selected in a sentence field as a span a Mention request can carry.
 Both hosts of the gesture read the field the same way, so the reading lives apart from either.
 
-## `internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(TextBox box, LWindow window)`
+## `internal static (int PMentionSelectionOffset, int PMentionSelectionLength) PMentionSelectionRead(TextBox box, CAtelier atelier)`
 
 The selection in code points, which is what every Mention is measured in.
 The field counts in UTF-16 units, so the engine converts the span before anything reaches a request.

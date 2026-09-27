@@ -28,3 +28,8 @@ A delegate over any record for `surface`, running `target` on the thread that su
 The bulletin overloads are this with a bulletin, and the clip and notation menus use it with their step records.
 Runs the response now when the call already stands on the right thread.
 Otherwise it queues the response there and returns, so the engine is never held for a redraw.
+
+## `public static Action<LStep> LObserverCreate<LStep>(Action<LStep> target)`
+
+The same marshalling onto the dispatcher of the thread that attaches.
+A driver attaches on the UI thread, so it needs no surface to find that dispatcher.

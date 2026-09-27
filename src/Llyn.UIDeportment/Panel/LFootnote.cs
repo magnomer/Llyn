@@ -31,7 +31,7 @@ public sealed class LFootnote
         LFootnoteEditor = editor;
         LFootnotePanel = new LPanel(
             "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, static () => false);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, static () => false);
         LFootnotePanel.LPanelCleared += LFootnoteEditorClear;
         LFootnotePanel.LPanelEdited += LFootnoteEditorOpen;
         LFootnoteCreated += editor.LEditorReferenceAdd;

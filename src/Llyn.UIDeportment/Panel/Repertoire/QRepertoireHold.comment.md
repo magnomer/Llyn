@@ -10,14 +10,14 @@ Typing is deferred through the tenure and written once the user stops, so a keys
 A media row added or removed is sent at once, because there is no keystroke coming to end it.
 The tenure raises a bulletin when its state moves, and the deportment settles the buttons from that.
 
-## `private LDesk QScenarioDesk => _lRepertoire.LRepertoireDesk;`
+## `private CDesk QScenarioDesk => _lRepertoire.LRepertoireDesk;`
 
 The desk holding the Situation being edited, read off the deportment each time.
 
 ## `private void QScenarioDeskAttach()`
 
 Wires the desk's notices once, and a failure and a refused hold both go straight to the window.
-The draft observer and the tenure observer, which updates the desk's state, are registered here too.
+The desk decides which bulletins refresh it, and the driver hands only its marshaller and its draft reread.
 
 ## `private void QScenarioChangeDefer()`
 

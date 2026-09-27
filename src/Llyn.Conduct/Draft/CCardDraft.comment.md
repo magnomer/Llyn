@@ -18,4 +18,3 @@ One meaning or collocation of an entry, as the editor's card shows it.
 - `CCardDraftTag`: the card's tags.
 - `CCardDraftImage`: the card's images.
 - `CCardDraftVideo`: the card's videos.
-- `CCardDraftChild`: the cards nested under this one.

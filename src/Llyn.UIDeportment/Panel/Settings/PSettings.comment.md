@@ -10,7 +10,7 @@ What each choice costs — a catalog swap, a whole different workspace — lives
 Loads the panel's markup from the Veneer and wears it as its content.
 The markup's name scope is copied onto the panel, so its named parts answer `FindName`.
 It names the language box's value path, sets the three icons and subscribes every control's event.
-The language box starts empty, since its items wait for the window deportment.
+The language box starts empty, since its items wait for the atelier.
 
 ## `private TextBox PWinnow`
 
@@ -18,38 +18,43 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 
 ## `internal void PSettingsAttach(PWindow host)`
 
-Puts the panel to work on the window deportment and shows the choices already stored.
-The panel also listens for settings bulletins, which drive every redraw a saved choice needs.
-The language items are built first, so the ledger summary and the sync find the stored language.
-The ledger rows get their fill through `QLookItemAttach` before the catalog is built.
+Puts the panel to work on the host's atelier with one attach to the ledger, and shows the first card.
+The ledger hands the panel its state at once and after every settings or workspace change.
+The ledger rows get their fill through `QLookItemAttach` before the first state arrives.
 
-## `private void PLocalizationBuild()`
+## `private void PLocalizationBuild(IReadOnlyList<KeyValuePair<string, string>> languages)`
 
-Fills the language box with one item per catalog the build embeds.
-Each item shows the culture's native name and carries its language code as `Tag`.
+Fills the language box with one item per interface language the ledger lists.
+Each item shows the native name and carries its language code as `Tag`.
 The markup lists no language, so a new catalog file needs no edit to either side.
 
-## `internal void PSettingsSync()`
+## `private void PSettingsShow(CLedgerState state)`
 
-Aligns every control of the panel to the settings and workspace the engine now holds, and to the posture.
-It runs on attach and again after a workspace change, since the new workspace may carry other choices.
+Paints the whole panel from one ledger state and keeps it for the folder field and the dialog.
+The interface texts are applied first, so everything painted after reads in the stored language.
+The language box is built once, from the first state.
 Setting the language box raises its selection change, and the handler writes the value back.
 That write leaves the record equal, so the engine neither saves nor raises a bulletin.
 The switches listen on `Click`, which setting `IsChecked` in code does not raise.
-So a synced switch writes nothing back at all.
-A stored language the interface does not carry is shown as English, the language the program opened in.
-
-## `private void PSettingsBulletinHandle()`
-
-Redraws the panel after the engine reports a settings change.
-The language catalog is applied from the record, so the interface follows whatever the engine holds.
-The ledger summaries are rewritten, since every one of them prints a stored choice.
-The linked switch is no settings field, so its handler links the tabs itself.
+So a painted switch writes nothing back at all.
+The linked switch is no settings field, so it is read from the posture.
 
 ## Inline notes
 
 ### `private PWindow _pSettingsHost = null!;`
 
 The window this panel sits in.
-It is who asks before a workspace change throws typed work away.
+Its envoy asks before a workspace change throws typed work away.
 It also owns the other panels that change moves onto the new workspace.
+
+### `private CLedgerState _pSettingsState = null!;`
+
+The ledger state last painted, which the folder field falls back to after a refused or declined move.
+
+### `private CAtelier PSettingsAtelier => _pSettingsHost.PWindowAtelier;`
+
+The host's atelier, whose gates every settings file calls.
+
+### `private QPosture PSettingsPosture => _pSettingsHost.PWindowPosture;`
+
+The host's GUI-only posture, read for the linked switch and cleared by the width reset.

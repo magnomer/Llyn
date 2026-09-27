@@ -9,7 +9,7 @@ Fonts come from `LFontFace`.
 The primary pronunciation and the accents live on [LLecternAccent](LLecternAccent.comment.md).
 The play button and the volume live on [LLecternPlayback](LLecternPlayback.comment.md), which shares the display's sound.
 
-## `public void LLecternGlyphAttach(LWindow window, ItemsControl transcriptions, UIElement section, ColumnDefinition lead, TextBlock label, ItemsControl glyph, Action<string, string> glyphSeam)`
+## `public void LLecternGlyphAttach(CAtelier atelier, ItemsControl transcriptions, UIElement section, ColumnDefinition lead, TextBlock label, ItemsControl glyph, Action<string, string> glyphSeam)`
 
 Holds the window and the glyph section, and binds the transcription and glyph lists to their rows.
 `glyphSeam` opens a character's entry in a language, and the window owns it.
@@ -98,10 +98,10 @@ Rebuilds the transcription rows from the display's answer.
 Rebuilds the reflex rows from the written reflexes, folding the languages the pack folds away.
 The fold is applied last, from the shared state.
 
-## `private void LLecternAnchorShow(IReadOnlyList<LFanqieRow> fanqie, string headword)`
+## `private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)`
 
-Writes each reflex row's anchor label from `fanqie`, under `headword`.
-The caller reads both inline, so no engine answer sits in a local.
+Writes each reflex row's anchor label from `groups`, with one read of the display's anchor verdict and labeller.
+The display reads the fanqie rows and the shown headword itself, so no fanqie row reaches this class.
 
 ## `private void LLecternPendingShow()`
 

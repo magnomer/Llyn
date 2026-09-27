@@ -13,12 +13,12 @@ The occurrence list's loads and clears go straight to its view's lectern, so no 
 
 The entry editor's deportment on the occurrence side, which takes the occurrence vista when the panel's vistas are restored.
 
-## `public LDesk LRepertoireDesk { get; }`
+## `public CDesk LRepertoireDesk { get; }`
 
 The desk over the situation draft, started by subject rather than by a vista.
 The panel control attaches its observers to the tenure the desk announces, as the entry editor does.
 
-## `public QSession LRepertoireSession { get; }`
+## `public CSession LRepertoireSession { get; }`
 
 The draft session over the desk, which defers to the entry editor while it shows.
 The views save, undo and redo through it, and a leave finishes through it.
@@ -116,7 +116,7 @@ The atlas panel loads the row, clears a vanished one and restarts the scenario t
 Shows the clicked Situation once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
 The voyage is recorded only after the user agreed, so a refused leave keeps the Forward history.
-A save from the dialog finishes through `QSessionClose`, so the Situation loads once.
+A save from the dialog finishes through `CSessionClose`, so the Situation loads once.
 
 ## `private void LRepertoireOccurrenceOpen(long id, bool editing)`
 
@@ -214,4 +214,4 @@ What the kind field's measure shows: the typed kind, or the hint while the field
 
 ## `internal void LRepertoireVistaRestore(LVista vista, LVista occurrence)`
 
-Only the window deportment hands the panel its vistas, so no driver holds one.
+Only the atelier's vista restore hands the panel its vistas, so no driver holds one.

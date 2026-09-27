@@ -27,7 +27,7 @@ internal sealed partial class QCorpus
         IReadOnlyList<string> languages;
         try
         {
-            languages = _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead();
+            languages = _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead();
         }
         catch (Exception)
         {
@@ -95,7 +95,7 @@ internal sealed partial class QCorpus
 
         QTranscriptMentionShow(example);
 
-        QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.LDeskStoredRead());
+        QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
 
         QTranscriptAttach();
     }

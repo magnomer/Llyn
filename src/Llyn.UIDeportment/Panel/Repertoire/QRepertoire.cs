@@ -203,15 +203,15 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     internal void QRepertoireAttach(PWindow host)
     {
         _qRepertoireHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lRepertoire = host.PWindowDeportment.LWindowForge.QForgeRepertoireCreate(
+        _lRepertoire = host.PWindowForge.QForgeRepertoireCreate(
             editor,
             lectern,
             QRepertoireShownCheck,
             QRepertoireDiscardConfirm,
             QRepertoireRemovalConfirm,
-            host.PWindowUnreadableConfirm);
+            host.PWindowEnvoy);
         QScenarioDeskAttach();
 
         QAtlas.ItemsSource = _qAtlasList;
@@ -225,7 +225,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QLookItem.QLookItemAttach(QVignettePicture, PImage.PImageLineApply);
         QLookItem.QLookItemAttach(QVignetteVideo, PVideo.PVideoLineApply);
 
-        PMedia.PMediaAttach(_qRepertoireSurface, host.PWindowDeportment);
+        PMedia.PMediaAttach(_qRepertoireSurface, host.PWindowAtelier);
         QRepertoireDisplay.PDisplayAttach(host, lectern);
         QRepertoireEditor.PEditorAttach(host, editor, lectern);
 
@@ -275,7 +275,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireMode.IsEnabled = _lRepertoire.LRepertoireModeEnabled;
         QRepertoireBin.IsEnabled = _lRepertoire.LRepertoireBinEnabled;
         QRepertoireStore.IsEnabled = _lRepertoire.LRepertoireStoreEnabled;
-        QScenario.IsEnabled = _lRepertoire.LRepertoireDesk.LDeskRunning;
+        QScenario.IsEnabled = _lRepertoire.LRepertoireDesk.CDeskRunning;
         QChronicleUpdate();
     }
 
@@ -286,12 +286,12 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
     internal bool QRepertoireChangeCheck()
     {
-        return _lRepertoire.LRepertoireSession.QSessionChangeCheck();
+        return _lRepertoire.LRepertoireSession.CSessionChangeCheck();
     }
 
     internal bool QRepertoireDraftFinish(bool store)
     {
-        return _lRepertoire.LRepertoireSession.QSessionFinish(store);
+        return _lRepertoire.LRepertoireSession.CSessionFinish(store);
     }
 
     internal void QRepertoireClose()

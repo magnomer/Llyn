@@ -21,6 +21,8 @@ public sealed class QPosture : IDisposable
 
     private CancellationTokenSource? _qPosturePending;
 
+    public event Action? QPostureCleared;
+
     internal QPosture(Func<string> root)
     {
         ArgumentNullException.ThrowIfNull(root);
@@ -142,6 +144,7 @@ public sealed class QPosture : IDisposable
 
             QPostureSave(content with { LCapsuleContentColumn = list });
         }
+        QPostureCleared?.Invoke();
     }
 
     public void Dispose()

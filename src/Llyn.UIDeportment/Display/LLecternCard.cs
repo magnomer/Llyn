@@ -16,7 +16,7 @@ public sealed class LLecternCard
 
     private readonly ObservableCollection<LUsageItem> _lLecternCardUsage = [];
 
-    private LWindow _lLecternCardWindow = null!;
+    private CAtelier _lLecternCardAtelier = null!;
 
     private ResourceDictionary _lLecternCardResources = null!;
 
@@ -62,7 +62,7 @@ public sealed class LLecternCard
     }
 
     public void LLecternCardAttach(
-        LWindow window,
+        CAtelier atelier,
         ResourceDictionary resources,
         ItemsControl meaning,
         UIElement meaningSection,
@@ -71,7 +71,7 @@ public sealed class LLecternCard
         ScrollViewer contents,
         LCompass compass)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(meaning);
         ArgumentNullException.ThrowIfNull(meaningSection);
@@ -80,7 +80,7 @@ public sealed class LLecternCard
         ArgumentNullException.ThrowIfNull(contents);
         ArgumentNullException.ThrowIfNull(compass);
 
-        _lLecternCardWindow = window;
+        _lLecternCardAtelier = atelier;
         _lLecternCardResources = resources;
         _lLecternCardMeaning = meaning;
         _lLecternCardDefinition = meaningSection;
@@ -167,7 +167,7 @@ public sealed class LLecternCard
     private void LLecternCardDraw(LEntryDraft draft)
     {
         _lLecternCardOrder(_lLecternCardDisplay.LDisplayOrderRead());
-        LFontFace.LFontExampleApply(_lLecternCardResources, _lLecternCardWindow, draft.LEntryDraftLanguage);
+        LFontFace.LFontExampleApply(_lLecternCardResources, _lLecternCardAtelier, draft.LEntryDraftLanguage);
         _lLecternCardCitation(_lLecternCardDisplay.LDisplayCitationRead());
         _lLecternCardTranslation(_lLecternCardDisplay.LDisplayTargetRead());
 

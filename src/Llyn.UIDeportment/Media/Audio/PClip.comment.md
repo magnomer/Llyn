@@ -81,7 +81,7 @@ The notice is the one line the menu says while it has no rows to show.
 It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing, since a row reports its own download itself.
 
-### `string path = await _pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingPrepare(`
+### `string path = await _pEditorHost.PWindowAtelier.CAtelierRecordingPrepare(`
 
 Streaming the remote, token-bearing URL through the media stack is unreliable.
 Fetch it to a local temp file first, then play that.

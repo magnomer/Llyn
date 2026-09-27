@@ -1,197 +1,217 @@
-# LDesk.cs
+# CDesk.cs
 
-## `public sealed class LDesk`
+## `public sealed class CDesk`
 
-The panel-side seat at one tenure, shared by every edit area through its own deportment.
-It starts, reads, finishes and cancels the held draft, and defers the field requests the veneer forwards.
+The Conduct seat at one tenure, shared by every edit area through its own deportment.
+It starts, reads, finishes and cancels the held draft, and defers the field requests its owners still build.
 The tenure is started over the panel's vista, whose tab and subject name the draft's origin and kind.
-The veneer attaches its observers when the tenure starts, so bulletins reach the desk on the veneer's thread.
-The only question it asks is whether an unreadable draft may be swept, through a seam the veneer hands in.
+The vigil attaches the driver's observers when the tenure starts.
+The only question it asks is whether an unreadable draft may be swept, through `CEnvoy`.
 
-## `private bool _lDeskFilling;`
+## `private bool _cDeskFilling;`
 
 Raised while the draft is being written into the controls, so the echo of that writing defers nothing.
 It is read through its verdict and never branched on by name, so the walker sees a verdict.
 
-## `private bool _lDeskHalted;`
+## `private bool _cDeskHalted;`
 
 Whether the tenure was halted at the last bulletin.
 A start clears it.
 
-## `public event Action? LDeskStarted;`
+## `public event Action? CDeskStarted;`
 
-A tenure was started, handed out so the veneer can attach its marshalling observers to it.
-The observers the veneer registered are already on the new tenure when this fires.
+A tenure was started, announced so the owner can refresh what it shows.
+The observers a driver registered are already on the new tenure when this fires.
 
-## `internal LDesk(LDraftPort drafts, string scope, Func<bool> unreadableSeam)`
+## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy)`
 
 Only the controllers that own a desk build one, so the port never reaches a driver.
 
-## `internal event Action<LDraft>? LDeskDraftPrepared;`
+## `internal event Action<LDraft>? CDeskDraftPrepared;`
 
 The held draft was read again, handed whole to the controllers that own the desk.
-It fires before `LDeskDraftChanged`, so a controller's own announcement reaches its driver first.
+It fires before `CDeskDraftChanged`, so a controller's own announcement reaches its driver first.
 
-## `public event Action<CDraft>? LDeskDraftChanged;`
+## `public event Action<CDraft>? CDeskDraftChanged;`
 
 The held draft was read again, so the edit area writes its controls from it.
 A driver receives only the Conduct copy.
 
-## `public event Action? LDeskStateChanged;`
+## `public event Action? CDeskStateChanged;`
 
 The tenure came, went, or changed, so the store and chronicle buttons are read again.
 
-## `public event Action<long>? LDeskFinished;`
+## `public event Action<long>? CDeskFinished;`
 
 The draft was stored under this id, raised after the tenure has been let go.
 Only the finish without a stored action raises it.
 
-## `public event Action<string>? LDeskRefused;`
+## `public event Action<string>? CDeskRefused;`
 
 The held tenure stopped taking requests.
 It carries the scope's `HoldFailed` key, and it fires once per halt.
 
-## `private LQuill? _lDeskQuill;`
+## `private LQuill? _cDeskQuill;`
 
 The text edits of the held tenure, built when a tenure starts and dropped when it ends.
 
-## `private LEasel? _lDeskEasel;`
+## `private LEasel? _cDeskEasel;`
 
 The media edits of the held tenure, built when a tenure starts and dropped when it ends.
 
-## `internal LQuill? LDeskQuill`
+## `internal LQuill? CDeskQuill`
 
 The held tenure's text edits, so no driver builds a text request.
 It is null while no tenure is held or while the desk fills its controls.
 A fill echoes values the draft already holds, so nothing is written back.
 
-## `internal LEasel? LDeskEasel`
+## `internal LEasel? CDeskEasel`
 
 The held tenure's media edits, so no driver builds a media request.
 It is null while no tenure is held or while the desk fills its controls.
 
-## `internal QErrand LDeskErrand { get; }`
+## `public CErrand CDeskErrand { get; }`
 
 The recording and reading searches over this desk's tenure, built over the desk itself.
 
-## `public QVigil LDeskVigil { get; }`
+## `internal LVigil CDeskVigil { get; }`
 
 The observers this desk puts on every tenure it starts, built over the desk itself.
 
-## `public bool LDeskStored`
+## `public bool CDeskStored`
 
 Whether the held draft stands on a stored record rather than a fresh one.
-It reads `LDeskStoredRead`, so a failed read answers false like the tally.
+It reads `CDeskStoredRead`, so a failed read answers false like the tally.
 
-## `public bool LDeskChanged`
+## `public bool CDeskChanged`
 
 Whether the held draft differs from what is stored, as the tenure last reported it, applying nothing first.
 
-## `public bool LDeskStorable`
+## `public bool CDeskStorable`
 
 Whether the held draft has changed and nothing refuses its store.
 
-## `public bool LDeskHalted`
+## `public bool CDeskHalted`
 
 Whether the tenure has stopped taking requests, so the edit area should go dead.
 
-## `public bool LDeskRunning`
+## `public bool CDeskRunning`
 
 A tenure is held and still takes requests, so its edit area stays live.
 
-## `private bool LDeskStalling`
+## `private bool CDeskStalling`
 
 The tenure halted since the last bulletin.
 
-## `internal LTenure? LDeskTenure`
+## `internal LTenure? CDeskTenure`
 
 The held tenure, for the editor that reads the draft's language and reflex state from it.
 
-## `internal LDraft? LDeskDraft`
+## `internal LDraft? CDeskDraft`
 
 The held draft as it stands, without applying what still waits, or null while nothing is held.
 A reader inside a keystroke takes this, so the pending request keeps its delay and raises no bulletin mid-typing.
 
-## `internal void LDeskVistaRestore(LVista vista)`
+## `internal void CDeskVistaRestore(LVista vista)`
 
 Takes the vista a start runs over, handed on by the controller that owns the desk.
 
-## `public void LDeskStart(long? id)`
+## `public void CDeskStart(long? id)`
 
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
+A desk with a restored vista starts over it.
+A desk built with an origin and a subject starts under them instead.
+The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 A refused start is announced under the scope's load key and leaves the desk empty.
 
-## `public void LDeskStart(string origin, CSubject subject, long? id)`
+## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
+
+Builds a desk that starts under its own origin and subject, so no owner decides the start.
+
+## `public void CDeskStart(string origin, CSubject subject, long? id)`
 
 The same start for a desk that holds no vista, naming the origin and the subject itself.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 
-## `internal LDraft? LDeskRead()`
+## `internal LDraft? CDeskRead()`
 
 The held draft after the deferred requests have been applied, or null while nothing is held.
 
-## `public long? LDeskStoredRead()`
+## `public long? CDeskStoredRead()`
 
 The stored id the held draft stands on, or null for a fresh draft, no tenure or a failed read.
 A tally reads it, so a failed persist only blanks the count.
 
-## `public CMentionDraft? LDeskMentionFind(long cardId, long sentenceId, string text, int start, int length)`
-
-The Mention a selection in a sentence field lies inside, read from the held draft.
-The selection arrives as the field gives it, in UTF-16 units, and the engine measures it.
-The find answers from what the engine holds, never from a list the shell keeps.
-It reads the draft without persisting, so a context menu asking many times sends nothing.
-The tenure keeps the draft it read until the next change, so command checks read no file per keystroke.
-A command about to act on the answer persists first, so pending typing cannot shift the offsets.
-
-## `private static CMentionDraft? LDeskMentionRead(LMentionDraft? found)`
-
-Shapes the found Mention through the card's map, or none when the selection lies in no Mention.
-
-## `public void LDeskDraftUpdate()`
+## `public void CDeskDraftUpdate()`
 
 Reads the draft again and announces it, unless the announcement itself is what is running.
 
-## `private LDraft? LDeskPrepare()`
+## `private LDraft? CDeskPrepare()`
 
 The held draft after the deferred requests and the tenure's completion have run, or null while nothing is held.
 The completion runs inside the tenure's prepare turn, so the rows it adds raise no draft bulletin.
 
-## `private void LDeskDraftShow(LDraft? draft)`
+## `private void CDeskDraftShow(LDraft? draft)`
 
 Announces the draft with the filling flag raised, so the controls' echo is ignored.
 
-## `public void LDeskStateUpdate()`
+## `public void CDeskStateUpdate()`
 
 Announces the change of state, after raising the refusal if the tenure just halted.
 
-## `public void LDeskPersist()`
+## `public void CDeskPersist()`
 
 Applies the deferred requests now, as a field is left, unless the controls are being filled.
 
-## `public void LDeskDefer(LRequest request)`
+## `internal void CDeskDefer(LRequest request)`
 
 Hands a field request to the tenure to apply in its own time, unless the controls are being filled.
 
-## `public void LDeskSend(LRequest request)`
+## `internal void CDeskSend(LRequest request)`
 
 Hands a request to the tenure to apply at once, unless the controls are being filled.
 
-## `public bool LDeskChangeCheck()`
+## `public bool CDeskChangeCheck()`
 
 Whether the held draft differs from what is stored, after the deferred requests have been applied.
 
-## `public bool LDeskFinish(bool store)`
+## `public bool CDeskFinish(bool store)`
 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.
 A refused store is announced under the scope's save key and keeps the tenure, so the user can read why.
-The unreadable seam travels into the finish, so the tenure asks before it sweeps and the desk decides nothing.
+The desk chooses the unreadable-drop key, and the tenure asks through `CEnvoy` before it sweeps.
 
-## `public bool LDeskFinish(bool store, Action<long> stored)`
+## `public bool CDeskFinish(bool store, Action<long> stored)`
 
-Ends the tenure like `LDeskFinish(bool store)`, and hands a stored id to `stored` instead of the event.
+Ends the tenure like `CDeskFinish(bool store)`, and hands a stored id to `stored` instead of the event.
 So a caller decides per finish what follows a store, without holding a flag.
 
-## `public void LDeskCancel()`
+## `public void CDeskCancel()`
 
 Lets the held tenure go without storing, announcing the change of state.
+
+## `public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()`
+
+Whether the held draft can step back and forward, or neither while nothing is held.
+
+## `public void CDeskUndo()`
+
+Steps the held draft back, then announces the change of state.
+`CDeskRedo` steps it forward the same way.
+
+## `private bool CDeskUnreadableConfirm()`
+
+Asks through `CEnvoy` whether an unreadable draft may be dropped.
+The key is chosen here, so no driver decides what is asked.
+
+## `internal string CDeskScope`
+
+The scope that prefixes every failure key the desk raises.
+A session over the desk names its failed undo under the same scope.
+
+## `public void CDeskObserverAttach(Action<Action> marshal, Action drafted)`
+
+Decides which bulletins refresh the desk, for every tenure it starts.
+A tenure bulletin updates the desk state, and a draft bulletin runs `drafted`.
+Both run through `marshal`, which the driver hands in to reach its own thread.
+The overload without `drafted` rereads and announces the draft through `CDeskDraftUpdate`.

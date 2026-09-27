@@ -104,13 +104,13 @@ public sealed class PEtymology : ContentControl
     }
 
     internal void PEtymologyMentionShow(
-        LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
+        PWindow host, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(mentions);
         ArgumentNullException.ThrowIfNull(silent);
 
-        _pEtymologyLine.PMentionLineShow(window, text, mentions, silent);
+        _pEtymologyLine.PMentionLineShow(host.PWindowAtelier, text, mentions, silent);
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()

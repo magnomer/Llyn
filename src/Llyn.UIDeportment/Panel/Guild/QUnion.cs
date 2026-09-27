@@ -8,7 +8,7 @@ public sealed class QUnion
 {
     private const int QUnionLimit = 8;
 
-    private readonly LDesk _qUnionDesk;
+    private readonly CDesk _qUnionDesk;
 
     private readonly Func<long?> _qUnionAuthorSeam;
 
@@ -23,7 +23,7 @@ public sealed class QUnion
     private readonly Action<long> _qUnionOpenSeam;
 
     internal QUnion(
-        LDesk desk,
+        CDesk desk,
         Func<long?> authorSeam,
         Func<string, long, int, IReadOnlyList<CCatalogAuthor>> findSeam,
         Func<long, string> nameSeam,
@@ -50,7 +50,7 @@ public sealed class QUnion
 
     public event Action<string, Exception>? QUnionFailed;
 
-    public bool QUnionShown => _qUnionDesk.LDeskStored;
+    public bool QUnionShown => _qUnionDesk.CDeskStored;
 
     public IReadOnlyList<CCatalogAuthor> QUnionRead(string typed)
     {
@@ -102,7 +102,7 @@ public sealed class QUnion
     private bool QUnionConfirm(long kept)
     {
         return _qUnionSeam(
-            _qUnionDesk.LDeskRead()?.LDraftAuthorName ?? string.Empty,
+            _qUnionDesk.CDeskRead()?.LDraftAuthorName ?? string.Empty,
             _qUnionNameSeam(kept));
     }
 }

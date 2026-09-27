@@ -75,7 +75,7 @@ public partial class PEditor
         {
             if (_lEditor.LEditorFlagged)
             {
-                await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowDeportment, _lEditor);
+                await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowAtelier, _lEditor);
                 if (!PClip.IsOpen)
                 {
                     return;
@@ -244,7 +244,7 @@ public partial class PEditor
 
         try
         {
-            string path = await _pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingPrepare(
+            string path = await _pEditorHost.PWindowAtelier.CAtelierRecordingPrepare(
                 reading.PClipReadingModel, CancellationToken.None);
             if (_pClipPreview != reading)
             {

@@ -10,9 +10,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class PMention : TextBlock
 {
-    public static readonly DependencyProperty PMentionWindowProperty = DependencyProperty.RegisterAttached(
-        "PMentionWindow",
-        typeof(LWindow),
+    public static readonly DependencyProperty PMentionHostProperty = DependencyProperty.RegisterAttached(
+        "PMentionHost",
+        typeof(PWindow),
         typeof(PMention),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, PMentionChangeHandle));
 
@@ -101,7 +101,7 @@ public sealed class PMention : TextBlock
 
     internal Rect PMentionPieceRead(int offset)
     {
-        if (PMentionWindow is not LWindow window)
+        if (PMentionHost is not PWindow host)
         {
             return new Rect(0, ActualHeight, 0, 0);
         }
@@ -123,7 +123,7 @@ public sealed class PMention : TextBlock
                 continue;
             }
 
-            int unit = window.LWindowAtelier.CAtelierMention.CMentionUnitRead(
+            int unit = host.PWindowAtelier.CAtelierMention.CMentionUnitRead(
                 run.Text, offset - piece.CMentionPieceOffset);
             TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
@@ -144,19 +144,19 @@ public sealed class PMention : TextBlock
         }
     }
 
-    private LWindow? PMentionWindow => (LWindow?)GetValue(PMentionWindowProperty);
+    private PWindow? PMentionHost => (PWindow?)GetValue(PMentionHostProperty);
 
     private void PMentionShow()
     {
         string text = PMentionText;
         Inlines.Clear();
-        if (PMentionWindow is not LWindow window)
+        if (PMentionHost is not PWindow host)
         {
             Inlines.Add(new Run(text));
             return;
         }
 
-        foreach (CMentionPiece piece in window.LWindowAtelier.CAtelierMention.CMentionDivide(
+        foreach (CMentionPiece piece in host.PWindowAtelier.CAtelierMention.CMentionDivide(
                      text, PMentionMention ?? []))
         {
             Run run = new(piece.CMentionPieceText) { Tag = piece };
@@ -189,14 +189,14 @@ public sealed class PMention : TextBlock
             return null;
         }
 
-        if (PMentionWindow is not LWindow window)
+        if (PMentionHost is not PWindow host)
         {
             return null;
         }
 
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
         return PMentionOffsetRead(
-            piece.CMentionPieceOffset, window.LWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
+            piece.CMentionPieceOffset, host.PWindowAtelier.CAtelierMention.CMentionOffsetRead(run.Text, unit));
     }
 
     private static void PMentionStyleApply(Run run, bool? linked)

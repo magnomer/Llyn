@@ -16,14 +16,14 @@ No engine and no posture is constructed or named here.
 Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
 The host builds the engine and the root, and hands the root over.
-The window builds its deportment over the root.
+The window keeps the root, and builds the panel factory and the GUI-only posture over it.
 The window disposes its posture and the root when it closes, and the bootstrap disposes the engine on exit.
-The deportment is set as the mention attached property on the loaded window, so every mention block below inherits it.
+The window sets itself as the mention attached property, so every mention block below inherits its host.
 The loaded window carries the class in its `Tag`, so a control inside can find its host.
 The roof, logo, menu lines, caption buttons and tab buttons are subscribed here after the load.
 Each caption glyph strokes with its button's foreground through a binding set here.
 Each tab button's icon is resolved here.
-The envoy is built over the loaded window, so every question it asks is owned by that window.
+The envoy is built over the loaded window and this class, so that window owns every question.
 
 ## `private readonly QEstablishment _qEstablishment;`
 
@@ -60,8 +60,8 @@ A panel already moved to the veneer is pulled by its contract ID as a plain page
 
 ## `internal LWing PWindowWingCreate()`
 
-Builds one duplex wing over the window deportment.
-The wing stays in the deportment, so the window builds it rather than the window deportment.
+Builds one duplex wing over the atelier.
+The wing stays in the deportment, so the window builds it rather than the panel factory.
 
 ## `internal CEnvoy PWindowEnvoy { get; }`
 
@@ -69,7 +69,7 @@ The window's answer to Conduct's user-question port, which the panels ask throug
 
 ## `private void PWindowAttach()`
 
-Puts every panel to work on the window deportment, which builds each panel's deportment over the one engine.
+Puts every panel to work on the panel factory, which builds each panel's deportment over the one engine.
 The workspace is swept first, so nothing already saved is counted as lost work.
 The recordings are swept next, while no draft is held, so a file no draft or entry names goes.
 The leftovers are counted next, so the number describes the workspace as it was found.
@@ -82,12 +82,20 @@ The navigation is built after every panel attaches, and the voyage shortcuts are
 
 The keeper of panel widths, reached by the settings panel when the user links or unlinks the tabs.
 
-## `internal LWindow PWindowDeportment => _lWindow;`
+## `internal CAtelier PWindowAtelier { get; }`
 
-The window deportment, reached by every panel.
-A panel asks it for a font, a flag, a respelling switch or a media address.
-It also answers the posture: the volume, the layout, the open tab and the window bounds.
+Conduct's root, reached by every panel for its gates.
+A panel asks it for a font, a flag, a respelling switch, a setting or a media address.
 The static veneer helpers take it, so no panel needs an engine to call them.
+
+## `internal QForge PWindowForge { get; }`
+
+The factory every panel builds its deportment through.
+
+## `internal QPosture PWindowPosture { get; }`
+
+The GUI-only posture: the layout, the linked flag and the window bounds.
+It is read under the atelier's workspace path, so a workspace change moves it too.
 
 ## `private void PWindowLayoutAttach()`
 

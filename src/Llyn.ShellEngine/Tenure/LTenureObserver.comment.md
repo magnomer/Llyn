@@ -24,9 +24,14 @@ Three rounds cover cards, then their sentences, then the check that nothing is l
 
 One round: applies what the engine still finds missing and says whether anything was.
 
-## `public LExampleDraft? LTenureExampleRead(long cardId, long sentenceId)`
+## `public LMentionDraft? LTenureMentionFind(long cardId, long sentenceId, LMentionDraft span)`
 
-The sentence a Mention request would edit, read from the draft as the engine stored it.
+The Mention the span lies inside, in the Example one sentence field holds, or none.
+It reads the draft through `LTenureKeptRead`, so a menu asking many times sends nothing.
+
+## `private LDraft? LTenureKeptRead()`
+
+The held draft as the engine stored it, for the Mention find.
 The draft is kept until the next draft bulletin or prepare, so command checks read the file once per change.
 A read that raced a bulletin is answered but not kept.
 A stale draft after a workspace switch is refused, and the read then answers none.

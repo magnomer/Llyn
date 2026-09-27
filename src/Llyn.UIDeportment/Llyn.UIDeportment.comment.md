@@ -91,7 +91,7 @@ A panel's edit requests are built in ShellEngine, over the tenure the desk holds
   `LQuill` also takes the Author name the guild types, through `LQuillAuthorSet`.
   It also builds the corpus Example's text, language, citation, Gloss rows and Mentions.
 - Which member runs for a field is the caller's decision.
-- `LDesk` builds both when a tenure starts and exposes them as `LDeskQuill` and `LDeskEasel`.
+- `CDesk` builds both when a tenure starts and exposes them as `CDeskQuill` and `CDeskEasel`.
   Each is null while no tenure is held or while the desk fills its controls.
 - A member takes ids and .NET values, and names no engine type in its parameters.
 - It reads the draft from its tenure without a flush, and builds the request and each written state inside.

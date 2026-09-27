@@ -17,6 +17,6 @@ A field already reading what the engine holds is left alone.
 ### `private PVideo PCardVideoCreate(LVideoDraft draft)`
 
 Builds one row from the engine's row.
-It is an instance member because the row takes the card's window deportment.
+It is an instance member because the row takes the card's atelier.
 The row holds the engine's values and nothing typed, so nothing on it is listened to.
 What is typed into its fields leaves through the editor's own handler.

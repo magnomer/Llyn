@@ -18,7 +18,7 @@ A deliberate refusal carries a reason key and resolves through the same catalog 
 Reads the detail line out of a failure.
 
 A refusal is a position the user can act on, so its reason is what they are shown.
-The engine reads the reason through `QWorkspace.QWorkspaceNoticeRead`, since the refusal type is its own.
+The engine reads the reason through `CLedgerNoticeRead`, since the refusal type is its own.
 Anything else is a fault.
 A fault's own message is written for whoever fixes the program, not for whoever uses it.
 A column name and an ordinal tell the user nothing they can act on.
@@ -26,41 +26,12 @@ The box says plainly that something unexpected went wrong.
 The fault itself is written to the workspace's audit log and the box names the file.
 So nothing diagnosable is lost, and nobody is handed a stack trace they did not ask for.
 
-### `private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()`
-
-The editors the window closes over, each paired with its own two answers.
-Asking and finishing read the same list, so a panel cannot be asked about work the exit would not carry.
-A panel whose edits have no store path yet belongs in neither.
-A prompt that promises a save is worse than no prompt.
-The corpus panel is on the list now that its sentence editor holds a draft it can commit.
-The repertoire panel joins it on the same terms, its situation editor holding one too.
-The reference panel completes the list, so every editor in the shell is both asked and finished.
-The authors panel joins now that its editor holds a tenure, so a typed name is asked about at exit.
-
 ### `internal bool PWindowDiscardConfirm()`
 
-Asks before typed text is thrown away, and answers whether it may be.
-Every editor on the list is asked whether it holds unsaved work.
-Each is asked even after one has answered yes, because the asking is what writes a pause-held keystroke down.
-The window closing and the workspace changing take all of them with it.
-Unsaved work is put to the leave dialog, which offers three answers rather than two.
-Discarding was the only exit, and a leaving user often means to keep the word.
-Saving commits every draft the window holds and discarding cancels every one.
-The third answer leaves the window standing.
-Either answer that lets the window go empties the drafts folder of this window's files.
-A leftover would otherwise be reported at the next launch as work a crash cost.
-A clean exit never cost any.
-A panel holding nothing unsaved is settled without a question, since its blank draft has nothing to lose either way.
-Saving that the engine refuses answers no, so the window stays open over the entry it failed to store.
-
-### `private bool PWindowDraftFinish((Func<bool> Check, Func<bool, bool> Finish)[] editors, bool store)`
-
-Carries one answer to every editor on the list the question was put over.
-Each holds its own draft under its own origin, so each is told separately.
-An unchanged draft is cancelled whatever the answer, because storing what matches its entry would rewrite the entry for nothing.
-Every editor is told before the answers are read.
-One refusal does not leave the others still holding their drafts.
-The window may go only when all of them are finished.
+Hands every editor the window closes over to `CAtelierQuitConfirm`, each with its two answers.
+The two lists run in the same order, so a panel is asked and finished as one.
+A panel whose edits have no store path yet belongs in neither list.
+The leave question itself is put through `CEnvoy`.
 
 ### `internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)`
 

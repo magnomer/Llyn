@@ -10,7 +10,7 @@ The etymology field sends its narrative, its source links and its spans through 
 It holds no state, since the card drag and the chip picks stay in the veneer until their own plan.
 The editor deportment owns one and hands it to the card views beside the desk.
 
-## `internal LCard(LDesk desk, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology)`
+## `internal LCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology)`
 
 Takes the editor's desk, so an etymology request lands on the held draft.
 Only the editor builds one, so the constructor is internal.

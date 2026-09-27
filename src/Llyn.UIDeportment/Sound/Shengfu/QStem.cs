@@ -9,7 +9,7 @@ internal sealed class QStem
 {
     private readonly UserControl _qStemSurface;
 
-    private LWindow _lWindow = null!;
+    private CAtelier _qStemAtelier = null!;
 
     private LXiesheng _lXiesheng = null!;
 
@@ -31,17 +31,17 @@ internal sealed class QStem
 
     private ItemsControl QStemList => QContract.QContractFind<ItemsControl>(_qStemSurface, "PStemList");
 
-    internal void QStemAttach(LWindow window, LXiesheng xiesheng)
+    internal void QStemAttach(CAtelier atelier, LXiesheng xiesheng)
     {
-        _lWindow = window;
+        _qStemAtelier = atelier;
         _lXiesheng = xiesheng;
     }
 
     internal void QStemShow(CStemPage page)
     {
-        LFontFace.LFontApply(_lWindow, page.CStemPageLanguage, QStemHeadword);
+        LFontFace.LFontApply(_qStemAtelier, page.CStemPageLanguage, QStemHeadword);
         LFontFace.LFontPlace(QStemHeadword);
-        LFontFace.LFontApply(_lWindow, page.CStemPageLanguage, CFontRole.CFontRoleGlyph, QStemList);
+        LFontFace.LFontApply(_qStemAtelier, page.CStemPageLanguage, CFontRole.CFontRoleGlyph, QStemList);
         QStemHeadword.Text = page.CStemPageKey;
         QStemLanguage.Text = page.CStemPageLanguage;
         QStemFlag.Source = LEnsignImage.LEnsignFind(page.CStemPageLanguage);

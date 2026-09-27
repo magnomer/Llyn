@@ -8,9 +8,9 @@ It subscribes to the engine for one announcement only, the workspace moving, and
 The editor's language picker, the read-only entry display, and every catalog row use it.
 A malformed or unknown flag becomes no image, which lets each surface show its neutral globe fallback.
 
-## `public static void LEnsignAttach(LWindow window)`
+## `public static void LEnsignAttach(CAtelier atelier)`
 
-Subscribes the flag store through `window`, once, for the whole program.
+Subscribes the flag store through `atelier`, once, for the whole program.
 It owns no control, so its answer runs on the thread that announced rather than on the shell's.
 
 ## `private static void LEnsignBulletinHandle(CBulletin bulletin)`
@@ -27,7 +27,7 @@ A file that does not read is answered with nothing, and handed to `delete` with 
 The engine keeps a locked or refused file and deletes one whose content was bad.
 The file is a cache the workspace can fetch again, and a truncated one would otherwise fail every launch.
 
-## `public static async Task LEnsignLoad(LWindow window)`
+## `public static async Task LEnsignLoad(CAtelier atelier)`
 
 Asks the engine to fill the flag of every language it offers, and draws each row that came back new.
 A language already asked comes back in no row, so a warm call draws nothing.
@@ -35,7 +35,7 @@ A catalog row must be built the moment its list is filled, so it cannot wait for
 Every surface that shows a flag awaits this first, and then reads without waiting.
 A pack installed while the program runs is picked up by the next call.
 
-## `public static async Task LEnsignVarietyLoad(LWindow window, string language, IEnumerable<string> varieties)`
+## `public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)`
 
 The same fill for the named varieties of `language`, each drawn under `language/variety`.
 The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.

@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -13,16 +14,16 @@ internal sealed class PMedia
         typeof(PMedia),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-    private readonly LWindow _lWindow;
+    private readonly CAtelier _pMediaAtelier;
 
-    private PMedia(LWindow window)
+    private PMedia(CAtelier atelier)
     {
-        _lWindow = window;
+        _pMediaAtelier = atelier;
     }
 
-    internal static void PMediaAttach(DependencyObject root, LWindow window)
+    internal static void PMediaAttach(DependencyObject root, CAtelier atelier)
     {
-        root.SetValue(PMediaProperty, new PMedia(window));
+        root.SetValue(PMediaProperty, new PMedia(atelier));
     }
 
     internal static PMedia? PMediaRead(DependencyObject element)
@@ -32,12 +33,12 @@ internal sealed class PMedia
 
     internal PImage PMediaImageCreate(LImageDraft draft)
     {
-        return new PImage(_lWindow, LCard.LCardImageRead([draft])[0]);
+        return new PImage(_pMediaAtelier, LCard.LCardImageRead([draft])[0]);
     }
 
     internal PVideo PMediaVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(_lWindow, LCard.LCardVideoRead([draft])[0]);
+        return new PVideo(_pMediaAtelier, LCard.LCardVideoRead([draft])[0]);
     }
 
     internal static void PMediaRevealAttach(ItemsControl list)

@@ -65,16 +65,16 @@ public sealed class TAtelier
     public void AtelierWorkspaceChange_Path_MovesEngineThenWritesPointer()
     {
         List<string> pointed = [];
-        using LEngine engine = new(
-            TRigFake.TRigFakeBuild(),
-            workspace => TRigFake.TRigFakeBuild(new TVaultFake(), workspace),
-            pointed.Add);
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), pointed.Add);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
 
-        atelier.CAtelierWorkspaceChange("fake-next");
+        string chosen = "  " + second.TWorkspaceFolder + "  ";
 
-        Assert.Equal("fake-next", engine.TEngineWorkspaceRead());
-        Assert.Equal(["fake-next"], pointed);
+        Assert.NotNull(atelier.CAtelierWorkspaceChange(chosen, TAtelierEnvoyCreate(true)));
+
+        Assert.Equal([second.TWorkspaceFolder], pointed);
     }
 
     [Fact]
@@ -87,10 +87,80 @@ public sealed class TAtelier
             pointed.Add);
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
 
-        Assert.Throws<IOException>(() => atelier.CAtelierWorkspaceChange("fake-broken"));
+        Assert.Throws<IOException>(() => atelier.CAtelierWorkspaceChange("fake-broken", TAtelierEnvoyCreate(true)));
 
         Assert.Equal("fake", engine.TEngineWorkspaceRead());
         Assert.Empty(pointed);
+    }
+
+    [Theory]
+    [InlineData("   ")]
+    [InlineData(" fake ")]
+    public void AtelierWorkspaceChange_BlankOrSamePath_AsksNothingAndStays(string chosen)
+    {
+        List<string> pointed = [];
+        using LEngine engine = new(
+            TRigFake.TRigFakeBuild(),
+            workspace => TRigFake.TRigFakeBuild(new TVaultFake(), workspace),
+            pointed.Add);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        Assert.Null(atelier.CAtelierWorkspaceChange(chosen, TEngineFake.TEngineStubCreate<CEnvoy>()));
+
+        Assert.Equal("fake", atelier.CAtelierPathRead());
+        Assert.Empty(pointed);
+    }
+
+    [Fact]
+    public void AtelierWorkspaceChange_DiscardDeclined_Stays()
+    {
+        List<string> pointed = [];
+        using LEngine engine = new(
+            TRigFake.TRigFakeBuild(),
+            workspace => TRigFake.TRigFakeBuild(new TVaultFake(), workspace),
+            pointed.Add);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        Assert.Null(atelier.CAtelierWorkspaceChange("fake-next", TAtelierEnvoyCreate(false)));
+
+        Assert.Equal("fake", atelier.CAtelierPathRead());
+        Assert.Empty(pointed);
+    }
+
+    [Fact]
+    public void AtelierWorkspaceChange_Moved_ReadsTheNewWorkspaceState()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { });
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
+
+        CWorkspaceState? state = atelier.CAtelierWorkspaceChange(second.TWorkspaceFolder, TAtelierEnvoyCreate(true));
+
+        Assert.Equal(atelier.CAtelierStateRead(), state);
+    }
+
+    [Fact]
+    public void AtelierEstablishmentAttach_Attached_ShowsTheStatusAtOnceAndStopsOnDetach()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CEstablishment> shown = [];
+
+        Action detach = atelier.CAtelierEstablishmentAttach(shown.Add);
+        detach();
+        atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
+
+        Assert.Equal([atelier.CAtelierEstablishmentRead()], shown);
+    }
+
+    private static CEnvoy TAtelierEnvoyCreate(bool discard)
+    {
+        return TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyDiscardConfirm"] = _ => discard,
+        });
     }
 
     private static LMediaPort TAtelierMediaCreate(List<double> played)

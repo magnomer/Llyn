@@ -33,9 +33,9 @@ Card scrolling goes through its scroll, so a card lands where a row would put it
 Builds the compass over the display and the view's controls.
 The compass subscribes to them itself, so the veneer names no compass handler.
 
-## `public void LLecternAttach(LWindow window, UIElement empty, UIElement contents, Action swathSeam)`
+## `public void LLecternAttach(CAtelier atelier, UIElement empty, UIElement contents, Action swathSeam)`
 
-Takes the window deportment, the unselected notice, the page and the swath's clear.
+Takes the atelier, the unselected notice, the page and the swath's clear.
 The swath's clear is a seam, since the band a reader drags lies in the veneer.
 Showing or clearing an entry drops the band, since the text it spanned is gone.
 

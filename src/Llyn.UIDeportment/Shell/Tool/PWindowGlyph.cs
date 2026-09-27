@@ -9,7 +9,7 @@ public partial class PWindow
         long entry;
         try
         {
-            entry = _lWindow.LWindowWorkspace.QWorkspaceGlyphResolve(character, language);
+            entry = PWindowAtelier.CAtelierCatalog.CCatalogGlyphResolve(character, language);
         }
         catch (Exception exception)
         {

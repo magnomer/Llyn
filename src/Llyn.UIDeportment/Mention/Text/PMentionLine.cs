@@ -9,14 +9,14 @@ internal sealed class PMentionLine
 {
     public ObservableCollection<PMentionChip> PMentionLineChip { get; } = [];
 
-    internal void PMentionLineShow(LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
+    internal void PMentionLineShow(CAtelier atelier, string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(mentions);
 
         List<PMentionChip> wanted = new(mentions.Count);
-        foreach (CMentionLabel label in window.LWindowAtelier.CAtelierMention.CMentionResolve(text, mentions, silent))
+        foreach (CMentionLabel label in atelier.CAtelierMention.CMentionResolve(text, mentions, silent))
         {
             wanted.Add(new PMentionChip(
                 label.CMentionLabelId, label.CMentionLabelWord, label.CMentionLabelName, label.CMentionLabelSense));

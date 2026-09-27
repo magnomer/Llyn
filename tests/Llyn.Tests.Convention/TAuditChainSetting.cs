@@ -155,6 +155,14 @@ internal static class TAuditChainSetting
             "CImprint",
             "CAtelier",
             "CEnvoy",
+            "CCatalog",
+            "CLedger",
+            "CLedgerPage",
+            "CLedgerState",
+            "CDesk",
+            "CSession",
+            "CErrand",
+            "LVigil",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -283,16 +291,16 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 125,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 863,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 646,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 33,
-        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 9,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 33,
-        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 9,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 114,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 761,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 542,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 32,
+        ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 32,
+        ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
-        ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
-        ["seal:Llyn.UIDeportment>Llyn.Application"] = 2,
+        ["reach:Llyn.ShellEngine>Llyn.Core"] = 14,
+        ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
         ["seal:Llyn.UIDeportment>Llyn.Core"] = 6,
         ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
     };

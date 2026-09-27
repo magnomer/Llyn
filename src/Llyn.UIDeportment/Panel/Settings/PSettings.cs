@@ -1,11 +1,9 @@
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Application;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -13,7 +11,11 @@ public partial class PSettings : UserControl
 {
     private PWindow _pSettingsHost = null!;
 
-    private LWindow PSettingsWindow => _pSettingsHost.PWindowDeportment;
+    private CLedgerState _pSettingsState = null!;
+
+    private CAtelier PSettingsAtelier => _pSettingsHost.PWindowAtelier;
+
+    private QPosture PSettingsPosture => _pSettingsHost.PWindowPosture;
 
     public PSettings()
     {
@@ -86,45 +88,42 @@ public partial class PSettings : UserControl
     internal void PSettingsAttach(PWindow host)
     {
         _pSettingsHost = host;
-        PLocalizationBuild();
-        PSettingsWindow.LWindowAtelier.CAtelierObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, PSettingsBulletinHandle));
         QLookItem.QLookItemAttach(PLedger, PLedgerApply);
-
-        PSettingsSync();
-        PLedgerBuild();
+        PSettingsAtelier.CAtelierLedger.CLedgerAttach(LObserver.LObserverCreate<CLedgerState>(this, PSettingsShow));
         PDialShow("Workspace");
     }
 
-    private void PLocalizationBuild()
+    private void PLocalizationBuild(IReadOnlyList<KeyValuePair<string, string>> languages)
     {
         PLocalization.Items.Clear();
-        foreach (string language in PSettingsWindow.LWindowLocalizationScan())
+        foreach (KeyValuePair<string, string> language in languages)
         {
             PLocalization.Items.Add(new ComboBoxItem
             {
-                Content = CultureInfo.GetCultureInfo(language).NativeName,
-                Tag = language,
+                Content = language.Value,
+                Tag = language.Key,
             });
         }
     }
 
-    internal void PSettingsSync()
+    private void PSettingsShow(CLedgerState state)
     {
-        CSettings settings = PSettingsWindow.LWindowWorkspace.QWorkspaceSettingsRead();
-        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
-        PLocalization.SelectedValue =
-            PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationRead();
+        _pSettingsState = state;
+        QLocalizationCatalog.QLocalizationCatalogApply(
+            System.Windows.Application.Current.Resources, state.CLedgerStateTexts);
+        if (PLocalization.Items.Count == 0)
+        {
+            PLocalizationBuild(state.CLedgerStateLanguages);
+        }
+
+        CSettings settings = state.CLedgerStateSettings;
+        PWorkspacePath.Text = state.CLedgerStatePath;
+        PLocalization.SelectedValue = state.CLedgerStateLocalization;
         PRespelling.IsChecked = settings.CSettingsRespelled;
         PSettingsEpithet.IsChecked = settings.CSettingsEpithet;
         PFrequency.IsChecked = settings.CSettingsFrequency;
         PMorphology.IsChecked = settings.CSettingsMorphology;
-        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked;
-    }
-
-    private void PSettingsBulletinHandle()
-    {
-        PLocalizationApply(PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationRead());
-        PLedgerMetaApply();
+        PLayoutLinked.IsChecked = PSettingsPosture.QPostureRead().LCapsuleContentLinked;
+        PLedgerShow(state.CLedgerStatePages);
     }
 }

@@ -60,9 +60,9 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         bool filling = false;
-        editor.LEditorDesk.LDeskDraftChanged += _ =>
+        editor.LEditorDesk.CDeskDraftChanged += _ =>
         {
-            filling = editor.LEditorDesk.LDeskFilling;
+            filling = editor.LEditorDesk.CDeskFilling;
             editor.TEditorHeadwordSet("echo");
         };
 

@@ -216,7 +216,7 @@ public partial class PEditor
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
         if (length == 0)
         {
             return;
@@ -235,14 +235,13 @@ public partial class PEditor
 
     internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lEditor.LEditorDesk.LDeskPersist();
         if (e.Source is not TextBox { DataContext: PSentence row } box
             || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        PSentenceSenseShow(box, card, row, PSentenceMentionFind(box, card, row));
+        PSentenceSenseShow(box, card, row, PSentenceMentionFind(box, card, row, true));
     }
 
     private void PSentenceSenseShow(TextBox box, PCard card, PSentence row, CMentionDraft? mention)
@@ -269,7 +268,7 @@ public partial class PEditor
             return;
         }
 
-        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment);
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier);
         if (length == 0)
         {
             return;
@@ -286,11 +285,10 @@ public partial class PEditor
             return;
         }
 
-        _lEditor.LEditorDesk.LDeskPersist();
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
             : e.Source is TextBox box
-                ? PSentenceMentionFind(box, card, row)?.CMentionDraftId
+                ? PSentenceMentionFind(box, card, row, true)?.CMentionDraftId
                 : null;
         if (mentionId is not long id)
         {
@@ -303,14 +301,14 @@ public partial class PEditor
     internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowDeportment).PMentionSelectionLength > 0;
+            && PMentionSelection.PMentionSelectionRead(box, _pEditorHost.PWindowAtelier).PMentionSelectionLength > 0;
     }
 
     internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox { DataContext: PSentence row } box
             && PCardSentenceFind(row) is PCard card
-            && PSentenceMentionFind(box, card, row) is { CMentionDraftEntry: not 0 };
+            && PSentenceMentionFind(box, card, row, false) is { CMentionDraftEntry: not 0 };
     }
 
     internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -318,7 +316,7 @@ public partial class PEditor
         e.CanExecute = e.Parameter is PMentionChip
             || (e.Source is TextBox { DataContext: PSentence row } box
                 && PCardSentenceFind(row) is PCard card
-                && PSentenceMentionFind(box, card, row) is not null);
+                && PSentenceMentionFind(box, card, row, false) is not null);
     }
 
     internal void PSentenceMentionShow(PCard card)
@@ -328,7 +326,7 @@ public partial class PEditor
         {
             try
             {
-                row.PSentenceMentionShow(_pEditorHost.PWindowDeportment, silent);
+                row.PSentenceMentionShow(_pEditorHost.PWindowAtelier, silent);
             }
             catch (Exception exception)
             {
@@ -338,10 +336,11 @@ public partial class PEditor
         }
     }
 
-    private CMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row)
+    private CMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row, bool settled)
     {
-        return _lEditor.LEditorDesk.LDeskMentionFind(
-            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
+        return _pEditorHost.PWindowAtelier.CAtelierMention.CMentionFind(
+            _lEditor.LEditorDesk, card.PCardId, row.PSentenceRow,
+            box.Text, box.SelectionStart, box.SelectionLength, settled);
     }
 
     private void PSentenceChangeHandle(PCard card, PSentence row, string field)

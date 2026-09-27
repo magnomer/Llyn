@@ -22,7 +22,7 @@ public sealed class LRepertoire
         Func<bool> shownSeam,
         Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam,
-        Func<bool> unreadableSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -34,27 +34,26 @@ public sealed class LRepertoire
 
         _lRepertoireLeaveSeam = leaveSeam;
         LRepertoireEditor = editor;
-        LRepertoireDesk = new LDesk(drafts, "Situation", unreadableSeam);
+        LRepertoireDesk = new CDesk(drafts, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
         LRepertoireAtlas = new LAtlas(
-            entries, portraits, settings, LRepertoireDesk.LDeskChangeCheck, shownSeam, LRepertoireLeaveConfirm,
+            entries, portraits, settings, LRepertoireDesk.CDeskChangeCheck, shownSeam, LRepertoireLeaveConfirm,
             removalSeam);
         LRepertoireOccurrence = new LOccurrence(
-            entries, portraits, editor.LEditorDesk.LDeskChangeCheck, shownSeam, LRepertoireLeaveConfirm);
+            entries, portraits, editor.LEditorDesk.CDeskChangeCheck, shownSeam, LRepertoireLeaveConfirm);
         LRepertoireAtlas.LAtlasPanel.LPanelRowsChanged += LRepertoireOccurrence.LOccurrencePanel.LPanelRowsUpdate;
-        LRepertoireSession = new QSession(
+        LRepertoireSession = new CSession(
             LRepertoireDesk,
-            [LRepertoireOccurrence.LOccurrencePanel, LRepertoireAtlas.LAtlasPanel],
-            editor,
-            LRepertoireOccurrence.LOccurrencePanel,
-            "Situation.HoldFailed",
-            id => LRepertoireDesk.LDeskStart("Repertoire", CSubject.CSubjectSituation, id),
+            [LRepertoireOccurrence.LOccurrencePanel.LPanelChangeCheck, LRepertoireAtlas.LAtlasPanel.LPanelChangeCheck],
+            editor.LEditorDesk,
+            () => LRepertoireOccurrence.LOccurrencePanel.LPanelEditing,
+            editor.LEditorFinish,
             static () => true,
             LRepertoireStoredShow);
-        LRepertoireSession.QSessionHeld += () => LRepertoireScenarioChanged?.Invoke(LRepertoireScenarioRead());
-        LRepertoireSession.QSessionChanged += () => LRepertoireChanged?.Invoke();
-        LRepertoireSession.QSessionFailed += (key, exception) => LRepertoireFailed?.Invoke(key, exception);
-        LRepertoireAtlas.LAtlasPanel.LPanelEdited += id => LRepertoireSession.QSessionStart(id);
-        LRepertoireAtlas.LAtlasPanel.LPanelCleared += LRepertoireSession.QSessionCancel;
+        LRepertoireSession.CSessionHeld += () => LRepertoireScenarioChanged?.Invoke(LRepertoireScenarioRead());
+        LRepertoireSession.CSessionChanged += () => LRepertoireChanged?.Invoke();
+        LRepertoireSession.CSessionFailed += (key, exception) => LRepertoireFailed?.Invoke(key, exception);
+        LRepertoireAtlas.LAtlasPanel.LPanelEdited += id => LRepertoireSession.CSessionStart(id);
+        LRepertoireAtlas.LAtlasPanel.LPanelCleared += LRepertoireSession.CSessionCancel;
         LRepertoireAtlas.LAtlasPanel.LPanelDraftChanged += LRepertoireSituationUpdate;
         LRepertoireOccurrence.LOccurrencePanel.LPanelEdited += id => editor.LEditorOpen(id);
         LRepertoireOccurrence.LOccurrencePanel.LPanelCleared += editor.LEditorClose;
@@ -74,9 +73,9 @@ public sealed class LRepertoire
 
     private LEditor LRepertoireEditor { get; }
 
-    public LDesk LRepertoireDesk { get; }
+    public CDesk LRepertoireDesk { get; }
 
-    public QSession LRepertoireSession { get; }
+    public CSession LRepertoireSession { get; }
 
     public LAtlas LRepertoireAtlas { get; }
 
@@ -106,7 +105,7 @@ public sealed class LRepertoire
     public bool LRepertoireBinEnabled => !LRepertoireOccurrenceSide && LRepertoireAtlas.LAtlasPanel.LPanelBinEnabled;
 
     public bool LRepertoireStoreEnabled =>
-        LRepertoireEditorShown ? LRepertoireEditor.LEditorStorable : LRepertoireDesk.LDeskChanged;
+        LRepertoireEditorShown ? LRepertoireEditor.LEditorStorable : LRepertoireDesk.CDeskChanged;
 
     public bool LRepertoirePressAllowed =>
         LRepertoireDisplayShown || (LRepertoireVignetteShown && LRepertoireVignetteHeld);
@@ -117,7 +116,7 @@ public sealed class LRepertoire
     {
         try
         {
-            return LAtlas.LAtlasSituationRead(LRepertoireDesk.LDeskRead()?.LDraftSituation);
+            return LAtlas.LAtlasSituationRead(LRepertoireDesk.CDeskRead()?.LDraftSituation);
         }
         catch (Exception exception)
         {
@@ -185,7 +184,7 @@ public sealed class LRepertoire
             return;
         }
 
-        LRepertoireDesk.LDeskCancel();
+        LRepertoireDesk.CDeskCancel();
         LRepertoireAtlas.LAtlasPanel.LPanelScribeShow(false);
         if (editing)
         {
@@ -224,7 +223,7 @@ public sealed class LRepertoire
 
         LRepertoireOccurrence.LOccurrencePanel.LPanelClear();
         LRepertoireAtlas.LAtlasPanel.LPanelFreshOpen();
-        LRepertoireSession.QSessionStart(null);
+        LRepertoireSession.CSessionStart(null);
     }
 
     public void LRepertoireScribeSet(bool editing)
@@ -243,7 +242,7 @@ public sealed class LRepertoire
         LRepertoireAtlas.LAtlasPanel.LPanelScribeSet(editing);
         if (!LRepertoireAtlas.LAtlasPanel.LPanelEditing)
         {
-            LRepertoireDesk.LDeskCancel();
+            LRepertoireDesk.CDeskCancel();
         }
     }
 
@@ -315,7 +314,7 @@ public sealed class LRepertoire
     private void LRepertoireOccurrenceCreate()
     {
         long? chosen = LRepertoireAtlas.LAtlasChosen;
-        LRepertoireDesk.LDeskCancel();
+        LRepertoireDesk.CDeskCancel();
         LRepertoireAtlas.LAtlasPanel.LPanelScribeShow(false);
         LRepertoireOccurrence.LOccurrencePanel.LPanelFreshOpen();
         LRepertoireEditor.LEditorOpen(null);
@@ -332,12 +331,12 @@ public sealed class LRepertoire
 
     private bool LRepertoireLeaveConfirm(bool shown)
     {
-        if (!LRepertoireSession.QSessionChangeCheck())
+        if (!LRepertoireSession.CSessionChangeCheck())
         {
             return true;
         }
 
-        return _lRepertoireLeaveSeam(shown ? LRepertoireSession.QSessionFinish : LRepertoireSession.QSessionClose);
+        return _lRepertoireLeaveSeam(shown ? LRepertoireSession.CSessionFinish : LRepertoireSession.CSessionClose);
     }
 
     public void LRepertoireEntryUpdate()
@@ -402,14 +401,14 @@ public sealed class LRepertoire
         LRepertoireEditor.LEditorVistaRestore(occurrence);
     }
 
-    internal void LRepertoireVistaRestore(LWindow window)
+    internal void LRepertoireVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LRepertoireVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "repertoire", CSubject.CSubjectSituation, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "occurrence", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 }

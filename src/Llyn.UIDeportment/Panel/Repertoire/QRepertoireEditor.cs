@@ -63,7 +63,7 @@ internal sealed partial class QRepertoire
         QScenarioShow(
             situation ?? new CSituationDraft(
                 0, CStateValue.CStateValueEmpty, CStateValue.CStateValueEmpty, CStateValue.CStateValueEmpty, [], []));
-        QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.LDeskStoredRead());
+        QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.CDeskStoredRead());
     }
 
     private void QScenarioShow(CSituationDraft situation)

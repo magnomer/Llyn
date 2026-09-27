@@ -16,7 +16,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptLinkShow(box, PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowDeportment));
+        QTranscriptLinkShow(box, PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowAtelier));
     }
 
     private void QTranscriptLinkShow(
@@ -42,8 +42,7 @@ internal sealed partial class QCorpus
 
     private void QTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        QTranscriptDesk.LDeskPersist();
-        QTranscriptSenseShow(QTranscriptMentionFind());
+        QTranscriptSenseShow(QTranscriptMentionFind(true));
     }
 
     private void QTranscriptSenseShow(CMentionDraft? mention)
@@ -72,7 +71,7 @@ internal sealed partial class QCorpus
             return;
         }
 
-        QTranscriptSilenceRun(PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowDeportment));
+        QTranscriptSilenceRun(PMentionSelection.PMentionSelectionRead(box, _qCorpusHost.PWindowAtelier));
     }
 
     private void QTranscriptSilenceRun((int PMentionSelectionOffset, int PMentionSelectionLength) selection)
@@ -88,9 +87,9 @@ internal sealed partial class QCorpus
 
     private void QTranscriptUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        QTranscriptDesk.LDeskPersist();
         QTranscriptUnlinkRun(
-            QSender.QSenderParameterRead<PMentionChip>(e)?.PMentionChipId ?? QTranscriptMentionFind()?.CMentionDraftId);
+            QSender.QSenderParameterRead<PMentionChip>(e)?.PMentionChipId
+            ?? QTranscriptMentionFind(true)?.CMentionDraftId);
     }
 
     private void QTranscriptUnlinkRun(long? mention)
@@ -106,24 +105,26 @@ internal sealed partial class QCorpus
     private void QTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = e.Source is TextBox box
-            && _qCorpusHost.PWindowDeportment.LWindowAtelier.CAtelierMention.CMentionSpanCheck(
+            && _qCorpusHost.PWindowAtelier.CAtelierMention.CMentionSpanCheck(
                 box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void QTranscriptSenseCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Source is TextBox && QTranscriptMentionFind() is { CMentionDraftEntry: not 0 };
+        e.CanExecute = e.Source is TextBox && QTranscriptMentionFind(false) is { CMentionDraftEntry: not 0 };
     }
 
     private void QTranscriptUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Parameter is PMentionChip || (e.Source is TextBox && QTranscriptMentionFind() is not null);
+        e.CanExecute = e.Parameter is PMentionChip
+            || (e.Source is TextBox && QTranscriptMentionFind(false) is not null);
     }
 
-    private CMentionDraft? QTranscriptMentionFind()
+    private CMentionDraft? QTranscriptMentionFind(bool settled)
     {
-        return QTranscriptDesk.LDeskMentionFind(
-            0, 0, QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength);
+        return _qCorpusHost.PWindowAtelier.CAtelierMention.CMentionFind(
+            QTranscriptDesk, 0, 0,
+            QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength, settled);
     }
 
     private void QTranscriptMentionShow(CExample? example)
@@ -137,7 +138,7 @@ internal sealed partial class QCorpus
         try
         {
             _qTranscriptChip.PMentionLineShow(
-                _qCorpusHost.PWindowDeportment,
+                _qCorpusHost.PWindowAtelier,
                 example.CExampleText.CStateValueText,
                 example.CExampleMention,
                 QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));

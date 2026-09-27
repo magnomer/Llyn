@@ -121,9 +121,9 @@ internal sealed partial class QFavorite
     internal void QFavoriteAttach(PWindow host)
     {
         _qFavoriteHost = host;
-        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lFavorite = host.PWindowDeportment.LWindowForge.QForgeFavoriteCreate(
+        _lFavorite = host.PWindowForge.QForgeFavoriteCreate(
             _lEditor, lectern, QFavoriteShownCheck, QFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lFavorite.LFavoritePanel;
         panel.LPanelChanged += QFavoriteModeUpdate;

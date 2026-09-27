@@ -12,8 +12,6 @@ internal sealed class QEstablishment
 
     private readonly FrameworkElement _qEstablishmentSurface;
 
-    private PWindow _qEstablishmentHost = null!;
-
     private Action _qEstablishmentRelease = () => { };
 
     internal QEstablishment(FrameworkElement surface)
@@ -37,9 +35,8 @@ internal sealed class QEstablishment
 
     internal void QEstablishmentAttach(PWindow host)
     {
-        _qEstablishmentHost = host;
-        QEstablishmentHook(host, LObserver.LObserverCreate<CBulletin>(host.PWindowSurface, QEstablishmentUpdate));
-        QEstablishmentUpdate();
+        _qEstablishmentRelease = host.PWindowAtelier.CAtelierEstablishmentAttach(
+            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentShow));
     }
 
     internal void QEstablishmentClose()
@@ -47,23 +44,8 @@ internal sealed class QEstablishment
         _qEstablishmentRelease();
     }
 
-    private void QEstablishmentHook(PWindow host, Action<CBulletin> observer)
+    private void QEstablishmentShow(CEstablishment establishment)
     {
-        _qEstablishmentRelease = host.PWindowDeportment.LWindowAtelier.CAtelierObserverAttach(observer);
-    }
-
-    private void QEstablishmentUpdate()
-    {
-        CEstablishment establishment;
-        try
-        {
-            establishment = _qEstablishmentHost.PWindowDeportment.LWindowWorkspace.QWorkspaceEstablishmentRead();
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
         QEstablishmentPending.Visibility = establishment.CEstablishmentPending
             ? Visibility.Visible
             : Visibility.Collapsed;

@@ -89,7 +89,7 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireSession.QSessionSave();
+        _lRepertoire.LRepertoireSession.CSessionSave();
     }
 
     private void QRepertoireFreshHandle(object sender, RoutedEventArgs e)

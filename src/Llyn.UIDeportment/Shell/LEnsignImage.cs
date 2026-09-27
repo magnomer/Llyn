@@ -17,11 +17,11 @@ public static class LEnsignImage
 
     private static readonly SemaphoreSlim LEnsignGate = new(1, 1);
 
-    public static void LEnsignAttach(LWindow window)
+    public static void LEnsignAttach(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        window.LWindowAtelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
+        atelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
     }
 
     private static void LEnsignBulletinHandle(CBulletin bulletin)
@@ -56,14 +56,14 @@ public static class LEnsignImage
         }
     }
 
-    public static async Task LEnsignLoad(LWindow window)
+    public static async Task LEnsignLoad(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            await window.LWindowWorkspace.QWorkspaceEnsignLoad(LEnsignStoreAdd);
+            await atelier.CAtelierCatalog.CCatalogEnsignLoad(LEnsignStoreAdd);
         }
         finally
         {
@@ -71,21 +71,21 @@ public static class LEnsignImage
         }
     }
 
-    public static Task LEnsignVarietyLoad(LWindow window, LEditor editor)
+    public static Task LEnsignVarietyLoad(CAtelier atelier, LEditor editor)
     {
         ArgumentNullException.ThrowIfNull(editor);
 
-        return LEnsignVarietyLoad(window, editor.LEditorLanguage, editor.LEditorVarietyNames);
+        return LEnsignVarietyLoad(atelier, editor.LEditorLanguage, editor.LEditorVarietyNames);
     }
 
-    public static async Task LEnsignVarietyLoad(LWindow window, string language, IEnumerable<string> varieties)
+    public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            await window.LWindowWorkspace.QWorkspaceEnsignLoad(language, varieties, LEnsignStoreAdd);
+            await atelier.CAtelierCatalog.CCatalogEnsignLoad(language, varieties, LEnsignStoreAdd);
         }
         finally
         {

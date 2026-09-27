@@ -15,7 +15,7 @@ internal sealed partial class QRepertoire
 
     private async void QRepertoireWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier);
         QRepertoireReset();
     }
 
@@ -48,7 +48,7 @@ internal sealed partial class QRepertoire
         QChoice.QChoiceOrderApply(QTierDropdown, atlas.LPanelOrder);
         QMeshRestore();
 
-        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier);
 
         QMeshBuild();
         _lRepertoire.LRepertoireAtlas.LAtlasInquestSet(QInquest.Text ?? string.Empty);
@@ -138,7 +138,7 @@ internal sealed partial class QRepertoire
         QAtlasEmpty.Visibility = QLook.QLookVisibleRead(_qAtlasList.Count == 0);
 
         QVignetteTally.Text = QRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.LAtlasChosen);
-        QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.LDeskStoredRead());
+        QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.CDeskStoredRead());
         _lRepertoire.LRepertoireRowsApply(read);
     }
 

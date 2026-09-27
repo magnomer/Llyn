@@ -6,7 +6,8 @@ The keeper of panel widths across every tab that has a seam.
 Each tab's root grid is registered once, and the seams inside it are handed this keeper.
 A drag in one tab is then carried to every other tab while the panels are linked.
 The widths are stored per tab either way, so unlinking never loses what a tab had.
-They are read from and written through the window deportment, so the engine never learns how wide a pane is.
+They are read from and written through the posture, so the engine never learns how wide a pane is.
+It listens for the posture being cleared and resets the grids, so a width reset is one call.
 
 ## `internal void PLayoutAttach(Grid host, string tab)`
 

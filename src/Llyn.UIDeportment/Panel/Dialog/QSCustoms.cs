@@ -23,6 +23,8 @@ internal sealed class QSCustoms
     private readonly PWindow _qsCustomsHost;
     private readonly CSCustoms _csCustoms;
 
+    private IReadOnlyList<CSCustomsRow>? _qsCustomsRows;
+
     private QSCustoms(PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)
     {
         _qsCustomsSurface = QContract.QContractSheetFind<Window>("PSCustoms");
@@ -63,7 +65,7 @@ internal sealed class QSCustoms
         int index = 0;
         foreach (CMarkupEntry entry in entries)
         {
-            IReadOnlyList<long> found = host.PWindowDeportment.LWindowWorkspace.QWorkspaceMarkupFind(
+            IReadOnlyList<long> found = host.PWindowAtelier.CAtelierCatalog.CCatalogMarkupFind(
                 entry.CMarkupEntryHeadword, entry.CMarkupEntryLanguage);
             candidates.Add(found);
             items.Add(new QSCustomsItem(index, entry.CMarkupEntryName, entry.CMarkupEntryLanguage, found));
@@ -102,19 +104,8 @@ internal sealed class QSCustoms
     private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(
         PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)
     {
-        bool accepted = new QSCustoms(host, customs, items)._qsCustomsSurface.ShowDialog() == true;
-        List<CSCustomsRow> rows = new(items.Count);
-        foreach (QSCustomsItem item in items)
-        {
-            rows.Add(customs.CSCustomsRowRead(item.QSCustomsItemIndex));
-        }
-
-        return accepted ? rows : null;
-    }
-
-    private static IReadOnlyList<CCardDraft> QSCustomsChildRead(CCardDraft card)
-    {
-        return card.CCardDraftChild;
+        QSCustoms dialog = new(host, customs, items);
+        return dialog._qsCustomsSurface.ShowDialog() == true ? dialog._qsCustomsRows : null;
     }
 
     private void QSCustomsRowApply(FrameworkElement container, object item, string? _)
@@ -155,7 +146,7 @@ internal sealed class QSCustoms
         if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsLoss") is TextBlock loss)
         {
             loss.Text = QSCustomsLossFormat(
-                _qsCustomsHost.PWindowDeportment.LWindowWorkspace.QWorkspaceEntryLoad(state.CSCustomsRowLoss));
+                _qsCustomsHost.PWindowAtelier.CAtelierCatalog.CCatalogEntryLoad(state.CSCustomsRowLoss));
         }
     }
 
@@ -255,6 +246,13 @@ internal sealed class QSCustoms
 
     private void QSCustomsAcceptHandle(object sender, RoutedEventArgs e)
     {
+        List<CSCustomsRow> rows = [];
+        foreach (QSCustomsItem item in (IEnumerable<QSCustomsItem>)QSCustomsList.ItemsSource)
+        {
+            rows.Add(_csCustoms.CSCustomsRowRead(item.QSCustomsItemIndex));
+        }
+
+        _qsCustomsRows = rows;
         _qsCustomsSurface.DialogResult = true;
     }
 
@@ -268,9 +266,9 @@ internal sealed class QSCustoms
         _qsCustomsSurface.DialogResult = true;
     }
 
-    private string QSCustomsLossFormat(CEntryDraft? stored)
+    private string QSCustomsLossFormat((int, int)? stored)
     {
-        if (stored is null)
+        if (stored is not (int meanings, int collocations))
         {
             return string.Empty;
         }
@@ -278,7 +276,7 @@ internal sealed class QSCustoms
         return string.Format(
             CultureInfo.CurrentCulture,
             _qsCustomsSurface.TryFindResource("Customs.Loss") as string ?? "Customs.Loss",
-            CSCustoms.CSCustomsCardScan(stored.CEntryDraftMeanings, QSCustomsChildRead),
-            CSCustoms.CSCustomsCardScan(stored.CEntryDraftCollocations, QSCustomsChildRead));
+            meanings,
+            collocations);
     }
 }

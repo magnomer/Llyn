@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -15,6 +16,8 @@ internal sealed partial class QCorpus : QChronicleHost
     private PWindow _qCorpusHost = null!;
 
     private LCorpus _lCorpus = null!;
+
+    private CDesk _qCorpusDesk = null!;
 
     internal QCorpus(UserControl surface)
     {
@@ -223,15 +226,16 @@ internal sealed partial class QCorpus : QChronicleHost
     internal void QCorpusAttach(PWindow host)
     {
         _qCorpusHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lCorpus = host.PWindowDeportment.LWindowForge.QForgeCorpusCreate(
+        _lCorpus = host.PWindowForge.QForgeCorpusCreate(
             editor,
             lectern,
             QCorpusShownCheck,
             QCorpusDiscardConfirm,
             QCorpusRemovalConfirm,
-            host.PWindowUnreadableConfirm);
+            host.PWindowEnvoy);
+        _qCorpusDesk = _lCorpus.LCorpusDesk;
         QTranscriptDeskAttach();
 
         QAnthology.ItemsSource = _qAnthologyList;
@@ -292,7 +296,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusMode.IsEnabled = _lCorpus.LCorpusModeEnabled;
         QCorpusBin.IsEnabled = _lCorpus.LCorpusBinEnabled;
         QCorpusStore.IsEnabled = _lCorpus.LCorpusStoreEnabled;
-        QTranscript.IsEnabled = _lCorpus.LCorpusDesk.LDeskRunning;
+        QTranscript.IsEnabled = _lCorpus.LCorpusDesk.CDeskRunning;
         QChronicleUpdate();
     }
 
@@ -303,12 +307,12 @@ internal sealed partial class QCorpus : QChronicleHost
 
     internal bool QCorpusChangeCheck()
     {
-        return _lCorpus.LCorpusSession.QSessionChangeCheck();
+        return _lCorpus.LCorpusSession.CSessionChangeCheck();
     }
 
     internal bool QCorpusDraftFinish(bool store)
     {
-        return _lCorpus.LCorpusSession.QSessionFinish(store);
+        return _lCorpus.LCorpusSession.CSessionFinish(store);
     }
 
     internal void QCorpusClose()

@@ -141,7 +141,14 @@ public sealed partial class LTenure
         }
     }
 
-    public LExampleDraft? LTenureExampleRead(long cardId, long sentenceId)
+    public LMentionDraft? LTenureMentionFind(long cardId, long sentenceId, LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        return LTenureKeptRead()?.LDraftMentionFind(cardId, sentenceId, span);
+    }
+
+    private LDraft? LTenureKeptRead()
     {
         int round;
         lock (_lTenureGate)
@@ -153,7 +160,7 @@ public sealed partial class LTenure
 
             if (_lTenureKept is LDraft kept)
             {
-                return kept.LDraftExampleRead(cardId, sentenceId);
+                return kept;
             }
 
             round = _lTenureRound;
@@ -177,7 +184,7 @@ public sealed partial class LTenure
             }
         }
 
-        return read?.LDraftExampleRead(cardId, sentenceId);
+        return read;
     }
 
     private void LTenureKeptClear()

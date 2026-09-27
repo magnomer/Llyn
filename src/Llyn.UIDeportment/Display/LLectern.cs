@@ -13,7 +13,7 @@ public sealed class LLectern
 {
     private readonly LDisplay _lLecternDisplay;
 
-    private LWindow _lLecternWindow = null!;
+    private CAtelier _lLecternAtelier = null!;
 
     private UIElement _lLecternEmpty = null!;
 
@@ -94,14 +94,14 @@ public sealed class LLectern
 
     public bool LLecternFoldOpened => _lLecternDisplay.LDisplaySound.LDisplayFoldOpened;
 
-    public void LLecternAttach(LWindow window, UIElement empty, UIElement contents, Action swathSeam)
+    public void LLecternAttach(CAtelier atelier, UIElement empty, UIElement contents, Action swathSeam)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(empty);
         ArgumentNullException.ThrowIfNull(contents);
         ArgumentNullException.ThrowIfNull(swathSeam);
 
-        _lLecternWindow = window;
+        _lLecternAtelier = atelier;
         _lLecternEmpty = empty;
         _lLecternContents = contents;
         _lLecternSwath = swathSeam;
@@ -258,7 +258,7 @@ public sealed class LLectern
         _lLecternSpeech.ItemsSource = _lLecternDisplay.LDisplaySpeechRead();
         _lLecternSpeechSection.Visibility = draft.LEntryDraftMarked ? Visibility.Visible : Visibility.Collapsed;
         LLecternFrequencyUpdate();
-        LMarkdownFace.LMarkdownShow(_lLecternNote, draft.LEntryDraftNote, _lLecternWindow);
+        LMarkdownFace.LMarkdownShow(_lLecternNote, draft.LEntryDraftNote, _lLecternAtelier);
         _lLecternNoteSection.Visibility = draft.LEntryDraftNoted ? Visibility.Visible : Visibility.Collapsed;
         LLecternStampShow(_lLecternDisplay.LDisplayStampRead());
 
@@ -333,10 +333,10 @@ public sealed class LLectern
     {
         _lLecternLanguage.Text = language;
         LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, string.Empty);
-        LFontFace.LFontApply(_lLecternWindow, language, _lLecternHeadword);
+        LFontFace.LFontApply(_lLecternAtelier, language, _lLecternHeadword);
         LFontFace.LFontPlace(_lLecternHeadword);
 
-        await LEnsignImage.LEnsignLoad(_lLecternWindow);
+        await LEnsignImage.LEnsignLoad(_lLecternAtelier);
 
         LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, _lLecternDisplay.LDisplayLanguageRead());
     }

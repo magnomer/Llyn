@@ -10,7 +10,7 @@ Everything that names only panels comes from the posture, one layout record per 
 ## `internal void PWindowViewRestore(CWorkspaceState state)`
 
 Applies `state` and the posture's layout records across the shell.
-The window deportment has already started every panel's vistas through the posture with the stored order and filter.
+The atelier has already started every panel's vistas through the posture with the stored order and filter.
 Each panel's designed ordering is named by its deportment, since the record holds nothing before a choice.
 The yunjing panel takes two, since its two columns keep two orderings under two records.
 A tab whose middle column lists entries under a chosen record takes a child vista for that column as well.

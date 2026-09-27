@@ -92,14 +92,9 @@ internal sealed class QImprint : QChronicleHost
         _lImprint.LImprintFocused += QAuthorFocusDefer;
         _lImprint.LImprintReverted += QAuthorRestore;
         _lImprint.LBylineChanged += QBylineUpdate;
-        _lImprint.LImprintDesk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectDraft,
-            LObserver.LObserverCreate<CBulletin>(_qImprintSurface, _lImprint.LImprintDesk.LDeskDraftUpdate));
-        _lImprint.LImprintDesk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectTenure,
-            LObserver.LObserverCreate<CBulletin>(_qImprintSurface, _lImprint.LImprintDesk.LDeskStateUpdate));
+        _lImprint.LImprintDesk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
         _lImprint.LImprintReferenceChanged += QImprintDraftUpdate;
-        _lImprint.LImprintDesk.LDeskFailed += host.PWindowFailureShow;
+        _lImprint.LImprintDesk.CDeskFailed += host.PWindowFailureShow;
     }
 
     internal void QImprintClear()
@@ -120,17 +115,17 @@ internal sealed class QImprint : QChronicleHost
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lImprint.LImprintDesk.LDeskUndo);
+        QChronicle.QChronicleRun(_lImprint.LImprintDesk.CDeskUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lImprint.LImprintDesk.LDeskRedo);
+        QChronicle.QChronicleRun(_lImprint.LImprintDesk.CDeskRedo);
     }
 
     public void QChronicleUpdate()
     {
-        _lImprint.LImprintDesk.LDeskStateUpdate();
+        _lImprint.LImprintDesk.CDeskStateUpdate();
     }
 
     private void QImprintDraftUpdate(CImprint reference)

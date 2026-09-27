@@ -133,9 +133,9 @@ internal sealed partial class QTenor
     internal void QTenorAttach(PWindow host)
     {
         _qTenorHost = host;
-        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lTenor = host.PWindowDeportment.LWindowForge.QForgeTenorCreate(
+        _lTenor = host.PWindowForge.QForgeTenorCreate(
             _lEditor, lectern, QTenorShownCheck, QTenorDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelChanged += QTenorModeUpdate;

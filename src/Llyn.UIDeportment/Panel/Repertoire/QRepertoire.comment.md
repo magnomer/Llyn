@@ -27,7 +27,7 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
 Binds the panel to the window it asks for confirmations and panel switches through.
-The media host is attached to the surface, so the rows inside it find the window deportment.
+The media host is attached to the surface, so the rows inside it find the atelier.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 The atlas and occurrence lists get their row fills through `QLookItemAttach`.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.

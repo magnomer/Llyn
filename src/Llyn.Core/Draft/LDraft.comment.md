@@ -44,6 +44,10 @@ Never null, so a reader walks it without a check.
 The credits as editor rows, each knowing its place and whether it can move.
 The source editor copies them and splices its own blank row in, so it never counts the credits itself.
 
+## `public LMentionDraft? LDraftMentionFind(long cardId, long sentenceId, LMentionDraft span)`
+
+The Mention the span lies inside, in the example these ids name, or none.
+
 ## `public LExampleDraft? LDraftExampleRead(long cardId, long sentenceId)`
 
 The example a Mention request with these ids would edit, or none.

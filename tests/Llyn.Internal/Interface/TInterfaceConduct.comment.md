@@ -7,13 +7,42 @@ It is a class of its own rather than a part of `TInterface`.
 Each relay reaches a static rule or builds a conduct over outlets, so none builds a WPF object.
 Each relay is transparent and carries no test logic of its own.
 
+## `internal static LFont TFontCreate(string family, double size) => new(family, size);`
+
+Builds an engine font for a fake settings port to answer, so a test never constructs a Core record.
+
+## `internal static CAtelier TAtelierCreate(LEngine engine) => new(`
+
+Builds the atelier over real outlets on `engine`, with a stub player.
+A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
+
 ## `internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(`
 
 Builds Conduct's atelier over outlets on `engine` as Host does, with `media` standing in for the player.
 The draft port is a fake that sweeps nothing, since the fake rig holds no drafts.
+
+## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings) => new(`
+
+Builds an atelier over a fake `settings` port, for the ledger's reads and saves.
+Its draft port answers the sweep and the observer attach, so the ledger can attach without a real engine.
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)`
 
 Builds an atelier whose draft, entry and phonology ports answer from `answers`, for the text gates.
 The settings and portrait ports are outlets on `engine`, and the player is a stub.
 It adds the leftover sweep, so disposing the atelier needs no answer from the test.
+
+## `internal static CEnvoy TEnvoyCreate(bool? answer, List<string> asked)`
+
+Builds an envoy that records every key it is asked in `asked`.
+A confirm answers `answer`, or no when it is null.
+The leave question records `Leave` and answers `answer` as given.
+
+## `internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy)`
+
+Builds a desk over a real draft outlet on `engine`, as the owners in Deportment do.
+
+## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`
+
+Builds a session over `desk` alone, starting it by vista as the guild does.
+The overload over an editor desk records each editor finish in `seen`.

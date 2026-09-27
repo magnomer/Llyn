@@ -47,9 +47,9 @@ internal sealed class QAutograph
     internal void QAutographAttach(LGuild guild)
     {
         _lGuild = guild;
-        _lGuild.LGuildAutograph.LDeskStarted += QAutographStartUpdate;
-        QAutographObserverAttach(_lGuild.LGuildAutograph);
-        _lGuild.LGuildAutograph.LDeskDraftChanged += QAutographDraftUpdate;
+        _lGuild.LGuildAutograph.CDeskStarted += QAutographStartUpdate;
+        _lGuild.LGuildAutograph.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
+        _lGuild.LGuildAutograph.CDeskDraftChanged += QAutographDraftUpdate;
     }
 
     internal void QAutographTallyShow(CVita vita)
@@ -66,14 +66,6 @@ internal sealed class QAutograph
         QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_lGuild.LGuildUnion.QUnionShown);
     }
 
-    private void QAutographObserverAttach(LDesk desk)
-    {
-        desk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(_qAutographSurface, desk.LDeskDraftUpdate));
-        desk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(_qAutographSurface, desk.LDeskStateUpdate));
-    }
-
     private void QAutographStartUpdate()
     {
         QAutographUnion.Text = string.Empty;
@@ -88,7 +80,7 @@ internal sealed class QAutograph
 
     private void QAutographNameHandle(object sender, TextChangedEventArgs e)
     {
-        _lGuild.LGuildAutograph.LDeskQuill?.LQuillAuthorSet(QAutographName.Text);
+        _lGuild.LGuildAutograph.CDeskQuill?.LQuillAuthorSet(QAutographName.Text);
     }
 
     private void QAutographUnionHandle(object sender, TextChangedEventArgs e)

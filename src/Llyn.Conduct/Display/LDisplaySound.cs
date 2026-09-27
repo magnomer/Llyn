@@ -8,6 +8,8 @@ namespace Llyn.Conduct;
 
 public sealed class LDisplaySound
 {
+    private readonly LDraftPort _lDraftPort;
+
     private readonly LEntryPort _lEntryPort;
 
     private readonly LPhonologyPort _lPhonologyPort;
@@ -28,13 +30,16 @@ public sealed class LDisplaySound
 
     private int _lDisplaySoundTicket;
 
-    public LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
+    internal LDisplaySound(
+        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
     {
+        ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(settings);
 
+        _lDraftPort = drafts;
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
         _lMediaPort = media;
@@ -153,11 +158,15 @@ public sealed class LDisplaySound
         return LDisplayListRead(_lPhonologyPort.LEngineFanqieDivide);
     }
 
-    public static IReadOnlyList<LFanqieRow> LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
+    public (bool, Func<IReadOnlyList<long>, string, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
     {
         ArgumentNullException.ThrowIfNull(groups);
 
-        return groups.SelectMany(static group => group.LFanqieGroupRows).ToList();
+        IReadOnlyList<LFanqieRow> rows = groups.SelectMany(static group => group.LFanqieGroupRows).ToList();
+        string headword = _lDisplaySoundDraft!.LEntryDraftHeadword;
+        return (
+            _lDraftPort.LEngineAnchorCheck(rows, headword),
+            (anchors, separator) => _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator));
     }
 
     public string LDisplayReadingRead()

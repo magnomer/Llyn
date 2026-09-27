@@ -16,9 +16,9 @@ A designed pixel size cannot fit every desktop, so the default is measured again
 The rest in milliseconds the posture waits after a move before it writes.
 A drag raises a change for every pixel, and one write per pixel would be a file write per pixel.
 
-## `public LFootprint(LWindow window)`
+## `public LFootprint(QPosture posture)`
 
-Keeps the window deportment, which holds the posture.
+Keeps the posture.
 
 ## `public LCapsuleWindow? LFootprintRead(double left, double top, double width, double height, double minWidth, double minHeight)`
 

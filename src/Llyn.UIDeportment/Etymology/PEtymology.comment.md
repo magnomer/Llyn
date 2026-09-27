@@ -52,7 +52,7 @@ The reading view's card deportment calls it as its seam.
 Draws the source links the engine already resolved to a headword and a language.
 The typing entry always closes the row, collapsed on the read side, so the row has one shape.
 
-## `internal void PEtymologyMentionShow(LWindow window, string text, IReadOnlyList<CMentionDraft> mentions, string silent)`
+## `internal void PEtymologyMentionShow(`
 
 Draws the spans as chips under the narrative box.
 Only the editor calls it, and it hands the window and the text in, so nothing is guessed.

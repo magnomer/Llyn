@@ -17,7 +17,7 @@ internal sealed partial class QTenor
 
     private async void QTenorWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier);
         QTenorReset();
     }
 
@@ -85,7 +85,7 @@ internal sealed partial class QTenor
         QChoice.QChoiceOrderApply(QDegreeDropdown, _lTenor.LTenorOrder);
         QGrilleRestore();
 
-        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qTenorHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QGrilleList, _lTenor.LTenorLanguageRead(), _lTenor.LTenorFilter, QGrilleHandle);

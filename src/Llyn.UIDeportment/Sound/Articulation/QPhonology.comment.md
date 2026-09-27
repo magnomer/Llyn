@@ -22,7 +22,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QPhonologyAttach(PWindow host)`
 
-Puts the panel to work on the window deportment, which builds its deportment over the engine's ports.
+Puts the panel to work on the panel factory, which builds its deportment over the engine's ports.
 It news the deportment with the seams the panel answers through and subscribes to its notices.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

@@ -223,9 +223,7 @@
       "Text",
       "Value"
     ],
-    "truthHandles": [
-      "LWindow"
-    ],
+    "truthHandles": [],
     "treatVerbs": [
       "Aggregate",
       "All",

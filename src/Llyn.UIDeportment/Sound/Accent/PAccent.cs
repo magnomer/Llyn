@@ -86,7 +86,7 @@ public partial class PEditor
             return;
         }
 
-        if (!_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(row.LAccentItemAudio))
+        if (!_pEditorHost.PWindowAtelier.CAtelierRecordingExist(row.LAccentItemAudio))
         {
             PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.LAccentItemId, string.Empty, null));
             return;
@@ -133,7 +133,7 @@ public partial class PEditor
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.CEntryDraftPronunciation?.CPronunciationDraftVariety ?? string.Empty;
         CRespellingMark respelling =
-            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(language);
+            _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingMarkRead(language);
         if (respelling != _pAccentRespelling)
         {
             _pAccentRespelling = respelling;
@@ -196,7 +196,7 @@ public partial class PEditor
         try
         {
             await LEnsignImage.LEnsignVarietyLoad(
-                _pEditorHost.PWindowDeportment, language, varieties.Where(static variety => variety.Length > 0));
+                _pEditorHost.PWindowAtelier, language, varieties.Where(static variety => variety.Length > 0));
         }
         catch (Exception)
         {

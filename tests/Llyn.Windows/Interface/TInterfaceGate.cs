@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceGate
 {
-    internal static void TQuillAuthorSet(this LDesk desk, string name) => desk.LDeskQuill!.LQuillAuthorSet(name);
+    internal static void TQuillAuthorSet(this CDesk desk, string name) => desk.CDeskQuill!.LQuillAuthorSet(name);
 
     internal static CExample? TAnthologyExampleRead(LExample? example) => LAnthology.LAnthologyExampleRead(example);
 

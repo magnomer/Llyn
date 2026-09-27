@@ -314,25 +314,4 @@ public sealed class LSounding
             reflex.LReflexDraftAnchors,
             reflex.LReflexDraftAnatomy.LAnatomyToneIpa);
     }
-
-    internal static CFont LSoundingFontRead(LFont font)
-    {
-        return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
-    }
-
-    internal static CSpeechValue? LSoundingSpeechRead(LSpeechValue? value)
-    {
-        return value is null ? null : new CSpeechValue(value.LSpeechValueId, value.LSpeechValueName);
-    }
-
-    internal static CGlyph? LSoundingGlyphRead(LGlyph? glyph)
-    {
-        return glyph is null ? null : new CGlyph(glyph.LGlyphName, glyph.LGlyphSourced);
-    }
-
-    internal static IReadOnlyList<CReflexRule> LSoundingRuleRead(IReadOnlyList<LReflexRule> rules)
-    {
-        return LSplice.LSpliceBuild(
-            rules, static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded));
-    }
 }

@@ -32,12 +32,12 @@ Zero says the panel stands on none, so there is no place to come back to.
 
 ## `internal LFavorite(`
 
-Only the window deportment builds it over the engine's ports, so no view names a port.
+Only the panel factory builds it over the engine's ports, so no view names a port.
 
 ## `internal void LFavoriteVistaRestore(LVista vista)`
 
 Hands the vista to the panel state and the editor.
-It stays internal, so only the window deportment passes an engine vista.
+It stays internal, so only the atelier's vista restore passes an engine vista.
 
 ## `public IReadOnlyList<CVistaRow> LFavoriteRowsRead()`
 

@@ -5,11 +5,11 @@ namespace Llyn.UIDeportment;
 
 public sealed class QEsteem
 {
-    private readonly LDesk _qEsteemDesk;
+    private readonly CDesk _qEsteemDesk;
 
     private readonly LDisplay _qEsteemDisplay;
 
-    internal QEsteem(LDesk desk, LDisplay display)
+    internal QEsteem(CDesk desk, LDisplay display)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(display);
@@ -28,7 +28,7 @@ public sealed class QEsteem
 
     public int QEsteemGraspStep => _qEsteemDisplay.LDisplayGraspStep;
 
-    private long? QEsteemEntry => _qEsteemDesk.LDeskStoredRead();
+    private long? QEsteemEntry => _qEsteemDesk.CDeskStoredRead();
 
     public void QEsteemFavoriteSet(bool marked)
     {

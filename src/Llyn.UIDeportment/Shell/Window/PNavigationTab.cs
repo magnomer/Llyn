@@ -59,7 +59,7 @@ public partial class PWindow
             modes[index] = _pNavigationTabs[index].LTabMode;
         }
 
-        _lNavigation = new LNavigation(_lWindow, modes);
+        _lNavigation = new LNavigation(PWindowAtelier, modes);
         _pWindowSurface.PreviewKeyDown += PVoyageKeyHandle;
         _pWindowSurface.PreviewMouseDown += PVoyageMouseHandle;
     }
@@ -75,7 +75,7 @@ public partial class PWindow
         {
             PNavigationApply(restored);
             PNavigationFind(restored).LTabScribe?.Invoke(
-                _lWindow.LWindowAtelier.CAtelierSplitRead());
+                PWindowAtelier.CAtelierSplitRead());
         }
     }
 
@@ -426,8 +426,7 @@ public partial class PWindow
         IReadOnlyList<CMeaning> meanings;
         try
         {
-            meanings = _lWindow.LWindowWorkspace.QWorkspaceMeaningRead(
-                entryId, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"));
+            meanings = PWindowAtelier.CAtelierCatalog.CCatalogMeaningSort(entryId);
         }
         catch (Exception exception)
         {

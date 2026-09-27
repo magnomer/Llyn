@@ -22,7 +22,7 @@ Each named part is pulled from the place by its contract ID on every read.
 
 ## `internal void QWingAttach(PWindow host)`
 
-Puts the side to work on the window deportment, which builds the wing controller over the engine's ports.
+Puts the side to work on the host, which builds the wing controller over the engine's ports.
 It wires the controller's events to the window and the list, and its lectern to the display.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.

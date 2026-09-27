@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -7,19 +8,16 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QCorpus
 {
-    private LDesk QTranscriptDesk => _lCorpus.LCorpusDesk;
+    private CDesk QTranscriptDesk => _qCorpusDesk;
 
-    private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;
+    private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.CDeskQuill;
 
     private void QTranscriptDeskAttach()
     {
-        UserControl surface = _qCorpusSurface;
-        QTranscriptDesk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(surface, QTranscriptDraftRestore));
-        QTranscriptDesk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(surface, QTranscriptDesk.LDeskStateUpdate));
-        QTranscriptDesk.LDeskFailed += _qCorpusHost.PWindowFailureShow;
-        QTranscriptDesk.LDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
+        QTranscriptDesk.CDeskObserverAttach(
+            LObserver.LObserverCreate<Action>(static run => run()), QTranscriptDraftRestore);
+        QTranscriptDesk.CDeskFailed += _qCorpusHost.PWindowFailureShow;
+        QTranscriptDesk.CDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
     }
 
     private void QTranscriptDraftRestore()
@@ -29,17 +27,17 @@ internal sealed partial class QCorpus
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.QSessionUndo);
+        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.CSessionUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.QSessionRedo);
+        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.CSessionRedo);
     }
 
     public void QChronicleUpdate()
     {
-        (bool undo, bool redo) = _lCorpus.LCorpusSession.QSessionChronicleRead();
+        (bool undo, bool redo) = _lCorpus.LCorpusSession.CSessionChronicleRead();
         QCorpusBackward.IsEnabled = undo;
         QCorpusForward.IsEnabled = redo;
     }

@@ -27,7 +27,7 @@ public sealed class LImprint
 
     private string _lBylineWord = string.Empty;
 
-    internal LImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, Func<bool> unreadableSeam)
+    internal LImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -36,8 +36,8 @@ public sealed class LImprint
         _lDraftPort = drafts;
         _lEntryPort = entries;
         _lSettingsPort = settings;
-        LImprintDesk = new LDesk(drafts, "Source", unreadableSeam);
-        LImprintDesk.LDeskDraftPrepared += LImprintDraftUpdate;
+        LImprintDesk = new CDesk(drafts, "Source", envoy);
+        LImprintDesk.CDeskDraftPrepared += LImprintDraftUpdate;
     }
 
     public event Action? LImprintChanged;
@@ -50,7 +50,7 @@ public sealed class LImprint
 
     public event Action? LBylineChanged;
 
-    public LDesk LImprintDesk { get; }
+    public CDesk LImprintDesk { get; }
 
     public static CImprint LImprintEmpty { get; } = LImprintReferenceRead(new LReference(
         0,
@@ -61,7 +61,7 @@ public sealed class LImprint
         LStateValue.LStateValueUnspecified,
         LStateMark.LStateMarkUnspecified));
 
-    public bool LImprintHeld => LImprintDesk.LDeskHeld;
+    public bool LImprintHeld => LImprintDesk.CDeskHeld;
 
     public int LImprintBlankAt => _lImprintBlankAt;
 
@@ -73,32 +73,32 @@ public sealed class LImprint
 
     internal void LImprintVistaRestore(LVista vista)
     {
-        LImprintDesk.LDeskVistaRestore(vista);
+        LImprintDesk.CDeskVistaRestore(vista);
     }
 
     public void LImprintOpen(long? id)
     {
         _lImprintBlankAt = -1;
         LBylineReset();
-        LImprintDesk.LDeskStart(id);
+        LImprintDesk.CDeskStart(id);
     }
 
     public void LImprintCancel()
     {
         LBylineReset();
-        LImprintDesk.LDeskCancel();
+        LImprintDesk.CDeskCancel();
         LImprintChanged?.Invoke();
         LBylineChanged?.Invoke();
     }
 
     public void LImprintSave()
     {
-        if (!LImprintDesk.LDeskChangeCheck())
+        if (!LImprintDesk.CDeskChangeCheck())
         {
             return;
         }
 
-        LImprintDesk.LDeskFinish(true);
+        LImprintDesk.CDeskFinish(true);
     }
 
     private void LImprintDraftUpdate(LDraft draft)
@@ -130,29 +130,29 @@ public sealed class LImprint
 
     private int LImprintUsageRead()
     {
-        return LImprintDesk.LDeskStoredRead() is long stored
+        return LImprintDesk.CDeskStoredRead() is long stored
             ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored)
             : 0;
     }
 
     public void LImprintTitleSet(string text)
     {
-        LImprintDesk.LDeskDefer(new LRequestReferenceTitle(LImprintDesk.LDeskId, new LStateWritten(text)));
+        LImprintDesk.CDeskDefer(new LRequestReferenceTitle(LImprintDesk.CDeskId, new LStateWritten(text)));
     }
 
     public void LImprintYearSet(string text)
     {
-        LImprintDesk.LDeskDefer(new LRequestReferenceYear(LImprintDesk.LDeskId, new LStateWritten(text)));
+        LImprintDesk.CDeskDefer(new LRequestReferenceYear(LImprintDesk.CDeskId, new LStateWritten(text)));
     }
 
     public void LImprintUrlSet(string text)
     {
-        LImprintDesk.LDeskDefer(new LRequestReferenceUrl(LImprintDesk.LDeskId, new LStateWritten(text)));
+        LImprintDesk.CDeskDefer(new LRequestReferenceUrl(LImprintDesk.CDeskId, new LStateWritten(text)));
     }
 
     public void LImprintNoteSet(string text)
     {
-        LImprintDesk.LDeskDefer(new LRequestReferenceNote(LImprintDesk.LDeskId, new LStateWritten(text)));
+        LImprintDesk.CDeskDefer(new LRequestReferenceNote(LImprintDesk.CDeskId, new LStateWritten(text)));
     }
 
     public void LImprintKindSet(string? tag)
@@ -172,18 +172,18 @@ public sealed class LImprint
             return;
         }
 
-        LImprintDesk.LDeskSend(new LRequestReferenceKind(LImprintDesk.LDeskId, LReference.LReferenceKindParse(tag)));
+        LImprintDesk.CDeskSend(new LRequestReferenceKind(LImprintDesk.CDeskId, LReference.LReferenceKindParse(tag)));
     }
 
     private bool LImprintKindCheck(string tag)
     {
-        return LImprintDesk.LDeskRead()?.LDraftReference?.LReferenceKindMatch(LReference.LReferenceKindParse(tag))
+        return LImprintDesk.CDeskRead()?.LDraftReference?.LReferenceKindMatch(LReference.LReferenceKindParse(tag))
             ?? false;
     }
 
     public IReadOnlyList<CAuthorRow> LImprintCreditRead()
     {
-        IReadOnlyList<LAuthorRow> rows = LImprintDesk.LDeskRead()?.LDraftCreditRead() ?? [];
+        IReadOnlyList<LAuthorRow> rows = LImprintDesk.CDeskRead()?.LDraftCreditRead() ?? [];
         _lImprintCount = rows.Count;
         if (LImprintHeld)
         {
@@ -254,7 +254,7 @@ public sealed class LImprint
             return;
         }
 
-        LImprintDesk.LDeskSend(new LRequestAuthorRemoval(LImprintDesk.LDeskId, author));
+        LImprintDesk.CDeskSend(new LRequestAuthorRemoval(LImprintDesk.CDeskId, author));
     }
 
     public void LImprintAuthorRetreat(int? position, long? id)
@@ -285,7 +285,7 @@ public sealed class LImprint
             return;
         }
 
-        LImprintDesk.LDeskSend(new LRequestAuthorShift(LImprintDesk.LDeskId, author, to));
+        LImprintDesk.CDeskSend(new LRequestAuthorShift(LImprintDesk.CDeskId, author, to));
     }
 
     private void LImprintCreditCommit(int at, long author, string? text)
@@ -299,7 +299,7 @@ public sealed class LImprint
         }
 
         _lImprintBlankAt = -1;
-        LImprintDesk.LDeskSend(new LRequestAuthorAddition(LImprintDesk.LDeskId, name, at, author));
+        LImprintDesk.CDeskSend(new LRequestAuthorAddition(LImprintDesk.CDeskId, name, at, author));
     }
 
     public bool LImprintKeyApply(string key, int? position, long? id, string? text, long? chosen)
@@ -397,7 +397,7 @@ public sealed class LImprint
 
         try
         {
-            return _lDraftPort.LEngineBylineFind(LImprintDesk.LDeskId, LBylineWord, LBylineLimit);
+            return _lDraftPort.LEngineBylineFind(LImprintDesk.CDeskId, LBylineWord, LBylineLimit);
         }
         catch (Exception)
         {
@@ -438,7 +438,7 @@ public sealed class LImprint
         }
 
         _lImprintBlankAt = -1;
-        LImprintDesk.LDeskSend(new LRequestAuthorPick(LImprintDesk.LDeskId, picked, at, author));
+        LImprintDesk.CDeskSend(new LRequestAuthorPick(LImprintDesk.CDeskId, picked, at, author));
     }
 
     public void LBylineHide()

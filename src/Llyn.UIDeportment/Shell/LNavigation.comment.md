@@ -4,12 +4,12 @@
 
 Decides which panel of the main window shows, naming each tab by its key.
 Nothing here keeps a copy of the open tab.
-The posture's mode is the only truth, asked through the window deportment.
+The posture's mode is the only truth, asked through the atelier.
 The window view holds the tabs, their buttons and their hooks, and hands the hooks in as seams.
 
-## `public LNavigation(LWindow window, IReadOnlyList<string> tabs)`
+## `public LNavigation(CAtelier atelier, IReadOnlyList<string> tabs)`
 
-Takes the window deportment and the tab keys in navigation order.
+Takes the atelier and the tab keys in navigation order.
 The first tab opens the window when the posture names none.
 
 ## `public LVoyage LNavigationVoyage`

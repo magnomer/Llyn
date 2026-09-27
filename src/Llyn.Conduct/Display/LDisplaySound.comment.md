@@ -11,9 +11,10 @@ The engine owns the player, so the view holds no player of its own.
 It keeps its latest play's ticket, so it never stops another view's sound.
 The level is the workspace's one audio level, which the caller hands to each play.
 
-## `public LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)`
+## `internal LDisplaySound(`
 
 Holds the ports the row answers, the phonology reads, the morphology setting and the playback come from.
+The draft port answers the reflex anchors.
 
 ## `public LEntryDraft? LDisplayShown => _lDisplaySoundDraft;`
 
@@ -152,10 +153,11 @@ Asks the engine to fetch the shown entry's rime-book rows.
 
 The shown entry's fanqie blocks, as the engine divides them.
 
-## `public static IReadOnlyList<LFanqieRow> LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)`
+## `public (bool, Func<IReadOnlyList<long>, string, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)`
 
-The fanqie rows of every block in `groups` in order, for the anchor text of the reflex rows.
+Whether the shown entry's reflex rows can anchor to the fanqie rows of `groups`, and the labeller of one row.
 The caller passes blocks it already divided, so one show divides once.
+One call answers both, so the lectern sends one request per show.
 
 ## `public string LDisplayReadingRead()`
 

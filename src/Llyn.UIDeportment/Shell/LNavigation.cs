@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public sealed class LNavigation
 {
-    private readonly LWindow _lWindow;
+    private readonly CAtelier _lNavigationAtelier;
 
     private readonly IReadOnlyList<string> _lNavigationTabs;
 
-    public LNavigation(LWindow window, IReadOnlyList<string> tabs)
+    public LNavigation(CAtelier atelier, IReadOnlyList<string> tabs)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(tabs);
 
-        _lWindow = window;
+        _lNavigationAtelier = atelier;
         _lNavigationTabs = tabs;
     }
 
@@ -31,7 +32,7 @@ public sealed class LNavigation
 
         foreach (string tab in _lNavigationTabs)
         {
-            if (_lWindow.LWindowAtelier.CAtelierModeMatch(tab))
+            if (_lNavigationAtelier.CAtelierModeMatch(tab))
             {
                 return LNavigationAllowRead(tab, allowed);
             }
@@ -43,7 +44,7 @@ public sealed class LNavigation
     private string LNavigationAllowRead(string tab, Func<string, bool> allowed)
     {
         string restored = allowed(tab) ? tab : _lNavigationTabs[0];
-        _lWindow.LWindowAtelier.CAtelierModeSave(restored);
+        _lNavigationAtelier.CAtelierModeSave(restored);
         return restored;
     }
 
@@ -71,7 +72,7 @@ public sealed class LNavigation
                 continue;
             }
 
-            if (!_lWindow.LWindowAtelier.CAtelierModeMatch(other))
+            if (!_lNavigationAtelier.CAtelierModeMatch(other))
             {
                 continue;
             }
@@ -82,7 +83,7 @@ public sealed class LNavigation
             }
         }
 
-        _lWindow.LWindowAtelier.CAtelierModeSave(tab);
+        _lNavigationAtelier.CAtelierModeSave(tab);
         return true;
     }
 
@@ -90,7 +91,7 @@ public sealed class LNavigation
     {
         foreach (string tab in _lNavigationTabs)
         {
-            if (_lWindow.LWindowAtelier.CAtelierModeMatch(tab))
+            if (_lNavigationAtelier.CAtelierModeMatch(tab))
             {
                 return tab;
             }

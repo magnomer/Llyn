@@ -125,12 +125,12 @@ The localized kind, or nothing when the row has none.
 Builds the row for one draft reflex, printing the form `respelling` picks for the row's language.
 The mark also carries the slashes, and `folded` decides whether the row starts hidden.
 
-## `public static List<LReflexItem> LReflexItemScan(LWindow window, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)`
+## `public static List<LReflexItem> LReflexItemScan(CAtelier atelier, IReadOnlyList<CReflexDraft> reflexes, HashSet<string> folded)`
 
 The rows for `reflexes` in order, each built as the single form below builds it.
 The reading view hands its reflexes in whole, so it never walks a draft itself.
 
-## `public static LReflexItem LReflexItemCreate(LWindow window, CReflexDraft reflex, HashSet<string> folded)`
+## `public static LReflexItem LReflexItemCreate(CAtelier atelier, CReflexDraft reflex, HashSet<string> folded)`
 
 A row for one draft reflex, asking `CRespelling` for its language's reflex mark.
 The row is folded when its language is in `folded`.
@@ -144,7 +144,7 @@ The form of one draft reflex to print, as `CRespelling` resolves it under the ro
 
 A language or kind as the view prints it, through the `Reflex.` localization keys, or as the pack spells it.
 
-## `public static HashSet<string> LReflexFoldRead(LWindow window, string language)`
+## `public static HashSet<string> LReflexFoldRead(CAtelier atelier, string language)`
 
 The languages the pack of `language` folds away, read from its reflex rules.
 Empty for a blank language or a pack without rules.

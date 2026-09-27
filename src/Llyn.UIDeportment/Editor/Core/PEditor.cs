@@ -141,7 +141,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private TextBox PNoteContents => (TextBox)FindName(nameof(PNoteContents));
 
-    private long PEditorDraft => _lEditor.LEditorDesk.LDeskId;
+    private long PEditorDraft => _lEditor.LEditorDesk.CDeskId;
 
     internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)
     {
@@ -150,10 +150,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _pEditorLectern = lectern;
         _qRegard.QRegardAttach(editor);
         _qCadence.QCadenceAttach(host, editor);
-        _lEditor.LEditorDesk.LDeskStarted += PEditorStartUpdate;
+        _lEditor.LEditorDesk.CDeskStarted += PEditorStartUpdate;
         PEditorObserverAttach(_lEditor.LEditorDesk);
         _lEditor.LEditorDraftChanged += PEditorDraftShow;
-        _lEditor.LEditorDesk.LDeskFailed += host.PWindowFailureShow;
+        _lEditor.LEditorDesk.CDeskFailed += host.PWindowFailureShow;
         _lEditor.LEditorStateChanged += PEditorStateUpdate;
         _lEditor.LEditorStopped += PEditorStopUpdate;
         _lEditor.LEditorSounding.LSoundingChanged += PEditorFanqieUpdate;
@@ -204,39 +204,39 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal bool PEditorChangeCheck()
     {
-        return _lEditor.LEditorDesk.LDeskChangeCheck();
+        return _lEditor.LEditorDesk.CDeskChangeCheck();
     }
 
     internal event Action? PEditorChronicleChanged;
 
     internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
     {
-        return _lEditor.LEditorDesk.LDeskChronicleRead();
+        return _lEditor.LEditorDesk.CDeskChronicleRead();
     }
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorDesk.LDeskUndo);
+        QChronicle.QChronicleRun(_lEditor.LEditorDesk.CDeskUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorDesk.LDeskRedo);
+        QChronicle.QChronicleRun(_lEditor.LEditorDesk.CDeskRedo);
     }
 
     public void QChronicleUpdate()
     {
-        _lEditor.LEditorDesk.LDeskStateUpdate();
+        _lEditor.LEditorDesk.CDeskStateUpdate();
     }
 
     private void PEditorRequestDefer(LRequest request)
     {
-        _lEditor.LEditorDesk.LDeskDefer(request);
+        _lEditor.LEditorDesk.CDeskDefer(request);
     }
 
     private void PEditorRequestSend(LRequest request)
     {
-        _lEditor.LEditorDesk.LDeskSend(request);
+        _lEditor.LEditorDesk.CDeskSend(request);
     }
 
     private void PEditorSpeechSend()
@@ -244,28 +244,25 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _lEditor.LEditorTenure?.LTenureSpeechSet(PMarkerRead(), false);
     }
 
-    private void PEditorObserverAttach(LDesk desk)
+    private void PEditorObserverAttach(CDesk desk)
     {
-        desk.LDeskVigil.QVigilEntryAttach(
+        desk.CDeskVigil.LVigilEntryAttach(
             CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardFrequencyUpdate));
-        desk.LDeskVigil.QVigilEntryAttach(
+        desk.CDeskVigil.LVigilEntryAttach(
             CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardGraspUpdate));
-        desk.LDeskVigil.QVigilEntryAttach(
+        desk.CDeskVigil.LVigilEntryAttach(
             CSubject.CSubjectInflection, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceParadigmUpdate));
-        desk.LDeskVigil.QVigilEntryAttach(
+        desk.CDeskVigil.LVigilEntryAttach(
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PReflexPendingShow));
-        desk.LDeskVigil.QVigilObserverAttach(
+        desk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceScriptUpdate));
-        desk.LDeskVigil.QVigilObserverAttach(
+        desk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(this, PEditorFanqieUpdate));
-        desk.LDeskVigil.QVigilObserverAttach(
+        desk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
-        desk.LDeskVigil.QVigilObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
-        desk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskStateUpdate));
-        desk.LDeskVigil.QVigilDraftAttach(
-            CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
+        desk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.CDeskDraftUpdate));
+        desk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
     }
 
     private void PEditorStartUpdate()
@@ -307,9 +304,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     {
         PSpeakerName.Text = _lEditor.LEditorLanguage;
         PSpeakerFlagUpdate();
-        LFontFace.LFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
+        LFontFace.LFontApply(_pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
-        LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
+        LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTimbre.QTimbreTonal;
         PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
         PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
@@ -365,7 +362,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         IsEnabled = _lEditor.LEditorRunning;
         PEditorDiscard.IsEnabled = _lEditor.LEditorChanged;
         PEditorStore.IsEnabled = _lEditor.LEditorStorable;
-        (bool undo, bool redo) = _lEditor.LEditorDesk.LDeskChronicleRead();
+        (bool undo, bool redo) = _lEditor.LEditorDesk.CDeskChronicleRead();
         PEditorBackward.IsEnabled = undo;
         PEditorForward.IsEnabled = redo;
         PEditorChronicleChanged?.Invoke();

@@ -9,7 +9,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class LCard
 {
-    private readonly LDesk _lCardDesk;
+    private readonly CDesk _lCardDesk;
 
     private readonly LDraftPort _lDraftPort;
 
@@ -17,7 +17,7 @@ public sealed class LCard
 
     private readonly LPhonologyPort _lPhonologyPort;
 
-    internal LCard(LDesk desk, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology)
+    internal LCard(CDesk desk, LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(drafts);
@@ -87,11 +87,11 @@ public sealed class LCard
 
     public void LCardCitationSet(long cardId, long sentenceId, string title)
     {
-        _lCardDesk.LDeskSend(new LRequestSentenceReference(
-            _lCardDesk.LDeskId,
+        _lCardDesk.CDeskSend(new LRequestSentenceReference(
+            _lCardDesk.CDeskId,
             cardId,
             sentenceId,
-            _lEntryPort.LEngineCitationResolve(_lCardDesk.LDeskId, cardId, sentenceId, title)));
+            _lEntryPort.LEngineCitationResolve(_lCardDesk.CDeskId, cardId, sentenceId, title)));
     }
 
     public IReadOnlyList<CTag> LCardTagFind(string word)
@@ -118,17 +118,17 @@ public sealed class LCard
 
     public void LCardEtymologySet(string text)
     {
-        _lCardDesk.LDeskDefer(new LRequestEtymologyText(_lCardDesk.LDeskId, text));
+        _lCardDesk.CDeskDefer(new LRequestEtymologyText(_lCardDesk.CDeskId, text));
     }
 
     public void LCardEtymonAdd(long entryId)
     {
-        _lCardDesk.LDeskSend(new LRequestEtymonAddition(_lCardDesk.LDeskId, entryId, int.MaxValue));
+        _lCardDesk.CDeskSend(new LRequestEtymonAddition(_lCardDesk.CDeskId, entryId, int.MaxValue));
     }
 
     public void LCardEtymonRemove(long entryId)
     {
-        _lCardDesk.LDeskSend(new LRequestEtymonRemoval(_lCardDesk.LDeskId, entryId));
+        _lCardDesk.CDeskSend(new LRequestEtymonRemoval(_lCardDesk.CDeskId, entryId));
     }
 
     public void LCardMentionSave(string text, int start, int length, long entryId)
@@ -148,7 +148,7 @@ public sealed class LCard
 
     private LEtymologyDraft LCardEtymologyRead()
     {
-        return _lCardDesk.LDeskDraft?.LDraftContent.LEntryDraftEtymology ?? new LEtymologyDraft();
+        return _lCardDesk.CDeskDraft?.LDraftContent.LEntryDraftEtymology ?? new LEtymologyDraft();
     }
 
     private void LCardMentionSend(LMentionDraft? span, long entryId)
@@ -158,8 +158,8 @@ public sealed class LCard
             return;
         }
 
-        _lCardDesk.LDeskSend(new LRequestEtymologyMention(
-            _lCardDesk.LDeskId, span.LMentionDraftOffset, span.LMentionDraftLength, entryId));
+        _lCardDesk.CDeskSend(new LRequestEtymologyMention(
+            _lCardDesk.CDeskId, span.LMentionDraftOffset, span.LMentionDraftLength, entryId));
     }
 
     internal static CSentenceOrder LCardOrderRead(LSentenceOrder order)
@@ -230,8 +230,7 @@ public sealed class LCard
                 LSplice.LSpliceBuild(
                     card.LCardDraftTag, static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)),
                 LCardImageRead(card.LCardDraftImage),
-                LCardVideoRead(card.LCardDraftVideo),
-                LCardSheetRead(card.LCardDraftChild)));
+                LCardVideoRead(card.LCardDraftVideo)));
     }
 
     private static CSentenceDraft LCardSentenceRead(LSentenceDraft sentence)

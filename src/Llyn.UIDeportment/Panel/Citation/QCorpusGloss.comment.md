@@ -26,7 +26,7 @@ The row's own fill sets the list with this handler off, so only a pick reaches t
 ## `private void QGlossAddHandle(object sender, RoutedEventArgs e)`
 
 Adds a Gloss after the row whose plus was pressed, or at the end from the seed line.
-The language it starts in is the workspace gate's `QWorkspaceGlossRead`, read from the settings.
+The language it starts in is the catalog's `CCatalogGlossRead`, read from the settings.
 
 ## `private void QGlossRemoveHandle(object sender, RoutedEventArgs e)`
 

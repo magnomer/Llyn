@@ -23,10 +23,10 @@ public class PInput : UserControl
 
     internal void PInputAttach(PWindow host)
     {
-        _lEditor = host.PWindowDeportment.LWindowForge.QForgeInputCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowForge.QForgeInputCreate(host.PWindowEnvoy);
         PEditor.PEditorAttach(host, _lEditor, new LLectern(_lEditor.LEditorDisplay));
 
-        _pInputRelease = host.PWindowDeportment.LWindowAtelier.CAtelierObserverAttach(
+        _pInputRelease = host.PWindowAtelier.CAtelierObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PInputReset));
     }
 

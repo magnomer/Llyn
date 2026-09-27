@@ -10,7 +10,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PVideo : INotifyPropertyChanged
 {
-    private readonly LWindow _lWindow;
+    private readonly CAtelier _pVideoAtelier;
 
     private CStateValue _pVideoLocation = CStateValue.CStateValueEmpty;
     private CStateValue _pVideoTimestamp = CStateValue.CStateValueEmpty;
@@ -20,12 +20,12 @@ internal sealed class PVideo : INotifyPropertyChanged
     private bool _pVideoPlaying;
     private long _pVideoRow;
 
-    internal PVideo(LWindow window, CVideoDraft written)
+    internal PVideo(CAtelier atelier, CVideoDraft written)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(written);
 
-        _lWindow = window;
+        _pVideoAtelier = atelier;
         _pVideoRow = written.CVideoDraftId;
 
         PVideoLocation = written.CVideoDraftLocation;
@@ -44,7 +44,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = _lWindow.LWindowWorkspace.QWorkspaceLocationRead(value.CStateValueText);
+            PVideoPreview = _pVideoAtelier.CAtelierLocationRead(value.CStateValueText);
         }
     }
 

@@ -29,7 +29,7 @@ public partial class PEditor
         PEtymologyField.PEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
         PEtymologyField.PEtymologySourceShow(_lEditor.LEditorEtymonRead());
         PEtymologyField.PEtymologyMentionShow(
-            _pEditorHost.PWindowDeportment,
+            _pEditorHost,
             draft.CEntryDraftEtymology.CEtymologyDraftText,
             draft.CEntryDraftEtymology.CEtymologyDraftMentions,
             QLocalizationCatalog.QLocalizationTextRead("Mention.Silent"));

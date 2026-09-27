@@ -41,7 +41,7 @@ public sealed class TImprintField
 
         LReference held = imprint.LImprintDesk.TDeskRead()!.LDraftReference!;
         Assert.Equal("journal", held.LReferenceKindTag);
-        Assert.True(imprint.LImprintDesk.TDeskChronicleRead().LDeskBackward);
+        Assert.True(imprint.LImprintDesk.TDeskChronicleRead().CDeskBackward);
     }
 
     [Fact]

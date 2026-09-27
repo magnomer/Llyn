@@ -115,10 +115,7 @@ internal static class TAuditTruthSetting
         "Value",
     ];
 
-    public static readonly string[] TAuditTruthHandles =
-    [
-        "LWindow",
-    ];
+    public static readonly string[] TAuditTruthHandles = [];
 
     public static readonly string[] TAuditTreatVerbs =
     [

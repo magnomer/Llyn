@@ -8,11 +8,15 @@ internal sealed class QEnvoy : CEnvoy
 {
     private readonly Window _qEnvoySurface;
 
-    internal QEnvoy(Window surface)
+    private readonly PWindow _qEnvoyHost;
+
+    internal QEnvoy(Window surface, PWindow host)
     {
         ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(host);
 
         _qEnvoySurface = surface;
+        _qEnvoyHost = host;
     }
 
     public bool CEnvoyConfirm(string key)
@@ -33,5 +37,20 @@ internal sealed class QEnvoy : CEnvoy
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
+    }
+
+    public bool CEnvoyDiscardConfirm()
+    {
+        return _qEnvoyHost.PWindowDiscardConfirm();
+    }
+
+    public bool? CEnvoyLeaveConfirm()
+    {
+        return QSLeave.QSLeaveShow(_qEnvoySurface) switch
+        {
+            QSLeaveAnswer.QSLeaveAnswerStore => true,
+            QSLeaveAnswer.QSLeaveAnswerDiscard => false,
+            _ => null,
+        };
     }
 }

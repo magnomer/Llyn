@@ -42,7 +42,7 @@ public sealed class LTaxonomy
 
         LTaxonomyPanel = new LPanel(
             "Tag.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
         LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
         LTaxonomyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -168,13 +168,13 @@ public sealed class LTaxonomy
             _lTaxonomyMembership, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    internal void LTaxonomyVistaRestore(LWindow window)
+    internal void LTaxonomyVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LTaxonomyVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart("taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart("taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName),
+            atelier.CAtelierVistaStart(
                 "membership", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

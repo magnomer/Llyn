@@ -42,7 +42,7 @@ public sealed class LTenor
 
         LTenorPanel = new LPanel(
             "Register.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.LDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTenorPanel.LPanelCleared += LTenorEditorClear;
         LTenorPanel.LPanelEdited += LTenorEditorOpen;
         LTenorPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -171,14 +171,14 @@ public sealed class LTenor
             _lTenorCohort, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    internal void LTenorVistaRestore(LWindow window)
+    internal void LTenorVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LTenorVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "tenor", CSubject.CSubjectRegister, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "cohort", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

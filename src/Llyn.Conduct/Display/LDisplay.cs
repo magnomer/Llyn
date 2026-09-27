@@ -20,13 +20,14 @@ public sealed class LDisplay
 
     private LEntryDraft? _lDisplayLoaded;
 
-    public LDisplay(LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
+    internal LDisplay(
+        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(entries);
 
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
-        LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
+        LDisplaySound = new LDisplaySound(drafts, entries, phonology, media, settings);
         LDisplaySound.LDisplaySoundFailed += (key, exception) => LDisplayFailed?.Invoke(key, exception);
     }
 

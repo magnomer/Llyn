@@ -29,10 +29,6 @@ Writes the two count chips from the vita sheet the guild read, so both sides sho
 Shows the union section or its unsaved notice by the controller's union verdict.
 The guild driver calls it whenever it writes its own mode.
 
-## `private void QAutographObserverAttach(LDesk desk)`
-
-Registers the desk's own draft and state updates on it, marshalled to the window's thread.
-
 ## `private void QAutographStartUpdate()`
 
 A tenure was started: the union field is emptied and the name takes focus.

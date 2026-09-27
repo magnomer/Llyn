@@ -19,7 +19,7 @@ public sealed class LLecternSound
 
     private readonly ObservableCollection<LGlyphItem> _lLecternSoundGlyph = [];
 
-    private LWindow _lLecternSoundWindow = null!;
+    private CAtelier _lLecternSoundAtelier = null!;
 
     private UIElement _lLecternSoundSection = null!;
 
@@ -63,7 +63,7 @@ public sealed class LLecternSound
     }
 
     public void LLecternGlyphAttach(
-        LWindow window,
+        CAtelier atelier,
         ItemsControl transcriptions,
         UIElement section,
         ColumnDefinition lead,
@@ -71,7 +71,7 @@ public sealed class LLecternSound
         ItemsControl glyph,
         Action<string, string> glyphSeam)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(transcriptions);
         ArgumentNullException.ThrowIfNull(section);
         ArgumentNullException.ThrowIfNull(lead);
@@ -79,7 +79,7 @@ public sealed class LLecternSound
         ArgumentNullException.ThrowIfNull(glyph);
         ArgumentNullException.ThrowIfNull(glyphSeam);
 
-        _lLecternSoundWindow = window;
+        _lLecternSoundAtelier = atelier;
         _lLecternSoundSection = section;
         _lLecternSoundGutter = lead;
         _lLecternSoundHeading = label;
@@ -151,9 +151,7 @@ public sealed class LLecternSound
 
         _lLecternSoundDisplay.LDisplayReflexLoad();
         LLecternReflexShow();
-        LLecternAnchorShow(
-            LDisplaySound.LDisplayAnchorRead(_lLecternSoundDisplay.LDisplayFanqieDivide()),
-            _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
+        LLecternAnchorShow(_lLecternSoundDisplay.LDisplayFanqieDivide());
         LLecternPendingShow();
     }
 
@@ -268,7 +266,7 @@ public sealed class LLecternSound
         _lLecternSoundHeading.Text = LTranscriptionItem.LTranscriptionLabelFormat(section.LGlyphName);
         LFontFace.LFontGlyphApply(
             _lLecternSoundStrip.Resources,
-            _lLecternSoundWindow,
+            _lLecternSoundAtelier,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
         _lLecternSoundSection.Visibility = _lLecternSoundGlyph.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
         _lLecternSoundGutter.SharedSizeGroup = _lLecternSoundGlyph.Count == 0 ? null : "PReadingLabel";
@@ -288,9 +286,9 @@ public sealed class LLecternSound
     {
         _lLecternSoundReflex.Clear();
         HashSet<string> folded = LReflexItem.LReflexFoldRead(
-            _lLecternSoundWindow, _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
+            _lLecternSoundAtelier, _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
         foreach (LReflexItem row in LReflexItem.LReflexItemScan(
-            _lLecternSoundWindow, LSounding.LSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
+            _lLecternSoundAtelier, LSounding.LSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
         {
             _lLecternSoundReflex.Add(row);
         }
@@ -300,12 +298,11 @@ public sealed class LLecternSound
             _lLecternSoundReflex, _lLecternSoundFold, _lLecternSoundDisplay.LDisplayFoldOpened);
     }
 
-    private void LLecternAnchorShow(IReadOnlyList<LFanqieRow> fanqie, string headword)
+    private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)
     {
-        LReflexItem.LReflexAnchorApply(
-            _lLecternSoundReflex,
-            _lLecternSoundWindow.LWindowAnchorCheck(fanqie, headword),
-            (anchors, separator) => _lLecternSoundWindow.LWindowAnchorFormat(fanqie, anchors, headword, separator));
+        (bool anchorable, Func<IReadOnlyList<long>, string, string> format) =
+            _lLecternSoundDisplay.LDisplayAnchorRead(groups);
+        LReflexItem.LReflexAnchorApply(_lLecternSoundReflex, anchorable, format);
     }
 
     private void LLecternPendingShow()
@@ -318,10 +315,9 @@ public sealed class LLecternSound
 
     private void LLecternFanqieShow(IReadOnlyList<LFanqieGroup> groups)
     {
-        LLecternAnchorShow(
-            LDisplaySound.LDisplayAnchorRead(groups), _lLecternSoundDisplay.LDisplayShown!.LEntryDraftHeadword);
+        LLecternAnchorShow(groups);
         LFontFace.LFontApply(
-            _lLecternSoundWindow,
+            _lLecternSoundAtelier,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
             CFontRole.CFontRoleGlyph,
             _lLecternSoundFanqie);
@@ -334,7 +330,7 @@ public sealed class LLecternSound
     private void LLecternScriptShow()
     {
         LFontFace.LFontApply(
-            _lLecternSoundWindow,
+            _lLecternSoundAtelier,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
             CFontRole.CFontRoleGlyph,
             _lLecternSoundScript);
@@ -349,7 +345,7 @@ public sealed class LLecternSound
             LSounding.LSoundingParadigmRead(_lLecternSoundDisplay.LDisplayParadigmRead());
         _lLecternSoundDisplay.LDisplayInflectionStart();
         LFontFace.LFontApply(
-            _lLecternSoundWindow, _lLecternSoundDisplay.LDisplayLanguageRead(), _lLecternSoundParadigm);
+            _lLecternSoundAtelier, _lLecternSoundDisplay.LDisplayLanguageRead(), _lLecternSoundParadigm);
         _lLecternSoundInflection(
             slots,
             _lLecternSoundDisplay.LDisplayParadigmCheck(_lLecternSoundDisplay.LDisplayEntry),

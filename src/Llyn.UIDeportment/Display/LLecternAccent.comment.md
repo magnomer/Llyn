@@ -6,7 +6,7 @@ The reading view's accent deportment, standing between the veneer and [LDisplayS
 It draws the primary pronunciation and the accent rows.
 Flags come from `LEnsignImage`, and the respelling mark from `CRespelling`.
 
-## `public void LLecternAccentAttach(LWindow window, UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty tonal)`
+## `public void LLecternAccentAttach(CAtelier atelier, UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty tonal)`
 
 Holds the window, the pronunciation surface and its parts, and binds the accent list to its rows.
 `tonal` is the contour's own property, set as a value so no veneer type is named here.

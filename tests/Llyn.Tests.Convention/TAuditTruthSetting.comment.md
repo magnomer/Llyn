@@ -109,7 +109,7 @@ Driver types a driver field may hold as a handle rather than as a value.
 A handle is called on and passed on, so the field is skipped before any rule reads it.
 A Conduct type is a handle by rule and is never listed.
 A type from below Conduct is never a handle, so holding one is a mirror hit counted in the ledger.
-`LWindow` is the window deportment the veneer helpers take.
+The list is empty now that the veneer helpers take Conduct's atelier, which is a handle by rule.
 A type is matched as the binder shows it, with any nullable mark dropped.
 
 ## `public static readonly string[] TAuditTreatVerbs`

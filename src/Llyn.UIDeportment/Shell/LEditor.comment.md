@@ -5,7 +5,7 @@
 The entry editor's spine as a deportment: the desk it sits at, and every entry-level fact and command.
 It opens an entry or a fresh draft, stores, resets, and forwards the headword, reading, note and language.
 The favourite and grasp marks and the sound facts sit on its `LEditorEsteem` and `LEditorTimbre`.
-The card lookups go through the card deportment, and the sound rows ask the window deportment for pack facts.
+The card lookups go through the card deportment, and the sound rows ask the atelier's catalog for pack facts.
 The origin of a draft is the tab of the vista handed in, so the deportment holds no origin string.
 
 ## `private bool _lEditorFresh;`
@@ -80,7 +80,7 @@ Whether this editor is the input tab's, which alone shows the command rail.
 ## `public long? LEditorEntry`
 
 The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
-It forwards to `LDeskStoredRead`, so the stored id has one home.
+It forwards to `CDeskStoredRead`, so the stored id has one home.
 
 ## `public bool LEditorRunning`
 

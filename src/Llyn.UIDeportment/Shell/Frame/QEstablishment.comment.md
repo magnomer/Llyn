@@ -22,26 +22,20 @@ Each named part is pulled from the bar by its contract ID on every read.
 
 ## `internal void QEstablishmentAttach(PWindow host)`
 
-Puts the bar to work on the one engine and prints the first reading at once.
-The bar subscribes like a panel, so a change made anywhere reaches it without any panel telling it.
+Puts the bar to work with one attach to `CAtelierEstablishmentAttach`, which prints the first reading at once.
+The atelier reads again on every bulletin, so a change made anywhere reaches the bar without any panel telling it.
 The observer runs on the window's thread, which is the bar's thread too.
-Every bulletin is a reason to read again, whatever its kind.
-Sorting the kinds would save one cheap read and would miss the next kind added.
 
 ## `internal void QEstablishmentClose()`
 
 Stops listening before the engine goes.
 A second close detaches an observer already gone, which the engine ignores.
 
-## `private void QEstablishmentHook(PWindow host, Action<CBulletin> observer)`
+## `private void QEstablishmentShow(CEstablishment establishment)`
 
-Attaches the observer and keeps its detach for the close.
-
-## `private void QEstablishmentUpdate()`
-
-Reads the three numbers and prints them.
+Prints the three numbers the atelier read.
 The unsaved line is hidden when nothing is unsaved, so a calm window shows nothing on the left.
-A refused read leaves the last printed numbers standing, since the bar has no room for a failure.
+A refused read never arrives here, so the last printed numbers stand.
 The entry line picks its singular wording by count, which the locale files spell out.
 
 ## `private static string QEstablishmentSizeFormat(long bytes)`

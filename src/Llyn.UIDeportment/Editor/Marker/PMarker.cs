@@ -94,7 +94,7 @@ public partial class PEditor
 
     private void PMarkerTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (_lEditor.LEditorDesk.LDeskFilling)
+        if (_lEditor.LEditorDesk.CDeskFilling)
         {
             return;
         }

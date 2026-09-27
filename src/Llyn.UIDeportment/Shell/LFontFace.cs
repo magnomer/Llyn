@@ -24,17 +24,17 @@ public static class LFontFace
         }
     }
 
-    public static void LFontApply(LWindow window, string language, params DependencyObject[] surfaces)
+    public static void LFontApply(CAtelier atelier, string language, params DependencyObject[] surfaces)
     {
-        LFontApply(window, language, CFontRole.CFontRoleHeadword, surfaces);
+        LFontApply(atelier, language, CFontRole.CFontRoleHeadword, surfaces);
     }
 
-    public static void LFontApply(LWindow window, string language, CFontRole role, params DependencyObject[] surfaces)
+    public static void LFontApply(CAtelier atelier, string language, CFontRole role, params DependencyObject[] surfaces)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(surfaces);
 
-        CFont font = LFontRoleRead(window, language, role);
+        CFont font = LFontRoleRead(atelier, language, role);
         FontFamily? family = font.CFontFamily is string named ? new FontFamily(named) : null;
 
         foreach (DependencyObject surface in surfaces)
@@ -44,35 +44,35 @@ public static class LFontFace
         }
     }
 
-    public static void LFontGlyphApply(ResourceDictionary resources, LWindow window, string language)
+    public static void LFontGlyphApply(ResourceDictionary resources, CAtelier atelier, string language)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        CFont glyph = LFontRoleRead(window, language, CFontRole.CFontRoleGlyph);
+        CFont glyph = LFontRoleRead(atelier, language, CFontRole.CFontRoleGlyph);
         LFontResourceSet(
             resources, "Theme.Glyph.Family", glyph.CFontFamily is string named ? new FontFamily(named) : null);
         LFontResourceSet(resources, "Theme.Glyph.Size", glyph.CFontSize);
     }
 
-    public static void LFontExampleApply(ResourceDictionary resources, LWindow window, string language)
+    public static void LFontExampleApply(ResourceDictionary resources, CAtelier atelier, string language)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        CFont example = LFontRoleRead(window, language, CFontRole.CFontRoleExample);
+        CFont example = LFontRoleRead(atelier, language, CFontRole.CFontRoleExample);
         LFontResourceSet(
             resources, "Theme.Card.ExampleFamily", example.CFontFamily is string named ? new FontFamily(named) : null);
         LFontResourceSet(resources, "Theme.Card.ExampleSize", example.CFontSize);
 
-        CFont gloss = LFontRoleRead(window, language, CFontRole.CFontRoleGloss);
+        CFont gloss = LFontRoleRead(atelier, language, CFontRole.CFontRoleGloss);
         LFontResourceSet(
             resources, "Theme.Card.GlossFamily", gloss.CFontFamily is string glossed ? new FontFamily(glossed) : null);
         LFontResourceSet(resources, "Theme.Card.GlossSize", gloss.CFontSize);
         LFontResourceSet(resources, "Theme.Card.GlossStyle", LFontStyleRead(gloss.CFontStyle));
     }
 
-    private static CFont LFontRoleRead(LWindow window, string language, CFontRole role)
+    private static CFont LFontRoleRead(CAtelier atelier, string language, CFontRole role)
     {
         if (string.IsNullOrWhiteSpace(language))
         {
@@ -81,7 +81,7 @@ public static class LFontFace
 
         try
         {
-            return window.LWindowFontRead(language, role);
+            return atelier.CAtelierCatalog.CCatalogFontRead(language, role);
         }
         catch (Exception)
         {

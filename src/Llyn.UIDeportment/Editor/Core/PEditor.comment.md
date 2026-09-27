@@ -46,10 +46,11 @@ The command rail shows only for the editor that owns its entries, which is the i
 Stops the editor.
 The tenure is let go, searches in flight are called off, and playback is released.
 
-## `private void PEditorObserverAttach(LDesk desk)`
+## `private void PEditorObserverAttach(CDesk desk)`
 
 Registers the marshalling observers on the desk once, which puts them on every tenure it starts.
-The desk's own draft and state updates ride the same observers, so they run on the window's thread.
+The desk's own draft and state updates go through `CDeskObserverAttach`, which decides their subjects.
+The entry-level subjects stay here until job06-10 folds them into one `CEditor` event.
 
 ## `private void PEditorStartUpdate()`
 

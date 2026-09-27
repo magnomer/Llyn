@@ -12,7 +12,7 @@ Every change goes out as a request and comes back through the redraw.
 
 The chip line under the sentence field.
 
-## `internal void PSentenceMentionShow(LWindow window, string silent)`
+## `internal void PSentenceMentionShow(CAtelier atelier, string silent)`
 
 Redraws the chip line from the held Mentions over the sentence as the row shows it.
 The editor calls it after each redraw, because the row holds no engine to read headwords from.

@@ -61,7 +61,7 @@ public partial class PEditor
         IReadOnlyList<CSpeechValue> values;
         try
         {
-            values = _pEditorHost.PWindowDeportment.LWindowSpeechRead(_lEditor.LEditorLanguage);
+            values = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechRead(_lEditor.LEditorLanguage);
         }
         catch (Exception)
         {
@@ -82,7 +82,7 @@ public partial class PEditor
         CSpeechValue? created;
         try
         {
-            created = _pEditorHost.PWindowDeportment.LWindowSpeechAdd(_lEditor.LEditorLanguage, name);
+            created = _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogSpeechAdd(_lEditor.LEditorLanguage, name);
         }
         catch (Exception)
         {

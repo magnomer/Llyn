@@ -20,7 +20,7 @@ internal sealed partial class QCorpus
 
     private async void QCorpusWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier);
         QSpeakerLoad();
         QCorpusReset();
     }
@@ -55,7 +55,7 @@ internal sealed partial class QCorpus
         QChoice.QChoiceOrderApply(QRankDropdown, anthology.LPanelOrder);
         QGauzeRestore();
 
-        await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier);
 
         QGauzeBuild();
         _lCorpus.LCorpusAnthology.LAnthologyQuerySet(QQuery.Text ?? string.Empty);
@@ -100,7 +100,7 @@ internal sealed partial class QCorpus
     {
         QChoice.QChoiceFilterBuild(
             QGauzeList,
-            _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
+            _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
             _lCorpus.LCorpusAnthology.LAnthologyPanel.LPanelFilter,
             QGauzeHandle);
     }
@@ -151,7 +151,7 @@ internal sealed partial class QCorpus
         QAnthologyEmpty.Visibility = QLook.QLookVisibleRead(_qAnthologyList.Count == 0);
 
         QExcerptTally.Text = QCorpusTallyRead(_lCorpus.LCorpusAnthology.LAnthologyChosen);
-        QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.LDeskStoredRead());
+        QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
         _lCorpus.LCorpusRowsApply(read);
     }
 
@@ -231,7 +231,7 @@ internal sealed partial class QCorpus
 
     private void QCorpusStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusSession.QSessionSave();
+        _lCorpus.LCorpusSession.CSessionSave();
     }
 
     private void QCorpusViewerHandle(object sender, RoutedEventArgs e)

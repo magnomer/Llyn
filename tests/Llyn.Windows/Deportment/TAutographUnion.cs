@@ -44,7 +44,7 @@ public sealed class TAutographUnion
         Assert.True(guild.LGuildVitaShown);
         Assert.Equal("Adam", guild.TGuildVitaRead().CVitaName);
         Assert.Equal("Guild.WorkOne", guild.TGuildVitaRead().CVitaWork);
-        Assert.False(guild.LGuildAutograph.LDeskHeld);
+        Assert.False(guild.LGuildAutograph.CDeskHeld);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public sealed class TAutographUnion
         Assert.True(guild.TGuildSave());
         Assert.True(guild.LGuildAutographShown);
         Assert.True(guild.LGuildUnion.QUnionShown);
-        Assert.True(guild.LGuildAutograph.LDeskHeld);
+        Assert.True(guild.LGuildAutograph.CDeskHeld);
         Assert.Equal(
             ["Ada"],
             guild.TGuildRollRead().Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));

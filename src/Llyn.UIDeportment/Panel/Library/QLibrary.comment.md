@@ -20,7 +20,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QLibraryAttach(PWindow host)`
 
-Puts the panel to work on the window deportment, which builds its controller over the engine's ports.
+Puts the panel to work on the panel factory, which builds its controller over the engine's ports.
 It builds the controller with the seams the panel answers through and subscribes to its notices.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
@@ -42,7 +42,7 @@ Shows the mark on the sieve button while the vista hides any language.
 
 ## `internal async void QLibraryVistaRestore()`
 
-The window deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+The atelier starts the tab's vistas from the stored posture, so no vista crosses the veneer.
 Attaches the observers that carry each announcement onto the dispatcher.
 The dropdown lists the shared entry orderings, and the mark is drawn from the controller's verdict.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.

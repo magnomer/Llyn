@@ -125,9 +125,9 @@ internal sealed class QLibrary
     internal void QLibraryAttach(PWindow host)
     {
         _qLibraryHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lLibrary = host.PWindowDeportment.LWindowForge.QForgeLibraryCreate(
+        _lLibrary = host.PWindowForge.QForgeLibraryCreate(
             editor,
             lectern,
             QLibraryShownCheck,
@@ -193,11 +193,11 @@ internal sealed class QLibrary
         QChoice.QChoiceOrderApply(QOrderDropdown, panel.LPanelOrder);
         QLibrarySieveShow(QSieveMark);
 
-        await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QSieveList,
-            _qLibraryHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
+            _qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
             panel.LPanelFilter,
             QSieveHandle);
         _lLibrary.LLibraryInquirySet(QInquiry.Text);
@@ -206,7 +206,7 @@ internal sealed class QLibrary
 
     private async void QLibraryWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier);
         _lLibrary.LLibraryPanel.LPanelClear();
     }
 

@@ -1,67 +1,71 @@
 using System;
+using System.Collections.Generic;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public sealed class QForge
 {
-    private readonly LWindow _qForgeWindow;
+    private readonly CAtelier _qForgeAtelier;
 
-    internal QForge(LWindow window)
+    private readonly List<Action> _qForgeVistas = [];
+
+    internal QForge(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        _qForgeWindow = window;
+        _qForgeAtelier = atelier;
     }
 
-    public LEditor QForgeEditorCreate(Func<bool> unreadableSeam)
+    public LEditor QForgeEditorCreate(CEnvoy envoy)
     {
         return new LEditor(
-            _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
-            _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-            _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
-            _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
-            _qForgeWindow.LWindowAtelier.CAtelierMediaPort,
-            unreadableSeam);
+            _qForgeAtelier.CAtelierDraftPort,
+            _qForgeAtelier.CAtelierEntryPort,
+            _qForgeAtelier.CAtelierPhonologyPort,
+            _qForgeAtelier.CAtelierSettingsPort,
+            _qForgeAtelier.CAtelierMediaPort,
+            envoy);
     }
 
-    public LEditor QForgeInputCreate(Func<bool> unreadableSeam)
+    public LEditor QForgeInputCreate(CEnvoy envoy)
     {
-        return _qForgeWindow.LWindowVistaAdd(
-            QForgeEditorCreate(unreadableSeam), static (editor, window) => editor.LEditorVistaRestore(window));
+        return QForgeVistaAdd(
+            QForgeEditorCreate(envoy), editor => editor.LEditorVistaRestore(_qForgeAtelier));
     }
 
     public LCorpus QForgeCorpusCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
-        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
+        Func<int, bool> removalSeam, CEnvoy envoy)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LCorpus(
-                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierDraftPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 removalSeam,
-                unreadableSeam),
-            static (corpus, window) => corpus.LCorpusVistaRestore(window));
+                envoy),
+            corpus => corpus.LCorpusVistaRestore(_qForgeAtelier));
     }
 
     public LFavorite QForgeFavoriteCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LFavorite(
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (favorite, window) => favorite.LFavoriteVistaRestore(window));
+            favorite => favorite.LFavoriteVistaRestore(_qForgeAtelier));
     }
 
     public LGuild QForgeGuildCreate(
@@ -69,50 +73,50 @@ public sealed class QForge
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
         Func<string, string, bool> unionSeam,
-        Func<bool> unreadableSeam)
+        CEnvoy envoy)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LGuild(
-                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierDraftPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 shownSeam,
                 leaveSeam,
                 removalSeam,
                 unionSeam,
-                unreadableSeam),
-            static (guild, window) => guild.LGuildVistaRestore(window));
+                envoy),
+            guild => guild.LGuildVistaRestore(_qForgeAtelier));
     }
 
     public LLibrary QForgeLibraryCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LLibrary(
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (library, window) => library.LLibraryVistaRestore(window));
+            library => library.LLibraryVistaRestore(_qForgeAtelier));
     }
 
     public LPhonology QForgePhonologyCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LPhonology(
-                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierPhonologyPort,
+                _qForgeAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (phonology, window) => phonology.LPhonologyVistaRestore(window));
+            phonology => phonology.LPhonologyVistaRestore(_qForgeAtelier));
     }
 
     public LShelf QForgeShelfCreate(
@@ -121,102 +125,117 @@ public sealed class QForge
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
-        Func<bool> unreadableSeam)
+        CEnvoy envoy)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LShelf(
-                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierDraftPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 removalSeam,
-                unreadableSeam),
-            static (shelf, window) => shelf.LShelfVistaRestore(window));
+                envoy),
+            shelf => shelf.LShelfVistaRestore(_qForgeAtelier));
     }
 
     public LRepertoire QForgeRepertoireCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
-        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
+        Func<int, bool> removalSeam, CEnvoy envoy)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LRepertoire(
-                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierDraftPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 removalSeam,
-                unreadableSeam),
-            static (repertoire, window) => repertoire.LRepertoireVistaRestore(window));
+                envoy),
+            repertoire => repertoire.LRepertoireVistaRestore(_qForgeAtelier));
     }
 
     public LTaxonomy QForgeTaxonomyCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LTaxonomy(
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (taxonomy, window) => taxonomy.LTaxonomyVistaRestore(window));
+            taxonomy => taxonomy.LTaxonomyVistaRestore(_qForgeAtelier));
     }
 
     public LTenor QForgeTenorCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LTenor(
-                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierEntryPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (tenor, window) => tenor.LTenorVistaRestore(window));
+            tenor => tenor.LTenorVistaRestore(_qForgeAtelier));
     }
 
     public LXiesheng QForgeXieshengCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LXiesheng(
-                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierPhonologyPort,
+                _qForgeAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (xiesheng, window) => xiesheng.LXieshengVistaRestore(window));
+            xiesheng => xiesheng.LXieshengVistaRestore(_qForgeAtelier));
     }
 
     public LYunjing QForgeYunjingCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return _qForgeWindow.LWindowVistaAdd(
+        return QForgeVistaAdd(
             new LYunjing(
-                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
-                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
-                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+                _qForgeAtelier.CAtelierPhonologyPort,
+                _qForgeAtelier.CAtelierPortraitPort,
+                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
                 leaveSeam,
                 deleteSeam),
-            static (yunjing, window) => yunjing.LYunjingVistaRestore(window));
+            yunjing => yunjing.LYunjingVistaRestore(_qForgeAtelier));
+    }
+
+    public void QForgeVistaRestore()
+    {
+        foreach (Action restore in _qForgeVistas)
+        {
+            restore();
+        }
+    }
+
+    private QForgeHeld QForgeVistaAdd<QForgeHeld>(QForgeHeld held, Action<QForgeHeld> restore)
+    {
+        restore(held);
+        _qForgeVistas.Add(() => restore(held));
+        return held;
     }
 }

@@ -5,4 +5,7 @@ public interface CEnvoy
     bool CEnvoyConfirm(string key);
 
     void CEnvoyFailureShow(string key);
+
+    bool CEnvoyDiscardConfirm();
+    bool? CEnvoyLeaveConfirm();
 }

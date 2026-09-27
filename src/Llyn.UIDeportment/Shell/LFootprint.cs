@@ -10,20 +10,20 @@ public sealed class LFootprint
 
     private const int LFootprintDelay = 700;
 
-    private readonly LWindow _lWindow;
+    private readonly QPosture _lFootprintPosture;
 
-    public LFootprint(LWindow window)
+    public LFootprint(QPosture posture)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(posture);
 
-        _lWindow = window;
+        _lFootprintPosture = posture;
     }
 
     public LCapsuleWindow? LFootprintRead(
         double left, double top, double width, double height, double minWidth, double minHeight)
     {
         return LFootprintPlace(
-            _lWindow.LWindowPosture.QPostureRead().LCapsuleContentWindow,
+            _lFootprintPosture.QPostureRead().LCapsuleContentWindow,
             left,
             top,
             width,
@@ -94,6 +94,6 @@ public sealed class LFootprint
             return;
         }
 
-        _lWindow.LWindowPosture.QPostureWindowDefer(state, minimized, delay);
+        _lFootprintPosture.QPostureWindowDefer(state, minimized, delay);
     }
 }

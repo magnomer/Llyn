@@ -89,11 +89,11 @@ internal sealed class QWing
 
     internal async void QWingRestore(string tab, long? id)
     {
-        _lWing.LWingVistaRestore(_qWingHost.PWindowDeportment, tab);
+        _lWing.LWingVistaRestore(_qWingHost.PWindowAtelier, tab);
         _lWing.LWingObserverAttach(LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexShow));
         QWingDisplay.PDisplayObserverAttach();
         _qIndex.QIndexClear();
-        await LEnsignImage.LEnsignLoad(_qWingHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qWingHost.PWindowAtelier);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderHandle, QIndex.QIndexOrder);
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _lWing.LWingOrder);

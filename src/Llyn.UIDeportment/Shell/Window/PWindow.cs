@@ -13,8 +13,6 @@ public partial class PWindow
 {
     private readonly Window _pWindowSurface;
 
-    private readonly LWindow _lWindow;
-
     private readonly PLayout _pLayout;
 
     private readonly LFootprint _lFootprint;
@@ -51,11 +49,13 @@ public partial class PWindow
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
-        _lWindow = new LWindow(atelier);
-        _pLayout = new PLayout(_lWindow);
+        PWindowAtelier = atelier;
+        PWindowForge = new QForge(atelier);
+        PWindowPosture = new QPosture(atelier.CAtelierPathRead);
+        _pLayout = new PLayout(PWindowPosture);
 
         _pWindowSurface = QContract.QContractSheetFind<Window>("PWindow");
-        PWindowEnvoy = new QEnvoy(_pWindowSurface);
+        PWindowEnvoy = new QEnvoy(_pWindowSurface, this);
         _qEstablishment = new QEstablishment(
             QContract.QContractFind<FrameworkElement>(_pWindowSurface, "PEstablishment"));
         _qTaxonomy = new QTaxonomy(PTaxonomy);
@@ -70,7 +70,7 @@ public partial class PWindow
         _qDuplex = new QDuplex(PDuplex);
         _qGuild = new QGuild(PGuild);
         _pWindowSurface.Tag = this;
-        _pWindowSurface.SetValue(PMention.PMentionWindowProperty, _lWindow);
+        _pWindowSurface.SetValue(PMention.PMentionHostProperty, this);
 
         PRoof.MouseLeftButtonDown += PRoofHandle;
         PLogo.MouseLeftButtonDown += PLogoHandle;
@@ -125,7 +125,7 @@ public partial class PWindow
         _pWindowSurface.PreviewKeyDown += PChronicleKeyHandle;
         _pWindowSurface.Deactivated += PMentionLeaveHandle;
 
-        _lFootprint = new LFootprint(_lWindow);
+        _lFootprint = new LFootprint(PWindowPosture);
         PFootprintRestore();
         _pWindowSurface.Loaded += (_, _) => PFootprintAttach();
 
@@ -139,7 +139,11 @@ public partial class PWindow
 
     internal PLayout PWindowLayout => _pLayout;
 
-    internal LWindow PWindowDeportment => _lWindow;
+    internal CAtelier PWindowAtelier { get; }
+
+    internal QForge PWindowForge { get; }
+
+    internal QPosture PWindowPosture { get; }
 
     internal PWindowScreen PWindowScreen { get; } = new();
 
@@ -189,16 +193,16 @@ public partial class PWindow
 
     internal LWing PWindowWingCreate()
     {
-        return new LWing(_lWindow);
+        return new LWing(PWindowAtelier);
     }
 
     private void PWindowAttach()
     {
-        LEnsignImage.LEnsignAttach(_lWindow);
+        LEnsignImage.LEnsignAttach(PWindowAtelier);
 
-        _lWindow.LWindowAtelier.CAtelierLeftoverSweep();
+        PWindowAtelier.CAtelierLeftoverSweep();
 
-        CWorkspaceState state = _lWindow.LWindowWorkspace.QWorkspaceStateRead();
+        CWorkspaceState state = PWindowAtelier.CAtelierStateRead();
 
         PInput.PInputAttach(this);
         _qLibrary.QLibraryAttach(this);
@@ -241,7 +245,11 @@ public partial class PWindow
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)
     {
-        bool confirmed = PWindowDiscardConfirm();
+        PWindowClosureRun(e, PWindowDiscardConfirm());
+    }
+
+    private void PWindowClosureRun(CancelEventArgs e, bool confirmed)
+    {
         e.Cancel = !confirmed;
 
         if (confirmed)
@@ -318,7 +326,7 @@ public partial class PWindow
         _qFavorite.QFavoriteClose();
         _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();
-        _lWindow.LWindowPosture.Dispose();
-        _lWindow.LWindowAtelier.Dispose();
+        PWindowPosture.Dispose();
+        PWindowAtelier.Dispose();
     }
 }

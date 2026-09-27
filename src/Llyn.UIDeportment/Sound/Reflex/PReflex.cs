@@ -138,7 +138,7 @@ public partial class PEditor
         PReflexBlock.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorReflexShown);
         PReflexRenewal.Visibility = PReflexBlock.Visibility;
 
-        _pReflexFolded = LReflexItem.LReflexFoldRead(_pEditorHost.PWindowDeportment, language);
+        _pReflexFolded = LReflexItem.LReflexFoldRead(_pEditorHost.PWindowAtelier, language);
 
         PCard.PCardRowShow(
             _pReflexItem,
@@ -221,7 +221,7 @@ public partial class PEditor
 
     private LReflexItem PReflexCreate(CReflexDraft reflex)
     {
-        LReflexItem row = LReflexItem.LReflexItemCreate(_pEditorHost.PWindowDeportment, reflex, _pReflexFolded);
+        LReflexItem row = LReflexItem.LReflexItemCreate(_pEditorHost.PWindowAtelier, reflex, _pReflexFolded);
         row.PropertyChanged += PReflexChangeHandle;
         return row;
     }
@@ -231,7 +231,7 @@ public partial class PEditor
         return PReflexUpdate(
             row,
             reflex,
-            _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierRespelling.CRespellingReflexRead(
+            _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingReflexRead(
                 reflex.CReflexDraftLanguage.Trim()));
     }
 

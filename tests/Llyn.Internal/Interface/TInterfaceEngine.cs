@@ -310,6 +310,9 @@ internal static partial class TInterface
     internal static LSettings TEngineSettingsRead(this LEngine engine) =>
         engine.LEngineSettings.LEngineSettingsRead();
 
+    internal static string TEngineTextRead(this LEngine engine, string key) =>
+        engine.LEngineSettings.LEngineTextRead(key);
+
     internal static string TEngineLocalizationRead(this LEngine engine)
     {
         return engine.LEngineSettings.LEngineLocalizationRead();

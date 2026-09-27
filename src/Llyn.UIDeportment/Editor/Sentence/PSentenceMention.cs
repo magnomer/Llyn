@@ -9,8 +9,8 @@ internal sealed partial class PSentence
 
     public PMentionLine PSentenceChip { get; } = new();
 
-    internal void PSentenceMentionShow(LWindow window, string silent)
+    internal void PSentenceMentionShow(CAtelier atelier, string silent)
     {
-        PSentenceChip.PMentionLineShow(window, _pSentenceText.CStateValueText, _pSentenceMention, silent);
+        PSentenceChip.PMentionLineShow(atelier, _pSentenceText.CStateValueText, _pSentenceMention, silent);
     }
 }

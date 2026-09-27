@@ -7,11 +7,11 @@ The driver holds its controls, and the desk on its deportment holds the tenure f
 The driver keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
 Every change goes through the desk's text gate, which defers typing and sends a pick or a row at once.
 
-## `private LDesk QTranscriptDesk => _lCorpus.LCorpusDesk;`
+## `private CDesk QTranscriptDesk => _lCorpus.LCorpusDesk;`
 
 The desk holding the Example being edited, read off the deportment each time.
 
-## `private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.LDeskQuill;`
+## `private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.CDeskQuill;`
 
 The desk's text edits, which build every request the transcript makes.
 It is null while no tenure is held or the desk fills its controls.
@@ -19,7 +19,7 @@ It is null while no tenure is held or the desk fills its controls.
 ## `private void QTranscriptDeskAttach()`
 
 Wires the desk's notices once, and a failure and a refused hold both go straight to the window.
-The draft observer and the tenure observer are bound to the surface, since the driver is no control.
+The desk decides which bulletins refresh it, and the driver hands only its marshaller and its draft reread.
 
 ## `private void QTranscriptDraftRestore()`
 

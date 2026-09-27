@@ -133,9 +133,9 @@ internal sealed partial class QTaxonomy
     internal void QTaxonomyAttach(PWindow host)
     {
         _qTaxonomyHost = host;
-        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lTaxonomy = host.PWindowDeportment.LWindowForge.QForgeTaxonomyCreate(
+        _lTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(
             _lEditor, lectern, QTaxonomyShownCheck, QTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelChanged += QTaxonomyModeUpdate;

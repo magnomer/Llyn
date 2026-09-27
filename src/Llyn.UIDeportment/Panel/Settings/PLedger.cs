@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,92 +12,50 @@ public partial class PSettings
 {
     private readonly ObservableCollection<PLedgerItem> _pLedgerList = [];
 
-    private void PLedgerBuild()
+    private void PLedgerShow(IReadOnlyList<CLedgerPage> pages)
     {
-        _pLedgerList.Clear();
-        foreach ((string child, _, _) in PDialTableRead())
+        if (_pLedgerList.Count == 0)
         {
-            _pLedgerList.Add(new PLedgerItem(child, PLedgerTitleRead(child)));
+            foreach (CLedgerPage page in pages)
+            {
+                _pLedgerList.Add(new PLedgerItem(page.CLedgerPageChild, page.CLedgerPageTitle));
+            }
+
+            PLedger.ItemsSource = _pLedgerList;
+            PLedgerEmpty.Visibility = _pLedgerList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        PLedger.ItemsSource = _pLedgerList;
-        PLedgerEmpty.Visibility = _pLedgerList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (CLedgerPage page in pages)
+        {
+            foreach (PLedgerItem item in _pLedgerList)
+            {
+                if (string.Equals(item.PLedgerItemChild, page.CLedgerPageChild, StringComparison.Ordinal))
+                {
+                    item.PLedgerItemTitle = page.CLedgerPageTitle;
+                    item.PLedgerItemMeta = page.CLedgerPageMeta;
+                }
+            }
+        }
+
         PLedgerMetaApply();
-    }
-
-    private string PLedgerTitleRead(string child)
-    {
-        return QLocalizationCatalog.QLocalizationTextRead("Settings." + child);
-    }
-
-    private string PLedgerMetaRead(string child)
-    {
-        CSettings settings = PSettingsWindow.LWindowWorkspace.QWorkspaceSettingsRead();
-
-        switch (child)
-        {
-            case "Workspace":
-                return PSettingsWindow.LWindowWorkspace.QWorkspacePathFormat();
-
-            case "Language":
-                return PLedgerLanguageRead(settings.CSettingsLocalization);
-
-            case "Transcription":
-                return QLocalizationCatalog.QLocalizationTextRead(
-                    settings.CSettingsRespelled ? "Settings.On" : "Settings.Off");
-
-            case "Listing":
-                return QLocalizationCatalog.QLocalizationTextRead(
-                    settings.CSettingsEpithet ? "Settings.On" : "Settings.Off");
-
-            case "Web":
-                return string.Format(
-                    CultureInfo.CurrentCulture,
-                    QLocalizationCatalog.QLocalizationTextRead("Settings.Tally"),
-                    settings.CSettingsOnline,
-                    2);
-
-            case "Layout":
-                return QLocalizationCatalog.QLocalizationTextRead(
-                    PSettingsWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked
-                        ? "Layout.LinkedMeta"
-                        : "Layout.FreeMeta");
-
-            default:
-                return string.Empty;
-        }
-    }
-
-    private void PLedgerTitleApply()
-    {
-        foreach (PLedgerItem item in _pLedgerList)
-        {
-            item.PLedgerItemTitle = PLedgerTitleRead(item.PLedgerItemChild);
-        }
     }
 
     private void PLedgerMetaApply()
     {
         foreach (PLedgerItem item in _pLedgerList)
         {
-            item.PLedgerItemMeta = PLedgerMetaRead(item.PLedgerItemChild);
+            if (string.Equals(item.PLedgerItemChild, "Layout", StringComparison.Ordinal))
+            {
+                item.PLedgerItemMeta = PSettingsAtelier.CAtelierLedger.CLedgerMetaRead(
+                    item.PLedgerItemChild, PSettingsPosture.QPostureRead().LCapsuleContentLinked);
+            }
         }
     }
 
     private void PLedgerFind(string text)
     {
-        TextInfo casing = CultureInfo.CurrentCulture.TextInfo;
-        string wanted = casing.ToLower(text.Trim());
-        Dictionary<string, string[]> keys = PDialTableRead()
-            .ToDictionary(row => row.PDialChild, row => row.PDialKeys, StringComparer.Ordinal);
-
-        List<PLedgerItem> shown = _pLedgerList
-            .Where(item => wanted.Length == 0 || keys[item.PLedgerItemChild]
-                .Prepend("Settings." + item.PLedgerItemChild + "Helper")
-                .Prepend("Settings." + item.PLedgerItemChild)
-                .Select(key => casing.ToLower(QLocalizationCatalog.QLocalizationTextRead(key)))
-                .Any(label => label.Contains(wanted, StringComparison.Ordinal)))
-            .ToList();
+        HashSet<string> found = PSettingsAtelier.CAtelierLedger.CLedgerFind(text).ToHashSet(StringComparer.Ordinal);
+        List<PLedgerItem> shown = _pLedgerList.Where(item => found.Contains(item.PLedgerItemChild)).ToList();
 
         PLedger.ItemsSource = shown;
         PLedgerEmpty.Visibility = shown.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -150,13 +107,5 @@ public partial class PSettings
     private void PWinnowHandle(object sender, TextChangedEventArgs e)
     {
         PLedgerFind(PWinnow.Text ?? string.Empty);
-    }
-
-    private string PLedgerLanguageRead(string localization)
-    {
-        return PLocalization.Items
-            .OfType<ComboBoxItem>()
-            .FirstOrDefault(item => string.Equals(item.Tag as string, localization, StringComparison.Ordinal))
-            ?.Content as string ?? localization;
     }
 }

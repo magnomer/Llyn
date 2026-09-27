@@ -69,7 +69,7 @@ internal sealed partial class QCorpus
             : _qTranscriptGloss.Count;
 
         QTranscriptQuill?.LQuillGlossAdd(
-            0, 0, _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceGlossRead(), position);
+            0, 0, _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogGlossRead(), position);
     }
 
     private void QGlossRemoveHandle(object sender, RoutedEventArgs e)
@@ -140,7 +140,7 @@ internal sealed partial class QCorpus
         }
 
         QTranscriptQuill?.LQuillGlossAdd(
-            0, 0, _qCorpusHost.PWindowDeportment.LWindowWorkspace.QWorkspaceGlossRead(), 0);
+            0, 0, _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogGlossRead(), 0);
 
         QTranscriptGlossLine.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
         {

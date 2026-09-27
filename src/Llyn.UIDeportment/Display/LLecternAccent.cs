@@ -16,7 +16,7 @@ public sealed class LLecternAccent
 
     private readonly ObservableCollection<LAccentItem> _lLecternAccentRow = [];
 
-    private LWindow _lLecternAccentWindow = null!;
+    private CAtelier _lLecternAccentAtelier = null!;
 
     private UIElement _lLecternAccentSurface = null!;
 
@@ -44,7 +44,7 @@ public sealed class LLecternAccent
     }
 
     public void LLecternAccentAttach(
-        LWindow window,
+        CAtelier atelier,
         UIElement surface,
         ColumnDefinition lead,
         Image flag,
@@ -56,7 +56,7 @@ public sealed class LLecternAccent
         DependencyObject contour,
         DependencyProperty tonal)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(lead);
         ArgumentNullException.ThrowIfNull(flag);
@@ -68,7 +68,7 @@ public sealed class LLecternAccent
         ArgumentNullException.ThrowIfNull(contour);
         ArgumentNullException.ThrowIfNull(tonal);
 
-        _lLecternAccentWindow = window;
+        _lLecternAccentAtelier = atelier;
         _lLecternAccentSurface = surface;
         _lLecternAccentLead = lead;
         _lLecternAccentFlag = flag;
@@ -88,7 +88,7 @@ public sealed class LLecternAccent
             _lLecternAccentDisplay.LDisplayShown!.LEntryDraftLanguage,
             _lLecternAccentDisplay.LDisplayFlaggedCheck(),
             _lLecternAccentDisplay.LDisplayShown!.LEntryDraftPronunciation,
-            _lLecternAccentWindow.LWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
+            _lLecternAccentAtelier.CAtelierRespelling.CRespellingMarkRead(
                 _lLecternAccentDisplay.LDisplayShown!.LEntryDraftLanguage),
             LSounding.LSoundingPronunciationRead(_lLecternAccentDisplay.LDisplayAccentRead()));
     }
@@ -160,7 +160,7 @@ public sealed class LLecternAccent
         try
         {
             await LEnsignImage.LEnsignVarietyLoad(
-                _lLecternAccentWindow, language, varieties.Where(static variety => variety.Length > 0));
+                _lLecternAccentAtelier, language, varieties.Where(static variety => variety.Length > 0));
         }
         catch (Exception)
         {

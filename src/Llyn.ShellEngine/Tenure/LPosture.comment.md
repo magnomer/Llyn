@@ -27,7 +27,7 @@ The record of one tab in `state`, which the vista start reads its ordering and f
 ## `public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)`
 
 Starts the tab's vista on the order and filter stored under it, and on the stored split.
-The deportments reach it through `LWindow`, since the veneer names no posture after plan 13.
+The deportments reach it through `CAtelier`, since the veneer names no posture after plan 13.
 A tab with no stored order lists by `fallback`, and one with no stored filter hides nothing.
 The vista's starting order and filter are marked, so the first bulletin stores only what moved since.
 The vista's editing event is taken here, since only a vista started through the posture is the session's.

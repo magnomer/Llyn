@@ -25,7 +25,18 @@ public static class LObserver
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(target);
 
-        Dispatcher dispatcher = surface.Dispatcher;
+        return LObserverCreate(surface.Dispatcher, target);
+    }
+
+    public static Action<LStep> LObserverCreate<LStep>(Action<LStep> target)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        return LObserverCreate(Dispatcher.CurrentDispatcher, target);
+    }
+
+    private static Action<LStep> LObserverCreate<LStep>(Dispatcher dispatcher, Action<LStep> target)
+    {
         return step =>
         {
             if (dispatcher.CheckAccess())

@@ -8,6 +8,10 @@ It keeps the state through Deportment's Capsule, in a file under the workspace r
 It holds one state record and swaps it whole on every change.
 It reloads whenever the workspace root it reads has moved, so no engine notice is needed.
 
+## `public event Action? QPostureCleared;`
+
+Raised once the stored widths are dropped, so `PLayout` puts the grids back at their markup widths.
+
 ## `internal QPosture(Func<string> root)`
 
 Keeps the reader of the current workspace root, and loads nothing until first asked.
@@ -40,6 +44,7 @@ Nothing is written while no tab's record moved.
 ## `public void QPostureLayoutReset()`
 
 Drops the stored width of every tab, keeping the tabs.
+It then raises `QPostureCleared`, so the layout on screen follows in the same call.
 
 ## `public void Dispose()`
 

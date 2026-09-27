@@ -21,8 +21,8 @@ It is internal because the navigation tab opens the prospect list on it.
 
 ## `internal void PInputAttach(PWindow host)`
 
-Puts the panel to work on the editor the window deportment builds, and opens the form empty.
-The window deportment builds it with the input vista already restored.
+Puts the panel to work on the editor the panel factory builds, and opens the form empty.
+The factory builds it with the input vista already restored.
 
 ## `internal void PInputReset()`
 
@@ -54,7 +54,7 @@ The editor this panel attaches stands on no entry, because this panel creates th
 A form that stood on one would turn the next store into an update of it.
 That is how a session's second entry used to overwrite its first.
 
-### `_pInputRelease = host.PWindowDeportment.LWindowObserverAttach(`
+### `_pInputRelease = host.PWindowAtelier.CAtelierObserverAttach(`
 
 The panel listens for the workspace moving and for nothing else.
 It lists nothing, so a stored record elsewhere is none of its business.

@@ -11,19 +11,19 @@ namespace Llyn.UIDeportment;
 
 internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
-    private readonly LWindow _lWindow;
+    private readonly CAtelier _pImageAtelier;
 
     private CStateValue _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
-    internal PImage(LWindow window, CImageDraft written)
+    internal PImage(CAtelier atelier, CImageDraft written)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(written);
 
-        _lWindow = window;
+        _pImageAtelier = atelier;
         _pImageRow = written.CImageDraftId;
         _pImageLocation = written.CImageDraftLocation;
     }
@@ -161,7 +161,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = _lWindow.LWindowWorkspace.QWorkspaceLocationRead(_pImageLocation.CStateValueText);
+        Uri? address = _pImageAtelier.CAtelierLocationRead(_pImageLocation.CStateValueText);
         if (address is null)
         {
             PImagePreview = null;

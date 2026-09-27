@@ -35,14 +35,9 @@ The declaration's default and cancel keys are released so Close answers both.
 
 ## `private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(`
 
-Shows the declaration and reads the gate's row for every entry in file order.
+Shows the declaration and hands back the rows Accept read.
 Null when the window closes without Accept.
-The rows are read either way, so the dialog's answer decides only what is handed back.
 The library controller maps the rows to the engine's intakes, so this dialog names no engine type.
-
-## `private static IReadOnlyList<CCardDraft> QSCustomsChildRead(CCardDraft card)`
-
-The cards nested under a card, handed to the gate's count as its way down the tree.
 
 ## `private void QSCustomsRowApply(FrameworkElement container, object item, string? _)`
 
@@ -82,9 +77,14 @@ Every row is filled again, since the gate may now answer differently for it.
 
 Hands the picked candidate's id to the gate, whose answer lights or darkens Accept.
 
-## `private string QSCustomsLossFormat(LEntryDraft? stored)`
+## `private void QSCustomsAcceptHandle(object sender, RoutedEventArgs e)`
 
-The meanings and collocations a Replace would drop, counted by the gate over the stored entry.
+Reads the gate's row for every entry in file order, then closes the dialog as accepted.
+The rows are read here, on the one Accept, so opening the dialog sends no second request.
+
+## `private string QSCustomsLossFormat((int, int)? stored)`
+
+The meanings and collocations a Replace would drop, counted by `CCatalogEntryLoad` over the stored entry.
 The format is the window's localized text, filled with both counts.
 A missing format falls back to its own key, so a broken catalog still shows something.
 Blank when no entry was read.

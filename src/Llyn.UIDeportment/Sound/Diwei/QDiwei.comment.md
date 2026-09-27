@@ -5,9 +5,9 @@
 The driver of the category page, over the Veneer's `PDiwei` surface the yunjing panel places.
 Its list is attached to `QDiweiItem.QDiweiItemApply`, which fills each section and the lists inside it.
 
-## `private LWindow _lWindow = null!;`
+## `private CAtelier _qDiweiAtelier = null!;`
 
-The window deportment, asked only for the language fonts.
+The atelier, asked only for the language fonts.
 
 ## `private LYunjing _lYunjing = null!;`
 
@@ -21,9 +21,9 @@ Keeps the surface and binds the entry and switch commands the chips raise, then 
 
 Each named part of the surface is read through `QContract.QContractFind`.
 
-## `internal void QDiweiAttach(LWindow window, LYunjing yunjing)`
+## `internal void QDiweiAttach(CAtelier atelier, LYunjing yunjing)`
 
-Keeps the window deportment for the fonts and the yunjing deportment for the requests.
+Keeps the atelier for the fonts and the yunjing deportment for the requests.
 
 ## `internal void QDiweiShow(CDiweiPage page, string kind)`
 

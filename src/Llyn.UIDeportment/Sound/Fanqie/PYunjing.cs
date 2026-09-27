@@ -152,9 +152,9 @@ public class PYunjing : UserControl
     internal void PYunjingAttach(PWindow host)
     {
         _pYunjingHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lYunjing = host.PWindowDeportment.LWindowForge.QForgeYunjingCreate(
+        _lYunjing = host.PWindowForge.QForgeYunjingCreate(
             editor,
             lectern,
             PYunjingShownCheck,
@@ -173,7 +173,7 @@ public class PYunjing : UserControl
         PXiaoyun.ItemsSource = _pXiaoyunList;
 
         PDisplay.PDisplayAttach(host, lectern);
-        _qDiwei.QDiweiAttach(host.PWindowDeportment, _lYunjing);
+        _qDiwei.QDiweiAttach(host.PWindowAtelier, _lYunjing);
 
         PEditor.PEditorAttach(host, _lYunjing.LYunjingEditor, lectern);
 
@@ -245,7 +245,7 @@ public class PYunjing : UserControl
 
     private async void PYunjingWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_pYunjingHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pYunjingHost.PWindowAtelier);
         _lYunjing.LYunjingReset();
     }
 

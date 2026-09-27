@@ -9,7 +9,7 @@ internal sealed class QDiwei
 {
     private readonly UserControl _qDiweiSurface;
 
-    private LWindow _lWindow = null!;
+    private CAtelier _qDiweiAtelier = null!;
 
     private LYunjing _lYunjing = null!;
 
@@ -36,17 +36,17 @@ internal sealed class QDiwei
 
     private ItemsControl QDiweiList => QContract.QContractFind<ItemsControl>(_qDiweiSurface, "PDiweiList");
 
-    internal void QDiweiAttach(LWindow window, LYunjing yunjing)
+    internal void QDiweiAttach(CAtelier atelier, LYunjing yunjing)
     {
-        _lWindow = window;
+        _qDiweiAtelier = atelier;
         _lYunjing = yunjing;
     }
 
     internal void QDiweiShow(CDiweiPage page, string kind)
     {
-        LFontFace.LFontApply(_lWindow, page.CDiweiPageLanguage, QDiweiHeadword);
+        LFontFace.LFontApply(_qDiweiAtelier, page.CDiweiPageLanguage, QDiweiHeadword);
         LFontFace.LFontPlace(QDiweiHeadword);
-        LFontFace.LFontApply(_lWindow, page.CDiweiPageLanguage, CFontRole.CFontRoleGlyph, QDiweiList);
+        LFontFace.LFontApply(_qDiweiAtelier, page.CDiweiPageLanguage, CFontRole.CFontRoleGlyph, QDiweiList);
         QDiweiHeadword.Text = page.CDiweiPageKey;
         QDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         QDiweiLanguage.Text = page.CDiweiPageLanguage;

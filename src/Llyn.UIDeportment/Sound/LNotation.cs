@@ -5,9 +5,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class LNotation
 {
-    private readonly LDesk _lNotationDesk;
+    private readonly CDesk _lNotationDesk;
 
-    internal LNotation(LDesk desk)
+    internal LNotation(CDesk desk)
     {
         ArgumentNullException.ThrowIfNull(desk);
 
@@ -20,19 +20,19 @@ public sealed class LNotation
 
     public event Action? LNotationFinished;
 
-    public bool LNotationHeld => _lNotationDesk.LDeskErrand.QErrandTranscription is not null;
+    public bool LNotationHeld => _lNotationDesk.CDeskErrand.CErrandTranscription is not null;
 
-    public string LNotationLanguage => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayLanguage ?? string.Empty;
+    public string LNotationLanguage => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForayLanguage ?? string.Empty;
 
-    public bool LNotationFlagged => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayFlagged ?? false;
+    public bool LNotationFlagged => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForayFlagged ?? false;
 
-    public bool LNotationPrimary => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayPrimary ?? false;
+    public bool LNotationPrimary => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForayPrimary ?? false;
 
-    public long LNotationTarget => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayTarget ?? 0;
+    public long LNotationTarget => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForayTarget ?? 0;
 
-    public string LNotationScheme => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayScheme ?? string.Empty;
+    public string LNotationScheme => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForayScheme ?? string.Empty;
 
-    public bool LNotationSchemed => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForaySchemed ?? false;
+    public bool LNotationSchemed => _lNotationDesk.CDeskErrand.CErrandTranscription?.LForaySchemed ?? false;
 
     public void LNotationStepHandle(CLookupStep step)
     {
@@ -55,6 +55,6 @@ public sealed class LNotation
 
     public void LNotationCancel()
     {
-        _lNotationDesk.LDeskErrand.QErrandCancel();
+        _lNotationDesk.CDeskErrand.CErrandCancel();
     }
 }

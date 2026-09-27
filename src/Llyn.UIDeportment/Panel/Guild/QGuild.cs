@@ -139,12 +139,12 @@ internal sealed class QGuild
     internal void QGuildAttach(PWindow host)
     {
         _qGuildHost = host;
-        _lGuild = host.PWindowDeportment.LWindowForge.QForgeGuildCreate(
+        _lGuild = host.PWindowForge.QForgeGuildCreate(
             QGuildShownCheck,
             QGuildDiscardConfirm,
             QGuildRemovalConfirm,
             host.PWindowUnionConfirm,
-            host.PWindowUnreadableConfirm);
+            host.PWindowEnvoy);
         _lGuild.LGuildChanged += QGuildModeUpdate;
         _lGuild.LGuildRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lGuild.LGuildFailed += host.PWindowFailureShow;
@@ -158,8 +158,8 @@ internal sealed class QGuild
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
         _qVita.QVitaAttach(host, _lGuild);
         _qAutograph.QAutographAttach(_lGuild);
-        _lGuild.LGuildAutograph.LDeskFailed += host.PWindowFailureShow;
-        _lGuild.LGuildAutograph.LDeskStateChanged += QGuildChronicleUpdate;
+        _lGuild.LGuildAutograph.CDeskFailed += host.PWindowFailureShow;
+        _lGuild.LGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 
         QRoll.ItemsSource = _qRollList;
         QOeuvre.ItemsSource = _qOeuvreList;
@@ -210,12 +210,12 @@ internal sealed class QGuild
 
     internal bool QGuildChangeCheck()
     {
-        return _lGuild.LGuildSession.QSessionChangeCheck();
+        return _lGuild.LGuildSession.CSessionChangeCheck();
     }
 
     internal bool QGuildDraftFinish(bool store)
     {
-        return _lGuild.LGuildSession.QSessionFinish(store);
+        return _lGuild.LGuildSession.CSessionFinish(store);
     }
 
     internal bool QGuildLeaveConfirm()
@@ -355,7 +355,7 @@ internal sealed class QGuild
 
     private void QGuildStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildSession.QSessionSave();
+        _lGuild.LGuildSession.CSessionSave();
     }
 
     private void QGuildBinHandle(object sender, RoutedEventArgs e)
@@ -391,17 +391,17 @@ internal sealed class QGuild
 
     private void QGuildUndoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_lGuild.LGuildSession.QSessionUndo);
+        QChronicle.QChronicleRun(_lGuild.LGuildSession.CSessionUndo);
     }
 
     private void QGuildRedoHandle(object sender, RoutedEventArgs e)
     {
-        QChronicle.QChronicleRun(_lGuild.LGuildSession.QSessionRedo);
+        QChronicle.QChronicleRun(_lGuild.LGuildSession.CSessionRedo);
     }
 
     private void QGuildChronicleUpdate()
     {
-        (bool undo, bool redo) = _lGuild.LGuildSession.QSessionChronicleRead();
+        (bool undo, bool redo) = _lGuild.LGuildSession.CSessionChronicleRead();
         QGuildBackward.IsEnabled = undo;
         QGuildForward.IsEnabled = redo;
     }

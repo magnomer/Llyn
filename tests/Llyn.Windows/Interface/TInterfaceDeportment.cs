@@ -22,7 +22,7 @@ internal static class TInterfaceDeportment
         new LPhonologyOutlet(engine),
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
-        static () => false);
+        TInterfaceConduct.TEnvoyCreate(false, []));
 
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
@@ -47,7 +47,8 @@ internal static class TInterfaceDeportment
 
     internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorDisplay);
 
-    internal static LClip TClipCreate(LEngine engine) => new(TDeskCreate(engine, "Input", static () => false));
+    internal static LClip TClipCreate(LEngine engine) =>
+        new(TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, [])));
 
     internal static void TClipStepHandle(this LClip clip, CHarvestStep step) => clip.LClipStepHandle(step);
 
@@ -121,7 +122,7 @@ internal static class TInterfaceDeportment
             () => true,
             leaveSeam,
             _ => true,
-            () => false);
+            TInterfaceConduct.TEnvoyCreate(false, []));
     }
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
@@ -222,7 +223,7 @@ internal static class TInterfaceDeportment
             TEngineFake.TEngineStubCreate<LPhonologyPort>(),
             settings,
             TEngineFake.TEngineStubCreate<LMediaPort>(),
-            static () => false);
+            TInterfaceConduct.TEnvoyCreate(false, []));
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),
@@ -255,17 +256,6 @@ internal static class TInterfaceDeportment
 
     internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
 
-    internal static LDesk TDeskCreate(LEngine engine, string scope, Func<bool> unreadableSeam) =>
-        new(new LDraftOutlet(engine), scope, unreadableSeam);
-
-    internal static void TDeskVistaRestore(this LDesk desk, LVista vista) => desk.LDeskVistaRestore(vista);
-
-    internal static void TDeskStart(this LDesk desk, long? id) => desk.LDeskStart(id);
-
-    internal static LDraft? TDeskRead(this LDesk desk) => desk.LDeskRead();
-
-    internal static CRecording? TDeskRecordingRead(LRecording? recording) => QErrand.QErrandRecordingRead(recording);
-
     internal static CStateValue TCardStateRead(LStateValue value) => LCard.LCardStateRead(value);
 
     internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => LCard.LCardEntryRead(draft);
@@ -276,20 +266,10 @@ internal static class TInterfaceDeportment
     internal static CFrequency? TSoundingFrequencyRead(IReadOnlyList<LFrequency> rows, string once) =>
         LSounding.LSoundingFrequencyRead(rows, once);
 
-    internal static LRecording TDeskRecordingRead(CRecording recording) => QErrand.QErrandRecordingRead(recording);
+    internal static bool TDeskChangeCheck(this CDesk desk) => desk.CDeskChangeCheck();
 
-    internal static CCandidate? TDeskCandidateRead(LCandidate? candidate) => QErrand.QErrandCandidateRead(candidate);
-
-    internal static void TDeskDefer(this LDesk desk, LRequest request) => desk.LDeskDefer(request);
-
-    internal static bool TDeskChangeCheck(this LDesk desk) => desk.LDeskChangeCheck();
-
-    internal static (bool LDeskBackward, bool LDeskForward) TDeskChronicleRead(this LDesk desk) =>
-        desk.LDeskChronicleRead();
-
-    internal static bool TDeskFinish(this LDesk desk, bool store) => desk.LDeskFinish(store);
-
-    internal static void TDeskCancel(this LDesk desk) => desk.LDeskCancel();
+    internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
+        desk.CDeskChronicleRead();
 
     internal static LGuild TGuildCreate(
         LEngine engine, Func<bool> leaveSeam, Func<int, bool> removalSeam, Func<string, string, bool> unionSeam) =>
@@ -302,7 +282,7 @@ internal static class TInterfaceDeportment
             leaveSeam,
             removalSeam,
             unionSeam,
-            () => false);
+            TInterfaceConduct.TEnvoyCreate(false, []));
 
     internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
         guild.LGuildVistaRestore(vista, oeuvre);
@@ -326,7 +306,7 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildFreshStart(this LGuild guild) => guild.LGuildFreshStart();
 
-    internal static bool TGuildSave(this LGuild guild) => guild.LGuildSession.QSessionSave();
+    internal static bool TGuildSave(this LGuild guild) => guild.LGuildSession.CSessionSave();
 
     internal static void TGuildUnionSelect(this LGuild guild, long? id) => guild.LGuildUnion.QUnionSelect(id);
 
@@ -367,35 +347,8 @@ internal static class TInterfaceDeportment
         panel.LYunjingDiweiShow(language, kind, key);
 
     internal static void TYunjingTallySet(this LYunjing panel, bool? respelled) => panel.LYunjingTallySet(respelled);
-    internal static LWindow TWindowCreate(LSettingsPort settings) =>
-        TWindowCreate(TEngineFake.TEngineStubCreate<LDraftPort>(), settings);
-
-    internal static LWindow TWindowCreate(LDraftPort drafts, LSettingsPort settings) =>
-        new(new CAtelier(
-            new LPosture(TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild())),
-            drafts,
-            TEngineFake.TEngineStubCreate<LEntryPort>(),
-            settings,
-            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
-            TEngineFake.TEngineStubCreate<LMediaPort>(),
-            TEngineFake.TEngineStubCreate<LPortraitPort>()));
 
     internal static QPosture TPostureCreate(string root) => new(() => root);
-
-    internal static LFont TFontCreate(string family, double size) => new(family, size);
-
-    internal static CFont TWindowFontRead(this LWindow window, string language, CFontRole role) =>
-        window.LWindowFontRead(language, role);
-
-    internal static string TWorkspaceLocalizationRead(this LWindow window) =>
-        window.LWindowWorkspace.QWorkspaceLocalizationRead();
-
-    internal static void TWorkspaceEpithetSave(this LWindow window, bool epithet) =>
-        window.LWindowWorkspace.QWorkspaceEpithetSave(epithet);
-
-    internal static CFont TSoundingFontRead(LFont font) => LSounding.LSoundingFontRead(font);
-
-    internal static CSettings TWorkspaceSettingsRead(LSettings settings) => QWorkspace.QWorkspaceSettingsRead(settings);
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
     {
@@ -405,7 +358,7 @@ internal static class TInterfaceDeportment
             TEngineFake.TEngineStubCreate<LPhonologyPort>(),
             settings,
             TEngineFake.TEngineStubCreate<LMediaPort>(),
-            static () => false);
+            TInterfaceConduct.TEnvoyCreate(false, []));
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),
@@ -432,9 +385,6 @@ internal static class TInterfaceDeportment
         new(register, usage, chosen);
 
     internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
-
-    internal static IReadOnlyList<CMeaning> TWorkspaceMeaningSort(IReadOnlyList<LMeaning> meanings, string unknown) =>
-        QWorkspace.QWorkspaceMeaningSort(meanings, unknown);
 
     internal static IReadOnlyList<QIndexItem> TIndexItemBuild(IReadOnlyList<CVistaRow> rows) =>
         QIndexItem.QIndexItemBuild(rows);

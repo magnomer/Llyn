@@ -92,10 +92,10 @@ True while the column points at a series.
 
 The language of the chosen series, or the first pack declaring a series source.
 
-## `internal void LXieshengVistaRestore(LWindow window)`
+## `internal void LXieshengVistaRestore(CAtelier atelier)`
 
 Starts the two vistas off the window posture, the column and the entry list.
-The window deportment calls it when it builds the panel and again after a workspace change.
+The atelier calls it when the factory builds the panel and again after a workspace change.
 
 ## `internal void LXieshengVistaRestore(LVista grove, LVista kindred)`
 

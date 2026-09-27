@@ -1,4 +1,8 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Llyn.Application;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -42,6 +46,10 @@ public sealed class CAtelier : IDisposable
     public CMarkdown CAtelierMarkdown { get; }
 
     public CRespelling CAtelierRespelling { get; }
+
+    public CCatalog CAtelierCatalog => new(this);
+
+    public CLedger CAtelierLedger => new(this);
 
     internal LDraftPort CAtelierDraftPort { get; }
 
@@ -96,22 +104,113 @@ public sealed class CAtelier : IDisposable
         CAtelierMediaPort.LEngineRecordingSweep();
     }
 
-    public void CAtelierWorkspaceChange(string path)
+    public bool CAtelierQuitConfirm(
+        IReadOnlyList<Func<bool>> pending, IReadOnlyList<Func<bool, bool>> closures, CEnvoy envoy)
     {
+        ArgumentNullException.ThrowIfNull(pending);
+        ArgumentNullException.ThrowIfNull(closures);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        bool unsaved = false;
+        foreach (Func<bool> check in pending)
+        {
+            unsaved |= check();
+        }
+
+        bool store = false;
+        if (unsaved)
+        {
+            if (envoy.CEnvoyLeaveConfirm() is not bool answer)
+            {
+                return false;
+            }
+
+            store = answer;
+        }
+
+        bool finished = true;
+        foreach (Func<bool, bool> finish in closures)
+        {
+            finished &= finish(store);
+        }
+
+        return finished;
+    }
+
+    public CWorkspaceState? CAtelierWorkspaceChange(string chosen, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(chosen);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        string path = chosen.Trim();
+        if (path.Length == 0
+            || string.Equals(path, CAtelierPathRead(), StringComparison.Ordinal)
+            || !envoy.CEnvoyDiscardConfirm())
+        {
+            return null;
+        }
+
         CAtelierSettingsPort.LEngineWorkspaceChange(path);
+        return CAtelierStateRead();
+    }
+
+    public string CAtelierPathRead()
+    {
+        return CAtelierSettingsPort.LEngineWorkspaceRead();
+    }
+
+    public CWorkspaceState CAtelierStateRead()
+    {
+        LWorkspaceState state = CAtelierSettingsPort.LEngineStateRead();
+        return new CWorkspaceState(state.LWorkspaceStateLeft, state.LWorkspaceStateRight);
+    }
+
+    public CEstablishment CAtelierEstablishmentRead()
+    {
+        LEstablishment establishment = CAtelierSettingsPort.LEngineEstablishmentRead();
+        return new CEstablishment(
+            establishment.LEstablishmentUnsaved,
+            establishment.LEstablishmentEntry,
+            establishment.LEstablishmentSize,
+            establishment.LEstablishmentPending,
+            establishment.LEstablishmentSingle);
+    }
+
+    public Action CAtelierEstablishmentAttach(Action<CEstablishment> show)
+    {
+        ArgumentNullException.ThrowIfNull(show);
+
+        Action detach = CAtelierObserverAdd(_ => CAtelierEstablishmentShow(show));
+        CAtelierEstablishmentShow(show);
+        return detach;
+    }
+
+    public bool CAtelierRecordingExist(string? file)
+    {
+        return CAtelierMediaPort.LEngineRecordingExist(file);
+    }
+
+    public Task<string> CAtelierRecordingPrepare(CRecording recording, CancellationToken cancellation)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+
+        return CAtelierMediaPort.LEngineRecordingPrepare(CErrand.CErrandRecordingRead(recording), cancellation);
+    }
+
+    public Uri? CAtelierLocationRead(string? location)
+    {
+        return CAtelierMediaPort.LEngineLocationRead(location);
+    }
+
+    public void CAtelierLocationOpen(string target)
+    {
+        CAtelierMediaPort.LEngineLocationOpen(target);
     }
 
     public void Dispose()
     {
         CAtelierDraftPort.LEngineLeftoverSweep();
         _cAtelierPosture.Dispose();
-    }
-
-    public Action CAtelierObserverAttach(Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        return CAtelierObserverAdd(bulletin => observer(CAtelierBulletinRead(bulletin)));
     }
 
     public Action CAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)
@@ -131,6 +230,21 @@ public sealed class CAtelier : IDisposable
     {
         CAtelierDraftPort.LEngineObserverAttach(sent);
         return () => CAtelierDraftPort.LEngineObserverDetach(sent);
+    }
+
+    private void CAtelierEstablishmentShow(Action<CEstablishment> show)
+    {
+        CEstablishment establishment;
+        try
+        {
+            establishment = CAtelierEstablishmentRead();
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        show(establishment);
     }
 
     private static CBulletin CAtelierBulletinRead(LBulletin bulletin)

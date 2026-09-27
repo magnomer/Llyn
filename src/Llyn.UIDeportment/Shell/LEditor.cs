@@ -26,7 +26,7 @@ public sealed class LEditor
         LPhonologyPort phonology,
         LSettingsPort settings,
         LMediaPort media,
-        Func<bool> unreadableSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -36,8 +36,8 @@ public sealed class LEditor
 
         _lDraftPort = drafts;
         _lSettingsPort = settings;
-        LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
-        LEditorDisplay = new LDisplay(entries, phonology, settings, media);
+        LEditorDesk = new CDesk(drafts, "Input", envoy);
+        LEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media);
         LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
         LEditorClip = new LClip(LEditorDesk);
         LEditorNotation = new LNotation(LEditorDesk);
@@ -46,9 +46,9 @@ public sealed class LEditor
         LEditorDisplay.LDisplayFailed += LEditorFailureShow;
         LEditorEsteem = new QEsteem(LEditorDesk, LEditorDisplay);
         LEditorTimbre = new QTimbre(this, phonology, LEditorDisplay, LEditorSounding);
-        LEditorDesk.LDeskStateChanged += LEditorStateUpdate;
-        LEditorDesk.LDeskFinished += LEditorStoredShow;
-        LEditorDesk.LDeskDraftPrepared += LEditorDraftShow;
+        LEditorDesk.CDeskStateChanged += LEditorStateUpdate;
+        LEditorDesk.CDeskFinished += LEditorStoredShow;
+        LEditorDesk.CDeskDraftPrepared += LEditorDraftShow;
     }
 
     public event Action? LEditorStateChanged;
@@ -59,7 +59,7 @@ public sealed class LEditor
 
     public event Action<string, Exception>? LEditorFailed;
 
-    public LDesk LEditorDesk { get; }
+    public CDesk LEditorDesk { get; }
 
     public LDisplay LEditorDisplay { get; }
 
@@ -79,62 +79,62 @@ public sealed class LEditor
 
     public string LEditorOrigin => _lEditorVista?.LVistaTab ?? string.Empty;
 
-    public bool LEditorHeld => LEditorDesk.LDeskHeld;
+    public bool LEditorHeld => LEditorDesk.CDeskHeld;
 
-    public bool LEditorChanged => LEditorDesk.LDeskChanged;
+    public bool LEditorChanged => LEditorDesk.CDeskChanged;
 
-    public bool LEditorStorable => LEditorDesk.LDeskStorable;
+    public bool LEditorStorable => LEditorDesk.CDeskStorable;
 
-    public bool LEditorRunning => LEditorHeld && !LEditorDesk.LDeskHalted;
+    public bool LEditorRunning => LEditorHeld && !LEditorDesk.CDeskHalted;
 
     public bool LEditorFresh => _lEditorFresh;
 
     public bool LEditorHalted => _lEditorHalted;
 
-    public long? LEditorEntry => LEditorDesk.LDeskStoredRead();
+    public long? LEditorEntry => LEditorDesk.CDeskStoredRead();
 
-    public string LEditorLanguage => LEditorDesk.LDeskTenure?.LTenureLanguageRead() ?? string.Empty;
+    public string LEditorLanguage => LEditorDesk.CDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 
-    public bool LEditorFlagged => LEditorDesk.LDeskTenure?.LTenureFlaggedCheck() ?? false;
+    public bool LEditorFlagged => LEditorDesk.CDeskTenure?.LTenureFlaggedCheck() ?? false;
 
-    public bool LEditorReflexShown => LEditorDesk.LDeskTenure?.LTenureReflexCheck() ?? false;
+    public bool LEditorReflexShown => LEditorDesk.CDeskTenure?.LTenureReflexCheck() ?? false;
 
-    public IReadOnlyList<string> LEditorVarietyNames => LEditorDesk.LDeskTenure?.LTenureVarietyNames ?? [];
+    public IReadOnlyList<string> LEditorVarietyNames => LEditorDesk.CDeskTenure?.LTenureVarietyNames ?? [];
 
     public bool LEditorMorphology => _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
 
-    private LEntryDraft? LEditorContent => LEditorDesk.LDeskDraft?.LDraftContent;
+    private LEntryDraft? LEditorContent => LEditorDesk.CDeskDraft?.LDraftContent;
 
-    internal LTenure? LEditorTenure => LEditorDesk.LDeskFilling ? null : LEditorDesk.LDeskTenure;
+    internal LTenure? LEditorTenure => LEditorDesk.CDeskFilling ? null : LEditorDesk.CDeskTenure;
 
     private bool LEditorRestarting => LEditorFresh && LEditorOwned;
 
-    private bool LEditorStalling => LEditorDesk.LDeskHalted && !LEditorHalted;
+    private bool LEditorStalling => LEditorDesk.CDeskHalted && !LEditorHalted;
 
     internal void LEditorVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
         _lEditorVista = vista;
-        LEditorDesk.LDeskVistaRestore(vista);
+        LEditorDesk.CDeskVistaRestore(vista);
         LEditorDisplay.LDisplayVistaRestore(vista);
     }
 
-    internal void LEditorVistaRestore(LWindow window)
+    internal void LEditorVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LEditorVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public void LEditorOpen(long? id)
     {
-        LEditorDesk.LDeskStart(id);
+        LEditorDesk.CDeskStart(id);
         if (LEditorMissCheck(id))
         {
-            LEditorDesk.LDeskStart(null);
+            LEditorDesk.CDeskStart(null);
         }
     }
 
@@ -145,17 +145,17 @@ public sealed class LEditor
 
     public void LEditorClose()
     {
-        LEditorDesk.LDeskCancel();
+        LEditorDesk.CDeskCancel();
     }
 
     public bool LEditorClipStart(string word, long target, Action<CHarvestStep> sink)
     {
-        return LEditorDesk.LDeskErrand.QErrandRecordingStart(word, target, sink);
+        return LEditorDesk.CDeskErrand.CErrandRecordingStart(word, target, sink);
     }
 
     public bool LEditorNotationStart(string word, long target, string scheme, Action<CLookupStep> sink)
     {
-        return LEditorDesk.LDeskErrand.QErrandTranscriptionStart(word, target, scheme, sink);
+        return LEditorDesk.CDeskErrand.CErrandTranscriptionStart(word, target, scheme, sink);
     }
 
     private void LEditorDraftShow(LDraft draft)
@@ -209,49 +209,49 @@ public sealed class LEditor
 
     public void LEditorTagAdd(long id)
     {
-        LEditorDesk.LDeskSend(new LRequestTagPick(LEditorDesk.LDeskId, 0, id, 0));
+        LEditorDesk.CDeskSend(new LRequestTagPick(LEditorDesk.CDeskId, 0, id, 0));
     }
 
     public void LEditorRegisterAdd(long id)
     {
-        LEditorDesk.LDeskSend(new LRequestRegisterPick(LEditorDesk.LDeskId, 0, id, 0));
+        LEditorDesk.CDeskSend(new LRequestRegisterPick(LEditorDesk.CDeskId, 0, id, 0));
     }
 
     public void LEditorSituationAdd(long id)
     {
-        LEditorDesk.LDeskSend(new LRequestSituationPick(LEditorDesk.LDeskId, 0, id, 0));
+        LEditorDesk.CDeskSend(new LRequestSituationPick(LEditorDesk.CDeskId, 0, id, 0));
     }
 
     public void LEditorExampleAdd(long id)
     {
-        LEditorDesk.LDeskSend(new LRequestSentenceExample(LEditorDesk.LDeskId, 0, 0, id));
+        LEditorDesk.CDeskSend(new LRequestSentenceExample(LEditorDesk.CDeskId, 0, 0, id));
     }
 
     public void LEditorReferenceAdd(long id)
     {
-        LEditorDesk.LDeskSend(new LRequestSentenceReference(LEditorDesk.LDeskId, 0, 0, id));
+        LEditorDesk.CDeskSend(new LRequestSentenceReference(LEditorDesk.CDeskId, 0, 0, id));
     }
 
     public void LEditorPersist()
     {
-        LEditorDesk.LDeskPersist();
+        LEditorDesk.CDeskPersist();
     }
 
     public void LEditorSave()
     {
-        if (!LEditorDesk.LDeskChangeCheck())
+        if (!LEditorDesk.CDeskChangeCheck())
         {
             return;
         }
 
         _lEditorFresh = LEditorEntry is null;
-        LEditorDesk.LDeskFinish(true);
+        LEditorDesk.CDeskFinish(true);
     }
 
     public bool LEditorFinish(bool store)
     {
         _lEditorFresh = LEditorEntry is null;
-        return LEditorDesk.LDeskFinish(store);
+        return LEditorDesk.CDeskFinish(store);
     }
 
     private void LEditorStoredShow(long id)
@@ -277,7 +277,7 @@ public sealed class LEditor
             LEditorStopped?.Invoke();
         }
 
-        _lEditorHalted = LEditorDesk.LDeskHalted;
+        _lEditorHalted = LEditorDesk.CDeskHalted;
         LEditorStateChanged?.Invoke();
     }
 
@@ -285,7 +285,7 @@ public sealed class LEditor
     {
         try
         {
-            return _lDraftPort.LEngineTargetFind(LEditorDesk.LDeskId)
+            return _lDraftPort.LEngineTargetFind(LEditorDesk.CDeskId)
                 .ToDictionary(pair => pair.Key, pair => LCard.LCardTargetRead([pair.Value])[0]);
         }
         catch (Exception)

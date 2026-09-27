@@ -22,7 +22,7 @@ Each named part of the page is found through `QContract.QContractFind` under its
 
 ## `internal void QReferenceAttach(PWindow host)`
 
-Puts the driver to work on the window deportment, which builds the shelf over the engine's ports.
+Puts the driver to work on the panel factory, which builds the shelf over the engine's ports.
 It hands the shelf the seams the driver answers through and subscribes to the notices of both lists.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 The print and portrait command bindings are added last, so no can-execute query meets a shelf not yet built.

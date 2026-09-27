@@ -6,9 +6,9 @@ namespace Llyn.UIDeportment;
 
 public sealed class LClip
 {
-    private readonly LDesk _lClipDesk;
+    private readonly CDesk _lClipDesk;
 
-    internal LClip(LDesk desk)
+    internal LClip(CDesk desk)
     {
         ArgumentNullException.ThrowIfNull(desk);
 
@@ -21,19 +21,19 @@ public sealed class LClip
 
     public event Action? LClipFinished;
 
-    public bool LClipHeld => _lClipDesk.LDeskErrand.QErrandRecording is not null;
+    public bool LClipHeld => _lClipDesk.CDeskErrand.CErrandRecording is not null;
 
-    public string LClipLanguage => _lClipDesk.LDeskErrand.QErrandRecording?.LForayLanguage ?? string.Empty;
+    public string LClipLanguage => _lClipDesk.CDeskErrand.CErrandRecording?.LForayLanguage ?? string.Empty;
 
-    public bool LClipFlagged => _lClipDesk.LDeskErrand.QErrandRecording?.LForayFlagged ?? false;
+    public bool LClipFlagged => _lClipDesk.CDeskErrand.CErrandRecording?.LForayFlagged ?? false;
 
-    public bool LClipPrimary => _lClipDesk.LDeskErrand.QErrandRecording?.LForayPrimary ?? false;
+    public bool LClipPrimary => _lClipDesk.CDeskErrand.CErrandRecording?.LForayPrimary ?? false;
 
-    public long LClipTarget => _lClipDesk.LDeskErrand.QErrandRecording?.LForayTarget ?? 0;
+    public long LClipTarget => _lClipDesk.CDeskErrand.CErrandRecording?.LForayTarget ?? 0;
 
     public void LClipCancel()
     {
-        _lClipDesk.LDeskErrand.QErrandCancel();
+        _lClipDesk.CDeskErrand.CErrandCancel();
     }
 
     public void LClipStepHandle(CHarvestStep step)
@@ -59,7 +59,7 @@ public sealed class LClip
     {
         ArgumentNullException.ThrowIfNull(recording);
 
-        return _lClipDesk.LDeskErrand.QErrandRecording?.LForayRecordingSave(QErrand.QErrandRecordingRead(recording))
+        return _lClipDesk.CDeskErrand.CErrandRecording?.LForayRecordingSave(CErrand.CErrandRecordingRead(recording))
             ?? Task.FromResult(false);
     }
 }

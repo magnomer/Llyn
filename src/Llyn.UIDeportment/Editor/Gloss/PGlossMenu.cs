@@ -39,9 +39,9 @@ public partial class PEditor
 
     internal async void PSpeakerLoad()
     {
-        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
         PLanguageItem.PLanguageItemReset(
-            _pLanguageItem, _pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead());
+            _pLanguageItem, _pEditorHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead());
         PEditorLanguageUpdate();
         PLinkFlagUpdate();
     }
@@ -54,7 +54,7 @@ public partial class PEditor
 
     private async void PSpeakerFlagUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
         LEnsignImage.LEnsignFlagShow(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
     }
 

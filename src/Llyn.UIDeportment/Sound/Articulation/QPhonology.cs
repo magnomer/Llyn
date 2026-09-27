@@ -149,9 +149,9 @@ internal sealed class QPhonology
     internal void QPhonologyAttach(PWindow host)
     {
         _qPhonologyHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lPhonology = host.PWindowDeportment.LWindowForge.QForgePhonologyCreate(
+        _lPhonology = host.PWindowForge.QForgePhonologyCreate(
             editor,
             lectern,
             QPhonologyShownCheck,
@@ -209,11 +209,11 @@ internal sealed class QPhonology
         QChoice.QChoiceOrderApply(QSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
         QLensUpdate();
 
-        await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
             QLensList,
-            _qPhonologyHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
+            _qPhonologyHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
             _lPhonology.LPhonologyPanel.LPanelFilter,
             QLensHandle);
         _lPhonology.LPhonologyQuerySet(QProbe.Text);
@@ -222,7 +222,7 @@ internal sealed class QPhonology
 
     private async void QPhonologyWorkspaceUpdate()
     {
-        await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowDeportment);
+        await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier);
         _lPhonology.LPhonologyPanel.LPanelClear();
     }
 

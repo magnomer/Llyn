@@ -9,17 +9,18 @@ namespace Llyn.UIDeportment;
 
 public sealed class PLayout
 {
-    private readonly LWindow _lWindow;
+    private readonly QPosture _pLayoutPosture;
 
     private readonly List<(string PLayoutTab, Grid PLayoutHost, GridLength PLayoutLeft, GridLength PLayoutMiddle)>
         _pLayoutList = [];
 
     private Grid? _pLayoutRecent;
 
-    public PLayout(LWindow window)
+    public PLayout(QPosture posture)
     {
-        ArgumentNullException.ThrowIfNull(window);
-        _lWindow = window;
+        ArgumentNullException.ThrowIfNull(posture);
+        _pLayoutPosture = posture;
+        _pLayoutPosture.QPostureCleared += PLayoutReset;
     }
 
     internal void PLayoutAttach(Grid host, string tab)
@@ -47,14 +48,14 @@ public sealed class PLayout
     {
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
-            if (_lWindow.LWindowPosture.QPostureColumnRead(tab) is LCapsuleColumn record)
+            if (_pLayoutPosture.QPostureColumnRead(tab) is LCapsuleColumn record)
             {
                 PLayoutColumnApply(host, 0, record.LCapsuleColumnLeft);
                 PLayoutColumnApply(host, 1, record.LCapsuleColumnMiddle);
             }
         }
 
-        if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
+        if (!_pLayoutPosture.QPostureRead().LCapsuleContentLinked)
         {
             return;
         }
@@ -83,7 +84,7 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
+        if (!_pLayoutPosture.QPostureRead().LCapsuleContentLinked)
         {
             return;
         }
@@ -116,7 +117,7 @@ public sealed class PLayout
         {
             if (!ReferenceEquals(host, source))
             {
-                if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
+                if (!_pLayoutPosture.QPostureRead().LCapsuleContentLinked)
                 {
                     continue;
                 }
@@ -125,7 +126,7 @@ public sealed class PLayout
             list.Add(PLayoutRecordRead(tab, host));
         }
 
-        _lWindow.LWindowPosture.QPostureLayoutSave(list);
+        _pLayoutPosture.QPostureLayoutSave(list);
     }
 
     internal void PLayoutSync()

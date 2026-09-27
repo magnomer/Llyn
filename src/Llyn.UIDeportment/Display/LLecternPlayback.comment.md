@@ -12,7 +12,7 @@ It shares the display's sound with [LLecternSound](LLecternSound.comment.md), wh
 
 Holds the display's sound, which owns the shown draft and plays through the engine.
 
-## `public void LLecternPlaybackAttach(LWindow window, UIElement action, UIElement tray, RangeBase volume)`
+## `public void LLecternPlaybackAttach(CAtelier atelier, UIElement action, UIElement tray, RangeBase volume)`
 
 Holds the controls, hooks the slider and puts the workspace's level on it.
 The veneer binds the slider to the shared catalog, so every other tray shows the same figure.

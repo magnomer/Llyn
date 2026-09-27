@@ -30,7 +30,7 @@ public sealed class LShelf
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
         Func<int, bool> removalSeam,
-        Func<bool> unreadableSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -47,7 +47,7 @@ public sealed class LShelf
         _lShelfLeaveSeam = leaveSeam;
         _lShelfRemovalSeam = removalSeam;
         LShelfEditor = editor;
-        LShelfImprint = new LImprint(drafts, entries, settings, unreadableSeam);
+        LShelfImprint = new LImprint(drafts, entries, settings, envoy);
         LShelfPanel = new LPanel(
             "Source.LoadFailed", "Source.DeleteFailed",
             LImprintChangeCheck, shownSeam, leaveSeam, LShelfDeleteConfirm);
@@ -58,8 +58,8 @@ public sealed class LShelf
         LShelfPanel.LPanelDraftChanged += LShelfColophonUpdate;
         LShelfFootnote.LFootnotePanel.LPanelCleared += lectern.LLecternClear;
         LShelfFootnote.LFootnotePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LShelfImprint.LImprintDesk.LDeskFinished += LShelfStoredShow;
-        LShelfImprint.LImprintDesk.LDeskStateChanged += LShelfStateUpdate;
+        LShelfImprint.LImprintDesk.CDeskFinished += LShelfStoredShow;
+        LShelfImprint.LImprintDesk.CDeskStateChanged += LShelfStateUpdate;
         LShelfEditor.LEditorStateChanged += LShelfStateUpdate;
     }
 
@@ -97,7 +97,7 @@ public sealed class LShelf
     public bool LShelfBinEnabled => !LShelfEntrySide && LShelfPanel.LPanelBinEnabled;
 
     public bool LShelfStoreEnabled =>
-        LShelfEntrySide ? LShelfEditor.LEditorStorable : LShelfImprint.LImprintDesk.LDeskChangeCheck();
+        LShelfEntrySide ? LShelfEditor.LEditorStorable : LShelfImprint.LImprintDesk.CDeskChangeCheck();
 
     public bool LShelfPressAllowed => LShelfFootnote.LFootnotePanel.LPanelPressAllowed || LShelfSourcePrintable;
 
@@ -226,7 +226,7 @@ public sealed class LShelf
 
     private bool LImprintChangeCheck()
     {
-        return LShelfImprint.LImprintDesk.LDeskChangeCheck();
+        return LShelfImprint.LImprintDesk.CDeskChangeCheck();
     }
 
     private void LShelfStateUpdate()
@@ -399,13 +399,13 @@ public sealed class LShelf
     public (bool LShelfBackward, bool LShelfForward) LShelfChronicleRead()
     {
         return LShelfEntrySide
-            ? LShelfEditor.LEditorDesk.LDeskChronicleRead()
-            : LShelfImprint.LImprintDesk.LDeskChronicleRead();
+            ? LShelfEditor.LEditorDesk.CDeskChronicleRead()
+            : LShelfImprint.LImprintDesk.CDeskChronicleRead();
     }
 
     public bool LShelfDraftFinish(bool store)
     {
-        return LShelfEntrySide ? LShelfEditor.LEditorFinish(store) : LShelfImprint.LImprintDesk.LDeskFinish(store);
+        return LShelfEntrySide ? LShelfEditor.LEditorFinish(store) : LShelfImprint.LImprintDesk.CDeskFinish(store);
     }
 
     public void LShelfStoreRun()
@@ -423,22 +423,22 @@ public sealed class LShelf
     {
         if (LShelfEntrySide)
         {
-            LShelfEditor.LEditorDesk.LDeskUndo();
+            LShelfEditor.LEditorDesk.CDeskUndo();
             return;
         }
 
-        LShelfImprint.LImprintDesk.LDeskUndo();
+        LShelfImprint.LImprintDesk.CDeskUndo();
     }
 
     public void LShelfRedo()
     {
         if (LShelfEntrySide)
         {
-            LShelfEditor.LEditorDesk.LDeskRedo();
+            LShelfEditor.LEditorDesk.CDeskRedo();
             return;
         }
 
-        LShelfImprint.LImprintDesk.LDeskRedo();
+        LShelfImprint.LImprintDesk.CDeskRedo();
     }
 
     public Task LShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
@@ -457,14 +457,14 @@ public sealed class LShelf
         return Task.CompletedTask;
     }
 
-    internal void LShelfVistaRestore(LWindow window)
+    internal void LShelfVistaRestore(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(atelier);
 
         LShelfVistaRestore(
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "reference", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName),
-            window.LWindowAtelier.CAtelierVistaStart(
+            atelier.CAtelierVistaStart(
                 "footnote", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
