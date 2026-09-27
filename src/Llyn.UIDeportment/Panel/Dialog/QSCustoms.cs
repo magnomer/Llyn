@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -54,7 +53,7 @@ internal sealed class QSCustoms
 
     private Button QSCustomsDismiss => QContract.QContractFind<Button>(_qsCustomsSurface, "PSCustomsDismiss");
 
-    internal static IReadOnlyList<LMarkupIntake>? QSCustomsShow(PWindow host, IReadOnlyList<LMarkupEntry> entries)
+    internal static IReadOnlyList<CSCustomsRow>? QSCustomsShow(PWindow host, IReadOnlyList<CMarkupEntry> entries)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(entries);
@@ -62,28 +61,28 @@ internal sealed class QSCustoms
         List<IReadOnlyList<long>> candidates = [];
         List<QSCustomsItem> items = [];
         int index = 0;
-        foreach (LMarkupEntry entry in entries)
+        foreach (CMarkupEntry entry in entries)
         {
             IReadOnlyList<long> found = host.PWindowDeportment.LWindowWorkspace.QWorkspaceMarkupFind(
-                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
+                entry.CMarkupEntryHeadword, entry.CMarkupEntryLanguage);
             candidates.Add(found);
-            items.Add(new QSCustomsItem(index, entry.LMarkupEntryName, entry.LMarkupEntryLanguage, found));
+            items.Add(new QSCustomsItem(index, entry.CMarkupEntryName, entry.CMarkupEntryLanguage, found));
             index++;
         }
 
         return QSCustomsIntakeRead(host, new CSCustoms(candidates), items);
     }
 
-    internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<LMarkupOmission> omissions)
+    internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<CMarkupOmission> omissions)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(omissions);
 
         List<KeyValuePair<string, string>> lines = [];
-        foreach (LMarkupOmission omission in omissions)
+        foreach (CMarkupOmission omission in omissions)
         {
             lines.Add(new KeyValuePair<string, string>(
-                omission.LMarkupOmissionLine.ToString(CultureInfo.CurrentCulture), omission.LMarkupOmissionText));
+                omission.CMarkupOmissionLine.ToString(CultureInfo.CurrentCulture), omission.CMarkupOmissionText));
         }
 
         if (lines.Count == 0)
@@ -100,31 +99,17 @@ internal sealed class QSCustoms
         dialog._qsCustomsSurface.ShowDialog();
     }
 
-    private static IReadOnlyList<LMarkupIntake>? QSCustomsIntakeRead(
+    private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(
         PWindow host, CSCustoms customs, IReadOnlyList<QSCustomsItem> items)
     {
         bool accepted = new QSCustoms(host, customs, items)._qsCustomsSurface.ShowDialog() == true;
-        List<LMarkupIntake> intakes = new(items.Count);
+        List<CSCustomsRow> rows = new(items.Count);
         foreach (QSCustomsItem item in items)
         {
-            intakes.Add(QSCustomsIntakeCreate(
-                item.QSCustomsItemIndex, customs.CSCustomsRowRead(item.QSCustomsItemIndex)));
+            rows.Add(customs.CSCustomsRowRead(item.QSCustomsItemIndex));
         }
 
-        return accepted ? intakes : null;
-    }
-
-    private static LMarkupIntake QSCustomsIntakeCreate(int index, CSCustomsRow row)
-    {
-        return LMarkupIntake.LMarkupIntakeCreate(
-            index,
-            row.CSCustomsRowMode switch
-            {
-                CSCustomsMode.CSCustomsModeMerge => LMarkupMode.LMarkupModeMerge,
-                CSCustomsMode.CSCustomsModeReplace => LMarkupMode.LMarkupModeReplace,
-                _ => LMarkupMode.LMarkupModeNew,
-            },
-            row.CSCustomsRowTarget);
+        return accepted ? rows : null;
     }
 
     private static IReadOnlyList<CCardDraft> QSCustomsChildRead(CCardDraft card)

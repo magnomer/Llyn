@@ -16,6 +16,11 @@ public partial class PWindow
                 return host;
             }
 
+            if (PChronicle.PChronicleRead(current) is PChronicleHost driver)
+            {
+                return driver;
+            }
+
             current = current is Visual
                 ? VisualTreeHelper.GetParent(current)
                 : LogicalTreeHelper.GetParent(current);

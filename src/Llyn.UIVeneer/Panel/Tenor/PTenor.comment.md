@@ -39,6 +39,6 @@ Export and print stand here as on every panel that reads an entry.
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `PTenor` sets icons, commands, clicks, popups and row fills.
+The Deportment driver `QTenor` sets icons, commands, clicks, popups and row fills.
 It also folds the two button pairs by mode.
 `PTenorChronicle` starts collapsed because the reader is the side shown first.

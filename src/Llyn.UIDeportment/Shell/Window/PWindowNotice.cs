@@ -56,15 +56,15 @@ public partial class PWindow
         return
         [
             (PInput.PInputChangeCheck, PInput.PInputDraftFinish),
-            (PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
+            (_qLibrary.QLibraryChangeCheck, _qLibrary.QLibraryDraftFinish),
             (PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
-            (PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
-            (PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
+            (_qTaxonomy.QTaxonomyChangeCheck, _qTaxonomy.QTaxonomyDraftFinish),
+            (_qTenor.QTenorChangeCheck, _qTenor.QTenorDraftFinish),
             (PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
             (PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
-            (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish),
+            (_qFavorite.QFavoriteChangeCheck, _qFavorite.QFavoriteDraftFinish),
             (PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
-            (PRepertoire.PRepertoireChangeCheck, PRepertoire.PRepertoireDraftFinish),
+            (_qRepertoire.QRepertoireChangeCheck, _qRepertoire.QRepertoireDraftFinish),
             (PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
             (PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish)
         ];

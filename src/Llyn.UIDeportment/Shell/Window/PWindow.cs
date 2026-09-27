@@ -22,6 +22,18 @@ public partial class PWindow
 
     private readonly QEstablishment _qEstablishment;
 
+    private readonly QTaxonomy _qTaxonomy;
+
+    private readonly QTenor _qTenor;
+
+    private readonly QRepertoire _qRepertoire;
+
+    private readonly QLibrary _qLibrary;
+
+    private readonly QFavorite _qFavorite;
+
+    private readonly QDuplex _qDuplex;
+
     private LNavigation _lNavigation = null!;
 
     private LTab[] _pNavigationTabs = [];
@@ -38,6 +50,12 @@ public partial class PWindow
         _pWindowSurface = QContract.QContractSheetFind<Window>("PWindow");
         _qEstablishment = new QEstablishment(
             QContract.QContractFind<FrameworkElement>(_pWindowSurface, "PEstablishment"));
+        _qTaxonomy = new QTaxonomy(PTaxonomy);
+        _qTenor = new QTenor(PTenor);
+        _qRepertoire = new QRepertoire(PRepertoire);
+        _qLibrary = new QLibrary(PLibrary);
+        _qFavorite = new QFavorite(PFavorite);
+        _qDuplex = new QDuplex(PDuplex);
         _pWindowSurface.Tag = this;
         _pWindowSurface.SetValue(PMention.PMentionWindowProperty, _lWindow);
 
@@ -128,7 +146,7 @@ public partial class PWindow
 
     private PInput PInput => (PInput)_pWindowSurface.FindName(nameof(PInput));
 
-    private PLibrary PLibrary => (PLibrary)_pWindowSurface.FindName(nameof(PLibrary));
+    private UserControl PLibrary => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PLibrary));
 
     private PPhonology PPhonology => (PPhonology)_pWindowSurface.FindName(nameof(PPhonology));
 
@@ -136,11 +154,11 @@ public partial class PWindow
 
     private PYunjing PYunjing => (PYunjing)_pWindowSurface.FindName(nameof(PYunjing));
 
-    private PTaxonomy PTaxonomy => (PTaxonomy)_pWindowSurface.FindName(nameof(PTaxonomy));
+    private UserControl PTaxonomy => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PTaxonomy));
 
-    private PTenor PTenor => (PTenor)_pWindowSurface.FindName(nameof(PTenor));
+    private UserControl PTenor => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PTenor));
 
-    private PRepertoire PRepertoire => (PRepertoire)_pWindowSurface.FindName(nameof(PRepertoire));
+    private UserControl PRepertoire => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PRepertoire));
 
     private PCorpus PCorpus => (PCorpus)_pWindowSurface.FindName(nameof(PCorpus));
 
@@ -148,9 +166,9 @@ public partial class PWindow
 
     private PGuild PGuild => (PGuild)_pWindowSurface.FindName(nameof(PGuild));
 
-    private PFavorite PFavorite => (PFavorite)_pWindowSurface.FindName(nameof(PFavorite));
+    private UserControl PFavorite => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PFavorite));
 
-    private PDuplex PDuplex => (PDuplex)_pWindowSurface.FindName(nameof(PDuplex));
+    private UserControl PDuplex => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PDuplex));
 
     private PSettings PSettings => (PSettings)_pWindowSurface.FindName(nameof(PSettings));
 
@@ -174,18 +192,18 @@ public partial class PWindow
         CWorkspaceState state = _lWindow.LWindowWorkspace.QWorkspaceStateRead();
 
         PInput.PInputAttach(this);
-        PLibrary.PLibraryAttach(this);
+        _qLibrary.QLibraryAttach(this);
         PPhonology.PPhonologyAttach(this);
         PXiesheng.PXieshengAttach(this);
         PYunjing.PYunjingAttach(this);
-        PTaxonomy.PTaxonomyAttach(this);
-        PTenor.PTenorAttach(this);
-        PRepertoire.PRepertoireAttach(this);
+        _qTaxonomy.QTaxonomyAttach(this);
+        _qTenor.QTenorAttach(this);
+        _qRepertoire.QRepertoireAttach(this);
         PCorpus.PCorpusAttach(this);
         PReference.PReferenceAttach(this);
         PGuild.PGuildAttach(this);
-        PFavorite.PFavoriteAttach(this);
-        PDuplex.PDuplexAttach(this);
+        _qFavorite.QFavoriteAttach(this);
+        _qDuplex.QDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         _qEstablishment.QEstablishmentAttach(this);
         PNavigationAttach();
@@ -197,17 +215,17 @@ public partial class PWindow
 
     private void PWindowLayoutAttach()
     {
-        _pLayout.PLayoutAttach((Grid)((UserControl)PLibrary.Content).Content, "library");
+        _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
         _pLayout.PLayoutAttach((Grid)((UserControl)PPhonology.Content).Content, "phonology");
         _pLayout.PLayoutAttach((Grid)((UserControl)PXiesheng.Content).Content, "xiesheng");
         _pLayout.PLayoutAttach((Grid)((UserControl)PYunjing.Content).Content, "yunjing");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PTaxonomy.Content).Content, "taxonomy");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PTenor.Content).Content, "tenor");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PRepertoire.Content).Content, "repertoire");
+        _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
+        _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
+        _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
         _pLayout.PLayoutAttach((Grid)((UserControl)PCorpus.Content).Content, "corpus");
         _pLayout.PLayoutAttach((Grid)((UserControl)PReference.Content).Content, "reference");
         _pLayout.PLayoutAttach((Grid)((UserControl)PGuild.Content).Content, "guild");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PFavorite.Content).Content, "favorite");
+        _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
 
         _pLayout.PLayoutRestore();
     }
@@ -278,18 +296,18 @@ public partial class PWindow
     private void PWindowExitHandle(object? sender, EventArgs e)
     {
         PInput.PInputClose();
-        PLibrary.PLibraryClose();
+        _qLibrary.QLibraryClose();
         PPhonology.PPhonologyClose();
         PXiesheng.PXieshengClose();
         PYunjing.PYunjingClose();
-        PTaxonomy.PTaxonomyClose();
-        PTenor.PTenorClose();
-        PRepertoire.PRepertoireClose();
+        _qTaxonomy.QTaxonomyClose();
+        _qTenor.QTenorClose();
+        _qRepertoire.QRepertoireClose();
         PCorpus.PCorpusClose();
         PReference.PReferenceClose();
         PGuild.PGuildClose();
-        PFavorite.PFavoriteClose();
-        PDuplex.PDuplexClose();
+        _qFavorite.QFavoriteClose();
+        _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();
         _lWindow.LWindowLeftoverSweep();
         _lWindow.Dispose();

@@ -7,19 +7,19 @@ public partial class PWindow
     internal void PWindowViewRestore(CWorkspaceState state)
     {
         PInput.PInputVistaRestore();
-        PLibrary.PLibraryVistaRestore();
+        _qLibrary.QLibraryVistaRestore();
         PPhonology.PPhonologyVistaRestore();
-        PFavorite.PFavoriteVistaRestore();
-        PTaxonomy.PTaxonomyVistaRestore();
-        PTenor.PTenorVistaRestore();
-        PRepertoire.PRepertoireVistaRestore();
+        _qFavorite.QFavoriteVistaRestore();
+        _qTaxonomy.QTaxonomyVistaRestore();
+        _qTenor.QTenorVistaRestore();
+        _qRepertoire.QRepertoireVistaRestore();
         PReference.PReferenceVistaRestore();
         PCorpus.PCorpusVistaRestore();
         PGuild.PGuildVistaRestore();
         PXiesheng.PXieshengVistaRestore();
         PYunjing.PYunjingVistaRestore();
 
-        PDuplex.PDuplexRestore(state);
+        _qDuplex.QDuplexRestore(state);
 
         PNavigationRestore();
     }

@@ -1,0 +1,25 @@
+namespace Llyn.Conduct;
+
+public sealed record CPortraitLabel(
+    string CPortraitLabelUnknown,
+    string CPortraitLabelMeaning,
+    string CPortraitLabelMeanings,
+    string CPortraitLabelCollocation,
+    string CPortraitLabelCollocations,
+    string CPortraitLabelIncoming,
+    string CPortraitLabelNote,
+    string CPortraitLabelForm,
+    string CPortraitLabelParadigm,
+    string CPortraitLabelFrequency,
+    string CPortraitLabelGlyph,
+    string CPortraitLabelScript,
+    string CPortraitLabelFanqie,
+    string CPortraitLabelExample,
+    string CPortraitLabelGloss,
+    string CPortraitLabelSource,
+    string CPortraitLabelMention,
+    string CPortraitLabelEtymology,
+    string CPortraitLabelSituation,
+    string CPortraitLabelRegister,
+    string CPortraitLabelTranslation,
+    string CPortraitLabelTag);

@@ -28,6 +28,26 @@ Each tab button's icon is resolved here.
 
 Drives the status bar, pulled from the window under the contract ID `PEstablishment`.
 
+## `private readonly QTaxonomy _qTaxonomy;`
+
+Drives the taxonomy panel, pulled from the window under the contract ID `PTaxonomy`.
+
+## `private readonly QTenor _qTenor;`
+
+Drives the tenor panel, pulled from the window under the contract ID `PTenor`.
+
+## `private readonly QLibrary _qLibrary;`
+
+Drives the library panel, pulled from the window under the contract ID `PLibrary`.
+
+## `private readonly QFavorite _qFavorite;`
+
+Drives the favorites panel, pulled from the window under the contract ID `PFavorite`.
+
+## `private readonly QDuplex _qDuplex;`
+
+Drives the duplex panel, pulled from the window under the contract ID `PDuplex`.
+
 ## `internal Window PWindowSurface => _pWindowSurface;`
 
 The loaded window, reached by the bootstrap to show it and by panels as the owner of their dialogs.
@@ -35,6 +55,7 @@ The loaded window, reached by the bootstrap to show it and by panels as the owne
 ## `private PInput PInput`
 
 The named panels are read through the window's name scope.
+A panel already moved to the veneer is pulled by its contract ID as a plain page.
 
 ## `internal LWing PWindowWingCreate()`
 

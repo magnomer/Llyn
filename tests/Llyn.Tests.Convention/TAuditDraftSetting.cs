@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditDraftSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 21;
 
     public static readonly string[] TAuditDraftInclude =
     [

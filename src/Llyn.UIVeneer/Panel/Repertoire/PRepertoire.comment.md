@@ -122,7 +122,7 @@ The shared Theme.Catalog.Row preserves the same rounded shape, internal padding 
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `PRepertoire` sets icons, commands, clicks, text changes, popups and row fills.
+The Deportment driver `QRepertoire` sets icons, commands, clicks, text changes, popups and row fills.
 It also folds `PRepertoireVoyage` and `PRepertoireChronicle` by mode.
 `PRepertoireChronicle` starts collapsed because the reader is the side shown first.
 The atlas and occurrence rows use `Theme.Catalog.Row` directly, and their fills mark the chosen row.

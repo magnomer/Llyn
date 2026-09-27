@@ -63,7 +63,7 @@ auditfake -ReportDirectory D:\temp\audit -Top 10 -Open
 Write the report elsewhere, show ten rows of each kind, open the report.
 #>
 #requires -Version 5.1
-# AUDITFAKE GENERATION 18 - auditfake.ps1.
+# AUDITFAKE GENERATION 21 - auditfake.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -89,6 +89,12 @@ Write the report elsewhere, show ten rows of each kind, open the report.
 # seal check counts engine types on the public members of sealed Deportment types.
 # Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
 # Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 19: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the taxonomy and tenor shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 20: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the markup entry and omission shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 21: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the portrait legend shape, and the UI audit, whose Parity ledger holds the repertoire's CUI debt.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -136,7 +142,7 @@ COUNTERS
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 18
+$script:AuditGeneration = 21
 
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding

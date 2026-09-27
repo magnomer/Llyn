@@ -14,4 +14,4 @@ Each side is one wing: bar, matches and display.
 The two wings are peers and neither drives the other.
 A wing spans both rows, so its bar lines up with the seam the panel draws.
 Only the gutter margin differs between the two.
-The wing stays a Deportment control, loaded here by its tag and driven by its own class.
+The wing is a veneer page placed twice, and the duplex driver gives each place its own `QWing`.

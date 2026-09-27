@@ -1,5 +1,5 @@
 {
-  "generation": 18,
+  "generation": 21,
   "project": "Llyn",
   "enforced": true,
   "helper": {
@@ -57,15 +57,15 @@
     "Llyn.UIDeportment.PCard": 9,
     "Llyn.UIDeportment.PCorpus": 9,
     "Llyn.UIDeportment.PEditor": 29,
-    "Llyn.UIDeportment.PFavorite": 2,
-    "Llyn.UIDeportment.PRepertoire": 7,
     "Llyn.UIDeportment.PScreen": 5,
     "Llyn.UIDeportment.PSentence": 3,
     "Llyn.UIDeportment.PSettings": 10,
     "Llyn.UIDeportment.PSwath": 2,
-    "Llyn.UIDeportment.PTaxonomy": 3,
-    "Llyn.UIDeportment.PTenor": 3,
-    "Llyn.UIDeportment.PWindow": 11
+    "Llyn.UIDeportment.PWindow": 11,
+    "Llyn.UIDeportment.QFavorite": 2,
+    "Llyn.UIDeportment.QRepertoire": 7,
+    "Llyn.UIDeportment.QTaxonomy": 3,
+    "Llyn.UIDeportment.QTenor": 3
   },
   "console": {
     "top": 25

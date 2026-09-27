@@ -26,13 +26,13 @@ The situation list, whose panel asks the desk whether the scenario holds unsaved
 
 Raised when the desk or the entry editor changes state, so the panel control refreshes its parts.
 
-## `public event Action<LSituation?>? LRepertoireScenarioChanged`
+## `public event Action<CSituationDraft?>? LRepertoireScenarioChanged`
 
-Raised with the Situation the desk holds after a start, or null after a cancel or a refused start.
+Raised with the shaped Situation the desk holds after a start, or null after a cancel or a refused start.
 
-## `public event Action<LSituation>? LRepertoireSituationChanged`
+## `public event Action<CSituationDraft>? LRepertoireSituationChanged`
 
-Raised with the Situation a loaded draft carries, so the vignette shows it.
+Raised with the shaped Situation a loaded draft carries, so the vignette shows it.
 
 ## `public event Action<string, Exception>? LRepertoireFailed`
 
@@ -47,15 +47,11 @@ Raised once an arrival drops the inquest and the language filter, so the panel c
 Starts the desk on a stored Situation or on nothing, from the `Repertoire` origin the recovered draft names.
 It then announces the Situation the desk holds, which is null when the start was refused.
 
-## `public LSituation? LRepertoireScenarioRead()`
+## `public CSituationDraft? LRepertoireScenarioRead()`
 
-Reads the Situation the desk holds, which persists the tenure first and so can throw.
+Reads the Situation the desk holds as a shape, which persists the tenure first and so can throw.
 A throw raises `LRepertoireFailed` with `Situation.HoldFailed` and reads as null, so no click handler sees it.
 The veneer reads it on each draft bulletin, so the desk never hands it a draft.
-
-## `private void LRepertoireDraftOpen(long id)`
-
-Starts the desk on the Situation the atlas panel opened for editing.
 
 ## `private void LRepertoireDraftCancel()`
 
@@ -64,10 +60,6 @@ Cancels the desk and announces that no scenario is held.
 ## `private void LRepertoireSituationUpdate(LDraft draft)`
 
 Announces the Situation a loaded draft carries and ignores drafts of other subjects.
-
-## `private void LRepertoireEditorOpen(long id)`
-
-Opens the entry editor on the entry the occurrence panel opened for editing.
 
 ## `private void LRepertoireStateUpdate()`
 
@@ -161,7 +153,7 @@ Shows the chosen Situation again in the given mode, or clears both lists when no
 
 Clears both lists, also when the workspace changes under the panel.
 
-## `public void LRepertoireRowsApply(IReadOnlyList<LCatalogSituation> rows)`
+## `public void LRepertoireRowsApply(IReadOnlyList<CCatalogSituation> rows)`
 
 Checks the rows the panel control has just applied, so a clear never re-enters a read in progress.
 A chosen Situation missing from them clears both lists while the vignette shows it.
@@ -244,10 +236,24 @@ Steps the entry editor forward while it shows, else the scenario desk.
 
 Runs a scenario step and raises `LRepertoireFailed` with `Situation.HoldFailed` when it throws.
 
-## `public Task LRepertoirePortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)`
+## `public Task LRepertoirePortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
 
 Prints the entry on display, else the chosen Situation, else nothing.
+The driver's words and ticket become the engine's through the shared panel maps.
 
-## `public Task LRepertoirePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)`
+## `public Task LRepertoirePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
 
 Exports the entry on display, and does nothing otherwise.
+
+## `public bool LRepertoireVacantCheck(string? text)`
+
+Whether a scenario field is empty, so its hint shows.
+The view asks rather than measuring its own input.
+
+## `public string LRepertoireMeasureRead(string? text, string hint)`
+
+What the kind field's measure shows: the typed kind, or the hint while the field is empty.
+
+## `internal void LRepertoireVistaRestore(LVista vista, LVista occurrence)`
+
+Only the window deportment hands the panel its vistas, so no driver holds one.

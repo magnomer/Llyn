@@ -30,8 +30,8 @@ public sealed class TLibraryVoyage
 
         Assert.Equal(water.LEntryId, panel.TLibraryVoyageRead());
         Assert.Equal(["water"], panel.TLibraryRowsRead()
-            .Where(row => row.LVistaRowChosen)
-            .Select(row => row.LVistaRowHeadword));
+            .Where(row => row.CVistaRowChosen)
+            .Select(row => row.CVistaRowHeadword));
     }
 
     [Fact]

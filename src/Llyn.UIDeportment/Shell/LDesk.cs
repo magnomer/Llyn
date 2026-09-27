@@ -42,6 +42,8 @@ public sealed class LDesk
         _lDraftPort = drafts;
         _lDeskScope = scope;
         _lDeskUnreadableSeam = unreadableSeam;
+        LDeskQuill = new QQuill(this);
+        LDeskEasel = new QEasel(this);
     }
 
     public event Action? LDeskStarted;
@@ -57,6 +59,10 @@ public sealed class LDesk
     public event Action<string, Exception>? LDeskFailed;
 
     public event Action<string>? LDeskRefused;
+
+    public QQuill LDeskQuill { get; }
+
+    public QEasel LDeskEasel { get; }
 
     public bool LDeskHeld => _lDeskTenure is not null;
 
@@ -78,6 +84,8 @@ public sealed class LDesk
     private bool LDeskStalling => LDeskHalted && !_lDeskHalted;
 
     internal LTenure? LDeskTenure => _lDeskTenure;
+
+    internal LDraft? LDeskDraft => _lDeskTenure is LTenure held ? held.LTenureRead() : null;
 
     internal LForay? LDeskRecording => _lDeskRecording;
 

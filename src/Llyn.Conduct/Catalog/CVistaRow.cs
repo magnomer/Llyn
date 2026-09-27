@@ -5,4 +5,5 @@ public sealed record CVistaRow(
     string CVistaRowHeadword,
     string CVistaRowLanguage,
     string CVistaRowEpithet,
-    string CVistaRowName);
+    string CVistaRowName,
+    bool CVistaRowChosen);

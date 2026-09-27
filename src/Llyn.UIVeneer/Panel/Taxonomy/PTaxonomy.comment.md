@@ -57,6 +57,6 @@ The matching-entry column uses Theme.Catalog.Middle to measure its left gutter f
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `PTaxonomy` sets icons, commands, clicks, popups and row fills.
+The Deportment driver `QTaxonomy` sets icons, commands, clicks, popups and row fills.
 It also folds the two button pairs by mode.
 `PTaxonomyChronicle` starts collapsed because the reader is the side shown first.

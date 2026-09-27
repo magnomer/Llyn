@@ -20,7 +20,7 @@ public sealed class LAtlas
 
     private LVista? _lAtlasVista;
 
-    public LAtlas(
+    internal LAtlas(
         LEntryPort entries,
         LPortraitPort portraits,
         LSettingsPort settings,
@@ -51,7 +51,7 @@ public sealed class LAtlas
 
     public bool LAtlasNarrowed => _lAtlasVista?.LVistaNarrowed ?? false;
 
-    public void LAtlasVistaRestore(LVista vista)
+    internal void LAtlasVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -83,9 +83,11 @@ public sealed class LAtlas
         _lAtlasVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public IReadOnlyList<LCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
+    public IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
     {
-        return _lAtlasVista is LVista vista ? _lEntryPort.LEngineSituationFind(vista, unknown, untitled) : [];
+        return _lAtlasVista is LVista vista
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineSituationFind(vista, unknown, untitled), LAtlasRowRead)
+            : [];
     }
 
     public IReadOnlyDictionary<long, int> LAtlasUsageRead()
@@ -108,8 +110,60 @@ public sealed class LAtlas
         return _lSettingsPort.LEngineLanguageRead();
     }
 
-    public Task LAtlasPortraitPrint(LPortraitLegend legend, LPressTicket ticket)
+    public Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lAtlasVista, legend, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lAtlasVista, LAtlasLegendRead(legend), LPanel.LPanelTicketRead(ticket));
+    }
+
+    internal static LPortraitLegend LAtlasLegendRead(CPortraitLegend legend)
+    {
+        ArgumentNullException.ThrowIfNull(legend);
+
+        Dictionary<LReferenceKind, string> kinds = [];
+        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
+        {
+            kinds[kind] = legend.CPortraitLegendKind.GetValueOrDefault(
+                LReference.LReferenceKindResolve(kind), LReference.LReferenceKindFormat(kind));
+        }
+
+        return new LPortraitLegend(
+            legend.CPortraitLegendUnknown,
+            legend.CPortraitLegendUntitled,
+            legend.CPortraitLegendUnwritten,
+            legend.CPortraitLegendUnused,
+            legend.CPortraitLegendOnce,
+            legend.CPortraitLegendUses,
+            legend.CPortraitLegendTranslation,
+            legend.CPortraitLegendSource,
+            legend.CPortraitLegendAuthor,
+            legend.CPortraitLegendYear,
+            legend.CPortraitLegendUrl,
+            legend.CPortraitLegendNote,
+            legend.CPortraitLegendDescription,
+            kinds);
+    }
+
+    internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)
+    {
+        return new CCatalogSituation(
+            row.LCatalogSituationStored.LSituationId,
+            row.LCatalogSituationName,
+            row.LCatalogSituationUsage,
+            LCard.LCardStateRead(row.LCatalogSituationStored.LSituationKind),
+            row.LCatalogSituationChosen);
+    }
+
+    internal static CSituationDraft? LAtlasSituationRead(LSituation? situation)
+    {
+        return situation is null
+            ? null
+            : new CSituationDraft(
+                situation.LSituationId,
+                LCard.LCardStateRead(situation.LSituationTitle),
+                LCard.LCardStateRead(situation.LSituationKind),
+                LCard.LCardStateRead(situation.LSituationDescription),
+                LCard.LCardImageRead(situation.LSituationImage),
+                LCard.LCardVideoRead(situation.LSituationVideo));
     }
 }

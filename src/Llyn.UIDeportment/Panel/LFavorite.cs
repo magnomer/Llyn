@@ -17,7 +17,7 @@ public sealed class LFavorite
 
     private LVista? _lFavoriteVista;
 
-    public LFavorite(
+    internal LFavorite(
         LEntryPort entries,
         LPortraitPort portraits,
         LSettingsPort settings,
@@ -63,9 +63,19 @@ public sealed class LFavorite
 
     public bool LFavoriteFiltered => _lFavoriteVista?.LVistaFiltered ?? false;
 
-    public bool LFavoriteGraspOrdered => _lFavoriteVista?.LVistaOrderMatch(LCatalogOrder.LCatalogOrderGrasp) ?? false;
+    private bool LFavoriteGraspOrdered => _lFavoriteVista?.LVistaOrderMatch(LCatalogOrder.LCatalogOrderGrasp) ?? false;
 
-    public void LFavoriteVistaRestore(LVista vista)
+    public void LFavoriteGraspApply(Action find)
+    {
+        ArgumentNullException.ThrowIfNull(find);
+
+        if (LFavoriteGraspOrdered)
+        {
+            find();
+        }
+    }
+
+    internal void LFavoriteVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -98,9 +108,11 @@ public sealed class LFavorite
         _lFavoriteVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public IReadOnlyList<LVistaRow> LFavoriteRowsRead()
+    public IReadOnlyList<CVistaRow> LFavoriteRowsRead()
     {
-        return _lFavoriteVista is LVista vista ? _lEntryPort.LEngineFavoriteFind(vista) : [];
+        return _lFavoriteVista is LVista vista
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineFavoriteFind(vista), LPanel.LPanelRowRead)
+            : [];
     }
 
     public IReadOnlyList<string> LFavoriteLanguageRead()
@@ -108,9 +120,10 @@ public sealed class LFavorite
         return _lSettingsPort.LEngineLanguageRead();
     }
 
-    public Task LFavoritePortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LFavoritePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lFavoriteVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lFavoriteVista, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
     }
 
     internal void LFavoriteVistaRestore(LWindow window)
@@ -137,8 +150,9 @@ public sealed class LFavorite
         return LVista.LVistaFileRead(_lFavoriteVista);
     }
 
-    public Task LFavoritePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LFavoritePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(_lFavoriteVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            _lFavoriteVista, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
     }
 }

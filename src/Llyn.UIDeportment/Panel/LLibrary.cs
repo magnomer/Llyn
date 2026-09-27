@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -19,9 +15,7 @@ public sealed class LLibrary
 
     private LVista? _lLibraryVista;
 
-    private LIndex? _lLibraryIndex;
-
-    public LLibrary(
+    internal LLibrary(
         LEntryPort entries,
         LPortraitPort portraits,
         LEditor editor,
@@ -63,34 +57,20 @@ public sealed class LLibrary
         LLibraryEditor.LEditorOpen(id);
     }
 
-    private bool LLibrarySieveActive => _lLibraryVista?.LVistaFiltered ?? false;
+    public bool LLibraryFiltered => _lLibraryVista?.LVistaFiltered ?? false;
 
-    public void LLibraryVistaRestore(LVista vista)
+    internal void LLibraryVistaRestore(LVista vista)
     {
         _lLibraryVista = vista;
         LLibraryPanel.LPanelVistaRestore(vista);
         LLibraryEditor.LEditorVistaRestore(vista);
     }
 
-    public IReadOnlyList<LVistaRow> LLibraryRowsRead()
+    public IReadOnlyList<CVistaRow> LLibraryRowsRead()
     {
-        return _lLibraryVista is LVista vista ? _lEntryPort.LEngineEntryFind(vista) : [];
-    }
-
-    public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty)
-    {
-        _lLibraryIndex = new LIndex(view, empty);
-        LLibraryPanel.LPanelRowsChanged += LLibraryIndexShow;
-    }
-
-    private void LLibraryIndexShow()
-    {
-        _lLibraryIndex?.LIndexShow(LLibraryRowsRead(), true);
-    }
-
-    public void LLibraryIndexSelect(object sender)
-    {
-        LLibraryPanel.LPanelRowSelect(LIndex.LIndexEntryRead(sender));
+        return _lLibraryVista is LVista vista
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+            : [];
     }
 
     public long LLibraryVoyageRead()
@@ -105,7 +85,7 @@ public sealed class LLibrary
         _lLibraryVista?.LVistaQuerySet(query);
     }
 
-    private void LLibraryOrderSet(CCatalogOrder? order)
+    public void LLibraryOrderSet(CCatalogOrder? order)
     {
         if (_lLibraryVista is not LVista vista)
         {
@@ -115,46 +95,28 @@ public sealed class LLibrary
         vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    private void LLibrarySieveSet(CCatalogFilter filter)
+    public void LLibrarySieveSet(CCatalogFilter filter)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         _lLibraryVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public void LLibraryOrderHandle(object sender, ToggleButton dropper)
-    {
-        ArgumentNullException.ThrowIfNull(dropper);
-
-        dropper.IsChecked = false;
-        LLibraryOrderSet(QChoice.QChoiceOrderRead(sender));
-    }
-
-    public void LLibrarySieveHandle(Panel list, UIElement mark)
-    {
-        LLibrarySieveSet(QChoice.QChoiceFilterRead(list));
-        LLibrarySieveShow(mark);
-    }
-
-    public void LLibrarySieveShow(UIElement mark)
-    {
-        ArgumentNullException.ThrowIfNull(mark);
-
-        mark.Visibility = LLibrarySieveActive ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    public Task LLibraryPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LLibraryPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         if (_lLibraryVista is not LVista vista)
         {
             return Task.CompletedTask;
         }
 
-        return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            vista, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
     }
 
     public async Task LLibraryMarkupStart(
         Func<string?> pathSeam,
-        Func<LMarkupCargo, IReadOnlyList<LMarkupIntake>?> customsSeam,
-        Action<IReadOnlyList<LMarkupOmission>> omissionSeam)
+        Func<IReadOnlyList<CMarkupEntry>, IReadOnlyList<CSCustomsRow>?> customsSeam,
+        Action<IReadOnlyList<CMarkupOmission>> omissionSeam)
     {
         ArgumentNullException.ThrowIfNull(pathSeam);
         ArgumentNullException.ThrowIfNull(customsSeam);
@@ -177,18 +139,55 @@ public sealed class LLibrary
 
     private async Task LLibraryMarkupImport(
         LMarkupCargo cargo,
-        Func<LMarkupCargo, IReadOnlyList<LMarkupIntake>?> customsSeam,
-        Action<IReadOnlyList<LMarkupOmission>> omissionSeam)
+        Func<IReadOnlyList<CMarkupEntry>, IReadOnlyList<CSCustomsRow>?> customsSeam,
+        Action<IReadOnlyList<CMarkupOmission>> omissionSeam)
     {
-        if (customsSeam(cargo) is not IReadOnlyList<LMarkupIntake> intakes)
+        IReadOnlyList<CMarkupEntry> entries = LLibraryEntryRead(cargo.LMarkupCargoEntry);
+        if (customsSeam(entries) is not IReadOnlyList<CSCustomsRow> rows)
         {
             return;
         }
 
-        LMarkupOutcome outcome = await _lPortraitPort.LEngineMarkupStart(cargo, intakes);
+        LMarkupOutcome outcome = await _lPortraitPort.LEngineMarkupStart(cargo, LLibraryIntakeRead(rows));
 
         LLibraryPanel.LPanelRowsUpdate();
-        omissionSeam(outcome.LMarkupOutcomeOmission);
+        omissionSeam(LLibraryOmissionRead(outcome.LMarkupOutcomeOmission));
+    }
+
+    internal static IReadOnlyList<CMarkupEntry> LLibraryEntryRead(IReadOnlyList<LMarkupEntry> entries)
+    {
+        return LSplice.LSpliceBuild(
+            entries,
+            static entry => new CMarkupEntry(
+                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage, entry.LMarkupEntryName));
+    }
+
+    internal static IReadOnlyList<LMarkupIntake> LLibraryIntakeRead(IReadOnlyList<CSCustomsRow> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        List<LMarkupIntake> intakes = new(rows.Count);
+        for (int index = 0; index < rows.Count; index++)
+        {
+            intakes.Add(LMarkupIntake.LMarkupIntakeCreate(
+                index,
+                rows[index].CSCustomsRowMode switch
+                {
+                    CSCustomsMode.CSCustomsModeMerge => LMarkupMode.LMarkupModeMerge,
+                    CSCustomsMode.CSCustomsModeReplace => LMarkupMode.LMarkupModeReplace,
+                    _ => LMarkupMode.LMarkupModeNew,
+                },
+                rows[index].CSCustomsRowTarget));
+        }
+
+        return intakes;
+    }
+
+    internal static IReadOnlyList<CMarkupOmission> LLibraryOmissionRead(IReadOnlyList<LMarkupOmission> omissions)
+    {
+        return LSplice.LSpliceBuild(
+            omissions,
+            static omission => new CMarkupOmission(omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
     }
 
     internal void LLibraryVistaRestore(LWindow window)
@@ -204,8 +203,9 @@ public sealed class LLibrary
         return LVista.LVistaFileRead(LLibraryPanel.LPanelVista);
     }
 
-    public Task LLibraryPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LLibraryPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(LLibraryPanel.LPanelVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            LLibraryPanel.LPanelVista, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
     }
 }

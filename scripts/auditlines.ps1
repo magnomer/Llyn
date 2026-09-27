@@ -26,7 +26,7 @@ Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 18,
+    "generation": 21,
     "project": "Llyn",
     "enforced": true,
     "ceilings": { "Length": 0, "Width": 0 },
@@ -105,7 +105,7 @@ auditlines -Extensions .cs, .xaml
 auditlines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 18 - auditlines.ps1.
+# AUDITLINES GENERATION 21 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -132,6 +132,12 @@ auditlines -SourceRoots .\src, .\tests
 # seal check counts engine types on the public members of sealed Deportment types.
 # Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
 # Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 19: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the taxonomy and tenor shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 20: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the markup entry and omission shapes, and the UI audit, whose Parity ledger holds their CUI debt.
+# Generation 21: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the portrait legend shape, and the UI audit, whose Parity ledger holds the repertoire's CUI debt.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -250,7 +256,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 18
+$script:AuditGeneration = 21
 $script:ItemLimit = 40
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits

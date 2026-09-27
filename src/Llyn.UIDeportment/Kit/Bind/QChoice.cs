@@ -173,6 +173,11 @@ internal static class QChoice
         return new CCatalogFilter(hidden);
     }
 
+    internal static CCatalogFilter QChoiceFilterRead(object sender)
+    {
+        return QChoiceFilterRead((Panel)((FrameworkElement)sender).Parent);
+    }
+
     internal static CCatalogOrder? QChoiceOrderRead(object sender)
     {
         return sender is RadioButton { Tag: string word }

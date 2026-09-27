@@ -7,6 +7,11 @@ The panel state is held rather than inherited, because a shell type deriving fro
 It keeps its own handle on the vista.
 A vista read off the panel would be an engine answer to branch on.
 The panel's loads and clears go straight to the lectern its view hands in, so the veneer relays no draft.
+It names no WPF type, so the entry list, the droppers and the sieve mark live in `QLibrary`.
+
+## `internal LLibrary(`
+
+Only the window deportment builds it over the engine's ports, so no view names a port.
 
 ## `public event Action<string, Exception>? LLibraryFailed;`
 
@@ -17,58 +22,38 @@ The engine imports every entry or none, so nothing needs undoing before it is sh
 
 The entry editor's deportment, whose desk answers whether the panel may leave and opens the row that is edited.
 
-## `public IReadOnlyList<LVistaRow> LLibraryRowsRead()`
+## `public bool LLibraryFiltered`
+
+Whether the vista hides any language, which the view shows as the mark on the sieve button.
+
+## `internal void LLibraryVistaRestore(LVista vista)`
+
+Hands the vista to the panel state and the editor.
+It stays internal, so only the window deportment and the Windows tests pass an engine vista.
+
+## `public IReadOnlyList<CVistaRow> LLibraryRowsRead()`
 
 The rows the engine returns for the vista, already filtered, sorted, numbered and marked.
-
-## `private LIndex? _lLibraryIndex;`
-
-The entry list the panel fills, absent until the veneer hands over its controls.
-Tests attach none, so the panel reads its rows without a list to fill.
-
-## `public void LLibraryIndexAttach(ItemsControl view, FrameworkElement empty)`
-
-Builds the list over the veneer's controls and refills it whenever the panel announces new rows.
-
-## `private void LLibraryIndexShow()`
-
-Reads the rows and hands them to the list as an answered request.
-The list counts what it holds, so the empty notice needs no count kept here.
-
-## `public void LLibraryIndexSelect(object sender)`
-
-Puts the panel on the entry of the clicked row, or on none when the sender carries no row.
+They cross as shapes, so the view names no engine row.
 
 ## `public long LLibraryVoyageRead()`
 
 The entry the panel shows, as the station the window records before a jump away.
 Zero says no entry is shown, so there is no place to come back to.
 
-## `private void LLibraryOrderSet(CCatalogOrder? order)`
+## `public void LLibraryOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves and announces it.
 A sender that is no order row hands null, which keeps the ordering it has.
 
-## `private void LLibrarySieveSet(CCatalogFilter filter)`
+## `public void LLibrarySieveSet(CCatalogFilter filter)`
 
 Hands the ticked languages to the vista, which saves and announces them.
 
-## `public void LLibraryOrderHandle(object sender, ToggleButton dropper)`
-
-A clicked order row closes the dropdown and sets the ordering its tag carries.
-The row's enum is read here, so no ordering is spelled or parsed in the veneer.
-
-## `public void LLibrarySieveHandle(Panel list, UIElement mark)`
-
-A clicked language row sets the filter the list now stands for, then redraws the mark at once.
-
-## `public void LLibrarySieveShow(UIElement mark)`
-
-Shows the mark on the sieve button while the vista hides any language.
-
-## `public Task LLibraryPortraitPrint(LPortraitLabel label, LPressTicket ticket)`
+## `public Task LLibraryPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
 
 Prints the chosen entry as the engine portrays it, with the labels the window localized.
+The label and the ticket are mapped to the engine's own by the panel's shared maps.
 
 ## `public async Task LLibraryMarkupStart(`
 
@@ -84,3 +69,17 @@ The customs seam shows what the cargo declares before anything is written.
 A seam answering null is a declined declaration, and the workspace is left untouched.
 The engine then imports under the declared intakes, and the rows are re-read from what the workspace holds.
 What the import could not place goes to the omission seam after the rows already hold the entries.
+
+## `internal static IReadOnlyList<CMarkupEntry> LLibraryEntryRead(IReadOnlyList<LMarkupEntry> entries)`
+
+Maps the parsed entries to what the customs dialog shows and searches by.
+The rows keep the file's order, so a declared row's place is its intake's index.
+
+## `internal static IReadOnlyList<LMarkupIntake> LLibraryIntakeRead(IReadOnlyList<CSCustomsRow> rows)`
+
+Maps the dialog's declared rows to the engine's intakes, one per parsed entry in file order.
+A fresh row carries no target, which the engine's factory enforces.
+
+## `internal static IReadOnlyList<CMarkupOmission> LLibraryOmissionRead(IReadOnlyList<LMarkupOmission> omissions)`
+
+Maps what the import left behind to the rows the import report lists.

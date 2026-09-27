@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditChainSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 21;
     public const string TAuditChainHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainReach = new Dictionary<string, string[]>
@@ -110,6 +110,16 @@ internal static class TAuditChainSetting
             "CMeaning",
             "CMarkdownBlock",
             "CMarkdownSpan",
+            "CCatalogTag",
+            "CCatalogRegister",
+            "CPortraitLabel",
+            "CPortraitLegend",
+            "CPortraitMedium",
+            "CPressTicket",
+            "CPressSide",
+            "CPressInk",
+            "CMarkupEntry",
+            "CMarkupOmission",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -179,6 +189,16 @@ internal static class TAuditChainSetting
             "CMeaning",
             "CMarkdownBlock",
             "CMarkdownSpan",
+            "CCatalogTag",
+            "CCatalogRegister",
+            "CPortraitLabel",
+            "CPortraitLegend",
+            "CPortraitMedium",
+            "CPressTicket",
+            "CPressSide",
+            "CPressInk",
+            "CMarkupEntry",
+            "CMarkupOmission",
         ],
     };
 
@@ -204,9 +224,9 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 171,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 1419,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 662,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 166,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 1258,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 661,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 33,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 9,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 33,
@@ -214,8 +234,8 @@ internal static class TAuditChainSetting
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
         ["seal:Llyn.UIDeportment>Llyn.Application"] = 2,
-        ["seal:Llyn.UIDeportment>Llyn.Core"] = 119,
-        ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 66,
+        ["seal:Llyn.UIDeportment>Llyn.Core"] = 73,
+        ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 42,
     };
 
     public static readonly string[] TAuditChainWaiver = [];

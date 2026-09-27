@@ -150,7 +150,7 @@ public sealed class LEditor
     public string LEditorParadigmLanguage =>
         LParadigm.LParadigmLanguageRead(LEditorSounding.LSoundingParadigmFind(LEditorEntry));
 
-    private LEntryDraft? LEditorContent => LEditorDesk.LDeskTenure?.LTenureRead()?.LDraftContent;
+    private LEntryDraft? LEditorContent => LEditorDesk.LDeskDraft?.LDraftContent;
 
     private bool LEditorRestarting => LEditorFresh && LEditorOwned;
 

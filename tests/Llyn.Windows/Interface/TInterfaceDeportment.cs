@@ -102,7 +102,7 @@ internal static class TInterfaceDeportment
     internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
         panel.LLibraryVistaRestore(vista);
 
-    internal static IReadOnlyList<LVistaRow> TLibraryRowsRead(this LLibrary panel) => panel.LLibraryRowsRead();
+    internal static IReadOnlyList<CVistaRow> TLibraryRowsRead(this LLibrary panel) => panel.LLibraryRowsRead();
 
     internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
 
@@ -188,6 +188,53 @@ internal static class TInterfaceDeportment
     internal static LCatalogFilter TPanelFilterRead(CCatalogFilter filter) => LPanel.LPanelFilterRead(filter);
 
     internal static LSubject TPanelSubjectRead(CSubject subject) => LPanel.LPanelSubjectRead(subject);
+
+    internal static CVistaRow TPanelRowRead(LVistaRow row) => LPanel.LPanelRowRead(row);
+
+    internal static LPortraitMedium TPanelMediumRead(CPortraitMedium medium) => LPanel.LPanelMediumRead(medium);
+
+    internal static LPressTicket TPanelTicketRead(CPressTicket ticket) => LPanel.LPanelTicketRead(ticket);
+
+    internal static LPortraitLabel TPanelLabelRead(CPortraitLabel label) => LPanel.LPanelLabelRead(label);
+
+    internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
+        new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
+
+    internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
+    {
+        LEditor editor = new(
+            TEngineFake.TEngineStubCreate<LDraftPort>(),
+            entries,
+            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
+            settings,
+            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            static () => false);
+        return new(
+            entries,
+            TEngineFake.TEngineStubCreate<LPortraitPort>(),
+            settings,
+            editor,
+            TLecternCreate(editor),
+            static () => true,
+            static () => true,
+            static () => true);
+    }
+
+    internal static IReadOnlyList<CCatalogTag> TTaxonomyRowsRead(this LTaxonomy taxonomy) =>
+        taxonomy.LTaxonomyRowsRead();
+
+    internal static long TTaxonomyTagCreate(this LTaxonomy taxonomy, string name) =>
+        taxonomy.LTaxonomyTagCreate(name);
+
+    internal static bool TTaxonomyCoinageCheck(this LTaxonomy taxonomy) => taxonomy.LTaxonomyCoinageCheck();
+
+    internal static string TTaxonomyEmptyRead(this LTaxonomy taxonomy, string query) =>
+        taxonomy.LTaxonomyEmptyRead(query);
+
+    internal static IReadOnlyList<CCatalogTag> TTaxonomyTagRead(IReadOnlyList<LCatalogTag> rows) =>
+        LTaxonomy.LTaxonomyTagRead(rows);
+
+    internal static LCatalogTag TCatalogTagCreate(LTag tag, bool chosen) => new(tag, chosen);
 
     internal static IReadOnlyList<LCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
         panel.LPhonologyRowsRead();
@@ -388,26 +435,34 @@ internal static class TInterfaceDeportment
             static () => true);
     }
 
-    internal static IReadOnlyList<LCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
+    internal static IReadOnlyList<CCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
 
-    internal static IReadOnlyList<LVistaRow> TTenorCohortRead(this LTenor tenor) => tenor.LTenorCohortRead();
+    internal static IReadOnlyList<CVistaRow> TTenorCohortRead(this LTenor tenor) => tenor.LTenorCohortRead();
 
-    internal static LRegister TTenorRegisterCreate(this LTenor tenor, string name) => tenor.LTenorRegisterCreate(name);
+    internal static long TTenorRegisterCreate(this LTenor tenor, string name) => tenor.LTenorRegisterCreate(name);
+
+    internal static bool TTenorCoinageCheck(this LTenor tenor) => tenor.LTenorCoinageCheck();
+
+    internal static IReadOnlyList<CCatalogRegister> TTenorRegisterRead(IReadOnlyList<LCatalogRegister> rows) =>
+        LTenor.LTenorRegisterRead(rows);
+
+    internal static LCatalogRegister TCatalogRegisterCreate(LRegister register, int usage, bool chosen) =>
+        new(register, usage, chosen);
 
     internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
 
     internal static IReadOnlyList<CMeaning> TWorkspaceMeaningSort(IReadOnlyList<LMeaning> meanings, string unknown) =>
         QWorkspace.QWorkspaceMeaningSort(meanings, unknown);
 
-    internal static IReadOnlyList<LIndexItem> TIndexItemBuild(IReadOnlyList<LVistaRow> rows) =>
-        LIndexItem.LIndexItemBuild(rows);
+    internal static IReadOnlyList<QIndexItem> TIndexItemBuild(IReadOnlyList<CVistaRow> rows) =>
+        QIndexItem.QIndexItemBuild(rows);
 
-    internal static bool TIndexItemMatch(LIndexItem held, LIndexItem fresh) => LIndexItem.LIndexItemMatch(held, fresh);
+    internal static bool TIndexItemMatch(QIndexItem held, QIndexItem fresh) => QIndexItem.QIndexItemMatch(held, fresh);
 
-    internal static void TIndexItemSync(LIndexItem held, LIndexItem fresh) => LIndexItem.LIndexItemSync(held, fresh);
+    internal static void TIndexItemSync(QIndexItem held, QIndexItem fresh) => QIndexItem.QIndexItemSync(held, fresh);
 
-    internal static long? TIndexNeighbourFind(IReadOnlyList<LIndexItem> items, bool down) =>
-        LIndex.LIndexNeighbourFind(items, down);
+    internal static long? TIndexNeighbourFind(IReadOnlyList<QIndexItem> items, bool down) =>
+        QIndex.QIndexNeighbourFind(items, down);
 
     internal static bool TCaretKeyApply(
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>

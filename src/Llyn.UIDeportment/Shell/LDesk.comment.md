@@ -64,6 +64,16 @@ Only the finish without a stored action raises it.
 The held tenure stopped taking requests.
 It carries the scope's `HoldFailed` key, and it fires once per halt.
 
+## `public QQuill LDeskQuill { get; }`
+
+The gate for this desk's text rows, built over the desk itself.
+A driver reaches it through the desk, so no driver builds a text request.
+
+## `public QEasel LDeskEasel { get; }`
+
+The gate for this desk's image and video rows, built over the desk itself.
+A driver reaches it through the desk, so no driver builds a media request.
+
 ## `public bool LDeskStored`
 
 Whether the held draft stands on a stored record rather than a fresh one.
@@ -91,6 +101,11 @@ The tenure halted since the last bulletin.
 ## `internal LTenure? LDeskTenure`
 
 The held tenure, for the editor that reads the draft's language and reflex state from it.
+
+## `internal LDraft? LDeskDraft`
+
+The held draft as it stands, without applying what still waits, or null while nothing is held.
+A reader inside a keystroke takes this, so the pending request keeps its delay and raises no bulletin mid-typing.
 
 ## `internal LForay? LDeskRecording`
 

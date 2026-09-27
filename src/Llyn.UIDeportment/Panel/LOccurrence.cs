@@ -58,6 +58,11 @@ public sealed class LOccurrence
         return _lEntryPort.LEngineEntryFind(_lOccurrenceRoll, _lOccurrenceVista);
     }
 
+    public string LOccurrenceEmptyRead(string? sortie)
+    {
+        return string.IsNullOrWhiteSpace(sortie) ? "Situation.Vacant" : "Situation.Unmatched";
+    }
+
     public string LOccurrenceFileRead()
     {
         return LVista.LVistaFileRead(_lOccurrenceVista);

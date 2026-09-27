@@ -1,27 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    private static readonly IReadOnlyList<(string PWindowKey, string PWindowSuffix, LPortraitMedium PWindowKind)>
+    private static readonly IReadOnlyList<(string PWindowKey, string PWindowSuffix, CPortraitMedium PWindowKind)>
         PWindowPortraitKinds =
         [
-            ("Export.Markup", ".llx", LPortraitMedium.LPortraitMediumMarkup),
-            ("Export.Html", ".html", LPortraitMedium.LPortraitMediumHtml),
-            ("Export.Markdown", ".md", LPortraitMedium.LPortraitMediumMarkdown),
-            ("Export.Docx", ".docx", LPortraitMedium.LPortraitMediumDocx),
-            ("Export.Pdf", ".pdf", LPortraitMedium.LPortraitMediumPdf),
+            ("Export.Markup", ".llx", CPortraitMedium.CPortraitMediumMarkup),
+            ("Export.Html", ".html", CPortraitMedium.CPortraitMediumHtml),
+            ("Export.Markdown", ".md", CPortraitMedium.CPortraitMediumMarkdown),
+            ("Export.Docx", ".docx", CPortraitMedium.CPortraitMediumDocx),
+            ("Export.Pdf", ".pdf", CPortraitMedium.CPortraitMediumPdf),
         ];
 
-    internal async Task PWindowPortraitExport(
+    internal Task PWindowPortraitExport(
         string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)
     {
+        return PWindowPortraitExport(file, LPanel.LPanelPortraitCreate(export));
+    }
+
+    internal async Task PWindowPortraitExport(
+        string file, Func<string, CPortraitMedium, CPortraitLabel, Task> export)
+    {
         List<string> filters = new List<string>();
-        foreach ((string key, string suffix, LPortraitMedium _) in PWindowPortraitKinds)
+        foreach ((string key, string suffix, CPortraitMedium _) in PWindowPortraitKinds)
         {
             filters.Add($"{QLocalizationCatalog.QLocalizationTextRead(key)}|*{suffix}");
         }
@@ -41,11 +48,11 @@ public partial class PWindow
         }
 
         int chosen = Math.Clamp(dialog.FilterIndex - 1, 0, PWindowPortraitKinds.Count - 1);
-        LPortraitMedium format = PWindowPortraitKinds[chosen].PWindowKind;
+        CPortraitMedium format = PWindowPortraitKinds[chosen].PWindowKind;
 
         try
         {
-            await export(dialog.FileName, format, PWindowLabelRead());
+            await export(dialog.FileName, format, PWindowPortraitRead());
         }
         catch (Exception exception)
         {

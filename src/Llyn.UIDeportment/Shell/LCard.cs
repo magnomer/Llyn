@@ -32,14 +32,7 @@ public sealed class LCard
 
     public IReadOnlyList<CVistaRow> LCardProspectFind(string word)
     {
-        return LSplice.LSpliceBuild(
-            _lDraftPort.LEngineProspectFind(word),
-            static row => new CVistaRow(
-                row.LVistaRowId,
-                row.LVistaRowHeadword,
-                row.LVistaRowLanguage,
-                row.LVistaRowEpithet ?? string.Empty,
-                row.LVistaRowName));
+        return LSplice.LSpliceBuild(_lDraftPort.LEngineProspectFind(word), LPanel.LPanelRowRead);
     }
 
     public long? LCardTranslationResolve(string word, long? entryId)
@@ -78,11 +71,7 @@ public sealed class LCard
     public IReadOnlyList<CCatalogSituation> LCardSituationFind(string word)
     {
         return LSplice.LSpliceBuild(
-            _lEntryPort.LEngineSituationFind(word, LCatalogOrder.LCatalogOrderUsage),
-            static row => new CCatalogSituation(
-                row.LCatalogSituationStored.LSituationId,
-                row.LCatalogSituationStored.LSituationTitle.LStateValueShow(),
-                row.LCatalogSituationUsage));
+            _lEntryPort.LEngineSituationFind(word, LCatalogOrder.LCatalogOrderUsage), LAtlas.LAtlasRowRead);
     }
 
     public IReadOnlyList<CCatalogReference> LCardReferenceFind(string word)
@@ -159,7 +148,7 @@ public sealed class LCard
 
     private LEtymologyDraft LCardEtymologyRead()
     {
-        return _lCardDesk.LDeskTenure?.LTenureRead()?.LDraftContent.LEntryDraftEtymology ?? new LEtymologyDraft();
+        return _lCardDesk.LDeskDraft?.LDraftContent.LEntryDraftEtymology ?? new LEtymologyDraft();
     }
 
     private void LCardMentionSend(LMentionDraft? span, long entryId)
@@ -227,7 +216,13 @@ public sealed class LCard
                 LSplice.LSpliceBuild(card.LCardDraftSentence, LCardSentenceRead),
                 LSplice.LSpliceBuild(
                     card.LCardDraftSituation,
-                    static row => new CSituationDraft(row.LSituationDraftId, LCardStateRead(row.LSituationDraftTitle))),
+                    static row => new CSituationDraft(
+                        row.LSituationDraftId,
+                        LCardStateRead(row.LSituationDraftTitle),
+                        LCardStateRead(row.LSituationDraftKind),
+                        LCardStateRead(row.LSituationDraftDescription),
+                        [],
+                        [])),
                 LSplice.LSpliceBuild(
                     card.LCardDraftRegister,
                     static row => new CRegisterDraft(row.LRegisterDraftId, LCardStateRead(row.LRegisterDraftName))),

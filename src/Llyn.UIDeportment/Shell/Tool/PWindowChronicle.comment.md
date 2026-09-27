@@ -9,6 +9,7 @@ Which editor answers is decided by where the keyboard is, not by which panel is 
 ## `private static PChronicleHost? PChronicleHostRead()`
 
 Climbs from the focused element to the first ancestor that answers undo and redo.
+A veneer surface answers through the driver attached to it, as the situation form does.
 The situation and example forms each hold an entry form inside them.
 Climbing meets the nearer of the two first, which is the one the user is typing in.
 A focused element outside the visual tree climbs the logical tree instead, so a text run still finds its form.

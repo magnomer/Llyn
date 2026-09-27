@@ -1,11 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -20,10 +14,6 @@ public sealed class LWing
 
     private LVista? _lWingVista;
 
-    private LIndex? _lWingIndex;
-
-    private TextBox? _lWingQuery;
-
     internal LWing(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
@@ -36,13 +26,13 @@ public sealed class LWing
 
     public event Action<string, Exception>? LWingFailed;
 
+    public event Action? LWingLoaded;
+
     public LLectern LWingLectern { get; }
 
-    private bool LWingFiltered => _lWingVista?.LVistaFiltered ?? false;
+    public bool LWingFiltered => _lWingVista?.LVistaFiltered ?? false;
 
-    private bool LWingQueried => _lWingVista?.LVistaQueried ?? false;
-
-    private bool LWingShown => _lWingIndex?.LIndexShown ?? false;
+    public bool LWingQueried => _lWingVista?.LVistaQueried ?? false;
 
     private void LWingVistaRestore(LVista vista)
     {
@@ -52,12 +42,14 @@ public sealed class LWing
         _lWingDisplay.LDisplayVistaRestore(vista);
     }
 
-    private void LWingQuerySet(string query)
+    public void LWingQuerySet(string query)
     {
+        ArgumentNullException.ThrowIfNull(query);
+
         _lWingVista?.LVistaQuerySet(query);
     }
 
-    private void LWingOrderSet(CCatalogOrder? order)
+    public void LWingOrderSet(CCatalogOrder? order)
     {
         if (_lWingVista is not LVista vista)
         {
@@ -67,38 +59,19 @@ public sealed class LWing
         vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
-    private void LWingSieveSet(CCatalogFilter filter)
+    public void LWingSieveSet(CCatalogFilter filter)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         _lWingVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public void LWingOrderHandle(object sender, ToggleButton dropper)
-    {
-        ArgumentNullException.ThrowIfNull(dropper);
-
-        dropper.IsChecked = false;
-        LWingOrderSet(QChoice.QChoiceOrderRead(sender));
-    }
-
-    public void LWingSieveHandle(Panel list, UIElement mark)
-    {
-        LWingSieveSet(QChoice.QChoiceFilterRead(list));
-        LWingSieveShow(mark);
-    }
-
-    public void LWingSieveShow(UIElement mark)
-    {
-        ArgumentNullException.ThrowIfNull(mark);
-
-        mark.Visibility = LWingFiltered ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void LWingSelect(long? id)
+    public void LWingSelect(long? id)
     {
         _lWingVista?.LVistaSelect(id);
     }
 
-    public void LWingVistaRestore(LWindow window, string tab)
+    internal void LWingVistaRestore(LWindow window, string tab)
     {
         ArgumentNullException.ThrowIfNull(window);
 
@@ -106,39 +79,19 @@ public sealed class LWing
             window.LWindowVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
     }
 
-    public void LWingIndexAttach(ItemsControl view, FrameworkElement empty, TextBox query)
+    public void LWingObserverAttach(Action<CBulletin> observer)
     {
-        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(observer);
 
-        _lWingIndex = new LIndex(view, empty);
-        _lWingQuery = query;
-    }
+        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectVista, LWingBulletinSend);
+        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectEntry, LWingBulletinSend);
+        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectReflex, LWingBulletinSend);
+        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectSettings, LWingBulletinSend);
 
-    public void LWingObserverAttach(
-        DispatcherObject surface, Func<DispatcherObject, Action, Action<LBulletin>> observerSeam)
-    {
-        ArgumentNullException.ThrowIfNull(observerSeam);
-
-        Action<LBulletin> observer = observerSeam(surface, LWingIndexShow);
-        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectVista, observer);
-        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectEntry, observer);
-        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectReflex, observer);
-        _lWingVista?.LVistaObserverAttach(LSubject.LSubjectSettings, observer);
-    }
-
-    private void LWingIndexShow()
-    {
-        _lWingIndex?.LIndexShow(LWingRowsRead(), LWingQueried);
-    }
-
-    public void LWingIndexClear()
-    {
-        _lWingIndex?.LIndexClear();
-    }
-
-    private void LWingIndexHide()
-    {
-        _lWingIndex?.LIndexShownSet(false);
+        void LWingBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
     public void LWingEntryShow(long? id)
@@ -162,78 +115,12 @@ public sealed class LWing
             return;
         }
 
-        LWingIndexShow();
+        LWingLoaded?.Invoke();
         LWingLectern.LLecternLoadedShow();
     }
 
-    public void LWingQueryHandle()
+    public void LWingEntryOpen(long id)
     {
-        LWingQuerySet(_lWingQuery?.Text ?? string.Empty);
-        _lWingIndex?.LIndexShownSet(LWingQueried);
-    }
-
-    public void LWingKeyHandle(KeyEventArgs e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        LIndex? index = _lWingIndex;
-        if (!LWingShown)
-        {
-            return;
-        }
-
-        if (e.Key == Key.Escape)
-        {
-            LWingIndexHide();
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key == Key.Enter)
-        {
-            if (index?.LIndexChosenRead() is long chosen)
-            {
-                LWingIndexHide();
-                LWingEntryLoad(chosen);
-                LWingEntrySave();
-            }
-
-            e.Handled = true;
-            return;
-        }
-
-        if (e.Key is not (Key.Down or Key.Up) || index?.LIndexNeighbourFind(e.Key == Key.Down) is not long target)
-        {
-            return;
-        }
-
-        LWingSelect(target);
-        LWingIndexShow();
-        index?.LIndexEntryScroll(target);
-        e.Handled = true;
-    }
-
-    public void LWingLeaveHandle(KeyboardFocusChangedEventArgs e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewFocus is Visual target
-            && (ReferenceEquals(target, _lWingQuery) || (_lWingIndex?.LIndexHoldCheck(target) ?? false)))
-        {
-            return;
-        }
-
-        LWingIndexHide();
-    }
-
-    public void LWingIndexHandle(object sender)
-    {
-        if (LIndex.LIndexEntryRead(sender) is not long id)
-        {
-            return;
-        }
-
-        LWingIndexHide();
         LWingEntryLoad(id);
         LWingEntrySave();
     }
@@ -244,9 +131,11 @@ public sealed class LWing
     public CCatalogFilter LWingFilter =>
         LPanel.LPanelFilterRead(_lWingVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
-    private IReadOnlyList<LVistaRow> LWingRowsRead()
+    public IReadOnlyList<CVistaRow> LWingRowsRead()
     {
-        return _lWingVista is LVista vista ? _lWingWindow.LWindowEntryPort.LEngineEntryFind(vista) : [];
+        return _lWingVista is LVista vista
+            ? LSplice.LSpliceBuild(_lWingWindow.LWindowEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+            : [];
     }
 
     public IReadOnlyList<string> LWingLanguageRead()

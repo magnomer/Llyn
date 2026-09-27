@@ -21,30 +21,26 @@ The omission face passes an empty gate and no rows.
 
 Each named part is pulled from the window by its contract ID.
 
-## `internal static IReadOnlyList<LMarkupIntake>? QSCustomsShow(PWindow host, IReadOnlyList<LMarkupEntry> entries)`
+## `internal static IReadOnlyList<CSCustomsRow>? QSCustomsShow(PWindow host, IReadOnlyList<CMarkupEntry> entries)`
 
 Looks up each entry's candidates, so the gate starts every row defaulted before the window opens.
 Every row is numbered by its place in the file, so a reader can tell twin rows apart.
 
-## `internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<LMarkupOmission> omissions)`
+## `internal static void QSCustomsOmissionShow(PWindow host, IReadOnlyList<CMarkupOmission> omissions)`
 
 Shows the omissions the import reported on the window's second face.
 Each omission becomes a line number and its text before the window sees it.
 An empty list shows nothing, so a clean import ends without a further click.
 The declaration's default and cancel keys are released so Close answers both.
 
-## `private static IReadOnlyList<LMarkupIntake>? QSCustomsIntakeRead(`
+## `private static IReadOnlyList<CSCustomsRow>? QSCustomsIntakeRead(`
 
-Shows the declaration and reads one intake per row in file order.
+Shows the declaration and reads the gate's row for every entry in file order.
 Null when the window closes without Accept.
-The intakes are built either way, so the dialog's answer decides only what is handed back.
+The rows are read either way, so the dialog's answer decides only what is handed back.
+The library controller maps the rows to the engine's intakes, so this dialog names no engine type.
 
-## `private static LMarkupIntake QSCustomsIntakeCreate(int index, CSCustomsRow row)`
-
-Reshapes one row of the gate into the intake the import takes.
-A New row's intake carries no target, even when the row still holds an earlier pick.
-
-## `private static IReadOnlyList<LCardDraft> QSCustomsChildRead(LCardDraft card)`
+## `private static IReadOnlyList<CCardDraft> QSCustomsChildRead(CCardDraft card)`
 
 The cards nested under a card, handed to the gate's count as its way down the tree.
 

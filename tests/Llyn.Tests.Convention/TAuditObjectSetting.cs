@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 18;
+    public const int TAuditGeneration = 21;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
     public const int TAuditPartLimit = 5;
@@ -31,15 +31,15 @@ internal static class TAuditObjectSetting
         ["Llyn.UIDeportment.PCard"] = 9,
         ["Llyn.UIDeportment.PCorpus"] = 9,
         ["Llyn.UIDeportment.PEditor"] = 29,
-        ["Llyn.UIDeportment.PFavorite"] = 2,
-        ["Llyn.UIDeportment.PRepertoire"] = 7,
         ["Llyn.UIDeportment.PScreen"] = 5,
         ["Llyn.UIDeportment.PSentence"] = 3,
         ["Llyn.UIDeportment.PSettings"] = 10,
         ["Llyn.UIDeportment.PSwath"] = 2,
-        ["Llyn.UIDeportment.PTaxonomy"] = 3,
-        ["Llyn.UIDeportment.PTenor"] = 3,
         ["Llyn.UIDeportment.PWindow"] = 11,
+        ["Llyn.UIDeportment.QFavorite"] = 2,
+        ["Llyn.UIDeportment.QRepertoire"] = 7,
+        ["Llyn.UIDeportment.QTaxonomy"] = 3,
+        ["Llyn.UIDeportment.QTenor"] = 3,
     };
 
     public static readonly string[] TAuditObjectInclude =

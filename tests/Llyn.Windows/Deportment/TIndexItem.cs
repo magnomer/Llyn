@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using Llyn.Core;
+using Llyn.Conduct;
 using Llyn.UIDeportment;
 using Xunit;
 
@@ -10,20 +10,20 @@ public sealed class TIndexItem
     [Fact]
     public void IndexItemBuild_ChosenRow_CarriesMark()
     {
-        IReadOnlyList<LIndexItem> items = TInterfaceDeportment.TIndexItemBuild(
+        IReadOnlyList<QIndexItem> items = TInterfaceDeportment.TIndexItemBuild(
             [TIndexRowCreate(1, "Latin", false), TIndexRowCreate(2, "Latin", true)]);
 
-        Assert.Equal([1L, 2L], items.Select(item => item.LIndexItemId));
-        Assert.False(items[0].LIndexItemChosen);
-        Assert.True(items[1].LIndexItemChosen);
-        Assert.Null(items[1].LIndexItemFlag);
+        Assert.Equal([1L, 2L], items.Select(item => item.QIndexItemId));
+        Assert.False(items[0].QIndexItemChosen);
+        Assert.True(items[1].QIndexItemChosen);
+        Assert.Null(items[1].QIndexItemFlag);
     }
 
     [Fact]
     public void IndexItemMatch_DifferentMark_Matches()
     {
-        LIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
-        LIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
+        QIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
+        QIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
 
         Assert.True(TInterfaceDeportment.TIndexItemMatch(held, fresh));
     }
@@ -31,8 +31,8 @@ public sealed class TIndexItem
     [Fact]
     public void IndexItemMatch_DifferentLanguage_Refuses()
     {
-        LIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
-        LIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Greek", false));
+        QIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
+        QIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Greek", false));
 
         Assert.False(TInterfaceDeportment.TIndexItemMatch(held, fresh));
     }
@@ -40,35 +40,35 @@ public sealed class TIndexItem
     [Fact]
     public void IndexItemSync_MovedMark_RaisesChange()
     {
-        LIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
-        LIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
+        QIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", false));
+        QIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
         List<string?> raised = [];
         held.PropertyChanged += (_, change) => raised.Add(change.PropertyName);
 
         TInterfaceDeportment.TIndexItemSync(held, fresh);
 
-        Assert.True(held.LIndexItemChosen);
-        Assert.Equal([nameof(LIndexItem.LIndexItemChosen)], raised);
+        Assert.True(held.QIndexItemChosen);
+        Assert.Equal([nameof(QIndexItem.QIndexItemChosen)], raised);
     }
 
     [Fact]
     public void IndexItemSync_SameMark_RaisesNothing()
     {
-        LIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
-        LIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
+        QIndexItem held = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
+        QIndexItem fresh = TIndexItemCreate(TIndexRowCreate(1, "Latin", true));
         List<PropertyChangedEventArgs> raised = [];
         held.PropertyChanged += (_, change) => raised.Add(change);
 
         TInterfaceDeportment.TIndexItemSync(held, fresh);
 
-        Assert.True(held.LIndexItemChosen);
+        Assert.True(held.QIndexItemChosen);
         Assert.Empty(raised);
     }
 
     [Fact]
     public void IndexNeighbourFind_NoChosenDown_PicksFirst()
     {
-        IReadOnlyList<LIndexItem> items = TIndexListCreate(-1);
+        IReadOnlyList<QIndexItem> items = TIndexListCreate(-1);
 
         Assert.Equal(1L, TInterfaceDeportment.TIndexNeighbourFind(items, true));
     }
@@ -76,7 +76,7 @@ public sealed class TIndexItem
     [Fact]
     public void IndexNeighbourFind_NoChosenUp_PicksFirst()
     {
-        IReadOnlyList<LIndexItem> items = TIndexListCreate(-1);
+        IReadOnlyList<QIndexItem> items = TIndexListCreate(-1);
 
         Assert.Equal(1L, TInterfaceDeportment.TIndexNeighbourFind(items, false));
     }
@@ -84,7 +84,7 @@ public sealed class TIndexItem
     [Fact]
     public void IndexNeighbourFind_MiddleChosen_MovesOneRow()
     {
-        IReadOnlyList<LIndexItem> items = TIndexListCreate(1);
+        IReadOnlyList<QIndexItem> items = TIndexListCreate(1);
 
         Assert.Equal(3L, TInterfaceDeportment.TIndexNeighbourFind(items, true));
         Assert.Equal(1L, TInterfaceDeportment.TIndexNeighbourFind(items, false));
@@ -103,13 +103,13 @@ public sealed class TIndexItem
         Assert.Null(TInterfaceDeportment.TIndexNeighbourFind([], true));
     }
 
-    private static IReadOnlyList<LIndexItem> TIndexListCreate(int chosen) =>
+    private static IReadOnlyList<QIndexItem> TIndexListCreate(int chosen) =>
         TInterfaceDeportment.TIndexItemBuild(
             [TIndexRowCreate(1, "Latin", chosen == 0), TIndexRowCreate(2, "Latin", chosen == 1),
                 TIndexRowCreate(3, "Latin", chosen == 2)]);
 
-    private static LVistaRow TIndexRowCreate(long id, string language, bool chosen) =>
-        new(id, "aqua", language, null, "aqua", chosen);
+    private static CVistaRow TIndexRowCreate(long id, string language, bool chosen) =>
+        new(id, "aqua", language, string.Empty, "aqua", chosen);
 
-    private static LIndexItem TIndexItemCreate(LVistaRow row) => TInterfaceDeportment.TIndexItemBuild([row])[0];
+    private static QIndexItem TIndexItemCreate(CVistaRow row) => TInterfaceDeportment.TIndexItemBuild([row])[0];
 }

@@ -60,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 18 - auditui.ps1.
+# AUDITUI GENERATION 21 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -86,6 +86,12 @@ auditui -Configuration Release
 # seal check counts engine types on the public members of sealed Deportment types.
 # Generation 18: the Parity ledger holds the window's shapes, which only Deportment reaches until the
 # CUI reads them. The structure audit rises with it.
+# Generation 19: the Parity ledger holds the taxonomy and tenor shapes and the shared panel maps, which
+# only Deportment reaches until the CUI reads them. The structure audit rises with it.
+# Generation 20: the Parity ledger holds the favorite and library shapes, the index rows and the
+# markup entries and omissions, which only Deportment reaches until the CUI reads them. The structure audit rises with it.
+# Generation 21: the Parity ledger holds the repertoire's situation shapes, its atlas maps and the text
+# gate, which only Deportment reaches until the CUI reads them. The structure audit rises with it.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -188,7 +194,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 18
+$script:AuditGeneration = 21
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 

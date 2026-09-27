@@ -2,70 +2,48 @@
 
 ## `public sealed class LWing`
 
-The deportment of one side of the duplex panel: the entry vista it holds and the reading view under it.
+The controller of one side of the duplex panel: the entry vista it holds and the reading view under it.
 It finds the rows, takes the query, order and language sieve, and loads the chosen entry.
-It owns the side's match list and steers it from the field's keys, focus and clicks.
 The reading view's deportment is built here, since a wing has no editor to own it.
 The window view builds a wing over the window deportment, whose ports it reads through.
 The chosen entry is saved to the workspace state under the wing's side, so the next run reopens it.
-
-## `private LIndex? _lWingIndex;`
-
-The side's match list, absent until the veneer hands over its controls.
-Every use tolerates its absence, so an announcement before the attach does nothing.
-
-## `private TextBox? _lWingQuery;`
-
-The side's search field, read on each keystroke and kept to tell a leave from a move into the list.
+It names no WPF type, so the match list, the keys and the focus live in `QWing`.
 
 ## `public event Action<string, Exception>? LWingFailed;`
 
 Raised with the failure key when an entry load threw, so the veneer can report it.
 
-## `private void LWingOrderSet(CCatalogOrder? order)`
+## `public event Action? LWingLoaded;`
+
+Raised once an entry is loaded, so the side re-lists its matches with the new mark.
+A load that failed raises nothing, since the side stands where it stood.
+
+## `public bool LWingFiltered`
+
+Whether the vista hides any language, which the side shows as the mark on the sieve button.
+
+## `public bool LWingQueried`
+
+Whether the vista holds a query, so the side shows the list and its empty notice only then.
+
+## `public void LWingOrderSet(CCatalogOrder? order)`
 
 Hands a chosen ordering to the vista, which saves it under the side's tab and announces it.
 A sender that is no order row hands null, which keeps the ordering it has.
 
-## `private void LWingSieveSet(CCatalogFilter filter)`
+## `public void LWingSieveSet(CCatalogFilter filter)`
 
 Hands the ticked languages to the vista, which saves and announces them.
 
-## `public void LWingOrderHandle(object sender, ToggleButton dropper)`
+## `public void LWingSelect(long? id)`
 
-A clicked order row closes the dropdown and sets the ordering its tag carries.
-The announcement then re-lists the matches.
+Moves the vista's choice without loading, for the keys that walk the list.
 
-## `public void LWingSieveHandle(Panel list, UIElement mark)`
-
-A clicked language row sets the filter the list now stands for, then redraws the mark at once.
-
-## `public void LWingSieveShow(UIElement mark)`
-
-Shows the mark on the sieve button while the vista hides any language.
-
-## `public void LWingIndexAttach(ItemsControl view, FrameworkElement empty, TextBox query)`
-
-Takes the side's list, empty notice and field once, and builds the index over them.
-
-## `public void LWingObserverAttach(DispatcherObject surface, Func<DispatcherObject, Action, Action<LBulletin>> observerSeam)`
+## `public void LWingObserverAttach(Action<CBulletin> observer)`
 
 Re-lists the matches on each vista, entry, reflex and settings announcement.
 Order, filter or query moved, or a stored entry, a reflex fill or a flipped setting changed a listed row.
-The seam puts each response on the surface's thread.
-
-## `private void LWingIndexShow()`
-
-Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.
-The empty notice shows only while a typed query matched nothing.
-
-## `public void LWingIndexClear()`
-
-Empties the match list.
-
-## `private void LWingIndexHide()`
-
-Collapses the match list and leaves the query standing.
+The side hands an observer that already runs on its thread, and each bulletin crosses as a shape.
 
 ## `public void LWingEntryShow(long? id)`
 
@@ -74,34 +52,19 @@ The side is cleared first, so a failed load never leaves another tab's entry sta
 
 ## `private void LWingEntryLoad(long id)`
 
-Loads one entry onto this side for a pick from the list.
+Loads one entry onto this side.
 An entry that is gone leaves the side empty rather than showing what it was.
 A load that failed leaves the side where it stood and reports the failure.
 The wing's display loads and chooses the entry, so the wing never holds the draft.
 The wing then shows or clears its own lectern, so no veneer relays the draft.
 
-## `public void LWingQueryHandle()`
+## `public void LWingEntryOpen(long id)`
 
-Hands the text to the vista, then shows the list while the vista holds a query and hides it otherwise.
+Loads the entry picked from the list and saves the side's standing.
 
-## `public void LWingKeyHandle(KeyEventArgs e)`
+## `public IReadOnlyList<CVistaRow> LWingRowsRead()`
 
-The keyboard path from the field into the open list.
-A closed list lets every key through to the field, so a hidden list is never picked from.
-The index remembers whether it is shown, since a control's state never gates a request.
-Escape hides the list and takes the key.
-Enter picks the chosen row while the rows still mark it.
-Down and Up move the choice one row, stopping at either end.
-The rows are re-marked in place and the chosen one scrolled into view.
-
-## `public void LWingLeaveHandle(KeyboardFocusChangedEventArgs e)`
-
-Focus leaving the field and the list hides the list.
-Focus moving between the two is not a leave, since a clicked row takes focus before its click lands.
-
-## `public void LWingIndexHandle(object sender)`
-
-A clicked row hides the list, shows its entry and saves the side's standing.
+The rows the engine returns for the vista, crossing as shapes so the side names no engine row.
 
 ## `private void LWingEntrySave()`
 

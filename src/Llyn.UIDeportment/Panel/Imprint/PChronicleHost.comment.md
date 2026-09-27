@@ -14,6 +14,19 @@ So the buttons never lag the chronicle.
 ## `internal static class PChronicle`
 
 The one wrap the four hosts put around their engine step.
+It also keeps the hosts that drive a veneer surface, since such a surface is not a host itself.
+
+## `private static readonly ConditionalWeakTable<DependencyObject, PChronicleHost> PChronicleHold = [];`
+
+Each surface's driver, held weakly so a dropped surface frees its entry.
+
+## `internal static void PChronicleAttach(DependencyObject surface, PChronicleHost host)`
+
+Names the driver that answers the undo and redo keys for everything inside the surface.
+
+## `internal static PChronicleHost? PChronicleRead(DependencyObject element)`
+
+The driver attached to this element, or null when none was.
 
 ## `internal static void PChronicleRun(Action step)`
 

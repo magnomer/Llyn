@@ -19,7 +19,7 @@ public sealed class LTaxonomy
 
     private LVista? _lTaxonomyMembership;
 
-    public LTaxonomy(
+    internal LTaxonomy(
         LEntryPort entries,
         LPortraitPort portraits,
         LSettingsPort settings,
@@ -72,11 +72,21 @@ public sealed class LTaxonomy
         }
     }
 
+    public bool LTaxonomyCoinageCheck()
+    {
+        return LTaxonomyChosen is null && !LTaxonomyPanel.LPanelBinEnabled;
+    }
+
     public long? LTaxonomyChosen => _lTaxonomyVista?.LVistaChosen;
 
     public bool LTaxonomyFiltered => _lTaxonomyVista?.LVistaFiltered ?? false;
 
-    public void LTaxonomyVistaRestore(LVista vista, LVista membership)
+    public string LTaxonomyEmptyRead(string query)
+    {
+        return string.IsNullOrWhiteSpace(query) ? "Tag.Vacant" : "Tag.Unmatched";
+    }
+
+    internal void LTaxonomyVistaRestore(LVista vista, LVista membership)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(membership);
@@ -123,19 +133,28 @@ public sealed class LTaxonomy
         _lTaxonomyVista?.LVistaSelect(id);
     }
 
-    public IReadOnlyList<LCatalogTag> LTaxonomyRowsRead()
+    public IReadOnlyList<CCatalogTag> LTaxonomyRowsRead()
     {
-        return _lTaxonomyVista is LVista vista ? _lEntryPort.LEngineTagFind(vista) : [];
+        return _lTaxonomyVista is LVista vista ? LTaxonomyTagRead(_lEntryPort.LEngineTagFind(vista)) : [];
     }
 
-    public IReadOnlyList<LVistaRow> LTaxonomyMembershipRead()
+    internal static IReadOnlyList<CCatalogTag> LTaxonomyTagRead(IReadOnlyList<LCatalogTag> rows)
     {
-        return _lEntryPort.LEngineEntryFind(_lTaxonomyVista, _lTaxonomyMembership);
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CCatalogTag(
+                new CTag(row.LCatalogTagStored.LTagId, row.LCatalogTagStored.LTagText), row.LCatalogTagChosen));
     }
 
-    public LTag LTaxonomyTagCreate(string name)
+    public IReadOnlyList<CVistaRow> LTaxonomyMembershipRead()
     {
-        return _lEntryPort.LEngineTagCreate(name);
+        return LSplice.LSpliceBuild(
+            _lEntryPort.LEngineEntryFind(_lTaxonomyVista, _lTaxonomyMembership), LPanel.LPanelRowRead);
+    }
+
+    public long LTaxonomyTagCreate(string name)
+    {
+        return _lEntryPort.LEngineTagCreate(name).LTagId;
     }
 
     public IReadOnlyList<string> LTaxonomyLanguageRead()
@@ -143,9 +162,10 @@ public sealed class LTaxonomy
         return _lSettingsPort.LEngineLanguageRead();
     }
 
-    public Task LTaxonomyPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LTaxonomyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lTaxonomyMembership, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lTaxonomyMembership, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
     }
 
     internal void LTaxonomyVistaRestore(LWindow window)
@@ -157,9 +177,16 @@ public sealed class LTaxonomy
             window.LWindowVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LTaxonomyObserverAttach(LSubject subject, Action<LBulletin> observer)
+    public void LTaxonomyObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lTaxonomyVista?.LVistaObserverAttach(subject, observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lTaxonomyVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LTaxonomyBulletinSend);
+
+        void LTaxonomyBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
     public CCatalogOrder LTaxonomyOrder =>
@@ -173,8 +200,9 @@ public sealed class LTaxonomy
         return LVista.LVistaFileRead(_lTaxonomyMembership);
     }
 
-    public Task LTaxonomyPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LTaxonomyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(_lTaxonomyMembership, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            _lTaxonomyMembership, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
     }
 }

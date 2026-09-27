@@ -19,7 +19,7 @@ public sealed class LTenor
 
     private LVista? _lTenorCohort;
 
-    public LTenor(
+    internal LTenor(
         LEntryPort entries,
         LPortraitPort portraits,
         LSettingsPort settings,
@@ -72,11 +72,21 @@ public sealed class LTenor
         }
     }
 
+    public bool LTenorCoinageCheck()
+    {
+        return LTenorChosen is null && !LTenorPanel.LPanelBinEnabled;
+    }
+
     public long? LTenorChosen => _lTenorVista?.LVistaChosen;
 
     public bool LTenorFiltered => _lTenorVista?.LVistaFiltered ?? false;
 
-    public void LTenorVistaRestore(LVista vista, LVista cohort)
+    public string LTenorEmptyRead(string query)
+    {
+        return string.IsNullOrWhiteSpace(query) ? "Register.Vacant" : "Register.Unmatched";
+    }
+
+    internal void LTenorVistaRestore(LVista vista, LVista cohort)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(cohort);
@@ -123,19 +133,31 @@ public sealed class LTenor
         _lTenorVista?.LVistaSelect(id);
     }
 
-    public IReadOnlyList<LCatalogRegister> LTenorRowsRead()
+    public IReadOnlyList<CCatalogRegister> LTenorRowsRead()
     {
-        return _lTenorVista is LVista vista ? _lEntryPort.LEngineRegisterFind(vista) : [];
+        return _lTenorVista is LVista vista ? LTenorRegisterRead(_lEntryPort.LEngineRegisterFind(vista)) : [];
     }
 
-    public IReadOnlyList<LVistaRow> LTenorCohortRead()
+    internal static IReadOnlyList<CCatalogRegister> LTenorRegisterRead(IReadOnlyList<LCatalogRegister> rows)
     {
-        return _lEntryPort.LEngineEntryFind(_lTenorVista, _lTenorCohort);
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CCatalogRegister(
+                new CRegister(
+                    row.LCatalogRegisterStored.LRegisterId, row.LCatalogRegisterStored.LRegisterName.LStateValueShow()),
+                row.LCatalogRegisterUsage,
+                row.LCatalogRegisterChosen));
     }
 
-    public LRegister LTenorRegisterCreate(string name)
+    public IReadOnlyList<CVistaRow> LTenorCohortRead()
     {
-        return _lEntryPort.LEngineRegisterCreate(name);
+        return LSplice.LSpliceBuild(
+            _lEntryPort.LEngineEntryFind(_lTenorVista, _lTenorCohort), LPanel.LPanelRowRead);
+    }
+
+    public long LTenorRegisterCreate(string name)
+    {
+        return _lEntryPort.LEngineRegisterCreate(name).LRegisterId;
     }
 
     public IReadOnlyList<string> LTenorLanguageRead()
@@ -143,9 +165,10 @@ public sealed class LTenor
         return _lSettingsPort.LEngineLanguageRead();
     }
 
-    public Task LTenorPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LTenorPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lTenorCohort, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lTenorCohort, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
     }
 
     internal void LTenorVistaRestore(LWindow window)
@@ -157,9 +180,16 @@ public sealed class LTenor
             window.LWindowVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
     }
 
-    public void LTenorObserverAttach(LSubject subject, Action<LBulletin> observer)
+    public void LTenorObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lTenorVista?.LVistaObserverAttach(subject, observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _lTenorVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LTenorBulletinSend);
+
+        void LTenorBulletinSend(LBulletin bulletin)
+        {
+            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
+        }
     }
 
     public CCatalogOrder LTenorOrder =>
@@ -173,8 +203,9 @@ public sealed class LTenor
         return LVista.LVistaFileRead(_lTenorCohort);
     }
 
-    public Task LTenorPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LTenorPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(_lTenorCohort, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            _lTenorCohort, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
     }
 }

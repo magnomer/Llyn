@@ -29,6 +29,6 @@ The shared Theme.Catalog.Row preserves the same rounded shape, internal padding 
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `PFavorite` sets icons, commands, clicks, popups and row fills.
+The Deportment driver `QFavorite` sets icons, commands, clicks, popups and row fills.
 It also folds the two button pairs by mode.
 `PFavoriteChronicle` starts collapsed because the reader is the side shown first.

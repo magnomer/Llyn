@@ -183,11 +183,11 @@ public partial class PWindow
             new LTab("Input", PNavigationInput, PInput),
             new LTab("Library", PNavigationLibrary, PLibrary)
             {
-                LTabLeave = PLibrary.PLibraryLeaveConfirm,
-                LTabScribe = PLibrary.PLibraryScribeRestore,
-                LTabStation = PLibrary.PLibraryVoyageRead,
-                LTabVoyage = PLibrary.PLibraryVoyageShow,
-                LTabArrival = PLibrary.PIndexEntryShow
+                LTabLeave = _qLibrary.QLibraryLeaveConfirm,
+                LTabScribe = _qLibrary.QLibraryScribeRestore,
+                LTabStation = _qLibrary.QLibraryVoyageRead,
+                LTabVoyage = _qLibrary.QLibraryVoyageShow,
+                LTabArrival = _qLibrary.QIndexEntryShow
             },
             new LTab("Phonology", PNavigationPhonology, PPhonology)
             {
@@ -217,27 +217,27 @@ public partial class PWindow
             },
             new LTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
             {
-                LTabLeave = PTaxonomy.PTaxonomyLeaveConfirm,
-                LTabScribe = PTaxonomy.PTaxonomyScribeRestore,
-                LTabStation = PTaxonomy.PTaxonomyVoyageRead,
-                LTabVoyage = PTaxonomy.PTaxonomyVoyageShow,
-                LTabArrival = PTaxonomy.PDirectoryTagShow
+                LTabLeave = _qTaxonomy.QTaxonomyLeaveConfirm,
+                LTabScribe = _qTaxonomy.QTaxonomyScribeRestore,
+                LTabStation = _qTaxonomy.QTaxonomyVoyageRead,
+                LTabVoyage = _qTaxonomy.QTaxonomyVoyageShow,
+                LTabArrival = _qTaxonomy.QDirectoryTagShow
             },
             new LTab("Tenor", PNavigationTenor, PTenor)
             {
-                LTabLeave = PTenor.PTenorLeaveConfirm,
-                LTabScribe = PTenor.PTenorScribeRestore,
-                LTabStation = PTenor.PTenorVoyageRead,
-                LTabVoyage = PTenor.PTenorVoyageShow,
-                LTabArrival = PTenor.PGamutRegisterShow
+                LTabLeave = _qTenor.QTenorLeaveConfirm,
+                LTabScribe = _qTenor.QTenorScribeRestore,
+                LTabStation = _qTenor.QTenorVoyageRead,
+                LTabVoyage = _qTenor.QTenorVoyageShow,
+                LTabArrival = _qTenor.QGamutRegisterShow
             },
             new LTab("Repertoire", PNavigationRepertoire, PRepertoire)
             {
-                LTabLeave = PRepertoire.PRepertoireLeaveConfirm,
-                LTabScribe = PRepertoire.PRepertoireScribeRestore,
-                LTabStation = PRepertoire.PRepertoireVoyageRead,
-                LTabVoyage = PRepertoire.PRepertoireVoyageShow,
-                LTabArrival = PRepertoire.PAtlasSituationShow
+                LTabLeave = _qRepertoire.QRepertoireLeaveConfirm,
+                LTabScribe = _qRepertoire.QRepertoireScribeRestore,
+                LTabStation = _qRepertoire.QRepertoireVoyageRead,
+                LTabVoyage = _qRepertoire.QRepertoireVoyageShow,
+                LTabArrival = _qRepertoire.QAtlasSituationShow
             },
             new LTab("Corpus", PNavigationCorpus, PCorpus)
             {
@@ -265,11 +265,11 @@ public partial class PWindow
             },
             new LTab("Favorite", PNavigationFavorite, PFavorite)
             {
-                LTabLeave = PFavorite.PFavoriteLeaveConfirm,
-                LTabScribe = PFavorite.PFavoriteScribeRestore,
-                LTabStation = PFavorite.PFavoriteVoyageRead,
-                LTabVoyage = PFavorite.PFavoriteVoyageShow,
-                LTabArrival = PFavorite.PRosterEntryShow
+                LTabLeave = _qFavorite.QFavoriteLeaveConfirm,
+                LTabScribe = _qFavorite.QFavoriteScribeRestore,
+                LTabStation = _qFavorite.QFavoriteVoyageRead,
+                LTabVoyage = _qFavorite.QFavoriteVoyageShow,
+                LTabArrival = _qFavorite.QRosterEntryShow
             },
             new LTab("Duplex", PNavigationDuplex, PDuplex),
             new LTab("Settings", PNavigationSettings, PSettings)
@@ -399,7 +399,7 @@ public partial class PWindow
             PWindowEntryShow(stored.LMentionEntryId);
             if (stored.LMentionSensed)
             {
-                PLibrary.PDisplay.PDisplayCardScroll(stored.LMentionSenseId);
+                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.LMentionSenseId);
             }
 
             return;

@@ -64,6 +64,11 @@ Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu 
 The filter the rows of `list` now stand for: every unticked language is hidden.
 The panel maps a filter hiding nothing to the engine's shared empty filter.
 
+## `internal static CCatalogFilter QChoiceFilterRead(object sender)`
+
+The filter a clicked box stands for, read from the list that holds the box.
+A view that pulls its parts through a surface field reads the click instead, so no field feeds the request.
+
 ## `internal static CCatalogOrder? QChoiceOrderRead(object sender)`
 
 The ordering an order row's word names, or null when the sender is not such a row.

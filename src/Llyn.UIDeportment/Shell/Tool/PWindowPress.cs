@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Printing;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    internal async Task PWindowPressRun(Func<LPressTicket, Task> print)
+    internal async Task PWindowPressRun(Func<CPressTicket, Task> print)
     {
         ArgumentNullException.ThrowIfNull(print);
 
         try
         {
-            if (PWindowTicketRead() is LPressTicket ticket)
+            if (PWindowTicketRead() is CPressTicket ticket)
             {
                 await print(ticket);
             }
@@ -26,14 +27,32 @@ public partial class PWindow
         }
     }
 
-    internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)
+    internal Task PWindowPressRun(Func<CPortraitLabel, CPressTicket, Task> print)
     {
         ArgumentNullException.ThrowIfNull(print);
 
-        return PWindowPressRun(ticket => print(PWindowLabelRead(), ticket));
+        return PWindowPressRun((CPressTicket ticket) => print(PWindowPortraitRead(), ticket));
     }
 
-    internal LPressTicket? PWindowTicketRead()
+    internal Task PWindowPressRun(string realm, Func<CPortraitLabel, CPortraitLegend, CPressTicket, Task> print)
+    {
+        ArgumentNullException.ThrowIfNull(print);
+
+        return PWindowPressRun((CPortraitLabel label, CPressTicket ticket) =>
+            print(label, PWindowLegendCreate(realm), ticket));
+    }
+
+    internal Task PWindowPressRun(Func<LPressTicket, Task> print)
+    {
+        return PWindowPressRun(LPanel.LPanelPressCreate(print));
+    }
+
+    internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)
+    {
+        return PWindowPressRun(LPanel.LPanelPressCreate(print));
+    }
+
+    internal CPressTicket? PWindowTicketRead()
     {
         PrintDialog dialog = new()
         {
@@ -47,40 +66,41 @@ public partial class PWindow
 
         PrintTicket chosen = dialog.PrintTicket;
 
-        return new LPressTicket(
+        return new CPressTicket(
             dialog.PrintQueue.FullName,
-            PWindowPaperRead(chosen.PageMediaSize),
+            PWindowPaperRead(chosen.PageMediaSize?.Width),
+            PWindowPaperRead(chosen.PageMediaSize?.Height),
             chosen.PageOrientation is PageOrientation.Landscape or PageOrientation.ReverseLandscape,
             chosen.CopyCount ?? 1,
             chosen.Collation != Collation.Uncollated,
             chosen.Duplexing switch
             {
-                Duplexing.OneSided => LPressSide.LPressSideSingle,
-                Duplexing.TwoSidedLongEdge => LPressSide.LPressSideLong,
-                Duplexing.TwoSidedShortEdge => LPressSide.LPressSideShort,
-                _ => LPressSide.LPressSideDefault,
+                Duplexing.OneSided => CPressSide.CPressSideSingle,
+                Duplexing.TwoSidedLongEdge => CPressSide.CPressSideLong,
+                Duplexing.TwoSidedShortEdge => CPressSide.CPressSideShort,
+                _ => CPressSide.CPressSideDefault,
             },
             chosen.OutputColor switch
             {
-                OutputColor.Color => LPressInk.LPressInkColor,
-                OutputColor.Grayscale or OutputColor.Monochrome => LPressInk.LPressInkGray,
-                _ => LPressInk.LPressInkDefault,
+                OutputColor.Color => CPressInk.CPressInkColor,
+                OutputColor.Grayscale or OutputColor.Monochrome => CPressInk.CPressInkGray,
+                _ => CPressInk.CPressInkDefault,
             });
     }
 
-    private static LPressPaper PWindowPaperRead(PageMediaSize? size)
+    private static double? PWindowPaperRead(double? pixels)
     {
-        if (size?.Width is not double width || size.Height is not double height || width <= 0 || height <= 0)
-        {
-            return LPressPaper.LPressPaperLocal;
-        }
-
-        return new LPressPaper(width / 96.0, height / 96.0);
+        return pixels > 0 ? pixels / 96.0 : null;
     }
 
     internal LPortraitLabel PWindowLabelRead()
     {
-        return new LPortraitLabel(
+        return LPanel.LPanelLabelRead(PWindowPortraitRead());
+    }
+
+    internal CPortraitLabel PWindowPortraitRead()
+    {
+        return new CPortraitLabel(
             QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
             QLocalizationCatalog.QLocalizationTextRead("Display.MeaningSingle"),
             QLocalizationCatalog.QLocalizationTextRead("Display.MeaningPlural"),
@@ -107,13 +127,19 @@ public partial class PWindow
 
     internal LPortraitLegend PWindowLegendRead(string realm)
     {
-        Dictionary<LReferenceKind, string> kinds = [];
+        return LAtlas.LAtlasLegendRead(PWindowLegendCreate(realm));
+    }
+
+    internal CPortraitLegend PWindowLegendCreate(string realm)
+    {
+        Dictionary<string, string> kinds = [];
         foreach (LReferenceKind kind in System.Enum.GetValues<LReferenceKind>())
         {
-            kinds[kind] = QLocalizationCatalog.QLocalizationTextRead(LReference.LReferenceKindResolve(kind));
+            string key = LReference.LReferenceKindResolve(kind);
+            kinds[key] = QLocalizationCatalog.QLocalizationTextRead(key);
         }
 
-        return new LPortraitLegend(
+        return new CPortraitLegend(
             QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
             QLocalizationCatalog.QLocalizationTextRead(realm == "Example" ? "Example.Unwritten" : realm + ".Untitled"),
             QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten"),

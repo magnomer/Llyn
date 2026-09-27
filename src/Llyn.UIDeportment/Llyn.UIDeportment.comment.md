@@ -37,3 +37,41 @@ The veneer holds only the empty slot the player is put into.
 Renders flag and interface SVGs into WPF drawings.
 WPF's bitmap decoders can't read SVG on their own.
 The icons it renders are embedded in the veneer, so `QIcon` reads them by pack URI.
+
+## Area pattern
+
+Every panel area moves to the veneer by the same steps, first proven on taxonomy and tenor.
+
+- The veneer page `P{X}.xaml` gains an `x:Class` and a shell copied from `PEstablishment.xaml.cs`.
+- The parent swaps `<local:P{X}` for `<veneer:P{X}` and keeps the `x:Name`.
+- The view `P{X} : UserControl` becomes `internal sealed partial class Q{X}`, shaped like `QEstablishment`.
+- It takes the page as its surface and pulls each part through `QContract.QContractFind`.
+- The pack URI load and the name scope copy go.
+- The parent builds it as the window builds `QEstablishment`, from the page pulled by contract ID.
+- Part files and `P…Item` models are renamed with the class.
+- The controller is sealed by the pattern of job05.
+  Its maps are internal statics on the controller, as in `LCard`.
+  A map shared by every panel sits on `LPanel`.
+- A choice the view made over controller answers becomes a controller verdict, such as `LTaxonomyCoinageCheck`.
+- A controller that names WPF types splits in two, as `LLibrary` and `LWing` did.
+  Its WPF half joins the driver, and its engine half stays a sealed controller.
+  A driver never holds a vista, since only handles escape the Truth audit.
+- Sealed-controller tests stay in `Llyn.Windows` until job28.
+  Shape tests go to `Llyn.Internal`.
+- A file is renamed only in the job that brings its Truth and Strict rows to zero.
+  The ratchet reads a renamed row as new.
+- A big class is cleaned in place first and renamed last.
+
+## Gate holders
+
+A panel's edit requests become gates, held by the desk the draft sits on.
+
+- `QQuill` gates text rows and `QEasel` images and videos.
+  `QChord` joins them for sound rows in job23.
+- `LDesk` builds each over itself and exposes it, as `LDeskQuill` and `LDeskEasel`.
+- They take `Q` while they live here, and become `C` in job28, once they sink into Conduct.
+- A gate takes ids, .NET values and Conduct shapes, and names no engine type in its public members.
+- It reads the draft from its desk without a flush, and builds the request and each written state inside.
+- It defers when the request it replaced was deferred, and sends otherwise.
+- A driver hands a gate its input and never builds a request.
+- A driver over a veneer page answers the undo and redo keys through `PChronicle.PChronicleAttach`.
