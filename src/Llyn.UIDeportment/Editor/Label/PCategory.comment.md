@@ -41,7 +41,7 @@ An entry moved from English to Japanese is offered Japanese's presets from that 
 A vocabulary that cannot be read leaves the field editable and the menu empty.
 The presets are a convenience, and losing them is not a reason to refuse the typing.
 
-### `private LSpeechValue? PCategoryAdd(string name)`
+### `private CSpeechValue? PCategoryAdd(string name)`
 
 A part of speech no preset names is declared as one, under the chosen language.
 It is what makes the next entry in that language offer what this one taught it.

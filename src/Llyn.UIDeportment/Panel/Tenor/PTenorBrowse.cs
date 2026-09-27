@@ -53,7 +53,6 @@ public partial class PTenor
 
     internal async void PTenorVistaRestore()
     {
-        _lTenor.LTenorVistaRestore(_pTenorHost.PWindowDeportment);
         _lTenor.LTenorObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PGamutFind));
         _lTenor.LTenorObserverAttach(
             LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PTenorWorkspaceUpdate));

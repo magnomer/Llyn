@@ -56,3 +56,7 @@ A new title or summary on the item refills the row the same way.
 
 The search field's text changed, so the catalog is narrowed to it.
 A null text is read as empty, which shows every row.
+
+## `private string PLedgerLanguageRead(string localization)`
+
+The native name the language box shows for `localization`, or the code itself when the box lacks it.

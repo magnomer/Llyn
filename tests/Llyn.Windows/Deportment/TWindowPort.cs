@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -24,14 +25,15 @@ public sealed class TWindowPort
         });
         LWindow window = TInterfaceDeportment.TWindowCreate(settings);
 
-        LFont font = window.TWindowFontRead("Korean", LFontRole.LFontRoleGlyph);
+        CFont font = window.TWindowFontRead("Korean", CFontRole.CFontRoleGlyph);
 
-        Assert.Equal("Noto Serif", font.LFontFamily);
+        Assert.Equal("Noto Serif", font.CFontFamily);
+        Assert.Equal(21, font.CFontSize);
         Assert.Equal([("Korean", LFontRole.LFontRoleGlyph)], asked);
     }
 
     [Fact]
-    public void WindowLocalizationRead_FakePort_ForwardsTheNormalisedName()
+    public void WorkspaceLocalizationRead_FakePort_ForwardsTheNormalisedName()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(
             new Dictionary<string, Func<object?[]?, object?>>
@@ -40,11 +42,11 @@ public sealed class TWindowPort
         });
         LWindow window = TInterfaceDeportment.TWindowCreate(settings);
 
-        Assert.Equal("ko", window.TWindowLocalizationRead());
+        Assert.Equal("ko", window.TWorkspaceLocalizationRead());
     }
 
     [Fact]
-    public void WindowEpithetSave_Toggle_ReachesPort()
+    public void WorkspaceEpithetSave_Toggle_ReachesPort()
     {
         List<bool> saved = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(
@@ -58,8 +60,8 @@ public sealed class TWindowPort
         });
         LWindow window = TInterfaceDeportment.TWindowCreate(settings);
 
-        window.TWindowEpithetSave(false);
-        window.TWindowEpithetSave(true);
+        window.TWorkspaceEpithetSave(false);
+        window.TWorkspaceEpithetSave(true);
 
         Assert.Equal([false, true], saved);
     }

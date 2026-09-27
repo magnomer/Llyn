@@ -195,7 +195,6 @@ public class PYunjing : UserControl
 
     internal void PYunjingVistaRestore()
     {
-        _lYunjing.LYunjingVistaRestore(_pYunjingHost.PWindowDeportment);
         _lYunjing.LYunjingShengmuAttach(
             LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingYunmuAttach(

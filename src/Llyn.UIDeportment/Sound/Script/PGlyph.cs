@@ -12,7 +12,7 @@ namespace Llyn.UIDeportment;
 public partial class PEditor
 {
     private readonly ObservableCollection<LTranscriptionItem> _pGlyphItem = [];
-    private LGlyph? _pGlyph;
+    private CGlyph? _pGlyph;
 
     private ItemsControl PGlyph => (ItemsControl)FindName(nameof(PGlyph));
 
@@ -28,7 +28,7 @@ public partial class PEditor
     {
         if (e.Parameter is LTranscriptionItem row && _pGlyph is not null)
         {
-            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.LTranscriptionItemId, _pGlyph.LGlyphName);
+            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.LTranscriptionItemId, _pGlyph.CGlyphName);
         }
     }
 
@@ -87,9 +87,9 @@ public partial class PEditor
         return PGlyphSchemeCheck(_pGlyph, scheme);
     }
 
-    private static bool PGlyphSchemeCheck(LGlyph? glyph, string scheme)
+    private static bool PGlyphSchemeCheck(CGlyph? glyph, string scheme)
     {
-        return glyph is not null && string.Equals(scheme, glyph.LGlyphName, StringComparison.Ordinal);
+        return glyph is not null && string.Equals(scheme, glyph.CGlyphName, StringComparison.Ordinal);
     }
 
     private void PGlyphShow(CEntryDraft draft)
@@ -97,7 +97,7 @@ public partial class PEditor
         string language = draft.CEntryDraftLanguage;
         _pGlyph = _pEditorHost.PWindowDeportment.LWindowGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
-        PGlyph.Tag = _pGlyph?.LGlyphSourced ?? false;
+        PGlyph.Tag = _pGlyph?.CGlyphSourced ?? false;
         QLookItem.QLookItemApply(PGlyph);
         LFontFace.LFontGlyphApply(PGlyph.Resources, _pEditorHost.PWindowDeportment, language);
 

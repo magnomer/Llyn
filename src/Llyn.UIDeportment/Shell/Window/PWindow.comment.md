@@ -36,6 +36,11 @@ The loaded window, reached by the bootstrap to show it and by panels as the owne
 
 The named panels are read through the window's name scope.
 
+## `internal LWing PWindowWingCreate()`
+
+Builds one duplex wing over the window deportment.
+The wing stays in the deportment, so the window builds it rather than the window deportment.
+
 ## `internal void PWindowWorkspaceChange(string path)`
 
 Moves the user onto the workspace at `path` through the bootstrap's delegate.
@@ -50,7 +55,7 @@ The leftovers are counted next, so the number describes the workspace as it was 
 The stored view state is read once here and applied after every panel is attached.
 Reading it once is what keeps the panels from each asking the workspace the same question.
 The status bar attaches after every panel, so its first reading already sees the drafts the panels opened.
-The navigation is built after every panel attaches.
+The navigation is built after every panel attaches, and the voyage shortcuts are hooked with it.
 
 ## `internal PLayout PWindowLayout => _pLayout;`
 
@@ -71,6 +76,30 @@ The duplex panel is left out.
 Its two halves are editors sharing the window, not a catalog beside a display.
 The stored widths are applied right after, before any tab is shown, so nothing jumps on the first view.
 
+## `private void PWindowClosingHandle(object? sender, CancelEventArgs e)`
+
+Declining leaves the window open on the form exactly as typed, which is the only place the work still exists.
+Geometry is stored only once the close is certain, so a declined close changes nothing.
+The close writes at once, with no delay.
+
+## `private void PFootprintRestore()`
+
+Runs before the window is shown, while position and size can still be set.
+The footprint places the stored geometry inside the virtual screen the window reads here.
+With nothing stored the window takes its share of the work area and stays centred.
+Setting the startup location to manual is required, since the designed default centres the window.
+
+## `private void PFootprintAttach()`
+
+Listens for the window being moved, resized or maximized, once it is loaded.
+Nothing is written before then, so the restore does not save what it has just read.
+Geometry is written down while the program runs rather than only as it closes.
+A killed process, a launcher window shut and a machine turned off all end without closing.
+
+## `private CWindowState PFootprintRead()`
+
+The window's restored rectangle, which `RestoreBounds` supplies whenever the window is not normal.
+
 ## `private void PWindowExitHandle(object? sender, EventArgs e)`
 
 Closes every panel, sweeps the workspace once more, lets the posture go, and lets the engine go.
@@ -86,11 +115,11 @@ The third is attestation: example, source, author.
 The fourth is the rime table, the one tool with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode, not a page.
 
-The rail's buttons are handed to `LNavigation`, which lights the chosen one.
+The rail's tabs are held here, and `LNavigation` decides which one shows.
 
 ## Inline notes
 
-### `_lFootprint.LFootprintRestore();`
+### `PFootprintRestore();`
 
 Geometry is applied before any panel is attached, while the window is still unshown.
 

@@ -64,7 +64,8 @@ internal sealed class QSCustoms
         int index = 0;
         foreach (LMarkupEntry entry in entries)
         {
-            IReadOnlyList<long> found = QSCustomsCandidateRead(host.PWindowDeportment.LWindowMarkupFind(entry));
+            IReadOnlyList<long> found = host.PWindowDeportment.LWindowWorkspace.QWorkspaceMarkupFind(
+                entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage);
             candidates.Add(found);
             items.Add(new QSCustomsItem(index, entry.LMarkupEntryName, entry.LMarkupEntryLanguage, found));
             index++;
@@ -113,17 +114,6 @@ internal sealed class QSCustoms
         return accepted ? intakes : null;
     }
 
-    private static IReadOnlyList<long> QSCustomsCandidateRead(IReadOnlyList<LEntry> found)
-    {
-        List<long> ids = [];
-        foreach (LEntry entry in found)
-        {
-            ids.Add(entry.LEntryId);
-        }
-
-        return ids;
-    }
-
     private static LMarkupIntake QSCustomsIntakeCreate(int index, CSCustomsRow row)
     {
         return LMarkupIntake.LMarkupIntakeCreate(
@@ -137,9 +127,9 @@ internal sealed class QSCustoms
             row.CSCustomsRowTarget);
     }
 
-    private static IReadOnlyList<LCardDraft> QSCustomsChildRead(LCardDraft card)
+    private static IReadOnlyList<CCardDraft> QSCustomsChildRead(CCardDraft card)
     {
-        return card.LCardDraftChild;
+        return card.CCardDraftChild;
     }
 
     private void QSCustomsRowApply(FrameworkElement container, object item, string? _)
@@ -179,7 +169,8 @@ internal sealed class QSCustoms
 
         if (QLook.QLookPartFind<TextBlock>(container, "PSCustomsLoss") is TextBlock loss)
         {
-            loss.Text = QSCustomsLossFormat(_qsCustomsHost.PWindowDeportment.LWindowEntryLoad(state.CSCustomsRowLoss));
+            loss.Text = QSCustomsLossFormat(
+                _qsCustomsHost.PWindowDeportment.LWindowWorkspace.QWorkspaceEntryLoad(state.CSCustomsRowLoss));
         }
     }
 
@@ -292,7 +283,7 @@ internal sealed class QSCustoms
         _qsCustomsSurface.DialogResult = true;
     }
 
-    private string QSCustomsLossFormat(LEntryDraft? stored)
+    private string QSCustomsLossFormat(CEntryDraft? stored)
     {
         if (stored is null)
         {
@@ -302,7 +293,7 @@ internal sealed class QSCustoms
         return string.Format(
             CultureInfo.CurrentCulture,
             _qsCustomsSurface.TryFindResource("Customs.Loss") as string ?? "Customs.Loss",
-            CSCustoms.CSCustomsCardScan(stored.LEntryDraftMeanings, QSCustomsChildRead),
-            CSCustoms.CSCustomsCardScan(stored.LEntryDraftCollocations, QSCustomsChildRead));
+            CSCustoms.CSCustomsCardScan(stored.CEntryDraftMeanings, QSCustomsChildRead),
+            CSCustoms.CSCustomsCardScan(stored.CEntryDraftCollocations, QSCustomsChildRead));
     }
 }

@@ -486,7 +486,7 @@ public sealed class LRepertoire
         LRepertoireEditor.LEditorVistaRestore(occurrence);
     }
 
-    public void LRepertoireVistaRestore(LWindow window)
+    internal void LRepertoireVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

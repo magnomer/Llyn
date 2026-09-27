@@ -42,7 +42,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 17 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 18 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -81,6 +81,8 @@ Audit a specific checkout and open the violation report.
 # CSCustoms with its mode and row. The UI audit rises with it.
 # Generation 17: the seal check counts every public member of a sealed-prefix type in a UI ring that
 # names a type from below its neighbour. Each seal row names a ring and the type prefixes it seals.
+# Generation 18: the Conduct surface each driver may reach admits the window's shapes, from the posture
+# and the settings to the mention pieces and markdown blocks. The UI audit rises with it.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -170,7 +172,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)

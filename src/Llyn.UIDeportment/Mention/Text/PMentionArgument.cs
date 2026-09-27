@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Windows;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -20,5 +20,5 @@ public sealed class PMentionArgument : RoutedEventArgs
 
     public string PMentionArgumentLanguage => PMentionArgumentOrigin.PMentionLanguage;
 
-    public IReadOnlyList<LMention>? PMentionArgumentMention => PMentionArgumentOrigin.PMentionMention;
+    public IReadOnlyList<CMention>? PMentionArgumentMention => PMentionArgumentOrigin.PMentionMention;
 }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -157,8 +158,8 @@ internal sealed class PLeaf
         }
 
         text.PMentionLanguage = example?.LExampleDraftLanguage ?? string.Empty;
-        text.PMentionMention = (IReadOnlyList<LMention>)new PMentionConverter().Convert(
-            example?.LExampleDraftMention, typeof(IReadOnlyList<LMention>), null, culture);
+        text.PMentionMention = (IReadOnlyList<CMention>)new PMentionConverter().Convert(
+            example?.LExampleDraftMention, typeof(IReadOnlyList<CMention>), null, culture);
         text.PMentionText = (string)PLeafFrame.Convert(parts, typeof(string), "Text", culture);
         if (frame is not null)
         {

@@ -69,18 +69,18 @@ public sealed class LLecternPlayback
         }
 
         _lLecternPlaybackDisplay.LDisplayRecordingPlay(
-            row.LAccentItemAudio, _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume);
+            row.LAccentItemAudio, _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume);
     }
 
     public void LLecternActionHandle()
     {
         _lLecternPlaybackDisplay.LDisplayRecordingPlay(
-            _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume);
+            _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume);
     }
 
     private void LLecternVolumeLoad()
     {
-        _lLecternPlaybackVolume.Value = _lLecternPlaybackWindow.LWindowPostureRead().LPostureStateVolume;
+        _lLecternPlaybackVolume.Value = _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume;
     }
 
     private void LLecternVolumeHandle(double level)

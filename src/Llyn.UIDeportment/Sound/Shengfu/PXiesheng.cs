@@ -169,7 +169,6 @@ public class PXiesheng : UserControl
 
     internal void PXieshengVistaRestore()
     {
-        _lXiesheng.LXieshengVistaRestore(_pXieshengHost.PWindowDeportment);
         _lXiesheng.LXieshengGroveAttach(
             LSubject.LSubjectVista, LObserver.LObserverCreate(this, _lXiesheng.LXieshengRowsUpdate));
         _lXiesheng.LXieshengGroveAttach(

@@ -148,7 +148,7 @@ public sealed class LTenor
         return _lPortraitPort.LEnginePortraitPrint(_lTenorCohort, label, ticket);
     }
 
-    public void LTenorVistaRestore(LWindow window)
+    internal void LTenorVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

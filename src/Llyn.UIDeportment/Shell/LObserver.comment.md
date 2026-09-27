@@ -12,10 +12,6 @@ An engine call made off the UI thread announces on the thread that made it.
 An import runs on a worker, so its announcement would otherwise reach a panel where it cannot touch a control.
 A lookup step arrives from a source's worker for the same reason.
 
-## `public static Action<LBulletin> LObserverCreate(DispatcherObject surface, Action<LBulletin> target)`
-
-A bulletin delegate for `surface`, running `target` on the thread that surface belongs to.
-
 ## `public static Action<LBulletin> LObserverCreate(DispatcherObject surface, Action target)`
 
 A bulletin delegate for `surface` with a response that needs nothing from the bulletin.

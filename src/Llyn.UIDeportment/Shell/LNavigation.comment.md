@@ -2,68 +2,47 @@
 
 ## `public sealed class LNavigation`
 
-Decides which panel of the main window shows.
+Decides which panel of the main window shows, naming each tab by its key.
 Nothing here keeps a copy of the open tab.
 The posture's mode is the only truth, asked through the window deportment.
+The window view holds the tabs, their buttons and their hooks, and hands the hooks in as seams.
 
-## `public LNavigation(Window window, LWindow deportment, DependencyProperty chosen, IReadOnlyList<LTab> tabs)`
+## `public LNavigation(LWindow window, IReadOnlyList<string> tabs)`
 
-Takes the window, its deportment and the tabs in navigation order.
+Takes the window deportment and the tab keys in navigation order.
 The first tab opens the window when the posture names none.
-The `chosen` property marks the open button, since the deportment cannot name `PTab`.
-The voyage is built last over this navigation.
 
-## `public LTab LNavigationShownRead()`
+## `public LVoyage LNavigationVoyage`
+
+The trail of stations the reader has jumped between, built with the navigation.
+
+## `public string LNavigationShownRead()`
 
 The tab whose mode the posture holds.
 Falls back to the first tab when the posture matches none.
 
-## `public bool LNavigationSelect(object? button)`
+## `public string? LNavigationRestore(Func<string, bool> allowed)`
 
-Opens the tab of the given button.
-Answers false for an unknown button or when the open tab refuses to be left.
-
-## `public void LNavigationRestore()`
-
-Shows every tab button unless its tab is not allowed.
-Then it restores the tab the posture names.
+Restores the tab the posture names and answers it, for the window view to show.
 A tab that is not allowed falls back to the first tab, so the posture names what shows.
-No tab is restored when the posture matches none.
-The restore skips the leave guard and hands the split state to the tab's scribe.
+No tab is answered when the posture matches none.
+The restore skips the leave guard, since nothing has been shown yet to leave.
 
-## `public bool LNavigationShow(object button, long id)`
+## `private string LNavigationAllowRead(string tab, Func<string, bool> allowed)`
 
-Jumps to a record in the tab of the given button.
-The station is read before anything moves.
-It is recorded only when the jump went, so a refused jump leaves no station.
+The tab itself when it is allowed, else the first tab, saved to the posture either way.
 
-## `public void LNavigationShow(object button, Action arrival)`
+## `public bool LNavigationShow(string tab, Func<string, bool> leave)`
 
-Jumps to the tab of the given button and records no station.
-The arrival runs only when the switch succeeds.
+Asks the target tab first whether it may be left, then selects it.
+Answers false when either the target or the open tab refuses.
 
-## `public bool LNavigationTabShow(LTab target, long id)`
+## `public bool LNavigationSelect(string tab, Func<string, bool> leave)`
 
-Opens the target tab and hands it the record id.
-Answers false for a tab without arrival or a refused switch.
-It records no station, so the voyage walks through it freely.
-
-## `private bool LNavigationTargetSelect(LTab target)`
-
-Asks the target tab first whether it may be left.
-Then it asks the open panel through the tab switch.
-
-## `private bool LNavigationTabSelect(LTab chosen)`
-
-Asks the open tab whether it may be left before switching.
+Asks the open tab whether it may be left, then saves the chosen mode to the posture.
 The posture, never the screen, names the open panel.
-A tab without a leave hook has nothing to lose.
+The `leave` seam answers for a tab, and a tab without a leave hook has nothing to lose.
 
-## `private void LNavigationApply(LTab chosen)`
+## `private string? LNavigationFind()`
 
-Marks the chosen button and shows only its panel.
-Then it saves the chosen mode to the posture.
-
-## `private LTab? LNavigationFind(object? button)`
-
-The tab owning the given button, or null.
+The tab whose mode the posture holds, or null.

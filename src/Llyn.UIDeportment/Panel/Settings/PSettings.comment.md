@@ -39,7 +39,7 @@ The switches listen on `Click`, which setting `IsChecked` in code does not raise
 So a synced switch writes nothing back at all.
 A stored language the interface does not carry is shown as English, the language the program opened in.
 
-## `private void PSettingsBulletinHandle(LBulletin bulletin)`
+## `private void PSettingsBulletinHandle()`
 
 Redraws the panel after the engine reports a settings change.
 The language catalog is applied from the record, so the interface follows whatever the engine holds.

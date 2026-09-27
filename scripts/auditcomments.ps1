@@ -25,7 +25,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 auditcomments.json shape:
   {
-    "generation": 17,
+    "generation": 18,
     "project": "Llyn",
     "sources": {
       "roots": ["languages", "localization", "src", "tests", "themes"],
@@ -97,7 +97,7 @@ auditcomments -Segments 2
 auditcomments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS GENERATION 17 - auditcomments.ps1.
+# AUDITCOMMENTS GENERATION 18 - auditcomments.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -122,6 +122,8 @@ auditcomments -SourceRoots .\src -MaxWords 25
 # Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
 # Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
 # seal check counts engine types on the public members of sealed Deportment types.
+# Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
+# Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -221,7 +223,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 17
+$script:AuditGeneration = 18
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next

@@ -110,7 +110,7 @@ public sealed class LPhonology
         return _lPortraitPort.LEnginePortraitPrint(vista, label, ticket);
     }
 
-    public void LPhonologyVistaRestore(LWindow window)
+    internal void LPhonologyVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

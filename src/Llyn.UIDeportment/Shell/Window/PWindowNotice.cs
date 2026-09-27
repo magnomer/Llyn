@@ -38,13 +38,13 @@ public partial class PWindow
 
     private string PWindowDetailRead(Exception exception)
     {
-        if (_lWindow.LWindowNoticeRead(exception) is string reason)
+        if (_lWindow.LWindowWorkspace.QWorkspaceNoticeRead(exception) is string reason)
         {
             return QLocalizationCatalog.QLocalizationTextRead(reason);
         }
 
         string unexpected = QLocalizationCatalog.QLocalizationTextRead("Notice.Unexpected");
-        string? recorded = _lWindow.LWindowAuditRecord(exception);
+        string? recorded = _lWindow.LWindowWorkspace.QWorkspaceAuditRecord(exception);
 
         return recorded is null
             ? unexpected

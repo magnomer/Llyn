@@ -38,7 +38,8 @@ public partial class PSettings
     {
         try
         {
-            PSettingsWindow.LWindowLocationOpen(PSettingsWindow.LWindowWorkspaceRead());
+            PSettingsWindow.LWindowWorkspace.QWorkspaceLocationOpen(
+                PSettingsWindow.LWindowWorkspace.QWorkspacePathRead());
         }
         catch (Exception exception)
         {

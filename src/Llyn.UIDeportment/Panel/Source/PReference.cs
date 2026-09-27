@@ -174,7 +174,6 @@ public class PReference : UserControl
 
     internal async void PReferenceVistaRestore()
     {
-        _lShelf.LShelfVistaRestore(_pReferenceHost.PWindowDeportment);
         LPanel footnote = _lShelf.LShelfFootnote.LFootnotePanel;
         LPanel shelf = _lShelf.LShelfPanel;
         shelf.LPanelObserverAttach(
@@ -221,7 +220,7 @@ public class PReference : UserControl
 
         QChoice.QChoiceFilterBuild(
             PTrellisList,
-            _pReferenceHost.PWindowDeportment.LWindowLanguageRead(),
+            _pReferenceHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
             _lShelf.LShelfPanel.LPanelFilter,
             PTrellisHandle);
         _lShelf.LShelfQuerySet(PSurvey.Text);

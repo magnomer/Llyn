@@ -1,6 +1,6 @@
 using System;
-using System.ComponentModel;
-using System.Windows;
+using System.Collections.Generic;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -11,98 +11,143 @@ public sealed class LFootprint
 
     private const int LFootprintDelay = 700;
 
-    private readonly Window _lFootprintWindow;
-
     private readonly LWindow _lWindow;
 
-    public LFootprint(Window window, LWindow deportment)
+    public LFootprint(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
-        ArgumentNullException.ThrowIfNull(deportment);
 
-        _lFootprintWindow = window;
-        _lWindow = deportment;
-        window.Loaded += (_, _) => LFootprintAttach();
+        _lWindow = window;
     }
 
-    public void LFootprintRestore()
+    public CWindowState? LFootprintRead(
+        double left, double top, double width, double height, double minWidth, double minHeight)
     {
-        Window window = _lFootprintWindow;
+        return LFootprintPlace(
+            _lWindow.LWindowPostureRead().CPostureStateWindow, left, top, width, height, minWidth, minHeight);
+    }
 
-        if (_lWindow.LWindowPostureRead().LPostureStateWindow is not LWindowState state)
+    public (double LFootprintWidth, double LFootprintHeight) LFootprintSizeRead(
+        double width, double height, double minWidth, double minHeight)
+    {
+        return (
+            Math.Clamp(width * LFootprintShare, minWidth, Math.Max(minWidth, width)),
+            Math.Clamp(height * LFootprintShare, minHeight, Math.Max(minHeight, height)));
+    }
+
+    public void LFootprintSave(CWindowState state, bool minimized)
+    {
+        LFootprintDefer(state, minimized, LFootprintDelay);
+    }
+
+    public void LFootprintClose(CWindowState state, bool minimized)
+    {
+        LFootprintDefer(state, minimized, 0);
+    }
+
+    private static CWindowState? LFootprintPlace(
+        CWindowState? state, double left, double top, double width, double height, double minWidth, double minHeight)
+    {
+        if (state is null)
         {
-            Rect area = SystemParameters.WorkArea;
-
-            window.Width = Math.Clamp(
-                area.Width * LFootprintShare, window.MinWidth, Math.Max(window.MinWidth, area.Width));
-            window.Height = Math.Clamp(
-                area.Height * LFootprintShare, window.MinHeight, Math.Max(window.MinHeight, area.Height));
-
-            return;
+            return null;
         }
 
-        double limitLeft = SystemParameters.VirtualScreenLeft;
-        double limitTop = SystemParameters.VirtualScreenTop;
-        double width = Math.Clamp(
-            state.LWindowStateWidth,
-            window.MinWidth,
-            Math.Max(window.MinWidth, SystemParameters.VirtualScreenWidth));
-        double height = Math.Clamp(
-            state.LWindowStateHeight,
-            window.MinHeight,
-            Math.Max(window.MinHeight, SystemParameters.VirtualScreenHeight));
-        double limitRight = Math.Max(limitLeft, limitLeft + SystemParameters.VirtualScreenWidth - width);
-        double limitBottom = Math.Max(limitTop, limitTop + SystemParameters.VirtualScreenHeight - height);
-
-        window.WindowStartupLocation = WindowStartupLocation.Manual;
-        window.Left = Math.Clamp(state.LWindowStateLeft, limitLeft, limitRight);
-        window.Top = Math.Clamp(state.LWindowStateTop, limitTop, limitBottom);
-        window.Width = width;
-        window.Height = height;
-
-        if (state.LWindowStateMaximized)
-        {
-            window.WindowState = WindowState.Maximized;
-        }
+        return LFootprintClamp(
+            state,
+            left,
+            top,
+            width,
+            height,
+            Math.Clamp(state.CWindowStateWidth, minWidth, Math.Max(minWidth, width)),
+            Math.Clamp(state.CWindowStateHeight, minHeight, Math.Max(minHeight, height)));
     }
 
-    public void LFootprintClosingHandle(CancelEventArgs e, bool confirmed)
+    private static CWindowState LFootprintClamp(
+        CWindowState state,
+        double left,
+        double top,
+        double width,
+        double height,
+        double placedWidth,
+        double placedHeight)
     {
-        e.Cancel = !confirmed;
-
-        if (confirmed)
-        {
-            LFootprintSave(0);
-        }
+        return new CWindowState(
+            Math.Clamp(state.CWindowStateLeft, left, Math.Max(left, left + width - placedWidth)),
+            Math.Clamp(state.CWindowStateTop, top, Math.Max(top, top + height - placedHeight)),
+            placedWidth,
+            placedHeight,
+            state.CWindowStateMaximized);
     }
 
-    private void LFootprintAttach()
+    private void LFootprintDefer(CWindowState state, bool minimized, int delay)
     {
-        _lFootprintWindow.LocationChanged += (_, _) => LFootprintSave(LFootprintDelay);
-        _lFootprintWindow.SizeChanged += (_, _) => LFootprintSave(LFootprintDelay);
-        _lFootprintWindow.StateChanged += (_, _) => LFootprintSave(LFootprintDelay);
-    }
+        ArgumentNullException.ThrowIfNull(state);
 
-    private void LFootprintSave(int delay)
-    {
-        Window window = _lFootprintWindow;
-        Rect bounds = window.WindowState == WindowState.Normal
-            ? new Rect(window.Left, window.Top, window.Width, window.Height)
-            : window.RestoreBounds;
-
-        if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
+        if (!(state.CWindowStateWidth > 0) || !(state.CWindowStateHeight > 0))
         {
             return;
         }
 
-        _lWindow.LWindowStateDefer(
-            new LWindowState(
-                bounds.Left,
-                bounds.Top,
-                bounds.Width,
-                bounds.Height,
-                window.WindowState == WindowState.Maximized),
-            window.WindowState == WindowState.Minimized,
-            delay);
+        _lWindow.LWindowStateDefer(state, minimized, delay);
+    }
+
+    internal static CPostureState LFootprintPostureRead(LPostureState state)
+    {
+        return new CPostureState(
+            LFootprintStateRead(state.LPostureStateWindow),
+            state.LPostureStateLinked,
+            state.LPostureStateSplit,
+            state.LPostureStateVolume);
+    }
+
+    internal static CWindowState? LFootprintStateRead(LWindowState? window)
+    {
+        return window is null
+            ? null
+            : new CWindowState(
+                window.LWindowStateLeft,
+                window.LWindowStateTop,
+                window.LWindowStateWidth,
+                window.LWindowStateHeight,
+                window.LWindowStateMaximized);
+    }
+
+    internal static LWindowState LFootprintStateRead(CWindowState window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+
+        return new LWindowState(
+            window.CWindowStateLeft,
+            window.CWindowStateTop,
+            window.CWindowStateWidth,
+            window.CWindowStateHeight,
+            window.CWindowStateMaximized);
+    }
+
+    internal static CLayout? LFootprintLayoutRead(IReadOnlyList<LLayout> layout, string tab)
+    {
+        foreach (LLayout record in layout)
+        {
+            if (record.LLayoutTabMatch(tab))
+            {
+                return new CLayout(record.LLayoutTab, record.LLayoutLeft, record.LLayoutMiddle);
+            }
+        }
+
+        return null;
+    }
+
+    internal static List<LLayout> LFootprintLayoutRead(IEnumerable<CLayout> layout)
+    {
+        ArgumentNullException.ThrowIfNull(layout);
+
+        List<LLayout> saved = [];
+        foreach (CLayout tab in layout)
+        {
+            saved.Add(new LLayout(tab.CLayoutTab, tab.CLayoutLeft, tab.CLayoutMiddle));
+        }
+
+        return saved;
     }
 }

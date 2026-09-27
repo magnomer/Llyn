@@ -25,7 +25,8 @@ public partial class PEditor
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRecording is null || !_pEditorHost.PWindowDeportment.LWindowRecordingExist(_pRecording))
+        if (_pRecording is null
+            || !_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(_pRecording))
         {
             PRecordingClear();
             return;
@@ -64,7 +65,7 @@ public partial class PEditor
 
     internal void PVolumeLoad()
     {
-        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowPostureRead().LPostureStateVolume;
+        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowPostureRead().CPostureStateVolume;
         _pDownloaderPlayer.Volume = PVolume.Value;
     }
 
@@ -80,7 +81,7 @@ public partial class PEditor
 
     private void PRecordingShow(string audio)
     {
-        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(audio))
+        if (!_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(audio))
         {
             PRecordingClear();
             return;

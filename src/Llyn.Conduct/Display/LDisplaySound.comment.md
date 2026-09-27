@@ -105,7 +105,7 @@ Stops this view's play, and leaves a later play from another view running.
 
 Sets whether the folded reflexes are shown, as the reading view's or the editor's toggle reads.
 
-## `public static HashSet<string> LDisplayFoldScan(IReadOnlyList<LReflexRule> rules)`
+## `public static HashSet<string> LDisplayFoldScan(IReadOnlyList<CReflexRule> rules)`
 
 The languages `rules` fold away, compared by ordinal.
 

@@ -30,7 +30,8 @@ public partial class PCorpus
 
         PExcerptText.PMentionText = text ?? QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten");
         PExcerptText.PMentionLanguage = example.LExampleLanguage;
-        PExcerptText.PMentionMention = example.LExampleText.LStateValueSound ? example.LExampleMention : [];
+        PExcerptText.PMentionMention =
+            example.LExampleText.LStateValueSound ? LWindow.LWindowMentionRead(example.LExampleMention) : [];
         PExcerptText.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");

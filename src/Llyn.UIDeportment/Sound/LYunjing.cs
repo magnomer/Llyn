@@ -337,7 +337,7 @@ public sealed class LYunjing
         return _lPortraitPort.LEnginePortraitPrint(LYunjingPanel.LPanelVista, label, ticket);
     }
 
-    public void LYunjingVistaRestore(LWindow window)
+    internal void LYunjingVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

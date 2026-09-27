@@ -48,7 +48,6 @@ public partial class PFavorite
 
     internal async void PFavoriteVistaRestore()
     {
-        _lFavorite.LFavoriteVistaRestore(_pFavoriteHost.PWindowDeportment);
         LPanel panel = _lFavorite.LFavoritePanel;
         panel.LPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, PRosterFind));

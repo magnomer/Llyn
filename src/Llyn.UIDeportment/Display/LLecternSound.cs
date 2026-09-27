@@ -323,7 +323,7 @@ public sealed class LLecternSound
         LFontFace.LFontApply(
             _lLecternSoundWindow,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
-            LFontRole.LFontRoleGlyph,
+            CFontRole.CFontRoleGlyph,
             _lLecternSoundFanqie);
         _lLecternSoundRime(
             LSounding.LSoundingFanqieRead(groups),
@@ -336,7 +336,7 @@ public sealed class LLecternSound
         LFontFace.LFontApply(
             _lLecternSoundWindow,
             _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
-            LFontRole.LFontRoleGlyph,
+            CFontRole.CFontRoleGlyph,
             _lLecternSoundScript);
         _lLecternSoundWriting(
             LSounding.LSoundingScriptRead(_lLecternSoundDisplay.LDisplayScriptDivide()),

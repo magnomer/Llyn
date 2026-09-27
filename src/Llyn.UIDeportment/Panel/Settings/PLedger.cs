@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -33,38 +33,34 @@ public partial class PSettings
 
     private string PLedgerMetaRead(string child)
     {
-        LSettings settings = PSettingsWindow.LWindowSettingsRead();
+        CSettings settings = PSettingsWindow.LWindowWorkspace.QWorkspaceSettingsRead();
 
         switch (child)
         {
             case "Workspace":
-                return PSettingsWindow.LWindowWorkspaceFormat();
+                return PSettingsWindow.LWindowWorkspace.QWorkspacePathFormat();
 
             case "Language":
-                return PLocalization.Items
-                    .OfType<ComboBoxItem>()
-                    .FirstOrDefault(item => string.Equals(
-                        item.Tag as string, settings.LSettingsLocalization, StringComparison.Ordinal))
-                    ?.Content as string ?? settings.LSettingsLocalization;
+                return PLedgerLanguageRead(settings.CSettingsLocalization);
 
             case "Transcription":
                 return QLocalizationCatalog.QLocalizationTextRead(
-                    settings.LSettingsRespelled ? "Settings.On" : "Settings.Off");
+                    settings.CSettingsRespelled ? "Settings.On" : "Settings.Off");
 
             case "Listing":
                 return QLocalizationCatalog.QLocalizationTextRead(
-                    settings.LSettingsEpithet ? "Settings.On" : "Settings.Off");
+                    settings.CSettingsEpithet ? "Settings.On" : "Settings.Off");
 
             case "Web":
                 return string.Format(
                     CultureInfo.CurrentCulture,
                     QLocalizationCatalog.QLocalizationTextRead("Settings.Tally"),
-                    settings.LSettingsOnline,
+                    settings.CSettingsOnline,
                     2);
 
             case "Layout":
                 return QLocalizationCatalog.QLocalizationTextRead(
-                    PSettingsWindow.LWindowPostureRead().LPostureStateLinked
+                    PSettingsWindow.LWindowPostureRead().CPostureStateLinked
                         ? "Layout.LinkedMeta"
                         : "Layout.FreeMeta");
 
@@ -154,5 +150,13 @@ public partial class PSettings
     private void PWinnowHandle(object sender, TextChangedEventArgs e)
     {
         PLedgerFind(PWinnow.Text ?? string.Empty);
+    }
+
+    private string PLedgerLanguageRead(string localization)
+    {
+        return PLocalization.Items
+            .OfType<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag as string, localization, StringComparison.Ordinal))
+            ?.Content as string ?? localization;
     }
 }

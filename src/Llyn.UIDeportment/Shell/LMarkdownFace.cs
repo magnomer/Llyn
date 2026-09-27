@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Navigation;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -19,9 +19,9 @@ public static class LMarkdownFace
         ArgumentNullException.ThrowIfNull(window);
 
         target.Children.Clear();
-        IReadOnlyList<LMarkdownBlock> blocks = window.LWindowMarkdownParse(markdown);
+        IReadOnlyList<CMarkdownBlock> blocks = window.LWindowMarkdownParse(markdown);
         int place = 0;
-        foreach (LMarkdownBlock block in blocks)
+        foreach (CMarkdownBlock block in blocks)
         {
             FrameworkElement element = LMarkdownBlockBuild(block, window);
             element.Margin = new Thickness(0, place == 0 ? 0 : LMarkdownGapRead(block), 0, 0);
@@ -30,44 +30,44 @@ public static class LMarkdownFace
         }
     }
 
-    private static FrameworkElement LMarkdownBlockBuild(LMarkdownBlock block, LWindow window)
+    private static FrameworkElement LMarkdownBlockBuild(CMarkdownBlock block, LWindow window)
     {
-        if (block.LMarkdownBlockHeaded)
+        if (block.CMarkdownBlockHeaded)
         {
             return LMarkdownHeadingBuild(block, window);
         }
 
-        if (block.LMarkdownBlockListed)
+        if (block.CMarkdownBlockListed)
         {
             return LMarkdownItemBuild(block, window);
         }
 
-        if (block.LMarkdownBlockQuoted)
+        if (block.CMarkdownBlockQuoted)
         {
             return LMarkdownQuoteBuild(block, window);
         }
 
-        if (block.LMarkdownBlockFenced)
+        if (block.CMarkdownBlockFenced)
         {
             return LMarkdownCodeBuild(block);
         }
 
-        if (block.LMarkdownBlockRuled)
+        if (block.CMarkdownBlockRuled)
         {
             return LMarkdownRuleBuild();
         }
 
-        return LMarkdownTextBuild(block.LMarkdownBlockSpan, 14, window);
+        return LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
     }
 
-    private static double LMarkdownGapRead(LMarkdownBlock block)
+    private static double LMarkdownGapRead(CMarkdownBlock block)
     {
-        if (block.LMarkdownBlockHeaded)
+        if (block.CMarkdownBlockHeaded)
         {
             return 14;
         }
 
-        return block.LMarkdownBlockListed ? 3 : 10;
+        return block.CMarkdownBlockListed ? 3 : 10;
     }
 
     private static double LMarkdownIndentRead(int level)
@@ -76,7 +76,7 @@ public static class LMarkdownFace
     }
 
     private static TextBlock LMarkdownTextBuild(
-        IReadOnlyList<LMarkdownSpan> spans, double size, LWindow window)
+        IReadOnlyList<CMarkdownSpan> spans, double size, LWindow window)
     {
         TextBlock text = new TextBlock
         {
@@ -85,7 +85,7 @@ public static class LMarkdownFace
             TextWrapping = TextWrapping.Wrap,
         };
 
-        foreach (LMarkdownSpan span in spans)
+        foreach (CMarkdownSpan span in spans)
         {
             text.Inlines.Add(LMarkdownSpanBuild(span, window));
         }
@@ -93,28 +93,28 @@ public static class LMarkdownFace
         return text;
     }
 
-    private static Inline LMarkdownSpanBuild(LMarkdownSpan span, LWindow window)
+    private static Inline LMarkdownSpanBuild(CMarkdownSpan span, LWindow window)
     {
-        Run run = new Run(span.LMarkdownSpanText);
+        Run run = new Run(span.CMarkdownSpanText);
 
-        if (span.LMarkdownSpanCode)
+        if (span.CMarkdownSpanCode)
         {
             run.FontFamily = LMarkdownMono;
             run.Background = LMarkdownBrushRead("Theme.AccentSoft");
             return run;
         }
 
-        if (span.LMarkdownSpanBold)
+        if (span.CMarkdownSpanBold)
         {
             run.FontWeight = FontWeights.SemiBold;
         }
 
-        if (span.LMarkdownSpanItalic)
+        if (span.CMarkdownSpanItalic)
         {
             run.FontStyle = FontStyles.Italic;
         }
 
-        if (span.LMarkdownSpanAddress is not Uri target)
+        if (span.CMarkdownSpanAddress is not Uri target)
         {
             return run;
         }
@@ -126,33 +126,33 @@ public static class LMarkdownFace
         };
         link.RequestNavigate += (_, e) =>
         {
-            window.LWindowLocationOpen(e.Uri.AbsoluteUri);
+            window.LWindowWorkspace.QWorkspaceLocationOpen(e.Uri.AbsoluteUri);
             e.Handled = true;
         };
         return link;
     }
 
-    private static TextBlock LMarkdownHeadingBuild(LMarkdownBlock block, LWindow window)
+    private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, LWindow window)
     {
-        TextBlock text = LMarkdownTextBuild(block.LMarkdownBlockSpan, 15, window);
+        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 15, window);
         text.FontWeight = FontWeights.SemiBold;
         return text;
     }
 
-    private static Grid LMarkdownItemBuild(LMarkdownBlock block, LWindow window)
+    private static Grid LMarkdownItemBuild(CMarkdownBlock block, LWindow window)
     {
-        Grid row = new Grid { Margin = new Thickness(LMarkdownIndentRead(block.LMarkdownBlockLevel), 0, 0, 0) };
+        Grid row = new Grid { Margin = new Thickness(LMarkdownIndentRead(block.CMarkdownBlockLevel), 0, 0, 0) };
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
         row.ColumnDefinitions.Add(new ColumnDefinition());
 
         TextBlock lead = new TextBlock
         {
-            Text = block.LMarkdownBlockMark,
+            Text = block.CMarkdownBlockMark,
             FontSize = 14,
             LineHeight = 21,
             Foreground = LMarkdownBrushRead("Theme.Muted"),
         };
-        TextBlock body = LMarkdownTextBuild(block.LMarkdownBlockSpan, 14, window);
+        TextBlock body = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
         Grid.SetColumn(body, 1);
 
         row.Children.Add(lead);
@@ -160,9 +160,9 @@ public static class LMarkdownFace
         return row;
     }
 
-    private static Border LMarkdownQuoteBuild(LMarkdownBlock block, LWindow window)
+    private static Border LMarkdownQuoteBuild(CMarkdownBlock block, LWindow window)
     {
-        TextBlock text = LMarkdownTextBuild(block.LMarkdownBlockSpan, 14, window);
+        TextBlock text = LMarkdownTextBuild(block.CMarkdownBlockSpan, 14, window);
         text.Foreground = LMarkdownBrushRead("Theme.Muted");
 
         return new Border
@@ -174,7 +174,7 @@ public static class LMarkdownFace
         };
     }
 
-    private static Border LMarkdownCodeBuild(LMarkdownBlock block)
+    private static Border LMarkdownCodeBuild(CMarkdownBlock block)
     {
         return new Border
         {
@@ -183,7 +183,7 @@ public static class LMarkdownFace
             Padding = new Thickness(12, 10, 12, 10),
             Child = new TextBlock
             {
-                Text = block.LMarkdownBlockText,
+                Text = block.CMarkdownBlockText,
                 FontFamily = LMarkdownMono,
                 FontSize = 13,
                 LineHeight = 19,

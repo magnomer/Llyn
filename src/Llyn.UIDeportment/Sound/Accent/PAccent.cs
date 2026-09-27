@@ -86,7 +86,7 @@ public partial class PEditor
             return;
         }
 
-        if (!_pEditorHost.PWindowDeportment.LWindowRecordingExist(row.LAccentItemAudio))
+        if (!_pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingExist(row.LAccentItemAudio))
         {
             PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.LAccentItemId, string.Empty, null));
             return;

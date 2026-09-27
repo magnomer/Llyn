@@ -24,7 +24,7 @@ A deliberate refusal carries a reason key and resolves through the same catalog 
 Reads the detail line out of a failure.
 
 A refusal is a position the user can act on, so its reason is what they are shown.
-The engine reads the reason through `LWindow.LWindowNoticeRead`, since the refusal type is its own.
+The engine reads the reason through `QWorkspace.QWorkspaceNoticeRead`, since the refusal type is its own.
 Anything else is a fault.
 A fault's own message is written for whoever fixes the program, not for whoever uses it.
 A column name and an ordinal tell the user nothing they can act on.

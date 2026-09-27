@@ -463,7 +463,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     private void PEditorScriptUpdate()
     {
         LFontFace.LFontApply(
-            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorScript);
+            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, PEditorScript);
         PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
         PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
         PEditorScript.PScriptRenewal =
@@ -474,7 +474,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     {
         PReflexAnchorShow();
         LFontFace.LFontApply(
-            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, LFontRole.LFontRoleGlyph, PEditorFanqie);
+            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, PEditorFanqie);
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
         PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;
         PEditorFanqie.PFanqieRenewal =

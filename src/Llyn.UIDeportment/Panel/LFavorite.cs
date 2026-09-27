@@ -113,7 +113,7 @@ public sealed class LFavorite
         return _lPortraitPort.LEnginePortraitPrint(_lFavoriteVista, label, ticket);
     }
 
-    public void LFavoriteVistaRestore(LWindow window)
+    internal void LFavoriteVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

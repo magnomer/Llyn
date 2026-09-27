@@ -168,7 +168,6 @@ public class PPhonology : UserControl
 
     internal async void PPhonologyVistaRestore()
     {
-        _lPhonology.LPhonologyVistaRestore(_pPhonologyHost.PWindowDeportment);
         LPanel panel = _lPhonology.LPhonologyPanel;
         panel.LPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
@@ -201,7 +200,7 @@ public class PPhonology : UserControl
 
         QChoice.QChoiceFilterBuild(
             PLensList,
-            _pPhonologyHost.PWindowDeportment.LWindowLanguageRead(),
+            _pPhonologyHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
             _lPhonology.LPhonologyPanel.LPanelFilter,
             PLensHandle);
         _lPhonology.LPhonologyQuerySet(PProbe.Text);

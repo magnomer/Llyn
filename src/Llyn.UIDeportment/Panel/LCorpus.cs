@@ -482,7 +482,7 @@ public sealed class LCorpus
         LCorpusEditor.LEditorVistaRestore(quotation);
     }
 
-    public void LCorpusVistaRestore(LWindow window)
+    internal void LCorpusVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

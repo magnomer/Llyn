@@ -1,5 +1,4 @@
 using System;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -7,10 +6,10 @@ public partial class PWindow
 {
     internal void PWindowGlyphShow(string character, string language)
     {
-        LEntry entry;
+        long entry;
         try
         {
-            entry = _lWindow.LWindowGlyphResolve(character, language);
+            entry = _lWindow.LWindowWorkspace.QWorkspaceGlyphResolve(character, language);
         }
         catch (Exception exception)
         {
@@ -18,6 +17,6 @@ public partial class PWindow
             return;
         }
 
-        PWindowEntryShow(entry.LEntryId);
+        PWindowEntryShow(entry);
     }
 }

@@ -8,6 +8,9 @@ using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
+using Xunit;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Llyn.Tests;
 
@@ -331,16 +334,28 @@ internal static class TInterfaceDeportment
 
     internal static LFont TFontCreate(string family, double size) => new(family, size);
 
-    internal static LFont TWindowFontRead(this LWindow window, string language, LFontRole role) =>
+    internal static CFont TWindowFontRead(this LWindow window, string language, CFontRole role) =>
         window.LWindowFontRead(language, role);
 
-    internal static string TWindowLocalizationRead(this LWindow window) => window.LWindowLocalizationRead();
+    internal static string TWorkspaceLocalizationRead(this LWindow window) =>
+        window.LWindowWorkspace.QWorkspaceLocalizationRead();
 
-    internal static void TWindowEpithetSave(this LWindow window, bool epithet) => window.LWindowEpithetSave(epithet);
+    internal static void TWorkspaceEpithetSave(this LWindow window, bool epithet) =>
+        window.LWindowWorkspace.QWorkspaceEpithetSave(epithet);
 
-    internal static LPostureState TWindowPostureRead(this LWindow window) => window.LWindowPostureRead();
+    internal static CPostureState TWindowPostureRead(this LWindow window) => window.LWindowPostureRead();
 
-    internal static void TWindowLayoutSave(this LWindow window, params LLayout[] layout) =>
+    internal static CPostureState TFootprintPostureRead(LPostureState state) => LFootprint.LFootprintPostureRead(state);
+
+    internal static CFont TSoundingFontRead(LFont font) => LSounding.LSoundingFontRead(font);
+
+    internal static CSettings TWorkspaceSettingsRead(LSettings settings) => QWorkspace.QWorkspaceSettingsRead(settings);
+
+    internal static CMarkdownBlock TWindowMarkdownRead(LMarkdownBlock block) => LWindow.LWindowMarkdownRead(block);
+
+    internal static CLayout? TWindowLayoutRead(this LWindow window, string tab) => window.LWindowLayoutRead(tab);
+
+    internal static void TWindowLayoutSave(this LWindow window, params CLayout[] layout) =>
         window.LWindowLayoutSave(layout);
 
     internal static void TWindowLayoutReset(this LWindow window) => window.LWindowLayoutReset();
@@ -349,8 +364,8 @@ internal static class TInterfaceDeportment
 
     internal static bool TWindowModeMatch(this LWindow window, string mode) => window.LWindowModeMatch(mode);
 
-    internal static IReadOnlyList<LMentionPiece> TWindowMentionDivide(
-        this LWindow window, string text, IReadOnlyList<LMention> mentions) =>
+    internal static IReadOnlyList<CMentionPiece> TWindowMentionDivide(
+        this LWindow window, string text, IReadOnlyList<CMention> mentions) =>
         window.LWindowMentionDivide(text, mentions);
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
@@ -381,8 +396,8 @@ internal static class TInterfaceDeportment
 
     internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
 
-    internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TWindowMeaningSort(
-        IReadOnlyList<LMeaning> meanings, string unknown) => LWindow.LWindowMeaningSort(meanings, unknown);
+    internal static IReadOnlyList<CMeaning> TWorkspaceMeaningSort(IReadOnlyList<LMeaning> meanings, string unknown) =>
+        QWorkspace.QWorkspaceMeaningSort(meanings, unknown);
 
     internal static IReadOnlyList<LIndexItem> TIndexItemBuild(IReadOnlyList<LVistaRow> rows) =>
         LIndexItem.LIndexItemBuild(rows);

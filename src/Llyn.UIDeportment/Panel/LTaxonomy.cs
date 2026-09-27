@@ -148,7 +148,7 @@ public sealed class LTaxonomy
         return _lPortraitPort.LEnginePortraitPrint(_lTaxonomyMembership, label, ticket);
     }
 
-    public void LTaxonomyVistaRestore(LWindow window)
+    internal void LTaxonomyVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

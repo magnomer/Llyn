@@ -7,10 +7,10 @@ The stored view state is read once and applied from here, so no panel reads it f
 The Entry each duplex side stands on comes from the workspace row.
 Everything that names only panels comes from the posture, one layout record per tab.
 
-## `internal void PWindowViewRestore(LWorkspaceState state)`
+## `internal void PWindowViewRestore(CWorkspaceState state)`
 
 Applies `state` and the posture's layout records across the shell.
-Every browse panel restores its deportment, which starts its vistas through the posture with the stored order and filter.
+The window deportment has already started every panel's vistas through the posture with the stored order and filter.
 Each panel's designed ordering is named by its deportment, since the record holds nothing before a choice.
 The yunjing panel takes two, since its two columns keep two orderings under two records.
 A tab whose middle column lists entries under a chosen record takes a child vista for that column as well.
@@ -20,5 +20,5 @@ It is also the tab standing open and whether that tab shows its editor.
 The vistas are handed over before the tab, so the opening panel lists in the ordering it was left in.
 A posture naming no tab leaves the window where it stands.
 A posture naming an unoffered tab opens the first.
-The same call puts the shell onto a workspace the user has just switched to.
+The same call puts the shell onto a workspace the user has just switched to, once its vistas restart.
 That workspace carries its own posture, and starting the vistas here spares every panel from asking.

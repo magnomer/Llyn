@@ -191,7 +191,7 @@ public sealed class LLibrary
         omissionSeam(outcome.LMarkupOutcomeOmission);
     }
 
-    public void LLibraryVistaRestore(LWindow window)
+    internal void LLibraryVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

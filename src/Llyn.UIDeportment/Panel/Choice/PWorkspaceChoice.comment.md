@@ -26,6 +26,7 @@ The field therefore never shows a path that is not the workspace.
 
 Moves onto `chosen` once the user has agreed to lose the form.
 The panel controls, the language, the panel widths and the view are then aligned to the workspace moved onto.
+The window deportment restarts every panel's vista before the view is restored over them.
 The widths are reset before restoring, so a workspace without stored widths opens at the markup widths.
 
 ## Inline notes
@@ -35,14 +36,14 @@ The widths are reset before restoring, so a workspace without stored widths open
 Changing the workspace throws the form away with it.
 The user must say so before it happens.
 
-### `PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();`
+### `PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();`
 
 An unusable path leaves the previous workspace in place.
 Permission and invalid characters are such faults.
 Restore the field so it keeps showing the folder actually in use.
 The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
 
-### `_pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowStateRead());`
+### `_pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowWorkspace.QWorkspaceStateRead());`
 
 The new workspace carries its own view state.
 The shell is put onto it as well as onto its database.

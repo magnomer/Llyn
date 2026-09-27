@@ -72,16 +72,16 @@ public sealed class LDisplaySound
         _lDisplaySoundOpened = opened;
     }
 
-    public static HashSet<string> LDisplayFoldScan(IReadOnlyList<LReflexRule> rules)
+    public static HashSet<string> LDisplayFoldScan(IReadOnlyList<CReflexRule> rules)
     {
         ArgumentNullException.ThrowIfNull(rules);
 
         HashSet<string> folded = new(StringComparer.Ordinal);
-        foreach (LReflexRule rule in rules)
+        foreach (CReflexRule rule in rules)
         {
-            if (rule.LReflexRuleFolded)
+            if (rule.CReflexRuleFolded)
             {
-                folded.Add(rule.LReflexRuleLanguage);
+                folded.Add(rule.CReflexRuleLanguage);
             }
         }
 

@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -24,7 +24,7 @@ public sealed class PMention : TextBlock
 
     public static readonly DependencyProperty PMentionMentionProperty = DependencyProperty.Register(
         nameof(PMentionMention),
-        typeof(IReadOnlyList<LMention>),
+        typeof(IReadOnlyList<CMention>),
         typeof(PMention),
         new FrameworkPropertyMetadata(null, PMentionChangeHandle));
 
@@ -61,9 +61,9 @@ public sealed class PMention : TextBlock
         set => SetValue(PMentionTextProperty, value);
     }
 
-    public IReadOnlyList<LMention>? PMentionMention
+    public IReadOnlyList<CMention>? PMentionMention
     {
-        get => (IReadOnlyList<LMention>?)GetValue(PMentionMentionProperty);
+        get => (IReadOnlyList<CMention>?)GetValue(PMentionMentionProperty);
         set => SetValue(PMentionMentionProperty, value);
     }
 
@@ -113,17 +113,17 @@ public sealed class PMention : TextBlock
                 continue;
             }
 
-            if (run.Tag is not LMentionPiece piece)
+            if (run.Tag is not CMentionPiece piece)
             {
                 continue;
             }
 
-            if (offset < piece.LMentionPieceOffset || offset >= piece.LMentionPieceEnd)
+            if (offset < piece.CMentionPieceOffset || offset >= piece.CMentionPieceEnd)
             {
                 continue;
             }
 
-            int unit = window.LWindowUnitRead(run.Text, offset - piece.LMentionPieceOffset);
+            int unit = window.LWindowUnitRead(run.Text, offset - piece.CMentionPieceOffset);
             TextPointer pointer = run.ContentStart.GetPositionAtOffset(unit) ?? run.ContentStart;
             Rect found = pointer.GetCharacterRect(LogicalDirection.Forward);
             if (!found.IsEmpty)
@@ -155,16 +155,11 @@ public sealed class PMention : TextBlock
             return;
         }
 
-        foreach (LMentionPiece piece in window.LWindowMentionDivide(text, PMentionMention ?? []))
+        foreach (CMentionPiece piece in window.LWindowMentionDivide(text, PMentionMention ?? []))
         {
-            Run run = new(piece.LMentionPieceText) { Tag = piece };
+            Run run = new(piece.CMentionPieceText) { Tag = piece };
 
-            if (piece.LMentionPieceStored is LMention stored)
-            {
-                run.SetResourceReference(
-                    FrameworkContentElement.StyleProperty,
-                    stored.LMentionLinked ? "Theme.Mention.Linked" : "Theme.Mention.Silent");
-            }
+            PMentionStyleApply(run, piece.CMentionPieceLinked);
 
             Inlines.Add(run);
         }
@@ -187,7 +182,7 @@ public sealed class PMention : TextBlock
             return null;
         }
 
-        if (run.Tag is not LMentionPiece piece)
+        if (run.Tag is not CMentionPiece piece)
         {
             return null;
         }
@@ -198,6 +193,23 @@ public sealed class PMention : TextBlock
         }
 
         int unit = run.ContentStart.GetOffsetToPosition(pointer);
-        return piece.LMentionPieceOffset + window.LWindowOffsetRead(run.Text, unit);
+        return PMentionOffsetRead(piece.CMentionPieceOffset, window.LWindowOffsetRead(run.Text, unit));
+    }
+
+    private static void PMentionStyleApply(Run run, bool? linked)
+    {
+        if (linked is true)
+        {
+            run.SetResourceReference(FrameworkContentElement.StyleProperty, "Theme.Mention.Linked");
+        }
+        else if (linked is false)
+        {
+            run.SetResourceReference(FrameworkContentElement.StyleProperty, "Theme.Mention.Silent");
+        }
+    }
+
+    private static int PMentionOffsetRead(int start, int offset)
+    {
+        return start + offset;
     }
 }

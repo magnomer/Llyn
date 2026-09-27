@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -38,7 +38,7 @@ internal sealed class QEstablishment
     internal void QEstablishmentAttach(PWindow host)
     {
         _qEstablishmentHost = host;
-        QEstablishmentHook(host, LObserver.LObserverCreate(host.PWindowSurface, QEstablishmentUpdate));
+        QEstablishmentHook(host, LObserver.LObserverCreate<CBulletin>(host.PWindowSurface, QEstablishmentUpdate));
         QEstablishmentUpdate();
     }
 
@@ -47,39 +47,38 @@ internal sealed class QEstablishment
         _qEstablishmentRelease();
     }
 
-    private void QEstablishmentHook(PWindow host, Action<LBulletin> observer)
+    private void QEstablishmentHook(PWindow host, Action<CBulletin> observer)
     {
-        host.PWindowDeportment.LWindowObserverAttach(observer);
-        _qEstablishmentRelease = () => host.PWindowDeportment.LWindowObserverDetach(observer);
+        _qEstablishmentRelease = host.PWindowDeportment.LWindowObserverAttach(observer);
     }
 
     private void QEstablishmentUpdate()
     {
-        LEstablishment establishment;
+        CEstablishment establishment;
         try
         {
-            establishment = _qEstablishmentHost.PWindowDeportment.LWindowEstablishmentRead();
+            establishment = _qEstablishmentHost.PWindowDeportment.LWindowWorkspace.QWorkspaceEstablishmentRead();
         }
         catch (Exception)
         {
             return;
         }
 
-        QEstablishmentPending.Visibility = establishment.LEstablishmentPending
+        QEstablishmentPending.Visibility = establishment.CEstablishmentPending
             ? Visibility.Visible
             : Visibility.Collapsed;
         QEstablishmentUnsaved.Text = string.Format(
             CultureInfo.CurrentCulture,
             QLocalizationCatalog.QLocalizationTextRead("Establishment.Unsaved"),
-            establishment.LEstablishmentUnsaved);
+            establishment.CEstablishmentUnsaved);
 
         QEstablishmentEntry.Text = string.Format(
             CultureInfo.CurrentCulture,
             QLocalizationCatalog.QLocalizationTextRead(
-                establishment.LEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry"),
-            establishment.LEstablishmentEntry);
+                establishment.CEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry"),
+            establishment.CEstablishmentEntry);
 
-        QEstablishmentSize.Text = QEstablishmentSizeFormat(establishment.LEstablishmentSize);
+        QEstablishmentSize.Text = QEstablishmentSizeFormat(establishment.CEstablishmentSize);
     }
 
     private static string QEstablishmentSizeFormat(long bytes)

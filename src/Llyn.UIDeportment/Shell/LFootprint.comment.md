@@ -4,6 +4,7 @@
 
 Where the window was and how big it was, carried from one run to the next.
 The window's posture holds it, so a workspace opens the way its owner left it.
+It names no window, so the window view reads the screen and applies what it answers.
 
 ## `private const double LFootprintShare = 0.8;`
 
@@ -15,36 +16,53 @@ A designed pixel size cannot fit every desktop, so the default is measured again
 The rest in milliseconds the posture waits after a move before it writes.
 A drag raises a change for every pixel, and one write per pixel would be a file write per pixel.
 
-## `public LFootprint(Window window, LWindow deportment)`
+## `public LFootprint(LWindow window)`
 
-Listens for the window only once it is loaded.
-Nothing is written before then, so the restore does not save what it has just read.
+Keeps the window deportment, which holds the posture.
 
-## `public void LFootprintRestore()`
+## `public CWindowState? LFootprintRead(double left, double top, double width, double height, double minWidth, double minHeight)`
 
-Runs before the window is shown, while position and size can still be set.
-With nothing stored the window takes its share of the work area and stays centred.
-Stored geometry is clamped into the current virtual screen and against the minimum size.
+The stored geometry, placed inside the current virtual screen, or null when nothing is stored.
+The screen's rectangle and the window's minimum size are handed in by the window view.
+Stored geometry is clamped into that screen and against the minimum size.
 A monitor that is gone, or a saved size larger than the desktop, must not leave the window unreachable.
-Setting the startup location to manual is required, since the designed default centres the window.
 
-## `public void LFootprintClosingHandle(CancelEventArgs e, bool confirmed)`
+## `public (double LFootprintWidth, double LFootprintHeight) LFootprintSizeRead(double width, double height, double minWidth, double minHeight)`
 
-Declining leaves the window open on the form exactly as typed, which is the only place the work still exists.
-Geometry is stored only once the close is certain, so a declined close changes nothing.
-The close writes at once, with no delay.
+The size a first launch takes: its share of the work area, never below the minimum size.
 
-## `private void LFootprintAttach()`
+## `public void LFootprintSave(CWindowState state, bool minimized)`
 
-Listens for the window being moved, resized or maximized.
-Geometry is written down while the program runs rather than only as it closes.
-A run that ends without closing used to leave the last geometry unwritten.
-A killed process, a launcher window shut and a machine turned off all end that way.
+Hands a move or resize to the posture, which waits before writing.
 
-## `private void LFootprintSave(int delay)`
+## `public void LFootprintClose(CWindowState state, bool minimized)`
 
-Hands the window's geometry to the posture, which waits `delay` milliseconds before writing.
-The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.
-`RestoreBounds` supplies it whenever the window is maximized.
+Hands the geometry of a certain close to the posture, which writes at once.
+
+## `private static CWindowState? LFootprintPlace(CWindowState? state, double left, double top, double width, double height, double minWidth, double minHeight)`
+
+Clamps the stored size against the screen and the minimum size, keeping whether it was maximized.
+
+## `private static CWindowState LFootprintClamp(CWindowState state, double left, double top, double width, double height, double placedWidth, double placedHeight)`
+
+Clamps the stored position into the screen, once the size is settled.
+
+## `private void LFootprintDefer(CWindowState state, bool minimized, int delay)`
+
+Hands the geometry to the posture, which waits `delay` milliseconds before writing.
+The window view hands the restored rectangle, never the maximized one, so restoring returns to a usable size.
 The minimized flag goes along, and the posture drops a minimized window.
 An empty or degenerate rectangle is dropped, leaving the previous geometry in place.
+
+## `internal static CPostureState LFootprintPostureRead(LPostureState state)`
+
+Copies the engine's posture into the Conduct shape the window view and its parts read.
+The posture's mode is left out, since only the navigation asks it, through the window deportment.
+
+## `internal static CWindowState? LFootprintStateRead(LWindowState? window)`
+
+Copies the stored geometry, and the overload taking the shape copies it back for the posture.
+
+## `internal static CLayout? LFootprintLayoutRead(IReadOnlyList<LLayout> layout, string tab)`
+
+The stored widths of one tab, and the overload taking shapes builds the records the posture merges.

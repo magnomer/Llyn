@@ -1,17 +1,15 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public class PInput : UserControl
 {
-    private PWindow _pInputHost = null!;
-
     private LEditor _lEditor = null!;
 
-    private Action<LBulletin>? _pInputObserver;
+    private Action? _pInputRelease;
 
     public PInput()
     {
@@ -25,28 +23,15 @@ public class PInput : UserControl
 
     internal void PInputAttach(PWindow host)
     {
-        _pInputHost = host;
-
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowInputCreate(host.PWindowUnreadableConfirm);
         PEditor.PEditorAttach(host, _lEditor, new LLectern(_lEditor.LEditorDisplay));
 
-        _pInputObserver = LObserver.LObserverCreate(this, PInputBulletinHandle);
-        host.PWindowDeportment.LWindowObserverAttach(_pInputObserver);
-    }
-
-    private void PInputBulletinHandle(LBulletin bulletin)
-    {
-        if (!bulletin.LBulletinMatch(LSubject.LSubjectWorkspace))
-        {
-            return;
-        }
-
-        PInputReset();
+        _pInputRelease = host.PWindowDeportment.LWindowObserverAttach(
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PInputReset));
     }
 
     internal void PInputVistaRestore()
     {
-        _lEditor.LEditorVistaRestore(_pInputHost.PWindowDeportment);
         PEditor.PEditorVistaRestore();
     }
 
@@ -67,11 +52,8 @@ public class PInput : UserControl
 
     internal void PInputClose()
     {
-        if (_pInputObserver is not null)
-        {
-            _pInputHost.PWindowDeportment.LWindowObserverDetach(_pInputObserver);
-            _pInputObserver = null;
-        }
+        _pInputRelease?.Invoke();
+        _pInputRelease = null;
 
         PEditor.PEditorClose();
     }

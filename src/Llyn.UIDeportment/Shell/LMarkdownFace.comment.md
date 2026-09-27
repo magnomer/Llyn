@@ -15,11 +15,11 @@ It is indented one step per level.
 Numbers count up while consecutive items stay on one level and restart otherwise.
 The gap above a block depends on what it is, so list items sit close and headings stand off.
 
-## `private static FrameworkElement LMarkdownBlockBuild(LMarkdownBlock block, LWindow window)`
+## `private static FrameworkElement LMarkdownBlockBuild(CMarkdownBlock block, LWindow window)`
 
 The element for one block, picked by the block's own verdicts, with plain text for a paragraph.
 
-## `private static double LMarkdownGapRead(LMarkdownBlock block)`
+## `private static double LMarkdownGapRead(CMarkdownBlock block)`
 
 The space above a block of that kind.
 
@@ -37,19 +37,19 @@ One run carrying the span's weight, style and monospace face.
 Only an absolute http or https target becomes a hyperlink, so a note cannot launch anything else.
 A followed link opens through `window`, so the helper starts no process itself.
 
-## `private static TextBlock LMarkdownHeadingBuild(LMarkdownBlock block, LWindow window)`
+## `private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, LWindow window)`
 
 A heading is a slightly larger semibold text block, whatever its level.
 
-## `private static Grid LMarkdownItemBuild(LMarkdownBlock block, LWindow window)`
+## `private static Grid LMarkdownItemBuild(CMarkdownBlock block, LWindow window)`
 
 One list row, the block's mark in the lead column and the item text beside it.
 
-## `private static Border LMarkdownQuoteBuild(LMarkdownBlock block, LWindow window)`
+## `private static Border LMarkdownQuoteBuild(CMarkdownBlock block, LWindow window)`
 
 Muted text behind a left rule.
 
-## `private static Border LMarkdownCodeBuild(LMarkdownBlock block)`
+## `private static Border LMarkdownCodeBuild(CMarkdownBlock block)`
 
 Verbatim monospace text on a soft rounded ground.
 

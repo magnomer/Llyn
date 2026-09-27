@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -58,7 +58,7 @@ public partial class PEditor
 
     internal void PCategoryLoad()
     {
-        IReadOnlyList<LSpeechValue> values;
+        IReadOnlyList<CSpeechValue> values;
         try
         {
             values = _pEditorHost.PWindowDeportment.LWindowSpeechRead(_lEditor.LEditorLanguage);
@@ -69,17 +69,17 @@ public partial class PEditor
         }
 
         _pCategoryPreset.Clear();
-        foreach (LSpeechValue value in values)
+        foreach (CSpeechValue value in values)
         {
-            _pCategoryPreset.Add(new PCategoryItem(value.LSpeechValueId, value.LSpeechValueName, false));
+            _pCategoryPreset.Add(new PCategoryItem(value.CSpeechValueId, value.CSpeechValueName, false));
         }
 
         PCategoryUpdate();
     }
 
-    private LSpeechValue? PCategoryAdd(string name)
+    private CSpeechValue? PCategoryAdd(string name)
     {
-        LSpeechValue? created;
+        CSpeechValue? created;
         try
         {
             created = _pEditorHost.PWindowDeportment.LWindowSpeechAdd(_lEditor.LEditorLanguage, name);

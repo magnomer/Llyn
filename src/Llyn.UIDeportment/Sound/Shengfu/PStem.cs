@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -41,7 +42,7 @@ public class PStem : UserControl
     {
         LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, PStemHeadword);
         LFontFace.LFontPlace(PStemHeadword);
-        LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, LFontRole.LFontRoleGlyph, PStemList);
+        LFontFace.LFontApply(_lWindow, page.LStemPageLanguage, CFontRole.CFontRoleGlyph, PStemList);
         PStemHeadword.Text = page.LStemPageKey;
         PStemLanguage.Text = page.LStemPageLanguage;
         PStemFlag.Source = LEnsignImage.LEnsignFind(page.LStemPageLanguage);

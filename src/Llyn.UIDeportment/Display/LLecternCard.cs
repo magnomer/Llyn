@@ -268,10 +268,11 @@ public sealed class LLecternCard
         string text,
         string language,
         int offset,
-        IReadOnlyList<LMention>? mentions,
+        IReadOnlyList<CMention>? mentions,
         Action<LLecternAnchor, LMentionResult> show)
     {
-        _lLecternCardDisplay.LDisplayMentionFind(anchor, text, language, offset, mentions, show);
+        _lLecternCardDisplay.LDisplayMentionFind(
+            anchor, text, language, offset, mentions is null ? null : LWindow.LWindowMentionRead(mentions), show);
     }
 
     public void LLecternCardScroll(long id)

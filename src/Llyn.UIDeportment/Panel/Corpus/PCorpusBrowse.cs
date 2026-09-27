@@ -40,7 +40,6 @@ public partial class PCorpus
     internal async void PCorpusVistaRestore()
     {
         LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
-        _lCorpus.LCorpusVistaRestore(_pCorpusHost.PWindowDeportment);
         PCorpusObserverAttach();
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();

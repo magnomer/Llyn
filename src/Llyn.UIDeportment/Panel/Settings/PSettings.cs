@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -86,7 +87,8 @@ public partial class PSettings : UserControl
     {
         _pSettingsHost = host;
         PLocalizationBuild();
-        PSettingsWindow.LWindowObserverAttach(LObserver.LObserverCreate(this, PSettingsBulletinHandle));
+        PSettingsWindow.LWindowObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, PSettingsBulletinHandle));
         QLookItem.QLookItemAttach(PLedger, PLedgerApply);
 
         PSettingsSync();
@@ -109,25 +111,20 @@ public partial class PSettings : UserControl
 
     internal void PSettingsSync()
     {
-        LSettings settings = PSettingsWindow.LWindowSettingsRead();
-        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+        CSettings settings = PSettingsWindow.LWindowWorkspace.QWorkspaceSettingsRead();
+        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
         PLocalization.SelectedValue =
-            PSettingsWindow.LWindowLocalizationRead();
-        PRespelling.IsChecked = settings.LSettingsRespelled;
-        PSettingsEpithet.IsChecked = settings.LSettingsEpithet;
-        PFrequency.IsChecked = settings.LSettingsFrequency;
-        PMorphology.IsChecked = settings.LSettingsMorphology;
-        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPostureRead().LPostureStateLinked;
+            PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationRead();
+        PRespelling.IsChecked = settings.CSettingsRespelled;
+        PSettingsEpithet.IsChecked = settings.CSettingsEpithet;
+        PFrequency.IsChecked = settings.CSettingsFrequency;
+        PMorphology.IsChecked = settings.CSettingsMorphology;
+        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPostureRead().CPostureStateLinked;
     }
 
-    private void PSettingsBulletinHandle(LBulletin bulletin)
+    private void PSettingsBulletinHandle()
     {
-        if (!bulletin.LBulletinMatch(LSubject.LSubjectSettings))
-        {
-            return;
-        }
-
-        PLocalizationApply(PSettingsWindow.LWindowLocalizationRead());
+        PLocalizationApply(PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationRead());
         PLedgerMetaApply();
     }
 }

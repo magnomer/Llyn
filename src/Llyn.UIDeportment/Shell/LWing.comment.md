@@ -6,6 +6,7 @@ The deportment of one side of the duplex panel: the entry vista it holds and the
 It finds the rows, takes the query, order and language sieve, and loads the chosen entry.
 It owns the side's match list and steers it from the field's keys, focus and clicks.
 The reading view's deportment is built here, since a wing has no editor to own it.
+The window view builds a wing over the window deportment, whose ports it reads through.
 The chosen entry is saved to the workspace state under the wing's side, so the next run reopens it.
 
 ## `private LIndex? _lWingIndex;`

@@ -19,7 +19,7 @@ The popup, its title and its list are read through the loaded window's name scop
 Entry mode.
 A picked row opens its Entry through `PWindowEntryShow`, so the menu hides the way any navigation hides it.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<LMeaning> meanings, Action<long> chosen)`
+## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<CMeaning> meanings, Action<long> chosen)`
 
 Sense mode.
 The window reads the Meanings before calling, so the menu stays free of the engine.

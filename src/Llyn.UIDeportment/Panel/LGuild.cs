@@ -481,7 +481,7 @@ public sealed class LGuild
         return _lPortraitPort.LEnginePortraitPrint(LGuildOeuvre.LOeuvrePanel.LPanelVista, legend, ticket);
     }
 
-    public void LGuildVistaRestore(LWindow window)
+    internal void LGuildVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

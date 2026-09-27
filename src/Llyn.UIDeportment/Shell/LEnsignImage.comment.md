@@ -13,7 +13,7 @@ A malformed or unknown flag becomes no image, which lets each surface show its n
 Subscribes the flag store through `window`, once, for the whole program.
 It owns no control, so its answer runs on the thread that announced rather than on the shell's.
 
-## `private static void LEnsignBulletinHandle(LBulletin bulletin)`
+## `private static void LEnsignBulletinHandle(CBulletin bulletin)`
 
 Throws every kept drawing away when the workspace moves, and answers nothing else.
 The engine has already forgotten the paths before it announces, so a surface reloading on the announcement asks afresh.
@@ -41,7 +41,7 @@ The same fill for the named varieties of `language`, each drawn under `language/
 The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
 It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
 
-## `private static Action LEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)`
+## `private static Action LEnsignStoreAdd(IReadOnlyList<CEnsignRow> rows, Action<string, Exception> delete)`
 
 Draws every row the engine kept and answers the commit that stores them.
 The drawing is made here rather than when a row asks, so a row never waits on a file.

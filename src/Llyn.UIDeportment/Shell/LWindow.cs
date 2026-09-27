@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Conduct;
@@ -25,7 +24,9 @@ public sealed class LWindow : IDisposable
 
     private readonly LPosture _lPosture;
 
-    public LWindow(
+    private readonly List<Action> _lWindowVistas = [];
+
+    internal LWindow(
         LPosture posture,
         LDraftPort drafts,
         LEntryPort entries,
@@ -49,27 +50,48 @@ public sealed class LWindow : IDisposable
         _lPhonologyPort = phonology;
         _lMediaPort = media;
         _lPortraitPort = portraits;
+        LWindowWorkspace = new QWorkspace(this);
     }
+
+    public QWorkspace LWindowWorkspace { get; }
+
+    internal LEntryPort LWindowEntryPort => _lEntryPort;
+
+    internal LPhonologyPort LWindowPhonologyPort => _lPhonologyPort;
+
+    internal LSettingsPort LWindowSettingsPort => _lSettingsPort;
+
+    internal LMediaPort LWindowMediaPort => _lMediaPort;
 
     public LEditor LWindowEditorCreate(Func<bool> unreadableSeam)
     {
         return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, _lMediaPort, unreadableSeam);
     }
 
+    public LEditor LWindowInputCreate(Func<bool> unreadableSeam)
+    {
+        return LWindowVistaAdd(
+            LWindowEditorCreate(unreadableSeam), static (editor, window) => editor.LEditorVistaRestore(window));
+    }
+
     public LCorpus LWindowCorpusCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
-        return new LCorpus(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern,
-            shownSeam, leaveSeam, removalSeam, unreadableSeam);
+        return LWindowVistaAdd(
+            new LCorpus(
+                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
+                removalSeam, unreadableSeam),
+            static (corpus, window) => corpus.LCorpusVistaRestore(window));
     }
 
     public LFavorite LWindowFavoriteCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LFavorite(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LFavorite(
+                _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (favorite, window) => favorite.LFavoriteVistaRestore(window));
     }
 
     public LGuild LWindowGuildCreate(
@@ -79,21 +101,27 @@ public sealed class LWindow : IDisposable
         Func<string, string, bool> unionSeam,
         Func<bool> unreadableSeam)
     {
-        return new LGuild(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort,
-            shownSeam, leaveSeam, removalSeam, unionSeam, unreadableSeam);
+        return LWindowVistaAdd(
+            new LGuild(
+                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, shownSeam, leaveSeam, removalSeam, unionSeam,
+                unreadableSeam),
+            static (guild, window) => guild.LGuildVistaRestore(window));
     }
 
     public LLibrary LWindowLibraryCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LLibrary(_lEntryPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LLibrary(_lEntryPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (library, window) => library.LLibraryVistaRestore(window));
     }
 
     public LPhonology LWindowPhonologyCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LPhonology(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LPhonology(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (phonology, window) => phonology.LPhonologyVistaRestore(window));
     }
 
     public LShelf LWindowShelfCreate(
@@ -104,55 +132,81 @@ public sealed class LWindow : IDisposable
         Func<int, bool> removalSeam,
         Func<bool> unreadableSeam)
     {
-        return new LShelf(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort,
-            editor, lectern, shownSeam, leaveSeam, removalSeam, unreadableSeam);
+        return LWindowVistaAdd(
+            new LShelf(
+                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
+                removalSeam, unreadableSeam),
+            static (shelf, window) => shelf.LShelfVistaRestore(window));
     }
 
     public LRepertoire LWindowRepertoireCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
         Func<int, bool> removalSeam, Func<bool> unreadableSeam)
     {
-        return new LRepertoire(
-            _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern,
-            shownSeam, leaveSeam, removalSeam, unreadableSeam);
+        return LWindowVistaAdd(
+            new LRepertoire(
+                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
+                removalSeam, unreadableSeam),
+            static (repertoire, window) => repertoire.LRepertoireVistaRestore(window));
     }
 
     public LTaxonomy LWindowTaxonomyCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LTaxonomy(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LTaxonomy(
+                _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (taxonomy, window) => taxonomy.LTaxonomyVistaRestore(window));
     }
 
     public LTenor LWindowTenorCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LTenor(
-            _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
-    }
-
-    public LWing LWindowWingCreate()
-    {
-        return new LWing(_lEntryPort, _lPhonologyPort, _lSettingsPort, _lMediaPort);
+        return LWindowVistaAdd(
+            new LTenor(_lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (tenor, window) => tenor.LTenorVistaRestore(window));
     }
 
     public LXiesheng LWindowXieshengCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (xiesheng, window) => xiesheng.LXieshengVistaRestore(window));
     }
 
     public LYunjing LWindowYunjingCreate(
         LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
-        return new LYunjing(
-            _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam);
+        return LWindowVistaAdd(
+            new LYunjing(
+                _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
+            static (yunjing, window) => yunjing.LYunjingVistaRestore(window));
     }
 
-    public LPostureState LWindowPostureRead()
+    public void LWindowVistaRestore()
     {
-        return _lPosture.LPostureRead();
+        foreach (Action restore in _lWindowVistas)
+        {
+            restore();
+        }
+    }
+
+    private LWindowHeld LWindowVistaAdd<LWindowHeld>(LWindowHeld held, Action<LWindowHeld, LWindow> restore)
+    {
+        restore(held, this);
+        _lWindowVistas.Add(() => restore(held, this));
+        return held;
+    }
+
+    public CPostureState LWindowPostureRead()
+    {
+        return LFootprint.LFootprintPostureRead(_lPosture.LPostureRead());
+    }
+
+    public CLayout? LWindowLayoutRead(string tab)
+    {
+        return LFootprint.LFootprintLayoutRead(_lPosture.LPostureRead().LPostureStateLayout ?? [], tab);
     }
 
     public bool LWindowModeMatch(string? mode)
@@ -160,14 +214,14 @@ public sealed class LWindow : IDisposable
         return _lPosture.LPostureModeMatch(mode);
     }
 
-    public LVista LWindowVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
+    internal LVista LWindowVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
     {
         return _lPosture.LPostureVistaStart(tab, subject, fallback, blank);
     }
 
-    public void LWindowStateDefer(LWindowState window, bool minimized, int delay)
+    public void LWindowStateDefer(CWindowState window, bool minimized, int delay)
     {
-        _lPosture.LPostureWindowDefer(window, minimized, delay);
+        _lPosture.LPostureWindowDefer(LFootprint.LFootprintStateRead(window), minimized, delay);
     }
 
     public void LWindowVolumeSet(double volume)
@@ -191,9 +245,9 @@ public sealed class LWindow : IDisposable
         return _lPosture.LPostureLinkedSave(linked);
     }
 
-    public void LWindowLayoutSave(IEnumerable<LLayout> layout)
+    public void LWindowLayoutSave(IEnumerable<CLayout> layout)
     {
-        _lPosture.LPostureLayoutSave(layout);
+        _lPosture.LPostureLayoutSave(LFootprint.LFootprintLayoutRead(layout));
     }
 
     public void LWindowLayoutReset()
@@ -201,37 +255,52 @@ public sealed class LWindow : IDisposable
         _lPosture.LPostureLayoutReset();
     }
 
+    public void LWindowLeftoverSweep()
+    {
+        _lDraftPort.LEngineLeftoverSweep();
+    }
+
     public void Dispose()
     {
         _lPosture.Dispose();
     }
 
-    public void LWindowObserverAttach(Action<LBulletin> observer)
+    public Action LWindowObserverAttach(Action<CBulletin> observer)
     {
-        _lDraftPort.LEngineObserverAttach(observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        return LWindowObserverAdd(LWindowBulletinSend);
+
+        void LWindowBulletinSend(LBulletin bulletin)
+        {
+            observer(LWindowBulletinRead(bulletin));
+        }
     }
 
-    public void LWindowObserverDetach(Action<LBulletin> observer)
+    public Action LWindowObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lDraftPort.LEngineObserverDetach(observer);
+        ArgumentNullException.ThrowIfNull(observer);
+
+        return LWindowObserverAdd(LWindowBulletinSend);
+
+        void LWindowBulletinSend(LBulletin bulletin)
+        {
+            if (bulletin.LBulletinMatch(LPanel.LPanelSubjectRead(subject)))
+            {
+                observer(LWindowBulletinRead(bulletin));
+            }
+        }
     }
 
-    public LFont LWindowFontRead(string language, LFontRole role)
+    private Action LWindowObserverAdd(Action<LBulletin> sent)
     {
-        return _lSettingsPort.LEngineFontRead(language, role);
+        _lDraftPort.LEngineObserverAttach(sent);
+        return () => _lDraftPort.LEngineObserverDetach(sent);
     }
 
-    public Task LWindowEnsignLoad(Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    public CFont LWindowFontRead(string language, CFontRole role)
     {
-        return _lSettingsPort.LEngineEnsignLoad(store);
-    }
-
-    public Task LWindowEnsignLoad(
-        string language,
-        IEnumerable<string> varieties,
-        Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
-    {
-        return _lSettingsPort.LEngineEnsignLoad(language, varieties, store);
+        return LSounding.LSoundingFontRead(_lSettingsPort.LEngineFontRead(language, (LFontRole)role));
     }
 
     public bool LWindowRespellingCheck(string language)
@@ -244,19 +313,9 @@ public sealed class LWindow : IDisposable
         return _lPhonologyPort.LEnginePhonemicCheck(language);
     }
 
-    public IReadOnlyList<LReflexRule> LWindowReflexRead(string language)
+    public IReadOnlyList<CReflexRule> LWindowReflexRead(string language)
     {
-        return _lPhonologyPort.LEngineReflexRead(language);
-    }
-
-    public Uri? LWindowLocationRead(string? location)
-    {
-        return _lMediaPort.LEngineLocationRead(location);
-    }
-
-    public bool LWindowRecordingExist(string? file)
-    {
-        return _lMediaPort.LEngineRecordingExist(file);
+        return LSounding.LSoundingRuleRead(_lPhonologyPort.LEngineReflexRead(language));
     }
 
     public CSentenceOrder LWindowOrderRead(string language)
@@ -264,8 +323,11 @@ public sealed class LWindow : IDisposable
         return LCard.LCardOrderRead(_lPhonologyPort.LEngineOrderRead(language));
     }
 
-    public IReadOnlyList<LMentionLabel> LWindowMentionResolve(string text, IReadOnlyList<CMentionDraft> mentions)
+    public IReadOnlyList<CMentionLabel> LWindowMentionResolve(
+        string text, IReadOnlyList<CMentionDraft> mentions, string silent)
     {
+        ArgumentNullException.ThrowIfNull(mentions);
+
         List<LMentionDraft> drafts = new(mentions.Count);
         foreach (CMentionDraft mention in mentions)
         {
@@ -277,12 +339,18 @@ public sealed class LWindow : IDisposable
                 mention.CMentionDraftSense));
         }
 
-        return _lEntryPort.LEngineMentionResolve(text, drafts);
+        return LWindowLabelRead(_lEntryPort.LEngineMentionResolve(text, drafts), silent);
     }
 
-    public IReadOnlyList<LMentionPiece> LWindowMentionDivide(string text, IReadOnlyList<LMention> mentions)
+    public IReadOnlyList<CMentionPiece> LWindowMentionDivide(string text, IReadOnlyList<CMention> mentions)
     {
-        return _lDraftPort.LEngineMentionDivide(text, mentions);
+        return LSplice.LSpliceBuild(
+            _lDraftPort.LEngineMentionDivide(text, LWindowMentionRead(mentions)),
+            static piece => new CMentionPiece(
+                piece.LMentionPieceOffset,
+                piece.LMentionPieceEnd,
+                piece.LMentionPieceText,
+                piece.LMentionPieceStored?.LMentionLinked));
     }
 
     public int LWindowUnitRead(string text, int offset)
@@ -306,30 +374,20 @@ public sealed class LWindow : IDisposable
         return _lDraftPort.LEngineAnchorMatch(one, other);
     }
 
-    public bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
+    internal bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)
     {
         return _lDraftPort.LEngineAnchorCheck(rows, headword);
     }
 
-    public string LWindowAnchorFormat(
+    internal string LWindowAnchorFormat(
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator)
     {
         return _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator);
     }
 
-    public IReadOnlyList<LMarkdownBlock> LWindowMarkdownParse(string? text)
+    public IReadOnlyList<CMarkdownBlock> LWindowMarkdownParse(string? text)
     {
-        return _lEntryPort.LEngineMarkdownParse(text);
-    }
-
-    public void LWindowLocationOpen(string target)
-    {
-        _lMediaPort.LEngineLocationOpen(target);
-    }
-
-    public IReadOnlyList<string> LWindowLanguageRead()
-    {
-        return _lSettingsPort.LEngineLanguageRead();
+        return LSplice.LSpliceBuild(_lEntryPort.LEngineMarkdownParse(text), LWindowMarkdownRead);
     }
 
     public IReadOnlyList<string> LWindowSchemeRead(string language)
@@ -337,59 +395,21 @@ public sealed class LWindow : IDisposable
         return _lPhonologyPort.LEngineSchemeRead(language);
     }
 
-    public IReadOnlyList<LSpeechValue> LWindowSpeechRead(string language)
+    public IReadOnlyList<CSpeechValue> LWindowSpeechRead(string language)
     {
-        return _lPhonologyPort.LEngineSpeechRead(language);
+        return LSplice.LSpliceBuild(
+            _lPhonologyPort.LEngineSpeechRead(language),
+            static value => new CSpeechValue(value.LSpeechValueId, value.LSpeechValueName));
     }
 
-    public LSpeechValue? LWindowSpeechAdd(string language, string name)
+    public CSpeechValue? LWindowSpeechAdd(string language, string name)
     {
-        return _lPhonologyPort.LEngineSpeechAdd(language, name);
+        return LSounding.LSoundingSpeechRead(_lPhonologyPort.LEngineSpeechAdd(language, name));
     }
 
-    public LGlyph? LWindowGlyphRead(string language)
+    public CGlyph? LWindowGlyphRead(string language)
     {
-        return _lEntryPort.LEngineGlyphRead(language);
-    }
-
-    public LEntryDraft? LWindowEntryLoad(long id)
-    {
-        return _lEntryPort.LEngineEntryLoad(id);
-    }
-
-    public IReadOnlyList<LEntry> LWindowMarkupFind(LMarkupEntry entry)
-    {
-        return _lEntryPort.LEngineMarkupFind(entry);
-    }
-
-    public Task<string> LWindowRecordingPrepare(CRecording recording, CancellationToken cancellation)
-    {
-        return _lMediaPort.LEngineRecordingPrepare(LDesk.LDeskRecordingRead(recording), cancellation);
-    }
-
-    public LSettings LWindowSettingsRead()
-    {
-        return _lSettingsPort.LEngineSettingsRead();
-    }
-
-    public string LWindowWorkspaceRead()
-    {
-        return _lSettingsPort.LEngineWorkspaceRead();
-    }
-
-    public string LWindowWorkspaceFormat()
-    {
-        return _lSettingsPort.LEngineWorkspaceFormat();
-    }
-
-    public LWorkspaceState LWindowStateRead()
-    {
-        return _lSettingsPort.LEngineStateRead();
-    }
-
-    public string LWindowLocalizationRead()
-    {
-        return _lSettingsPort.LEngineLocalizationRead();
+        return LSounding.LSoundingGlyphRead(_lEntryPort.LEngineGlyphRead(language));
     }
 
     public IReadOnlyList<string> LWindowLocalizationScan()
@@ -397,103 +417,68 @@ public sealed class LWindow : IDisposable
         return _lSettingsPort.LEngineLocalizationScan();
     }
 
-    public IReadOnlyDictionary<string, string> LWindowLocalizationLoad(string language)
+    private static CBulletin LWindowBulletinRead(LBulletin bulletin)
     {
-        return _lSettingsPort.LEngineLocalizationLoad(language);
+        return new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored);
     }
 
-    public void LWindowLocalizationSave(string language)
+    private static IReadOnlyList<CMentionLabel> LWindowLabelRead(IReadOnlyList<LMentionLabel> labels, string silent)
     {
-        _lSettingsPort.LEngineLocalizationSave(language);
-    }
-
-    public void LWindowEpithetSave(bool epithet)
-    {
-        _lSettingsPort.LEngineEpithetSave(epithet);
-    }
-
-    public void LWindowFrequencySave(bool frequency)
-    {
-        _lSettingsPort.LEngineFrequencySave(frequency);
-    }
-
-    public void LWindowMorphologySave(bool morphology)
-    {
-        _lSettingsPort.LEngineMorphologySave(morphology);
-    }
-
-    public void LWindowRespellingSave(bool respelled)
-    {
-        _lSettingsPort.LEngineRespellingSave(respelled);
-    }
-
-    public LEstablishment LWindowEstablishmentRead()
-    {
-        return _lSettingsPort.LEngineEstablishmentRead();
-    }
-
-    public string? LWindowAuditRecord(Exception exception)
-    {
-        return _lSettingsPort.LEngineAuditRecord(exception);
-    }
-
-    public string? LWindowNoticeRead(Exception exception)
-    {
-        return _lSettingsPort.LEngineNoticeRead(exception);
-    }
-
-    public void LWindowLeftoverSweep()
-    {
-        _lDraftPort.LEngineLeftoverSweep();
-    }
-
-    public void LWindowRecordingSweep()
-    {
-        _lMediaPort.LEngineRecordingSweep();
-    }
-
-    public LEntry LWindowGlyphResolve(string character, string language)
-    {
-        return _lEntryPort.LEngineGlyphResolve(character, language);
-    }
-
-    public IReadOnlyList<LMeaning> LWindowMeaningRead(long entryId)
-    {
-        return _lEntryPort.LEngineMeaningRead(entryId, LOwner.LOwnerEntry);
-    }
-
-    public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LWindowMeaningSort(
-        IReadOnlyList<LMeaning> meanings, string unknown)
-    {
-        ArgumentNullException.ThrowIfNull(meanings);
-        ArgumentNullException.ThrowIfNull(unknown);
-
-        List<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows = [];
-        LWindowMeaningAppend(rows, meanings, 0, 0, unknown);
-        return rows;
-    }
-
-    private static void LWindowMeaningAppend(
-        List<(long LMeaningId, string LMeaningName, int LMeaningDepth)> rows,
-        IReadOnlyList<LMeaning> meanings,
-        long parent,
-        int depth,
-        string unknown)
-    {
-        List<LMeaning> children = [];
-        foreach (LMeaning meaning in meanings)
+        List<CMentionLabel> read = new(labels.Count);
+        foreach (LMentionLabel label in labels)
         {
-            if ((meaning.LMeaningParentId ?? 0) == parent && meaning.LMeaningId != parent)
-            {
-                children.Add(meaning);
-            }
+            read.Add(new CMentionLabel(
+                label.LMentionLabelId,
+                label.LMentionLabelWord,
+                label.LMentionLabelLinked ? label.LMentionLabelName : silent,
+                label.LMentionLabelSense));
         }
 
-        children.Sort((left, right) => left.LMeaningPosition.CompareTo(right.LMeaningPosition));
-        foreach (LMeaning meaning in children)
-        {
-            rows.Add((meaning.LMeaningId, meaning.LMeaningName.Length > 0 ? meaning.LMeaningName : unknown, depth));
-            LWindowMeaningAppend(rows, meanings, meaning.LMeaningId, depth + 1, unknown);
-        }
+        return read;
+    }
+
+    internal static CMarkdownBlock LWindowMarkdownRead(LMarkdownBlock block)
+    {
+        return new CMarkdownBlock(
+            block.LMarkdownBlockHeaded,
+            block.LMarkdownBlockListed,
+            block.LMarkdownBlockQuoted,
+            block.LMarkdownBlockFenced,
+            block.LMarkdownBlockRuled,
+            block.LMarkdownBlockLevel,
+            block.LMarkdownBlockMark,
+            block.LMarkdownBlockText,
+            LSplice.LSpliceBuild(
+                block.LMarkdownBlockSpan,
+                static span => new CMarkdownSpan(
+                    span.LMarkdownSpanText,
+                    span.LMarkdownSpanBold,
+                    span.LMarkdownSpanItalic,
+                    span.LMarkdownSpanCode,
+                    span.LMarkdownSpanAddress)));
+    }
+
+    internal static IReadOnlyList<CMention> LWindowMentionRead(IReadOnlyList<LMention> mentions)
+    {
+        return LSplice.LSpliceBuild(
+            mentions,
+            static mention => new CMention(
+                mention.LMentionId,
+                mention.LMentionOffset,
+                mention.LMentionLength,
+                mention.LMentionEntryId,
+                mention.LMentionSenseId));
+    }
+
+    internal static IReadOnlyList<LMention> LWindowMentionRead(IReadOnlyList<CMention> mentions)
+    {
+        return LSplice.LSpliceBuild(
+            mentions,
+            static mention => new LMention(
+                mention.CMentionId,
+                mention.CMentionOffset,
+                mention.CMentionLength,
+                mention.CMentionEntry,
+                mention.CMentionSense));
     }
 }

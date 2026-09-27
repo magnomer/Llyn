@@ -156,7 +156,6 @@ public class PLibrary : UserControl
 
     internal async void PLibraryVistaRestore()
     {
-        _lLibrary.LLibraryVistaRestore(_pLibraryHost.PWindowDeportment);
         LPanel panel = _lLibrary.LLibraryPanel;
         panel.LPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
@@ -180,7 +179,7 @@ public class PLibrary : UserControl
 
         QChoice.QChoiceFilterBuild(
             PSieveList,
-            _pLibraryHost.PWindowDeportment.LWindowLanguageRead(),
+            _pLibraryHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead(),
             _lLibrary.LLibraryPanel.LPanelFilter,
             PSieveHandle);
         _lLibrary.LLibraryInquirySet(PInquiry.Text);

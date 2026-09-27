@@ -92,9 +92,10 @@ True while the column points at a series.
 
 The language of the chosen series, or the first pack declaring a series source.
 
-## `public void LXieshengVistaRestore(LWindow window)`
+## `internal void LXieshengVistaRestore(LWindow window)`
 
 Starts the two vistas off the window posture, the column and the entry list.
+The window deportment calls it when it builds the panel and again after a workspace change.
 
 ## `public void LXieshengVistaRestore(LVista grove, LVista kindred)`
 

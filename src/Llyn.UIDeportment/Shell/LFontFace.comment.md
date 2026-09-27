@@ -46,7 +46,7 @@ A part the pack leaves out has its key removed, so the theme's own value stands.
 A pack writes its slant as a word, `italic` or `oblique`.
 Any other word, or none, is answered with nothing, so the theme's upright stands.
 
-### `private static LFont LFontRoleRead(LWindow window, string language, LFontRole role)`
+### `private static CFont LFontRoleRead(LWindow window, string language, CFontRole role)`
 
 A pack that is missing or unknown must not stop a headword from being drawn.
 So a failed read is answered with a blank record and the theme's own typography.

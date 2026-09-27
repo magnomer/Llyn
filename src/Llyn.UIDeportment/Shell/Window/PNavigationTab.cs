@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -37,7 +39,141 @@ public partial class PWindow
 
     private void PNavigationHandle(object sender, RoutedEventArgs e)
     {
-        _lNavigation.LNavigationSelect(sender);
+        if (PNavigationFind(sender) is not LTab chosen)
+        {
+            return;
+        }
+
+        if (_lNavigation.LNavigationSelect(chosen.LTabMode, PNavigationLeaveCheck))
+        {
+            PNavigationApply(chosen.LTabMode);
+        }
+    }
+
+    private void PNavigationAttach()
+    {
+        _pNavigationTabs = PNavigationTabRead();
+        string[] modes = new string[_pNavigationTabs.Length];
+        for (int index = 0; index < modes.Length; index++)
+        {
+            modes[index] = _pNavigationTabs[index].LTabMode;
+        }
+
+        _lNavigation = new LNavigation(_lWindow, modes);
+        _pWindowSurface.PreviewKeyDown += PVoyageKeyHandle;
+        _pWindowSurface.PreviewMouseDown += PVoyageMouseHandle;
+    }
+
+    private void PNavigationRestore()
+    {
+        foreach (LTab tab in _pNavigationTabs)
+        {
+            tab.LTabButton.Visibility = PNavigationAllowCheck(tab.LTabMode) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        if (_lNavigation.LNavigationRestore(PNavigationAllowCheck) is string restored)
+        {
+            PNavigationApply(restored);
+            PNavigationFind(restored).LTabScribe?.Invoke(_lWindow.LWindowPostureRead().CPostureStateSplit);
+        }
+    }
+
+    private bool PNavigationShow(object button, long id)
+    {
+        (string tab, long station) = PVoyageStationRead();
+        if (PNavigationFind(button) is not LTab target)
+        {
+            return false;
+        }
+
+        if (!PNavigationArrivalShow(target.LTabMode, id))
+        {
+            return false;
+        }
+
+        _lNavigation.LNavigationVoyage.LVoyageRecord(tab, station);
+        PVoyageUpdate();
+        return true;
+    }
+
+    private void PNavigationShow(object button, Action arrival)
+    {
+        if (PNavigationFind(button) is not LTab target)
+        {
+            return;
+        }
+
+        if (!_lNavigation.LNavigationShow(target.LTabMode, PNavigationLeaveCheck))
+        {
+            return;
+        }
+
+        PNavigationApply(target.LTabMode);
+        arrival();
+    }
+
+    private bool PNavigationArrivalShow(string mode, long id)
+    {
+        LTab target = PNavigationFind(mode);
+        if (target.LTabArrival is null)
+        {
+            return false;
+        }
+
+        if (!_lNavigation.LNavigationShow(mode, PNavigationLeaveCheck))
+        {
+            return false;
+        }
+
+        PNavigationApply(mode);
+        target.LTabArrival(id);
+        return true;
+    }
+
+    private void PNavigationApply(string mode)
+    {
+        foreach (LTab tab in _pNavigationTabs)
+        {
+            bool shown = string.Equals(tab.LTabMode, mode, StringComparison.Ordinal);
+            tab.LTabButton.SetValue(PTab.PTabChosenProperty, shown);
+            tab.LTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
+    private bool PNavigationLeaveCheck(string mode)
+    {
+        return PNavigationFind(mode).LTabLeave?.Invoke() ?? true;
+    }
+
+    private bool PNavigationAllowCheck(string mode)
+    {
+        return PNavigationFind(mode).LTabAllowed?.Invoke() ?? true;
+    }
+
+    private LTab? PNavigationFind(object? button)
+    {
+        foreach (LTab tab in _pNavigationTabs)
+        {
+            if (ReferenceEquals(tab.LTabButton, button))
+            {
+                return tab;
+            }
+        }
+
+        return null;
+    }
+
+    private LTab PNavigationFind(string mode)
+    {
+        foreach (LTab tab in _pNavigationTabs)
+        {
+            if (string.Equals(tab.LTabMode, mode, StringComparison.Ordinal))
+            {
+                return tab;
+            }
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
     }
 
     private LTab[] PNavigationTabRead()
@@ -142,53 +278,108 @@ public partial class PWindow
 
     internal void PVoyageRecord()
     {
-        _lNavigation.LNavigationVoyage.LVoyageRecord();
+        (string tab, long id) = PVoyageStationRead();
+        _lNavigation.LNavigationVoyage.LVoyageRecord(tab, id);
+        PVoyageUpdate();
     }
 
     internal void PVoyageRetreatRun()
     {
-        _lNavigation.LNavigationVoyage.LVoyageRetreat();
+        (string tab, long id) = PVoyageStationRead();
+        _lNavigation.LNavigationVoyage.LVoyageRetreat(tab, id, PNavigationArrivalShow);
+        PVoyageUpdate();
     }
 
     internal void PVoyageAdvanceRun()
     {
-        _lNavigation.LNavigationVoyage.LVoyageAdvance();
+        (string tab, long id) = PVoyageStationRead();
+        _lNavigation.LNavigationVoyage.LVoyageAdvance(tab, id, PNavigationArrivalShow);
+        PVoyageUpdate();
+    }
+
+    private (string PVoyageTab, long PVoyageId) PVoyageStationRead()
+    {
+        LTab tab = PNavigationFind(_lNavigation.LNavigationShownRead());
+        return (tab.LTabMode, tab.LTabStation?.Invoke() ?? 0);
+    }
+
+    private void PVoyageUpdate()
+    {
+        bool past = _lNavigation.LNavigationVoyage.LVoyagePastCheck();
+        bool future = _lNavigation.LNavigationVoyage.LVoyageFutureCheck();
+        foreach (LTab tab in _pNavigationTabs)
+        {
+            tab.LTabVoyage?.Invoke(past, future);
+        }
+    }
+
+    private void PVoyageKeyHandle(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.System || Keyboard.Modifiers != ModifierKeys.Alt)
+        {
+            return;
+        }
+
+        if (e.SystemKey == Key.Left)
+        {
+            PVoyageRetreatRun();
+            e.Handled = true;
+        }
+        else if (e.SystemKey == Key.Right)
+        {
+            PVoyageAdvanceRun();
+            e.Handled = true;
+        }
+    }
+
+    private void PVoyageMouseHandle(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.XButton1)
+        {
+            PVoyageRetreatRun();
+            e.Handled = true;
+        }
+        else if (e.ChangedButton == MouseButton.XButton2)
+        {
+            PVoyageAdvanceRun();
+            e.Handled = true;
+        }
     }
 
     internal bool PWindowEntryShow(long id)
     {
         PMentionMenuHide();
-        return _lNavigation.LNavigationShow(PNavigationLibrary, id);
+        return PNavigationShow(PNavigationLibrary, id);
     }
 
     internal bool PWindowSituationShow(long id)
     {
-        return _lNavigation.LNavigationShow(PNavigationRepertoire, id);
+        return PNavigationShow(PNavigationRepertoire, id);
     }
 
     internal bool PWindowTagShow(long id)
     {
-        return _lNavigation.LNavigationShow(PNavigationTaxonomy, id);
+        return PNavigationShow(PNavigationTaxonomy, id);
     }
 
     internal bool PWindowExampleShow(long id)
     {
-        return _lNavigation.LNavigationShow(PNavigationCorpus, id);
+        return PNavigationShow(PNavigationCorpus, id);
     }
 
     internal bool PWindowRegisterShow(long id)
     {
-        return _lNavigation.LNavigationShow(PNavigationTenor, id);
+        return PNavigationShow(PNavigationTenor, id);
     }
 
     internal void PWindowDiweiShow(string language, string kind, string key)
     {
-        _lNavigation.LNavigationShow(PNavigationYunjing, () => PYunjing.PYunjingDiweiShow(language, kind, key));
+        PNavigationShow(PNavigationYunjing, () => PYunjing.PYunjingDiweiShow(language, kind, key));
     }
 
     internal void PWindowStemShow(string language, string? key)
     {
-        _lNavigation.LNavigationShow(PNavigationXiesheng, () => PXiesheng.PXieshengStemShow(language, key));
+        PNavigationShow(PNavigationXiesheng, () => PXiesheng.PXieshengStemShow(language, key));
     }
 
     internal void PWindowMentionHandle(PMention anchor, LMentionResult result)
@@ -231,10 +422,11 @@ public partial class PWindow
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(chosen);
 
-        IReadOnlyList<LMeaning> meanings;
+        IReadOnlyList<CMeaning> meanings;
         try
         {
-            meanings = _lWindow.LWindowMeaningRead(entryId);
+            meanings = _lWindow.LWindowWorkspace.QWorkspaceMeaningRead(
+                entryId, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"));
         }
         catch (Exception exception)
         {

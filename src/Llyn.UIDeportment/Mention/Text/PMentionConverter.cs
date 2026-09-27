@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -12,7 +13,7 @@ internal sealed class PMentionConverter : IValueConverter
     {
         if (value is not IReadOnlyList<LMentionDraft> drafts)
         {
-            return Array.Empty<LMention>();
+            return Array.Empty<CMention>();
         }
 
         List<LMention> mentions = new(drafts.Count);
@@ -21,7 +22,7 @@ internal sealed class PMentionConverter : IValueConverter
             mentions.Add(draft.LMentionDraftResolve());
         }
 
-        return mentions;
+        return LWindow.LWindowMentionRead(mentions);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -33,7 +33,7 @@ Sorting the kinds would save one cheap read and would miss the next kind added.
 Stops listening before the engine goes.
 A second close detaches an observer already gone, which the engine ignores.
 
-## `private void QEstablishmentHook(PWindow host, Action<LBulletin> observer)`
+## `private void QEstablishmentHook(PWindow host, Action<CBulletin> observer)`
 
 Attaches the observer and keeps its detach for the close.
 

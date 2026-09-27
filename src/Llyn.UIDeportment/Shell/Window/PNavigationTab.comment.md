@@ -3,7 +3,8 @@
 ## `public partial class PWindow`
 
 The window's buttons and the jumps panels ask for.
-`LNavigation` decides which panel shows, so each member only hands the request over.
+`LNavigation` decides which panel shows, and this part marks the button and shows the panel.
+The tabs are held here with their buttons and hooks, and the navigation knows each only by key.
 
 ## `private PTab PNavigationInput`
 
@@ -11,7 +12,53 @@ The tab buttons are read through the loaded window's name scope.
 
 ## `private void PNavigationHandle(object sender, RoutedEventArgs e)`
 
-A tab button click, handed to the navigation as the button pressed.
+A tab button click, handed to the navigation as the key of the button pressed.
+Answers nothing for an unknown button or when the open tab refuses to be left.
+
+## `private void PNavigationAttach()`
+
+Reads the tabs and builds the navigation over their keys.
+It hooks the window's key and mouse previews to the voyage shortcuts.
+
+## `private void PNavigationRestore()`
+
+Shows every tab button unless its tab is not allowed.
+Then it restores the tab the navigation answers, skipping the leave guard.
+The restored tab's scribe takes the posture's split state.
+
+## `private bool PNavigationShow(object button, long id)`
+
+Jumps to a record in the tab of the given button.
+The station is read before anything moves.
+It is recorded only when the jump went, so a refused jump leaves no station.
+
+## `private void PNavigationShow(object button, Action arrival)`
+
+Jumps to the tab of the given button and records no station.
+The arrival runs only when the switch succeeds.
+
+## `private bool PNavigationArrivalShow(string mode, long id)`
+
+Opens the tab of `mode` and hands it the record id.
+Answers false for a tab without arrival or a refused switch.
+It records no station, so the voyage walks through it freely.
+
+## `private void PNavigationApply(string mode)`
+
+Marks the chosen button and shows only its panel.
+
+## `private bool PNavigationLeaveCheck(string mode)`
+
+The leave seam: whether the tab of `mode` may be left.
+
+## `private bool PNavigationAllowCheck(string mode)`
+
+The allow seam: whether the tab of `mode` is offered.
+
+## `private LTab? PNavigationFind(object? button)`
+
+The tab owning the given button, or null.
+The overload taking a key answers the tab of that key.
 
 ## `private LTab[] PNavigationTabRead()`
 
@@ -31,6 +78,25 @@ Forwards a panel's retreat button to the voyage.
 ## `internal void PVoyageAdvanceRun()`
 
 Forwards a panel's advance button to the voyage.
+
+## `private (string PVoyageTab, long PVoyageId) PVoyageStationRead()`
+
+The station of the open tab, which comes from the posture.
+A tab without a station reader, or an id of zero, says there is nothing to come back to.
+
+## `private void PVoyageUpdate()`
+
+Enables each tab's pair only while the matching trail has somewhere to go.
+Every tab is told, because any of them may be the one on screen.
+
+## `private void PVoyageKeyHandle(object sender, KeyEventArgs e)`
+
+`Alt+Left` steps back and `Alt+Right` steps forward.
+With Alt held the key arrives as a system key, so the arrow is read off `SystemKey`.
+
+## `private void PVoyageMouseHandle(object sender, MouseButtonEventArgs e)`
+
+The two side buttons of a mouse step back and forward, as they do in a browser.
 
 ## `internal bool PWindowEntryShow(long id)`
 

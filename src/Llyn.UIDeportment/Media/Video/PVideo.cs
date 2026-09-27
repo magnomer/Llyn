@@ -44,7 +44,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = _lWindow.LWindowLocationRead(value.CStateValueText);
+            PVideoPreview = _lWindow.LWindowWorkspace.QWorkspaceLocationRead(value.CStateValueText);
         }
     }
 

@@ -6,11 +6,6 @@ namespace Llyn.UIDeportment;
 
 public static class LObserver
 {
-    public static Action<LBulletin> LObserverCreate(DispatcherObject surface, Action<LBulletin> target)
-    {
-        return LObserverCreate<LBulletin>(surface, target);
-    }
-
     public static Action<LBulletin> LObserverCreate(DispatcherObject surface, Action target)
     {
         ArgumentNullException.ThrowIfNull(target);

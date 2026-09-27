@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -18,7 +19,8 @@ internal static class TInterfaceConduct
     internal static void TDisplayFoldSet(this LDisplaySound sound, bool opened) => sound.LDisplayFoldSet(opened);
 
     internal static HashSet<string> TDisplayFoldScan(IReadOnlyList<LReflexRule> rules) =>
-        LDisplaySound.LDisplayFoldScan(rules);
+        LDisplaySound.LDisplayFoldScan(
+            rules.Select(static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded)).ToList());
 
     internal static int TDisplayBandResolve(IReadOnlyList<LFrequency> rows) => LDisplay.LDisplayBandResolve(rows);
 

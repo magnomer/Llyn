@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -36,7 +37,7 @@ public partial class PWindow
     }
 
     internal void PMentionMenuShow(
-        FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<LMeaning> meanings, Action<long> chosen)
+        FrameworkElement anchor, Rect place, long entryId, IReadOnlyList<CMeaning> meanings, Action<long> chosen)
     {
         ArgumentNullException.ThrowIfNull(meanings);
         ArgumentNullException.ThrowIfNull(chosen);
@@ -46,9 +47,7 @@ public partial class PWindow
             place,
             "Mention.Sense",
             PMentionItem.PMentionItemCreate(
-                entryId,
-                LWindow.LWindowMeaningSort(meanings, QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")),
-                QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
+                entryId, meanings, QLocalizationCatalog.QLocalizationTextRead("Mention.Whole")),
             item => chosen(item.PMentionItemSense));
     }
 

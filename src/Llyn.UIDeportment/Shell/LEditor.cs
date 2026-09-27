@@ -165,7 +165,7 @@ public sealed class LEditor
         LEditorDisplay.LDisplayVistaRestore(vista);
     }
 
-    public void LEditorVistaRestore(LWindow window)
+    internal void LEditorVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

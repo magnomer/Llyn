@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -48,7 +49,7 @@ public class PDiwei : UserControl
     {
         LFontFace.LFontApply(_lWindow, page.LDiweiPageLanguage, PDiweiHeadword);
         LFontFace.LFontPlace(PDiweiHeadword);
-        LFontFace.LFontApply(_lWindow, page.LDiweiPageLanguage, LFontRole.LFontRoleGlyph, PDiweiList);
+        LFontFace.LFontApply(_lWindow, page.LDiweiPageLanguage, CFontRole.CFontRoleGlyph, PDiweiList);
         PDiweiHeadword.Text = page.LDiweiPageKey;
         PDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         PDiweiLanguage.Text = page.LDiweiPageLanguage;

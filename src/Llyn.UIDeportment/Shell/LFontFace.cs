@@ -2,7 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -26,21 +26,21 @@ public static class LFontFace
 
     public static void LFontApply(LWindow window, string language, params DependencyObject[] surfaces)
     {
-        LFontApply(window, language, LFontRole.LFontRoleHeadword, surfaces);
+        LFontApply(window, language, CFontRole.CFontRoleHeadword, surfaces);
     }
 
-    public static void LFontApply(LWindow window, string language, LFontRole role, params DependencyObject[] surfaces)
+    public static void LFontApply(LWindow window, string language, CFontRole role, params DependencyObject[] surfaces)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(surfaces);
 
-        LFont font = LFontRoleRead(window, language, role);
-        FontFamily? family = font.LFontFamily is string named ? new FontFamily(named) : null;
+        CFont font = LFontRoleRead(window, language, role);
+        FontFamily? family = font.CFontFamily is string named ? new FontFamily(named) : null;
 
         foreach (DependencyObject surface in surfaces)
         {
             LFontSet(surface, TextElement.FontFamilyProperty, family);
-            LFontSet(surface, TextElement.FontSizeProperty, font.LFontSized);
+            LFontSet(surface, TextElement.FontSizeProperty, font.CFontSize);
         }
     }
 
@@ -49,10 +49,10 @@ public static class LFontFace
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(window);
 
-        LFont glyph = LFontRoleRead(window, language, LFontRole.LFontRoleGlyph);
+        CFont glyph = LFontRoleRead(window, language, CFontRole.CFontRoleGlyph);
         LFontResourceSet(
-            resources, "Theme.Glyph.Family", glyph.LFontFamily is string named ? new FontFamily(named) : null);
-        LFontResourceSet(resources, "Theme.Glyph.Size", glyph.LFontSized);
+            resources, "Theme.Glyph.Family", glyph.CFontFamily is string named ? new FontFamily(named) : null);
+        LFontResourceSet(resources, "Theme.Glyph.Size", glyph.CFontSize);
     }
 
     public static void LFontExampleApply(ResourceDictionary resources, LWindow window, string language)
@@ -60,23 +60,23 @@ public static class LFontFace
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(window);
 
-        LFont example = LFontRoleRead(window, language, LFontRole.LFontRoleExample);
+        CFont example = LFontRoleRead(window, language, CFontRole.CFontRoleExample);
         LFontResourceSet(
-            resources, "Theme.Card.ExampleFamily", example.LFontFamily is string named ? new FontFamily(named) : null);
-        LFontResourceSet(resources, "Theme.Card.ExampleSize", example.LFontSized);
+            resources, "Theme.Card.ExampleFamily", example.CFontFamily is string named ? new FontFamily(named) : null);
+        LFontResourceSet(resources, "Theme.Card.ExampleSize", example.CFontSize);
 
-        LFont gloss = LFontRoleRead(window, language, LFontRole.LFontRoleGloss);
+        CFont gloss = LFontRoleRead(window, language, CFontRole.CFontRoleGloss);
         LFontResourceSet(
-            resources, "Theme.Card.GlossFamily", gloss.LFontFamily is string glossed ? new FontFamily(glossed) : null);
-        LFontResourceSet(resources, "Theme.Card.GlossSize", gloss.LFontSized);
-        LFontResourceSet(resources, "Theme.Card.GlossStyle", LFontStyleRead(gloss.LFontStyle));
+            resources, "Theme.Card.GlossFamily", gloss.CFontFamily is string glossed ? new FontFamily(glossed) : null);
+        LFontResourceSet(resources, "Theme.Card.GlossSize", gloss.CFontSize);
+        LFontResourceSet(resources, "Theme.Card.GlossStyle", LFontStyleRead(gloss.CFontStyle));
     }
 
-    private static LFont LFontRoleRead(LWindow window, string language, LFontRole role)
+    private static CFont LFontRoleRead(LWindow window, string language, CFontRole role)
     {
         if (string.IsNullOrWhiteSpace(language))
         {
-            return new LFont(null, 0);
+            return new CFont(null, null, null);
         }
 
         try
@@ -85,7 +85,7 @@ public static class LFontFace
         }
         catch (Exception)
         {
-            return new LFont(null, 0);
+            return new CFont(null, null, null);
         }
     }
 

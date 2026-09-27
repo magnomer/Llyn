@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -17,13 +16,10 @@ internal sealed class PMentionLine
         ArgumentNullException.ThrowIfNull(mentions);
 
         List<PMentionChip> wanted = new(mentions.Count);
-        foreach (LMentionLabel label in window.LWindowMentionResolve(text, mentions))
+        foreach (CMentionLabel label in window.LWindowMentionResolve(text, mentions, silent))
         {
             wanted.Add(new PMentionChip(
-                label.LMentionLabelId,
-                label.LMentionLabelWord,
-                label.LMentionLabelLinked ? label.LMentionLabelName : silent,
-                label.LMentionLabelSense));
+                label.CMentionLabelId, label.CMentionLabelWord, label.CMentionLabelName, label.CMentionLabelSense));
         }
 
         for (int index = 0; index < wanted.Count; index++)

@@ -98,7 +98,7 @@ public sealed class LXiesheng
         ?? _lPhonologyPort.LEngineStemFind()
         ?? string.Empty;
 
-    public void LXieshengVistaRestore(LWindow window)
+    internal void LXieshengVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

@@ -14,6 +14,11 @@ It holds no markup, since every page and dictionary lives in the veneer.
 
 Only the Windows behaviour tests can load Deportment, so only they reach its internals.
 
+## `<InternalsVisibleTo Include="Llyn" />`
+
+The host, built as `Llyn`, builds the window deportment over the ports it makes.
+The constructor naming those ports stays internal, so no driver can build one.
+
 ## `<ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />`
 
 Conduct is the only reference, and ShellEngine, Application and Core arrive through it.

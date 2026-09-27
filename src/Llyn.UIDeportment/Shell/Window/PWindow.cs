@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Shapes;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -23,6 +23,8 @@ public partial class PWindow
     private readonly QEstablishment _qEstablishment;
 
     private LNavigation _lNavigation = null!;
+
+    private LTab[] _pNavigationTabs = [];
 
     public PWindow(LWindow window, Action<string> workspaceOpener)
     {
@@ -92,8 +94,9 @@ public partial class PWindow
         _pWindowSurface.PreviewKeyDown += PChronicleKeyHandle;
         _pWindowSurface.Deactivated += PMentionLeaveHandle;
 
-        _lFootprint = new LFootprint(_pWindowSurface, window);
-        _lFootprint.LFootprintRestore();
+        _lFootprint = new LFootprint(window);
+        PFootprintRestore();
+        _pWindowSurface.Loaded += (_, _) => PFootprintAttach();
 
         PWindowAttach();
 
@@ -151,6 +154,11 @@ public partial class PWindow
 
     private PSettings PSettings => (PSettings)_pWindowSurface.FindName(nameof(PSettings));
 
+    internal LWing PWindowWingCreate()
+    {
+        return new LWing(_lWindow);
+    }
+
     internal void PWindowWorkspaceChange(string path)
     {
         _pWindowWorkspaceOpener(path);
@@ -161,9 +169,9 @@ public partial class PWindow
         LEnsignImage.LEnsignAttach(_lWindow);
 
         _lWindow.LWindowLeftoverSweep();
-        _lWindow.LWindowRecordingSweep();
+        _lWindow.LWindowWorkspace.QWorkspaceRecordingSweep();
 
-        LWorkspaceState state = _lWindow.LWindowStateRead();
+        CWorkspaceState state = _lWindow.LWindowWorkspace.QWorkspaceStateRead();
 
         PInput.PInputAttach(this);
         PLibrary.PLibraryAttach(this);
@@ -180,7 +188,7 @@ public partial class PWindow
         PDuplex.PDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         _qEstablishment.QEstablishmentAttach(this);
-        _lNavigation = new LNavigation(_pWindowSurface, _lWindow, PTab.PTabChosenProperty, PNavigationTabRead());
+        PNavigationAttach();
 
         PWindowLayoutAttach();
 
@@ -206,7 +214,65 @@ public partial class PWindow
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)
     {
-        _lFootprint.LFootprintClosingHandle(e, PWindowDiscardConfirm());
+        bool confirmed = PWindowDiscardConfirm();
+        e.Cancel = !confirmed;
+
+        if (confirmed)
+        {
+            _lFootprint.LFootprintClose(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized);
+        }
+    }
+
+    private void PFootprintRestore()
+    {
+        Window window = _pWindowSurface;
+        if (_lFootprint.LFootprintRead(
+                SystemParameters.VirtualScreenLeft,
+                SystemParameters.VirtualScreenTop,
+                SystemParameters.VirtualScreenWidth,
+                SystemParameters.VirtualScreenHeight,
+                window.MinWidth,
+                window.MinHeight) is not CWindowState state)
+        {
+            Rect area = SystemParameters.WorkArea;
+            (window.Width, window.Height) =
+                _lFootprint.LFootprintSizeRead(area.Width, area.Height, window.MinWidth, window.MinHeight);
+            return;
+        }
+
+        window.WindowStartupLocation = WindowStartupLocation.Manual;
+        window.Left = state.CWindowStateLeft;
+        window.Top = state.CWindowStateTop;
+        window.Width = state.CWindowStateWidth;
+        window.Height = state.CWindowStateHeight;
+
+        if (state.CWindowStateMaximized)
+        {
+            window.WindowState = WindowState.Maximized;
+        }
+    }
+
+    private void PFootprintAttach()
+    {
+        _pWindowSurface.LocationChanged += (_, _) => PFootprintSave();
+        _pWindowSurface.SizeChanged += (_, _) => PFootprintSave();
+        _pWindowSurface.StateChanged += (_, _) => PFootprintSave();
+    }
+
+    private void PFootprintSave()
+    {
+        _lFootprint.LFootprintSave(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized);
+    }
+
+    private CWindowState PFootprintRead()
+    {
+        Window window = _pWindowSurface;
+        Rect bounds = window.WindowState == WindowState.Normal
+            ? new Rect(window.Left, window.Top, window.Width, window.Height)
+            : window.RestoreBounds;
+
+        return new CWindowState(
+            bounds.Left, bounds.Top, bounds.Width, bounds.Height, window.WindowState == WindowState.Maximized);
     }
 
     private void PWindowExitHandle(object? sender, EventArgs e)

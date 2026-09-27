@@ -244,7 +244,7 @@ public partial class PEditor
 
         try
         {
-            string path = await _pEditorHost.PWindowDeportment.LWindowRecordingPrepare(
+            string path = await _pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceRecordingPrepare(
                 reading.PClipReadingModel, CancellationToken.None);
             if (_pClipPreview != reading)
             {

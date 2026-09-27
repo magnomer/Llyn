@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -25,10 +25,10 @@ public class PDuplex : UserControl
         PRightWing.PWingAttach(host);
     }
 
-    internal void PDuplexRestore(LWorkspaceState state)
+    internal void PDuplexRestore(CWorkspaceState state)
     {
-        PLeftWing.PWingRestore("left", state.LWorkspaceStateLeft);
-        PRightWing.PWingRestore("right", state.LWorkspaceStateRight);
+        PLeftWing.PWingRestore("left", state.CWorkspaceStateLeft);
+        PRightWing.PWingRestore("right", state.CWorkspaceStateRight);
     }
 
     internal void PDuplexClose()

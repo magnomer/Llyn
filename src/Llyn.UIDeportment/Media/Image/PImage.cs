@@ -161,7 +161,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = _lWindow.LWindowLocationRead(_pImageLocation.CStateValueText);
+        Uri? address = _lWindow.LWindowWorkspace.QWorkspaceLocationRead(_pImageLocation.CStateValueText);
         if (address is null)
         {
             PImagePreview = null;

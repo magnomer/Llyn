@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Llyn.Application;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -22,16 +21,11 @@ public static class LEnsignImage
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        window.LWindowObserverAttach(LEnsignBulletinHandle);
+        window.LWindowObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
     }
 
-    private static void LEnsignBulletinHandle(LBulletin bulletin)
+    private static void LEnsignBulletinHandle(CBulletin bulletin)
     {
-        if (!bulletin.LBulletinMatch(LSubject.LSubjectWorkspace))
-        {
-            return;
-        }
-
         lock (LEnsignStore)
         {
             LEnsignStore.Clear();
@@ -69,7 +63,7 @@ public static class LEnsignImage
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            await window.LWindowEnsignLoad(LEnsignStoreAdd);
+            await window.LWindowWorkspace.QWorkspaceEnsignLoad(LEnsignStoreAdd);
         }
         finally
         {
@@ -91,7 +85,7 @@ public static class LEnsignImage
         await LEnsignGate.WaitAsync().ConfigureAwait(true);
         try
         {
-            await window.LWindowEnsignLoad(language, varieties, LEnsignStoreAdd);
+            await window.LWindowWorkspace.QWorkspaceEnsignLoad(language, varieties, LEnsignStoreAdd);
         }
         finally
         {
@@ -99,12 +93,12 @@ public static class LEnsignImage
         }
     }
 
-    private static Action LEnsignStoreAdd(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)
+    private static Action LEnsignStoreAdd(IReadOnlyList<CEnsignRow> rows, Action<string, Exception> delete)
     {
         List<KeyValuePair<string, ImageSource?>> resolved = new(rows.Count);
-        foreach (LEnsignRow row in rows)
+        foreach (CEnsignRow row in rows)
         {
-            resolved.Add(new(row.LEnsignRowKey, LEnsignResolve(row.LEnsignRowPath, delete)));
+            resolved.Add(new(row.CEnsignRowKey, LEnsignResolve(row.CEnsignRowPath, delete)));
         }
 
         return () => LEnsignStoreCommit(resolved);

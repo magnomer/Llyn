@@ -164,7 +164,6 @@ public class PGuild : UserControl
 
     internal void PGuildVistaRestore()
     {
-        _lGuild.LGuildVistaRestore(_pGuildHost.PWindowDeportment);
         _lGuild.LGuildPanel.LPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, _lGuild.LGuildPanel.LPanelRowsUpdate));
         _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(

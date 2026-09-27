@@ -445,7 +445,7 @@ public sealed class LShelf
         return Task.CompletedTask;
     }
 
-    public void LShelfVistaRestore(LWindow window)
+    internal void LShelfVistaRestore(LWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
 

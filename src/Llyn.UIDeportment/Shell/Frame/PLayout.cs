@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -44,24 +44,16 @@ public sealed class PLayout
 
     internal void PLayoutRestore()
     {
-        IReadOnlyList<LLayout> layout = _lWindow.LWindowPostureRead().LPostureStateLayout ?? [];
-
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
-            foreach (LLayout record in layout)
+            if (_lWindow.LWindowLayoutRead(tab) is CLayout record)
             {
-                if (!record.LLayoutTabMatch(tab))
-                {
-                    continue;
-                }
-
-                PLayoutColumnApply(host, 0, record.LLayoutLeft);
-                PLayoutColumnApply(host, 1, record.LLayoutMiddle);
-                break;
+                PLayoutColumnApply(host, 0, record.CLayoutLeft);
+                PLayoutColumnApply(host, 1, record.CLayoutMiddle);
             }
         }
 
-        if (!_lWindow.LWindowPostureRead().LPostureStateLinked)
+        if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
         {
             return;
         }
@@ -90,7 +82,7 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        if (!_lWindow.LWindowPostureRead().LPostureStateLinked)
+        if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
         {
             return;
         }
@@ -117,13 +109,13 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        List<LLayout> list = [];
+        List<CLayout> list = [];
 
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
             if (!ReferenceEquals(host, source))
             {
-                if (!_lWindow.LWindowPostureRead().LPostureStateLinked)
+                if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
                 {
                     continue;
                 }
@@ -167,14 +159,14 @@ public sealed class PLayout
         _pLayoutRecent = null;
     }
 
-    private static LLayout PLayoutRecordRead(string tab, Grid host)
+    private static CLayout PLayoutRecordRead(string tab, Grid host)
     {
         int last = host.ColumnDefinitions.Count - 1;
 
         double? left = last > 0 ? PLayoutColumnRead(host.ColumnDefinitions[0]) : null;
         double? middle = last > 1 ? PLayoutColumnRead(host.ColumnDefinitions[1]) : null;
 
-        return new LLayout(tab, left, middle);
+        return new CLayout(tab, left, middle);
     }
 
     private static double? PLayoutColumnRead(ColumnDefinition column)

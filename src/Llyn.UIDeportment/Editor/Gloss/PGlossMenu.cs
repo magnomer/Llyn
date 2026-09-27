@@ -40,7 +40,8 @@ public partial class PEditor
     internal async void PSpeakerLoad()
     {
         await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowDeportment);
-        PLanguageItem.PLanguageItemReset(_pLanguageItem, _pEditorHost.PWindowDeportment.LWindowLanguageRead());
+        PLanguageItem.PLanguageItemReset(
+            _pLanguageItem, _pEditorHost.PWindowDeportment.LWindowWorkspace.QWorkspaceLanguageRead());
         PEditorLanguageUpdate();
         PLinkFlagUpdate();
     }

@@ -12,7 +12,7 @@ public partial class PSettings
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
             Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Workspace"),
-            InitialDirectory = PSettingsWindow.LWindowWorkspaceRead()
+            InitialDirectory = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead()
         };
 
         if (dialog.ShowDialog(_pSettingsHost.PWindowSurface) == true)
@@ -33,27 +33,28 @@ public partial class PSettings
         if (e.Key == Key.Escape)
         {
             e.Handled = true;
-            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
         }
     }
 
     private void PWorkspaceFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+        PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
     }
 
     private void PWorkspaceApply(string chosen)
     {
         string path = chosen.Trim();
-        if (path.Length == 0 || string.Equals(path, PSettingsWindow.LWindowWorkspaceRead(), StringComparison.Ordinal))
+        if (path.Length == 0
+            || string.Equals(path, PSettingsWindow.LWindowWorkspace.QWorkspacePathRead(), StringComparison.Ordinal))
         {
-            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
             return;
         }
 
         if (!_pSettingsHost.PWindowDiscardConfirm())
         {
-            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
             return;
         }
 
@@ -63,15 +64,16 @@ public partial class PSettings
         }
         catch (Exception exception)
         {
-            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspaceRead();
+            PWorkspacePath.Text = PSettingsWindow.LWindowWorkspace.QWorkspacePathRead();
             _pSettingsHost.PWindowFailureShow("Workspace.OpenFailed", exception);
             return;
         }
 
         PSettingsSync();
-        PLocalizationApply(PSettingsWindow.LWindowLocalizationRead());
+        PLocalizationApply(PSettingsWindow.LWindowWorkspace.QWorkspaceLocalizationRead());
         _pSettingsHost.PWindowLayout.PLayoutReset();
         _pSettingsHost.PWindowLayout.PLayoutRestore();
-        _pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowStateRead());
+        PSettingsWindow.LWindowVistaRestore();
+        _pSettingsHost.PWindowViewRestore(PSettingsWindow.LWindowWorkspace.QWorkspaceStateRead());
     }
 }

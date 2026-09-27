@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using Llyn.Core;
+using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
 using Xunit;
@@ -14,23 +13,21 @@ public sealed class TWindowPosture
         using LEngine engine = new(TRigFake.TRigFakeBuild());
         LWindow window = TInterfaceDeportment.TWindowCreate(engine);
 
-        window.TWindowLayoutSave(TInterface.TLayoutCreate("library", 400), TInterface.TLayoutCreate("corpus", 390));
+        window.TWindowLayoutSave(new CLayout("library", 400, null), new CLayout("corpus", 390, null));
 
-        IReadOnlyList<LLayout> layout = window.TWindowPostureRead().LPostureStateLayout ?? [];
-        Assert.Equal(2, layout.Count);
-        Assert.Contains(layout, tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 400);
-        Assert.Contains(layout, tab => tab.LLayoutTab == "corpus" && tab.LLayoutLeft == 390);
+        Assert.Equal(400, window.TWindowLayoutRead("library")?.CLayoutLeft);
+        Assert.Equal(390, window.TWindowLayoutRead("corpus")?.CLayoutLeft);
+        Assert.Null(window.TWindowLayoutRead("tenor"));
     }
 
     [Fact]
-    public void WindowModeSave_Name_ReadsBackAndMatches()
+    public void WindowModeSave_Name_Matches()
     {
         using LEngine engine = new(TRigFake.TRigFakeBuild());
         LWindow window = TInterfaceDeportment.TWindowCreate(engine);
 
         window.TWindowModeSave("Corpus");
 
-        Assert.Equal("Corpus", window.TWindowPostureRead().LPostureStateMode);
         Assert.True(window.TWindowModeMatch("Corpus"));
         Assert.False(window.TWindowModeMatch("Library"));
     }
@@ -40,14 +37,27 @@ public sealed class TWindowPosture
     {
         using LEngine engine = new(TRigFake.TRigFakeBuild());
         LWindow window = TInterfaceDeportment.TWindowCreate(engine);
-        window.TWindowLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
+        window.TWindowLayoutSave(new CLayout("tenor", 320, 300));
 
         window.TWindowLayoutReset();
 
-        IReadOnlyList<LLayout> layout = window.TWindowPostureRead().LPostureStateLayout ?? [];
-        LLayout tenor = Assert.Single(layout);
-        Assert.Equal("tenor", tenor.LLayoutTab);
-        Assert.Null(tenor.LLayoutLeft);
-        Assert.Null(tenor.LLayoutMiddle);
+        CLayout tenor = Assert.IsType<CLayout>(window.TWindowLayoutRead("tenor"));
+        Assert.Equal("tenor", tenor.CLayoutTab);
+        Assert.Null(tenor.CLayoutLeft);
+        Assert.Null(tenor.CLayoutMiddle);
+    }
+
+    [Fact]
+    public void WindowPostureRead_FreshEngine_CopiesTheDefaultPosture()
+    {
+        using LEngine engine = new(TRigFake.TRigFakeBuild());
+        LWindow window = TInterfaceDeportment.TWindowCreate(engine);
+
+        CPostureState posture = window.TWindowPostureRead();
+
+        Assert.Null(posture.CPostureStateWindow);
+        Assert.True(posture.CPostureStateLinked);
+        Assert.False(posture.CPostureStateSplit);
+        Assert.Equal(1, posture.CPostureStateVolume);
     }
 }

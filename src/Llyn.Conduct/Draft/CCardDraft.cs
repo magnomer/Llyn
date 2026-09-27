@@ -14,4 +14,5 @@ public sealed record CCardDraft(
     IReadOnlyList<long> CCardDraftTranslation,
     IReadOnlyList<CTagDraft> CCardDraftTag,
     IReadOnlyList<CImageDraft> CCardDraftImage,
-    IReadOnlyList<CVideoDraft> CCardDraftVideo);
+    IReadOnlyList<CVideoDraft> CCardDraftVideo,
+    IReadOnlyList<CCardDraft> CCardDraftChild);

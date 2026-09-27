@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PFrequencyHandle(object sender, RoutedEventArgs e)
     {
-        PSettingsWindow.LWindowFrequencySave(PFrequency.IsChecked == true);
+        PSettingsWindow.LWindowWorkspace.QWorkspaceFrequencySave(PFrequency.IsChecked == true);
     }
 }

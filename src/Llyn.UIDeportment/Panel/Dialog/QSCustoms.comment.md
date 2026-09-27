@@ -39,10 +39,6 @@ Shows the declaration and reads one intake per row in file order.
 Null when the window closes without Accept.
 The intakes are built either way, so the dialog's answer decides only what is handed back.
 
-## `private static IReadOnlyList<long> QSCustomsCandidateRead(IReadOnlyList<LEntry> found)`
-
-The ids of the stored entries a lookup found, the shape the gate and the dropdown take.
-
 ## `private static LMarkupIntake QSCustomsIntakeCreate(int index, CSCustomsRow row)`
 
 Reshapes one row of the gate into the intake the import takes.

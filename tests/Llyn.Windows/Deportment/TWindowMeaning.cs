@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Xunit;
 
@@ -6,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TWindowMeaning
 {
     [Fact]
-    public void WindowMeaningSort_NestedMeanings_OrdersDepthFirst()
+    public void WorkspaceMeaningSort_NestedMeanings_OrdersDepthFirst()
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;
         LMeaning[] meanings =
@@ -16,8 +17,8 @@ public sealed class TWindowMeaning
             TInterface.TMeaningCreate(1, 1, null, 1, TInterface.TStateValueCreate("first"), blank),
         ];
 
-        (long, string, int)[] expected = [(1, "first", 0), (2, "?", 0), (3, "child", 1)];
+        CMeaning[] expected = [new(1, "first", 0), new(2, "?", 0), new(3, "child", 1)];
 
-        Assert.Equal(expected, TInterfaceDeportment.TWindowMeaningSort(meanings, "?"));
+        Assert.Equal(expected, TInterfaceDeportment.TWorkspaceMeaningSort(meanings, "?"));
     }
 }

@@ -104,3 +104,19 @@ The transcriptions of a draft, shaped for the transcription rows and the lectern
 
 The reflexes of a draft, shaped for the reflex rows and the lectern.
 The tone travels as text, so no driver reads an anatomy.
+
+## `internal static CFont LSoundingFontRead(LFont font)`
+
+Copies a pack font into the Conduct shape, with a size of zero read as no size.
+
+## `internal static CSpeechValue? LSoundingSpeechRead(LSpeechValue? value)`
+
+Copies one part of speech into the Conduct shape the editor's marker lists.
+
+## `internal static CGlyph? LSoundingGlyphRead(LGlyph? glyph)`
+
+Copies a pack's glyph scheme into the Conduct shape the editor's glyph row reads.
+
+## `internal static IReadOnlyList<CReflexRule> LSoundingRuleRead(IReadOnlyList<LReflexRule> rules)`
+
+Cuts each reflex rule to its language and whether its rows start folded.

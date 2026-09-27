@@ -6,6 +6,6 @@ public partial class PSettings
 {
     private void PRespellingHandle(object sender, RoutedEventArgs e)
     {
-        PSettingsWindow.LWindowRespellingSave(PRespelling.IsChecked == true);
+        PSettingsWindow.LWindowWorkspace.QWorkspaceRespellingSave(PRespelling.IsChecked == true);
     }
 }

@@ -1,5 +1,11 @@
 # TInterfaceDeportment.cs
 
+## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
+
+The Windows tests build workspaces from the portable suite's fixture, whose disposal clears every SQLite pool.
+The portable suite's own switch covers only its assembly, so this one repeats it here.
+Two workspaces alive in parallel let one disposal close a connection the other is opening.
+
 ## `internal static class TInterfaceDeportment`
 
 The relays for the deportment classes a browse panel holds.

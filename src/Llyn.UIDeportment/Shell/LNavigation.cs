@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace Llyn.UIDeportment;
 
@@ -8,196 +7,90 @@ public sealed class LNavigation
 {
     private readonly LWindow _lWindow;
 
-    private readonly DependencyProperty _lNavigationChosen;
+    private readonly IReadOnlyList<string> _lNavigationTabs;
 
-    public LNavigation(Window window, LWindow deportment, DependencyProperty chosen, IReadOnlyList<LTab> tabs)
+    public LNavigation(LWindow window, IReadOnlyList<string> tabs)
     {
         ArgumentNullException.ThrowIfNull(window);
-        ArgumentNullException.ThrowIfNull(deportment);
-        ArgumentNullException.ThrowIfNull(chosen);
         ArgumentNullException.ThrowIfNull(tabs);
-        _lWindow = deportment;
-        _lNavigationChosen = chosen;
-        LNavigationTabs = tabs;
-        LNavigationVoyage = new LVoyage(window, this);
+
+        _lWindow = window;
+        _lNavigationTabs = tabs;
     }
 
-    public IReadOnlyList<LTab> LNavigationTabs { get; }
+    public LVoyage LNavigationVoyage { get; } = new();
 
-    public LVoyage LNavigationVoyage { get; }
-
-    public LTab LNavigationShownRead()
+    public string LNavigationShownRead()
     {
-        foreach (LTab tab in LNavigationTabs)
+        return LNavigationFind() ?? _lNavigationTabs[0];
+    }
+
+    public string? LNavigationRestore(Func<string, bool> allowed)
+    {
+        ArgumentNullException.ThrowIfNull(allowed);
+
+        foreach (string tab in _lNavigationTabs)
         {
-            if (_lWindow.LWindowModeMatch(tab.LTabMode))
+            if (_lWindow.LWindowModeMatch(tab))
             {
-                return tab;
+                return LNavigationAllowRead(tab, allowed);
             }
         }
 
-        return LNavigationTabs[0];
+        return null;
     }
 
-    public bool LNavigationSelect(object? button)
+    private string LNavigationAllowRead(string tab, Func<string, bool> allowed)
     {
-        LTab? chosen = LNavigationFind(button);
-        if (chosen is null)
+        string restored = allowed(tab) ? tab : _lNavigationTabs[0];
+        _lWindow.LWindowModeSave(restored);
+        return restored;
+    }
+
+    public bool LNavigationShow(string tab, Func<string, bool> leave)
+    {
+        ArgumentNullException.ThrowIfNull(leave);
+
+        if (!leave(tab))
         {
             return false;
         }
 
-        return LNavigationTabSelect(chosen);
+        return LNavigationSelect(tab, leave);
     }
 
-    public void LNavigationRestore()
+    public bool LNavigationSelect(string tab, Func<string, bool> leave)
     {
-        foreach (LTab tab in LNavigationTabs)
-        {
-            bool allowed = tab.LTabAllowed is null || tab.LTabAllowed();
-            tab.LTabButton.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
-        }
+        ArgumentNullException.ThrowIfNull(tab);
+        ArgumentNullException.ThrowIfNull(leave);
 
-        LTab? restored = null;
-        foreach (LTab tab in LNavigationTabs)
+        foreach (string other in _lNavigationTabs)
         {
-            if (_lWindow.LWindowModeMatch(tab.LTabMode))
+            if (string.Equals(other, tab, StringComparison.Ordinal))
             {
-                restored = tab;
-                break;
+                continue;
             }
-        }
 
-        if (restored is null)
-        {
-            return;
-        }
-
-        if (restored.LTabAllowed is not null)
-        {
-            if (!restored.LTabAllowed())
+            if (!_lWindow.LWindowModeMatch(other))
             {
-                restored = LNavigationTabs[0];
+                continue;
             }
-        }
 
-        LNavigationApply(restored);
-        restored.LTabScribe?.Invoke(_lWindow.LWindowPostureRead().LPostureStateSplit);
-    }
-
-    public bool LNavigationShow(object button, long id)
-    {
-        ArgumentNullException.ThrowIfNull(button);
-        (LTab, long) station = LNavigationVoyage.LVoyageStationRead();
-        LTab? target = LNavigationFind(button);
-        if (target is null)
-        {
-            return false;
-        }
-
-        if (!LNavigationTabShow(target, id))
-        {
-            return false;
-        }
-
-        LNavigationVoyage.LVoyageRecord(station);
-        return true;
-    }
-
-    public void LNavigationShow(object button, Action arrival)
-    {
-        ArgumentNullException.ThrowIfNull(button);
-        ArgumentNullException.ThrowIfNull(arrival);
-        LTab? target = LNavigationFind(button);
-        if (target is null)
-        {
-            return;
-        }
-
-        if (!LNavigationTargetSelect(target))
-        {
-            return;
-        }
-
-        arrival();
-    }
-
-    public bool LNavigationTabShow(LTab target, long id)
-    {
-        ArgumentNullException.ThrowIfNull(target);
-        if (target.LTabArrival is null)
-        {
-            return false;
-        }
-
-        if (!LNavigationTargetSelect(target))
-        {
-            return false;
-        }
-
-        target.LTabArrival(id);
-        return true;
-    }
-
-    private bool LNavigationTargetSelect(LTab target)
-    {
-        if (target.LTabLeave is not null)
-        {
-            if (!target.LTabLeave())
+            if (!leave(other))
             {
                 return false;
             }
         }
 
-        return LNavigationTabSelect(target);
-    }
-
-    private bool LNavigationTabSelect(LTab chosen)
-    {
-        foreach (LTab tab in LNavigationTabs)
-        {
-            if (ReferenceEquals(tab, chosen))
-            {
-                continue;
-            }
-
-            if (!_lWindow.LWindowModeMatch(tab.LTabMode))
-            {
-                continue;
-            }
-
-            if (tab.LTabLeave is null)
-            {
-                continue;
-            }
-
-            if (!tab.LTabLeave())
-            {
-                return false;
-            }
-        }
-
-        LNavigationApply(chosen);
+        _lWindow.LWindowModeSave(tab);
         return true;
     }
 
-    private void LNavigationApply(LTab chosen)
+    private string? LNavigationFind()
     {
-        foreach (LTab tab in LNavigationTabs)
+        foreach (string tab in _lNavigationTabs)
         {
-            bool shown = ReferenceEquals(tab, chosen);
-            tab.LTabButton.SetValue(_lNavigationChosen, shown);
-            tab.LTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        _lWindow.LWindowModeSave(chosen.LTabMode);
-    }
-
-    private LTab? LNavigationFind(object? button)
-    {
-        foreach (LTab tab in LNavigationTabs)
-        {
-            if (ReferenceEquals(tab.LTabButton, button))
+            if (_lWindow.LWindowModeMatch(tab))
             {
                 return tab;
             }

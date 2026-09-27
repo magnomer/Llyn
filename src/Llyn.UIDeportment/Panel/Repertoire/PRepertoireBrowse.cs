@@ -34,7 +34,6 @@ public partial class PRepertoire
     internal async void PRepertoireVistaRestore()
     {
         LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
-        _lRepertoire.LRepertoireVistaRestore(_pRepertoireHost.PWindowDeportment);
         PRepertoireObserverAttach();
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();

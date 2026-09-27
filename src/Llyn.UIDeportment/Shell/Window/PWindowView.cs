@@ -1,11 +1,10 @@
-using Llyn.Core;
-
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    internal void PWindowViewRestore(LWorkspaceState state)
+    internal void PWindowViewRestore(CWorkspaceState state)
     {
         PInput.PInputVistaRestore();
         PLibrary.PLibraryVistaRestore();
@@ -22,6 +21,6 @@ public partial class PWindow
 
         PDuplex.PDuplexRestore(state);
 
-        _lNavigation.LNavigationRestore();
+        PNavigationRestore();
     }
 }

@@ -15,7 +15,7 @@ The markup's name scope is copied onto the panel, so both wings answer `FindName
 Puts both wings to work on the window `host`.
 Each wing subscribes for itself, so the panel subscribes to nothing.
 
-## `internal void PDuplexRestore(LWorkspaceState state)`
+## `internal void PDuplexRestore(CWorkspaceState state)`
 
 Puts both wings back on the workspace open now, each standing on the Entry `state` names for it.
 Each wing gets a vista started now under `left` or `right`, so a switched workspace's layout is read.

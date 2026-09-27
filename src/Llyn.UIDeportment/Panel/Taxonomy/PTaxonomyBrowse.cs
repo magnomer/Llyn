@@ -51,7 +51,6 @@ public partial class PTaxonomy
 
     internal async void PTaxonomyVistaRestore()
     {
-        _lTaxonomy.LTaxonomyVistaRestore(_pTaxonomyHost.PWindowDeportment);
         _lTaxonomy.LTaxonomyObserverAttach(LSubject.LSubjectVista, LObserver.LObserverCreate(this, PDirectoryFind));
         _lTaxonomy.LTaxonomyObserverAttach(
             LSubject.LSubjectWorkspace, LObserver.LObserverCreate(this, PTaxonomyWorkspaceUpdate));

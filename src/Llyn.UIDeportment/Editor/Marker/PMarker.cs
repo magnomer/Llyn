@@ -118,10 +118,10 @@ public partial class PEditor
 
         if (!PMarkerFind(typed))
         {
-            LSpeechValue? value = PCategoryAdd(typed);
+            CSpeechValue? value = PCategoryAdd(typed);
             _pMarkerChip.Add(value is null
                 ? new PMarkerChip(0, typed)
-                : new PMarkerChip(value.LSpeechValueId, value.LSpeechValueName));
+                : new PMarkerChip(value.CSpeechValueId, value.CSpeechValueName));
         }
 
         PCategoryUpdate();

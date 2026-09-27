@@ -30,7 +30,7 @@ Writes the typed text back to the row, which sends it on as the binding did.
 Whether a transcription scheme is the glyph scheme of the language shown.
 The transcription rows ask it to leave the glyph row out.
 
-## `private static bool PGlyphSchemeCheck(LGlyph? glyph, string scheme)`
+## `private static bool PGlyphSchemeCheck(CGlyph? glyph, string scheme)`
 
 Whether a transcription scheme is the scheme of `glyph`, which may be absent.
 The prepare pass reads the section off the draft's language before the form shows it.

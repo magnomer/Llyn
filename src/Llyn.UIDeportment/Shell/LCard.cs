@@ -235,7 +235,8 @@ public sealed class LCard
                 LSplice.LSpliceBuild(
                     card.LCardDraftTag, static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)),
                 LCardImageRead(card.LCardDraftImage),
-                LCardVideoRead(card.LCardDraftVideo)));
+                LCardVideoRead(card.LCardDraftVideo),
+                LCardSheetRead(card.LCardDraftChild)));
     }
 
     private static CSentenceDraft LCardSentenceRead(LSentenceDraft sentence)
@@ -297,4 +298,5 @@ public sealed class LCard
             mention.LMentionDraftLength,
             mention.LMentionDraftSense);
     }
+
 }

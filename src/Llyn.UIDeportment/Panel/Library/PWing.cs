@@ -70,7 +70,7 @@ public class PWing : UserControl
     internal void PWingAttach(PWindow host)
     {
         _pWingHost = host;
-        _lWing = host.PWindowDeportment.LWindowWingCreate();
+        _lWing = host.PWindowWingCreate();
 
         _lWing.LWingIndexAttach(PWingIndex, PWingEmpty, PWingQuery);
         _lWing.LWingFailed += host.PWindowFailureShow;

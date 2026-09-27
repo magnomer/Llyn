@@ -62,3 +62,12 @@ The text pointer under the point is measured from the start of its own run, in U
 That count is turned into code points and added to the offset the run begins at.
 A pointer outside every run, as in an empty control, answers nothing.
 So does a lookup made while the runs are being rebuilt, which the text block refuses.
+
+## `private static void PMentionStyleApply(Run run, bool? linked)`
+
+A linked run wears the linked style and a run standing for nothing wears the silent style.
+Plain text between Mentions keeps the block's own style.
+
+## `private static int PMentionOffsetRead(int start, int offset)`
+
+The code-point offset of a click, from the piece's start and the offset inside it.
