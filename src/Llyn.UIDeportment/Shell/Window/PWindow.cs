@@ -28,11 +28,17 @@ public partial class PWindow
 
     private readonly QRepertoire _qRepertoire;
 
+    private readonly QCorpus _qCorpus;
+
+    private readonly QReference _qReference;
+
     private readonly QLibrary _qLibrary;
 
     private readonly QFavorite _qFavorite;
 
     private readonly QDuplex _qDuplex;
+
+    private readonly QGuild _qGuild;
 
     private LNavigation _lNavigation = null!;
 
@@ -53,9 +59,12 @@ public partial class PWindow
         _qTaxonomy = new QTaxonomy(PTaxonomy);
         _qTenor = new QTenor(PTenor);
         _qRepertoire = new QRepertoire(PRepertoire);
+        _qCorpus = new QCorpus(PCorpus);
+        _qReference = new QReference(PReference);
         _qLibrary = new QLibrary(PLibrary);
         _qFavorite = new QFavorite(PFavorite);
         _qDuplex = new QDuplex(PDuplex);
+        _qGuild = new QGuild(PGuild);
         _pWindowSurface.Tag = this;
         _pWindowSurface.SetValue(PMention.PMentionWindowProperty, _lWindow);
 
@@ -160,11 +169,11 @@ public partial class PWindow
 
     private UserControl PRepertoire => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PRepertoire));
 
-    private PCorpus PCorpus => (PCorpus)_pWindowSurface.FindName(nameof(PCorpus));
+    private UserControl PCorpus => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PCorpus));
 
-    private PReference PReference => (PReference)_pWindowSurface.FindName(nameof(PReference));
+    private UserControl PReference => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PReference));
 
-    private PGuild PGuild => (PGuild)_pWindowSurface.FindName(nameof(PGuild));
+    private UserControl PGuild => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PGuild));
 
     private UserControl PFavorite => QContract.QContractFind<UserControl>(_pWindowSurface, nameof(PFavorite));
 
@@ -199,9 +208,9 @@ public partial class PWindow
         _qTaxonomy.QTaxonomyAttach(this);
         _qTenor.QTenorAttach(this);
         _qRepertoire.QRepertoireAttach(this);
-        PCorpus.PCorpusAttach(this);
-        PReference.PReferenceAttach(this);
-        PGuild.PGuildAttach(this);
+        _qCorpus.QCorpusAttach(this);
+        _qReference.QReferenceAttach(this);
+        _qGuild.QGuildAttach(this);
         _qFavorite.QFavoriteAttach(this);
         _qDuplex.QDuplexAttach(this);
         PSettings.PSettingsAttach(this);
@@ -222,9 +231,9 @@ public partial class PWindow
         _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
         _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
         _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PCorpus.Content).Content, "corpus");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PReference.Content).Content, "reference");
-        _pLayout.PLayoutAttach((Grid)((UserControl)PGuild.Content).Content, "guild");
+        _pLayout.PLayoutAttach((Grid)PCorpus.Content, "corpus");
+        _pLayout.PLayoutAttach((Grid)PReference.Content, "reference");
+        _pLayout.PLayoutAttach((Grid)PGuild.Content, "guild");
         _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
 
         _pLayout.PLayoutRestore();
@@ -303,9 +312,9 @@ public partial class PWindow
         _qTaxonomy.QTaxonomyClose();
         _qTenor.QTenorClose();
         _qRepertoire.QRepertoireClose();
-        PCorpus.PCorpusClose();
-        PReference.PReferenceClose();
-        PGuild.PGuildClose();
+        _qCorpus.QCorpusClose();
+        _qReference.QReferenceClose();
+        _qGuild.QGuildClose();
         _qFavorite.QFavoriteClose();
         _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();

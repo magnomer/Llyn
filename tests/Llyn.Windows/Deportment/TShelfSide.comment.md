@@ -8,3 +8,4 @@ A fresh request with a source chosen starts an entry under it and moves to the e
 A fresh request with nothing chosen opens a source draft in the imprint.
 Leaving a fresh entry returns to the chosen source in its read area.
 The bin ignores the entry side and deletes the chosen source only from the source side.
+Every order the shelf offers keeps every source listed, and name order lists them alphabetically.

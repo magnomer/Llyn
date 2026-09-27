@@ -41,6 +41,20 @@ The oeuvre and the shelf both call it, so the colophon map is declared once.
 
 The one map for reference rows, shared with the card, the anthology and the shelf.
 
+## `internal static IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(`
+
+Maps the guild's roll or union rows to their shape, each source count worded by `localize`.
+The maps of the guild sit here, since `LGuild` is near its line ceiling.
+
+## `internal static CVita LOeuvreVitaRead(LVita vita)`
+
+Maps the vita the engine built to its shape, with its fellows and citing places.
+
+## `internal static CUsage LOeuvreUsageRead(LUsage usage)`
+
+Maps one citing place to its shape.
+The lectern's usage rows build through it too, so both lists word a place alike.
+
 ## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
 
 The authors as a written value, uncertain when the engine marks them unknown.

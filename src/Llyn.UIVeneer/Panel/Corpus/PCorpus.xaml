@@ -1,4 +1,5 @@
 <UserControl
+    x:Class="Llyn.UIVeneer.PCorpus"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
@@ -9,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Editor/Core/PEditorPopup.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Corpus/PCorpusExcerpt.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Panel/Corpus/PCorpusTranscript.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -359,7 +361,7 @@
                                             Style="{DynamicResource Theme.Transcript.Gloss}" />
                                         <StackPanel x:Name="PTranscriptShelf" Grid.Column="2" Style="{DynamicResource Theme.Transcript.Control}">
                                             <Button x:Name="PTranscriptAddition" Style="{DynamicResource Theme.Transcript.Addition}">
-                                                <local:QIconImage Width="12" Height="12" />
+                                                <local:QIconImage x:Name="PTranscriptAdditionIcon" Width="12" Height="12" />
                                             </Button>
                                         </StackPanel>
                                     </Grid>

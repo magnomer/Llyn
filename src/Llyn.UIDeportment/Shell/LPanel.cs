@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -420,77 +419,5 @@ public sealed class LPanel
             row.LVistaRowEpithet ?? string.Empty,
             row.LVistaRowName,
             row.LVistaRowChosen);
-    }
-
-    internal static LPortraitMedium LPanelMediumRead(CPortraitMedium medium)
-    {
-        return (LPortraitMedium)medium;
-    }
-
-    internal static LPressTicket LPanelTicketRead(CPressTicket ticket)
-    {
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        return new LPressTicket(
-            ticket.CPressTicketPrinter,
-            LPanelPaperRead(ticket.CPressTicketWidth, ticket.CPressTicketHeight),
-            ticket.CPressTicketLandscape,
-            ticket.CPressTicketCopies,
-            ticket.CPressTicketCollated,
-            (LPressSide)ticket.CPressTicketSide,
-            (LPressInk)ticket.CPressTicketInk);
-    }
-
-    private static LPressPaper LPanelPaperRead(double? width, double? height)
-    {
-        return width is double across && height is double down
-            ? new LPressPaper(across, down)
-            : LPressPaper.LPressPaperLocal;
-    }
-
-    internal static LPortraitLabel LPanelLabelRead(CPortraitLabel label)
-    {
-        ArgumentNullException.ThrowIfNull(label);
-
-        return new LPortraitLabel(
-            label.CPortraitLabelUnknown,
-            label.CPortraitLabelMeaning,
-            label.CPortraitLabelMeanings,
-            label.CPortraitLabelCollocation,
-            label.CPortraitLabelCollocations,
-            label.CPortraitLabelIncoming,
-            label.CPortraitLabelNote,
-            label.CPortraitLabelForm,
-            label.CPortraitLabelParadigm,
-            label.CPortraitLabelFrequency,
-            label.CPortraitLabelGlyph,
-            label.CPortraitLabelScript,
-            label.CPortraitLabelFanqie,
-            label.CPortraitLabelExample,
-            label.CPortraitLabelGloss,
-            label.CPortraitLabelSource,
-            label.CPortraitLabelMention,
-            label.CPortraitLabelEtymology,
-            label.CPortraitLabelSituation,
-            label.CPortraitLabelRegister,
-            label.CPortraitLabelTranslation,
-            label.CPortraitLabelTag);
-    }
-
-    internal static Func<CPressTicket, Task> LPanelPressCreate(Func<LPressTicket, Task> print)
-    {
-        return ticket => print(LPanelTicketRead(ticket));
-    }
-
-    internal static Func<CPortraitLabel, CPressTicket, Task> LPanelPressCreate(
-        Func<LPortraitLabel, LPressTicket, Task> print)
-    {
-        return (label, ticket) => print(LPanelLabelRead(label), LPanelTicketRead(ticket));
-    }
-
-    internal static Func<string, CPortraitMedium, CPortraitLabel, Task> LPanelPortraitCreate(
-        Func<string, LPortraitMedium, LPortraitLabel, Task> export)
-    {
-        return (path, format, label) => export(path, LPanelMediumRead(format), LPanelLabelRead(label));
     }
 }

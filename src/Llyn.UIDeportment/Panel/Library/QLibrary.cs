@@ -125,9 +125,9 @@ internal sealed class QLibrary
     internal void QLibraryAttach(PWindow host)
     {
         _qLibraryHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lLibrary = host.PWindowDeportment.LWindowLibraryCreate(
+        _lLibrary = host.PWindowDeportment.LWindowForge.QForgeLibraryCreate(
             editor,
             lectern,
             QLibraryShownCheck,
@@ -381,12 +381,12 @@ internal sealed class QLibrary
 
     private void QLibraryUndoHandle(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.PChronicleUndo();
+        QLibraryEditor.QChronicleUndo();
     }
 
     private void QLibraryRedoHandle(object sender, RoutedEventArgs e)
     {
-        QLibraryEditor.PChronicleRedo();
+        QLibraryEditor.QChronicleRedo();
     }
 
     private void QLibraryChronicleUpdate()

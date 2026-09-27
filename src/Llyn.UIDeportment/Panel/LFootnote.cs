@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -18,7 +19,7 @@ public sealed class LFootnote
 
     private int _lFootnoteCount;
 
-    public LFootnote(
+    internal LFootnote(
         LEntryPort entries, LPortraitPort portraits, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
@@ -58,7 +59,7 @@ public sealed class LFootnote
 
     private bool LFootnoteQueried => _lFootnoteVista?.LVistaQueried ?? false;
 
-    public void LFootnoteVistaRestore(LVista parent, LVista vista)
+    internal void LFootnoteVistaRestore(LVista parent, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(vista);
@@ -68,9 +69,10 @@ public sealed class LFootnote
         LFootnotePanel.LPanelVistaRestore(vista);
     }
 
-    public IReadOnlyList<LVistaRow> LFootnoteRowsRead()
+    public IReadOnlyList<CVistaRow> LFootnoteRowsRead()
     {
-        IReadOnlyList<LVistaRow> rows = _lEntryPort.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista);
+        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(
+            _lEntryPort.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista), LPanel.LPanelRowRead);
         _lFootnoteCount = rows.Count;
         return rows;
     }
@@ -91,8 +93,9 @@ public sealed class LFootnote
         }
     }
 
-    public Task LFootnotePortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LFootnotePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lFootnoteVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lFootnoteVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 }

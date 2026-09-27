@@ -19,8 +19,8 @@ public sealed class TAutographUnion
         guild.TGuildScribeSet(true);
 
         Assert.True(guild.LGuildAutographShown);
-        Assert.True(guild.LGuildUnionShown);
-        Assert.Equal(["Adam"], guild.TGuildUnionRead("Ad").Select(row => row.LCatalogAuthorName));
+        Assert.True(guild.LGuildUnion.QUnionShown);
+        Assert.Equal(["Adam"], guild.TGuildUnionRead("Ad").Select(row => row.CCatalogAuthorName));
         Assert.Empty(guild.TGuildUnionRead(" "));
     }
 
@@ -42,8 +42,8 @@ public sealed class TAutographUnion
         Assert.Null(engine.TEngineAuthorRead(ada.LAuthorId));
         Assert.False(guild.LGuildAutographShown);
         Assert.True(guild.LGuildVitaShown);
-        Assert.Equal("Adam", guild.TGuildVitaRead().LVitaName);
-        Assert.Equal("Guild.WorkOne", guild.TGuildVitaRead().LVitaWork);
+        Assert.Equal("Adam", guild.TGuildVitaRead().CVitaName);
+        Assert.Equal("Guild.WorkOne", guild.TGuildVitaRead().CVitaWork);
         Assert.False(guild.LGuildAutograph.LDeskHeld);
     }
 
@@ -59,19 +59,19 @@ public sealed class TAutographUnion
         guild.TGuildFreshStart();
 
         Assert.True(guild.LGuildAutographShown);
-        Assert.False(guild.LGuildUnionShown);
+        Assert.False(guild.LGuildUnion.QUnionShown);
         Assert.False(guild.TGuildSave());
         Assert.Equal("Guild.NameBlank", refused);
 
-        guild.LGuildAutograph.TDeskDefer(TInterface.TRequestAuthorCreate(guild.LGuildAutograph.LDeskId, "Ada"));
+        guild.LGuildAutograph.TQuillAuthorSet("Ada");
 
         Assert.True(guild.TGuildSave());
         Assert.True(guild.LGuildAutographShown);
-        Assert.True(guild.LGuildUnionShown);
+        Assert.True(guild.LGuildUnion.QUnionShown);
         Assert.True(guild.LGuildAutograph.LDeskHeld);
         Assert.Equal(
             ["Ada"],
-            guild.TGuildRollRead().Where(row => row.LCatalogAuthorChosen).Select(row => row.LCatalogAuthorName));
+            guild.TGuildRollRead().Where(row => row.CCatalogAuthorChosen).Select(row => row.CCatalogAuthorName));
     }
 
     private static LGuild TGuildPrepare(LEngine engine)

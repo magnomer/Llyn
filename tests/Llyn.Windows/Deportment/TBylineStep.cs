@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -21,7 +22,7 @@ public sealed class TBylineStep
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;
-        imprint.TImprintCreditApply("Add", 0, ada.LAuthorId);
+        imprint.TImprintAuthorAdd(0, ada.LAuthorId);
 
         imprint.TBylineWordSet("Ad", false);
 
@@ -30,7 +31,7 @@ public sealed class TBylineStep
 
         imprint.TBylineWordSet("Ad", true);
 
-        Assert.Equal(["Adam"], imprint.TBylineRowsRead().Select(author => author.LAuthorName));
+        Assert.Equal(["Adam"], imprint.TBylineRowsRead().Select(author => author.CAuthorName));
         Assert.True(imprint.LBylineShown);
         Assert.Equal(-1, imprint.LBylineIndex);
         Assert.Equal("Ad", imprint.LBylineWord);
@@ -87,7 +88,7 @@ public sealed class TBylineStep
         imprint.TBylineRowsRead();
 
         Assert.False(imprint.LBylineShown);
-        Assert.Equal([adam.LAuthorId], imprint.TImprintCreditRead().Select(row => row.LAuthorRowId));
+        Assert.Equal([adam.LAuthorId], imprint.TImprintCreditRead().Select(row => row.CAuthorRowId));
         Assert.True(imprint.LImprintDesk.TDeskChangeCheck());
     }
 

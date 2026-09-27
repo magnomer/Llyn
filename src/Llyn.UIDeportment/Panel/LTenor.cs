@@ -168,7 +168,7 @@ public sealed class LTenor
     public Task LTenorPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lTenorCohort, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
+            _lTenorCohort, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LTenorVistaRestore(LWindow window)
@@ -206,6 +206,6 @@ public sealed class LTenor
     public Task LTenorPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            _lTenorCohort, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
+            _lTenorCohort, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
     }
 }

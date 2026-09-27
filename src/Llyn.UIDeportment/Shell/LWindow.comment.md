@@ -10,8 +10,7 @@ The veneer reads and saves the layout, mode, volume and bounds here.
 It hands the veneer the pure text facts too: mention pieces, unit and offset conversion, anchors and markdown blocks.
 It disposes the posture when the window closes.
 The static veneer helpers take it instead of the engine, so no panel holds an engine for them.
-It builds every panel's deportment over the ports it holds, so no panel names the engine or a port.
-A panel hands in only its own seams and the editor it shares, and receives its deportment built.
+The panel factories went to `QForge`, which it builds over its ports and exposes.
 Since job 8 it is sealed, so its public members name only .NET types, Conduct shapes and controllers.
 The settings, the folder and the stored-entry reads went to `QWorkspace`, which it builds and exposes.
 Each engine value is mapped once, by an internal static on the controller that owns the shape.
@@ -31,27 +30,22 @@ It is internal, so only the host, built as `Llyn`, can build a window deportment
 
 The workspace deportment, built over this window deportment and its ports.
 
+## `public QForge LWindowForge`
+
+The panel factory, built over this window deportment and the ports every panel stands on.
+
 ## `internal LEntryPort LWindowEntryPort`
 
-The ports the workspace deportment and a duplex wing reach, handed to no driver.
-
-## `public LEditor LWindowInputCreate(Func<bool> unreadableSeam)`
-
-The input panel's editor, standing on the input vista already restored.
-A panel's own editor comes from `LWindowEditorCreate` instead, and its panel restores it with the panel's vista.
-
-## `public LCorpus LWindowCorpusCreate(...)`
-
-Every panel deportment is handed back with its vistas already started through the posture.
-The restore is kept, so `LWindowVistaRestore` can run it again.
+The ports the workspace deportment, the panel factory and a duplex wing reach, handed to no driver.
 
 ## `public void LWindowVistaRestore()`
 
 Restarts every panel's vistas, which the settings panel asks for after a workspace change.
 
-## `private LWindowHeld LWindowVistaAdd<LWindowHeld>(LWindowHeld held, Action<LWindowHeld, LWindow> restore)`
+## `internal LWindowHeld LWindowVistaAdd<LWindowHeld>(LWindowHeld held, Action<LWindowHeld, LWindow> restore)`
 
 Runs one deportment's restore and keeps it for the next workspace change.
+`QForge` calls it for each panel it builds, so the restore list stays here.
 
 ## `public CLayout? LWindowLayoutRead(string tab)`
 
@@ -86,6 +80,11 @@ The chips of a mention line, each named by its linked headword or by `silent` wh
 ## `public (int LWindowSpanOffset, int LWindowSpanLength) LWindowSpanRead(string text, int start, int length)`
 
 A field's selection as a Mention span, measured by the engine in code points.
+
+## `public bool LWindowSpanCheck(string text, int start, int length)`
+
+Whether a field's selection spans any code point, so a link command may run.
+A driver asks this rather than measuring the span it read itself.
 
 ## `internal bool LWindowAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword)`
 

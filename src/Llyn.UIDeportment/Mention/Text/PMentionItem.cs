@@ -18,17 +18,17 @@ internal sealed record PMentionItem(
 
     public Thickness PMentionItemIndent => new(PMentionItemDepth * PMentionItemStep, 0, 0, 0);
 
-    internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<LTranslationTarget> targets)
+    internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CTranslationTarget> targets)
     {
         List<PMentionItem> rows = [];
-        foreach (LTranslationTarget target in targets)
+        foreach (CTranslationTarget target in targets)
         {
             rows.Add(new PMentionItem(
-                target.LTranslationTargetId,
+                target.CTranslationTargetId,
                 0,
-                target.LTranslationTargetHeadword,
-                target.LTranslationTargetLanguage,
-                LEnsignImage.LEnsignFind(target.LTranslationTargetLanguage),
+                target.CTranslationTargetHeadword,
+                target.CTranslationTargetLanguage,
+                LEnsignImage.LEnsignFind(target.CTranslationTargetLanguage),
                 0));
         }
 

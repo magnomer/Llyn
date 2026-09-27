@@ -38,6 +38,8 @@ public interface LDraftPort
 
     LMentionDraft LEngineSpanRead(string text, int start, int length);
 
+    bool LEngineSpanCheck(string text, int start, int length);
+
     int LEngineOffsetRead(string text, int unit);
 
     bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other);

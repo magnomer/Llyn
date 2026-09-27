@@ -8,6 +8,11 @@ It keeps a handle on the parent vista too, because the engine narrows the rows b
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
 Its delete seam always refuses, because an entry is never deleted from this list.
 
+## `public IReadOnlyList<CVistaRow> LFootnoteRowsRead()`
+
+The citing entries as Conduct rows, mapped by `LPanel.LPanelRowRead` as the quotation list maps its own.
+The count is kept for the empty verdict.
+
 ## `public event Action<long>? LFootnoteCreated;`
 
 A fresh entry was started under the chosen Source, named by that Source's id.

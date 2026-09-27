@@ -6,17 +6,17 @@ namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    private static PChronicleHost? PChronicleHostRead()
+    private static QChronicleHost? PWindowChronicleRead()
     {
         DependencyObject? current = Keyboard.FocusedElement as DependencyObject;
         while (current is not null)
         {
-            if (current is PChronicleHost host)
+            if (current is QChronicleHost host)
             {
                 return host;
             }
 
-            if (PChronicle.PChronicleRead(current) is PChronicleHost driver)
+            if (QChronicle.QChronicleRead(current) is QChronicleHost driver)
             {
                 return driver;
             }
@@ -44,18 +44,18 @@ public partial class PWindow
             return;
         }
 
-        if (PChronicleHostRead() is not PChronicleHost host)
+        if (PWindowChronicleRead() is not QChronicleHost host)
         {
             return;
         }
 
         if (undo)
         {
-            host.PChronicleUndo();
+            host.QChronicleUndo();
         }
         else
         {
-            host.PChronicleRedo();
+            host.QChronicleRedo();
         }
 
         e.Handled = true;

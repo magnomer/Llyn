@@ -78,6 +78,11 @@ Copies every cell the fanqie line shows, derived cells included.
 
 The one map from the engine's script groups to their shape, shared with the lectern.
 
+## `internal string LSoundingLanguageRead(long? entry)`
+
+The language the entry's paradigm is written in, read from the same slots the paradigm box shows.
+The timbre asks it here, so the paradigm rows are found in one place.
+
 ## `internal static IReadOnlyList<CParadigmSlot> LSoundingParadigmRead(IReadOnlyList<LParadigmSlot> slots)`
 
 Joins the slots into paradigm rows in the engine, then shapes each row.

@@ -169,13 +169,6 @@ internal static partial class TInterface
         IReadOnlyList<LEpoch> epochs, string caption) =>
         LEpoch.LEpochResolve(epochs, caption);
 
-    internal static LMentionResult TMentionResultCreate(
-        int offset, LMention? stored, IReadOnlyList<LTranslationTarget> targets) =>
-        new(offset, stored, targets);
-
-    internal static LTranslationTarget TTranslationTargetCreate(long id, string headword, string language) =>
-        new(id, headword, language);
-
     internal static LStateAnchor TStateAnchorCreate(long id) =>
         LStateAnchor.LStateAnchorCreate(id);
 

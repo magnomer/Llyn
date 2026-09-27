@@ -67,7 +67,7 @@ The mode toggle swaps it for `PEditor`, so an Entry is read and written here as 
 The entry editor the library and tenor panels share, drawn in the same cell as the display.
 It stands in front only while an Entry is shown and the toggle is on the editing side.
 
-## `<local:PColophon x:Name="PColophon" />`
+## `<veneer:PColophon x:Name="PColophon" />`
 
 The reading of one Source, a control of its own and described in `PColophon.comment.md`.
 It stands in the same cell as the Entry-shaped `PDisplay` and is shown while a Source is read.

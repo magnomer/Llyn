@@ -607,6 +607,7 @@
     "Guild.DetachCount": "이 저자를 표기한 출처:",
     "Guild.MergeConfirm": "첫 저자를 둘째 저자에 합칠까요? 모든 저자 표기가 옮겨지고 첫 저자는 삭제됩니다.",
     "Guild.LoadFailed": "저자를 읽지 못했습니다.",
+    "Guild.HoldFailed": "저장되지 않은 저자를 보관하지 못했습니다.",
     "Guild.SaveFailed": "저자를 저장하지 못했습니다.",
     "Guild.DeleteFailed": "저자를 삭제하지 못했습니다.",
     "Guild.MergeFailed": "저자를 합치지 못했습니다.",

@@ -21,10 +21,10 @@ Prints through a sealed panel that takes the window's labels with the ticket.
 Prints through a sealed panel that takes the labels and the realm's legend with the ticket.
 The window reads the legend, so the panel hands over no word of its own.
 
-## `internal Task PWindowPressRun(Func<LPressTicket, Task> print)`
+## `internal Task PWindowPressRun(string realm, Func<CPortraitLegend, CPressTicket, Task> print)`
 
-Prints through a panel not yet sealed, whose print the panel controller wraps to take the ticket shape.
-It goes once every panel takes Conduct shapes.
+Runs a legend print for a sealed panel that prints no label, such as the guild.
+The legend is worded for `realm` once the ticket is chosen.
 
 ## `internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)`
 
@@ -42,20 +42,10 @@ A choice the dialog left unsaid maps to the default the printer applies on its o
 The dialog measures the sheet in device-independent pixels, ninety-six to the inch.
 A side the dialog left unnamed or empty is none, and the panel then takes the regional default.
 
-## `internal LPortraitLabel PWindowLabelRead()`
-
-The same words as the engine's label, for a panel not yet sealed.
-It goes once every panel takes Conduct shapes.
-
 ## `internal CPortraitLabel PWindowPortraitRead()`
 
 The localized words an entry likeness is written with: the stand-in mark and every section heading.
 Every panel that exports or prints an entry reads them here, so all agree.
-
-## `internal LPortraitLegend PWindowLegendRead(string realm)`
-
-The same words as the engine's legend, for a panel not yet sealed.
-It goes once every panel takes Conduct shapes.
 
 ## `internal CPortraitLegend PWindowLegendCreate(string realm)`
 

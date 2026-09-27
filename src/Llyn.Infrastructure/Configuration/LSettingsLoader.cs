@@ -17,6 +17,7 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderMorphology = "morphology";
     private const string LSettingsLoaderEpithet = "epithet";
     private const string LSettingsLoaderTally = "tally";
+    private const string LSettingsLoaderGloss = "gloss";
     private const string LSettingsLoaderDefault = "en";
 
     private readonly string _lSettingsLoaderRoot;
@@ -74,7 +75,12 @@ public sealed class LSettingsLoader : LSettingsVault
                 document.RootElement.TryGetProperty(LSettingsLoaderTally, out JsonElement set) &&
                 set.ValueKind == JsonValueKind.True;
 
-            return new LSettings(localization, respelled, frequency, morphology, epithet, tally);
+            LSettings read = new(localization, respelled, frequency, morphology, epithet, tally);
+            return document.RootElement.TryGetProperty(LSettingsLoaderGloss, out JsonElement speech)
+                && speech.ValueKind == JsonValueKind.String
+                && speech.GetString() is { Length: > 0 } gloss
+                ? read with { LSettingsGloss = gloss }
+                : read;
         }
         catch (JsonException)
         {
@@ -112,7 +118,8 @@ public sealed class LSettingsLoader : LSettingsVault
             [LSettingsLoaderFrequency] = settings.LSettingsFrequency,
             [LSettingsLoaderMorphology] = settings.LSettingsMorphology,
             [LSettingsLoaderEpithet] = settings.LSettingsEpithet,
-            [LSettingsLoaderTally] = settings.LSettingsTally
+            [LSettingsLoaderTally] = settings.LSettingsTally,
+            [LSettingsLoaderGloss] = settings.LSettingsGloss
         };
 
         string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);

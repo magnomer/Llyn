@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Xunit;
 
@@ -116,20 +117,19 @@ public sealed class TDraftFact
     [Fact]
     public void MentionResultSingle_OneTarget_NamesItsId()
     {
-        LMentionResult single = TInterface.TMentionResultCreate(
-            0, null, [TInterface.TTranslationTargetCreate(8, "wolf", "English")]);
-        LMentionResult many = TInterface.TMentionResultCreate(
+        CMentionResult single = new(0, null, [new CTranslationTarget(8, "wolf", "English")]);
+        CMentionResult many = new(
             0,
             null,
             [
-                TInterface.TTranslationTargetCreate(8, "wolf", "English"),
-                TInterface.TTranslationTargetCreate(9, "loup", "French"),
+                new CTranslationTarget(8, "wolf", "English"),
+                new CTranslationTarget(9, "loup", "French"),
             ]);
 
-        Assert.True(single.LMentionResultSingle);
-        Assert.Equal(8, single.LMentionResultFirst);
-        Assert.False(single.LMentionResultMany);
-        Assert.True(many.LMentionResultMany);
-        Assert.Equal(0, many.LMentionResultFirst);
+        Assert.True(single.CMentionResultSingle);
+        Assert.Equal(8, single.CMentionResultFirst);
+        Assert.False(single.CMentionResultMany);
+        Assert.True(many.CMentionResultMany);
+        Assert.Equal(0, many.CMentionResultFirst);
     }
 }

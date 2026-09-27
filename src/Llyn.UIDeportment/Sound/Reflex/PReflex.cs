@@ -159,8 +159,8 @@ public partial class PEditor
         string headword = PHeadword.Text;
         LReflexItem.LReflexAnchorApply(
             _pReflexItem,
-            _lEditor.LEditorAnchorCheck(headword),
-            (anchors, separator) => _lEditor.LEditorAnchorFormat(anchors, headword, separator));
+            _lEditor.LEditorTimbre.QTimbreAnchorCheck(headword),
+            (anchors, separator) => _lEditor.LEditorTimbre.QTimbreAnchorFormat(anchors, headword, separator));
     }
 
     internal void PReflexPendingShow()

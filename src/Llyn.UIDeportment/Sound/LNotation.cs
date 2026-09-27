@@ -20,19 +20,19 @@ public sealed class LNotation
 
     public event Action? LNotationFinished;
 
-    public bool LNotationHeld => _lNotationDesk.LDeskTranscription is not null;
+    public bool LNotationHeld => _lNotationDesk.LDeskErrand.QErrandTranscription is not null;
 
-    public string LNotationLanguage => _lNotationDesk.LDeskTranscription?.LForayLanguage ?? string.Empty;
+    public string LNotationLanguage => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayLanguage ?? string.Empty;
 
-    public bool LNotationFlagged => _lNotationDesk.LDeskTranscription?.LForayFlagged ?? false;
+    public bool LNotationFlagged => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayFlagged ?? false;
 
-    public bool LNotationPrimary => _lNotationDesk.LDeskTranscription?.LForayPrimary ?? false;
+    public bool LNotationPrimary => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayPrimary ?? false;
 
-    public long LNotationTarget => _lNotationDesk.LDeskTranscription?.LForayTarget ?? 0;
+    public long LNotationTarget => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayTarget ?? 0;
 
-    public string LNotationScheme => _lNotationDesk.LDeskTranscription?.LForayScheme ?? string.Empty;
+    public string LNotationScheme => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForayScheme ?? string.Empty;
 
-    public bool LNotationSchemed => _lNotationDesk.LDeskTranscription?.LForaySchemed ?? false;
+    public bool LNotationSchemed => _lNotationDesk.LDeskErrand.QErrandTranscription?.LForaySchemed ?? false;
 
     public void LNotationStepHandle(CLookupStep step)
     {
@@ -55,6 +55,6 @@ public sealed class LNotation
 
     public void LNotationCancel()
     {
-        _lNotationDesk.LDeskForayCancel();
+        _lNotationDesk.LDeskErrand.QErrandCancel();
     }
 }

@@ -42,14 +42,16 @@ public partial class PWindow
             print(label, PWindowLegendCreate(realm), ticket));
     }
 
-    internal Task PWindowPressRun(Func<LPressTicket, Task> print)
+    internal Task PWindowPressRun(string realm, Func<CPortraitLegend, CPressTicket, Task> print)
     {
-        return PWindowPressRun(LPanel.LPanelPressCreate(print));
+        ArgumentNullException.ThrowIfNull(print);
+
+        return PWindowPressRun((CPressTicket ticket) => print(PWindowLegendCreate(realm), ticket));
     }
 
     internal Task PWindowPressRun(Func<LPortraitLabel, LPressTicket, Task> print)
     {
-        return PWindowPressRun(LPanel.LPanelPressCreate(print));
+        return PWindowPressRun(QPortrait.QPortraitPressCreate(print));
     }
 
     internal CPressTicket? PWindowTicketRead()
@@ -93,11 +95,6 @@ public partial class PWindow
         return pixels > 0 ? pixels / 96.0 : null;
     }
 
-    internal LPortraitLabel PWindowLabelRead()
-    {
-        return LPanel.LPanelLabelRead(PWindowPortraitRead());
-    }
-
     internal CPortraitLabel PWindowPortraitRead()
     {
         return new CPortraitLabel(
@@ -123,11 +120,6 @@ public partial class PWindow
             QLocalizationCatalog.QLocalizationTextRead("Portrait.Register"),
             QLocalizationCatalog.QLocalizationTextRead("Portrait.Translation"),
             QLocalizationCatalog.QLocalizationTextRead("Portrait.Tag"));
-    }
-
-    internal LPortraitLegend PWindowLegendRead(string realm)
-    {
-        return LAtlas.LAtlasLegendRead(PWindowLegendCreate(realm));
     }
 
     internal CPortraitLegend PWindowLegendCreate(string realm)

@@ -106,7 +106,13 @@ The panel's edited notice, carried to the imprint as a nullable id.
 
 Deletes the chosen Source from the source side alone, behind the removal seam.
 
-## `public Task LShelfPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)`
+## `public Task LShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
 
 Prints the entry being read, else the Source being read, as the engine portrays it.
 Both label sets arrive because the deportment, not the window, knows which side prints.
+The Conduct shapes are mapped here through `QPortrait` and `LAtlas.LAtlasLegendRead`, so the driver names no engine shape.
+
+## `public static IReadOnlyList<CCatalogOrder> LShelfOrderRead()`
+
+The orders the shelf offers, in the order the dropdown lists them.
+The controller owns the list, so a driver in any medium offers the same orders.

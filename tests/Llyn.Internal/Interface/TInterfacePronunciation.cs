@@ -326,6 +326,9 @@ internal static partial class TInterface
     internal static IReadOnlyList<string> TEngineLanguageRead(this LEngine engine) =>
         engine.LEngineLanguage.LEngineLanguageRead();
 
+    internal static string TEngineGlossRead(this LEngine engine) =>
+        engine.LEngineLanguage.LEngineGlossRead();
+
     internal static IReadOnlyList<LContour> TContourParse(string ipa) =>
         LContour.LContourParse(ipa);
 

@@ -100,9 +100,9 @@ public sealed class LDisplay
 
     public bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
 
-    public bool LDisplayFavoriteRead()
+    public bool LDisplayFavoriteRead(long? entry)
     {
-        if (LDisplayChosen is not long id)
+        if (entry is not long id)
         {
             return false;
         }
@@ -117,9 +117,9 @@ public sealed class LDisplay
         }
     }
 
-    public void LDisplayFavoriteSave(bool marked)
+    public void LDisplayFavoriteSave(long? entry, bool marked)
     {
-        if (LDisplayChosen is not long id)
+        if (entry is not long id)
         {
             return;
         }
@@ -177,16 +177,16 @@ public sealed class LDisplay
         return card.LCardDraftId == id;
     }
 
-    public string LDisplayGraspFormat(int step)
+    public string LDisplayGraspFormat(long? entry, int step)
     {
-        return LDisplayChosen is null
+        return entry is null
             ? string.Empty
             : _lEntryPort.LEngineGraspFormat(step);
     }
 
-    public int LDisplayGraspRead()
+    public int LDisplayGraspRead(long? entry)
     {
-        if (LDisplayChosen is not long id)
+        if (entry is not long id)
         {
             return 0;
         }
@@ -201,9 +201,9 @@ public sealed class LDisplay
         }
     }
 
-    public void LDisplayGraspSave(int step)
+    public void LDisplayGraspSave(long? entry, int step)
     {
-        if (LDisplayChosen is not long id)
+        if (entry is not long id)
         {
             return;
         }
@@ -267,9 +267,9 @@ public sealed class LDisplay
         return named;
     }
 
-    public IReadOnlyList<LFrequency> LDisplayFrequencyRead()
+    public IReadOnlyList<LFrequency> LDisplayFrequencyRead(long? entry)
     {
-        if (LDisplayChosen is not long id)
+        if (entry is not long id)
         {
             return [];
         }

@@ -18,6 +18,12 @@ The entry editor's deportment on the occurrence side, which takes the occurrence
 The desk over the situation draft, started by subject rather than by a vista.
 The panel control attaches its observers to the tenure the desk announces, as the entry editor does.
 
+## `public QSession LRepertoireSession { get; }`
+
+The draft session over the desk, which defers to the entry editor while it shows.
+The views save, undo and redo through it, and a leave finishes through it.
+A stored Situation is shown again outside the scribe through `LRepertoireStoredShow`.
+
 ## `public LAtlas LRepertoireAtlas { get; }`
 
 The situation list, whose panel asks the desk whether the scenario holds unsaved changes.
@@ -42,28 +48,15 @@ Raised with a message key and the exception when a repertoire action fails.
 
 Raised once an arrival drops the inquest and the language filter, so the panel control empties both fields.
 
-## `private void LRepertoireDraftStart(long? id)`
-
-Starts the desk on a stored Situation or on nothing, from the `Repertoire` origin the recovered draft names.
-It then announces the Situation the desk holds, which is null when the start was refused.
-
 ## `public CSituationDraft? LRepertoireScenarioRead()`
 
 Reads the Situation the desk holds as a shape, which persists the tenure first and so can throw.
 A throw raises `LRepertoireFailed` with `Situation.HoldFailed` and reads as null, so no click handler sees it.
 The veneer reads it on each draft bulletin, so the desk never hands it a draft.
 
-## `private void LRepertoireDraftCancel()`
-
-Cancels the desk and announces that no scenario is held.
-
 ## `private void LRepertoireSituationUpdate(LDraft draft)`
 
 Announces the Situation a loaded draft carries and ignores drafts of other subjects.
-
-## `private void LRepertoireStateUpdate()`
-
-Relays a desk or editor state change as `LRepertoireChanged`.
 
 ## `public LOccurrence LRepertoireOccurrence { get; }`
 
@@ -123,7 +116,7 @@ The atlas panel loads the row, clears a vanished one and restarts the scenario t
 Shows the clicked Situation once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
 The voyage is recorded only after the user agreed, so a refused leave keeps the Forward history.
-A save from the dialog finishes through `LRepertoireDraftClose`, so the Situation loads once.
+A save from the dialog finishes through `QSessionClose`, so the Situation loads once.
 
 ## `private void LRepertoireOccurrenceOpen(long id, bool editing)`
 
@@ -170,11 +163,6 @@ True while the vignette shows a chosen Situation, the only case a missing row cl
 
 Drops the inquest and the language filter on the situation vista and raises `LRepertoireInquestCleared`.
 
-## `public void LRepertoireSave()`
-
-Saves the entry editor while it shows, else stores the scenario when it holds changes.
-A stored scenario is shown again outside the scribe.
-
 ## `private void LRepertoireStoredShow(long id)`
 
 Shows the stored Situation outside the scribe after the desk stores it.
@@ -189,10 +177,6 @@ A failure reads `Situation.DeleteFailed`, the delete key `LAtlas` hands its pane
 
 Opens a blank entry in the editor, attaching the chosen Situation when there is one.
 The fresh open clears the occurrence panel, which closes the editor before the blank opens.
-
-## `public bool LRepertoireChangeCheck()`
-
-True when either list holds unsaved changes.
 
 ## `public bool LRepertoireLeaveConfirm()`
 
@@ -209,32 +193,6 @@ The finish shows the stored Situation only when `shown` holds.
 Refreshes the occurrence draft, and falls back to the chosen Situation once the occurrence side has closed.
 It does nothing without a chosen occurrence, so a whole-set bulletin never clears a scenario or a new entry.
 The mode is read before the refresh, so a vanished entry under edit reopens the scenario.
-
-## `public bool LRepertoireDraftFinish(bool store)`
-
-Finishes the entry editor while it shows, else the scenario desk.
-A stored scenario is shown again outside the scribe.
-
-## `private bool LRepertoireDraftClose(bool store)`
-
-Finishes like `LRepertoireDraftFinish` but leaves a stored scenario unshown.
-A row click uses it, because the click shows its own row next.
-
-## `public (bool LDeskBackward, bool LDeskForward) LRepertoireChronicleRead()`
-
-Reads undo and redo from the entry editor's desk while it shows, else from the scenario desk.
-
-## `public void LRepertoireUndo()`
-
-Steps the entry editor back while it shows, else the scenario desk.
-
-## `public void LRepertoireRedo()`
-
-Steps the entry editor forward while it shows, else the scenario desk.
-
-## `private void LRepertoireChronicleRun(Action step)`
-
-Runs a scenario step and raises `LRepertoireFailed` with `Situation.HoldFailed` when it throws.
 
 ## `public Task LRepertoirePortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
 

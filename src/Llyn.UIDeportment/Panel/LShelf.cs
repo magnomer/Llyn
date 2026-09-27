@@ -23,7 +23,7 @@ public sealed class LShelf
 
     private int _lShelfCount;
 
-    public LShelf(
+    internal LShelf(
         LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         LEditor editor,
         LLectern lectern,
@@ -113,7 +113,7 @@ public sealed class LShelf
 
     public bool LShelfSieveActive => _lShelfVista?.LVistaFiltered ?? false;
 
-    public void LShelfVistaRestore(LVista vista, LVista footnote)
+    internal void LShelfVistaRestore(LVista vista, LVista footnote)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(footnote);
@@ -173,6 +173,17 @@ public sealed class LShelf
         }
 
         vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+    }
+
+    public static IReadOnlyList<CCatalogOrder> LShelfOrderRead()
+    {
+        return
+        [
+            CCatalogOrder.CCatalogOrderName,
+            CCatalogOrder.CCatalogOrderYear,
+            CCatalogOrder.CCatalogOrderAuthor,
+            CCatalogOrder.CCatalogOrderUsage,
+        ];
     }
 
     public void LShelfSieveSet(CCatalogFilter filter)
@@ -430,7 +441,7 @@ public sealed class LShelf
         LShelfImprint.LImprintDesk.LDeskRedo();
     }
 
-    public Task LShelfPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)
+    public Task LShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
     {
         if (LShelfFootnote.LFootnotePanel.LPanelPressAllowed)
         {
@@ -439,7 +450,8 @@ public sealed class LShelf
 
         if (LShelfSourcePrintable)
         {
-            return _lPortraitPort.LEnginePortraitPrint(_lShelfVista, legend, ticket);
+            return _lPortraitPort.LEnginePortraitPrint(
+                _lShelfVista, LAtlas.LAtlasLegendRead(legend), QPortrait.QPortraitTicketRead(ticket));
         }
 
         return Task.CompletedTask;
@@ -459,8 +471,12 @@ public sealed class LShelf
         return LVista.LVistaFileRead(LShelfFootnote.LFootnotePanel.LPanelVista);
     }
 
-    public Task LShelfPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LShelfPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(LShelfFootnote.LFootnotePanel.LPanelVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            LShelfFootnote.LFootnotePanel.LPanelVista,
+            path,
+            QPortrait.QPortraitMediumRead(format),
+            QPortrait.QPortraitLabelRead(label));
     }
 }

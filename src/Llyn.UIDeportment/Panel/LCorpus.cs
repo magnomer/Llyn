@@ -12,11 +12,10 @@ public sealed class LCorpus
 {
     private readonly Func<Func<bool, bool>, bool> _lCorpusLeaveSeam;
 
-    public LCorpus(
+    internal LCorpus(
         LDraftPort drafts,
         LEntryPort entries,
         LPortraitPort portraits,
-        LSettingsPort settings,
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
@@ -27,7 +26,6 @@ public sealed class LCorpus
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
-        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(lectern);
         ArgumentNullException.ThrowIfNull(leaveSeam);
@@ -36,26 +34,36 @@ public sealed class LCorpus
         LCorpusEditor = editor;
         LCorpusDesk = new LDesk(drafts, "Example", unreadableSeam);
         LCorpusAnthology = new LAnthology(
-            entries, portraits, settings, LCorpusDesk, shownSeam, LCorpusLeaveConfirm, removalSeam);
+            entries, portraits, LCorpusDesk, shownSeam, LCorpusLeaveConfirm, removalSeam);
         LCorpusQuotation = new LQuotation(
             entries, portraits, editor.LEditorDesk.LDeskChangeCheck, shownSeam, LCorpusLeaveConfirm);
         LCorpusAnthology.LAnthologyPanel.LPanelRowsChanged += LCorpusQuotation.LQuotationPanel.LPanelRowsUpdate;
-        LCorpusAnthology.LAnthologyPanel.LPanelEdited += LCorpusDraftOpen;
-        LCorpusAnthology.LAnthologyPanel.LPanelCleared += LCorpusDraftCancel;
+        LCorpusSession = new QSession(
+            LCorpusDesk,
+            [LCorpusQuotation.LQuotationPanel, LCorpusAnthology.LAnthologyPanel],
+            editor,
+            LCorpusQuotation.LQuotationPanel,
+            "Example.HoldFailed",
+            id => LCorpusDesk.LDeskStart("Corpus", CSubject.CSubjectExample, id),
+            static () => true,
+            LCorpusStoredShow);
+        LCorpusSession.QSessionHeld += () => LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
+        LCorpusSession.QSessionChanged += () => LCorpusChanged?.Invoke();
+        LCorpusSession.QSessionFailed += (key, exception) => LCorpusFailed?.Invoke(key, exception);
+        LCorpusAnthology.LAnthologyPanel.LPanelEdited += id => LCorpusSession.QSessionStart(id);
+        LCorpusAnthology.LAnthologyPanel.LPanelCleared += LCorpusSession.QSessionCancel;
         LCorpusAnthology.LAnthologyPanel.LPanelDraftChanged += LCorpusExampleUpdate;
         LCorpusQuotation.LQuotationPanel.LPanelEdited += LCorpusEditorOpen;
         LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorClose;
         LCorpusQuotation.LQuotationPanel.LPanelCleared += lectern.LLecternClear;
         LCorpusQuotation.LQuotationPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LCorpusDesk.LDeskStateChanged += LCorpusStateUpdate;
-        editor.LEditorStateChanged += LCorpusStateUpdate;
     }
 
     public event Action? LCorpusChanged;
 
-    public event Action<LExample?>? LCorpusTranscriptChanged;
+    public event Action<CExample?>? LCorpusTranscriptChanged;
 
-    public event Action<LExample>? LCorpusExampleChanged;
+    public event Action<CExample>? LCorpusExampleChanged;
 
     public event Action<string, Exception>? LCorpusFailed;
 
@@ -64,6 +72,8 @@ public sealed class LCorpus
     private LEditor LCorpusEditor { get; }
 
     public LDesk LCorpusDesk { get; }
+
+    public QSession LCorpusSession { get; }
 
     public LAnthology LCorpusAnthology { get; }
 
@@ -97,17 +107,14 @@ public sealed class LCorpus
 
     public bool LCorpusPortraitAllowed => LCorpusDisplayShown;
 
-    private void LCorpusDraftStart(long? id)
-    {
-        LCorpusDesk.LDeskStart("Corpus", CSubject.CSubjectExample, id);
-        LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
-    }
+    public IReadOnlyList<CCitationRow> LCorpusCitationFind(string word) =>
+        LCorpusAnthology.LAnthologyCitationFind(word, LCorpusTranscriptRead()?.CExampleSource);
 
-    public LExample? LCorpusTranscriptRead()
+    public CExample? LCorpusTranscriptRead()
     {
         try
         {
-            return LCorpusDesk.LDeskRead()?.LDraftExample;
+            return LAnthology.LAnthologyExampleRead(LCorpusDesk.LDeskRead()?.LDraftExample);
         }
         catch (Exception exception)
         {
@@ -116,20 +123,9 @@ public sealed class LCorpus
         }
     }
 
-    private void LCorpusDraftOpen(long id)
-    {
-        LCorpusDraftStart(id);
-    }
-
-    private void LCorpusDraftCancel()
-    {
-        LCorpusDesk.LDeskCancel();
-        LCorpusTranscriptChanged?.Invoke(null);
-    }
-
     private void LCorpusExampleUpdate(LDraft draft)
     {
-        if (draft.LDraftExample is LExample example)
+        if (LAnthology.LAnthologyExampleRead(draft.LDraftExample) is CExample example)
         {
             LCorpusExampleChanged?.Invoke(example);
         }
@@ -138,11 +134,6 @@ public sealed class LCorpus
     private void LCorpusEditorOpen(long id)
     {
         LCorpusEditor.LEditorOpen(id);
-    }
-
-    private void LCorpusStateUpdate()
-    {
-        LCorpusChanged?.Invoke();
     }
 
     public void LCorpusExampleShow(long id)
@@ -235,7 +226,7 @@ public sealed class LCorpus
 
         LCorpusQuotation.LQuotationPanel.LPanelClear();
         LCorpusAnthology.LAnthologyPanel.LPanelFreshOpen();
-        LCorpusDraftStart(null);
+        LCorpusSession.QSessionStart(null);
     }
 
     public void LCorpusScribeSet(bool editing)
@@ -275,7 +266,7 @@ public sealed class LCorpus
         LCorpusAnthology.LAnthologyPanel.LPanelClear();
     }
 
-    public void LCorpusRowsApply(IReadOnlyList<LCatalogExample> rows)
+    public void LCorpusRowsApply(IReadOnlyList<CCatalogExample> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -284,9 +275,9 @@ public sealed class LCorpus
             return;
         }
 
-        foreach (LCatalogExample row in rows)
+        foreach (CCatalogExample row in rows)
         {
-            if (row.LCatalogExampleChosen)
+            if (row.CCatalogExampleChosen)
             {
                 return;
             }
@@ -305,20 +296,6 @@ public sealed class LCorpus
         LCorpusAnthology.LAnthologyQuerySet(string.Empty);
         LCorpusAnthology.LAnthologyGauzeSet(new CCatalogFilter([]));
         LCorpusQueryCleared?.Invoke();
-    }
-
-    public void LCorpusSave()
-    {
-        if (LCorpusEditorShown)
-        {
-            LCorpusEditor.LEditorSave();
-            return;
-        }
-
-        if (LCorpusDesk.LDeskChangeCheck())
-        {
-            LCorpusDesk.LDeskFinish(true, LCorpusStoredShow);
-        }
     }
 
     private void LCorpusStoredShow(long id)
@@ -350,13 +327,6 @@ public sealed class LCorpus
         }
     }
 
-    public bool LCorpusChangeCheck()
-    {
-        LPanel quotation = LCorpusQuotation.LQuotationPanel;
-        LPanel anthology = LCorpusAnthology.LAnthologyPanel;
-        return quotation.LPanelChangeCheck() || anthology.LPanelChangeCheck();
-    }
-
     public bool LCorpusLeaveConfirm()
     {
         return LCorpusLeaveConfirm(true);
@@ -364,17 +334,17 @@ public sealed class LCorpus
 
     private bool LCorpusLeaveConfirm(bool shown)
     {
-        if (!LCorpusChangeCheck())
+        if (!LCorpusSession.QSessionChangeCheck())
         {
             return true;
         }
 
         if (shown)
         {
-            return _lCorpusLeaveSeam(LCorpusDraftFinish);
+            return _lCorpusLeaveSeam(LCorpusSession.QSessionFinish);
         }
 
-        return _lCorpusLeaveSeam(LCorpusDraftClose);
+        return _lCorpusLeaveSeam(LCorpusSession.QSessionClose);
     }
 
     public void LCorpusEntryUpdate()
@@ -394,60 +364,7 @@ public sealed class LCorpus
         LCorpusExampleRestore(editing);
     }
 
-    public bool LCorpusDraftFinish(bool store)
-    {
-        return LCorpusEditorShown
-            ? LCorpusEditor.LEditorFinish(store)
-            : LCorpusDesk.LDeskFinish(store, LCorpusStoredShow);
-    }
-
-    private bool LCorpusDraftClose(bool store)
-    {
-        return LCorpusEditorShown ? LCorpusEditor.LEditorFinish(store) : LCorpusDesk.LDeskFinish(store);
-    }
-
-    public (bool LDeskBackward, bool LDeskForward) LCorpusChronicleRead()
-    {
-        return LCorpusEditorShown
-            ? LCorpusEditor.LEditorDesk.LDeskChronicleRead()
-            : LCorpusDesk.LDeskChronicleRead();
-    }
-
-    public void LCorpusUndo()
-    {
-        if (LCorpusEditorShown)
-        {
-            LCorpusEditor.LEditorDesk.LDeskUndo();
-            return;
-        }
-
-        LCorpusChronicleRun(LCorpusDesk.LDeskUndo);
-    }
-
-    public void LCorpusRedo()
-    {
-        if (LCorpusEditorShown)
-        {
-            LCorpusEditor.LEditorDesk.LDeskRedo();
-            return;
-        }
-
-        LCorpusChronicleRun(LCorpusDesk.LDeskRedo);
-    }
-
-    private void LCorpusChronicleRun(Action step)
-    {
-        try
-        {
-            step();
-        }
-        catch (Exception exception)
-        {
-            LCorpusFailed?.Invoke("Example.HoldFailed", exception);
-        }
-    }
-
-    public Task LCorpusPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)
+    public Task LCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
     {
         if (LCorpusDisplayShown)
         {
@@ -462,7 +379,7 @@ public sealed class LCorpus
         return Task.CompletedTask;
     }
 
-    public Task LCorpusPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         if (!LCorpusPortraitAllowed)
         {
@@ -472,7 +389,7 @@ public sealed class LCorpus
         return LCorpusQuotation.LQuotationPortraitExport(path, format, label);
     }
 
-    public void LCorpusVistaRestore(LVista vista, LVista quotation)
+    internal void LCorpusVistaRestore(LVista vista, LVista quotation)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(quotation);

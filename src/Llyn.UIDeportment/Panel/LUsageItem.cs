@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Llyn.Conduct;
 using Llyn.Core;
 
 namespace Llyn.UIDeportment;
@@ -11,18 +12,25 @@ namespace Llyn.UIDeportment;
 public sealed class LUsageItem
 {
     public LUsageItem(LUsage usage, string owner, string unknown, string unnamed, string epithet = "")
+        : this(LOeuvre.LOeuvreUsageRead(usage), owner, unknown, unnamed, epithet)
     {
-        LUsageItemId = usage.LUsageId;
-        LUsageItemEntry = usage.LUsageEntry;
-        LUsageItemName = usage.LUsageName;
+    }
+
+    internal LUsageItem(CUsage usage, string owner, string unknown, string unnamed, string epithet)
+    {
+        ArgumentNullException.ThrowIfNull(usage);
+
+        LUsageItemId = usage.CUsageId;
+        LUsageItemEntry = usage.CUsageEntry;
+        LUsageItemName = usage.CUsageName;
         LUsageItemEpithet = epithet ?? string.Empty;
-        LUsageItemLanguage = usage.LUsageLanguage;
+        LUsageItemLanguage = usage.CUsageLanguage;
         LUsageItemOwner = owner;
-        LUsageItemQuoted = usage.LUsageQuoted;
-        LUsageItemTitle = usage.LUsageTitle.LStateValueUncertain
+        LUsageItemQuoted = usage.CUsageQuoted;
+        LUsageItemTitle = usage.CUsageTitle.CStateValueUncertain
             ? unknown
-            : usage.LUsageTitle.LStateValueShown ?? unnamed;
-        LUsageItemFlag = LEnsignImage.LEnsignFind(usage.LUsageLanguage);
+            : usage.CUsageTitle.CStateValueShown ?? unnamed;
+        LUsageItemFlag = LEnsignImage.LEnsignFind(usage.CUsageLanguage);
     }
 
     public long LUsageItemId { get; }
@@ -43,7 +51,7 @@ public sealed class LUsageItem
 
     public ImageSource? LUsageItemFlag { get; }
 
-    public static IReadOnlyList<LUsageItem> LUsageItemBuild(IReadOnlyList<LUsage> usages)
+    public static IReadOnlyList<LUsageItem> LUsageItemBuild(IReadOnlyList<CUsage> usages)
     {
         ArgumentNullException.ThrowIfNull(usages);
 
@@ -53,10 +61,10 @@ public sealed class LUsageItem
         string example = QLocalizationCatalog.QLocalizationTextRead("Vita.Example");
 
         List<LUsageItem> built = new(usages.Count);
-        foreach (LUsage usage in usages)
+        foreach (CUsage usage in usages)
         {
-            string owner = usage.LUsageCollocated ? collocation : usage.LUsageQuoted ? example : meaning;
-            built.Add(new LUsageItem(usage, owner, unknown, string.Empty, usage.LUsageEpithet));
+            string owner = usage.CUsageCollocated ? collocation : usage.CUsageQuoted ? example : meaning;
+            built.Add(new LUsageItem(usage, owner, unknown, string.Empty, usage.CUsageEpithet));
         }
 
         return built;

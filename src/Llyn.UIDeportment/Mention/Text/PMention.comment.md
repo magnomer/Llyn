@@ -48,6 +48,11 @@ A linked run wears the linked style and a run standing for nothing wears the sil
 A gap wears nothing.
 Each run keeps its piece in its tag, which is how a click finds its offset.
 
+### `internal void PMentionMarkShow(IReadOnlyList<PMentionMark> marks)`
+
+Sets the Mentions from a driver's own rows, so the driver hands the control no Conduct shape.
+Each row becomes the stored shape again, since the window divides the text by that shape.
+
 ### `internal Rect PMentionPieceRead(int offset)`
 
 Where the character at a code-point offset is drawn, relative to the control.

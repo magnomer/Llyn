@@ -24,7 +24,7 @@ public partial class PWindow
 
     private ListBox PMentionList => (ListBox)_pWindowSurface.FindName(nameof(PMentionList));
 
-    internal void PMentionMenuShow(FrameworkElement anchor, Rect place, LMentionResult result)
+    internal void PMentionMenuShow(FrameworkElement anchor, Rect place, CMentionResult result)
     {
         ArgumentNullException.ThrowIfNull(result);
 
@@ -32,7 +32,7 @@ public partial class PWindow
             anchor,
             place,
             "Mention.Title",
-            PMentionItem.PMentionItemCreate(result.LMentionResultEntry),
+            PMentionItem.PMentionItemCreate(result.CMentionResultEntry),
             item => PWindowEntryShow(item.PMentionItemEntry));
     }
 

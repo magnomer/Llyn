@@ -149,34 +149,3 @@ It is internal so the test that holds the member order can reach it.
 
 The Conduct copy of one entry a vista lists, carrying its chosen flag.
 Every entry list and the prospect popup map through here, so the copy has one home.
-
-## `internal static LPortraitMedium LPanelMediumRead(CPortraitMedium medium)`
-
-The engine format a driver's export choice stands for, cast member for member.
-
-## `internal static LPressTicket LPanelTicketRead(CPressTicket ticket)`
-
-The engine ticket a driver's print dialog answer stands for.
-Side and ink cast member for member.
-
-## `private static LPressPaper LPanelPaperRead(double? width, double? height)`
-
-The sheet the dialog named, or the local sheet when it named no usable size.
-The local sheet is the engine's rule, so the driver only says it has no size.
-
-## `internal static LPortraitLabel LPanelLabelRead(CPortraitLabel label)`
-
-The engine label a driver's localized words stand for, copied word for word.
-
-## `internal static Func<CPressTicket, Task> LPanelPressCreate(Func<LPressTicket, Task> print)`
-
-Wraps the print of a panel not yet sealed so it takes the ticket shape the window reads.
-The window then keeps one print path, and the wrap goes once every panel takes Conduct shapes.
-
-## `internal static Func<CPortraitLabel, CPressTicket, Task> LPanelPressCreate(`
-
-The same wrap for a print that takes the labels too.
-
-## `internal static Func<string, CPortraitMedium, CPortraitLabel, Task> LPanelPortraitCreate(`
-
-The same wrap for an export, turning the format and the labels into the engine's own.

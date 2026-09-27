@@ -59,19 +59,21 @@ While no Author is chosen, every Source is listed, as the sources panel lists ev
 The row is the sources panel's own shelf card, so a Source reads alike wherever it is browsed.
 Choosing a row shows that Source in the colophon, in place of the Author reading, without leaving the tab.
 
-## `<local:PColophon x:Name="PColophon" Visibility="Collapsed" />`
+## `<veneer:PColophon x:Name="PColophon" Visibility="Collapsed" />`
 
 The Source reading the sources panel shares, drawn in the same cell as the Author reading.
 It shows an Author or a Source, never both, so it stays collapsed until a Source row is chosen.
 
-## `<local:PVita x:Name="PVita" />`
+## `<veneer:PVita x:Name="PVita" />`
 
-The reading of one Author, a control of its own and described in `PVita.comment.md`.
+The reading of one Author, a veneer page of its own and described in `PVita.comment.md`.
+The guild driver gives it its own `QVita`.
 It stands in the same cell as the colophon and is shown while an Author is read.
 
-## `<local:PAutograph x:Name="PAutograph" Margin="21,18,0,0" Visibility="Collapsed" />`
+## `<veneer:PAutograph x:Name="PAutograph" Margin="21,18,0,0" Visibility="Collapsed" />`
 
-The edit area, a control of its own and described in `PAutograph.comment.md`.
+The edit area, a veneer page of its own and described in `PAutograph.comment.md`.
+The guild driver gives it its own `QAutograph`.
 It sits over the read area in the same cell and at the same inset.
 The panel decides which is shown, so the mode toggle stays in the action row.
 

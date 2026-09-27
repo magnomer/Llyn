@@ -59,6 +59,9 @@ public sealed class LDraftOutlet : LDraftPort
     public LMentionDraft LEngineSpanRead(string text, int start, int length) =>
         _lDraftOutletEngine.LEngineMention.LEngineSpanRead(text, start, length);
 
+    public bool LEngineSpanCheck(string text, int start, int length) =>
+        _lDraftOutletEngine.LEngineMention.LEngineSpanCheck(text, start, length);
+
     public int LEngineOffsetRead(string text, int unit) =>
         _lDraftOutletEngine.LEngineMention.LEngineOffsetRead(text, unit);
 

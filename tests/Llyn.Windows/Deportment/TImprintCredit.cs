@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDeportment;
@@ -38,23 +39,23 @@ public sealed class TImprintCredit
         int focused = 0;
         imprint.LImprintFocused += () => focused++;
 
-        imprint.TImprintCreditApply("Add", 0, ada.LAuthorId);
+        imprint.TImprintAuthorAdd(0, ada.LAuthorId);
 
         Assert.Equal(1, focused);
         Assert.Equal(
             [(ada.LAuthorId, 0)],
-            imprint.TImprintCreditRead().Select(row => (row.LAuthorRowId, row.LAuthorRowPosition)));
+            imprint.TImprintCreditRead().Select(row => (row.CAuthorRowId, row.CAuthorRowPosition)));
         Assert.Equal(1, imprint.LImprintBlankAt);
 
-        imprint.TImprintCreditApply("Remove", 1, 0);
+        imprint.TImprintAuthorRemove(0);
 
-        Assert.Equal(["Ada"], imprint.TImprintCreditRead().Select(row => row.LAuthorRowName));
+        Assert.Equal(["Ada"], imprint.TImprintCreditRead().Select(row => row.CAuthorRowName));
         Assert.Equal(-1, imprint.LImprintBlankAt);
         Assert.False(imprint.LImprintDesk.TDeskChangeCheck());
     }
 
     [Fact]
-    public void CreditApply_Later_ShiftsCredit()
+    public void AuthorAdvance_FirstCredit_ShiftsLater()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,11 +69,15 @@ public sealed class TImprintCredit
         shelf.TShelfScribeSet(true);
         LImprint imprint = shelf.LShelfImprint;
 
-        imprint.TImprintCreditApply("Later", 0, ada.LAuthorId);
+        imprint.TImprintAuthorAdvance(0, ada.LAuthorId);
 
-        Assert.Equal(["Bob", "Ada"], imprint.TImprintCreditRead().Select(row => row.LAuthorRowName));
-        Assert.Equal([false, true], imprint.TImprintCreditRead().Select(row => row.LAuthorRowEarlier));
+        Assert.Equal(["Bob", "Ada"], imprint.TImprintCreditRead().Select(row => row.CAuthorRowName));
+        Assert.Equal([false, true], imprint.TImprintCreditRead().Select(row => row.CAuthorRowEarlier));
         Assert.True(imprint.LImprintDesk.TDeskChangeCheck());
+
+        imprint.TImprintAuthorRetreat(1, ada.LAuthorId);
+
+        Assert.Equal(["Ada", "Bob"], imprint.TImprintCreditRead().Select(row => row.CAuthorRowName));
     }
 
     [Fact]
@@ -90,12 +95,12 @@ public sealed class TImprintCredit
         Assert.Equal(1, reverted);
         Assert.True(imprint.TImprintKeyApply("Enter", 0, 0, " Ada ", null));
 
-        IReadOnlyList<LAuthorRow> rows = imprint.TImprintCreditRead();
-        Assert.Equal(["Ada"], rows.Select(row => row.LAuthorRowName));
+        IReadOnlyList<CAuthorRow> rows = imprint.TImprintCreditRead();
+        Assert.Equal(["Ada"], rows.Select(row => row.CAuthorRowName));
         Assert.Equal(-1, imprint.LImprintBlankAt);
-        Assert.False(imprint.TImprintKeyApply("A", 0, rows[0].LAuthorRowId, "Ada", null));
-        Assert.True(imprint.TImprintKeyApply("Enter", 0, rows[0].LAuthorRowId, "Ada", null));
-        Assert.Equal(["Ada"], imprint.TImprintCreditRead().Select(row => row.LAuthorRowName));
+        Assert.False(imprint.TImprintKeyApply("A", 0, rows[0].CAuthorRowId, "Ada", null));
+        Assert.True(imprint.TImprintKeyApply("Enter", 0, rows[0].CAuthorRowId, "Ada", null));
+        Assert.Equal(["Ada"], imprint.TImprintCreditRead().Select(row => row.CAuthorRowName));
 
         imprint.TImprintTitleSet("Book");
         imprint.TImprintSave();

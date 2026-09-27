@@ -12,10 +12,6 @@ public sealed class LEditor
 {
     private readonly LDraftPort _lDraftPort;
 
-    private readonly LEntryPort _lEntryPort;
-
-    private readonly LPhonologyPort _lPhonologyPort;
-
     private readonly LSettingsPort _lSettingsPort;
 
     private LVista? _lEditorVista;
@@ -39,8 +35,6 @@ public sealed class LEditor
         ArgumentNullException.ThrowIfNull(media);
 
         _lDraftPort = drafts;
-        _lEntryPort = entries;
-        _lPhonologyPort = phonology;
         _lSettingsPort = settings;
         LEditorDesk = new LDesk(drafts, "Input", unreadableSeam);
         LEditorDisplay = new LDisplay(entries, phonology, settings, media);
@@ -49,6 +43,9 @@ public sealed class LEditor
         LEditorNotation = new LNotation(LEditorDesk);
         LEditorSounding = new LSounding(phonology, drafts);
         LEditorSounding.LSoundingFailed += LEditorFailureShow;
+        LEditorDisplay.LDisplayFailed += LEditorFailureShow;
+        LEditorEsteem = new QEsteem(LEditorDesk, LEditorDisplay);
+        LEditorTimbre = new QTimbre(this, phonology, LEditorDisplay, LEditorSounding);
         LEditorDesk.LDeskStateChanged += LEditorStateUpdate;
         LEditorDesk.LDeskFinished += LEditorStoredShow;
         LEditorDesk.LDeskDraftPrepared += LEditorDraftShow;
@@ -59,10 +56,6 @@ public sealed class LEditor
     public event Action<CEntryDraft>? LEditorDraftChanged;
 
     public event Action? LEditorStopped;
-
-    public event Action? LEditorFavoriteChanged;
-
-    public event Action? LEditorGraspChanged;
 
     public event Action<string, Exception>? LEditorFailed;
 
@@ -77,6 +70,10 @@ public sealed class LEditor
     public LNotation LEditorNotation { get; }
 
     public LSounding LEditorSounding { get; }
+
+    public QEsteem LEditorEsteem { get; }
+
+    public QTimbre LEditorTimbre { get; }
 
     public bool LEditorOwned => _lEditorVista?.LVistaInput ?? false;
 
@@ -94,20 +91,7 @@ public sealed class LEditor
 
     public bool LEditorHalted => _lEditorHalted;
 
-    public long? LEditorEntry
-    {
-        get
-        {
-            try
-            {
-                return LEditorDesk.LDeskRead()?.LDraftStored;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-    }
+    public long? LEditorEntry => LEditorDesk.LDeskStoredRead();
 
     public string LEditorLanguage => LEditorDesk.LDeskTenure?.LTenureLanguageRead() ?? string.Empty;
 
@@ -117,38 +101,7 @@ public sealed class LEditor
 
     public IReadOnlyList<string> LEditorVarietyNames => LEditorDesk.LDeskTenure?.LTenureVarietyNames ?? [];
 
-    public bool LEditorTonal => _lPhonologyPort.LEngineTonalCheck(LEditorLanguage);
-
-    public bool LEditorSilent => _lPhonologyPort.LEngineSilentCheck(LEditorLanguage);
-
-    public bool LEditorSpoken => !LEditorSilent;
-
-    public bool LEditorRespelled => _lPhonologyPort.LEngineRespellingCheck(LEditorLanguage);
-
-    public bool LEditorPhonemic => LEditorRespelled && _lPhonologyPort.LEnginePhonemicCheck(LEditorLanguage);
-
-    public bool LEditorFanqieRebuildable =>
-        LEditorEntry is not null && _lPhonologyPort.LEngineBookCheck(LEditorLanguage);
-
-    public bool LEditorScriptRebuildable =>
-        LEditorEntry is not null && _lPhonologyPort.LEngineStyleCheck(LEditorLanguage);
-
     public bool LEditorMorphology => _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
-
-    public bool LEditorFavorite => LEditorEntry is long id && LEditorFavoriteRead(id);
-
-    public int LEditorGrasp => LEditorEntry is long id ? LEditorGraspRead(id) : 0;
-
-    public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;
-
-    public bool LEditorFanqiePending => LEditorDisplay.LDisplayFanqieCheck(LEditorEntry);
-
-    public bool LEditorScriptPending => LEditorDisplay.LDisplayScriptCheck(LEditorEntry);
-
-    public bool LEditorParadigmPending => LEditorDisplay.LDisplayParadigmCheck(LEditorEntry);
-
-    public string LEditorParadigmLanguage =>
-        LParadigm.LParadigmLanguageRead(LEditorSounding.LSoundingParadigmFind(LEditorEntry));
 
     private LEntryDraft? LEditorContent => LEditorDesk.LDeskDraft?.LDraftContent;
 
@@ -194,12 +147,12 @@ public sealed class LEditor
 
     public bool LEditorClipStart(string word, long target, Action<CHarvestStep> sink)
     {
-        return LEditorDesk.LDeskRecordingStart(word, target, sink);
+        return LEditorDesk.LDeskErrand.QErrandRecordingStart(word, target, sink);
     }
 
     public bool LEditorNotationStart(string word, long target, string scheme, Action<CLookupStep> sink)
     {
-        return LEditorDesk.LDeskTranscriptionStart(word, target, scheme, sink);
+        return LEditorDesk.LDeskErrand.QErrandTranscriptionStart(word, target, scheme, sink);
     }
 
     private void LEditorDraftShow(LDraft draft)
@@ -214,7 +167,8 @@ public sealed class LEditor
 
     public string LEditorPronunciationRead()
     {
-        return LEditorContent?.LEntryDraftPronunciation?.LPronunciationDraftRead(LEditorRespelled) ?? string.Empty;
+        return LEditorContent?.LEntryDraftPronunciation?.LPronunciationDraftRead(LEditorTimbre.QTimbreRespelled)
+            ?? string.Empty;
     }
 
     public IReadOnlyList<CTranslationTarget> LEditorEtymonRead()
@@ -232,7 +186,7 @@ public sealed class LEditor
     public void LEditorPronunciationSet(string text)
     {
         LEditorDesk.LDeskDefer(
-            LEditorRespelled
+            LEditorTimbre.QTimbreRespelled
                 ? new LRequestRespelling(LEditorDesk.LDeskId, text)
                 : new LRequestIpa(LEditorDesk.LDeskId, text));
     }
@@ -330,103 +284,6 @@ public sealed class LEditor
         LEditorStateChanged?.Invoke();
     }
 
-    public void LEditorFavoriteSet(bool marked)
-    {
-        if (LEditorEntry is not long id)
-        {
-            LEditorFavoriteChanged?.Invoke();
-            return;
-        }
-
-        try
-        {
-            LEditorFavoriteSave(id, marked);
-        }
-        catch (Exception exception)
-        {
-            LEditorFailed?.Invoke("Favorite.MarkFailed", exception);
-            LEditorFavoriteChanged?.Invoke();
-        }
-    }
-
-    private void LEditorFavoriteSave(long id, bool marked)
-    {
-        if (marked)
-        {
-            _lEntryPort.LEngineFavoriteSave(id);
-            return;
-        }
-
-        _lEntryPort.LEngineFavoriteDelete(id);
-    }
-
-    private bool LEditorFavoriteRead(long id)
-    {
-        try
-        {
-            return _lEntryPort.LEngineFavoriteCheck(id);
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    public void LEditorGraspSet(int step)
-    {
-        if (LEditorEntry is not long id)
-        {
-            LEditorGraspChanged?.Invoke();
-            return;
-        }
-
-        try
-        {
-            _lEntryPort.LEngineGraspSave(id, step);
-        }
-        catch (Exception exception)
-        {
-            LEditorFailed?.Invoke("Grasp.MarkFailed", exception);
-            LEditorGraspChanged?.Invoke();
-        }
-    }
-
-    private int LEditorGraspRead(long id)
-    {
-        try
-        {
-            return _lEntryPort.LEngineGraspRead(id);
-        }
-        catch (Exception)
-        {
-            return 0;
-        }
-    }
-
-    public string LEditorGraspFormat(int step)
-    {
-        return LEditorEntry is null
-            ? string.Empty
-            : _lEntryPort.LEngineGraspFormat(step);
-    }
-
-    public CFrequency? LEditorFrequencyRead(string once)
-    {
-        if (LEditorEntry is not long id)
-        {
-            return null;
-        }
-
-        try
-        {
-            return LSounding.LSoundingFrequencyRead(_lEntryPort.LEngineFrequencyRead(id), once);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
     public IReadOnlyDictionary<long, CTranslationTarget> LEditorTargetRead()
     {
         try
@@ -438,58 +295,6 @@ public sealed class LEditor
         {
             return new Dictionary<long, CTranslationTarget>();
         }
-    }
-
-    public IReadOnlyList<CFanqieGroup> LEditorFanqieRead()
-    {
-        return LEditorSounding.LSoundingFanqieRead(LEditorEntry);
-    }
-
-    public string LEditorReadingRead(string headword)
-    {
-        return LEditorSounding.LSoundingReadingRead(LEditorEntry, headword);
-    }
-
-    public bool LEditorAnchorCheck(string headword)
-    {
-        return LEditorSounding.LSoundingAnchorCheck(LEditorSounding.LSoundingAnchorRead(LEditorEntry), headword);
-    }
-
-    public string LEditorAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)
-    {
-        return LEditorSounding.LSoundingAnchorFormat(
-            LEditorSounding.LSoundingAnchorRead(LEditorEntry), anchors, headword, separator);
-    }
-
-    public IReadOnlyList<CAnchorRow> LEditorAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)
-    {
-        return LEditorSounding.LSoundingAnchorScan(
-            LEditorSounding.LSoundingAnchorRead(LEditorEntry), anchors, LEditorLanguage, reflex, tone);
-    }
-
-    public void LEditorFanqieRebuild()
-    {
-        LEditorSounding.LSoundingFanqieRebuild(LEditorEntry);
-    }
-
-    public void LEditorFanqieSet(long fanqieId, int rank)
-    {
-        LEditorSounding.LSoundingFanqieSet(LEditorEntry, fanqieId, rank);
-    }
-
-    public IReadOnlyList<CScriptGroup> LEditorScriptRead()
-    {
-        return LEditorSounding.LSoundingScriptRead(LEditorEntry);
-    }
-
-    public void LEditorScriptRebuild()
-    {
-        LEditorSounding.LSoundingScriptRebuild(LEditorEntry);
-    }
-
-    public IReadOnlyList<CParadigmSlot> LEditorParadigmRead()
-    {
-        return LEditorSounding.LSoundingParadigmRead(LEditorEntry);
     }
 
     private void LEditorFailureShow(string key, Exception exception)

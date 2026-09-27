@@ -121,9 +121,9 @@ internal sealed partial class QFavorite
     internal void QFavoriteAttach(PWindow host)
     {
         _qFavoriteHost = host;
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lFavorite = host.PWindowDeportment.LWindowFavoriteCreate(
+        _lFavorite = host.PWindowDeportment.LWindowForge.QForgeFavoriteCreate(
             _lEditor, lectern, QFavoriteShownCheck, QFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lFavorite.LFavoritePanel;
         panel.LPanelChanged += QFavoriteModeUpdate;
@@ -198,12 +198,12 @@ internal sealed partial class QFavorite
 
     private void QFavoriteUndoHandle(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.PChronicleUndo();
+        QFavoriteEditor.QChronicleUndo();
     }
 
     private void QFavoriteRedoHandle(object sender, RoutedEventArgs e)
     {
-        QFavoriteEditor.PChronicleRedo();
+        QFavoriteEditor.QChronicleRedo();
     }
 
     private void QFavoriteChronicleUpdate()

@@ -56,6 +56,11 @@ internal sealed class LMentionFacade
         return LMentionClerk.LMentionSpanRead(text, start, length);
     }
 
+    public bool LEngineSpanCheck(string text, int start, int length)
+    {
+        return LEngineSpanRead(text, start, length).LMentionDraftLength > 0;
+    }
+
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
     {
         lock (_lMentionFacadeGate)

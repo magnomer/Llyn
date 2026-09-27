@@ -19,3 +19,5 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsEpithet` — Whether every list prints an entry's epithet after its headword, on by default.
   The epithet is the reading a pack's reflex rule names, such as the Korean 훈 and 음.
 - `LSettingsTally` — Whether the tally lines of a category page print the respelling set rather than IPA, off by default.
+- `LSettingsGloss` — The language a new translation of an Example starts in, English by default.
+  The pack list holds no such default, so the user's own language is kept here.

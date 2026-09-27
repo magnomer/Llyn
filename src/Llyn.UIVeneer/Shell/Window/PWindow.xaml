@@ -188,9 +188,9 @@
                     <veneer:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <veneer:PTenor x:Name="PTenor" Visibility="Collapsed" />
                     <veneer:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
-                    <local:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
-                    <local:PReference x:Name="PReference" Visibility="Collapsed" />
-                    <local:PGuild x:Name="PGuild" Visibility="Collapsed" />
+                    <veneer:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
+                    <veneer:PReference x:Name="PReference" Visibility="Collapsed" />
+                    <veneer:PGuild x:Name="PGuild" Visibility="Collapsed" />
                     <veneer:PFavorite x:Name="PFavorite" Visibility="Collapsed" />
                     <veneer:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />

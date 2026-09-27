@@ -132,9 +132,9 @@ public class PPhonology : UserControl
     internal void PPhonologyAttach(PWindow host)
     {
         _pPhonologyHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lPhonology = host.PWindowDeportment.LWindowPhonologyCreate(
+        _lPhonology = host.PWindowDeportment.LWindowForge.QForgePhonologyCreate(
             editor,
             lectern,
             PPhonologyShownCheck,
@@ -370,12 +370,12 @@ public class PPhonology : UserControl
 
     private void PPhonologyUndoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleUndo();
+        PEditor.QChronicleUndo();
     }
 
     private void PPhonologyRedoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleRedo();
+        PEditor.QChronicleRedo();
     }
 
     private void PPhonologyChronicleUpdate()

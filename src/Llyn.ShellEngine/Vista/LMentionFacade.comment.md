@@ -25,6 +25,10 @@ The pieces a sentence falls into around its Mentions.
 
 A field's selection as the span a Mention request carries, measured by the engine so the shell never counts.
 
+## `public bool LEngineSpanCheck(string text, int start, int length)`
+
+Whether a field's selection spans any code point, so a link command may run.
+
 ## `public int LEngineUnitRead(string text, int offset)`
 
 The UTF-16 index of a code-point offset in the text.

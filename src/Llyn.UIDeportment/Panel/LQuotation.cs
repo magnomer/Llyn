@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,7 +17,7 @@ public sealed class LQuotation
 
     private LVista? _lQuotationVista;
 
-    public LQuotation(
+    internal LQuotation(
         LEntryPort entries,
         LPortraitPort portraits,
         Func<bool> changeSeam,
@@ -36,7 +36,7 @@ public sealed class LQuotation
 
     public LPanel LQuotationPanel { get; }
 
-    public void LQuotationVistaRestore(LVista roll, LVista vista)
+    internal void LQuotationVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
@@ -46,6 +46,11 @@ public sealed class LQuotation
         LQuotationPanel.LPanelVistaRestore(vista);
     }
 
+    public string LQuotationEmptyRead(string? dredge)
+    {
+        return string.IsNullOrWhiteSpace(dredge) ? "Example.Vacant" : "Example.Unmatched";
+    }
+
     public void LQuotationDredgeSet(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -53,9 +58,10 @@ public sealed class LQuotation
         _lQuotationVista?.LVistaQuerySet(query);
     }
 
-    public IReadOnlyList<LVistaRow> LQuotationRowsRead()
+    public IReadOnlyList<CVistaRow> LQuotationRowsRead()
     {
-        return _lEntryPort.LEngineEntryFind(_lQuotationRoll, _lQuotationVista);
+        return LSplice.LSpliceBuild(
+            _lEntryPort.LEngineEntryFind(_lQuotationRoll, _lQuotationVista), LPanel.LPanelRowRead);
     }
 
     public string LQuotationFileRead()
@@ -63,13 +69,15 @@ public sealed class LQuotation
         return LVista.LVistaFileRead(_lQuotationVista);
     }
 
-    public Task LQuotationPortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LQuotationPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lQuotationVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lQuotationVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    public Task LQuotationPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LQuotationPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(_lQuotationVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            _lQuotationVista, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
     }
 }

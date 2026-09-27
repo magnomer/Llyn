@@ -22,7 +22,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     private long _pSentenceRow;
 
     internal PSentence(
-        ObservableCollection<PCitationItem> catalog,
+        ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages,
@@ -45,7 +45,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
     }
 
-    public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
+    public ObservableCollection<QCitationItem> PSentenceCitationCatalog { get; }
 
     public ObservableCollection<PLanguageItem> PSentenceLanguageCatalog { get; }
 
@@ -341,7 +341,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         }
     }
 
-    internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, long? anchor)
+    internal static string PSentenceCitationFind(ObservableCollection<QCitationItem> catalog, long? anchor)
     {
         ArgumentNullException.ThrowIfNull(catalog);
 
@@ -350,11 +350,11 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             return string.Empty;
         }
 
-        foreach (PCitationItem row in catalog)
+        foreach (QCitationItem row in catalog)
         {
-            if (row.PCitationItemId == id)
+            if (row.QCitationItemId == id)
             {
-                return row.PCitationItemName;
+                return row.QCitationItemName;
             }
         }
 

@@ -4,17 +4,17 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private readonly ObservableCollection<POccurrenceItem> _qOccurrenceList = [];
+    private readonly ObservableCollection<QOccurrenceItem> _qOccurrenceList = [];
 
     private void QOccurrenceFind()
     {
-        IReadOnlyList<LVistaRow> read;
+        IReadOnlyList<CVistaRow> read;
         try
         {
             read = _lRepertoire.LRepertoireOccurrence.LOccurrenceRowsRead();
@@ -25,22 +25,14 @@ internal sealed partial class QRepertoire
             return;
         }
 
-        List<POccurrenceItem> fresh = [];
-        foreach (LVistaRow entry in read)
+        List<QOccurrenceItem> fresh = [];
+        foreach (CVistaRow entry in read)
         {
-            fresh.Add(new POccurrenceItem(
-                entry.LVistaRowId,
-                entry.LVistaRowHeadword,
-                entry.LVistaRowLanguage,
-                entry.LVistaRowEpithet ?? string.Empty,
-                entry.LVistaRowChosen)
-            {
-                POccurrenceItemName = entry.LVistaRowName,
-            });
+            fresh.Add(new QOccurrenceItem(entry, entry.CVistaRowChosen));
         }
 
         LSplice.LSpliceApply(
-            _qOccurrenceList, fresh, POccurrenceItem.POccurrenceItemMatch, POccurrenceItem.POccurrenceItemSync);
+            _qOccurrenceList, fresh, QOccurrenceItem.QOccurrenceItemMatch, QOccurrenceItem.QOccurrenceItemSync);
 
         QOccurrenceEmpty.SetResourceReference(
             TextBlock.TextProperty, _lRepertoire.LRepertoireOccurrence.LOccurrenceEmptyRead(QSortie.Text));
@@ -49,19 +41,19 @@ internal sealed partial class QRepertoire
 
     private void QOccurrenceHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireOccurrenceSelect(QSender.QSenderSourceRead<POccurrenceItem>(e)?.POccurrenceItemId);
+        _lRepertoire.LRepertoireOccurrenceSelect(QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
     }
 
     private void QOccurrenceApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not POccurrenceItem occurrence)
+        if (item is not QOccurrenceItem occurrence)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Button>(container, "POccurrenceRow") is Button row)
         {
-            if (occurrence.POccurrenceItemChosen)
+            if (occurrence.QOccurrenceItemChosen)
             {
                 row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
@@ -76,28 +68,28 @@ internal sealed partial class QRepertoire
 
         if (QLook.QLookPartFind<Image>(container, "POccurrenceFlag") is Image flag)
         {
-            flag.Source = occurrence.POccurrenceItemFlag;
+            flag.Source = occurrence.QOccurrenceItemFlag;
         }
 
         if (QLook.QLookPartFind<Run>(container, "POccurrenceName") is Run name)
         {
-            name.Text = occurrence.POccurrenceItemName;
+            name.Text = occurrence.QOccurrenceItemName;
         }
 
         if (QLook.QLookPartFind<Run>(container, "POccurrenceEpithet") is Run epithet)
         {
-            epithet.Text = " " + occurrence.POccurrenceItemEpithet;
+            epithet.Text = " " + occurrence.QOccurrenceItemEpithet;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "POccurrenceLanguage") is TextBlock language)
         {
-            language.Text = occurrence.POccurrenceItemLanguage;
+            language.Text = occurrence.QOccurrenceItemLanguage;
         }
     }
 
     private void QRepertoireStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireSave();
+        _lRepertoire.LRepertoireSession.QSessionSave();
     }
 
     private void QRepertoireFreshHandle(object sender, RoutedEventArgs e)

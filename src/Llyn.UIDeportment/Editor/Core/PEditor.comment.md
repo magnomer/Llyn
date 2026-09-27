@@ -5,6 +5,8 @@
 The shared editable entry view as a control: what it is made of, and how its spine reaches the deportment.
 Its card and sound behaviour is still split across the files beside this one until their own plans.
 This file assembles the parts, wires the editor deportment's notices to control writes, and forwards the rail.
+The esteem strip lives in `QRegard` and the sound panels under the header in `QCadence`.
+This control builds both, attaches them, and routes their bulletins.
 
 One control serves every panel that edits an entry.
 The input panel's editor stands on no entry and never puts it on one.
@@ -113,18 +115,12 @@ A line as well made it a second card.
 
 Focus leaving any box is caught as the event bubbles, so unsent typing goes before the focus does.
 
-### `private Border PEditorFrequencyChip => (Border)FindName(nameof(PEditorFrequencyChip));`
-
-The frequency chip sits under the part-of-speech chips, drawn as the reading view draws it.
-It is read only here as there, since a frequency is fetched rather than typed.
-A form standing on nothing hides it, and nothing beside it moves when it does.
-
 ## `internal event Action? PEditorChronicleChanged;`
 
 Says the chronicle may now stand differently, so a host panel can light its own buttons.
 An embedded editor hides its own rail, and the panel around it carries undo and redo.
 
-### `private TextBlock PEditorReading => (TextBlock)FindName(nameof(PEditorReading));`
+## `private void PEditorFanqieUpdate()`
 
-The representative reading of the headword, rewritten with each draft and each rime-book update.
-Its markup style hides the line on empty text, so nothing ranked leaves the header as it was.
+A rime-book update moves the reflex anchor, the fanqie panel and the reading line together.
+The headword stays with this control, so the reading takes it as a parameter.

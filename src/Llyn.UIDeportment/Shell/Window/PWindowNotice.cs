@@ -63,10 +63,10 @@ public partial class PWindow
             (PXiesheng.PXieshengChangeCheck, PXiesheng.PXieshengDraftFinish),
             (PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
             (_qFavorite.QFavoriteChangeCheck, _qFavorite.QFavoriteDraftFinish),
-            (PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
+            (_qCorpus.QCorpusChangeCheck, _qCorpus.QCorpusDraftFinish),
             (_qRepertoire.QRepertoireChangeCheck, _qRepertoire.QRepertoireDraftFinish),
-            (PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish),
-            (PGuild.PGuildChangeCheck, PGuild.PGuildDraftFinish)
+            (_qReference.QReferenceChangeCheck, _qReference.QReferenceDraftFinish),
+            (_qGuild.QGuildChangeCheck, _qGuild.QGuildDraftFinish)
         ];
     }
 

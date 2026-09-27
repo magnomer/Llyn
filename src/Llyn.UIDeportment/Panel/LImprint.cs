@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -26,7 +27,7 @@ public sealed class LImprint
 
     private string _lBylineWord = string.Empty;
 
-    public LImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, Func<bool> unreadableSeam)
+    internal LImprint(LDraftPort drafts, LEntryPort entries, LSettingsPort settings, Func<bool> unreadableSeam)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
@@ -41,7 +42,7 @@ public sealed class LImprint
 
     public event Action? LImprintChanged;
 
-    public event Action<LReference>? LImprintReferenceChanged;
+    public event Action<CImprint>? LImprintReferenceChanged;
 
     public event Action? LImprintFocused;
 
@@ -50,6 +51,15 @@ public sealed class LImprint
     public event Action? LBylineChanged;
 
     public LDesk LImprintDesk { get; }
+
+    public static CImprint LImprintEmpty { get; } = LImprintReferenceRead(new LReference(
+        0,
+        LStateValue.LStateValueUnspecified,
+        LStateValue.LStateValueUnspecified,
+        LReferenceKind.LReferenceKindUnspecified,
+        LStateValue.LStateValueUnspecified,
+        LStateValue.LStateValueUnspecified,
+        LStateMark.LStateMarkUnspecified));
 
     public bool LImprintHeld => LImprintDesk.LDeskHeld;
 
@@ -61,7 +71,7 @@ public sealed class LImprint
 
     public string LBylineWord => _lBylineWord;
 
-    public void LImprintVistaRestore(LVista vista)
+    internal void LImprintVistaRestore(LVista vista)
     {
         LImprintDesk.LDeskVistaRestore(vista);
     }
@@ -94,13 +104,23 @@ public sealed class LImprint
     private void LImprintDraftUpdate(LDraft draft)
     {
         LImprintChanged?.Invoke();
-        LImprintReferenceChanged?.Invoke(LImprintReferenceRead(draft));
+        LImprintReferenceChanged?.Invoke(LImprintReferenceRead(draft.LDraftReference
+            ?? throw new InvalidOperationException("The imprint draft holds no reference.")));
     }
 
-    private static LReference LImprintReferenceRead(LDraft draft)
+    internal static CImprint LImprintReferenceRead(LReference reference)
     {
-        return draft.LDraftReference
-            ?? throw new InvalidOperationException("The imprint draft holds no reference.");
+        return new CImprint(
+            reference.LReferenceTitle.LStateValueShow(),
+            reference.LReferenceTitleHint,
+            reference.LReferenceYear.LStateValueShow(),
+            reference.LReferenceYearHint,
+            reference.LReferenceUrl.LStateValueShow(),
+            reference.LReferenceUrlHint,
+            reference.LReferenceNote.LStateValueShow(),
+            reference.LReferenceNoteHint,
+            reference.LReferenceKindKey,
+            reference.LReferenceKindTag);
     }
 
     public string LImprintTallyRead()
@@ -110,7 +130,7 @@ public sealed class LImprint
 
     private int LImprintUsageRead()
     {
-        return LImprintDesk.LDeskRead()?.LDraftStored is long stored
+        return LImprintDesk.LDeskStoredRead() is long stored
             ? _lEntryPort.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(stored)
             : 0;
     }
@@ -161,7 +181,7 @@ public sealed class LImprint
             ?? false;
     }
 
-    public IReadOnlyList<LAuthorRow> LImprintCreditRead()
+    public IReadOnlyList<CAuthorRow> LImprintCreditRead()
     {
         IReadOnlyList<LAuthorRow> rows = LImprintDesk.LDeskRead()?.LDraftCreditRead() ?? [];
         _lImprintCount = rows.Count;
@@ -170,7 +190,14 @@ public sealed class LImprint
             LImprintBlankSet();
         }
 
-        return rows;
+        return LSplice.LSpliceBuild(
+            rows,
+            static row => new CAuthorRow(
+                row.LAuthorRowId,
+                row.LAuthorRowName,
+                row.LAuthorRowPosition,
+                row.LAuthorRowEarlier,
+                row.LAuthorRowLater));
     }
 
     private void LImprintBlankSet()
@@ -186,39 +213,18 @@ public sealed class LImprint
         }
     }
 
-    public void LImprintCreditApply(string? action, int? position, long? id)
+    public void LImprintAuthorAdd(int? position, long? id)
     {
         if (!LImprintHeld)
         {
             return;
         }
 
-        if (action is null || position is not int at || id is not long author)
+        if (position is not int at || id is not long author)
         {
             return;
         }
 
-        switch (action)
-        {
-            case "Add":
-                LImprintCreditAdd(at, author);
-                return;
-            case "Remove":
-                LImprintCreditRemove(author);
-                return;
-            case "Earlier":
-                LImprintCreditMove(author, at - 1);
-                return;
-            case "Later":
-                LImprintCreditMove(author, at + 1);
-                return;
-            default:
-                return;
-        }
-    }
-
-    private void LImprintCreditAdd(int at, long author)
-    {
         if (author != 0)
         {
             _lImprintBlankAt = at + 1;
@@ -228,8 +234,18 @@ public sealed class LImprint
         LImprintFocused?.Invoke();
     }
 
-    private void LImprintCreditRemove(long author)
+    public void LImprintAuthorRemove(long? id)
     {
+        if (!LImprintHeld)
+        {
+            return;
+        }
+
+        if (id is not long author)
+        {
+            return;
+        }
+
         LBylineHide();
         if (author == 0)
         {
@@ -241,9 +257,30 @@ public sealed class LImprint
         LImprintDesk.LDeskSend(new LRequestAuthorRemoval(LImprintDesk.LDeskId, author));
     }
 
-    private void LImprintCreditMove(long author, int to)
+    public void LImprintAuthorRetreat(int? position, long? id)
     {
-        if (author == 0)
+        if (position is int at)
+        {
+            LImprintCreditMove(id, at - 1);
+        }
+    }
+
+    public void LImprintAuthorAdvance(int? position, long? id)
+    {
+        if (position is int at)
+        {
+            LImprintCreditMove(id, at + 1);
+        }
+    }
+
+    private void LImprintCreditMove(long? id, int to)
+    {
+        if (!LImprintHeld)
+        {
+            return;
+        }
+
+        if (id is not long author || author == 0)
         {
             return;
         }
@@ -339,11 +376,11 @@ public sealed class LImprint
         LBylineChanged?.Invoke();
     }
 
-    public IReadOnlyList<LAuthor> LBylineRowsRead()
+    public IReadOnlyList<CAuthor> LBylineRowsRead()
     {
         IReadOnlyList<LAuthor> rows = LBylineFind();
         _lBylineCount = rows.Count;
-        return rows;
+        return LSplice.LSpliceBuild(rows, static row => new CAuthor(row.LAuthorId, row.LAuthorName));
     }
 
     private IReadOnlyList<LAuthor> LBylineFind()

@@ -23,22 +23,9 @@ A start clears it.
 A tenure was started, handed out so the veneer can attach its marshalling observers to it.
 The observers the veneer registered are already on the new tenure when this fires.
 
-## `private LForay? _lDeskRecording;`
-
-The recording search running over the held tenure, kept here so no driver ever holds it.
-`_lDeskTranscription` is the reading search, kept apart since the engine runs both kinds side by side.
-
 ## `internal LDesk(LDraftPort drafts, string scope, Func<bool> unreadableSeam)`
 
 Only the controllers that own a desk build one, so the port never reaches a driver.
-
-## `public void LDeskDraftAttach(CSubject subject, Action<CBulletin> observer)`
-
-Registers an observer the desk puts on every tenure it starts, for the draft-level subjects.
-An observer is a delegate over a Conduct bulletin, which the desk copies from each engine bulletin.
-The veneer registers once at attach time and never sees the tenure, which is what re-attaches per start.
-A tenure already held gets the observer at once.
-`LDeskObserverAttach` and `LDeskEntryAttach` do the same for the tenure-wide and entry-level subjects.
 
 ## `internal event Action<LDraft>? LDeskDraftPrepared;`
 
@@ -74,9 +61,18 @@ A driver reaches it through the desk, so no driver builds a text request.
 The gate for this desk's image and video rows, built over the desk itself.
 A driver reaches it through the desk, so no driver builds a media request.
 
+## `internal QErrand LDeskErrand { get; }`
+
+The recording and reading searches over this desk's tenure, built over the desk itself.
+
+## `public QVigil LDeskVigil { get; }`
+
+The observers this desk puts on every tenure it starts, built over the desk itself.
+
 ## `public bool LDeskStored`
 
 Whether the held draft stands on a stored record rather than a fresh one.
+It reads `LDeskStoredRead`, so a failed read answers false like the tally.
 
 ## `public bool LDeskChanged`
 
@@ -107,11 +103,6 @@ The held tenure, for the editor that reads the draft's language and reflex state
 The held draft as it stands, without applying what still waits, or null while nothing is held.
 A reader inside a keystroke takes this, so the pending request keeps its delay and raises no bulletin mid-typing.
 
-## `internal LForay? LDeskRecording`
-
-The running recording search, read by the clip for its language, target and save.
-`LDeskTranscription` hands the reading search to the notation the same way.
-
 ## `internal void LDeskVistaRestore(LVista vista)`
 
 Takes the vista a start runs over, handed on by the controller that owns the desk.
@@ -125,31 +116,6 @@ A refused start is announced under the scope's load key and leaves the desk empt
 
 The same start for a desk that holds no vista, naming the origin and the subject itself.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
-
-## `public bool LDeskRecordingStart(string word, long target, Action<CHarvestStep> sink)`
-
-Starts a recording search over the held tenure and reports whether one started.
-Nothing starts while no tenure is held.
-The previous recording search is cancelled first.
-Each engine step reaches the sink as a Conduct copy.
-`LDeskTranscriptionStart` starts a reading search the same way, under one scheme.
-
-## `public void LDeskForayCancel()`
-
-Stops both searches.
-The clip and notation popups never stay open together, so stopping both stops only the one running.
-
-## `private static LForay? LDeskRecordingRun(LTenure? tenure, string word, long target, Action<LHarvestStep> sink)`
-
-Starts the search over the tenure handed in, or nothing when none is held.
-The tenure and the forays arrive as parameters, so no field decides the start.
-`LDeskTranscriptionRun` and `LDeskForayStop` take their handles the same way.
-
-## `internal static CRecording? LDeskRecordingRead(LRecording? recording)`
-
-Copies an engine recording into its Conduct shape, or none for none.
-The overload over `CRecording` copies it back, since the clip saves and plays what it listed.
-`LDeskCandidateRead` copies a reading out the same way.
 
 ## `internal LDraft? LDeskRead()`
 

@@ -28,8 +28,3 @@ A marked field is unknown whatever its box holds, because an unknown value keeps
 Every editor empties the box when the mark goes on, so nothing written is lost by this order.
 An unmarked field that is blank stands for nothing recorded.
 Any other text is the value it states.
-
-## `public bool LStateWrittenMatch(LStateValue? value)`
-
-Whether the field already stands for `value`, so an editor can leave a box the user is typing in alone.
-A missing value counts as nothing recorded.

@@ -19,10 +19,10 @@ public sealed class TGuildRoll
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
 
-        IReadOnlyList<LCatalogAuthor> rows = guild.TGuildRollRead();
+        IReadOnlyList<CCatalogAuthor> rows = guild.TGuildRollRead();
 
-        Assert.Equal([0L, ada.LAuthorId], rows.Select(row => row.LCatalogAuthorStored.LAuthorId));
-        Assert.Equal(1, rows[1].LCatalogAuthorWork);
+        Assert.Equal([0L, ada.LAuthorId], rows.Select(row => row.CCatalogAuthorId));
+        Assert.Equal("Guild.WorkOne", rows[1].CCatalogAuthorWork);
         Assert.False(guild.LGuildEmpty);
     }
 
@@ -38,7 +38,7 @@ public sealed class TGuildRoll
 
         guild.TGuildQuerySet("Bo");
 
-        Assert.Equal(["Bob"], guild.TGuildRollRead().Select(row => row.LCatalogAuthorName));
+        Assert.Equal(["Bob"], guild.TGuildRollRead().Select(row => row.CCatalogAuthorName));
     }
 
     [Fact]
@@ -54,16 +54,16 @@ public sealed class TGuildRoll
         engine.TRequestCreditApply(book.LReferenceId, bob.LAuthorId, 1);
 
         guild.TGuildRowSelect(ada.LAuthorId);
-        LVita vita = guild.TGuildVitaRead();
+        CVita vita = guild.TGuildVitaRead();
 
         Assert.True(guild.LGuildVitaShown);
         Assert.True(guild.LGuildVitaHeld);
         Assert.True(guild.LGuildModeEnabled);
         Assert.True(guild.LGuildBinEnabled);
-        Assert.Equal("Ada", vita.LVitaName);
-        Assert.True(vita.LVitaNamed);
-        Assert.Equal("Guild.WorkOne", vita.LVitaWork);
-        Assert.Equal(["Bob"], vita.LVitaFellows.Select(fellow => fellow.LFellowName));
+        Assert.Equal("Ada", vita.CVitaName);
+        Assert.True(vita.CVitaNamed);
+        Assert.Equal("Guild.WorkOne", vita.CVitaWork);
+        Assert.Equal(["Bob"], vita.CVitaFellows.Select(fellow => fellow.CFellowName));
         Assert.Equal(["Book"], guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
 

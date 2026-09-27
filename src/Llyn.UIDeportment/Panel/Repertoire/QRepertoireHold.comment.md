@@ -30,18 +30,18 @@ Reads the held Situation back and redraws the controls from it.
 This is what the panel's own draft bulletin does.
 What is waiting is written first, so a bulletin from the tenure's timer never redraws over a newer keystroke.
 
-## `public void PChronicleUndo()`
+## `public void QChronicleUndo()`
 
 Steps whichever draft is in front one snapshot back, through the deportment.
-The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+The step runs inside `QChronicle.QChronicleRun`, so the caret stays at the end of the focused box.
 The draft bulletin the engine raises brings the older fields back through the ordinary restore.
 
-## `public void PChronicleRedo()`
+## `public void QChronicleRedo()`
 
 Steps whichever draft is in front one snapshot forward again.
 The inverse of the undo above, through the same bulletin.
 
-## `public void PChronicleUpdate()`
+## `public void QChronicleUpdate()`
 
 Lights `QRepertoireBackward` and `QRepertoireForward` only when the draft in front has a step to walk.
 The deportment reads the entry editor's chronicle while `PEditor` is in front, and the held Situation's otherwise.

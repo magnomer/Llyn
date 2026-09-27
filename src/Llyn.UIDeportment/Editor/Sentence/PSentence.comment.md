@@ -38,7 +38,7 @@ The language catalog is handed in for the Gloss pickers, shared with every other
 
 The id of the row itself, which every request about the row names.
 
-## `public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }`
+## `public ObservableCollection<QCitationItem> PSentenceCitationCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.
@@ -80,7 +80,7 @@ A field already reading what the engine holds is left alone, so the caret surviv
 Says the cited Source again, for when the list of Sources changed underneath the row.
 The field then looks the byline up afresh.
 
-## `internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, long? anchor)`
+## `internal static string PSentenceCitationFind(ObservableCollection<QCitationItem> catalog, long? anchor)`
 
 The `Author (Year)` line of the Source an anchor names, or nothing when it names none.
 The citation converter calls it when a field is drawn, and the editor when it compares a typed line.

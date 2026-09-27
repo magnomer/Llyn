@@ -42,7 +42,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 21 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 22 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -89,6 +89,8 @@ Audit a specific checkout and open the violation report.
 # the import dialog shows. The UI audit rises with it.
 # Generation 21: the Conduct surface each driver may reach admits the portrait legend the repertoire
 # prints with. The UI audit rises with it.
+# Generation 22: the Conduct surface each driver may reach admits the example, mention result, author,
+# vita, fellow and usage shapes the corpus and guild read. The UI audit rises with it.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -178,7 +180,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 21
+$script:AuditGeneration = 22
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)

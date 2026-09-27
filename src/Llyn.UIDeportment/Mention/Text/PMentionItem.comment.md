@@ -14,7 +14,7 @@ The flag comes from `LEnsignImage`, so the rows read as every other headword lis
 A sub-sense is listed flat under its parent and pushed right by one step per level.
 The template binds this, because a margin is the one thing markup cannot compute from a depth.
 
-## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<LTranslationTarget> targets)`
+## `internal static IReadOnlyList<PMentionItem> PMentionItemCreate(IReadOnlyList<CTranslationTarget> targets)`
 
 The Entry-mode rows, one per candidate, in the order the engine returned them.
 

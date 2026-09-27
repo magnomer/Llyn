@@ -26,6 +26,12 @@ Returns the names of the languages that have a pack on disk, for the UI to offer
 The scan opens and parses every pack once, and the engine keeps the list until the workspace changes.
 Every panel asks for it on each entry switch, so a fresh scan each time stalled the UI thread.
 
+## `public string LEngineGlossRead()`
+
+Picks the gloss language of the settings when a pack for it is loaded.
+Otherwise it falls back to the first loaded language, and to empty when none is loaded.
+A settings file names a language the workspace may lack, so the pick checks the list first.
+
 ## `public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 
 Returns the local path to the given language's flag image, for the UI to display beside it.

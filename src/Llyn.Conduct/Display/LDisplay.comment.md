@@ -47,9 +47,9 @@ It is static, because the label depends on the card alone.
 
 Whether `card` is the one with `id`, which a card scroll looks for.
 
-## `public string LDisplayGraspFormat(int step)`
+## `public string LDisplayGraspFormat(long? entry, int step)`
 
-The wording of a grasp step, or empty while no entry is shown.
+The wording of a grasp step, or empty when no entry is given.
 
 ## `public void LDisplayDraftLoad(Action<LEntryDraft?> show)`
 
@@ -72,22 +72,23 @@ A refused load throws before anything changes, so the caller can report it.
 The shown draft's language, or empty while nothing is shown.
 A flag arriving late is drawn for it, so a stale language never gets its flag.
 
-## `public bool LDisplayFavoriteRead()`
+## `public bool LDisplayFavoriteRead(long? entry)`
 
-Whether the chosen entry is a favorite, false while nothing is chosen or the read fails.
+Whether the entry is a favorite, false when no entry is given or the read fails.
+The lectern passes the chosen entry and the editor's esteem the stored one, so both share this rule.
 
-## `public void LDisplayFavoriteSave(bool marked)`
+## `public void LDisplayFavoriteSave(long? entry, bool marked)`
 
-Marks or unmarks the chosen entry as a favorite.
+Marks or unmarks the entry as a favorite.
 A refused mark raises `LDisplayFailed` with `Favorite.MarkFailed`, and the heart then redraws from the stored value.
 
-## `public int LDisplayGraspRead()`
+## `public int LDisplayGraspRead(long? entry)`
 
-The chosen entry's grasp step, zero while nothing is chosen or the read fails.
+The entry's grasp step, zero when no entry is given or the read fails.
 
-## `public void LDisplayGraspSave(int step)`
+## `public void LDisplayGraspSave(long? entry, int step)`
 
-Stores `step` as the chosen entry's grasp.
+Stores `step` as the entry's grasp.
 A refused save raises `LDisplayFailed` with `Grasp.MarkFailed`, and the stars then redraw from the stored value.
 
 ## `public LDisplayStamp LDisplayStampRead()`
@@ -105,10 +106,10 @@ A missing or unreadable stamp answers empty.
 The shown draft's parts of speech as the names a reader reads.
 The draft keeps the stored value beside the name, and the page shows only the name.
 
-## `public IReadOnlyList<LFrequency> LDisplayFrequencyRead()`
+## `public IReadOnlyList<LFrequency> LDisplayFrequencyRead(long? entry)`
 
-The chosen entry's frequency rows, since the draft does not carry them.
-It answers empty while nothing is chosen or the read fails.
+The entry's frequency rows, since the draft does not carry them.
+It answers empty when no entry is given or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
 
 ## `public static bool LDisplayFrequencyCheck(IReadOnlyList<LFrequency> rows)`

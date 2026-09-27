@@ -58,4 +58,8 @@ internal static class TInterfaceConduct
 
     internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>
         filter.CCatalogFilterMatch(language);
+
+    internal static IReadOnlyList<CCitationRow> TCitationRowFind(
+        IReadOnlyList<CCatalogReference> found, string word, long? source) =>
+        CCitationRow.CCitationRowFind(found, word, source);
 }

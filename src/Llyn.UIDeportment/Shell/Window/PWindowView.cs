@@ -13,9 +13,9 @@ public partial class PWindow
         _qTaxonomy.QTaxonomyVistaRestore();
         _qTenor.QTenorVistaRestore();
         _qRepertoire.QRepertoireVistaRestore();
-        PReference.PReferenceVistaRestore();
-        PCorpus.PCorpusVistaRestore();
-        PGuild.PGuildVistaRestore();
+        _qReference.QReferenceVistaRestore();
+        _qCorpus.QCorpusVistaRestore();
+        _qGuild.QGuildVistaRestore();
         PXiesheng.PXieshengVistaRestore();
         PYunjing.PYunjingVistaRestore();
 

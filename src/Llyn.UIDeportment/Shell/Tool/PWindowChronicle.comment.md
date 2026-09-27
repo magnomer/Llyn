@@ -6,7 +6,7 @@ The three key chords that walk a draft's chronicle: Ctrl+Z back, Ctrl+Y or Ctrl+
 The window owns the chords so every draft editor answers them the same way.
 Which editor answers is decided by where the keyboard is, not by which panel is showing.
 
-## `private static PChronicleHost? PChronicleHostRead()`
+## `private static QChronicleHost? PWindowChronicleRead()`
 
 Climbs from the focused element to the first ancestor that answers undo and redo.
 A veneer surface answers through the driver attached to it, as the situation form does.

@@ -56,4 +56,6 @@ public interface LSettingsPort
     LEstablishment LEngineEstablishmentRead();
 
     IReadOnlyList<string> LEngineLanguageRead();
+
+    string LEngineGlossRead();
 }

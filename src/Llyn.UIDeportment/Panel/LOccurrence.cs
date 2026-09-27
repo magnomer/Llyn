@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,7 +17,7 @@ public sealed class LOccurrence
 
     private LVista? _lOccurrenceVista;
 
-    public LOccurrence(
+    internal LOccurrence(
         LEntryPort entries,
         LPortraitPort portraits,
         Func<bool> changeSeam,
@@ -36,7 +36,7 @@ public sealed class LOccurrence
 
     public LPanel LOccurrencePanel { get; }
 
-    public void LOccurrenceVistaRestore(LVista roll, LVista vista)
+    internal void LOccurrenceVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
@@ -53,9 +53,10 @@ public sealed class LOccurrence
         _lOccurrenceVista?.LVistaQuerySet(inquest);
     }
 
-    public IReadOnlyList<LVistaRow> LOccurrenceRowsRead()
+    public IReadOnlyList<CVistaRow> LOccurrenceRowsRead()
     {
-        return _lEntryPort.LEngineEntryFind(_lOccurrenceRoll, _lOccurrenceVista);
+        return LSplice.LSpliceBuild(
+            _lEntryPort.LEngineEntryFind(_lOccurrenceRoll, _lOccurrenceVista), LPanel.LPanelRowRead);
     }
 
     public string LOccurrenceEmptyRead(string? sortie)
@@ -68,13 +69,15 @@ public sealed class LOccurrence
         return LVista.LVistaFileRead(_lOccurrenceVista);
     }
 
-    public Task LOccurrencePortraitPrint(LPortraitLabel label, LPressTicket ticket)
+    public Task LOccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        return _lPortraitPort.LEnginePortraitPrint(_lOccurrenceVista, label, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lOccurrenceVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
-    public Task LOccurrencePortraitExport(string path, LPortraitMedium format, LPortraitLabel label)
+    public Task LOccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
-        return _lPortraitPort.LEnginePortraitExport(_lOccurrenceVista, path, format, label);
+        return _lPortraitPort.LEnginePortraitExport(
+            _lOccurrenceVista, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
     }
 }

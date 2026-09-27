@@ -14,10 +14,6 @@ public sealed record LVita(
 {
     private static readonly LCatalogAuthor LVitaNobody = new(new LAuthor(0, string.Empty), 0, 0);
 
-    public bool LVitaFellowShown => LVitaFellows.Count > 0;
-
-    public bool LVitaUsageShown => LVitaUsages.Count > 0;
-
     public static LVita LVitaCreate(
         LCatalogAuthor? row,
         IReadOnlyList<LFellow> fellows,

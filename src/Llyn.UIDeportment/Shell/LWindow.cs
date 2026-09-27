@@ -51,9 +51,14 @@ public sealed class LWindow : IDisposable
         _lMediaPort = media;
         _lPortraitPort = portraits;
         LWindowWorkspace = new QWorkspace(this);
+        LWindowForge = new QForge(this);
     }
 
     public QWorkspace LWindowWorkspace { get; }
+
+    public QForge LWindowForge { get; }
+
+    internal LDraftPort LWindowDraftPort => _lDraftPort;
 
     internal LEntryPort LWindowEntryPort => _lEntryPort;
 
@@ -63,126 +68,7 @@ public sealed class LWindow : IDisposable
 
     internal LMediaPort LWindowMediaPort => _lMediaPort;
 
-    public LEditor LWindowEditorCreate(Func<bool> unreadableSeam)
-    {
-        return new LEditor(_lDraftPort, _lEntryPort, _lPhonologyPort, _lSettingsPort, _lMediaPort, unreadableSeam);
-    }
-
-    public LEditor LWindowInputCreate(Func<bool> unreadableSeam)
-    {
-        return LWindowVistaAdd(
-            LWindowEditorCreate(unreadableSeam), static (editor, window) => editor.LEditorVistaRestore(window));
-    }
-
-    public LCorpus LWindowCorpusCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
-        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
-    {
-        return LWindowVistaAdd(
-            new LCorpus(
-                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
-                removalSeam, unreadableSeam),
-            static (corpus, window) => corpus.LCorpusVistaRestore(window));
-    }
-
-    public LFavorite LWindowFavoriteCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LFavorite(
-                _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (favorite, window) => favorite.LFavoriteVistaRestore(window));
-    }
-
-    public LGuild LWindowGuildCreate(
-        Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<int, bool> removalSeam,
-        Func<string, string, bool> unionSeam,
-        Func<bool> unreadableSeam)
-    {
-        return LWindowVistaAdd(
-            new LGuild(
-                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, shownSeam, leaveSeam, removalSeam, unionSeam,
-                unreadableSeam),
-            static (guild, window) => guild.LGuildVistaRestore(window));
-    }
-
-    public LLibrary LWindowLibraryCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LLibrary(_lEntryPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (library, window) => library.LLibraryVistaRestore(window));
-    }
-
-    public LPhonology LWindowPhonologyCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LPhonology(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (phonology, window) => phonology.LPhonologyVistaRestore(window));
-    }
-
-    public LShelf LWindowShelfCreate(
-        LEditor editor,
-        LLectern lectern,
-        Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<int, bool> removalSeam,
-        Func<bool> unreadableSeam)
-    {
-        return LWindowVistaAdd(
-            new LShelf(
-                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
-                removalSeam, unreadableSeam),
-            static (shelf, window) => shelf.LShelfVistaRestore(window));
-    }
-
-    public LRepertoire LWindowRepertoireCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
-        Func<int, bool> removalSeam, Func<bool> unreadableSeam)
-    {
-        return LWindowVistaAdd(
-            new LRepertoire(
-                _lDraftPort, _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam,
-                removalSeam, unreadableSeam),
-            static (repertoire, window) => repertoire.LRepertoireVistaRestore(window));
-    }
-
-    public LTaxonomy LWindowTaxonomyCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LTaxonomy(
-                _lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (taxonomy, window) => taxonomy.LTaxonomyVistaRestore(window));
-    }
-
-    public LTenor LWindowTenorCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LTenor(_lEntryPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (tenor, window) => tenor.LTenorVistaRestore(window));
-    }
-
-    public LXiesheng LWindowXieshengCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LXiesheng(_lPhonologyPort, _lPortraitPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (xiesheng, window) => xiesheng.LXieshengVistaRestore(window));
-    }
-
-    public LYunjing LWindowYunjingCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<bool> leaveSeam, Func<bool> deleteSeam)
-    {
-        return LWindowVistaAdd(
-            new LYunjing(
-                _lPhonologyPort, _lPortraitPort, _lSettingsPort, editor, lectern, shownSeam, leaveSeam, deleteSeam),
-            static (yunjing, window) => yunjing.LYunjingVistaRestore(window));
-    }
+    internal LPortraitPort LWindowPortraitPort => _lPortraitPort;
 
     public void LWindowVistaRestore()
     {
@@ -192,7 +78,7 @@ public sealed class LWindow : IDisposable
         }
     }
 
-    private LWindowHeld LWindowVistaAdd<LWindowHeld>(LWindowHeld held, Action<LWindowHeld, LWindow> restore)
+    internal LWindowHeld LWindowVistaAdd<LWindowHeld>(LWindowHeld held, Action<LWindowHeld, LWindow> restore)
     {
         restore(held, this);
         _lWindowVistas.Add(() => restore(held, this));
@@ -367,6 +253,11 @@ public sealed class LWindow : IDisposable
     {
         LMentionDraft span = _lDraftPort.LEngineSpanRead(text, start, length);
         return (span.LMentionDraftOffset, span.LMentionDraftLength);
+    }
+
+    public bool LWindowSpanCheck(string text, int start, int length)
+    {
+        return _lDraftPort.LEngineSpanCheck(text, start, length);
     }
 
     public bool LWindowAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)

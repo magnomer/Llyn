@@ -170,7 +170,12 @@ public sealed class LSounding
         return LSoundingParadigmRead(LSoundingParadigmFind(entry));
     }
 
-    internal IReadOnlyList<LParadigmSlot> LSoundingParadigmFind(long? entry)
+    internal string LSoundingLanguageRead(long? entry)
+    {
+        return LParadigm.LParadigmLanguageRead(LSoundingParadigmFind(entry));
+    }
+
+    private IReadOnlyList<LParadigmSlot> LSoundingParadigmFind(long? entry)
     {
         if (entry is not long id)
         {

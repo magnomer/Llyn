@@ -113,7 +113,7 @@ public sealed class LAtlas
     public Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lAtlasVista, LAtlasLegendRead(legend), LPanel.LPanelTicketRead(ticket));
+            _lAtlasVista, LAtlasLegendRead(legend), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal static LPortraitLegend LAtlasLegendRead(CPortraitLegend legend)

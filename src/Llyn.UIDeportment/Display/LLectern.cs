@@ -301,25 +301,25 @@ public sealed class LLectern
 
     public void LLecternFavoriteHandle()
     {
-        _lLecternDisplay.LDisplayFavoriteSave(_lLecternFavorite.IsChecked is true);
+        _lLecternDisplay.LDisplayFavoriteSave(_lLecternDisplay.LDisplayChosen, _lLecternFavorite.IsChecked is true);
         LLecternFavoriteUpdate();
     }
 
     public void LLecternGraspHandle(int step)
     {
-        _lLecternDisplay.LDisplayGraspSave(step);
+        _lLecternDisplay.LDisplayGraspSave(_lLecternDisplay.LDisplayChosen, step);
         LLecternGraspUpdate();
     }
 
     public void LLecternHoverHandle(int pointed)
     {
-        _lLecternGraspLabel.Text = _lLecternDisplay.LDisplayGraspFormat(pointed);
+        _lLecternGraspLabel.Text = _lLecternDisplay.LDisplayGraspFormat(_lLecternDisplay.LDisplayChosen, pointed);
     }
 
     private void LLecternGraspShow(int step)
     {
         _lLecternGrasp.SetValue(_lLecternStep, step);
-        _lLecternGraspLabel.Text = _lLecternDisplay.LDisplayGraspFormat(step);
+        _lLecternGraspLabel.Text = _lLecternDisplay.LDisplayGraspFormat(_lLecternDisplay.LDisplayChosen, step);
     }
 
     private void LLecternStampShow(LDisplayStamp stamp)
@@ -343,12 +343,12 @@ public sealed class LLectern
 
     private void LLecternFavoriteUpdate()
     {
-        _lLecternFavorite.IsChecked = _lLecternDisplay.LDisplayFavoriteRead();
+        _lLecternFavorite.IsChecked = _lLecternDisplay.LDisplayFavoriteRead(_lLecternDisplay.LDisplayChosen);
     }
 
     private void LLecternGraspUpdate()
     {
-        LLecternGraspShow(_lLecternDisplay.LDisplayGraspRead());
+        LLecternGraspShow(_lLecternDisplay.LDisplayGraspRead(_lLecternDisplay.LDisplayChosen));
     }
 
     private void LLecternFrequencyUpdate()
@@ -359,7 +359,7 @@ public sealed class LLectern
             _lLecternName,
             _lLecternBand,
             LSounding.LSoundingFrequencyRead(
-                _lLecternDisplay.LDisplayFrequencyRead(),
+                _lLecternDisplay.LDisplayFrequencyRead(_lLecternDisplay.LDisplayChosen),
                 QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
     }
 

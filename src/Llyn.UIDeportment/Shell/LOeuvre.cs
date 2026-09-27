@@ -175,6 +175,46 @@ public sealed class LOeuvre
                 row.LCatalogReferenceChosen));
     }
 
+    internal static IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(
+        IReadOnlyList<LCatalogAuthor> rows, Func<string, string> localize)
+    {
+        return LSplice.LSpliceBuild(
+            rows,
+            row => new CCatalogAuthor(
+                row.LCatalogAuthorStored.LAuthorId,
+                row.LCatalogAuthorName,
+                LVita.LVitaWorkFormat(row.LCatalogAuthorWork, localize),
+                row.LCatalogAuthorUsage,
+                row.LCatalogAuthorStored.LAuthorStored,
+                row.LCatalogAuthorChosen));
+    }
+
+    internal static CVita LOeuvreVitaRead(LVita vita)
+    {
+        return new CVita(
+            vita.LVitaName,
+            vita.LVitaNamed,
+            vita.LVitaWork,
+            vita.LVitaTally,
+            LSplice.LSpliceBuild(
+                vita.LVitaFellows,
+                static fellow => new CFellow(fellow.LFellowId, fellow.LFellowName, fellow.LFellowShared)),
+            LSplice.LSpliceBuild(vita.LVitaUsages, LOeuvreUsageRead));
+    }
+
+    internal static CUsage LOeuvreUsageRead(LUsage usage)
+    {
+        return new CUsage(
+            usage.LUsageId,
+            usage.LUsageEntry,
+            usage.LUsageName,
+            usage.LUsageEpithet,
+            usage.LUsageLanguage,
+            LCard.LCardStateRead(usage.LUsageTitle),
+            usage.LUsageQuoted,
+            usage.LUsageCollocated);
+    }
+
     private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)
     {
         return credit is null ? new CStateValue(string.Empty, uncertain, false) : new CStateValue(credit, false, true);

@@ -77,6 +77,7 @@ Opens the entry a source chip names, as a translation link does.
 
 Forwards a clicked word to the display, which asks the engine what stands there.
 The display hands a found answer to `show` with `anchor`, and a failed lookup calls nothing.
+The answer is mapped to its shape on the way, so the window reads no engine type.
 
 ## `public void LLecternCardScroll(long id)`
 

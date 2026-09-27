@@ -10,13 +10,17 @@ using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
-public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHost
+public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHost
 {
     private PWindow _pEditorHost = null!;
 
     private LEditor _lEditor = null!;
 
     private LLectern _pEditorLectern = null!;
+
+    private readonly QRegard _qRegard;
+
+    private readonly QCadence _qCadence;
 
     public PEditor()
     {
@@ -84,9 +88,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         QField.QFieldGhostAttach(PHeadwordGhost, PHeadword);
         QField.QFieldGhostAttach(PPronunciationMeasure, PPronunciationField);
         PNoteContents.TextChanged += PNoteHandle;
-        PEditorFavorite.Click += PEditorFavoriteHandle;
-        PEditorGrasp.PGraspChanged += PEditorGraspHandle;
-        PEditorGrasp.PGraspHovered += PEditorHoverHandle;
+        _qRegard = new QRegard(this);
+        _qCadence = new QCadence(this);
         PEditorBackward.Click += PEditorUndoHandle;
         PHeadword.SetResourceReference(QField.QFieldHintProperty, "Input.Headword");
         PPronunciationField.SetResourceReference(QField.QFieldHintProperty, "Input.Pronunciation");
@@ -109,14 +112,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     private TextBlock PHeadwordGhost => (TextBlock)FindName(nameof(PHeadwordGhost));
 
     private TextBox PHeadword => (TextBox)FindName(nameof(PHeadword));
-
-    private TextBlock PEditorReading => (TextBlock)FindName(nameof(PEditorReading));
-
-    private ToggleButton PEditorFavorite => (ToggleButton)FindName(nameof(PEditorFavorite));
-
-    private PGrasp PEditorGrasp => (PGrasp)FindName(nameof(PEditorGrasp));
-
-    private TextBlock PEditorGraspLabel => (TextBlock)FindName(nameof(PEditorGraspLabel));
 
     private Border PEditorCommand => (Border)FindName(nameof(PEditorCommand));
 
@@ -142,20 +137,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private PContour PContour => (PContour)FindName(nameof(PContour));
 
-    private StackPanel PEditorFrequencySection => (StackPanel)FindName(nameof(PEditorFrequencySection));
-
-    private Border PEditorFrequencyChip => (Border)FindName(nameof(PEditorFrequencyChip));
-
-    private TextBlock PEditorFrequency => (TextBlock)FindName(nameof(PEditorFrequency));
-
-    private TextBlock PEditorFrequencyBand => (TextBlock)FindName(nameof(PEditorFrequencyBand));
-
-    private PParadigm PEditorParadigm => (PParadigm)FindName(nameof(PEditorParadigm));
-
-    private PFanqie PEditorFanqie => (PFanqie)FindName(nameof(PEditorFanqie));
-
-    private PScript PEditorScript => (PScript)FindName(nameof(PEditorScript));
-
     private Border PContents => (Border)FindName(nameof(PContents));
 
     private TextBox PNoteContents => (TextBox)FindName(nameof(PNoteContents));
@@ -167,15 +148,14 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _pEditorHost = host;
         _lEditor = editor;
         _pEditorLectern = lectern;
+        _qRegard.QRegardAttach(editor);
+        _qCadence.QCadenceAttach(host, editor);
         _lEditor.LEditorDesk.LDeskStarted += PEditorStartUpdate;
         PEditorObserverAttach(_lEditor.LEditorDesk);
         _lEditor.LEditorDraftChanged += PEditorDraftShow;
         _lEditor.LEditorDesk.LDeskFailed += host.PWindowFailureShow;
         _lEditor.LEditorStateChanged += PEditorStateUpdate;
         _lEditor.LEditorStopped += PEditorStopUpdate;
-        _lEditor.LEditorFavoriteChanged += PEditorFavoriteUpdate;
-        _lEditor.LEditorGraspChanged += PEditorGraspUpdate;
-        PEditorGrasp.PGraspLimit = _lEditor.LEditorGraspStep;
         _lEditor.LEditorSounding.LSoundingChanged += PEditorFanqieUpdate;
         _lEditor.LEditorFailed += host.PWindowFailureShow;
         _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
@@ -234,17 +214,17 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         return _lEditor.LEditorDesk.LDeskChronicleRead();
     }
 
-    public void PChronicleUndo()
+    public void QChronicleUndo()
     {
-        PChronicle.PChronicleRun(_lEditor.LEditorDesk.LDeskUndo);
+        QChronicle.QChronicleRun(_lEditor.LEditorDesk.LDeskUndo);
     }
 
-    public void PChronicleRedo()
+    public void QChronicleRedo()
     {
-        PChronicle.PChronicleRun(_lEditor.LEditorDesk.LDeskRedo);
+        QChronicle.QChronicleRun(_lEditor.LEditorDesk.LDeskRedo);
     }
 
-    public void PChronicleUpdate()
+    public void QChronicleUpdate()
     {
         _lEditor.LEditorDesk.LDeskStateUpdate();
     }
@@ -266,22 +246,25 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorObserverAttach(LDesk desk)
     {
-        desk.LDeskEntryAttach(
-            CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(this, PEditorFrequencyUpdate));
-        desk.LDeskEntryAttach(CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, PEditorGraspUpdate));
-        desk.LDeskEntryAttach(
-            CSubject.CSubjectInflection, LObserver.LObserverCreate<CBulletin>(this, PEditorParadigmUpdate));
-        desk.LDeskEntryAttach(CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PReflexPendingShow));
-        desk.LDeskObserverAttach(
-            CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(this, PEditorScriptUpdate));
-        desk.LDeskObserverAttach(
+        desk.LDeskVigil.QVigilEntryAttach(
+            CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardFrequencyUpdate));
+        desk.LDeskVigil.QVigilEntryAttach(
+            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(this, _qRegard.QRegardGraspUpdate));
+        desk.LDeskVigil.QVigilEntryAttach(
+            CSubject.CSubjectInflection, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceParadigmUpdate));
+        desk.LDeskVigil.QVigilEntryAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, PReflexPendingShow));
+        desk.LDeskVigil.QVigilObserverAttach(
+            CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(this, _qCadence.QCadenceScriptUpdate));
+        desk.LDeskVigil.QVigilObserverAttach(
             CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(this, PEditorFanqieUpdate));
-        desk.LDeskObserverAttach(CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
-        desk.LDeskObserverAttach(
+        desk.LDeskVigil.QVigilObserverAttach(
+            CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
+        desk.LDeskVigil.QVigilObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
-        desk.LDeskDraftAttach(
+        desk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskStateUpdate));
-        desk.LDeskDraftAttach(
+        desk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(this, desk.LDeskDraftUpdate));
     }
 
@@ -289,19 +272,17 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
     {
         _pMeaningList.Clear();
         _pCollocationList.Clear();
-        PEditorFavoriteUpdate();
-        PEditorGraspUpdate();
-        PEditorFrequencyUpdate();
-        PEditorParadigmUpdate();
-        PEditorScriptUpdate();
+        _qRegard.QRegardUpdate();
+        _qCadence.QCadenceParadigmUpdate();
+        _qCadence.QCadenceScriptUpdate();
         PEditorFanqieUpdate();
     }
 
     private void PEditorDraftShow(CEntryDraft draft)
     {
         QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
-        PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "[");
-        PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorPhonemic, "/", "]");
+        PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "[");
+        PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "]");
         QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorPronunciationRead());
         PAccentShow(draft);
         PGlyphShow(draft);
@@ -309,7 +290,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PReflexShow(draft);
         PMarkerShow(draft.CEntryDraftSpeeches);
         PEditorLanguageUpdate();
-        PEditorReadingShow();
+        _qCadence.QCadenceReadingShow(PHeadword.Text);
 
         IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorTargetRead();
         PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets, draft.CEntryDraftLanguage);
@@ -329,9 +310,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         LFontFace.LFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
         LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage);
-        PContour.PContourTonal = _lEditor.LEditorTonal;
-        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorSpoken);
-        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorSpoken);
+        PContour.PContourTonal = _lEditor.LEditorTimbre.QTimbreTonal;
+        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
+        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
         PSentenceFrameLoad(_lEditor.LEditorLanguage);
         PCategoryLoad();
     }
@@ -397,12 +378,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
 
     private void PEditorUndoHandle(object sender, RoutedEventArgs e)
     {
-        PChronicleUndo();
+        QChronicleUndo();
     }
 
     private void PEditorRedoHandle(object sender, RoutedEventArgs e)
     {
-        PChronicleRedo();
+        QChronicleRedo();
     }
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
@@ -415,79 +396,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         _lEditor.LEditorReset();
     }
 
-    private void PEditorFavoriteUpdate()
-    {
-        PEditorFavorite.IsEnabled = _lEditor.LEditorDesk.LDeskStored;
-        PEditorFavorite.IsChecked = _lEditor.LEditorFavorite;
-    }
-
-    private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)
-    {
-        _lEditor.LEditorFavoriteSet(QLook.QLookCheckedRead(PEditorFavorite.IsChecked));
-    }
-
-    private void PEditorGraspUpdate()
-    {
-        PEditorGrasp.IsEnabled = _lEditor.LEditorDesk.LDeskStored;
-        PEditorGrasp.PGraspStep = _lEditor.LEditorGrasp;
-        PEditorGraspLabel.Text = _lEditor.LEditorGraspFormat(PEditorGrasp.PGraspStep);
-    }
-
-    private void PEditorHoverHandle(object sender, RoutedEventArgs e)
-    {
-        PEditorGraspLabel.Text = _lEditor.LEditorGraspFormat(PEditorGrasp.PGraspPointed);
-    }
-
-    private void PEditorGraspHandle(object sender, RoutedEventArgs e)
-    {
-        _lEditor.LEditorGraspSet(PEditorGrasp.PGraspStep);
-    }
-
-    private void PEditorFrequencyUpdate()
-    {
-        LFrequencyLabel.LFrequencyChipShow(
-            PEditorFrequencySection,
-            PEditorFrequencyChip,
-            PEditorFrequency,
-            PEditorFrequencyBand,
-            _lEditor.LEditorFrequencyRead(QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
-    }
-
-    private void PEditorParadigmUpdate()
-    {
-        LFontFace.LFontApply(_pEditorHost.PWindowDeportment, _lEditor.LEditorParadigmLanguage, PEditorParadigm);
-        PEditorParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
-            _lEditor.LEditorParadigmRead(), _lEditor.LEditorParadigmPending, _lEditor.LEditorMorphology, true);
-    }
-
-    private void PEditorScriptUpdate()
-    {
-        LFontFace.LFontApply(
-            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, PEditorScript);
-        PEditorScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorScriptRead());
-        PEditorScript.PScriptPending = _lEditor.LEditorScriptPending;
-        PEditorScript.PScriptRenewal =
-            QLook.QLookFirstRead<Action?>(_lEditor.LEditorScriptRebuildable, _lEditor.LEditorScriptRebuild, null);
-    }
-
     private void PEditorFanqieUpdate()
     {
         PReflexAnchorShow();
-        LFontFace.LFontApply(
-            _pEditorHost.PWindowDeportment, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, PEditorFanqie);
-        PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorFanqieRead());
-        PEditorFanqie.PFanqiePending = _lEditor.LEditorFanqiePending;
-        PEditorFanqie.PFanqieRenewal =
-            QLook.QLookFirstRead<Action?>(_lEditor.LEditorFanqieRebuildable, _lEditor.LEditorFanqieRebuild, null);
-        PEditorFanqie.PFanqieDiweiNotice =
-            (kind, key) => _pEditorHost.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
-        PEditorFanqie.PFanqieRepresentativeNotice =
-            (fanqieId, rank) => _lEditor.LEditorFanqieSet(fanqieId, rank);
-        PEditorReadingShow();
-    }
-
-    private void PEditorReadingShow()
-    {
-        PEditorReading.Text = _lEditor.LEditorReadingRead(PHeadword.Text);
+        _qCadence.QCadenceFanqieUpdate();
+        _qCadence.QCadenceReadingShow(PHeadword.Text);
     }
 }

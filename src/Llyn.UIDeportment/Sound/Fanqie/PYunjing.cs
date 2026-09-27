@@ -149,9 +149,9 @@ public class PYunjing : UserControl
     internal void PYunjingAttach(PWindow host)
     {
         _pYunjingHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lYunjing = host.PWindowDeportment.LWindowYunjingCreate(
+        _lYunjing = host.PWindowDeportment.LWindowForge.QForgeYunjingCreate(
             editor,
             lectern,
             PYunjingShownCheck,
@@ -448,12 +448,12 @@ public class PYunjing : UserControl
 
     private void PYunjingUndoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleUndo();
+        PEditor.QChronicleUndo();
     }
 
     private void PYunjingRedoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleRedo();
+        PEditor.QChronicleRedo();
     }
 
     private void PYunjingChronicleUpdate()

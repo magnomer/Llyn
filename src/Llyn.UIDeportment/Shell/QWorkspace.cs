@@ -101,7 +101,7 @@ public sealed class QWorkspace
 
     public Task<string> QWorkspaceRecordingPrepare(CRecording recording, CancellationToken cancellation)
     {
-        return _lWindow.LWindowMediaPort.LEngineRecordingPrepare(LDesk.LDeskRecordingRead(recording), cancellation);
+        return _lWindow.LWindowMediaPort.LEngineRecordingPrepare(QErrand.QErrandRecordingRead(recording), cancellation);
     }
 
     public Task QWorkspaceEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
@@ -144,6 +144,11 @@ public sealed class QWorkspace
     public IReadOnlyList<string> QWorkspaceLanguageRead()
     {
         return _lWindow.LWindowSettingsPort.LEngineLanguageRead();
+    }
+
+    public string QWorkspaceGlossRead()
+    {
+        return _lWindow.LWindowSettingsPort.LEngineGlossRead();
     }
 
     public CEntryDraft? QWorkspaceEntryLoad(long id)

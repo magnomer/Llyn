@@ -21,7 +21,7 @@ public partial class PWindow
     internal Task PWindowPortraitExport(
         string file, Func<string, LPortraitMedium, LPortraitLabel, Task> export)
     {
-        return PWindowPortraitExport(file, LPanel.LPanelPortraitCreate(export));
+        return PWindowPortraitExport(file, QPortrait.QPortraitPortraitCreate(export));
     }
 
     internal async Task PWindowPortraitExport(

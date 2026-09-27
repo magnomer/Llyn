@@ -261,7 +261,7 @@ public class PDisplay : UserControl
             lectern.LLecternCompass);
         lectern.LLecternCard.LLecternLinkAttach(
             _pLeaf.PLeafLink.PLinkConverterShow,
-            _pLeaf.PLeafCitation.PCitationConverterShow,
+            _pLeaf.PLeafCitation.QCitationConverterShow,
             _pLeaf.PLeafFrame.PSentenceConverterApply);
         lectern.LLecternCard.LLecternIncomingAttach(PDisplayIncoming, PDisplayIncomingSection);
         lectern.LLecternCard.LLecternEtymologyAttach(

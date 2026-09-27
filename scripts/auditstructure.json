@@ -1,5 +1,5 @@
 {
-  "generation": 21,
+  "generation": 22,
   "project": "Llyn",
   "framework": "net10.0",
   "source": "src/",
@@ -182,9 +182,9 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 166,
-    "cross:Llyn.UIDeportment>Llyn.Core": 1258,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 661,
+    "cross:Llyn.UIDeportment>Llyn.Application": 154,
+    "cross:Llyn.UIDeportment>Llyn.Core": 1098,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 654,
     "expose:Llyn.UIDemeanor>Llyn.Core": 33,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 9,
     "expose:Llyn.UIDeportment>Llyn.Core": 33,
@@ -192,8 +192,8 @@
     "reach:Llyn.Conduct>Llyn.Core": 1,
     "reach:Llyn.ShellEngine>Llyn.Core": 15,
     "seal:Llyn.UIDeportment>Llyn.Application": 2,
-    "seal:Llyn.UIDeportment>Llyn.Core": 73,
-    "seal:Llyn.UIDeportment>Llyn.ShellEngine": 42
+    "seal:Llyn.UIDeportment>Llyn.Core": 32,
+    "seal:Llyn.UIDeportment>Llyn.ShellEngine": 10
   },
   "surface": {
     "Llyn.Conduct>Llyn.ShellEngine": [
@@ -284,7 +284,20 @@
       "CPressSide",
       "CPressInk",
       "CMarkupEntry",
-      "CMarkupOmission"
+      "CMarkupOmission",
+      "CExample",
+      "CMentionResult",
+      "CCatalogExample",
+      "CCatalogAuthor",
+      "CVita",
+      "CFellow",
+      "CUsage",
+      "CExampleField",
+      "CGlossField",
+      "CCitationRow",
+      "CAuthor",
+      "CAuthorRow",
+      "CImprint"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",
@@ -362,7 +375,20 @@
       "CPressSide",
       "CPressInk",
       "CMarkupEntry",
-      "CMarkupOmission"
+      "CMarkupOmission",
+      "CExample",
+      "CMentionResult",
+      "CCatalogExample",
+      "CCatalogAuthor",
+      "CVita",
+      "CFellow",
+      "CUsage",
+      "CExampleField",
+      "CGlossField",
+      "CCitationRow",
+      "CAuthor",
+      "CAuthorRow",
+      "CImprint"
     ]
   },
   "seal": {

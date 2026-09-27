@@ -12,7 +12,7 @@ public sealed class TVaultSettings
         LSettingsVault settings = TInterface.TSettingsVaultCreate(workspace.TWorkspaceFolder);
 
         Assert.False(settings.TSettingsExist());
-        settings.TSettingsSave(TInterface.TSettingsCreate("ko", true, false, true, false, true));
+        settings.TSettingsSave(TInterface.TSettingsCreate("ko", true, false, true, false, true, "Korean"));
         LSettings read = settings.TSettingsRead();
 
         Assert.True(settings.TSettingsExist());
@@ -22,6 +22,7 @@ public sealed class TVaultSettings
         Assert.True(read.LSettingsMorphology);
         Assert.False(read.LSettingsEpithet);
         Assert.True(read.LSettingsTally);
+        Assert.Equal("Korean", read.LSettingsGloss);
     }
 
     [Fact]
@@ -34,5 +35,6 @@ public sealed class TVaultSettings
 
         Assert.Equal("en", read.LSettingsLocalization);
         Assert.False(read.LSettingsRespelled);
+        Assert.Equal("English", read.LSettingsGloss);
     }
 }

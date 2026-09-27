@@ -133,9 +133,9 @@ internal sealed partial class QTaxonomy
     internal void QTaxonomyAttach(PWindow host)
     {
         _qTaxonomyHost = host;
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lTaxonomy = host.PWindowDeportment.LWindowTaxonomyCreate(
+        _lTaxonomy = host.PWindowDeportment.LWindowForge.QForgeTaxonomyCreate(
             _lEditor, lectern, QTaxonomyShownCheck, QTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.LPanelChanged += QTaxonomyModeUpdate;
@@ -214,12 +214,12 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyUndoHandle(object sender, RoutedEventArgs e)
     {
-        QTaxonomyEditor.PChronicleUndo();
+        QTaxonomyEditor.QChronicleUndo();
     }
 
     private void QTaxonomyRedoHandle(object sender, RoutedEventArgs e)
     {
-        QTaxonomyEditor.PChronicleRedo();
+        QTaxonomyEditor.QChronicleRedo();
     }
 
     private void QTaxonomyChronicleUpdate()

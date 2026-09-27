@@ -60,3 +60,8 @@ So a bad row cannot loop the walk.
 ## `internal static CSettings QWorkspaceSettingsRead(LSettings settings)`
 
 Copies the engine's settings, with its count of online lookups, into the Conduct shape.
+
+## `public string QWorkspaceGlossRead()`
+
+The language a new translation starts in, as the engine resolves it from the settings and the loaded packs.
+The corpus transcript reads it here, and the entry editor's Gloss menu can read the same source.

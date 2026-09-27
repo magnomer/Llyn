@@ -99,6 +99,24 @@ public sealed class PMention : TextBlock
         RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset));
     }
 
+    internal void PMentionMarkShow(IReadOnlyList<PMentionMark> marks)
+    {
+        ArgumentNullException.ThrowIfNull(marks);
+
+        List<CMention> mentions = new(marks.Count);
+        foreach (PMentionMark mark in marks)
+        {
+            mentions.Add(new CMention(
+                mark.PMentionMarkId,
+                mark.PMentionMarkOffset,
+                mark.PMentionMarkLength,
+                mark.PMentionMarkEntry,
+                mark.PMentionMarkSense));
+        }
+
+        PMentionMention = mentions;
+    }
+
     internal Rect PMentionPieceRead(int offset)
     {
         if (PMentionWindow is not LWindow window)

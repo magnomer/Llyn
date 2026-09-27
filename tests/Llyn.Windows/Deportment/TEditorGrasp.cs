@@ -18,7 +18,7 @@ public sealed class TEditorGrasp
 
         editor.TEditorGraspSet(4);
 
-        Assert.Equal(4, editor.LEditorGrasp);
+        Assert.Equal(4, editor.LEditorEsteem.QEsteemGrasp);
         Assert.Equal(4, engine.TEngineGraspRead(entry.LEntryId));
         Assert.NotEqual(string.Empty, editor.TEditorGraspFormat(4));
     }
@@ -31,11 +31,11 @@ public sealed class TEditorGrasp
         LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
         editor.TEditorOpen(null);
         int announced = 0;
-        editor.LEditorGraspChanged += () => announced++;
+        editor.LEditorEsteem.QEsteemGraspChanged += () => announced++;
 
         editor.TEditorGraspSet(4);
 
-        Assert.Equal(0, editor.LEditorGrasp);
+        Assert.Equal(0, editor.LEditorEsteem.QEsteemGrasp);
         Assert.Equal(1, announced);
         Assert.Equal(string.Empty, editor.TEditorGraspFormat(4));
     }
@@ -50,10 +50,10 @@ public sealed class TEditorGrasp
         editor.TEditorOpen(entry.LEntryId);
 
         editor.TEditorFavoriteSet(true);
-        Assert.True(editor.LEditorFavorite);
+        Assert.True(editor.LEditorEsteem.QEsteemFavorite);
         Assert.True(engine.TEngineFavoriteCheck(entry.LEntryId));
 
         editor.TEditorFavoriteSet(false);
-        Assert.False(editor.LEditorFavorite);
+        Assert.False(editor.LEditorEsteem.QEsteemFavorite);
     }
 }

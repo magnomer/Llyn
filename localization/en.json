@@ -607,6 +607,7 @@
     "Guild.DetachCount": "Sources crediting it:",
     "Guild.MergeConfirm": "Merge the first author into the second? Every credit moves across and the first is deleted.",
     "Guild.LoadFailed": "The authors could not be read.",
+    "Guild.HoldFailed": "The unsaved author could not be held.",
     "Guild.SaveFailed": "The author could not be saved.",
     "Guild.DeleteFailed": "The author could not be deleted.",
     "Guild.MergeFailed": "The authors could not be merged.",

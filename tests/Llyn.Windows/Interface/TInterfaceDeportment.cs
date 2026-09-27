@@ -54,11 +54,13 @@ internal static class TInterfaceDeportment
     internal static bool TEditorClipStart(this LEditor editor, string word, long target, Action<CHarvestStep> sink) =>
         editor.LEditorClipStart(word, target, sink);
 
-    internal static string TEditorGraspFormat(this LEditor editor, int step) => editor.LEditorGraspFormat(step);
+    internal static string TEditorGraspFormat(this LEditor editor, int step) =>
+        editor.LEditorEsteem.QEsteemGraspFormat(step);
 
-    internal static void TEditorGraspSet(this LEditor editor, int step) => editor.LEditorGraspSet(step);
+    internal static void TEditorGraspSet(this LEditor editor, int step) => editor.LEditorEsteem.QEsteemGraspSet(step);
 
-    internal static void TEditorFavoriteSet(this LEditor editor, bool marked) => editor.LEditorFavoriteSet(marked);
+    internal static void TEditorFavoriteSet(this LEditor editor, bool marked) =>
+        editor.LEditorEsteem.QEsteemFavoriteSet(marked);
 
     internal static void TEditorTagAdd(this LEditor editor, long id) => editor.LEditorTagAdd(id);
 
@@ -137,6 +139,10 @@ internal static class TInterfaceDeportment
 
     internal static void TShelfDelete(this LShelf shelf) => shelf.LShelfDelete();
 
+    internal static IReadOnlyList<CCatalogOrder> TShelfOrderRead() => LShelf.LShelfOrderRead();
+
+    internal static void TShelfOrderSet(this LShelf shelf, CCatalogOrder order) => shelf.LShelfOrderSet(order);
+
     internal static void TImprintOpen(this LImprint imprint, long? id) => imprint.LImprintOpen(id);
 
     internal static void TImprintCancel(this LImprint imprint) => imprint.LImprintCancel();
@@ -151,11 +157,19 @@ internal static class TInterfaceDeportment
 
     internal static void TImprintKindSet(this LImprint imprint, string? tag) => imprint.LImprintKindSet(tag);
 
-    internal static IReadOnlyList<LAuthorRow> TImprintCreditRead(this LImprint imprint) =>
+    internal static IReadOnlyList<CAuthorRow> TImprintCreditRead(this LImprint imprint) =>
         imprint.LImprintCreditRead();
 
-    internal static void TImprintCreditApply(this LImprint imprint, string? action, int? position, long? id) =>
-        imprint.LImprintCreditApply(action, position, id);
+    internal static void TImprintAuthorAdd(this LImprint imprint, int? position, long? id) =>
+        imprint.LImprintAuthorAdd(position, id);
+
+    internal static void TImprintAuthorRemove(this LImprint imprint, long? id) => imprint.LImprintAuthorRemove(id);
+
+    internal static void TImprintAuthorRetreat(this LImprint imprint, int? position, long? id) =>
+        imprint.LImprintAuthorRetreat(position, id);
+
+    internal static void TImprintAuthorAdvance(this LImprint imprint, int? position, long? id) =>
+        imprint.LImprintAuthorAdvance(position, id);
 
     internal static bool TImprintKeyApply(
         this LImprint imprint, string key, int? position, long? id, string? text, long? chosen) =>
@@ -164,7 +178,7 @@ internal static class TInterfaceDeportment
     internal static void TBylineWordSet(this LImprint imprint, string? text, bool? focused) =>
         imprint.LBylineWordSet(text, focused);
 
-    internal static IReadOnlyList<LAuthor> TBylineRowsRead(this LImprint imprint) => imprint.LBylineRowsRead();
+    internal static IReadOnlyList<CAuthor> TBylineRowsRead(this LImprint imprint) => imprint.LBylineRowsRead();
 
     internal static void TBylineSelect(this LImprint imprint, long? id, int? position, long? held) =>
         imprint.LBylineSelect(id, position, held);
@@ -191,11 +205,11 @@ internal static class TInterfaceDeportment
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => LPanel.LPanelRowRead(row);
 
-    internal static LPortraitMedium TPanelMediumRead(CPortraitMedium medium) => LPanel.LPanelMediumRead(medium);
+    internal static LPortraitMedium TPanelMediumRead(CPortraitMedium medium) => QPortrait.QPortraitMediumRead(medium);
 
-    internal static LPressTicket TPanelTicketRead(CPressTicket ticket) => LPanel.LPanelTicketRead(ticket);
+    internal static LPressTicket TPanelTicketRead(CPressTicket ticket) => QPortrait.QPortraitTicketRead(ticket);
 
-    internal static LPortraitLabel TPanelLabelRead(CPortraitLabel label) => LPanel.LPanelLabelRead(label);
+    internal static LPortraitLabel TPanelLabelRead(CPortraitLabel label) => QPortrait.QPortraitLabelRead(label);
 
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
@@ -250,7 +264,7 @@ internal static class TInterfaceDeportment
 
     internal static LDraft? TDeskRead(this LDesk desk) => desk.LDeskRead();
 
-    internal static CRecording? TDeskRecordingRead(LRecording? recording) => LDesk.LDeskRecordingRead(recording);
+    internal static CRecording? TDeskRecordingRead(LRecording? recording) => QErrand.QErrandRecordingRead(recording);
 
     internal static CStateValue TCardStateRead(LStateValue value) => LCard.LCardStateRead(value);
 
@@ -262,9 +276,9 @@ internal static class TInterfaceDeportment
     internal static CFrequency? TSoundingFrequencyRead(IReadOnlyList<LFrequency> rows, string once) =>
         LSounding.LSoundingFrequencyRead(rows, once);
 
-    internal static LRecording TDeskRecordingRead(CRecording recording) => LDesk.LDeskRecordingRead(recording);
+    internal static LRecording TDeskRecordingRead(CRecording recording) => QErrand.QErrandRecordingRead(recording);
 
-    internal static CCandidate? TDeskCandidateRead(LCandidate? candidate) => LDesk.LDeskCandidateRead(candidate);
+    internal static CCandidate? TDeskCandidateRead(LCandidate? candidate) => QErrand.QErrandCandidateRead(candidate);
 
     internal static void TDeskDefer(this LDesk desk, LRequest request) => desk.LDeskDefer(request);
 
@@ -293,12 +307,12 @@ internal static class TInterfaceDeportment
     internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
         guild.LGuildVistaRestore(vista, oeuvre);
 
-    internal static IReadOnlyList<LCatalogAuthor> TGuildRollRead(this LGuild guild) => guild.LGuildRollRead();
+    internal static IReadOnlyList<CCatalogAuthor> TGuildRollRead(this LGuild guild) => guild.LGuildRollRead();
 
-    internal static LVita TGuildVitaRead(this LGuild guild) => guild.LGuildVitaRead();
+    internal static CVita TGuildVitaRead(this LGuild guild) => guild.LGuildVitaRead();
 
-    internal static IReadOnlyList<LCatalogAuthor> TGuildUnionRead(this LGuild guild, string typed) =>
-        guild.LGuildUnionRead(typed);
+    internal static IReadOnlyList<CCatalogAuthor> TGuildUnionRead(this LGuild guild, string typed) =>
+        guild.LGuildUnion.QUnionRead(typed);
 
     internal static void TGuildQuerySet(this LGuild guild, string query) => guild.LGuildQuerySet(query);
 
@@ -312,9 +326,9 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildFreshStart(this LGuild guild) => guild.LGuildFreshStart();
 
-    internal static bool TGuildSave(this LGuild guild) => guild.LGuildSave();
+    internal static bool TGuildSave(this LGuild guild) => guild.LGuildSession.QSessionSave();
 
-    internal static void TGuildUnionSelect(this LGuild guild, long? id) => guild.LGuildUnionSelect(id);
+    internal static void TGuildUnionSelect(this LGuild guild, long? id) => guild.LGuildUnion.QUnionSelect(id);
 
     internal static void TGuildDelete(this LGuild guild) => guild.LGuildDelete();
 

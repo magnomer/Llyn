@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -19,16 +18,6 @@ public sealed class LDesk
 
     private LTenure? _lDeskTenure;
 
-    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskTenureObservers = [];
-
-    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskDraftObservers = [];
-
-    private readonly List<(LSubject LDeskSubject, Action<LBulletin> LDeskObserver)> _lDeskEntryObservers = [];
-
-    private LForay? _lDeskRecording;
-
-    private LForay? _lDeskTranscription;
-
     private bool _lDeskFilling;
 
     private bool _lDeskHalted;
@@ -44,6 +33,8 @@ public sealed class LDesk
         _lDeskUnreadableSeam = unreadableSeam;
         LDeskQuill = new QQuill(this);
         LDeskEasel = new QEasel(this);
+        LDeskErrand = new QErrand(this);
+        LDeskVigil = new QVigil(this);
     }
 
     public event Action? LDeskStarted;
@@ -64,13 +55,17 @@ public sealed class LDesk
 
     public QEasel LDeskEasel { get; }
 
+    internal QErrand LDeskErrand { get; }
+
+    public QVigil LDeskVigil { get; }
+
     public bool LDeskHeld => _lDeskTenure is not null;
 
     public bool LDeskFilling => _lDeskFilling;
 
     public long LDeskId => _lDeskTenure?.LTenureId ?? 0;
 
-    public bool LDeskStored => LDeskRead()?.LDraftStored is not null;
+    public bool LDeskStored => LDeskStoredRead() is not null;
 
     public bool LDeskChanged => _lDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true };
 
@@ -86,10 +81,6 @@ public sealed class LDesk
     internal LTenure? LDeskTenure => _lDeskTenure;
 
     internal LDraft? LDeskDraft => _lDeskTenure is LTenure held ? held.LTenureRead() : null;
-
-    internal LForay? LDeskRecording => _lDeskRecording;
-
-    internal LForay? LDeskTranscription => _lDeskTranscription;
 
     internal void LDeskVistaRestore(LVista vista)
     {
@@ -124,7 +115,7 @@ public sealed class LDesk
             LTenure started = start();
             _lDeskTenure = started;
             _lDeskHalted = false;
-            LDeskObserverApply(started);
+            LDeskVigil.QVigilApply(started);
             LDeskStarted?.Invoke();
         }
         catch (Exception exception)
@@ -136,149 +127,6 @@ public sealed class LDesk
 
         LDeskDraftUpdate();
         LDeskStateChanged?.Invoke();
-    }
-
-    public void LDeskObserverAttach(CSubject subject, Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        LSubject held = LPanel.LPanelSubjectRead(subject);
-        _lDeskTenureObservers.Add((held, LDeskBulletinSend));
-        _lDeskTenure?.LTenureObserverAttach(held, LDeskBulletinSend);
-
-        void LDeskBulletinSend(LBulletin bulletin)
-        {
-            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
-        }
-    }
-
-    public void LDeskDraftAttach(CSubject subject, Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        LSubject held = LPanel.LPanelSubjectRead(subject);
-        _lDeskDraftObservers.Add((held, LDeskBulletinSend));
-        _lDeskTenure?.LTenureDraftAttach(held, LDeskBulletinSend);
-
-        void LDeskBulletinSend(LBulletin bulletin)
-        {
-            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
-        }
-    }
-
-    public void LDeskEntryAttach(CSubject subject, Action<CBulletin> observer)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        LSubject held = LPanel.LPanelSubjectRead(subject);
-        _lDeskEntryObservers.Add((held, LDeskBulletinSend));
-        _lDeskTenure?.LTenureEntryAttach(held, LDeskBulletinSend);
-
-        void LDeskBulletinSend(LBulletin bulletin)
-        {
-            observer(new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored));
-        }
-    }
-
-    private void LDeskObserverApply(LTenure started)
-    {
-        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskTenureObservers)
-        {
-            started.LTenureObserverAttach(subject, observer);
-        }
-
-        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskDraftObservers)
-        {
-            started.LTenureDraftAttach(subject, observer);
-        }
-
-        foreach ((LSubject subject, Action<LBulletin> observer) in _lDeskEntryObservers)
-        {
-            started.LTenureEntryAttach(subject, observer);
-        }
-    }
-
-    public bool LDeskRecordingStart(string word, long target, Action<CHarvestStep> sink)
-    {
-        ArgumentNullException.ThrowIfNull(sink);
-
-        LDeskForayStop(_lDeskRecording);
-        _lDeskRecording = LDeskRecordingRun(_lDeskTenure, word, target, LDeskHarvestSend);
-        return _lDeskRecording is not null;
-
-        void LDeskHarvestSend(LHarvestStep step)
-        {
-            sink(new CHarvestStep(
-                step.LHarvestStepSource, step.LHarvestStepOrder,
-                LDeskRecordingRead(step.LHarvestStepRecording), step.LHarvestStepEnded));
-        }
-    }
-
-    public bool LDeskTranscriptionStart(string word, long target, string scheme, Action<CLookupStep> sink)
-    {
-        ArgumentNullException.ThrowIfNull(sink);
-
-        LDeskForayStop(_lDeskTranscription);
-        _lDeskTranscription = LDeskTranscriptionRun(_lDeskTenure, word, target, scheme, LDeskLookupSend);
-        return _lDeskTranscription is not null;
-
-        void LDeskLookupSend(LLookupStep step)
-        {
-            sink(new CLookupStep(
-                step.LLookupStepSource, step.LLookupStepOrder,
-                LDeskCandidateRead(step.LLookupStepCandidate), step.LLookupStepEnded));
-        }
-    }
-
-    public void LDeskForayCancel()
-    {
-        LDeskForayStop(_lDeskRecording);
-        _lDeskRecording = null;
-        LDeskForayStop(_lDeskTranscription);
-        _lDeskTranscription = null;
-    }
-
-    private static LForay? LDeskRecordingRun(LTenure? tenure, string word, long target, Action<LHarvestStep> sink)
-    {
-        return tenure?.LTenureRecordingStart(word, target, sink);
-    }
-
-    private static LForay? LDeskTranscriptionRun(
-        LTenure? tenure, string word, long target, string scheme, Action<LLookupStep> sink)
-    {
-        return tenure?.LTenureTranscriptionStart(word, target, scheme, sink);
-    }
-
-    private static void LDeskForayStop(LForay? foray)
-    {
-        foray?.LForayCancel();
-    }
-
-    internal static CRecording? LDeskRecordingRead(LRecording? recording)
-    {
-        return recording is null
-            ? null
-            : new CRecording(
-                recording.LRecordingSource, recording.LRecordingAddress, recording.LRecordingOrder,
-                recording.LRecordingReached, recording.LRecordingVariety);
-    }
-
-    internal static LRecording LDeskRecordingRead(CRecording recording)
-    {
-        ArgumentNullException.ThrowIfNull(recording);
-
-        return new LRecording(
-            recording.CRecordingSource, recording.CRecordingAddress, recording.CRecordingOrder,
-            recording.CRecordingReached, recording.CRecordingVariety);
-    }
-
-    internal static CCandidate? LDeskCandidateRead(LCandidate? candidate)
-    {
-        return candidate is null
-            ? null
-            : new CCandidate(
-                candidate.LCandidateSource, candidate.LCandidatePhonetic, candidate.LCandidateOrder,
-                candidate.LCandidateReached, candidate.LCandidateVariety, candidate.LCandidateRespelling);
     }
 
     internal LDraft? LDeskRead()

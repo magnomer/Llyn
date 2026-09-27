@@ -15,6 +15,11 @@ The owner text is the word for that kind in the user's language, handed in rathe
 A side that names itself nowhere shows the unnamed text, and one marked as not known shows the mark.
 The row finds its own flag once for the language through `LEnsignImage`.
 
+## `internal LUsageItem(CUsage usage, string owner, string unknown, string unnamed, string epithet)`
+
+Builds the row from one citing place in its shape.
+The engine row constructor maps its row through `LOeuvre.LOeuvreUsageRead` and lands here.
+
 ## `public bool LUsageItemQuoted { get; }`
 
 Whether the side quotes an Example rather than naming an Entry.
@@ -24,7 +29,7 @@ A click reads it to decide whether the row leads to an Entry or to an Example.
 
 The epithet the row prints after the headword, small and muted, in the reading the language pack names.
 
-## `public static IReadOnlyList<LUsageItem> LUsageItemBuild(IReadOnlyList<LUsage> usages)`
+## `public static IReadOnlyList<LUsageItem> LUsageItemBuild(IReadOnlyList<CUsage> usages)`
 
 A plain copy loop over the citing places, wording each owner and taking the epithet the row carries.
 The labels read through `QLocalizationCatalog`, so the deportment words them without the veneer.

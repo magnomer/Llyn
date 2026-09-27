@@ -3,10 +3,8 @@
 ## `ResourceDictionary`
 
 The editing side of the Corpus panel: the transcript fields, the Gloss row and the pickers under it.
-Its class `PCorpusTranscript` stays in Deportment and merges this markup into itself.
-No event is named here, so the panel subscribes the class's forwarding handlers on each realized part.
-That is the shape every template dictionary with code takes from now on.
-The panel adds it from code after its own markup is parsed, so the markup reads the keys dynamically.
+The page merges it as it merges the excerpt, so it is loose and has no class of its own.
+No event is named here, so the corpus driver subscribes its own handlers on each realized part.
 The language choice and the citation row stand here because both open from the transcript.
 
 ## `<Style x:Key="Theme.Transcript.Row" TargetType="Border">`
@@ -41,11 +39,12 @@ The popup takes the window's activation when pressed, and the press must land be
 ## `<DataTemplate x:Key="Theme.Language.Choice">`
 
 One language in the speaker dropdown, its flag before its name.
-The click is forwarded to the panel, which knows which transcript is open.
+The driver subscribes the click, since it knows which transcript is open.
 The flag and name reuse the Gloss option part names, so the language item fill serves both.
 
 ## `<Image x:Name="PGlossFlag">`
 
 The flag, the ring, the popup, the picker list and the text are named for `PGloss.PGlossRowApply`.
 The fill gives the flag its source, the list its options and the text its value and placeholder.
-The shared fill names the list's value path, and the panel's own fill wires `PGlossAddition` and `PGlossRemoval`.
+The shared fill names the list's value path.
+The driver's own fill wires `PGlossAddition`, `PGlossRemoval`, the text and the list's choice.

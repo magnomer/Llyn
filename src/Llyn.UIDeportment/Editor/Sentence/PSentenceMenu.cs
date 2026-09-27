@@ -15,7 +15,7 @@ public partial class PEditor
 {
     private readonly PSentenceTemplate _pSentenceTemplate;
 
-    private readonly ObservableCollection<PCitationItem> _pEditorCitation = [];
+    private readonly ObservableCollection<QCitationItem> _pEditorCitation = [];
 
     private readonly ObservableCollection<string> _pEditorParticle = [];
 
@@ -38,7 +38,7 @@ public partial class PEditor
 
         foreach (CCatalogReference row in references)
         {
-            _pEditorCitation.Add(PCitationItem.PCitationItemCreate(row));
+            _pEditorCitation.Add(QCitationItem.QCitationItemCreate(row));
         }
 
         PSentenceCitationShow();

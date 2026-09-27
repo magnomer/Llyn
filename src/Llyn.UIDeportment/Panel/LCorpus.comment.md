@@ -8,6 +8,8 @@ The quotation list lives in the quotation, whose rows follow the chosen Example.
 The desk holds the example tenure the transcript editor edits, under the `Example` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
 The quotation list's loads and clears go straight to its view's lectern, so the veneer relays no draft.
+It is sealed, so its public members name only .NET types, Conduct shapes and deportment handles.
+Its constructor and vista restore take engine types, so they stay internal.
 
 ## `private LEditor LCorpusEditor { get; }`
 
@@ -18,6 +20,12 @@ The entry editor's deportment on the quotation side, which takes the quotation v
 The desk over the example draft, started by subject rather than by a vista.
 The veneer attaches its observers to the tenure the desk announces, as the entry editor does.
 
+## `public QSession LCorpusSession { get; }`
+
+The draft session over the desk, which defers to the entry editor while it shows.
+The views save, undo and redo through it, and a leave finishes through it.
+A stored Example is shown again outside the scribe through `LCorpusStoredShow`.
+
 ## `public LAnthology LCorpusAnthology { get; }`
 
 The example list, whose panel asks the desk whether the transcript holds unsaved changes.
@@ -26,11 +34,11 @@ The example list, whose panel asks the desk whether the transcript holds unsaved
 
 Raised when the desk or the entry editor changes state, so the veneer refreshes the panel.
 
-## `public event Action<LExample?>? LCorpusTranscriptChanged`
+## `public event Action<CExample?>? LCorpusTranscriptChanged`
 
 Raised with the Example the desk holds after a start, or null after a cancel or a refused start.
 
-## `public event Action<LExample>? LCorpusExampleChanged`
+## `public event Action<CExample>? LCorpusExampleChanged`
 
 Raised with the Example a loaded draft carries, so the excerpt shows it.
 
@@ -42,24 +50,12 @@ Raised with a message key and the exception when a corpus action fails.
 
 Raised once an arrival drops the query and the language filter, so the veneer empties both controls.
 
-## `private void LCorpusDraftStart(long? id)`
-
-Starts the desk on a stored Example or on nothing, from the `Corpus` origin the recovered draft names.
-It then announces the Example the desk holds, which is null when the start was refused.
-
-## `public LExample? LCorpusTranscriptRead()`
+## `public CExample? LCorpusTranscriptRead()`
 
 Reads the Example the desk holds, which persists the tenure first and so can throw.
+The Example is mapped to its shape by `LAnthology.LAnthologyExampleRead`.
 A throw raises `LCorpusFailed` with `Example.HoldFailed` and reads as null, so no click handler sees it.
 The veneer reads it on each draft bulletin, so the desk never hands it a draft.
-
-## `private void LCorpusDraftOpen(long id)`
-
-Starts the desk on the Example the anthology panel opened for editing.
-
-## `private void LCorpusDraftCancel()`
-
-Cancels the desk and announces that no transcript is held.
 
 ## `private void LCorpusExampleUpdate(LDraft draft)`
 
@@ -68,10 +64,6 @@ Announces the Example a loaded draft carries and ignores drafts of other subject
 ## `private void LCorpusEditorOpen(long id)`
 
 Opens the entry editor on the entry the quotation panel opened for editing.
-
-## `private void LCorpusStateUpdate()`
-
-Relays a desk or editor state change as `LCorpusChanged`.
 
 ## `public LQuotation LCorpusQuotation { get; }`
 
@@ -114,6 +106,11 @@ Allows print for an entry on display or for a chosen example in the excerpt.
 
 Allows export only for an entry on display.
 
+## `public IReadOnlyList<CCitationRow> LCorpusCitationFind(string word)`
+
+The Sources the transcript's citation field offers for the typed word.
+The Source the held Example cites now is passed along, so its unchanged byline offers nothing.
+
 ## `public void LCorpusExampleShow(long id)`
 
 Shows an Example that comes from outside the list, keeping the scribe open when either editor was open.
@@ -131,7 +128,7 @@ The anthology panel loads the row, clears a vanished one and restarts the transc
 Shows the clicked Example once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
 The voyage is recorded only after the user agreed, so a refused leave keeps the Forward history.
-A save from the dialog finishes through `LCorpusDraftClose`, so the Example loads once.
+A save from the dialog finishes through `QSessionClose`, so the Example loads once.
 
 ## `private void LCorpusQuotationOpen(long id, bool editing)`
 
@@ -161,7 +158,7 @@ Shows the chosen Example again in the given mode, or clears both lists when none
 
 Clears both lists, also when the workspace changes under the panel.
 
-## `public void LCorpusRowsApply(IReadOnlyList<LCatalogExample> rows)`
+## `public void LCorpusRowsApply(IReadOnlyList<CCatalogExample> rows)`
 
 Checks the rows the veneer has just applied, so a clear never re-enters a read in progress.
 A chosen Example missing from them clears both lists while the excerpt shows it.
@@ -178,11 +175,6 @@ True while the excerpt shows a chosen Example, the only case a missing row clear
 
 Drops the query and the language filter on the example vista and raises `LCorpusQueryCleared`.
 
-## `public void LCorpusSave()`
-
-Saves the entry editor while it shows, else stores the transcript when it holds changes.
-A stored transcript is shown again outside the scribe.
-
 ## `private void LCorpusStoredShow(long id)`
 
 Shows the stored Example outside the scribe after the desk stores it.
@@ -197,10 +189,6 @@ A failure reads `Example.DeleteFailed`, the delete key `LAnthology` hands its pa
 
 Opens a blank entry in the editor, attaching the chosen Example when there is one.
 The fresh open clears the quotation panel, which closes the editor before the blank opens.
-
-## `public bool LCorpusChangeCheck()`
-
-True when either list holds unsaved changes.
 
 ## `public bool LCorpusLeaveConfirm()`
 
@@ -218,36 +206,10 @@ Refreshes the quotation draft, and falls back to the chosen Example once the quo
 It does nothing without a chosen quotation, so a whole-set bulletin never clears a transcript or a new entry.
 The mode is read before the refresh, so a vanished entry under edit reopens the transcript.
 
-## `public bool LCorpusDraftFinish(bool store)`
-
-Finishes the entry editor while it shows, else the transcript desk.
-A stored transcript is shown again outside the scribe.
-
-## `private bool LCorpusDraftClose(bool store)`
-
-Finishes like `LCorpusDraftFinish` but leaves a stored transcript unshown.
-A row click uses it, because the click shows its own row next.
-
-## `public (bool LDeskBackward, bool LDeskForward) LCorpusChronicleRead()`
-
-Reads undo and redo from the entry editor's desk while it shows, else from the transcript desk.
-
-## `public void LCorpusUndo()`
-
-Steps the entry editor back while it shows, else the transcript desk.
-
-## `public void LCorpusRedo()`
-
-Steps the entry editor forward while it shows, else the transcript desk.
-
-## `private void LCorpusChronicleRun(Action step)`
-
-Runs a transcript step and raises `LCorpusFailed` with `Example.HoldFailed` when it throws.
-
-## `public Task LCorpusPortraitPrint(LPortraitLabel label, LPortraitLegend legend, LPressTicket ticket)`
+## `public Task LCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
 
 Prints the entry on display, else the chosen Example, else nothing.
 
-## `public Task LCorpusPortraitExport(string path, LPortraitMedium format, LPortraitLabel label)`
+## `public Task LCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
 
 Exports the entry on display, and does nothing otherwise.

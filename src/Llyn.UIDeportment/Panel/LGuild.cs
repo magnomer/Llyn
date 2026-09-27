@@ -9,8 +9,6 @@ namespace Llyn.UIDeportment;
 
 public sealed class LGuild
 {
-    private const int LGuildUnionLimit = 8;
-
     private readonly LEntryPort _lEntryPort;
 
     private readonly LPortraitPort _lPortraitPort;
@@ -21,13 +19,11 @@ public sealed class LGuild
 
     private readonly Func<int, bool> _lGuildRemovalSeam;
 
-    private readonly Func<string, string, bool> _lGuildUnionSeam;
-
     private LVista? _lGuildVista;
 
     private int _lGuildCount;
 
-    public LGuild(
+    internal LGuild(
         LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
@@ -48,17 +44,29 @@ public sealed class LGuild
         _lSettingsPort = settings;
         _lGuildLeaveSeam = leaveSeam;
         _lGuildRemovalSeam = removalSeam;
-        _lGuildUnionSeam = unionSeam;
         LGuildAutograph = new LDesk(drafts, "Guild", unreadableSeam);
         LGuildPanel = new LPanel(
             "Guild.LoadFailed", "Guild.DeleteFailed",
-            LAutographChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
+            LGuildAutograph.LDeskChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
         LGuildOeuvre = new LOeuvre(entries, settings, shownSeam);
         LGuildPanel.LPanelRowsChanged += LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate;
-        LGuildPanel.LPanelCleared += LGuildAutograph.LDeskCancel;
-        LGuildPanel.LPanelEdited += LGuildDraftStart;
-        LGuildAutograph.LDeskFinished += LGuildStoredShow;
-        LGuildAutograph.LDeskStateChanged += LGuildStateUpdate;
+        LGuildSession = new QSession(
+            LGuildAutograph, [LGuildPanel], null, null, "Guild.HoldFailed", LGuildAutograph.LDeskStart,
+            LGuildAutographCheck, LGuildStoredShow);
+        LGuildUnion = new QUnion(
+            LGuildAutograph,
+            () => LGuildAuthorStored,
+            (typed, author, limit) => LOeuvre.LOeuvreAuthorRead(
+                entries.LEngineAuthorFind(typed, author, limit), QLocalizationCatalog.QLocalizationTextRead),
+            kept => entries.LEngineAuthorFind(kept)?.LCatalogAuthorName ?? string.Empty,
+            entries.LEngineAuthorAbsorb,
+            unionSeam,
+            kept => LGuildAuthorOpen(kept, false));
+        LGuildSession.QSessionChanged += () => LGuildChanged?.Invoke();
+        LGuildSession.QSessionFailed += (key, exception) => LGuildFailed?.Invoke(key, exception);
+        LGuildUnion.QUnionFailed += (key, exception) => LGuildFailed?.Invoke(key, exception);
+        LGuildPanel.LPanelCleared += LGuildSession.QSessionCancel;
+        LGuildPanel.LPanelEdited += id => LGuildSession.QSessionStart(id);
     }
 
     public event Action? LGuildChanged;
@@ -72,6 +80,10 @@ public sealed class LGuild
     public LOeuvre LGuildOeuvre { get; }
 
     public LDesk LGuildAutograph { get; }
+
+    public QSession LGuildSession { get; }
+
+    public QUnion LGuildUnion { get; }
 
     private bool LGuildSourceSide => LGuildOeuvre.LOeuvrePanel.LPanelBinEnabled;
 
@@ -100,17 +112,17 @@ public sealed class LGuild
 
     public bool LGuildLouverActive => _lGuildVista?.LVistaFiltered ?? false;
 
-    public bool LGuildUnionShown => LGuildAutograph.LDeskStored;
+    private long? LGuildAuthorStored => _lGuildVista?.LVistaStored;
 
-    private bool LGuildAuthorHeld => _lGuildVista?.LVistaStored is not null;
+    private bool LGuildAuthorHeld => LGuildAuthorStored is not null;
 
     private bool LGuildAuthorShown => LGuildAuthorHeld || LGuildPanel.LPanelEditing;
 
     private bool LGuildAutographNamed => LGuildAutograph.LDeskRead()?.LDraftAuthorHeld?.LAuthorNamed ?? false;
 
-    private long LGuildAuthorId => _lGuildVista?.LVistaStored ?? 0;
+    private long LGuildAuthorId => LGuildAuthorStored ?? 0;
 
-    public void LGuildVistaRestore(LVista vista, LVista oeuvre)
+    internal void LGuildVistaRestore(LVista vista, LVista oeuvre)
     {
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(oeuvre);
@@ -121,9 +133,9 @@ public sealed class LGuild
         LGuildAutograph.LDeskVistaRestore(vista);
     }
 
-    public IReadOnlyList<LCatalogAuthor> LGuildRollRead()
+    public IReadOnlyList<CCatalogAuthor> LGuildRollRead()
     {
-        return LGuildRollApply(LGuildRollFind());
+        return LOeuvre.LOeuvreAuthorRead(LGuildRollApply(LGuildRollFind()), QLocalizationCatalog.QLocalizationTextRead);
     }
 
     private IReadOnlyList<LCatalogAuthor> LGuildRollFind()
@@ -165,35 +177,18 @@ public sealed class LGuild
         return false;
     }
 
-    public LVita LGuildVitaRead()
+    public CVita LGuildVitaRead()
     {
         if (!LGuildAuthorHeld)
         {
-            return LVita.LVitaCreate(null, [], [], _lSettingsPort.LEngineTextRead);
+            return LOeuvre.LOeuvreVitaRead(LVita.LVitaCreate(null, [], [], _lSettingsPort.LEngineTextRead));
         }
 
-        return LVita.LVitaCreate(
+        return LOeuvre.LOeuvreVitaRead(LVita.LVitaCreate(
             _lEntryPort.LEngineAuthorFind(LGuildAuthorId),
             _lEntryPort.LEngineFellowFind(LGuildAuthorId),
             _lEntryPort.LEngineUsageRead(LGuildAuthorId, LOwner.LOwnerAuthor),
-            _lSettingsPort.LEngineTextRead);
-    }
-
-    public IReadOnlyList<LCatalogAuthor> LGuildUnionRead(string typed)
-    {
-        ArgumentNullException.ThrowIfNull(typed);
-
-        if (string.IsNullOrWhiteSpace(typed))
-        {
-            return [];
-        }
-
-        if (!LGuildAuthorHeld)
-        {
-            return [];
-        }
-
-        return _lEntryPort.LEngineAuthorFind(typed, LGuildAuthorId, LGuildUnionLimit);
+            _lSettingsPort.LEngineTextRead));
     }
 
     public void LGuildQuerySet(string query)
@@ -225,19 +220,9 @@ public sealed class LGuild
         _lGuildVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public bool LGuildChangeCheck()
-    {
-        return LGuildPanel.LPanelChangeCheck();
-    }
-
-    private bool LAutographChangeCheck()
-    {
-        return LGuildAutograph.LDeskChangeCheck();
-    }
-
     public bool LGuildLeaveConfirm()
     {
-        if (!LGuildChangeCheck())
+        if (!LGuildSession.QSessionChangeCheck())
         {
             return true;
         }
@@ -278,11 +263,6 @@ public sealed class LGuild
         LGuildChanged?.Invoke();
     }
 
-    private void LGuildStateUpdate()
-    {
-        LGuildChanged?.Invoke();
-    }
-
     public void LGuildRowSelect(long? id)
     {
         if (id is null)
@@ -305,22 +285,17 @@ public sealed class LGuild
 
     private void LGuildAuthorOpen(long? id, bool editing)
     {
-        LGuildAutograph.LDeskCancel();
+        LGuildSession.QSessionCancel();
         LGuildOeuvre.LOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelScribeShow(editing && id is > 0);
         LGuildPanel.LPanelRowShow(id);
-    }
-
-    private void LGuildDraftStart(long id)
-    {
-        LGuildAutograph.LDeskStart(id);
     }
 
     private void LGuildStoredShow(long id)
     {
         _lGuildVista?.LVistaSelect(id);
         LGuildPanel.LPanelRowsUpdate();
-        LGuildAutograph.LDeskStart(id);
+        LGuildSession.QSessionStart(id);
         LGuildChanged?.Invoke();
     }
 
@@ -336,7 +311,7 @@ public sealed class LGuild
             return;
         }
 
-        LGuildAutograph.LDeskCancel();
+        LGuildSession.QSessionCancel();
         LGuildPanel.LPanelScribeShow(false);
         LGuildOeuvre.LOeuvrePanel.LPanelRowShow(id);
     }
@@ -350,7 +325,7 @@ public sealed class LGuild
 
         LGuildOeuvre.LOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelFreshOpen();
-        LGuildAutograph.LDeskStart(null);
+        LGuildSession.QSessionStart(null);
     }
 
     public void LGuildScribeSet(bool editing)
@@ -369,7 +344,7 @@ public sealed class LGuild
         LGuildPanel.LPanelScribeSet(editing);
         if (!LGuildPanel.LPanelEditing)
         {
-            LGuildAutograph.LDeskCancel();
+            LGuildSession.QSessionCancel();
         }
     }
 
@@ -383,7 +358,7 @@ public sealed class LGuild
         LGuildPanel.LPanelScribeRestore(editing);
         if (LGuildPanel.LPanelEditing)
         {
-            LGuildAutograph.LDeskStart(LGuildAuthorId);
+            LGuildSession.QSessionStart(LGuildAuthorId);
         }
     }
 
@@ -392,73 +367,15 @@ public sealed class LGuild
         return !editing || LGuildAuthorHeld;
     }
 
-    public bool LGuildSave()
+    private bool LGuildAutographCheck()
     {
-        if (!LGuildAutographShown)
+        if (LGuildAutographNamed)
         {
             return true;
         }
 
-        if (!LGuildAutographNamed)
-        {
-            LGuildRefused?.Invoke("Guild.NameBlank");
-            return false;
-        }
-
-        return LGuildAutograph.LDeskFinish(true);
-    }
-
-    public bool LGuildDraftFinish(bool store)
-    {
-        if (!LGuildAutographShown)
-        {
-            return true;
-        }
-
-        if (store)
-        {
-            return LGuildSave();
-        }
-
-        LGuildAutograph.LDeskCancel();
-        return true;
-    }
-
-    public void LGuildUnionSelect(long? id)
-    {
-        if (id is not long kept)
-        {
-            return;
-        }
-
-        if (!LGuildAuthorHeld)
-        {
-            return;
-        }
-
-        if (!LGuildUnionConfirm(kept))
-        {
-            return;
-        }
-
-        try
-        {
-            _lEntryPort.LEngineAuthorAbsorb(kept, LGuildAuthorId);
-        }
-        catch (Exception exception)
-        {
-            LGuildFailed?.Invoke("Guild.MergeFailed", exception);
-            return;
-        }
-
-        LGuildAuthorOpen(kept, false);
-    }
-
-    private bool LGuildUnionConfirm(long kept)
-    {
-        return _lGuildUnionSeam(
-            LGuildAutograph.LDeskRead()?.LDraftAuthorName ?? string.Empty,
-            _lEntryPort.LEngineAuthorFind(kept)?.LCatalogAuthorName ?? string.Empty);
+        LGuildRefused?.Invoke("Guild.NameBlank");
+        return false;
     }
 
     public void LGuildDelete()
@@ -471,14 +388,17 @@ public sealed class LGuild
         LGuildPanel.LPanelDelete();
     }
 
-    public Task LGuildPortraitPrint(LPortraitLegend legend, LPressTicket ticket)
+    public Task LGuildPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
         if (!LGuildSourceSide)
         {
             return Task.CompletedTask;
         }
 
-        return _lPortraitPort.LEnginePortraitPrint(LGuildOeuvre.LOeuvrePanel.LPanelVista, legend, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            LGuildOeuvre.LOeuvrePanel.LPanelVista,
+            LAtlas.LAtlasLegendRead(legend),
+            QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LGuildVistaRestore(LWindow window)

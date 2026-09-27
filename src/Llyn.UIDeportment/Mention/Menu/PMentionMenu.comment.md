@@ -14,7 +14,7 @@ It shows the rows it is given and reports the one picked.
 
 The popup, its title and its list are read through the loaded window's name scope.
 
-## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, LMentionResult result)`
+## `internal void PMentionMenuShow(FrameworkElement anchor, Rect place, CMentionResult result)`
 
 Entry mode.
 A picked row opens its Entry through `PWindowEntryShow`, so the menu hides the way any navigation hides it.

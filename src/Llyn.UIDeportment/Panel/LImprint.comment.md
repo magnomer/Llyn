@@ -54,15 +54,19 @@ Drops the held draft and closes the byline, then raises both notices so the vene
 
 Stores the draft only when it differs from what is stored, so an idle store keeps the editor open.
 
-## `public event Action<LReference>? LImprintReferenceChanged;`
+## `public event Action<CImprint>? LImprintReferenceChanged;`
 
-The Source inside the draft the desk just prepared, which the veneer writes its fields from.
+The Source inside the draft the desk just prepared, as the shape the veneer writes its fields from.
 It fires after `LImprintChanged`, as the veneer's own handler did before.
+An imprint draft always holds a Source, so a missing one throws.
 
-## `private static LReference LImprintReferenceRead(LDraft draft)`
+## `public static CImprint LImprintEmpty { get; }`
 
-The Source inside a prepared draft.
-An imprint draft always holds one, so a missing Source throws.
+The shape of a Source with every field unstated, which the driver writes when no draft is held.
+
+## `internal static CImprint LImprintReferenceRead(LReference reference)`
+
+Maps a Source to the fields, hints and kind the driver writes.
 
 ## `public string LImprintTallyRead()`
 
@@ -78,9 +82,9 @@ The kind already held is not sent again, so a repeated click leaves the chronicl
 
 Whether the held Source already has the kind the tag names.
 
-## `public IReadOnlyList<LAuthorRow> LImprintCreditRead()`
+## `public IReadOnlyList<CAuthorRow> LImprintCreditRead()`
 
-The credit rows the draft composes, with the blank row settled against their count.
+The credit rows the draft composes, with the blank row settled against their count, as shapes.
 
 ## `private void LImprintBlankSet()`
 
@@ -88,12 +92,28 @@ An empty credit list on a held draft opens the blank row.
 A new Source thus has a field to type into.
 A blank row past the end moves to the end after a removal.
 
-## `public void LImprintCreditApply(string? action, int? position, long? id)`
+## `public void LImprintAuthorAdd(int? position, long? id)`
 
-One of the four row buttons, named by the tag the template put on it.
-Add opens a blank row under the clicked one, or focuses the blank row itself.
-Remove closes the blank row, or sends the removal of a credit.
-Earlier and Later send a shift by one.
+The add button of a credit row.
+It opens a blank row under the clicked one, or focuses the blank row itself.
+
+## `public void LImprintAuthorRemove(long? id)`
+
+The remove button of a credit row.
+It closes the blank row, or sends the removal of a credit.
+
+## `public void LImprintAuthorRetreat(int? position, long? id)`
+
+The earlier button of a credit row, which sends a shift one place earlier.
+
+## `public void LImprintAuthorAdvance(int? position, long? id)`
+
+The later button of a credit row, which sends a shift one place later.
+
+## `private void LImprintCreditMove(long? id, int to)`
+
+Sends the shift of a held credit to the place given.
+The blank row has no credit to shift, so it sends nothing.
 
 ## `private void LImprintCreditCommit(int at, long author, string? text)`
 
@@ -115,9 +135,9 @@ The lit row's Author arrives from the veneer, so no offered list is kept here.
 The text of a credit field changed.
 A field without the keyboard is being written by the veneer, not the user, so it opens nothing.
 
-## `public IReadOnlyList<LAuthor> LBylineRowsRead()`
+## `public IReadOnlyList<CAuthor> LBylineRowsRead()`
 
-The Authors the typed word matches, read from the engine on every notice and never stored.
+The Authors the typed word matches, as shapes, read from the engine on every notice and never stored.
 The engine leaves out what the draft already credits, reading the draft by the desk's id.
 An engine failure offers nothing rather than a dialog under a keystroke.
 

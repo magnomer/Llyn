@@ -10,9 +10,4 @@ public sealed record LStateWritten(
     {
         return LStateWrittenUnknown ? LStateValue.LStateValueUnknown : LStateValue.LStateValueRead(LStateWrittenText);
     }
-
-    public bool LStateWrittenMatch(LStateValue? value)
-    {
-        return LStateWrittenResolve() == (value ?? LStateValue.LStateValueUnspecified);
-    }
 }

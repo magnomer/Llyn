@@ -130,6 +130,10 @@ Save is the rail's `PCorpusStore`, delete is `PCorpusBin`, and there is no disca
 That is how the repertoire panel arranges a Situation.
 Leaving the editor asks about the draft as it does there.
 
+## `<local:QIconImage x:Name="PTranscriptAdditionIcon" ...>`
+
+The seed's plus icon is named, so the driver sets its source by contract.
+
 ## `<TextBlock x:Name="PTranscriptTally" ...>`
 
 How many places quote the Example, kept visible while it is being edited.

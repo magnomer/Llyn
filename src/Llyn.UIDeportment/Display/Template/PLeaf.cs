@@ -13,7 +13,7 @@ internal sealed class PLeaf
 {
     internal PLinkConverter PLeafLink { get; } = new();
 
-    internal PCitationConverter PLeafCitation { get; } = new();
+    internal QCitationConverter PLeafCitation { get; } = new();
 
     internal PSentenceConverter PLeafFrame { get; } = new();
 

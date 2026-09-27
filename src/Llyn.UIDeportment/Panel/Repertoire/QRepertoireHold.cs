@@ -11,9 +11,9 @@ internal sealed partial class QRepertoire
     private void QScenarioDeskAttach()
     {
         UserControl surface = _qRepertoireSurface;
-        QScenarioDesk.LDeskDraftAttach(
+        QScenarioDesk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectDraft, LObserver.LObserverCreate<CBulletin>(surface, QScenarioDraftRestore));
-        QScenarioDesk.LDeskDraftAttach(
+        QScenarioDesk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(surface, QScenarioDesk.LDeskStateUpdate));
         QScenarioDesk.LDeskFailed += _qRepertoireHost.PWindowFailureShow;
         QScenarioDesk.LDeskRefused += _qRepertoireHost.PWindowFailureShow;
@@ -33,30 +33,30 @@ internal sealed partial class QRepertoire
         }
     }
 
-    public void PChronicleUndo()
+    public void QChronicleUndo()
     {
-        PChronicle.PChronicleRun(_lRepertoire.LRepertoireUndo);
+        QChronicle.QChronicleRun(_lRepertoire.LRepertoireSession.QSessionUndo);
     }
 
-    public void PChronicleRedo()
+    public void QChronicleRedo()
     {
-        PChronicle.PChronicleRun(_lRepertoire.LRepertoireRedo);
+        QChronicle.QChronicleRun(_lRepertoire.LRepertoireSession.QSessionRedo);
     }
 
-    public void PChronicleUpdate()
+    public void QChronicleUpdate()
     {
-        (bool undo, bool redo) = _lRepertoire.LRepertoireChronicleRead();
+        (bool undo, bool redo) = _lRepertoire.LRepertoireSession.QSessionChronicleRead();
         QRepertoireBackward.IsEnabled = undo;
         QRepertoireForward.IsEnabled = redo;
     }
 
     private void QRepertoireUndoHandle(object sender, RoutedEventArgs e)
     {
-        PChronicleUndo();
+        QChronicleUndo();
     }
 
     private void QRepertoireRedoHandle(object sender, RoutedEventArgs e)
     {
-        PChronicleRedo();
+        QChronicleRedo();
     }
 }

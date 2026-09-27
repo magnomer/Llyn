@@ -4,7 +4,7 @@
 
 The entry editor's spine as a deportment: the desk it sits at, and every entry-level fact and command.
 It opens an entry or a fresh draft, stores, resets, and forwards the headword, reading, note and language.
-The favourite mark, the grasp, the frequency, and the read-only sections are read from it as facts.
+The favourite and grasp marks and the sound facts sit on its `LEditorEsteem` and `LEditorTimbre`.
 The card lookups go through the card deportment, and the sound rows ask the window deportment for pack facts.
 The origin of a draft is the tab of the vista handed in, so the deportment holds no origin string.
 
@@ -28,11 +28,13 @@ The tenure stopped taking requests, announced once so the window can say so.
 ## `public event Action<string, Exception>? LEditorFailed;`
 
 A favourite, grasp or rime-book write was refused, announced under its own notice key.
+The display and the sound sheet pass their refusals on here, so the window listens once.
 
 ## `public LDisplay LEditorDisplay { get; }`
 
 The Conduct display of the editor's entry, which the editor view wraps in its own lectern.
 The editor holds no lectern, since a lectern names WPF and a sealed controller names none.
+It holds the favourite and grasp rules the esteem forwards to.
 
 ## `public LCard LEditorCard { get; }`
 
@@ -50,6 +52,15 @@ The pronunciation menu deportment, holding the foray the menu searches readings 
 
 The sound sheet of the held entry, which the editor hands to the rime, script and paradigm boxes.
 Its refusals are announced through `LEditorFailed`, so one notice reaches the window.
+
+## `public QEsteem LEditorEsteem { get; }`
+
+The favourite, grasp and frequency of the held entry, built over the editor's desk.
+It forwards each mark to the editor's display, whose refusals reach `LEditorFailed`.
+
+## `public QTimbre LEditorTimbre { get; }`
+
+The pack sound facts and sound-sheet commands of the held entry, built over the desk, display and sheet.
 
 ## `public event Action<CEntryDraft>? LEditorDraftChanged;`
 
@@ -69,6 +80,7 @@ Whether this editor is the input tab's, which alone shows the command rail.
 ## `public long? LEditorEntry`
 
 The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
+It forwards to `LDeskStoredRead`, so the stored id has one home.
 
 ## `public bool LEditorRunning`
 
@@ -113,61 +125,6 @@ Drops the typing by reopening the entry the draft stood on, or a fresh draft.
 
 Announces the state, and the stop once when the tenure has just halted.
 
-## `public void LEditorFavoriteSet(bool marked)`
-
-Marks or clears the favourite on the stored entry, announcing a refusal and a re-read on failure.
-
-## `public void LEditorGraspSet(int step)`
-
-Writes the grasp step on the stored entry, announcing a refusal and a re-read on failure.
-
-## `public int LEditorGraspStep => _lEntryPort.LEngineGraspStep;`
-
-The last grasp step, which the star control takes as its limit so it names no Core constant.
-
-## `public string LEditorGraspFormat(int step)`
-
-The wording of a grasp step, or empty for a fresh draft that has no grasp to word.
-The engine words it, so the deportment names no localization and no grasp key.
-
-## `public IReadOnlyList<CFanqieGroup> LEditorFanqieRead()`
-
-The held entry's rime-book groups, read off the sound sheet.
-
-## `public string LEditorReadingRead(string headword)`
-
-The headword's representative reading, formed by the engine from the same groups the box draws.
-The editor prints it under the headword box, as the reading view prints it under the headword.
-
-## `public bool LEditorAnchorCheck(string headword)`
-
-Whether the held entry's fanqie rows let a reflex anchor at all.
-The rows stay in the engine, so the gate reads them itself.
-
-## `public string LEditorAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)`
-
-The anchors of one reflex written as its row shows them.
-
-## `public IReadOnlyList<CAnchorRow> LEditorAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)`
-
-The readings one reflex may anchor to, as the anchor menu offers them.
-
-## `public void LEditorFanqieRebuild()`
-
-Fetches the rime-book rows again for the held entry, announcing the change or the refusal.
-
-## `public void LEditorFanqieSet(long fanqieId, int rank)`
-
-Ranks one rime-book row of the held entry among its representative readings.
-
-## `public IReadOnlyList<CScriptGroup> LEditorScriptRead()`
-
-The held entry's script rows, read off the sound sheet.
-
-## `public IReadOnlyList<CParadigmSlot> LEditorParadigmRead()`
-
-The held entry's paradigm slots, read off the sound sheet.
-
 ## `private void LEditorFailureShow(string key, Exception exception)`
 
 Passes a sound sheet refusal on under the editor's own notice, so the window listens once.
@@ -181,11 +138,6 @@ The draft, pronunciation and etymon reads share it, so the tenure is named once.
 
 The etymons of the held entry, as the etymology field lists them.
 The display resolves them, since the etymology field no longer reaches a lectern.
-
-## `public CFrequency? LEditorFrequencyRead(string once)`
-
-The frequency chip of the held entry, or null when no source ranks it.
-The driver hands the localized word for a one-off figure, so the controller stays out of localization.
 
 ## `public IReadOnlyDictionary<long, CTranslationTarget> LEditorTargetRead()`
 

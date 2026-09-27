@@ -125,9 +125,9 @@ public class PXiesheng : UserControl
     internal void PXieshengAttach(PWindow host)
     {
         _pXieshengHost = host;
-        LEditor editor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        LEditor editor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(editor.LEditorDisplay);
-        _lXiesheng = host.PWindowDeportment.LWindowXieshengCreate(
+        _lXiesheng = host.PWindowDeportment.LWindowForge.QForgeXieshengCreate(
             editor,
             lectern,
             PXieshengShownCheck,
@@ -387,12 +387,12 @@ public class PXiesheng : UserControl
 
     private void PXieshengUndoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleUndo();
+        PEditor.QChronicleUndo();
     }
 
     private void PXieshengRedoHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PChronicleRedo();
+        PEditor.QChronicleRedo();
     }
 
     private void PXieshengChronicleUpdate()

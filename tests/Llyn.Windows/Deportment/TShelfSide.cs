@@ -119,6 +119,40 @@ public sealed class TShelfSide
         Assert.False(shelf.LShelfBinEnabled);
     }
 
+    [Fact]
+    public void OrderSet_EachOfferedOrder_KeepsEverySource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LShelf shelf = TShelfPrepare(engine);
+        engine.TEngineCitationCreate("Beta");
+        engine.TEngineCitationCreate("Alpha");
+        int listed = shelf.TShelfRowsRead().Count;
+
+        Assert.Equal(
+            [
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderYear,
+                CCatalogOrder.CCatalogOrderAuthor,
+                CCatalogOrder.CCatalogOrderUsage,
+            ],
+            TInterfaceDeportment.TShelfOrderRead());
+        foreach (CCatalogOrder order in TInterfaceDeportment.TShelfOrderRead())
+        {
+            shelf.TShelfOrderSet(order);
+
+            Assert.Equal(listed, shelf.TShelfRowsRead().Count);
+        }
+
+        shelf.TShelfOrderSet(CCatalogOrder.CCatalogOrderName);
+
+        Assert.Equal(
+            ["Alpha", "Beta"],
+            shelf.TShelfRowsRead()
+                .Select(row => row.CCatalogReferenceName)
+                .Where(name => name is "Alpha" or "Beta"));
+    }
+
     private static LShelf TShelfPrepare(LEngine engine)
     {
         LShelf shelf = TInterfaceDeportment.TShelfCreate(engine, () => true);

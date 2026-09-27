@@ -14,18 +14,15 @@ public sealed class LAnthology
 
     private readonly LPortraitPort _lPortraitPort;
 
-    private readonly LSettingsPort _lSettingsPort;
-
     private readonly Func<int, bool> _lAnthologyRemovalSeam;
 
     private readonly LDesk _lAnthologyDesk;
 
     private LVista? _lAnthologyVista;
 
-    public LAnthology(
+    internal LAnthology(
         LEntryPort entries,
         LPortraitPort portraits,
-        LSettingsPort settings,
         LDesk desk,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
@@ -33,13 +30,11 @@ public sealed class LAnthology
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
-        ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(removalSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
-        _lSettingsPort = settings;
         _lAnthologyDesk = desk;
         _lAnthologyRemovalSeam = removalSeam;
         LAnthologyPanel = new LPanel(
@@ -55,7 +50,7 @@ public sealed class LAnthology
 
     public bool LAnthologyNarrowed => _lAnthologyVista?.LVistaNarrowed ?? false;
 
-    public void LAnthologyVistaRestore(LVista vista)
+    internal void LAnthologyVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -87,9 +82,13 @@ public sealed class LAnthology
         _lAnthologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
     }
 
-    public IReadOnlyList<LCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
+    public IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
     {
-        return _lAnthologyVista is LVista vista ? _lEntryPort.LEngineExampleFind(vista, unknown, unwritten) : [];
+        return _lAnthologyVista is LVista vista
+            ? LSplice.LSpliceBuild(
+                _lEntryPort.LEngineExampleFind(vista, unknown, unwritten),
+                row => LAnthologyRowRead(row, unknown, unwritten))
+            : [];
     }
 
     public IReadOnlyDictionary<long, int> LAnthologyUsageRead()
@@ -107,35 +106,99 @@ public sealed class LAnthology
         return _lAnthologyRemovalSeam(LAnthologyUsageRead(LAnthologyChosen));
     }
 
-    public LMentionResult LAnthologyMentionFind(long id, int offset)
+    public CMentionResult? LAnthologyMentionFind(long? id, int offset)
     {
-        return _lEntryPort.LEngineMentionFind(id, offset);
+        return id is long chosen ? LAnthologyMentionRead(_lEntryPort.LEngineMentionFind(chosen, offset)) : null;
     }
 
-    public IReadOnlyList<string> LAnthologyLanguageRead()
+    public Task LAnthologyPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
-        return _lSettingsPort.LEngineLanguageRead();
-    }
-
-    public Task LAnthologyPortraitPrint(LPortraitLegend legend, LPressTicket ticket)
-    {
-        return _lPortraitPort.LEnginePortraitPrint(_lAnthologyVista, legend, ticket);
+        return _lPortraitPort.LEnginePortraitPrint(
+            _lAnthologyVista, LAtlas.LAtlasLegendRead(legend), QPortrait.QPortraitTicketRead(ticket));
     }
 
     public IReadOnlyList<CCatalogReference> LAnthologyReferenceFind()
     {
-        return LOeuvre.LOeuvreReferenceRead(
-            _lEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor));
+        return LAnthologyReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor);
     }
 
-    public IReadOnlyList<CCatalogReference> LAnthologyReferenceFind(string word)
+    private IReadOnlyList<CCatalogReference> LAnthologyReferenceFind(string word, LCatalogOrder order)
     {
-        return LOeuvre.LOeuvreReferenceRead(_lEntryPort.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage));
+        return LOeuvre.LOeuvreReferenceRead(_lEntryPort.LEngineReferenceFind(word, order));
+    }
+
+    public IReadOnlyList<CCitationRow> LAnthologyCitationFind(string word, long? source)
+    {
+        ArgumentNullException.ThrowIfNull(word);
+
+        string text = word.Trim();
+        return text.Length == 0 ? [] : CCitationRow.CCitationRowFind(
+            LAnthologyReferenceFind(text, LCatalogOrder.LCatalogOrderUsage), text, source);
     }
 
     public void LAnthologyCitationSet(string title)
     {
         _lAnthologyDesk.LDeskSend(new LRequestExampleReference(
             _lAnthologyDesk.LDeskId, _lEntryPort.LEngineCitationResolve(_lAnthologyDesk.LDeskId, 0, 0, title)));
+    }
+
+    public bool LAnthologyTextCheck(string text, CStateValue value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        return string.Equals(
+            string.IsNullOrWhiteSpace(text) ? string.Empty : text, value.CStateValueText, StringComparison.Ordinal);
+    }
+
+    internal static CCatalogExample LAnthologyRowRead(LCatalogExample row, string unknown, string unwritten)
+    {
+        return new CCatalogExample(
+            row.LCatalogExampleStored.LExampleId,
+            LAnthologyTextRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
+            row.LCatalogExampleName,
+            row.LCatalogExampleStored.LExampleLanguage,
+            row.LCatalogExampleUsage,
+            row.LCatalogExampleChosen);
+    }
+
+    internal static CExample? LAnthologyExampleRead(LExample? example)
+    {
+        return example is null
+            ? null
+            : new CExample(
+                example.LExampleLanguage,
+                LCard.LCardStateRead(example.LExampleText),
+                example.LExampleSource.LStateAnchorShown,
+                LSplice.LSpliceBuild(
+                    example.LExampleGloss,
+                    static gloss => new CGlossDraft(
+                        gloss.LGlossId, gloss.LGlossLanguage, LCard.LCardStateRead(gloss.LGlossText))),
+                LSplice.LSpliceBuild(
+                    example.LExampleMention,
+                    static mention => LCard.LCardMentionRead(LMentionDraft.LMentionDraftCreate(mention))),
+                LAnthologyExcerptRead(example.LExampleText.LStateValueSound, example.LExampleMention));
+    }
+
+    private static string LAnthologyTextRead(LStateValue text, string unknown, string unwritten)
+    {
+        return (text.LStateValueUncertain ? unknown : text.LStateValueShown) ?? unwritten;
+    }
+
+    internal static CMentionResult LAnthologyMentionRead(LMentionResult result)
+    {
+        return new CMentionResult(
+            result.LMentionResultOffset,
+            LAnthologyMentionRead(result.LMentionResultStored),
+            LCard.LCardTargetRead(result.LMentionResultEntry));
+    }
+
+    private static CMention? LAnthologyMentionRead(LMention? mention)
+    {
+        return mention is null ? null : LWindow.LWindowMentionRead([mention])[0];
+    }
+
+    private static IReadOnlyList<CMention> LAnthologyExcerptRead(bool sound, IReadOnlyList<LMention> mentions)
+    {
+        return sound ? LWindow.LWindowMentionRead(mentions) : [];
     }
 }

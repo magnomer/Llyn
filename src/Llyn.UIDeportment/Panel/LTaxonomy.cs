@@ -165,7 +165,7 @@ public sealed class LTaxonomy
     public Task LTaxonomyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lTaxonomyMembership, LPanel.LPanelLabelRead(label), LPanel.LPanelTicketRead(ticket));
+            _lTaxonomyMembership, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LTaxonomyVistaRestore(LWindow window)
@@ -203,6 +203,6 @@ public sealed class LTaxonomy
     public Task LTaxonomyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            _lTaxonomyMembership, path, LPanel.LPanelMediumRead(format), LPanel.LPanelLabelRead(label));
+            _lTaxonomyMembership, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
     }
 }

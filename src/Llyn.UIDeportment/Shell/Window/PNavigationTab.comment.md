@@ -132,7 +132,7 @@ Switches to the xiesheng panel and opens the series a chip names.
 An unsaved draft in the panel stops the switch, as it does for a rime-table cell.
 It leaves no voyage station.
 
-## `internal void PWindowMentionHandle(PMention anchor, LMentionResult result)`
+## `internal void PWindowMentionHandle(PMention anchor, CMentionResult result)`
 
 What a click on a word of a shown sentence opens, decided once for every panel that draws one.
 Any menu already open is closed first, so a second click never stacks two.

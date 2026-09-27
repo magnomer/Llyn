@@ -28,6 +28,18 @@ internal sealed class LLanguageFacade
         }
     }
 
+    public string LEngineGlossRead()
+    {
+        string gloss = _lLanguageFacadeEngine.LEngineSettingsRead().LSettingsGloss;
+        IReadOnlyList<string> languages = LEngineLanguageRead();
+        if (languages.Contains(gloss, StringComparer.Ordinal))
+        {
+            return gloss;
+        }
+
+        return languages.Count > 0 ? languages[0] : string.Empty;
+    }
+
     public LFont LEngineFontRead(string language, LFontRole role)
     {
         LLanguage pack = LEngineLanguageLoad(language);

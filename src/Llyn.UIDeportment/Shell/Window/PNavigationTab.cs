@@ -241,27 +241,27 @@ public partial class PWindow
             },
             new LTab("Corpus", PNavigationCorpus, PCorpus)
             {
-                LTabLeave = PCorpus.PCorpusLeaveConfirm,
-                LTabScribe = PCorpus.PCorpusScribeRestore,
-                LTabStation = PCorpus.PCorpusVoyageRead,
-                LTabVoyage = PCorpus.PCorpusVoyageShow,
-                LTabArrival = PCorpus.PAnthologyExampleShow
+                LTabLeave = _qCorpus.QCorpusLeaveConfirm,
+                LTabScribe = _qCorpus.QCorpusScribeRestore,
+                LTabStation = _qCorpus.QCorpusVoyageRead,
+                LTabVoyage = _qCorpus.QCorpusVoyageShow,
+                LTabArrival = _qCorpus.QAnthologyExampleShow
             },
             new LTab("Reference", PNavigationSource, PReference)
             {
-                LTabLeave = PReference.PReferenceLeaveConfirm,
-                LTabScribe = PReference.PReferenceScribeRestore,
-                LTabStation = PReference.PReferenceVoyageRead,
-                LTabVoyage = PReference.PReferenceVoyageShow,
-                LTabArrival = PReference.PShelfSourceShow
+                LTabLeave = _qReference.QReferenceLeaveConfirm,
+                LTabScribe = _qReference.QReferenceScribeRestore,
+                LTabStation = _qReference.QReferenceVoyageRead,
+                LTabVoyage = _qReference.QReferenceVoyageShow,
+                LTabArrival = _qReference.QShelfSourceShow
             },
             new LTab("Guild", PNavigationGuild, PGuild)
             {
-                LTabLeave = PGuild.PGuildLeaveConfirm,
-                LTabScribe = PGuild.PGuildScribeRestore,
-                LTabStation = PGuild.PGuildVoyageRead,
-                LTabVoyage = PGuild.PGuildVoyageShow,
-                LTabArrival = PGuild.PRollAuthorShow
+                LTabLeave = _qGuild.QGuildLeaveConfirm,
+                LTabScribe = _qGuild.QGuildScribeRestore,
+                LTabStation = _qGuild.QGuildVoyageRead,
+                LTabVoyage = _qGuild.QGuildVoyageShow,
+                LTabArrival = _qGuild.QRollAuthorShow
             },
             new LTab("Favorite", PNavigationFavorite, PFavorite)
             {
@@ -382,38 +382,38 @@ public partial class PWindow
         PNavigationShow(PNavigationXiesheng, () => PXiesheng.PXieshengStemShow(language, key));
     }
 
-    internal void PWindowMentionHandle(PMention anchor, LMentionResult result)
+    internal void PWindowMentionHandle(PMention anchor, CMentionResult result)
     {
         ArgumentNullException.ThrowIfNull(anchor);
         ArgumentNullException.ThrowIfNull(result);
 
         PMentionMenuHide();
 
-        if (result.LMentionResultStored is LMention stored)
+        if (result.CMentionResultStored is CMention stored)
         {
-            if (!stored.LMentionLinked)
+            if (stored.CMentionEntry == 0)
             {
                 return;
             }
 
-            PWindowEntryShow(stored.LMentionEntryId);
-            if (stored.LMentionSensed)
+            PWindowEntryShow(stored.CMentionEntry);
+            if (stored.CMentionSense != 0)
             {
-                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.LMentionSenseId);
+                _qLibrary.QLibraryDisplay.PDisplayCardScroll(stored.CMentionSense);
             }
 
             return;
         }
 
-        if (result.LMentionResultSingle)
+        if (result.CMentionResultSingle)
         {
-            PWindowEntryShow(result.LMentionResultFirst);
+            PWindowEntryShow(result.CMentionResultFirst);
             return;
         }
 
-        if (result.LMentionResultMany)
+        if (result.CMentionResultMany)
         {
-            PMentionMenuShow(anchor, anchor.PMentionPieceRead(result.LMentionResultOffset), result);
+            PMentionMenuShow(anchor, anchor.PMentionPieceRead(result.CMentionResultOffset), result);
         }
     }
 

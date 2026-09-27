@@ -133,9 +133,9 @@ internal sealed partial class QTenor
     internal void QTenorAttach(PWindow host)
     {
         _qTenorHost = host;
-        _lEditor = host.PWindowDeportment.LWindowEditorCreate(host.PWindowUnreadableConfirm);
+        _lEditor = host.PWindowDeportment.LWindowForge.QForgeEditorCreate(host.PWindowUnreadableConfirm);
         LLectern lectern = new(_lEditor.LEditorDisplay);
-        _lTenor = host.PWindowDeportment.LWindowTenorCreate(
+        _lTenor = host.PWindowDeportment.LWindowForge.QForgeTenorCreate(
             _lEditor, lectern, QTenorShownCheck, QTenorDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTenor.LTenorPanel;
         panel.LPanelChanged += QTenorModeUpdate;
@@ -214,12 +214,12 @@ internal sealed partial class QTenor
 
     private void QTenorUndoHandle(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.PChronicleUndo();
+        QTenorEditor.QChronicleUndo();
     }
 
     private void QTenorRedoHandle(object sender, RoutedEventArgs e)
     {
-        QTenorEditor.PChronicleRedo();
+        QTenorEditor.QChronicleRedo();
     }
 
     private void QTenorChronicleUpdate()

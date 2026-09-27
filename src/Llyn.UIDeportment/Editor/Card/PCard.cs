@@ -13,7 +13,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 {
     private readonly LWindow _pCardWindow;
     private readonly string _pCardPrefix;
-    private readonly ObservableCollection<PCitationItem> _pCardCitation;
+    private readonly ObservableCollection<QCitationItem> _pCardCitation;
     private readonly ObservableCollection<string> _pCardParticle;
     private readonly ObservableCollection<string> _pCardDependence;
     private readonly ObservableCollection<PLanguageItem> _pCardLanguage;
@@ -28,7 +28,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         LWindow window,
         string prefix,
         int position,
-        ObservableCollection<PCitationItem> catalog,
+        ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages)

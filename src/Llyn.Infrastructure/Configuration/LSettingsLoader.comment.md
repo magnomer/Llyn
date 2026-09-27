@@ -49,3 +49,8 @@ The epithet switch defaults on the same way, so an older workspace lists its Han
 ### `set.ValueKind == JsonValueKind.True;`
 
 The tally switch defaults off like the respelling switch, so an older workspace prints its tallies in IPA.
+
+### `&& speech.GetString() is { Length: > 0 } gloss`
+
+The gloss language is read only as a non-empty JSON string, and anything else keeps the record's default.
+A missing key keeps the default, so an older workspace starts new translations in English as before.
