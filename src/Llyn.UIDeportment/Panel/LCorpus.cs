@@ -404,7 +404,9 @@ public sealed class LCorpus
         ArgumentNullException.ThrowIfNull(window);
 
         LCorpusVistaRestore(
-            window.LWindowVistaStart("corpus", LSubject.LSubjectExample, LCatalogOrder.LCatalogOrderText),
-            window.LWindowVistaStart("quotation", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "corpus", CSubject.CSubjectExample, CCatalogOrder.CCatalogOrderText),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "quotation", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 }

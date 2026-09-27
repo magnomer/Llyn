@@ -18,11 +18,9 @@ internal static partial class TInterface
 
     internal static LLayout TLayoutCreate(
         string tab,
-        double? left = null,
-        double? middle = null,
         LCatalogOrder? order = null,
         LCatalogFilter? filter = null) =>
-        new(tab, left, middle, order, filter);
+        new(tab, order, filter);
 
     internal static LCatalogFilter TCatalogFilterCreate(params string[] hidden) =>
         new(hidden);
@@ -38,22 +36,12 @@ internal static partial class TInterface
         new LSettingsLoader(root).LSettingsSave(settings);
     }
 
-    internal static LWindowState TWindowStateCreate(
-        double left,
-        double top,
-        double width,
-        double height,
-        bool maximized) =>
-        new(left, top, width, height, maximized);
-
     internal static LPostureState TPostureStateCreate(
-        LWindowState? window = null,
         IReadOnlyList<LLayout>? layout = null,
-        bool linked = true,
         string? mode = null,
         bool split = false,
         double volume = 1) =>
-        new(window, layout, linked, mode, split, volume);
+        new(layout, mode, split, volume);
 
     internal static LPostureFile TPostureFileCreate(string root) => new(new LKeepFile(root));
 
@@ -86,11 +74,6 @@ internal static partial class TInterface
 
     internal static LPostureState TPostureRead(this LPosture posture) => posture.LPostureRead();
 
-    internal static void TPostureWindowSave(this LPosture posture, LWindowState window)
-    {
-        posture.LPostureWindowDefer(window, false, 0);
-    }
-
     internal static void TPostureVolumeSet(this LPosture posture, double volume)
     {
         posture.LPostureVolumeSet(volume);
@@ -107,17 +90,9 @@ internal static partial class TInterface
         posture.LPostureModeSave(mode);
     }
 
-    internal static bool TPostureLinkedSave(this LPosture posture, bool linked) =>
-        posture.LPostureLinkedSave(linked);
-
     internal static void TPostureLayoutSave(this LPosture posture, params LLayout[] layout)
     {
         posture.LPostureLayoutSave(layout);
-    }
-
-    internal static void TPostureLayoutReset(this LPosture posture)
-    {
-        posture.LPostureLayoutReset();
     }
 
     internal static void TEngineLeftSave(this LEngine engine, long? id)

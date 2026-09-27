@@ -1,5 +1,5 @@
 {
-  "generation": 22,
+  "generation": 16,
   "project": "Llyn",
   "enforced": true,
   "helper": {
@@ -46,7 +46,7 @@
   "ceiling": {
     "monolith": 6,
     "hub": 9,
-    "large": 47
+    "large": 46
   },
   "parts": {
     "Llyn.Infrastructure.LEntryArchive": 2,

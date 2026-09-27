@@ -133,7 +133,8 @@ public sealed class LPhonology
         ArgumentNullException.ThrowIfNull(window);
 
         LPhonologyVistaRestore(
-            window.LWindowVistaStart("phonology", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public string LPhonologyFileRead()

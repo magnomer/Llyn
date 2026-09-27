@@ -1,5 +1,5 @@
 {
-  "generation": 22,
+  "generation": 16,
   "project": "Llyn",
   "framework": "net10.0",
   "source": "src/",
@@ -7,6 +7,7 @@
     {
       "name": "Llyn.Core",
       "reach": [],
+      "capsule": [],
       "frame": [
         "System",
         "System.Collections.Generic",
@@ -27,6 +28,7 @@
       "reach": [
         "Llyn.Core"
       ],
+      "capsule": [],
       "frame": [
         "System",
         "System.Collections.Generic",
@@ -47,6 +49,7 @@
       "reach": [
         "Llyn.Application"
       ],
+      "capsule": [],
       "frame": [
         "System",
         "System.Collections.Generic",
@@ -68,6 +71,7 @@
       "reach": [
         "Llyn.ShellEngine"
       ],
+      "capsule": [],
       "frame": [
         "System",
         "System.Collections.Generic",
@@ -89,6 +93,9 @@
       "reach": [
         "Llyn.Conduct"
       ],
+      "capsule": [
+        "Llyn.UIDeportment.Capsule"
+      ],
       "frame": [],
       "pure": false,
       "cut": true
@@ -98,6 +105,7 @@
       "reach": [
         "Llyn.UIDeportment"
       ],
+      "capsule": [],
       "frame": [],
       "pure": false,
       "cut": true
@@ -107,6 +115,7 @@
       "reach": [
         "Llyn.Conduct"
       ],
+      "capsule": [],
       "frame": [],
       "pure": false,
       "cut": true
@@ -116,6 +125,7 @@
       "reach": [
         "Llyn.UIDemeanor"
       ],
+      "capsule": [],
       "frame": [],
       "pure": false,
       "cut": true
@@ -125,15 +135,25 @@
       "reach": [
         "Llyn.Core"
       ],
+      "capsule": [],
       "frame": [],
       "pure": false,
       "cut": false
+    },
+    {
+      "name": "Llyn.UIDeportment.Capsule",
+      "reach": [],
+      "capsule": [],
+      "frame": [],
+      "pure": false,
+      "cut": true
     },
     {
       "name": "Llyn.Core.Windows",
       "reach": [
         "Llyn.Core"
       ],
+      "capsule": [],
       "frame": [],
       "pure": false,
       "cut": false
@@ -157,6 +177,7 @@
   "shells": [
     "src/Llyn.UIVeneer",
     "src/Llyn.UIDeportment",
+    "src/Llyn.UIDeportment.Capsule",
     "src/Llyn.UITerminal",
     "src/Llyn.UIDemeanor"
   ],
@@ -183,8 +204,8 @@
   ],
   "ceilings": {
     "cross:Llyn.UIDeportment>Llyn.Application": 154,
-    "cross:Llyn.UIDeportment>Llyn.Core": 988,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 654,
+    "cross:Llyn.UIDeportment>Llyn.Core": 917,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 616,
     "expose:Llyn.UIDemeanor>Llyn.Core": 33,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 9,
     "expose:Llyn.UIDeportment>Llyn.Core": 33,
@@ -306,7 +327,9 @@
       "CCitationRow",
       "CAuthor",
       "CAuthorRow",
-      "CImprint"
+      "CImprint",
+      "CAtelier",
+      "CEnvoy"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",

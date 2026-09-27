@@ -33,13 +33,20 @@ public sealed class LEngine : IDisposable
     internal LSettings LEngineSettingsHeld { get; set; }
     internal HashSet<long> LEngineDraftStale { get; } = [];
     private readonly List<Action<LBulletin>> _lEngineObservers = [];
+    private readonly Func<string, LRig> _lEngineFactory;
+    private readonly Action<string> _lEnginePointer;
     private LEngineStaff _lEngineStaff;
     private string _lEngineFolder;
     private LDoctorRescue _lEngineRescue;
 
-    public LEngine(LRig rig)
+    public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)
     {
         ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(pointer);
+
+        _lEngineFactory = factory;
+        _lEnginePointer = pointer;
 
         _lEngineFolder = rig.LRigWorkspace;
         _lEngineStaff = LEngineStaff.LEngineStaffBuild(
@@ -136,6 +143,14 @@ public sealed class LEngine : IDisposable
     public string? LEngineNoticeRead(Exception exception)
     {
         return LWorkspaceClerk.LWorkspaceNoticeRead(exception);
+    }
+
+    public void LEngineWorkspaceChange(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        LEngineRigApply(_lEngineFactory(path));
+        _lEnginePointer(path);
     }
 
     public void LEngineRigApply(LRig rig)

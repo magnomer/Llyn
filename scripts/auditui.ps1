@@ -60,7 +60,7 @@ auditui -Open
 auditui -Configuration Release
 #>
 #requires -Version 5.1
-# AUDITUI GENERATION 22 - auditui.ps1.
+# AUDITUI GENERATION 16 - auditui.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -80,20 +80,8 @@ auditui -Configuration Release
 # Generation 15: the strict audit also counts a driver line holding a pack URI or naming the surface,
 # a driver type deriving from a scaffold type, and a contract ID the surface markup never names.
 # An x:Class in surface markup is a hook unless it names a surface type.
-# Generation 16: the Parity ledger holds the first dialog gates, which only Deportment reaches until the
-# CUI gains its dialogs. The structure audit rises with it.
-# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
+# Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
 # seal check counts engine types on the public members of sealed Deportment types.
-# Generation 18: the Parity ledger holds the window's shapes, which only Deportment reaches until the
-# CUI reads them. The structure audit rises with it.
-# Generation 19: the Parity ledger holds the taxonomy and tenor shapes and the shared panel maps, which
-# only Deportment reaches until the CUI reads them. The structure audit rises with it.
-# Generation 20: the Parity ledger holds the favorite and library shapes, the index rows and the
-# markup entries and omissions, which only Deportment reaches until the CUI reads them. The structure audit rises with it.
-# Generation 21: the Parity ledger holds the repertoire's situation shapes, its atlas maps and the text
-# gate, which only Deportment reaches until the CUI reads them. The structure audit rises with it.
-# Generation 22: the Parity ledger holds the corpus and guild shapes, their maps and the author gate,
-# which only Deportment reaches until the CUI reads them. The structure audit rises with it.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -196,7 +184,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 22
+$script:AuditGeneration = 16
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 

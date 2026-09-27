@@ -123,7 +123,8 @@ public sealed class LEditor
         ArgumentNullException.ThrowIfNull(window);
 
         LEditorVistaRestore(
-            window.LWindowVistaStart("input", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public void LEditorOpen(long? id)

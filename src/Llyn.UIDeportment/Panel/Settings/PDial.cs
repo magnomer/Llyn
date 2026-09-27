@@ -49,7 +49,7 @@ public partial class PSettings
 
     private void PDialWidthHandle(object sender, RoutedEventArgs e)
     {
-        PSettingsWindow.LWindowLayoutReset();
+        PSettingsWindow.LWindowPosture.QPostureLayoutReset();
         _pSettingsHost.PWindowLayout.PLayoutReset();
     }
 }

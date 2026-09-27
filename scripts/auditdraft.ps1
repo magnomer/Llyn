@@ -26,7 +26,7 @@ record include, the types, the waivers and the sides - lives in auditdraft.json.
 
 auditdraft.json shape:
   {
-    "generation": 22,
+    "generation": 16,
     "project": "Llyn",
     "records": {
       "include": ["src/Llyn.Core/Lexicon/*.cs"],
@@ -52,7 +52,7 @@ auditdraft
 Audit the current checkout.
 #>
 #requires -Version 5.1
-# AUDITDRAFT GENERATION 22 - auditdraft.ps1.
+# AUDITDRAFT GENERATION 16 - auditdraft.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -69,19 +69,7 @@ Audit the current checkout.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
 # seal check counts engine types on the public members of sealed Deportment types.
-# Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 19: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the taxonomy and tenor shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 20: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the markup entry and omission shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 21: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the portrait legend shape, and the UI audit, whose Parity ledger holds the repertoire's CUI debt.
-# Generation 22: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the corpus and guild shapes, and the UI audit, whose Parity ledger holds their CUI debt.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -145,7 +133,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 22
+$script:AuditGeneration = 16
 $script:TargetFramework = 'net10.0'
 $script:Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 

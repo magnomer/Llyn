@@ -18,7 +18,7 @@ internal sealed partial class QCorpus
         QTranscriptDesk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(surface, QTranscriptDesk.LDeskStateUpdate));
         QTranscriptDesk.LDeskFailed += _qCorpusHost.PWindowFailureShow;
-        QTranscriptDesk.LDeskRefused += _qCorpusHost.PWindowFailureShow;
+        QTranscriptDesk.LDeskRefused += _qCorpusHost.PWindowEnvoy.CEnvoyFailureShow;
     }
 
     private void QTranscriptDraftRestore()

@@ -38,26 +38,27 @@ It pulls the application from `Application.Current`, so the host hands it nothin
 The default catalog is applied before any engine exists, so the host opens it through the port itself.
 That load lists the embedded languages first, since it refuses a language the build does not embed.
 
-## `workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph)),`
+## `workspace => new LEngine(`
 
 The engine opens the workspace: settings, database file, and schema.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
 
-## `bootstrap.QBootstrapWindowShow(new PWindow(`
+## `path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph),`
 
-The host creates the deportment's window too, so `QBootstrap` builds nothing.
-
-## `new LWindow(`
-
-Composes the window from the posture and one outlet per port, all over the one engine.
-The deportment receives the outlets and never sees the engine itself.
-
-## `path =>`
-
-The host's half of a workspace change, handed to the window as a delegate.
+The rig factory the engine keeps for a workspace change.
 The engine takes the new rig whole and refuses it whole.
 A folder that fails to open leaves the old rig standing.
-The pointer is written last, so a folder that fails to open is never pointed at.
+
+## `LWorkspaceRoot.LWorkspaceRootChange),`
+
+Records the chosen folder, which the engine calls only after the new rig stands.
+A folder that fails to open is therefore never pointed at.
+
+## `bootstrap.QBootstrapWindowShow(new PWindow(new CAtelier(`
+
+The host builds Conduct's root and hands it to the deportment's window, so `QBootstrap` builds nothing.
+The root takes the posture and one outlet per port, all over the one engine.
+The deportment receives the root and never sees the engine itself.
 
 ## `code = application.Run();`
 

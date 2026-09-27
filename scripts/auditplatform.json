@@ -1,5 +1,5 @@
 {
-  "generation": 22,
+  "generation": 16,
   "project": "Llyn",
   "enforced": true,
   "ceilings": {
@@ -16,7 +16,8 @@
       { "name": "Llyn.Infrastructure", "role": "portable" },
       { "name": "Llyn.ShellEngine", "role": "portable" },
       { "name": "Llyn.Conduct", "role": "portable" },
-      { "name": "Llyn.UIDeportment", "role": "twin", "half": "Llyn.Conduct" },
+      { "name": "Llyn.UIDeportment", "role": "twin", "half": "Llyn.Conduct", "capsule": "Llyn.UIDeportment.Capsule" },
+      { "name": "Llyn.UIDeportment.Capsule", "role": "portable" },
       { "name": "Llyn.UIVeneer", "role": "twin", "half": "Llyn.Conduct" },
       { "name": "Llyn.UIDemeanor", "role": "portable" },
       { "name": "Llyn.UITerminal", "role": "portable" },

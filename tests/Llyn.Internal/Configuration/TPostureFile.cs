@@ -20,8 +20,7 @@ public sealed class TPostureFile
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         LPostureFile file = TInterface.TPostureFileCreate(workspace.TWorkspaceFolder);
-        LPostureState state = TInterface.TPostureStateCreate(
-            TInterface.TWindowStateCreate(10, 20, 800, 600, false), mode: "Corpus", split: true, volume: 0.5);
+        LPostureState state = TInterface.TPostureStateCreate(mode: "Corpus", split: true, volume: 0.5);
 
         file.TPostureFileSave("posture", state);
 

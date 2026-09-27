@@ -173,8 +173,9 @@ public sealed class LTaxonomy
         ArgumentNullException.ThrowIfNull(window);
 
         LTaxonomyVistaRestore(
-            window.LWindowVistaStart("taxonomy", LSubject.LSubjectTag, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("membership", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart("taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "membership", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public void LTaxonomyObserverAttach(CSubject subject, Action<CBulletin> observer)

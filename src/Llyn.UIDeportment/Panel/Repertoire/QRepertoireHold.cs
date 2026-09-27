@@ -16,7 +16,7 @@ internal sealed partial class QRepertoire
         QScenarioDesk.LDeskVigil.QVigilDraftAttach(
             CSubject.CSubjectTenure, LObserver.LObserverCreate<CBulletin>(surface, QScenarioDesk.LDeskStateUpdate));
         QScenarioDesk.LDeskFailed += _qRepertoireHost.PWindowFailureShow;
-        QScenarioDesk.LDeskRefused += _qRepertoireHost.PWindowFailureShow;
+        QScenarioDesk.LDeskRefused += _qRepertoireHost.PWindowEnvoy.CEnvoyFailureShow;
     }
 
     private void QScenarioChangeDefer()

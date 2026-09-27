@@ -6,24 +6,9 @@ namespace Llyn.UIDeportment;
 
 public partial class PWindow
 {
-    internal void PWindowFailureShow(string key)
-    {
-        MessageBox.Show(
-            _pWindowSurface,
-            QLocalizationCatalog.QLocalizationTextRead(key),
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.OK,
-            MessageBoxImage.Warning);
-    }
-
     internal bool PWindowUnreadableConfirm()
     {
-        return MessageBox.Show(
-            _pWindowSurface,
-            QLocalizationCatalog.QLocalizationTextRead("Notice.UnreadableDrop"),
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning) == MessageBoxResult.Yes;
+        return PWindowEnvoy.CEnvoyConfirm("Notice.UnreadableDrop");
     }
 
     internal void PWindowFailureShow(string key, Exception exception)
@@ -150,12 +135,7 @@ public partial class PWindow
 
     internal bool PWindowDeleteConfirm()
     {
-        return MessageBox.Show(
-            _pWindowSurface,
-            QLocalizationCatalog.QLocalizationTextRead("Scribe.DeleteConfirm"),
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning) == MessageBoxResult.Yes;
+        return PWindowEnvoy.CEnvoyConfirm("Scribe.DeleteConfirm");
     }
 
     internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)

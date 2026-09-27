@@ -1,6 +1,6 @@
 # Llyn.Conduct.csproj
 
-Builds the view logic that holds each panel's state, decisions and engine reads.
+Builds Conduct, which holds every behaviour of the application behind the screen.
 
 ## `<TargetFramework>net10.0</TargetFramework>`
 
@@ -13,6 +13,21 @@ A Windows-only call turns the build red, so the platform stays out of Conduct.
 ## `<InternalsVisibleTo Include="Llyn.Internal" />`
 
 The portable behaviour tests reach Conduct internals directly.
+
+## `<InternalsVisibleTo Include="Llyn.Windows" />`
+
+The Windows behaviour tests build `CAtelier` for the deportments they drive.
+
+## `<InternalsVisibleTo Include="Llyn" />`
+
+The host, built as `Llyn`, builds `CAtelier` over the ports it makes.
+The constructor naming those ports stays internal, so no driver can build one.
+
+## `<InternalsVisibleTo Include="Llyn.UIDeportment" />`
+
+Deportment reads the transitional port handles and starts vistas on `CAtelier`.
+Those members name engine types, so they stay internal and out of the Conduct surface.
+job14-30 deletes them, and this line with them.
 
 ## `<ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />`
 

@@ -407,7 +407,9 @@ public sealed class LRepertoire
         ArgumentNullException.ThrowIfNull(window);
 
         LRepertoireVistaRestore(
-            window.LWindowVistaStart("repertoire", LSubject.LSubjectSituation, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("occurrence", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "repertoire", CSubject.CSubjectSituation, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "occurrence", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 }

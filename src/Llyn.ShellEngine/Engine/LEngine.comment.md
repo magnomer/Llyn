@@ -32,11 +32,12 @@ The core keeps the gate, the staff, shared state, observers and one property per
 Each sealed facade holds the engine and uses its gate to call a clerk.
 `LEngineStaff` keeps the clerks in dependency order and swaps them together when the rig changes.
 
-## `public LEngine(LRig rig)`
+## `public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)`
 
 Binds the engine to the ports of `rig`, already built over the workspace they stand on.
 It neither reads nor rewrites the recorded workspace pointer.
-Changing the user's workspace is `LEngineRigApply` with a rig over the new folder.
+Host hands `factory`, which builds a rig over a folder, and `pointer`, which records the chosen folder.
+Both stay outside, since the engine names no infrastructure.
 The clerks are built first, then the settings and the rescue are read through them.
 The facades come last, so none of them can ever see an engine without its staff.
 A database this build can no longer read costs the user a launch rather than the program.
@@ -125,10 +126,15 @@ It answers with the file the fault went to, or `null` when nothing could be writ
 The reason key of a refusal standing anywhere inside the failure, or null for a fault.
 The workspace clerk walks the inner chain, since the shells name no exception type.
 
+## `public void LEngineWorkspaceChange(string path)`
+
+Moves the engine onto the folder at `path`, then records it as the workspace.
+The pointer is written only after the move succeeds, so a folder that fails never becomes the next launch's workspace.
+
 ## `public void LEngineRigApply(LRig rig)`
 
 Moves the engine onto the workspace `rig` was built over, without touching the workspace pointer.
-The caller builds the rig and writes the pointer after.
+`LEngineWorkspaceChange` builds the rig and writes the pointer after.
 The new rig's rescue and settings are read through the clerk's static open steps before anything here changes.
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.

@@ -21,94 +21,90 @@ public sealed class QWorkspace
 
     public CSettings QWorkspaceSettingsRead()
     {
-        return QWorkspaceSettingsRead(_lWindow.LWindowSettingsPort.LEngineSettingsRead());
+        return QWorkspaceSettingsRead(_lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineSettingsRead());
     }
 
     public string QWorkspacePathRead()
     {
-        return _lWindow.LWindowSettingsPort.LEngineWorkspaceRead();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineWorkspaceRead();
     }
 
     public string QWorkspacePathFormat()
     {
-        return _lWindow.LWindowSettingsPort.LEngineWorkspaceFormat();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineWorkspaceFormat();
     }
 
     public CWorkspaceState QWorkspaceStateRead()
     {
-        return QWorkspaceStateRead(_lWindow.LWindowSettingsPort.LEngineStateRead());
+        return QWorkspaceStateRead(_lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineStateRead());
     }
 
     public string QWorkspaceLocalizationRead()
     {
-        return _lWindow.LWindowSettingsPort.LEngineLocalizationRead();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLocalizationRead();
     }
 
     public IReadOnlyDictionary<string, string> QWorkspaceLocalizationLoad(string language)
     {
-        return _lWindow.LWindowSettingsPort.LEngineLocalizationLoad(language);
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLocalizationLoad(language);
     }
 
     public void QWorkspaceLocalizationSave(string language)
     {
-        _lWindow.LWindowSettingsPort.LEngineLocalizationSave(language);
+        _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLocalizationSave(language);
     }
 
     public void QWorkspaceEpithetSave(bool epithet)
     {
-        _lWindow.LWindowSettingsPort.LEngineEpithetSave(epithet);
+        _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineEpithetSave(epithet);
     }
 
     public void QWorkspaceFrequencySave(bool frequency)
     {
-        _lWindow.LWindowSettingsPort.LEngineFrequencySave(frequency);
+        _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineFrequencySave(frequency);
     }
 
     public void QWorkspaceMorphologySave(bool morphology)
     {
-        _lWindow.LWindowSettingsPort.LEngineMorphologySave(morphology);
+        _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineMorphologySave(morphology);
     }
 
     public void QWorkspaceRespellingSave(bool respelled)
     {
-        _lWindow.LWindowSettingsPort.LEngineRespellingSave(respelled);
+        _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineRespellingSave(respelled);
     }
 
     public CEstablishment QWorkspaceEstablishmentRead()
     {
-        return QWorkspaceEstablishmentRead(_lWindow.LWindowSettingsPort.LEngineEstablishmentRead());
+        return QWorkspaceEstablishmentRead(_lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineEstablishmentRead());
     }
 
     public string? QWorkspaceAuditRecord(Exception exception)
     {
-        return _lWindow.LWindowSettingsPort.LEngineAuditRecord(exception);
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineAuditRecord(exception);
     }
 
     public string? QWorkspaceNoticeRead(Exception exception)
     {
-        return _lWindow.LWindowSettingsPort.LEngineNoticeRead(exception);
-    }
-
-    public void QWorkspaceRecordingSweep()
-    {
-        _lWindow.LWindowMediaPort.LEngineRecordingSweep();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineNoticeRead(exception);
     }
 
     public bool QWorkspaceRecordingExist(string? file)
     {
-        return _lWindow.LWindowMediaPort.LEngineRecordingExist(file);
+        return _lWindow.LWindowAtelier.CAtelierMediaPort.LEngineRecordingExist(file);
     }
 
     public Task<string> QWorkspaceRecordingPrepare(CRecording recording, CancellationToken cancellation)
     {
-        return _lWindow.LWindowMediaPort.LEngineRecordingPrepare(QErrand.QErrandRecordingRead(recording), cancellation);
+        return _lWindow.LWindowAtelier.CAtelierMediaPort.LEngineRecordingPrepare(
+            QErrand.QErrandRecordingRead(recording), cancellation);
     }
 
     public Task QWorkspaceEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
     {
         ArgumentNullException.ThrowIfNull(store);
 
-        return _lWindow.LWindowSettingsPort.LEngineEnsignLoad(QWorkspaceEnsignSend);
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineEnsignLoad(QWorkspaceEnsignSend);
 
         Action QWorkspaceEnsignSend(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)
         {
@@ -123,7 +119,8 @@ public sealed class QWorkspace
     {
         ArgumentNullException.ThrowIfNull(store);
 
-        return _lWindow.LWindowSettingsPort.LEngineEnsignLoad(language, varieties, QWorkspaceEnsignSend);
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineEnsignLoad(
+            language, varieties, QWorkspaceEnsignSend);
 
         Action QWorkspaceEnsignSend(IReadOnlyList<LEnsignRow> rows, Action<string, Exception> delete)
         {
@@ -133,45 +130,45 @@ public sealed class QWorkspace
 
     public Uri? QWorkspaceLocationRead(string? location)
     {
-        return _lWindow.LWindowMediaPort.LEngineLocationRead(location);
+        return _lWindow.LWindowAtelier.CAtelierMediaPort.LEngineLocationRead(location);
     }
 
     public void QWorkspaceLocationOpen(string target)
     {
-        _lWindow.LWindowMediaPort.LEngineLocationOpen(target);
+        _lWindow.LWindowAtelier.CAtelierMediaPort.LEngineLocationOpen(target);
     }
 
     public IReadOnlyList<string> QWorkspaceLanguageRead()
     {
-        return _lWindow.LWindowSettingsPort.LEngineLanguageRead();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLanguageRead();
     }
 
     public string QWorkspaceGlossRead()
     {
-        return _lWindow.LWindowSettingsPort.LEngineGlossRead();
+        return _lWindow.LWindowAtelier.CAtelierSettingsPort.LEngineGlossRead();
     }
 
     public CEntryDraft? QWorkspaceEntryLoad(long id)
     {
-        return QWorkspaceEntryRead(_lWindow.LWindowEntryPort.LEngineEntryLoad(id));
+        return QWorkspaceEntryRead(_lWindow.LWindowAtelier.CAtelierEntryPort.LEngineEntryLoad(id));
     }
 
     public IReadOnlyList<long> QWorkspaceMarkupFind(string headword, string language)
     {
         return LSplice.LSpliceBuild(
-            _lWindow.LWindowEntryPort.LEngineMarkupFind(new LMarkupEntry(headword, language)),
+            _lWindow.LWindowAtelier.CAtelierEntryPort.LEngineMarkupFind(new LMarkupEntry(headword, language)),
             static entry => entry.LEntryId);
     }
 
     public long QWorkspaceGlyphResolve(string character, string language)
     {
-        return _lWindow.LWindowEntryPort.LEngineGlyphResolve(character, language).LEntryId;
+        return _lWindow.LWindowAtelier.CAtelierEntryPort.LEngineGlyphResolve(character, language).LEntryId;
     }
 
     public IReadOnlyList<CMeaning> QWorkspaceMeaningRead(long entryId, string unknown)
     {
         return QWorkspaceMeaningSort(
-            _lWindow.LWindowEntryPort.LEngineMeaningRead(entryId, LOwner.LOwnerEntry), unknown);
+            _lWindow.LWindowAtelier.CAtelierEntryPort.LEngineMeaningRead(entryId, LOwner.LOwnerEntry), unknown);
     }
 
     internal static IReadOnlyList<CMeaning> QWorkspaceMeaningSort(IReadOnlyList<LMeaning> meanings, string unknown)

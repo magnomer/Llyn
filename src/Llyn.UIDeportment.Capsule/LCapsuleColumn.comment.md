@@ -1,0 +1,12 @@
+# LCapsuleColumn.cs
+
+## `public sealed record LCapsuleColumn(`
+
+The widths of one tab's fixed panels.
+The last column takes whatever room the window leaves, so it is never stored.
+
+**Parameters**
+
+- `LCapsuleColumnTab` — The lowercase name of the tab, for example `"library"`.
+- `LCapsuleColumnLeft` — The width of the leftmost panel, or nothing before it was ever dragged.
+- `LCapsuleColumnMiddle` — The width of the middle panel where a tab has three, or nothing otherwise.

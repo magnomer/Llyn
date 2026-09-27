@@ -43,6 +43,19 @@ public sealed class TAuditChain
             }
         }
 
+        foreach ((string ring, string capsule) in TAuditChainSetting.TAuditChainCapsule)
+        {
+            if (TAuditChainSetting.TAuditChainReach.GetValueOrDefault(capsule) is not [])
+            {
+                wide.Add($"  {ring} names capsule {capsule}, which is undeclared or reaches a ring");
+            }
+
+            if (TAuditChainSetting.TAuditChainCapsule.Values.Count(value => value == capsule) > 1)
+            {
+                wide.Add($"  capsule {capsule} is named by more than one ring");
+            }
+        }
+
         Assert.True(wide.Count == 0, TAuditConvention.TAuditReportFormat(
             TAuditChainAudit,
             $"{wide.Count} ring(s) reach more than one ring, themselves or an unknown one:\n"
@@ -57,6 +70,11 @@ public sealed class TAuditChain
                      pair.Key != TAuditChainSetting.TAuditChainHost))
         {
             string[] reach = TAuditChainSetting.TAuditChainReach.GetValueOrDefault(ring) ?? ["(absent)"];
+            if (TAuditChainSetting.TAuditChainCapsule.GetValueOrDefault(ring) is string capsule)
+            {
+                reach = [.. reach, capsule];
+            }
+
             if (!reach.Order(StringComparer.Ordinal).SequenceEqual(edges.Order(StringComparer.Ordinal)))
             {
                 drift.Add($"  {ring} reaches [{string.Join(", ", reach)}] but references [{string.Join(", ", edges)}]");

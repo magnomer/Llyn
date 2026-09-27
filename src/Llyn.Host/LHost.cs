@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Threading;
 using Llyn.Application;
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.Core.Windows;
 using Llyn.Infrastructure;
@@ -24,7 +25,10 @@ Thread thread = new(() =>
     LEngine? engine = themed
         ? bootstrap.QBootstrapBuild(
             LWorkspaceRoot.LWorkspaceRootRead,
-            workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph)),
+            workspace => new LEngine(
+                LRigFactory.LRigFactoryBuild(workspace, client, usher, press, phonograph),
+                path => LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph),
+                LWorkspaceRoot.LWorkspaceRootChange),
             LDoctor.LDoctorBusyCheck)
         : null;
     if (engine is null)
@@ -42,20 +46,14 @@ Thread thread = new(() =>
     LDoctorRescue rescue = engine.LEngineRescueRead();
     bootstrap.QBootstrapRescueShow(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
-    bootstrap.QBootstrapWindowShow(new PWindow(
-        new LWindow(
-            new LPosture(engine),
-            new LDraftOutlet(engine),
-            new LEntryOutlet(engine),
-            settings,
-            new LPhonologyOutlet(engine),
-            new LMediaOutlet(engine),
-            new LPortraitOutlet(engine)),
-        path =>
-        {
-            engine.LEngineRigApply(LRigFactory.LRigFactoryBuild(path, client, usher, press, phonograph));
-            LWorkspaceRoot.LWorkspaceRootChange(path);
-        }));
+    bootstrap.QBootstrapWindowShow(new PWindow(new CAtelier(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        new LEntryOutlet(engine),
+        settings,
+        new LPhonologyOutlet(engine),
+        new LMediaOutlet(engine),
+        new LPortraitOutlet(engine))));
     code = application.Run();
     engine.Dispose();
     client.Dispose();

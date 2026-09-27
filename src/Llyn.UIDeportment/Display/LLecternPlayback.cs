@@ -37,10 +37,10 @@ public sealed class LLecternPlayback
         _lLecternPlaybackTray = tray;
         _lLecternPlaybackVolume = volume;
 
-        volume.ValueChanged += (_, e) => LLecternVolumeHandle(e.NewValue);
-        volume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((_, _) => LLecternVolumeSave()));
-        volume.AddHandler(UIElement.MouseUpEvent, new MouseButtonEventHandler((_, _) => LLecternVolumeSave()), true);
-        volume.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, _) => LLecternVolumeSave()), true);
+        volume.ValueChanged += LLecternVolumeHandle;
+        volume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(LLecternVolumeSettle));
+        volume.AddHandler(UIElement.MouseUpEvent, new MouseButtonEventHandler(LLecternVolumeSettle), true);
+        volume.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler(LLecternVolumeSettle), true);
         LLecternVolumeLoad();
     }
 
@@ -69,27 +69,27 @@ public sealed class LLecternPlayback
         }
 
         _lLecternPlaybackDisplay.LDisplayRecordingPlay(
-            row.LAccentItemAudio, _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume);
+            row.LAccentItemAudio, _lLecternPlaybackWindow.LWindowAtelier.CAtelierVolumeRead());
     }
 
     public void LLecternActionHandle()
     {
         _lLecternPlaybackDisplay.LDisplayRecordingPlay(
-            _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume);
+            _lLecternPlaybackWindow.LWindowAtelier.CAtelierVolumeRead());
     }
 
     private void LLecternVolumeLoad()
     {
-        _lLecternPlaybackVolume.Value = _lLecternPlaybackWindow.LWindowPostureRead().CPostureStateVolume;
+        _lLecternPlaybackVolume.Value = _lLecternPlaybackWindow.LWindowAtelier.CAtelierVolumeRead();
     }
 
-    private void LLecternVolumeHandle(double level)
+    private void LLecternVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        _lLecternPlaybackWindow.LWindowVolumeSet(level);
+        _lLecternPlaybackWindow.LWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
     }
 
-    private void LLecternVolumeSave()
+    private void LLecternVolumeSettle(object sender, RoutedEventArgs e)
     {
-        _lLecternPlaybackWindow.LWindowVolumeSave();
+        _lLecternPlaybackWindow.LWindowAtelier.CAtelierVolumeSet(_lLecternPlaybackVolume.Value, true);
     }
 }

@@ -406,7 +406,8 @@ public sealed class LGuild
         ArgumentNullException.ThrowIfNull(window);
 
         LGuildVistaRestore(
-            window.LWindowVistaStart("guild", LSubject.LSubjectAuthor, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("oeuvre", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName));
+            window.LWindowAtelier.CAtelierVistaStart("guild", CSubject.CSubjectAuthor, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "oeuvre", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName));
     }
 }

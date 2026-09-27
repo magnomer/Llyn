@@ -1,11 +1,15 @@
 using System.Reflection;
 using Llyn.Core;
 using Llyn.Infrastructure;
+using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
 internal static class TRigFake
 {
+    internal static LEngine TRigFakeStart(LRig rig) =>
+        new(rig, workspace => TRigFakeBuild(new TVaultFake(), workspace), _ => { });
+
     internal static LRig TRigFakeBuild() => TRigFakeBuild(new TVaultFake(), "fake");
 
     internal static LRig TRigFakeBuild(LEntryVault entries) => TRigFakeBuild(entries, "fake");

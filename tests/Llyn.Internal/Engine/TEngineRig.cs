@@ -9,7 +9,7 @@ public sealed class TEngineRig
     [Fact]
     public void Engine_FakeRig_StartsWithoutDisk()
     {
-        using LEngine engine = new(TRigFake.TRigFakeBuild(new TVaultFake(), "fake-start"));
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(new TVaultFake(), "fake-start"));
 
         Assert.Equal("fake-start", engine.TEngineWorkspaceRead());
         Assert.Equal("en", engine.TEngineSettingsRead().LSettingsLocalization);
@@ -20,7 +20,7 @@ public sealed class TEngineRig
     public void EntryCreate_FakeRig_LandsInFakeVault()
     {
         TVaultFake fake = new();
-        using LEngine engine = new(TInterface.TRigClerkCreate(fake));
+        using LEngine engine = TRigFake.TRigFakeStart(TInterface.TRigClerkCreate(fake));
         engine.TEngineFrequencySave(false);
 
         LEntry created = engine.TEngineTranslationCreate("kindle", "en");
@@ -36,7 +36,7 @@ public sealed class TEngineRig
         TVaultFake first = new();
         TVaultFake second = new();
         LEntry seeded = second.TVaultFakeAdd(TInterface.TEntryCreate(0, "ember", "en", 0, null, null));
-        using LEngine engine = new(TRigFake.TRigFakeBuild(first, "fake-first"));
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(first, "fake-first"));
         engine.TEngineRespellingSave(true);
 
         engine.TEngineRigApply(TRigFake.TRigFakeBuild(second, "fake-second"));

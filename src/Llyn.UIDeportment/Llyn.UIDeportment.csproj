@@ -9,11 +9,11 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Llyn.Windows" />
-    <InternalsVisibleTo Include="Llyn" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
+    <ProjectReference Include="..\Llyn.UIDeportment.Capsule\Llyn.UIDeportment.Capsule.csproj" />
   </ItemGroup>
 
   <ItemGroup>

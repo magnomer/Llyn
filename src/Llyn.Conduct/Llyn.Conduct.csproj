@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Llyn.Internal" />
+    <InternalsVisibleTo Include="Llyn.Windows" />
+    <InternalsVisibleTo Include="Llyn" />
+    <InternalsVisibleTo Include="Llyn.UIDeportment" />
   </ItemGroup>
 
   <ItemGroup>

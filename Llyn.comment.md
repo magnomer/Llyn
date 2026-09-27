@@ -1,6 +1,6 @@
 # Llyn.slnx
 
-Lists the eleven source projects that `dotnet build Llyn.slnx` compiles.
+Lists the twelve source projects that `dotnet build Llyn.slnx` compiles.
 This file is the single authoritative statement of the target structure.
 It states the target, and the source tree may lag it.
 The audits and convention tests measure the lag as falling ceilings.
@@ -8,8 +8,10 @@ The audits and convention tests measure the lag as falling ceilings.
 ## Layers
 
 - Veneer → Deportment → Conduct → ShellEngine → Application → Core.
+- Deportment → Deportment.Capsule.
 - UITerminal → Demeanor → Conduct.
 - Each layer names only the layer directly below it.
+- A driver also names its own Capsule, and no other layer names it.
 - Data travels freely below Conduct and never crosses the cut above it.
 - Host is the only exception.
 
@@ -86,7 +88,21 @@ The audits and convention tests measure the lag as falling ceilings.
   Nothing forbids it.
 - Deportment holds only what a GUI needs: visibility, focus, dispatcher, dialogs, drag, clipboard, printing.
 - Deportment also holds every visual written by logic: custom controls, converters, item models, commands, localization.
-- Deportment names only Conduct.
+- Deportment names Conduct and its own Capsule, and nothing else.
+
+## `<Project Path="src/Llyn.UIDeportment.Capsule/Llyn.UIDeportment.Capsule.csproj" />`
+
+- Capsule is Deportment's own storage.
+- It holds the GUI-only state that must outlive a run: window geometry, column widths, linked columns, split.
+- It reads and writes that state on disk under the workspace root.
+- It holds no rule about what the state means.
+  Deportment clamps, propagates and decides.
+- It names no Llyn project.
+  It uses .NET alone.
+- Only Deportment names it.
+  Conduct and every layer below never see GUI-only state.
+- Its types take `L`, since it handles no Veneer part and is no driver.
+- Demeanor may have its own Capsule by the same rules, and none exists yet.
 
 ## `<Project Path="src/Llyn.UIDemeanor/Llyn.UIDemeanor.csproj" />`
 
@@ -98,14 +114,24 @@ The audits and convention tests measure the lag as falling ceilings.
 - Demeanor uses the console freely.
   Nothing forbids it.
 - Demeanor holds only what a CUI needs: cursor, key reading, redraw, prompts, screen size.
-- Demeanor names only Conduct.
+- Demeanor names Conduct and its own Capsule, and nothing else.
 
 ## Driver
 
 - A driver does three things: gather input in its medium, call a gate, show the verdict.
 - A driver controls its surface completely: what is drawn, focus, navigation and redraw.
 - A driver manipulates its surface but never the data.
-- It only rearranges data into the shape a gate takes, and the verdict into the shape its surface takes.
+- Conduct holds every behaviour of the application, down to the smallest action.
+- Deportment manipulates the Veneer, and nothing else.
+- A driver never defines what the application does.
+  It only defines how its medium shows it and how its medium hears the user.
+- Every line of a driver answers one question: would the other driver need this same answer?
+- Yes: it is behaviour, and it moves into Conduct or deeper.
+- No, it only concerns pixels, controls, focus or the console: it stays in the driver.
+- Behaviour includes creating, changing, removing, ordering or linking anything.
+- It includes validation, trimming, empty and duplicate checks, limits, clamps, defaults and fallbacks.
+- It includes choosing a localization key, parsing text, and deciding what happens next.
+- It includes dirty, undo, redo and held state, mapping engine records, and the order of engine calls.
 - A driver never builds, checks or decides what a gate owns.
 - Both drivers call the same gate for the same user action.
 - Creating a new entry is one Conduct gate.
@@ -142,6 +168,7 @@ The audits and convention tests measure the lag as falling ceilings.
 
 - Conduct is organized by gates.
 - A gate is one way into the inner code: one user action with one function and one signature.
+- Every user action, down to one field edit, is a gate.
 - A gate is named as a user action: create an entry, save an entry, delete, search, record, navigate.
 - A function that cannot be named as a user action is not a gate.
   It is a helper inside one.
@@ -244,6 +271,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - If the other medium would need the same answer, the logic goes to a Conduct gate.
 - If the answer depends on WPF, the logic goes to Deportment.
 - If the answer depends on the console, the logic goes to Demeanor.
+- If the answer is GUI-only state that must persist, Deportment decides it and Capsule stores it.
 - Engine work goes to ShellEngine, Application or Core.
 - First pick the layer that owns the concern.
   Then pick its portable half or its twin.
@@ -299,6 +327,10 @@ The audits and convention tests measure the lag as falling ceilings.
 - Deportment was treated as loading the Veneer by pack URI.
   Wrong.
   The Veneer holds the scaffold, and Deportment pulls each part by contract ID.
+
+- GUI-only state was treated as Conduct's because a medium-free part sat beside it.
+  Wrong.
+  Each piece is split by concern first, and GUI-only state never goes below Deportment.
 
 ## Test projects
 

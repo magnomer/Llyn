@@ -24,3 +24,7 @@ The Windows tests reach them through this grant instead of keeping a second rela
 ## `<ProjectReference Include="../../src/Llyn.Conduct/Llyn.Conduct.csproj" />`
 
 Conduct is the deepest portable layer the tests drive, through its gates.
+
+## `<ProjectReference Include="../../src/Llyn.UIDeportment.Capsule/Llyn.UIDeportment.Capsule.csproj" />`
+
+Deportment's Capsule is portable, so its file contract is checked here without WPF.

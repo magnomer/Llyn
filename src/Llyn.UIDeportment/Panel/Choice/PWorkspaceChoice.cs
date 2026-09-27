@@ -60,7 +60,7 @@ public partial class PSettings
 
         try
         {
-            _pSettingsHost.PWindowWorkspaceChange(path);
+            PSettingsWindow.LWindowAtelier.CAtelierWorkspaceChange(path);
         }
         catch (Exception exception)
         {

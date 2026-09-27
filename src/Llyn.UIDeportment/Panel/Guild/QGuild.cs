@@ -146,7 +146,7 @@ internal sealed class QGuild
             host.PWindowUnionConfirm,
             host.PWindowUnreadableConfirm);
         _lGuild.LGuildChanged += QGuildModeUpdate;
-        _lGuild.LGuildRefused += host.PWindowFailureShow;
+        _lGuild.LGuildRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lGuild.LGuildFailed += host.PWindowFailureShow;
         _lGuild.LGuildPanel.LPanelChanged += QGuildModeUpdate;
         _lGuild.LGuildPanel.LPanelRowsChanged += QRollUpdate;

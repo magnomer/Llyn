@@ -26,7 +26,7 @@ Git is the only external tool required.
 
 auditlines.json shape:
   {
-    "generation": 22,
+    "generation": 16,
     "project": "Llyn",
     "enforced": true,
     "ceilings": { "Length": 0, "Width": 0 },
@@ -105,7 +105,7 @@ auditlines -Extensions .cs, .xaml
 auditlines -SourceRoots .\src, .\tests
 #>
 #requires -Version 5.1
-# AUDITLINES GENERATION 22 - auditlines.ps1.
+# AUDITLINES GENERATION 16 - auditlines.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -127,19 +127,7 @@ auditlines -SourceRoots .\src, .\tests
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
 # seal check counts engine types on the public members of sealed Deportment types.
-# Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 19: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the taxonomy and tenor shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 20: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the markup entry and omission shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 21: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the portrait legend shape, and the UI audit, whose Parity ledger holds the repertoire's CUI debt.
-# Generation 22: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the corpus and guild shapes, and the UI audit, whose Parity ledger holds their CUI debt.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -258,7 +246,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 22
+$script:AuditGeneration = 16
 $script:ItemLimit = 40
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
@@ -731,14 +719,24 @@ $wideWarnings = [System.Collections.Generic.List[object]]::new()
 $extensionTotals = @{}
 $readErrors = [System.Collections.Generic.List[string]]::new()
 
+$solutionFile = @([System.IO.Directory]::GetFiles($repoRootFull, '*.slnx') + [System.IO.Directory]::GetFiles($repoRootFull, '*.sln')) | Select-Object -First 1
+$projectPrefix = if ($null -eq $solutionFile) { '' } else { [System.IO.Path]::GetFileNameWithoutExtension($solutionFile) + '.' }
+
 function Get-FolderKey {
-    param([Parameter(Mandatory = $true)][string]$Relative)
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Root,
+        [Parameter(Mandatory = $true)][string]$Relative
+    )
 
     $cut = $Relative.LastIndexOf('/')
-    if ($cut -le 0) { return "(root)" }
-    $parts = @($Relative.Substring(0, $cut).Split('/'))
+    $parts = @(if ($cut -gt 0) { $Relative.Substring(0, $cut).Split("/") })
     $take = [Math]::Min($Segments, $parts.Count)
-    return (($parts | Select-Object -First $take) -join '/')
+    $labels = @($parts | Select-Object -First $take | ForEach-Object {
+        if ($projectPrefix.Length -gt 0 -and $_.Length -gt $projectPrefix.Length -and $_.StartsWith($projectPrefix, [System.StringComparison]::OrdinalIgnoreCase)) { $_.Substring($projectPrefix.Length) } else { $_ }
+    })
+    if ($Root.Length -gt 0) { $labels = @($Root) + $labels }
+    if ($labels.Count -eq 0) { return "(root)" }
+    return ($labels -join ' / ')
 }
 
 function New-FolderResult {
@@ -765,6 +763,7 @@ if ($listing.ExitCode -ne 0) {
 $sourcePaths = [System.Collections.Generic.List[string]]::new()
 $sourceRelatives = @{}
 $sourceUnderRoots = @{}
+$sourceOwners = @{}
 foreach ($entry in $listing.Lines) {
     $relative = ([string]$entry).Trim()
     if ($relative.Length -eq 0 -or (Test-IsExcludedPath -Relative $relative -ExcludedNames $excludedNames)) { continue }
@@ -784,6 +783,7 @@ foreach ($entry in $listing.Lines) {
     $sourcePaths.Add($full)
     $sourceRelatives[$full] = $relative
     $sourceUnderRoots[$full] = $relative.Substring($owner.Prefix.Length)
+    $sourceOwners[$full] = $owner.Prefix.TrimEnd('/')
 }
 $sourcePaths.Sort([System.StringComparer]::OrdinalIgnoreCase)
 
@@ -792,7 +792,7 @@ $order = 0
 foreach ($fileFull in $sourcePaths) {
     $file = [System.IO.FileInfo]::new($fileFull)
     $relative = [string]$sourceRelatives[$fileFull]
-    $folderKey = Get-FolderKey -Relative ([string]$sourceUnderRoots[$fileFull])
+    $folderKey = Get-FolderKey -Root ([string]$sourceOwners[$fileFull]) -Relative ([string]$sourceUnderRoots[$fileFull])
     $extensionKey = $file.Extension.ToLowerInvariant()
     $hasWidth = $widthLimits.ContainsKey($extensionKey)
     $widthLimit = if ($hasWidth) { $widthLimits[$extensionKey] } else { 0 }

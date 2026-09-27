@@ -131,7 +131,8 @@ public sealed class LFavorite
         ArgumentNullException.ThrowIfNull(window);
 
         LFavoriteVistaRestore(
-            window.LWindowVistaStart("favorite", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "favorite", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public long LFavoriteVoyageRead()

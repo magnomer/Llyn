@@ -373,7 +373,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PEditorStopUpdate()
     {
-        _pEditorHost.PWindowFailureShow("Input.HoldFailed");
+        _pEditorHost.PWindowEnvoy.CEnvoyFailureShow("Input.HoldFailed");
     }
 
     private void PEditorUndoHandle(object sender, RoutedEventArgs e)

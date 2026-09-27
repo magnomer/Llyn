@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
+using Llyn.UIDeportment.Capsule;
 
 namespace Llyn.UIDeportment;
 
@@ -46,14 +47,14 @@ public sealed class PLayout
     {
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
-            if (_lWindow.LWindowLayoutRead(tab) is CLayout record)
+            if (_lWindow.LWindowPosture.QPostureColumnRead(tab) is LCapsuleColumn record)
             {
-                PLayoutColumnApply(host, 0, record.CLayoutLeft);
-                PLayoutColumnApply(host, 1, record.CLayoutMiddle);
+                PLayoutColumnApply(host, 0, record.LCapsuleColumnLeft);
+                PLayoutColumnApply(host, 1, record.LCapsuleColumnMiddle);
             }
         }
 
-        if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
+        if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
         {
             return;
         }
@@ -82,7 +83,7 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
+        if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
         {
             return;
         }
@@ -109,13 +110,13 @@ public sealed class PLayout
 
         _pLayoutRecent = source;
 
-        List<CLayout> list = [];
+        List<LCapsuleColumn> list = [];
 
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
             if (!ReferenceEquals(host, source))
             {
-                if (!_lWindow.LWindowPostureRead().CPostureStateLinked)
+                if (!_lWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked)
                 {
                     continue;
                 }
@@ -124,7 +125,7 @@ public sealed class PLayout
             list.Add(PLayoutRecordRead(tab, host));
         }
 
-        _lWindow.LWindowLayoutSave(list);
+        _lWindow.LWindowPosture.QPostureLayoutSave(list);
     }
 
     internal void PLayoutSync()
@@ -159,14 +160,14 @@ public sealed class PLayout
         _pLayoutRecent = null;
     }
 
-    private static CLayout PLayoutRecordRead(string tab, Grid host)
+    private static LCapsuleColumn PLayoutRecordRead(string tab, Grid host)
     {
         int last = host.ColumnDefinitions.Count - 1;
 
         double? left = last > 0 ? PLayoutColumnRead(host.ColumnDefinitions[0]) : null;
         double? middle = last > 1 ? PLayoutColumnRead(host.ColumnDefinitions[1]) : null;
 
-        return new CLayout(tab, left, middle);
+        return new LCapsuleColumn(tab, left, middle);
     }
 
     private static double? PLayoutColumnRead(ColumnDefinition column)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
@@ -62,4 +63,16 @@ internal static class TInterfaceConduct
     internal static IReadOnlyList<CCitationRow> TCitationRowFind(
         IReadOnlyList<CCatalogReference> found, string word, long? source) =>
         CCitationRow.CCitationRowFind(found, word, source);
+
+    internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(
+        new LPosture(engine),
+        TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineLeftoverSweep"] = _ => null,
+        }),
+        new LEntryOutlet(engine),
+        new LSettingsOutlet(engine),
+        new LPhonologyOutlet(engine),
+        media,
+        new LPortraitOutlet(engine));
 }

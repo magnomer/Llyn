@@ -2,15 +2,15 @@
 
 ## `public sealed class LPosture : IDisposable`
 
-How the main window stands: its geometry, tab layout, linked panels, open tab, split and volume.
-It is owned by the window, since none of it belongs to one tab.
-It stands beside the engine in the shell ring, not inside it, so no engine part carries window posture.
+How the session stands in every medium: each tab's listing, the open tab, the split and the volume.
+Window geometry and panel widths are GUI-only, so the GUI driver's Capsule keeps them instead.
+It is owned by Conduct's atelier, since none of it belongs to one tab.
+It stands beside the engine in the shell ring, not inside it, so no engine part carries view posture.
 It persists through the posture port the engine hands out, so it never learns where the workspace is.
-The core ring no longer holds any of this, so it knows nothing of how wide a pane is.
 It listens to the engine as an observer.
 A vista bulletin stores the order and filter that vista now holds.
 A workspace bulletin reloads the posture of the workspace moved onto.
-The window disposes it on exit, which detaches it and lets go of every vista it watched.
+The atelier disposes it on exit, which detaches it and lets go of every vista it watched.
 
 ## `public LPostureState LPostureRead()`
 
@@ -20,29 +20,18 @@ The posture as it stands, read whole under the gate.
 
 Whether the tab named is the one stored as standing open.
 
+## `private static LLayout? LPostureLayoutFind(LPostureState state, string tab)`
+
+The record of one tab in `state`, which the vista start reads its ordering and filter from.
+
 ## `public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)`
 
 Starts the tab's vista on the order and filter stored under it, and on the stored split.
 The deportments reach it through `LWindow`, since the veneer names no posture after plan 13.
 A tab with no stored order lists by `fallback`, and one with no stored filter hides nothing.
 The vista's starting order and filter are marked, so the first bulletin stores only what moved since.
-The vista's editing event is taken here, since only a vista started through the posture is the window's.
+The vista's editing event is taken here, since only a vista started through the posture is the session's.
 The vista is remembered so the event can be given back on dispose.
-
-## `public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)`
-
-Stores the window geometry after `delay` milliseconds, or at once when `delay` is zero.
-Every call cancels the write still waiting, so a drag ends in one write.
-A minimized window stores nothing, so the maximized flag it had before survives a close from the taskbar.
-The shell hands the raw facts here, so no control and no clock of its own decides the write.
-
-## `private async Task LPostureWindowRun(CancellationTokenSource pending, LWindowState window, int delay)`
-
-Waits out the delay, then writes unless a later call replaced or cancelled the wait.
-
-## `private void LPostureWindowCancel()`
-
-Cancels and releases the waiting write, if there is one.
 
 ## `public void LPostureVolumeSet(double volume)`
 
@@ -60,25 +49,14 @@ A level equal to the one last written writes nothing, so no shell asks before it
 
 Stores the name of the tab standing open.
 
-## `public bool LPostureLinkedSave(bool linked)`
-
-Stores whether dragging a panel in one tab sets the same width in every tab, and says whether that changed.
-The widths themselves are stored per tab either way, so a flip neither moves nor loses any panel.
-No bulletin carries the switch any more, so the caller syncs the tabs itself.
-
 ## `public void LPostureLayoutSave(IEnumerable<LLayout> layout)`
 
-Stores the panel widths, ordering and hidden languages of the tabs given.
+Stores the ordering and hidden languages of the tabs given.
 Each field a tab gives replaces that field of its own record.
 A field left empty keeps what the record had.
 Every tab not given keeps the record it had.
-A drag therefore never drops the ordering a panel chose, and an ordering never drops a dragged width.
+A new ordering therefore never drops the filter a tab chose, and a filter never drops an ordering.
 Nothing is written while no tab's record moved, so a bulletin that changed nothing costs no file.
-
-## `public void LPostureLayoutReset()`
-
-Drops the stored width of every tab.
-Each tab's ordering and hidden languages stay, because the button promises widths and nothing more.
 
 ## `public void Dispose()`
 
@@ -108,7 +86,7 @@ Two filters compare by the text the catalog writes them in, since the record com
 ## `private void LPostureLoad()`
 
 Reads the stored posture through the engine, then the legacy settings key when none is stored.
-A vault fault on either read leaves the posture as it stands, so a broken file never resets the window.
+A vault fault on either read leaves the posture as it stands, so a broken file never resets the session.
 A legacy posture that differs from the default is adopted and written under the current key.
 
 ## `private bool LPostureChange(Func<LPostureState, LPostureState> change)`

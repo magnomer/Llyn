@@ -31,7 +31,7 @@ public sealed class LNavigation
 
         foreach (string tab in _lNavigationTabs)
         {
-            if (_lWindow.LWindowModeMatch(tab))
+            if (_lWindow.LWindowAtelier.CAtelierModeMatch(tab))
             {
                 return LNavigationAllowRead(tab, allowed);
             }
@@ -43,7 +43,7 @@ public sealed class LNavigation
     private string LNavigationAllowRead(string tab, Func<string, bool> allowed)
     {
         string restored = allowed(tab) ? tab : _lNavigationTabs[0];
-        _lWindow.LWindowModeSave(restored);
+        _lWindow.LWindowAtelier.CAtelierModeSave(restored);
         return restored;
     }
 
@@ -71,7 +71,7 @@ public sealed class LNavigation
                 continue;
             }
 
-            if (!_lWindow.LWindowModeMatch(other))
+            if (!_lWindow.LWindowAtelier.CAtelierModeMatch(other))
             {
                 continue;
             }
@@ -82,7 +82,7 @@ public sealed class LNavigation
             }
         }
 
-        _lWindow.LWindowModeSave(tab);
+        _lWindow.LWindowAtelier.CAtelierModeSave(tab);
         return true;
     }
 
@@ -90,7 +90,7 @@ public sealed class LNavigation
     {
         foreach (string tab in _lNavigationTabs)
         {
-            if (_lWindow.LWindowModeMatch(tab))
+            if (_lWindow.LWindowAtelier.CAtelierModeMatch(tab))
             {
                 return tab;
             }

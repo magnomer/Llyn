@@ -59,6 +59,7 @@ A saved entry starts a background frequency fetch, and a real client would hit t
 
 Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
+A workspace change builds its rig the same way, and no test ever writes the user's workspace pointer.
 Only the clock is swapped for the workspace's `TClockFake`, so a test can freeze time through `TWorkspaceClockSet`.
 The rig carries the workspace's `TPress`, so a print test reads what reached it from the workspace.
 An engine over fakes instead starts from `TRigFake`.

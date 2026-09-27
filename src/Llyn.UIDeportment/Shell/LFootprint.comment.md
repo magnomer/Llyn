@@ -20,7 +20,7 @@ A drag raises a change for every pixel, and one write per pixel would be a file 
 
 Keeps the window deportment, which holds the posture.
 
-## `public CWindowState? LFootprintRead(double left, double top, double width, double height, double minWidth, double minHeight)`
+## `public LCapsuleWindow? LFootprintRead(double left, double top, double width, double height, double minWidth, double minHeight)`
 
 The stored geometry, placed inside the current virtual screen, or null when nothing is stored.
 The screen's rectangle and the window's minimum size are handed in by the window view.
@@ -31,38 +31,25 @@ A monitor that is gone, or a saved size larger than the desktop, must not leave 
 
 The size a first launch takes: its share of the work area, never below the minimum size.
 
-## `public void LFootprintSave(CWindowState state, bool minimized)`
+## `public void LFootprintSave(LCapsuleWindow state, bool minimized)`
 
 Hands a move or resize to the posture, which waits before writing.
 
-## `public void LFootprintClose(CWindowState state, bool minimized)`
+## `public void LFootprintClose(LCapsuleWindow state, bool minimized)`
 
 Hands the geometry of a certain close to the posture, which writes at once.
 
-## `private static CWindowState? LFootprintPlace(CWindowState? state, double left, double top, double width, double height, double minWidth, double minHeight)`
+## `private static LCapsuleWindow? LFootprintPlace(LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)`
 
 Clamps the stored size against the screen and the minimum size, keeping whether it was maximized.
 
-## `private static CWindowState LFootprintClamp(CWindowState state, double left, double top, double width, double height, double placedWidth, double placedHeight)`
+## `private static LCapsuleWindow LFootprintClamp(LCapsuleWindow state, double left, double top, double width, double height, double placedWidth, double placedHeight)`
 
 Clamps the stored position into the screen, once the size is settled.
 
-## `private void LFootprintDefer(CWindowState state, bool minimized, int delay)`
+## `private void LFootprintDefer(LCapsuleWindow state, bool minimized, int delay)`
 
 Hands the geometry to the posture, which waits `delay` milliseconds before writing.
 The window view hands the restored rectangle, never the maximized one, so restoring returns to a usable size.
 The minimized flag goes along, and the posture drops a minimized window.
 An empty or degenerate rectangle is dropped, leaving the previous geometry in place.
-
-## `internal static CPostureState LFootprintPostureRead(LPostureState state)`
-
-Copies the engine's posture into the Conduct shape the window view and its parts read.
-The posture's mode is left out, since only the navigation asks it, through the window deportment.
-
-## `internal static CWindowState? LFootprintStateRead(LWindowState? window)`
-
-Copies the stored geometry, and the overload taking the shape copies it back for the posture.
-
-## `internal static CLayout? LFootprintLayoutRead(IReadOnlyList<LLayout> layout, string tab)`
-
-The stored widths of one tab, and the overload taking shapes builds the records the posture merges.

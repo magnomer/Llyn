@@ -9,20 +9,21 @@ Each panel is a control with its own markup and its own behaviour.
 This file only puts them to work on the workspace the engine opened.
 It stops them at the end.
 
-## `public PWindow(LWindow window, Action<string> workspaceOpener)`
+## `public PWindow(CAtelier atelier)`
 
-Opens the window on its deportment, already built over an engine bound to a workspace that opened.
+Opens the window on Conduct's root, already built over an engine bound to a workspace that opened.
 No engine and no posture is constructed or named here.
 Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
-The host builds the engine, the posture and the deportment, and hands the deportment over.
-The window disposes the deportment when it closes, and the bootstrap disposes the engine on exit.
+The host builds the engine and the root, and hands the root over.
+The window builds its deportment over the root.
+The window disposes its posture and the root when it closes, and the bootstrap disposes the engine on exit.
 The deportment is set as the mention attached property on the loaded window, so every mention block below inherits it.
 The loaded window carries the class in its `Tag`, so a control inside can find its host.
 The roof, logo, menu lines, caption buttons and tab buttons are subscribed here after the load.
 Each caption glyph strokes with its button's foreground through a binding set here.
 Each tab button's icon is resolved here.
-`workspaceOpener` is the bootstrap's own workspace change, since only it may build a rig for a new folder.
+The envoy is built over the loaded window, so every question it asks is owned by that window.
 
 ## `private readonly QEstablishment _qEstablishment;`
 
@@ -62,10 +63,9 @@ A panel already moved to the veneer is pulled by its contract ID as a plain page
 Builds one duplex wing over the window deportment.
 The wing stays in the deportment, so the window builds it rather than the window deportment.
 
-## `internal void PWindowWorkspaceChange(string path)`
+## `internal CEnvoy PWindowEnvoy { get; }`
 
-Moves the user onto the workspace at `path` through the bootstrap's delegate.
-The settings panel calls it, so no panel names the factory or the pointer.
+The window's answer to Conduct's user-question port, which the panels ask through.
 
 ## `private void PWindowAttach()`
 
@@ -117,7 +117,7 @@ Nothing is written before then, so the restore does not save what it has just re
 Geometry is written down while the program runs rather than only as it closes.
 A killed process, a launcher window shut and a machine turned off all end without closing.
 
-## `private CWindowState PFootprintRead()`
+## `private LCapsuleWindow PFootprintRead()`
 
 The window's restored rectangle, which `RestoreBounds` supplies whenever the window is not normal.
 

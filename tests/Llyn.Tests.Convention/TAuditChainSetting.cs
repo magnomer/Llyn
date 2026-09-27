@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditChainSetting
 {
-    public const int TAuditGeneration = 22;
+    public const int TAuditGeneration = 16;
     public const string TAuditChainHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditChainReach = new Dictionary<string, string[]>
@@ -17,12 +17,19 @@ internal static class TAuditChainSetting
         ["Llyn.UITerminal"] = ["Llyn.UIDemeanor"],
         ["Llyn.Infrastructure"] = ["Llyn.Core"],
         ["Llyn.Core.Windows"] = ["Llyn.Core"],
+        ["Llyn.UIDeportment.Capsule"] = [],
+    };
+
+    public static readonly IReadOnlyDictionary<string, string> TAuditChainCapsule = new Dictionary<string, string>
+    {
+        ["Llyn.UIDeportment"] = "Llyn.UIDeportment.Capsule",
     };
 
     public static readonly string[] TAuditChainCut =
     [
         "Llyn.UIVeneer",
         "Llyn.UIDeportment",
+        "Llyn.UIDeportment.Capsule",
         "Llyn.UIDemeanor",
         "Llyn.UITerminal",
     ];
@@ -142,6 +149,8 @@ internal static class TAuditChainSetting
             "CAuthor",
             "CAuthorRow",
             "CImprint",
+            "CAtelier",
+            "CEnvoy",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -269,8 +278,8 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 154,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 988,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 654,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 917,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 616,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 33,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 9,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 33,

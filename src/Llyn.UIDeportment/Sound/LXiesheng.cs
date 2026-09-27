@@ -103,8 +103,9 @@ public sealed class LXiesheng
         ArgumentNullException.ThrowIfNull(window);
 
         LXieshengVistaRestore(
-            window.LWindowVistaStart("grove", null, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("kindred", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart("grove", null, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "kindred", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     internal void LXieshengVistaRestore(LVista grove, LVista kindred)

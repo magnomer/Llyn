@@ -8,12 +8,6 @@ Those are a request that failed, and the question asked before work is thrown aw
 
 ## Inline notes
 
-### `internal void PWindowFailureShow(string key)`
-
-Presents a request that failed with nothing further to say about why.
-A disagreement the program noticed itself carries no refusal and no fault.
-The headline alone is the whole answer, and an empty detail line under it would read as a missing message.
-
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 
 Presents a request that failed, under the localized headline the given key names.

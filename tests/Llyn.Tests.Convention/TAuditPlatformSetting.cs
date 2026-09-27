@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditPlatformSetting
 {
-    public const int TAuditGeneration = 22;
+    public const int TAuditGeneration = 16;
     public const bool TAuditPlatformEnforced = true;
     public const string TAuditPlatformRoot = "src/";
     public const string TAuditPlatformPortable = "net10.0";
@@ -36,10 +36,16 @@ internal static class TAuditPlatformSetting
         ["Llyn.ShellEngine"] = "Llyn.ShellEngine",
         ["Llyn.Conduct"] = "Llyn.Conduct",
         ["Llyn.UIDeportment"] = "Llyn.Conduct",
+        ["Llyn.UIDeportment.Capsule"] = "Llyn.UIDeportment.Capsule",
         ["Llyn.UIVeneer"] = "Llyn.Conduct",
         ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor",
         ["Llyn.UITerminal"] = "Llyn.UITerminal",
         ["Llyn.Host"] = "",
+    };
+
+    public static readonly IReadOnlyDictionary<string, string> TAuditPlatformCapsule = new Dictionary<string, string>
+    {
+        ["Llyn.UIDeportment"] = "Llyn.UIDeportment.Capsule",
     };
 
     public static readonly string[] TAuditPlatformProperties = ["UseWPF", "UseWindowsForms", "UseWinUI"];

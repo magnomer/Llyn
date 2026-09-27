@@ -192,7 +192,8 @@ public sealed class TAuditPlatform
                 }
 
                 hits.AddRange(references
-                    .Where(reference => table.GetValueOrDefault(reference) != column)
+                    .Where(reference => table.GetValueOrDefault(reference) != column
+                        && TAuditPlatformSetting.TAuditPlatformCapsule.GetValueOrDefault(name) != reference)
                     .Select(reference => new TAuditHit(
                         relative, 0, name, "Column", reference,
                         $"references {reference} outside the {column} column")));

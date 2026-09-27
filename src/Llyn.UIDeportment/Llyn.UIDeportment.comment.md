@@ -14,18 +14,18 @@ It holds no markup, since every page and dictionary lives in the veneer.
 
 Only the Windows behaviour tests can load Deportment, so only they reach its internals.
 
-## `<InternalsVisibleTo Include="Llyn" />`
-
-The host, built as `Llyn`, builds the window deportment over the ports it makes.
-The constructor naming those ports stays internal, so no driver can build one.
-
 ## `<ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />`
 
-Conduct is the only reference, and ShellEngine, Application and Core arrive through it.
+Conduct is the layer below, and ShellEngine, Application and Core arrive through it.
+Deportment reaches the engine only through Conduct's atelier and its transitional port handles.
 The engine handles a panel keeps, `LVista`, `LTenure` and `LForay`, are its whole reason to exist.
-A deportment holds the engine through the `L*Port` slices it calls, never through `LEngine` itself.
-The ring guard lists the ports and handles it may name, and every other engine type is out of reach.
+The ring guard lists the handles it may name, and every other engine type is out of reach.
 `Llyn.Core.Windows` is not referenced, since playback runs through WPF and WebView2 controls held here.
+
+## `<ProjectReference Include="..\Llyn.UIDeportment.Capsule\Llyn.UIDeportment.Capsule.csproj" />`
+
+Deportment's own storage, which keeps the window geometry and panel widths between runs.
+Only Deportment names it, so no layer below the cut sees GUI-only state.
 
 ## `<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />`
 
@@ -50,7 +50,6 @@ Every file in Deportment holds one role.
 - No lines, lambdas or ternaries are merged to save lines, and no wrap is tightened.
 - No member is placed where there is room rather than with its role.
 - A moved member keeps its name under its new owner's prefix and base.
-- A new medium-free class in Deportment takes `Q` until job44 sinks it, as `QQuill` does.
 
 ## Area pattern
 
@@ -63,7 +62,6 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - The pack URI load and the name scope copy go.
 - The parent builds it as the window builds `QEstablishment`, from the page pulled by contract ID.
 - Part files and `P…Item` models are renamed with the class.
-- The controller is sealed by the pattern of job05.
   Its maps are internal statics on the controller, as in `LCard`.
   A map shared by every panel sits on `LPanel`.
 - A choice the view made over controller answers becomes a controller verdict, such as `LTaxonomyCoinageCheck`.

@@ -60,7 +60,7 @@ public partial class PSettings
 
             case "Layout":
                 return QLocalizationCatalog.QLocalizationTextRead(
-                    PSettingsWindow.LWindowPostureRead().CPostureStateLinked
+                    PSettingsWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked
                         ? "Layout.LinkedMeta"
                         : "Layout.FreeMeta");
 

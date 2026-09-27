@@ -7,6 +7,10 @@ The ports the engine touches at start are answered by small in-memory fakes belo
 Every other port is a stub that throws on any call.
 A test reaching storage it did not seat therefore fails loudly.
 
+## `internal static LEngine TRigFakeStart(LRig rig) =>`
+
+Binds an engine to `rig`, whose workspace change builds a fresh fake rig and records no pointer.
+
 ## `internal static LRig TRigFakeBuild(LEntryVault entries, string workspace)`
 
 The rig over `entries` as its entry port, standing on the root named `workspace`.

@@ -374,24 +374,16 @@ internal static class TInterfaceDeportment
         TWindowCreate(drafts, TEngineFake.TEngineStubCreate<LSettingsPort>());
 
     internal static LWindow TWindowCreate(LDraftPort drafts, LSettingsPort settings) =>
-        new(
-            new LPosture(new LEngine(TRigFake.TRigFakeBuild())),
+        new(new CAtelier(
+            new LPosture(TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild())),
             drafts,
             TEngineFake.TEngineStubCreate<LEntryPort>(),
             settings,
             TEngineFake.TEngineStubCreate<LPhonologyPort>(),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
-            TEngineFake.TEngineStubCreate<LPortraitPort>());
+            TEngineFake.TEngineStubCreate<LPortraitPort>()));
 
-    internal static LWindow TWindowCreate(LEngine engine) =>
-        new(
-            new LPosture(engine),
-            new LDraftOutlet(engine),
-            new LEntryOutlet(engine),
-            new LSettingsOutlet(engine),
-            new LPhonologyOutlet(engine),
-            new LMediaOutlet(engine),
-            new LPortraitOutlet(engine));
+    internal static QPosture TPostureCreate(string root) => new(() => root);
 
     internal static LFont TFontCreate(string family, double size) => new(family, size);
 
@@ -404,26 +396,11 @@ internal static class TInterfaceDeportment
     internal static void TWorkspaceEpithetSave(this LWindow window, bool epithet) =>
         window.LWindowWorkspace.QWorkspaceEpithetSave(epithet);
 
-    internal static CPostureState TWindowPostureRead(this LWindow window) => window.LWindowPostureRead();
-
-    internal static CPostureState TFootprintPostureRead(LPostureState state) => LFootprint.LFootprintPostureRead(state);
-
     internal static CFont TSoundingFontRead(LFont font) => LSounding.LSoundingFontRead(font);
 
     internal static CSettings TWorkspaceSettingsRead(LSettings settings) => QWorkspace.QWorkspaceSettingsRead(settings);
 
     internal static CMarkdownBlock TWindowMarkdownRead(LMarkdownBlock block) => LWindow.LWindowMarkdownRead(block);
-
-    internal static CLayout? TWindowLayoutRead(this LWindow window, string tab) => window.LWindowLayoutRead(tab);
-
-    internal static void TWindowLayoutSave(this LWindow window, params CLayout[] layout) =>
-        window.LWindowLayoutSave(layout);
-
-    internal static void TWindowLayoutReset(this LWindow window) => window.LWindowLayoutReset();
-
-    internal static void TWindowModeSave(this LWindow window, string mode) => window.LWindowModeSave(mode);
-
-    internal static bool TWindowModeMatch(this LWindow window, string mode) => window.LWindowModeMatch(mode);
 
     internal static IReadOnlyList<CMentionPiece> TWindowMentionDivide(
         this LWindow window, string text, IReadOnlyList<CMention> mentions) =>

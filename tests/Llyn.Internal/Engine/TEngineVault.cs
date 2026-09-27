@@ -11,7 +11,7 @@ public sealed class TEngineVault
     {
         TVaultFake fake = new();
         LEntry seeded = fake.TVaultFakeAdd(TInterface.TEntryCreate(0, "kindle", "en", 0, null, null));
-        using LEngine engine = new(TRigFake.TRigFakeBuild(fake));
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(fake));
 
         LEntry? read = engine.TEngineEntryRead(seeded.LEntryId);
 
@@ -23,7 +23,7 @@ public sealed class TEngineVault
     public void EntryRead_FakeVaultUnknownId_ReturnsNull()
     {
         TVaultFake fake = new();
-        using LEngine engine = new(TRigFake.TRigFakeBuild(fake));
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild(fake));
 
         Assert.Null(engine.TEngineEntryRead(42));
         Assert.Equal(1, fake.TVaultFakeReads);

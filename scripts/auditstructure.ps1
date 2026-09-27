@@ -42,7 +42,7 @@ auditstructure -Root C:\path\to\project -Open
 Audit a specific checkout and open the violation report.
 #>
 #requires -Version 5.1
-# AUDITSTRUCTURE GENERATION 22 - auditstructure.ps1.
+# AUDITSTRUCTURE GENERATION 16 - auditstructure.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -77,20 +77,8 @@ Audit a specific checkout and open the violation report.
 # also counts command parameters, member paths and literal tags in surface markup as hooks.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
-# Generation 16: the Conduct surface each driver may reach admits the first dialog gates, CSCoinage and
-# CSCustoms with its mode and row. The UI audit rises with it.
-# Generation 17: the seal check counts every public member of a sealed-prefix type in a UI ring that
+# Generation 16: the seal check counts every public member of a sealed-prefix type in a UI ring that
 # names a type from below its neighbour. Each seal row names a ring and the type prefixes it seals.
-# Generation 18: the Conduct surface each driver may reach admits the window's shapes, from the posture
-# and the settings to the mention pieces and markdown blocks. The UI audit rises with it.
-# Generation 19: the Conduct surface each driver may reach admits the catalog tag and register rows,
-# the portrait labels and formats, and the print tickets. The UI audit rises with it.
-# Generation 20: the Conduct surface each driver may reach admits the markup entries and omissions
-# the import dialog shows. The UI audit rises with it.
-# Generation 21: the Conduct surface each driver may reach admits the portrait legend the repertoire
-# prints with. The UI audit rises with it.
-# Generation 22: the Conduct surface each driver may reach admits the example, mention result, author,
-# vita, fellow and usage shapes the corpus and guild read. The UI audit rises with it.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -148,7 +136,8 @@ CHECKS
         carry, neighbour
     The frame and ambient checks read the pure rings alone. A configuration
     that lets a ring reach more than one ring, or whose cut differs from its
-    shell folders, is refused before the audit runs.
+    shell folders, is refused before the audit runs. A ring may also name
+    one capsule: a leaf ring that reaches nothing and that no other ring names.
 
 CONFIGURATION
     auditstructure.json beside this script. A ring's folder is the source
@@ -180,7 +169,7 @@ EXAMPLES
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:AuditGeneration = 22
+$script:AuditGeneration = 16
 $script:ConfigDocument = 'auditstructure.json'
 $script:BinderSource = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'auditbinder.cs'))
 $script:PathSeparators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
@@ -370,6 +359,7 @@ $script:AuditSchema = [ordered]@{
 $script:RingSchema = [ordered]@{
     'name'  = 'string'
     'reach' = 'string[]'
+    'capsule' = 'string[]'
     'frame' = 'string[]'
     'pure'  = 'bool'
     'cut'   = 'bool'
@@ -608,6 +598,26 @@ function Read-AuditConfig {
                 [void]$problems.Add("ring '$($ring.name)' reaches $($reach -join ', '), more than one ring")
             }
 
+            $capsule = @($ring.capsule)
+            if ($capsule.Count -gt 1) {
+                [void]$problems.Add("ring '$($ring.name)' names $($capsule -join ', '), more than one capsule")
+            }
+
+            foreach ($target in $capsule) {
+                $owned = @($ringsNode.Value | Where-Object { $_.name -ceq $target })
+                if ($owned.Count -eq 0) {
+                    [void]$problems.Add("ring '$($ring.name)' names an undeclared capsule '$target'")
+                }
+                elseif (@($owned[0].reach).Count -gt 0 -or @($owned[0].capsule).Count -gt 0) {
+                    [void]$problems.Add("capsule '$target' reaches a ring, so it is no capsule")
+                }
+
+                $holders = @($ringsNode.Value | Where-Object { @($_.capsule) -ccontains $target })
+                if ($holders.Count -gt 1) {
+                    [void]$problems.Add("capsule '$target' is named by more than one ring")
+                }
+            }
+
             foreach ($target in $reach) {
                 if (-not ($names -ccontains $target)) {
                     [void]$problems.Add("ring '$($ring.name)' reaches an undeclared ring '$target'")
@@ -778,6 +788,7 @@ List<Ring> rings = config.GetProperty("rings").EnumerateArray()
         ring.GetProperty("name").GetString()!,
         source + ring.GetProperty("name").GetString()! + "/",
         Strings(ring.GetProperty("reach")),
+        Strings(ring.GetProperty("capsule")),
         Strings(ring.GetProperty("frame")),
         ring.GetProperty("pure").GetBoolean(),
         ring.GetProperty("cut").GetBoolean()))
@@ -913,7 +924,7 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
             return;
         }
 
-        string check = ring.Reach.Contains(target.Name) ? "neighbour"
+        string check = ring.Reach.Contains(target.Name) || ring.Capsule.Contains(target.Name) ? "neighbour"
             : !inner[ring.Name].Contains(target.Name) ? "outward"
             : ring.Cut && !target.Cut ? "cross"
             : data ? "carry"
@@ -937,7 +948,7 @@ Parallel.ForEach(binder.LAuditTrees, tree =>
         if (directive.NamespaceOrType is { } named
             && model.GetSymbolInfo(named).Symbol is INamespaceSymbol spaceSymbol
             && SpaceRing(spaceSymbol.ToDisplayString()) is { } target
-            && !ring.Reach.Contains(target.Name))
+            && !ring.Reach.Contains(target.Name) && !ring.Capsule.Contains(target.Name))
         {
             Chain(line, target, "using " + spaceSymbol.ToDisplayString(), true);
         }
@@ -1117,7 +1128,8 @@ foreach ((string ringName, int floor) in floors)
 List<string> projectFiles = LAuditBinder.LAuditFileRead(projectRoot, [source + "*.csproj"], [], [], [], []);
 Dictionary<string, string> projectOf = projectFiles
     .ToDictionary(path => Path.GetFileNameWithoutExtension(path), path => path, StringComparer.Ordinal);
-Dictionary<string, string[]> edges = rings.ToDictionary(ring => ring.Name, ring => ring.Reach, StringComparer.Ordinal);
+Dictionary<string, string[]> edges = rings.ToDictionary(
+    ring => ring.Name, ring => ring.Reach.Concat(ring.Capsule).ToArray(), StringComparer.Ordinal);
 edges[hostName] = hostReach;
 foreach (string name in projectOf.Keys.Union(edges.Keys, StringComparer.Ordinal).Order(StringComparer.Ordinal))
 {
@@ -1244,7 +1256,7 @@ static string[] Strings(JsonElement element) => element.EnumerateArray().Select(
 static Dictionary<string, string[]> Map(JsonElement element) => element.EnumerateObject()
     .ToDictionary(item => item.Name, item => Strings(item.Value), StringComparer.Ordinal);
 
-sealed record Ring(string Name, string Path, string[] Reach, string[] Frame, bool Pure, bool Cut);
+sealed record Ring(string Name, string Path, string[] Reach, string[] Capsule, string[] Frame, bool Pure, bool Cut);
 
 sealed record Finding(string Path, int Line, string Ring, string Check, string Target, string Name, string Text);
 

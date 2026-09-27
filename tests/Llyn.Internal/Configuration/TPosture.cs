@@ -80,22 +80,18 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void OrderSave_AfterLayoutSave_KeepsDraggedWidth()
+    public void FilterSave_AfterOrderSave_KeepsOrdering()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LPosture posture = engine.TPostureStart();
 
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
-        LVista vista = posture.TPostureVistaStart("tenor", LCatalogOrder.LCatalogOrderName);
-        vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderUsage);
-        vista.TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean"));
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("tenor", 340, 300));
+        posture.TPostureLayoutSave(TInterface.TLayoutCreate("tenor", order: LCatalogOrder.LCatalogOrderUsage));
+        posture.TPostureLayoutSave(
+            TInterface.TLayoutCreate("tenor", filter: TInterface.TCatalogFilterCreate("Korean")));
 
         LLayout tenor = Assert.Single(posture.TPostureRead().LPostureStateLayout ?? []);
 
-        Assert.Equal(340, tenor.LLayoutLeft);
-        Assert.Equal(300, tenor.LLayoutMiddle);
         Assert.Equal(LCatalogOrder.LCatalogOrderUsage, tenor.LLayoutOrder);
         Assert.Equal(["Korean"], tenor.LLayoutFilter?.LCatalogFilterHidden);
     }
@@ -107,33 +103,16 @@ public sealed class TPosture
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LPosture posture = engine.TPostureStart();
 
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("library", 400));
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("corpus", 390), TInterface.TLayoutCreate("library", 410));
+        posture.TPostureLayoutSave(TInterface.TLayoutCreate("library", order: LCatalogOrder.LCatalogOrderName));
+        posture.TPostureLayoutSave(
+            TInterface.TLayoutCreate("corpus", order: LCatalogOrder.LCatalogOrderText),
+            TInterface.TLayoutCreate("library", order: LCatalogOrder.LCatalogOrderRecent));
 
         IReadOnlyList<LLayout> layout = posture.TPostureRead().LPostureStateLayout ?? [];
 
         Assert.Equal(2, layout.Count);
-        Assert.Contains(layout, tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 410);
-        Assert.Contains(layout, tab => tab.LLayoutTab == "corpus" && tab.LLayoutLeft == 390);
-    }
-
-    [Fact]
-    public void LayoutReset_ClearsStoredWidths()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LPosture posture = engine.TPostureStart();
-
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
-        posture.TPostureVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
-            .TVistaOrderSet(LCatalogOrder.LCatalogOrderUsage);
-        posture.TPostureLayoutReset();
-
-        LLayout tenor = Assert.Single(posture.TPostureRead().LPostureStateLayout ?? []);
-
-        Assert.Null(tenor.LLayoutLeft);
-        Assert.Null(tenor.LLayoutMiddle);
-        Assert.Equal(LCatalogOrder.LCatalogOrderUsage, tenor.LLayoutOrder);
+        Assert.Equal(LCatalogOrder.LCatalogOrderRecent, TPostureOrderRead(layout, "library"));
+        Assert.Equal(LCatalogOrder.LCatalogOrderText, TPostureOrderRead(layout, "corpus"));
     }
 
     [Fact]
@@ -152,23 +131,6 @@ public sealed class TPosture
 
         Assert.Equal(written.AddMinutes(-5), File.GetLastWriteTimeUtc(path));
         Assert.Empty(posture.TPostureRead().LPostureStateLayout ?? []);
-    }
-
-    [Fact]
-    public void WindowSave_SameGeometryTwice_WritesFileOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LPosture posture = engine.TPostureStart();
-        string path = Path.Combine(workspace.TWorkspaceFolder, "posture.json");
-
-        posture.TPostureWindowSave(TInterface.TWindowStateCreate(10, 20, 800, 600, false));
-        DateTime written = File.GetLastWriteTimeUtc(path);
-        File.SetLastWriteTimeUtc(path, written.AddMinutes(-5));
-
-        posture.TPostureWindowSave(TInterface.TWindowStateCreate(10, 20, 800, 600, false));
-
-        Assert.Equal(written.AddMinutes(-5), File.GetLastWriteTimeUtc(path));
     }
 
     [Fact]
@@ -225,39 +187,21 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void WindowSave_WorkspaceReopened_KeepsGeometryAndVolume()
+    public void VolumeSave_WorkspaceReopened_KeepsVolume()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
             LPosture posture = engine.TPostureStart();
-            posture.TPostureWindowSave(TInterface.TWindowStateCreate(10, 20, 640, 480, true));
             posture.TPostureVolumeSave(0.25);
         }
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
         LPostureState state = reopened.TPostureStart().TPostureRead();
 
-        Assert.Equal(640, state.LPostureStateWindow?.LWindowStateWidth);
-        Assert.True(state.LPostureStateWindow?.LWindowStateMaximized);
         Assert.Equal(0.25, state.LPostureStateVolume);
         Assert.False(File.Exists(Path.Combine(workspace.TWorkspaceFolder, "posture.json.tmp")));
-    }
-
-    [Fact]
-    public void LinkedSave_False_KeepsLayoutAndReportsChange()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LPosture posture = engine.TPostureStart();
-
-        posture.TPostureLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
-
-        Assert.True(posture.TPostureLinkedSave(false));
-        Assert.False(posture.TPostureLinkedSave(false));
-        Assert.False(posture.TPostureRead().LPostureStateLinked);
-        Assert.Single(posture.TPostureRead().LPostureStateLayout ?? []);
     }
 
     [Fact]
@@ -273,12 +217,9 @@ public sealed class TPosture
 
         LPostureState state = engine.TPostureStart().TPostureRead();
 
-        Assert.Equal(700, state.LPostureStateWindow?.LWindowStateWidth);
-        Assert.Equal(420, TPostureLeftRead(state.LPostureStateLayout ?? [], "library"));
         Assert.Equal(LCatalogOrder.LCatalogOrderReverse, TPostureOrderRead(state.LPostureStateLayout ?? [], "library"));
         Assert.Equal("Library", state.LPostureStateMode);
         Assert.True(state.LPostureStateSplit);
-        Assert.False(state.LPostureStateLinked);
         Assert.Equal(0.5, state.LPostureStateVolume);
         Assert.True(File.Exists(Path.Combine(workspace.TWorkspaceFolder, "posture.json")));
     }
@@ -343,7 +284,6 @@ public sealed class TPosture
 
         LPostureState state = posture.TPostureRead();
         Assert.Equal("Corpus", state.LPostureStateMode);
-        Assert.Equal(700, state.LPostureStateWindow?.LWindowStateWidth);
         Assert.Equal(0.5, state.LPostureStateVolume);
         Assert.True(File.Exists(Path.Combine(second.TWorkspaceFolder, "posture.json")));
     }
@@ -384,7 +324,6 @@ public sealed class TPosture
 
         LLayout corpus = Assert.Single(loaded.LPostureStateLayout ?? []);
         Assert.Equal("corpus", corpus.LLayoutTab);
-        Assert.Null(corpus.LLayoutLeft);
         Assert.Equal(LCatalogOrder.LCatalogOrderSource, corpus.LLayoutOrder);
         Assert.Equal(["Korean", "French"], corpus.LLayoutFilter?.LCatalogFilterHidden);
         Assert.True(loaded.LPostureStateSplit);
@@ -403,9 +342,7 @@ public sealed class TPosture
     {
         LPostureState state = TInterface.TPostureLoaderRead(text);
 
-        Assert.Null(state.LPostureStateWindow);
         Assert.Empty(state.LPostureStateLayout ?? []);
-        Assert.True(state.LPostureStateLinked);
         Assert.Null(state.LPostureStateMode);
         Assert.False(state.LPostureStateSplit);
         Assert.Equal(1, state.LPostureStateVolume);
@@ -418,12 +355,6 @@ public sealed class TPosture
         Assert.Equal(0, TInterface.TPostureLoaderRead("{ \"volume\": -4 }").LPostureStateVolume);
     }
 
-    [Fact]
-    public void PostureLoader_HalfWindow_ReadsNoWindow()
-    {
-        Assert.Null(TInterface.TPostureLoaderRead("{ \"window\": { \"left\": 1, \"top\": 2 } }").LPostureStateWindow);
-    }
-
     private static LCatalogOrder? TPostureOrderRead(IReadOnlyList<LLayout> layout, string tab)
     {
         foreach (LLayout record in layout)
@@ -431,19 +362,6 @@ public sealed class TPosture
             if (record.LLayoutTab == tab)
             {
                 return record.LLayoutOrder;
-            }
-        }
-
-        return null;
-    }
-
-    private static double? TPostureLeftRead(IReadOnlyList<LLayout> layout, string tab)
-    {
-        foreach (LLayout record in layout)
-        {
-            if (record.LLayoutTab == tab)
-            {
-                return record.LLayoutLeft;
             }
         }
 

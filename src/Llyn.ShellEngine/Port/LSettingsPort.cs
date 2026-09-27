@@ -14,6 +14,8 @@ public interface LSettingsPort
 
     string LEngineWorkspaceFormat();
 
+    void LEngineWorkspaceChange(string path);
+
     LWorkspaceState LEngineStateRead();
 
     void LEngineLeftSave(long? id);

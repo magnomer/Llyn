@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Shapes;
 using Llyn.Conduct;
+using Llyn.UIDeportment.Capsule;
 
 namespace Llyn.UIDeportment;
 
@@ -15,8 +16,6 @@ public partial class PWindow
     private readonly LWindow _lWindow;
 
     private readonly PLayout _pLayout;
-
-    private readonly Action<string> _pWindowWorkspaceOpener;
 
     private readonly LFootprint _lFootprint;
 
@@ -48,16 +47,15 @@ public partial class PWindow
 
     private LTab[] _pNavigationTabs = [];
 
-    public PWindow(LWindow window, Action<string> workspaceOpener)
+    public PWindow(CAtelier atelier)
     {
-        ArgumentNullException.ThrowIfNull(window);
-        ArgumentNullException.ThrowIfNull(workspaceOpener);
+        ArgumentNullException.ThrowIfNull(atelier);
 
-        _lWindow = window;
-        _pWindowWorkspaceOpener = workspaceOpener;
-        _pLayout = new PLayout(window);
+        _lWindow = new LWindow(atelier);
+        _pLayout = new PLayout(_lWindow);
 
         _pWindowSurface = QContract.QContractSheetFind<Window>("PWindow");
+        PWindowEnvoy = new QEnvoy(_pWindowSurface);
         _qEstablishment = new QEstablishment(
             QContract.QContractFind<FrameworkElement>(_pWindowSurface, "PEstablishment"));
         _qTaxonomy = new QTaxonomy(PTaxonomy);
@@ -127,7 +125,7 @@ public partial class PWindow
         _pWindowSurface.PreviewKeyDown += PChronicleKeyHandle;
         _pWindowSurface.Deactivated += PMentionLeaveHandle;
 
-        _lFootprint = new LFootprint(window);
+        _lFootprint = new LFootprint(_lWindow);
         PFootprintRestore();
         _pWindowSurface.Loaded += (_, _) => PFootprintAttach();
 
@@ -187,22 +185,18 @@ public partial class PWindow
 
     private PSettings PSettings => (PSettings)_pWindowSurface.FindName(nameof(PSettings));
 
+    internal CEnvoy PWindowEnvoy { get; }
+
     internal LWing PWindowWingCreate()
     {
         return new LWing(_lWindow);
-    }
-
-    internal void PWindowWorkspaceChange(string path)
-    {
-        _pWindowWorkspaceOpener(path);
     }
 
     private void PWindowAttach()
     {
         LEnsignImage.LEnsignAttach(_lWindow);
 
-        _lWindow.LWindowLeftoverSweep();
-        _lWindow.LWindowWorkspace.QWorkspaceRecordingSweep();
+        _lWindow.LWindowAtelier.CAtelierLeftoverSweep();
 
         CWorkspaceState state = _lWindow.LWindowWorkspace.QWorkspaceStateRead();
 
@@ -265,7 +259,7 @@ public partial class PWindow
                 SystemParameters.VirtualScreenWidth,
                 SystemParameters.VirtualScreenHeight,
                 window.MinWidth,
-                window.MinHeight) is not CWindowState state)
+                window.MinHeight) is not LCapsuleWindow state)
         {
             Rect area = SystemParameters.WorkArea;
             (window.Width, window.Height) =
@@ -274,12 +268,12 @@ public partial class PWindow
         }
 
         window.WindowStartupLocation = WindowStartupLocation.Manual;
-        window.Left = state.CWindowStateLeft;
-        window.Top = state.CWindowStateTop;
-        window.Width = state.CWindowStateWidth;
-        window.Height = state.CWindowStateHeight;
+        window.Left = state.LCapsuleWindowLeft;
+        window.Top = state.LCapsuleWindowTop;
+        window.Width = state.LCapsuleWindowWidth;
+        window.Height = state.LCapsuleWindowHeight;
 
-        if (state.CWindowStateMaximized)
+        if (state.LCapsuleWindowMaximized)
         {
             window.WindowState = WindowState.Maximized;
         }
@@ -297,14 +291,14 @@ public partial class PWindow
         _lFootprint.LFootprintSave(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized);
     }
 
-    private CWindowState PFootprintRead()
+    private LCapsuleWindow PFootprintRead()
     {
         Window window = _pWindowSurface;
         Rect bounds = window.WindowState == WindowState.Normal
             ? new Rect(window.Left, window.Top, window.Width, window.Height)
             : window.RestoreBounds;
 
-        return new CWindowState(
+        return new LCapsuleWindow(
             bounds.Left, bounds.Top, bounds.Width, bounds.Height, window.WindowState == WindowState.Maximized);
     }
 
@@ -324,7 +318,7 @@ public partial class PWindow
         _qFavorite.QFavoriteClose();
         _qDuplex.QDuplexClose();
         _qEstablishment.QEstablishmentClose();
-        _lWindow.LWindowLeftoverSweep();
-        _lWindow.Dispose();
+        _lWindow.LWindowPosture.Dispose();
+        _lWindow.LWindowAtelier.Dispose();
     }
 }

@@ -16,11 +16,11 @@ public sealed class QForge
     public LEditor QForgeEditorCreate(Func<bool> unreadableSeam)
     {
         return new LEditor(
-            _qForgeWindow.LWindowDraftPort,
-            _qForgeWindow.LWindowEntryPort,
-            _qForgeWindow.LWindowPhonologyPort,
-            _qForgeWindow.LWindowSettingsPort,
-            _qForgeWindow.LWindowMediaPort,
+            _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
+            _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+            _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
+            _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
+            _qForgeWindow.LWindowAtelier.CAtelierMediaPort,
             unreadableSeam);
     }
 
@@ -36,9 +36,9 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LCorpus(
-                _qForgeWindow.LWindowDraftPort,
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -53,9 +53,9 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LFavorite(
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -73,10 +73,10 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LGuild(
-                _qForgeWindow.LWindowDraftPort,
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 shownSeam,
                 leaveSeam,
                 removalSeam,
@@ -90,8 +90,8 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LLibrary(
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -105,8 +105,8 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LPhonology(
-                _qForgeWindow.LWindowPhonologyPort,
-                _qForgeWindow.LWindowPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -125,10 +125,10 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LShelf(
-                _qForgeWindow.LWindowDraftPort,
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -144,10 +144,10 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LRepertoire(
-                _qForgeWindow.LWindowDraftPort,
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierDraftPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -162,9 +162,9 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LTaxonomy(
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -178,9 +178,9 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LTenor(
-                _qForgeWindow.LWindowEntryPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierEntryPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -194,8 +194,8 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LXiesheng(
-                _qForgeWindow.LWindowPhonologyPort,
-                _qForgeWindow.LWindowPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
                 editor,
                 lectern,
                 shownSeam,
@@ -209,9 +209,9 @@ public sealed class QForge
     {
         return _qForgeWindow.LWindowVistaAdd(
             new LYunjing(
-                _qForgeWindow.LWindowPhonologyPort,
-                _qForgeWindow.LWindowPortraitPort,
-                _qForgeWindow.LWindowSettingsPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPhonologyPort,
+                _qForgeWindow.LWindowAtelier.CAtelierPortraitPort,
+                _qForgeWindow.LWindowAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,

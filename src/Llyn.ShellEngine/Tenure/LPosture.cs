@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -23,8 +21,6 @@ public sealed class LPosture : IDisposable
     private LPostureState _lPostureState = new();
 
     private double _lPostureStored = 1;
-
-    private CancellationTokenSource? _lPosturePending;
 
     public LPosture(LEngine engine)
     {
@@ -52,20 +48,10 @@ public sealed class LPosture : IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
 
-        LCatalogOrder order = fallback;
-        LCatalogFilter filter = LCatalogFilter.LCatalogFilterEmpty;
         LPostureState state = LPostureRead();
-        foreach (LLayout record in state.LPostureStateLayout ?? [])
-        {
-            if (!record.LLayoutTabMatch(tab))
-            {
-                continue;
-            }
-
-            order = record.LLayoutOrder ?? fallback;
-            filter = record.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty;
-            break;
-        }
+        LLayout? record = LPostureLayoutFind(state, tab);
+        LCatalogOrder order = record?.LLayoutOrder ?? fallback;
+        LCatalogFilter filter = record?.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty;
 
         LVista vista = _lEngine.LEngineVista.LEngineVistaStart(
             tab, subject, order, filter, state.LPostureStateSplit, blank);
@@ -77,30 +63,6 @@ public sealed class LPosture : IDisposable
         }
 
         return vista;
-    }
-
-    public void LPostureWindowDefer(LWindowState window, bool minimized, int delay)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-
-        lock (_lPostureGate)
-        {
-            LPostureWindowCancel();
-            if (minimized)
-            {
-                return;
-            }
-
-            if (delay > 0)
-            {
-                CancellationTokenSource pending = new();
-                _lPosturePending = pending;
-                _ = LPostureWindowRun(pending, window, delay);
-                return;
-            }
-
-            LPostureChange(state => state with { LPostureStateWindow = window });
-        }
     }
 
     public void LPostureVolumeSet(double volume)
@@ -135,11 +97,6 @@ public sealed class LPosture : IDisposable
         LPostureChange(state => state with { LPostureStateMode = mode });
     }
 
-    public bool LPostureLinkedSave(bool linked)
-    {
-        return LPostureChange(state => state with { LPostureStateLinked = linked });
-    }
-
     public void LPostureLayoutSave(IEnumerable<LLayout> layout)
     {
         ArgumentNullException.ThrowIfNull(layout);
@@ -159,8 +116,6 @@ public sealed class LPosture : IDisposable
                 LLayout next = merged.TryGetValue(tab.LLayoutTab, out LLayout? held)
                     ? held with
                     {
-                        LLayoutLeft = tab.LLayoutLeft ?? held.LLayoutLeft,
-                        LLayoutMiddle = tab.LLayoutMiddle ?? held.LLayoutMiddle,
                         LLayoutOrder = tab.LLayoutOrder ?? held.LLayoutOrder,
                         LLayoutFilter = tab.LLayoutFilter ?? held.LLayoutFilter,
                     }
@@ -179,27 +134,11 @@ public sealed class LPosture : IDisposable
         }
     }
 
-    public void LPostureLayoutReset()
-    {
-        lock (_lPostureGate)
-        {
-            List<LLayout> list = [];
-
-            foreach (LLayout tab in _lPostureState.LPostureStateLayout ?? [])
-            {
-                list.Add(tab with { LLayoutLeft = null, LLayoutMiddle = null });
-            }
-
-            LPostureChange(state => state with { LPostureStateLayout = list });
-        }
-    }
-
     public void Dispose()
     {
         _lEngine.LEngineObserverDetach(LPostureBulletinHandle);
         lock (_lPostureGate)
         {
-            LPostureWindowCancel();
             foreach (LVista vista in _lPostureWatched)
             {
                 vista.LVistaEditingSaved -= LPostureSplitSave;
@@ -256,11 +195,22 @@ public sealed class LPosture : IDisposable
         return (vista.LVistaOrder, LCatalogClerk.LCatalogClerkFormat(vista.LVistaFilter));
     }
 
+    private static LLayout? LPostureLayoutFind(LPostureState state, string tab)
+    {
+        foreach (LLayout record in state.LPostureStateLayout ?? [])
+        {
+            if (record.LLayoutTabMatch(tab))
+            {
+                return record;
+            }
+        }
+
+        return null;
+    }
+
     private static bool LPostureLayoutMatch(LLayout held, LLayout next)
     {
-        return held.LLayoutLeft == next.LLayoutLeft
-            && held.LLayoutMiddle == next.LLayoutMiddle
-            && held.LLayoutOrder == next.LLayoutOrder
+        return held.LLayoutOrder == next.LLayoutOrder
             && string.Equals(
                 LCatalogClerk.LCatalogClerkFormat(held.LLayoutFilter),
                 LCatalogClerk.LCatalogClerkFormat(next.LLayoutFilter),
@@ -311,43 +261,6 @@ public sealed class LPosture : IDisposable
             LPostureSave();
             return true;
         }
-    }
-
-    private async Task LPostureWindowRun(CancellationTokenSource pending, LWindowState window, int delay)
-    {
-        try
-        {
-            await Task.Delay(delay, pending.Token).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            return;
-        }
-
-        lock (_lPostureGate)
-        {
-            if (!ReferenceEquals(_lPosturePending, pending))
-            {
-                return;
-            }
-
-            LPostureWindowCancel();
-            LPostureChange(state => state with { LPostureStateWindow = window });
-        }
-    }
-
-    private void LPostureWindowCancel()
-    {
-        CancellationTokenSource? pending = _lPosturePending;
-        _lPosturePending = null;
-
-        if (pending is null)
-        {
-            return;
-        }
-
-        pending.Cancel();
-        pending.Dispose();
     }
 
     private void LPostureSave()

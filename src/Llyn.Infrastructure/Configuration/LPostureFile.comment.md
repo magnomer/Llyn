@@ -7,7 +7,7 @@ It reads and writes through the keep it is built over, so the file is the one th
 The JSON shape is this adapter's alone.
 The two conversions are public so a test can run them on text.
 The keys are the ones the settings file carried before the posture moved out, so an old file reads as-is.
-A window block holds the restored edges.
+The window block and the panel widths an old file carries are ignored, since the GUI driver's Capsule keeps them.
 A layout block holds one object per tab under its lowercase name.
 
 ## `public LPostureFile(LKeep keep)`
@@ -27,7 +27,7 @@ A keep that cannot be written raises `LVaultFault` around the file system's own 
 ## `public static LPostureState LPostureFileParse(string? text)`
 
 Nothing, a blank, or text that is not JSON reads as the default posture, so the window always opens.
-Only an explicit `false` unlinks the panels, and only the editor word opens a split.
+Only the editor word opens a split.
 A volume outside the range is clamped, so a hand-edited number never reaches the player.
 A missing number means full, so a workspace written before the setting existed plays as it did.
 
@@ -36,36 +36,18 @@ A missing number means full, so a workspace written before the setting existed p
 Persisted keys are a data contract, so they stay lowercase and independent of member names.
 The split is written as one of two words rather than a boolean.
 So a file read by hand says which side stood open.
-A mode, a layout and a window are written only once each was set.
+A mode and a layout are written only once each was set.
 So the file says only what the user set.
-
-## `private static LWindowState? LPostureWindowRead(JsonElement window)`
-
-Any missing or unusable edge yields nothing at all.
-Half a rectangle would place the window somewhere its owner never left it.
 
 ## `private static IReadOnlyList<LLayout> LPostureLayoutRead(JsonElement layout)`
 
-A tab whose widths, ordering and filter are all missing or unusable is dropped rather than kept empty.
-An unusable block as a whole yields an empty list, so every tab keeps its designed width.
+A tab whose ordering and filter are both missing or unusable is dropped rather than kept empty.
+An unusable block as a whole yields an empty list, so every tab opens as designed.
 
 ## `private static Dictionary<string, object> LPostureLayoutCreate(IReadOnlyList<LLayout> layout)`
 
-A width that was never dragged is left out.
-So are an ordering never chosen and a filter never touched.
+An ordering never chosen and a filter never touched are left out.
 An ordering is written by its stored name, never by its position in the enumeration.
-
-## `private static double? LPostureEdgeResolve(JsonElement window, string name)`
-
-A window edge may be negative, since a screen left of the main one lies below zero.
-
-## `private static double? LPostureWidthResolve(JsonElement tab, string name)`
-
-A panel width below zero counts as missing, and so does an infinity.
-
-## `private static double? LPostureNumberResolve(JsonElement block, string name)`
-
-A hand-edited file may hold a number as text, so both forms are read.
 
 ## `private static LCatalogOrder? LPostureOrderResolve(JsonElement tab)`
 

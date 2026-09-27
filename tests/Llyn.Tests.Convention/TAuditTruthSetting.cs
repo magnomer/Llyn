@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditTruthSetting
 {
-    public const int TAuditGeneration = 22;
+    public const int TAuditGeneration = 16;
     public const bool TAuditTruthEnforced = true;
     public const string TAuditTruthReport = "temp/audit/Custody-{0}.md";
     public const string TAuditStateSuffix = "State";
@@ -16,6 +16,7 @@ internal static class TAuditTruthSetting
     [
         "src/Llyn.UIVeneer/*.cs",
         "src/Llyn.UIDeportment/*.cs",
+        "src/Llyn.UIDeportment.Capsule/*.cs",
         "src/Llyn.UITerminal/*.cs",
         "src/Llyn.UIDemeanor/*.cs",
     ];

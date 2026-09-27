@@ -74,7 +74,8 @@ public partial class PWindow
         if (_lNavigation.LNavigationRestore(PNavigationAllowCheck) is string restored)
         {
             PNavigationApply(restored);
-            PNavigationFind(restored).LTabScribe?.Invoke(_lWindow.LWindowPostureRead().CPostureStateSplit);
+            PNavigationFind(restored).LTabScribe?.Invoke(
+                _lWindow.LWindowAtelier.CAtelierSplitRead());
         }
     }
 

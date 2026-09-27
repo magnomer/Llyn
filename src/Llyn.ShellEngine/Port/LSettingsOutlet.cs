@@ -22,6 +22,8 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public string LEngineWorkspaceFormat() => _lSettingsOutletEngine.LEngineWorkspaceFormat();
 
+    public void LEngineWorkspaceChange(string path) => _lSettingsOutletEngine.LEngineWorkspaceChange(path);
+
     public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineStateRead();
 
     public void LEngineLeftSave(long? id) => _lSettingsOutletEngine.LEngineWorkspace.LEngineLeftSave(id);

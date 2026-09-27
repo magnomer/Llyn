@@ -462,8 +462,10 @@ public sealed class LShelf
         ArgumentNullException.ThrowIfNull(window);
 
         LShelfVistaRestore(
-            window.LWindowVistaStart("reference", LSubject.LSubjectReference, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("footnote", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "reference", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "footnote", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public string LShelfFileRead()

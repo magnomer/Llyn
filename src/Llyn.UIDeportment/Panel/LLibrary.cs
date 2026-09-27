@@ -195,7 +195,8 @@ public sealed class LLibrary
         ArgumentNullException.ThrowIfNull(window);
 
         LLibraryVistaRestore(
-            window.LWindowVistaStart("library", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public string LLibraryFileRead()

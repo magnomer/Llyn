@@ -387,9 +387,10 @@ public sealed class LYunjing
         ArgumentNullException.ThrowIfNull(window);
 
         LYunjingVistaRestore(
-            window.LWindowVistaStart("yunjing", null, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("yunmu", null, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("xiaoyun", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart("yunjing", null, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart("yunmu", null, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "xiaoyun", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public void LYunjingShengmuAttach(CSubject subject, Action<CBulletin> observer)

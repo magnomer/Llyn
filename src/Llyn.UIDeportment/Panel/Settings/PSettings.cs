@@ -87,7 +87,7 @@ public partial class PSettings : UserControl
     {
         _pSettingsHost = host;
         PLocalizationBuild();
-        PSettingsWindow.LWindowObserverAttach(
+        PSettingsWindow.LWindowAtelier.CAtelierObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, PSettingsBulletinHandle));
         QLookItem.QLookItemAttach(PLedger, PLedgerApply);
 
@@ -119,7 +119,7 @@ public partial class PSettings : UserControl
         PSettingsEpithet.IsChecked = settings.CSettingsEpithet;
         PFrequency.IsChecked = settings.CSettingsFrequency;
         PMorphology.IsChecked = settings.CSettingsMorphology;
-        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPostureRead().CPostureStateLinked;
+        PLayoutLinked.IsChecked = PSettingsWindow.LWindowPosture.QPostureRead().LCapsuleContentLinked;
     }
 
     private void PSettingsBulletinHandle()

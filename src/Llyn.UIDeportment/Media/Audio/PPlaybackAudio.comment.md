@@ -15,12 +15,12 @@ The volume tray is shared by every row, so whether it shows is decided here as w
 ## `private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)`
 
 Plays at the level the grip stands at, from the moment it is moved there.
-The level is set as the workspace's one audio level, so every other tray follows.
+The level reaches the volume gate unsettled, so every other tray follows without a write.
 It is also written to the shared volume, where a two-way binding stood.
 
 ## `private void PVolumeSave(object sender, RoutedEventArgs e)`
 
-Writes the workspace's level down once the hand comes off the grip.
+Hands the level to the volume gate settled once the hand comes off the grip.
 The level belongs to the workspace rather than to the form, so it outlives the entry being edited.
 
 ## `internal void PVolumeAttach()`

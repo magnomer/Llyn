@@ -254,7 +254,8 @@ internal static class TAuditChainWalker
                 return;
             }
 
-            string kind = reach.Contains(target, StringComparer.Ordinal) ? "neighbour"
+            string kind = reach.Contains(target, StringComparer.Ordinal)
+                || TAuditChainSetting.TAuditChainCapsule.GetValueOrDefault(ring) == target ? "neighbour"
                 : !inner[ring].Contains(target) ? "outward"
                 : isCut && !TAuditChainSetting.TAuditChainCut.Contains(target, StringComparer.Ordinal) ? "cross"
                 : data ? "carry"
@@ -272,7 +273,8 @@ internal static class TAuditChainWalker
             if (directive.NamespaceOrType is { } named
                 && model.GetSymbolInfo(named).Symbol is INamespaceSymbol space
                 && TAuditSpaceRead(space.ToDisplayString()) is { } target
-                && !reach.Contains(target, StringComparer.Ordinal))
+                && !reach.Contains(target, StringComparer.Ordinal)
+                && TAuditChainSetting.TAuditChainCapsule.GetValueOrDefault(ring) != target)
             {
                 TAuditHitAdd(directive, target, "using " + space.ToDisplayString(), true);
             }

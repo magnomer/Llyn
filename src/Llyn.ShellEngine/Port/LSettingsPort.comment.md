@@ -9,6 +9,10 @@ The interface texts are read through it, so a deportment names no localization.
 Nothing here touches an entry or a draft.
 `LEngine` implements it today, and a settings clerk takes it over when the parts are dismantled.
 
+## `void LEngineWorkspaceChange(string path);`
+
+Moves the engine onto another workspace folder and records it, so Conduct changes the workspace without the engine itself.
+
 ## `IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);`
 
 The interface strings of one language, parsed and ready for the resource dictionary.

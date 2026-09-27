@@ -39,7 +39,7 @@ public partial class PEditor
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDownloaderPlayer.Volume = e.NewValue;
-        _pEditorHost.PWindowDeportment.LWindowVolumeSet(e.NewValue);
+        _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeSet(e.NewValue, false);
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
     }
 
@@ -50,7 +50,7 @@ public partial class PEditor
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
     {
-        _pEditorHost.PWindowDeportment.LWindowVolumeSave();
+        _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeSet(PVolume.Value, true);
     }
 
     internal void PVolumeAttach()
@@ -65,7 +65,7 @@ public partial class PEditor
 
     internal void PVolumeLoad()
     {
-        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowPostureRead().CPostureStateVolume;
+        PVolume.Value = _pEditorHost.PWindowDeportment.LWindowAtelier.CAtelierVolumeRead();
         _pDownloaderPlayer.Volume = PVolume.Value;
     }
 

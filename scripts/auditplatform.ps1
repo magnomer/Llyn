@@ -14,7 +14,7 @@ reads every project file under the configured root, and reports:
              targeting the Windows framework
   Reference  a portable project that references a twin or any Windows project
   Column     a twin that references a project outside its own column: its portable half and
-             the other twins of that half
+             the other twins of that half, or the one capsule its table row names
   Analyzer   a portable project where the platform analyzer rule is not an error for one of
              its C# files, judged per file through the .editorconfig and .globalconfig chain
              (sections, root and precedence) and then the MSBuild warning properties
@@ -69,7 +69,7 @@ auditplatform -ReportDirectory D:\temp\audit -Open
 Write the report elsewhere and open it.
 #>
 #requires -Version 5.1
-# AUDITPLATFORM GENERATION 22 - auditplatform.ps1.
+# AUDITPLATFORM GENERATION 16 - auditplatform.ps1.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -89,19 +89,7 @@ Write the report elsewhere and open it.
 # Generation 15: nothing this audit reports changes; the number rises with the name audit, which
 # counts prefix rings, and the UI audit, which counts pack URIs, scaffold types and contract IDs.
 # Generation 16: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the first dialog gates, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 17: nothing this audit reports changes; the number rises with the structure audit, whose
 # seal check counts engine types on the public members of sealed Deportment types.
-# Generation 18: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the window's shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 19: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the taxonomy and tenor shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 20: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the markup entry and omission shapes, and the UI audit, whose Parity ledger holds their CUI debt.
-# Generation 21: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the portrait legend shape, and the UI audit, whose Parity ledger holds the repertoire's CUI debt.
-# Generation 22: nothing this audit reports changes; the number rises with the structure audit, whose
-# Conduct surface admits the corpus and guild shapes, and the UI audit, whose Parity ledger holds their CUI debt.
 [CmdletBinding()]
 param(
     [string]$Root,
@@ -153,7 +141,7 @@ EXIT CODES
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$script:AuditGeneration = 22
+$script:AuditGeneration = 16
 $script:AuditKinds = @('Unmapped', 'Absent', 'Framework', 'Reference', 'Column', 'Analyzer', 'Windows', 'Empty',
     'Suppress', 'Implicit', 'Domain')
 
@@ -323,6 +311,12 @@ function Read-AuditConfig {
         $half = if ($row.PSObject.Properties.Name -contains 'half') { [string]$row.half } else { '' }
         if (-not $names.ContainsKey($half) -or [string]$names[$half].role -ne 'portable') {
             throw "The twin '$($row.name)' names no portable half in the platform table: $ConfigPath"
+        }
+        if ($row.PSObject.Properties.Name -contains 'capsule') {
+            $capsule = [string]$row.capsule
+            if (-not $names.ContainsKey($capsule) -or [string]$names[$capsule].role -ne 'portable') {
+                throw "The twin '$($row.name)' names a capsule that is no portable project: $ConfigPath"
+            }
         }
     }
 
@@ -1049,8 +1043,9 @@ foreach ($name in ($facts.Keys | Sort-Object -Property @{ Expression = { Get-Ord
         }
 
         $column = Get-ProjectColumn -Name $name
+        $capsule = if ($table[$name].PSObject.Properties.Name -contains 'capsule') { [string]$table[$name].capsule } else { '' }
         foreach ($reference in $fact.References) {
-            if ((Get-ProjectColumn -Name $reference) -ne $column) {
+            if ((Get-ProjectColumn -Name $reference) -ne $column -and $reference -ne $capsule) {
                 Add-AuditHit -Kind 'Column' -Project $name -Path $fact.Path -Line 0 -Detail "references $reference outside the $column column"
             }
         }

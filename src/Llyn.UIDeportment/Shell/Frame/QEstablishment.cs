@@ -49,7 +49,7 @@ internal sealed class QEstablishment
 
     private void QEstablishmentHook(PWindow host, Action<CBulletin> observer)
     {
-        _qEstablishmentRelease = host.PWindowDeportment.LWindowObserverAttach(observer);
+        _qEstablishmentRelease = host.PWindowDeportment.LWindowAtelier.CAtelierObserverAttach(observer);
     }
 
     private void QEstablishmentUpdate()

@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 22;
+    public const int TAuditGeneration = 16;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
     public const int TAuditPartLimit = 5;
@@ -18,7 +18,7 @@ internal static class TAuditObjectSetting
     {
         ["Monolith"] = 6,
         ["Hub"] = 9,
-        ["Large"] = 47,
+        ["Large"] = 46,
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPartCeiling = new Dictionary<string, int>

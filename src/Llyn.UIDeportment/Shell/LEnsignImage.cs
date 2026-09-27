@@ -21,7 +21,7 @@ public static class LEnsignImage
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        window.LWindowObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
+        window.LWindowAtelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
     }
 
     private static void LEnsignBulletinHandle(CBulletin bulletin)

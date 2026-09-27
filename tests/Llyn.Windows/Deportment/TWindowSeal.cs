@@ -30,18 +30,6 @@ public sealed class TWindowSeal
     }
 
     [Fact]
-    public void FootprintPostureRead_StoredGeometry_CopiesTheWindowState()
-    {
-        CPostureState posture = TInterfaceDeportment.TFootprintPostureRead(TInterface.TPostureStateCreate(
-            TInterface.TWindowStateCreate(10, 20, 800, 600, true), linked: false, split: true, volume: 0.5));
-
-        Assert.Equal(new CWindowState(10, 20, 800, 600, true), posture.CPostureStateWindow);
-        Assert.False(posture.CPostureStateLinked);
-        Assert.True(posture.CPostureStateSplit);
-        Assert.Equal(0.5, posture.CPostureStateVolume);
-    }
-
-    [Fact]
     public void WorkspaceSettingsRead_TwoLookupsOn_CountsThemOnline()
     {
         CSettings settings = TInterfaceDeportment.TWorkspaceSettingsRead(

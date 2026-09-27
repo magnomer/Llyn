@@ -176,8 +176,10 @@ public sealed class LTenor
         ArgumentNullException.ThrowIfNull(window);
 
         LTenorVistaRestore(
-            window.LWindowVistaStart("tenor", LSubject.LSubjectRegister, LCatalogOrder.LCatalogOrderName),
-            window.LWindowVistaStart("cohort", LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword));
+            window.LWindowAtelier.CAtelierVistaStart(
+                "tenor", CSubject.CSubjectRegister, CCatalogOrder.CCatalogOrderName),
+            window.LWindowAtelier.CAtelierVistaStart(
+                "cohort", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public void LTenorObserverAttach(CSubject subject, Action<CBulletin> observer)

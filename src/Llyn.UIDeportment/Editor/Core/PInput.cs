@@ -26,7 +26,7 @@ public class PInput : UserControl
         _lEditor = host.PWindowDeportment.LWindowForge.QForgeInputCreate(host.PWindowUnreadableConfirm);
         PEditor.PEditorAttach(host, _lEditor, new LLectern(_lEditor.LEditorDisplay));
 
-        _pInputRelease = host.PWindowDeportment.LWindowObserverAttach(
+        _pInputRelease = host.PWindowDeportment.LWindowAtelier.CAtelierObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(this, PInputReset));
     }
 

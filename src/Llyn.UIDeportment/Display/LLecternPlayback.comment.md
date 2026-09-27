@@ -40,18 +40,11 @@ Plays the shown draft's own recording at the workspace's level.
 Reads the workspace's level into the slider.
 A level that differs moves the grip, which sets the same level back.
 
-## `private void LLecternVolumeHandle(double level)`
+## `private void LLecternVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)`
 
-Sets the workspace's one level as the grip moves, so every audio view changes under the hand.
+Hands each step of the grip to the volume gate unsettled, so the level plays but is not written.
 
-## `private void LLecternVolumeSave()`
+## `private void LLecternVolumeSettle(object sender, RoutedEventArgs e)`
 
-Writes the workspace's level, which skips a level already written.
-
-## Inline notes
-
-### `volume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((_, _) => LLecternVolumeSave()));`
-
-The level is played as the grip moves but written down only when the hand comes off it.
-Writing on every step of a drag would put a file write behind every pixel.
-A track click and an arrow key are gestures of their own, so each ends with a write too.
+Hands the level to the volume gate settled when a drag, a track click or an arrow key ends.
+The gate then decides whether the level is written.

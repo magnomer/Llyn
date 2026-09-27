@@ -64,7 +64,14 @@ internal sealed class TWorkspace : IDisposable
 
     public LEngine TWorkspaceEngineStart(HttpClient client)
     {
-        return new LEngine(TWorkspaceRigCreate(client));
+        return new LEngine(
+            TWorkspaceRigCreate(client),
+            workspace => LRigFactory.LRigFactoryBuild(
+                workspace, client, new LUsherFile(), TWorkspacePress, TWorkspacePhonograph) with
+            {
+                LRigClock = TWorkspaceClock,
+            },
+            _ => { });
     }
 
     public LRig TWorkspaceRigCreate()

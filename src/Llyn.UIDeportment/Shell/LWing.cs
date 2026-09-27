@@ -20,7 +20,10 @@ public sealed class LWing
 
         _lWingWindow = window;
         _lWingDisplay = new LDisplay(
-            window.LWindowEntryPort, window.LWindowPhonologyPort, window.LWindowSettingsPort, window.LWindowMediaPort);
+            window.LWindowAtelier.CAtelierEntryPort,
+            window.LWindowAtelier.CAtelierPhonologyPort,
+            window.LWindowAtelier.CAtelierSettingsPort,
+            window.LWindowAtelier.CAtelierMediaPort);
         LWingLectern = new LLectern(_lWingDisplay);
     }
 
@@ -76,7 +79,8 @@ public sealed class LWing
         ArgumentNullException.ThrowIfNull(window);
 
         LWingVistaRestore(
-            window.LWindowVistaStart(tab, LSubject.LSubjectEntry, LCatalogOrder.LCatalogOrderHeadword, true));
+            window.LWindowAtelier.CAtelierVistaStart(
+                tab, CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true));
     }
 
     public void LWingObserverAttach(Action<CBulletin> observer)
@@ -134,13 +138,14 @@ public sealed class LWing
     public IReadOnlyList<CVistaRow> LWingRowsRead()
     {
         return _lWingVista is LVista vista
-            ? LSplice.LSpliceBuild(_lWingWindow.LWindowEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+            ? LSplice.LSpliceBuild(
+                _lWingWindow.LWindowAtelier.CAtelierEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
             : [];
     }
 
     public IReadOnlyList<string> LWingLanguageRead()
     {
-        return _lWingWindow.LWindowSettingsPort.LEngineLanguageRead();
+        return _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLanguageRead();
     }
 
     private void LWingEntrySave()
@@ -149,11 +154,11 @@ public sealed class LWing
         {
             if (vista.LVistaLeft)
             {
-                _lWingWindow.LWindowSettingsPort.LEngineLeftSave(vista.LVistaChosen);
+                _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineLeftSave(vista.LVistaChosen);
                 return;
             }
         }
 
-        _lWingWindow.LWindowSettingsPort.LEngineRightSave(_lWingVista?.LVistaChosen);
+        _lWingWindow.LWindowAtelier.CAtelierSettingsPort.LEngineRightSave(_lWingVista?.LVistaChosen);
     }
 }

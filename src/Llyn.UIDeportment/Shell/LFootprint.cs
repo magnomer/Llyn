@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Llyn.Conduct;
-using Llyn.Core;
+using Llyn.UIDeportment.Capsule;
 
 namespace Llyn.UIDeportment;
 
@@ -20,11 +19,17 @@ public sealed class LFootprint
         _lWindow = window;
     }
 
-    public CWindowState? LFootprintRead(
+    public LCapsuleWindow? LFootprintRead(
         double left, double top, double width, double height, double minWidth, double minHeight)
     {
         return LFootprintPlace(
-            _lWindow.LWindowPostureRead().CPostureStateWindow, left, top, width, height, minWidth, minHeight);
+            _lWindow.LWindowPosture.QPostureRead().LCapsuleContentWindow,
+            left,
+            top,
+            width,
+            height,
+            minWidth,
+            minHeight);
     }
 
     public (double LFootprintWidth, double LFootprintHeight) LFootprintSizeRead(
@@ -35,18 +40,18 @@ public sealed class LFootprint
             Math.Clamp(height * LFootprintShare, minHeight, Math.Max(minHeight, height)));
     }
 
-    public void LFootprintSave(CWindowState state, bool minimized)
+    public void LFootprintSave(LCapsuleWindow state, bool minimized)
     {
         LFootprintDefer(state, minimized, LFootprintDelay);
     }
 
-    public void LFootprintClose(CWindowState state, bool minimized)
+    public void LFootprintClose(LCapsuleWindow state, bool minimized)
     {
         LFootprintDefer(state, minimized, 0);
     }
 
-    private static CWindowState? LFootprintPlace(
-        CWindowState? state, double left, double top, double width, double height, double minWidth, double minHeight)
+    private static LCapsuleWindow? LFootprintPlace(
+        LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)
     {
         if (state is null)
         {
@@ -59,12 +64,12 @@ public sealed class LFootprint
             top,
             width,
             height,
-            Math.Clamp(state.CWindowStateWidth, minWidth, Math.Max(minWidth, width)),
-            Math.Clamp(state.CWindowStateHeight, minHeight, Math.Max(minHeight, height)));
+            Math.Clamp(state.LCapsuleWindowWidth, minWidth, Math.Max(minWidth, width)),
+            Math.Clamp(state.LCapsuleWindowHeight, minHeight, Math.Max(minHeight, height)));
     }
 
-    private static CWindowState LFootprintClamp(
-        CWindowState state,
+    private static LCapsuleWindow LFootprintClamp(
+        LCapsuleWindow state,
         double left,
         double top,
         double width,
@@ -72,82 +77,23 @@ public sealed class LFootprint
         double placedWidth,
         double placedHeight)
     {
-        return new CWindowState(
-            Math.Clamp(state.CWindowStateLeft, left, Math.Max(left, left + width - placedWidth)),
-            Math.Clamp(state.CWindowStateTop, top, Math.Max(top, top + height - placedHeight)),
+        return new LCapsuleWindow(
+            Math.Clamp(state.LCapsuleWindowLeft, left, Math.Max(left, left + width - placedWidth)),
+            Math.Clamp(state.LCapsuleWindowTop, top, Math.Max(top, top + height - placedHeight)),
             placedWidth,
             placedHeight,
-            state.CWindowStateMaximized);
+            state.LCapsuleWindowMaximized);
     }
 
-    private void LFootprintDefer(CWindowState state, bool minimized, int delay)
+    private void LFootprintDefer(LCapsuleWindow state, bool minimized, int delay)
     {
         ArgumentNullException.ThrowIfNull(state);
 
-        if (!(state.CWindowStateWidth > 0) || !(state.CWindowStateHeight > 0))
+        if (!(state.LCapsuleWindowWidth > 0) || !(state.LCapsuleWindowHeight > 0))
         {
             return;
         }
 
-        _lWindow.LWindowStateDefer(state, minimized, delay);
-    }
-
-    internal static CPostureState LFootprintPostureRead(LPostureState state)
-    {
-        return new CPostureState(
-            LFootprintStateRead(state.LPostureStateWindow),
-            state.LPostureStateLinked,
-            state.LPostureStateSplit,
-            state.LPostureStateVolume);
-    }
-
-    internal static CWindowState? LFootprintStateRead(LWindowState? window)
-    {
-        return window is null
-            ? null
-            : new CWindowState(
-                window.LWindowStateLeft,
-                window.LWindowStateTop,
-                window.LWindowStateWidth,
-                window.LWindowStateHeight,
-                window.LWindowStateMaximized);
-    }
-
-    internal static LWindowState LFootprintStateRead(CWindowState window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-
-        return new LWindowState(
-            window.CWindowStateLeft,
-            window.CWindowStateTop,
-            window.CWindowStateWidth,
-            window.CWindowStateHeight,
-            window.CWindowStateMaximized);
-    }
-
-    internal static CLayout? LFootprintLayoutRead(IReadOnlyList<LLayout> layout, string tab)
-    {
-        foreach (LLayout record in layout)
-        {
-            if (record.LLayoutTabMatch(tab))
-            {
-                return new CLayout(record.LLayoutTab, record.LLayoutLeft, record.LLayoutMiddle);
-            }
-        }
-
-        return null;
-    }
-
-    internal static List<LLayout> LFootprintLayoutRead(IEnumerable<CLayout> layout)
-    {
-        ArgumentNullException.ThrowIfNull(layout);
-
-        List<LLayout> saved = [];
-        foreach (CLayout tab in layout)
-        {
-            saved.Add(new LLayout(tab.CLayoutTab, tab.CLayoutLeft, tab.CLayoutMiddle));
-        }
-
-        return saved;
+        _lWindow.LWindowPosture.QPostureWindowDefer(state, minimized, delay);
     }
 }
