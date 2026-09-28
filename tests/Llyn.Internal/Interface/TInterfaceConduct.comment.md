@@ -59,6 +59,14 @@ Binds the oeuvre to the two vistas through its internal helper, as the guild's r
 
 Maps roll rows through the oeuvre's internal helper, as the guild's roll read does.
 
+## `internal static COccurrence TOccurrenceCreate(LEngine engine)`
+
+Builds the occurrence list over real outlets on `engine`, as the repertoire does.
+
+## `internal static void TOccurrenceVistaRestore(this COccurrence occurrence, LVista roll, LVista vista)`
+
+Binds the occurrence list to the situation vista and its own, as the repertoire's restore does.
+
 ## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
 
 Builds one Latin entry row with the given id, epithet and chosen mark.

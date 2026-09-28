@@ -21,9 +21,10 @@ The panel that holds the chosen entry and the edit mode of the quotation side.
 The wording key of the empty list, chosen by whether the vista holds a query.
 No query means nothing quotes the Example, and a query means nothing matched.
 
-## `internal void CQuotationVistaRestore(LVista roll, LVista vista)`
+## `internal void LQuotationVistaRestore(LVista roll, LVista vista)`
 
 Takes the example vista as the roll the rows follow, and its own vista for the panel.
+Only the corpus's vista restore calls it, so it takes `L`.
 
 ## `public void CQuotationQuerySet(string query)`
 

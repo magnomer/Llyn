@@ -24,9 +24,7 @@ public sealed class LPortraitOutlet : LPortraitPort
     public Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label) =>
         _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);
 
-    public Task<LMarkupCargo> LEngineMarkupStart(string path) =>
-        _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path);
-
-    public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
-        _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(cargo, intakes);
+    public Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
+        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare) =>
+        _lPortraitOutletEngine.LEngineMarkup.LEngineMarkupStart(path, declare);
 }

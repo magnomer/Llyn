@@ -49,18 +49,11 @@ public sealed class QForge
             static guild => guild.CGuildVistaRestore());
     }
 
-    public LLibrary QForgeLibraryCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CLibrary QForgeLibraryCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LLibrary(
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            library => library.LLibraryVistaRestore(_qForgeAtelier));
+            CLibrary.CLibraryCreate(_qForgeAtelier, shownSeam, envoy),
+            static library => library.CLibraryVistaRestore());
     }
 
     public LPhonology QForgePhonologyCreate(

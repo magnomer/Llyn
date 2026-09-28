@@ -294,13 +294,6 @@ internal static partial class TInterface
     internal static string TEngineWorkspaceFormat(this LEngine engine) =>
         engine.LEngineWorkspaceFormat();
 
-    internal static Task<LMarkupCargo> TEngineMarkupStart(this LEngine engine, string path) =>
-        engine.LEngineMarkup.LEngineMarkupStart(path);
-
-    internal static Task<LMarkupOutcome> TEngineMarkupStart(
-        this LEngine engine, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
-        engine.LEngineMarkup.LEngineMarkupStart(cargo, intakes);
-
     internal static long? TEngineRevisionRead(this LEngine engine) =>
         engine.LEngineWorkspace.LEngineStateRead().LWorkspaceStateRevision;
 

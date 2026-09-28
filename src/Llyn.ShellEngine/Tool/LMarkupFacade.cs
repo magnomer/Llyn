@@ -24,11 +24,6 @@ internal sealed class LMarkupFacade
         return LMarkupFacadeStaff.LEngineStaffMarkup.LMarkupClerkRead(path);
     }
 
-    public Task<LMarkupCargo> LEngineMarkupStart(string path)
-    {
-        return Task.Run(() => LEngineMarkupRead(path));
-    }
-
     public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -40,9 +35,19 @@ internal sealed class LMarkupFacade
         }
     }
 
-    public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
+    public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
+        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare)
     {
-        return Task.Run(() => LEngineMarkupImport(cargo, intakes));
+        ArgumentNullException.ThrowIfNull(declare);
+
+        LMarkupCargo cargo = await Task.Run(() => LEngineMarkupRead(path)).ConfigureAwait(true);
+        if (declare(cargo.LMarkupCargoEntry) is not IReadOnlyList<LMarkupIntake> intakes)
+        {
+            return null;
+        }
+
+        LMarkupOutcome outcome = await Task.Run(() => LEngineMarkupImport(cargo, intakes)).ConfigureAwait(false);
+        return outcome.LMarkupOutcomeOmission;
     }
 
     public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)

@@ -45,6 +45,11 @@ public sealed class LMarkupClerkIntake
         _lMarkupIntakeDraft = draft;
     }
 
+    public static LMarkupIntake LMarkupIntakeCreate(int index, LMarkupMode mode, long target)
+    {
+        return LMarkupIntake.LMarkupIntakeCreate(index, mode, target);
+    }
+
     public LMarkupOutcome LMarkupClerkImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)
     {
         ArgumentNullException.ThrowIfNull(cargo);

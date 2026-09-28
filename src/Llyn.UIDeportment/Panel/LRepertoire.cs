@@ -39,19 +39,19 @@ public sealed class LRepertoire
             shownSeam,
             envoy,
             store => LRepertoireSession!.CSessionFinish(store));
-        LRepertoireOccurrence = new LOccurrence(
+        LRepertoireOccurrence = new COccurrence(
             entries,
             portraits,
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck,
-            shownSeam,
             envoy,
-            store => LRepertoireSession!.CSessionFinish(store));
-        LRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += LRepertoireOccurrence.LOccurrencePanel.CPanelRowsUpdate;
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck,
+            store => LRepertoireSession!.CSessionFinish(store),
+            shownSeam);
+        LRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += LRepertoireOccurrence.COccurrencePanel.CPanelRowsUpdate;
         LRepertoireSession = new CSession(
             LRepertoireDesk,
-            [LRepertoireOccurrence.LOccurrencePanel.CPanelChangeCheck, LRepertoireAtlas.CAtlasPanel.CPanelChangeCheck],
+            [LRepertoireOccurrence.COccurrencePanel.CPanelChangeCheck, LRepertoireAtlas.CAtlasPanel.CPanelChangeCheck],
             editor.LEditorStudio.CEditorDesk,
-            () => LRepertoireOccurrence.LOccurrencePanel.CPanelEditing,
+            () => LRepertoireOccurrence.COccurrencePanel.CPanelEditing,
             editor.LEditorStudio.CEditorFinish,
             static () => true,
             LRepertoireStoredShow);
@@ -61,10 +61,10 @@ public sealed class LRepertoire
         LRepertoireAtlas.CAtlasPanel.CPanelEdited += id => LRepertoireSession.CSessionStart(id);
         LRepertoireAtlas.CAtlasPanel.CPanelCleared += LRepertoireSession.CSessionCancel;
         LRepertoireAtlas.CAtlasPanel.CPanelDraftChanged += LRepertoireSituationUpdate;
-        LRepertoireOccurrence.LOccurrencePanel.CPanelEdited += id => editor.LEditorStudio.CEditorEntryOpen(id);
-        LRepertoireOccurrence.LOccurrencePanel.CPanelCleared += editor.LEditorStudio.CEditorDesk.CDeskCancel;
-        LRepertoireOccurrence.LOccurrencePanel.CPanelCleared += lectern.LLecternClear;
-        LRepertoireOccurrence.LOccurrencePanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.LEditorStudio.CEditorEntryOpen(id);
+        LRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.LEditorStudio.CEditorDesk.CDeskCancel;
+        LRepertoireOccurrence.COccurrencePanel.CPanelCleared += lectern.LLecternClear;
+        LRepertoireOccurrence.COccurrencePanel.CPanelDraftChanged += lectern.LLecternDraftShow;
     }
 
     public event Action? LRepertoireChanged;
@@ -85,18 +85,18 @@ public sealed class LRepertoire
 
     public CAtlas LRepertoireAtlas { get; }
 
-    public LOccurrence LRepertoireOccurrence { get; }
+    public COccurrence LRepertoireOccurrence { get; }
 
-    private bool LRepertoireOccurrenceSide => LRepertoireOccurrence.LOccurrencePanel.CPanelModeEnabled;
+    private bool LRepertoireOccurrenceSide => LRepertoireOccurrence.COccurrencePanel.CPanelModeEnabled;
 
     public bool LRepertoireScenarioShown => !LRepertoireOccurrenceSide && LRepertoireAtlas.CAtlasPanel.CPanelEditing;
 
     public bool LRepertoireVignetteShown => !LRepertoireOccurrenceSide && !LRepertoireAtlas.CAtlasPanel.CPanelEditing;
 
     public bool LRepertoireDisplayShown =>
-        LRepertoireOccurrenceSide && !LRepertoireOccurrence.LOccurrencePanel.CPanelEditing;
+        LRepertoireOccurrenceSide && !LRepertoireOccurrence.COccurrencePanel.CPanelEditing;
 
-    public bool LRepertoireEditorShown => LRepertoireOccurrence.LOccurrencePanel.CPanelEditing;
+    public bool LRepertoireEditorShown => LRepertoireOccurrence.COccurrencePanel.CPanelEditing;
 
     public bool LRepertoireVignetteHeld => LRepertoireAtlas.CAtlasPanel.CPanelBinEnabled;
 
@@ -159,7 +159,7 @@ public sealed class LRepertoire
 
     private void LRepertoireSituationShow(long id, bool editing)
     {
-        LRepertoireOccurrence.LOccurrencePanel.CPanelEntryClose();
+        LRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
         LRepertoireAtlas.CAtlasPanel.CPanelScribeSet(editing);
         LRepertoireAtlas.CAtlasPanel.CPanelRowOpen(id);
     }
@@ -185,7 +185,7 @@ public sealed class LRepertoire
 
     private void LRepertoireOccurrenceOpen(long id, bool editing)
     {
-        if (!LRepertoireOccurrence.LOccurrencePanel.CPanelRowOpen(id))
+        if (!LRepertoireOccurrence.COccurrencePanel.CPanelRowOpen(id))
         {
             return;
         }
@@ -194,7 +194,7 @@ public sealed class LRepertoire
         LRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
         if (editing)
         {
-            LRepertoireOccurrence.LOccurrencePanel.CPanelScribeToggle(true);
+            LRepertoireOccurrence.COccurrencePanel.CPanelScribeToggle(true);
         }
     }
 
@@ -227,7 +227,7 @@ public sealed class LRepertoire
             return;
         }
 
-        LRepertoireOccurrence.LOccurrencePanel.CPanelEntryClose();
+        LRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
         LRepertoireAtlas.CAtlasPanel.CPanelFreshOpen();
         LRepertoireSession.CSessionStart(null);
     }
@@ -236,7 +236,7 @@ public sealed class LRepertoire
     {
         if (LRepertoireOccurrenceSide)
         {
-            LRepertoireOccurrence.LOccurrencePanel.CPanelScribeToggle(editing);
+            LRepertoireOccurrence.COccurrencePanel.CPanelScribeToggle(editing);
             if (!LRepertoireOccurrenceSide)
             {
                 LRepertoireSituationRestore(editing);
@@ -265,7 +265,7 @@ public sealed class LRepertoire
 
     public void LRepertoireClear()
     {
-        LRepertoireOccurrence.LOccurrencePanel.CPanelEntryClose();
+        LRepertoireOccurrence.COccurrencePanel.CPanelEntryClose();
         LRepertoireAtlas.CAtlasPanel.CPanelEntryClose();
     }
 
@@ -292,7 +292,7 @@ public sealed class LRepertoire
     private bool LRepertoireRowShown => LRepertoireVignetteShown && LRepertoireVignetteHeld;
 
     private bool LRepertoireRowHeld =>
-        LRepertoireAtlas.CAtlasPanel.CPanelBinEnabled || LRepertoireOccurrence.LOccurrencePanel.CPanelBinEnabled;
+        LRepertoireAtlas.CAtlasPanel.CPanelBinEnabled || LRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled;
 
     private void LRepertoireInquestClear()
     {
@@ -322,7 +322,7 @@ public sealed class LRepertoire
         long? chosen = LRepertoireAtlas.CAtlasChosen;
         LRepertoireDesk.CDeskCancel();
         LRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
-        LRepertoireOccurrence.LOccurrencePanel.CPanelFreshOpen();
+        LRepertoireOccurrence.COccurrencePanel.CPanelFreshOpen();
         LRepertoireEditor.LEditorStudio.CEditorEntryOpen(null);
         if (chosen is long id)
         {
@@ -347,13 +347,13 @@ public sealed class LRepertoire
 
     public void LRepertoireEntryUpdate()
     {
-        if (!LRepertoireOccurrence.LOccurrencePanel.CPanelBinEnabled)
+        if (!LRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled)
         {
             return;
         }
 
         bool editing = LRepertoireScribeChecked;
-        LRepertoireOccurrence.LOccurrencePanel.CPanelDraftUpdate();
+        LRepertoireOccurrence.COccurrencePanel.CPanelDraftUpdate();
         if (LRepertoireOccurrenceSide)
         {
             return;
@@ -366,7 +366,7 @@ public sealed class LRepertoire
     {
         if (LRepertoireDisplayShown)
         {
-            return LRepertoireOccurrence.LOccurrencePortraitPrint(label, ticket);
+            return LRepertoireOccurrence.COccurrencePortraitPrint(label, ticket);
         }
 
         if (LRepertoirePressAllowed)
@@ -384,7 +384,7 @@ public sealed class LRepertoire
             return Task.CompletedTask;
         }
 
-        return LRepertoireOccurrence.LOccurrencePortraitExport(path, format, label);
+        return LRepertoireOccurrence.COccurrencePortraitExport(path, format, label);
     }
 
     public bool LRepertoireVacantCheck(string? text)
@@ -403,7 +403,7 @@ public sealed class LRepertoire
         ArgumentNullException.ThrowIfNull(occurrence);
 
         LRepertoireAtlas.CAtlasVistaRestore(vista);
-        LRepertoireOccurrence.LOccurrenceVistaRestore(vista, occurrence);
+        LRepertoireOccurrence.COccurrenceVistaRestore(vista, occurrence);
         LRepertoireEditor.LEditorStudio.CEditorVistaRestore(occurrence);
     }
 

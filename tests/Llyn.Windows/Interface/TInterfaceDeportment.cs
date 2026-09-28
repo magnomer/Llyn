@@ -43,25 +43,6 @@ internal static class TInterfaceDeportment
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
-    internal static LLibrary TLibraryCreate(LEngine engine)
-    {
-        LEditor editor = TEditorCreate(engine);
-        return new(
-            new LEntryOutlet(engine),
-            new LPortraitOutlet(engine),
-            editor,
-            TLecternCreate(editor),
-            () => true,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
-        panel.LLibraryVistaRestore(vista);
-
-    internal static IReadOnlyList<CVistaRow> TLibraryRowsRead(this LLibrary panel) => panel.LLibraryRowsRead();
-
-    internal static long TLibraryVoyageRead(this LLibrary panel) => panel.LLibraryVoyageRead();
-
     internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam)
     {
         LEditor editor = TEditorCreate(engine);
@@ -99,8 +80,6 @@ internal static class TInterfaceDeportment
     internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
 
     internal static void TPanelScribeToggle(this CPanel panel, bool editing) => panel.CPanelScribeToggle(editing);
-
-    internal static void TPanelDelete(this CPanel panel) => panel.CPanelEntryDelete();
 
     internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
     {

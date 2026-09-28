@@ -383,7 +383,7 @@ public sealed class CCorpus
         LVista quotation = _cCorpusAtelier.CAtelierVistaStart(
             "quotation", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         CCorpusAnthology.CAnthologyVistaRestore(vista);
-        CCorpusQuotation.CQuotationVistaRestore(vista, quotation);
+        CCorpusQuotation.LQuotationVistaRestore(vista, quotation);
         CCorpusEditor.CEditorVistaRestore(quotation);
     }
 }

@@ -37,7 +37,7 @@ public sealed class CQuotation
     public string CQuotationEmptyKey =>
         _cQuotationVista?.LVistaQueried ?? false ? "Example.Unmatched" : "Example.Vacant";
 
-    internal void CQuotationVistaRestore(LVista roll, LVista vista)
+    internal void LQuotationVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);

@@ -52,7 +52,7 @@ internal sealed partial class QRepertoire
 
         QMeshBuild();
         _lRepertoire.LRepertoireAtlas.CAtlasQuerySet(QInquest.Text ?? string.Empty);
-        _lRepertoire.LRepertoireOccurrence.LOccurrenceSortieSet(QSortie.Text);
+        _lRepertoire.LRepertoireOccurrence.COccurrenceQuerySet(QSortie.Text);
         atlas.CPanelRowsUpdate();
     }
 
@@ -60,7 +60,7 @@ internal sealed partial class QRepertoire
     {
         UserControl surface = _qRepertoireSurface;
         CPanel atlas = _lRepertoire.LRepertoireAtlas.CAtlasPanel;
-        CPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
+        CPanel occurrence = _lRepertoire.LRepertoireOccurrence.COccurrencePanel;
         Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, atlas.CPanelRowsUpdate);
         atlas.CPanelObserverAttach(CSubject.CSubjectVista, rows);
         atlas.CPanelObserverAttach(
@@ -100,7 +100,7 @@ internal sealed partial class QRepertoire
 
     private void QSortieHandle(object sender, TextChangedEventArgs e)
     {
-        _lRepertoire.LRepertoireOccurrence.LOccurrenceSortieSet(QSortie.Text);
+        _lRepertoire.LRepertoireOccurrence.COccurrenceQuerySet(QSortie.Text);
     }
 
     private void QMeshHandle(object sender, RoutedEventArgs e)

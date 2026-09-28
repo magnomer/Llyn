@@ -3,7 +3,7 @@
 ## `internal sealed class LMarkupFacade`
 
 The engine's facade for markup cargo reads, imports, exports and entry matching.
-The two `Start` overloads run the same work on a pool thread for the shell.
+`LEngineMarkupStart` runs a whole import in its order, reading and storing on a pool thread.
 
 ## `public LMarkupFacade(LEngine engine)`
 
@@ -13,19 +13,19 @@ Stores the engine and its gate.
 
 The file at `path` parsed into a cargo, unknown languages omitted and twin names applied.
 
-## `public Task<LMarkupCargo> LEngineMarkupStart(string path)`
-
-The first stage of an import on a worker thread: the read, so the window stays live while parsing.
-The hop lives here because the shell starts no task of its own.
-
 ## `public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry)`
 
 The stored entries with the headword and language of one parsed entry.
 
-## `public Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
+## `public async Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(`
 
-The second stage on a worker thread: the import under the intakes the customs window settled.
-One verb names both stages, since together they are the one staged procedure the shell begins.
+The whole import in its order: read the file, ask for the intakes, then store the cargo under them.
+The read and the store run on a worker thread, so the window stays live while parsing.
+The hops live here because the shell starts no task of its own.
+The question runs back on the caller's thread, since it may put up a window.
+A declaration answered null stores nothing and answers null.
+Otherwise it answers what the read and the import left behind.
+The cargo never leaves the engine, so no caller holds it between the two steps.
 
 ## `public LMarkupOutcome LEngineMarkupImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 

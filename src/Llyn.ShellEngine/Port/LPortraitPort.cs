@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -13,9 +14,8 @@ public interface LPortraitPort
 
     Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);
 
-    Task<LMarkupCargo> LEngineMarkupStart(string path);
-
-    Task<LMarkupOutcome> LEngineMarkupStart(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes);
+    Task<IReadOnlyList<LMarkupOmission>?> LEngineMarkupStart(
+        string path, Func<IReadOnlyList<LMarkupEntry>, IReadOnlyList<LMarkupIntake>?> declare);
 
     static LPressTicket LEngineTicketRead(
         string printer,
@@ -33,6 +33,11 @@ public interface LPortraitPort
     static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)
     {
         return LPortraitClerk.LPortraitLabelCreate(words);
+    }
+
+    static LMarkupIntake LEngineIntakeRead(int index, LMarkupMode mode, long target)
+    {
+        return LMarkupClerkIntake.LMarkupIntakeCreate(index, mode, target);
     }
 
     static LPortraitLegend LEngineLegendRead(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)

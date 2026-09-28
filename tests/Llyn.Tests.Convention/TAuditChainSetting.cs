@@ -187,6 +187,8 @@ internal static class TAuditChainSetting
             "CGuild",
             "CImprint",
             "CByline",
+            "CLibrary",
+            "COccurrence",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -318,8 +320,8 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 78,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 286,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 266,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 270,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 232,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,

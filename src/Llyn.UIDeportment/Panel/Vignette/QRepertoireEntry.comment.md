@@ -16,7 +16,7 @@ The catalog and the Situation reading live in `QRepertoireBrowse.cs`.
 Refills the middle column with the entries referencing the chosen Situation, or every Entry while none is chosen.
 The engine matches the typed text and drops the hidden languages, so the panel decides nothing about what matches.
 An empty result is shown rather than hidden, and its text says whether nothing references the Situation or nothing matches.
-The occurrence deportment picks that wording from the search text.
+The Conduct occurrence list picks that wording from whether its vista holds a query.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
 

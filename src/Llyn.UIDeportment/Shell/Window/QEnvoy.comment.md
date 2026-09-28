@@ -43,3 +43,12 @@ It answers true only once every editor has finished.
 
 Puts up the leave dialog, which offers three answers rather than two.
 A leaving user often means to keep the word, so discarding is not the only exit.
+
+## `public IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries)`
+
+Puts up the customs window over the parsed entries and answers the rows the user declared.
+A cancelled window answers null.
+
+## `public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)`
+
+Puts up the customs window's report of what an import could not place.

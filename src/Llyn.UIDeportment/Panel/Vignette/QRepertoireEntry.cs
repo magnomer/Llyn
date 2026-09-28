@@ -17,7 +17,7 @@ internal sealed partial class QRepertoire
         IReadOnlyList<CVistaRow> read;
         try
         {
-            read = _lRepertoire.LRepertoireOccurrence.LOccurrenceRowsRead();
+            read = _lRepertoire.LRepertoireOccurrence.COccurrenceRowsRead();
         }
         catch (Exception exception)
         {
@@ -35,7 +35,7 @@ internal sealed partial class QRepertoire
             _qOccurrenceList, fresh, QOccurrenceItem.QOccurrenceItemMatch, QOccurrenceItem.QOccurrenceItemSync);
 
         QOccurrenceEmpty.SetResourceReference(
-            TextBlock.TextProperty, _lRepertoire.LRepertoireOccurrence.LOccurrenceEmptyRead(QSortie.Text));
+            TextBlock.TextProperty, _lRepertoire.LRepertoireOccurrence.COccurrenceEmptyKey);
         QOccurrenceEmpty.Visibility = QLook.QLookVisibleRead(_qOccurrenceList.Count == 0);
     }
 

@@ -59,7 +59,7 @@ The veneer reads it on each draft bulletin, so the desk never hands it a draft.
 
 Announces the Situation a loaded draft carries and ignores drafts of other subjects.
 
-## `public LOccurrence LRepertoireOccurrence { get; }`
+## `public COccurrence LRepertoireOccurrence { get; }`
 
 The occurrence list, whose panel asks the entry editor's desk whether the entry holds unsaved changes.
 

@@ -230,7 +230,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireEditor.PEditorAttach(host, editor, lectern);
 
         CPanel atlas = _lRepertoire.LRepertoireAtlas.CAtlasPanel;
-        CPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
+        CPanel occurrence = _lRepertoire.LRepertoireOccurrence.COccurrencePanel;
         _lRepertoire.LRepertoireChanged += QRepertoireModeUpdate;
         _lRepertoire.LRepertoireScenarioChanged += QScenarioApply;
         _lRepertoire.LRepertoireSituationChanged += QVignetteShow;
@@ -313,6 +313,6 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     private async void QRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
         await _qRepertoireHost.PWindowPortraitExport(
-            _lRepertoire.LRepertoireOccurrence.LOccurrenceFileRead(), _lRepertoire.LRepertoirePortraitExport);
+            _lRepertoire.LRepertoireOccurrence.COccurrenceFileRead(), _lRepertoire.LRepertoirePortraitExport);
     }
 }

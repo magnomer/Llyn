@@ -4,7 +4,7 @@
 
 The slice of the engine a panel sees when it prints, exports or imports.
 Printing and exporting portray the record a vista chose, so the caller hands the vista and never the id.
-The markup import runs in two steps, reading the cargo and then storing it under declared intakes.
+The markup import runs as one call, which reads the cargo and stores it under declared intakes.
 `LEngine` implements it today, and a portrait clerk takes it over when the parts are dismantled.
 
 ## `static LPressTicket LEngineTicketRead(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
@@ -15,6 +15,11 @@ The statics build the records a print or export takes from plain values, so Cond
 ## `static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)`
 
 The engine label an entry page is worded with, word by word in the record's order.
+
+## `static LMarkupIntake LEngineIntakeRead(int index, LMarkupMode mode, long target)`
+
+The engine intake one declared row stands for, built from plain values through the intake clerk.
+A new entry carries no target, which the Core factory enforces.
 
 ## `static LPortraitLegend LEngineLegendRead(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)`
 

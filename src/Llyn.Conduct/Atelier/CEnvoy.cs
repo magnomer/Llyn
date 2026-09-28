@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.Conduct;
 
@@ -17,4 +18,8 @@ public interface CEnvoy
     bool CEnvoyDiscardConfirm();
 
     bool? CEnvoyLeaveConfirm();
+
+    IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries);
+
+    void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);
 }

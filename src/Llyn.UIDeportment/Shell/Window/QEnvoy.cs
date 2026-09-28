@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using Llyn.Conduct;
@@ -84,5 +85,15 @@ internal sealed class QEnvoy : CEnvoy
             QSLeaveAnswer.QSLeaveAnswerDiscard => false,
             _ => null,
         };
+    }
+
+    public IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries)
+    {
+        return QSCustoms.QSCustomsShow(_qEnvoyHost, entries);
+    }
+
+    public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)
+    {
+        QSCustoms.QSCustomsOmissionShow(_qEnvoyHost, omissions);
     }
 }

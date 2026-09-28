@@ -28,6 +28,18 @@ public sealed class TQuotation
     }
 
     [Fact]
+    public void QuotationRowsRead_NoExampleChosen_ListsEveryEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TCorpus.TCorpusEntrySave(engine);
+        CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+
+        Assert.Equal(water.LEntryId, Assert.Single(corpus.CCorpusQuotation.CQuotationRowsRead()).CVistaRowId);
+    }
+
+    [Fact]
     public void QuotationQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

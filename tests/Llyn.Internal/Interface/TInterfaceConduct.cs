@@ -190,6 +190,17 @@ internal static class TInterfaceConduct
     internal static IReadOnlyList<CCatalogAuthor> TOeuvreAuthorRead(
         this COeuvre oeuvre, IReadOnlyList<LCatalogAuthor> rows) => oeuvre.LOeuvreAuthorRead(rows);
 
+    internal static COccurrence TOccurrenceCreate(LEngine engine) => new(
+        new LEntryOutlet(engine),
+        new LPortraitOutlet(engine),
+        TEnvoyCreate(false, []),
+        static () => false,
+        static _ => true,
+        static () => true);
+
+    internal static void TOccurrenceVistaRestore(this COccurrence occurrence, LVista roll, LVista vista) =>
+        occurrence.COccurrenceVistaRestore(roll, vista);
+
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 

@@ -3,7 +3,7 @@
 ## `internal sealed class QLibrary`
 
 Drives the library panel: what it is made of, and what it forwards.
-Every branch it once carried lives in `LLibrary` and the `CPanel` it holds.
+Every branch it once carried lives in the Conduct `CLibrary` and the `CPanel` it holds.
 The search, the ordering, the index, the read-only display, the editor and the import are all wired here.
 The panel itself is the veneer's `PLibrary` page, which the window places.
 
@@ -20,8 +20,9 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QLibraryAttach(PWindow host)`
 
-Puts the panel to work on the panel factory, which builds its controller over the engine's ports.
-It builds the controller with the seams the panel answers through and subscribes to its notices.
+Puts the panel to work on the panel factory, which builds its Conduct over the atelier.
+The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
+It subscribes the lectern and its own controls to the panel's notices.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 The print and portrait command bindings live in the constructor, and their check answers false until the controller exists.
@@ -66,6 +67,7 @@ The panel asks it through the envoy only when it found changes.
 ## `internal long QLibraryVoyageRead()`
 
 The entry the panel shows, as the station the window records before a jump away.
+Zero says no entry is shown, so there is no place to come back to.
 
 ## `internal void QIndexEntryShow(long id)`
 
@@ -86,17 +88,7 @@ Writes the mode and the enablement the controller holds into the eight controls 
 
 ## `private string? QLibraryMarkupOpen()`
 
-The path seam of the import: the file the reader picked, or null for a cancelled pick.
-
-## `private IReadOnlyList<CSCustomsRow>? QLibraryCustomsShow(IReadOnlyList<CMarkupEntry> entries)`
-
-The customs seam of the import: the reader chooses how each entry enters before anything is written.
-A cancelled window answers null.
-
-## `private void QLibraryOmissionShow(IReadOnlyList<CMarkupOmission> omissions)`
-
-The omission seam of the import: what the import could not place, shown after the index holds the entries.
-An import that dropped nothing shows nothing.
+The file dialog of the import: the file the reader picked, or null for a cancelled pick.
 
 ## `private void QOrderHandle(object sender, RoutedEventArgs e)`
 
@@ -120,7 +112,8 @@ The click is removed first, so a refill never doubles it.
 
 ## `private async void QLibraryMarkupHandle(object sender, RoutedEventArgs e)`
 
-The import button: the controller runs the whole import and asks each question through the three seams.
+The import button hands the picked path, or null, to `CLibraryMarkupImport`.
+The gate asks the customs question and shows the report through the envoy.
 Import belongs on this panel rather than the editor.
 What arrives is any number of entries, none of them the one being written.
 
@@ -141,7 +134,7 @@ The window asks for the file and the format, and the engine writes the document 
 
 ## Inline notes
 
-### `QLibraryEditor.PEditorAttach(host, _lLibrary.LLibraryEditor, lectern);`
+### `QLibraryEditor.PEditorAttach(host, _lEditor, lectern);`
 
 The editor opens on no entry, and this panel puts it on one when the reader asks to write.
 The editor deportment was made for this panel, so its held work is told apart from the input panel's.

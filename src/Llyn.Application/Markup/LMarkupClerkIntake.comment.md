@@ -10,6 +10,11 @@ Every entry is created or rewritten in one session and one revision, the held me
 Reads the vault and the entry, meaning and mention ports out of `rig`.
 Keeps the clerks the import writes through.
 
+## `public static LMarkupIntake LMarkupIntakeCreate(int index, LMarkupMode mode, long target)`
+
+The intake one declared row stands for, built by the Core record's factory.
+The shell reaches that rule through it, so the shell calls no Core member for it.
+
 ## `public LMarkupOutcome LMarkupClerkImport(LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes)`
 
 One intake per entry, each index once, else the import is refused.

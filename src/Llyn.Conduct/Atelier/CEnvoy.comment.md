@@ -39,3 +39,12 @@ A driver that holds editors of its own walks them, so the question keeps its own
 
 Asks whether unsaved work is stored, dropped, or kept open.
 True stores, false discards, and null means the user stays.
+
+## `IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries);`
+
+Asks how each parsed entry of a markup file enters the workspace, one declared row per entry in file order.
+It answers null when the user declines, and the gate then stores nothing.
+
+## `void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);`
+
+Tells the user what a markup import could not place, line by line.
