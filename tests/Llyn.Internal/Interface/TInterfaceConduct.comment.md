@@ -46,6 +46,10 @@ Builds a desk over a real draft outlet on `engine`, as the owners in Deportment 
 
 Relays the internal entry row map.
 
+## `internal static COeuvre TOeuvreCreate(LEngine engine)`
+
+Builds the oeuvre over a real entry outlet on `engine`, as the guild does.
+
 ## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
 
 Builds one Latin entry row with the given id, epithet and chosen mark.

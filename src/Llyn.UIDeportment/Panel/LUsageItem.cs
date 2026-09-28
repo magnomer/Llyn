@@ -12,7 +12,7 @@ namespace Llyn.UIDeportment;
 public sealed class LUsageItem
 {
     public LUsageItem(LUsage usage, string owner, string unknown, string unnamed, string epithet = "")
-        : this(LOeuvre.LOeuvreUsageRead(usage), owner, unknown, unnamed, epithet)
+        : this(COeuvre.COeuvreUsageRead(usage), owner, unknown, unnamed, epithet)
     {
     }
 

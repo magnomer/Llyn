@@ -206,6 +206,15 @@ public sealed class LReferenceClerk
             && one.LReferenceAuthorState == other.LReferenceAuthorState;
     }
 
+    public static LColophon LReferenceColophonRead(LDraft draft, string tally)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        LReference reference = draft.LDraftReference
+            ?? throw new InvalidOperationException("The draft holds no reference.");
+        return reference.LReferenceColophonRead(draft.LDraftAuthor, tally, LLocalization.QLocalizationTextRead);
+    }
+
     public static LPortraitPage LReferencePageRead(
         LReference reference, IReadOnlyList<LAuthor> credits, int count, LPortraitLegend legend)
     {

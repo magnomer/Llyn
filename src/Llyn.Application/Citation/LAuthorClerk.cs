@@ -249,6 +249,11 @@ public sealed class LAuthorClerk
         return true;
     }
 
+    public static string LAuthorWorkFormat(int count)
+    {
+        return LVita.LVitaWorkFormat(count, LLocalization.QLocalizationTextRead);
+    }
+
     public static bool LOeuvreMatch(long? author, IReadOnlyList<LAuthor>? credited)
     {
         if (author is not long wanted)

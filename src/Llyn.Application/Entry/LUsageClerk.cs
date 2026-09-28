@@ -33,6 +33,12 @@ public sealed class LUsageClerk
         };
     }
 
+    public string LUsageTallyRead(long? reference)
+    {
+        int count = reference is long id ? LUsageClerkRead(LOwner.LOwnerReference).GetValueOrDefault(id) : 0;
+        return LReference.LReferenceUsageFormat(count, LLocalization.QLocalizationTextRead);
+    }
+
     public IReadOnlyList<LUsage> LUsageClerkRead(long id, LOwner owner, bool epithet)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

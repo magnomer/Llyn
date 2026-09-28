@@ -2,11 +2,155 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
-internal static class COeuvre
+public sealed class COeuvre
 {
+    private readonly LEntryPort _cOeuvreEntryPort;
+
+    private LVista? _cOeuvreRoll;
+
+    private LVista? _cOeuvreVista;
+
+    private int _cOeuvreCount;
+
+    internal COeuvre(LEntryPort entries)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+
+        _cOeuvreEntryPort = entries;
+    }
+
+    public event Action<CColophon>? COeuvreColophonChanged;
+
+    public event Action? COeuvreStrayed;
+
+    public bool COeuvreEmpty => _cOeuvreCount == 0;
+
+    public string COeuvreEmptyKey => LOeuvreAuthorChosen ? LOeuvreVacantKey : "Source.Empty";
+
+    private string LOeuvreVacantKey => LOeuvreNarrowed ? "Guild.Unmatched" : "Guild.Vacant";
+
+    private bool LOeuvreAuthorChosen => _cOeuvreRoll?.LVistaChosen is not null;
+
+    private bool LOeuvreNarrowed => (_cOeuvreVista?.LVistaQueried ?? false) || (_cOeuvreRoll?.LVistaFiltered ?? false);
+
+    private bool LOeuvreSourceHeld => _cOeuvreVista?.LVistaChosen is not null;
+
+    internal void COeuvreVistaRestore(LVista roll, LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(roll);
+        ArgumentNullException.ThrowIfNull(vista);
+
+        vista.LVistaQuerySet(_cOeuvreVista?.LVistaQuery ?? string.Empty);
+        _cOeuvreRoll = roll;
+        _cOeuvreVista = vista;
+    }
+
+    public IReadOnlyList<CCatalogReference> COeuvreRowsRead()
+    {
+        IReadOnlyList<CCatalogReference> rows =
+            COeuvreReferenceRead(_cOeuvreEntryPort.LEngineOeuvreFind(_cOeuvreRoll, _cOeuvreVista));
+        _cOeuvreCount = rows.Count;
+        if (LOeuvreSourceHeld && !rows.Any(static row => row.CCatalogReferenceChosen))
+        {
+            COeuvreStrayed?.Invoke();
+        }
+
+        return rows;
+    }
+
+    public void COeuvreQuerySet(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        _cOeuvreVista?.LVistaQuerySet(query);
+    }
+
+    public string COeuvreTallyRead()
+    {
+        return _cOeuvreEntryPort.LEngineTallyRead(_cOeuvreVista?.LVistaChosen);
+    }
+
+    internal void COeuvreColophonUpdate(LDraft draft)
+    {
+        COeuvreColophonChanged?.Invoke(COeuvreColophonRead(draft));
+    }
+
+    internal CColophon COeuvreColophonRead(LDraft draft)
+    {
+        return LOeuvreColophonRead(_cOeuvreEntryPort.LEngineColophonRead(draft));
+    }
+
+    private static CColophon LOeuvreColophonRead(LColophon sheet)
+    {
+        return new CColophon(
+            sheet.LColophonTitle,
+            sheet.LColophonTitleFaint,
+            sheet.LColophonKind,
+            sheet.LColophonKindShown,
+            sheet.LColophonYear,
+            sheet.LColophonYearFaint,
+            sheet.LColophonYearShown,
+            sheet.LColophonUrl,
+            sheet.LColophonUrlFaint,
+            sheet.LColophonUrlShown,
+            sheet.LColophonNote,
+            sheet.LColophonNoteFaint,
+            sheet.LColophonNoteShown,
+            sheet.LColophonAuthor,
+            sheet.LColophonAuthorFaint,
+            sheet.LColophonAuthorShown,
+            sheet.LColophonTally);
+    }
+
+    internal IReadOnlyList<CCatalogAuthor> COeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows
+            .Select(row => new CCatalogAuthor(
+                row.LCatalogAuthorStored.LAuthorId,
+                row.LCatalogAuthorName,
+                _cOeuvreEntryPort.LEngineWorkFormat(row.LCatalogAuthorWork),
+                row.LCatalogAuthorUsage,
+                row.LCatalogAuthorStored.LAuthorStored,
+                row.LCatalogAuthorChosen))
+            .ToList();
+    }
+
+    internal static CVita COeuvreVitaRead(LVita vita)
+    {
+        ArgumentNullException.ThrowIfNull(vita);
+
+        return new CVita(
+            vita.LVitaName,
+            vita.LVitaNamed,
+            vita.LVitaWork,
+            vita.LVitaTally,
+            vita.LVitaFellows
+                .Select(static fellow => new CFellow(fellow.LFellowId, fellow.LFellowName, fellow.LFellowShared))
+                .ToList(),
+            vita.LVitaUsages.Select(COeuvreUsageRead).ToList());
+    }
+
+    internal static CUsage COeuvreUsageRead(LUsage usage)
+    {
+        ArgumentNullException.ThrowIfNull(usage);
+
+        return new CUsage(
+            usage.LUsageId,
+            usage.LUsageEntry,
+            usage.LUsageName,
+            usage.LUsageEpithet,
+            usage.LUsageLanguage,
+            CFolio.CFolioStateRead(usage.LUsageTitle),
+            usage.LUsageQuoted,
+            usage.LUsageCollocated);
+    }
+
     internal static IReadOnlyList<CCatalogReference> COeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);

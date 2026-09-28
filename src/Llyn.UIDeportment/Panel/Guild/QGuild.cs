@@ -151,11 +151,12 @@ internal sealed class QGuild
         _lGuild.LGuildPanel.LPanelChanged += QGuildModeUpdate;
         _lGuild.LGuildPanel.LPanelRowsChanged += QRollUpdate;
         _lGuild.LGuildPanel.LPanelFailed += host.PWindowFailureShow;
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelChanged += QGuildModeUpdate;
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsChanged += QOeuvreUpdate;
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelCleared += _qColophon.QColophonClear;
-        _lGuild.LGuildOeuvre.LOeuvreColophonChanged += _qColophon.QColophonShow;
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
+        _lGuild.LGuildOeuvrePanel.LPanelChanged += QGuildModeUpdate;
+        _lGuild.LGuildOeuvrePanel.LPanelRowsChanged += QOeuvreUpdate;
+        _lGuild.LGuildOeuvrePanel.LPanelRowsChanged += QTallyRefine;
+        _lGuild.LGuildOeuvrePanel.LPanelCleared += _qColophon.QColophonClear;
+        _lGuild.LGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
+        _lGuild.LGuildOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
         _qVita.QVitaAttach(host, _lGuild);
         _qAutograph.QAutographAttach(_lGuild);
         _lGuild.LGuildAutograph.CDeskFailed += host.PWindowFailureShow;
@@ -173,9 +174,9 @@ internal sealed class QGuild
         _lGuild.LGuildPanel.LPanelObserverAttach(
             CSubject.CSubjectVista,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildPanel.LPanelRowsUpdate));
-        _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelObserverAttach(
+        _lGuild.LGuildOeuvrePanel.LPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildOeuvrePanel.LPanelRowsUpdate));
         _lGuild.LGuildPanel.LPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildReset));
         _lGuild.LGuildPanel.LPanelObserverAttach(
@@ -204,7 +205,6 @@ internal sealed class QGuild
         QChoice.QChoiceKindBuild(QLouverList, _lGuild.LGuildLouverRead(), QLouverHandle);
         QLouverUpdate();
         _lGuild.LGuildQuerySet(QMuster.Text);
-        _lGuild.LGuildOeuvre.LOeuvreQuerySet(QComb.Text);
         _lGuild.LGuildPanel.LPanelRowsUpdate();
     }
 
@@ -270,12 +270,16 @@ internal sealed class QGuild
     {
         LSplice.LSpliceApply(
             _qOeuvreList,
-            QShelfItem.QShelfItemBuild(_lGuild.LGuildOeuvre.LOeuvreRowsRead()),
+            QShelfItem.QShelfItemBuild(_lGuild.LGuildOeuvre.COeuvreRowsRead()),
             QShelfItem.QShelfItemMatch,
             QShelfItem.QShelfItemSync);
-        QOeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _lGuild.LGuildOeuvre.LOeuvreEmptyKey);
-        QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildOeuvre.LOeuvreEmpty);
-        _qColophon.QColophonTallyShow(_lGuild.LGuildOeuvre.LOeuvreTallyRead());
+        QOeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _lGuild.LGuildOeuvre.COeuvreEmptyKey);
+        QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildOeuvre.COeuvreEmpty);
+    }
+
+    private void QTallyRefine()
+    {
+        _qColophon.QColophonTallyShow(_lGuild.LGuildOeuvre.COeuvreTallyRead());
     }
 
     private void QGuildModeUpdate()
@@ -307,7 +311,7 @@ internal sealed class QGuild
 
     private void QCombHandle(object sender, TextChangedEventArgs e)
     {
-        _lGuild.LGuildOeuvre.LOeuvreQuerySet(QComb.Text);
+        _lGuild.LGuildOeuvre.COeuvreQuerySet(QComb.Text);
     }
 
     private void QEchelonHandle(object sender, RoutedEventArgs e)

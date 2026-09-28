@@ -36,15 +36,20 @@ Its name is the word the panel hands in.
 The Authors the authors panel's vista lists, with the query and order read off the vista.
 Each row carries its chosen mark, true where its id is the one the vista stands on.
 
-## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre)`
+## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre)`
 
 The Sources the authors panel's oeuvre vista lists, under the Author and the kinds the roll vista holds.
+Before the panel binds both vistas it lists nothing.
 Query and order come off the oeuvre vista, the chosen Author and the kind filter off the roll vista.
 
 ## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`
 
 The Sources crediting `author` as browsed rows, narrowed by `query` and by the kinds left shown.
 Passing `null` lists every Source, and zero lists the Sources crediting nobody.
+
+## `public string LEngineWorkFormat(int count)`
+
+The author clerk's wording of a work count.
 
 ## `public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)`
 

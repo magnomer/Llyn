@@ -48,16 +48,20 @@ public sealed class LGuild
         LGuildPanel = new LPanel(
             "Guild.LoadFailed", "Guild.DeleteFailed",
             LGuildAutograph.CDeskChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
-        LGuildOeuvre = new LOeuvre(entries, settings, shownSeam);
-        LGuildPanel.LPanelRowsChanged += LGuildOeuvre.LOeuvrePanel.LPanelRowsUpdate;
+        LGuildOeuvre = new COeuvre(entries);
+        LGuildOeuvrePanel = new LPanel(
+            "Source.LoadFailed", "Source.DeleteFailed",
+            static () => false, shownSeam, static () => true, static () => false);
+        LGuildOeuvrePanel.LPanelDraftChanged += LGuildOeuvre.COeuvreColophonUpdate;
+        LGuildOeuvre.COeuvreStrayed += LGuildOeuvrePanel.LPanelClear;
+        LGuildPanel.LPanelRowsChanged += LGuildOeuvrePanel.LPanelRowsUpdate;
         LGuildSession = new CSession(
             LGuildAutograph, [LGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
         LGuildUnion = new QUnion(
             LGuildAutograph,
             () => LGuildAuthorStored,
-            (typed, author, limit) => LOeuvre.LOeuvreAuthorRead(
-                entries.LEngineAuthorFind(typed, author, limit), QLocalizationCatalog.QLocalizationTextRead),
+            (typed, author, limit) => LGuildOeuvre.COeuvreAuthorRead(entries.LEngineAuthorFind(typed, author, limit)),
             kept => entries.LEngineAuthorFind(kept)?.LCatalogAuthorName ?? string.Empty,
             entries.LEngineAuthorAbsorb,
             unionSeam,
@@ -77,7 +81,9 @@ public sealed class LGuild
 
     public LPanel LGuildPanel { get; }
 
-    public LOeuvre LGuildOeuvre { get; }
+    public COeuvre LGuildOeuvre { get; }
+
+    public LPanel LGuildOeuvrePanel { get; }
 
     public CDesk LGuildAutograph { get; }
 
@@ -85,7 +91,7 @@ public sealed class LGuild
 
     public QUnion LGuildUnion { get; }
 
-    private bool LGuildSourceSide => LGuildOeuvre.LOeuvrePanel.LPanelBinEnabled;
+    private bool LGuildSourceSide => LGuildOeuvrePanel.LPanelBinEnabled;
 
     public bool LGuildColophonShown => LGuildSourceSide;
 
@@ -129,13 +135,14 @@ public sealed class LGuild
 
         _lGuildVista = vista;
         LGuildPanel.LPanelVistaRestore(vista);
-        LGuildOeuvre.LOeuvreVistaRestore(vista, oeuvre);
+        LGuildOeuvrePanel.LPanelVistaRestore(oeuvre);
+        LGuildOeuvre.COeuvreVistaRestore(vista, oeuvre);
         LGuildAutograph.CDeskVistaRestore(vista);
     }
 
     public IReadOnlyList<CCatalogAuthor> LGuildRollRead()
     {
-        return LOeuvre.LOeuvreAuthorRead(LGuildRollApply(LGuildRollFind()), QLocalizationCatalog.QLocalizationTextRead);
+        return LGuildOeuvre.COeuvreAuthorRead(LGuildRollApply(LGuildRollFind()));
     }
 
     private IReadOnlyList<LCatalogAuthor> LGuildRollFind()
@@ -181,10 +188,10 @@ public sealed class LGuild
     {
         if (!LGuildAuthorHeld)
         {
-            return LOeuvre.LOeuvreVitaRead(LVita.LVitaCreate(null, [], [], _lSettingsPort.LEngineTextRead));
+            return COeuvre.COeuvreVitaRead(LVita.LVitaCreate(null, [], [], _lSettingsPort.LEngineTextRead));
         }
 
-        return LOeuvre.LOeuvreVitaRead(LVita.LVitaCreate(
+        return COeuvre.COeuvreVitaRead(LVita.LVitaCreate(
             _lEntryPort.LEngineAuthorFind(LGuildAuthorId),
             _lEntryPort.LEngineFellowFind(LGuildAuthorId),
             _lEntryPort.LEngineUsageRead(LGuildAuthorId, LOwner.LOwnerAuthor),
@@ -242,13 +249,13 @@ public sealed class LGuild
 
     private void LGuildClear()
     {
-        LGuildOeuvre.LOeuvrePanel.LPanelClear();
+        LGuildOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelClear();
     }
 
     public void LGuildReset()
     {
-        LGuildOeuvre.LOeuvrePanel.LPanelClear();
+        LGuildOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelClear();
     }
 
@@ -257,7 +264,7 @@ public sealed class LGuild
         LGuildPanel.LPanelRowsUpdate();
         if (LGuildSourceSide)
         {
-            LGuildOeuvre.LOeuvrePanel.LPanelDraftUpdate();
+            LGuildOeuvrePanel.LPanelDraftUpdate();
         }
 
         LGuildChanged?.Invoke();
@@ -286,7 +293,7 @@ public sealed class LGuild
     private void LGuildAuthorOpen(long? id, bool editing)
     {
         LGuildSession.CSessionCancel();
-        LGuildOeuvre.LOeuvrePanel.LPanelClear();
+        LGuildOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelScribeShow(editing && id is > 0);
         LGuildPanel.LPanelRowShow(id);
     }
@@ -313,7 +320,7 @@ public sealed class LGuild
 
         LGuildSession.CSessionCancel();
         LGuildPanel.LPanelScribeShow(false);
-        LGuildOeuvre.LOeuvrePanel.LPanelRowShow(id);
+        LGuildOeuvrePanel.LPanelRowShow(id);
     }
 
     public void LGuildFreshStart()
@@ -323,7 +330,7 @@ public sealed class LGuild
             return;
         }
 
-        LGuildOeuvre.LOeuvrePanel.LPanelClear();
+        LGuildOeuvrePanel.LPanelClear();
         LGuildPanel.LPanelFreshOpen();
         LGuildSession.CSessionStart(null);
     }
@@ -396,7 +403,7 @@ public sealed class LGuild
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LGuildOeuvre.LOeuvrePanel.LPanelVista,
+            LGuildOeuvrePanel.LPanelVista,
             LAtlas.LAtlasLegendRead(legend),
             QPortrait.QPortraitTicketRead(ticket));
     }

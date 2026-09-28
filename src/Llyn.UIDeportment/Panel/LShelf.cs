@@ -19,6 +19,8 @@ public sealed class LShelf
 
     private readonly Func<int, bool> _lShelfRemovalSeam;
 
+    private readonly COeuvre _lShelfOeuvre;
+
     private LVista? _lShelfVista;
 
     private int _lShelfCount;
@@ -46,6 +48,7 @@ public sealed class LShelf
         _lSettingsPort = settings;
         _lShelfLeaveSeam = leaveSeam;
         _lShelfRemovalSeam = removalSeam;
+        _lShelfOeuvre = new COeuvre(entries);
         LShelfEditor = editor;
         LShelfImprint = new LImprint(drafts, entries, settings, envoy);
         LShelfPanel = new LPanel(
@@ -215,8 +218,7 @@ public sealed class LShelf
 
     private void LShelfColophonUpdate(LDraft draft)
     {
-        LShelfColophonChanged?.Invoke(LOeuvre.LOeuvreColophonRead(
-            draft, LShelfTallyRead(), _lSettingsPort.LEngineTextRead, "The shelf draft holds no reference."));
+        LShelfColophonChanged?.Invoke(_lShelfOeuvre.COeuvreColophonRead(draft));
     }
 
     public bool LShelfChangeCheck()

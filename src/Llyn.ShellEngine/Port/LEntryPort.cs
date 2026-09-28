@@ -89,9 +89,15 @@ public interface LEntryPort
 
     IReadOnlyList<LFellow> LEngineFellowFind(long authorId);
 
-    IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre);
+    IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);
+
+    string LEngineWorkFormat(int count);
+
+    LColophon LEngineColophonRead(LDraft draft);
 
     IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);
+
+    string LEngineTallyRead(long? reference);
 
     IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner);
 

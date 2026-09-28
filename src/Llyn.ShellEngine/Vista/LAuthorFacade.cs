@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -89,10 +90,13 @@ internal sealed class LAuthorFacade
         return rows;
     }
 
-    public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre)
+    public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre)
     {
-        ArgumentNullException.ThrowIfNull(roll);
-        ArgumentNullException.ThrowIfNull(oeuvre);
+        if (roll is null || oeuvre is null)
+        {
+            return [];
+        }
+
         IReadOnlyList<LCatalogReference> found = LEngineOeuvreFind(
             roll.LVistaChosen, oeuvre.LVistaQuery, roll.LVistaFilter, oeuvre.LVistaOrder);
         return _lAuthorFacadeEngine.LEngineReference.LEngineReferenceRead(found, oeuvre.LVistaChosen);
@@ -108,6 +112,11 @@ internal sealed class LAuthorFacade
         {
             return LAuthorFacadeStaff.LEngineStaffReference.LReferenceOeuvreFind(author, query, kind, order);
         }
+    }
+
+    public string LEngineWorkFormat(int count)
+    {
+        return LAuthorClerk.LAuthorWorkFormat(count);
     }
 
     public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)

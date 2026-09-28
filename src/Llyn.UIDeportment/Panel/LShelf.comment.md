@@ -56,7 +56,8 @@ The page asks it by the chosen row.
 
 ## `private void LShelfColophonUpdate(LDraft draft)`
 
-Composes the read sheet of a loaded Source draft with the tally of the chosen row, and announces it.
+Announces the read sheet of a loaded Source draft, composed by the oeuvre with the Source's own tally.
+The shelf holds its own oeuvre only for that read, until the shelf's own job builds its Conduct area.
 The draft passes only between controllers, so the view receives the sheet and never the draft.
 The draft arrives as a parameter from the notice, so the Source is never a local here.
 

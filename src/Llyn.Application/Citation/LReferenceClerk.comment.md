@@ -82,6 +82,11 @@ Identity is left out, because a held Reference is named before the record it bec
 The title, the year, the kind, the note and the address each count.
 The author state counts too, because ruling the writers unknown is an edit nothing else records.
 
+## `public static LColophon LReferenceColophonRead(LDraft draft, string tally)`
+
+The read sheet of a Source draft in the current language, with its credits and `tally`.
+A draft holding no Source is a caller's mistake and throws.
+
 ## `public static LPortraitPage LReferencePageRead(LReference reference, IReadOnlyList<LAuthor> credits, int count, LPortraitLegend legend)`
 
 The title heads the page, and the kind and usage tally are the chips.

@@ -67,7 +67,11 @@ The sheet arrives as a parameter, so no engine answer sits in a local.
 
 ## `private void QOeuvreUpdate()`
 
-Lists the oeuvre afresh with its empty text and refreshes the colophon's tally.
+Lists the oeuvre afresh with its empty text.
+
+## `private void QTallyRefine()`
+
+Refreshes the colophon's tally whenever the oeuvre rows change.
 
 ## `private void QGuildModeUpdate()`
 

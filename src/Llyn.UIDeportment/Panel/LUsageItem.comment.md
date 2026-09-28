@@ -18,7 +18,7 @@ The row finds its own flag once for the language through `LEnsignImage`.
 ## `internal LUsageItem(CUsage usage, string owner, string unknown, string unnamed, string epithet)`
 
 Builds the row from one citing place in its shape.
-The engine row constructor maps its row through `LOeuvre.LOeuvreUsageRead` and lands here.
+The engine row constructor maps its row through `COeuvre.COeuvreUsageRead` and lands here.
 
 ## `public bool LUsageItemQuoted { get; }`
 

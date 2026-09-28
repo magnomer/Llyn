@@ -64,7 +64,7 @@ public sealed class TGuildRoll
         Assert.True(vita.CVitaNamed);
         Assert.Equal("Guild.WorkOne", vita.CVitaWork);
         Assert.Equal(["Bob"], vita.CVitaFellows.Select(fellow => fellow.CFellowName));
-        Assert.Equal(["Book"], guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.CCatalogReferenceName));
+        Assert.Equal(["Book"], guild.LGuildOeuvre.COeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public sealed class TGuildRoll
         Assert.False(guild.LGuildVitaHeld);
         Assert.False(guild.LGuildModeEnabled);
         Assert.False(guild.LGuildBinEnabled);
-        Assert.Contains("Orphan", guild.LGuildOeuvre.TOeuvreRowsRead().Select(row => row.CCatalogReferenceName));
+        Assert.Contains("Orphan", guild.LGuildOeuvre.COeuvreRowsRead().Select(row => row.CCatalogReferenceName));
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public sealed class TGuildRoll
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         CColophon? shown = null;
-        guild.LGuildOeuvre.LOeuvreColophonChanged += colophon => shown = colophon;
+        guild.LGuildOeuvre.COeuvreColophonChanged += colophon => shown = colophon;
         guild.TGuildRowSelect(ada.LAuthorId);
 
         guild.TGuildSourceSelect(book.LReferenceId);

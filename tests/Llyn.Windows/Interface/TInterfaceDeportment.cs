@@ -267,8 +267,6 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildDelete(this LGuild guild) => guild.LGuildDelete();
 
-    internal static IReadOnlyList<CCatalogReference> TOeuvreRowsRead(this LOeuvre oeuvre) => oeuvre.LOeuvreRowsRead();
-
     internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam)
     {
         LEditor editor = TEditorCreate(engine);

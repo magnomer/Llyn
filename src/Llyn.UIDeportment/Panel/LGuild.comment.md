@@ -25,6 +25,13 @@ A request the deportment itself refused, named by the localization key the windo
 The draft session over the autograph, which the views save, undo and redo through.
 A save refuses a blank name through `LGuildAutographCheck` before the engine is asked.
 
+## `public LPanel LGuildOeuvrePanel { get; }`
+
+The panel state over the oeuvre vista, built here until the panel itself moves into Conduct.
+The list never edits, so its change seam answers false and its delete seam refuses.
+It loads a chosen Source, whose draft the oeuvre turns into the colophon.
+It clears when the oeuvre reports that the chosen Source left the list.
+
 ## `public QUnion LGuildUnion { get; }`
 
 The author union, which reads the Author the roll stands on and reopens the kept one.
@@ -66,7 +73,7 @@ The roll as the view lists it, each source count worded through the engine.
 ## `public CVita LGuildVitaRead()`
 
 The read sheet of the chosen Author, or the sheet of nobody while none is stored.
-The engine builds the sheet, and `LOeuvre.LOeuvreVitaRead` maps it to its shape.
+The engine builds the sheet, and `COeuvre.COeuvreVitaRead` maps it to its shape.
 The same sheet feeds the count chips of the autograph, which show the Author being written.
 
 ## `private bool LGuildDeleteConfirm()`

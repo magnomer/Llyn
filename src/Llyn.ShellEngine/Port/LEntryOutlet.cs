@@ -140,13 +140,20 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LFellow> LEngineFellowFind(long authorId) =>
         _lEntryOutletEngine.LEngineAuthor.LEngineFellowFind(authorId);
 
-    public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista roll, LVista oeuvre) =>
+    public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre) =>
         _lEntryOutletEngine.LEngineAuthor.LEngineOeuvreFind(roll, oeuvre);
+
+    public string LEngineWorkFormat(int count) => _lEntryOutletEngine.LEngineAuthor.LEngineWorkFormat(count);
+
+    public LColophon LEngineColophonRead(LDraft draft) =>
+        _lEntryOutletEngine.LEngineReference.LEngineColophonRead(draft);
 
     public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
     {
         return _lEntryOutletEngine.LEngineEntry.LEngineUsageRead(owner);
     }
+
+    public string LEngineTallyRead(long? reference) => _lEntryOutletEngine.LEngineEntry.LEngineTallyRead(reference);
 
     public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner) =>
         _lEntryOutletEngine.LEngineEntry.LEngineUsageRead(id, owner);

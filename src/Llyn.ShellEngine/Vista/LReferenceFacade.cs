@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -88,6 +89,17 @@ internal sealed class LReferenceFacade
         }
 
         _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, id);
+    }
+
+    public LColophon LEngineColophonRead(LDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        lock (_lReferenceFacadeGate)
+        {
+            string tally = LReferenceFacadeStaff.LEngineStaffUsage.LUsageTallyRead(draft.LDraftReference?.LReferenceId);
+            return LReferenceClerk.LReferenceColophonRead(draft, tally);
+        }
     }
 
     public IReadOnlyDictionary<long, string> LEngineCitationRead()

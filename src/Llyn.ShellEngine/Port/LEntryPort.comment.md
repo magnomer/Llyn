@@ -21,3 +21,19 @@ The cells of the draft's glyph row, empty when its language declares no glyph se
 ## `IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);`
 
 How many places cite each record of one owner kind, keyed by record id.
+
+## `IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);`
+
+The Sources of the authors panel's oeuvre, and none while either vista is missing.
+
+## `string LEngineWorkFormat(int count);`
+
+An Author's work count as the roll shows it.
+
+## `LColophon LEngineColophonRead(LDraft draft);`
+
+The read sheet of a Source draft, with the citation line of the Source it holds.
+
+## `string LEngineTallyRead(long? reference);`
+
+The citation line of one Source, worded as none when no Source is given.

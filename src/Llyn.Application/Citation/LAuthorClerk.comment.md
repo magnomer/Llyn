@@ -94,6 +94,10 @@ A name credited twice is attached once, at its first place.
 Whether two credit lists name the same Authors in the same order.
 Only the ids count, because a renamed Author is still the same credit.
 
+## `public static string LAuthorWorkFormat(int count)`
+
+An Author's work count in the current language, by the vita's wording.
+
 ## `public static bool LOeuvreMatch(long? author, IReadOnlyList<LAuthor>? credited)`
 
 Whether a Source with the credits `credited` belongs to the oeuvre asked for.

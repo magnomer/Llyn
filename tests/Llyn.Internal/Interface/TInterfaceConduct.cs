@@ -157,6 +157,8 @@ internal static class TInterfaceConduct
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
 
+    internal static COeuvre TOeuvreCreate(LEngine engine) => new(new LEntryOutlet(engine));
+
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 
