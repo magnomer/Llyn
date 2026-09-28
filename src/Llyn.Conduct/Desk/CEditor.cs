@@ -29,6 +29,7 @@ public sealed class CEditor
         CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media);
         CEditorCard = new CCard(CEditorDesk, drafts, entries);
         CEditorSentence = new CSentence(CEditorDesk, phonology);
+        CEditorSounding = new CSounding(CEditorDesk, phonology, drafts, envoy);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorDesk.CDeskDraftPrepared +=
             draft => CEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(draft.LDraftContent));
@@ -56,6 +57,8 @@ public sealed class CEditor
     public CCard CEditorCard { get; }
 
     public CSentence CEditorSentence { get; }
+
+    public CSounding CEditorSounding { get; }
 
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
 

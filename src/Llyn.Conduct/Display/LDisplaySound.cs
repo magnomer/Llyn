@@ -24,7 +24,7 @@ public sealed class LDisplaySound
 
     private bool _lDisplaySoundOpened;
 
-    private IReadOnlyList<LParadigmSlot> _lDisplaySoundParadigm = [];
+    private IReadOnlyList<LParadigmRow> _lDisplaySoundParadigm = [];
 
     private IReadOnlyList<LReflexDraft>? _lDisplaySoundReflex;
 
@@ -201,9 +201,9 @@ public sealed class LDisplaySound
         return LDisplayListRead(_lPhonologyPort.LEngineScriptDivide);
     }
 
-    public IReadOnlyList<LParadigmSlot> LDisplayParadigmRead()
+    public IReadOnlyList<LParadigmRow> LDisplayParadigmRead()
     {
-        _lDisplaySoundParadigm = LDisplayListRead(_lPhonologyPort.LEngineParadigmShow);
+        _lDisplaySoundParadigm = LDisplayListRead(_lPhonologyPort.LEngineParadigmScan);
         return _lDisplaySoundParadigm;
     }
 
@@ -221,7 +221,7 @@ public sealed class LDisplaySound
     {
         return _lDisplaySoundParadigm.Count == 0
             ? string.Empty
-            : _lDisplaySoundParadigm[0].LParadigmSlotSpeech.LSpeechValueLanguage;
+            : _lDisplaySoundParadigm[0].LParadigmRowFirst.LParadigmSlotSpeech.LSpeechValueLanguage;
     }
 
     public bool LDisplayMorphologyRead()

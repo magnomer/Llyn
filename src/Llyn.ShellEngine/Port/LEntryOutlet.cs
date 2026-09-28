@@ -44,8 +44,8 @@ public sealed class LEntryOutlet : LEntryPort
         _lEntryOutletEngine.LEngineEntry.LEngineGraspSave(entryId, grasp);
     }
 
-    public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId) =>
-        _lEntryOutletEngine.LEnginePronunciation.LEngineFrequencyRead(entryId);
+    public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once) =>
+        _lEntryOutletEngine.LEnginePronunciation.LEngineFrequencyResolve(entryId, once);
 
     public string LEngineEpithetRead(long entryId) => _lEntryOutletEngine.LEngineEntry.LEngineEpithetRead(entryId);
 

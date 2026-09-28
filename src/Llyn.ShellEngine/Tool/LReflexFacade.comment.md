@@ -14,6 +14,18 @@ Whether two anchor lists name the same rows.
 
 ## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(`
 
+The anchor rows of one stored entry, read from its own rime-book rows.
+
+## `public bool LEngineAnchorCheck(long entryId, string headword)`
+
+Whether the reflex rows of `headword` may carry anchors, judged on the entry's own rime-book rows.
+
+## `public string LEngineAnchorFormat(long entryId, IReadOnlyList<long> anchors, string headword, string separator)`
+
+The anchored readings of one stored entry, joined with `separator`.
+
+## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(`
+
 The stored fanqie rows marked held and estimated for the anchor dropdown.
 The tone rules of the entry `language` resolve the classes of the `reflex` language and `tone`.
 
@@ -44,3 +56,7 @@ Whether a reflex fetch is pending for the entry.
 ## `public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)`
 
 The tone classes the pack of a language declares, or none for a blank language.
+
+## `private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)`
+
+The entry's rime-book rows flattened out of their book groups, fetched first when missing.

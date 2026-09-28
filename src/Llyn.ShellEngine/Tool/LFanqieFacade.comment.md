@@ -25,6 +25,16 @@ The first listed language that declares a book, or null.
 
 The rows grouped by book.
 
+## `public IReadOnlyList<LFanqieGroup> LEngineFanqieRead(long entryId)`
+
+The rows grouped by book, after starting the fetch of every character still missing.
+The start comes first, so a character fetched long ago is never fetched twice.
+
+## `public string LEngineReadingRead(long entryId, string headword)`
+
+The headword's representative reading, formed from the grouped rows.
+It starts the fetch of missing characters first, as the grouped read does.
+
 ## `public void LEngineFanqieStart(long entryId)`
 
 Starts the fetch of every character that has no rows.

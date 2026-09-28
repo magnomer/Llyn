@@ -13,9 +13,9 @@ public sealed class QTimbre
 
     private readonly LDisplay _qTimbreDisplay;
 
-    private readonly LSounding _qTimbreSounding;
+    private readonly CSounding _qTimbreSounding;
 
-    internal QTimbre(LEditor editor, LPhonologyPort phonology, LDisplay display, LSounding sounding)
+    internal QTimbre(LEditor editor, LPhonologyPort phonology, LDisplay display, CSounding sounding)
     {
         ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(phonology);
@@ -50,7 +50,7 @@ public sealed class QTimbre
 
     public bool QTimbreParadigmPending => _qTimbreDisplay.LDisplayParadigmCheck(QTimbreEntry);
 
-    public string QTimbreParadigmLanguage => _qTimbreSounding.LSoundingLanguageRead(QTimbreEntry);
+    public string QTimbreParadigmLanguage => _qTimbreSounding.CSoundingLanguageRead();
 
     private string QTimbreLanguage => _qTimbreEditor.LEditorLanguage;
 
@@ -58,53 +58,51 @@ public sealed class QTimbre
 
     public IReadOnlyList<CFanqieGroup> QTimbreFanqieRead()
     {
-        return _qTimbreSounding.LSoundingFanqieRead(QTimbreEntry);
+        return _qTimbreSounding.CSoundingFanqieRead();
     }
 
     public string QTimbreReadingRead(string headword)
     {
-        return _qTimbreSounding.LSoundingReadingRead(QTimbreEntry, headword);
+        return _qTimbreSounding.CSoundingReadingRead(headword);
     }
 
     public bool QTimbreAnchorCheck(string headword)
     {
-        return _qTimbreSounding.LSoundingAnchorCheck(_qTimbreSounding.LSoundingAnchorRead(QTimbreEntry), headword);
+        return _qTimbreSounding.CSoundingAnchorCheck(headword);
     }
 
     public string QTimbreAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)
     {
-        return _qTimbreSounding.LSoundingAnchorFormat(
-            _qTimbreSounding.LSoundingAnchorRead(QTimbreEntry), anchors, headword, separator);
+        return _qTimbreSounding.CSoundingAnchorFormat(anchors, headword, separator);
     }
 
     public IReadOnlyList<CAnchorRow> QTimbreAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)
     {
-        return _qTimbreSounding.LSoundingAnchorScan(
-            _qTimbreSounding.LSoundingAnchorRead(QTimbreEntry), anchors, QTimbreLanguage, reflex, tone);
+        return _qTimbreSounding.CSoundingAnchorScan(anchors, reflex, tone);
     }
 
     public void QTimbreFanqieRebuild()
     {
-        _qTimbreSounding.LSoundingFanqieRebuild(QTimbreEntry);
+        _qTimbreSounding.CSoundingFanqieResolve();
     }
 
     public void QTimbreFanqieSet(long fanqieId, int rank)
     {
-        _qTimbreSounding.LSoundingFanqieSet(QTimbreEntry, fanqieId, rank);
+        _qTimbreSounding.CSoundingFanqieSet(fanqieId, rank);
     }
 
     public IReadOnlyList<CScriptGroup> QTimbreScriptRead()
     {
-        return _qTimbreSounding.LSoundingScriptRead(QTimbreEntry);
+        return _qTimbreSounding.CSoundingScriptRead();
     }
 
     public void QTimbreScriptRebuild()
     {
-        _qTimbreSounding.LSoundingScriptRebuild(QTimbreEntry);
+        _qTimbreSounding.CSoundingScriptResolve();
     }
 
     public IReadOnlyList<CParadigmSlot> QTimbreParadigmRead()
     {
-        return _qTimbreSounding.LSoundingParadigmRead(QTimbreEntry);
+        return _qTimbreSounding.CSoundingParadigmRead();
     }
 }

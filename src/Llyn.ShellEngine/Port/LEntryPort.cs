@@ -29,7 +29,7 @@ public interface LEntryPort
 
     void LEngineGraspSave(long entryId, int grasp);
 
-    IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId);
+    LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once);
 
     string LEngineEpithetRead(long entryId);
 

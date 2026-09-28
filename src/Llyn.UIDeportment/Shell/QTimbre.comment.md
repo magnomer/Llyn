@@ -4,7 +4,8 @@
 
 The sound facts of the entry an editor holds, and the sound-sheet reads and writes over its stored id.
 The pack facts come from `LEditorLanguage`, and the waiting sections from the editor's display.
-The editor builds it over itself, its display and its sound sheet, so it keeps no copy.
+The editor builds it over itself, its display and the Conduct sound sheet, so it keeps no copy.
+Its sheet reads and writes only forward to `CSounding` until their callers call the sheet directly.
 
 ## `public bool QTimbreRespelled`
 

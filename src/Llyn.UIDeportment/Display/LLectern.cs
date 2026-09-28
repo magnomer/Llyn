@@ -359,9 +359,8 @@ public sealed class LLectern
             _lLecternChip,
             _lLecternName,
             _lLecternBand,
-            LSounding.LSoundingFrequencyRead(
-                _lLecternDisplay.LDisplayFrequencyRead(_lLecternDisplay.LDisplayChosen),
-                QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
+            _lLecternDisplay.LDisplayFrequencyRead(
+                _lLecternDisplay.LDisplayChosen, QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
     }
 
     private void LLecternEntryUpdate()

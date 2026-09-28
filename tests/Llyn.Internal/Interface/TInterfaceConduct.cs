@@ -25,8 +25,6 @@ internal static class TInterfaceConduct
         LDisplaySound.LDisplayFoldScan(
             rules.Select(static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded)).ToList());
 
-    internal static int TDisplayBandResolve(IReadOnlyList<LFrequency> rows) => LDisplay.LDisplayBandResolve(rows);
-
     internal static string TDisplayBandRead(int count) => LDisplay.LDisplayBandRead(count, string.Empty);
 
     internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
@@ -39,8 +37,8 @@ internal static class TInterfaceConduct
     internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
         sound.LDisplayReflexRead();
 
-    internal static string TDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once) =>
-        LDisplay.LDisplaySourceFormat(rows, once);
+    internal static CFrequency? TDisplayFrequencyRead(this LDisplay display, long? entry, string once) =>
+        display.LDisplayFrequencyRead(entry, once);
 
     internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) =>
         CSCustoms.CSCustomsCardScan(cards, card => card.LCardDraftChild);
@@ -184,6 +182,9 @@ internal static class TInterfaceConduct
 
     internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
         desk, new LPhonologyOutlet(engine));
+
+    internal static CSounding TSoundingCreate(
+        CDesk desk, LPhonologyPort phonology, LDraftPort drafts, CEnvoy envoy) => new(desk, phonology, drafts, envoy);
 
     internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
 

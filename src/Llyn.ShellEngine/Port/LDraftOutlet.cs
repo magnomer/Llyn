@@ -66,8 +66,14 @@ public sealed class LDraftOutlet : LDraftPort
         _lDraftOutletEngine.LEngineReflex.LEngineAnchorMatch(one, other);
 
     public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string language, string reflex, string tone) =>
-        _lDraftOutletEngine.LEngineReflex.LEngineAnchorScan(rows, anchors, language, reflex, tone);
+        long entryId, IReadOnlyList<long> anchors, string language, string reflex, string tone) =>
+        _lDraftOutletEngine.LEngineReflex.LEngineAnchorScan(entryId, anchors, language, reflex, tone);
+
+    public bool LEngineAnchorCheck(long entryId, string headword) =>
+        _lDraftOutletEngine.LEngineReflex.LEngineAnchorCheck(entryId, headword);
+
+    public string LEngineAnchorFormat(long entryId, IReadOnlyList<long> anchors, string headword, string separator) =>
+        _lDraftOutletEngine.LEngineReflex.LEngineAnchorFormat(entryId, anchors, headword, separator);
 
     public bool LEngineAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword) =>
         _lDraftOutletEngine.LEngineReflex.LEngineAnchorCheck(rows, headword);

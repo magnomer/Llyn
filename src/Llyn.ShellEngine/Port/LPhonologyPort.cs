@@ -14,6 +14,8 @@ public interface LPhonologyPort
 
     IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId);
 
+    IReadOnlyList<LFanqieGroup> LEngineFanqieRead(long entryId);
+
     string LEngineReadingRead(long entryId, string headword);
 
     void LEngineFanqieRebuild(long entryId);
@@ -27,6 +29,8 @@ public interface LPhonologyPort
     void LEngineScriptRebuild(long entryId);
 
     IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId);
+
+    IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId);
 
     bool LEngineStyleCheck(string language);
 
@@ -42,7 +46,9 @@ public interface LPhonologyPort
 
     void LEngineInflectionStart(long entryId);
 
-    IReadOnlyList<LParadigmSlot> LEngineParadigmShow(long entryId);
+    IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId);
+
+    string LEngineLanguageResolve(long entryId);
 
     LDiwei? LEngineDiweiFind(string language, string kind, string key);
 

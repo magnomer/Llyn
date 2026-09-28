@@ -175,9 +175,9 @@ Asks the engine to fetch the shown entry's script images.
 
 The shown entry's script rows, as the engine divides them.
 
-## `public IReadOnlyList<LParadigmSlot> LDisplayParadigmRead()`
+## `public IReadOnlyList<LParadigmRow> LDisplayParadigmRead()`
 
-The shown entry's paradigm slots, held so the font verdict reads the same slots.
+The shown entry's paradigm rows, joined by the engine and held so the font verdict reads the same rows.
 
 ## `public void LDisplayInflectionStart()`
 
@@ -185,7 +185,7 @@ Asks the engine to fetch the shown entry's inflections, only while morphology is
 
 ## `public string LDisplayLanguageRead()`
 
-The language of the first slot read, or empty when there were none.
+The language of the first row's first slot, or empty when there were none.
 
 ## `public bool LDisplayMorphologyRead()`
 

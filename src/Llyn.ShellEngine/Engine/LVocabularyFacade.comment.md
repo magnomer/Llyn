@@ -15,9 +15,13 @@ Stores the engine and its gate, which the facade uses for its vocabulary operati
 Every language pack's vocabulary written into the workspace, through the clerk.
 It runs whenever the engine binds to a workspace, under the constructor or the rig apply.
 
-## `public IReadOnlyList<LParadigmSlot> LEngineParadigmShow(long entryId)`
+## `public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)`
 
-The clerk's display read under the gate, the regular forms dropped.
+The entry's paradigm slots joined into the rows a paradigm box shows.
+
+## `public string LEngineLanguageResolve(long entryId)`
+
+The language the entry's paradigm is written in, or empty when it has no slots.
 
 ## `public bool LEngineInflectionCheck(long entryId)`
 

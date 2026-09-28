@@ -24,7 +24,7 @@ internal static partial class TInterface
             .SingleOrDefault(row => string.Equals(row.LSpeechValueName, name, StringComparison.Ordinal));
 
     internal static LMorphology TParadigmMorphologyRead(this LEngine engine, long entryId, string name) =>
-        engine.LEngineVocabulary.LEngineParadigmShow(entryId)
+        engine.TEngineParadigmShow(entryId)
             .First(slot => string.Equals(slot.LParadigmSlotMorphology.LMorphologyName, name, StringComparison.Ordinal))
             .LParadigmSlotMorphology;
 
@@ -84,8 +84,13 @@ internal static partial class TInterface
     internal static IReadOnlyList<LUsage> TEngineIncomingRead(this LEngine engine, long entryId) =>
         engine.LEngineCard.LEngineIncomingRead(entryId);
 
-    internal static IReadOnlyList<LParadigmSlot> TEngineParadigmShow(this LEngine engine, long entryId) =>
-        engine.LEngineVocabulary.LEngineParadigmShow(entryId);
+    internal static IReadOnlyList<LParadigmSlot> TEngineParadigmShow(this LEngine engine, long entryId)
+    {
+        lock (engine.LEngineGate)
+        {
+            return engine.LEngineStaffHeld.LEngineStaffParadigm.LParadigmClerkShow(entryId);
+        }
+    }
 
     internal static bool TEngineParadigmMatch(LParadigm paradigm, string headword, string form) =>
         LParadigmClerk.LParadigmClerkMatch(paradigm, headword, form);

@@ -62,11 +62,19 @@ internal sealed class LVocabularyFacade
         LVocabularyFacadeStaff.LEngineStaffVocabulary.LLanguageImport();
     }
 
-    public IReadOnlyList<LParadigmSlot> LEngineParadigmShow(long entryId)
+    public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)
     {
         lock (_lVocabularyFacadeGate)
         {
-            return LVocabularyFacadeStaff.LEngineStaffParadigm.LParadigmClerkShow(entryId);
+            return LVocabularyFacadeStaff.LEngineStaffParadigm.LParadigmRowRead(entryId);
+        }
+    }
+
+    public string LEngineLanguageResolve(long entryId)
+    {
+        lock (_lVocabularyFacadeGate)
+        {
+            return LVocabularyFacadeStaff.LEngineStaffParadigm.LParadigmLanguageRead(entryId);
         }
     }
 

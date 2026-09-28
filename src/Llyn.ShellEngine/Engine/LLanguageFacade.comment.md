@@ -116,6 +116,10 @@ Drops the stored images of the entry's characters and fetches them again.
 
 The images grouped by style.
 
+## `public IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId)`
+
+The images grouped by style, after starting the fetch of every character still missing.
+
 ## `public bool LEngineScriptCheck(long entryId)`
 
 Whether a fetch is pending for any character of the entry.

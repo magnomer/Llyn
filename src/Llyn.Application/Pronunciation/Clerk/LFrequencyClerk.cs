@@ -45,6 +45,11 @@ public sealed class LFrequencyClerk
         _lFrequencyClerkBulletin = raise;
     }
 
+    public LFrequencyGauge? LFrequencyClerkResolve(long entryId, string once)
+    {
+        return LFrequencyGauge.LFrequencyGaugeResolve(LFrequencyClerkRead(entryId), once);
+    }
+
     public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)
     {
         LEntry? entry;

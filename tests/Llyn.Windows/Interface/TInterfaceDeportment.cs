@@ -17,7 +17,7 @@ namespace Llyn.Tests;
 internal static class TInterfaceDeportment
 {
     internal static LEditor TEditorCreate(LEngine engine) => new(
-        TInterfaceConduct.TEditorCreate(engine), new LPhonologyOutlet(engine), new LDraftOutlet(engine));
+        TInterfaceConduct.TEditorCreate(engine), new LPhonologyOutlet(engine));
 
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) =>
         editor.LEditorStudio.TEditorVistaRestore(vista);
@@ -166,8 +166,7 @@ internal static class TInterfaceDeportment
         LEditor editor = new(
             TInterfaceConduct.TEditorCreate(
                 drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()),
-            phonology,
-            drafts);
+            phonology);
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),
@@ -198,12 +197,6 @@ internal static class TInterfaceDeportment
         panel.LPhonologyRowsRead();
 
     internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
-
-    internal static IReadOnlyList<CParadigmSlot> TSoundingParadigmRead(IReadOnlyList<LParadigmSlot> slots) =>
-        LSounding.LSoundingParadigmRead(slots);
-
-    internal static CFrequency? TSoundingFrequencyRead(IReadOnlyList<LFrequency> rows, string once) =>
-        LSounding.LSoundingFrequencyRead(rows, once);
 
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.CDeskChangeCheck();
 
@@ -291,8 +284,7 @@ internal static class TInterfaceDeportment
         LEditor editor = new(
             TInterfaceConduct.TEditorCreate(
                 drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()),
-            phonology,
-            drafts);
+            phonology);
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),

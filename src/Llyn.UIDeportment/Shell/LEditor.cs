@@ -7,18 +7,16 @@ namespace Llyn.UIDeportment;
 
 public sealed class LEditor
 {
-    internal LEditor(CEditor studio, LPhonologyPort phonology, LDraftPort drafts)
+    internal LEditor(CEditor studio, LPhonologyPort phonology)
     {
         ArgumentNullException.ThrowIfNull(studio);
         ArgumentNullException.ThrowIfNull(phonology);
-        ArgumentNullException.ThrowIfNull(drafts);
 
         LEditorStudio = studio;
         LEditorClip = new LClip(studio.CEditorDesk);
         LEditorNotation = new LNotation(studio.CEditorDesk);
-        LEditorSounding = new LSounding(phonology, drafts);
         LEditorEsteem = new QEsteem(studio.CEditorDesk, studio.CEditorDisplay);
-        LEditorTimbre = new QTimbre(this, phonology, studio.CEditorDisplay, LEditorSounding);
+        LEditorTimbre = new QTimbre(this, phonology, studio.CEditorDisplay, studio.CEditorSounding);
     }
 
     public CEditor LEditorStudio { get; }
@@ -26,8 +24,6 @@ public sealed class LEditor
     public LClip LEditorClip { get; }
 
     public LNotation LEditorNotation { get; }
-
-    public LSounding LEditorSounding { get; }
 
     public QEsteem LEditorEsteem { get; }
 

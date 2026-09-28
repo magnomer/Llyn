@@ -16,18 +16,6 @@ No reflex rule folds no language.
 
 Setting the fold to the value it already holds leaves it there, so a toggle echo changes nothing.
 
-## `public void DisplayBandResolve_UnbandedRows_ReturnsZero()`
-
-Rows that carry no band resolve to the unknown band.
-
-## `public void DisplayBandResolve_BandedRow_ReturnsItsRank()`
-
-The first row that carries a band resolves to that band's rank.
-
-## `public void DisplayBandResolve_UnknownBandFirst_ReturnsNextRank()`
-
-A first row whose band is not a ladder name is passed over for the next row's band.
-
 ## `public void DisplayBandRead_TopRank_ReturnsCore()`
 
 The highest rank reads as the core band.
@@ -45,10 +33,13 @@ Clearing a shown draft drops both the draft and its entry.
 The stored reflexes loaded for the shown entry win over the shown draft's empty ones.
 A refused draft load stays untested, since no seam fails the entry load.
 
-## `public void DisplaySourceFormat_OnceInterval_FormatsInterval()`
+## `public void DisplayFrequencyRead_NoEntry_ReturnsNone()`
 
-A row with a once interval shows the interval in the given pattern, and a plain row shows its figure.
-Each source takes its own line.
+A fresh draft has no entry, so no frequency chip shows.
+
+## `public void DisplayFrequencyRead_EntryWithoutFrequency_ReturnsNone()`
+
+A stored entry no source has ranked shows no chip, and the read asks the engine to fetch one.
 
 ## `private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
 

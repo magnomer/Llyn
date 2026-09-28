@@ -27,6 +27,14 @@ So a noun whose plural is `cats` shows no plural row, while `mice` keeps one.
 A paradigm stating no rules keeps every row, which is why verb forms always show.
 The flag was derived when the form was stored, so showing runs no rule.
 
+## `public IReadOnlyList<LParadigmRow> LParadigmRowRead(long entryId)`
+
+The display slots of an entry joined into the rows a paradigm box shows.
+
+## `public string LParadigmLanguageRead(long entryId)`
+
+The language the entry's display slots are written in, or empty when it has none.
+
 ## `public void LParadigmClerkUpdate(long entryId)`
 
 Derives the regular flag of every stored form of the entry `entryId` names, or does nothing for a missing entry.

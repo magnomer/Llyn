@@ -338,6 +338,9 @@ internal static partial class TInterface
     internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
         new LFrequency(source, raw, band);
 
+    internal static LFrequencyGauge? TFrequencyGaugeResolve(IReadOnlyList<LFrequency> rows, string once) =>
+        LFrequencyGauge.LFrequencyGaugeResolve(rows, once);
+
     internal static LFrequency TFrequencyIntervalCreate(string source, string raw, long once) =>
         new LFrequency(source, raw, null, once);
 

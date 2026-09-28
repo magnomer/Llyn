@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -270,43 +269,24 @@ public sealed class LDisplay
         return named;
     }
 
-    public IReadOnlyList<LFrequency> LDisplayFrequencyRead(long? entry)
+    public CFrequency? LDisplayFrequencyRead(long? entry, string once)
     {
         if (entry is not long id)
         {
-            return [];
+            return null;
         }
 
+        LFrequencyGauge? gauge;
         try
         {
-            return _lEntryPort.LEngineFrequencyRead(id);
+            gauge = _lEntryPort.LEngineFrequencyResolve(id, once);
         }
         catch (Exception)
         {
-            return [];
-        }
-    }
-
-    public static bool LDisplayFrequencyCheck(IReadOnlyList<LFrequency> rows)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        return rows.Count > 0;
-    }
-
-    public static int LDisplayBandResolve(IReadOnlyList<LFrequency> rows)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        foreach (LFrequency row in rows)
-        {
-            if (row.LFrequencyRank > 0)
-            {
-                return row.LFrequencyRank;
-            }
+            return null;
         }
 
-        return 0;
+        return gauge is null ? null : new CFrequency(gauge.LFrequencyGaugeBand, gauge.LFrequencyGaugeSource);
     }
 
     public static int LDisplayBandLimit => LFrequency.LFrequencyScale.Count;
@@ -319,27 +299,6 @@ public sealed class LDisplay
     public static string LDisplayBandRead(int count, string prefix)
     {
         return prefix + (count == 0 ? LDisplayUnknown : LFrequency.LFrequencyScale[count - 1]);
-    }
-
-    public static string LDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once)
-    {
-        ArgumentNullException.ThrowIfNull(rows);
-
-        StringBuilder lines = new();
-        foreach (LFrequency row in rows)
-        {
-            if (lines.Length > 0)
-            {
-                lines.Append('\n');
-            }
-
-            string figure = row.LFrequencyOnce is long interval
-                ? string.Format(CultureInfo.CurrentCulture, once, interval.ToString("N0", CultureInfo.CurrentCulture))
-                : row.LFrequencyFigure;
-            lines.Append(row.LFrequencySource).Append(": ").Append(figure);
-        }
-
-        return lines.ToString();
     }
 
     public IReadOnlyList<LUsage> LDisplayIncomingRead()

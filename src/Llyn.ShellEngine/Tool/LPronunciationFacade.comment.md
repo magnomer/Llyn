@@ -83,9 +83,10 @@ The scheme names of a language.
 
 The lookup of `word` under one scheme, replayed from the trove when the session already asked.
 
-## `public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)`
+## `public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once)`
 
-The stored frequency rows of an entry, regraded, a fetch started when there are none.
+The entry's frequency gathered into one answer, or null when it has none.
+The `once` text words a word interval.
 
 ## `internal void LEngineFrequencyStart(long entryId)`
 

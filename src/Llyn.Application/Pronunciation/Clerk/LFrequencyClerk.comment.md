@@ -12,6 +12,11 @@ Reads the entry and frequency ports and the source factory out of `rig`.
 `settings` is read at fetch time, so a setting turned off mid-fetch discards the answer.
 `raise` publishes the bulletin when a fetch lands.
 
+## `public LFrequencyGauge? LFrequencyClerkResolve(long entryId, string once)`
+
+The entry's regraded rows gathered into the one answer a frequency chip shows.
+The `once` text words a word interval.
+
 ## `public IReadOnlyList<LFrequency> LFrequencyClerkRead(long entryId)`
 
 The stored rows of an entry, regraded under the current pack.

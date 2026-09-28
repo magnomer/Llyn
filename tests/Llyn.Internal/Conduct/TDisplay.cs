@@ -1,4 +1,3 @@
-using System.Globalization;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -32,42 +31,6 @@ public sealed class TDisplay
         sound.TDisplayFoldSet(true);
 
         Assert.True(sound.LDisplayFoldOpened);
-    }
-
-    [Fact]
-    public void DisplayBandResolve_UnbandedRows_ReturnsZero()
-    {
-        LFrequency[] rows =
-        [
-            TInterface.TFrequencyCreate("one", "12", null),
-            TInterface.TFrequencyCreate("two", "3", null),
-        ];
-
-        Assert.Equal(0, TInterfaceConduct.TDisplayBandResolve(rows));
-    }
-
-    [Fact]
-    public void DisplayBandResolve_BandedRow_ReturnsItsRank()
-    {
-        LFrequency[] rows =
-        [
-            TInterface.TFrequencyCreate("one", "12", null),
-            TInterface.TFrequencyCreate("two", "3", "Everyday"),
-        ];
-
-        Assert.Equal(3, TInterfaceConduct.TDisplayBandResolve(rows));
-    }
-
-    [Fact]
-    public void DisplayBandResolve_UnknownBandFirst_ReturnsNextRank()
-    {
-        LFrequency[] rows =
-        [
-            TInterface.TFrequencyCreate("one", "12", "Nowhere"),
-            TInterface.TFrequencyCreate("two", "3", "Core"),
-        ];
-
-        Assert.Equal(4, TInterfaceConduct.TDisplayBandResolve(rows));
     }
 
     [Fact]
@@ -121,19 +84,24 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void DisplaySourceFormat_OnceInterval_FormatsInterval()
+    public void DisplayFrequencyRead_NoEntry_ReturnsNone()
     {
-        LFrequency[] rows =
-        [
-            TInterface.TFrequencyIntervalCreate("Corpus", "0.5", 12000),
-            TInterface.TFrequencyCreate("List", "7", null),
-        ];
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
 
-        string text = TInterfaceConduct.TDisplaySourceFormat(rows, "once in {0} words");
+        Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(null, "once in {0} words"));
+    }
 
-        Assert.Equal(
-            "Corpus: once in " + 12000.ToString("N0", CultureInfo.CurrentCulture) + " words\nList: 7",
-            text);
+    [Fact]
+    public void DisplayFrequencyRead_EntryWithoutFrequency_ReturnsNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long id = TExemplar.TExemplarSave(engine, TDisplayDraftCreate([]))[0];
+        CEditor editor = TInterfaceConduct.TEditorCreate(engine);
+
+        Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(id, "once in {0} words"));
     }
 
     private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes) =>

@@ -49,11 +49,6 @@ public sealed class QEsteem
 
     public CFrequency? QEsteemFrequencyRead(string once)
     {
-        if (QEsteemEntry is null)
-        {
-            return null;
-        }
-
-        return LSounding.LSoundingFrequencyRead(_qEsteemDisplay.LDisplayFrequencyRead(QEsteemEntry), once);
+        return _qEsteemDisplay.LDisplayFrequencyRead(QEsteemEntry, once);
     }
 }

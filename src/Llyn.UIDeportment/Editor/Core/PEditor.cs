@@ -156,8 +156,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _lEditor.LEditorStudio.CEditorDesk.CDeskFailed += host.PWindowFailureShow;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PEditorStateUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
-        _lEditor.LEditorSounding.LSoundingChanged += PEditorFanqieUpdate;
-        _lEditor.LEditorSounding.LSoundingFailed += host.PWindowFailureShow;
+        _lEditor.LEditorStudio.CEditorSounding.CSoundingChanged += PEditorFanqieUpdate;
         _lEditor.LEditorStudio.CEditorDisplay.LDisplayFailed += host.PWindowFailureShow;
         _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
         _lEditor.LEditorClip.LClipRecordingAdded += PClipRecordingHandle;

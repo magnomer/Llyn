@@ -279,9 +279,9 @@ internal sealed class LPronunciationFacade
             : LEngineTroveSave(scan, session, word, language, scheme);
     }
 
-    public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)
+    public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once)
     {
-        return LPronunciationFacadeStaff.LEngineStaffFrequency.LFrequencyClerkRead(entryId);
+        return LPronunciationFacadeStaff.LEngineStaffFrequency.LFrequencyClerkResolve(entryId, once);
     }
 
     internal void LEngineFrequencyStart(long entryId)

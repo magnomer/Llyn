@@ -13,6 +13,12 @@ Marks the held rows in place when the fresh list matches them pair by pair, else
 The match and the mark are the item's own, so this helper never reads a logic value.
 No row is moved or overwritten in place, because the walker treats that as reordering a store.
 
+## `public static IReadOnlyList<LSpliceItem> LSpliceBuild<LSpliceRow, LSpliceItem>(IReadOnlyList<LSpliceRow> rows, Func<LSpliceRow, LSpliceItem> make)`
+
+Builds one driver item per row, in order, such as a list item from a Conduct shape.
+It holds no rule, so a driver keeps it for its own items.
+A map from an engine record to a Conduct shape belongs in Conduct, which maps with its own `Select`.
+
 ## `private static bool LSpliceMatchCheck<LSpliceRow>(ObservableCollection<LSpliceRow> held, IReadOnlyList<LSpliceRow> fresh, Func<LSpliceRow, LSpliceRow, bool> match)`
 
 Whether the two lists are the same length and match at every place.

@@ -81,6 +81,16 @@ public sealed class LParadigmClerk
         return shown;
     }
 
+    public IReadOnlyList<LParadigmRow> LParadigmRowRead(long entryId)
+    {
+        return LParadigmRow.LParadigmRowScan(LParadigmClerkShow(entryId));
+    }
+
+    public string LParadigmLanguageRead(long entryId)
+    {
+        return LParadigm.LParadigmLanguageRead(LParadigmClerkShow(entryId));
+    }
+
     public void LParadigmClerkUpdate(long entryId)
     {
         LEntry? entry = _lParadigmClerkEntries.LEntryRead(entryId);

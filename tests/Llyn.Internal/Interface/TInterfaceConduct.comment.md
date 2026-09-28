@@ -58,6 +58,11 @@ Builds one Latin entry row with the given id, epithet and chosen mark.
 
 Builds the card gates over `desk` and real outlets on `engine`, as the editor does.
 
+## `internal static CSounding TSoundingCreate(`
+
+Builds the editor's sound sheet over a real desk and ports a test may fake.
+The fake ports let a test refuse an engine call and watch the envoy.
+
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 
 Builds the sentence gates over `desk`, a real phonology outlet and an atelier's catalog on `engine`.

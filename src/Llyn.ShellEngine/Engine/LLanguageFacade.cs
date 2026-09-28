@@ -204,6 +204,12 @@ internal sealed class LLanguageFacade
         return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkDivide(entryId);
     }
 
+    public IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId)
+    {
+        LEngineScriptStart(entryId);
+        return LEngineScriptDivide(entryId);
+    }
+
     public bool LEngineScriptCheck(long entryId)
     {
         return LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkCheck(entryId);

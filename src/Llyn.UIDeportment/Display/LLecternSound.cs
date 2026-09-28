@@ -322,7 +322,7 @@ public sealed class LLecternSound
             CFontRole.CFontRoleGlyph,
             _lLecternSoundFanqie);
         _lLecternSoundRime(
-            LSounding.LSoundingFanqieRead(groups),
+            CSounding.CSoundingFanqieRead(groups),
             _lLecternSoundDisplay.LDisplayFanqieCheck(_lLecternSoundDisplay.LDisplayEntry));
         _lLecternSoundReading.Text = _lLecternSoundDisplay.LDisplayReadingRead();
     }
@@ -335,14 +335,14 @@ public sealed class LLecternSound
             CFontRole.CFontRoleGlyph,
             _lLecternSoundScript);
         _lLecternSoundWriting(
-            LSounding.LSoundingScriptRead(_lLecternSoundDisplay.LDisplayScriptDivide()),
+            CSounding.CSoundingScriptRead(_lLecternSoundDisplay.LDisplayScriptDivide()),
             _lLecternSoundDisplay.LDisplayScriptCheck(_lLecternSoundDisplay.LDisplayEntry));
     }
 
     private void LLecternParadigmShow()
     {
         IReadOnlyList<CParadigmSlot> slots =
-            LSounding.LSoundingParadigmRead(_lLecternSoundDisplay.LDisplayParadigmRead());
+            CSounding.CSoundingParadigmRead(_lLecternSoundDisplay.LDisplayParadigmRead());
         _lLecternSoundDisplay.LDisplayInflectionStart();
         LFontFace.LFontRefine(
             _lLecternSoundAtelier,

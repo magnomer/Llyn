@@ -39,6 +39,11 @@ The card gates over the editor's desk.
 
 The sentence gates over the editor's desk.
 
+## `public CSounding CEditorSounding { get; }`
+
+The sound sheet of the entry the editor's desk holds.
+It shares the editor's envoy, so a refused rebuild shows the same notice as the desk's own failures.
+
 ## `public bool CEditorOwned`
 
 Whether this editor is the input tab's, which alone shows the command rail.

@@ -115,21 +115,12 @@ A missing or unreadable stamp answers empty.
 The shown draft's parts of speech as the names a reader reads.
 The draft keeps the stored value beside the name, and the page shows only the name.
 
-## `public IReadOnlyList<LFrequency> LDisplayFrequencyRead(long? entry)`
+## `public CFrequency? LDisplayFrequencyRead(long? entry, string once)`
 
-The entry's frequency rows, since the draft does not carry them.
-It answers empty when no entry is given or the read fails.
+The entry's frequency chip, since the draft does not carry the frequency.
+The engine gathers the rows and words them, and this read only reshapes the answer.
+It answers null when no entry is given, the entry has no frequency, or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
-
-## `public static bool LDisplayFrequencyCheck(IReadOnlyList<LFrequency> rows)`
-
-Whether an entry has any frequency to show, true when at least one source answered.
-
-## `public static int LDisplayBandResolve(IReadOnlyList<LFrequency> rows)`
-
-The star count of the first ladder band in pack order, the limit for core, one for rare.
-A band that is not a ladder name is passed over, so a later row can still name the band.
-Zero when no row carries a ladder band.
 
 ## `public static int LDisplayBandLimit`
 
@@ -144,14 +135,6 @@ The stars past `count` in a full row, never below zero.
 The ladder name at a star count behind `prefix`, or the unknown name at zero.
 The ladder is `LFrequency.LFrequencyScale`, so the engine and the chip read one list.
 The chip passes the localization prefix for its name and the theme prefix for its brush.
-
-## `public static string LDisplaySourceFormat(IReadOnlyList<LFrequency> rows, string once)`
-
-One line per row, each naming its source, so the band is never the only thing said.
-A row with a word interval prints it through the `once` pattern as a round number.
-The line then reads once every 1,300 words.
-A row without one prints its unit before the raw figure when the pack names one, as CantoDict's Level does.
-A row with neither, such as a Longman list mark or an HSK level, prints its raw answer.
 
 ## `public bool LDisplayFanqieCheck(long? id)`
 

@@ -356,7 +356,7 @@ internal static partial class TInterface
     }
 
     internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
-        engine.LEnginePronunciation.LEngineFrequencyRead(entryId);
+        engine.LEngineStaffHeld.LEngineStaffFrequency.LFrequencyClerkRead(entryId);
 
     internal static void TEngineFrequencyStart(this LEngine engine, long entryId)
     {
