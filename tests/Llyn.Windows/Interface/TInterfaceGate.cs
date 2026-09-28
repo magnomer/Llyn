@@ -8,9 +8,6 @@ internal static class TInterfaceGate
 {
     internal static void TQuillAuthorSet(this CDesk desk, string name) => desk.CDeskQuill!.LQuillAuthorSet(name);
 
-    internal static CSituationDraft? TAtlasSituationRead(LSituation? situation) =>
-        LAtlas.LAtlasSituationRead(situation);
-
     internal static IReadOnlyList<CStem> TXieshengGroveBuild(IReadOnlyList<LStem> rows) =>
         LXiesheng.LXieshengGroveBuild(rows);
 

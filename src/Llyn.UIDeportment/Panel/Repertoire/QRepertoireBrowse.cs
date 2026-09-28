@@ -21,18 +21,18 @@ internal sealed partial class QRepertoire
 
     private void QInquestHandle(object sender, TextChangedEventArgs e)
     {
-        _lRepertoire.LRepertoireAtlas.LAtlasInquestSet(QInquest.Text ?? string.Empty);
+        _lRepertoire.LRepertoireAtlas.CAtlasQuerySet(QInquest.Text ?? string.Empty);
     }
 
     private void QTierHandle(object sender, RoutedEventArgs e)
     {
         QTierDropper.IsChecked = false;
-        _lRepertoire.LRepertoireAtlas.LAtlasTierSet(QChoice.QChoiceOrderRead(sender));
+        _lRepertoire.LRepertoireAtlas.CAtlasOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     internal async void QRepertoireVistaRestore()
     {
-        CPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
+        CPanel atlas = _lRepertoire.LRepertoireAtlas.CAtlasPanel;
         QRepertoireObserverAttach();
         QRepertoireDisplay.PDisplayObserverAttach();
         QRepertoireEditor.PEditorVistaRestore();
@@ -51,7 +51,7 @@ internal sealed partial class QRepertoire
         await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier);
 
         QMeshBuild();
-        _lRepertoire.LRepertoireAtlas.LAtlasInquestSet(QInquest.Text ?? string.Empty);
+        _lRepertoire.LRepertoireAtlas.CAtlasQuerySet(QInquest.Text ?? string.Empty);
         _lRepertoire.LRepertoireOccurrence.LOccurrenceSortieSet(QSortie.Text);
         atlas.CPanelRowsUpdate();
     }
@@ -59,7 +59,7 @@ internal sealed partial class QRepertoire
     private void QRepertoireObserverAttach()
     {
         UserControl surface = _qRepertoireSurface;
-        CPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
+        CPanel atlas = _lRepertoire.LRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
         Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, atlas.CPanelRowsUpdate);
         atlas.CPanelObserverAttach(CSubject.CSubjectVista, rows);
@@ -79,15 +79,15 @@ internal sealed partial class QRepertoire
 
     private void QMeshRestore()
     {
-        QMeshMark.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireAtlas.LAtlasFiltered);
+        QMeshMark.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireAtlas.CAtlasFiltered);
     }
 
     private void QMeshBuild()
     {
         QChoice.QChoiceFilterBuild(
             QMeshList,
-            _lRepertoire.LRepertoireAtlas.LAtlasLanguageRead(),
-            _lRepertoire.LRepertoireAtlas.LAtlasPanel.CPanelFilter,
+            _lRepertoire.LRepertoireAtlas.CAtlasLanguageRead(),
+            _lRepertoire.LRepertoireAtlas.CAtlasPanel.CPanelFilter,
             QMeshHandle);
     }
 
@@ -105,7 +105,7 @@ internal sealed partial class QRepertoire
 
     private void QMeshHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireAtlas.LAtlasMeshSet(QChoice.QChoiceFilterRead(sender));
+        _lRepertoire.LRepertoireAtlas.CAtlasFilterSet(QChoice.QChoiceFilterRead(sender));
         QMeshRestore();
     }
 
@@ -114,10 +114,10 @@ internal sealed partial class QRepertoire
         IReadOnlyList<CCatalogSituation> read;
         try
         {
-            read = _lRepertoire.LRepertoireAtlas.LAtlasRowsRead(
+            read = _lRepertoire.LRepertoireAtlas.CAtlasRowsRead(
                 QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
                 QLocalizationCatalog.QLocalizationTextRead("Situation.Untitled"));
-            _qAtlasCount = _lRepertoire.LRepertoireAtlas.LAtlasUsageRead();
+            _qAtlasCount = _lRepertoire.LRepertoireAtlas.CAtlasUsageRead();
         }
         catch (Exception exception)
         {
@@ -137,7 +137,7 @@ internal sealed partial class QRepertoire
 
         QAtlasEmpty.Visibility = QLook.QLookVisibleRead(_qAtlasList.Count == 0);
 
-        QVignetteTally.Text = QRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.LAtlasChosen);
+        QVignetteTally.Text = QRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.CAtlasChosen);
         QScenarioTally.Text = QRepertoireTallyRead(QScenarioDesk.CDeskStoredRead());
         _lRepertoire.LRepertoireRowsApply(read);
     }
@@ -213,7 +213,7 @@ internal sealed partial class QRepertoire
 
     internal void QRepertoireScribeRestore(bool editing)
     {
-        _lRepertoire.LRepertoireAtlas.LAtlasPanel.CPanelScribeRestore(editing);
+        _lRepertoire.LRepertoireAtlas.CAtlasPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QRepertoireLeaveConfirm()
@@ -223,7 +223,7 @@ internal sealed partial class QRepertoire
 
     internal long QRepertoireVoyageRead()
     {
-        return _lRepertoire.LRepertoireAtlas.LAtlasPanel.CPanelChosenRead();
+        return _lRepertoire.LRepertoireAtlas.CAtlasPanel.CPanelChosenRead();
     }
 
     internal void QRepertoireVoyageShow(bool past, bool future)

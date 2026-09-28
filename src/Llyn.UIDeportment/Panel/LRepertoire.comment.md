@@ -3,7 +3,7 @@
 ## `public sealed class LRepertoire`
 
 The repertoire panel's deportment: the situation list, the occurrence list, the entry editor and the scenario desk.
-The situation list lives in the atlas, which holds the situation vista's panel state.
+The situation list is the Conduct atlas, which holds the situation vista's panel state.
 The occurrence list lives in the occurrence, whose rows follow the chosen Situation.
 The desk holds the situation tenure the scenario editor edits, under the `Situation` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
@@ -24,9 +24,10 @@ The draft session over the desk, which defers to the entry editor while it shows
 The views save, undo and redo through it, and a leave finishes through it.
 A stored Situation is shown again outside the scribe through `LRepertoireStoredShow`.
 
-## `public LAtlas LRepertoireAtlas { get; }`
+## `public CAtlas LRepertoireAtlas { get; }`
 
 The situation list, whose panel asks the desk whether the scenario holds unsaved changes.
+It is built over the atelier, so the repertoire hands it no port.
 
 ## `public event Action? LRepertoireChanged`
 
@@ -171,7 +172,7 @@ The save button, a tab leave and the window's close finish through it, and a row
 ## `public void LRepertoireDelete()`
 
 Deletes the chosen Situation, and does nothing on the occurrence side.
-A failure reads `Situation.DeleteFailed`, the delete key `LAtlas` hands its panel.
+A failure reads `Situation.DeleteFailed`, the delete key `CAtlas` hands its panel.
 
 ## `private void LRepertoireOccurrenceCreate()`
 

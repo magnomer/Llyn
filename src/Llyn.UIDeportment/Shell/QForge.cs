@@ -135,10 +135,10 @@ public sealed class QForge
     {
         return QForgeVistaAdd(
             new LRepertoire(
+                _qForgeAtelier,
                 _qForgeAtelier.CAtelierDraftPort,
                 _qForgeAtelier.CAtelierEntryPort,
                 _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
                 editor,
                 lectern,
                 shownSeam,

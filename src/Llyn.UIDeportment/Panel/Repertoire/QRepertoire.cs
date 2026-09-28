@@ -229,7 +229,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireDisplay.PDisplayAttach(host, lectern);
         QRepertoireEditor.PEditorAttach(host, editor, lectern);
 
-        CPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
+        CPanel atlas = _lRepertoire.LRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
         _lRepertoire.LRepertoireChanged += QRepertoireModeUpdate;
         _lRepertoire.LRepertoireScenarioChanged += QScenarioApply;
