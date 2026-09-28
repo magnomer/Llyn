@@ -58,11 +58,6 @@ The loaded window, reached by the bootstrap to show it and by panels as the owne
 The named panels are read through the window's name scope.
 A panel already moved to the veneer is pulled by its contract ID as a plain page.
 
-## `internal LWing PWindowWingCreate()`
-
-Builds one duplex wing over the atelier.
-The wing stays in the deportment, so the window builds it rather than the panel factory.
-
 ## `internal CEnvoy PWindowEnvoy { get; }`
 
 The window's answer to Conduct's user-question port, which the panels ask through.

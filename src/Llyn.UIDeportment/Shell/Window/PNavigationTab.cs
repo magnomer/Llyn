@@ -93,7 +93,7 @@ public partial class PWindow
             return false;
         }
 
-        _lVoyage.LVoyageRecord(tab, station);
+        _cVoyage.CVoyageStationAdd(tab, station);
         PVoyageUpdate();
         return true;
     }
@@ -281,21 +281,21 @@ public partial class PWindow
     internal void PVoyageRecord()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lVoyage.LVoyageRecord(tab, id);
+        _cVoyage.CVoyageStationAdd(tab, id);
         PVoyageUpdate();
     }
 
     internal void PVoyageRetreatRun()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lVoyage.LVoyageRetreat(tab, id, PNavigationArrivalShow);
+        _cVoyage.CVoyageUndo(tab, id, PNavigationArrivalShow);
         PVoyageUpdate();
     }
 
     internal void PVoyageAdvanceRun()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lVoyage.LVoyageAdvance(tab, id, PNavigationArrivalShow);
+        _cVoyage.CVoyageRedo(tab, id, PNavigationArrivalShow);
         PVoyageUpdate();
     }
 
@@ -307,11 +307,10 @@ public partial class PWindow
 
     private void PVoyageUpdate()
     {
-        bool past = _lVoyage.LVoyagePastCheck();
-        bool future = _lVoyage.LVoyageFutureCheck();
+        CVoyageState state = _cVoyage.CVoyageRead();
         foreach (LTab tab in _pNavigationTabs)
         {
-            tab.LTabVoyage?.Invoke(past, future);
+            tab.LTabVoyage?.Invoke(state.CVoyageStatePast, state.CVoyageStateFuture);
         }
     }
 

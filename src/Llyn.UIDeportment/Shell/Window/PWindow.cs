@@ -43,7 +43,7 @@ public partial class PWindow
 
     private CNavigation _cNavigation = null!;
 
-    private readonly LVoyage _lVoyage = new();
+    private readonly CVoyage _cVoyage = new();
 
     private LTab[] _pNavigationTabs = [];
 
@@ -192,11 +192,6 @@ public partial class PWindow
     private PSettings PSettings => (PSettings)_pWindowSurface.FindName(nameof(PSettings));
 
     internal CEnvoy PWindowEnvoy { get; }
-
-    internal LWing PWindowWingCreate()
-    {
-        return new LWing(PWindowAtelier);
-    }
 
     private void PWindowAttach()
     {

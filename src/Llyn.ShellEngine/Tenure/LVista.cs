@@ -125,6 +125,17 @@ public sealed class LVista
         return vista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
     }
 
+    public void LVistaSideSave()
+    {
+        if (LVistaLeft)
+        {
+            _lEngine.LEngineWorkspace.LEngineLeftSave(LVistaChosen);
+            return;
+        }
+
+        _lEngine.LEngineWorkspace.LEngineRightSave(LVistaChosen);
+    }
+
     public int LVistaUsageRead()
     {
         if (LVistaStored is not long id)

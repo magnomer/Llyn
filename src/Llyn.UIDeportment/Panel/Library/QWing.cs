@@ -17,7 +17,9 @@ internal sealed class QWing
 
     private PWindow _qWingHost = null!;
 
-    private LWing _lWing = null!;
+    private CWing _cWing = null!;
+
+    private LLectern _qWingLectern = null!;
 
     internal QWing(UserControl surface)
     {
@@ -79,30 +81,31 @@ internal sealed class QWing
     internal void QWingAttach(PWindow host)
     {
         _qWingHost = host;
-        _lWing = host.PWindowWingCreate();
+        _cWing = CWing.CWingCreate(host.PWindowAtelier, host.PWindowEnvoy);
+        _qWingLectern = new LLectern(_cWing.CWingDisplay);
 
-        _lWing.LWingFailed += host.PWindowFailureShow;
-        _lWing.LWingLoaded += QWingIndexShow;
+        _cWing.CWingLoaded += QWingLoadedRefine;
+        _cWing.CWingChanged += LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexShow);
 
-        QWingDisplay.PDisplayAttach(host, _lWing.LWingLectern);
+        QWingDisplay.PDisplayAttach(host, _qWingLectern);
     }
 
     internal async void QWingRestore(string tab, long? id)
     {
-        _lWing.LWingVistaRestore(_qWingHost.PWindowAtelier, tab);
-        _lWing.LWingObserverAttach(LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexShow));
+        _cWing.CWingVistaRestore(tab);
         QWingDisplay.PDisplayObserverAttach();
         _qIndex.QIndexClear();
         await LEnsignImage.LEnsignLoad(_qWingHost.PWindowAtelier);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderHandle, QIndex.QIndexOrder);
-        QChoice.QChoiceOrderApply(QWingOrderDropdown, _lWing.LWingOrder);
+        QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);
         QWingSieveShow();
         QChoice.QChoiceFilterBuild(
-            QWingSieveList, _lWing.LWingLanguageRead(), _lWing.LWingFilter, QWingSieveHandle);
+            QWingSieveList, _cWing.CWingLanguageRead(), _cWing.CWingFilter, QWingSieveHandle);
 
         QWingQuery.Text = string.Empty;
-        _lWing.LWingEntryShow(id);
+        _qWingLectern.LLecternClear();
+        _cWing.CWingEntryRestore(id);
     }
 
     internal void QWingClose()
@@ -112,30 +115,36 @@ internal sealed class QWing
 
     private void QWingIndexShow()
     {
-        _qIndex.QIndexShow(_lWing.LWingRowsRead(), _lWing.LWingQueried);
+        _qIndex.QIndexShow(_cWing.CWingRowsRead(), _cWing.CWingQueried);
+    }
+
+    private void QWingLoadedRefine()
+    {
+        QWingIndexShow();
+        _qWingLectern.LLecternLoadedShow();
     }
 
     private void QWingSieveShow()
     {
-        QWingSieveMark.Visibility = _lWing.LWingFiltered ? Visibility.Visible : Visibility.Collapsed;
+        QWingSieveMark.Visibility = _cWing.CWingFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void QWingOrderHandle(object sender, RoutedEventArgs e)
     {
         QWingOrderDropper.IsChecked = false;
-        _lWing.LWingOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cWing.CWingOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void QWingSieveHandle(object sender, RoutedEventArgs e)
     {
-        _lWing.LWingSieveSet(QChoice.QChoiceFilterRead(sender));
+        _cWing.CWingFilterSet(QChoice.QChoiceFilterRead(sender));
         QWingSieveShow();
     }
 
     private void QWingQueryHandle(object sender, TextChangedEventArgs e)
     {
-        _lWing.LWingQuerySet(QWingQuery.Text ?? string.Empty);
-        _qIndex.QIndexShownSet(_lWing.LWingQueried);
+        _cWing.CWingQuerySet(QWingQuery.Text ?? string.Empty);
+        _qIndex.QIndexShownSet(_cWing.CWingQueried);
     }
 
     private void QWingKeyHandle(object sender, KeyEventArgs e)
@@ -174,7 +183,7 @@ internal sealed class QWing
             return false;
         }
 
-        _lWing.LWingSelect(id);
+        _cWing.CWingEntrySelect(id);
         QWingIndexShow();
         _qIndex.QIndexEntryScroll(id);
         return true;
@@ -204,7 +213,7 @@ internal sealed class QWing
         }
 
         _qIndex.QIndexShownSet(false);
-        _lWing.LWingEntryOpen(chosen);
+        _cWing.CWingEntryOpen(chosen);
     }
 
     private void QWingIndexApply(FrameworkElement container, object item, string? change)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -52,14 +53,18 @@ public sealed class QBootstrap
         }
         catch (Exception exception)
         {
-            string key = busySeam(exception) ? "Workspace.Busy" : "Workspace.OpenFailed";
-            MessageBox.Show(
-                $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{workspace}\n\n{exception.Message}",
-                QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            QBootstrapBuildConsult(CAtelier.CAtelierRefusalRead(busySeam(exception)), workspace, exception);
             return null;
         }
+    }
+
+    private static void QBootstrapBuildConsult(string key, string workspace, Exception exception)
+    {
+        MessageBox.Show(
+            $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{workspace}\n\n{exception.Message}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Error);
     }
 
     public void QBootstrapCatalogApply(
@@ -84,27 +89,27 @@ public sealed class QBootstrap
         }
     }
 
-    public void QBootstrapRescueShow(bool done, string? backup, string? reason)
+    public void QBootstrapRescueConsult(bool done, string? backup, string? reason)
     {
-        if (!done)
+        if (CAtelier.CAtelierRescueRead(done) is not string key)
         {
             return;
         }
 
         MessageBox.Show(
-            $"{QLocalizationCatalog.QLocalizationTextRead("Workspace.DatabaseReset")}\n\n{backup}\n\n{reason}",
+            $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{backup}\n\n{reason}",
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
     }
 
-    public void QBootstrapFaultAttach(Func<Exception, string?> auditSeam)
+    public void QBootstrapFaultIntroduce(Func<Exception, string?> auditSeam)
     {
         ArgumentNullException.ThrowIfNull(auditSeam);
 
         _qBootstrapAudit = auditSeam;
-        System.Windows.Application.Current.DispatcherUnhandledException += QBootstrapFaultHandle;
-        TaskScheduler.UnobservedTaskException += QBootstrapStrayHandle;
+        System.Windows.Application.Current.DispatcherUnhandledException += QBootstrapFaultObserve;
+        TaskScheduler.UnobservedTaskException += QBootstrapStrayObserve;
     }
 
     public void QBootstrapWindowShow(PWindow window)
@@ -114,17 +119,25 @@ public sealed class QBootstrap
         window.PWindowSurface.Show();
     }
 
-    private void QBootstrapFaultHandle(object sender, DispatcherUnhandledExceptionEventArgs e)
+    private void QBootstrapFaultObserve(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         string? log = _qBootstrapAudit(e.Exception);
         e.Handled = true;
+        QBootstrapFaultConsult(log, e.Exception);
+        QBootstrapWindowRefine();
+    }
 
+    private static void QBootstrapFaultConsult(string? log, Exception exception)
+    {
         MessageBox.Show(
-            $"{QLocalizationCatalog.QLocalizationTextRead("Workspace.Fault")}\n\n{log}\n\n{e.Exception.Message}",
+            $"{QLocalizationCatalog.QLocalizationTextRead("Workspace.Fault")}\n\n{log}\n\n{exception.Message}",
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Error);
+    }
 
+    private static void QBootstrapWindowRefine()
+    {
         if (!QBootstrapWindowCheck())
         {
             System.Windows.Application.Current.Shutdown(1);
@@ -144,7 +157,7 @@ public sealed class QBootstrap
         return false;
     }
 
-    private void QBootstrapStrayHandle(object? sender, UnobservedTaskExceptionEventArgs e)
+    private void QBootstrapStrayObserve(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         _qBootstrapAudit(e.Exception);
         e.SetObserved();

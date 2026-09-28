@@ -173,6 +173,9 @@ internal static class TAuditChainSetting
             "CPanel",
             "CAtlas",
             "COeuvre",
+            "CWing",
+            "CVoyage",
+            "CVoyageState",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -304,8 +307,8 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 92,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 423,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 440,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 414,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 415,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,

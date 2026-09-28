@@ -16,6 +16,20 @@ public sealed class TAtelier
     }
 
     [Fact]
+    public void AtelierRefusalRead_BusyOrNot_ReadsItsOwnKey()
+    {
+        Assert.Equal("Workspace.Busy", CAtelier.CAtelierRefusalRead(true));
+        Assert.Equal("Workspace.OpenFailed", CAtelier.CAtelierRefusalRead(false));
+    }
+
+    [Fact]
+    public void AtelierRescueRead_SetAsideOrNot_ReadsTheKeyOnlyWhenDone()
+    {
+        Assert.Equal("Workspace.DatabaseReset", CAtelier.CAtelierRescueRead(true));
+        Assert.Null(CAtelier.CAtelierRescueRead(false));
+    }
+
+    [Fact]
     public void AtelierRead_FreshEngine_ReadsDefaultVolumeAndSplit()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());

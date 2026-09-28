@@ -7,7 +7,7 @@ The two sides are peers, so each place of the veneer's `PWing` gets its own driv
 Each driver has its own vista and its own display.
 The panel never writes, so there is no editor and nothing to discard.
 The match list, the field's keys and focus live here, since they are medium.
-The vista, the rows and the saved standing live in `LWing`, which names no WPF type.
+The vista, the rows and the saved standing live in Conduct's `CWing`.
 
 ## `internal QWing(UserControl surface)`
 
@@ -22,8 +22,9 @@ Each named part is pulled from the place by its contract ID on every read.
 
 ## `internal void QWingAttach(PWindow host)`
 
-Puts the side to work on the host, which builds the wing controller over the engine's ports.
-It wires the controller's events to the window and the list, and its lectern to the display.
+Puts the side to work on the host, building Conduct's side over the host's atelier and envoy.
+The side's announcements re-list the matches on the list's thread.
+A loaded entry re-lists the matches and paints the lectern, which the display shows.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.
 
@@ -34,8 +35,9 @@ A switched workspace hands a fresh vista, so the order and filter are the new wo
 A vista announcement re-lists the matches, since order, filter or query moved.
 A stored entry, a reflex fill or a flipped setting can change a listed row, so each re-lists too.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
-The dropdown lists the shared entry orderings, and the filter mark is drawn from the controller's verdict.
-The query is emptied and the controller shows the Entry `id` names, or clears the side for none.
+The dropdown lists the shared entry orderings, and the filter mark is drawn from the side's verdict.
+The query is emptied, the lectern cleared, and the side loads the Entry `id` names.
+The lectern is cleared first, so a failed load never leaves another workspace's entry standing.
 The fresh vista starts with nothing typed and nothing chosen, so neither needs setting.
 A different workspace has its own database.
 So the Entry the side was comparing came from a workspace no longer open.
@@ -48,7 +50,11 @@ Stops the side: the display releases its playback.
 
 Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.
 The empty notice shows only while a typed query matched nothing.
-It runs on each announcement and after each entry the controller loaded.
+It runs on each announcement and after each entry the side loaded.
+
+## `private void QWingLoadedRefine()`
+
+Re-lists the matches with the new mark and paints the loaded entry on the lectern.
 
 ## `private void QWingSieveShow()`
 

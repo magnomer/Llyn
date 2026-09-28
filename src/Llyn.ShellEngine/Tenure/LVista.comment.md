@@ -160,6 +160,12 @@ The ordering a panel shows, headword order before a vista arrives.
 
 The filter a panel shows, the shared empty filter before a vista arrives.
 
+## `public void LVistaSideSave()`
+
+Writes the chosen entry to the left or right slot of the workspace state, whichever side the vista's tab names.
+The next run reopens each duplex side on the entry it last showed.
+The vista itself says which side it is, so no caller copies that.
+
 ## `public int LVistaUsageRead()`
 
 How many places the chosen stored record reaches, which a delete would drop.

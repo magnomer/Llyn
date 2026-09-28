@@ -1,50 +1,45 @@
 using System;
 using System.Collections.Generic;
 
-namespace Llyn.UIDeportment;
+namespace Llyn.Conduct;
 
-public sealed class LVoyage
+public sealed class CVoyage
 {
     private const int LVoyageCap = 50;
 
-    private readonly LinkedList<(string LVoyageTab, long LVoyageId)> _lVoyagePast = new();
+    private readonly LinkedList<(string LVoyageTab, long LVoyageId)> _cVoyagePast = new();
 
-    private readonly LinkedList<(string LVoyageTab, long LVoyageId)> _lVoyageFuture = new();
+    private readonly LinkedList<(string LVoyageTab, long LVoyageId)> _cVoyageFuture = new();
 
-    public bool LVoyagePastCheck()
+    public CVoyageState CVoyageRead()
     {
-        return _lVoyagePast.Count > 0;
+        return new CVoyageState(_cVoyagePast.Count > 0, _cVoyageFuture.Count > 0);
     }
 
-    public bool LVoyageFutureCheck()
-    {
-        return _lVoyageFuture.Count > 0;
-    }
-
-    public void LVoyageRecord(string tab, long id)
+    public void CVoyageStationAdd(string tab, long id)
     {
         ArgumentNullException.ThrowIfNull(tab);
 
-        if (id == 0 || _lVoyagePast.Last?.Value == (tab, id))
+        if (id == 0 || _cVoyagePast.Last?.Value == (tab, id))
         {
             return;
         }
 
-        LVoyageStationAdd(_lVoyagePast, (tab, id));
-        _lVoyageFuture.Clear();
+        LVoyageTrailAdd(_cVoyagePast, (tab, id));
+        _cVoyageFuture.Clear();
     }
 
-    public bool LVoyageRetreat(string tab, long id, Func<string, long, bool> show)
+    public bool CVoyageUndo(string tab, long id, Func<string, long, bool> show)
     {
-        return LVoyageRun(_lVoyagePast, _lVoyageFuture, (tab, id), show);
+        return LVoyageRun(_cVoyagePast, _cVoyageFuture, (tab, id), show);
     }
 
-    public bool LVoyageAdvance(string tab, long id, Func<string, long, bool> show)
+    public bool CVoyageRedo(string tab, long id, Func<string, long, bool> show)
     {
-        return LVoyageRun(_lVoyageFuture, _lVoyagePast, (tab, id), show);
+        return LVoyageRun(_cVoyageFuture, _cVoyagePast, (tab, id), show);
     }
 
-    private static void LVoyageStationAdd(
+    private static void LVoyageTrailAdd(
         LinkedList<(string LVoyageTab, long LVoyageId)> trail, (string LVoyageTab, long LVoyageId) station)
     {
         if (station.LVoyageId == 0)
@@ -80,7 +75,7 @@ public sealed class LVoyage
         }
 
         source.RemoveLast();
-        LVoyageStationAdd(target, current);
+        LVoyageTrailAdd(target, current);
         return true;
     }
 }

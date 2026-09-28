@@ -138,6 +138,18 @@ The wording key of the version line the product's about notice shows.
 It is static, since every session words the notice alike.
 The build number stays with the driver, because Conduct is framed away from reflection.
 
+## `public static string CAtelierRefusalRead(bool busy)`
+
+The wording key of the notice a workspace that failed to open shows.
+A database another program holds says so, since closing that program is the cure.
+It is static, since no atelier stands when the workspace fails to open.
+
+## `public static string? CAtelierRescueRead(bool done)`
+
+The wording key of the notice that the database was set aside, or null when it was not.
+Without the notice the workspace would appear empty and the old data would look lost.
+It is static, since the host reads the rescue before it builds the atelier.
+
 ## `public void Dispose()`
 
 Sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.

@@ -26,10 +26,6 @@ public sealed class LSettingsOutlet : LSettingsPort
 
     public LWorkspaceState LEngineStateRead() => _lSettingsOutletEngine.LEngineWorkspace.LEngineStateRead();
 
-    public void LEngineLeftSave(long? id) => _lSettingsOutletEngine.LEngineWorkspace.LEngineLeftSave(id);
-
-    public void LEngineRightSave(long? id) => _lSettingsOutletEngine.LEngineWorkspace.LEngineRightSave(id);
-
     public IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationLoad(language);
 

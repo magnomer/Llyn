@@ -37,14 +37,14 @@ Thread thread = new(() =>
         return;
     }
 
-    bootstrap.QBootstrapFaultAttach(engine.LEngineAuditRecord);
+    bootstrap.QBootstrapFaultIntroduce(engine.LEngineAuditRecord);
     LSettingsOutlet settings = new(engine);
     bootstrap.QBootstrapCatalogApply(
         () => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization),
         () => settings.LEngineLocalizationLoad(
             LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization)));
     LDoctorRescue rescue = engine.LEngineRescueRead();
-    bootstrap.QBootstrapRescueShow(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
+    bootstrap.QBootstrapRescueConsult(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
     bootstrap.QBootstrapWindowShow(new PWindow(new CAtelier(
         new LPosture(engine),

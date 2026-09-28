@@ -18,10 +18,6 @@ public interface LSettingsPort
 
     LWorkspaceState LEngineStateRead();
 
-    void LEngineLeftSave(long? id);
-
-    void LEngineRightSave(long? id);
-
     IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);
 
     string LEngineLocalizationRead();

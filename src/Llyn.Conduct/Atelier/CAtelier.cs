@@ -211,6 +211,16 @@ public sealed class CAtelier : IDisposable
         return "Headquarter.Version";
     }
 
+    public static string CAtelierRefusalRead(bool busy)
+    {
+        return busy ? "Workspace.Busy" : "Workspace.OpenFailed";
+    }
+
+    public static string? CAtelierRescueRead(bool done)
+    {
+        return done ? "Workspace.DatabaseReset" : null;
+    }
+
     public void Dispose()
     {
         CAtelierDraftPort.LEngineLeftoverSweep();
