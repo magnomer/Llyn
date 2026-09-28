@@ -246,6 +246,20 @@ public sealed class TTranscription
     }
 
     [Fact]
+    public void SchemeTakenCheck_OtherRowHoldsTheScheme_AnswersTakenForEveryOtherRow()
+    {
+        IReadOnlyList<LTranscriptionDraft> rows =
+        [
+            TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1 gong2", 1),
+            TInterface.TTranscriptionDraftCreate("Yale ", "hēung góng", 2),
+        ];
+
+        Assert.True(TInterface.TSchemeTakenCheck(rows, "Yale", 1));
+        Assert.False(TInterface.TSchemeTakenCheck(rows, "Yale", 2));
+        Assert.False(TInterface.TSchemeTakenCheck(rows, "Pinyin", 1));
+    }
+
+    [Fact]
     public void SchemeRead_LanguagePack_ListsDeclaredSchemesOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

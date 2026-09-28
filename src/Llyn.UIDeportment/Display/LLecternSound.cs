@@ -15,7 +15,7 @@ public sealed class LLecternSound
 {
     private readonly LDisplaySound _lLecternSoundDisplay;
 
-    private readonly ObservableCollection<LTranscriptionItem> _lLecternSoundTranscription = [];
+    private readonly ObservableCollection<QTranscriptionItem> _lLecternSoundTranscription = [];
 
     private readonly ObservableCollection<QGlyphItem> _lLecternSoundGlyph = [];
 
@@ -31,7 +31,7 @@ public sealed class LLecternSound
 
     private Action<string, string> _lLecternSoundOpening = null!;
 
-    private readonly ObservableCollection<LReflexItem> _lLecternSoundReflex = [];
+    private readonly ObservableCollection<QReflexItem> _lLecternSoundReflex = [];
 
     private UIElement _lLecternSoundLoading = null!;
 
@@ -86,7 +86,7 @@ public sealed class LLecternSound
         _lLecternSoundStrip = glyph;
         _lLecternSoundOpening = glyphSeam;
         transcriptions.ItemsSource = _lLecternSoundTranscription;
-        QLookItem.QLookItemAttach(transcriptions, LTranscriptionItem.LTranscriptionItemApply);
+        QLookItem.QLookItemAttach(transcriptions, QTranscriptionItem.QTranscriptionItemRefine);
         glyph.ItemsSource = _lLecternSoundGlyph;
         QLookItem.QLookItemAttach(glyph, QGlyphItem.QGlyphItemRefine);
     }
@@ -100,7 +100,7 @@ public sealed class LLecternSound
         _lLecternSoundLoading = loading;
         _lLecternSoundFold = fold;
         reflex.ItemsSource = _lLecternSoundReflex;
-        QLookItem.QLookItemAttach(reflex, LReflexItem.LReflexItemApply);
+        QLookItem.QLookItemAttach(reflex, QReflexItem.QReflexItemRefine);
     }
 
     public void LLecternFanqieAttach(
@@ -182,7 +182,7 @@ public sealed class LLecternSound
     public void LLecternFoldHandle(bool opened)
     {
         _lLecternSoundDisplay.LDisplayFoldSet(opened);
-        LReflexItem.LReflexFoldApply(
+        QReflexItem.QReflexFoldRefine(
             _lLecternSoundReflex, _lLecternSoundFold, _lLecternSoundDisplay.LDisplayFoldOpened);
     }
 
@@ -264,7 +264,8 @@ public sealed class LLecternSound
                 new QGlyphItem(cell.LGlyphCellText, cell.LGlyphCellLanguage, cell.LGlyphCellLinked));
         }
 
-        _lLecternSoundHeading.Text = LTranscriptionItem.LTranscriptionLabelFormat(section.LGlyphName);
+        _lLecternSoundHeading.Text = QTranscriptionItem.QTranscriptionLabelRefine(
+            CScheme.CSchemeKeyRead(section.LGlyphName), section.LGlyphName);
         LFontFace.LFontGlyphRefine(
             _lLecternSoundStrip.Resources,
             _lLecternSoundAtelier,
@@ -279,31 +280,29 @@ public sealed class LLecternSound
         foreach (CTranscriptionDraft spelled in CSounding.CSoundingTranscriptionRead(
             _lLecternSoundDisplay.LDisplayTranscriptionRead()))
         {
-            _lLecternSoundTranscription.Add(LTranscriptionItem.LTranscriptionItemCreate(spelled));
+            _lLecternSoundTranscription.Add(QTranscriptionItem.QTranscriptionRowRefine(spelled));
         }
     }
 
     private void LLecternReflexShow()
     {
         _lLecternSoundReflex.Clear();
-        HashSet<string> folded = LReflexItem.LReflexFoldRead(
-            _lLecternSoundAtelier, _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
-        foreach (LReflexItem row in LReflexItem.LReflexItemScan(
-            _lLecternSoundAtelier, CSounding.CSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
+        foreach (CReflex reflex in _lLecternSoundAtelier.CAtelierRespelling.CRespellingReflexScan(
+            _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage,
+            CSounding.CSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead())))
         {
-            _lLecternSoundReflex.Add(row);
+            _lLecternSoundReflex.Add(new QReflexItem(reflex));
         }
 
-        LReflexItem.LReflexLeadApply(_lLecternSoundReflex);
-        LReflexItem.LReflexFoldApply(
+        QReflexItem.QReflexFoldRefine(
             _lLecternSoundReflex, _lLecternSoundFold, _lLecternSoundDisplay.LDisplayFoldOpened);
     }
 
     private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)
     {
-        (bool anchorable, Func<IReadOnlyList<long>, string, string> format) =
+        (bool anchorable, Func<IReadOnlyList<long>, string> format) =
             _lLecternSoundDisplay.LDisplayAnchorRead(groups);
-        LReflexItem.LReflexAnchorApply(_lLecternSoundReflex, anchorable, format);
+        QReflexItem.QReflexAnchorRefine(_lLecternSoundReflex, anchorable, format);
     }
 
     private void LLecternPendingShow()

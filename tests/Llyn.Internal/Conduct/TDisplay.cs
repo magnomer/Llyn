@@ -15,12 +15,6 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void DisplayFoldScan_NoRule_ReturnsEmpty()
-    {
-        Assert.Empty(TInterfaceConduct.TDisplayFoldScan([]));
-    }
-
-    [Fact]
     public void DisplayFoldSet_CurrentValue_KeepsFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -31,21 +25,6 @@ public sealed class TDisplay
         sound.TDisplayFoldSet(true);
 
         Assert.True(sound.LDisplayFoldOpened);
-    }
-
-    [Fact]
-    public void DisplayFoldScan_FoldedRule_ReturnsItsLanguage()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
-            """
-            { "reflex": [
-                { "language": "Jin", "url": "https://example.test/{word}", "match": "(?<text>x)", "folded": true },
-                { "language": "Wu", "url": "https://example.test/{word}", "match": "(?<text>x)" } ] }
-            """);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        Assert.Equal(["Jin"], TInterfaceConduct.TDisplayFoldScan(engine.TEngineReflexRead(pack.TLanguageFixtureName)));
     }
 
     [Fact]

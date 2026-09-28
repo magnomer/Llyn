@@ -14,7 +14,7 @@ The rows are rendered as a diff on each draft bulletin, so a row being typed int
 
 ## `private static void PTranscriptionApply(FrameworkElement container, object item, string? name)`
 
-Fills an editor row: the shared parts through `LTranscriptionItem.LTranscriptionItemApply`, then the field and dropdown.
+Fills an editor row: the shared parts through `QTranscriptionItem.QTranscriptionItemRefine`, then the field and dropdown.
 The dropdown lists the row's schemes, selects its own, and greys out the taken ones.
 It shows each choice by its label and selects by its scheme, paths set here rather than in the style.
 
@@ -53,7 +53,7 @@ Opens the lookup menu under the row's own button, for that row and in that row's
 
 The first declared scheme no shown row carries, or nothing when all are taken.
 
-## `private LTranscriptionItem? PTranscriptionFind(long id)`
+## `private QTranscriptionItem? PTranscriptionFind(long id)`
 
 The shown row with one transcription id, or nothing when the draft no longer has it.
 The glyph row is searched too, because the lookup menu fills it through the same path.
@@ -69,7 +69,7 @@ The fill guard holds during a render, so a render writing a different text raise
 
 Renders every transcription as a row, keyed by the transcription id.
 The declared schemes are asked of the language pack once per render.
-Every row's dropdown is then told which schemes the other rows hold, so it greys those out.
+Every row's dropdown then takes `CSounding.CSoundingSchemeRead`, which marks what other rows hold.
 The list is shown only while there is one.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
 A row in the glyph scheme is left out, because the glyph row shows it beneath.
@@ -83,7 +83,7 @@ The draft's transcription rows without the glyph row of the language shown.
 The draft's transcription rows without the row in `glyph`'s scheme.
 The glyph form is stored as a transcription row, so this is where the two are told apart.
 
-## `private LTranscriptionItem PTranscriptionUpdate(LTranscriptionItem row, CTranscriptionDraft spelled)`
+## `private QTranscriptionItem PTranscriptionUpdate(QTranscriptionItem row, CTranscriptionDraft spelled)`
 
 Brings a shown row up to the draft row with the same id.
 A changed scheme is written onto the row, which relabels itself.

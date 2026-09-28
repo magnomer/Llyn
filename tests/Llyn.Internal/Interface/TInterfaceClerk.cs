@@ -92,6 +92,9 @@ internal static partial class TInterface
     internal static LPortraitPage TSituationPageRead(LSituation situation, int count, LPortraitLegend legend) =>
         LSituationClerk.LSituationPageRead(situation, count, legend);
 
+    internal static bool TSchemeTakenCheck(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId) =>
+        LDraftClerkReading.LSchemeTakenCheck(drafts, scheme, ownId);
+
     internal static LDraftClerk TDraftClerkCreate(LRig rig) =>
         new(rig, new LIdentity(rig.LRigWorkspaces), new LLanguageCache(rig.LRigLanguages));
 

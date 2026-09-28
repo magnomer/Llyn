@@ -86,6 +86,6 @@ internal static class TInterfaceDeportment
     internal static void TLecternFoldHandle(this LLectern lectern, bool opened) =>
         lectern.LLecternSound.LLecternFoldHandle(opened);
 
-    internal static void TReflexFoldApply(IReadOnlyList<LReflexItem> rows, ToggleButton fold, bool opened) =>
-        LReflexItem.LReflexFoldApply(rows, fold, opened);
+    internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
+        QReflexItem.QReflexFoldRefine(rows, fold, opened);
 }

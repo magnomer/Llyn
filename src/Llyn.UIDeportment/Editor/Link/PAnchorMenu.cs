@@ -19,7 +19,7 @@ public partial class PEditor
 
     private const string PAnchorMenuMark = " ≈";
 
-    private LReflexItem? _pAnchorRow;
+    private QReflexItem? _pAnchorRow;
 
     private Popup PAnchor => (Popup)FindName(nameof(PAnchor));
 
@@ -34,7 +34,7 @@ public partial class PEditor
 
     internal void PReflexAnchorHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not LReflexItem row || e.OriginalSource is not UIElement anchor)
+        if (e.Parameter is not QReflexItem row || e.OriginalSource is not UIElement anchor)
         {
             return;
         }
@@ -46,12 +46,12 @@ public partial class PEditor
         PAnchor.IsOpen = true;
     }
 
-    private void PAnchorBuild(LReflexItem row)
+    private void PAnchorBuild(QReflexItem row)
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
             _lEditor.LEditorStudio.CEditorSounding.CSoundingAnchorScan(
-                row.LReflexItemAnchors, row.LReflexItemLanguage, row.LReflexItemTone));
+                row.QReflexItemAnchors, row.QReflexItemLanguage, row.QReflexItemTone));
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)
         {
@@ -85,13 +85,13 @@ public partial class PEditor
 
     private void PAnchorTickHandle(object sender, RoutedEventArgs e)
     {
-        if (_pAnchorRow is not LReflexItem row || sender is not CheckBox { Tag: long fanqieId } box)
+        if (_pAnchorRow is not QReflexItem row || sender is not CheckBox { Tag: long fanqieId } box)
         {
             return;
         }
 
         bool anchored = box.IsChecked == true;
-        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.LReflexItemId, fanqieId, anchored));
+        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.QReflexItemId, fanqieId, anchored));
     }
 
     private void PAnchorClosedHandle(object? sender, EventArgs e)

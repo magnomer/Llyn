@@ -69,6 +69,11 @@ The one-scheme rule at request time.
 The form learns of a doubled scheme as it is typed rather than at commit.
 A blank scheme passes, because a row still being named collides with nothing.
 
+## `public static bool LSchemeTakenCheck(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId)`
+
+Whether a row other than `ownId` already holds `scheme`, the one owner of the one-scheme rule.
+The refusal above asks it, and the editor's scheme dropdown asks it to grey out a held scheme.
+
 ## `private static LEntryDraft LTranscriptionChange(`
 
 Changes the transcription row named, and refuses when the draft holds none by that id.

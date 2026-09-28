@@ -110,6 +110,9 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LVariety> TTenureVarietyRead(this LTenure tenure) => tenure.LTenureVarietyRead();
 
+    internal static IReadOnlyList<LSchemeRow> TTenureSchemeRead(this LTenure tenure, long transcription) =>
+        tenure.LTenureSchemeRead(transcription);
+
     internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(draft);
 

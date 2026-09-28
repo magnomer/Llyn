@@ -30,10 +30,18 @@ The mark a transcription candidate prints under.
 A schemed search prints the phonetic bare, whatever the switch shows.
 Otherwise it is the pronunciation mark.
 
-## `public CRespellingMark CRespellingReflexRead(string language)`
+## `public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)`
 
-The mark a reflex row prints under.
+The reflex rows of an entry in `language`, in order, each ready to show.
+One engine read answers every row's switch, phonemic mark and fold.
+Each row is marked when it leads its run of one language.
+The editor and the reading view both read their rows here.
+
+## `private static CReflex LRespellingReflexRead(CReflexDraft reflex, LReflexGuise guise, bool lead)`
+
+One reflex row under the mark its guise picks.
 A phonemic language stands between slashes whatever the switch shows, and any other reading stands bare.
+The text is resolved by `CRespellingResolve`, the one rule the accent rows share.
 
 ## `public static CAccent CRespellingAccentRead(CRespellingMark mark, string language, CPronunciationDraft spoken)`
 

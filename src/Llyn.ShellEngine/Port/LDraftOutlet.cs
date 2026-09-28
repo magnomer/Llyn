@@ -79,9 +79,6 @@ public sealed class LDraftOutlet : LDraftPort
     public int LEngineOffsetRead(string text, int unit) =>
         _lDraftOutletEngine.LEngineMention.LEngineOffsetRead(text, unit);
 
-    public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other) =>
-        _lDraftOutletEngine.LEngineReflex.LEngineAnchorMatch(one, other);
-
     public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
         long entryId, IReadOnlyList<long> anchors, string language, string reflex, string tone) =>
         _lDraftOutletEngine.LEngineReflex.LEngineAnchorScan(entryId, anchors, language, reflex, tone);

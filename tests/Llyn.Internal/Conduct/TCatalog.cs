@@ -120,17 +120,6 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogAnchorMatch_SameAndOtherAnchors_MatchOnlyTheSame()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-
-        Assert.True(atelier.CAtelierCatalog.CCatalogAnchorMatch([1, 2], [1, 2]));
-        Assert.False(atelier.CAtelierCatalog.CCatalogAnchorMatch([1, 2], [3]));
-    }
-
-    [Fact]
     public void CatalogFontRead_LanguageAndRole_ReadsThePortFont()
     {
         List<(string, LFontRole)> asked = [];

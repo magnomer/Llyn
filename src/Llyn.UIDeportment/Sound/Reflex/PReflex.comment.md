@@ -43,7 +43,8 @@ A language change also remarks the leads at once, so the language prints on the 
 
 Rebuilds the rows from the draft, keeping a row that is still being typed into.
 The stack is shown when the language declares a rule or the draft carries a row, and hidden otherwise.
-The folded languages are read from the rules of the draft's language, and the fold is applied last.
+The rows come ready from `CRespelling.CRespellingReflexScan`, each knowing its mark and its fold.
+The fold is applied last.
 The anchor labels are written from the fanqie rows the editor last read.
 The fetch-again button shows and hides with the block, where a binding followed its visibility.
 
@@ -70,17 +71,13 @@ The fill reaches the draft through the engine and lands here by bulletin.
 The fetching line is shown at once, since the ask starts the fill before it returns.
 An unsaved entry has no id and is not asked.
 
-## `private LReflexItem PReflexCreate(CReflexDraft reflex)`
+## `private QReflexItem PReflexCreate(CReflex reflex)`
 
-A row for a draft row, listened to for changes.
-It prints the form the switch picks for the row's own language.
+A row for a ready reflex, listened to for changes.
 
-## `private LReflexItem PReflexUpdate(LReflexItem row, CReflexDraft reflex)`
+## `private static QReflexItem PReflexUpdate(QReflexItem row, CReflex reflex)`
 
-Brings a row up to the draft, leaving a field alone while its own request is still deferred.
-A row whose respelled, phonemic or folded state or whose anchors no longer match the draft is rebuilt.
-Those states are fixed when the row is created.
-The tone is taken from the draft's anatomy the same way, since the engine cuts it.
+Brings a row up to the ready reflex in place, its mark, fold and anchors included.
 
 ## `private void PReflexAttach()`
 

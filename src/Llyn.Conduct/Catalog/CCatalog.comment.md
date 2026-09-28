@@ -23,10 +23,6 @@ A blank language or a refused read answers the font with nothing set, so the sur
 The fonts of several roles in one read, in the order the roles are given.
 A surface showing two roles together, such as an example and its gloss, asks once.
 
-## `public IReadOnlyList<CReflexRule> CCatalogReflexRead(string language)`
-
-The reflex rules of a language, which tell a driver which reflex rows start folded.
-
 ## `public CSentenceOrder CCatalogOrderRead(string language)`
 
 Where a language puts its particles and its dependents in a sentence.
@@ -87,10 +83,6 @@ A row naming itself as its parent is skipped rather than followed, so it cannot 
 How many meaning and collocation cards a stored entry holds, children included.
 It answers nothing when no entry has `id`.
 The customs window shows the two counts as what a Replace would drop.
-
-## `public bool CCatalogAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
-
-Whether two anchor lists match, as the engine's reflex tool decides.
 
 ## `public IReadOnlyList<long> CCatalogMarkupFind(string headword, string language)`
 

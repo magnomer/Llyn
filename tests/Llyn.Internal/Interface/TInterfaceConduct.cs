@@ -12,6 +12,9 @@ internal static class TInterfaceConduct
 {
     internal static string TDisplayStampFormat(string? utc) => LDisplay.LDisplayStampFormat(utc);
 
+    internal static IReadOnlyList<bool> TReflexLeadRead(IReadOnlyList<string> languages) =>
+        CReflex.LReflexLeadRead(languages);
+
     internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
         new LDraftOutlet(engine),
         new LEntryOutlet(engine),
@@ -20,10 +23,6 @@ internal static class TInterfaceConduct
         new LSettingsOutlet(engine));
 
     internal static void TDisplayFoldSet(this LDisplaySound sound, bool opened) => sound.LDisplayFoldSet(opened);
-
-    internal static HashSet<string> TDisplayFoldScan(IReadOnlyList<LReflexRule> rules) =>
-        LDisplaySound.LDisplayFoldScan(
-            rules.Select(static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded)).ToList());
 
     internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
         sound.LDisplaySoundShow(id, draft);

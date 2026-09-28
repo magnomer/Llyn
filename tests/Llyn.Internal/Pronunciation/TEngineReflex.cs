@@ -28,6 +28,34 @@ public sealed class TEngineReflex
     }
 
     [Fact]
+    public void GuiseRead_FoldedRule_FoldsTheTrimmedLanguage()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            """
+            { "reflex": [
+                { "language": "Jin", "url": "https://example.test/{word}", "match": "(?<text>x)", "folded": true },
+                { "language": "Wu", "url": "https://example.test/{word}", "match": "(?<text>x)" } ] }
+            """);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<LReflexGuise> guises = engine.TEngineGuiseRead(pack.TLanguageFixtureName, [" Jin ", "Wu", "Jin"]);
+
+        Assert.Equal([true, false, true], guises.Select(static guise => guise.LReflexGuiseFolded));
+        Assert.Equal(guises[2], guises[0]);
+    }
+
+    [Fact]
+    public void GuiseRead_BlankLanguage_FoldsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.False(Assert.Single(engine.TEngineGuiseRead(" ", ["Jin"])).LReflexGuiseFolded);
+        Assert.Empty(engine.TEngineGuiseRead("Chinese", []));
+    }
+
+    [Fact]
     public async Task ReflexStart_ThreeRules_StoresRowsRomanizationsAndMark()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);

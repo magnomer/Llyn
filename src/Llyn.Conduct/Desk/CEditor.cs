@@ -127,6 +127,15 @@ public sealed class CEditor
         return CEditorDesk.CDeskDraft is { } held ? CFolio.CFolioEntryRead(held.LDraftContent) : null;
     }
 
+    public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)
+    {
+        IReadOnlyList<CReflexDraft> rows = CEditorDraftRead()?.CEntryDraftReflexes ?? [];
+        IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(rows
+            .Select(row => row.CReflexDraftId == reflex ? language : row.CReflexDraftLanguage)
+            .ToList());
+        return rows.Select((row, index) => new CReflexHead(row.CReflexDraftId, leads[index])).ToList();
+    }
+
     public string CEditorPronunciationRead()
     {
         return CEditorDesk.CDeskTenure?.LTenurePronunciationRead() ?? string.Empty;

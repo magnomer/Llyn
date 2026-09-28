@@ -43,13 +43,6 @@ public sealed class CCatalog
         return roles.Select(role => CCatalogFontRead(language, role)).ToList();
     }
 
-    public IReadOnlyList<CReflexRule> CCatalogReflexRead(string language)
-    {
-        return _cCatalogAtelier.CAtelierPhonologyPort.LEngineReflexRead(language)
-            .Select(static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded))
-            .ToList();
-    }
-
     public CSentenceOrder CCatalogOrderRead(string language)
     {
         return CCatalogOrderRead(_cCatalogAtelier.CAtelierPhonologyPort.LEngineOrderRead(language));
@@ -165,11 +158,6 @@ public sealed class CCatalog
         return (
             CSCustoms.CSCustomsCardScan(draft.LEntryDraftMeanings, static card => card.LCardDraftChild),
             CSCustoms.CSCustomsCardScan(draft.LEntryDraftCollocations, static card => card.LCardDraftChild));
-    }
-
-    public bool CCatalogAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
-    {
-        return _cCatalogAtelier.CAtelierDraftPort.LEngineAnchorMatch(one, other);
     }
 
     public IReadOnlyList<long> CCatalogMarkupFind(string headword, string language)

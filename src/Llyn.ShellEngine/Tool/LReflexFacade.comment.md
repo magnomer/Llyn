@@ -8,10 +8,6 @@ The engine's facade for reflex, wrapping the clerk's anchors, rules, rows, fetch
 
 The facade bound to its engine and the engine's gate.
 
-## `public bool LEngineAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
-
-Whether two anchor lists name the same rows.
-
 ## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(`
 
 The anchor rows of one stored entry, read from its own rime-book rows.
@@ -40,6 +36,16 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 ## `public IReadOnlyList<LReflexRule> LEngineReflexRead(string language)`
 
 The reflex rules of a language.
+
+## `public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes)`
+
+How each reflex row prints, one answer per language in `reflexes`, in order.
+Each row language is trimmed before the settings and the fold set are asked.
+The fold set is the one the pack of the entry's `language` declares.
+
+## `private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)`
+
+The respelling switch, the phonemic mark and the fold of one trimmed row language.
 
 ## `public void LEngineReflexStart(long entryId)`
 

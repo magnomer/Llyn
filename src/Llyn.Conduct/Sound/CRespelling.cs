@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Llyn.Core;
 
 namespace Llyn.Conduct;
 
@@ -40,11 +43,36 @@ public sealed class CRespelling
         return new CRespellingMark(shown, slashed ? "/" : "[", slashed ? "/" : "]");
     }
 
-    public CRespellingMark CRespellingReflexRead(string language)
+    public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)
     {
-        bool phonemic = CRespellingPhonemicCheck(language);
-        string slash = phonemic ? "/" : string.Empty;
-        return new CRespellingMark(CRespellingCheck(language), slash, slash);
+        ArgumentNullException.ThrowIfNull(reflexes);
+
+        IReadOnlyList<string> languages = reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList();
+        IReadOnlyList<LReflexGuise> guises =
+            _cRespellingAtelier.CAtelierPhonologyPort.LEngineGuiseRead(language, languages);
+        IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(languages);
+        return reflexes.Select((reflex, index) => LRespellingReflexRead(reflex, guises[index], leads[index])).ToList();
+    }
+
+    private static CReflex LRespellingReflexRead(CReflexDraft reflex, LReflexGuise guise, bool lead)
+    {
+        string slash = guise.LReflexGuisePhonemic ? "/" : string.Empty;
+        CRespellingMark mark = new(guise.LReflexGuiseRespelled, slash, slash);
+        return new CReflex(
+            reflex.CReflexDraftId,
+            reflex.CReflexDraftLanguage,
+            reflex.CReflexDraftKind,
+            CRespellingResolve(mark, reflex.CReflexDraftText, reflex.CReflexDraftRespelling),
+            reflex.CReflexDraftRomanization,
+            reflex.CReflexDraftMeaning,
+            reflex.CReflexDraftNote,
+            reflex.CReflexDraftMain,
+            reflex.CReflexDraftRegion,
+            reflex.CReflexDraftAnchors,
+            reflex.CReflexDraftTone,
+            mark,
+            guise.LReflexGuiseFolded,
+            lead);
     }
 
     public static CAccent CRespellingAccentRead(CRespellingMark mark, string language, CPronunciationDraft spoken)

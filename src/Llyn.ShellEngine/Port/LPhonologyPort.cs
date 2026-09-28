@@ -40,7 +40,7 @@ public interface LPhonologyPort
 
     void LEngineReflexRebuild(long entryId);
 
-    IReadOnlyList<LReflexRule> LEngineReflexRead(string language);
+    IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes);
 
     bool LEngineInflectionCheck(long entryId);
 

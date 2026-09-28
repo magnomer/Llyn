@@ -4,6 +4,9 @@
 
 Covers the engine's reflex find over a fixture pack with three rules behind stubbed pages.
 The rules are read from the pack in written order, with their template, every flag and busy text.
+The guise of each reflex row folds its trimmed language when the entry's pack folds it.
+A padded language reads the same guise as the bare one.
+A blank entry language folds nothing.
 A find fetches each rule's page for the character and reads one row per match.
 The format fills its slots from the named groups, and a double-bracketed piece is dropped when its group is empty.
 A `main` group that captured marks the row, and `every` keeps every match of a rule.

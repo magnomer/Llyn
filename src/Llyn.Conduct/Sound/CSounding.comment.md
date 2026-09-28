@@ -38,9 +38,16 @@ The headword's representative reading, formed by the engine from the same groups
 
 Whether the entry's rime-book rows let a reflex anchor at all.
 
-## `public string CSoundingAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)`
+## `public string CSoundingAnchorFormat(IReadOnlyList<long> anchors, string headword)`
 
 The anchors of one reflex written against the entry's rime-book rows.
+The placements are joined by `CReflex.LReflexSeparator`, so both panes print the same label.
+
+## `public IReadOnlyList<CScheme> CSoundingSchemeRead(long transcription)`
+
+The schemes the dropdown of one transcription row offers, each marked when another row holds it.
+The mark is the engine's one-scheme rule, so a pick the engine would refuse is greyed out.
+No held draft answers no schemes.
 
 ## `public IReadOnlyList<CAnchorRow> CSoundingAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)`
 

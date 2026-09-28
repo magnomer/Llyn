@@ -163,6 +163,58 @@ public sealed class TSounding
     }
 
     [Fact]
+    public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        List<object?> sent = [];
+        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineAnchorFormat"] = args =>
+            {
+                sent.Add(args![3]);
+                return "Guangyun";
+            },
+        }, []);
+
+        Assert.Equal("Guangyun", sounding.CSoundingAnchorFormat([7], "水"));
+        Assert.Equal([" · "], sent);
+    }
+
+    [Fact]
+    public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "香港",
+            "Cantonese",
+            string.Empty,
+            string.Empty,
+            [],
+            [],
+            transcriptions:
+            [
+                TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1 gong2"),
+                TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
+            ]));
+        CEditor editor = TSoundingEditorPrepare(engine, entry.LEntryId);
+        long yale = editor.CEditorDraftRead()!.CEntryDraftTranscriptions[1].CTranscriptionDraftId;
+
+        Assert.Equal(
+            [new CScheme("Jyutping", true), new CScheme("Yale", false)],
+            editor.CEditorSounding.CSoundingSchemeRead(yale));
+    }
+
+    [Fact]
+    public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()
+    {
+        Assert.Equal("Scheme.Yale", CScheme.CSchemeKeyRead("Yale"));
+        Assert.Equal("Scheme.", CScheme.CSchemeKeyRead(string.Empty));
+    }
+
+    [Fact]
     public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

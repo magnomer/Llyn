@@ -61,8 +61,8 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public void LEngineReflexRebuild(long entryId) =>
         _lPhonologyOutletEngine.LEngineReflex.LEngineReflexRebuild(entryId);
 
-    public IReadOnlyList<LReflexRule> LEngineReflexRead(string language) =>
-        _lPhonologyOutletEngine.LEngineReflex.LEngineReflexRead(language);
+    public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes) =>
+        _lPhonologyOutletEngine.LEngineReflex.LEngineGuiseRead(language, reflexes);
 
     public bool LEngineInflectionCheck(long entryId) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineInflectionCheck(entryId);

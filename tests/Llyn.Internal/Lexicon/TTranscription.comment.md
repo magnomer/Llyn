@@ -7,6 +7,7 @@ That is their order and ids across a save, and the one-scheme rule the engine re
 A row the user added is stored even blank, so it stands again the next time the entry is edited.
 A seeded row, the one the form offers unasked, is no change and is dropped while blank.
 It also covers the list the language pack declares.
+It also covers the one-scheme rule the scheme dropdown asks, which ignores the row that asks.
 It also covers the draft requests that add, move, rename and drop a transcription row before a save.
 It also covers the lookup of one scheme through the sources its pack declares, kept literal.
 A scheme without sources finishes at once with nothing found.

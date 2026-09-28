@@ -74,4 +74,4 @@ Both the editor and the reading view show it, and hide it when the fill answers.
 
 One reading-view row: the language on a lead row, the kind, reading, romanization, meaning, note and anchors.
 The reading stands between the same slashes the editor row draws, in the same stack with the same inset.
-`LReflexItem.LReflexItemApply` fills every named part from the row.
+`QReflexItem.QReflexItemRefine` fills every named part from the row.

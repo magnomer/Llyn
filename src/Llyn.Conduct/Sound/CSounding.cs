@@ -53,12 +53,20 @@ public sealed class CSounding
             && LSoundingAnswerRead(() => _cSoundingDraftPort.LEngineAnchorCheck(id, headword), false);
     }
 
-    public string CSoundingAnchorFormat(IReadOnlyList<long> anchors, string headword, string separator)
+    public string CSoundingAnchorFormat(IReadOnlyList<long> anchors, string headword)
     {
         return LSoundingEntry is long id
             ? LSoundingAnswerRead(
-                () => _cSoundingDraftPort.LEngineAnchorFormat(id, anchors, headword, separator), string.Empty)
+                () => _cSoundingDraftPort.LEngineAnchorFormat(id, anchors, headword, CReflex.LReflexSeparator),
+                string.Empty)
             : string.Empty;
+    }
+
+    public IReadOnlyList<CScheme> CSoundingSchemeRead(long transcription)
+    {
+        return (_cSoundingDesk.CDeskTenure?.LTenureSchemeRead(transcription) ?? [])
+            .Select(static row => new CScheme(row.LSchemeRowName, row.LSchemeRowTaken))
+            .ToList();
     }
 
     public IReadOnlyList<CAnchorRow> CSoundingAnchorScan(IReadOnlyList<long> anchors, string reflex, string tone)

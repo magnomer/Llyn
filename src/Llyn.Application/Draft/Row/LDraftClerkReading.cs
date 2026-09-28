@@ -210,19 +210,26 @@ public sealed class LDraftClerkReading
 
     private static void LSchemeValidate(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId)
     {
-        if (scheme.Length == 0)
+        if (scheme.Length > 0 && LSchemeTakenCheck(drafts, scheme, ownId))
         {
-            return;
+            throw new LRefusal(LRefusal.LRefusalScheme);
         }
+    }
+
+    public static bool LSchemeTakenCheck(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId)
+    {
+        ArgumentNullException.ThrowIfNull(drafts);
 
         foreach (LTranscriptionDraft draft in drafts)
         {
             if (draft.LTranscriptionDraftId != ownId
                 && string.Equals(draft.LTranscriptionDraftScheme.Trim(), scheme, StringComparison.Ordinal))
             {
-                throw new LRefusal(LRefusal.LRefusalScheme);
+                return true;
             }
         }
+
+        return false;
     }
 
     private static LEntryDraft LTranscriptionChange(

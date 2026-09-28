@@ -85,7 +85,7 @@ public partial class PEditor
             if (PTranscriptionFind(id) is { } spelled)
             {
                 PEditorRequestSend(new LRequestTranscriptionText(
-                    PEditorDraft, spelled.LTranscriptionItemId, reading.PNotationReadingPhonetic));
+                    PEditorDraft, spelled.QTranscriptionItemId, reading.PNotationReadingPhonetic));
             }
 
             return;

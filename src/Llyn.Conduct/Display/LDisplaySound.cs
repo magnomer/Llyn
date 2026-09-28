@@ -77,22 +77,6 @@ public sealed class LDisplaySound
         _lDisplaySoundOpened = opened;
     }
 
-    public static HashSet<string> LDisplayFoldScan(IReadOnlyList<CReflexRule> rules)
-    {
-        ArgumentNullException.ThrowIfNull(rules);
-
-        HashSet<string> folded = new(StringComparer.Ordinal);
-        foreach (CReflexRule rule in rules)
-        {
-            if (rule.CReflexRuleFolded)
-            {
-                folded.Add(rule.CReflexRuleLanguage);
-            }
-        }
-
-        return folded;
-    }
-
     public void LDisplayReflexLoad()
     {
         if (_lDisplaySoundEntry is not long shown)
@@ -158,7 +142,7 @@ public sealed class LDisplaySound
         return LDisplayListRead(_lPhonologyPort.LEngineFanqieDivide);
     }
 
-    public (bool, Func<IReadOnlyList<long>, string, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
+    public (bool, Func<IReadOnlyList<long>, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
     {
         ArgumentNullException.ThrowIfNull(groups);
 
@@ -166,7 +150,7 @@ public sealed class LDisplaySound
         string headword = _lDisplaySoundDraft!.LEntryDraftHeadword;
         return (
             _lDraftPort.LEngineAnchorCheck(rows, headword),
-            (anchors, separator) => _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, separator));
+            anchors => _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, CReflex.LReflexSeparator));
     }
 
     public string LDisplayReadingRead()

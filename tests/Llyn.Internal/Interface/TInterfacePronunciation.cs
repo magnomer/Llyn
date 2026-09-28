@@ -16,6 +16,9 @@ internal static partial class TInterface
         IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword) =>
         LAnchor.LAnchorTextFormat(rows, anchors, headword, " · ");
 
+    internal static LReflexGuise TReflexGuiseCreate(bool respelled, bool phonemic, bool folded) =>
+        new(respelled, phonemic, folded);
+
     internal static LReading TReadingCreate(string variety, string phonetic) =>
         new LReading(variety, phonetic);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Xunit;
@@ -40,14 +41,54 @@ public sealed class TAtelierRespelling
     [InlineData(true, false, "")]
     [InlineData(false, true, "/")]
     [InlineData(true, true, "/")]
-    public void RespellingReflexRead_Modes_SlashesOnlyPhonemic(bool respelled, bool phonemic, string slash)
+    public void RespellingReflexScan_Modes_SlashesOnlyPhonemic(bool respelled, bool phonemic, string slash)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierRespellingCreate(engine, respelled, phonemic);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineGuiseRead"] = _ => new[] { TInterface.TReflexGuiseCreate(respelled, phonemic, false) },
+            });
 
-        CRespellingMark mark = atelier.CAtelierRespelling.CRespellingReflexRead("en");
+        CReflex reflex = Assert.Single(
+            atelier.CAtelierRespelling.CRespellingReflexScan("Chinese", [TAtelierReflexCreate(1, "Wu", "ipa", "")]));
 
-        Assert.Equal(new CRespellingMark(respelled, slash, slash), mark);
+        Assert.Equal(new CRespellingMark(respelled, slash, slash), reflex.CReflexMark);
+    }
+
+    [Fact]
+    public void RespellingReflexScan_TwoRows_AnswersEachRowReadyToShow()
+    {
+        List<object?[]?> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineGuiseRead"] = args =>
+                {
+                    asked.Add(args);
+                    return new[]
+                    {
+                        TInterface.TReflexGuiseCreate(true, false, false),
+                        TInterface.TReflexGuiseCreate(true, false, true),
+                    };
+                },
+            });
+
+        IReadOnlyList<CReflex> reflexes = atelier.CAtelierRespelling.CRespellingReflexScan(
+            "Chinese", [TAtelierReflexCreate(4, " Wu", "ipa", "respelt"), TAtelierReflexCreate(5, "Jin", "ipa", "")]);
+
+        Assert.Equal("Chinese", asked.Single()![0]);
+        Assert.Equal([" Wu", "Jin"], (IReadOnlyList<string>)asked.Single()![1]!);
+        Assert.Equal([4L, 5L], reflexes.Select(static reflex => reflex.CReflexId));
+        Assert.Equal(["respelt", "ipa"], reflexes.Select(static reflex => reflex.CReflexText));
+        Assert.Equal([false, true], reflexes.Select(static reflex => reflex.CReflexFolded));
+        Assert.Equal([true, true], reflexes.Select(static reflex => reflex.CReflexLead));
+        Assert.Equal(" Wu", reflexes[0].CReflexLanguage);
+        Assert.Equal([7L], reflexes[0].CReflexAnchors);
+        Assert.Equal("55", reflexes[0].CReflexTone);
     }
 
     [Theory]
@@ -83,6 +124,13 @@ public sealed class TAtelierRespelling
         Assert.Equal("respelt", accent.CAccentText);
         Assert.Equal("clip.mp3", accent.CAccentAudio);
         Assert.Equal(CSounding.CSoundingVarietyRead("English", "Scottish"), accent.CAccentVariety);
+    }
+
+    private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)
+    {
+        return new CReflexDraft(
+            id, language, string.Empty, text, respelling, string.Empty, string.Empty, string.Empty, false, string.Empty,
+            [7], "55");
     }
 
     private static CAtelier TAtelierRespellingCreate(LEngine engine, bool respelled, bool phonemic)

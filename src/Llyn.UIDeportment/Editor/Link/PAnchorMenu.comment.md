@@ -19,7 +19,7 @@ The accent brush the estimate mark is drawn in.
 The mark appended after the label of an estimated placement, a space and `≈`.
 It stands at the end so the label reads as stored and the estimate reads as a comment on it.
 
-## `private LReflexItem? _pAnchorRow`
+## `private QReflexItem? _pAnchorRow`
 
 The reflex row the open popup edits, `null` while it is closed.
 
@@ -27,7 +27,7 @@ The reflex row the open popup edits, `null` while it is closed.
 
 Opens the popup under the label that was pressed, filled for the row the command carries.
 
-## `private void PAnchorBuild(LReflexItem row)`
+## `private void PAnchorBuild(QReflexItem row)`
 
 Fills the list with one tick row per stored placement, ticked where `row` is anchored.
 The engine marks each placement, reading the classes the row's tone may descend from under the entry language's tone rows.

@@ -106,10 +106,6 @@ Stops this view's play, and leaves a later play from another view running.
 
 Sets whether the folded reflexes are shown, as the reading view's or the editor's toggle reads.
 
-## `public static HashSet<string> LDisplayFoldScan(IReadOnlyList<CReflexRule> rules)`
-
-The languages `rules` fold away, compared by ordinal.
-
 ## `public void LDisplayReflexLoad()`
 
 Reloads the shown entry's reflexes after a reflex fill.
@@ -153,9 +149,10 @@ Asks the engine to fetch the shown entry's rime-book rows.
 
 The shown entry's fanqie blocks, as the engine divides them.
 
-## `public (bool, Func<IReadOnlyList<long>, string, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)`
+## `public (bool, Func<IReadOnlyList<long>, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)`
 
 Whether the shown entry's reflex rows can anchor to the fanqie rows of `groups`, and the labeller of one row.
+The labeller joins placements by `CReflex.LReflexSeparator`, the editor's own separator.
 The caller passes blocks it already divided, so one show divides once.
 One call answers both, so the lectern sends one request per show.
 

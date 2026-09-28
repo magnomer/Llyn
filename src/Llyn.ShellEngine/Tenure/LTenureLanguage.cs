@@ -23,6 +23,14 @@ public sealed partial class LTenure
     public IReadOnlyList<string> LTenureVarietyNames =>
         LTenureVarietyRead().Select(static variety => variety.LVarietyName).ToList();
 
+    public IReadOnlyList<LSchemeRow> LTenureSchemeRead(long transcription)
+    {
+        IReadOnlyList<LTranscriptionDraft> rows = LTenureRead()?.LDraftContent.LEntryDraftTranscriptions ?? [];
+        return _lEngine.LEnginePronunciation.LEngineSchemeRead(LTenureLanguageRead())
+            .Select(scheme => new LSchemeRow(scheme, LDraftClerkReading.LSchemeTakenCheck(rows, scheme, transcription)))
+            .ToList();
+    }
+
     public bool LTenureReflexCheck()
     {
         return _lEngine.LEngineReflex.LEngineReflexRead(LTenureLanguageRead()).Count > 0

@@ -68,4 +68,4 @@ The side cells are the same grids in both templates.
 So an empty cell measures alike in both modes.
 The region is no field, only the hover the view has on the language.
 The reading field of a phonemic language stands between two slashes it does not hold.
-`LReflexItem.LReflexItemApply` fills every named part and picks the reading field's style.
+`QReflexItem.QReflexItemRefine` fills every named part and picks the reading field's style.

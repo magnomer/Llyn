@@ -12,7 +12,7 @@ It stands where the play button would, so the row's field ends where a pronuncia
 ## `<Style x:Key="Theme.Transcription.Option" TargetType="ComboBoxItem">`
 
 One scheme in the dropdown, drawn as a choice row is.
-`LTranscriptionChoice.LTranscriptionChoiceApply` disables a scheme another row already holds, so the engine is never asked twice.
+`QTranscriptionChoice.QTranscriptionChoiceRefine` disables a scheme another row already holds, so the engine is never asked twice.
 Its highlight, padding and greyed ink are `QLook` rows.
 
 ## `<Style x:Key="Theme.Transcription.Scheme" TargetType="ComboBox">`
@@ -41,4 +41,4 @@ A row as the editor draws it: scheme dropdown, field, lookup, and the plus and m
 ## `<DataTemplate x:Key="Theme.Transcription.Display">`
 
 A row as the reading view draws it: scheme chip and text, nothing to type into.
-`LTranscriptionItem.LTranscriptionItemApply` fills its named parts.
+`QTranscriptionItem.QTranscriptionItemRefine` fills its named parts.

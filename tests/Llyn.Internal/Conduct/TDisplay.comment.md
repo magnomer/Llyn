@@ -8,17 +8,9 @@ Covers the reading view rules that moved into the conduct, driven with no window
 
 A stamp that does not parse, or none at all, shows as nothing.
 
-## `public void DisplayFoldScan_NoRule_ReturnsEmpty()`
-
-No reflex rule folds no language.
-
 ## `public void DisplayFoldSet_CurrentValue_KeepsFold()`
 
 Setting the fold to the value it already holds leaves it there, so a toggle echo changes nothing.
-
-## `public void DisplayFoldScan_FoldedRule_ReturnsItsLanguage()`
-
-Only the language of a folded rule is folded.
 
 ## `public void DisplaySoundClear_ShownDraft_DropsDraftAndEntry()`
 

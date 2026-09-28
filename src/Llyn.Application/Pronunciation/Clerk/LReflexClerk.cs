@@ -41,11 +41,6 @@ public sealed class LReflexClerk
         _lReflexClerkBulletin = raise;
     }
 
-    public static bool LReflexAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
-    {
-        return LAnchor.LAnchorMatch(one, other);
-    }
-
     public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(
         IReadOnlyList<LFanqieRow> rows,
         IReadOnlyList<long> anchors,
@@ -72,6 +67,14 @@ public sealed class LReflexClerk
         return string.IsNullOrWhiteSpace(language)
             ? []
             : _lReflexClerkLanguages.LLanguageCacheRead(language).LLanguageReflexRules;
+    }
+
+    public IReadOnlyList<string> LReflexFoldedRead(string language)
+    {
+        return LReflexRuleRead(language)
+            .Where(static rule => rule.LReflexRuleFolded)
+            .Select(static rule => rule.LReflexRuleLanguage)
+            .ToList();
     }
 
     public void LReflexClerkSync(

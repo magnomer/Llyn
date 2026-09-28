@@ -38,6 +38,19 @@ The rank edit reaches the engine with the stored entry, the row and the rank.
 
 The anchor scan hands the engine the language of the draft on the desk, and shapes the rows it answers.
 
+## `public void SoundingAnchorFormat_StoredEntry_JoinsWithTheReflexSeparator()`
+
+The anchor label reaches the engine with the reflex separator Conduct owns.
+
+## `public void SoundingSchemeRead_TwoRows_MarksTheSchemeTheOtherRowHolds()`
+
+The Yale row's dropdown marks Jyutping as taken, since the other row holds it.
+Its own scheme stays free, so the row can keep it.
+
+## `public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()`
+
+A scheme is labelled under `Scheme.` plus its name, and a blank one keys `Scheme.` alone.
+
 ## `public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()`
 
 The paradigm rows the engine joined keep their part, name, form and doubt.

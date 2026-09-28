@@ -11,7 +11,7 @@ namespace Llyn.UIDeportment;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<LTranscriptionItem> _pGlyphItem = [];
+    private readonly ObservableCollection<QTranscriptionItem> _pGlyphItem = [];
     private CGlyph? _pGlyph;
 
     private ItemsControl PGlyph => (ItemsControl)FindName(nameof(PGlyph));
@@ -26,32 +26,32 @@ public partial class PEditor
 
     internal async void PGlyphNotationHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is LTranscriptionItem row && _pGlyph is not null)
+        if (e.Parameter is QTranscriptionItem row && _pGlyph is not null)
         {
-            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.LTranscriptionItemId, _pGlyph.CGlyphName);
+            await PNotationOpen(e.OriginalSource as UIElement ?? PGlyph, row.QTranscriptionItemId, _pGlyph.CGlyphName);
         }
     }
 
     private void PGlyphApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not LTranscriptionItem row)
+        if (item is not QTranscriptionItem row)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PGlyphLabel") is TextBlock label)
         {
-            label.Text = row.LTranscriptionItemLabel;
+            label.Text = row.QTranscriptionItemLabel;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PGlyphMeasure") is TextBlock measure)
         {
-            PGlyphMeasureApply(measure, row.LTranscriptionItemText);
+            PGlyphMeasureApply(measure, row.QTranscriptionItemText);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PGlyphField") is TextBox field)
         {
-            field.Text = row.LTranscriptionItemText;
+            field.Text = row.QTranscriptionItemText;
             field.SetResourceReference(QField.QFieldHintProperty, "Input.Glyph");
             field.TextChanged -= PGlyphFieldHandle;
             field.TextChanged += PGlyphFieldHandle;
@@ -76,9 +76,9 @@ public partial class PEditor
 
     private static void PGlyphFieldHandle(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { DataContext: LTranscriptionItem row } field)
+        if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            row.LTranscriptionItemText = field.Text;
+            row.QTranscriptionItemText = field.Text;
         }
     }
 
@@ -112,7 +112,7 @@ public partial class PEditor
         PCard.PCardRowShow(
             _pGlyphItem,
             rows,
-            static row => row.LTranscriptionItemId,
+            static row => row.QTranscriptionItemId,
             static spelled => spelled.CTranscriptionDraftId,
             PTranscriptionCreate,
             PTranscriptionUpdate);

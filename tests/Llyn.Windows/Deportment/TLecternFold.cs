@@ -29,7 +29,7 @@ public sealed class TLecternFold
                 fold.Unchecked += (_, _) => lectern.TLecternFoldHandle(fold.IsChecked == true);
 
                 lectern.TLecternFoldSet(true);
-                TInterfaceDeportment.TReflexFoldApply([], fold, lectern.LLecternFoldOpened);
+                TInterfaceDeportment.TReflexFoldRefine([], fold, lectern.LLecternFoldOpened);
                 shown = fold.IsChecked;
             }
             catch (Exception caught)

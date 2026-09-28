@@ -11,10 +11,6 @@ The engine's gate is shared, so a fetch that lands writes under the same lock as
 Reads the entry and reflex ports, the reflex source and the clock out of `rig`.
 The claim clerk supplies the held drafts a fetch fills.
 
-## `public static bool LReflexAnchorMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
-
-Whether two anchor lists name the same rows.
-
 ## `public static IReadOnlyList<LAnchorRow> LReflexAnchorScan(`
 
 The stored fanqie rows marked held and estimated for the anchor dropdown.
@@ -31,6 +27,11 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 ## `public IReadOnlyList<LReflexRule> LReflexRuleRead(string language)`
 
 The reflex rules the pack of `language` declares, or none for a blank language.
+
+## `public IReadOnlyList<string> LReflexFoldedRead(string language)`
+
+The languages the pack of `language` folds away, read from its reflex rules.
+None for a blank language or a pack without folded rules.
 
 ## `public void LReflexClerkSync(long entryId, string language, IReadOnlyList<LReflexDraft> drafts, List<LRevisionDelta>? changes, Dictionary<long, long> identity)`
 

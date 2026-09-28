@@ -95,6 +95,13 @@ Chooses what opens after a store: a blank draft for a fresh input draft, else th
 
 The held draft's content as the tenure last read it, applying nothing first.
 
+## `public IReadOnlyList<CReflexHead> CEditorLeadRead(long reflex, string language)`
+
+Every reflex row's lead, while `language` is typed into row `reflex`.
+The held draft's rows are read in order, with the typed language standing in for the row's stored one.
+The lead rule is `CReflex.LReflexLeadRead`, the one the scan marks its rows by.
+Only the edit in hand is overlaid, so another row's edit still deferred reads as stored.
+
 ## `public string CEditorPronunciationRead()`
 
 The primary reading as the field shows it, respelled when the pack respells.

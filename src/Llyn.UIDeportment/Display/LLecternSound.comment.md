@@ -15,12 +15,12 @@ Holds the window and the glyph section, and binds the transcription and glyph li
 `glyphSeam` opens a character's entry in a language, and the window owns it.
 
 The chip list is attached to `QGlyphItem.QGlyphItemRefine`, which fills each chip.
-The transcription list is attached to `LTranscriptionItem.LTranscriptionItemApply` the same way.
+The transcription list is attached to `QTranscriptionItem.QTranscriptionItemRefine` the same way.
 
 ## `public void LLecternReflexAttach(ItemsControl reflex, UIElement loading, ToggleButton fold)`
 
 Binds the reflex list to its rows and holds the loading line and the fold toggle.
-The list is attached to `LReflexItem.LReflexItemApply`, which fills each row.
+The list is attached to `QReflexItem.QReflexItemRefine`, which fills each row.
 
 ## `public void LLecternFanqieAttach(DependencyObject fanqie, TextBlock reading, Action<IReadOnlyList<CFanqieGroup>, bool> fanqieSeam, Action<string, string, string> diweiSeam, Action<string, string?> stemSeam)`
 
@@ -95,7 +95,7 @@ Rebuilds the transcription rows from the display's answer.
 
 ## `private void LLecternReflexShow()`
 
-Rebuilds the reflex rows from the written reflexes, folding the languages the pack folds away.
+Rebuilds the reflex rows from the written reflexes, each ready from `CRespelling.CRespellingReflexScan`.
 The fold is applied last, from the shared state.
 
 ## `private void LLecternAnchorShow(IReadOnlyList<LFanqieGroup> groups)`
