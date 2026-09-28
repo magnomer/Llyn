@@ -47,6 +47,12 @@ public sealed record LEntryDraft(
 
     public bool LEntryDraftMarked => LEntryDraftSpeeches.Count > 0;
 
+    public IReadOnlyList<string> LEntryDraftNames =>
+        LEntryDraftSpeeches
+            .Where(static speech => speech.LSpeechDraftNamed)
+            .Select(static speech => speech.LSpeechDraftName)
+            .ToList();
+
     public bool LEntryDraftDefined => LEntryDraftMeanings.Count > 0;
 
     public bool LEntryDraftCollocated => LEntryDraftCollocations.Count > 0;

@@ -22,7 +22,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 Puts the panel to work on the panel factory, which builds its Conduct over the atelier.
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
-It subscribes the lectern and its own controls to the panel's notices.
+The lectern follows the panel, and the panel's notices reach its own controls.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 The print and portrait command bindings live in the constructor, and their check answers false until the controller exists.
@@ -134,7 +134,7 @@ The window asks for the file and the format, and the engine writes the document 
 
 ## Inline notes
 
-### `QLibraryEditor.PEditorAttach(host, _lEditor, lectern);`
+### `QLibraryEditor.PEditorAttach(host, _lEditor);`
 
 The editor opens on no entry, and this panel puts it on one when the reader asks to write.
 The editor deportment was made for this panel, so its held work is told apart from the input panel's.

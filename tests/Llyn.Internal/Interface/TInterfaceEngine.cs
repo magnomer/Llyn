@@ -100,6 +100,13 @@ internal static partial class TInterface
     internal static LEntry? TEngineEntryRead(this LEngine engine, long id) =>
         engine.LEngineEntry.LEngineEntryRead(id);
 
+    internal static (bool, string, string) TEngineStampRead(this LEngine engine, long id) =>
+        engine.LEngineEntry.LEngineStampRead(id);
+
+    internal static string TEngineStampFormat(string? utc) => LEntryFacade.LEngineStampFormat(utc);
+
+    internal static bool TEngineNarrativeCheck(string text) => LEntryPort.LEngineNarrativeCheck(text);
+
     internal static LEntry TEngineEntrySave(this LEngine engine, LEntryDraft draft) =>
         engine.TEngineEntryCommit(null, draft);
 

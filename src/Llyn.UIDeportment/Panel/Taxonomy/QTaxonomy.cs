@@ -136,10 +136,8 @@ internal sealed partial class QTaxonomy
         _qTaxonomyHost = host;
         _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cTaxonomy.CTaxonomyEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cTaxonomy.CTaxonomyPanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += QTaxonomyModeUpdate;
         panel.CPanelRowsChanged += QMembershipFind;
 
@@ -150,7 +148,7 @@ internal sealed partial class QTaxonomy
 
         QTaxonomyDisplay.PDisplayAttach(host, lectern);
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QTaxonomyStoreUpdate;
-        QTaxonomyEditor.PEditorAttach(host, _lEditor, lectern);
+        QTaxonomyEditor.PEditorAttach(host, _lEditor);
         QTaxonomyEditor.PEditorChronicleChanged += QTaxonomyChronicleUpdate;
     }
 

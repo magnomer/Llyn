@@ -21,7 +21,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 Puts the panel to work through its Conduct `CFavorite`, which the forge builds over the atelier.
 The editor view and the lectern wrap the entry editor that `CFavorite` owns.
-The panel's loads and clears go straight to the lectern, so the veneer relays no draft.
+The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 It binds its lists, attaches their row fills, and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

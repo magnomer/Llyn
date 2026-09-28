@@ -38,7 +38,7 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 ## `internal void QCorpusAttach(PWindow host)`
 
 Takes the corpus Conduct and its editor from the forge, and wires the desk's notices.
-The quotation panel's loads and clears go straight to the lectern, so the veneer relays no draft.
+The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.

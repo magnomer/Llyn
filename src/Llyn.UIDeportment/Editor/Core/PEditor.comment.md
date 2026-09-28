@@ -29,10 +29,10 @@ The glyph, accent, transcription and reflex lists are attached to their row fill
 The pronunciation box, found by name.
 It is internal because the phonology panel attaches its probe to it.
 
-## `internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)`
+## `internal void PEditorAttach(PWindow host, LEditor editor)`
 
 Puts the editor to work on the deportment its tab built, and subscribes each notice to one control write.
-The view built `lectern` over the editor's display, and the reflex block keeps its fold there.
+The reflex block keeps its fold on the editor's display, so no lectern is handed in.
 The sentence frames, the language menu, the categories and the volume are loaded once here.
 They do not follow the draft, so no notice reloads them.
 

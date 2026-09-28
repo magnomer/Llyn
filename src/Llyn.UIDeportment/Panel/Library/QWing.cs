@@ -19,7 +19,7 @@ internal sealed class QWing
 
     private CWing _cWing = null!;
 
-    private LLectern _qWingLectern = null!;
+    private QLectern _qWingLectern = null!;
 
     internal QWing(UserControl surface)
     {
@@ -82,9 +82,9 @@ internal sealed class QWing
     {
         _qWingHost = host;
         _cWing = CWing.CWingCreate(host.PWindowAtelier, host.PWindowEnvoy);
-        _qWingLectern = new LLectern(_cWing.CWingDisplay);
+        _qWingLectern = new QLectern(_cWing.CWingDisplay);
 
-        _cWing.CWingLoaded += QWingLoadedRefine;
+        _cWing.CWingLoaded += QWingIndexShow;
         _cWing.CWingChanged += LObserver.LObserverCreate<CBulletin>(_qWingSurface, QWingIndexShow);
 
         QWingDisplay.PDisplayAttach(host, _qWingLectern);
@@ -93,7 +93,6 @@ internal sealed class QWing
     internal async void QWingRestore(string tab, long? id)
     {
         _cWing.CWingVistaRestore(tab);
-        QWingDisplay.PDisplayObserverAttach();
         _qIndex.QIndexClear();
         await LEnsignImage.LEnsignLoad(_qWingHost.PWindowAtelier);
 
@@ -104,7 +103,7 @@ internal sealed class QWing
             QWingSieveList, _cWing.CWingLanguageRead(), _cWing.CWingFilter, QWingSieveHandle);
 
         QWingQuery.Text = string.Empty;
-        _qWingLectern.LLecternClear();
+        _qWingLectern.QLecternArea.CDisplayEntryClose();
         _cWing.CWingEntryRestore(id);
     }
 
@@ -116,12 +115,6 @@ internal sealed class QWing
     private void QWingIndexShow()
     {
         _qIndex.QIndexShow(_cWing.CWingRowsRead(), _cWing.CWingQueried);
-    }
-
-    private void QWingLoadedRefine()
-    {
-        QWingIndexShow();
-        _qWingLectern.LLecternLoadedShow();
     }
 
     private void QWingSieveShow()

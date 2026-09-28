@@ -10,7 +10,7 @@ public interface LEntryPort
 
     IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child);
 
-    LEntry? LEngineEntryRead(long id);
+    (bool, string, string) LEngineStampRead(long entryId);
 
     LEntryDraft? LEngineEntryLoad(long id);
 
@@ -117,5 +117,10 @@ public interface LEntryPort
     static bool LEngineTextMatch(string field, string shown)
     {
         return LExampleClerk.LExampleTextMatch(field, shown);
+    }
+
+    static bool LEngineNarrativeCheck(string text)
+    {
+        return new LEtymologyDraft(text).LEtymologyDraftNarrated;
     }
 }

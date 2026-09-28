@@ -98,7 +98,7 @@ Plays an accent's recording at `volume`, and the engine plays nothing for a file
 The answered ticket is kept, so a later stop reaches this play alone.
 A refused play raises `LDisplaySoundFailed` with `Sound.PlayFailed` and keeps the old ticket.
 
-## `public void LDisplayPlaybackStop()`
+## `internal void LDisplayPlaybackStop()`
 
 Stops this view's play, and leaves a later play from another view running.
 

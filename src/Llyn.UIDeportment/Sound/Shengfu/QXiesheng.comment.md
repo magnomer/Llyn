@@ -22,7 +22,7 @@ Each named part of the page is pulled through `QContract.QContractFind`.
 ## `internal void QXieshengAttach(PWindow host)`
 
 Builds the Conduct session, wraps its editor, and subscribes the notices.
-The lectern takes the panel's loads and clears here, so the session names no driver type.
+The lectern is built here to follow the panel, so the session names no driver type.
 It then attaches the reader, the series page and the editor.
 
 ## `private void QXieshengStoreUpdate()`

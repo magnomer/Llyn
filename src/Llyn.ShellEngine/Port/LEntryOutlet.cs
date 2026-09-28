@@ -20,7 +20,8 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LVistaRow> LEngineEntryFind(LVista? parent, LVista? child) =>
         _lEntryOutletEngine.LEngineVista.LEngineEntryFind(parent, child);
 
-    public LEntry? LEngineEntryRead(long id) => _lEntryOutletEngine.LEngineEntry.LEngineEntryRead(id);
+    public (bool, string, string) LEngineStampRead(long entryId) =>
+        _lEntryOutletEngine.LEngineEntry.LEngineStampRead(entryId);
 
     public LEntryDraft? LEngineEntryLoad(long id) => _lEntryOutletEngine.LEngineEntry.LEngineEntryLoad(id);
 

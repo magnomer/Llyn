@@ -10,13 +10,6 @@ namespace Llyn.Tests;
 public sealed class TDisplay
 {
     [Fact]
-    public void DisplayStampFormat_UnreadableText_ReturnsEmpty()
-    {
-        Assert.Empty(TInterfaceConduct.TDisplayStampFormat("not a moment"));
-        Assert.Empty(TInterfaceConduct.TDisplayStampFormat(null));
-    }
-
-    [Fact]
     public void DisplayFoldSet_CurrentValue_KeepsFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -135,44 +128,6 @@ public sealed class TDisplay
             ["<Display.MeaningPlural>", "<Display.Translated>", "<Display.Note>"],
             rows.Select(static row => row.CCompassRowName));
         Assert.All(rows, static row => Assert.Null(row.CCompassRowCard));
-    }
-
-    [Fact]
-    public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        wing.CWingVistaRestore("left");
-        wing.CWingEntryOpen(water.LEntryId);
-
-        wing.CWingDisplay.CDisplayGraspSet(6);
-        Assert.Equal(6, wing.CWingDisplay.TDisplayGraspRead(water.LEntryId));
-
-        wing.CWingDisplay.CDisplayGraspSet(3);
-        Assert.Equal(3, engine.TEngineGraspRead(water.LEntryId));
-
-        wing.CWingDisplay.CDisplayGraspSet(3);
-        Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
-    }
-
-    [Fact]
-    public void DisplayGraspSet_NoEntryChosen_StoresNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        wing.CWingVistaRestore("left");
-
-        wing.CWingDisplay.CDisplayGraspSet(4);
-
-        Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
     }
 
     private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes) =>

@@ -17,7 +17,7 @@ public class PDisplay : UserControl
 
     private PWindow _pDisplayHost = null!;
 
-    private LLectern _lLectern = null!;
+    private QLectern _qLectern = null!;
 
     public PDisplay()
     {
@@ -188,12 +188,12 @@ public class PDisplay : UserControl
 
     private QIconImage PCompassIcon => (QIconImage)FindName(nameof(PCompassIcon));
 
-    internal void PDisplayAttach(PWindow host, LLectern lectern)
+    internal void PDisplayAttach(PWindow host, QLectern lectern)
     {
         _pDisplayHost = host;
-        _lLectern = lectern;
-        lectern.LLecternAttach(host.PWindowAtelier, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
-        lectern.LLecternHeaderAttach(
+        _qLectern = lectern;
+        lectern.QLecternIntroduce(host.PWindowAtelier, PDisplayEmpty, PDisplayContents, PDisplaySwath.PSwathClear);
+        lectern.QLecternHeaderIntroduce(
             PDisplayHeadword,
             PDisplayLanguage,
             PDisplayLanguageFlag,
@@ -203,14 +203,14 @@ public class PDisplay : UserControl
             PGrasp.PGraspStepProperty,
             PGrasp.PGraspLimitProperty,
             PDisplayGraspLabel);
-        lectern.LLecternStampAttach(PDisplayStampSection, PDisplayStampAdded, PDisplayStampUpdated);
-        lectern.LLecternFrequencyAttach(
+        lectern.QLecternStampIntroduce(PDisplayStampSection, PDisplayStampAdded, PDisplayStampUpdated);
+        lectern.QLecternFrequencyIntroduce(
             PDisplayFrequencySection, PDisplayFrequencyChip, PDisplayFrequency, PDisplayFrequencyBand);
-        lectern.LLecternSpeechAttach(PDisplaySpeechSection, PDisplaySpeech);
-        lectern.LLecternNoteAttach(PDisplayNoteSection, PDisplayNote);
+        lectern.QLecternSpeechIntroduce(PDisplaySpeechSection, PDisplaySpeech);
+        lectern.QLecternNoteIntroduce(PDisplayNoteSection, PDisplayNote);
         PMedia.PMediaAttach(this, host.PWindowAtelier);
-        lectern.LLecternPlayback.LLecternPlaybackAttach(host.PWindowAtelier, PPlaybackAction, PPlayback, PVolume);
-        lectern.LLecternAccent.LLecternAccentAttach(
+        lectern.QLecternPlayback.LLecternPlaybackAttach(host.PWindowAtelier, PPlaybackAction, PPlayback, PVolume);
+        lectern.QLecternAccent.LLecternAccentAttach(
             host.PWindowAtelier,
             PDisplayPronunciationSurface,
             PDisplayPronunciationLead,
@@ -222,7 +222,7 @@ public class PDisplay : UserControl
             PDisplayAccent,
             PDisplayContour,
             PContour.PContourTonalProperty);
-        lectern.LLecternSound.LLecternGlyphAttach(
+        lectern.QLecternSound.LLecternGlyphAttach(
             host.PWindowAtelier,
             PDisplayTranscription,
             PDisplayGlyphSection,
@@ -230,18 +230,18 @@ public class PDisplay : UserControl
             PDisplayGlyphLabel,
             PDisplayGlyph,
             host.PWindowGlyphShow);
-        lectern.LLecternSound.LLecternReflexAttach(PDisplayReflex, PDisplayReflexLoading, PDisplayReflexFold);
-        lectern.LLecternSound.LLecternFanqieAttach(
+        lectern.QLecternSound.LLecternReflexAttach(PDisplayReflex, PDisplayReflexLoading, PDisplayReflexFold);
+        lectern.QLecternSound.LLecternFanqieAttach(
             PDisplayFanqie,
             PDisplayReading,
             PDisplayFanqie.PFanqieShow,
             host.PWindowDiweiShow,
             host.PWindowStemShow);
-        lectern.LLecternSound.LLecternScriptAttach(PDisplayScript, PDisplayScript.PScriptShow);
-        lectern.LLecternSound.LLecternParadigmAttach(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
-        lectern.LLecternCompassAttach(
+        lectern.QLecternSound.LLecternScriptAttach(PDisplayScript, PDisplayScript.PScriptShow);
+        lectern.QLecternSound.LLecternParadigmAttach(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
+        lectern.QLecternCompassIntroduce(
             this, PDisplayContents, PDisplayHeader, PCompass, PCompassSurface, PCompassSwitch, PCompassList);
-        lectern.LLecternCompass.QCompassSectionIntroduce(
+        lectern.QLecternCompass.QCompassSectionIntroduce(
             PDisplaySpeechSection,
             PDisplayFrequencySection,
             PDisplayMeaningSection,
@@ -250,7 +250,7 @@ public class PDisplay : UserControl
             PDisplayCollocation,
             PDisplayIncomingSection,
             PDisplayNoteSection);
-        lectern.LLecternCard.LLecternCardAttach(
+        lectern.QLecternCard.LLecternCardAttach(
             host.PWindowAtelier,
             Resources,
             PDisplayMeaning,
@@ -258,94 +258,89 @@ public class PDisplay : UserControl
             PDisplayCollocation,
             PDisplayCollocationSection,
             PDisplayContents,
-            lectern.LLecternCompass);
-        lectern.LLecternCard.LLecternLinkAttach(
+            lectern.QLecternCompass);
+        lectern.QLecternCard.LLecternLinkAttach(
             _pLeaf.PLeafLink.PLinkConverterShow,
             _pLeaf.PLeafCitation.QCitationConverterShow,
             _pLeaf.PLeafFrame.PSentenceConverterApply);
-        lectern.LLecternCard.LLecternIncomingAttach(PDisplayIncoming, PDisplayIncomingSection);
-        lectern.LLecternCard.LLecternEtymologyAttach(
+        lectern.QLecternCard.LLecternIncomingAttach(PDisplayIncoming, PDisplayIncomingSection);
+        lectern.QLecternCard.LLecternEtymologyAttach(
             PDisplayEtymology, PDisplayEtymologySection, PDisplayEtymology.PEtymologyShow);
-        lectern.LLecternCard.LLecternRouteAttach(
+        lectern.QLecternCard.LLecternRouteAttach(
             host.PWindowEntryShow,
             host.PWindowSituationShow,
             host.PWindowRegisterShow,
             host.PWindowTagShow,
             host.PWindowFailureShow);
         PDisplayFanqie.PFanqieNoticeAttach(
-            lectern.LLecternSound.LLecternDiweiShow,
-            lectern.LLecternSound.LLecternStemShow,
-            lectern.LLecternSound.LLecternFanqieSet);
+            lectern.QLecternSound.LLecternDiweiShow,
+            lectern.QLecternSound.LLecternStemShow,
+            lectern.QLecternSound.LLecternFanqieSet);
     }
 
     internal void PCompassRowHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternCompass.QCompassRowRefine(sender);
+        _qLectern.QLecternCompass.QCompassRowRefine(sender);
     }
 
     private void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternSound.LLecternFoldHandle(QLook.QLookCheckedRead(PDisplayReflexFold.IsChecked));
-    }
-
-    internal void PDisplayObserverAttach()
-    {
-        _lLectern.LLecternObserverAttach(this);
+        _qLectern.QLecternSound.LLecternFoldHandle(QLook.QLookCheckedRead(PDisplayReflexFold.IsChecked));
     }
 
     private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternFavoriteHandle();
+        _qLectern.QLecternFavoriteObserve();
     }
 
     private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternGraspHandle(PDisplayGrasp.PGraspStep);
+        _qLectern.QLecternGraspObserve(PDisplayGrasp.PGraspStep);
     }
 
     private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternHoverHandle(PDisplayGrasp.PGraspPointed);
+        _qLectern.QLecternHoverRefine(PDisplayGrasp.PGraspPointed);
     }
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternPlayback.LLecternActionHandle();
+        _qLectern.QLecternPlayback.LLecternActionHandle();
     }
 
     internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lLectern.LLecternPlayback.LLecternPlaybackHandle(e.Parameter);
+        _qLectern.QLecternPlayback.LLecternPlaybackHandle(e.Parameter);
     }
 
     private void PDisplayGlyphHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lLectern.LLecternSound.LLecternGlyphHandle(e.Parameter);
+        _qLectern.QLecternSound.LLecternGlyphHandle(e.Parameter);
     }
 
     internal void PDisplayClose()
     {
-        _lLectern.LLecternClose();
+        _qLectern.QLecternArea.CDisplayPlaybackCancel();
     }
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternCard.LLecternCardHandle(e);
+        _qLectern.QLecternCard.LLecternCardHandle(e);
     }
 
     private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternCard.LLecternIncomingHandle(e.OriginalSource);
+        _qLectern.QLecternCard.LLecternIncomingHandle(e.OriginalSource);
     }
 
     private void PDisplayEtymonHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lLectern.LLecternCard.LLecternEtymonHandle(e.Parameter);
+        _qLectern.QLecternCard.LLecternEtymonHandle(e.Parameter);
     }
 
     private void PDisplayMentionHandle(object? sender, PMentionArgument e)
     {
-        _lLectern.LLecternCard.LLecternMentionFind(
+        _qLectern.QLecternCard.LLecternMentionFind(
             e.PMentionArgumentOrigin,
             e.PMentionArgumentText,
             e.PMentionArgumentLanguage,
@@ -356,7 +351,7 @@ public class PDisplay : UserControl
 
     internal void PDisplayCardScroll(long id)
     {
-        _lLectern.LLecternCard.LLecternCardScroll(id);
+        _qLectern.QLecternCard.LLecternCardScroll(id);
     }
 
     private static void PSpeechApply(FrameworkElement container, object item, string? _)

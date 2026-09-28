@@ -21,7 +21,7 @@ Each named part is pulled from the page by its contract ID on every read.
 
 Puts the panel to work through the Conduct tenor panel, which the forge builds with its own editor.
 The view wraps that editor for its editor page.
-The panel's loads and clears go straight to the lectern, so the veneer relays no draft.
+The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
 Both catalogs get their row fills here, where their sources are set.
 
 ## `internal void QTenorReset()`

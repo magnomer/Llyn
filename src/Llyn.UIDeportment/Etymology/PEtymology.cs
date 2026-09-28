@@ -100,7 +100,7 @@ public sealed class PEtymology : ContentControl
 
         _pEtymologyField.ItemsSource = PEtymon.PEtymonBuild(etymons, _pEtymologyCaret);
         _pEtymologyField.Visibility = QLook.QLookVisibleRead(
-            LLectern.LLecternEtymonCheck(PEtymologyEditable, etymons.Count));
+            CDisplay.CDisplayEtymonCheck(PEtymologyEditable, etymons.Count));
     }
 
     internal void PEtymologyMentionShow(
@@ -134,7 +134,7 @@ public sealed class PEtymology : ContentControl
         QField.QFieldTextShow(_pEtymologyWrite, text);
 
         _pEtymologyCaret.PEtymonShown = editable;
-        _pEtymologyProse.Visibility = QLook.QLookVisibleRead(LLectern.LLecternNarrativeCheck(editable, text));
+        _pEtymologyProse.Visibility = QLook.QLookVisibleRead(CDisplay.CDisplayNarrativeCheck(editable, text));
         _pEtymologyWrite.Visibility = QLook.QLookVisibleRead(editable);
         _pEtymologyStrip.Visibility = QLook.QLookVisibleRead(editable);
         QLookItem.QLookItemApply(_pEtymologyField);

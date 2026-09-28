@@ -40,7 +40,6 @@ internal sealed partial class QCorpus
     {
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         QCorpusObserverAttach();
-        QCorpusDisplay.PDisplayObserverAttach();
         QCorpusEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QRankList,

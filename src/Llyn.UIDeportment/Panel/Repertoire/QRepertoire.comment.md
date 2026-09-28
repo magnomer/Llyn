@@ -26,7 +26,7 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 ## `internal void QRepertoireAttach(PWindow host)`
 
 Takes the repertoire Conduct and its editor from the forge, and wires the desk's notices.
-The occurrence panel's loads and clears go straight to the lectern, so the veneer relays no draft.
+The lectern follows the occurrence panel, whose loads and clears reach the display's area, never the veneer.
 Binds the panel to the window it asks for confirmations and panel switches through.
 The media host is attached to the surface, so the rows inside it find the atelier.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.

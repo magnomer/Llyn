@@ -82,7 +82,7 @@ public partial class PEditor
         PReflexTable.MinHeight = PReflexTable.ActualHeight;
         try
         {
-            _pEditorLectern.LLecternReflexRebuild(entry);
+            _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexRebuild(entry);
         }
         catch (Exception)
         {
@@ -145,7 +145,8 @@ public partial class PEditor
             PReflexCreate,
             PReflexUpdate);
 
-        QReflexItem.QReflexFoldRefine(_pReflexItem, PReflexFold, _pEditorLectern.LLecternFoldOpened);
+        QReflexItem.QReflexFoldRefine(
+            _pReflexItem, PReflexFold, _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
         PReflexAnchorShow();
         PReflexPendingShow();
     }
@@ -166,7 +167,7 @@ public partial class PEditor
         {
             try
             {
-                pending = _pEditorLectern.LLecternReflexCheck(entry);
+                pending = _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexCheck(entry);
             }
             catch (Exception)
             {
@@ -187,8 +188,10 @@ public partial class PEditor
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _pEditorLectern.LLecternFoldSet(QLook.QLookCheckedRead(PReflexFold.IsChecked));
-        QReflexItem.QReflexFoldRefine(_pReflexItem, PReflexFold, _pEditorLectern.LLecternFoldOpened);
+        _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldSet(
+            QLook.QLookCheckedRead(PReflexFold.IsChecked));
+        QReflexItem.QReflexFoldRefine(
+            _pReflexItem, PReflexFold, _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);
     }
 
     private void PReflexPrepare(CEntryDraft draft)
@@ -206,7 +209,7 @@ public partial class PEditor
 
         try
         {
-            _pEditorLectern.LLecternReflexStart(entry.Value);
+            _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayReflexStart(entry.Value);
         }
         catch (Exception)
         {

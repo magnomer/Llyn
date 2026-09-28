@@ -3,7 +3,8 @@
 ## `public sealed class LDisplay`
 
 The reading view's conduct, which holds its state, decisions and engine reads.
-Only the display drivers, such as [LLectern](../../Llyn.UIDeportment/Display/LLectern.comment.md), name it, so no veneer reaches Conduct.
+Only the display drivers, such as [QLectern](../../Llyn.UIDeportment/Display/QLectern.comment.md), name it, so no veneer reaches Conduct.
+The lectern's gates and change events live in its area, [CDisplay](CDisplay.comment.md), so this class holds the rules they share.
 It forwards the pending checks the editor reads to the sound half.
 Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
 The card reads answer for the shown draft, and a refused one answers empty so the page still draws.
@@ -12,31 +13,32 @@ The card reads answer for the shown draft, and a refused one answers empty so th
 
 The sound half, which holds the shown draft, the fold state and every phonology read.
 
+## `public CDisplay CDisplayArea { get; }`
+
+The lectern's area, built once here, so every driver over this display hears the same events.
+
 ## `public event Action<string, Exception>? LDisplayFailed;`
 
 Raised with the text key and the exception when a word lookup, a mark or a load is refused.
 The sound half's failures arrive here too.
 The card deportment hands it to the window's notice.
 
-## `public void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)`
+## `public void LDisplayVistaRestore(LVista vista)`
+
+Takes the vista the display follows, then lets the area subscribe its plan on it.
+Each vista is new, so the plan is subscribed once per vista.
+
+## `internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)`
 
 Hands `observer` the display vista's bulletins about `subject` that name the chosen entry or no entry.
-The driver names the subject and hears the bulletin in Conduct's records, never the engine's.
+The area and the wing name the subject and hear the bulletin in Conduct's records, never the engine's.
 The subject maps through `CPanel.CPanelSubjectRead`, by name, so an unknown subject throws.
 
-## `public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)`
+## `internal void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)`
 
 Hands `observer` every bulletin about `subject` the display vista hears, in Conduct's records.
 
-## `public void LDisplayShow(LEntryDraft draft)`
-
-Hands the shown draft to the sound half.
-
-## `public void LDisplayClear()`
-
-Drops the shown draft from the sound half.
-
-## `public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;`
+## `internal int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;`
 
 The last grasp step, which the display's star control takes as its limit.
 
@@ -63,42 +65,33 @@ A refused lookup raises `LDisplayFailed` and answers the plain wordings.
 
 Whether `card` is the one with `id`, which a card scroll looks for.
 
-## `public string LDisplayGraspFormat(long? entry, int step)`
+## `internal string LDisplayGraspFormat(long? entry, int step)`
 
 The wording of a grasp step, or empty when no entry is given.
 
-## `public void LDisplayDraftLoad(Action<LEntryDraft?> show)`
+## `internal void LDisplayDraftLoad(Action<LEntryDraft?> show)`
 
 Reloads the chosen entry's draft from the vista and hands it to `show`, or null once the entry is gone.
 A refused load calls nothing and raises `LDisplayFailed` with `Sound.LoadFailed`.
 The page keeps what it shows, so no draft is paired with an id it was not loaded for.
 
-## `private LEntryDraft? _lDisplayLoaded;`
+## `internal void LDisplayEntryLoad(long id)`
 
-The draft the last entry load found, or null when that entry was gone.
-
-## `public void LDisplayEntryLoad(long id)`
-
-Loads one entry for a pick, holds its draft, and chooses it on the vista.
-An entry that is gone chooses nothing, so the side stands on no entry.
+Loads one entry for a pick, chooses it on the vista, and opens its draft in the area.
+An entry that is gone chooses nothing, so the side stands on no entry and the area closes.
 A refused load throws before anything changes, so the caller can report it.
 
-## `public string LDisplayLanguageRead()`
-
-The shown draft's language, or empty while nothing is shown.
-A flag arriving late is drawn for it, so a stale language never gets its flag.
-
-## `public bool LDisplayFavoriteRead(long? entry)`
+## `internal bool LDisplayFavoriteRead(long? entry)`
 
 Whether the entry is a favorite, false when no entry is given or the read fails.
-The lectern passes the chosen entry and the editor's esteem the stored one, so both share this rule.
+The area passes the chosen entry and the editor's esteem the stored one, so both share this rule.
 
-## `public void LDisplayFavoriteSave(long? entry, bool marked)`
+## `internal void LDisplayFavoriteSave(long? entry, bool marked)`
 
 Marks or unmarks the entry as a favorite.
 A refused mark raises `LDisplayFailed` with `Favorite.MarkFailed`, and the heart then redraws from the stored value.
 
-## `public int LDisplayGraspRead(long? entry)`
+## `internal int LDisplayGraspRead(long? entry)`
 
 The entry's grasp step, zero when no entry is given or the read fails.
 The step it answers is held with its entry, since that is the step the stars now show.
@@ -107,34 +100,15 @@ The step it answers is held with its entry, since that is the step the stars now
 
 The entry and grasp step last read or stored, which a repeated press compares against.
 
-## `public void CDisplayGraspSet(int step)`
-
-The gate for a grasp step the reader picked on the chosen entry.
-
 ## `internal void LDisplayGraspSave(long? entry, int step)`
 
 Stores `step` as the entry's grasp.
 Picking the step that already stands clears the grasp, so one press unrates.
 Only the step held for the same entry counts, so another entry's step never clears this one.
-The lectern's gate and the editor's esteem both store through it, so the rule has one owner.
+The area's gate and the editor's esteem both store through it, so the rule has one owner.
 A refused save raises `LDisplayFailed` with `Grasp.MarkFailed`, and the stars then redraw from the stored value.
 
-## `public LDisplayStamp LDisplayStampRead()`
-
-The creation and update times from the stored entry, since the draft carries no clock.
-An entry that cannot be read answers a hidden stamp.
-
-## `public static string LDisplayStampFormat(string? utc)`
-
-Turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
-A missing or unreadable stamp answers empty.
-
-## `public IReadOnlyList<string> LDisplaySpeechRead()`
-
-The shown draft's parts of speech as the names a reader reads.
-The draft keeps the stored value beside the name, and the page shows only the name.
-
-## `public CFrequency? LDisplayFrequencyRead(long? entry, string once)`
+## `internal CFrequency? LDisplayFrequencyRead(long? entry, string once)`
 
 The entry's frequency chip, since the draft does not carry the frequency.
 The engine gathers the rows, words them, and names the rank and the spare stars.
@@ -157,7 +131,7 @@ Forwards to the sound half, since the editor asks whether the inflections are st
 ## `public IReadOnlyList<CUsage> LDisplayIncomingRead()`
 
 The usages pointing at the chosen entry, each carrying the epithet of the entry that holds it.
-It reads the live choice, as favorite, grasp, stamp and frequency do.
+It reads the live choice, as the area's favorite, grasp, stamp and frequency reads do.
 No entry chosen answers no usages.
 A refused incoming read raises `LDisplayFailed` with `Display.IncomingFailed` and answers no usages.
 A refused epithet keeps its usage with an empty epithet, so one bad entry hides nothing else.
@@ -193,14 +167,6 @@ A refused lookup raises `LDisplayFailed` and never calls `show`, so the click op
 
 The source links of an etymology, named by the engine.
 A read the engine refuses answers no links, so the page still draws.
-
-## `public static bool LDisplayNarrativeCheck(bool editable, string text)`
-
-Whether the read face of the narrative stands: only on the read side, and only with words in it.
-
-## `public static bool LDisplayEtymonCheck(bool editable, int count)`
-
-Whether the row of source links shows: always while editable, else only with a link.
 
 ## `public static bool LDisplayEtymologyCheck(string text, int count)`
 

@@ -2,7 +2,7 @@
 
 ## `public sealed class TLecternFold`
 
-Covers the reflex fold toggle the reading view shares with the editor through one lectern.
+Covers the reflex fold toggle the reading view shares with the editor through one display.
 The toggle lives on its own STA thread, since a WPF control demands one.
 
 ## `public void FoldHandle_DisagreeingToggle_SettlesOnFlag()`

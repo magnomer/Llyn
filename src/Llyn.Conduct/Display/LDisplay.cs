@@ -15,8 +15,6 @@ public sealed class LDisplay
 
     private LVista? _lDisplayVista;
 
-    private LEntryDraft? _lDisplayLoaded;
-
     private (long, int)? _lDisplayGrasp;
 
     internal LDisplay(
@@ -28,34 +26,38 @@ public sealed class LDisplay
         _lPhonologyPort = phonology;
         LDisplaySound = new LDisplaySound(drafts, entries, phonology, media, settings);
         LDisplaySound.LDisplaySoundFailed += (key, exception) => LDisplayFailed?.Invoke(key, exception);
+        CDisplayArea = new CDisplay(this, entries);
     }
 
     public LDisplaySound LDisplaySound { get; }
 
+    public CDisplay CDisplayArea { get; }
+
     public event Action<string, Exception>? LDisplayFailed;
 
-    public long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
+    internal long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
 
     public void LDisplayVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
         _lDisplayVista = vista;
+        CDisplayArea.LDisplayVistaAttach();
     }
 
-    public void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
+    internal void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaChosenAttach(
             CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
-    public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)
+    internal void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaObserverAttach(
             CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
-    public void LDisplayDraftLoad(Action<LEntryDraft?> show)
+    internal void LDisplayDraftLoad(Action<LEntryDraft?> show)
     {
         ArgumentNullException.ThrowIfNull(show);
 
@@ -73,27 +75,11 @@ public sealed class LDisplay
         show(draft);
     }
 
-    public LEntryDraft? LDisplayLoaded => _lDisplayLoaded;
-
-    public void LDisplayEntryLoad(long id)
+    internal void LDisplayEntryLoad(long id)
     {
-        _lDisplayLoaded = _lEntryPort.LEngineEntryLoad(id);
-        _lDisplayVista?.LVistaSelect(_lDisplayLoaded is null ? null : id);
-    }
-
-    public string LDisplayLanguageRead()
-    {
-        return LDisplaySound.LDisplayShown?.LEntryDraftLanguage ?? string.Empty;
-    }
-
-    public void LDisplayShow(LEntryDraft draft)
-    {
-        LDisplaySound.LDisplaySoundShow(LDisplayChosen, draft);
-    }
-
-    public void LDisplayClear()
-    {
-        LDisplaySound.LDisplaySoundClear();
+        LEntryDraft? loaded = _lEntryPort.LEngineEntryLoad(id);
+        _lDisplayVista?.LVistaSelect(loaded is null ? null : id);
+        CDisplayArea.LDisplayEntryOpen(loaded);
     }
 
     public bool LDisplayFanqieCheck(long? id) => LDisplaySound.LDisplayFanqieCheck(id);
@@ -102,7 +88,7 @@ public sealed class LDisplay
 
     public bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
 
-    public bool LDisplayFavoriteRead(long? entry)
+    internal bool LDisplayFavoriteRead(long? entry)
     {
         if (entry is not long id)
         {
@@ -119,7 +105,7 @@ public sealed class LDisplay
         }
     }
 
-    public void LDisplayFavoriteSave(long? entry, bool marked)
+    internal void LDisplayFavoriteSave(long? entry, bool marked)
     {
         if (entry is not long id)
         {
@@ -143,7 +129,7 @@ public sealed class LDisplay
         }
     }
 
-    public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
+    internal int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
 
     public IReadOnlyList<CCompassRow> CDisplayCompassRead(
         IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)
@@ -220,14 +206,14 @@ public sealed class LDisplay
         return card.LCardDraftId == id;
     }
 
-    public string LDisplayGraspFormat(long? entry, int step)
+    internal string LDisplayGraspFormat(long? entry, int step)
     {
         return entry is null
             ? string.Empty
             : _lEntryPort.LEngineGraspFormat(step);
     }
 
-    public int LDisplayGraspRead(long? entry)
+    internal int LDisplayGraspRead(long? entry)
     {
         if (entry is not long id)
         {
@@ -244,11 +230,6 @@ public sealed class LDisplay
         {
             return 0;
         }
-    }
-
-    public void CDisplayGraspSet(int step)
-    {
-        LDisplayGraspSave(LDisplayChosen, step);
     }
 
     internal void LDisplayGraspSave(long? entry, int step)
@@ -270,56 +251,7 @@ public sealed class LDisplay
         }
     }
 
-    public LDisplayStamp LDisplayStampRead()
-    {
-        LEntry? entry;
-        try
-        {
-            entry = LDisplayChosen is long id ? _lEntryPort.LEngineEntryRead(id) : null;
-        }
-        catch (Exception)
-        {
-            entry = null;
-        }
-
-        return entry is null
-            ? new LDisplayStamp(false, string.Empty, string.Empty)
-            : new LDisplayStamp(
-                true, LDisplayStampFormat(entry.LEntryAddedUtc), LDisplayStampFormat(entry.LEntryUpdatedUtc));
-    }
-
-    public static string LDisplayStampFormat(string? utc)
-    {
-        if (utc is null
-            || !DateTimeOffset.TryParse(
-                utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
-        {
-            return string.Empty;
-        }
-
-        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
-    }
-
-    public IReadOnlyList<string> LDisplaySpeechRead()
-    {
-        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
-        {
-            return [];
-        }
-
-        List<string> named = new(draft.LEntryDraftSpeeches.Count);
-        foreach (LSpeechDraft speech in draft.LEntryDraftSpeeches)
-        {
-            if (speech.LSpeechDraftNamed)
-            {
-                named.Add(speech.LSpeechDraftName);
-            }
-        }
-
-        return named;
-    }
-
-    public CFrequency? LDisplayFrequencyRead(long? entry, string once)
+    internal CFrequency? LDisplayFrequencyRead(long? entry, string once)
     {
         if (entry is not long id)
         {
@@ -439,16 +371,6 @@ public sealed class LDisplay
         {
             return [];
         }
-    }
-
-    public static bool LDisplayNarrativeCheck(bool editable, string text)
-    {
-        return !editable && text.Trim().Length > 0;
-    }
-
-    public static bool LDisplayEtymonCheck(bool editable, int count)
-    {
-        return editable || count > 0;
     }
 
     public static bool LDisplayEtymologyCheck(string text, int count)

@@ -22,7 +22,7 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 ## `internal void PYunjingAttach(PWindow host)`
 
 Builds the Conduct session, wraps its editor, and subscribes the notices.
-The lectern takes the panel's loads and clears here, so the session names no driver type.
+The lectern is built here to follow the panel, so the session names no driver type.
 It then wires the lists, the page and the editor.
 The print and portrait command bindings are added last, so no can-execute query meets a session not yet built.
 

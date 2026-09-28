@@ -10,8 +10,6 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceConduct
 {
-    internal static string TDisplayStampFormat(string? utc) => LDisplay.LDisplayStampFormat(utc);
-
     internal static IReadOnlyList<bool> TReflexLeadRead(IReadOnlyList<string> languages) =>
         CReflex.LReflexLeadRead(languages);
 

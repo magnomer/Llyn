@@ -69,7 +69,6 @@ internal sealed partial class QTaxonomy
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        QTaxonomyDisplay.PDisplayObserverAttach();
         QTaxonomyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QFunnelList,

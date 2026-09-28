@@ -137,10 +137,8 @@ internal sealed class QXiesheng
         _qXieshengHost = host;
         _cXiesheng = host.PWindowForge.QForgeXieshengCreate(QXieshengShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cXiesheng.CXieshengEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cXiesheng.CXieshengPanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += QXieshengModeUpdate;
         panel.CPanelRowsChanged += QKindredUpdate;
         panel.CPanelCleared += QXieshengClearUpdate;
@@ -154,7 +152,7 @@ internal sealed class QXiesheng
         QXieshengDisplay.PDisplayAttach(host, lectern);
         _qStem.QStemAttach(host.PWindowAtelier, _cXiesheng);
 
-        QXieshengEditor.PEditorAttach(host, _lEditor, lectern);
+        QXieshengEditor.PEditorAttach(host, _lEditor);
 
         QXieshengEditor.PEditorChronicleChanged += QXieshengChronicleUpdate;
     }
@@ -188,7 +186,6 @@ internal sealed class QXiesheng
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengEntryResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QXieshengDisplay.PDisplayObserverAttach();
         QXieshengEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QRungList,

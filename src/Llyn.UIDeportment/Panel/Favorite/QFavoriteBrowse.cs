@@ -55,7 +55,6 @@ internal sealed partial class QFavorite
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QFavoriteDisplay.PDisplayObserverAttach();
         QFavoriteEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QSeriesList,

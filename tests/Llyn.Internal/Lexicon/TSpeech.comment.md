@@ -7,6 +7,10 @@ The engine writes parts of speech and morphology into a workspace from the packs
 It covers a pack row rewritten in place, as a second import rewrites it.
 It covers an Entry's inflected forms appended to, moved and deleted through the entry update.
 
+## `public void EntryDraftNames_UnnamedSpeech_LeavesItOut()`
+
+An unnamed part of speech stays out of the names a reader reads, though the entry still counts as marked.
+
 ## Inline notes
 
 ### `Assert.Equal("Noun", engine.LEngineSpeechRead("English", "noun"));`

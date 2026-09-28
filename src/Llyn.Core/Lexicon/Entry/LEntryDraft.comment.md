@@ -28,6 +28,11 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 - `LEntryDraftEtymology` — What the entry says about its own origin, in either shape.
   Never null, since an entry that says nothing carries an empty etymology draft.
 
+## `public IReadOnlyList<string> LEntryDraftNames`
+
+The names of the parts of speech a reader reads, in order.
+A part stored with no name is left out, since only its stored value would show.
+
 ## `public bool LEntryDraftDerived`
 
 Whether the entry says anything about its origin, by prose or by link.

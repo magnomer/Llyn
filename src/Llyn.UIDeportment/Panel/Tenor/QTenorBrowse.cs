@@ -71,7 +71,6 @@ internal sealed partial class QTenor
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         _cTenor.CTenorObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
-        QTenorDisplay.PDisplayObserverAttach();
         QTenorEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QDegreeList,

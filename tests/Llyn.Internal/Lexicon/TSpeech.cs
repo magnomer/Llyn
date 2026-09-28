@@ -221,6 +221,23 @@ public sealed class TSpeech
             TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!));
     }
 
+    [Fact]
+    public void EntryDraftNames_UnnamedSpeech_LeavesItOut()
+    {
+        LEntryDraft draft = TSpeechDraftCreate() with
+        {
+            LEntryDraftSpeeches =
+            [
+                TInterface.TSpeechDraftCreate(7, string.Empty),
+                TInterface.TSpeechDraftCreate(8, "Noun"),
+                TInterface.TSpeechDraftCreate(9, "Verb"),
+            ],
+        };
+
+        Assert.Equal(["Noun", "Verb"], draft.LEntryDraftNames);
+        Assert.True(draft.LEntryDraftMarked);
+    }
+
     private static LEntryDraft TSpeechDraftCreate(params string[] speeches)
     {
         return TInterface.TEntryDraftCreate(

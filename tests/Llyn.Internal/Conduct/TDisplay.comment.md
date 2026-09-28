@@ -4,10 +4,6 @@
 
 Covers the reading view rules that moved into the conduct, driven with no window.
 
-## `public void DisplayStampFormat_UnreadableText_ReturnsEmpty()`
-
-A stamp that does not parse, or none at all, shows as nothing.
-
 ## `public void DisplayFoldSet_CurrentValue_KeepsFold()`
 
 Setting the fold to the value it already holds leaves it there, so a toggle echo changes nothing.
@@ -39,14 +35,6 @@ Each card carries its number, its depth and its place in its section's list.
 ## `public void DisplayCompassRead_NothingShown_NamesOnlyTheParts()`
 
 With no draft shown, the parts are named through the lookup and carry no cards.
-
-## `public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()`
-
-A new step is stored, and the step that stands pressed again clears the grasp to zero.
-
-## `public void DisplayGraspSet_NoEntryChosen_StoresNothing()`
-
-With no entry chosen the gate stores nothing.
 
 ## `private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
 

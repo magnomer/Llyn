@@ -15,6 +15,16 @@ Keeps the engine and its gate so entry calls share the engine's state and lock.
 
 Reads the entry for `id`, or `null` when no entry has that id.
 
+## `public (bool, string, string) LEngineStampRead(long entryId)`
+
+Whether the entry is stored, with its creation and update times already worded, since the draft carries no clock.
+An id no entry has answers false with empty times, so the reading view hides its stamp row.
+
+## `internal static string LEngineStampFormat(string? utc)`
+
+Turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
+A missing or unreadable stamp answers empty.
+
 ## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The clerk's search under the gate.

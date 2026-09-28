@@ -55,7 +55,6 @@ internal static class TAuditChainSetting
         [
             "LDisplay",
             "LDisplaySound",
-            "LDisplayStamp",
             "CSentence",
             "CSentenceFrame",
             "CSCoinage",
@@ -202,12 +201,14 @@ internal static class TAuditChainSetting
             "CYunjing",
             "CCompassPart",
             "CCompassRow",
+            "CDisplay",
+            "CLectern",
+            "CGrasp",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
             "LDisplay",
             "LDisplaySound",
-            "LDisplayStamp",
             "CSentence",
             "CSentenceFrame",
             "CSCoinage",
@@ -332,16 +333,16 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 77,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 168,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 158,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 33,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 20,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 17,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 20,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 17,
         ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
         ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
-        ["seal:Llyn.UIDeportment>Llyn.Core"] = 2,
+        ["seal:Llyn.UIDeportment>Llyn.Core"] = 0,
         ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
     };
 

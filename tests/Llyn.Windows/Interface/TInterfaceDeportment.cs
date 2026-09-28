@@ -21,7 +21,7 @@ internal static class TInterfaceDeportment
     internal static void TEditorVistaRestore(this LEditor editor, LVista vista) =>
         editor.LEditorStudio.TEditorVistaRestore(vista);
 
-    internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorStudio.CEditorDisplay);
+    internal static QLectern TLecternCreate(LEditor editor) => new(editor.LEditorStudio.CEditorDisplay);
 
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.CDeskChangeCheck();
 
@@ -44,14 +44,18 @@ internal static class TInterfaceDeportment
         string key, int caret, int length, int selection, Action<int> remove, Func<int, bool> move, Action place) =>
         QCaret.QCaretKeyApply(key, caret, length, selection, remove, move, place);
 
-    internal static void TLecternFoldSet(this LLectern lectern, bool opened) => lectern.LLecternFoldSet(opened);
+    internal static void TDisplayFoldSet(this LEditor editor, bool opened) =>
+        editor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldSet(opened);
+
+    internal static bool TDisplayFoldRead(this LEditor editor) =>
+        editor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened;
 
     internal static void TLecternReflexAttach(
-        this LLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>
-        lectern.LLecternSound.LLecternReflexAttach(reflex, loading, fold);
+        this QLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>
+        lectern.QLecternSound.LLecternReflexAttach(reflex, loading, fold);
 
-    internal static void TLecternFoldHandle(this LLectern lectern, bool opened) =>
-        lectern.LLecternSound.LLecternFoldHandle(opened);
+    internal static void TLecternFoldHandle(this QLectern lectern, bool opened) =>
+        lectern.QLecternSound.LLecternFoldHandle(opened);
 
     internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
         QReflexItem.QReflexFoldRefine(rows, fold, opened);

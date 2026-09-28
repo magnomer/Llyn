@@ -15,7 +15,8 @@ public sealed class TLecternFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LLectern lectern = TInterfaceDeportment.TLecternCreate(TInterfaceDeportment.TEditorCreate(engine));
+        LEditor editor = TInterfaceDeportment.TEditorCreate(engine);
+        QLectern lectern = TInterfaceDeportment.TLecternCreate(editor);
         bool? shown = null;
         Exception? failure = null;
 
@@ -28,8 +29,8 @@ public sealed class TLecternFold
                 fold.Checked += (_, _) => lectern.TLecternFoldHandle(fold.IsChecked == true);
                 fold.Unchecked += (_, _) => lectern.TLecternFoldHandle(fold.IsChecked == true);
 
-                lectern.TLecternFoldSet(true);
-                TInterfaceDeportment.TReflexFoldRefine([], fold, lectern.LLecternFoldOpened);
+                editor.TDisplayFoldSet(true);
+                TInterfaceDeportment.TReflexFoldRefine([], fold, editor.TDisplayFoldRead());
                 shown = fold.IsChecked;
             }
             catch (Exception caught)
@@ -42,7 +43,7 @@ public sealed class TLecternFold
         thread.Join();
 
         Assert.Null(failure);
-        Assert.True(lectern.LLecternFoldOpened);
+        Assert.True(editor.TDisplayFoldRead());
         Assert.True(shown);
     }
 }

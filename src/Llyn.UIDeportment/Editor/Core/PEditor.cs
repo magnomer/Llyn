@@ -16,8 +16,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private LEditor _lEditor = null!;
 
-    private LLectern _pEditorLectern = null!;
-
     private readonly QRegard _qRegard;
 
     private readonly QCadence _qCadence;
@@ -143,11 +141,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private long PEditorDraft => _lEditor.LEditorStudio.CEditorDesk.CDeskId;
 
-    internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)
+    internal void PEditorAttach(PWindow host, LEditor editor)
     {
         _pEditorHost = host;
         _lEditor = editor;
-        _pEditorLectern = lectern;
         _qRegard.QRegardAttach(editor);
         _qCadence.QCadenceAttach(host, editor);
         _lEditor.LEditorStudio.CEditorDesk.CDeskStarted += PEditorStartUpdate;

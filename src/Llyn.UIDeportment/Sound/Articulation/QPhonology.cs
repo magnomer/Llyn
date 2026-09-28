@@ -153,10 +153,8 @@ internal sealed class QPhonology
         _qPhonologyHost = host;
         _cPhonology = host.PWindowForge.QForgePhonologyCreate(QPhonologyShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cPhonology.CPhonologyEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cPhonology.CPhonologyPanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += QPhonologyModeUpdate;
         panel.CPanelRowsChanged += QInventoryUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QPhonologyStoreUpdate;
@@ -165,7 +163,7 @@ internal sealed class QPhonology
 
         QPhonologyDisplay.PDisplayAttach(host, lectern);
 
-        QPhonologyEditor.PEditorAttach(host, _lEditor, lectern);
+        QPhonologyEditor.PEditorAttach(host, _lEditor);
 
         QPhonologyEditor.PEditorChronicleChanged += QPhonologyChronicleUpdate;
 
@@ -193,7 +191,6 @@ internal sealed class QPhonology
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QPhonologyDisplay.PDisplayObserverAttach();
         QPhonologyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             QSequenceList,

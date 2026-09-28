@@ -24,7 +24,7 @@ Each named part is pulled from the place by its contract ID on every read.
 
 Puts the side to work on the host, building Conduct's side over the host's atelier and envoy.
 The side's announcements re-list the matches on the list's thread.
-A loaded entry re-lists the matches and paints the lectern, which the display shows.
+A loaded entry re-lists the matches, and the display's area opens it on the lectern itself.
 The vista arrives with each restore, since it belongs to the workspace open then.
 The display is its own subscriber, so it stays current on its own.
 
@@ -36,8 +36,8 @@ A vista announcement re-lists the matches, since order, filter or query moved.
 A stored entry, a reflex fill or a flipped setting can change a listed row, so each re-lists too.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
 The dropdown lists the shared entry orderings, and the filter mark is drawn from the side's verdict.
-The query is emptied, the lectern cleared, and the side loads the Entry `id` names.
-The lectern is cleared first, so a failed load never leaves another workspace's entry standing.
+The query is emptied, the display's area closes its entry, and the side loads the Entry `id` names.
+The entry is closed first, so a failed load never leaves another workspace's entry standing.
 The fresh vista starts with nothing typed and nothing chosen, so neither needs setting.
 A different workspace has its own database.
 So the Entry the side was comparing came from a workspace no longer open.
@@ -51,10 +51,6 @@ Stops the side: the display releases its playback.
 Lists the matches from the vista, already filtered, sorted, numbered and marked by the engine.
 The empty notice shows only while a typed query matched nothing.
 It runs on each announcement and after each entry the side loaded.
-
-## `private void QWingLoadedRefine()`
-
-Re-lists the matches with the new mark and paints the loaded entry on the lectern.
 
 ## `private void QWingSieveShow()`
 

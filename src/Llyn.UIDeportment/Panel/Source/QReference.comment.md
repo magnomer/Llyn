@@ -24,7 +24,7 @@ Each named part of the page is found through `QContract.QContractFind` under its
 
 Puts the driver to work on the panel factory, which builds the Conduct shelf with its own editor.
 It hands the shelf only the shown seam, and subscribes to the notices of both lists.
-The lectern follows the entry list's clears and loaded drafts, as the other panel drivers wire it.
+The lectern follows the entry list's panel, as the other panel drivers build it.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 The print and portrait command bindings are added last, so no can-execute query meets a shelf not yet built.
 

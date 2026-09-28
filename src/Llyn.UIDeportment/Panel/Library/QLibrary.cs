@@ -128,10 +128,8 @@ internal sealed class QLibrary
         _qLibraryHost = host;
         _cLibrary = host.PWindowForge.QForgeLibraryCreate(QLibraryShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cLibrary.CLibraryEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cLibrary.CLibraryPanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += QLibraryModeUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QLibraryStoreUpdate;
 
@@ -141,7 +139,7 @@ internal sealed class QLibrary
 
         QLibraryDisplay.PDisplayAttach(host, lectern);
 
-        QLibraryEditor.PEditorAttach(host, _lEditor, lectern);
+        QLibraryEditor.PEditorAttach(host, _lEditor);
 
         QLibraryEditor.PEditorChronicleChanged += QLibraryChronicleUpdate;
     }
@@ -184,7 +182,6 @@ internal sealed class QLibrary
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        QLibraryDisplay.PDisplayObserverAttach();
         QLibraryEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderHandle, QIndex.QIndexOrder);
         QChoice.QChoiceOrderApply(QOrderDropdown, panel.CPanelOrder);

@@ -24,7 +24,7 @@ It attaches the item fills of the speech, card, incoming and contents lists.
 
 Each named part of the markup is read through `FindName`, so call sites keep the old generated names.
 
-## `internal void PDisplayAttach(PWindow host, LLectern lectern)`
+## `internal void PDisplayAttach(PWindow host, QLectern lectern)`
 
 Puts the view on `lectern`, the deportment its owner built over the ports.
 The notice, the page, the header, the stamp, frequency, speech and note controls go to the lectern.
@@ -67,10 +67,6 @@ It is internal, because the contents dictionary forwards its row clicks here.
 
 Hands the fold toggle's state to the lectern's sound, which sets the fold and redraws the rows.
 
-## `internal void PDisplayObserverAttach()`
-
-Asks the lectern to listen for the bulletins, marshalled onto this view.
-
 ## `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 
 Hands the heart's press to the lectern, which stores it.
@@ -97,7 +93,7 @@ Hands the pressed chip to the lectern, which opens the character's entry.
 
 ## `internal void PDisplayClose()`
 
-Asks the lectern to stop what the engine plays.
+Calls the display area's gate that stops this view's own play, since the view is going away.
 
 ## Inline notes
 

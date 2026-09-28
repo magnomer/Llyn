@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -25,6 +26,25 @@ internal sealed class LEntryFacade
         {
             return LEntryFacadeStaff.LEngineStaffEntry.LEntryClerkRead(id);
         }
+    }
+
+    public (bool, string, string) LEngineStampRead(long entryId)
+    {
+        return LEngineEntryRead(entryId) is LEntry entry
+            ? (true, LEngineStampFormat(entry.LEntryAddedUtc), LEngineStampFormat(entry.LEntryUpdatedUtc))
+            : (false, string.Empty, string.Empty);
+    }
+
+    internal static string LEngineStampFormat(string? utc)
+    {
+        if (utc is null
+            || !DateTimeOffset.TryParse(
+                utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
+        {
+            return string.Empty;
+        }
+
+        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)

@@ -75,3 +75,13 @@ A word already naming the byline the held draft's Example cites offers none.
 
 Whether a field showing `field` already shows the text `shown`, a blank field reading as nothing recorded.
 It is static, since it reads no record and a Conduct verdict holds no port for it.
+
+## `(bool, string, string) LEngineStampRead(long entryId);`
+
+Whether an entry is stored, with its worded creation and update times, empty once it is gone.
+The engine parses and words the stored stamps, so Conduct only copies them.
+
+## `static bool LEngineNarrativeCheck(string text)`
+
+Whether an etymology narrative holds words, by the etymology draft's own rule.
+It is static, since the reading view asks it of text a control holds and no port is at hand.

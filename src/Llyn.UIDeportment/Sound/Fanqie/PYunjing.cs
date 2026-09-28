@@ -155,10 +155,8 @@ public class PYunjing : UserControl
         _pYunjingHost = host;
         _cYunjing = host.PWindowForge.QForgeYunjingCreate(PYunjingShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cYunjing.CYunjingEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cYunjing.CYunjingPanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += PYunjingModeUpdate;
         panel.CPanelRowsChanged += PXiaoyunUpdate;
         panel.CPanelCleared += PYunjingClearUpdate;
@@ -173,7 +171,7 @@ public class PYunjing : UserControl
         PDisplay.PDisplayAttach(host, lectern);
         _qDiwei.QDiweiAttach(host.PWindowAtelier, _cYunjing);
 
-        PEditor.PEditorAttach(host, _lEditor, lectern);
+        PEditor.PEditorAttach(host, _lEditor);
 
         PEditor.PEditorChronicleChanged += PYunjingChronicleUpdate;
 
@@ -213,7 +211,6 @@ public class PYunjing : UserControl
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _cYunjing.CYunjingEntryResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelDraftResonate));
-        PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
             PLadderList,

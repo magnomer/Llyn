@@ -124,10 +124,8 @@ internal sealed partial class QFavorite
         _qFavoriteHost = host;
         _cFavorite = host.PWindowForge.QForgeFavoriteCreate(QFavoriteShownCheck, host.PWindowEnvoy);
         _lEditor = new LEditor(_cFavorite.CFavoriteEditor);
-        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         CPanel panel = _cFavorite.CFavoritePanel;
-        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
-        panel.CPanelCleared += lectern.LLecternClear;
+        QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
         panel.CPanelChanged += QFavoriteModeUpdate;
         panel.CPanelRowsChanged += QRosterFind;
 
@@ -136,7 +134,7 @@ internal sealed partial class QFavorite
 
         QFavoriteDisplay.PDisplayAttach(host, lectern);
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QFavoriteStoreUpdate;
-        QFavoriteEditor.PEditorAttach(host, _lEditor, lectern);
+        QFavoriteEditor.PEditorAttach(host, _lEditor);
         QFavoriteEditor.PEditorChronicleChanged += QFavoriteChronicleUpdate;
     }
 

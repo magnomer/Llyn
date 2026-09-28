@@ -347,7 +347,7 @@ public sealed class LDisplaySound
         }
     }
 
-    public void LDisplayPlaybackStop()
+    internal void LDisplayPlaybackStop()
     {
         _lMediaPort.LEngineRecordingStop(_lDisplaySoundTicket);
     }
