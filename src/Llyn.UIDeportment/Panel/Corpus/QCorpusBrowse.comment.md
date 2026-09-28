@@ -43,7 +43,7 @@ A stored Example or Source refills the citations and the catalog, because a row 
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills the catalog too.
 An entry announcement goes to the quotation panel first, which may adopt a freshly stored Entry.
 The citations and the catalog follow, since the store may quote an Example.
-The chosen entry's own announcement reaches the deportment last, which redraws or drops it.
+The chosen entry's own announcement reaches `CCorpusEntryUpdate` last, which redraws or drops it.
 Every observer is bound to the surface, since the driver is no control.
 
 ## `private void QGauzeRestore()`
@@ -77,8 +77,8 @@ Both tally chips are rewritten from the fresh counts, so a quotation added elsew
 
 ## `private void QAnthologyHandle(object sender, RoutedEventArgs e)`
 
-A clicked row asks the deportment to select it, handing over the trail's record.
-The deportment asks about unsaved work first, and records the station only when the move goes ahead.
+A clicked row asks the gate `CCorpusExampleSelect` to select it, handing over the trail's record.
+The gate asks about unsaved work first, and records the station only when the move goes ahead.
 
 ## `private void QAnthologyApply(FrameworkElement container, object item, string? _)`
 
@@ -88,7 +88,8 @@ The click is subscribed once per row, removed first so a refill never doubles it
 
 ## `internal void QAnthologyExampleShow(long id)`
 
-A jump from another panel: opens the Example without asking, since the window has already asked.
+A jump from another panel: the gate `CCorpusExampleOpen` opens the Example without asking.
+The window has already asked.
 
 ## `private void QCorpusBinHandle(object sender, RoutedEventArgs e)`
 
@@ -104,13 +105,13 @@ The rail's save, standing for whichever editor is in front.
 
 ## `private void QCorpusViewerHandle(object sender, RoutedEventArgs e)`
 
-Puts whichever side the deportment stands on back on its reading page.
+Puts whichever side the corpus stands on back on its reading page, through `CCorpusScribeToggle`.
 The viewer and scribe segments have their own handlers, so no control decides the request.
 
 ## `private void QCorpusScribeHandle(object sender, RoutedEventArgs e)`
 
-Swaps the reading for the editor on whichever side the deportment stands.
-The deportment asks before leaving an editor, so unsaved wording is never lost silently.
+Swaps the reading for the editor on whichever side the corpus stands.
+The gate asks before leaving an editor, so unsaved wording is never lost silently.
 
 ## `internal void QCorpusScribeRestore(bool editing)`
 
@@ -118,7 +119,7 @@ Puts the Example side back on the reader or the editor it was left standing on.
 
 ## `internal bool QCorpusLeaveConfirm()`
 
-Asks the deportment whether the panel may be left, which asks the window only over unsaved work.
+Asks `CCorpusLeaveConfirm` whether the panel may be left, which asks the envoy only over unsaved work.
 
 ## `internal long QCorpusVoyageRead()`
 

@@ -12,9 +12,14 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 
 ## `private LCorpus _lCorpus`
 
-The panel's deportment, holding the anthology, the quotation and the desk the window restored.
+The panel's deportment, holding the quotation list and the corpus Conduct the window restored.
+It is null until the window hands one over.
+
+## `private CCorpus _cCorpus`
+
+The corpus Conduct, holding the anthology, the quotation panel, the desk, the session and the panel's mode.
 The anthology's vista carries the order, the query, and the languages hidden from the entry column.
-The driver keeps no copy of any of them and asks the deportment for each where it needs it.
+The driver keeps no copy of any of them and asks the Conduct for each where it needs it.
 It is null until the window hands one over, so the command checks answer false before that.
 
 ## `private readonly QDrawer _qDrawer`
@@ -44,7 +49,8 @@ The chip line and the two Gloss lists are attached to their fills, since their t
 The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The engine's change notices drive the mode, and its row notices drive the two lists.
-Its transcript and example notices paint the sheet, and its failures reach the window.
+Its transcript and example notices paint the sheet.
+Its failures reach the window through the envoy, which the Conduct asks directly.
 A dropped search empties the search box and the language menu.
 The window fills the example catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
@@ -54,11 +60,6 @@ The panel is current whether or not its tab is in front.
 
 Whether the page is on screen, so the engine knows when a notice needs painting.
 
-## `private bool QCorpusDiscardConfirm(Func<bool, bool> finish)`
-
-Asks the window whether unsaved work may be dropped before the engine moves on.
-A save runs the finish the deportment handed in, so the deportment decides what follows it.
-
 ## `private void QCorpusModeUpdate()`
 
 Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.
@@ -67,7 +68,7 @@ It ends by refreshing the rail's undo and redo.
 
 ## `internal void QCorpusReset()`
 
-Drops both selections through the deportment, for when the workspace underneath changed.
+Drops both selections through `CCorpusExampleClose`, for when the workspace underneath changed.
 
 ## `internal bool QCorpusChangeCheck()`
 

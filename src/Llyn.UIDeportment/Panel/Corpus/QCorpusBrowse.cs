@@ -27,18 +27,18 @@ internal sealed partial class QCorpus
 
     private void QQueryHandle(object sender, TextChangedEventArgs e)
     {
-        _lCorpus.LCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
+        _cCorpus.CCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
     }
 
     private void QRankHandle(object sender, RoutedEventArgs e)
     {
         QRankDropper.IsChecked = false;
-        _lCorpus.LCorpusAnthology.CAnthologyOrderSet(QChoice.QChoiceOrderRead(sender));
+        _cCorpus.CCorpusAnthology.CAnthologyOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     internal async void QCorpusVistaRestore()
     {
-        CPanel anthology = _lCorpus.LCorpusAnthology.CAnthologyPanel;
+        CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         QCorpusObserverAttach();
         QCorpusDisplay.PDisplayObserverAttach();
         QCorpusEditor.PEditorVistaRestore();
@@ -58,7 +58,7 @@ internal sealed partial class QCorpus
         await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier);
 
         QGauzeBuild();
-        _lCorpus.LCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
+        _cCorpus.CCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
         _lCorpus.LCorpusQuotation.LQuotationDredgeSet(QDredge.Text);
         QSpeakerLoad();
         QCitationFind();
@@ -67,8 +67,8 @@ internal sealed partial class QCorpus
 
     private void QCorpusObserverAttach()
     {
-        CPanel anthology = _lCorpus.LCorpusAnthology.CAnthologyPanel;
-        CPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
+        CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
+        CPanel quotation = _cCorpus.CCorpusQuotation;
         UserControl surface = _qCorpusSurface;
         Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsUpdate);
         Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(surface, QCitationFind);
@@ -86,14 +86,14 @@ internal sealed partial class QCorpus
         quotation.CPanelObserverAttach(CSubject.CSubjectEntry, citation);
         quotation.CPanelObserverAttach(CSubject.CSubjectEntry, rows);
         quotation.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _lCorpus.LCorpusEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cCorpus.CCorpusEntryUpdate));
         quotation.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelRowsUpdate));
     }
 
     private void QGauzeRestore()
     {
-        QGauzeMark.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusAnthology.CAnthologyFiltered);
+        QGauzeMark.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusAnthology.CAnthologyFiltered);
     }
 
     private void QGauzeBuild()
@@ -101,7 +101,7 @@ internal sealed partial class QCorpus
         QChoice.QChoiceFilterBuild(
             QGauzeList,
             _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
-            _lCorpus.LCorpusAnthology.CAnthologyPanel.CPanelFilter,
+            _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelFilter,
             QGauzeHandle);
     }
 
@@ -119,7 +119,7 @@ internal sealed partial class QCorpus
 
     private void QGauzeHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusAnthology.CAnthologyFilterSet(QChoice.QChoiceFilterRead(sender));
+        _cCorpus.CCorpusAnthology.CAnthologyFilterSet(QChoice.QChoiceFilterRead(sender));
         QGauzeRestore();
     }
 
@@ -128,10 +128,10 @@ internal sealed partial class QCorpus
         IReadOnlyList<CCatalogExample> read;
         try
         {
-            read = _lCorpus.LCorpusAnthology.CAnthologyRowsRead(
+            read = _cCorpus.CCorpusAnthology.CAnthologyRowsRead(
                 QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
                 QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten"));
-            _qAnthologyCount = _lCorpus.LCorpusAnthology.CAnthologyUsageRead();
+            _qAnthologyCount = _cCorpus.CCorpusAnthology.CAnthologyUsageRead();
         }
         catch (Exception exception)
         {
@@ -150,14 +150,14 @@ internal sealed partial class QCorpus
 
         QAnthologyEmpty.Visibility = QLook.QLookVisibleRead(_qAnthologyList.Count == 0);
 
-        QExcerptTally.Text = QCorpusTallyRead(_lCorpus.LCorpusAnthology.CAnthologyChosen);
+        QExcerptTally.Text = QCorpusTallyRead(_cCorpus.CCorpusAnthology.CAnthologyChosen);
         QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
         _lCorpus.LCorpusRowsApply(read);
     }
 
     private void QAnthologyHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusSelect(
+        _cCorpus.CCorpusExampleSelect(
             QSender.QSenderSourceRead<QAnthologyItem>(e)?.QAnthologyItemId, _qCorpusHost.PVoyageRecord);
     }
 
@@ -206,7 +206,7 @@ internal sealed partial class QCorpus
 
     internal void QAnthologyExampleShow(long id)
     {
-        _lCorpus.LCorpusExampleShow(id);
+        _cCorpus.CCorpusExampleOpen(id);
     }
 
     private void QCorpusBinHandle(object sender, RoutedEventArgs e)
@@ -231,32 +231,32 @@ internal sealed partial class QCorpus
 
     private void QCorpusStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusSession.CSessionSave();
+        _cCorpus.CCorpusSession.CSessionSave();
     }
 
     private void QCorpusViewerHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusScribeSet(false);
+        _cCorpus.CCorpusScribeToggle(false);
     }
 
     private void QCorpusScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusScribeSet(true);
+        _cCorpus.CCorpusScribeToggle(true);
     }
 
     internal void QCorpusScribeRestore(bool editing)
     {
-        _lCorpus.LCorpusAnthology.CAnthologyPanel.CPanelScribeRestore(editing);
+        _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QCorpusLeaveConfirm()
     {
-        return _lCorpus.LCorpusLeaveConfirm();
+        return _cCorpus.CCorpusLeaveConfirm();
     }
 
     internal long QCorpusVoyageRead()
     {
-        return _lCorpus.LCorpusAnthology.CAnthologyPanel.CPanelChosenRead();
+        return _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelChosenRead();
     }
 
     internal void QCorpusVoyageShow(bool past, bool future)

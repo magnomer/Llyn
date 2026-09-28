@@ -17,25 +17,18 @@ public sealed class LQuotation
 
     private LVista? _lQuotationVista;
 
-    internal LQuotation(
-        LEntryPort entries,
-        LPortraitPort portraits,
-        Func<bool> changeSeam,
-        Func<bool> shownSeam,
-        CEnvoy envoy,
-        Func<bool, bool> finishSeam)
+    internal LQuotation(LEntryPort entries, LPortraitPort portraits, CPanel panel)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
+        ArgumentNullException.ThrowIfNull(panel);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
-        LQuotationPanel = new CPanel(
-            envoy, "List.LoadFailed", null,
-            changeSeam, finishSeam, shownSeam);
+        LQuotationPanel = panel;
     }
 
-    public CPanel LQuotationPanel { get; }
+    private CPanel LQuotationPanel { get; }
 
     internal void LQuotationVistaRestore(LVista roll, LVista vista)
     {

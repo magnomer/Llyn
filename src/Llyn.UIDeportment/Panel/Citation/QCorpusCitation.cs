@@ -16,7 +16,7 @@ internal sealed partial class QCorpus
         IReadOnlyList<CCatalogReference> read;
         try
         {
-            read = _lCorpus.LCorpusAnthology.CAnthologyReferenceRead();
+            read = _cCorpus.CCorpusAnthology.CAnthologyReferenceRead();
         }
         catch (Exception exception)
         {
@@ -59,7 +59,7 @@ internal sealed partial class QCorpus
     {
         try
         {
-            _qDrawer.QDrawerShow(_lCorpus.LCorpusAnthology.CAnthologyCitationRead(QCitationField.Text), QCitationField);
+            _qDrawer.QDrawerShow(_cCorpus.CCorpusAnthology.CAnthologyCitationRead(QCitationField.Text), QCitationField);
         }
         catch (Exception)
         {
@@ -136,7 +136,7 @@ internal sealed partial class QCorpus
         _qDrawer.QDrawerHide();
         try
         {
-            _lCorpus.LCorpusAnthology.CAnthologyCitationSet(QCitationField.Text);
+            _cCorpus.CCorpusAnthology.CAnthologyCitationSet(QCitationField.Text);
         }
         catch (Exception exception)
         {

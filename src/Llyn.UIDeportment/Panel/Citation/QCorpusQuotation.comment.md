@@ -15,7 +15,8 @@ Its wording is the deportment's `LQuotationEmptyRead`, which reads the dredge fi
 
 ## `private void QQuotationHandle(object sender, RoutedEventArgs e)`
 
-A clicked Entry row asks the deportment to show it, in the display or the editor, without leaving the tab.
+A clicked Entry row asks the gate `CCorpusQuotationSelect` to show it without leaving the tab.
+It shows in the display or the editor, whichever the mode holds.
 
 ## `private void QQuotationApply(FrameworkElement container, object item, string? _)`
 

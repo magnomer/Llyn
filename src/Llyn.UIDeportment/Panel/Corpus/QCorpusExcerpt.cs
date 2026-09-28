@@ -21,7 +21,7 @@ internal sealed partial class QCorpus
         QExcerptFlag.Source = LEnsignImage.LEnsignFind(example.CExampleLanguage);
         QExcerptGlossShow(example.CExampleGloss);
         QExcerptCitationShow(example.CExampleSource);
-        QExcerptTally.Text = QCorpusTallyRead(_lCorpus.LCorpusAnthology.CAnthologyChosen);
+        QExcerptTally.Text = QCorpusTallyRead(_cCorpus.CCorpusAnthology.CAnthologyChosen);
     }
 
     private void QExcerptSentenceShow(CExample example)
@@ -46,14 +46,14 @@ internal sealed partial class QCorpus
 
     private void QExcerptMentionHandle(object? sender, PMentionArgument e)
     {
-        if (!_lCorpus.LCorpusLeaveConfirm())
+        if (!_cCorpus.CCorpusLeaveConfirm())
         {
             return;
         }
 
         try
         {
-            QExcerptMentionShow(_lCorpus.LCorpusAnthology.CAnthologyMentionRead(e.PMentionArgumentOffset));
+            QExcerptMentionShow(_cCorpus.CCorpusAnthology.CAnthologyMentionRead(e.PMentionArgumentOffset));
         }
         catch (Exception exception)
         {

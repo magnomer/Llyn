@@ -138,6 +138,6 @@ internal sealed partial class QCorpus
 
     private void QCorpusFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusFreshStart();
+        _cCorpus.CCorpusExampleCreate();
     }
 }

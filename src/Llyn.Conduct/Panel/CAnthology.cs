@@ -138,6 +138,11 @@ public sealed class CAnthology
         return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
     }
 
+    internal static CExample? CAnthologyDraftRead(LDraft? draft)
+    {
+        return CAnthologyExampleRead(draft?.LDraftExample);
+    }
+
     internal static CExample? CAnthologyExampleRead(LExample? example)
     {
         return example is null

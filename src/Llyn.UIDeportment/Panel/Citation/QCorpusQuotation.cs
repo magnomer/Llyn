@@ -41,7 +41,7 @@ internal sealed partial class QCorpus
 
     private void QQuotationHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusQuotationSelect(QSender.QSenderSourceRead<QQuotationItem>(e)?.QQuotationItemId);
+        _cCorpus.CCorpusQuotationSelect(QSender.QSenderSourceRead<QQuotationItem>(e)?.QQuotationItemId);
     }
 
     private void QQuotationApply(FrameworkElement container, object item, string? _)

@@ -55,4 +55,4 @@ The language and the citation are compared the same way, so a bulletin that chan
 
 ## `private void QCorpusFreshHandle(object sender, RoutedEventArgs e)`
 
-New makes whatever the emptier panel would list, and the deportment decides which.
+New makes whatever the emptier panel would list, and the gate `CCorpusExampleCreate` decides which.

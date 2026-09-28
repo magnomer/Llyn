@@ -68,11 +68,16 @@ Whether a field showing `text` already shows `value`, as the engine would store 
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
 It is static, since it reads no state of the list.
 
+## `internal static CExample? CAnthologyDraftRead(LDraft? draft)`
+
+Maps the Example a draft carries to its shape, and a draft of another subject to null.
+`CCorpus` calls it for the transcript desk and for the anthology's loaded drafts.
+So the corpus names no engine record.
+
 ## `internal static CExample? CAnthologyExampleRead(LExample? example)`
 
 Maps a stored Example to its shape, and null to null.
 The excerpt links only the Mentions the Example lets a reading link, while the transcript keeps them all.
-The corpus desk still calls it until the corpus session reaches Conduct.
 
 ## `private static CCatalogExample LAnthologyRowRead(LCatalogExample row)`
 

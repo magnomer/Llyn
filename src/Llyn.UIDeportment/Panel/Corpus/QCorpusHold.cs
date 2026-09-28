@@ -10,7 +10,7 @@ internal sealed partial class QCorpus
 {
     private CDesk QTranscriptDesk => _qCorpusDesk;
 
-    private LQuill? QTranscriptQuill => _lCorpus.LCorpusDesk.CDeskQuill;
+    private LQuill? QTranscriptQuill => _cCorpus.CCorpusDesk.CDeskQuill;
 
     private void QTranscriptDeskAttach()
     {
@@ -22,22 +22,22 @@ internal sealed partial class QCorpus
 
     private void QTranscriptDraftRestore()
     {
-        QTranscriptShow(_lCorpus.LCorpusTranscriptRead());
+        QTranscriptShow(_cCorpus.CCorpusTranscriptRead());
     }
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.CSessionUndo);
+        QChronicle.QChronicleRun(_cCorpus.CCorpusSession.CSessionUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lCorpus.LCorpusSession.CSessionRedo);
+        QChronicle.QChronicleRun(_cCorpus.CCorpusSession.CSessionRedo);
     }
 
     public void QChronicleUpdate()
     {
-        (bool undo, bool redo) = _lCorpus.LCorpusSession.CSessionChronicleRead();
+        (bool undo, bool redo) = _cCorpus.CCorpusSession.CSessionChronicleRead();
         QCorpusBackward.IsEnabled = undo;
         QCorpusForward.IsEnabled = redo;
     }

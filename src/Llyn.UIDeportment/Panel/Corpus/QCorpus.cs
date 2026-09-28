@@ -17,6 +17,8 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private LCorpus _lCorpus = null!;
 
+    private CCorpus _cCorpus = null!;
+
     private CDesk _qCorpusDesk = null!;
 
     internal QCorpus(UserControl surface)
@@ -228,13 +230,9 @@ internal sealed partial class QCorpus : QChronicleHost
         _qCorpusHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
-        _lCorpus = host.PWindowForge.QForgeCorpusCreate(
-            editor,
-            lectern,
-            QCorpusShownCheck,
-            QCorpusDiscardConfirm,
-            host.PWindowEnvoy);
-        _qCorpusDesk = _lCorpus.LCorpusDesk;
+        _lCorpus = host.PWindowForge.QForgeCorpusCreate(editor, lectern, QCorpusShownCheck, host.PWindowEnvoy);
+        _cCorpus = _lCorpus.LCorpusStudio;
+        _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskAttach();
 
         QAnthology.ItemsSource = _qAnthologyList;
@@ -250,13 +248,12 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusDisplay.PDisplayAttach(host, lectern);
         QCorpusEditor.PEditorAttach(host, editor, lectern);
 
-        CPanel anthology = _lCorpus.LCorpusAnthology.CAnthologyPanel;
-        CPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
-        _lCorpus.LCorpusChanged += QCorpusModeUpdate;
-        _lCorpus.LCorpusTranscriptChanged += QTranscriptApply;
-        _lCorpus.LCorpusExampleChanged += QExcerptShow;
-        _lCorpus.LCorpusFailed += host.PWindowFailureShow;
-        _lCorpus.LCorpusQueryCleared += QQueryClear;
+        CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
+        CPanel quotation = _cCorpus.CCorpusQuotation;
+        _cCorpus.CCorpusChanged += QCorpusModeUpdate;
+        _cCorpus.CCorpusTranscriptChanged += QTranscriptApply;
+        _cCorpus.CCorpusExampleChanged += QExcerptShow;
+        _cCorpus.CCorpusQueryCleared += QQueryClear;
         anthology.CPanelChanged += QCorpusModeUpdate;
         anthology.CPanelRowsChanged += QAnthologyFind;
         quotation.CPanelChanged += QCorpusModeUpdate;
@@ -268,43 +265,38 @@ internal sealed partial class QCorpus : QChronicleHost
         return _qCorpusSurface.IsVisible;
     }
 
-    private bool QCorpusDiscardConfirm(Func<bool, bool> finish)
-    {
-        return _qCorpusHost.PWindowDiscardConfirm(true, finish);
-    }
-
     private void QCorpusModeUpdate()
     {
-        QTranscript.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusTranscriptShown);
-        QExcerpt.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptShown);
-        QCorpusDisplay.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusDisplayShown);
-        QCorpusEditor.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusEditorShown);
-        QExcerptBody.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptHeld);
-        QExcerptUnselected.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusExcerptBlank);
-        QCorpusViewer.IsChecked = QLook.QLookCheckedRead(_lCorpus.LCorpusViewerChecked);
-        QCorpusScribe.IsChecked = QLook.QLookCheckedRead(_lCorpus.LCorpusScribeChecked);
-        QCorpusVoyage.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusViewerChecked);
-        QCorpusChronicle.Visibility = QLook.QLookVisibleRead(_lCorpus.LCorpusScribeChecked);
-        QCorpusMode.IsEnabled = _lCorpus.LCorpusModeEnabled;
-        QCorpusBin.IsEnabled = _lCorpus.LCorpusBinEnabled;
-        QCorpusStore.IsEnabled = _lCorpus.LCorpusStoreEnabled;
-        QTranscript.IsEnabled = _lCorpus.LCorpusDesk.CDeskRunning;
+        QTranscript.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusTranscriptShown);
+        QExcerpt.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptShown);
+        QCorpusDisplay.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusDisplayShown);
+        QCorpusEditor.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusEditorShown);
+        QExcerptBody.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptHeld);
+        QExcerptUnselected.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusExcerptBlank);
+        QCorpusViewer.IsChecked = QLook.QLookCheckedRead(_cCorpus.CCorpusViewerChecked);
+        QCorpusScribe.IsChecked = QLook.QLookCheckedRead(_cCorpus.CCorpusScribeChecked);
+        QCorpusVoyage.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusViewerChecked);
+        QCorpusChronicle.Visibility = QLook.QLookVisibleRead(_cCorpus.CCorpusScribeChecked);
+        QCorpusMode.IsEnabled = _cCorpus.CCorpusModeEnabled;
+        QCorpusBin.IsEnabled = _cCorpus.CCorpusBinEnabled;
+        QCorpusStore.IsEnabled = _cCorpus.CCorpusStoreEnabled;
+        QTranscript.IsEnabled = _cCorpus.CCorpusDesk.CDeskRunning;
         QChronicleUpdate();
     }
 
     internal void QCorpusReset()
     {
-        _lCorpus.LCorpusClear();
+        _cCorpus.CCorpusExampleClose();
     }
 
     internal bool QCorpusChangeCheck()
     {
-        return _lCorpus.LCorpusSession.CSessionChangeCheck();
+        return _cCorpus.CCorpusSession.CSessionChangeCheck();
     }
 
     internal bool QCorpusDraftFinish(bool store)
     {
-        return _lCorpus.LCorpusSession.CSessionFinish(store);
+        return _cCorpus.CCorpusSession.CSessionFinish(store);
     }
 
     internal void QCorpusClose()
@@ -319,7 +311,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private void QCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lCorpus?.LCorpusPressAllowed ?? false;
+        e.CanExecute = _cCorpus?.CCorpusPressAllowed ?? false;
     }
 
     private async void QCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
@@ -329,7 +321,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lCorpus?.LCorpusPortraitAllowed ?? false;
+        e.CanExecute = _cCorpus?.CCorpusPortraitAllowed ?? false;
     }
 
     private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
