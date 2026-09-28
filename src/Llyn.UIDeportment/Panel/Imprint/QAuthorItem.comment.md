@@ -2,7 +2,7 @@
 
 ## `internal sealed class QAuthorItem`
 
-Presentation item for one credit row of the Source edit area, copied from the deportment's row.
+Presentation item for one credit row of the Source edit area, copied from the source editor's row.
 The list is spliced on each notice.
 A row that keeps its id and place thus keeps its field and caret.
 
@@ -26,7 +26,7 @@ Whether a row above this one exists, so the move control is offered only where i
 
 ## `internal static IReadOnlyList<QAuthorItem> QAuthorItemBuild(IReadOnlyList<CAuthorRow> rows, int blankAt)`
 
-One item per credit row, with the blank row spliced in at the index the deportment names.
+One item per credit row, with the blank row spliced in at the index the source editor names.
 The rows are counted here as they are copied, so no engine count enters the compare.
 The blank row takes the position of the credit it precedes, so an addition lands there.
 A negative index adds no blank row, and one equal to the count adds it last.

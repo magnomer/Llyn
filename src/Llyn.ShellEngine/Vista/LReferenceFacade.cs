@@ -111,6 +111,11 @@ internal sealed class LReferenceFacade
         }
     }
 
+    public static LImprint LEngineImprintRead(LDraft? draft)
+    {
+        return LReferenceClerk.LReferenceImprintRead(draft);
+    }
+
     public IReadOnlyDictionary<long, string> LEngineCitationRead()
     {
         lock (_lReferenceFacadeGate)

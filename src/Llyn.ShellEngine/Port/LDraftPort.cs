@@ -26,7 +26,9 @@ public interface LDraftPort
 
     IReadOnlyList<LVistaRow> LEngineProspectFind(string query);
 
-    IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit);
+    IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);
+
+    string LEngineBylineRead(string? text);
 
     LEntry? LEngineTranslationResolve(string word, long? entryId);
 

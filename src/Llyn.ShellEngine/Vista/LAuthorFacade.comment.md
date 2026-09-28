@@ -70,7 +70,7 @@ The author clerk's wording of a work count.
 
 ## `private const int LAuthorFacadeLimit`
 
-How many rows the union search lists, few enough to read at a glance.
+How many rows the union search and the byline list, few enough to read at a glance.
 
 ## `public void LEngineAuthorAbsorb(long kept, long dropped)`
 
@@ -81,11 +81,20 @@ Observers hear of both ids, because a panel standing on the dropped Author must 
 
 Reads the Author for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)`
+## `public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query)`
 
-The byline rows a typed credit may already name, at most the limit asked.
+The byline rows a typed credit may already name, at most `LAuthorFacadeLimit` of them.
 The draft is read here by its id, so the editor never carries the credits it holds back down.
-No draft offers nothing.
+No draft offers nothing, and neither does a blank word.
+
+## `public static string LEngineBylineRead(string? text)`
+
+The author clerk's byline word for a typed credit.
+
+## `public static IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)`
+
+The credit rows of the held draft, after its deferred requests are applied.
+The author clerk reads them, and no held draft has none.
 
 ## `public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)`
 

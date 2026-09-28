@@ -41,8 +41,10 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyList<LVistaRow> LEngineProspectFind(string query) =>
         _lDraftOutletEngine.LEngineCard.LEngineProspectFind(query);
 
-    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit) =>
-        _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query, limit);
+    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query) =>
+        _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);
+
+    public string LEngineBylineRead(string? text) => LAuthorFacade.LEngineBylineRead(text);
 
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>
         _lDraftOutletEngine.LEngineCard.LEngineTranslationResolve(word, entryId);

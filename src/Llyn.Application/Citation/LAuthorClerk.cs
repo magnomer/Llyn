@@ -138,6 +138,16 @@ public sealed class LAuthorClerk
         return (dropped.Trim(), held.Trim());
     }
 
+    public static string LBylineRead(string? text)
+    {
+        return (text ?? string.Empty).Trim();
+    }
+
+    public static IReadOnlyList<LAuthorRow> LAuthorCreditRead(LDraft? draft)
+    {
+        return draft?.LDraftCreditRead() ?? [];
+    }
+
     public IReadOnlyList<LAuthor> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)
     {
         ArgumentNullException.ThrowIfNull(credited);

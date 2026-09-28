@@ -16,6 +16,14 @@ Starts a tenure over the entry the vista chose, or a fresh entry when `id` is nu
 
 Starts a tenure for a non-entry subject from a named origin, as the corpus and repertoire holds do.
 
+## `IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);`
+
+The Authors a typed credit may already name, left out those the draft credits.
+
+## `string LEngineBylineRead(string? text);`
+
+The word a typed credit searches and highlights the byline with.
+
 ## `IReadOnlyList<LVistaRow> LEngineProspectFind(string query);`
 
 The entries a typed translation may link to, one row per match plus one per language for a new entry.

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -166,6 +167,73 @@ public sealed class LQuill
 
         _lQuillTenure.LTenureRequestDefer(
             new LRequestSentenceDependence(_lQuillTenure.LTenureId, card, sentence, new LStateWritten(text)));
+    }
+
+    public void LQuillTitleSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(new LRequestReferenceTitle(_lQuillTenure.LTenureId, new LStateWritten(text)));
+    }
+
+    public void LQuillYearSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(new LRequestReferenceYear(_lQuillTenure.LTenureId, new LStateWritten(text)));
+    }
+
+    public void LQuillUrlSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(new LRequestReferenceUrl(_lQuillTenure.LTenureId, new LStateWritten(text)));
+    }
+
+    public void LQuillNoteSet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(new LRequestReferenceNote(_lQuillTenure.LTenureId, new LStateWritten(text)));
+    }
+
+    public void LQuillKindSet(string? tag)
+    {
+        if (LReferenceClerk.LReferenceKindRead(_lQuillTenure.LTenureRead(), tag) is not LReferenceKind kind)
+        {
+            return;
+        }
+
+        _lQuillTenure.LTenureRequestApply(new LRequestReferenceKind(_lQuillTenure.LTenureId, kind));
+    }
+
+    public static bool LQuillAuthorCheck([NotNullWhen(true)] string? text)
+    {
+        return LDraftClerkPanel.LAuthorNameCheck(text);
+    }
+
+    public void LQuillAuthorAdd(string name, int position, long former)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestAuthorAddition(_lQuillTenure.LTenureId, name, position, former));
+    }
+
+    public void LQuillAuthorInsert(long author, int position, long former)
+    {
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestAuthorPick(_lQuillTenure.LTenureId, author, position, former));
+    }
+
+    public void LQuillAuthorRemove(long author)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestAuthorRemoval(_lQuillTenure.LTenureId, author));
+    }
+
+    public void LQuillAuthorMove(long author, int position)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestAuthorShift(_lQuillTenure.LTenureId, author, position));
     }
 
     public void LQuillSituationSet(string title, string description, string kind)

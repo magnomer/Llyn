@@ -239,6 +239,28 @@ public sealed class LReferenceClerk
         return reference.LReferenceColophonRead(draft.LDraftAuthor, tally, LLocalization.QLocalizationTextRead);
     }
 
+    public static LImprint LReferenceImprintRead(LDraft? draft)
+    {
+        if (draft is null)
+        {
+            return LImprint.LImprintCreate(LReferenceClerkBlank);
+        }
+
+        return LImprint.LImprintCreate(
+            draft.LDraftReference ?? throw new InvalidOperationException("The draft holds no reference."));
+    }
+
+    public static LReferenceKind? LReferenceKindRead(LDraft? draft, string? tag)
+    {
+        if (tag is null)
+        {
+            return null;
+        }
+
+        LReferenceKind kind = LReference.LReferenceKindParse(tag);
+        return draft?.LDraftReference?.LReferenceKindMatch(kind) is true ? null : kind;
+    }
+
     public static LPortraitPage LReferencePageRead(
         LReference reference, IReadOnlyList<LAuthor> credits, int count, LPortraitLegend legend)
     {

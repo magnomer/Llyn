@@ -1,0 +1,153 @@
+using System.Collections.Generic;
+using Llyn.Conduct;
+using Llyn.Core;
+using Llyn.ShellEngine;
+using Xunit;
+
+namespace Llyn.Tests;
+
+public sealed class TImprint
+{
+    [Fact]
+    public void ImprintTitleSet_RawText_HoldsSpecifiedTitle()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        imprint.CImprintOpen(null);
+
+        imprint.CImprintTitleSet("Book");
+        imprint.CImprintYearSet(" ");
+
+        LReference held = imprint.CImprintDesk.TDeskRead()!.LDraftReference!;
+        Assert.Equal("Book", held.LReferenceTitle.TStateValueShow());
+        Assert.True(held.LReferenceYear.LStateValueEmpty);
+        Assert.Equal("Source.Year", held.LReferenceYearHint);
+        Assert.True(imprint.CImprintDesk.CDeskChangeCheck());
+    }
+
+    [Fact]
+    public void ImprintKindSet_Tag_RoundTripsThroughDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        imprint.CImprintOpen(null);
+
+        imprint.CImprintKindSet("journal");
+        imprint.CImprintKindSet(null);
+
+        LReference held = imprint.CImprintDesk.TDeskRead()!.LDraftReference!;
+        Assert.Equal("journal", held.LReferenceKindTag);
+        Assert.True(imprint.CImprintDesk.CDeskChronicleRead().CDeskBackward);
+    }
+
+    [Fact]
+    public void ImprintKindSet_KindAlreadyHeld_SendsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        imprint.CImprintOpen(null);
+
+        imprint.CImprintKindSet("unspecified");
+
+        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+        Assert.False(imprint.CImprintDesk.CDeskChronicleRead().CDeskBackward);
+    }
+
+    [Fact]
+    public void ImprintSave_UnchangedStoredSource_KeepsDraftHeld()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        LReference book = engine.TEngineCitationCreate("Book");
+        imprint.CImprintOpen(book.LReferenceId);
+
+        imprint.CImprintSave();
+
+        Assert.True(imprint.CImprintHeld);
+        Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), imprint.CImprintTallyRead());
+
+        imprint.CImprintTitleSet("Tome");
+        imprint.CImprintSave();
+
+        Assert.False(imprint.CImprintHeld);
+        Assert.Equal("Tome", engine.TEngineReferenceRead(book.LReferenceId)?.LReferenceTitle.TStateValueShow());
+    }
+
+    [Fact]
+    public void ImprintOpen_StoredSource_ShowsItsFieldsThroughTheReferenceNotice()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        LReference book = engine.TEngineCitationCreate("Book");
+        List<CReference> shown = [];
+        imprint.CImprintReferenceChanged += shown.Add;
+
+        imprint.CImprintOpen(book.LReferenceId);
+
+        CReference reference = Assert.Single(shown);
+        Assert.Equal("Book", reference.CReferenceTitle);
+        Assert.Equal("Source.Untitled", reference.CReferenceTitleHint);
+        Assert.Equal(string.Empty, reference.CReferenceYear);
+        Assert.Equal("Source.Year", reference.CReferenceYearHint);
+        Assert.Equal("unspecified", reference.CReferenceKindTag);
+    }
+
+    [Fact]
+    public void ImprintEmptyRead_NoDraft_ReadsTheBlankSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+
+        CReference blank = imprint.CImprintEmptyRead();
+
+        Assert.Equal(string.Empty, blank.CReferenceTitle);
+        Assert.Equal("Source.Untitled", blank.CReferenceTitleHint);
+        Assert.Equal("Source.Url", blank.CReferenceUrlHint);
+        Assert.Equal("Source.Note", blank.CReferenceNoteHint);
+        Assert.Equal("Source.KindUnspecified", blank.CReferenceKindKey);
+        Assert.Equal("unspecified", blank.CReferenceKindTag);
+    }
+
+    [Fact]
+    public void ImprintCancel_HeldDraft_DropsTheDraftAndClosesTheByline()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprintPrepare(engine, atelier);
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
+        imprint.CImprintOpen(null);
+        imprint.CImprintByline.CBylineWordSet("Ad", true);
+        imprint.CImprintByline.CBylineRowsRead();
+        int changed = 0;
+        imprint.CImprintByline.CBylineChanged += () => changed++;
+
+        imprint.CImprintCancel();
+
+        Assert.False(imprint.CImprintHeld);
+        Assert.False(imprint.CImprintByline.CBylineShown);
+        Assert.Equal(string.Empty, imprint.CImprintByline.CBylineWord);
+        Assert.Equal(1, changed);
+    }
+
+    internal static CImprint TImprintPrepare(LEngine engine, CAtelier atelier)
+    {
+        CImprint imprint = new(
+            atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, TInterfaceConduct.TEnvoyCreate(false, []));
+        imprint.CImprintDesk.TDeskVistaRestore(
+            engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName));
+        return imprint;
+    }
+}

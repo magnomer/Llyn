@@ -58,8 +58,8 @@ public sealed class TShelfSide
 
         shelf.TShelfFreshStart();
 
-        Assert.True(shelf.LShelfImprint.LImprintHeld);
-        Assert.False(shelf.LShelfImprint.LImprintDesk.CDeskStored);
+        Assert.True(shelf.LShelfImprint.CImprintHeld);
+        Assert.False(shelf.LShelfImprint.CImprintDesk.CDeskStored);
         Assert.False(shelf.LShelfEntrySide);
         Assert.True(shelf.LShelfImprintShown);
         Assert.True(shelf.LShelfScribeChecked);
@@ -80,7 +80,7 @@ public sealed class TShelfSide
 
         Assert.True(shelf.LShelfDisplayShown);
         Assert.False(shelf.LShelfBinEnabled);
-        Assert.False(shelf.LShelfImprint.LImprintHeld);
+        Assert.False(shelf.LShelfImprint.CImprintHeld);
 
         shelf.TShelfScribeSet(true);
 

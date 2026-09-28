@@ -100,6 +100,10 @@ public interface LEntryPort
 
     LColophon LEngineColophonRead(LDraft draft);
 
+    LImprint LEngineImprintRead(LDraft? draft);
+
+    IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held);
+
     IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);
 
     string LEngineTallyRead(long? reference);

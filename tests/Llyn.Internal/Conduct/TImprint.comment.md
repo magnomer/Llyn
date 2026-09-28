@@ -1,0 +1,16 @@
+# TImprint.cs
+
+## `public sealed class TImprint`
+
+Covers the source editor's fields and draft on a real workspace.
+A typed title crosses raw and the engine holds it specified, while a blank year holds nothing.
+A kind tag round-trips through the draft and takes one chronicle step, and a null tag sends nothing.
+A tag naming the kind the Source already has sends nothing either.
+A save on an unchanged Source keeps the draft, and one after a change commits it.
+Opening a stored Source announces its fields, and the empty read gives the blank Source's hints.
+A cancel drops the draft and closes the byline with one notice.
+
+## `internal static CImprint TImprintPrepare(LEngine engine, CAtelier atelier)`
+
+Builds the editor over the atelier's ports and a source vista, as the sources panel does.
+The credit and byline suites share it.

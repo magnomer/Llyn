@@ -154,6 +154,10 @@ public sealed class LEntryOutlet : LEntryPort
     public LColophon LEngineColophonRead(LDraft draft) =>
         _lEntryOutletEngine.LEngineReference.LEngineColophonRead(draft);
 
+    public LImprint LEngineImprintRead(LDraft? draft) => LReferenceFacade.LEngineImprintRead(draft);
+
+    public IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held) => LAuthorFacade.LEngineCreditRead(held);
+
     public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
     {
         return _lEntryOutletEngine.LEngineEntry.LEngineUsageRead(owner);

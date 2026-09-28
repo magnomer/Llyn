@@ -194,7 +194,7 @@ internal sealed class QReference
         shelf.CPanelObserverAttach(
             CSubject.CSubjectAuthor,
             LObserver.LObserverCreate<CBulletin>(
-                _qReferenceSurface, _lShelf.LShelfImprint.LImprintDesk.CDeskDraftUpdate));
+                _qReferenceSurface, _lShelf.LShelfImprint.CImprintDesk.CDeskDraftUpdate));
         shelf.CPanelObserverAttach(
             CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
         shelf.CPanelObserverAttach(

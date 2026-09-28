@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -46,6 +47,11 @@ public sealed class LDraftClerkPanel
             LSituationDescription = LStateValue.LStateValueRead(sent.LRequestDescription),
             LSituationKind = LStateValue.LStateValueRead(sent.LRequestKind),
         };
+    }
+
+    public static bool LAuthorNameCheck([NotNullWhen(true)] string? text)
+    {
+        return !string.IsNullOrWhiteSpace(text);
     }
 
     public LDraft LAuthorAdd(LDraft draft, LRequestAuthorAddition request)

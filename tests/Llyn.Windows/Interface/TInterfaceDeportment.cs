@@ -96,48 +96,6 @@ internal static class TInterfaceDeportment
 
     internal static void TShelfOrderSet(this LShelf shelf, CCatalogOrder order) => shelf.LShelfOrderSet(order);
 
-    internal static void TImprintOpen(this LImprint imprint, long? id) => imprint.LImprintOpen(id);
-
-    internal static void TImprintCancel(this LImprint imprint) => imprint.LImprintCancel();
-
-    internal static void TImprintSave(this LImprint imprint) => imprint.LImprintSave();
-
-    internal static string TImprintTallyRead(this LImprint imprint) => imprint.LImprintTallyRead();
-
-    internal static void TImprintTitleSet(this LImprint imprint, string text) => imprint.LImprintTitleSet(text);
-
-    internal static void TImprintYearSet(this LImprint imprint, string text) => imprint.LImprintYearSet(text);
-
-    internal static void TImprintKindSet(this LImprint imprint, string? tag) => imprint.LImprintKindSet(tag);
-
-    internal static IReadOnlyList<CAuthorRow> TImprintCreditRead(this LImprint imprint) =>
-        imprint.LImprintCreditRead();
-
-    internal static void TImprintAuthorAdd(this LImprint imprint, int? position, long? id) =>
-        imprint.LImprintAuthorAdd(position, id);
-
-    internal static void TImprintAuthorRemove(this LImprint imprint, long? id) => imprint.LImprintAuthorRemove(id);
-
-    internal static void TImprintAuthorRetreat(this LImprint imprint, int? position, long? id) =>
-        imprint.LImprintAuthorRetreat(position, id);
-
-    internal static void TImprintAuthorAdvance(this LImprint imprint, int? position, long? id) =>
-        imprint.LImprintAuthorAdvance(position, id);
-
-    internal static bool TImprintKeyApply(
-        this LImprint imprint, string key, int? position, long? id, string? text, long? chosen) =>
-        imprint.LImprintKeyApply(key, position, id, text, chosen);
-
-    internal static void TBylineWordSet(this LImprint imprint, string? text, bool? focused) =>
-        imprint.LBylineWordSet(text, focused);
-
-    internal static IReadOnlyList<CAuthor> TBylineRowsRead(this LImprint imprint) => imprint.LBylineRowsRead();
-
-    internal static void TBylineSelect(this LImprint imprint, long? id, int? position, long? held) =>
-        imprint.LBylineSelect(id, position, held);
-
-    internal static void TBylineHide(this LImprint imprint) => imprint.LBylineHide();
-
     internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
 
     internal static void TPanelScribeToggle(this CPanel panel, bool editing) => panel.CPanelScribeToggle(editing);

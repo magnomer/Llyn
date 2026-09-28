@@ -178,9 +178,11 @@ internal sealed class LAuthorFacade
         }
     }
 
-    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit)
+    public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query)
     {
-        if (draft == 0)
+        ArgumentNullException.ThrowIfNull(query);
+
+        if (draft == 0 || string.IsNullOrWhiteSpace(query))
         {
             return [];
         }
@@ -188,8 +190,19 @@ internal sealed class LAuthorFacade
         IReadOnlyList<LAuthor> credited = _lAuthorFacadeEngine.LEngineDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
         lock (_lAuthorFacadeGate)
         {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LBylineFind(credited, query, limit);
+            return LAuthorFacadeStaff.LEngineStaffAuthor.LBylineFind(credited, query, LAuthorFacadeLimit);
         }
+    }
+
+    public static string LEngineBylineRead(string? text)
+    {
+        return LAuthorClerk.LBylineRead(text);
+    }
+
+    public static IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held)
+    {
+        held?.LTenurePersist();
+        return LAuthorClerk.LAuthorCreditRead(held?.LTenureRead());
     }
 
     public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)

@@ -24,6 +24,11 @@ Resolves the written title, description and kind of the sent situation.
 It lays them over the held one, keeping the held id.
 The situation panel and the chips both route here through `LSituationChange`.
 
+## `public static bool LAuthorNameCheck([NotNullWhen(true)] string? text)`
+
+Whether a typed credit names an Author at all.
+A blank text credits nobody, so the field it was typed into keeps its former name.
+
 ## `public LDraft LAuthorAdd(LDraft draft, LRequestAuthorAddition request)`
 
 Credits the Author of the typed name at the place asked for.

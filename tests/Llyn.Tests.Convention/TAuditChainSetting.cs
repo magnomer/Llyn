@@ -154,7 +154,7 @@ internal static class TAuditChainSetting
             "CCitationRow",
             "CAuthor",
             "CAuthorRow",
-            "CImprint",
+            "CReference",
             "CAtelier",
             "CEnvoy",
             "CCatalog",
@@ -185,6 +185,8 @@ internal static class TAuditChainSetting
             "CFavorite",
             "CFootnote",
             "CGuild",
+            "CImprint",
+            "CByline",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -289,7 +291,7 @@ internal static class TAuditChainSetting
             "CCitationRow",
             "CAuthor",
             "CAuthorRow",
-            "CImprint",
+            "CReference",
         ],
     };
 
@@ -315,9 +317,9 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 88,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 330,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 277,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 78,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 286,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 266,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,

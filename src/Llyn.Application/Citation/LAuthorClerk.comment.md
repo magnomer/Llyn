@@ -64,6 +64,15 @@ One Author as a browsed row, or null when none has that id.
 The rows matching `query` by name, the Author `except` left out, at most `limit` of them.
 The union section offers these as the Authors one may fold into.
 
+## `public static string LBylineRead(string? text)`
+
+The word a typed credit searches the byline with, without its outer spaces.
+The byline highlights this same word in the names it offers.
+
+## `public static IReadOnlyList<LAuthorRow> LAuthorCreditRead(LDraft? draft)`
+
+The credit rows of the Source a draft holds, in order, or none with no draft.
+
 ## `public IReadOnlyList<LAuthor> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)`
 
 The byline rows a typed credit may already name, at most the limit asked.

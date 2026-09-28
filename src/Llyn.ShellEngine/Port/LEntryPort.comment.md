@@ -50,6 +50,14 @@ An Author's work count as the roll shows it.
 
 The read sheet of a Source draft, with the citation line of the Source it holds.
 
+## `LImprint LEngineImprintRead(LDraft? draft);`
+
+The edit sheet of a Source draft, or of a blank Source with no draft.
+
+## `IReadOnlyList<LAuthorRow> LEngineCreditRead(LTenure? held);`
+
+The credit rows of the held Source draft, after its deferred requests are applied.
+
 ## `string LEngineTallyRead(long? reference);`
 
 The citation line of one Source, worded as none when no Source is given.

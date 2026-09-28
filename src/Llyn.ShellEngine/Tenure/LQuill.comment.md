@@ -91,6 +91,48 @@ Writes a sentence's particle as known, deferred like the text.
 
 Writes a sentence's dependence as known, deferred like the text.
 
+## `public void LQuillTitleSet(string text)`
+
+Defers the held Source's typed title.
+
+## `public void LQuillYearSet(string text)`
+
+Defers the held Source's typed year.
+
+## `public void LQuillUrlSet(string text)`
+
+Defers the held Source's typed address.
+
+## `public void LQuillNoteSet(string text)`
+
+Defers the held Source's typed note.
+
+## `public void LQuillKindSet(string? tag)`
+
+Sends the kind a menu tag names at once, since it came from a click.
+The reference clerk decides the kind, and a tag the Source already has sends nothing.
+
+## `public static bool LQuillAuthorCheck([NotNullWhen(true)] string? text)`
+
+Whether a typed credit names an Author, as the draft clerk rules.
+
+## `public void LQuillAuthorAdd(string name, int position, long former)`
+
+Sends the credit of a typed name at `position`, in place of the credit `former` stood for.
+The draft clerk trims the name and resolves it to an Author.
+
+## `public void LQuillAuthorInsert(long author, int position, long former)`
+
+Sends the credit of a stored Author at `position`, in place of the credit `former` stood for.
+
+## `public void LQuillAuthorRemove(long author)`
+
+Sends the removal of one credit.
+
+## `public void LQuillAuthorMove(long author, int position)`
+
+Sends one credit to a new place, which the draft clerk clamps to the list.
+
 ## `public void LQuillSituationSet(string title, string description, string kind)`
 
 Defers the scenario's title, description and kind as one body.

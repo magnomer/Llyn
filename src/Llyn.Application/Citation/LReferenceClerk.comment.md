@@ -94,6 +94,17 @@ The author state counts too, because ruling the writers unknown is an edit nothi
 The read sheet of a Source draft in the current language, with its credits and `tally`.
 A draft holding no Source is a caller's mistake and throws.
 
+## `public static LImprint LReferenceImprintRead(LDraft? draft)`
+
+The edit sheet of the Source a draft holds.
+With no draft it is the sheet of a blank Source, which the imprint shows while nothing is held.
+A draft holding no Source is a caller's mistake and throws.
+
+## `public static LReferenceKind? LReferenceKindRead(LDraft? draft, string? tag)`
+
+The kind a picked menu tag sets on the Source a draft holds.
+It is null when no tag was picked, or when the Source already has that kind, so nothing is sent.
+
 ## `public static LPortraitPage LReferencePageRead(LReference reference, IReadOnlyList<LAuthor> credits, int count, LPortraitLegend legend)`
 
 The title heads the page, and the kind and usage tally are the chips.

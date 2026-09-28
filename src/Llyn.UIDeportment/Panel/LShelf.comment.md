@@ -35,9 +35,9 @@ The window's leave over the side in front.
 
 The rail's save over the side in front.
 
-## `public LImprint LShelfImprint { get; }`
+## `public CImprint LShelfImprint { get; }`
 
-The source editor's deportment, opened by an edited row or a fresh start and dropped when the area leaves.
+The source editor, opened by an edited row or a fresh start and dropped when the area leaves.
 Its stored draft is shown again through the panel state, as the stored Source.
 
 ## `public bool LShelfEntrySide`

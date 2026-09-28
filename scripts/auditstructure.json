@@ -203,9 +203,9 @@
     "System.Diagnostics.Stopwatch"
   ],
   "ceilings": {
-    "cross:Llyn.UIDeportment>Llyn.Application": 88,
-    "cross:Llyn.UIDeportment>Llyn.Core": 330,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 277,
+    "cross:Llyn.UIDeportment>Llyn.Application": 78,
+    "cross:Llyn.UIDeportment>Llyn.Core": 286,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 266,
     "expose:Llyn.UIDemeanor>Llyn.Core": 23,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
     "expose:Llyn.UIDeportment>Llyn.Core": 23,
@@ -333,7 +333,7 @@
       "CCitationRow",
       "CAuthor",
       "CAuthorRow",
-      "CImprint",
+      "CReference",
       "CAtelier",
       "CEnvoy",
       "CCatalog",
@@ -363,7 +363,9 @@
       "CQuotation",
       "CFavorite",
       "CFootnote",
-      "CGuild"
+      "CGuild",
+      "CImprint",
+      "CByline"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",
@@ -467,7 +469,7 @@
       "CCitationRow",
       "CAuthor",
       "CAuthorRow",
-      "CImprint"
+      "CReference"
     ]
   },
   "seal": {

@@ -52,6 +52,11 @@ The same delete, with `detach` clearing every citation first.
 The reference clerk's read sheet of a Source draft, under the gate.
 The citation line counts the Source the draft holds, which is the one its panel has chosen.
 
+## `public static LImprint LEngineImprintRead(LDraft? draft)`
+
+The reference clerk's edit sheet of a Source draft, or of a blank Source with no draft.
+It reads no store, so it takes no gate.
+
 ## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
 
 The `Author (Year)` line every stored Source is cited under, by id.
