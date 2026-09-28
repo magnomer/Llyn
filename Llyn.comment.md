@@ -336,3 +336,9 @@ The audits and convention tests measure the lag as falling ceilings.
 
 The projects under `tests` are left out on purpose.
 `scripts/test.ps1` finds, builds and runs them from the tests folder instead.
+
+## Performance project
+
+`performance/Llyn.Performance` is left out on purpose too.
+It holds the drills, fixed workloads that `scripts/estimateperformance.ps1` builds and runs under the sampling profiler.
+It references portable engine projects only, never a UI project.
