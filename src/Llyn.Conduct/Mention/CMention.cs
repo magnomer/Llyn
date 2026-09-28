@@ -138,6 +138,16 @@ public sealed class CMention
         return read;
     }
 
+    internal static CMentionResult CMentionResultRead(LMentionResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+
+        return new CMentionResult(
+            result.LMentionResultOffset,
+            result.LMentionResultStored is LMention stored ? CMentionRead([stored])[0] : null,
+            CFolio.CFolioTargetRead(result.LMentionResultEntry));
+    }
+
     internal static IReadOnlyList<LMention> CMentionRead(IReadOnlyList<CMentionMark> mentions)
     {
         ArgumentNullException.ThrowIfNull(mentions);

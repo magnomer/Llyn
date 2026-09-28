@@ -8,16 +8,6 @@ internal static class TInterfaceGate
 {
     internal static void TQuillAuthorSet(this CDesk desk, string name) => desk.CDeskQuill!.LQuillAuthorSet(name);
 
-    internal static CExample? TAnthologyExampleRead(LExample? example) => LAnthology.LAnthologyExampleRead(example);
-
-    internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>
-        example with { LExampleMention = [mention] };
-
-    internal static CMentionResult TAnthologyMentionRead(int offset, LMention? stored) =>
-        LAnthology.LAnthologyMentionRead(new LMentionResult(offset, stored, []));
-
-    internal static LPortraitLegend TAtlasLegendRead(CPortraitLegend legend) => LAtlas.LAtlasLegendRead(legend);
-
     internal static CSituationDraft? TAtlasSituationRead(LSituation? situation) =>
         LAtlas.LAtlasSituationRead(situation);
 

@@ -44,6 +44,14 @@ The sentence gates over the editor's desk.
 The sound sheet of the entry the editor's desk holds.
 It shares the editor's envoy, so a refused rebuild shows the same notice as the desk's own failures.
 
+## `public CEsteem CEditorEsteem { get; }`
+
+The favourite, grasp and frequency of the stored entry the editor's desk holds.
+
+## `public CTimbre CEditorTimbre { get; }`
+
+The pack sound facts and waiting sections of the entry the editor's desk holds.
+
 ## `public bool CEditorOwned`
 
 Whether this editor is the input tab's, which alone shows the command rail.

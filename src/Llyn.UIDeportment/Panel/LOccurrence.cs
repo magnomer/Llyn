@@ -73,12 +73,12 @@ public sealed class LOccurrence
     public Task LOccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lOccurrenceVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            _lOccurrenceVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     public Task LOccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            _lOccurrenceVista, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
+            _lOccurrenceVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
     }
 }

@@ -27,6 +27,21 @@ The entry written as markup through the markup clerk.
 
 The page rendered as sheet HTML and handed to the press with the ticket.
 
+## `public static LPressTicket LPortraitTicketCreate(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
+
+The ticket a print dialog's answer stands for.
+A dialog that named no usable sheet size prints on the local sheet.
+
+## `public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)`
+
+The label an entry page is worded with, taken word by word in the record's order.
+It throws unless every one of the label's words is given.
+
+## `public static LPortraitLegend LPortraitLegendCreate(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)`
+
+The legend a catalog page is worded with, taken word by word in the record's order.
+Each Source kind is worded by its stored word, and a kind the words leave out keeps its own name.
+
 ## `private IReadOnlyDictionary<long, LPortraitLink> LPortraitTargetScan(IReadOnlyList<long> ids)`
 
 The translation targets as links, empty when the read fails.

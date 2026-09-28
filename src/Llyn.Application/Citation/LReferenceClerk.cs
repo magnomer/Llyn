@@ -129,6 +129,30 @@ public sealed class LReferenceClerk
         return LCatalogReference.LCatalogReferenceSort(rows, order);
     }
 
+    public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)
+    {
+        ArgumentNullException.ThrowIfNull(word);
+
+        string text = word.Trim();
+        if (text.Length == 0)
+        {
+            return [];
+        }
+
+        long? held = draft?.LDraftExample?.LExampleSource.LStateAnchorShown;
+        IReadOnlyList<LCatalogReference> found = LReferenceClerkFind(text, LCatalogOrder.LCatalogOrderUsage);
+        foreach (LCatalogReference row in found)
+        {
+            if (row.LCatalogReferenceStored.LReferenceId == held
+                && string.Equals(row.LCatalogReferenceByline, text, StringComparison.Ordinal))
+            {
+                return [];
+            }
+        }
+
+        return found;
+    }
+
     public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(
         long? author,
         string query,

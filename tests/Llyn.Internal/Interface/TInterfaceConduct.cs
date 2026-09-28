@@ -60,9 +60,14 @@ internal static class TInterfaceConduct
     internal static bool TCatalogFilterMatch(this CCatalogFilter filter, string? language) =>
         filter.CCatalogFilterMatch(language);
 
-    internal static IReadOnlyList<CCitationRow> TCitationRowFind(
-        IReadOnlyList<CCatalogReference> found, string word, long? source) =>
-        CCitationRow.CCitationRowFind(found, word, source);
+    internal static IReadOnlyList<CCitationRow> TCitationRowFind(IReadOnlyList<CCatalogReference> found, string word) =>
+        CCitationRow.CCitationRowFind(found, word);
+
+    internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>
+        example with { LExampleMention = [mention] };
+
+    internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>
+        CMention.CMentionResultRead(new LMentionResult(offset, stored, []));
 
     internal static LFont TFontCreate(string family, double size) => new(family, size);
 

@@ -20,6 +20,8 @@ public sealed record LExample(
 
     public IReadOnlyList<LMention> LExampleMention { get; init; } = LExampleMention ?? [];
 
+    public IReadOnlyList<LMention> LExampleExcerpt => LExampleText.LStateValueSound ? LExampleMention : [];
+
     public bool Equals(LExample? other)
     {
         return other is not null

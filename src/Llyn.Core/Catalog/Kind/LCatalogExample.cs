@@ -12,6 +12,8 @@ public sealed record LCatalogExample(
 {
     public string LCatalogExampleName { get; init; } = LCatalogExampleStored.LExampleText.LStateValueShow();
 
+    public string LCatalogExampleText { get; init; } = LCatalogExampleStored.LExampleText.LStateValueShow();
+
     public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)
     {
         ArgumentNullException.ThrowIfNull(example);

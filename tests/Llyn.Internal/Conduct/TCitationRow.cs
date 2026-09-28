@@ -11,7 +11,7 @@ public sealed class TCitationRow
     public void CitationRowFind_WordInByline_SplitsAroundMatchIgnoringCase()
     {
         IReadOnlyList<CCitationRow> rows = TInterfaceConduct.TCitationRowFind(
-            [TCitationSourceCreate(3, "Smith (1990)", 4)], "smi", null);
+            [TCitationSourceCreate(3, "Smith (1990)", 4)], "smi");
 
         CCitationRow row = Assert.Single(rows);
         Assert.Equal(3, row.CCitationRowId);
@@ -25,23 +25,12 @@ public sealed class TCitationRow
     public void CitationRowFind_WordOutsideByline_ReadsBylineWholeWithoutCount()
     {
         CCitationRow row = Assert.Single(TInterfaceConduct.TCitationRowFind(
-            [TCitationSourceCreate(3, "Smith (1990)", 0)], "1991", null));
+            [TCitationSourceCreate(3, "Smith (1990)", 0)], "1991"));
 
         Assert.Equal("Smith (1990)", row.CCitationRowLead);
         Assert.Equal(string.Empty, row.CCitationRowMark);
         Assert.Equal(string.Empty, row.CCitationRowTail);
         Assert.Equal(string.Empty, row.CCitationRowCount);
-    }
-
-    [Fact]
-    public void CitationRowFind_WordIsCitedByline_OffersNothing()
-    {
-        IReadOnlyList<CCitationRow> rows = TInterfaceConduct.TCitationRowFind(
-            [TCitationSourceCreate(3, "Smith (1990)", 4), TCitationSourceCreate(5, "Smith (1991)", 1)],
-            "Smith (1990)",
-            3);
-
-        Assert.Empty(rows);
     }
 
     [Fact]
@@ -52,7 +41,7 @@ public sealed class TCitationRow
             .. Enumerable.Range(1, 10).Select(id => TCitationSourceCreate(id, "Smith " + id, id)),
         ];
 
-        IReadOnlyList<CCitationRow> rows = TInterfaceConduct.TCitationRowFind(found, "Smith", null);
+        IReadOnlyList<CCitationRow> rows = TInterfaceConduct.TCitationRowFind(found, "Smith");
 
         Assert.Equal([1L, 2, 3, 4, 5, 6, 7, 8], rows.Select(row => row.CCitationRowId));
     }

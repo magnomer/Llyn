@@ -55,6 +55,13 @@ The usage tally is counted from the rows citing the Source, as the catalog count
 The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
 The credits and the counts are read whole rather than one Source at a time.
 
+## `public IReadOnlyList<LCatalogReference> LReferenceCitationFind(string word, LDraft? draft)`
+
+The Sources a citation field offers for the typed word, the most cited first.
+The word is trimmed, and a blank word offers none.
+A word that already names the byline of the Source the draft's Example cites offers none.
+The citation then stands as typed, so nothing is left to pick.
+
 ## `public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`
 
 Reads the Sources crediting `author` as browsed rows, narrowed by `query` and by the kinds left shown.

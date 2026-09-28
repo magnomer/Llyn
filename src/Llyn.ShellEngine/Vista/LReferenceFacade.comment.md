@@ -20,6 +20,11 @@ The Reference cited now is read off the held draft, so no shell carries it in.
 Zero card and sentence ids name the draft's own Example, as on the corpus panel.
 The clerk decides the match, and only a created Reference is announced.
 
+## `public IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word)`
+
+The Sources a citation field offers for the typed word, over the held draft's cited Source.
+No draft id reads as no draft, so nothing counts as cited yet.
+
 ## `internal LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.

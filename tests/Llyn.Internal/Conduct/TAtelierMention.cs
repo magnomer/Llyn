@@ -80,6 +80,24 @@ public sealed class TAtelierMention
     }
 
     [Fact]
+    public void MentionResultRead_StoredMention_CarriesLink()
+    {
+        CMentionResult held = TInterfaceConduct.TMentionResultRead(2, TInterface.TMentionCreate(1, 2, 3, 40, 7));
+
+        Assert.Equal(2, held.CMentionResultOffset);
+        Assert.Equal(40, held.CMentionResultStored?.CMentionMarkEntry);
+        Assert.Equal(7, held.CMentionResultStored?.CMentionMarkSense);
+        Assert.False(held.CMentionResultSingle);
+        Assert.Equal(0, held.CMentionResultFirst);
+    }
+
+    [Fact]
+    public void MentionResultRead_NothingStored_CarriesNoMark()
+    {
+        Assert.Null(TInterfaceConduct.TMentionResultRead(2, null).CMentionResultStored);
+    }
+
+    [Fact]
     public void MentionMarkRead_NoDrafts_ReadsEmpty()
     {
         Assert.Empty(CMention.CMentionMarkRead(null));

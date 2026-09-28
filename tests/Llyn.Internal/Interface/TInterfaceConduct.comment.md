@@ -79,3 +79,11 @@ Relays the entry draft map, so the facts pass engine drafts through the boundary
 
 Builds a session over `desk` alone, starting it by vista as the guild does.
 The overload over an editor desk records each editor finish in `seen`.
+
+## `internal static LExample TExampleMentionAdd(this LExample example, LMention mention) =>`
+
+The Example with `mention` as its only Mention, so a test builds an Example that links.
+
+## `internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>`
+
+Maps a click result holding only `stored`, so a test builds no engine record itself.

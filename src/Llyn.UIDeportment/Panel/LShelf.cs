@@ -445,7 +445,7 @@ public sealed class LShelf
         if (LShelfSourcePrintable)
         {
             return _lPortraitPort.LEnginePortraitPrint(
-                _lShelfVista, LAtlas.LAtlasLegendRead(legend), QPortrait.QPortraitTicketRead(ticket));
+                _lShelfVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
         }
 
         return Task.CompletedTask;
@@ -472,7 +472,7 @@ public sealed class LShelf
         return _lPortraitPort.LEnginePortraitExport(
             LShelfFootnote.LFootnotePanel.CPanelVista,
             path,
-            QPortrait.QPortraitMediumRead(format),
-            QPortrait.QPortraitLabelRead(label));
+            CPortrait.CPortraitMediumRead(format),
+            CPortrait.CPortraitLabelRead(label));
     }
 }

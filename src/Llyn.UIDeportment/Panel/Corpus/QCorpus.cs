@@ -250,7 +250,7 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusDisplay.PDisplayAttach(host, lectern);
         QCorpusEditor.PEditorAttach(host, editor, lectern);
 
-        CPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
+        CPanel anthology = _lCorpus.LCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
         _lCorpus.LCorpusChanged += QCorpusModeUpdate;
         _lCorpus.LCorpusTranscriptChanged += QTranscriptApply;

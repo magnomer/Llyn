@@ -3,7 +3,7 @@
 ## `public sealed class LCorpus`
 
 The corpus panel's deportment: the example list, the quotation list, the entry editor and the transcript desk.
-The example list lives in the anthology, which holds the example vista's panel state.
+The example list is the Conduct anthology, which holds the example vista's panel state.
 The quotation list lives in the quotation, whose rows follow the chosen Example.
 The desk holds the example tenure the transcript editor edits, under the `Example` scope.
 The two vistas' chosen rows and editing flags are the panel's mode, and the controls only follow.
@@ -26,9 +26,10 @@ The draft session over the desk, which defers to the entry editor while it shows
 The views save, undo and redo through it, and a leave finishes through it.
 A stored Example is shown again outside the scribe through `LCorpusStoredShow`.
 
-## `public LAnthology LCorpusAnthology { get; }`
+## `public CAnthology LCorpusAnthology { get; }`
 
 The example list, whose panel asks the desk whether the transcript holds unsaved changes.
+It is built over the atelier, so the corpus hands it no port.
 
 ## `public event Action? LCorpusChanged`
 
@@ -53,7 +54,7 @@ Raised once an arrival drops the query and the language filter, so the veneer em
 ## `public CExample? LCorpusTranscriptRead()`
 
 Reads the Example the desk holds, which persists the tenure first and so can throw.
-The Example is mapped to its shape by `LAnthology.LAnthologyExampleRead`.
+The Example is mapped to its shape by `CAnthology.CAnthologyExampleRead`.
 A throw raises `LCorpusFailed` with `Example.HoldFailed` and reads as null, so no click handler sees it.
 The veneer reads it on each draft bulletin, so the desk never hands it a draft.
 
@@ -105,11 +106,6 @@ Allows print for an entry on display or for a chosen example in the excerpt.
 ## `public bool LCorpusPortraitAllowed`
 
 Allows export only for an entry on display.
-
-## `public IReadOnlyList<CCitationRow> LCorpusCitationFind(string word)`
-
-The Sources the transcript's citation field offers for the typed word.
-The Source the held Example cites now is passed along, so its unchanged byline offers nothing.
 
 ## `public void LCorpusExampleShow(long id)`
 
@@ -183,7 +179,7 @@ The save button, a tab leave and the window's close finish through it, and a row
 ## `public void LCorpusDelete()`
 
 Deletes the chosen Example, and does nothing on the quotation side.
-A failure reads `Example.DeleteFailed`, the delete key `LAnthology` hands its panel.
+A failure reads `Example.DeleteFailed`, the delete key `CAnthology` hands its panel.
 
 ## `private void LCorpusQuotationCreate()`
 

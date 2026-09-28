@@ -73,12 +73,12 @@ public sealed class LQuotation
     public Task LQuotationPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lQuotationVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            _lQuotationVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     public Task LQuotationPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            _lQuotationVista, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
+            _lQuotationVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
     }
 }

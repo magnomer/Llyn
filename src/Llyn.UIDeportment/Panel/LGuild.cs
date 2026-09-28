@@ -381,8 +381,8 @@ public sealed class LGuild
 
         return _lPortraitPort.LEnginePortraitPrint(
             LGuildOeuvre.COeuvrePanel.CPanelVista,
-            LAtlas.LAtlasLegendRead(legend),
-            QPortrait.QPortraitTicketRead(ticket));
+            CPortrait.CPortraitLegendRead(legend),
+            CPortrait.CPortraitTicketRead(ticket));
     }
 
     internal void LGuildVistaRestore(CAtelier atelier)

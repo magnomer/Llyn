@@ -36,9 +36,9 @@ internal sealed class QRegard
     internal void QRegardAttach(LEditor editor)
     {
         _lEditor = editor;
-        _lEditor.LEditorEsteem.QEsteemFavoriteChanged += QRegardFavoriteUpdate;
-        _lEditor.LEditorEsteem.QEsteemGraspChanged += QRegardGraspUpdate;
-        QRegardGrasp.PGraspLimit = _lEditor.LEditorEsteem.QEsteemGraspStep;
+        _lEditor.LEditorStudio.CEditorEsteem.CEsteemFavoriteChanged += QRegardFavoriteUpdate;
+        _lEditor.LEditorStudio.CEditorEsteem.CEsteemGraspChanged += QRegardGraspUpdate;
+        QRegardGrasp.PGraspLimit = _lEditor.LEditorStudio.CEditorEsteem.CEsteemGraspStep;
     }
 
     internal void QRegardUpdate()
@@ -51,29 +51,29 @@ internal sealed class QRegard
     private void QRegardFavoriteUpdate()
     {
         QRegardFavorite.IsEnabled = _lEditor.LEditorStudio.CEditorDesk.CDeskStored;
-        QRegardFavorite.IsChecked = _lEditor.LEditorEsteem.QEsteemFavorite;
+        QRegardFavorite.IsChecked = _lEditor.LEditorStudio.CEditorEsteem.CEsteemFavorite;
     }
 
     private void QRegardFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorEsteem.QEsteemFavoriteSet(QLook.QLookCheckedRead(QRegardFavorite.IsChecked));
+        _lEditor.LEditorStudio.CEditorEsteem.CEsteemFavoriteSet(QLook.QLookCheckedRead(QRegardFavorite.IsChecked));
     }
 
     internal void QRegardGraspUpdate()
     {
         QRegardGrasp.IsEnabled = _lEditor.LEditorStudio.CEditorDesk.CDeskStored;
-        QRegardGrasp.PGraspStep = _lEditor.LEditorEsteem.QEsteemGrasp;
-        QRegardGraspLabel.Text = _lEditor.LEditorEsteem.QEsteemGraspFormat(QRegardGrasp.PGraspStep);
+        QRegardGrasp.PGraspStep = _lEditor.LEditorStudio.CEditorEsteem.CEsteemGrasp;
+        QRegardGraspLabel.Text = _lEditor.LEditorStudio.CEditorEsteem.CEsteemGraspRead(QRegardGrasp.PGraspStep);
     }
 
     private void QRegardHoverHandle(object sender, RoutedEventArgs e)
     {
-        QRegardGraspLabel.Text = _lEditor.LEditorEsteem.QEsteemGraspFormat(QRegardGrasp.PGraspPointed);
+        QRegardGraspLabel.Text = _lEditor.LEditorStudio.CEditorEsteem.CEsteemGraspRead(QRegardGrasp.PGraspPointed);
     }
 
     private void QRegardGraspHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorEsteem.QEsteemGraspSet(QRegardGrasp.PGraspStep);
+        _lEditor.LEditorStudio.CEditorEsteem.CEsteemGraspSet(QRegardGrasp.PGraspStep);
     }
 
     internal void QRegardFrequencyUpdate()
@@ -83,6 +83,7 @@ internal sealed class QRegard
             QRegardFrequencyChip,
             QRegardFrequency,
             QRegardFrequencyBand,
-            _lEditor.LEditorEsteem.QEsteemFrequencyRead(QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
+            _lEditor.LEditorStudio.CEditorEsteem.CEsteemFrequencyRead(
+                QLocalizationCatalog.QLocalizationTextRead("Frequency.Once")));
     }
 }

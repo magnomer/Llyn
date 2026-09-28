@@ -50,7 +50,7 @@ The tally chip follows the stored id the draft names, not the sentence being wri
 ## `private void QTranscriptShow(CExample? example)`
 
 Redraws each field from the held sentence only where the field says something else.
-Whether the text differs is the anthology's `LAnthologyTextCheck` verdict, so a bulletin never moves the caret.
+Whether the text differs is the `CAnthology.CAnthologyTextCheck` verdict, so a bulletin never moves the caret.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
 ## `private void QCorpusFreshHandle(object sender, RoutedEventArgs e)`

@@ -95,4 +95,4 @@ The engine's subject and bulletin are mapped here, so the driver names neither.
 
 ## `public Task LYunjingPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
 
-Prints the entry list, the label and ticket mapped through `QPortrait`, as export maps its medium.
+Prints the entry list, the label and ticket mapped through `CPortrait`, as export maps its medium.

@@ -173,6 +173,52 @@ public sealed class LPortraitClerk
         return _lPortraitClerkPress.LPressPrint(_lPortraitClerkPortraits.LPortraitSheetFormat(page), ticket);
     }
 
+    public static LPressTicket LPortraitTicketCreate(
+        string printer,
+        double? width,
+        double? height,
+        bool landscape,
+        int copies,
+        bool collated,
+        LPressSide side,
+        LPressInk ink)
+    {
+        LPressPaper paper = width is double across && height is double down
+            ? new LPressPaper(across, down)
+            : LPressPaper.LPressPaperLocal;
+        return new LPressTicket(printer, paper, landscape, copies, collated, side, ink);
+    }
+
+    public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)
+    {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 22);
+
+        return new LPortraitLabel(
+            words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
+            words[10], words[11], words[12], words[13], words[14], words[15], words[16], words[17], words[18],
+            words[19], words[20], words[21]);
+    }
+
+    public static LPortraitLegend LPortraitLegendCreate(
+        IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)
+    {
+        ArgumentNullException.ThrowIfNull(words);
+        ArgumentNullException.ThrowIfNull(kinds);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 13);
+
+        Dictionary<LReferenceKind, string> worded = [];
+        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
+        {
+            worded[kind] = kinds.GetValueOrDefault(
+                LReference.LReferenceKindResolve(kind), LReference.LReferenceKindFormat(kind));
+        }
+
+        return new LPortraitLegend(
+            words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
+            words[10], words[11], words[12], worded);
+    }
+
     private IReadOnlyDictionary<long, LPortraitLink> LPortraitTargetScan(IReadOnlyList<long> ids)
     {
         Dictionary<long, LPortraitLink> targets = [];

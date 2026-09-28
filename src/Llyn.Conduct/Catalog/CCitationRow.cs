@@ -13,21 +13,12 @@ public sealed record CCitationRow(
 {
     private const int CCitationRowLimit = 8;
 
-    public static IReadOnlyList<CCitationRow> CCitationRowFind(
-        IReadOnlyList<CCatalogReference> found, string word, long? source)
+    public static IReadOnlyList<CCitationRow> CCitationRowFind(IReadOnlyList<CCatalogReference> found, string word)
     {
         ArgumentNullException.ThrowIfNull(found);
         ArgumentNullException.ThrowIfNull(word);
 
-        foreach (CCatalogReference row in found)
-        {
-            if (row.CCatalogReferenceId == source
-                && string.Equals(row.CCatalogReferenceByline, word, StringComparison.Ordinal))
-            {
-                return [];
-            }
-        }
-
+        string marked = word.Trim();
         List<CCitationRow> rows = [];
         foreach (CCatalogReference row in found)
         {
@@ -36,7 +27,7 @@ public sealed record CCitationRow(
                 break;
             }
 
-            rows.Add(CCitationRowRead(row, word));
+            rows.Add(CCitationRowRead(row, marked));
         }
 
         return rows;

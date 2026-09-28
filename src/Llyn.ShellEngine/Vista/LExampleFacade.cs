@@ -49,6 +49,8 @@ internal sealed class LExampleFacade
             rows.Add(row with
             {
                 LCatalogExampleName = names[index],
+                LCatalogExampleText =
+                    LVistaFacade.LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
                 LCatalogExampleChosen = row.LCatalogExampleStored.LExampleId == vista.LVistaChosen,
             });
         }

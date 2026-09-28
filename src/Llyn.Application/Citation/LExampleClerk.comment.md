@@ -54,6 +54,11 @@ Identity is left out, because a held sentence is named before the Example it bec
 The language counts, because the tongue a sentence is written in is part of the sentence.
 The cited Source counts too, and so do the Mentions.
 
+## `public static bool LExampleTextMatch(string field, string shown)`
+
+Whether a field showing `field` already shows the text `shown`.
+A blank field reads as nothing recorded, as the engine would store it, so it matches an empty text.
+
 ## `public static LPortraitPage LExamplePageRead(LExample example, LReference? cited, int count, LPortraitLegend legend)`
 
 The sentence heads the page, its language is the chip, and its usage tally follows.

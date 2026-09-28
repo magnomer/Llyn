@@ -4,21 +4,12 @@
 
 The entry editor's holder until its remaining pieces reach Conduct.
 Every entry gate, read and session flag lives on `CEditor`, which the atelier builds.
-It still builds the clip, notation, esteem and timbre, whose own jobs dismantle them.
-The phonology port it takes serves only the timbre.
-The sound sheet is `CEditor.CEditorSounding`, which the timbre is handed.
+The marks, the sound facts and the sound sheet are `CEditor`'s too, so it holds no port.
+It still builds the clip and the notation, whose own jobs dismantle them.
 
 ## `public CEditor LEditorStudio { get; }`
 
 The Conduct editor every view calls for an entry gate or read.
-
-## `public QEsteem LEditorEsteem { get; }`
-
-The favourite, grasp and frequency of the held entry, built over the editor's desk and display.
-
-## `public QTimbre LEditorTimbre { get; }`
-
-The pack sound facts and sound-sheet commands of the held entry, built over the desk, display and Conduct sheet.
 
 ## `public long? LEditorEntry`
 

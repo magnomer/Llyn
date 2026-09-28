@@ -108,6 +108,11 @@ public sealed class LExampleClerk
             && one.LExampleMention.SequenceEqual(other.LExampleMention);
     }
 
+    public static bool LExampleTextMatch(string field, string shown)
+    {
+        return string.Equals(LStateValue.LStateValueRead(field).LStateValueShow(), shown, StringComparison.Ordinal);
+    }
+
     public static LPortraitPage LExamplePageRead(
         LExample example, LReference? cited, int count, LPortraitLegend legend)
     {

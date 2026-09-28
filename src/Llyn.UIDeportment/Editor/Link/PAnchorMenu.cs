@@ -50,7 +50,7 @@ public partial class PEditor
     {
         PAnchorList.Children.Clear();
         IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(
-            _lEditor.LEditorTimbre.QTimbreAnchorScan(
+            _lEditor.LEditorStudio.CEditorSounding.CSoundingAnchorScan(
                 row.LReflexItemAnchors, row.LReflexItemLanguage, row.LReflexItemTone));
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)

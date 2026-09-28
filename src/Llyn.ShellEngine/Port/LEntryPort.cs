@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -75,6 +76,10 @@ public interface LEntryPort
 
     IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista);
 
+    IReadOnlyList<LCatalogReference> LEngineReferenceFind();
+
+    IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word);
+
     long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title);
 
     IReadOnlyDictionary<long, string> LEngineCitationRead();
@@ -106,4 +111,9 @@ public interface LEntryPort
     IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels);
 
     IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text);
+
+    static bool LEngineTextMatch(string field, string shown)
+    {
+        return LExampleClerk.LExampleTextMatch(field, shown);
+    }
 }

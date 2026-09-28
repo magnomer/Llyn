@@ -49,6 +49,11 @@ The stored Mentions of a text as a driver holds them.
 The overload taking the marks maps them back for the engine's piece and find calls.
 Both stay internal, since they name engine types.
 
+## `internal static CMentionResult CMentionResultRead(LMentionResult result)`
+
+Maps what a click on a text found to its shape, and a stored Mention under the click with it.
+The corpus excerpt and the lectern both hand the window this shape, so the lectern calls it too.
+
 ## `private static IReadOnlyList<CMentionLabel> CMentionLabelRead(IReadOnlyList<LMentionLabel> labels, string silent)`
 
 Names each label by its headword while linked, and by `silent` otherwise.

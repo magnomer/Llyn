@@ -123,7 +123,7 @@ public sealed class LFavorite
     public Task LFavoritePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lFavoriteVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            _lFavoriteVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     internal void LFavoriteVistaRestore(CAtelier atelier)
@@ -154,6 +154,6 @@ public sealed class LFavorite
     public Task LFavoritePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            _lFavoriteVista, path, QPortrait.QPortraitMediumRead(format), QPortrait.QPortraitLabelRead(label));
+            _lFavoriteVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
     }
 }

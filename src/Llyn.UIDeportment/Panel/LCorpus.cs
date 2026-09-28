@@ -13,6 +13,7 @@ public sealed class LCorpus
     private readonly Func<Func<bool, bool>, bool> _lCorpusLeaveSeam;
 
     internal LCorpus(
+        CAtelier atelier,
         LDraftPort drafts,
         LEntryPort entries,
         LPortraitPort portraits,
@@ -32,9 +33,8 @@ public sealed class LCorpus
         _lCorpusLeaveSeam = leaveSeam;
         LCorpusEditor = editor;
         LCorpusDesk = new CDesk(drafts, "Example", envoy, "Corpus", CSubject.CSubjectExample);
-        LCorpusAnthology = new LAnthology(
-            entries,
-            portraits,
+        LCorpusAnthology = CAnthology.CAnthologyCreate(
+            atelier,
             LCorpusDesk,
             shownSeam,
             envoy,
@@ -46,10 +46,10 @@ public sealed class LCorpus
             shownSeam,
             envoy,
             store => LCorpusSession!.CSessionFinish(store));
-        LCorpusAnthology.LAnthologyPanel.CPanelRowsChanged += LCorpusQuotation.LQuotationPanel.CPanelRowsUpdate;
+        LCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += LCorpusQuotation.LQuotationPanel.CPanelRowsUpdate;
         LCorpusSession = new CSession(
             LCorpusDesk,
-            [LCorpusQuotation.LQuotationPanel.CPanelChangeCheck, LCorpusAnthology.LAnthologyPanel.CPanelChangeCheck],
+            [LCorpusQuotation.LQuotationPanel.CPanelChangeCheck, LCorpusAnthology.CAnthologyPanel.CPanelChangeCheck],
             editor.LEditorStudio.CEditorDesk,
             () => LCorpusQuotation.LQuotationPanel.CPanelEditing,
             editor.LEditorStudio.CEditorFinish,
@@ -58,9 +58,9 @@ public sealed class LCorpus
         LCorpusSession.CSessionHeld += () => LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
         LCorpusSession.CSessionChanged += () => LCorpusChanged?.Invoke();
         LCorpusSession.CSessionFailed += (key, exception) => LCorpusFailed?.Invoke(key, exception);
-        LCorpusAnthology.LAnthologyPanel.CPanelEdited += id => LCorpusSession.CSessionStart(id);
-        LCorpusAnthology.LAnthologyPanel.CPanelCleared += LCorpusSession.CSessionCancel;
-        LCorpusAnthology.LAnthologyPanel.CPanelDraftChanged += LCorpusExampleUpdate;
+        LCorpusAnthology.CAnthologyPanel.CPanelEdited += id => LCorpusSession.CSessionStart(id);
+        LCorpusAnthology.CAnthologyPanel.CPanelCleared += LCorpusSession.CSessionCancel;
+        LCorpusAnthology.CAnthologyPanel.CPanelDraftChanged += LCorpusExampleUpdate;
         LCorpusQuotation.LQuotationPanel.CPanelEdited += LCorpusEditorOpen;
         LCorpusQuotation.LQuotationPanel.CPanelCleared += editor.LEditorStudio.CEditorDesk.CDeskCancel;
         LCorpusQuotation.LQuotationPanel.CPanelCleared += lectern.LLecternClear;
@@ -83,31 +83,31 @@ public sealed class LCorpus
 
     public CSession LCorpusSession { get; }
 
-    public LAnthology LCorpusAnthology { get; }
+    public CAnthology LCorpusAnthology { get; }
 
     public LQuotation LCorpusQuotation { get; }
 
     private bool LCorpusQuotationSide => LCorpusQuotation.LQuotationPanel.CPanelModeEnabled;
 
-    public bool LCorpusTranscriptShown => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.CPanelEditing;
+    public bool LCorpusTranscriptShown => !LCorpusQuotationSide && LCorpusAnthology.CAnthologyPanel.CPanelEditing;
 
-    public bool LCorpusExcerptShown => !LCorpusQuotationSide && !LCorpusAnthology.LAnthologyPanel.CPanelEditing;
+    public bool LCorpusExcerptShown => !LCorpusQuotationSide && !LCorpusAnthology.CAnthologyPanel.CPanelEditing;
 
     public bool LCorpusDisplayShown => LCorpusQuotationSide && !LCorpusQuotation.LQuotationPanel.CPanelEditing;
 
     public bool LCorpusEditorShown => LCorpusQuotation.LQuotationPanel.CPanelEditing;
 
-    public bool LCorpusExcerptHeld => LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
+    public bool LCorpusExcerptHeld => LCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
-    public bool LCorpusExcerptBlank => !LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
+    public bool LCorpusExcerptBlank => !LCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
     public bool LCorpusScribeChecked => LCorpusTranscriptShown || LCorpusEditorShown;
 
     public bool LCorpusViewerChecked => !LCorpusScribeChecked;
 
-    public bool LCorpusModeEnabled => LCorpusQuotationSide || LCorpusAnthology.LAnthologyPanel.CPanelModeEnabled;
+    public bool LCorpusModeEnabled => LCorpusQuotationSide || LCorpusAnthology.CAnthologyPanel.CPanelModeEnabled;
 
-    public bool LCorpusBinEnabled => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
+    public bool LCorpusBinEnabled => !LCorpusQuotationSide && LCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
     public bool LCorpusStoreEnabled => LCorpusEditorShown ? LCorpusEditor.LEditorStorable : LCorpusDesk.CDeskChanged;
 
@@ -115,14 +115,11 @@ public sealed class LCorpus
 
     public bool LCorpusPortraitAllowed => LCorpusDisplayShown;
 
-    public IReadOnlyList<CCitationRow> LCorpusCitationFind(string word) =>
-        LCorpusAnthology.LAnthologyCitationFind(word, LCorpusTranscriptRead()?.CExampleSource);
-
     public CExample? LCorpusTranscriptRead()
     {
         try
         {
-            return LAnthology.LAnthologyExampleRead(LCorpusDesk.CDeskRead()?.LDraftExample);
+            return CAnthology.CAnthologyExampleRead(LCorpusDesk.CDeskRead()?.LDraftExample);
         }
         catch (Exception exception)
         {
@@ -133,7 +130,7 @@ public sealed class LCorpus
 
     private void LCorpusExampleUpdate(LDraft draft)
     {
-        if (LAnthology.LAnthologyExampleRead(draft.LDraftExample) is CExample example)
+        if (CAnthology.CAnthologyExampleRead(draft.LDraftExample) is CExample example)
         {
             LCorpusExampleChanged?.Invoke(example);
         }
@@ -153,7 +150,7 @@ public sealed class LCorpus
             return;
         }
 
-        if (!LCorpusAnthology.LAnthologyNarrowed)
+        if (!LCorpusAnthology.CAnthologyNarrowed)
         {
             return;
         }
@@ -165,8 +162,8 @@ public sealed class LCorpus
     private void LCorpusExampleShow(long id, bool editing)
     {
         LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
-        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(editing);
-        LCorpusAnthology.LAnthologyPanel.CPanelRowOpen(id);
+        LCorpusAnthology.CAnthologyPanel.CPanelScribeSet(editing);
+        LCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
     }
 
     public void LCorpusSelect(long? id, Action record)
@@ -196,7 +193,7 @@ public sealed class LCorpus
         }
 
         LCorpusDesk.CDeskCancel();
-        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
+        LCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         if (editing)
         {
             LCorpusQuotation.LQuotationPanel.CPanelScribeToggle(true);
@@ -233,7 +230,7 @@ public sealed class LCorpus
         }
 
         LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
-        LCorpusAnthology.LAnthologyPanel.CPanelFreshOpen();
+        LCorpusAnthology.CAnthologyPanel.CPanelFreshOpen();
         LCorpusSession.CSessionStart(null);
     }
 
@@ -250,8 +247,8 @@ public sealed class LCorpus
             return;
         }
 
-        LCorpusAnthology.LAnthologyPanel.CPanelScribeToggle(editing);
-        if (!LCorpusAnthology.LAnthologyPanel.CPanelEditing)
+        LCorpusAnthology.CAnthologyPanel.CPanelScribeToggle(editing);
+        if (!LCorpusAnthology.CAnthologyPanel.CPanelEditing)
         {
             LCorpusDesk.CDeskCancel();
         }
@@ -259,7 +256,7 @@ public sealed class LCorpus
 
     private void LCorpusExampleRestore(bool editing)
     {
-        if (LCorpusAnthology.LAnthologyChosen is long chosen)
+        if (LCorpusAnthology.CAnthologyChosen is long chosen)
         {
             LCorpusExampleShow(chosen, editing);
             return;
@@ -271,7 +268,7 @@ public sealed class LCorpus
     public void LCorpusClear()
     {
         LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
-        LCorpusAnthology.LAnthologyPanel.CPanelEntryClose();
+        LCorpusAnthology.CAnthologyPanel.CPanelEntryClose();
     }
 
     public void LCorpusRowsApply(IReadOnlyList<CCatalogExample> rows)
@@ -297,18 +294,18 @@ public sealed class LCorpus
     private bool LCorpusRowShown => LCorpusExcerptShown && LCorpusExcerptHeld;
 
     private bool LCorpusRowHeld =>
-        LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled || LCorpusQuotation.LQuotationPanel.CPanelBinEnabled;
+        LCorpusAnthology.CAnthologyPanel.CPanelBinEnabled || LCorpusQuotation.LQuotationPanel.CPanelBinEnabled;
 
     private void LCorpusQueryClear()
     {
-        LCorpusAnthology.LAnthologyQuerySet(string.Empty);
-        LCorpusAnthology.LAnthologyGauzeSet(new CCatalogFilter([]));
+        LCorpusAnthology.CAnthologyQuerySet(string.Empty);
+        LCorpusAnthology.CAnthologyFilterSet(new CCatalogFilter([]));
         LCorpusQueryCleared?.Invoke();
     }
 
     private void LCorpusStoredShow(long id)
     {
-        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
+        LCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         LCorpusExampleShow(id);
     }
 
@@ -319,14 +316,14 @@ public sealed class LCorpus
             return;
         }
 
-        LCorpusAnthology.LAnthologyPanel.CPanelEntryDelete();
+        LCorpusAnthology.CAnthologyPanel.CPanelEntryDelete();
     }
 
     private void LCorpusQuotationCreate()
     {
-        long? chosen = LCorpusAnthology.LAnthologyChosen;
+        long? chosen = LCorpusAnthology.CAnthologyChosen;
         LCorpusDesk.CDeskCancel();
-        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
+        LCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         LCorpusQuotation.LQuotationPanel.CPanelFreshOpen();
         LCorpusEditor.LEditorStudio.CEditorEntryOpen(null);
         if (chosen is long id)
@@ -381,7 +378,7 @@ public sealed class LCorpus
 
         if (LCorpusPressAllowed)
         {
-            return LCorpusAnthology.LAnthologyPortraitPrint(legend, ticket);
+            return LCorpusAnthology.CAnthologyPortraitPrint(legend, ticket);
         }
 
         return Task.CompletedTask;
@@ -402,7 +399,7 @@ public sealed class LCorpus
         ArgumentNullException.ThrowIfNull(vista);
         ArgumentNullException.ThrowIfNull(quotation);
 
-        LCorpusAnthology.LAnthologyVistaRestore(vista);
+        LCorpusAnthology.CAnthologyVistaRestore(vista);
         LCorpusQuotation.LQuotationVistaRestore(vista, quotation);
         LCorpusEditor.LEditorStudio.CEditorVistaRestore(quotation);
     }

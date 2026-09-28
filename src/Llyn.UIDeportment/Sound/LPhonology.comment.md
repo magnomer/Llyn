@@ -36,8 +36,8 @@ A sender that is no order row hands null, which keeps the ordering it has.
 ## `public Task LPhonologyPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
 
 Prints the chosen entry as the engine portrays it, with the labels the window localized.
-The label and ticket shapes are mapped back to engine types through `QPortrait`.
+The label and ticket shapes are mapped back to engine types through `CPortrait`.
 
 ## `public Task LPhonologyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
 
-Exports the panel's vista to a file, with the medium and label mapped through `QPortrait`.
+Exports the panel's vista to a file, with the medium and label mapped through `CPortrait`.

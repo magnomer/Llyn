@@ -111,7 +111,7 @@ Deletes the chosen Source from the source side alone, through the panel's delete
 
 Prints the entry being read, else the Source being read, as the engine portrays it.
 Both label sets arrive because the deportment, not the window, knows which side prints.
-The Conduct shapes are mapped here through `QPortrait` and `LAtlas.LAtlasLegendRead`, so the driver names no engine shape.
+The Conduct shapes are mapped here through `CPortrait`, so the driver names no engine shape.
 
 ## `public static IReadOnlyList<CCatalogOrder> LShelfOrderRead()`
 

@@ -283,7 +283,7 @@ public sealed class LLecternCard
 
         void LLecternMentionShow(LLecternAnchor shown, LMentionResult result)
         {
-            show(shown, LAnthology.LAnthologyMentionRead(result));
+            show(shown, CMention.CMentionResultRead(result));
         }
     }
 

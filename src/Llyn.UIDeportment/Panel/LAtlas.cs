@@ -99,35 +99,7 @@ public sealed class LAtlas
     public Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
         return _lPortraitPort.LEnginePortraitPrint(
-            _lAtlasVista, LAtlasLegendRead(legend), QPortrait.QPortraitTicketRead(ticket));
-    }
-
-    internal static LPortraitLegend LAtlasLegendRead(CPortraitLegend legend)
-    {
-        ArgumentNullException.ThrowIfNull(legend);
-
-        Dictionary<LReferenceKind, string> kinds = [];
-        foreach (LReferenceKind kind in Enum.GetValues<LReferenceKind>())
-        {
-            kinds[kind] = legend.CPortraitLegendKind.GetValueOrDefault(
-                LReference.LReferenceKindResolve(kind), LReference.LReferenceKindFormat(kind));
-        }
-
-        return new LPortraitLegend(
-            legend.CPortraitLegendUnknown,
-            legend.CPortraitLegendUntitled,
-            legend.CPortraitLegendUnwritten,
-            legend.CPortraitLegendUnused,
-            legend.CPortraitLegendOnce,
-            legend.CPortraitLegendUses,
-            legend.CPortraitLegendTranslation,
-            legend.CPortraitLegendSource,
-            legend.CPortraitLegendAuthor,
-            legend.CPortraitLegendYear,
-            legend.CPortraitLegendUrl,
-            legend.CPortraitLegendNote,
-            legend.CPortraitLegendDescription,
-            kinds);
+            _lAtlasVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
     }
 
     internal static CSituationDraft? LAtlasSituationRead(LSituation? situation)

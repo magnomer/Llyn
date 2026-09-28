@@ -19,7 +19,7 @@ public sealed class QForge
 
     public LEditor QForgeEditorCreate(CEnvoy envoy)
     {
-        return new LEditor(CEditor.CEditorCreate(_qForgeAtelier, envoy), _qForgeAtelier.CAtelierPhonologyPort);
+        return new LEditor(CEditor.CEditorCreate(_qForgeAtelier, envoy));
     }
 
     public LEditor QForgeInputCreate(CEnvoy envoy)
@@ -34,6 +34,7 @@ public sealed class QForge
     {
         return QForgeVistaAdd(
             new LCorpus(
+                _qForgeAtelier,
                 _qForgeAtelier.CAtelierDraftPort,
                 _qForgeAtelier.CAtelierEntryPort,
                 _qForgeAtelier.CAtelierPortraitPort,

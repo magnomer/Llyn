@@ -35,6 +35,11 @@ It says instead when the user marked the value as not known.
   The list is the Example's own, so every card quoting the sentence reads the same words the same way.
   It stands empty until one is drawn.
 
+## `public IReadOnlyList<LMention> LExampleExcerpt`
+
+The Mentions a reading of the text may link, which are none unless the text reads soundly.
+A Mention's offsets point into the stated text, so an unknown or unreadable text links nothing.
+
 ## `public bool Equals(LExample? other)`
 
 Two Examples are equal when every field is equal and the Gloss and Mention lists match row by row.

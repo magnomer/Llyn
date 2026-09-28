@@ -75,9 +75,10 @@ The search text the rows are matched against, empty for every row.
 
 The id of the row the panel stands on, or null when none is chosen.
 
-## `public void LVistaOrderSet(LCatalogOrder order)`
+## `public void LVistaOrderSet(LCatalogOrder? order)`
 
 Takes the ordering and announces the move, which the posture stores under the tab.
+No ordering keeps the one the vista has, so a sender that is no order row changes nothing.
 
 ## `public void LVistaFilterSet(LCatalogFilter filter)`
 

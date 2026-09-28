@@ -13,6 +13,11 @@ An Example citing nothing carries an empty name rather than an id nobody would r
 - `LCatalogExampleUsage` — How many places quote it.
 - `LCatalogExampleChosen` — True on the row of the Example the vista stands on, false until the vista find fills it.
 
+## `public string LCatalogExampleText`
+
+The sentence as the list shows it, worded by the vista find for an unknown or unwritten text.
+It is the stored text until a find words it.
+
 ## `public static LCatalogExample LCatalogExampleCreate(LExample example, string? source, int usage)`
 
 Builds the row from the stored Example and the name resolved for its citation.

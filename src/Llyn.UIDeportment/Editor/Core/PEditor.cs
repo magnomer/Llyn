@@ -278,8 +278,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     private void PEditorDraftShow(CEntryDraft draft)
     {
         QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
-        PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "[");
-        PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "]");
+        PPronunciationOpener.Text =
+            QLook.QLookFirstRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbrePhonemic, "/", "[");
+        PPronunciationCloser.Text =
+            QLook.QLookFirstRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbrePhonemic, "/", "]");
         QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorStudio.CEditorPronunciationRead());
         PAccentShow(draft);
         PGlyphShow(draft);
@@ -313,9 +315,9 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
         LFontFace.LFontExampleRefine(Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
         LFontFace.LFontGlyphRefine(PGlyph.Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
-        PContour.PContourTonal = _lEditor.LEditorTimbre.QTimbreTonal;
-        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
-        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
+        PContour.PContourTonal = _lEditor.LEditorStudio.CEditorTimbre.CTimbreTonal;
+        PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbreSpoken);
+        PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorTimbre.CTimbreSpoken);
         PSentenceFrameRefine();
         PCategoryLoad();
     }

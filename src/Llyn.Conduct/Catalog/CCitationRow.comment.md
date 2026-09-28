@@ -17,10 +17,11 @@ The driver draws the three parts as they come and decides nothing about the matc
 
 The most Sources the drawer offers, so a short word never floods the popup.
 
-## `public static IReadOnlyList<CCitationRow> CCitationRowFind(`
+## `public static IReadOnlyList<CCitationRow> CCitationRowFind(IReadOnlyList<CCatalogReference> found, string word)`
 
-The rows the citation field offers for a trimmed, non-empty word, in the order the references were found.
-A word that is exactly the byline of the cited Source offers none, since nothing was changed.
+The rows the citation field offers, at most eight, in the order the engine found the references.
+The engine already dropped a blank word and a word naming the cited Source, so only the split remains.
+The mark is found for the word without its surrounding blanks, which the engine searched for too.
 The split sits in Conduct, since a controller that computes over engine rows reads as a driver.
 
 ## `private static CCitationRow CCitationRowRead(CCatalogReference row, string word)`

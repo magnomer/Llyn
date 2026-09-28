@@ -18,14 +18,7 @@ No row is read while no vista is restored.
 
 ## `public Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
 
-Prints the vista's situations with the driver's words, turned into the engine's legend here.
-
-## `internal static LPortraitLegend LAtlasLegendRead(CPortraitLegend legend)`
-
-The one map from the driver's legend words to the engine's legend.
-Each source kind takes the word keyed by its localization key.
-A missing word falls back to the name the engine gives the kind.
-It sits here until the shared panel map has room, since only the atlas prints with a shape legend yet.
+Prints the vista's situations with the driver's words, turned into the engine's legend by `CPortrait`.
 
 ## `internal static CSituationDraft? LAtlasSituationRead(LSituation? situation)`
 

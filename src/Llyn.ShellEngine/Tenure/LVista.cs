@@ -209,14 +209,14 @@ public sealed class LVista
         _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
-    public void LVistaOrderSet(LCatalogOrder order)
+    public void LVistaOrderSet(LCatalogOrder? order)
     {
-        if (order == LVistaOrder)
+        if (order is not LCatalogOrder chosen || chosen == LVistaOrder)
         {
             return;
         }
 
-        LVistaOrder = order;
+        LVistaOrder = chosen;
         _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 

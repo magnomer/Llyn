@@ -78,8 +78,7 @@ public sealed class CCard
 
     public IReadOnlyList<CCatalogReference> CCardReferenceFind()
     {
-        return COeuvre.COeuvreReferenceRead(
-            _cCardEntryPort.LEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor));
+        return COeuvre.COeuvreReferenceRead(_cCardEntryPort.LEngineReferenceFind());
     }
 
     public IReadOnlyList<CTag> CCardTagFind(string word)

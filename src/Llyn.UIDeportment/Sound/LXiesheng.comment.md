@@ -175,12 +175,12 @@ The engine's subject and bulletin are mapped here, so the driver names neither.
 ## `public Task LXieshengPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
 
 Prints the entry the reader holds, doing nothing while there is none.
-The label and ticket are mapped down through `QPortrait`.
+The label and ticket are mapped down through `CPortrait`.
 
 ## `public Task LXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
 
 Exports the entry the reader holds as a portrait file.
-The medium and label are mapped down through `QPortrait`.
+The medium and label are mapped down through `CPortrait`.
 
 ## `public string LXieshengFileRead()`
 

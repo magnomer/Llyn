@@ -56,6 +56,15 @@ internal sealed class LReferenceFacade
         }
     }
 
+    public IReadOnlyList<LCatalogReference> LEngineCitationFind(long draftId, string word)
+    {
+        lock (_lReferenceFacadeGate)
+        {
+            LDraft? held = draftId == 0 ? null : _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId);
+            return LReferenceFacadeStaff.LEngineStaffReference.LReferenceCitationFind(word, held);
+        }
+    }
+
     public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);

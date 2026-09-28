@@ -26,6 +26,7 @@ The Examples the corpus panel's vista lists, with the query and order read off t
 Each row carries its chosen mark, true where its id is the one the vista stands on.
 The twin names are read from the sentence.
 The panel hands in the words shown for an unknown or unwritten one.
+Each row's text is worded by the same rule, so the list shows it ready.
 
 ## `internal void LEngineExampleDelete(long id, bool detach)`
 

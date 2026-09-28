@@ -125,7 +125,7 @@ public sealed class LPhonology
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            vista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            vista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     internal void LPhonologyVistaRestore(CAtelier atelier)
@@ -147,7 +147,7 @@ public sealed class LPhonology
         return _lPortraitPort.LEnginePortraitExport(
             LPhonologyPanel.CPanelVista,
             path,
-            QPortrait.QPortraitMediumRead(format),
-            QPortrait.QPortraitLabelRead(label));
+            CPortrait.CPortraitMediumRead(format),
+            CPortrait.CPortraitLabelRead(label));
     }
 }

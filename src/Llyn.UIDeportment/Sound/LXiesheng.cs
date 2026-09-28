@@ -293,7 +293,7 @@ public sealed class LXiesheng
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LXieshengPanel.CPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            LXieshengPanel.CPanelVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     public Task LXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
@@ -301,8 +301,8 @@ public sealed class LXiesheng
         return _lPortraitPort.LEnginePortraitExport(
             LXieshengPanel.CPanelVista,
             path,
-            QPortrait.QPortraitMediumRead(format),
-            QPortrait.QPortraitLabelRead(label));
+            CPortrait.CPortraitMediumRead(format),
+            CPortrait.CPortraitLabelRead(label));
     }
 
     public string LXieshengFileRead()

@@ -379,7 +379,7 @@ public sealed class LYunjing
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LYunjingPanel.CPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            LYunjingPanel.CPanelVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     internal void LYunjingVistaRestore(CAtelier atelier)
@@ -431,7 +431,7 @@ public sealed class LYunjing
         return _lPortraitPort.LEnginePortraitExport(
             LYunjingPanel.CPanelVista,
             path,
-            QPortrait.QPortraitMediumRead(format),
-            QPortrait.QPortraitLabelRead(label));
+            CPortrait.CPortraitMediumRead(format),
+            CPortrait.CPortraitLabelRead(label));
     }
 }

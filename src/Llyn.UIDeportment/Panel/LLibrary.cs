@@ -110,7 +110,7 @@ public sealed class LLibrary
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            vista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            vista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
     public async Task LLibraryMarkupStart(
@@ -209,7 +209,7 @@ public sealed class LLibrary
         return _lPortraitPort.LEnginePortraitExport(
             LLibraryPanel.CPanelVista,
             path,
-            QPortrait.QPortraitMediumRead(format),
-            QPortrait.QPortraitLabelRead(label));
+            CPortrait.CPortraitMediumRead(format),
+            CPortrait.CPortraitLabelRead(label));
     }
 }
