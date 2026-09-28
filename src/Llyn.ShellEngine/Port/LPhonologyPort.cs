@@ -50,15 +50,13 @@ public interface LPhonologyPort
 
     string LEngineLanguageResolve(long entryId);
 
-    LDiwei? LEngineDiweiFind(string language, string kind, string key);
+    (long, bool)? LEngineDiweiFind(string language, string kind, string key);
 
-    IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind);
-
-    LDiwei? LEngineDiweiRead(long? id);
+    IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, long? chosen, bool final);
 
     LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize);
 
-    IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista);
+    IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista);
 
     long? LEngineStemFind(string language, string? key);
 
@@ -72,7 +70,7 @@ public interface LPhonologyPort
 
     bool LEngineBookCheck(string language);
 
-    string? LEngineBookFind();
+    bool LEngineBookCheck();
 
     bool LEnginePhonemicCheck(string language);
 

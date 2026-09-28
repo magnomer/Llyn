@@ -90,7 +90,7 @@ public sealed class CXiesheng
         _cXieshengGrove = grove;
         _cXieshengKindred = kindred;
         CXieshengPanel.CPanelVistaRestore(kindred);
-        CXieshengEditor.CEditorVistaRestore(kindred);
+        CXieshengEditor.LEditorVistaRestore(kindred);
     }
 
     public void CXieshengObserverAttach(CSubject subject, Action<CBulletin> observer)

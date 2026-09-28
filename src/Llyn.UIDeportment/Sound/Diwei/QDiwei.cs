@@ -11,7 +11,7 @@ internal sealed class QDiwei
 
     private CAtelier _qDiweiAtelier = null!;
 
-    private LYunjing _lYunjing = null!;
+    private CYunjing _cYunjing = null!;
 
     internal QDiwei(UserControl surface)
     {
@@ -36,10 +36,10 @@ internal sealed class QDiwei
 
     private ItemsControl QDiweiList => QContract.QContractFind<ItemsControl>(_qDiweiSurface, "PDiweiList");
 
-    internal void QDiweiAttach(CAtelier atelier, LYunjing yunjing)
+    internal void QDiweiAttach(CAtelier atelier, CYunjing yunjing)
     {
         _qDiweiAtelier = atelier;
-        _lYunjing = yunjing;
+        _cYunjing = yunjing;
     }
 
     internal void QDiweiShow(CDiweiPage page, string kind)
@@ -60,11 +60,11 @@ internal sealed class QDiwei
 
     private void QDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lYunjing.LYunjingTallySet(QSender.QSenderFlagRead(e));
+        _cYunjing.CYunjingTallyToggle(QSender.QSenderFlagRead(e));
     }
 
     private void QDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lYunjing.LYunjingGlyphSelect(QSender.QSenderTextRead(e));
+        _cYunjing.CYunjingGlyphSelect(QSender.QSenderTextRead(e));
     }
 }

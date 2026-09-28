@@ -54,7 +54,7 @@ public sealed class CLibrary
             "library", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         _cLibraryVista = vista;
         CLibraryPanel.CPanelVistaRestore(vista);
-        CLibraryEditor.CEditorVistaRestore(vista);
+        CLibraryEditor.LEditorVistaRestore(vista);
     }
 
     public void CLibraryQuerySet(string query)

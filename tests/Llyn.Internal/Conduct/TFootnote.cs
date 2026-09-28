@@ -106,7 +106,7 @@ public sealed class TFootnote
         LVista parent = engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName);
         LVista vista = engine.TEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword);
         footnote.TFootnoteVistaRestore(parent, vista);
-        editor.CEditorVistaRestore(vista);
+        editor.TEditorVistaRestore(vista);
         return (footnote, parent, editor);
     }
 

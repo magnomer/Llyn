@@ -7,7 +7,7 @@ namespace Llyn.Core;
 public sealed record LDiweiSection(
     string LDiweiSectionLabel,
     IReadOnlyList<LDiweiLine> LDiweiSectionLines,
-    IReadOnlyList<LTallyLine> LDiweiSectionTallies,
+    IReadOnlyList<LTallyRow> LDiweiSectionTallies,
     bool LDiweiSectionSwitched,
     bool LDiweiSectionRespelled)
 {
@@ -109,10 +109,10 @@ public sealed record LDiweiSection(
         });
     }
 
-    private static IReadOnlyList<LTallyLine> LDiweiTallyScan(
+    private static IReadOnlyList<LTallyRow> LDiweiTallyScan(
         IReadOnlyList<LTally> tallies, string heading, bool respelled)
     {
-        List<LTallyLine> kept = [];
+        List<LTallyRow> kept = [];
         foreach (LTally tally in tallies)
         {
             if (!string.Equals(tally.LTallyHeading, heading, StringComparison.Ordinal))
@@ -122,9 +122,10 @@ public sealed record LDiweiSection(
 
             foreach (LTallyLine line in tally.LTallyLines)
             {
-                if (line.LTallyLineRead(respelled).Count > 0)
+                IReadOnlyList<LTallyMark> marks = line.LTallyLineRead(respelled);
+                if (marks.Count > 0)
                 {
-                    kept.Add(line);
+                    kept.Add(new LTallyRow(line.LTallyLineLanguage, line.LTallyLineKind, marks));
                 }
             }
         }

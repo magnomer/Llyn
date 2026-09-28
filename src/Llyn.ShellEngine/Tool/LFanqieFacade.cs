@@ -45,6 +45,11 @@ internal sealed class LFanqieFacade
         return null;
     }
 
+    public bool LEngineBookCheck()
+    {
+        return LEngineBookFind() is not null;
+    }
+
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)
     {
         return LFanqieFacadeStaff.LEngineStaffFanqie.LFanqieClerkDivide(entryId);
@@ -121,18 +126,27 @@ internal sealed class LFanqieFacade
         }
     }
 
-    public LDiwei? LEngineDiweiFind(string language, string kind, string key)
+    public (long, bool)? LEngineDiweiFind(string language, string kind, string key)
     {
         lock (_lFanqieFacadeGate)
         {
-            return LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiClerkFind(language, kind, key);
+            return LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiClerkFind(language, kind, key) is LDiwei found
+                ? (found.LDiweiId, found.LDiweiFinal)
+                : null;
         }
     }
 
-    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)
+    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, long? chosen, bool final)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
+        if (!LEngineBookCheck())
+        {
+            return [];
+        }
+
+        string language = LEngineLanguageRead(chosen);
+        string kind = final ? LDiwei.LDiweiRime : LDiwei.LDiweiInitial;
         string wanted = vista.LVistaQuery.Trim();
         IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
             wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
@@ -145,7 +159,7 @@ internal sealed class LFanqieFacade
                 .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal)],
             _ => [.. kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal)],
         };
-        if (vista.LVistaChosen is long chosen && LDiwei.LDiweiFind(sorted, chosen) is null)
+        if (vista.LVistaChosen is long held && LDiwei.LDiweiFind(sorted, held) is null)
         {
             vista.LVistaSelect(null);
         }
@@ -166,7 +180,7 @@ internal sealed class LFanqieFacade
         }
     }
 
-    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(onset);
         ArgumentNullException.ThrowIfNull(rime);
@@ -188,7 +202,12 @@ internal sealed class LFanqieFacade
             return [];
         }
 
-        return LEngineXiaoyunFind(language, wanted, vista.LVistaQuery.Trim(), vista);
+        return LEngineXiaoyunFind(LEngineLanguageRead(chosen), wanted, vista.LVistaQuery.Trim(), vista);
+    }
+
+    private string LEngineLanguageRead(long? chosen)
+    {
+        return LEngineDiweiRead(chosen)?.LDiweiLanguage ?? LEngineBookFind() ?? string.Empty;
     }
 
     private LEngineStaff LFanqieFacadeStaff => _lFanqieFacadeEngine.LEngineStaffHeld;

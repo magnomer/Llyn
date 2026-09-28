@@ -138,7 +138,6 @@
       "src/Llyn.UIDeportment/Shell/Window/PNavigationTab.cs": 1,
       "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 8,
       "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 2,
-      "src/Llyn.UIDeportment/Sound/LYunjing.cs": 7,
       "src/Llyn.UIDeportment/Sound/Reflex/PReflex.cs": 15,
       "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 1,
       "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 4,
@@ -202,7 +201,6 @@
       "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 3,
       "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 1,
       "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 2,
-      "src/Llyn.UIDeportment/Sound/LYunjing.cs": 17,
       "src/Llyn.UIDeportment/Sound/QAccentItem.cs": 3,
       "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 10,
       "src/Llyn.UIDeportment/Sound/QTranscriptionItem.cs": 2,
@@ -212,8 +210,7 @@
       "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 1
     },
     "Mirror": {
-      "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 1,
-      "src/Llyn.UIDeportment/Sound/LYunjing.cs": 6
+      "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 1
     },
     "Mutation": {
       "src/Llyn.UIDeportment/Editor/Card/PCardContext.cs": 1,
@@ -346,7 +343,7 @@
       "src/Llyn.UIDeportment/Shell/LFontFace.cs": 6,
       "src/Llyn.UIDeportment/Shell/LMarkdownFace.cs": 17,
       "src/Llyn.UIDeportment/Shell/QBootstrap.cs": 2,
-      "src/Llyn.UIDeportment/Shell/QForge.cs": 25,
+      "src/Llyn.UIDeportment/Shell/QForge.cs": 24,
       "src/Llyn.UIDeportment/Shell/Tool/PWindowGlyph.cs": 2,
       "src/Llyn.UIDeportment/Shell/Window/PHeadquarter.cs": 1,
       "src/Llyn.UIDeportment/Shell/Window/PNavigationTab.cs": 20,
@@ -355,7 +352,7 @@
       "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 12,
       "src/Llyn.UIDeportment/Sound/Articulation/QInventoryItem.cs": 8,
       "src/Llyn.UIDeportment/Sound/Articulation/QPhonology.cs": 38,
-      "src/Llyn.UIDeportment/Sound/Diwei/QDiwei.cs": 4,
+      "src/Llyn.UIDeportment/Sound/Diwei/QDiwei.cs": 6,
       "src/Llyn.UIDeportment/Sound/Diwei/QDiweiItem.cs": 5,
       "src/Llyn.UIDeportment/Sound/Diwei/QDiweiLine.cs": 4,
       "src/Llyn.UIDeportment/Sound/Diwei/QTally.cs": 3,
@@ -363,9 +360,8 @@
       "src/Llyn.UIDeportment/Sound/Fanqie/PFanqieItem.cs": 5,
       "src/Llyn.UIDeportment/Sound/Fanqie/PFanqieLine.cs": 17,
       "src/Llyn.UIDeportment/Sound/Fanqie/PXiaoyunItem.cs": 6,
-      "src/Llyn.UIDeportment/Sound/Fanqie/PYunjing.cs": 20,
+      "src/Llyn.UIDeportment/Sound/Fanqie/PYunjing.cs": 54,
       "src/Llyn.UIDeportment/Sound/Fanqie/PYunjingItem.cs": 5,
-      "src/Llyn.UIDeportment/Sound/LYunjing.cs": 22,
       "src/Llyn.UIDeportment/Sound/QAccentItem.cs": 10,
       "src/Llyn.UIDeportment/Sound/QFrequencyLabel.cs": 6,
       "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 22,

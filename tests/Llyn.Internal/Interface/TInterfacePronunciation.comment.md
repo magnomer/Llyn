@@ -9,6 +9,7 @@ The language pack loader and the per-session trove are relayed here too.
 The frequency record, its parse and its stored form are relayed here too.
 The tone contour parse, the engine's tonal check and its language list are relayed here too.
 The reading hypothesis, its resolve and the fanqie row it reads are relayed here too.
+The diwei section scan is relayed over one fixed row and two tally lines, since only the shown set varies.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client)`

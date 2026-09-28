@@ -76,7 +76,7 @@ public sealed class CAtelier : IDisposable
     {
         ArgumentNullException.ThrowIfNull(editor);
 
-        editor.CEditorVistaRestore(
+        editor.LEditorVistaRestore(
             CAtelierVistaStart("input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 

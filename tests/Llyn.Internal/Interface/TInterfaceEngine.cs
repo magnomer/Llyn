@@ -399,6 +399,9 @@ internal static partial class TInterface
         engine.LEngineStaffHeld.LEngineStaffDiwei.LDiweiFanqieRead(diwei);
 
     internal static LDiwei? TEngineDiweiFind(this LEngine engine, string language, string kind, string key) =>
+        engine.LEngineStaffHeld.LEngineStaffDiwei.LDiweiClerkFind(language, kind, key);
+
+    internal static (long, bool)? TFanqieDiweiFind(this LEngine engine, string language, string kind, string key) =>
         engine.LEngineFanqie.LEngineDiweiFind(language, kind, key);
 
     internal static long? TEngineStemFind(this LEngine engine, string language, string? key) =>

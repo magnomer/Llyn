@@ -74,7 +74,7 @@ public sealed class CTenor
         _cTenorVista = vista;
         _cTenorCohort = cohort;
         CTenorPanel.CPanelVistaRestore(cohort);
-        CTenorEditor.CEditorVistaRestore(cohort);
+        CTenorEditor.LEditorVistaRestore(cohort);
     }
 
     public void CTenorObserverAttach(CSubject subject, Action<CBulletin> observer)

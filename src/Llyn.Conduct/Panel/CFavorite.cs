@@ -52,7 +52,7 @@ public sealed class CFavorite
             "favorite", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         _cFavoriteVista = vista;
         CFavoritePanel.CPanelVistaRestore(vista);
-        CFavoriteEditor.CEditorVistaRestore(vista);
+        CFavoriteEditor.LEditorVistaRestore(vista);
     }
 
     public void CFavoriteGraspResonate()

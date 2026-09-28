@@ -12,7 +12,6 @@ The relays for the deportment classes a browse panel holds.
 It is a class of its own rather than a part of `TInterface`.
 The relay layer grows by owner and not by partial.
 Each relay is transparent and carries no test logic of its own.
-The shown seam is answered true, because a test panel is always the one in front.
 The window relays build their deportments over fake ports, with no engine behind them.
 The entry row relays read a flag store no test fills, so no WPF object is made.
 The lectern fold relays hand a WPF toggle through, so their caller runs them on an STA thread.

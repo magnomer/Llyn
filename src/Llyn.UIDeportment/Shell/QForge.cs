@@ -98,19 +98,11 @@ public sealed class QForge
             static xiesheng => xiesheng.CXieshengVistaRestore());
     }
 
-    public LYunjing QForgeYunjingCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CYunjing QForgeYunjingCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LYunjing(
-                _qForgeAtelier.CAtelierPhonologyPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            yunjing => yunjing.LYunjingVistaRestore(_qForgeAtelier));
+            CYunjing.CYunjingCreate(_qForgeAtelier, shownSeam, envoy),
+            static yunjing => yunjing.CYunjingVistaRestore());
     }
 
     public void QForgeVistaRestore()

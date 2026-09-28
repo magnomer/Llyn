@@ -69,7 +69,7 @@ public sealed class CTaxonomy
         _cTaxonomyVista = vista;
         _cTaxonomyMembership = membership;
         CTaxonomyPanel.CPanelVistaRestore(membership);
-        CTaxonomyEditor.CEditorVistaRestore(membership);
+        CTaxonomyEditor.LEditorVistaRestore(membership);
     }
 
     public void CTaxonomyObserverAttach(CSubject subject, Action<CBulletin> observer)

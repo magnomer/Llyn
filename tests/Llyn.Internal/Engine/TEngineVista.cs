@@ -239,13 +239,14 @@ public sealed class TEngineVista
 
         LVista named = engine.TEngineVistaStart("yunjing", LCatalogOrder.LCatalogOrderName);
         LVista used = engine.TEngineVistaStart("yunmu", LCatalogOrder.LCatalogOrderUsage);
+        long? chosen = engine.TEngineDiweiFind(language, LDiwei.LDiweiInitial, "來")?.LDiweiId;
 
         Assert.Equal(
             ["來", "見"],
-            engine.TEngineDiweiFind(named, language, LDiwei.LDiweiInitial).Select(row => row.LDiweiKey));
+            engine.TEngineDiweiFind(named, chosen, false).Select(row => row.LDiweiKey));
         Assert.Equal(
             ["見", "來"],
-            engine.TEngineDiweiFind(used, language, LDiwei.LDiweiInitial).Select(row => row.LDiweiKey));
+            engine.TEngineDiweiFind(used, chosen, false).Select(row => row.LDiweiKey));
     }
 
     [Fact]

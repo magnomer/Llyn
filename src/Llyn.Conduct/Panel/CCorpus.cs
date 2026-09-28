@@ -380,6 +380,6 @@ public sealed class CCorpus
             "quotation", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         CCorpusAnthology.LAnthologyVistaRestore(vista);
         CCorpusQuotation.LQuotationVistaRestore(vista, quotation);
-        CCorpusEditor.CEditorVistaRestore(quotation);
+        CCorpusEditor.LEditorVistaRestore(quotation);
     }
 }

@@ -56,6 +56,7 @@ The pronunciation rows come in the vista's ordering, here headwords reversed.
 
 Under the usage ordering the onset anchored by more entries lists first.
 Under the name ordering it lists second.
+The chosen onset names the language both columns list.
 
 ## `public void TagFind_VistaQuery_MatchesName()`
 

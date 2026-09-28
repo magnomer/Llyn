@@ -43,6 +43,24 @@ internal static partial class TInterface
     internal static int TDiweiRankNormalize(int rank) =>
         LDiwei.LDiweiRankNormalize(rank);
 
+    internal static LDiweiSection TDiweiSectionScan(bool respelled) =>
+        LDiweiSection.LDiweiSectionScan(
+            LDiwei.LDiweiInitial,
+            [new LFanqieRow("爛", "book", 0, "text", "來", "寒", "寒", "一", "平")],
+            null,
+            [
+                new LTally(
+                    "一",
+                    [
+                        new LTallyLine(
+                            "Cantonese", "literary", [new LTallyMark("l", ["爛"])], [new LTallyMark("L", ["蘭"])]),
+                        new LTallyLine("Korean", string.Empty, [new LTallyMark("r", ["爛"])], []),
+                    ]),
+            ],
+            true,
+            respelled,
+            static _ => null)[0];
+
     internal static IReadOnlyList<string> TStemKeyScan(string text, string separator) =>
         LStem.LStemKeyScan(text, separator);
 

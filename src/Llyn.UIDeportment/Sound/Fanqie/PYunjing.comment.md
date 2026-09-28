@@ -4,7 +4,7 @@
 
 The yunjing panel: the workspace browsed as a rime table, by onset and rime of the user's reconstruction.
 It is shown only while a loaded language pack carries rime books, since without them there is no table.
-Every decision lives in [LYunjing](../../Llyn.UIDeportment/LYunjing.comment.md), and this file writes controls on notice.
+Every decision lives in [CYunjing](../../../Llyn.Conduct/Panel/CYunjing.comment.md), and this file writes controls on notice.
 The two columns, the entry list, the category page, the reader and the editor are all served from one file.
 
 ## `public PYunjing()`
@@ -21,8 +21,10 @@ Each named part of the markup is read through `FindName`, so call sites keep the
 
 ## `internal void PYunjingAttach(PWindow host)`
 
-News the deportment with the window's dialogs as seams, subscribes its notices, and wires the lists and the page.
-The print and portrait command bindings are added last, so no can-execute query ever meets a deportment not yet built.
+Builds the Conduct session, wraps its editor, and subscribes the notices.
+The lectern takes the panel's loads and clears here, so the session names no driver type.
+It then wires the lists, the page and the editor.
+The print and portrait command bindings are added last, so no can-execute query meets a session not yet built.
 
 ## `internal bool PYunjingCheck()`
 
@@ -30,8 +32,8 @@ Whether any loaded language pack carries rime books, so the navigation knows to 
 
 ## `internal void PYunjingVistaRestore()`
 
-The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
-Hands the vistas down, attaches the bulletins the panel follows, restores the order menus, and loads.
+The session starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+Attaches the bulletins the panel follows, restores the order menus, and loads.
 
 ## `internal bool PYunjingLeaveConfirm()`
 
@@ -48,7 +50,7 @@ Lists both columns afresh with their empty texts, then the page and the mode, wh
 
 ## `private void PXiaoyunUpdate()`
 
-Lists the entries at the chosen cell afresh with the empty text the deportment names.
+Lists the entries at the chosen cell afresh with the empty text the session names.
 
 ## `private void PDiweiUpdate()`
 
@@ -56,16 +58,16 @@ Hands the page its composed content, blank while it is hidden.
 
 ## `private void PYunjingModeUpdate()`
 
-Writes every visibility and enablement off the deportment's verdicts.
+Writes every visibility and enablement off the session's verdicts.
 
 ## `private void PYunjingClearUpdate()`
 
 The entry list was cleared, so the page is read again.
-The deportment empties the reader and resets the editor itself.
+The lectern empties the reader, and the session resets the editor itself.
 
 ## `private void PYunjingHandle(object sender, RoutedEventArgs e)`
 
-A click on either column hands the cell's id and side to the deportment.
+A click on either column hands the cell's id and side to the select gate.
 
 ## `internal void PYunjingVoyageShow(bool past, bool future)`
 

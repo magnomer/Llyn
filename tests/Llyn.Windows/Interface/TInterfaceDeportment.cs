@@ -28,39 +28,6 @@ internal static class TInterfaceDeportment
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicleRead();
 
-    internal static LYunjing TYunjingCreate(LEngine engine)
-    {
-        LEditor editor = TEditorCreate(engine);
-        return new(
-            new LPhonologyOutlet(engine),
-            new LPortraitOutlet(engine),
-            new LSettingsOutlet(engine),
-            editor,
-            TLecternCreate(editor),
-            () => true,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
-        panel.LYunjingVistaRestore(shengmu, yunmu, xiaoyun);
-
-    internal static IReadOnlyList<CDiwei> TYunjingShengmuRead(this LYunjing panel) => panel.LYunjingShengmuRead();
-
-    internal static IReadOnlyList<CDiwei> TYunjingYunmuRead(this LYunjing panel) => panel.LYunjingYunmuRead();
-
-    internal static IReadOnlyList<CVistaRow> TYunjingXiaoyunRead(this LYunjing panel) =>
-        panel.LYunjingXiaoyunRead();
-
-    internal static CDiweiPage TYunjingDiweiRead(this LYunjing panel) => panel.LYunjingDiweiRead();
-
-    internal static void TYunjingDiweiSelect(this LYunjing panel, long? id, bool? final) =>
-        panel.LYunjingDiweiSelect(id, final);
-
-    internal static void TYunjingDiweiShow(this LYunjing panel, string language, string kind, string key) =>
-        panel.LYunjingDiweiShow(language, kind, key);
-
-    internal static void TYunjingTallySet(this LYunjing panel, bool? respelled) => panel.LYunjingTallySet(respelled);
-
     internal static QPosture TPostureCreate(string root) => new(() => root);
 
     internal static IReadOnlyList<QIndexItem> TIndexItemBuild(IReadOnlyList<CVistaRow> rows) =>

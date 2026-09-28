@@ -30,4 +30,21 @@ public sealed class TDiwei
         Assert.Equal(int.MaxValue, TInterface.TDiweiRankNormalize(-1));
         Assert.Equal(3, TInterface.TDiweiRankNormalize(3));
     }
+
+    [Theory]
+    [InlineData(false, "l", "爛")]
+    [InlineData(true, "L", "蘭")]
+    public void DiweiSectionScan_TallyUnderHeading_KeepsOnlyTheShownSet(bool respelled, string text, string character)
+    {
+        LDiweiSection section = TInterface.TDiweiSectionScan(respelled);
+
+        Assert.True(section.LDiweiSectionSwitched);
+        Assert.Equal(respelled, section.LDiweiSectionRespelled);
+        LTallyRow row = section.LDiweiSectionTallies[0];
+        Assert.Equal(("Cantonese", "literary"), (row.LTallyRowLanguage, row.LTallyRowKind));
+        LTallyMark mark = Assert.Single(row.LTallyRowMarks);
+        Assert.Equal((text, 1), (mark.LTallyMarkText, mark.LTallyMarkCount));
+        Assert.Equal([character], mark.LTallyMarkCharacters);
+        Assert.Equal(respelled ? 1 : 2, section.LDiweiSectionTallies.Count);
+    }
 }

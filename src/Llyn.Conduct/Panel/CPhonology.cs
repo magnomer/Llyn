@@ -59,7 +59,7 @@ public sealed class CPhonology
             "phonology", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         _cPhonologyVista = vista;
         CPhonologyPanel.CPanelVistaRestore(vista);
-        CPhonologyEditor.CEditorVistaRestore(vista);
+        CPhonologyEditor.LEditorVistaRestore(vista);
     }
 
     public IReadOnlyList<CCatalogPronunciation> CPhonologyRowsRead()

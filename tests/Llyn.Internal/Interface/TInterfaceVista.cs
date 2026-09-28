@@ -39,8 +39,8 @@ internal static partial class TInterface
         engine.LEngineCard.LEngineTagFind(vista);
 
     internal static IReadOnlyList<LDiwei> TEngineDiweiFind(
-        this LEngine engine, LVista vista, string language, string kind) =>
-        engine.LEngineFanqie.LEngineDiweiFind(vista, language, kind);
+        this LEngine engine, LVista vista, long? chosen, bool final) =>
+        engine.LEngineFanqie.LEngineDiweiFind(vista, chosen, final);
 
     internal static IReadOnlyList<LVistaRow> TEngineXiaoyunFind(
         this LEngine engine, string language, IReadOnlyList<long> diweiIds, string query) =>

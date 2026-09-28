@@ -76,19 +76,17 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public string LEngineLanguageResolve(long entryId) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineLanguageResolve(entryId);
 
-    public LDiwei? LEngineDiweiFind(string language, string kind, string key) =>
+    public (long, bool)? LEngineDiweiFind(string language, string kind, string key) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiFind(language, kind, key);
 
-    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind) =>
-        _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiFind(vista, language, kind);
-
-    public LDiwei? LEngineDiweiRead(long? id) => _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiRead(id);
+    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, long? chosen, bool final) =>
+        _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiFind(vista, chosen, final);
 
     public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiResolve(id, localize);
 
-    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista) =>
-        _lPhonologyOutletEngine.LEngineFanqie.LEngineXiaoyunFind(language, onset, rime, vista);
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista) =>
+        _lPhonologyOutletEngine.LEngineFanqie.LEngineXiaoyunFind(chosen, onset, rime, vista);
 
     public long? LEngineStemFind(string language, string? key) =>
         _lPhonologyOutletEngine.LEngineStem.LEngineStemFind(language, key);
@@ -105,7 +103,7 @@ public sealed class LPhonologyOutlet : LPhonologyPort
 
     public bool LEngineBookCheck(string language) => _lPhonologyOutletEngine.LEngineFanqie.LEngineBookCheck(language);
 
-    public string? LEngineBookFind() => _lPhonologyOutletEngine.LEngineFanqie.LEngineBookFind();
+    public bool LEngineBookCheck() => _lPhonologyOutletEngine.LEngineFanqie.LEngineBookCheck();
 
     public bool LEnginePhonemicCheck(string language) =>
         _lPhonologyOutletEngine.LEngineSettings.LEnginePhonemicCheck(language);

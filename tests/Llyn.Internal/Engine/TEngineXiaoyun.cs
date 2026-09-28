@@ -26,7 +26,23 @@ public sealed class TEngineXiaoyun
         Assert.Equal(["蘭"], narrowed.Select(row => row.LVistaRowName));
     }
 
-    private static void TXiaoyunDiweiPlace(
+    [Fact]
+    public void DiweiFind_StoredKey_AnswersTheCellAndItsColumn()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
+        long onset = engine.TEngineDiweiFind(language, LDiwei.LDiweiInitial, "來")!.LDiweiId;
+        long rime = engine.TEngineDiweiFind(language, LDiwei.LDiweiRime, "寒 I")!.LDiweiId;
+
+        Assert.Equal((onset, false), engine.TFanqieDiweiFind(language, LDiwei.LDiweiInitial, "來"));
+        Assert.Equal((rime, true), engine.TFanqieDiweiFind(language, LDiwei.LDiweiRime, "寒 I"));
+        Assert.Null(engine.TFanqieDiweiFind(language, LDiwei.LDiweiInitial, "見"));
+    }
+
+    internal static void TXiaoyunDiweiPlace(
         LEngine engine, TWorkspace workspace, string language, string character, string initial)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

@@ -72,7 +72,7 @@ public sealed class CEditor
 
     private LTenure? CEditorTenure => CEditorDesk.CDeskFilling ? null : CEditorDesk.CDeskTenure;
 
-    internal void CEditorVistaRestore(LVista vista)
+    internal void LEditorVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 

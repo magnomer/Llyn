@@ -115,7 +115,7 @@ public sealed class CShelf
         CShelfPanel.CPanelVistaRestore(vista);
         CShelfFootnote.LFootnoteVistaRestore(vista, footnote);
         CShelfImprint.CImprintDesk.CDeskVistaRestore(vista);
-        CShelfEditor.CEditorVistaRestore(footnote);
+        CShelfEditor.LEditorVistaRestore(footnote);
     }
 
     public IReadOnlyList<CCatalogReference> CShelfRowsRead()

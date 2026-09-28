@@ -392,6 +392,6 @@ public sealed class CRepertoire
             "occurrence", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
         CRepertoireAtlas.LAtlasVistaRestore(vista);
         CRepertoireOccurrence.LOccurrenceVistaRestore(vista, occurrence);
-        CRepertoireEditor.CEditorVistaRestore(occurrence);
+        CRepertoireEditor.LEditorVistaRestore(occurrence);
     }
 }

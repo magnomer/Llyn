@@ -64,9 +64,10 @@ The tab the editor serves, which a link court records as its origin.
 
 The held tenure for a field edit, or null while none is held or the desk fills its controls.
 
-## `internal void CEditorVistaRestore(LVista vista)`
+## `internal void LEditorVistaRestore(LVista vista)`
 
 Binds the desk and the display to the tab's vista.
+Only the Conduct areas call it as they restore their vistas, so it is a helper.
 
 ## `public void CEditorEntryOpen(long? id)`
 

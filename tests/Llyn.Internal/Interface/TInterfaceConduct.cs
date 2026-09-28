@@ -158,7 +158,7 @@ internal static class TInterfaceConduct
     internal static CEditor TEditorCreate(
         LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>
         new(drafts, entries, phonology, settings, media, TEnvoyCreate(false, []));
-    internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.CEditorVistaRestore(vista);
+    internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
 

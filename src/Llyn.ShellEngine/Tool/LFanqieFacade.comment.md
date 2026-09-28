@@ -21,6 +21,10 @@ Whether the language declares any book.
 
 The first listed language that declares a book, or null.
 
+## `public bool LEngineBookCheck()`
+
+True while a listed language declares a book, the verdict the yunjing tab is shown by.
+
 ## `public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId)`
 
 The rows grouped by book.
@@ -61,19 +65,28 @@ One diwei by id, or null for no id.
 The page of one diwei, blank for no id.
 Respellings show under the respelling setting for the diwei's language, and the tally under its own setting.
 
-## `public LDiwei? LEngineDiweiFind(string language, string kind, string key)`
+## `public (long, bool)? LEngineDiweiFind(string language, string kind, string key)`
 
-The diwei of one kind with the given key.
+The identity of the diwei of one kind with the given key, and whether it is a rime.
+A diwei never stored answers null.
 
-## `public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)`
+## `public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, long? chosen, bool final)`
 
-The diwei of one kind filtered by the vista's query and sorted by its order, the chosen one marked.
-A chosen id no longer listed clears the choice.
+The initials or the rimes as one column, filtered by the vista's query and sorted by its order.
+The column lists the language of the chosen diwei, the one the panel reads.
+The chosen one is marked, and a chosen id no longer listed clears the choice.
+Nothing is listed while no language declares a book.
 
 ## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query, LVista? vista = null)`
 
 The entries filed under all of the diwei that match `query`, built as vista rows.
 
-## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista)`
+## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista)`
 
 The entries under the chosen onset and rime, none when neither is chosen.
+They are read in the language of the diwei the panel reads.
+
+## `private string LEngineLanguageRead(long? chosen)`
+
+The language the columns list, that of the chosen diwei, else the first language declaring a book.
+Empty while neither answers.
