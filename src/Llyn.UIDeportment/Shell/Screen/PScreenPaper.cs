@@ -14,7 +14,7 @@ public partial class PScreen
             : 0).ToString(CultureInfo.InvariantCulture);
         string playing = PScreenPlaying ? "1" : "0";
         string level = PScreenVolume.ToString("0.###", CultureInfo.InvariantCulture);
-        string? film = PScreenFilmRead(address);
+        string? film = PScreenFilm;
 
         if (film is null)
         {

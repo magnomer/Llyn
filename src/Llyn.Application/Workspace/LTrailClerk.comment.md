@@ -47,6 +47,12 @@ A path the trail cannot place, or one the Uri parser refuses, answers null.
 
 The resolved location, or null when it is a file that does not exist.
 
+## `public (Uri, string?)? LTrailScreenRead(string? location)`
+
+What a video screen plays: the resolved address and the hosted film id Core's `LVideoFilmRead` names in it.
+It answers null where `LTrailClerkRead` does.
+A local file names no hosted film, so its film id is null without asking.
+
 ## `public void LTrailClerkOpen(string target)`
 
 Opens `target` through the shell usher.

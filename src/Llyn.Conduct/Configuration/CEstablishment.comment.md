@@ -3,12 +3,13 @@
 ## `public sealed record CEstablishment(`
 
 The workspace's size and unsaved work, as the status strip shows it.
-Its verdicts are copied from the engine, so the strip judges nothing itself.
+Its verdicts come from the engine and its keys from the atelier, so the strip judges nothing itself.
 
 **Parameters**
 
 - `CEstablishmentUnsaved`: how many drafts hold unsaved work.
 - `CEstablishmentEntry`: how many entries the workspace holds.
-- `CEstablishmentSize`: the workspace's size in bytes.
 - `CEstablishmentPending`: whether any draft holds unsaved work.
-- `CEstablishmentSingle`: whether the workspace holds exactly one entry.
+- `CEstablishmentEntryKey`: the entry count's wording, singular for exactly one entry.
+- `CEstablishmentSizeKey`: the size's wording, megabytes or kilobytes.
+- `CEstablishmentAmount`: the size in that unit, written for the current culture.

@@ -9,6 +9,8 @@ public interface LMediaPort
 {
     Uri? LEngineLocationRead(string? location);
 
+    (Uri, string?)? LEngineScreenRead(string? location);
+
     void LEngineLocationOpen(string target);
 
     bool LEngineRecordingExist(string? file);

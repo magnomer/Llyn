@@ -24,22 +24,21 @@ public partial class PScreen : UserControl
         Content = surface;
         NameScope.SetNameScope(this, NameScope.GetNameScope(surface));
 
-        PScreenStage.SizeChanged += PScreenSizeHandle;
-        PScreenMedia.MediaOpened += PScreenReadyHandle;
-        PScreenMedia.MediaEnded += PScreenFinishHandle;
-        PScreenMedia.MediaFailed += PScreenFailureHandle;
-        PScreenSwitch.Click += PScreenSwitchHandle;
+        PScreenStage.SizeChanged += PScreenSizeRefine;
+        PScreenMedia.MediaOpened += PScreenReadyRefine;
+        PScreenMedia.MediaEnded += PScreenFinishRefine;
+        PScreenMedia.MediaFailed += PScreenFailureRefine;
+        PScreenSwitch.Click += PScreenSwitchRefine;
 
         _pScreenPending = new DispatcherTimer(DispatcherPriority.Background)
         {
             Interval = TimeSpan.FromMilliseconds(PScreenDelay),
         };
-        _pScreenPending.Tick += PScreenPendingHandle;
+        _pScreenPending.Tick += PScreenPendingRefine;
+        _pScreenClock.Tick += PScreenSpanRefine;
 
-        PScreenClockPrepare();
-
-        Loaded += PScreenOpenHandle;
-        Unloaded += PScreenDropHandle;
+        Loaded += PScreenOpenRefine;
+        Unloaded += PScreenDropRefine;
     }
 
     private Border PScreenStage => (Border)FindName(nameof(PScreenStage));
@@ -56,37 +55,49 @@ public partial class PScreen : UserControl
         nameof(PScreenAddress),
         typeof(Uri),
         typeof(PScreen),
-        new PropertyMetadata(null, PScreenSourceHandle));
+        new PropertyMetadata(null, PScreenSourceRefine));
+
+    public static readonly DependencyProperty PScreenFilmProperty = DependencyProperty.Register(
+        nameof(PScreenFilm),
+        typeof(string),
+        typeof(PScreen),
+        new PropertyMetadata(null));
 
     public static readonly DependencyProperty PScreenFromProperty = DependencyProperty.Register(
         nameof(PScreenFrom),
         typeof(TimeSpan),
         typeof(PScreen),
-        new PropertyMetadata(TimeSpan.Zero, PScreenSourceHandle));
+        new PropertyMetadata(TimeSpan.Zero, PScreenSourceRefine));
 
     public static readonly DependencyProperty PScreenUntilProperty = DependencyProperty.Register(
         nameof(PScreenUntil),
         typeof(TimeSpan?),
         typeof(PScreen),
-        new PropertyMetadata(null, PScreenSourceHandle));
+        new PropertyMetadata(null, PScreenSourceRefine));
 
     public static readonly DependencyProperty PScreenVolumeProperty = DependencyProperty.Register(
         nameof(PScreenVolume),
         typeof(double),
         typeof(PScreen),
-        new PropertyMetadata(1d, PScreenVolumeHandle));
+        new PropertyMetadata(1d, PScreenVolumeRefine));
 
     public static readonly DependencyProperty PScreenPlayingProperty = DependencyProperty.Register(
         nameof(PScreenPlaying),
         typeof(bool),
         typeof(PScreen),
         new FrameworkPropertyMetadata(
-            false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PScreenPlayingHandle));
+            false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PScreenPlayingRefine));
 
     public Uri? PScreenAddress
     {
         get => (Uri?)GetValue(PScreenAddressProperty);
         set => SetValue(PScreenAddressProperty, value);
+    }
+
+    public string? PScreenFilm
+    {
+        get => (string?)GetValue(PScreenFilmProperty);
+        set => SetValue(PScreenFilmProperty, value);
     }
 
     public TimeSpan PScreenFrom
@@ -113,7 +124,7 @@ public partial class PScreen : UserControl
         set => SetValue(PScreenVolumeProperty, value);
     }
 
-    private static void PScreenSourceHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
+    private static void PScreenSourceRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
         if (holder is PScreen screen && (screen._pScreenOpened || screen.PScreenPlaying))
         {
@@ -122,7 +133,7 @@ public partial class PScreen : UserControl
         }
     }
 
-    private static void PScreenPlayingHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
+    private static void PScreenPlayingRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
         if (holder is not PScreen screen)
         {
@@ -133,28 +144,25 @@ public partial class PScreen : UserControl
         if (screen.PScreenPlaying && !screen._pScreenOpened && screen.IsLoaded)
         {
             screen._pScreenPending.Stop();
-            screen.PScreenShow();
+            screen.PScreenRefine();
             return;
         }
 
-        screen.PScreenSync();
+        screen.PScreenSyncRefine();
     }
 
-    private static void PScreenVolumeHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
+    private static void PScreenVolumeRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
-        if (holder is PScreen screen)
+        if (holder is not PScreen screen)
         {
-            screen.PScreenVolumeApply();
+            return;
         }
+
+        screen.PScreenMedia.Volume = screen.PScreenVolume;
+        screen.PScreenPageSend("volume:" + screen.PScreenVolume.ToString("0.###", CultureInfo.InvariantCulture));
     }
 
-    private void PScreenVolumeApply()
-    {
-        PScreenMedia.Volume = PScreenVolume;
-        PScreenPageSend("volume:" + PScreenVolume.ToString("0.###", CultureInfo.InvariantCulture));
-    }
-
-    private void PScreenSizeHandle(object sender, SizeChangedEventArgs e)
+    private void PScreenSizeRefine(object sender, SizeChangedEventArgs e)
     {
         if (!e.WidthChanged)
         {
@@ -168,7 +176,7 @@ public partial class PScreen : UserControl
         }
     }
 
-    private void PScreenOpenHandle(object sender, RoutedEventArgs e)
+    private void PScreenOpenRefine(object sender, RoutedEventArgs e)
     {
         if (PScreenPlaying && PScreenAddress is not null)
         {
@@ -177,27 +185,27 @@ public partial class PScreen : UserControl
         }
     }
 
-    private void PScreenPendingHandle(object? sender, EventArgs e)
+    private void PScreenPendingRefine(object? sender, EventArgs e)
     {
         _pScreenPending.Stop();
-        PScreenShow();
+        PScreenRefine();
     }
 
-    private void PScreenSwitchHandle(object sender, RoutedEventArgs e)
+    private void PScreenSwitchRefine(object sender, RoutedEventArgs e)
     {
         PScreenPlaying = PScreenSwitch.IsChecked == true;
     }
 
-    private void PScreenDropHandle(object sender, RoutedEventArgs e)
+    private void PScreenDropRefine(object sender, RoutedEventArgs e)
     {
         _pScreenPending.Stop();
-        PScreenStop();
+        PScreenStopRefine();
         PScreenBrowserDispose();
     }
 
-    private void PScreenShow()
+    private void PScreenRefine()
     {
-        PScreenStop();
+        PScreenStopRefine();
 
         if (PScreenAddress is not Uri address)
         {
@@ -208,15 +216,15 @@ public partial class PScreen : UserControl
         if (address.IsFile)
         {
             _pScreenWeb = false;
-            PScreenMediaPlay(address);
+            PScreenMediaRefine(address);
             return;
         }
 
         _pScreenWeb = true;
-        PScreenPageShow(address);
+        PScreenPageRefine(address);
     }
 
-    private void PScreenSync()
+    private void PScreenSyncRefine()
     {
         if (_pScreenWeb)
         {
@@ -224,18 +232,18 @@ public partial class PScreen : UserControl
             return;
         }
 
-        PScreenMediaSync();
+        PScreenPlaybackRefine();
     }
 
-    private void PScreenStop()
+    private void PScreenStopRefine()
     {
         _pScreenOpened = false;
         PScreenNotice.Visibility = Visibility.Collapsed;
-        PScreenMediaStop();
-        PScreenPageStop();
+        PScreenSilenceRefine();
+        PScreenBlankRefine();
     }
 
-    private void PScreenNoticeShow()
+    private void PScreenNoticeRefine()
     {
         PScreenPage.Visibility = Visibility.Collapsed;
         PScreenNotice.Text = QLocalizationCatalog.QLocalizationCatalogCurrent["Card.VideoFailed"];

@@ -52,6 +52,14 @@ internal sealed class LWorkspaceFacade
         }
     }
 
+    public (Uri, string?)? LEngineScreenRead(string? location)
+    {
+        lock (_lWorkspaceFacadeGate)
+        {
+            return LWorkspaceFacadeStaff.LEngineStaffTrail.LTrailScreenRead(location);
+        }
+    }
+
     public void LEngineLocationOpen(string target)
     {
         LWorkspaceFacadeStaff.LEngineStaffTrail.LTrailClerkOpen(target);

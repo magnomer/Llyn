@@ -30,7 +30,7 @@ internal static class TAuditObjectSetting
         ["Llyn.UIDeportment.QArticulation"] = 3,
         ["Llyn.UIDeportment.PCard"] = 9,
         ["Llyn.UIDeportment.PEditor"] = 29,
-        ["Llyn.UIDeportment.PScreen"] = 5,
+        ["Llyn.UIDeportment.PScreen"] = 4,
         ["Llyn.UIDeportment.PSentence"] = 3,
         ["Llyn.UIDeportment.PSettings"] = 10,
         ["Llyn.UIDeportment.PSwath"] = 2,

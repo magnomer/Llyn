@@ -111,6 +111,8 @@ The entries the duplex wings last stood on.
 ## `public CEstablishment CAtelierEstablishmentRead()`
 
 The workspace's size and unsaved work, as the status strip shows it.
+The engine judges the singular count and the unit, and the atelier chooses their wording keys.
+The amount is written with one decimal in megabytes and as a whole number in kilobytes.
 
 ## `public Action CAtelierEstablishmentAttach(Action<CEstablishment> show)`
 
@@ -128,6 +130,11 @@ Downloads a remote recording into the workspace and answers the local path it wa
 ## `public Uri? CAtelierLocationRead(string? location)`
 
 The resolved address of a media location, or nothing when it is a file that does not exist.
+
+## `public CScreen? CAtelierScreenRead(string? location)`
+
+What a video screen plays from a location, or nothing when the location resolves to nothing.
+The engine resolves the address and reads the film id in one call, and the atelier only maps the pair.
 
 ## `public void CAtelierLocationOpen(string target)`
 

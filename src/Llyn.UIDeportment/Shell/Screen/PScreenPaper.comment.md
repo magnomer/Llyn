@@ -10,6 +10,8 @@ A YouTube address is played by the site's own player, which is the only way its 
 
 The span, the level and whether to start are written into the page before it loads.
 A page told afterwards would already have begun playing from the wrong place.
+The film id is the one the row set on the Screen.
+Without one, the browser's own video element plays the address.
 The two players are written separately, because the site's player is driven by its API rather than by an element.
 
 ## `private static string PScreenPaperFormat(string body)`

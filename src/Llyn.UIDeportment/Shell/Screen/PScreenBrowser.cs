@@ -18,21 +18,21 @@ public partial class PScreen
 
     private string _pScreenPaper = string.Empty;
 
-    private void PScreenPageShow(Uri address)
+    private void PScreenPageRefine(Uri address)
     {
         _pScreenPaper = PScreenPaperBuild(address);
         PScreenPage.Visibility = Visibility.Visible;
-        _ = PScreenPageLoad();
+        _ = PScreenLoadRefine();
     }
 
-    private async Task PScreenPageLoad()
+    private async Task PScreenLoadRefine()
     {
         string paper = _pScreenPaper;
         WebView2CompositionControl browser = _pScreenBrowser ??= PScreenBrowserCreate();
 
         if (Window.GetWindow(this)?.Tag is not PWindow host)
         {
-            PScreenNoticeShow();
+            PScreenNoticeRefine();
             return;
         }
 
@@ -44,7 +44,7 @@ public partial class PScreen
         catch (Exception)
         {
             host.PWindowScreen.PScreenSettingReset();
-            PScreenNoticeShow();
+            PScreenNoticeRefine();
             return;
         }
 
@@ -61,7 +61,7 @@ public partial class PScreen
             browser.CoreWebView2.Settings.IsStatusBarEnabled = false;
             browser.CoreWebView2.AddWebResourceRequestedFilter(
                 PScreenHost, CoreWebView2WebResourceContext.Document);
-            browser.CoreWebView2.WebResourceRequested += PScreenPaperHandle;
+            browser.CoreWebView2.WebResourceRequested += PScreenPaperRefine;
         }
 
         browser.CoreWebView2.Navigate(PScreenHost);
@@ -78,7 +78,7 @@ public partial class PScreen
         return browser;
     }
 
-    private void PScreenPaperHandle(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+    private void PScreenPaperRefine(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
     {
         if (_pScreenBrowser?.CoreWebView2 is not CoreWebView2 core)
         {
@@ -108,7 +108,7 @@ public partial class PScreen
         }
     }
 
-    private void PScreenPageStop()
+    private void PScreenBlankRefine()
     {
         _pScreenPaper = string.Empty;
 
@@ -129,7 +129,7 @@ public partial class PScreen
         if (_pScreenReady)
         {
             _pScreenReady = false;
-            browser.CoreWebView2.WebResourceRequested -= PScreenPaperHandle;
+            browser.CoreWebView2.WebResourceRequested -= PScreenPaperRefine;
         }
 
         _pScreenBrowser = null;

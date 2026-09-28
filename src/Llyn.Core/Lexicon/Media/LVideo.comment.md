@@ -25,3 +25,18 @@ A row that named a film is not the same as a row that never named one.
 - `LVideoSpan` — The stretch worth watching, written as `mm:ss - mm:ss`.
   The store keeps the text and reads no moments out of it.
   A span that says nothing is a film watched whole.
+
+## `private const int LVideoFilmLength = 11;`
+
+Every film id the host hands out is eleven characters long.
+
+## `public static string? LVideoFilmRead(Uri address)`
+
+The film id inside a hosted video address, or `null` when the address is not one.
+Every shape the host hands out is read, since a user pastes whichever one they were given.
+The video screen and the portrait sheet both ask here, so one rule names a film.
+
+## `private static string? LVideoFilmCheck(string film)`
+
+An id is eleven ASCII letters, digits, dashes and underscores, and anything else is refused.
+The id is written into a page's script and address, so the check keeps that text closed.

@@ -7,10 +7,6 @@ A hosted video is the one kind whose poster frame can be named without decoding 
 
 ## `public static string? LPortraitFilmRead(string location)`
 
-The same address shapes the video screen accepts are accepted here.
+The written location is read as an address, and Core's `LVideoFilmRead` names the film in it.
+The video screen asks the same rule, so both accept the same address shapes.
 A local file yields nothing, because no frame can be taken from it without a decoder.
-
-## `private static string? LPortraitFilmCheck(string film)`
-
-An id may only hold the characters the host uses.
-Anything else would put unchecked text into a page address.

@@ -43,7 +43,7 @@ The id is always taken.
 ## `public CStateValue PVideoLocation`
 
 The location as the draft holds it, set only from the draft.
-A changed location reads the address the screen plays again.
+A changed location reads what the screen plays again, in one atelier read.
 
 ## `public CStateValue PVideoTimestamp`
 
@@ -84,6 +84,7 @@ The fill of a read-only video line, whose row is the video the frame made.
 
 ## `private static void PVideoScreenApply(PScreen screen, PVideo row)`
 
-Sets the span, the address and the playing flag the screen shows.
+Sets the span, the film id, the address and the playing flag the screen shows.
+The film id goes first, because a changed address reloads the screen at once.
 The volume follows the shared catalog live, so every screen answers the one slider.
 The playing flag is bound both ways, since the screen's own switch changes it.

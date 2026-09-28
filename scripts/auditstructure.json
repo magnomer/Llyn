@@ -394,7 +394,8 @@
       "CLecternFanqie",
       "CLecternScript",
       "CLecternParadigm",
-      "CLecternPlayback"
+      "CLecternPlayback",
+      "CScreen"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",

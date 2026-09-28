@@ -13,12 +13,7 @@ public partial class PScreen
         Interval = TimeSpan.FromMilliseconds(PScreenClockDelay),
     };
 
-    private void PScreenClockPrepare()
-    {
-        _pScreenClock.Tick += PScreenSpanHandle;
-    }
-
-    private void PScreenMediaPlay(Uri address)
+    private void PScreenMediaRefine(Uri address)
     {
         PScreenMedia.Visibility = Visibility.Visible;
         PScreenMedia.Source = address;
@@ -26,7 +21,7 @@ public partial class PScreen
         _pScreenClock.Start();
     }
 
-    private void PScreenMediaSync()
+    private void PScreenPlaybackRefine()
     {
         if (PScreenMedia.Source is null)
         {
@@ -42,7 +37,7 @@ public partial class PScreen
         PScreenMedia.Pause();
     }
 
-    private void PScreenMediaStop()
+    private void PScreenSilenceRefine()
     {
         _pScreenClock.Stop();
 
@@ -51,7 +46,7 @@ public partial class PScreen
         PScreenMedia.Source = null;
     }
 
-    private void PScreenReadyHandle(object sender, RoutedEventArgs e)
+    private void PScreenReadyRefine(object sender, RoutedEventArgs e)
     {
         PScreenMedia.Volume = PScreenVolume;
         PScreenMedia.Position = PScreenFrom;
@@ -61,19 +56,19 @@ public partial class PScreen
         }
     }
 
-    private void PScreenFinishHandle(object sender, RoutedEventArgs e)
+    private void PScreenFinishRefine(object sender, RoutedEventArgs e)
     {
         PScreenMedia.Position = PScreenFrom;
         PScreenMedia.Play();
     }
 
-    private void PScreenFailureHandle(object? sender, ExceptionRoutedEventArgs e)
+    private void PScreenFailureRefine(object? sender, ExceptionRoutedEventArgs e)
     {
         PScreenMedia.Visibility = Visibility.Collapsed;
-        PScreenNoticeShow();
+        PScreenNoticeRefine();
     }
 
-    private void PScreenSpanHandle(object? sender, EventArgs e)
+    private void PScreenSpanRefine(object? sender, EventArgs e)
     {
         if (PScreenMedia.Source is null
             || PScreenUntil is not TimeSpan until

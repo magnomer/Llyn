@@ -31,14 +31,9 @@ The observer runs on the window's thread, which is the bar's thread too.
 Stops listening before the engine goes.
 A second close detaches an observer already gone, which the engine ignores.
 
-## `private void QEstablishmentShow(CEstablishment establishment)`
+## `private void QEstablishmentRefine(CEstablishment establishment)`
 
-Prints the three numbers the atelier read.
+Prints the three lines the atelier read, each through the wording key it chose.
 The unsaved line is hidden when nothing is unsaved, so a calm window shows nothing on the left.
 A refused read never arrives here, so the last printed numbers stand.
-The entry line picks its singular wording by count, which the locale files spell out.
-
-## `private static string QEstablishmentSizeFormat(long bytes)`
-
-Megabytes with one decimal once the file reaches one, kilobytes rounded up below that.
-A workspace of a few words would otherwise print as zero, which reads as a missing file.
+The singular entry wording and the size unit arrive as ready keys, and the amount as ready text.

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
@@ -185,6 +186,51 @@ public sealed class TAtelier
         atelier.CAtelierLedger.CLedgerEpithetSave(!engine.TEngineSettingsRead().LSettingsEpithet);
 
         Assert.Equal([atelier.CAtelierEstablishmentRead()], shown);
+    }
+
+    [Theory]
+    [InlineData(0, 0L, 3000L, "Establishment.Entry", "Establishment.Kilobyte", 3d)]
+    [InlineData(2, 1L, 1024L * 1024, "Establishment.EntryOne", "Establishment.Megabyte", 1d)]
+    [InlineData(0, 7L, 3L * 1024 * 1024 / 2, "Establishment.Entry", "Establishment.Megabyte", 1.5d)]
+    public void AtelierEstablishmentRead_EngineVerdicts_ChoosesWordingKeysAndAmount(
+        int unsaved, long entry, long size, string entryKey, string sizeKey, double amount)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineEstablishmentRead"] = _ => TInterface.TEstablishmentCreate(unsaved, entry, size),
+            }));
+
+        CEstablishment establishment = atelier.CAtelierEstablishmentRead();
+
+        Assert.Equal(unsaved, establishment.CEstablishmentUnsaved);
+        Assert.Equal(entry, establishment.CEstablishmentEntry);
+        Assert.Equal(unsaved > 0, establishment.CEstablishmentPending);
+        Assert.Equal(entryKey, establishment.CEstablishmentEntryKey);
+        Assert.Equal(sizeKey, establishment.CEstablishmentSizeKey);
+        Assert.Equal(
+            amount.ToString(size >= 1024L * 1024 ? "0.0" : "0", CultureInfo.CurrentCulture),
+            establishment.CEstablishmentAmount);
+    }
+
+    [Fact]
+    public void AtelierScreenRead_HostedOrOtherLocation_AnswersAddressAndEngineFilmId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TInterfaceConduct.TMediaCreate(engine));
+
+        Assert.Equal(
+            new CScreen(new Uri("https://youtu.be/dQw4w9WgXcQ"), "dQw4w9WgXcQ"),
+            atelier.CAtelierScreenRead(" https://youtu.be/dQw4w9WgXcQ "));
+        Assert.Equal(
+            new CScreen(new Uri("https://example.com/reel.mp4"), null),
+            atelier.CAtelierScreenRead("https://example.com/reel.mp4"));
+        Assert.Null(atelier.CAtelierScreenRead("media/dQw4w9WgXcQ.mp4"));
+        Assert.Null(atelier.CAtelierScreenRead(null));
     }
 
     private static CEnvoy TAtelierEnvoyCreate(bool discard)

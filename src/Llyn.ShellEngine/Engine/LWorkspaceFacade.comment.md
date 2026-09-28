@@ -28,6 +28,10 @@ Reads, changes and writes the state row under the gate.
 
 The resolved location, or null when it is a file that does not exist.
 
+## `public (Uri, string?)? LEngineScreenRead(string? location)`
+
+The resolved address of a video location and its hosted film id, by the Application trail clerk.
+
 ## `public void LEngineLocationOpen(string target)`
 
 Opens `target` through the shell usher.

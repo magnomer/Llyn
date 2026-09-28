@@ -14,7 +14,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     private CStateValue _pVideoLocation = CStateValue.CStateValueEmpty;
     private CStateValue _pVideoTimestamp = CStateValue.CStateValueEmpty;
-    private Uri? _pVideoPreview;
+    private CScreen? _pVideoPreview;
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
     private bool _pVideoPlaying;
@@ -44,7 +44,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
             _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = _pVideoAtelier.CAtelierLocationRead(value.CStateValueText);
+            PVideoPreview = _pVideoAtelier.CAtelierScreenRead(value.CStateValueText);
         }
     }
 
@@ -64,7 +64,7 @@ internal sealed class PVideo : INotifyPropertyChanged
         }
     }
 
-    public Uri? PVideoPreview
+    public CScreen? PVideoPreview
     {
         get => _pVideoPreview;
         private set
@@ -204,7 +204,8 @@ internal sealed class PVideo : INotifyPropertyChanged
     {
         screen.PScreenFrom = row.PVideoFrom;
         screen.PScreenUntil = row.PVideoUntil;
-        screen.PScreenAddress = row.PVideoPreview;
+        screen.PScreenFilm = row.PVideoPreview?.CScreenFilm;
+        screen.PScreenAddress = row.PVideoPreview?.CScreenAddress;
         screen.SetBinding(
             PScreen.PScreenPlayingProperty,
             new Binding(nameof(PVideoPlaying)) { Source = row, Mode = BindingMode.TwoWay });

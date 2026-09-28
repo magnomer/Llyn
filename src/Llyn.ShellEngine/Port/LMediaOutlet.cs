@@ -18,6 +18,9 @@ public sealed class LMediaOutlet : LMediaPort
     public Uri? LEngineLocationRead(string? location) =>
         _lMediaOutletEngine.LEngineWorkspace.LEngineLocationRead(location);
 
+    public (Uri, string?)? LEngineScreenRead(string? location) =>
+        _lMediaOutletEngine.LEngineWorkspace.LEngineScreenRead(location);
+
     public void LEngineLocationOpen(string target) => _lMediaOutletEngine.LEngineWorkspace.LEngineLocationOpen(target);
 
     public bool LEngineRecordingExist(string? file) =>

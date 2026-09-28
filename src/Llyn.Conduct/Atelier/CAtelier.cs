@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -173,9 +174,11 @@ public sealed class CAtelier : IDisposable
         return new CEstablishment(
             establishment.LEstablishmentUnsaved,
             establishment.LEstablishmentEntry,
-            establishment.LEstablishmentSize,
             establishment.LEstablishmentPending,
-            establishment.LEstablishmentSingle);
+            establishment.LEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry",
+            establishment.LEstablishmentLarge ? "Establishment.Megabyte" : "Establishment.Kilobyte",
+            establishment.LEstablishmentAmount.ToString(
+                establishment.LEstablishmentLarge ? "0.0" : "0", CultureInfo.CurrentCulture));
     }
 
     public Action CAtelierEstablishmentAttach(Action<CEstablishment> show)
@@ -202,6 +205,13 @@ public sealed class CAtelier : IDisposable
     public Uri? CAtelierLocationRead(string? location)
     {
         return CAtelierMediaPort.LEngineLocationRead(location);
+    }
+
+    public CScreen? CAtelierScreenRead(string? location)
+    {
+        return CAtelierMediaPort.LEngineScreenRead(location) is (Uri address, var film)
+            ? new CScreen(address, film)
+            : null;
     }
 
     public void CAtelierLocationOpen(string target)

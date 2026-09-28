@@ -22,7 +22,8 @@ Each player is written where it is used and nowhere else.
 The machine's own player lives in [PScreenMedia.cs](PScreenMedia.comment.md).
 The embedded browser lives in [PScreenBrowser.cs](PScreenBrowser.comment.md).
 The page it is given lives in [PScreenPaper.cs](PScreenPaper.comment.md).
-The address a YouTube film is read from lives in [PScreenFilm.cs](PScreenFilm.comment.md).
+The row hands the Screen the YouTube film id the atelier read, beside the address.
+A portrait sheet names films by the same engine rule.
 A reader who wants one of them reads one file rather than a player split across a long one.
 
 The span is enforced wherever the film is playing.
@@ -65,6 +66,7 @@ This tracks whether media has been opened so property changes can trigger a relo
 
 Loads the Veneer's `PScreen.xaml` by pack URI, sets it as content and copies its name scope.
 The stage's size, the player's open, end and failure, and the switch's click are subscribed after the load.
+The span clock's tick is wired there too.
 The markup carries no event attribute, so every handler is wired here.
 Deferred loading and lifetime cleanup are then tied to the control's visual lifecycle.
 
@@ -76,6 +78,11 @@ Call sites across the partial parts read them as they read generated fields befo
 ## `public static readonly DependencyProperty PScreenAddressProperty`
 
 The address property selects a local file or remote page and reloads active media when changed.
+
+## `public static readonly DependencyProperty PScreenFilmProperty`
+
+The hosted film id of the address, or null, as the row read it through the atelier.
+It has no callback, because the row sets it before the address, whose change reloads the Screen.
 
 ## `public static readonly DependencyProperty PScreenFromProperty`
 
@@ -99,6 +106,10 @@ A row's flag survives the screen being taken down as the card scrolls.
 Where the film is read from, as the row already resolved it through the engine.
 It is null while the location names no place.
 
+## `public string? PScreenFilm`
+
+Which hosted film the page plays, or null for a film the browser's own element plays.
+
 ## `public TimeSpan PScreenFrom`
 
 Where play begins and where it returns to.
@@ -117,53 +128,50 @@ It survives the Screen being taken down and put back.
 How loud to play, taken from the one slider the program keeps.
 A film and a pronunciation are both the program speaking, so one slider answers for both.
 
-## `private static void PScreenSourceHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
+## `private static void PScreenSourceRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
 
 Every change to what is played waits half a second before anything is built.
 The location field updates on each keystroke.
 A half-typed address would otherwise open a browser page per letter.
 A Screen nobody has asked to play ignores the change, since there is no player to hand it to.
 
-## `private static void PScreenPlayingHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
+## `private static void PScreenPlayingRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
 
 The callback mirrors the playing state into the switch.
 The first ask for play opens the player, and every later ask is relayed to the one standing.
 A row put back into the tree while marked playing opens on load instead, so this waits for the tree.
 
-## `private static void PScreenVolumeHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
+## `private static void PScreenVolumeRefine(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
 
 Volume changes are applied immediately so both playback paths remain in sync.
-
-## `private void PScreenVolumeApply()`
-
 The level is given to whichever player is standing.
 The page is sent a culture independent command rather than rebuilt.
 Reloading a film to turn it down would lose where it was.
 A page still loading is skipped, since the level it will be built with is the current one anyway.
 
-## `private void PScreenSizeHandle(object sender, SizeChangedEventArgs e)`
+## `private void PScreenSizeRefine(object sender, SizeChangedEventArgs e)`
 
 The height follows the width at sixteen to nine.
 Only a width change is answered, because the answer is a height change and answering that would not end.
 
-## `private void PScreenOpenHandle(object sender, RoutedEventArgs e)`
+## `private void PScreenOpenRefine(object sender, RoutedEventArgs e)`
 
 A Screen entering the tree opens only when its row already says it is playing.
 That is the row returning after the card was taken down, not a card being read.
 
-## `private void PScreenPendingHandle(object? sender, EventArgs e)`
+## `private void PScreenPendingRefine(object? sender, EventArgs e)`
 
 The timer callback opens only the latest pending source after earlier requests have settled.
 
-## `private void PScreenSwitchHandle(object sender, RoutedEventArgs e)`
+## `private void PScreenSwitchRefine(object sender, RoutedEventArgs e)`
 
 User toggles update the playing property rather than bypassing its callback.
 
-## `private void PScreenDropHandle(object sender, RoutedEventArgs e)`
+## `private void PScreenDropRefine(object sender, RoutedEventArgs e)`
 
 Unloading stops pending work and disposes browser resources to release the media surface.
 
-## `private void PScreenShow()`
+## `private void PScreenRefine()`
 
 The one place the two players are chosen between.
 A file address is the machine's own player and anything else is the browser page.
@@ -171,15 +179,15 @@ Whichever was standing is stopped first, because a Screen shows one film at a ti
 The Screen remembers a player was opened.
 Later changes of address reach it, and an unopened one stays idle.
 
-## `private void PScreenSync()`
+## `private void PScreenSyncRefine()`
 
 Which player is running decides who is told to play or pause.
 The flag is kept here rather than asked of either player, since only this file starts them.
 
-## `private void PScreenStop()`
+## `private void PScreenStopRefine()`
 
 Stopping clears visible failure state and halts both playback paths before a reload.
 
-## `private void PScreenNoticeShow()`
+## `private void PScreenNoticeRefine()`
 
 A localized notice replaces the browser surface when remote video cannot be displayed.

@@ -17,21 +17,21 @@ public sealed class PSeam : Thumb
     public PSeam()
     {
         Cursor = Cursors.SizeWE;
-        DragStarted += PSeamStartHandle;
-        DragDelta += PSeamDragHandle;
-        DragCompleted += PSeamFinishHandle;
+        DragStarted += PSeamStartRefine;
+        DragDelta += PSeamDragRefine;
+        DragCompleted += PSeamFinishRefine;
     }
 
     internal PLayout? PSeamLayout { get; set; }
 
-    private void PSeamStartHandle(object sender, DragStartedEventArgs e)
+    private void PSeamStartRefine(object sender, DragStartedEventArgs e)
     {
         if (Parent is not Grid host)
         {
             return;
         }
 
-        PSeamColumnNormalize(host);
+        PSeamColumnRefine(host);
         host.UpdateLayout();
 
         int count = host.ColumnDefinitions.Count;
@@ -53,7 +53,7 @@ public sealed class PSeam : Thumb
         _pSeamOrigin = Mouse.GetPosition(host).X;
     }
 
-    private void PSeamDragHandle(object sender, DragDeltaEventArgs e)
+    private void PSeamDragRefine(object sender, DragDeltaEventArgs e)
     {
         if (Parent is not Grid host || _pSeamWidth.Length != host.ColumnDefinitions.Count)
         {
@@ -96,7 +96,7 @@ public sealed class PSeam : Thumb
         PSeamLayout?.PLayoutLinkRefine(host);
     }
 
-    private void PSeamFinishHandle(object sender, DragCompletedEventArgs e)
+    private void PSeamFinishRefine(object sender, DragCompletedEventArgs e)
     {
         if (Parent is Grid host && _pSeamWidth.Length == host.ColumnDefinitions.Count)
         {
@@ -128,7 +128,7 @@ public sealed class PSeam : Thumb
         return room;
     }
 
-    private static void PSeamColumnNormalize(Grid host)
+    private static void PSeamColumnRefine(Grid host)
     {
         int last = host.ColumnDefinitions.Count - 1;
         for (int index = 0; index < last; index++)

@@ -18,6 +18,11 @@ The blank one is still held, so being held is not what counts.
 
 Committing moves the draft out of the unsaved count and into the entry count.
 
+## `public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(`
+
+The size counts in megabytes once it reaches one, and in kilobytes rounded up below that.
+A file of one byte therefore counts as one kilobyte, never as zero.
+
 ## `public void DraftCancel_TypedDraft_RaisesDraftBulletinWithZeroId()`
 
 Cancelling raises one draft bulletin carrying id zero, and the count read after it is zero.

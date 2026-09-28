@@ -6,12 +6,12 @@ The embedded browser a web film is played on.
 A web address is not a file and the machine's own player cannot resolve one.
 The browser, its environment, and the messages sent to the page live here together.
 
-## `private void PScreenPageShow(Uri address)`
+## `private void PScreenPageRefine(Uri address)`
 
 Builds the page for this address and puts the browser in front of the reader.
 The load itself is not waited on, because the surface must stay answerable while it runs.
 
-## `private async Task PScreenPageLoad()`
+## `private async Task PScreenLoadRefine()`
 
 The browser environment is the window's, made once and shared by every Screen under it.
 The host is found through the `Tag` of the loaded window above the Screen.
@@ -41,7 +41,7 @@ The one way anything reaches the page, whether that is play, pause or a level.
 A browser not yet standing is silently skipped, since the page it will build carries the current state anyway.
 A refused message is dropped, because a film that would not be told is not worth a failed program.
 
-## `private void PScreenPageStop()`
+## `private void PScreenBlankRefine()`
 
 Hides the page and sends the browser to an empty address, so a film cannot keep playing unseen.
 The browser itself is kept, because building one costs far more than navigating one.
@@ -53,7 +53,7 @@ A page kept alive behind a closed card would hold its own process for nothing.
 
 ## Inline notes
 
-### `private void PScreenPaperHandle(object? sender, CoreWebView2WebResourceRequestedEventArgs e)`
+### `private void PScreenPaperRefine(object? sender, CoreWebView2WebResourceRequestedEventArgs e)`
 
 The page is answered from memory rather than written to a file.
 It still needs a real address to be answered at.

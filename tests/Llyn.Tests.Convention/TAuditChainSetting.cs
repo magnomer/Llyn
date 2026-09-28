@@ -216,6 +216,7 @@ internal static class TAuditChainSetting
             "CLecternScript",
             "CLecternParadigm",
             "CLecternPlayback",
+            "CScreen",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [

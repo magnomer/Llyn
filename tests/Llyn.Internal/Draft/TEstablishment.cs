@@ -52,6 +52,23 @@ public sealed class TEstablishment
         Assert.Equal(1, establishment.LEstablishmentEntry);
     }
 
+    [Theory]
+    [InlineData(0L, false, 0d)]
+    [InlineData(1L, false, 1d)]
+    [InlineData(1025L, false, 2d)]
+    [InlineData(1024L * 1024 - 1, false, 1024d)]
+    [InlineData(1024L * 1024, true, 1d)]
+    [InlineData(5L * 1024 * 1024 / 2, true, 2.5d)]
+    public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(
+        long size, bool large, double amount)
+    {
+        LEstablishment establishment = TInterface.TEstablishmentCreate(0, 1, size);
+
+        Assert.Equal(large, establishment.LEstablishmentLarge);
+        Assert.Equal(amount, establishment.LEstablishmentAmount);
+        Assert.True(establishment.LEstablishmentSingle);
+    }
+
     [Fact]
     public void DraftCancel_TypedDraft_RaisesDraftBulletinWithZeroId()
     {

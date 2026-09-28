@@ -102,6 +102,13 @@ public sealed class LTrailClerk
             : address;
     }
 
+    public (Uri, string?)? LTrailScreenRead(string? location)
+    {
+        return LTrailClerkRead(location) is Uri address
+            ? (address, address.IsFile ? null : LVideo.LVideoFilmRead(address))
+            : null;
+    }
+
     public void LTrailClerkOpen(string target)
     {
         ArgumentNullException.ThrowIfNull(target);

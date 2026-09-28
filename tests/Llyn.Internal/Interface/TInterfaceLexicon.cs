@@ -4,6 +4,8 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static string? TVideoFilmRead(Uri address) => LVideo.LVideoFilmRead(address);
+
     internal static LFellow TFellowCreate(long id, string name, int shared) =>
         new(id, name, shared);
 

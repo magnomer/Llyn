@@ -15,6 +15,9 @@ A workspace change moves the engine, writes the pointer and answers the new view
 A blank path, the folder in use or a declined question moves nothing and asks nothing more.
 A folder that fails leaves the engine where it stood and writes no pointer.
 The status strip is shown the status at once, and a detached strip is shown nothing more.
+The status carries the wording keys the atelier chose from the engine's verdicts, and the amount in their unit.
+A video location answers its address and the hosted film id the engine read, or no film id.
+A missing workspace file and no location answer nothing.
 
 ## `private static LMediaPort TAtelierMediaCreate(List<double> played)`
 

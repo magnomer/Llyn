@@ -8,8 +8,6 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QEstablishment
 {
-    private const long QEstablishmentMegabyte = 1024L * 1024;
-
     private readonly FrameworkElement _qEstablishmentSurface;
 
     private Action _qEstablishmentRelease = () => { };
@@ -36,7 +34,7 @@ internal sealed class QEstablishment
     internal void QEstablishmentAttach(PWindow host)
     {
         _qEstablishmentRelease = host.PWindowAtelier.CAtelierEstablishmentAttach(
-            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentShow));
+            LObserver.LObserverCreate<CEstablishment>(host.PWindowSurface, QEstablishmentRefine));
     }
 
     internal void QEstablishmentClose()
@@ -44,7 +42,7 @@ internal sealed class QEstablishment
         _qEstablishmentRelease();
     }
 
-    private void QEstablishmentShow(CEstablishment establishment)
+    private void QEstablishmentRefine(CEstablishment establishment)
     {
         QEstablishmentPending.Visibility = establishment.CEstablishmentPending
             ? Visibility.Visible
@@ -56,26 +54,12 @@ internal sealed class QEstablishment
 
         QEstablishmentEntry.Text = string.Format(
             CultureInfo.CurrentCulture,
-            QLocalizationCatalog.QLocalizationTextRead(
-                establishment.CEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry"),
+            QLocalizationCatalog.QLocalizationTextRead(establishment.CEstablishmentEntryKey),
             establishment.CEstablishmentEntry);
 
-        QEstablishmentSize.Text = QEstablishmentSizeFormat(establishment.CEstablishmentSize);
-    }
-
-    private static string QEstablishmentSizeFormat(long bytes)
-    {
-        if (bytes >= QEstablishmentMegabyte)
-        {
-            return string.Format(
-                CultureInfo.CurrentCulture,
-                QLocalizationCatalog.QLocalizationTextRead("Establishment.Megabyte"),
-                ((double)bytes / QEstablishmentMegabyte).ToString("0.0", CultureInfo.CurrentCulture));
-        }
-
-        return string.Format(
+        QEstablishmentSize.Text = string.Format(
             CultureInfo.CurrentCulture,
-            QLocalizationCatalog.QLocalizationTextRead("Establishment.Kilobyte"),
-            (bytes + 1023) / 1024);
+            QLocalizationCatalog.QLocalizationTextRead(establishment.CEstablishmentSizeKey),
+            establishment.CEstablishmentAmount);
     }
 }

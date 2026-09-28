@@ -16,7 +16,7 @@ A seam with no keeper still resizes its own tab, so a tab standing alone keeps w
 Every step of the drag is reported, so linked tabs follow live rather than at the end.
 A step that crossed back over its start is reported too, because the snapshot was just put back.
 
-### `private void PSeamFinishHandle(object sender, DragCompletedEventArgs e)`
+### `private void PSeamFinishRefine(object sender, DragCompletedEventArgs e)`
 
 The widths are stored once when the pointer is released, not on every step.
 A drag that never took a snapshot has nothing to store.
@@ -51,7 +51,7 @@ Each element measured is marked stale straight after, and one layout pass then r
 A panel already too narrow for its contents would otherwise be frozen where it stands.
 Its limit is its current width instead, so it can still be widened and simply not narrowed.
 
-### `private void PSeamStartHandle(object sender, DragStartedEventArgs e)`
+### `private void PSeamStartRefine(object sender, DragStartedEventArgs e)`
 
 Every width the tab declared is frozen the moment a drag begins.
 The whole drag is then measured from that one snapshot rather than from the last mouse step.
@@ -78,7 +78,7 @@ Widening the middle panel leftward narrows the left one, and rightward narrows t
 Every fixed width is put back to its snapshot before the new one is applied.
 Without it a drag that crossed back over its start would leave the earlier side still shrunk.
 
-### `private static void PSeamColumnNormalize(Grid host)`
+### `private static void PSeamColumnRefine(Grid host)`
 
 A tab declares its panels as fixed widths with one flexible column at the end.
 The flexible column is left flexible so the tab still fills the window as it is resized.
