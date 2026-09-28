@@ -48,14 +48,14 @@ public partial class PEditor
 
     internal void PSpeakerHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        _lEditor.LEditorStudio.CEditorLanguageSet(PLanguageItem.PLanguageNameRead(sender));
         PSpeaker.IsChecked = false;
     }
 
     private async void PSpeakerFlagUpdate()
     {
         await LEnsignImage.LEnsignLoad(_pEditorHost.PWindowAtelier);
-        LEnsignImage.LEnsignFlagShow(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
+        LEnsignImage.LEnsignFlagRefine(PSpeakerFlag, PSpeakerGlobe, _lEditor.LEditorLanguage);
     }
 
     private void PSpeakerApply(FrameworkElement container, object item, string? change)

@@ -16,6 +16,12 @@ Only the atelier builds it, over its own ports.
 
 The font a language shows `role` in, with an unsized font carrying no size.
 The role is cast across, since the two enums mirror each other name for name.
+A blank language or a refused read answers the font with nothing set, so the surface keeps its theme.
+
+## `public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)`
+
+The fonts of several roles in one read, in the order the roles are given.
+A surface showing two roles together, such as an example and its gloss, asks once.
 
 ## `public IReadOnlyList<CReflexRule> CCatalogReflexRead(string language)`
 

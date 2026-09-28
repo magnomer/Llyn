@@ -1,18 +1,10 @@
 using System;
 using System.Windows.Threading;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
 public static class LObserver
 {
-    public static Action<LBulletin> LObserverCreate(DispatcherObject surface, Action target)
-    {
-        ArgumentNullException.ThrowIfNull(target);
-
-        return LObserverCreate<LBulletin>(surface, _ => target());
-    }
-
     public static Action<LStep> LObserverCreate<LStep>(DispatcherObject surface, Action target)
     {
         ArgumentNullException.ThrowIfNull(target);

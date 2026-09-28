@@ -41,6 +41,13 @@ public sealed class LLanguageClerk
             && LLanguageClerkLoad(language).LLanguageRespellings.Count > 0;
     }
 
+    public string LLanguagePronunciationRead(LEntryDraft draft, bool respelled)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+        return draft.LEntryDraftPronunciation?.LPronunciationDraftRead(
+                LLanguageRespellingCheck(draft.LEntryDraftLanguage, respelled))
+            ?? string.Empty;
+    }
     public bool LLanguagePhonemicCheck(string language)
     {
         ArgumentNullException.ThrowIfNull(language);

@@ -20,8 +20,27 @@ public sealed class CCatalog
 
     public CFont CCatalogFontRead(string language, CFontRole role)
     {
-        LFont font = _cCatalogAtelier.CAtelierSettingsPort.LEngineFontRead(language, (LFontRole)role);
-        return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
+        if (string.IsNullOrWhiteSpace(language))
+        {
+            return new CFont(null, null, null);
+        }
+
+        try
+        {
+            LFont font = _cCatalogAtelier.CAtelierSettingsPort.LEngineFontRead(language, (LFontRole)role);
+            return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
+        }
+        catch (Exception)
+        {
+            return new CFont(null, null, null);
+        }
+    }
+
+    public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)
+    {
+        ArgumentNullException.ThrowIfNull(roles);
+
+        return roles.Select(role => CCatalogFontRead(language, role)).ToList();
     }
 
     public IReadOnlyList<CReflexRule> CCatalogReflexRead(string language)

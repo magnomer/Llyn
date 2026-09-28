@@ -34,7 +34,7 @@ public sealed class LLibrary
         LLibraryEditor = editor;
         LLibraryPanel = new LPanel(
             "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LLibraryPanel.LPanelCleared += LLibraryEditorClear;
         LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
         LLibraryPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -49,12 +49,12 @@ public sealed class LLibrary
 
     private void LLibraryEditorClear()
     {
-        LLibraryEditor.LEditorOpen(null);
+        LLibraryEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LLibraryEditorOpen(long id)
     {
-        LLibraryEditor.LEditorOpen(id);
+        LLibraryEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public bool LLibraryFiltered => _lLibraryVista?.LVistaFiltered ?? false;
@@ -63,7 +63,7 @@ public sealed class LLibrary
     {
         _lLibraryVista = vista;
         LLibraryPanel.LPanelVistaRestore(vista);
-        LLibraryEditor.LEditorVistaRestore(vista);
+        LLibraryEditor.LEditorStudio.CEditorVistaRestore(vista);
     }
 
     public IReadOnlyList<CVistaRow> LLibraryRowsRead()

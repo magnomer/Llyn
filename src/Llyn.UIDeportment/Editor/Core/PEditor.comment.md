@@ -65,6 +65,7 @@ The text boxes are written through the guarded writes, so a box being typed into
 ## `private void PEditorLanguageUpdate()`
 
 The writes that follow the language: its name and flag, the fonts, the tone contour, and the silent switch.
+The glyph typography goes into the glyph list's resources, so the field takes it and the scheme label does not.
 
 ## `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
 

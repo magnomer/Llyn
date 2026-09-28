@@ -134,7 +134,7 @@ internal sealed partial class QTenor
     {
         _qTenorHost = host;
         _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(_lEditor.LEditorDisplay);
+        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         _lTenor = host.PWindowForge.QForgeTenorCreate(
             _lEditor, lectern, QTenorShownCheck, QTenorDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lTenor.LTenorPanel;
@@ -148,7 +148,7 @@ internal sealed partial class QTenor
         QLookItem.QLookItemAttach(QCohort, QCohortApply);
 
         QTenorDisplay.PDisplayAttach(host, lectern);
-        _lEditor.LEditorStateChanged += QTenorStoreUpdate;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QTenorStoreUpdate;
         QTenorEditor.PEditorAttach(host, _lEditor, lectern);
         QTenorEditor.PEditorChronicleChanged += QTenorChronicleUpdate;
     }

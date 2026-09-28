@@ -167,7 +167,7 @@ public sealed class LLecternCard
     private void LLecternCardDraw(LEntryDraft draft)
     {
         _lLecternCardOrder(_lLecternCardDisplay.LDisplayOrderRead());
-        LFontFace.LFontExampleApply(_lLecternCardResources, _lLecternCardAtelier, draft.LEntryDraftLanguage);
+        LFontFace.LFontExampleRefine(_lLecternCardResources, _lLecternCardAtelier, draft.LEntryDraftLanguage);
         _lLecternCardCitation(_lLecternCardDisplay.LDisplayCitationRead());
         _lLecternCardTranslation(CFolio.CFolioTargetRead(_lLecternCardDisplay.LDisplayTargetRead()));
 

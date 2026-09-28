@@ -22,6 +22,11 @@ The pack of `language` through the cache.
 Whether respellings show for `language`.
 The setting must be on and the pack must declare respelling groups.
 
+## `public string LLanguagePronunciationRead(LEntryDraft draft, bool respelled)`
+
+The primary reading of `draft` as a field shows it, respelled when the setting and its pack both respell.
+A draft without a reading answers empty.
+
 ## `public bool LLanguagePhonemicCheck(string language)`
 
 Whether the pack of `language` is phonemic.

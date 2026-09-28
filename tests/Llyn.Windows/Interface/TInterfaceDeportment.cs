@@ -17,43 +17,17 @@ namespace Llyn.Tests;
 internal static class TInterfaceDeportment
 {
     internal static LEditor TEditorCreate(LEngine engine) => new(
-        new LDraftOutlet(engine),
-        new LEntryOutlet(engine),
-        new LPhonologyOutlet(engine),
-        new LSettingsOutlet(engine),
-        new LMediaOutlet(engine),
-        TInterfaceConduct.TEnvoyCreate(false, []));
+        TInterfaceConduct.TEditorCreate(engine), new LPhonologyOutlet(engine), new LDraftOutlet(engine));
 
-    internal static void TEditorVistaRestore(this LEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
+    internal static void TEditorVistaRestore(this LEditor editor, LVista vista) =>
+        editor.LEditorStudio.TEditorVistaRestore(vista);
 
-    internal static void TEditorOpen(this LEditor editor, long? id) => editor.LEditorOpen(id);
-
-    internal static void TEditorHeadwordSet(this LEditor editor, string text) => editor.LEditorHeadwordSet(text);
-
-    internal static void TEditorNoteSet(this LEditor editor, string text) => editor.LEditorNoteSet(text);
-
-    internal static void TEditorLanguageSet(this LEditor editor, string language) =>
-        editor.LEditorLanguageSet(language);
-
-    internal static void TEditorPersist(this LEditor editor) => editor.LEditorPersist();
-
-    internal static void TEditorSave(this LEditor editor) => editor.LEditorSave();
-
-    internal static void TEditorReset(this LEditor editor) => editor.LEditorReset();
-
-    internal static bool TEditorFinish(this LEditor editor, bool store) => editor.LEditorFinish(store);
-
-    internal static CEntryDraft? TEditorDraftRead(this LEditor editor) => editor.LEditorDraftRead();
-
-    internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorDisplay);
+    internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorStudio.CEditorDisplay);
 
     internal static LClip TClipCreate(LEngine engine) =>
         new(TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, [])));
 
     internal static void TClipStepHandle(this LClip clip, CHarvestStep step) => clip.LClipStepHandle(step);
-
-    internal static bool TEditorClipStart(this LEditor editor, string word, long target, Action<CHarvestStep> sink) =>
-        editor.LEditorClipStart(word, target, sink);
 
     internal static string TEditorGraspFormat(this LEditor editor, int step) =>
         editor.LEditorEsteem.QEsteemGraspFormat(step);
@@ -62,16 +36,6 @@ internal static class TInterfaceDeportment
 
     internal static void TEditorFavoriteSet(this LEditor editor, bool marked) =>
         editor.LEditorEsteem.QEsteemFavoriteSet(marked);
-
-    internal static void TEditorTagAdd(this LEditor editor, long id) => editor.LEditorTagAdd(id);
-
-    internal static void TEditorRegisterAdd(this LEditor editor, long id) => editor.LEditorRegisterAdd(id);
-
-    internal static void TEditorSituationAdd(this LEditor editor, long id) => editor.LEditorSituationAdd(id);
-
-    internal static void TEditorExampleAdd(this LEditor editor, long id) => editor.LEditorExampleAdd(id);
-
-    internal static void TEditorReferenceAdd(this LEditor editor, long id) => editor.LEditorReferenceAdd(id);
 
     internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam)
     {
@@ -212,13 +176,13 @@ internal static class TInterfaceDeportment
 
     internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
     {
+        LDraftPort drafts = TEngineFake.TEngineStubCreate<LDraftPort>();
+        LPhonologyPort phonology = TEngineFake.TEngineStubCreate<LPhonologyPort>();
         LEditor editor = new(
-            TEngineFake.TEngineStubCreate<LDraftPort>(),
-            entries,
-            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
-            settings,
-            TEngineFake.TEngineStubCreate<LMediaPort>(),
-            TInterfaceConduct.TEnvoyCreate(false, []));
+            TInterfaceConduct.TEditorCreate(
+                drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()),
+            phonology,
+            drafts);
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),
@@ -343,13 +307,13 @@ internal static class TInterfaceDeportment
 
     internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
     {
+        LDraftPort drafts = TEngineFake.TEngineStubCreate<LDraftPort>();
+        LPhonologyPort phonology = TEngineFake.TEngineStubCreate<LPhonologyPort>();
         LEditor editor = new(
-            TEngineFake.TEngineStubCreate<LDraftPort>(),
-            entries,
-            TEngineFake.TEngineStubCreate<LPhonologyPort>(),
-            settings,
-            TEngineFake.TEngineStubCreate<LMediaPort>(),
-            TInterfaceConduct.TEnvoyCreate(false, []));
+            TInterfaceConduct.TEditorCreate(
+                drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()),
+            phonology,
+            drafts);
         return new(
             entries,
             TEngineFake.TEngineStubCreate<LPortraitPort>(),

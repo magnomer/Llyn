@@ -44,7 +44,7 @@ public partial class PWindow
             return;
         }
 
-        if (_lNavigation.LNavigationSelect(chosen.LTabMode, PNavigationLeaveCheck))
+        if (_cNavigation.CNavigationTabSelect(chosen.LTabMode, false, PNavigationLeaveCheck))
         {
             PNavigationApply(chosen.LTabMode);
         }
@@ -52,14 +52,15 @@ public partial class PWindow
 
     private void PNavigationAttach()
     {
-        _pNavigationTabs = PNavigationTabRead();
-        string[] modes = new string[_pNavigationTabs.Length];
+        LTab[] tabs = PNavigationTabRead();
+        _pNavigationTabs = tabs;
+        string[] modes = new string[tabs.Length];
         for (int index = 0; index < modes.Length; index++)
         {
-            modes[index] = _pNavigationTabs[index].LTabMode;
+            modes[index] = tabs[index].LTabMode;
         }
 
-        _lNavigation = new LNavigation(PWindowAtelier, modes);
+        _cNavigation = CNavigation.CNavigationCreate(PWindowAtelier, modes);
         _pWindowSurface.PreviewKeyDown += PVoyageKeyHandle;
         _pWindowSurface.PreviewMouseDown += PVoyageMouseHandle;
     }
@@ -71,7 +72,7 @@ public partial class PWindow
             tab.LTabButton.Visibility = PNavigationAllowCheck(tab.LTabMode) ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        if (_lNavigation.LNavigationRestore(PNavigationAllowCheck) is string restored)
+        if (_cNavigation.CNavigationTabOpen(PNavigationAllowCheck) is string restored)
         {
             PNavigationApply(restored);
             PNavigationFind(restored).LTabScribe?.Invoke(
@@ -92,7 +93,7 @@ public partial class PWindow
             return false;
         }
 
-        _lNavigation.LNavigationVoyage.LVoyageRecord(tab, station);
+        _lVoyage.LVoyageRecord(tab, station);
         PVoyageUpdate();
         return true;
     }
@@ -104,7 +105,7 @@ public partial class PWindow
             return;
         }
 
-        if (!_lNavigation.LNavigationShow(target.LTabMode, PNavigationLeaveCheck))
+        if (!_cNavigation.CNavigationTabSelect(target.LTabMode, true, PNavigationLeaveCheck))
         {
             return;
         }
@@ -121,7 +122,7 @@ public partial class PWindow
             return false;
         }
 
-        if (!_lNavigation.LNavigationShow(mode, PNavigationLeaveCheck))
+        if (!_cNavigation.CNavigationTabSelect(mode, true, PNavigationLeaveCheck))
         {
             return false;
         }
@@ -280,34 +281,34 @@ public partial class PWindow
     internal void PVoyageRecord()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lNavigation.LNavigationVoyage.LVoyageRecord(tab, id);
+        _lVoyage.LVoyageRecord(tab, id);
         PVoyageUpdate();
     }
 
     internal void PVoyageRetreatRun()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lNavigation.LNavigationVoyage.LVoyageRetreat(tab, id, PNavigationArrivalShow);
+        _lVoyage.LVoyageRetreat(tab, id, PNavigationArrivalShow);
         PVoyageUpdate();
     }
 
     internal void PVoyageAdvanceRun()
     {
         (string tab, long id) = PVoyageStationRead();
-        _lNavigation.LNavigationVoyage.LVoyageAdvance(tab, id, PNavigationArrivalShow);
+        _lVoyage.LVoyageAdvance(tab, id, PNavigationArrivalShow);
         PVoyageUpdate();
     }
 
     private (string PVoyageTab, long PVoyageId) PVoyageStationRead()
     {
-        LTab tab = PNavigationFind(_lNavigation.LNavigationShownRead());
+        LTab tab = PNavigationFind(_cNavigation.CNavigationTabRead());
         return (tab.LTabMode, tab.LTabStation?.Invoke() ?? 0);
     }
 
     private void PVoyageUpdate()
     {
-        bool past = _lNavigation.LNavigationVoyage.LVoyagePastCheck();
-        bool future = _lNavigation.LNavigationVoyage.LVoyageFutureCheck();
+        bool past = _lVoyage.LVoyagePastCheck();
+        bool future = _lVoyage.LVoyageFutureCheck();
         foreach (LTab tab in _pNavigationTabs)
         {
             tab.LTabVoyage?.Invoke(past, future);

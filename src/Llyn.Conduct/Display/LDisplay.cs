@@ -44,14 +44,16 @@ public sealed class LDisplay
         _lDisplayVista = vista;
     }
 
-    public void LDisplayChosenAttach(LSubject subject, Action<LBulletin> observer)
+    public void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lDisplayVista?.LVistaChosenAttach(subject, observer);
+        _lDisplayVista?.LVistaChosenAttach(
+            (LSubject)subject, bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
-    public void LDisplayObserverAttach(LSubject subject, Action<LBulletin> observer)
+    public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
-        _lDisplayVista?.LVistaObserverAttach(subject, observer);
+        _lDisplayVista?.LVistaObserverAttach(
+            (LSubject)subject, bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     public void LDisplayDraftLoad(Action<LEntryDraft?> show)

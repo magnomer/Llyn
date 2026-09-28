@@ -196,37 +196,38 @@ public sealed class LLectern
     public void LLecternObserverAttach(DispatcherObject surface)
     {
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectFavorite, LObserver.LObserverCreate(surface, LLecternFavoriteUpdate));
+            CSubject.CSubjectFavorite, LObserver.LObserverCreate<CBulletin>(surface, LLecternFavoriteUpdate));
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectGrasp, LObserver.LObserverCreate(surface, LLecternGraspUpdate));
+            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(surface, LLecternGraspUpdate));
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectFrequency, LObserver.LObserverCreate(surface, LLecternFrequencyUpdate));
+            CSubject.CSubjectFrequency, LObserver.LObserverCreate<CBulletin>(surface, LLecternFrequencyUpdate));
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectInflection, LObserver.LObserverCreate(surface, LLecternSound.LLecternParadigmUpdate));
+            CSubject.CSubjectInflection,
+            LObserver.LObserverCreate<CBulletin>(surface, LLecternSound.LLecternParadigmUpdate));
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectReflex, LObserver.LObserverCreate(surface, LLecternSound.LLecternReflexUpdate));
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, LLecternSound.LLecternReflexUpdate));
         _lLecternDisplay.LDisplayChosenAttach(
-            LSubject.LSubjectEntry, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectScript, LObserver.LObserverCreate(surface, LLecternSound.LLecternScriptUpdate));
+            CSubject.CSubjectScript, LObserver.LObserverCreate<CBulletin>(surface, LLecternSound.LLecternScriptUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectFanqie, LObserver.LObserverCreate(surface, LLecternSound.LLecternFanqieUpdate));
+            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(surface, LLecternSound.LLecternFanqieUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectWorkspace, LObserver.LObserverCreate(surface, LLecternClear));
+            CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, LLecternClear));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectExample, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectExample, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectSituation, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectSituation, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectReference, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectAuthor, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectTag, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectTag, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectRegister, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectRegister, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
         _lLecternDisplay.LDisplayObserverAttach(
-            LSubject.LSubjectSettings, LObserver.LObserverCreate(surface, LLecternEntryUpdate));
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, LLecternEntryUpdate));
     }
 
     public void LLecternShow(LEntryDraft draft)
@@ -258,7 +259,7 @@ public sealed class LLectern
         _lLecternSpeech.ItemsSource = _lLecternDisplay.LDisplaySpeechRead();
         _lLecternSpeechSection.Visibility = draft.LEntryDraftMarked ? Visibility.Visible : Visibility.Collapsed;
         LLecternFrequencyUpdate();
-        LMarkdownFace.LMarkdownShow(_lLecternNote, draft.LEntryDraftNote, _lLecternAtelier);
+        LMarkdownFace.LMarkdownRefine(_lLecternNote, draft.LEntryDraftNote, _lLecternAtelier);
         _lLecternNoteSection.Visibility = draft.LEntryDraftNoted ? Visibility.Visible : Visibility.Collapsed;
         LLecternStampShow(_lLecternDisplay.LDisplayStampRead());
 
@@ -286,7 +287,7 @@ public sealed class LLectern
         LLecternCompass.LCompassClear();
 
         _lLecternLanguage.Text = string.Empty;
-        LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, string.Empty);
+        LEnsignImage.LEnsignFlagRefine(_lLecternFlag, _lLecternGlobe, string.Empty);
         _lLecternSpeech.ItemsSource = null;
         _lLecternSpeechSection.Visibility = Visibility.Collapsed;
         LFrequencyLabel.LFrequencyChipShow(
@@ -332,13 +333,13 @@ public sealed class LLectern
     private async void LLecternLanguageShow(string language)
     {
         _lLecternLanguage.Text = language;
-        LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, string.Empty);
-        LFontFace.LFontApply(_lLecternAtelier, language, _lLecternHeadword);
+        LEnsignImage.LEnsignFlagRefine(_lLecternFlag, _lLecternGlobe, string.Empty);
+        LFontFace.LFontRefine(_lLecternAtelier, language, CFontRole.CFontRoleHeadword, _lLecternHeadword);
         LFontFace.LFontPlace(_lLecternHeadword);
 
         await LEnsignImage.LEnsignLoad(_lLecternAtelier);
 
-        LEnsignImage.LEnsignFlagShow(_lLecternFlag, _lLecternGlobe, _lLecternDisplay.LDisplayLanguageRead());
+        LEnsignImage.LEnsignFlagRefine(_lLecternFlag, _lLecternGlobe, _lLecternDisplay.LDisplayLanguageRead());
     }
 
     private void LLecternFavoriteUpdate()

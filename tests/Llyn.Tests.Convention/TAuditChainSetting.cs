@@ -162,6 +162,8 @@ internal static class TAuditChainSetting
             "CLedgerPage",
             "CLedgerState",
             "CDesk",
+            "CEditor",
+            "CNavigation",
             "CSession",
             "CErrand",
             "LVigil",
@@ -301,17 +303,17 @@ internal static class TAuditChainSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
-        ["cross:Llyn.UIDeportment>Llyn.Application"] = 99,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 594,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 517,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 31,
+        ["cross:Llyn.UIDeportment>Llyn.Application"] = 92,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 565,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 501,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 27,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 31,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 27,
         ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
         ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
-        ["seal:Llyn.UIDeportment>Llyn.Core"] = 4,
+        ["seal:Llyn.UIDeportment>Llyn.Core"] = 3,
         ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
     };
 

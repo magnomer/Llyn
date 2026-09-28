@@ -18,7 +18,7 @@ public static class LCaption
         }
     }
 
-    public static void LCaptionDragHandle(Window window, FrameworkElement roof, MouseButtonEventArgs e)
+    public static void LCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {

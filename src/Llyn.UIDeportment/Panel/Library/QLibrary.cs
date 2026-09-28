@@ -126,7 +126,7 @@ internal sealed class QLibrary
     {
         _qLibraryHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lLibrary = host.PWindowForge.QForgeLibraryCreate(
             editor,
             lectern,
@@ -134,7 +134,7 @@ internal sealed class QLibrary
             QLibraryDiscardConfirm,
             host.PWindowDeleteConfirm);
         _lLibrary.LLibraryFailed += host.PWindowFailureShow;
-        _lLibrary.LLibraryEditor.LEditorStateChanged += QLibraryStoreUpdate;
+        _lLibrary.LLibraryEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QLibraryStoreUpdate;
         _lLibrary.LLibraryPanel.LPanelChanged += QLibraryModeUpdate;
         _lLibrary.LLibraryPanel.LPanelFailed += host.PWindowFailureShow;
 

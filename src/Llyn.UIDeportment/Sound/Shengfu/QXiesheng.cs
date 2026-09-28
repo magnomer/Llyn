@@ -134,14 +134,14 @@ internal sealed class QXiesheng
     {
         _qXieshengHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lXiesheng = host.PWindowForge.QForgeXieshengCreate(
             editor,
             lectern,
             QXieshengShownCheck,
             QXieshengDiscardConfirm,
             host.PWindowDeleteConfirm);
-        _lXiesheng.LXieshengEditor.LEditorStateChanged += QXieshengStoreUpdate;
+        _lXiesheng.LXieshengEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
         _lXiesheng.LXieshengChanged += QXieshengColumnUpdate;
         _lXiesheng.LXieshengGlyphChosen += host.PWindowGlyphShow;
         _lXiesheng.LXieshengPanel.LPanelChanged += QXieshengModeUpdate;

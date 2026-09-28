@@ -40,7 +40,7 @@ public sealed class LXiesheng
         LXieshengEditor = editor;
         LXieshengPanel = new LPanel(
             "Xiesheng.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LXieshengPanel.LPanelCleared += LXieshengEditorClear;
         LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
         LXieshengPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -49,12 +49,12 @@ public sealed class LXiesheng
 
     private void LXieshengEditorClear()
     {
-        LXieshengEditor.LEditorOpen(null);
+        LXieshengEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LXieshengEditorOpen(long id)
     {
-        LXieshengEditor.LEditorOpen(id);
+        LXieshengEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public event Action? LXieshengChanged;
@@ -116,7 +116,7 @@ public sealed class LXiesheng
         _lGroveVista = grove;
         _lKindredVista = kindred;
         LXieshengPanel.LPanelVistaRestore(kindred);
-        LXieshengEditor.LEditorVistaRestore(kindred);
+        LXieshengEditor.LEditorStudio.CEditorVistaRestore(kindred);
     }
 
     public IReadOnlyList<CStem> LXieshengGroveRead()

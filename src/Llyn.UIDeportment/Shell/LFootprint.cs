@@ -40,16 +40,6 @@ public sealed class LFootprint
             Math.Clamp(height * LFootprintShare, minHeight, Math.Max(minHeight, height)));
     }
 
-    public void LFootprintSave(LCapsuleWindow state, bool minimized)
-    {
-        LFootprintDefer(state, minimized, LFootprintDelay);
-    }
-
-    public void LFootprintClose(LCapsuleWindow state, bool minimized)
-    {
-        LFootprintDefer(state, minimized, 0);
-    }
-
     private static LCapsuleWindow? LFootprintPlace(
         LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)
     {
@@ -85,7 +75,7 @@ public sealed class LFootprint
             state.LCapsuleWindowMaximized);
     }
 
-    private void LFootprintDefer(LCapsuleWindow state, bool minimized, int delay)
+    public void LFootprintDefer(LCapsuleWindow state, bool minimized, bool closing)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -94,6 +84,6 @@ public sealed class LFootprint
             return;
         }
 
-        _lFootprintPosture.QPostureWindowDefer(state, minimized, delay);
+        _lFootprintPosture.QPostureWindowDefer(state, minimized, closing ? 0 : LFootprintDelay);
     }
 }

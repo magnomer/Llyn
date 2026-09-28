@@ -44,9 +44,6 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit) =>
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query, limit);
 
-    public IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId) =>
-        _lDraftOutletEngine.LEngineCard.LEngineTargetFind(ownerId);
-
     public LEntry? LEngineTranslationResolve(string word, long? entryId) =>
         _lDraftOutletEngine.LEngineCard.LEngineTranslationResolve(word, entryId);
 

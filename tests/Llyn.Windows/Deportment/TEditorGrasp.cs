@@ -14,7 +14,7 @@ public sealed class TEditorGrasp
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorFixture.TEntryPrepare(engine);
         LEditor editor = TEditorFixture.TEditorPrepare(engine, "library");
-        editor.TEditorOpen(entry.LEntryId);
+        editor.LEditorStudio.CEditorEntryOpen(entry.LEntryId);
 
         editor.TEditorGraspSet(4);
 
@@ -29,7 +29,7 @@ public sealed class TEditorGrasp
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEditor editor = TEditorFixture.TEditorPrepare(engine, "input");
-        editor.TEditorOpen(null);
+        editor.LEditorStudio.CEditorEntryOpen(null);
         int announced = 0;
         editor.LEditorEsteem.QEsteemGraspChanged += () => announced++;
 
@@ -47,7 +47,7 @@ public sealed class TEditorGrasp
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorFixture.TEntryPrepare(engine);
         LEditor editor = TEditorFixture.TEditorPrepare(engine, "library");
-        editor.TEditorOpen(entry.LEntryId);
+        editor.LEditorStudio.CEditorEntryOpen(entry.LEntryId);
 
         editor.TEditorFavoriteSet(true);
         Assert.True(editor.LEditorEsteem.QEsteemFavorite);

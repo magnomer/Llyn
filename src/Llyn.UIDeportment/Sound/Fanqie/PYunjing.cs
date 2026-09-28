@@ -153,14 +153,14 @@ public class PYunjing : UserControl
     {
         _pYunjingHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lYunjing = host.PWindowForge.QForgeYunjingCreate(
             editor,
             lectern,
             PYunjingShownCheck,
             PYunjingDiscardConfirm,
             host.PWindowDeleteConfirm);
-        _lYunjing.LYunjingEditor.LEditorStateChanged += PYunjingStoreUpdate;
+        _lYunjing.LYunjingEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
         _lYunjing.LYunjingChanged += PYunjingColumnUpdate;
         _lYunjing.LYunjingGlyphChosen += host.PWindowGlyphShow;
         _lYunjing.LYunjingPanel.LPanelChanged += PYunjingModeUpdate;

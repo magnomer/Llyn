@@ -50,7 +50,7 @@ internal sealed class QRegard
 
     private void QRegardFavoriteUpdate()
     {
-        QRegardFavorite.IsEnabled = _lEditor.LEditorDesk.CDeskStored;
+        QRegardFavorite.IsEnabled = _lEditor.LEditorStudio.CEditorDesk.CDeskStored;
         QRegardFavorite.IsChecked = _lEditor.LEditorEsteem.QEsteemFavorite;
     }
 
@@ -61,7 +61,7 @@ internal sealed class QRegard
 
     internal void QRegardGraspUpdate()
     {
-        QRegardGrasp.IsEnabled = _lEditor.LEditorDesk.CDeskStored;
+        QRegardGrasp.IsEnabled = _lEditor.LEditorStudio.CEditorDesk.CDeskStored;
         QRegardGrasp.PGraspStep = _lEditor.LEditorEsteem.QEsteemGrasp;
         QRegardGraspLabel.Text = _lEditor.LEditorEsteem.QEsteemGraspFormat(QRegardGrasp.PGraspStep);
     }

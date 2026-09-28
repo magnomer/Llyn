@@ -142,6 +142,19 @@ internal static class TInterfaceConduct
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy, string origin, CSubject subject) =>
         new(new LDraftOutlet(engine), scope, envoy, origin, subject);
 
+    internal static CEditor TEditorCreate(LEngine engine) => new(
+        new LDraftOutlet(engine),
+        new LEntryOutlet(engine),
+        new LPhonologyOutlet(engine),
+        new LSettingsOutlet(engine),
+        new LMediaOutlet(engine),
+        TEnvoyCreate(false, []));
+
+    internal static CEditor TEditorCreate(
+        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>
+        new(drafts, entries, phonology, settings, media, TEnvoyCreate(false, []));
+    internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.CEditorVistaRestore(vista);
+
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
 
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>

@@ -69,6 +69,10 @@ A settings bulletin is raised when the switch changed, so every open reading re-
 
 Whether respellings show for `language`: the setting is on and the pack declares respelling groups.
 
+## `internal string LEnginePronunciationRead(LEntryDraft draft)`
+
+The primary reading of `draft` under the held respelling setting, through the language clerk.
+
 ## `internal bool LEnginePhonemicCheck(string language)`
 
 Whether the pack of `language` is phonemic, through the language clerk.

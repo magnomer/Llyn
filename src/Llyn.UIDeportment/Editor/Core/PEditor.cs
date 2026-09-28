@@ -141,7 +141,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private TextBox PNoteContents => (TextBox)FindName(nameof(PNoteContents));
 
-    private long PEditorDraft => _lEditor.LEditorDesk.CDeskId;
+    private long PEditorDraft => _lEditor.LEditorStudio.CEditorDesk.CDeskId;
 
     internal void PEditorAttach(PWindow host, LEditor editor, LLectern lectern)
     {
@@ -150,14 +150,15 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _pEditorLectern = lectern;
         _qRegard.QRegardAttach(editor);
         _qCadence.QCadenceAttach(host, editor);
-        _lEditor.LEditorDesk.CDeskStarted += PEditorStartUpdate;
-        PEditorObserverAttach(_lEditor.LEditorDesk);
-        _lEditor.LEditorDraftChanged += PEditorDraftShow;
-        _lEditor.LEditorDesk.CDeskFailed += host.PWindowFailureShow;
-        _lEditor.LEditorStateChanged += PEditorStateUpdate;
-        _lEditor.LEditorStopped += PEditorStopUpdate;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStarted += PEditorStartUpdate;
+        PEditorObserverAttach(_lEditor.LEditorStudio.CEditorDesk);
+        _lEditor.LEditorStudio.CEditorDraftChanged += PEditorDraftShow;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskFailed += host.PWindowFailureShow;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PEditorStateUpdate;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lEditor.LEditorSounding.LSoundingChanged += PEditorFanqieUpdate;
-        _lEditor.LEditorFailed += host.PWindowFailureShow;
+        _lEditor.LEditorSounding.LSoundingFailed += host.PWindowFailureShow;
+        _lEditor.LEditorStudio.CEditorDisplay.LDisplayFailed += host.PWindowFailureShow;
         _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
         _lEditor.LEditorClip.LClipRecordingAdded += PClipRecordingHandle;
         _lEditor.LEditorClip.LClipFinished += PClipFinishHandle;
@@ -174,13 +175,13 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal void PEditorVistaRestore()
     {
-        PEditorCommand.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorOwned);
-        _lEditor.LEditorOpen(null);
+        PEditorCommand.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorStudio.CEditorOwned);
+        _lEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     internal void PEditorClose()
     {
-        _lEditor.LEditorClose();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskCancel();
 
         PNotationCancel();
         PClipCancel();
@@ -189,54 +190,54 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     internal void PEditorReset()
     {
-        _lEditor.LEditorOpen(null);
+        _lEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     internal void PEditorEntrySave()
     {
-        _lEditor.LEditorSave();
+        _lEditor.LEditorStudio.CEditorEntrySave();
     }
 
     internal bool PEditorDraftFinish(bool store)
     {
-        return _lEditor.LEditorFinish(store);
+        return _lEditor.LEditorStudio.CEditorFinish(store);
     }
 
     internal bool PEditorChangeCheck()
     {
-        return _lEditor.LEditorDesk.CDeskChangeCheck();
+        return _lEditor.LEditorStudio.CEditorDesk.CDeskChangeCheck();
     }
 
     internal event Action? PEditorChronicleChanged;
 
     internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
     {
-        return _lEditor.LEditorDesk.CDeskChronicleRead();
+        return _lEditor.LEditorStudio.CEditorDesk.CDeskChronicleRead();
     }
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorDesk.CDeskUndo);
+        QChronicle.QChronicleRun(_lEditor.LEditorStudio.CEditorDesk.CDeskUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lEditor.LEditorDesk.CDeskRedo);
+        QChronicle.QChronicleRun(_lEditor.LEditorStudio.CEditorDesk.CDeskRedo);
     }
 
     public void QChronicleUpdate()
     {
-        _lEditor.LEditorDesk.CDeskStateUpdate();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateUpdate();
     }
 
     private void PEditorRequestDefer(LRequest request)
     {
-        _lEditor.LEditorDesk.CDeskDefer(request);
+        _lEditor.LEditorStudio.CEditorDesk.CDeskDefer(request);
     }
 
     private void PEditorRequestSend(LRequest request)
     {
-        _lEditor.LEditorDesk.CDeskSend(request);
+        _lEditor.LEditorStudio.CEditorDesk.CDeskSend(request);
     }
 
     private void PEditorSpeechSend()
@@ -280,7 +281,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         QField.QFieldTextShow(PHeadword, draft.CEntryDraftHeadword);
         PPronunciationOpener.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "[");
         PPronunciationCloser.Text = QLook.QLookFirstRead(_lEditor.LEditorTimbre.QTimbrePhonemic, "/", "]");
-        QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorPronunciationRead());
+        QField.QFieldTextShow(PPronunciationField, _lEditor.LEditorStudio.CEditorPronunciationRead());
         PAccentShow(draft);
         PGlyphShow(draft);
         PTranscriptionShow(draft);
@@ -289,7 +290,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PEditorLanguageUpdate();
         _qCadence.QCadenceReadingShow(PHeadword.Text);
 
-        IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorTargetRead();
+        IReadOnlyDictionary<long, CTranslationTarget> targets = _lEditor.LEditorStudio.CEditorTargetRead();
         PCardShow(_pMeaningList, "Meaning", draft.CEntryDraftMeanings, targets, draft.CEntryDraftLanguage);
         PCardShow(_pCollocationList, "Collocation", draft.CEntryDraftCollocations, targets, draft.CEntryDraftLanguage);
 
@@ -304,9 +305,15 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
     {
         PSpeakerName.Text = _lEditor.LEditorLanguage;
         PSpeakerFlagUpdate();
-        LFontFace.LFontApply(_pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage, PHeadword, PHeadwordGhost);
+        LFontFace.LFontRefine(
+            _pEditorHost.PWindowAtelier,
+            _lEditor.LEditorLanguage,
+            CFontRole.CFontRoleHeadword,
+            PHeadword,
+            PHeadwordGhost);
         LFontFace.LFontPlace(PHeadword, PHeadwordGhost);
-        LFontFace.LFontExampleApply(Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
+        LFontFace.LFontExampleRefine(Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
+        LFontFace.LFontGlyphRefine(PGlyph.Resources, _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage);
         PContour.PContourTonal = _lEditor.LEditorTimbre.QTimbreTonal;
         PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
         PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
@@ -316,18 +323,18 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)
     {
-        _lEditor.LEditorHeadwordSet(PHeadword.Text);
+        _lEditor.LEditorStudio.CEditorHeadwordSet(PHeadword.Text);
     }
 
     private void PPronunciationHandle(object sender, TextChangedEventArgs e)
     {
         PContour.PContourIpa = PPronunciationField.Text;
-        _lEditor.LEditorPronunciationSet(PPronunciationField.Text);
+        _lEditor.LEditorStudio.CEditorPronunciationSet(PPronunciationField.Text);
     }
 
     private void PNoteHandle(object sender, TextChangedEventArgs e)
     {
-        _lEditor.LEditorNoteSet(PNoteContents.Text);
+        _lEditor.LEditorStudio.CEditorNoteSet(PNoteContents.Text);
     }
 
     private void PEditorTextHandle(object sender, TextChangedEventArgs e)
@@ -354,7 +361,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PEditorFocusHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorPersist();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskPersist();
     }
 
     private void PEditorStateUpdate()
@@ -362,15 +369,10 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         IsEnabled = _lEditor.LEditorRunning;
         PEditorDiscard.IsEnabled = _lEditor.LEditorChanged;
         PEditorStore.IsEnabled = _lEditor.LEditorStorable;
-        (bool undo, bool redo) = _lEditor.LEditorDesk.CDeskChronicleRead();
+        (bool undo, bool redo) = _lEditor.LEditorStudio.CEditorDesk.CDeskChronicleRead();
         PEditorBackward.IsEnabled = undo;
         PEditorForward.IsEnabled = redo;
         PEditorChronicleChanged?.Invoke();
-    }
-
-    private void PEditorStopUpdate()
-    {
-        _pEditorHost.PWindowEnvoy.CEnvoyFailureShow("Input.HoldFailed");
     }
 
     private void PEditorUndoHandle(object sender, RoutedEventArgs e)
@@ -385,12 +387,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorSave();
+        _lEditor.LEditorStudio.CEditorEntrySave();
     }
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorReset();
+        _lEditor.LEditorStudio.CEditorEntryUndo();
     }
 
     private void PEditorFanqieUpdate()

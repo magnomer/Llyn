@@ -10,15 +10,9 @@ namespace Llyn.Tests;
 public sealed class TAtelier
 {
     [Fact]
-    public void AtelierModeSave_Name_Matches()
+    public void AtelierAboutRead_AnySession_ReadsVersionKey()
     {
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
-
-        atelier.CAtelierModeSave("Corpus");
-
-        Assert.True(atelier.CAtelierModeMatch("Corpus"));
-        Assert.False(atelier.CAtelierModeMatch("Library"));
+        Assert.Equal("Headquarter.Version", CAtelier.CAtelierAboutRead());
     }
 
     [Fact]

@@ -150,14 +150,14 @@ internal sealed class QPhonology
     {
         _qPhonologyHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lPhonology = host.PWindowForge.QForgePhonologyCreate(
             editor,
             lectern,
             QPhonologyShownCheck,
             QPhonologyDiscardConfirm,
             host.PWindowDeleteConfirm);
-        _lPhonology.LPhonologyEditor.LEditorStateChanged += QPhonologyStoreUpdate;
+        _lPhonology.LPhonologyEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QPhonologyStoreUpdate;
         _lPhonology.LPhonologyPanel.LPanelChanged += QPhonologyModeUpdate;
         _lPhonology.LPhonologyPanel.LPanelRowsChanged += QInventoryUpdate;
         _lPhonology.LPhonologyPanel.LPanelFailed += host.PWindowFailureShow;

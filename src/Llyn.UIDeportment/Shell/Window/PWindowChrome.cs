@@ -22,6 +22,6 @@ public partial class PWindow
 
     private void PRoofHandle(object sender, MouseButtonEventArgs e)
     {
-        LCaption.LCaptionDragHandle(_pWindowSurface, PRoof, e);
+        LCaption.LCaptionDragRefine(_pWindowSurface, PRoof, e);
     }
 }

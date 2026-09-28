@@ -20,18 +20,15 @@ public sealed class QForge
     public LEditor QForgeEditorCreate(CEnvoy envoy)
     {
         return new LEditor(
-            _qForgeAtelier.CAtelierDraftPort,
-            _qForgeAtelier.CAtelierEntryPort,
+            CEditor.CEditorCreate(_qForgeAtelier, envoy),
             _qForgeAtelier.CAtelierPhonologyPort,
-            _qForgeAtelier.CAtelierSettingsPort,
-            _qForgeAtelier.CAtelierMediaPort,
-            envoy);
+            _qForgeAtelier.CAtelierDraftPort);
     }
 
     public LEditor QForgeInputCreate(CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            QForgeEditorCreate(envoy), editor => editor.LEditorVistaRestore(_qForgeAtelier));
+            QForgeEditorCreate(envoy), editor => _qForgeAtelier.CAtelierInputRestore(editor.LEditorStudio));
     }
 
     public LCorpus QForgeCorpusCreate(

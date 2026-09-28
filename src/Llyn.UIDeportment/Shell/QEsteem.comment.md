@@ -5,7 +5,7 @@
 The user's marks on the stored entry an editor holds, its favourite flag and its grasp step.
 The frequency chip is read here beside them, since all three stand on the stored id.
 The editor builds it over its desk and its Conduct `LDisplay`, which holds every favourite and grasp rule.
-It only supplies the stored id, and a refusal reaches `LEditorFailed` through `LDisplayFailed`.
+It only supplies the stored id, and a refusal reaches the window through `LDisplayFailed`.
 
 ## `private long? QEsteemEntry`
 

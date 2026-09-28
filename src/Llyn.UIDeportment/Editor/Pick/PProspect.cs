@@ -121,7 +121,7 @@ public partial class PEditor
         IReadOnlyList<CVistaRow> found;
         try
         {
-            found = _lEditor.LEditorCard.CCardProspectFind(word);
+            found = _lEditor.LEditorStudio.CEditorCard.CCardProspectFind(word);
         }
         catch (Exception exception)
         {
@@ -196,9 +196,9 @@ public partial class PEditor
         long target;
         try
         {
-            target = _lEditor.LEditorCard.CCardCourtStart(
+            target = _lEditor.LEditorStudio.CEditorCard.CCardCourtStart(
                 PEditorDraft,
-                _lEditor.LEditorOrigin,
+                _lEditor.LEditorStudio.CEditorOrigin,
                 item.PProspectItemHeadword,
                 item.PProspectItemLanguage);
         }

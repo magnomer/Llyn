@@ -36,7 +36,7 @@ public sealed class LPhonology
         LPhonologyEditor = editor;
         LPhonologyPanel = new LPanel(
             "Sound.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
         LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
         LPhonologyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -49,12 +49,12 @@ public sealed class LPhonology
 
     private void LPhonologyEditorClear()
     {
-        LPhonologyEditor.LEditorOpen(null);
+        LPhonologyEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LPhonologyEditorOpen(long id)
     {
-        LPhonologyEditor.LEditorOpen(id);
+        LPhonologyEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public bool LPhonologyInventoryEmpty => _lPhonologyCount == 0;
@@ -65,7 +65,7 @@ public sealed class LPhonology
     {
         _lPhonologyVista = vista;
         LPhonologyPanel.LPanelVistaRestore(vista);
-        LPhonologyEditor.LEditorVistaRestore(vista);
+        LPhonologyEditor.LEditorStudio.CEditorVistaRestore(vista);
     }
 
     public IReadOnlyList<CCatalogPronunciation> LPhonologyRowsRead()

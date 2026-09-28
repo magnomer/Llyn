@@ -31,10 +31,10 @@ public sealed class LFootnote
         LFootnoteEditor = editor;
         LFootnotePanel = new LPanel(
             "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, static () => false);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, static () => false);
         LFootnotePanel.LPanelCleared += LFootnoteEditorClear;
         LFootnotePanel.LPanelEdited += LFootnoteEditorOpen;
-        LFootnoteCreated += editor.LEditorReferenceAdd;
+        LFootnoteCreated += editor.LEditorStudio.CEditorReferenceAdd;
     }
 
     public event Action<long>? LFootnoteCreated;
@@ -45,12 +45,12 @@ public sealed class LFootnote
 
     private void LFootnoteEditorClear()
     {
-        LFootnoteEditor.LEditorOpen(null);
+        LFootnoteEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LFootnoteEditorOpen(long id)
     {
-        LFootnoteEditor.LEditorOpen(id);
+        LFootnoteEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public bool LFootnoteEmpty => _lFootnoteCount == 0;

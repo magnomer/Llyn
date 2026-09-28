@@ -65,7 +65,7 @@ public partial class PEditor
     {
         card.PCardLabelNotice = text => PSlateShow(card, text);
         card.PCardLabelDispatcher =
-            text => _lEditor.LEditorCard.CCardTagAdd(card.PCardId, text, card.PCardLabelPosition);
+            text => _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(card.PCardId, text, card.PCardLabelPosition);
     }
 
     private void PLabelChipObserve(object sender, RoutedEventArgs e)
@@ -123,7 +123,7 @@ public partial class PEditor
 
     private void PLabelCommitObserve(PCard card)
     {
-        _lEditor.LEditorCard.CCardTagAdd(card.PCardId, card.PCardLabelText, card.PCardLabelPosition);
+        _lEditor.LEditorStudio.CEditorCard.CCardTagAdd(card.PCardId, card.PCardLabelText, card.PCardLabelPosition);
         card.PCardLabelClear();
     }
 
@@ -131,7 +131,7 @@ public partial class PEditor
     {
         if (chip is not null)
         {
-            _lEditor.LEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+            _lEditor.LEditorStudio.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
         }
     }
 

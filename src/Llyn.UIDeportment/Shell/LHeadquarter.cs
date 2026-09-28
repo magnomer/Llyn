@@ -8,27 +8,28 @@ namespace Llyn.UIDeportment;
 
 public static class LHeadquarter
 {
-    public static void LHeadquarterToggle(Popup menu, MouseButtonEventArgs e)
+    public static void LHeadquarterMenuRefine(Popup menu, MouseButtonEventArgs e)
     {
         menu.IsOpen = !menu.IsOpen;
         e.Handled = true;
     }
 
-    public static void LHeadquarterAboutHandle(
-        Window window, Popup menu, MouseButtonEventArgs e, string product, string label)
+    public static void LHeadquarterAboutRefine(
+        Window window, Popup menu, MouseButtonEventArgs e, string key)
     {
         menu.IsOpen = false;
         e.Handled = true;
 
+        string product = QLocalizationCatalog.QLocalizationTextRead("Terms.Product");
         MessageBox.Show(
             window,
-            $"{product}\n{label} " + LHeadquarterVersionRead(),
+            $"{product}\n{QLocalizationCatalog.QLocalizationTextRead(key)} {LHeadquarterVersionRead()}",
             product,
             MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
 
-    public static void LHeadquarterExitHandle(Window window, Popup menu, MouseButtonEventArgs e)
+    public static void LHeadquarterExitRefine(Window window, Popup menu, MouseButtonEventArgs e)
     {
         menu.IsOpen = false;
         e.Handled = true;

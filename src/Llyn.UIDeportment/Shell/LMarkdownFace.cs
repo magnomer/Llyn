@@ -13,7 +13,7 @@ public static class LMarkdownFace
 {
     private static readonly FontFamily LMarkdownMono = new("Consolas");
 
-    public static void LMarkdownShow(Panel target, string? markdown, CAtelier atelier)
+    public static void LMarkdownRefine(Panel target, string? markdown, CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(atelier);
@@ -124,12 +124,14 @@ public static class LMarkdownFace
             NavigateUri = target,
             Foreground = LMarkdownBrushRead("Theme.Accent"),
         };
-        link.RequestNavigate += (_, e) =>
-        {
-            atelier.CAtelierLocationOpen(e.Uri.AbsoluteUri);
-            e.Handled = true;
-        };
+        link.RequestNavigate += (_, e) => LMarkdownLinkObserve(e, atelier);
         return link;
+    }
+
+    private static void LMarkdownLinkObserve(RequestNavigateEventArgs e, CAtelier atelier)
+    {
+        atelier.CAtelierLocationOpen(e.Uri.AbsoluteUri);
+        e.Handled = true;
     }
 
     private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, CAtelier atelier)

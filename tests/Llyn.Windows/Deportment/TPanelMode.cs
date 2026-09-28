@@ -16,7 +16,7 @@ public sealed class TPanelMode
         LPhonology panel = TPanelPrepare(engine, () => { asked++; return false; });
 
         panel.LPhonologyPanel.TPanelScribeSet(true);
-        panel.LPhonologyEditor.TEditorHeadwordSet("waters");
+        panel.LPhonologyEditor.LEditorStudio.CEditorHeadwordSet("waters");
         panel.LPhonologyPanel.TPanelScribeSet(false);
 
         Assert.Equal(1, asked);
@@ -31,7 +31,7 @@ public sealed class TPanelMode
         LPhonology panel = TPanelPrepare(engine, () => true);
 
         panel.LPhonologyPanel.TPanelScribeSet(true);
-        panel.LPhonologyEditor.TEditorHeadwordSet("waters");
+        panel.LPhonologyEditor.LEditorStudio.CEditorHeadwordSet("waters");
         panel.LPhonologyPanel.TPanelScribeSet(false);
 
         Assert.False(panel.LPhonologyPanel.LPanelEditing);

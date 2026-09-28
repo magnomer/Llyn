@@ -51,7 +51,7 @@ public sealed class LYunjing
         LYunjingEditor = editor;
         LYunjingPanel = new LPanel(
             "Yunjing.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LYunjingPanel.LPanelCleared += LYunjingEditorClear;
         LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
         LYunjingPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -60,12 +60,12 @@ public sealed class LYunjing
 
     private void LYunjingEditorClear()
     {
-        LYunjingEditor.LEditorOpen(null);
+        LYunjingEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LYunjingEditorOpen(long id)
     {
-        LYunjingEditor.LEditorOpen(id);
+        LYunjingEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public event Action? LYunjingChanged;
@@ -126,7 +126,7 @@ public sealed class LYunjing
         _lYunmuVista = yunmu;
         _lXiaoyunVista = xiaoyun;
         LYunjingPanel.LPanelVistaRestore(xiaoyun);
-        LYunjingEditor.LEditorVistaRestore(xiaoyun);
+        LYunjingEditor.LEditorStudio.CEditorVistaRestore(xiaoyun);
     }
 
     public IReadOnlyList<CDiwei> LYunjingShengmuRead()

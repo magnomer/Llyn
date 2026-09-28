@@ -204,7 +204,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     {
         _qRepertoireHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lRepertoire = host.PWindowForge.QForgeRepertoireCreate(
             editor,
             lectern,

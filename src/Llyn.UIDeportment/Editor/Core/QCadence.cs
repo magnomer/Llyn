@@ -33,8 +33,11 @@ internal sealed class QCadence
 
     internal void QCadenceParadigmUpdate()
     {
-        LFontFace.LFontApply(
-            _pWindow.PWindowAtelier, _lEditor.LEditorTimbre.QTimbreParadigmLanguage, QCadenceParadigm);
+        LFontFace.LFontRefine(
+            _pWindow.PWindowAtelier,
+            _lEditor.LEditorTimbre.QTimbreParadigmLanguage,
+            CFontRole.CFontRoleHeadword,
+            QCadenceParadigm);
         QCadenceParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(
             _lEditor.LEditorTimbre.QTimbreParadigmRead(), _lEditor.LEditorTimbre.QTimbreParadigmPending,
             _lEditor.LEditorMorphology, true);
@@ -42,7 +45,7 @@ internal sealed class QCadence
 
     internal void QCadenceScriptUpdate()
     {
-        LFontFace.LFontApply(
+        LFontFace.LFontRefine(
             _pWindow.PWindowAtelier, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, QCadenceScript);
         QCadenceScript.PScriptItems = PScriptItem.PScriptItemScan(_lEditor.LEditorTimbre.QTimbreScriptRead());
         QCadenceScript.PScriptPending = _lEditor.LEditorTimbre.QTimbreScriptPending;
@@ -53,7 +56,7 @@ internal sealed class QCadence
 
     internal void QCadenceFanqieUpdate()
     {
-        LFontFace.LFontApply(
+        LFontFace.LFontRefine(
             _pWindow.PWindowAtelier, _lEditor.LEditorLanguage, CFontRole.CFontRoleGlyph, QCadenceFanqie);
         QCadenceFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(_lEditor.LEditorTimbre.QTimbreFanqieRead());
         QCadenceFanqie.PFanqiePending = _lEditor.LEditorTimbre.QTimbreFanqiePending;

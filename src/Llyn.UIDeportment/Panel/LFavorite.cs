@@ -40,7 +40,7 @@ public sealed class LFavorite
 
         LFavoritePanel = new LPanel(
             "Favorite.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LFavoritePanel.LPanelCleared += LFavoriteEditorClear;
         LFavoritePanel.LPanelEdited += LFavoriteEditorOpen;
         LFavoritePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -53,12 +53,12 @@ public sealed class LFavorite
 
     private void LFavoriteEditorClear()
     {
-        LFavoriteEditor.LEditorOpen(null);
+        LFavoriteEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LFavoriteEditorOpen(long id)
     {
-        LFavoriteEditor.LEditorOpen(id);
+        LFavoriteEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public bool LFavoriteFiltered => _lFavoriteVista?.LVistaFiltered ?? false;
@@ -81,7 +81,7 @@ public sealed class LFavorite
 
         _lFavoriteVista = vista;
         LFavoritePanel.LPanelVistaRestore(vista);
-        LFavoriteEditor.LEditorVistaRestore(vista);
+        LFavoriteEditor.LEditorStudio.CEditorVistaRestore(vista);
     }
 
     public void LFavoriteRecallSet(string query)

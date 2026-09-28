@@ -41,7 +41,7 @@ A transcription search returns untagged readings, so no flag would ever be drawn
 A reading's flag is then ready the moment the reading lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorNotationStart(`
+### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.

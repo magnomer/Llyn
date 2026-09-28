@@ -75,14 +75,15 @@ public partial class PEditor
         {
             if (_lEditor.LEditorFlagged)
             {
-                await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowAtelier, _lEditor);
+                await LEnsignImage.LEnsignVarietyLoad(
+                    _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage, _lEditor.LEditorVarietyNames);
                 if (!PClip.IsOpen)
                 {
                     return;
                 }
             }
 
-            _lEditor.LEditorClipStart(
+            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(
                 word, target, LObserver.LObserverCreate<CHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
         }
         catch (Exception)
@@ -302,11 +303,8 @@ public partial class PEditor
                 return;
             }
 
-            long id = _lEditor.LEditorClip.LClipPrimary
-                ? PNotationDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftId ?? 0
-                : _lEditor.LEditorClip.LClipTarget;
-
-            PNotationVarietySend(id, reading.PClipReadingVariety);
+            _lEditor.LEditorStudio.CEditorVarietySet(
+                _lEditor.LEditorClip.LClipPrimary, _lEditor.LEditorClip.LClipTarget, reading.PClipReadingVariety);
             PClip.IsOpen = false;
         }
         catch (Exception)

@@ -8,12 +8,12 @@ It subscribes to the engine for one announcement only, the workspace moving, and
 The editor's language picker, the read-only entry display, and every catalog row use it.
 A malformed or unknown flag becomes no image, which lets each surface show its neutral globe fallback.
 
-## `public static void LEnsignAttach(CAtelier atelier)`
+## `public static void LEnsignIntroduce(CAtelier atelier)`
 
 Subscribes the flag store through `atelier`, once, for the whole program.
 It owns no control, so its answer runs on the thread that announced rather than on the shell's.
 
-## `private static void LEnsignBulletinHandle(CBulletin bulletin)`
+## `private static void LEnsignBulletinRefine(CBulletin bulletin)`
 
 Throws every kept drawing away when the workspace moves, and answers nothing else.
 The engine has already forgotten the paths before it announces, so a surface reloading on the announcement asks afresh.
@@ -38,7 +38,7 @@ A pack installed while the program runs is picked up by the next call.
 ## `public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)`
 
 The same fill for the named varieties of `language`, each drawn under `language/variety`.
-The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
+The pronunciation and recording menus await this before a search, passing the editor's language and varieties.
 It shares the gate with the language flags, so one fill runs at a time whichever kind it is.
 
 ## `private static Action LEnsignStoreAdd(IReadOnlyList<CEnsignRow> rows, Action<string, Exception> delete)`
@@ -54,7 +54,7 @@ Stores each drawing under its row's key.
 The engine runs it inside the cache's lock, only while the fill's workspace is current.
 So a workspace move cannot slip between the engine's check and this store.
 
-## `public static void LEnsignFlagShow(Image flag, UIElement globe, string language)`
+## `public static void LEnsignFlagRefine(Image flag, UIElement globe, string language)`
 
 Shows the language's flag in the image, or the globe when the pack draws none.
 

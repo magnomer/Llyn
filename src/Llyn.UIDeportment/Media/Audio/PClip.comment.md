@@ -31,7 +31,7 @@ In flag mode every declared variety's flag is resolved before the search starts.
 A recording's flag is then ready the moment the recording lands.
 A menu closed while the flags loaded starts no search.
 
-### `_lEditor.LEditorClipStart(`
+### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
@@ -122,7 +122,7 @@ But it is audio of a word the form no longer holds.
 The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
 The primary row's id is read back after the audio is attached, since the engine mints that row late.
 
-### `PNotationVarietySend(id, reading.PClipReadingVariety);`
+### `_lEditor.LEditorStudio.CEditorVarietySet(`
 
 Taking a recording tags its row with the variety, exactly as taking a reading does.
 An untagged recording sends nothing, and the row keeps whatever it had.

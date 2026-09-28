@@ -170,6 +170,63 @@ public sealed class TCatalog
     }
 
     [Fact]
+    public void CatalogFontRead_BlankLanguage_AnswersNothingSetWithoutAsking()
+    {
+        List<string> asked = [];
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFontRead"] = args =>
+                {
+                    asked.Add((string)args![0]!);
+                    return TInterfaceConduct.TFontCreate("Noto Serif", 21);
+                },
+            }));
+
+        CFont font = atelier.CAtelierCatalog.CCatalogFontRead(" ", CFontRole.CFontRoleHeadword);
+
+        Assert.Equal(new CFont(null, null, null), font);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void CatalogFontRead_RefusedRead_AnswersNothingSet()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFontRead"] = _ => throw new InvalidOperationException("no pack"),
+            }));
+
+        CFont font = atelier.CAtelierCatalog.CCatalogFontRead("Korean", CFontRole.CFontRoleExample);
+
+        Assert.Equal(new CFont(null, null, null), font);
+    }
+
+    [Fact]
+    public void CatalogFontRead_TwoRoles_AnswersEachInTheGivenOrder()
+    {
+        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(
+            engine,
+            TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LEngineFontRead"] = args => (LFontRole)args![1]! == LFontRole.LFontRoleGloss
+                    ? TInterfaceConduct.TFontCreate("Gloss Sans", 12)
+                    : TInterfaceConduct.TFontCreate("Example Serif", 18),
+            }));
+
+        IReadOnlyList<CFont> fonts = atelier.CAtelierCatalog.CCatalogFontRead(
+            "Korean", [CFontRole.CFontRoleExample, CFontRole.CFontRoleGloss]);
+
+        Assert.Equal(["Example Serif", "Gloss Sans"], fonts.Select(font => font.CFontFamily));
+    }
+
+    [Fact]
     public void CatalogFontRead_EveryEngineRole_CastsToTheSameNamedMirror()
     {
         LFontRole[] roles = Enum.GetValues<LFontRole>();

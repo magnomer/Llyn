@@ -31,14 +31,6 @@ A monitor that is gone, or a saved size larger than the desktop, must not leave 
 
 The size a first launch takes: its share of the work area, never below the minimum size.
 
-## `public void LFootprintSave(LCapsuleWindow state, bool minimized)`
-
-Hands a move or resize to the posture, which waits before writing.
-
-## `public void LFootprintClose(LCapsuleWindow state, bool minimized)`
-
-Hands the geometry of a certain close to the posture, which writes at once.
-
 ## `private static LCapsuleWindow? LFootprintPlace(LCapsuleWindow? state, double left, double top, double width, double height, double minWidth, double minHeight)`
 
 Clamps the stored size against the screen and the minimum size, keeping whether it was maximized.
@@ -47,9 +39,10 @@ Clamps the stored size against the screen and the minimum size, keeping whether 
 
 Clamps the stored position into the screen, once the size is settled.
 
-## `private void LFootprintDefer(LCapsuleWindow state, bool minimized, int delay)`
+## `public void LFootprintDefer(LCapsuleWindow state, bool minimized, bool closing)`
 
-Hands the geometry to the posture, which waits `delay` milliseconds before writing.
+Hands the geometry to the posture.
+A move or resize waits `LFootprintDelay` before writing, and a certain close writes at once.
 The window view hands the restored rectangle, never the maximized one, so restoring returns to a usable size.
 The minimized flag goes along, and the posture drops a minimized window.
 An empty or degenerate rectangle is dropped, leaving the previous geometry in place.

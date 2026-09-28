@@ -5,7 +5,7 @@
 The decisions behind the caption the program draws for itself.
 The veneer's caption and roof handlers hand every press here.
 
-## `public static void LCaptionDragHandle(Window window, FrameworkElement roof, MouseButtonEventArgs e)`
+## `public static void LCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)`
 
 A double press on the roof toggles maximize instead of dragging.
 A maximized window is restored under the pointer before the drag starts.

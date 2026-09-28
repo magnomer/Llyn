@@ -6,7 +6,7 @@ Draws a Markdown note as WPF elements, one per block `LMarkdown` reads.
 It holds no rule about the dialect, only how each block looks on screen.
 Colors come from the theme brushes, so a theme change recolors a drawn note.
 
-## `public static void LMarkdownShow(Panel target, string? markdown, CAtelier atelier)`
+## `public static void LMarkdownRefine(Panel target, string? markdown, CAtelier atelier)`
 
 Empties `target` and fills it with the note's blocks in reading order.
 The atelier parses the text and opens a link, so the helper names no parser and no shell.
@@ -27,15 +27,20 @@ The space above a block of that kind.
 
 The left indent of a list item at nesting `level`, one step per level.
 
-## `private static TextBlock LMarkdownTextBuild(IReadOnlyList<LMarkdownSpan> spans, double size, CAtelier atelier)`
+## `private static TextBlock LMarkdownTextBuild(IReadOnlyList<CMarkdownSpan> spans, double size, CAtelier atelier)`
 
 A wrapping text block holding one inline per span.
 
-## `private static Inline LMarkdownSpanBuild(LMarkdownSpan span, CAtelier atelier)`
+## `private static Inline LMarkdownSpanBuild(CMarkdownSpan span, CAtelier atelier)`
 
 One run carrying the span's weight, style and monospace face.
 Only an absolute http or https target becomes a hyperlink, so a note cannot launch anything else.
-A followed link opens through `atelier`, so the helper starts no process itself.
+A followed link is heard by `LMarkdownLinkObserve`.
+
+## `private static void LMarkdownLinkObserve(RequestNavigateEventArgs e, CAtelier atelier)`
+
+Hears a followed link and hands its address to the atelier's open gate.
+The helper starts no process itself.
 
 ## `private static TextBlock LMarkdownHeadingBuild(CMarkdownBlock block, CAtelier atelier)`
 

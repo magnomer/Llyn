@@ -19,7 +19,7 @@ It pins the interface font for the same reason the part does.
 
 ## `<Style x:Key="Theme.Paradigm.Text" TargetType="TextBlock">`
 
-The form, inked and in the headword font the box inherits from `LFontApply`.
+The form, inked and in the headword font the box inherits from `LFontRefine`.
 The size is fixed here, so the headword's own size does not carry into the rows.
 The template carries no bindings, so `PParadigm` writes each row's text and marks.
 An empty form draws an ellipsis and says the lookup is off.

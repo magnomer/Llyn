@@ -3,7 +3,7 @@
 ## `public partial class PWindow`
 
 The window's buttons and the jumps panels ask for.
-`LNavigation` decides which panel shows, and this part marks the button and shows the panel.
+Conduct's `CNavigation` decides which panel shows, and this part marks the button and shows the panel.
 The tabs are held here with their buttons and hooks, and the navigation knows each only by key.
 
 ## `private PTab PNavigationInput`
@@ -12,18 +12,18 @@ The tab buttons are read through the loaded window's name scope.
 
 ## `private void PNavigationHandle(object sender, RoutedEventArgs e)`
 
-A tab button click, handed to the navigation as the key of the button pressed.
+A tab button click, handed to the navigation's select gate as the key of the button pressed.
 Answers nothing for an unknown button or when the open tab refuses to be left.
 
 ## `private void PNavigationAttach()`
 
-Reads the tabs and builds the navigation over their keys.
+Reads the tabs and builds Conduct's navigation over their keys.
 It hooks the window's key and mouse previews to the voyage shortcuts.
 
 ## `private void PNavigationRestore()`
 
 Shows every tab button unless its tab is not allowed.
-Then it restores the tab the navigation answers, skipping the leave guard.
+Then it shows the tab the navigation's startup gate answers, which asks no tab to be left.
 The restored tab's scribe takes the posture's split state.
 
 ## `private bool PNavigationShow(object button, long id)`

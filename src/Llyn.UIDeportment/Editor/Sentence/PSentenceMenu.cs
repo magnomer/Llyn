@@ -28,7 +28,7 @@ public partial class PEditor
         IReadOnlyList<CCatalogReference> references;
         try
         {
-            references = _lEditor.LEditorCard.CCardReferenceFind();
+            references = _lEditor.LEditorStudio.CEditorCard.CCardReferenceFind();
         }
         catch (Exception exception)
         {
@@ -46,7 +46,7 @@ public partial class PEditor
 
     internal void PSentenceFrameRefine()
     {
-        CSentenceFrame frame = _lEditor.LEditorSentence.CSentenceFrameRead();
+        CSentenceFrame frame = _lEditor.LEditorStudio.CEditorSentence.CSentenceFrameRead();
         PSentenceListRefine(_pEditorParticle, frame.CSentenceFrameParticle);
         PSentenceListRefine(_pEditorDependence, frame.CSentenceFrameDependence);
 
@@ -170,7 +170,7 @@ public partial class PEditor
             return;
         }
 
-        _lEditor.LEditorSentence.CSentenceAdd(card.PCardId, card.PCardSentenceFind(row));
+        _lEditor.LEditorStudio.CEditorSentence.CSentenceAdd(card.PCardId, card.PCardSentenceFind(row));
     }
 
     private void PSentenceRemoveObserve(object sender, RoutedEventArgs e)
@@ -180,7 +180,7 @@ public partial class PEditor
             return;
         }
 
-        _lEditor.LEditorSentence.CSentenceRemove(card.PCardId, row.PSentenceRow);
+        _lEditor.LEditorStudio.CEditorSentence.CSentenceRemove(card.PCardId, row.PSentenceRow);
     }
 
     internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -313,7 +313,7 @@ public partial class PEditor
     private CMentionDraft? PSentenceMentionFind(TextBox box, PCard card, PSentence row, bool settled)
     {
         return _pEditorHost.PWindowAtelier.CAtelierMention.CMentionFind(
-            _lEditor.LEditorDesk, card.PCardId, row.PSentenceRow,
+            _lEditor.LEditorStudio.CEditorDesk, card.PCardId, row.PSentenceRow,
             box.Text, box.SelectionStart, box.SelectionLength, settled);
     }
 
@@ -330,13 +330,13 @@ public partial class PEditor
         switch (field)
         {
             case nameof(PSentence.PSentenceText):
-                _lEditor.LEditorSentence.CSentenceTextSet(card.PCardId, row.PSentenceRow, box.Text);
+                _lEditor.LEditorStudio.CEditorSentence.CSentenceTextSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceParticle):
-                _lEditor.LEditorSentence.CSentenceParticleSet(card.PCardId, row.PSentenceRow, box.Text);
+                _lEditor.LEditorStudio.CEditorSentence.CSentenceParticleSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceDependence):
-                _lEditor.LEditorSentence.CSentenceDependenceSet(card.PCardId, row.PSentenceRow, box.Text);
+                _lEditor.LEditorStudio.CEditorSentence.CSentenceDependenceSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceCitation):
                 PCandidateCitationShow(card, row, box);

@@ -144,7 +144,8 @@ The third is attestation: example, source, author.
 The fourth is the rime table, the one tool with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode, not a page.
 
-The rail's tabs are held here, and `LNavigation` decides which one shows.
+The rail's tabs are held here, and Conduct's `CNavigation` decides which one shows.
+The voyage trail the tabs walk is held here too, as GUI state.
 
 ## Inline notes
 

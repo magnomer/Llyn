@@ -42,7 +42,7 @@ public sealed class LTenor
 
         LTenorPanel = new LPanel(
             "Register.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTenorPanel.LPanelCleared += LTenorEditorClear;
         LTenorPanel.LPanelEdited += LTenorEditorOpen;
         LTenorPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -55,12 +55,12 @@ public sealed class LTenor
 
     private void LTenorEditorClear()
     {
-        LTenorEditor.LEditorOpen(null);
+        LTenorEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LTenorEditorOpen(long id)
     {
-        LTenorEditor.LEditorOpen(id);
+        LTenorEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public void LTenorEntryCreate()
@@ -68,7 +68,7 @@ public sealed class LTenor
         LTenorPanel.LPanelFreshOpen();
         if (LTenorChosen is long register)
         {
-            LTenorEditor.LEditorRegisterAdd(register);
+            LTenorEditor.LEditorStudio.CEditorRegisterAdd(register);
         }
     }
 
@@ -94,7 +94,7 @@ public sealed class LTenor
         _lTenorVista = vista;
         _lTenorCohort = cohort;
         LTenorPanel.LPanelVistaRestore(cohort);
-        LTenorEditor.LEditorVistaRestore(cohort);
+        LTenorEditor.LEditorStudio.CEditorVistaRestore(cohort);
     }
 
     public void LTenorSoundingSet(string query)

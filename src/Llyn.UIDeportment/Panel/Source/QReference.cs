@@ -153,7 +153,7 @@ internal sealed class QReference
     {
         _qReferenceHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lShelf = host.PWindowForge.QForgeShelfCreate(
             editor,
             lectern,

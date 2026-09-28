@@ -18,6 +18,15 @@ Raised with the text key and the exception when a word lookup, a mark or a load 
 The sound half's failures arrive here too.
 The card deportment hands it to the window's notice.
 
+## `public void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)`
+
+Hands `observer` the display vista's bulletins about `subject` that name the chosen entry or no entry.
+The driver names the subject and hears the bulletin in Conduct's records, never the engine's.
+
+## `public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)`
+
+Hands `observer` every bulletin about `subject` the display vista hears, in Conduct's records.
+
 ## `public void LDisplayShow(LEntryDraft draft)`
 
 Hands the shown draft to the sound half.

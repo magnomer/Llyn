@@ -10,8 +10,6 @@ namespace Llyn.Conduct;
 
 public sealed class CAtelier : IDisposable
 {
-    private readonly LPosture _cAtelierPosture;
-
     internal CAtelier(
         LPosture posture,
         LDraftPort drafts,
@@ -29,7 +27,7 @@ public sealed class CAtelier : IDisposable
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(portraits);
 
-        _cAtelierPosture = posture;
+        CAtelierPosture = posture;
         CAtelierDraftPort = drafts;
         CAtelierEntryPort = entries;
         CAtelierSettingsPort = settings;
@@ -51,6 +49,8 @@ public sealed class CAtelier : IDisposable
 
     public CLedger CAtelierLedger => new(this);
 
+    internal LPosture CAtelierPosture { get; }
+
     internal LDraftPort CAtelierDraftPort { get; }
 
     internal LEntryPort CAtelierEntryPort { get; }
@@ -65,36 +65,35 @@ public sealed class CAtelier : IDisposable
 
     internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)
     {
-        return _cAtelierPosture.LPostureVistaStart(tab, (LSubject?)subject, (LCatalogOrder)fallback, blank);
+        return CAtelierPosture.LPostureVistaStart(tab, (LSubject?)subject, (LCatalogOrder)fallback, blank);
     }
 
-    public bool CAtelierModeMatch(string? mode)
-    {
-        return _cAtelierPosture.LPostureModeMatch(mode);
-    }
 
-    public void CAtelierModeSave(string mode)
+    internal void CAtelierInputRestore(CEditor editor)
     {
-        _cAtelierPosture.LPostureModeSave(mode);
+        ArgumentNullException.ThrowIfNull(editor);
+
+        editor.CEditorVistaRestore(
+            CAtelierVistaStart("input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
     public bool CAtelierSplitRead()
     {
-        return _cAtelierPosture.LPostureRead().LPostureStateSplit;
+        return CAtelierPosture.LPostureRead().LPostureStateSplit;
     }
 
     public double CAtelierVolumeRead()
     {
-        return _cAtelierPosture.LPostureRead().LPostureStateVolume;
+        return CAtelierPosture.LPostureRead().LPostureStateVolume;
     }
 
     public void CAtelierVolumeSet(double volume, bool settled)
     {
-        _cAtelierPosture.LPostureVolumeSet(volume);
+        CAtelierPosture.LPostureVolumeSet(volume);
         CAtelierMediaPort.LEngineVolumeSet(volume);
         if (settled)
         {
-            _cAtelierPosture.LPostureVolumeSave();
+            CAtelierPosture.LPostureVolumeSave();
         }
     }
 
@@ -207,10 +206,15 @@ public sealed class CAtelier : IDisposable
         CAtelierMediaPort.LEngineLocationOpen(target);
     }
 
+    public static string CAtelierAboutRead()
+    {
+        return "Headquarter.Version";
+    }
+
     public void Dispose()
     {
         CAtelierDraftPort.LEngineLeftoverSweep();
-        _cAtelierPosture.Dispose();
+        CAtelierPosture.Dispose();
     }
 
     public Action CAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)
@@ -247,7 +251,7 @@ public sealed class CAtelier : IDisposable
         show(establishment);
     }
 
-    private static CBulletin CAtelierBulletinRead(LBulletin bulletin)
+    internal static CBulletin CAtelierBulletinRead(LBulletin bulletin)
     {
         return new CBulletin(bulletin.LBulletinId, bulletin.LBulletinStored);
     }

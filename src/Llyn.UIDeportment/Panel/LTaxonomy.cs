@@ -42,7 +42,7 @@ public sealed class LTaxonomy
 
         LTaxonomyPanel = new LPanel(
             "Tag.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
         LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
         LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
         LTaxonomyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
@@ -55,12 +55,12 @@ public sealed class LTaxonomy
 
     private void LTaxonomyEditorClear()
     {
-        LTaxonomyEditor.LEditorOpen(null);
+        LTaxonomyEditor.LEditorStudio.CEditorEntryOpen(null);
     }
 
     private void LTaxonomyEditorOpen(long id)
     {
-        LTaxonomyEditor.LEditorOpen(id);
+        LTaxonomyEditor.LEditorStudio.CEditorEntryOpen(id);
     }
 
     public void LTaxonomyEntryCreate()
@@ -68,7 +68,7 @@ public sealed class LTaxonomy
         LTaxonomyPanel.LPanelFreshOpen();
         if (LTaxonomyChosen is long tag)
         {
-            LTaxonomyEditor.LEditorTagAdd(tag);
+            LTaxonomyEditor.LEditorStudio.CEditorTagAdd(tag);
         }
     }
 
@@ -94,7 +94,7 @@ public sealed class LTaxonomy
         _lTaxonomyVista = vista;
         _lTaxonomyMembership = membership;
         LTaxonomyPanel.LPanelVistaRestore(membership);
-        LTaxonomyEditor.LEditorVistaRestore(membership);
+        LTaxonomyEditor.LEditorStudio.CEditorVistaRestore(membership);
     }
 
     public void LTaxonomyExplorationSet(string query)

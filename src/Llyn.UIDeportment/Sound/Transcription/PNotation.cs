@@ -94,7 +94,6 @@ public partial class PEditor
         if (_lEditor.LEditorNotation.LNotationPrimary)
         {
             PEditorRequestSend(new LRequestIpa(PEditorDraft, reading.PNotationReadingPhonetic));
-            id = PNotationDraftRead()?.CEntryDraftPronunciation?.CPronunciationDraftId ?? 0;
         }
         else
         {
@@ -106,22 +105,8 @@ public partial class PEditor
             PEditorRequestSend(new LRequestPronunciationIpa(PEditorDraft, id, reading.PNotationReadingPhonetic));
         }
 
-        PNotationVarietySend(id, reading.PNotationReadingVariety);
-    }
-
-    private void PNotationVarietySend(long pronunciationId, string variety)
-    {
-        if (pronunciationId == 0 || variety.Length == 0)
-        {
-            return;
-        }
-
-        PEditorRequestSend(new LRequestPronunciationVariety(PEditorDraft, pronunciationId, variety));
-    }
-
-    private CEntryDraft? PNotationDraftRead()
-    {
-        return _lEditor.LEditorDraftRead();
+        _lEditor.LEditorStudio.CEditorVarietySet(
+            _lEditor.LEditorNotation.LNotationPrimary, id, reading.PNotationReadingVariety);
     }
 
     private PNotationReading PNotationReadingCreate(CCandidate candidate)
@@ -179,7 +164,8 @@ public partial class PEditor
             {
                 if (_lEditor.LEditorFlagged)
                 {
-                    await LEnsignImage.LEnsignVarietyLoad(_pEditorHost.PWindowAtelier, _lEditor);
+                    await LEnsignImage.LEnsignVarietyLoad(
+                        _pEditorHost.PWindowAtelier, _lEditor.LEditorLanguage, _lEditor.LEditorVarietyNames);
                 }
 
                 if (!PNotation.IsOpen)
@@ -188,7 +174,7 @@ public partial class PEditor
                 }
             }
 
-            _lEditor.LEditorNotationStart(
+            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
                 word,
                 target,
                 scheme,

@@ -36,25 +36,28 @@ The catalog holds no state, so each read builds a fresh one and the atelier keep
 The settings ledger over this atelier's settings port.
 The ledger holds no state, so each read builds a fresh one and the atelier keeps no slot for it.
 
+## `internal LPosture CAtelierPosture { get; }`
+
+The session's posture, for the Conduct areas built over it, such as the navigation.
+It is internal, since the posture is an engine handle.
+
 ## `internal LDraftPort CAtelierDraftPort { get; }`
 
 A transitional handle for the deportments not yet moved into Conduct.
 The five other port handles below it stand for the same reason.
 job14-30 deletes all six.
 
+
+## `internal void CAtelierInputRestore(CEditor editor)`
+
+Binds `editor` to the input tab's vista, which lists entries by headword.
+It runs again after a workspace change, so the input tab follows the new workspace.
+
 ## `internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)`
 
 Starts the tab's vista on its stored order, filter and split.
 The driver names the subject and order in Conduct's enums, so it never names a Core one.
 It is internal, since the vista it answers is an engine handle.
-
-## `public bool CAtelierModeMatch(string? mode)`
-
-Whether the tab named is the one stored as standing open.
-
-## `public void CAtelierModeSave(string mode)`
-
-Stores the name of the tab standing open.
 
 ## `public bool CAtelierSplitRead()`
 
@@ -129,6 +132,12 @@ The resolved address of a media location, or nothing when it is a file that does
 
 Opens `target` through the engine's shell usher, so the driver starts no process itself.
 
+## `public static string CAtelierAboutRead()`
+
+The wording key of the version line the product's about notice shows.
+It is static, since every session words the notice alike.
+The build number stays with the driver, because Conduct is framed away from reflection.
+
 ## `public void Dispose()`
 
 Sweeps the leftover drafts once more, then releases the posture, which lets go of every vista it watched.
@@ -143,3 +152,7 @@ The engine subject is read into Conduct's enum, so the compare stays between Con
 
 Reads the status and hands it to `show`.
 A read that fails is skipped, so a busy or closing workspace leaves the strip as it stood.
+
+## `internal static CBulletin CAtelierBulletinRead(LBulletin bulletin)`
+
+The one map from an engine bulletin to Conduct's, shared by every attach that bridges one.

@@ -1,5 +1,6 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -9,21 +10,20 @@ public partial class PWindow
 
     private void PLogoHandle(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterToggle(PHeadquarter, e);
+        LHeadquarter.LHeadquarterMenuRefine(PHeadquarter, e);
     }
 
     private void PHeadquarterAboutHandle(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterAboutHandle(
+        LHeadquarter.LHeadquarterAboutRefine(
             _pWindowSurface,
             PHeadquarter,
             e,
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            QLocalizationCatalog.QLocalizationTextRead("Headquarter.Version"));
+            CAtelier.CAtelierAboutRead());
     }
 
     private void PHeadquarterExitHandle(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterExitHandle(_pWindowSurface, PHeadquarter, e);
+        LHeadquarter.LHeadquarterExitRefine(_pWindowSurface, PHeadquarter, e);
     }
 }

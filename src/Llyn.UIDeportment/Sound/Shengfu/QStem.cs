@@ -39,9 +39,12 @@ internal sealed class QStem
 
     internal void QStemShow(CStemPage page)
     {
-        LFontFace.LFontApply(_qStemAtelier, page.CStemPageLanguage, QStemHeadword);
+        LFontFace.LFontRefine(
+            _qStemAtelier,
+            page.CStemPageLanguage,
+            [CFontRole.CFontRoleHeadword, CFontRole.CFontRoleGlyph],
+            [QStemHeadword, QStemList]);
         LFontFace.LFontPlace(QStemHeadword);
-        LFontFace.LFontApply(_qStemAtelier, page.CStemPageLanguage, CFontRole.CFontRoleGlyph, QStemList);
         QStemHeadword.Text = page.CStemPageKey;
         QStemLanguage.Text = page.CStemPageLanguage;
         QStemFlag.Source = LEnsignImage.LEnsignFind(page.CStemPageLanguage);

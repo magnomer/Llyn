@@ -227,7 +227,7 @@ internal sealed partial class QCorpus : QChronicleHost
     {
         _qCorpusHost = host;
         LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorDisplay);
+        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
         _lCorpus = host.PWindowForge.QForgeCorpusCreate(
             editor,
             lectern,

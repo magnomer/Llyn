@@ -60,7 +60,7 @@ public sealed class LShelf
         LShelfFootnote.LFootnotePanel.LPanelDraftChanged += lectern.LLecternDraftShow;
         LShelfImprint.LImprintDesk.CDeskFinished += LShelfStoredShow;
         LShelfImprint.LImprintDesk.CDeskStateChanged += LShelfStateUpdate;
-        LShelfEditor.LEditorStateChanged += LShelfStateUpdate;
+        LShelfEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += LShelfStateUpdate;
     }
 
     public event Action? LShelfChanged;
@@ -122,7 +122,7 @@ public sealed class LShelf
         LShelfPanel.LPanelVistaRestore(vista);
         LShelfFootnote.LFootnoteVistaRestore(vista, footnote);
         LShelfImprint.LImprintVistaRestore(vista);
-        LShelfEditor.LEditorVistaRestore(footnote);
+        LShelfEditor.LEditorStudio.CEditorVistaRestore(footnote);
     }
 
     public IReadOnlyList<CCatalogReference> LShelfRowsRead()
@@ -399,20 +399,22 @@ public sealed class LShelf
     public (bool LShelfBackward, bool LShelfForward) LShelfChronicleRead()
     {
         return LShelfEntrySide
-            ? LShelfEditor.LEditorDesk.CDeskChronicleRead()
+            ? LShelfEditor.LEditorStudio.CEditorDesk.CDeskChronicleRead()
             : LShelfImprint.LImprintDesk.CDeskChronicleRead();
     }
 
     public bool LShelfDraftFinish(bool store)
     {
-        return LShelfEntrySide ? LShelfEditor.LEditorFinish(store) : LShelfImprint.LImprintDesk.CDeskFinish(store);
+        return LShelfEntrySide
+            ? LShelfEditor.LEditorStudio.CEditorFinish(store)
+            : LShelfImprint.LImprintDesk.CDeskFinish(store);
     }
 
     public void LShelfStoreRun()
     {
         if (LShelfEntrySide)
         {
-            LShelfEditor.LEditorSave();
+            LShelfEditor.LEditorStudio.CEditorEntrySave();
             return;
         }
 
@@ -423,7 +425,7 @@ public sealed class LShelf
     {
         if (LShelfEntrySide)
         {
-            LShelfEditor.LEditorDesk.CDeskUndo();
+            LShelfEditor.LEditorStudio.CEditorDesk.CDeskUndo();
             return;
         }
 
@@ -434,7 +436,7 @@ public sealed class LShelf
     {
         if (LShelfEntrySide)
         {
-            LShelfEditor.LEditorDesk.CDeskRedo();
+            LShelfEditor.LEditorStudio.CEditorDesk.CDeskRedo();
             return;
         }
 

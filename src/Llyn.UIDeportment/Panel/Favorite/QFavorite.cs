@@ -122,7 +122,7 @@ internal sealed partial class QFavorite
     {
         _qFavoriteHost = host;
         _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(_lEditor.LEditorDisplay);
+        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         _lFavorite = host.PWindowForge.QForgeFavoriteCreate(
             _lEditor, lectern, QFavoriteShownCheck, QFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
         LPanel panel = _lFavorite.LFavoritePanel;
@@ -134,7 +134,7 @@ internal sealed partial class QFavorite
         QLookItem.QLookItemAttach(QRoster, QRosterApply);
 
         QFavoriteDisplay.PDisplayAttach(host, lectern);
-        _lEditor.LEditorStateChanged += QFavoriteStoreUpdate;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QFavoriteStoreUpdate;
         QFavoriteEditor.PEditorAttach(host, _lEditor, lectern);
         QFavoriteEditor.PEditorChronicleChanged += QFavoriteChronicleUpdate;
     }

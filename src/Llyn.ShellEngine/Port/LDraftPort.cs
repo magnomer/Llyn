@@ -28,8 +28,6 @@ public interface LDraftPort
 
     IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query, int limit);
 
-    IReadOnlyDictionary<long, LTranslationTarget> LEngineTargetFind(long ownerId);
-
     LEntry? LEngineTranslationResolve(string word, long? entryId);
 
     IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions);

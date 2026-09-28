@@ -117,13 +117,15 @@ An empty choice changes nothing.
 Replaces the parts of speech as a whole list.
 Typing defers it, and a chip click sends it at once.
 
-## `public void LTenureIpaSet(string text)`
+## `public void LTenureTagAdd(long tag)`
 
-Defers the typed phonetic reading of the primary pronunciation.
+Links a stored tag to the first card at once, as a panel seeding a fresh draft does.
+`LTenureRegisterAdd` and `LTenureSituationAdd` do the same for a register and a situation.
 
-## `public void LTenureRespellingSet(string text)`
+## `public void LTenureExampleAdd(long example)`
 
-Defers the typed respelling of the primary pronunciation.
+Cites a stored example in the first sentence of the first card at once.
+`LTenureReferenceAdd` does the same for a stored source.
 
 ## `public LDraft? LTenureUndo()`
 

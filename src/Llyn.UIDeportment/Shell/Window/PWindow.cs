@@ -41,7 +41,9 @@ public partial class PWindow
 
     private readonly QGuild _qGuild;
 
-    private LNavigation _lNavigation = null!;
+    private CNavigation _cNavigation = null!;
+
+    private readonly LVoyage _lVoyage = new();
 
     private LTab[] _pNavigationTabs = [];
 
@@ -198,7 +200,7 @@ public partial class PWindow
 
     private void PWindowAttach()
     {
-        LEnsignImage.LEnsignAttach(PWindowAtelier);
+        LEnsignImage.LEnsignIntroduce(PWindowAtelier);
 
         PWindowAtelier.CAtelierLeftoverSweep();
 
@@ -254,7 +256,7 @@ public partial class PWindow
 
         if (confirmed)
         {
-            _lFootprint.LFootprintClose(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized);
+            _lFootprint.LFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, true);
         }
     }
 
@@ -296,7 +298,7 @@ public partial class PWindow
 
     private void PFootprintSave()
     {
-        _lFootprint.LFootprintSave(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized);
+        _lFootprint.LFootprintDefer(PFootprintRead(), _pWindowSurface.WindowState == WindowState.Minimized, false);
     }
 
     private LCapsuleWindow PFootprintRead()

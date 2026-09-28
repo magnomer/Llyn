@@ -44,9 +44,12 @@ internal sealed class QDiwei
 
     internal void QDiweiShow(CDiweiPage page, string kind)
     {
-        LFontFace.LFontApply(_qDiweiAtelier, page.CDiweiPageLanguage, QDiweiHeadword);
+        LFontFace.LFontRefine(
+            _qDiweiAtelier,
+            page.CDiweiPageLanguage,
+            [CFontRole.CFontRoleHeadword, CFontRole.CFontRoleGlyph],
+            [QDiweiHeadword, QDiweiList]);
         LFontFace.LFontPlace(QDiweiHeadword);
-        LFontFace.LFontApply(_qDiweiAtelier, page.CDiweiPageLanguage, CFontRole.CFontRoleGlyph, QDiweiList);
         QDiweiHeadword.Text = page.CDiweiPageKey;
         QDiweiKind.SetResourceReference(TextBlock.TextProperty, kind);
         QDiweiLanguage.Text = page.CDiweiPageLanguage;

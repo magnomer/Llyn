@@ -101,6 +101,14 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal string LEnginePronunciationRead(LEntryDraft draft)
+    {
+        lock (_lSettingsFacadeGate)
+        {
+            return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguagePronunciationRead(
+                draft, _lSettingsFacadeEngine.LEngineSettingsHeld.LSettingsRespelled);
+        }
+    }
     internal bool LEnginePhonemicCheck(string language)
     {
         lock (_lSettingsFacadeGate)

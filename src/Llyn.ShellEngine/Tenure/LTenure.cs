@@ -170,14 +170,29 @@ public sealed partial class LTenure
         LTenureRequestApply(request);
     }
 
-    public void LTenureIpaSet(string text)
+    public void LTenureTagAdd(long tag)
     {
-        LTenureRequestDefer(new LRequestIpa(LTenureId, text));
+        LTenureRequestApply(new LRequestTagPick(LTenureId, 0, tag, 0));
     }
 
-    public void LTenureRespellingSet(string text)
+    public void LTenureRegisterAdd(long register)
     {
-        LTenureRequestDefer(new LRequestRespelling(LTenureId, text));
+        LTenureRequestApply(new LRequestRegisterPick(LTenureId, 0, register, 0));
+    }
+
+    public void LTenureSituationAdd(long situation)
+    {
+        LTenureRequestApply(new LRequestSituationPick(LTenureId, 0, situation, 0));
+    }
+
+    public void LTenureExampleAdd(long example)
+    {
+        LTenureRequestApply(new LRequestSentenceExample(LTenureId, 0, 0, example));
+    }
+
+    public void LTenureReferenceAdd(long reference)
+    {
+        LTenureRequestApply(new LRequestSentenceReference(LTenureId, 0, 0, reference));
     }
 
     public LDraft? LTenureUndo()

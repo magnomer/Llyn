@@ -17,14 +17,14 @@ public static class LEnsignImage
 
     private static readonly SemaphoreSlim LEnsignGate = new(1, 1);
 
-    public static void LEnsignAttach(CAtelier atelier)
+    public static void LEnsignIntroduce(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
-        atelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinHandle);
+        atelier.CAtelierObserverAttach(CSubject.CSubjectWorkspace, LEnsignBulletinRefine);
     }
 
-    private static void LEnsignBulletinHandle(CBulletin bulletin)
+    private static void LEnsignBulletinRefine(CBulletin bulletin)
     {
         lock (LEnsignStore)
         {
@@ -71,12 +71,6 @@ public static class LEnsignImage
         }
     }
 
-    public static Task LEnsignVarietyLoad(CAtelier atelier, LEditor editor)
-    {
-        ArgumentNullException.ThrowIfNull(editor);
-
-        return LEnsignVarietyLoad(atelier, editor.LEditorLanguage, editor.LEditorVarietyNames);
-    }
 
     public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)
     {
@@ -115,7 +109,7 @@ public static class LEnsignImage
         }
     }
 
-    public static void LEnsignFlagShow(Image flag, UIElement globe, string language)
+    public static void LEnsignFlagRefine(Image flag, UIElement globe, string language)
     {
         ArgumentNullException.ThrowIfNull(flag);
         ArgumentNullException.ThrowIfNull(globe);
