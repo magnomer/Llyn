@@ -52,7 +52,7 @@ public sealed class TEngineXiaoyun
             string.Empty,
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a state", [], [], [], [], [], 1)],
             [],
-            reflexes: [TInterface.TReflexDraftCreate("Korean", "", "a")]));
+            reflexes: [TInterface.TReflexDraftCreate("Korean", "", "란")]));
 
         LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
         fanqie.TFanqieSave(language, character, [TInterface.TFanqieRowCreate(character, 0, initial, "寒", "一", "平")]);

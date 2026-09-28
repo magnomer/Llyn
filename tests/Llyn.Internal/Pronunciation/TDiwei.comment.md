@@ -14,3 +14,9 @@ With no hypothesis every place is unlisted, and a negative line rank normalizes 
 
 A section's tally rows carry only the marks of the set the page shows.
 A line with no mark in the respelled set is left out of a respelled section.
+
+## `public void DiweiSectionScan_DivisionHeading_LabelsItByTheLocalizedPattern(string? pattern, string label)`
+
+A division section is headed by the localized pattern, filled with the division and its Roman numeral.
+Without a pattern the raw division heads the section.
+The localizer is handed in, so the label never depends on the catalog another test loaded.

@@ -43,7 +43,7 @@ internal static partial class TInterface
     internal static int TDiweiRankNormalize(int rank) =>
         LDiwei.LDiweiRankNormalize(rank);
 
-    internal static LDiweiSection TDiweiSectionScan(bool respelled) =>
+    internal static LDiweiSection TDiweiSectionScan(bool respelled, Func<string, string?> localize) =>
         LDiweiSection.LDiweiSectionScan(
             LDiwei.LDiweiInitial,
             [new LFanqieRow("爛", "book", 0, "text", "來", "寒", "寒", "一", "平")],
@@ -59,7 +59,7 @@ internal static partial class TInterface
             ],
             true,
             respelled,
-            static _ => null)[0];
+            localize)[0];
 
     internal static IReadOnlyList<string> TStemKeyScan(string text, string separator) =>
         LStem.LStemKeyScan(text, separator);

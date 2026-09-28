@@ -36,7 +36,7 @@ public sealed class TDiwei
     [InlineData(true, "L", "蘭")]
     public void DiweiSectionScan_TallyUnderHeading_KeepsOnlyTheShownSet(bool respelled, string text, string character)
     {
-        LDiweiSection section = TInterface.TDiweiSectionScan(respelled);
+        LDiweiSection section = TInterface.TDiweiSectionScan(respelled, static _ => null);
 
         Assert.True(section.LDiweiSectionSwitched);
         Assert.Equal(respelled, section.LDiweiSectionRespelled);
@@ -46,5 +46,17 @@ public sealed class TDiwei
         Assert.Equal((text, 1), (mark.LTallyMarkText, mark.LTallyMarkCount));
         Assert.Equal([character], mark.LTallyMarkCharacters);
         Assert.Equal(respelled ? 1 : 2, section.LDiweiSectionTallies.Count);
+    }
+
+    [Theory]
+    [InlineData(null, "一")]
+    [InlineData("Division {1}", "Division I")]
+    [InlineData("{0}등", "一등")]
+    public void DiweiSectionScan_DivisionHeading_LabelsItByTheLocalizedPattern(string? pattern, string label)
+    {
+        LDiweiSection section = TInterface.TDiweiSectionScan(
+            false, key => key == "Yunjing.Division" ? pattern : null);
+
+        Assert.Equal(label, section.LDiweiSectionLabel);
     }
 }
