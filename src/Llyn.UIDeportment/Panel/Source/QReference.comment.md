@@ -58,7 +58,8 @@ The citation chips of both source areas are rewritten, because a stored entry ma
 
 ## `private void QFootnoteUpdate()`
 
-Refills the entry list and picks its empty text by whether the list is being searched.
+Refills the entry list, and shows the empty text while no row stands.
+`CFootnote` chooses the text's key by whether the list is being searched.
 
 ## `private void QReferenceModeUpdate()`
 

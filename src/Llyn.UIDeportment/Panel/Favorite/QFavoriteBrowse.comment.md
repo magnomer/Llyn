@@ -59,12 +59,6 @@ Swaps the read view for the editor, and back, through the shared panel.
 
 Asks the shared panel whether the unsaved changes may be dropped.
 
-## `private void QSeriesGraspUpdate()`
-
-Reads the roster again when a grasp changed under the grasp ordering, and does nothing otherwise.
-The controller decides whether the ordering is by grasp and runs the read, so no view branches on it.
-Under any other ordering the grasp is not shown, so the rows stay where they are.
-
 ## `internal async void QFavoriteVistaRestore()`
 
 The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
@@ -74,7 +68,7 @@ Each subject the panel cares about is attached once, so no handler sorts announc
 A vista announcement re-lists the roster, since order, filter or query moved.
 A mark set from another tab puts its row here without the tab being opened.
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each re-lists too.
-A changed grasp re-lists only under the grasp ordering, because only then does the row move.
+A changed grasp goes to `CFavoriteGraspUpdate`, which re-lists only under the grasp ordering.
 A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.

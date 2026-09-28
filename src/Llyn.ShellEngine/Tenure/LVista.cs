@@ -56,11 +56,6 @@ public sealed class LVista
         return LVistaChosen == id;
     }
 
-    public bool LVistaOrderMatch(LCatalogOrder order)
-    {
-        return LVistaOrder == order;
-    }
-
     public bool LVistaFiltered => LVistaFilter.LCatalogFilterActive;
 
     public bool LVistaQueried => LVistaQuery.Trim().Length > 0;

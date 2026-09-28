@@ -204,8 +204,8 @@
   ],
   "ceilings": {
     "cross:Llyn.UIDeportment>Llyn.Application": 88,
-    "cross:Llyn.UIDeportment>Llyn.Core": 349,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 344,
+    "cross:Llyn.UIDeportment>Llyn.Core": 344,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 307,
     "expose:Llyn.UIDemeanor>Llyn.Core": 23,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
     "expose:Llyn.UIDeportment>Llyn.Core": 23,
@@ -360,7 +360,9 @@
       "CTimbre",
       "CPortrait",
       "CCorpus",
-      "CQuotation"
+      "CQuotation",
+      "CFavorite",
+      "CFootnote"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",

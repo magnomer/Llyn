@@ -14,7 +14,7 @@ A panel's own editor comes from `QForgeEditorCreate` instead, and its panel rest
 ## `public CCorpus QForgeCorpusCreate(LEditor editor, Func<bool> shownSeam, CEnvoy envoy)`
 
 Every panel deportment is handed back with its vistas already started through the posture.
-The corpus is handed back as its Conduct, which starts its own vistas.
+The corpus and the favorites panel are handed back as their Conduct, which starts its own vistas.
 The forge keeps the restore through `QForgeVistaAdd`, so a workspace change can run it again.
 
 ## `public void QForgeVistaRestore()`

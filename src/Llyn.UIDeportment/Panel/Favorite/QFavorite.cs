@@ -13,7 +13,7 @@ internal sealed partial class QFavorite
 
     private PWindow _qFavoriteHost = null!;
 
-    private LFavorite _lFavorite = null!;
+    private CFavorite _cFavorite = null!;
 
     private LEditor _lEditor = null!;
 
@@ -122,11 +122,12 @@ internal sealed partial class QFavorite
     internal void QFavoriteAttach(PWindow host)
     {
         _qFavoriteHost = host;
-        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
+        _cFavorite = host.PWindowForge.QForgeFavoriteCreate(QFavoriteShownCheck, host.PWindowEnvoy);
+        _lEditor = new LEditor(_cFavorite.CFavoriteEditor);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
-        _lFavorite = host.PWindowForge.QForgeFavoriteCreate(
-            _lEditor, lectern, QFavoriteShownCheck, host.PWindowEnvoy);
-        CPanel panel = _lFavorite.LFavoritePanel;
+        CPanel panel = _cFavorite.CFavoritePanel;
+        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        panel.CPanelCleared += lectern.LLecternClear;
         panel.CPanelChanged += QFavoriteModeUpdate;
         panel.CPanelRowsChanged += QRosterFind;
 
@@ -146,7 +147,7 @@ internal sealed partial class QFavorite
 
     internal void QFavoriteReset()
     {
-        _lFavorite.LFavoritePanel.CPanelEntryClose();
+        _cFavorite.CFavoritePanel.CPanelEntryClose();
     }
 
     internal bool QFavoriteDraftFinish(bool store)
@@ -156,7 +157,7 @@ internal sealed partial class QFavorite
 
     internal bool QFavoriteChangeCheck()
     {
-        return _lFavorite.LFavoritePanel.CPanelChangeCheck();
+        return _cFavorite.CFavoritePanel.CPanelChangeCheck();
     }
 
     internal void QFavoriteClose()
@@ -167,17 +168,17 @@ internal sealed partial class QFavorite
 
     private void QFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lFavorite?.LFavoritePanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cFavorite?.CFavoritePanel.CPanelPressAllowed ?? false;
     }
 
     private async void QFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qFavoriteHost.PWindowPressRun(_lFavorite.LFavoritePortraitPrint);
+        await _qFavoriteHost.PWindowPressRun(_cFavorite.CFavoritePortraitPrint);
     }
 
     private async void QFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qFavoriteHost.PWindowPortraitExport(_lFavorite.LFavoriteFileRead(), _lFavorite.LFavoritePortraitExport);
+        await _qFavoriteHost.PWindowPortraitExport(_cFavorite.CFavoriteFileRead(), _cFavorite.CFavoritePortraitExport);
     }
 
     internal void QFavoriteVoyageShow(bool past, bool future)
@@ -220,7 +221,7 @@ internal sealed partial class QFavorite
 
     private void QFavoriteModeUpdate()
     {
-        CPanel panel = _lFavorite.LFavoritePanel;
+        CPanel panel = _cFavorite.CFavoritePanel;
         QFavoriteEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QFavoriteDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QFavoriteViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);

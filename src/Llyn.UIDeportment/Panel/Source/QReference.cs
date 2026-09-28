@@ -166,8 +166,8 @@ internal sealed class QReference
         _lShelf.LShelfPanel.CPanelCleared += _qImprint.QImprintClear;
         _lShelf.LShelfPanel.CPanelCleared += _qColophon.QColophonClear;
         _lShelf.LShelfColophonChanged += _qColophon.QColophonShow;
-        _lShelf.LShelfFootnote.LFootnotePanel.CPanelChanged += QReferenceModeUpdate;
-        _lShelf.LShelfFootnote.LFootnotePanel.CPanelRowsChanged += QFootnoteUpdate;
+        _lShelf.LShelfFootnote.CFootnotePanel.CPanelChanged += QReferenceModeUpdate;
+        _lShelf.LShelfFootnote.CFootnotePanel.CPanelRowsChanged += QFootnoteUpdate;
 
         QShelf.ItemsSource = _qShelfList;
         QFootnote.ItemsSource = _qFootnoteList;
@@ -185,7 +185,7 @@ internal sealed class QReference
 
     internal async void QReferenceVistaRestore()
     {
-        CPanel footnote = _lShelf.LShelfFootnote.LFootnotePanel;
+        CPanel footnote = _lShelf.LShelfFootnote.CFootnotePanel;
         CPanel shelf = _lShelf.LShelfPanel;
         shelf.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
@@ -232,7 +232,7 @@ internal sealed class QReference
             _lShelf.LShelfPanel.CPanelFilter,
             QTrellisHandle);
         _lShelf.LShelfQuerySet(QSurvey.Text);
-        _lShelf.LShelfFootnote.LFootnoteQuerySet(QRummage.Text);
+        _lShelf.LShelfFootnote.CFootnoteQuerySet(QRummage.Text);
         _lShelf.LShelfPanel.CPanelRowsUpdate();
     }
 
@@ -291,11 +291,11 @@ internal sealed class QReference
     {
         LSplice.LSpliceApply(
             _qFootnoteList,
-            QFootnoteItem.QFootnoteItemBuild(_lShelf.LShelfFootnote.LFootnoteRowsRead()),
+            QFootnoteItem.QFootnoteItemBuild(_lShelf.LShelfFootnote.CFootnoteRowsRead()),
             QFootnoteItem.QFootnoteItemMatch,
             QFootnoteItem.QFootnoteItemSync);
-        QFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _lShelf.LShelfFootnote.LFootnoteEmptyKey);
-        QFootnoteEmpty.Visibility = QLook.QLookVisibleRead(_lShelf.LShelfFootnote.LFootnoteEmpty);
+        QFootnoteEmpty.SetResourceReference(TextBlock.TextProperty, _lShelf.LShelfFootnote.CFootnoteEmptyKey);
+        QFootnoteEmpty.Visibility = QLook.QLookVisibleRead(_qFootnoteList.Count == 0);
     }
 
     private void QReferenceModeUpdate()
@@ -349,7 +349,7 @@ internal sealed class QReference
 
     private void QRummageHandle(object sender, TextChangedEventArgs e)
     {
-        _lShelf.LShelfFootnote.LFootnoteQuerySet(QRummage.Text);
+        _lShelf.LShelfFootnote.CFootnoteQuerySet(QRummage.Text);
     }
 
     private void QTrellisHandle(object sender, RoutedEventArgs e)

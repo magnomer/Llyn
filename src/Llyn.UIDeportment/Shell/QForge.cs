@@ -35,19 +35,11 @@ public sealed class QForge
             static corpus => corpus.CCorpusVistaRestore());
     }
 
-    public LFavorite QForgeFavoriteCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CFavorite QForgeFavoriteCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LFavorite(
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            favorite => favorite.LFavoriteVistaRestore(_qForgeAtelier));
+            CFavorite.CFavoriteCreate(_qForgeAtelier, shownSeam, envoy),
+            static favorite => favorite.CFavoriteVistaRestore());
     }
 
     public LGuild QForgeGuildCreate(

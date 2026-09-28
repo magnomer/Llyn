@@ -36,13 +36,13 @@ public sealed class TShelfSide
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LShelf shelf = TShelfPrepare(engine);
         LReference book = engine.TEngineCitationCreate("Book");
-        long? cited = null;
-        shelf.LShelfFootnote.LFootnoteCreated += id => cited = id;
         shelf.TShelfRowSelect(book.LReferenceId);
 
         shelf.TShelfFreshStart();
 
-        Assert.Equal(book.LReferenceId, cited);
+        CExampleDraft? cited = shelf.LShelfEditor.LEditorStudio
+            .CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
+        Assert.Equal(book.LReferenceId, cited?.CExampleDraftReference);
         Assert.True(shelf.LShelfEntrySide);
         Assert.True(shelf.LShelfEditorShown);
         Assert.False(shelf.LShelfBinEnabled);
@@ -111,7 +111,7 @@ public sealed class TShelfSide
         Assert.Contains(shelf.TShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
 
         shelf.TShelfScribeSet(false);
-        shelf.LShelfFootnote.LFootnotePanel.TPanelScribeToggle(false);
+        shelf.LShelfFootnote.CFootnotePanel.TPanelScribeToggle(false);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfDelete();
 
