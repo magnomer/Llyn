@@ -37,6 +37,7 @@ It adds the leftover sweep, so disposing the atelier needs no answer from the te
 Builds an envoy that records every key it is asked in `asked`.
 A confirm answers `answer`, or no when it is null.
 The leave question records `Leave` and answers `answer` as given.
+The union question records its key and both names joined by `>`, and answers like a confirm.
 
 ## `internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy)`
 

@@ -139,6 +139,7 @@
     "Refusal.SchemeDoubled": "이 항목에는 이미 해당 표기법의 전사가 있습니다.",
     "Refusal.ValueUnreadable": "저장된 값을 읽을 수 없습니다. 지운 뒤 저장하세요.",
     "Refusal.MarkupMalformed": "파일이 올바른 Llyn 마크업 형식이 아닙니다.",
+    "Refusal.NameMissing": "이름 없이는 저자를 저장할 수 없습니다.",
     "Notice.Unexpected": "{terms.product}가 예상하지 못한 문제가 발생했습니다.",
     "Notice.Recorded": "기술적인 세부 내용은 다음 위치에 기록했습니다:",
     "Notice.UnreadableDrop": "읽을 수 없는 저장 값이 있습니다. 버리고 저장할까요? 읽을 수 없는 데이터는 사라집니다.",

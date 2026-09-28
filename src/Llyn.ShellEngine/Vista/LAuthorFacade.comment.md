@@ -24,12 +24,29 @@ One Author as a browsed row, or null when none has that id.
 
 The rows matching `query` by name, the Author `except` left out, at most `limit` of them.
 
-## `public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited)`
+## `public IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista)`
 
 The roll the authors panel lists, headed by the row standing for Sources crediting nobody.
+Before the panel binds its vista it lists nothing.
 That row is added only while the vista carries no query, and only when such Sources exist.
 Its counts are the uncredited Sources and the places citing them.
-Its name is the word the panel hands in.
+Its name is the localized uncredited word, so the panel hands in no text.
+
+## `public IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed)`
+
+The Authors the autograph may fold its stored Author into, matched by `typed`.
+Blank text or no stored Author on the roll lists nothing.
+The stored Author itself is left out, and at most `LAuthorFacadeLimit` rows are listed.
+
+## `public (string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept)`
+
+The two names of the union question, after the held tenure's deferred requests are applied.
+The author clerk trims them and reads a missing Author as empty.
+
+## `public LVita LEngineVitaRead(LVista? roll)`
+
+The read sheet of the Author the roll stands on, with its fellows and the places citing it.
+With no stored Author chosen it is the sheet of nobody, worded as unnamed.
 
 ## `public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)`
 
@@ -51,9 +68,9 @@ Passing `null` lists every Source, and zero lists the Sources crediting nobody.
 
 The author clerk's wording of a work count.
 
-## `public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)`
+## `private const int LAuthorFacadeLimit`
 
-Every Author credited beside `authorId` on some Source, with how many Sources credit the two together.
+How many rows the union search lists, few enough to read at a glance.
 
 ## `public void LEngineAuthorAbsorb(long kept, long dropped)`
 

@@ -25,7 +25,13 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorFind(query, order);
 
     internal static IReadOnlyList<LFellow> TEngineFellowFind(this LEngine engine, long authorId) =>
-        engine.LEngineAuthor.LEngineFellowFind(authorId);
+        engine.LEngineStaffHeld.LEngineStaffAuthor.LFellowFind(authorId);
+
+    internal static (string LUnionDropped, string LUnionKept) TEngineUnionRead(
+        this LEngine engine,
+        LTenure? held,
+        long kept) =>
+        engine.LEngineAuthor.LEngineUnionRead(held, kept);
 
     internal static void TEngineAuthorAbsorb(this LEngine engine, long kept, long dropped)
     {

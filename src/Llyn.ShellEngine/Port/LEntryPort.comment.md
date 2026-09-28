@@ -22,6 +22,22 @@ The cells of the draft's glyph row, empty when its language declares no glyph se
 
 How many places cite each record of one owner kind, keyed by record id.
 
+## `IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);`
+
+The Authors of the authors panel's roll, headed by the uncredited row, and none while the vista is missing.
+
+## `IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed);`
+
+The Authors the stored Author of the roll may be folded into, matched by `typed` and capped.
+
+## `(string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept);`
+
+The held draft's written Author name and the kept Author's name, as the union question shows them.
+
+## `LVita LEngineVitaRead(LVista? roll);`
+
+The read sheet of the Author the roll stands on, or the sheet of nobody.
+
 ## `IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);`
 
 The Sources of the authors panel's oeuvre, and none while either vista is missing.

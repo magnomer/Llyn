@@ -77,6 +77,24 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
+    public void DraftCheck_BlankAuthorName_NamesTheRefusalUntilNamed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineAuthorStart("Guild", null);
+
+        engine.TEngineDraftCheck(started.LDraftId, out string? blank);
+        engine.TEngineRequestApply(TInterface.TAuthorNameCreate(started.LDraftId, "  "));
+        engine.TEngineDraftCheck(started.LDraftId, out string? spaced);
+        engine.TEngineRequestApply(TInterface.TAuthorNameCreate(started.LDraftId, "Ada"));
+        engine.TEngineDraftCheck(started.LDraftId, out string? named);
+
+        Assert.Equal(LRefusal.LRefusalName, blank);
+        Assert.Equal(LRefusal.LRefusalName, spaced);
+        Assert.Null(named);
+    }
+
+    [Fact]
     public void EntryUpdate_NothingChanged_RecordsNoRevision()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

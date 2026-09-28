@@ -76,6 +76,16 @@ Reads every Author credited beside `authorId` on some Source, with how many Sour
 The credits of every Source are read once, so the tally never queries per Source.
 The rows come by shared count falling, then by name, case aside, so the closest co-author leads.
 
+## `public (string LUnionDropped, string LUnionKept) LAuthorUnionRead(LDraft? draft, long kept)`
+
+The two names a union question shows: the Author held by `draft`, then the stored Author `kept`.
+Each name loses its outer spaces, and a missing Author reads as empty.
+
+## `public LVita LAuthorVitaRead(long? authorId, IReadOnlyList<LUsage> usages, Func<string, string> localize)`
+
+The read sheet of one Author, with its fellows and the citing places the caller read.
+With no Author it is the sheet of nobody, worded as unnamed through `localize`.
+
 ## `public IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId)`
 
 The Authors the store credits on one Reference, in order.

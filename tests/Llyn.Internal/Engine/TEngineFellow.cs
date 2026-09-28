@@ -40,6 +40,28 @@ public sealed class TEngineFellow
         Assert.Equal([2, 1, 1], fellows.Select(row => row.LFellowShared));
     }
 
+    [Fact]
+    public void UnionRead_NoDraftAndMissingKept_ReadsBothEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        (string dropped, string kept) = engine.TEngineUnionRead(null, 999);
+
+        Assert.Equal(string.Empty, dropped);
+        Assert.Equal(string.Empty, kept);
+    }
+
+    [Fact]
+    public void UnionRead_PaddedKeptName_ReadsItTrimmed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LAuthor kept = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "  Adam "));
+
+        Assert.Equal("Adam", engine.TEngineUnionRead(null, kept.LAuthorId).LUnionKept);
+    }
+
     private static void TFellowReferenceCreate(LEngine engine, string title, params LAuthor[] credited)
     {
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(

@@ -4,7 +4,7 @@
 
 The driver of the authors panel: the workspace browsed by the people its Sources credit.
 It is the sources panel's shape read through a different question, so it holds the same three columns.
-Every decision lives in [LGuild](../LGuild.comment.md), and this driver writes controls on notice.
+Every decision lives in Conduct's `CGuild`, and this driver writes controls on notice.
 The roll and the oeuvre are served here, and the vita and the autograph have drivers of their own.
 
 ## `internal QGuild(UserControl surface)`
@@ -19,13 +19,13 @@ Each part of the page is pulled by its contract ID through `QContract.QContractF
 
 ## `internal void QGuildAttach(PWindow host)`
 
-Builds the controller with the window's dialogs as seams, subscribes its notices, and wires the two lists.
-It hands the controller to the vita and the autograph drivers, which attach their own notices.
-The print command binding is added last, so no can-execute query ever meets a controller not yet built.
+Takes the panel's Conduct from the forge with the window's envoy, subscribes its notices, and wires the two lists.
+It hands the panel to the vita and the autograph drivers, which attach their own notices.
+The print command binding is added last, so no can-execute query ever meets a panel not yet built.
 
 ## `internal void QGuildVistaRestore()`
 
-The controller starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+The panel starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Attaches the bulletins the panel follows, restores the order and kind menus, and lists.
 
 ## `internal bool QGuildChangeCheck()`
@@ -48,10 +48,6 @@ Reopens the side the last session ended on.
 
 Closes the dropdowns, so nothing stays open over a window that is going.
 
-## `private bool QGuildDiscardConfirm()`
-
-The leave seam: the window's discard question over this panel's finish.
-
 ## `private void QRollUpdate()`
 
 Lists the roll afresh and reads the vita and the count chips, which follow the same Author.
@@ -71,7 +67,7 @@ Refreshes the colophon's tally whenever the oeuvre rows change.
 
 ## `private void QGuildModeUpdate()`
 
-Writes every visibility and enablement off the controller's verdicts.
+Writes every visibility and enablement off the panel's verdicts.
 The two nested pages are pulled by contract ID, since their drivers own only what lies inside them.
 The voyage and chronicle pairs follow the viewer and scribe verdicts.
 

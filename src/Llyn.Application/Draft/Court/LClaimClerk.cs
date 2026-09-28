@@ -98,10 +98,14 @@ public sealed class LClaimClerk
     {
         ArgumentNullException.ThrowIfNull(draft);
 
+        if (draft.LDraftAuthorHeld is LAuthor author)
+        {
+            return author.LAuthorNamed ? null : LRefusal.LRefusalName;
+        }
+
         if (draft.LDraftExample is not null
             || draft.LDraftSituation is not null
-            || draft.LDraftReference is not null
-            || draft.LDraftAuthorHeld is not null)
+            || draft.LDraftReference is not null)
         {
             return null;
         }

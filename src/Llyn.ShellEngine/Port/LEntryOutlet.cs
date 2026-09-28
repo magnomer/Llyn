@@ -132,19 +132,19 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyDictionary<long, string> LEngineCitationRead() =>
         _lEntryOutletEngine.LEngineReference.LEngineCitationRead();
 
-    public LCatalogAuthor? LEngineAuthorFind(long id) => _lEntryOutletEngine.LEngineAuthor.LEngineAuthorFind(id);
+    public IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista) =>
+        _lEntryOutletEngine.LEngineAuthor.LEngineRollFind(vista);
 
-    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, long except, int limit) =>
-        _lEntryOutletEngine.LEngineAuthor.LEngineAuthorFind(query, except, limit);
+    public IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed) =>
+        _lEntryOutletEngine.LEngineAuthor.LEngineUnionFind(roll, typed);
 
-    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited) =>
-        _lEntryOutletEngine.LEngineAuthor.LEngineAuthorFind(vista, uncredited);
+    public (string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept) =>
+        _lEntryOutletEngine.LEngineAuthor.LEngineUnionRead(held, kept);
+
+    public LVita LEngineVitaRead(LVista? roll) => _lEntryOutletEngine.LEngineAuthor.LEngineVitaRead(roll);
 
     public void LEngineAuthorAbsorb(long kept, long dropped) =>
         _lEntryOutletEngine.LEngineAuthor.LEngineAuthorAbsorb(kept, dropped);
-
-    public IReadOnlyList<LFellow> LEngineFellowFind(long authorId) =>
-        _lEntryOutletEngine.LEngineAuthor.LEngineFellowFind(authorId);
 
     public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre) =>
         _lEntryOutletEngine.LEngineAuthor.LEngineOeuvreFind(roll, oeuvre);
@@ -160,9 +160,6 @@ public sealed class LEntryOutlet : LEntryPort
     }
 
     public string LEngineTallyRead(long? reference) => _lEntryOutletEngine.LEngineEntry.LEngineTallyRead(reference);
-
-    public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner) =>
-        _lEntryOutletEngine.LEngineEntry.LEngineUsageRead(id, owner);
 
     public IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry) =>
         _lEntryOutletEngine.LEngineMarkup.LEngineMarkupFind(entry);

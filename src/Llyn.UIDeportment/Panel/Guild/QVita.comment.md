@@ -15,9 +15,9 @@ Subscribes the clicks of both lists and attaches the co-author and citation row 
 
 Each part of the page is pulled by its contract ID through `QContract.QContractFind`.
 
-## `internal void QVitaAttach(PWindow host, LGuild guild)`
+## `internal void QVitaAttach(PWindow host, CGuild guild)`
 
-Keeps the window and the controller the guild driver built, for the two row clicks.
+Keeps the window and the panel the guild driver built, for the two row clicks.
 
 ## `internal void QVitaShow(CVita vita, bool held)`
 

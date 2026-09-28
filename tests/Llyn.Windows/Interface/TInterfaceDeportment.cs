@@ -187,45 +187,6 @@ internal static class TInterfaceDeportment
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicleRead();
 
-    internal static LGuild TGuildCreate(LEngine engine, Func<bool> leaveSeam, Func<string, string, bool> unionSeam) =>
-        new(
-            new LDraftOutlet(engine),
-            new LEntryOutlet(engine),
-            new LPortraitOutlet(engine),
-            new LSettingsOutlet(engine),
-            () => true,
-            leaveSeam,
-            unionSeam,
-            TInterfaceConduct.TEnvoyCreate(false, []));
-
-    internal static void TGuildVistaRestore(this LGuild guild, LVista vista, LVista oeuvre) =>
-        guild.LGuildVistaRestore(vista, oeuvre);
-
-    internal static IReadOnlyList<CCatalogAuthor> TGuildRollRead(this LGuild guild) => guild.LGuildRollRead();
-
-    internal static CVita TGuildVitaRead(this LGuild guild) => guild.LGuildVitaRead();
-
-    internal static IReadOnlyList<CCatalogAuthor> TGuildUnionRead(this LGuild guild, string typed) =>
-        guild.LGuildUnion.QUnionRead(typed);
-
-    internal static void TGuildQuerySet(this LGuild guild, string query) => guild.LGuildQuerySet(query);
-
-    internal static void TGuildOrderSet(this LGuild guild, CCatalogOrder? order) => guild.LGuildOrderSet(order);
-
-    internal static void TGuildRowSelect(this LGuild guild, long? id) => guild.LGuildRowSelect(id);
-
-    internal static void TGuildSourceSelect(this LGuild guild, long? id) => guild.LGuildSourceSelect(id);
-
-    internal static void TGuildScribeSet(this LGuild guild, bool editing) => guild.LGuildScribeSet(editing);
-
-    internal static void TGuildFreshStart(this LGuild guild) => guild.LGuildFreshStart();
-
-    internal static bool TGuildSave(this LGuild guild) => guild.LGuildSession.CSessionSave();
-
-    internal static void TGuildUnionSelect(this LGuild guild, long? id) => guild.LGuildUnion.QUnionSelect(id);
-
-    internal static void TGuildDelete(this LGuild guild) => guild.LGuildDelete();
-
     internal static LYunjing TYunjingCreate(LEngine engine)
     {
         LEditor editor = TEditorCreate(engine);

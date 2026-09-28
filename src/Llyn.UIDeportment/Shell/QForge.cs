@@ -42,23 +42,11 @@ public sealed class QForge
             static favorite => favorite.CFavoriteVistaRestore());
     }
 
-    public LGuild QForgeGuildCreate(
-        Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<string, string, bool> unionSeam,
-        CEnvoy envoy)
+    public CGuild QForgeGuildCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LGuild(
-                _qForgeAtelier.CAtelierDraftPort,
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                shownSeam,
-                leaveSeam,
-                unionSeam,
-                envoy),
-            guild => guild.LGuildVistaRestore(_qForgeAtelier));
+            CGuild.CGuildCreate(_qForgeAtelier, shownSeam, envoy),
+            static guild => guild.CGuildVistaRestore());
     }
 
     public LLibrary QForgeLibraryCreate(

@@ -27,6 +27,11 @@ The commit strips both, so the check must not call them a change.
 A draft with a note and no word is changed, yet cannot be saved.
 The check names the refusal so the form can enable Discard and not Save.
 
+## `public void DraftCheck_BlankAuthorName_NamesTheRefusalUntilNamed()`
+
+An author draft with no name, or only spaces, names the blank-name refusal.
+Once a name is typed the check names none, so the autograph may store it.
+
 ## `public void EntryUpdate_NothingChanged_RecordsNoRevision()`
 
 Saving an entry back exactly as loaded leaves the history alone.

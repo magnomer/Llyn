@@ -15,6 +15,11 @@ Asks the yes-or-no question named by `key`, and answers true on yes.
 Asks the question named by `key` with a tally under it, and answers true on yes.
 `tallyKey` names the label of the count, so the driver words both from its own catalog.
 
+## `bool CEnvoyUnionConfirm(string key, string dropped, string kept);`
+
+Asks the question named by `key` before one record is folded into another, and answers true on yes.
+`dropped` and `kept` are the two names, which the driver shows as given in the fold's direction.
+
 ## `void CEnvoyFailureShow(string key);`
 
 Tells the user the failure named by `key`.

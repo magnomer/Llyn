@@ -12,7 +12,7 @@ internal sealed class QVita
 
     private PWindow _qVitaHost = null!;
 
-    private LGuild _lGuild = null!;
+    private CGuild _cGuild = null!;
 
     internal QVita(UserControl surface)
     {
@@ -46,10 +46,10 @@ internal sealed class QVita
 
     private TextBlock QVitaUnselected => QContract.QContractFind<TextBlock>(_qVitaSurface, "PVitaUnselected");
 
-    internal void QVitaAttach(PWindow host, LGuild guild)
+    internal void QVitaAttach(PWindow host, CGuild guild)
     {
         _qVitaHost = host;
-        _lGuild = guild;
+        _cGuild = guild;
     }
 
     internal void QVitaShow(CVita vita, bool held)
@@ -70,7 +70,7 @@ internal sealed class QVita
 
     private void QFellowHandle(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildRowSelect(QSender.QSenderSourceRead<QFellowItem>(e)?.QFellowItemId);
+        _cGuild.CGuildAuthorSelect(QSender.QSenderSourceRead<QFellowItem>(e)?.QFellowItemId);
     }
 
     private void QVitaCitationHandle(object sender, RoutedEventArgs e)

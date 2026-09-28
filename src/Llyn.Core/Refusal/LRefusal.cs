@@ -34,6 +34,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalMarkup = "Refusal.MarkupMalformed";
 
+    public const string LRefusalName = "Refusal.NameMissing";
+
     public LRefusal(string reason)
         : base(reason)
     {

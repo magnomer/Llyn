@@ -131,6 +131,13 @@ public sealed class LAuthorClerk
         return rows;
     }
 
+    public (string LUnionDropped, string LUnionKept) LAuthorUnionRead(LDraft? draft, long kept)
+    {
+        string dropped = draft?.LDraftAuthorHeld?.LAuthorName ?? string.Empty;
+        string held = LAuthorClerkRead(kept)?.LAuthorName ?? string.Empty;
+        return (dropped.Trim(), held.Trim());
+    }
+
     public IReadOnlyList<LAuthor> LBylineFind(IReadOnlyList<LAuthor> credited, string query, int limit)
     {
         ArgumentNullException.ThrowIfNull(credited);
@@ -189,6 +196,19 @@ public sealed class LAuthorClerk
                 : string.Compare(left.LFellowName, right.LFellowName, StringComparison.CurrentCultureIgnoreCase);
         });
         return fellows;
+    }
+
+    public LVita LAuthorVitaRead(long? authorId, IReadOnlyList<LUsage> usages, Func<string, string> localize)
+    {
+        ArgumentNullException.ThrowIfNull(usages);
+        ArgumentNullException.ThrowIfNull(localize);
+
+        if (authorId is not long id)
+        {
+            return LVita.LVitaCreate(null, [], [], localize);
+        }
+
+        return LVita.LVitaCreate(LAuthorClerkFind(id), LFellowFind(id), usages, localize);
     }
 
     public IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId)

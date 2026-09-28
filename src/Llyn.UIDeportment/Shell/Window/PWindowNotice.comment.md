@@ -43,8 +43,3 @@ That is why it can sit in front of every path that discards typed work.
 Saving runs the panel's finish and answers whether it went through, so a refused save keeps the panel put.
 Discarding answers yes and leaves the dropping to the path that asked, as it always did.
 A plain yes-or-no offered no way to keep the work, which a user leaving a word often means to keep.
-
-### `internal bool PWindowUnionConfirm(string dropped, string kept)`
-
-Asks before one Author is folded into another, naming both so the direction of the fold is plain.
-The dropped name comes first and the kept name second, joined by an arrow, because the fold reads that way.

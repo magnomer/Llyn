@@ -43,6 +43,19 @@ internal sealed class QEnvoy : CEnvoy
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
+    public bool CEnvoyUnionConfirm(string key, string dropped, string kept)
+    {
+        string confirm = QLocalizationCatalog.QLocalizationTextRead(key);
+        string question = $"{confirm}\n\n{dropped} \u2192 {kept}";
+
+        return MessageBox.Show(
+            _qEnvoySurface,
+            question,
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) == MessageBoxResult.Yes;
+    }
+
     public void CEnvoyFailureShow(string key, Exception exception)
     {
         _qEnvoyHost.PWindowFailureShow(key, exception);

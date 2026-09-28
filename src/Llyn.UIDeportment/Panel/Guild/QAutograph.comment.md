@@ -3,8 +3,8 @@
 ## `internal sealed class QAutograph`
 
 The driver of the Author edit area, a veneer page the guild page places.
-It holds no state, since the guild controller holds the autograph desk and the union verdict.
-Every handler forwards what the page carries, and every update writes what the controller answers.
+It holds no state, since `CGuild` holds the autograph desk and the union verdict.
+Every handler forwards what the page carries, and every update writes what the panel answers.
 
 ## `internal QAutograph(UserControl surface)`
 
@@ -15,9 +15,9 @@ Subscribes the name and union fields and the union list's clicks, and attaches t
 
 Each part of the page is pulled by its contract ID through `QContract.QContractFind`.
 
-## `internal void QAutographAttach(LGuild guild)`
+## `internal void QAutographAttach(CGuild guild)`
 
-Takes the controller the guild driver built and listens to its autograph desk.
+Takes the panel the guild driver built and listens to its autograph desk.
 The start notice, the desk's own bulletins and the draft notice are attached in the old order.
 
 ## `internal void QAutographTallyShow(CVita vita)`
@@ -26,7 +26,7 @@ Writes the two count chips from the vita sheet the guild read, so both sides sho
 
 ## `internal void QAutographModeUpdate()`
 
-Shows the union section or its unsaved notice by the controller's union verdict.
+Shows the union section or its unsaved notice by the panel's union verdict.
 The guild driver calls it whenever it writes its own mode.
 
 ## `private void QAutographStartUpdate()`

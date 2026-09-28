@@ -87,6 +87,10 @@ The user clears the field first, and the unreadable data is lost on purpose.
 Reason key for markup text that is not well-formed XML or whose root is not `llyn`.
 Nothing is read from such a file, so the reader refuses rather than guessing at entries.
 
+## `public const string LRefusalName = "Refusal.NameMissing";`
+
+Reason key for an author draft whose name is blank.
+
 ## `public LRefusal(string reason)`
 
 Refuses a request for `reason`, a localization key.

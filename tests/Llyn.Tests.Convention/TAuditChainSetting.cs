@@ -184,6 +184,7 @@ internal static class TAuditChainSetting
             "CQuotation",
             "CFavorite",
             "CFootnote",
+            "CGuild",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -315,8 +316,8 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 88,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 344,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 307,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 330,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 277,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,

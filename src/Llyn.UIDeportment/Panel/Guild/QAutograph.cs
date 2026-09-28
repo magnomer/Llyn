@@ -10,7 +10,7 @@ internal sealed class QAutograph
 {
     private readonly UserControl _qAutographSurface;
 
-    private LGuild _lGuild = null!;
+    private CGuild _cGuild = null!;
 
     internal QAutograph(UserControl surface)
     {
@@ -44,12 +44,12 @@ internal sealed class QAutograph
     private TextBlock QAutographUnionNotice =>
         QContract.QContractFind<TextBlock>(_qAutographSurface, "PAutographUnionNotice");
 
-    internal void QAutographAttach(LGuild guild)
+    internal void QAutographAttach(CGuild guild)
     {
-        _lGuild = guild;
-        _lGuild.LGuildAutograph.CDeskStarted += QAutographStartUpdate;
-        _lGuild.LGuildAutograph.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
-        _lGuild.LGuildAutograph.CDeskDraftChanged += QAutographDraftUpdate;
+        _cGuild = guild;
+        _cGuild.CGuildAutograph.CDeskStarted += QAutographStartUpdate;
+        _cGuild.CGuildAutograph.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
+        _cGuild.CGuildAutograph.CDeskDraftChanged += QAutographDraftUpdate;
     }
 
     internal void QAutographTallyShow(CVita vita)
@@ -62,8 +62,8 @@ internal sealed class QAutograph
 
     internal void QAutographModeUpdate()
     {
-        QAutographUnionBody.Visibility = QLook.QLookVisibleRead(_lGuild.LGuildUnion.QUnionShown);
-        QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_lGuild.LGuildUnion.QUnionShown);
+        QAutographUnionBody.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildUnionShown);
+        QAutographUnionNotice.Visibility = QLook.QLookVisibleRead(!_cGuild.CGuildUnionShown);
     }
 
     private void QAutographStartUpdate()
@@ -80,17 +80,17 @@ internal sealed class QAutograph
 
     private void QAutographNameHandle(object sender, TextChangedEventArgs e)
     {
-        _lGuild.LGuildAutograph.CDeskQuill?.LQuillAuthorSet(QAutographName.Text);
+        _cGuild.CGuildAutograph.CDeskQuill?.LQuillAuthorSet(QAutographName.Text);
     }
 
     private void QAutographUnionHandle(object sender, TextChangedEventArgs e)
     {
         QAutographUnionList.ItemsSource =
-            QRollItem.QRollItemBuild(_lGuild.LGuildUnion.QUnionRead(QAutographUnion.Text));
+            QRollItem.QRollItemBuild(_cGuild.CGuildUnionRead(QAutographUnion.Text));
     }
 
     private void QAutographUnionSelect(object sender, RoutedEventArgs e)
     {
-        _lGuild.LGuildUnion.QUnionSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
+        _cGuild.CGuildUnionSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
     }
 }

@@ -137,6 +137,11 @@ internal static class TInterfaceConduct
                 asked.Add("Leave");
                 return answer;
             },
+            ["CEnvoyUnionConfirm"] = args =>
+            {
+                asked.Add(string.Join(">", args!));
+                return answer ?? false;
+            },
         });
 
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy) =>

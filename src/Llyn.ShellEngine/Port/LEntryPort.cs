@@ -84,15 +84,15 @@ public interface LEntryPort
 
     IReadOnlyDictionary<long, string> LEngineCitationRead();
 
-    LCatalogAuthor? LEngineAuthorFind(long id);
+    IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista);
 
-    IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, long except, int limit);
+    IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed);
 
-    IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited);
+    (string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept);
+
+    LVita LEngineVitaRead(LVista? roll);
 
     void LEngineAuthorAbsorb(long kept, long dropped);
-
-    IReadOnlyList<LFellow> LEngineFellowFind(long authorId);
 
     IReadOnlyList<LCatalogReference> LEngineOeuvreFind(LVista? roll, LVista? oeuvre);
 
@@ -103,8 +103,6 @@ public interface LEntryPort
     IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);
 
     string LEngineTallyRead(long? reference);
-
-    IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner);
 
     IReadOnlyList<LEntry> LEngineMarkupFind(LMarkupEntry entry);
 

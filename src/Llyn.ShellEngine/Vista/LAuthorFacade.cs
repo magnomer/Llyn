@@ -7,6 +7,8 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LAuthorFacade
 {
+    private const int LAuthorFacadeLimit = 8;
+
     private readonly LEngine _lAuthorFacadeEngine;
     private readonly object _lAuthorFacadeGate;
 
@@ -43,10 +45,12 @@ internal sealed class LAuthorFacade
         }
     }
 
-    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista, string uncredited)
+    public IReadOnlyList<LCatalogAuthor> LEngineRollFind(LVista? vista)
     {
-        ArgumentNullException.ThrowIfNull(vista);
-        ArgumentNullException.ThrowIfNull(uncredited);
+        if (vista is null)
+        {
+            return [];
+        }
 
         IReadOnlyList<LCatalogAuthor> rows = LEngineAuthorFind(vista);
         if (vista.LVistaQueried)
@@ -67,7 +71,43 @@ internal sealed class LAuthorFacade
             cited += row.LCatalogReferenceUsage;
         }
 
+        string uncredited = _lAuthorFacadeEngine.LEngineSettings.LEngineTextRead("Guild.Uncredited");
         return [new LCatalogAuthor(new LAuthor(0, uncredited), orphan.Count, cited, vista.LVistaMatch(0)), .. rows];
+    }
+
+    public IReadOnlyList<LCatalogAuthor> LEngineUnionFind(LVista? roll, string typed)
+    {
+        ArgumentNullException.ThrowIfNull(typed);
+
+        if (string.IsNullOrWhiteSpace(typed) || roll?.LVistaStored is not long author)
+        {
+            return [];
+        }
+
+        return LEngineAuthorFind(typed, author, LAuthorFacadeLimit);
+    }
+
+    public (string LUnionDropped, string LUnionKept) LEngineUnionRead(LTenure? held, long kept)
+    {
+        held?.LTenurePersist();
+        LDraft? draft = held?.LTenureRead();
+        lock (_lAuthorFacadeGate)
+        {
+            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorUnionRead(draft, kept);
+        }
+    }
+
+    public LVita LEngineVitaRead(LVista? roll)
+    {
+        long? author = roll?.LVistaStored;
+        IReadOnlyList<LUsage> usages = author is long id
+            ? _lAuthorFacadeEngine.LEngineEntry.LEngineUsageRead(id, LOwner.LOwnerAuthor)
+            : [];
+        lock (_lAuthorFacadeGate)
+        {
+            return LAuthorFacadeStaff.LEngineStaffAuthor.LAuthorVitaRead(
+                author, usages, _lAuthorFacadeEngine.LEngineSettings.LEngineTextRead);
+        }
     }
 
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)
@@ -117,14 +157,6 @@ internal sealed class LAuthorFacade
     public string LEngineWorkFormat(int count)
     {
         return LAuthorClerk.LAuthorWorkFormat(count);
-    }
-
-    public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)
-    {
-        lock (_lAuthorFacadeGate)
-        {
-            return LAuthorFacadeStaff.LEngineStaffAuthor.LFellowFind(authorId);
-        }
     }
 
     public void LEngineAuthorAbsorb(long kept, long dropped)

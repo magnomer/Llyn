@@ -19,6 +19,11 @@ Asks the question with the tally of what it reaches on a line of its own.
 It answers true on yes.
 It is the question before a shared record is deleted, so it shows under a question mark.
 
+## `public bool CEnvoyUnionConfirm(string key, string dropped, string kept)`
+
+Asks before one record is folded into another, naming both so the direction of the fold is plain.
+The dropped name comes first and the kept name second, joined by an arrow, because the fold reads that way.
+
 ## `public void CEnvoyFailureShow(string key, Exception exception)`
 
 Presents a failure that carries an exception through the window, which words the detail and records a fault.

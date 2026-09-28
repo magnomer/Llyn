@@ -11,10 +11,10 @@ It keeps no port of its own, so each port has one holder, and job44 sinks it int
 The input panel's editor, standing on the input vista already restored.
 A panel's own editor comes from `QForgeEditorCreate` instead, and its panel restores it with the panel's vista.
 
-## `public CCorpus QForgeCorpusCreate(LEditor editor, Func<bool> shownSeam, CEnvoy envoy)`
+## `public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)`
 
 Every panel deportment is handed back with its vistas already started through the posture.
-The corpus and the favorites panel are handed back as their Conduct, which starts its own vistas.
+The corpus, the favorites panel and the authors panel are handed back as their Conduct, which starts its own vistas.
 The forge keeps the restore through `QForgeVistaAdd`, so a workspace change can run it again.
 
 ## `public void QForgeVistaRestore()`

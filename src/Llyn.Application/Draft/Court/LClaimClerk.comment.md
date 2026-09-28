@@ -65,8 +65,8 @@ The engine keeps the set, since a stale mark is a fact of its session.
 ## `public static string? LDraftRefusalRead(LDraft draft)`
 
 The reason a commit of `draft` would be refused now, or null when none is known ahead.
-Only an entry draft has such a reason, and it is the missing headword.
-A sentence, situation, source or author draft always commits, so it answers null.
+An entry draft is refused for a missing headword, and an author draft for a blank name.
+A sentence, situation or source draft always commits, so it answers null.
 
 ## `public IReadOnlyList<LDraft> LDraftScan()`
 

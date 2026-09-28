@@ -64,19 +64,6 @@ public partial class PWindow
             PWindowEnvoy);
     }
 
-    internal bool PWindowUnionConfirm(string dropped, string kept)
-    {
-        string confirm = QLocalizationCatalog.QLocalizationTextRead("Guild.MergeConfirm");
-        string question = $"{confirm}\n\n{dropped.Trim()} \u2192 {kept.Trim()}";
-
-        return MessageBox.Show(
-            _pWindowSurface,
-            question,
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question) == MessageBoxResult.Yes;
-    }
-
     internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)
     {
         ArgumentNullException.ThrowIfNull(finish);

@@ -139,6 +139,7 @@
     "Refusal.SchemeDoubled": "This entry already carries a transcription in that scheme.",
     "Refusal.ValueUnreadable": "A stored value cannot be read. Clear it before saving.",
     "Refusal.MarkupMalformed": "The file is not well-formed Llyn markup.",
+    "Refusal.NameMissing": "An author cannot be saved without a name.",
     "Notice.Unexpected": "Something went wrong that {terms.product} did not expect.",
     "Notice.Recorded": "The technical details were written here, in case they help:",
     "Notice.UnreadableDrop": "Some stored values cannot be read. Drop them and save? The unreadable data will be lost.",
