@@ -152,7 +152,7 @@ public sealed class LTenor
     public IReadOnlyList<CVistaRow> LTenorCohortRead()
     {
         return LSplice.LSpliceBuild(
-            _lEntryPort.LEngineEntryFind(_lTenorVista, _lTenorCohort), LPanel.LPanelRowRead);
+            _lEntryPort.LEngineEntryFind(_lTenorVista, _lTenorCohort), CPanel.CPanelRowRead);
     }
 
     public long LTenorRegisterCreate(string name)

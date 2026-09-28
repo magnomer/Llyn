@@ -318,12 +318,19 @@ public sealed class LDraftClerkChip
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        LTagDraft tag = new(_lDraftClerkIdentity.LIdentityCreate(), request.LRequestText);
+        string text = (request.LRequestText ?? string.Empty).Trim();
+        if (text.Length == 0)
+        {
+            return content;
+        }
 
         return LTagApply(
             content,
             request.LRequestCardId,
-            tags => LDraftClerkList.LDraftListAdd(tags, tag, request.LRequestPosition));
+            tags => LTagHeldCheck(tags, text)
+                ? tags
+                : LDraftClerkList.LDraftListAdd(
+                    tags, new LTagDraft(_lDraftClerkIdentity.LIdentityCreate(), text), request.LRequestPosition));
     }
 
     public LEntryDraft LTagInsert(LEntryDraft content, LRequestTagPick request)
@@ -343,8 +350,23 @@ public sealed class LDraftClerkChip
         return LTagApply(
             content,
             request.LRequestCardId,
-            tags => LDraftClerkList.LDraftListInsert(
-                tags, tag, stored.LTagId, request.LRequestPosition, static row => row.LTagDraftId));
+            tags => LTagHeldCheck(tags, stored.LTagText)
+                ? tags
+                : LDraftClerkList.LDraftListInsert(
+                    tags, tag, stored.LTagId, request.LRequestPosition, static row => row.LTagDraftId));
+    }
+
+    private static bool LTagHeldCheck(IReadOnlyList<LTagDraft> tags, string text)
+    {
+        foreach (LTagDraft held in tags)
+        {
+            if (string.Equals(held.LTagDraftText, text, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static LEntryDraft LTagRemove(LEntryDraft content, LRequestTagRemoval request)

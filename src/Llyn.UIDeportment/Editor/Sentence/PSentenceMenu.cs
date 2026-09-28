@@ -28,7 +28,7 @@ public partial class PEditor
         IReadOnlyList<CCatalogReference> references;
         try
         {
-            references = _lEditor.LEditorCard.LCardReferenceFind();
+            references = _lEditor.LEditorCard.CCardReferenceFind();
         }
         catch (Exception exception)
         {
@@ -44,50 +44,24 @@ public partial class PEditor
         PSentenceCitationShow();
     }
 
-    internal void PSentenceFrameLoad(string language)
+    internal void PSentenceFrameRefine()
     {
-        string chosen = string.IsNullOrWhiteSpace(language) ? _lEditor.LEditorLanguage : language;
-
-        CSentenceOrder order = _lEditor.LEditorCard.LCardOrderRead(chosen);
-        PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
-        PSentenceFrameShow(_pEditorDependence, PSentenceDependenceRead(chosen));
+        CSentenceFrame frame = _lEditor.LEditorSentence.CSentenceFrameRead();
+        PSentenceListRefine(_pEditorParticle, frame.CSentenceFrameParticle);
+        PSentenceListRefine(_pEditorDependence, frame.CSentenceFrameDependence);
 
         foreach (PCard card in _pMeaningList)
         {
-            card.PCardSentenceApply(order);
+            card.PCardSentenceApply(frame.CSentenceFrameOrder);
         }
 
         foreach (PCard card in _pCollocationList)
         {
-            card.PCardSentenceApply(order);
+            card.PCardSentenceApply(frame.CSentenceFrameOrder);
         }
     }
 
-    private IReadOnlyList<string> PSentenceParticleRead(string language)
-    {
-        try
-        {
-            return _lEditor.LEditorCard.LCardParticleRead(language);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
-    }
-
-    private IReadOnlyList<string> PSentenceDependenceRead(string language)
-    {
-        try
-        {
-            return _lEditor.LEditorCard.LCardDependenceRead(language);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
-    }
-
-    private static void PSentenceFrameShow(ObservableCollection<string> catalog, IReadOnlyList<string> values)
+    private static void PSentenceListRefine(ObservableCollection<string> catalog, IReadOnlyList<string> values)
     {
         catalog.Clear();
         foreach (string value in values)
@@ -133,20 +107,20 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
         {
-            opening.Click -= PSentenceFrameHandle;
-            opening.Click += PSentenceFrameHandle;
+            opening.Click -= PSentenceOpeningRefine;
+            opening.Click += PSentenceOpeningRefine;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PSentenceAdder") is Button adder)
         {
-            adder.Click -= _pSentenceTemplate.PSentenceAddHandle;
-            adder.Click += _pSentenceTemplate.PSentenceAddHandle;
+            adder.Click -= PSentenceAddObserve;
+            adder.Click += PSentenceAddObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PSentenceEraser") is Button eraser)
         {
-            eraser.Click -= _pSentenceTemplate.PSentenceRemoveHandle;
-            eraser.Click += _pSentenceTemplate.PSentenceRemoveHandle;
+            eraser.Click -= PSentenceRemoveObserve;
+            eraser.Click += PSentenceRemoveObserve;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PSentenceGlossChooser") is Button gloss)
@@ -181,7 +155,7 @@ public partial class PEditor
         }
     }
 
-    private void PSentenceFrameHandle(object sender, RoutedEventArgs e)
+    private void PSentenceOpeningRefine(object sender, RoutedEventArgs e)
     {
         if (sender is ToggleButton { DataContext: PSentence row } opening)
         {
@@ -189,24 +163,24 @@ public partial class PEditor
         }
     }
 
-    internal void PSentenceAddHandle(object sender, RoutedEventArgs e)
+    private void PSentenceAddObserve(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        PEditorRequestSend(new LRequestSentenceAddition(PEditorDraft, card.PCardId, card.PCardSentenceFind(row) + 1));
+        _lEditor.LEditorSentence.CSentenceAdd(card.PCardId, card.PCardSentenceFind(row));
     }
 
-    internal void PSentenceRemoveHandle(object sender, RoutedEventArgs e)
+    private void PSentenceRemoveObserve(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
 
-        PEditorRequestSend(new LRequestSentenceRemoval(PEditorDraft, card.PCardId, row.PSentenceRow));
+        _lEditor.LEditorSentence.CSentenceRemove(card.PCardId, row.PSentenceRow);
     }
 
     internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -351,21 +325,18 @@ public partial class PEditor
         }
     }
 
-    private void PSentenceChangeHandle(PCard card, PSentence row, string field, TextBox box)
+    private void PSentenceFieldObserve(PCard card, PSentence row, string field, TextBox box)
     {
-        LStateWritten written = new(box.Text);
         switch (field)
         {
             case nameof(PSentence.PSentenceText):
-                PEditorRequestDefer(new LRequestSentenceText(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                _lEditor.LEditorSentence.CSentenceTextSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceParticle):
-                PEditorRequestDefer(
-                    new LRequestSentenceParticle(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                _lEditor.LEditorSentence.CSentenceParticleSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceDependence):
-                PEditorRequestDefer(
-                    new LRequestSentenceDependence(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                _lEditor.LEditorSentence.CSentenceDependenceSet(card.PCardId, row.PSentenceRow, box.Text);
                 break;
             case nameof(PSentence.PSentenceCitation):
                 PCandidateCitationShow(card, row, box);

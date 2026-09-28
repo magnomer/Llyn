@@ -62,8 +62,8 @@ Every panel area moves to the veneer by the same steps, first proven on taxonomy
 - The pack URI load and the name scope copy go.
 - The parent builds it as the window builds `QEstablishment`, from the page pulled by contract ID.
 - Part files and `P…Item` models are renamed with the class.
-  Its maps are internal statics on the controller, as in `LCard`.
-  A map shared by every panel sits on `LPanel`.
+  Its maps are internal statics on the controller, as in `LAtlas`.
+  A map shared by every panel sits on `CPanel` in Conduct.
 - A choice the view made over controller answers becomes a controller verdict, such as `LTaxonomyCoinageCheck`.
 - A controller that names WPF types splits in two, as `LLibrary` and `LWing` did.
   Its WPF half joins the driver, and its engine half stays a sealed controller.

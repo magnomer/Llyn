@@ -149,7 +149,7 @@ public sealed class LTaxonomy
     public IReadOnlyList<CVistaRow> LTaxonomyMembershipRead()
     {
         return LSplice.LSpliceBuild(
-            _lEntryPort.LEngineEntryFind(_lTaxonomyVista, _lTaxonomyMembership), LPanel.LPanelRowRead);
+            _lEntryPort.LEngineEntryFind(_lTaxonomyVista, _lTaxonomyMembership), CPanel.CPanelRowRead);
     }
 
     public long LTaxonomyTagCreate(string name)

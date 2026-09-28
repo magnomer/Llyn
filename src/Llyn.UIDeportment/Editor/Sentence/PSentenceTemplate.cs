@@ -16,16 +16,6 @@ public class PSentenceTemplate : ResourceDictionary
             new Uri("/Llyn.UIVeneer;component/Editor/Sentence/PSentenceTemplate.xaml", UriKind.Relative)));
     }
 
-    internal void PSentenceAddHandle(object sender, RoutedEventArgs e)
-    {
-        _pSentenceHost.PSentenceAddHandle(sender, e);
-    }
-
-    internal void PSentenceRemoveHandle(object sender, RoutedEventArgs e)
-    {
-        _pSentenceHost.PSentenceRemoveHandle(sender, e);
-    }
-
     internal void PCitationKeyHandle(object sender, KeyEventArgs e)
     {
         _pSentenceHost.PCitationKeyHandle(sender, e);

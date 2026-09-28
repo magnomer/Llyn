@@ -111,7 +111,7 @@ public sealed class LFavorite
     public IReadOnlyList<CVistaRow> LFavoriteRowsRead()
     {
         return _lFavoriteVista is LVista vista
-            ? LSplice.LSpliceBuild(_lEntryPort.LEngineFavoriteFind(vista), LPanel.LPanelRowRead)
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineFavoriteFind(vista), CPanel.CPanelRowRead)
             : [];
     }
 

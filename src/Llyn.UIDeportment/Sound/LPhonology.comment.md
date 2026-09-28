@@ -25,7 +25,7 @@ They are handed on as Conduct shapes, so the driver names no Core row.
 ## `internal static IReadOnlyList<CCatalogPronunciation> LPhonologyPronunciationRead(`
 
 Maps each engine row to its shape: the entry as a `CVistaRow` and the sound beside it.
-A missing epithet becomes an empty one, as `LPanel.LPanelRowRead` reads it.
+A missing epithet becomes an empty one, as `CPanel.CPanelRowRead` reads it.
 
 ## `public void LPhonologyOrderSet(CCatalogOrder? order)`
 

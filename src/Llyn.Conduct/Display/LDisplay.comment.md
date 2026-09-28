@@ -177,9 +177,10 @@ The headwords the shown draft's cards link to, or none when nothing is shown or 
 
 The source links of the shown draft's etymology.
 
-## `public LSentenceOrder LDisplayOrderRead()`
+## `public CSentenceOrder LDisplayOrderRead()`
 
-The sentence order of the shown draft's language, or the default when nothing is shown or the read is refused.
+The sentence order of the shown draft's language, shaped for the display's frame converter.
+It is the default order when nothing is shown or the read is refused.
 
 ## `public IReadOnlyDictionary<long, string> LDisplayCitationRead()`
 

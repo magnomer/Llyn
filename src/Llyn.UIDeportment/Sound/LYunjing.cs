@@ -167,7 +167,7 @@ public sealed class LYunjing
 
     public IReadOnlyList<CVistaRow> LYunjingXiaoyunRead()
     {
-        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LYunjingXiaoyunFind(), LPanel.LPanelRowRead);
+        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LYunjingXiaoyunFind(), CPanel.CPanelRowRead);
         _lXiaoyunCount = rows.Count;
         return rows;
     }

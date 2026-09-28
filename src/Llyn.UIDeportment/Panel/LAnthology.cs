@@ -124,7 +124,7 @@ public sealed class LAnthology
 
     private IReadOnlyList<CCatalogReference> LAnthologyReferenceFind(string word, LCatalogOrder order)
     {
-        return LOeuvre.LOeuvreReferenceRead(_lEntryPort.LEngineReferenceFind(word, order));
+        return COeuvre.COeuvreReferenceRead(_lEntryPort.LEngineReferenceFind(word, order));
     }
 
     public IReadOnlyList<CCitationRow> LAnthologyCitationFind(string word, long? source)
@@ -167,15 +167,15 @@ public sealed class LAnthology
             ? null
             : new CExample(
                 example.LExampleLanguage,
-                LCard.LCardStateRead(example.LExampleText),
+                CFolio.CFolioStateRead(example.LExampleText),
                 example.LExampleSource.LStateAnchorShown,
                 LSplice.LSpliceBuild(
                     example.LExampleGloss,
                     static gloss => new CGlossDraft(
-                        gloss.LGlossId, gloss.LGlossLanguage, LCard.LCardStateRead(gloss.LGlossText))),
+                        gloss.LGlossId, gloss.LGlossLanguage, CFolio.CFolioStateRead(gloss.LGlossText))),
                 LSplice.LSpliceBuild(
                     example.LExampleMention,
-                    static mention => LCard.LCardMentionRead(LMentionDraft.LMentionDraftCreate(mention))),
+                    static mention => CFolio.CFolioMentionRead(LMentionDraft.LMentionDraftCreate(mention))),
                 LAnthologyExcerptRead(example.LExampleText.LStateValueSound, example.LExampleMention));
     }
 
@@ -189,7 +189,7 @@ public sealed class LAnthology
         return new CMentionResult(
             result.LMentionResultOffset,
             LAnthologyMentionRead(result.LMentionResultStored),
-            LCard.LCardTargetRead(result.LMentionResultEntry));
+            CFolio.CFolioTargetRead(result.LMentionResultEntry));
     }
 
     private static CMentionMark? LAnthologyMentionRead(LMention? mention)

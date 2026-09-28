@@ -64,7 +64,7 @@ The excerpt's links are kept only while the text reads soundly, as the excerpt s
 
 Maps what a click on a text found to its shape.
 The excerpt and the lectern both hand the window this shape, so the lectern calls it too.
-It sits here since `LCard` would become a Large type.
+It sits here since `CCard` would become a Large type.
 
 ## `private static CMentionMark? LAnthologyMentionRead(LMention? mention)`
 

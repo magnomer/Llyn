@@ -36,11 +36,6 @@ Each source kind takes the word keyed by its localization key.
 A missing word falls back to the name the engine gives the kind.
 It sits here until the shared panel map has room, since only the atlas prints with a shape legend yet.
 
-## `internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)`
-
-The one map for a found situation, shared by the candidate popup and the atlas.
-The title is the name the engine gave the row, so the atlas keeps its unknown and untitled words.
-
 ## `internal static CSituationDraft? LAtlasSituationRead(LSituation? situation)`
 
 The one map for a whole situation, read by the repertoire's scenario, its vignette and the text gate.

@@ -36,9 +36,14 @@ The Conduct display of the editor's entry, which the editor view wraps in its ow
 The editor holds no lectern, since a lectern names WPF and a sealed controller names none.
 It holds the favourite and grasp rules the esteem forwards to.
 
-## `public LCard LEditorCard { get; }`
+## `public CCard LEditorCard { get; }`
 
 The card deportment the editor owns, handed to the card views for the lookups their fields make.
+
+## `public CSentence LEditorSentence { get; }`
+
+The sentence gates over the editor's desk, which the sentence rows call for every edit.
+It reads the word order through the same map the catalog gates use.
 
 ## `public LClip LEditorClip { get; }`
 

@@ -144,8 +144,3 @@ The engine builds it, so a filter hiding nothing is its shared empty filter.
 
 The engine subject a driver's subject names, cast member for member like the ordering.
 It is internal so the test that holds the member order can reach it.
-
-## `internal static CVistaRow LPanelRowRead(LVistaRow row)`
-
-The Conduct copy of one entry a vista lists, carrying its chosen flag.
-Every entry list and the prospect popup map through here, so the copy has one home.

@@ -124,12 +124,4 @@ public sealed class TPanelSeal
                 typeof(LPortraitLabel).GetProperty("L" + mirror.Name[1..])!.GetValue(engine));
         }
     }
-
-    [Fact]
-    public void PanelRowRead_MissingEpithet_ReadsEmptyAndKeepsTheMark()
-    {
-        CVistaRow row = TInterfaceDeportment.TPanelRowRead(TInterfaceDeportment.TVistaRowCreate(4, null, true));
-
-        Assert.Equal(new CVistaRow(4, "aqua", "Latin", string.Empty, "aqua (1)", true), row);
-    }
 }

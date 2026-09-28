@@ -67,11 +67,18 @@ The engine's commit and its register creation ask the same question, so the rule
 
 ## `public LEntryDraft LTagAdd(LEntryDraft content, LRequestTagAddition request)`
 
-A new tag with the typed text and a minted id, at the place asked for.
+A new tag with the typed text trimmed and a minted id, at the place asked for.
+Blank text, or text the card already holds, leaves the draft unchanged.
+Every driver and the markup import meet the same rule here, not in a view.
 
 ## `public LEntryDraft LTagInsert(LEntryDraft content, LRequestTagPick request)`
 
 Copies the stored tag under its own id into the card, unless the card already holds it.
+A stored tag whose text the card already holds is skipped too.
+
+## `private static bool LTagHeldCheck(IReadOnlyList<LTagDraft> tags, string text)`
+
+Whether one of the card's tags already reads exactly this text.
 
 ## `public static LEntryDraft LTagChange(LEntryDraft content, LRequestTagText request)`
 

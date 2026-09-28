@@ -28,7 +28,7 @@ internal sealed class PLeaf
         CultureInfo culture = CultureInfo.CurrentCulture;
         string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
         string title = (string)state.Convert(
-            [LCard.LCardStateRead(card.LCardDraftTitle), unknown], typeof(string), string.Empty, culture);
+            [CFolio.CFolioStateRead(card.LCardDraftTitle), unknown], typeof(string), string.Empty, culture);
         if (QLook.QLookPartFind<TextBlock>(container, "PCardRank") is TextBlock rank)
         {
             rank.Text = card.LCardDraftPosition.ToString(culture);
@@ -48,7 +48,7 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCollocation") is TextBlock expression)
         {
             string text = (string)state.Convert(
-                [LCard.LCardStateRead(card.LCardDraftExpression), unknown], typeof(string), string.Empty, culture);
+                [CFolio.CFolioStateRead(card.LCardDraftExpression), unknown], typeof(string), string.Empty, culture);
             expression.Text = text;
             expression.Visibility = QLook.QLookVisibleRead(text.Length > 0);
         }
@@ -56,7 +56,7 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
         {
             string text = (string)state.Convert(
-                [LCard.LCardStateRead(card.LCardDraftMeaning), unknown], typeof(string), string.Empty, culture);
+                [CFolio.CFolioStateRead(card.LCardDraftMeaning), unknown], typeof(string), string.Empty, culture);
             meaning.Text = text;
             meaning.Visibility = QLook.QLookVisibleRead(text.Length > 0);
         }
@@ -141,9 +141,10 @@ internal sealed class PLeaf
         LExampleDraft? example = sentence.LSentenceDraftExample;
         object[] parts =
         [
-            sentence.LSentenceDraftParticle,
-            sentence.LSentenceDraftDependence,
-            example?.LExampleDraftText ?? (object)string.Empty,
+            CFolio.CFolioStateRead(sentence.LSentenceDraftParticle),
+            CFolio.CFolioStateRead(sentence.LSentenceDraftDependence),
+            CFolio.CFolioStateRead(
+                sentence.LSentenceDraftExample?.LExampleDraftText ?? LStateValue.LStateValueUnspecified),
             QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
         ];
         TextBlock? frame = QLook.QLookPartFind<TextBlock>(container, "PExampleFrame");
@@ -173,7 +174,10 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PExampleCitation") is TextBlock citation)
         {
             citation.Text = (string)PLeafCitation.Convert(
-                example?.LExampleDraftReference ?? (object)string.Empty, typeof(string), string.Empty, culture);
+                example?.LExampleDraftReference.LStateAnchorShown ?? (object)string.Empty,
+                typeof(string),
+                string.Empty,
+                culture);
             citation.SetBinding(
                 FrameworkElement.MarginProperty, new Binding(nameof(PMention.Margin)) { Source = text });
             citation.SetBinding(
@@ -185,7 +189,7 @@ internal sealed class PLeaf
         if (QLook.QLookPartFind<ItemsControl>(container, "PExampleGloss") is ItemsControl gloss)
         {
             gloss.ItemsSource = (IEnumerable<PGloss>)new PGlossConverter().Convert(
-                example?.LExampleDraftGloss ?? (object)string.Empty,
+                CFolio.CFolioGlossRead(sentence.LSentenceDraftExample?.LExampleDraftGloss ?? []),
                 typeof(IEnumerable<PGloss>),
                 string.Empty,
                 culture);
@@ -245,7 +249,7 @@ internal sealed class PLeaf
     private static string PLeafStateRead(LStateValue value)
     {
         return (string)new QStateConverter().Convert(
-            [LCard.LCardStateRead(value), QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
+            [CFolio.CFolioStateRead(value), QLocalizationCatalog.QLocalizationTextRead("Display.Unknown")],
             typeof(string),
             string.Empty,
             CultureInfo.CurrentCulture);

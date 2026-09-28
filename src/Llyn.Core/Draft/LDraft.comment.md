@@ -44,6 +44,10 @@ Never null, so a reader walks it without a check.
 The credits as editor rows, each knowing its place and whether it can move.
 The source editor copies them and splices its own blank row in, so it never counts the credits itself.
 
+## `public LMentionDraft? LDraftEtymologyFind(LMentionDraft span)`
+
+The etymology span the given span lies inside, or null when it lies inside none.
+
 ## `public LMentionDraft? LDraftMentionFind(long cardId, long sentenceId, LMentionDraft span)`
 
 The Mention the span lies inside, in the example these ids name, or none.

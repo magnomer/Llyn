@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -12,11 +11,11 @@ internal sealed class PSentenceConverter : IMultiValueConverter
 
     private const string PSentenceConverterText = "Text";
 
-    private LSentenceOrder _pSentenceConverterOrder = LSentenceOrder.LSentenceOrderDefault;
+    private CSentenceOrder? _pSentenceConverterOrder;
 
-    internal void PSentenceConverterApply(LSentenceOrder order)
+    internal void PSentenceConverterApply(CSentenceOrder order)
     {
-        _pSentenceConverterOrder = order ?? LSentenceOrder.LSentenceOrderDefault;
+        _pSentenceConverterOrder = order;
     }
 
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -25,21 +24,12 @@ internal sealed class PSentenceConverter : IMultiValueConverter
 
         string mark = values.Length > 3 && values[3] is string marked ? marked : string.Empty;
         string part = parameter as string ?? string.Empty;
-        if (part == PSentenceConverterText)
-        {
-            return PSentenceConverterFormat(values, 2, mark);
-        }
-
-        if (part == PSentenceConverterHead)
-        {
-            return _pSentenceConverterOrder.LSentenceOrderFormat(
-                PSentenceConverterFormat(values, 0, mark), PSentenceConverterFormat(values, 1, mark));
-        }
-
-        return _pSentenceConverterOrder.LSentenceOrderFormat(
-            PSentenceConverterFormat(values, 0, mark),
-            PSentenceConverterFormat(values, 1, mark),
-            PSentenceConverterFormat(values, 2, mark));
+        return CCard.CCardOrderRead(
+            _pSentenceConverterOrder,
+            part == PSentenceConverterText ? CStateValue.CStateValueEmpty : PSentenceConverterRead(values, 0),
+            part == PSentenceConverterText ? CStateValue.CStateValueEmpty : PSentenceConverterRead(values, 1),
+            part == PSentenceConverterHead ? CStateValue.CStateValueEmpty : PSentenceConverterRead(values, 2),
+            mark);
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -47,18 +37,8 @@ internal sealed class PSentenceConverter : IMultiValueConverter
         throw new NotSupportedException();
     }
 
-    private static string PSentenceConverterFormat(object[] values, int place, string mark)
+    private static CStateValue PSentenceConverterRead(object[] values, int place)
     {
-        if (values.Length <= place)
-        {
-            return string.Empty;
-        }
-
-        if (values[place] is not LStateValue state)
-        {
-            return string.Empty;
-        }
-
-        return state.LStateValueLegible ? state.LStateValueShow() : state.LStateValueUncertain ? mark : string.Empty;
+        return values.Length > place && values[place] is CStateValue state ? state : CStateValue.CStateValueEmpty;
     }
 }

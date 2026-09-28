@@ -25,6 +25,11 @@ The reflex rules of a language, which tell a driver which reflex rows start fold
 
 Where a language puts its particles and its dependents in a sentence.
 
+## `internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)`
+
+Maps the engine's order into the Conduct shape, holding no rule.
+The sentence gates hand it the engine's answer unread, so they name no engine record.
+
 ## `public IReadOnlyList<string> CCatalogSchemeRead(string language)`
 
 The transcription schemes a language offers.

@@ -31,6 +31,13 @@ public sealed record LDraft(
         return LAuthorRow.LAuthorRowCreate(LDraftAuthor);
     }
 
+    public LMentionDraft? LDraftEtymologyFind(LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        return LDraftContent.LEntryDraftEtymology.LEtymologyDraftFind(span);
+    }
+
     public LMentionDraft? LDraftMentionFind(long cardId, long sentenceId, LMentionDraft span)
     {
         ArgumentNullException.ThrowIfNull(span);

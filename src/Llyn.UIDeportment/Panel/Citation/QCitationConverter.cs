@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -25,12 +24,7 @@ internal sealed class QCitationConverter : IValueConverter, IMultiValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not LStateAnchor anchor)
-        {
-            return string.Empty;
-        }
-
-        if (anchor.LStateAnchorShown is not long id)
+        if (value is not long id)
         {
             return string.Empty;
         }
@@ -47,17 +41,12 @@ internal sealed class QCitationConverter : IValueConverter, IMultiValueConverter
     {
         ArgumentNullException.ThrowIfNull(values);
 
-        if (values.ElementAtOrDefault(0) is not LStateAnchor anchor)
-        {
-            return string.Empty;
-        }
-
         if (values.ElementAtOrDefault(1) is not ObservableCollection<QCitationItem> catalog)
         {
             return string.Empty;
         }
 
-        return PSentence.PSentenceCitationFind(catalog, anchor.LStateAnchorShown);
+        return PSentence.PSentenceCitationFind(catalog, values.ElementAtOrDefault(0) as long?);
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

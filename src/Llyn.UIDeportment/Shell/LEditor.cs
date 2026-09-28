@@ -38,7 +38,8 @@ public sealed class LEditor
         _lSettingsPort = settings;
         LEditorDesk = new CDesk(drafts, "Input", envoy);
         LEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media);
-        LEditorCard = new LCard(LEditorDesk, drafts, entries, phonology);
+        LEditorCard = new CCard(LEditorDesk, drafts, entries);
+        LEditorSentence = new CSentence(LEditorDesk, phonology);
         LEditorClip = new LClip(LEditorDesk);
         LEditorNotation = new LNotation(LEditorDesk);
         LEditorSounding = new LSounding(phonology, drafts);
@@ -63,7 +64,9 @@ public sealed class LEditor
 
     public LDisplay LEditorDisplay { get; }
 
-    public LCard LEditorCard { get; }
+    public CCard LEditorCard { get; }
+
+    public CSentence LEditorSentence { get; }
 
     public LClip LEditorClip { get; }
 
@@ -160,12 +163,12 @@ public sealed class LEditor
 
     private void LEditorDraftShow(LDraft draft)
     {
-        LEditorDraftChanged?.Invoke(LCard.LCardEntryRead(draft.LDraftContent));
+        LEditorDraftChanged?.Invoke(CFolio.CFolioEntryRead(draft.LDraftContent));
     }
 
     public CEntryDraft? LEditorDraftRead()
     {
-        return LEditorContent is LEntryDraft draft ? LCard.LCardEntryRead(draft) : null;
+        return LEditorContent is LEntryDraft draft ? CFolio.CFolioEntryRead(draft) : null;
     }
 
     public string LEditorPronunciationRead()
@@ -177,7 +180,7 @@ public sealed class LEditor
     public IReadOnlyList<CTranslationTarget> LEditorEtymonRead()
     {
         return LEditorContent is LEntryDraft draft
-            ? LCard.LCardTargetRead(LEditorDisplay.LDisplayEtymonRead(draft))
+            ? CFolio.CFolioTargetRead(LEditorDisplay.LDisplayEtymonRead(draft))
             : [];
     }
 
@@ -286,7 +289,7 @@ public sealed class LEditor
         try
         {
             return _lDraftPort.LEngineTargetFind(LEditorDesk.CDeskId)
-                .ToDictionary(pair => pair.Key, pair => LCard.LCardTargetRead([pair.Value])[0]);
+                .ToDictionary(pair => pair.Key, pair => CFolio.CFolioTargetRead([pair.Value])[0]);
         }
         catch (Exception)
         {

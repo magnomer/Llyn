@@ -127,7 +127,7 @@ public sealed class LShelf
 
     public IReadOnlyList<CCatalogReference> LShelfRowsRead()
     {
-        return LOeuvre.LOeuvreReferenceRead(
+        return COeuvre.COeuvreReferenceRead(
             LShelfRowsApply(_lShelfVista is LVista vista ? _lEntryPort.LEngineReferenceFind(vista) : []));
     }
 

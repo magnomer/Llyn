@@ -12,6 +12,8 @@ public sealed record LCatalogReference(
     int LCatalogReferenceUsage,
     bool LCatalogReferenceChosen = false)
 {
+    public string? LCatalogReferenceWriter => LCatalogReferenceStored.LReferenceCreditRead(LCatalogReferenceCredit);
+
     private static readonly char[] LCatalogReferenceBreak = [' ', '\t', '(', ')', ','];
 
     public static LCatalogReference LCatalogReferenceCreate(

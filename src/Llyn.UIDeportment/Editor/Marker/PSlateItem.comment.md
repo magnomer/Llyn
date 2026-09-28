@@ -2,7 +2,7 @@
 
 ## `internal sealed class PSlateItem`
 
-One stored tag offered in the dropdown: the id of the stored Tag and the text it reads.
+One stored tag offered in the dropdown: the id of the stored Tag and its text in three pieces.
 Choosing a row links that Tag by id, so a rename in the workspace follows the card.
 
 ## `public string PSlateItemLead`

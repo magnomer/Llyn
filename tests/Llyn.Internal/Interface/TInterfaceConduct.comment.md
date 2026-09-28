@@ -42,6 +42,30 @@ The leave question records `Leave` and answers `answer` as given.
 
 Builds a desk over a real draft outlet on `engine`, as the owners in Deportment do.
 
+## `internal static CVistaRow TPanelRowRead(LVistaRow row)`
+
+Relays the internal entry row map.
+
+## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
+
+Builds one Latin entry row with the given id, epithet and chosen mark.
+
+## `internal static CCard TCardCreate(LEngine engine, CDesk desk)`
+
+Builds the card gates over `desk` and real outlets on `engine`, as the editor does.
+
+## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
+
+Builds the sentence gates over `desk`, a real phonology outlet and an atelier's catalog on `engine`.
+
+## `internal static CStateValue TCardStateRead(LStateValue value)`
+
+Relays the internal written-value map.
+
+## `internal static CEntryDraft TCardEntryRead(LEntryDraft draft)`
+
+Relays the entry draft map, so the facts pass engine drafts through the boundary.
+
 ## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`
 
 Builds a session over `desk` alone, starting it by vista as the guild does.

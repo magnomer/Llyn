@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
-using Llyn.Core;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -10,17 +10,17 @@ internal sealed class PLinkConverter : IValueConverter
 {
     private readonly Dictionary<long, LLinkChip> _pLinkConverterTargets = [];
 
-    internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)
+    internal void PLinkConverterShow(IReadOnlyList<CTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
 
         _pLinkConverterTargets.Clear();
-        foreach (LTranslationTarget target in targets)
+        foreach (CTranslationTarget target in targets)
         {
-            _pLinkConverterTargets[target.LTranslationTargetId] = new LLinkChip(
-                target.LTranslationTargetId,
-                target.LTranslationTargetHeadword,
-                target.LTranslationTargetLanguage);
+            _pLinkConverterTargets[target.CTranslationTargetId] = new LLinkChip(
+                target.CTranslationTargetId,
+                target.CTranslationTargetHeadword,
+                target.CTranslationTargetLanguage);
         }
     }
 

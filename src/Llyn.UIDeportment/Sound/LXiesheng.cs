@@ -145,7 +145,7 @@ public sealed class LXiesheng
 
     public IReadOnlyList<CVistaRow> LXieshengKindredRead()
     {
-        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LXieshengKindredFind(), LPanel.LPanelRowRead);
+        IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(LXieshengKindredFind(), CPanel.CPanelRowRead);
         _lKindredCount = rows.Count;
         return rows;
     }

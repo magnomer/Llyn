@@ -141,6 +141,13 @@ public sealed partial class LTenure
         }
     }
 
+    public LMentionDraft? LTenureEtymologyFind(LMentionDraft span)
+    {
+        ArgumentNullException.ThrowIfNull(span);
+
+        return LTenureRead()?.LDraftEtymologyFind(span);
+    }
+
     public LMentionDraft? LTenureMentionFind(long cardId, long sentenceId, LMentionDraft span)
     {
         ArgumentNullException.ThrowIfNull(span);

@@ -39,7 +39,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         Resources.MergedDictionaries.Add(_pImageTemplate);
         _pVideoTemplate = new PVideoTemplate(this);
         Resources.MergedDictionaries.Add(_pVideoTemplate);
-        _pLabelTemplate = new PLabelTemplate(this);
+        _pLabelTemplate = new PLabelTemplate();
         Resources.MergedDictionaries.Add(_pLabelTemplate);
         _pLinkTemplate = new PLinkTemplate(this);
         Resources.MergedDictionaries.Add(_pLinkTemplate);
@@ -310,7 +310,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         PContour.PContourTonal = _lEditor.LEditorTimbre.QTimbreTonal;
         PPronunciation.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
         PAccent.Visibility = QLook.QLookVisibleRead(_lEditor.LEditorTimbre.QTimbreSpoken);
-        PSentenceFrameLoad(_lEditor.LEditorLanguage);
+        PSentenceFrameRefine();
         PCategoryLoad();
     }
 

@@ -407,17 +407,4 @@ public sealed class LPanel
     {
         return (LSubject)subject;
     }
-
-    internal static CVistaRow LPanelRowRead(LVistaRow row)
-    {
-        ArgumentNullException.ThrowIfNull(row);
-
-        return new CVistaRow(
-            row.LVistaRowId,
-            row.LVistaRowHeadword,
-            row.LVistaRowLanguage,
-            row.LVistaRowEpithet ?? string.Empty,
-            row.LVistaRowName,
-            row.LVistaRowChosen);
-    }
 }

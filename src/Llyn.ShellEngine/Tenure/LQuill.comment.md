@@ -58,6 +58,39 @@ Drops one Mention, sent at once.
 
 Points one Mention at a sense of its Entry, sent at once.
 
+## `public void LQuillTagAdd(long card, string text, int position)`
+
+Adds a tag with the typed text to a card, sent at once.
+The clerk trims it and skips blank or held text.
+
+## `public void LQuillTagInsert(long card, long tag, int position)`
+
+Links a stored tag to a card, sent at once.
+
+## `public void LQuillTagRemove(long card, long tag)`
+
+Unlinks one tag from a card, sent at once.
+
+## `public void LQuillSentenceAdd(long card, int position)`
+
+Adds an empty sentence row to a card at the given position, sent at once.
+
+## `public void LQuillSentenceRemove(long card, long sentence)`
+
+Drops one sentence row from a card, sent at once.
+
+## `public void LQuillSentenceSet(long card, long sentence, string text)`
+
+Writes a sentence's text as known, deferred so typing folds into one change.
+
+## `public void LQuillParticleSet(long card, long sentence, string text)`
+
+Writes a sentence's particle as known, deferred like the text.
+
+## `public void LQuillDependenceSet(long card, long sentence, string text)`
+
+Writes a sentence's dependence as known, deferred like the text.
+
 ## `public void LQuillSituationSet(string title, string description, string kind)`
 
 Defers the scenario's title, description and kind as one body.
@@ -71,3 +104,24 @@ Builds the body over the held situation, taken as a parameter so no engine answe
 
 An empty field whose held value is unknown stays unknown.
 Any other text is written as it stands.
+
+## `public void LQuillEtymologySet(string text)`
+
+Defers the held entry's typed etymology narrative.
+
+## `public void LQuillEtymonAdd(long entry, int position)`
+
+Links a source entry at the given position, sent at once.
+
+## `public void LQuillEtymonRemove(long entry)`
+
+Drops one source link, sent at once.
+
+## `public void LQuillMentionSave(int offset, int length, long entry)`
+
+Links a span of the narrative to an entry, sent at once.
+Entry zero drops the span over that whole length.
+
+## `public void LQuillCitationSet(long card, long sentence, long reference)`
+
+Points a card sentence's citation at a Source, sent at once.

@@ -24,6 +24,11 @@ Three rounds cover cards, then their sentences, then the check that nothing is l
 
 One round: applies what the engine still finds missing and says whether anything was.
 
+## `public LMentionDraft? LTenureEtymologyFind(LMentionDraft span)`
+
+The span of the live draft's etymology that the given span lies inside.
+It reads the live draft, since the etymology gates act on what the user sees now.
+
 ## `public LMentionDraft? LTenureMentionFind(long cardId, long sentenceId, LMentionDraft span)`
 
 The Mention the span lies inside, in the Example one sentence field holds, or none.

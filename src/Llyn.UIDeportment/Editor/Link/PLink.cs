@@ -97,7 +97,7 @@ public partial class PEditor
         IReadOnlyList<CVistaRow> found;
         try
         {
-            found = _lEditor.LEditorCard.LCardProspectFind(word);
+            found = _lEditor.LEditorCard.CCardProspectFind(word);
         }
         catch (Exception)
         {
@@ -232,7 +232,7 @@ public partial class PEditor
 
         try
         {
-            _lEditor.LEditorCard.LCardCourtDelete(PEditorDraft, id);
+            _lEditor.LEditorCard.CCardCourtDelete(PEditorDraft, id);
         }
         catch (Exception)
         {
@@ -252,8 +252,8 @@ public partial class PEditor
         try
         {
             long? entry = _lEditor.LEditorEntry;
-            single = _lEditor.LEditorCard.LCardTranslationResolve(word, entry);
-            found = single is null || offered ? _lEditor.LEditorCard.LCardProspectFind(word) : [];
+            single = _lEditor.LEditorCard.CCardTranslationResolve(word, entry);
+            found = single is null || offered ? _lEditor.LEditorCard.CCardProspectFind(word) : [];
         }
         catch (Exception exception)
         {

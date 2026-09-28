@@ -11,4 +11,3 @@ These move to the portable suite once the panel sinks into Conduct.
 The export format, the print side and the ink cast the same way, so their order is held too.
 A print ticket keeps what the dialog answered, and a missing sheet size takes the local sheet.
 Every label word lands on the engine word of the same name.
-An entry row copies its chosen mark, and a missing epithet reads as empty.

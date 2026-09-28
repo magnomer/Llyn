@@ -182,13 +182,6 @@ internal static partial class TInterface
         LSpeechValue speech, LMorphology morphology, LInflection? inflection, LState state) =>
         new(speech, morphology, inflection, state, new LParadigm(speech.LSpeechValueId, []));
 
-    internal static string TSentenceOrderFormat(this LSentenceOrder order, string particle, string dependence) =>
-        order.LSentenceOrderFormat(particle, dependence);
-
-    internal static string TSentenceOrderFormat(
-        this LSentenceOrder order, string particle, string dependence, string text) =>
-        order.LSentenceOrderFormat(particle, dependence, text);
-
     internal static LSentenceOrder TSentenceOrderCreate(int particle, int dependence) =>
         new(particle, dependence);
 

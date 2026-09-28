@@ -142,6 +142,21 @@ internal static class TInterfaceConduct
     internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy, string origin, CSubject subject) =>
         new(new LDraftOutlet(engine), scope, envoy, origin, subject);
 
+    internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
+
+    internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
+        new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
+
+    internal static CCard TCardCreate(LEngine engine, CDesk desk) => new(
+        desk, new LDraftOutlet(engine), new LEntryOutlet(engine));
+
+    internal static CSentence TSentenceCreate(LEngine engine, CDesk desk) => new(
+        desk, new LPhonologyOutlet(engine));
+
+    internal static CStateValue TCardStateRead(LStateValue value) => CFolio.CFolioStateRead(value);
+
+    internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => CFolio.CFolioEntryRead(draft);
+
     internal static void TDeskVistaRestore(this CDesk desk, LVista vista) => desk.CDeskVistaRestore(vista);
 
     internal static void TDeskDefer(this CDesk desk, LRequest request) => desk.CDeskDefer(request);

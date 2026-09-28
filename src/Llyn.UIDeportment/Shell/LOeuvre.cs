@@ -61,7 +61,7 @@ public sealed class LOeuvre
 
     public IReadOnlyList<CCatalogReference> LOeuvreRowsRead()
     {
-        return LOeuvreReferenceRead(LOeuvreRowsApply(LOeuvreRowsFind()));
+        return COeuvre.COeuvreReferenceRead(LOeuvreRowsApply(LOeuvreRowsFind()));
     }
 
     private IReadOnlyList<LCatalogReference> LOeuvreRowsFind()
@@ -159,22 +159,6 @@ public sealed class LOeuvre
             sheet.LColophonTally);
     }
 
-    internal static IReadOnlyList<CCatalogReference> LOeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)
-    {
-        return LSplice.LSpliceBuild(
-            rows,
-            static row => new CCatalogReference(
-                row.LCatalogReferenceStored.LReferenceId,
-                row.LCatalogReferenceName,
-                row.LCatalogReferenceByline,
-                LOeuvreCreditRead(
-                    row.LCatalogReferenceStored.LReferenceCreditRead(row.LCatalogReferenceCredit),
-                    row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkUncertain),
-                LCard.LCardStateRead(row.LCatalogReferenceStored.LReferenceYear),
-                row.LCatalogReferenceUsage,
-                row.LCatalogReferenceChosen));
-    }
-
     internal static IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(
         IReadOnlyList<LCatalogAuthor> rows, Func<string, string> localize)
     {
@@ -210,13 +194,8 @@ public sealed class LOeuvre
             usage.LUsageName,
             usage.LUsageEpithet,
             usage.LUsageLanguage,
-            LCard.LCardStateRead(usage.LUsageTitle),
+            CFolio.CFolioStateRead(usage.LUsageTitle),
             usage.LUsageQuoted,
             usage.LUsageCollocated);
-    }
-
-    private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)
-    {
-        return credit is null ? new CStateValue(string.Empty, uncertain, false) : new CStateValue(credit, false, true);
     }
 }

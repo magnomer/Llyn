@@ -11,9 +11,9 @@ Duplicates are refused before a request is sent.
 
 Where the entry's text goes as it is typed, so the editor can offer matching Tags.
 
-## `internal Func<string, bool>? PCardLabelDispatcher { get; set; }`
+## `internal Action<string>? PCardLabelDispatcher { get; set; }`
 
-Where a typed tag goes to become a chip, answering whether a request went out.
+Where a typed tag goes to become a chip, as the user wrote it.
 
 ## `internal string PCardLabelText`
 
@@ -38,10 +38,6 @@ Steps the entry one place along the field and reports whether there was anywhere
 ## `internal void PCardLabelClear()`
 
 Empties the entry without reading it as a further edit.
-
-## `internal bool PCardLabelMatch(long? id)`
-
-Whether the card already carries the stored Tag.
 
 ## `internal bool PCardLabelCheck(string text)`
 

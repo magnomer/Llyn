@@ -275,7 +275,7 @@ public sealed class LLecternSound
     private void LLecternTranscriptionShow()
     {
         _lLecternSoundTranscription.Clear();
-        foreach (CTranscriptionDraft spelled in LSounding.LSoundingTranscriptionRead(
+        foreach (CTranscriptionDraft spelled in CSounding.CSoundingTranscriptionRead(
             _lLecternSoundDisplay.LDisplayTranscriptionRead()))
         {
             _lLecternSoundTranscription.Add(LTranscriptionItem.LTranscriptionItemCreate(spelled));
@@ -288,7 +288,7 @@ public sealed class LLecternSound
         HashSet<string> folded = LReflexItem.LReflexFoldRead(
             _lLecternSoundAtelier, _lLecternSoundDisplay.LDisplayShown!.LEntryDraftLanguage);
         foreach (LReflexItem row in LReflexItem.LReflexItemScan(
-            _lLecternSoundAtelier, LSounding.LSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
+            _lLecternSoundAtelier, CSounding.CSoundingReflexRead(_lLecternSoundDisplay.LDisplayReflexRead()), folded))
         {
             _lLecternSoundReflex.Add(row);
         }

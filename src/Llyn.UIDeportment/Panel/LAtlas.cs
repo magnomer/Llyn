@@ -86,7 +86,7 @@ public sealed class LAtlas
     public IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
     {
         return _lAtlasVista is LVista vista
-            ? LSplice.LSpliceBuild(_lEntryPort.LEngineSituationFind(vista, unknown, untitled), LAtlasRowRead)
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineSituationFind(vista, unknown, untitled), CAtlas.CAtlasRowRead)
             : [];
     }
 
@@ -144,26 +144,16 @@ public sealed class LAtlas
             kinds);
     }
 
-    internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)
-    {
-        return new CCatalogSituation(
-            row.LCatalogSituationStored.LSituationId,
-            row.LCatalogSituationName,
-            row.LCatalogSituationUsage,
-            LCard.LCardStateRead(row.LCatalogSituationStored.LSituationKind),
-            row.LCatalogSituationChosen);
-    }
-
     internal static CSituationDraft? LAtlasSituationRead(LSituation? situation)
     {
         return situation is null
             ? null
             : new CSituationDraft(
                 situation.LSituationId,
-                LCard.LCardStateRead(situation.LSituationTitle),
-                LCard.LCardStateRead(situation.LSituationKind),
-                LCard.LCardStateRead(situation.LSituationDescription),
-                LCard.LCardImageRead(situation.LSituationImage),
-                LCard.LCardVideoRead(situation.LSituationVideo));
+                CFolio.CFolioStateRead(situation.LSituationTitle),
+                CFolio.CFolioStateRead(situation.LSituationKind),
+                CFolio.CFolioStateRead(situation.LSituationDescription),
+                CFolio.CFolioImageRead(situation.LSituationImage),
+                CFolio.CFolioVideoRead(situation.LSituationVideo));
     }
 }

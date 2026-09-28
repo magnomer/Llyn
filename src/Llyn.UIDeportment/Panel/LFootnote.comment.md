@@ -10,7 +10,7 @@ Its delete seam always refuses, because an entry is never deleted from this list
 
 ## `public IReadOnlyList<CVistaRow> LFootnoteRowsRead()`
 
-The citing entries as Conduct rows, mapped by `LPanel.LPanelRowRead` as the quotation list maps its own.
+The citing entries as Conduct rows, mapped by `CPanel.CPanelRowRead` as the quotation list maps its own.
 The count is kept for the empty verdict.
 
 ## `public event Action<long>? LFootnoteCreated;`

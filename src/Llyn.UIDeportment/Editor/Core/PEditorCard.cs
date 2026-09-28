@@ -137,7 +137,7 @@ public partial class PEditor
                 PCardChangeHandle(card, field, written);
                 break;
             case PSentence row when PCardSentenceFind(row) is PCard card:
-                PSentenceChangeHandle(card, row, field, box);
+                PSentenceFieldObserve(card, row, field, box);
                 break;
             case PGloss gloss:
                 PGlossChangeHandle(gloss, written);

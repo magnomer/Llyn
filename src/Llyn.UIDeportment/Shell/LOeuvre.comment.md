@@ -37,10 +37,6 @@ The sheet of the Source just loaded, for the guild view's colophon.
 Reads the sheet of a Source draft and shapes it, failing with the caller's message when no Source is held.
 The oeuvre and the shelf both call it, so the colophon map is declared once.
 
-## `internal static IReadOnlyList<CCatalogReference> LOeuvreReferenceRead(IReadOnlyList<LCatalogReference> rows)`
-
-The one map for reference rows, shared with the card, the anthology and the shelf.
-
 ## `internal static IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(`
 
 Maps the guild's roll or union rows to their shape, each source count worded by `localize`.
@@ -54,7 +50,3 @@ Maps the vita the engine built to its shape, with its fellows and citing places.
 
 Maps one citing place to its shape.
 The lectern's usage rows build through it too, so both lists word a place alike.
-
-## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
-
-The authors as a written value, uncertain when the engine marks them unknown.

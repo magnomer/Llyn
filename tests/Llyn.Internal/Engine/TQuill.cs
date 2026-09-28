@@ -179,6 +179,93 @@ public sealed class TQuill
         Assert.True(held.LSituationDescription.LStateValueEmpty);
     }
 
+    [Fact]
+    public void EtymologySet_TextTyped_WritesNarrative()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = TQuillEntryStart(engine);
+
+        tenure.TQuillCreate().TQuillEtymologySet("from Latin");
+
+        Assert.Equal("from Latin", tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftText);
+    }
+
+    [Fact]
+    public void EtymonAdd_TwoSources_KeepsTheGivenOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
+        long dog = engine.TEngineTranslationCreate("canis", "Latin").LEntryId;
+        LTenure tenure = TQuillEntryStart(engine);
+        LQuill quill = tenure.TQuillCreate();
+
+        quill.TQuillEtymonAdd(cat, int.MaxValue);
+        quill.TQuillEtymonAdd(dog, 0);
+
+        Assert.Equal([dog, cat], tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftEtymons);
+    }
+
+    [Fact]
+    public void EtymonRemove_AddedSource_DropsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
+        LTenure tenure = TQuillEntryStart(engine);
+        LQuill quill = tenure.TQuillCreate();
+        quill.TQuillEtymonAdd(cat, int.MaxValue);
+
+        quill.TQuillEtymonRemove(cat);
+
+        Assert.Empty(tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftEtymons);
+    }
+
+    [Fact]
+    public void MentionSave_SpanOverEntry_LinksNarrativeSpan()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
+        LTenure tenure = TQuillEntryStart(engine);
+        LQuill quill = tenure.TQuillCreate();
+        quill.TQuillEtymologySet("from cattus");
+
+        quill.TQuillMentionSave(5, 6, cat);
+
+        LMentionDraft linked = Assert.Single(
+            tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftMentions);
+        Assert.Equal(cat, linked.LMentionDraftEntry);
+        Assert.Equal(5, linked.LMentionDraftOffset);
+    }
+
+    [Fact]
+    public void CitationSet_SourcePicked_CitesSentence()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference notes = engine.TEngineCitationCreate("Field notes");
+        LTenure tenure = TQuillEntryStart(engine);
+        LDraft carded = engine.TEngineRequestApply(
+            TInterface.TRequestAdditionCreate(tenure.LTenureId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        long card = carded.LDraftContent.LEntryDraftMeanings[^1].LCardDraftId;
+        LDraft rowed = engine.TEngineRequestApply(TInterface.TSentenceAdditionCreate(tenure.LTenureId, card, 0));
+        long sentence = TInterface.TRequestCardFind(rowed.LDraftContent, card).LCardDraftSentence[0].LSentenceDraftId;
+
+        tenure.TQuillCreate().TQuillCitationSet(card, sentence, notes.LReferenceId);
+
+        LExampleDraft? example = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, card)
+            .LCardDraftSentence[0].LSentenceDraftExample;
+        Assert.Equal(notes.LReferenceId, example?.LExampleDraftReference.LStateAnchorShown);
+    }
+
+    private static LTenure TQuillEntryStart(LEngine engine)
+    {
+        engine.TEngineDelaySet(0);
+        return engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+    }
+
     private static LTenure TQuillExampleStart(LEngine engine, LStateValue text)
     {
         engine.TEngineDelaySet(0);

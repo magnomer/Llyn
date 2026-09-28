@@ -20,7 +20,7 @@ internal sealed partial class PCard
 
     internal Action<string>? PCardLabelNotice { get; set; }
 
-    internal Func<string, bool>? PCardLabelDispatcher { get; set; }
+    internal Action<string>? PCardLabelDispatcher { get; set; }
 
     internal string PCardLabelText => _pCardLabelCaret.PLabelCaretText;
 
@@ -75,24 +75,6 @@ internal sealed partial class PCard
         _pCardLabelCaret.PLabelCaretText = string.Empty;
         _pCardLabelBusy = false;
         PCardLabelUpdate();
-    }
-
-    internal bool PCardLabelMatch(long? id)
-    {
-        if (id is null or <= 0)
-        {
-            return false;
-        }
-
-        foreach (object row in PCardLabel)
-        {
-            if (row is PLabelChip chip && chip.PLabelChipId == id)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     internal bool PCardLabelCheck(string text)

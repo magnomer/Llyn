@@ -9,34 +9,6 @@ namespace Llyn.Tests;
 public sealed class TEditorSeal
 {
     [Fact]
-    public void CardStateRead_UnknownValue_CarriesTheUncertainVerdict()
-    {
-        Assert.Equal(
-            new CStateValue(string.Empty, true, false),
-            TInterfaceDeportment.TCardStateRead(LStateValue.LStateValueUnknown));
-    }
-
-    [Fact]
-    public void CardEntryRead_ThreePronunciations_SplitsThePrimaryFromTheAccents()
-    {
-        LEntryDraft draft = TInterface.TEntryDraftCreate("colour", "English", "ˈkʌlə", "a note", [], []) with
-        {
-            LEntryDraftPronunciations =
-            [
-                TInterface.TPronunciationDraftCreate("ˈkʌlə", "RP"),
-                TInterface.TPronunciationDraftCreate("ˈkʌlɚ", "GA"),
-                TInterface.TPronunciationDraftCreate(string.Empty, "AU"),
-            ],
-        };
-
-        CEntryDraft shaped = TInterfaceDeportment.TCardEntryRead(draft);
-
-        Assert.Equal("RP", shaped.CEntryDraftPronunciation?.CPronunciationDraftVariety);
-        Assert.Equal(["GA", "AU"], shaped.CEntryDraftAccents.Select(spoken => spoken.CPronunciationDraftVariety));
-        Assert.False(shaped.CEntryDraftReflected);
-    }
-
-    [Fact]
     public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()
     {
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };

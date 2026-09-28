@@ -92,20 +92,3 @@ The lectern calls it too, so no driver groups slots.
 
 The frequency chip for a set of source rows, or null when there are none.
 The display statics rank and format the rows, so the rule stays in Conduct.
-
-## `internal static IReadOnlyList<CPronunciationDraft> LSoundingPronunciationRead(`
-
-The pronunciations of a draft, shaped for the accent rows and the lectern.
-
-## `internal static CPronunciationDraft? LSoundingPrimaryRead(LPronunciationDraft? spoken)`
-
-The main pronunciation, or null when the draft holds none.
-
-## `internal static IReadOnlyList<CTranscriptionDraft> LSoundingTranscriptionRead(`
-
-The transcriptions of a draft, shaped for the transcription rows and the lectern.
-
-## `internal static IReadOnlyList<CReflexDraft> LSoundingReflexRead(IReadOnlyList<LReflexDraft> reflexes)`
-
-The reflexes of a draft, shaped for the reflex rows and the lectern.
-The tone travels as text, so no driver reads an anatomy.

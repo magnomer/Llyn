@@ -33,7 +33,11 @@ public sealed class CCatalog
 
     public CSentenceOrder CCatalogOrderRead(string language)
     {
-        LSentenceOrder order = _cCatalogAtelier.CAtelierPhonologyPort.LEngineOrderRead(language);
+        return CCatalogOrderRead(_cCatalogAtelier.CAtelierPhonologyPort.LEngineOrderRead(language));
+    }
+
+    internal static CSentenceOrder CCatalogOrderRead(LSentenceOrder order)
+    {
         return new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence);
     }
 

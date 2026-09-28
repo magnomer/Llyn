@@ -121,10 +121,7 @@ public partial class PEditor
             return;
         }
 
-        if (!card.PCardLabelMatch(item.PSlateItemId) && !card.PCardLabelCheck(item.PSlateItemText))
-        {
-            PLabelSend(card, item.PSlateItemId);
-        }
+        _lEditor.LEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
 
         card.PCardLabelClear();
     }
@@ -141,7 +138,7 @@ public partial class PEditor
         IReadOnlyList<CTag> found;
         try
         {
-            found = _lEditor.LEditorCard.LCardTagFind(word);
+            found = _lEditor.LEditorCard.CCardTagFind(word);
         }
         catch (Exception)
         {

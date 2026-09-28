@@ -56,6 +56,31 @@ internal static partial class TInterface
         quill.LQuillMentionSet(0, 0, mention, sense);
     }
 
+    internal static void TQuillEtymologySet(this LQuill quill, string text)
+    {
+        quill.LQuillEtymologySet(text);
+    }
+
+    internal static void TQuillEtymonAdd(this LQuill quill, long entry, int position)
+    {
+        quill.LQuillEtymonAdd(entry, position);
+    }
+
+    internal static void TQuillEtymonRemove(this LQuill quill, long entry)
+    {
+        quill.LQuillEtymonRemove(entry);
+    }
+
+    internal static void TQuillMentionSave(this LQuill quill, int offset, int length, long entry)
+    {
+        quill.LQuillMentionSave(offset, length, entry);
+    }
+
+    internal static void TQuillCitationSet(this LQuill quill, long card, long sentence, long reference)
+    {
+        quill.LQuillCitationSet(card, sentence, reference);
+    }
+
     internal static void TQuillSituationSet(this LQuill quill, string title, string description, string kind)
     {
         quill.LQuillSituationSet(title, description, kind);

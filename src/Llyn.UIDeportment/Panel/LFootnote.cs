@@ -72,7 +72,7 @@ public sealed class LFootnote
     public IReadOnlyList<CVistaRow> LFootnoteRowsRead()
     {
         IReadOnlyList<CVistaRow> rows = LSplice.LSpliceBuild(
-            _lEntryPort.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista), LPanel.LPanelRowRead);
+            _lEntryPort.LEngineEntryFind(_lFootnoteParent, _lFootnoteVista), CPanel.CPanelRowRead);
         _lFootnoteCount = rows.Count;
         return rows;
     }

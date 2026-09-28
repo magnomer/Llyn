@@ -88,6 +88,86 @@ public sealed class LQuill
             new LRequestMentionSense(_lQuillTenure.LTenureId, card, sentence, mention, sense));
     }
 
+    public void LQuillEtymologySet(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(new LRequestEtymologyText(_lQuillTenure.LTenureId, text));
+    }
+
+    public void LQuillEtymonAdd(long entry, int position)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestEtymonAddition(_lQuillTenure.LTenureId, entry, position));
+    }
+
+    public void LQuillEtymonRemove(long entry)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestEtymonRemoval(_lQuillTenure.LTenureId, entry));
+    }
+
+    public void LQuillMentionSave(int offset, int length, long entry)
+    {
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestEtymologyMention(_lQuillTenure.LTenureId, offset, length, entry));
+    }
+
+    public void LQuillCitationSet(long card, long sentence, long reference)
+    {
+        _lQuillTenure.LTenureRequestApply(
+            new LRequestSentenceReference(_lQuillTenure.LTenureId, card, sentence, reference));
+    }
+
+    public void LQuillTagAdd(long card, string text, int position)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestApply(new LRequestTagAddition(_lQuillTenure.LTenureId, card, text, position));
+    }
+
+    public void LQuillTagInsert(long card, long tag, int position)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestTagPick(_lQuillTenure.LTenureId, card, tag, position));
+    }
+
+    public void LQuillTagRemove(long card, long tag)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestTagRemoval(_lQuillTenure.LTenureId, card, tag));
+    }
+
+    public void LQuillSentenceAdd(long card, int position)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestSentenceAddition(_lQuillTenure.LTenureId, card, position));
+    }
+
+    public void LQuillSentenceRemove(long card, long sentence)
+    {
+        _lQuillTenure.LTenureRequestApply(new LRequestSentenceRemoval(_lQuillTenure.LTenureId, card, sentence));
+    }
+
+    public void LQuillSentenceSet(long card, long sentence, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestSentenceText(_lQuillTenure.LTenureId, card, sentence, new LStateWritten(text)));
+    }
+
+    public void LQuillParticleSet(long card, long sentence, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestSentenceParticle(_lQuillTenure.LTenureId, card, sentence, new LStateWritten(text)));
+    }
+
+    public void LQuillDependenceSet(long card, long sentence, string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        _lQuillTenure.LTenureRequestDefer(
+            new LRequestSentenceDependence(_lQuillTenure.LTenureId, card, sentence, new LStateWritten(text)));
+    }
+
     public void LQuillSituationSet(string title, string description, string kind)
     {
         ArgumentNullException.ThrowIfNull(title);

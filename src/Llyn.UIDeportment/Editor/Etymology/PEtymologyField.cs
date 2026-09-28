@@ -37,7 +37,7 @@ public partial class PEditor
 
     private void PEtymologyWriteHandle(object sender, TextChangedEventArgs e)
     {
-        _lEditor.LEditorCard.LCardEtymologySet(PEtymologyField.PEtymologyBox.Text);
+        _lEditor.LEditorCard.CCardEtymologySet(PEtymologyField.PEtymologyBox.Text);
     }
 
     private void PEtymologyAddHandle(object sender, ExecutedRoutedEventArgs e)
@@ -55,12 +55,12 @@ public partial class PEditor
     private void PEtymonSend(PEtymon caret, long entryId)
     {
         caret.PEtymonText = string.Empty;
-        _lEditor.LEditorCard.LCardEtymonAdd(entryId);
+        _lEditor.LEditorCard.CCardEtymonAdd(entryId);
     }
 
     private void PEtymologyRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lEditor.LEditorCard.LCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
+        _lEditor.LEditorCard.CCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
     }
 
     private void PEtymologyEntryHandle(object sender, ExecutedRoutedEventArgs e)
@@ -79,13 +79,13 @@ public partial class PEditor
             PMentionSelection.PMentionSelectionPlace(box),
             box.SelectedText.Trim(),
             _lEditor.LEditorLanguage,
-            entryId => _lEditor.LEditorCard.LCardMentionSave(text, start, length, entryId));
+            entryId => _lEditor.LEditorCard.CCardMentionSave(text, start, length, entryId));
     }
 
     private void PEtymologyUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        _lEditor.LEditorCard.LCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
+        _lEditor.LEditorCard.CCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void PEtymologyLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -96,6 +96,6 @@ public partial class PEditor
     private void PEtymologyUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         TextBox box = PEtymologyField.PEtymologyBox;
-        e.CanExecute = _lEditor.LEditorCard.LCardMentionCheck(box.Text, box.SelectionStart, box.SelectionLength);
+        e.CanExecute = _lEditor.LEditorCard.CCardMentionCheck(box.Text, box.SelectionStart, box.SelectionLength);
     }
 }

@@ -61,7 +61,7 @@ public sealed class LQuotation
     public IReadOnlyList<CVistaRow> LQuotationRowsRead()
     {
         return LSplice.LSpliceBuild(
-            _lEntryPort.LEngineEntryFind(_lQuotationRoll, _lQuotationVista), LPanel.LPanelRowRead);
+            _lEntryPort.LEngineEntryFind(_lQuotationRoll, _lQuotationVista), CPanel.CPanelRowRead);
     }
 
     public string LQuotationFileRead()

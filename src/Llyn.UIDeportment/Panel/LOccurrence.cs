@@ -56,7 +56,7 @@ public sealed class LOccurrence
     public IReadOnlyList<CVistaRow> LOccurrenceRowsRead()
     {
         return LSplice.LSpliceBuild(
-            _lEntryPort.LEngineEntryFind(_lOccurrenceRoll, _lOccurrenceVista), LPanel.LPanelRowRead);
+            _lEntryPort.LEngineEntryFind(_lOccurrenceRoll, _lOccurrenceVista), CPanel.CPanelRowRead);
     }
 
     public string LOccurrenceEmptyRead(string? sortie)

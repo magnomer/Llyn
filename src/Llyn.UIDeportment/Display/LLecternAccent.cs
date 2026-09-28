@@ -90,7 +90,7 @@ public sealed class LLecternAccent
             _lLecternAccentDisplay.LDisplayShown!.LEntryDraftPronunciation,
             _lLecternAccentAtelier.CAtelierRespelling.CRespellingMarkRead(
                 _lLecternAccentDisplay.LDisplayShown!.LEntryDraftLanguage),
-            LSounding.LSoundingPronunciationRead(_lLecternAccentDisplay.LDisplayAccentRead()));
+            CSounding.CSoundingPronunciationRead(_lLecternAccentDisplay.LDisplayAccentRead()));
     }
 
     public void LLecternAccentClear()
@@ -113,7 +113,7 @@ public sealed class LLecternAccent
         _lLecternAccentContour.SetValue(_lLecternAccentTonal, _lLecternAccentDisplay.LDisplayTonalCheck());
         LLecternSurfaceShow(primary is null
             ? string.Empty
-            : CRespelling.CRespellingResolve(respelling, LSounding.LSoundingPronunciationRead(primary)));
+            : CRespelling.CRespellingResolve(respelling, CSounding.CSoundingPronunciationRead(primary)));
 
         _lLecternAccentRow.Clear();
         foreach (CPronunciationDraft spoken in accents)

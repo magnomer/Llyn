@@ -204,16 +204,11 @@ internal static class TInterfaceDeportment
 
     internal static LSubject TPanelSubjectRead(CSubject subject) => LPanel.LPanelSubjectRead(subject);
 
-    internal static CVistaRow TPanelRowRead(LVistaRow row) => LPanel.LPanelRowRead(row);
-
     internal static LPortraitMedium TPanelMediumRead(CPortraitMedium medium) => QPortrait.QPortraitMediumRead(medium);
 
     internal static LPressTicket TPanelTicketRead(CPressTicket ticket) => QPortrait.QPortraitTicketRead(ticket);
 
     internal static LPortraitLabel TPanelLabelRead(CPortraitLabel label) => QPortrait.QPortraitLabelRead(label);
-
-    internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
-        new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 
     internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
     {
@@ -255,10 +250,6 @@ internal static class TInterfaceDeportment
         panel.LPhonologyRowsRead();
 
     internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
-
-    internal static CStateValue TCardStateRead(LStateValue value) => LCard.LCardStateRead(value);
-
-    internal static CEntryDraft TCardEntryRead(LEntryDraft draft) => LCard.LCardEntryRead(draft);
 
     internal static IReadOnlyList<CParadigmSlot> TSoundingParadigmRead(IReadOnlyList<LParadigmSlot> slots) =>
         LSounding.LSoundingParadigmRead(slots);

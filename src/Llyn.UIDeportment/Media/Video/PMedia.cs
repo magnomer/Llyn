@@ -33,12 +33,12 @@ internal sealed class PMedia
 
     internal PImage PMediaImageCreate(LImageDraft draft)
     {
-        return new PImage(_pMediaAtelier, LCard.LCardImageRead([draft])[0]);
+        return new PImage(_pMediaAtelier, CFolio.CFolioImageRead([draft])[0]);
     }
 
     internal PVideo PMediaVideoCreate(LVideoDraft draft)
     {
-        return new PVideo(_pMediaAtelier, LCard.LCardVideoRead([draft])[0]);
+        return new PVideo(_pMediaAtelier, CFolio.CFolioVideoRead([draft])[0]);
     }
 
     internal static void PMediaRevealAttach(ItemsControl list)

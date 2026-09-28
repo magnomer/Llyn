@@ -69,7 +69,7 @@ public sealed class LLibrary
     public IReadOnlyList<CVistaRow> LLibraryRowsRead()
     {
         return _lLibraryVista is LVista vista
-            ? LSplice.LSpliceBuild(_lEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+            ? LSplice.LSpliceBuild(_lEntryPort.LEngineEntryFind(vista), CPanel.CPanelRowRead)
             : [];
     }
 

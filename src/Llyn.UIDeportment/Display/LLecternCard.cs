@@ -32,11 +32,11 @@ public sealed class LLecternCard
 
     private LCompass _lLecternCardCompass = null!;
 
-    private Action<IReadOnlyList<LTranslationTarget>> _lLecternCardTranslation = null!;
+    private Action<IReadOnlyList<CTranslationTarget>> _lLecternCardTranslation = null!;
 
     private Action<IReadOnlyDictionary<long, string>> _lLecternCardCitation = null!;
 
-    private Action<LSentenceOrder> _lLecternCardOrder = null!;
+    private Action<CSentenceOrder> _lLecternCardOrder = null!;
 
     private UIElement _lLecternCardReferral = null!;
 
@@ -91,9 +91,9 @@ public sealed class LLecternCard
     }
 
     public void LLecternLinkAttach(
-        Action<IReadOnlyList<LTranslationTarget>> translationSeam,
+        Action<IReadOnlyList<CTranslationTarget>> translationSeam,
         Action<IReadOnlyDictionary<long, string>> citationSeam,
-        Action<LSentenceOrder> orderSeam)
+        Action<CSentenceOrder> orderSeam)
     {
         ArgumentNullException.ThrowIfNull(translationSeam);
         ArgumentNullException.ThrowIfNull(citationSeam);
@@ -169,7 +169,7 @@ public sealed class LLecternCard
         _lLecternCardOrder(_lLecternCardDisplay.LDisplayOrderRead());
         LFontFace.LFontExampleApply(_lLecternCardResources, _lLecternCardAtelier, draft.LEntryDraftLanguage);
         _lLecternCardCitation(_lLecternCardDisplay.LDisplayCitationRead());
-        _lLecternCardTranslation(_lLecternCardDisplay.LDisplayTargetRead());
+        _lLecternCardTranslation(CFolio.CFolioTargetRead(_lLecternCardDisplay.LDisplayTargetRead()));
 
         _lLecternCardMeaning.ItemsSource = null;
         _lLecternCardCollocation.ItemsSource = null;
@@ -198,7 +198,7 @@ public sealed class LLecternCard
     private void LLecternEtymologyShow(
         string language, string text, IReadOnlyList<LTranslationTarget> etymons, bool derived)
     {
-        _lLecternCardLineage(language, text, LCard.LCardTargetRead(etymons));
+        _lLecternCardLineage(language, text, CFolio.CFolioTargetRead(etymons));
         _lLecternCardEtymology.Visibility = LDisplay.LDisplayEtymologyCheck(text, etymons.Count)
             ? Visibility.Visible
             : Visibility.Collapsed;

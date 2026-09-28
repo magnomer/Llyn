@@ -12,7 +12,7 @@ The veneer hands over its converters and its navigation as seams, so no veneer t
 Holds the window for the pack's typography and the view's resources the example templates read.
 Holds the two card lists with their sections, the scroll viewer and the compass a scroll measures by.
 
-## `public void LLecternLinkAttach(Action<IReadOnlyList<LTranslationTarget>> translationSeam, Action<IReadOnlyDictionary<long, string>> citationSeam, Action<LSentenceOrder> orderSeam)`
+## `public void LLecternLinkAttach(Action<IReadOnlyList<CTranslationTarget>> translationSeam, Action<IReadOnlyDictionary<long, string>> citationSeam, Action<CSentenceOrder> orderSeam)`
 
 Holds the seams that fill the converters the card templates bind through.
 `translationSeam` names the linked headwords, `citationSeam` the bylines, `orderSeam` the sentence order.

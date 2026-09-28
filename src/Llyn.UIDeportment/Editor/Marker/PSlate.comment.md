@@ -63,5 +63,5 @@ The list stays shut when nothing matches, rather than standing empty.
 
 ### `private void PSlateSelect(PSlateItem item)`
 
-Asks the engine to link the Tag the user chose, at the caret, and empties the entry.
-A Tag the card already carries, by id or by text, is not asked for again.
+Hands the Tag the user chose to the card gate, at the caret, and empties the entry.
+The clerk skips a Tag the card already carries, by id or by text.

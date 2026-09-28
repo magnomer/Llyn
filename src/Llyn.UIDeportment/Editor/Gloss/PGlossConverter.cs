@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -15,12 +14,12 @@ internal sealed class PGlossConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         List<PGloss> shown = [];
-        if (value is not IEnumerable<LGlossDraft> rows)
+        if (value is not IEnumerable<CGlossDraft> rows)
         {
             return shown;
         }
 
-        foreach (CGlossDraft row in LCard.LCardGlossRead([.. rows]))
+        foreach (CGlossDraft row in rows)
         {
             shown.Add(new PGloss(PGlossConverterCatalog, row));
         }

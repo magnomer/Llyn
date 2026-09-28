@@ -413,20 +413,20 @@ public sealed class LDisplay
         return LDisplaySound.LDisplayShown is LEntryDraft draft ? LDisplayEtymonRead(draft) : [];
     }
 
-    public LSentenceOrder LDisplayOrderRead()
+    public CSentenceOrder LDisplayOrderRead()
     {
         if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
         {
-            return LSentenceOrder.LSentenceOrderDefault;
+            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
         }
 
         try
         {
-            return _lPhonologyPort.LEngineOrderRead(draft.LEntryDraftLanguage);
+            return CFolio.CFolioOrderRead(_lPhonologyPort.LEngineOrderRead(draft.LEntryDraftLanguage));
         }
         catch (Exception)
         {
-            return LSentenceOrder.LSentenceOrderDefault;
+            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
         }
     }
 

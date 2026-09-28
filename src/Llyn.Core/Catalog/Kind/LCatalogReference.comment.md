@@ -15,6 +15,11 @@ The credits and the count travel with the row because the ordering and the match
 - `LCatalogReferenceUsage` — How many Entries and Examples cite it.
 - `LCatalogReferenceChosen` — True on the row of the Source the vista stands on, false until the vista find fills it.
 
+## `public string? LCatalogReferenceWriter`
+
+The row's credited authors joined into one line, or null when none is credited.
+Conduct reads it, so no driver joins the names itself.
+
 ## `public static LCatalogReference LCatalogReferenceCreate(LReference reference, IReadOnlyList<LAuthor>? credits, int usage)`
 
 Builds the row and derives the shown name and the byline from the Source and its credits.

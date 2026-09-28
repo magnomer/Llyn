@@ -10,7 +10,7 @@ An example is `(+of Something) This is an example of ...`.
 The order of the two fields belongs to the language, not to the row.
 The display holds one converter for the shown entry, so the order is read once for the whole entry.
 
-## `internal void PSentenceConverterApply(LSentenceOrder order)`
+## `internal void PSentenceConverterApply(CSentenceOrder order)`
 
 Takes the order the entry's language writes its frame in.
 It is called before the cards are handed over, so the templates find it ready.

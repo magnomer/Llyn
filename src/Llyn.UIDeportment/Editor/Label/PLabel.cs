@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Llyn.Application;
 
 namespace Llyn.UIDeportment;
 
@@ -17,10 +16,10 @@ public partial class PEditor
             {
                 entry.SetValue(QField.QFieldHintProperty, caret.PLabelCaretHint);
                 entry.Text = caret.PLabelCaretText;
-                entry.PreviewKeyDown -= _pLabelTemplate.PLabelCaretHandle;
-                entry.PreviewKeyDown += _pLabelTemplate.PLabelCaretHandle;
-                entry.LostKeyboardFocus -= _pLabelTemplate.PLabelCloseHandle;
-                entry.LostKeyboardFocus += _pLabelTemplate.PLabelCloseHandle;
+                entry.PreviewKeyDown -= PLabelCaretObserve;
+                entry.PreviewKeyDown += PLabelCaretObserve;
+                entry.LostKeyboardFocus -= PLabelCloseObserve;
+                entry.LostKeyboardFocus += PLabelCloseObserve;
             }
 
             return;
@@ -38,8 +37,8 @@ public partial class PEditor
 
         if (QLook.QLookPartFind<Button>(container, "PLabelEraser") is Button eraser)
         {
-            eraser.Click -= _pLabelTemplate.PLabelChipHandle;
-            eraser.Click += _pLabelTemplate.PLabelChipHandle;
+            eraser.Click -= PLabelChipObserve;
+            eraser.Click += PLabelChipObserve;
             if (QLook.QLookPartFind<QIconImage>(eraser, "PLabelIcon") is QIconImage icon)
             {
                 icon.QIconSource = QIcon.QIconResolve("close", 12);
@@ -57,26 +56,27 @@ public partial class PEditor
         QLookItem.QLookItemAttach(list, PLabelApply);
         if (QLook.QLookPartFind<Border>(list, "PLabelFrame") is Border frame)
         {
-            frame.MouseLeftButtonDown -= _pLabelTemplate.PLabelFocusHandle;
-            frame.MouseLeftButtonDown += _pLabelTemplate.PLabelFocusHandle;
+            frame.MouseLeftButtonDown -= PLabelFocusRefine;
+            frame.MouseLeftButtonDown += PLabelFocusRefine;
         }
     }
 
     internal void PLabelAttach(PCard card)
     {
         card.PCardLabelNotice = text => PSlateShow(card, text);
-        card.PCardLabelDispatcher = text => PLabelSend(card, text);
+        card.PCardLabelDispatcher =
+            text => _lEditor.LEditorCard.CCardTagAdd(card.PCardId, text, card.PCardLabelPosition);
     }
 
-    internal void PLabelChipHandle(object sender, RoutedEventArgs e)
+    private void PLabelChipObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PLabelChip chip } && PCardLabelFind(chip) is PCard card)
         {
-            PLabelRemove(card, chip);
+            PLabelEraseObserve(card, chip);
         }
     }
 
-    internal void PLabelCaretHandle(object sender, KeyEventArgs e)
+    private void PLabelCaretObserve(object sender, KeyEventArgs e)
     {
         if (sender is not TextBox { DataContext: PLabelCaret row } box)
         {
@@ -98,7 +98,7 @@ public partial class PEditor
         if (e.Key == Key.Enter)
         {
             PSlateHide();
-            PLabelCommit(card);
+            PLabelCommitObserve(card);
             e.Handled = true;
             return;
         }
@@ -106,53 +106,36 @@ public partial class PEditor
         e.Handled = PCaretKeyApply(
             box,
             e.Key,
-            step => PLabelRemove(card, card.PCardLabelFind(step)),
+            step => PLabelEraseObserve(card, card.PCardLabelFind(step)),
             card.PCardLabelMove,
             () => PEditorCaretApply(box, row, 0));
     }
 
-    internal void PLabelCloseHandle(object sender, RoutedEventArgs e)
+    private void PLabelCloseObserve(object sender, RoutedEventArgs e)
     {
         PSlateHide();
 
         if (sender is FrameworkElement { DataContext: PLabelCaret row } && PCardLabelFind(row) is PCard card)
         {
-            PLabelCommit(card);
+            PLabelCommitObserve(card);
         }
     }
 
-    private void PLabelCommit(PCard card)
+    private void PLabelCommitObserve(PCard card)
     {
-        PLabelSend(card, card.PCardLabelText);
+        _lEditor.LEditorCard.CCardTagAdd(card.PCardId, card.PCardLabelText, card.PCardLabelPosition);
         card.PCardLabelClear();
     }
 
-    private bool PLabelSend(PCard card, string text)
-    {
-        string written = (text ?? string.Empty).Trim();
-        if (written.Length == 0 || card.PCardLabelCheck(written))
-        {
-            return false;
-        }
-
-        PEditorRequestSend(new LRequestTagAddition(PEditorDraft, card.PCardId, written, card.PCardLabelPosition));
-        return true;
-    }
-
-    private void PLabelSend(PCard card, long id)
-    {
-        PEditorRequestSend(new LRequestTagPick(PEditorDraft, card.PCardId, id, card.PCardLabelPosition));
-    }
-
-    private void PLabelRemove(PCard card, PLabelChip? chip)
+    private void PLabelEraseObserve(PCard card, PLabelChip? chip)
     {
         if (chip is not null)
         {
-            PEditorRequestSend(new LRequestTagRemoval(PEditorDraft, card.PCardId, chip.PLabelChipId));
+            _lEditor.LEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
         }
     }
 
-    internal void PLabelFocusHandle(object sender, MouseButtonEventArgs e)
+    private void PLabelFocusRefine(object sender, MouseButtonEventArgs e)
     {
         if (sender is not DependencyObject surface)
         {

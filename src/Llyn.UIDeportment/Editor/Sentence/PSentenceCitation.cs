@@ -122,7 +122,7 @@ public partial class PEditor
         PCandidateHide();
         try
         {
-            _lEditor.LEditorCard.LCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
+            _lEditor.LEditorCard.CCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
         }
         catch (Exception exception)
         {

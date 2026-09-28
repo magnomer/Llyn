@@ -4,8 +4,9 @@
 
 The editor's side of an Example row: opening and dropping rows, and the Source list a row cites from.
 The rows themselves hold no engine.
-So every change in a row arrives here and leaves as a request naming the card and the row.
-The card that owns the row is found and the engine is asked.
+Adding, dropping and typing in a row are torn apart by role, as `docs-work/JobPrinciple.md` section 13 asks.
+Each Observe finds the card that owns the row and hands the raw value to one `CSentence` gate.
+The mention commands still send their own requests, left for their own job.
 One list of Sources serves every row on the form, Example and Situation alike.
 The field a row cites through is answered in [PSentenceCitation.cs](PSentenceCitation.comment.md).
 The linking gesture on a row's sentence is answered here too, four commands sent as Mention requests.
@@ -21,27 +22,24 @@ It then has every row read the byline of the Source it cites again.
 It runs again whenever the engine reports a Source changed, so a byline edited elsewhere is never stale here.
 A workspace that cannot be read leaves the list empty rather than failing the form.
 
-## `internal void PSentenceFrameLoad(string language)`
+## `internal void PSentenceFrameRefine()`
 
-Settles the Example frame for `language`: which of its two fields is written first, and what each offers.
-The order comes from the language pack and is handed to every row on the form.
-Neither the editor nor a card keeps it, so a row opened later reads the engine's order when built.
-The two lists come from what the workspace has already saved for that language.
-Nothing ships a marker or a role.
-A workspace that cannot be read leaves a list empty rather than failing the form.
-An unnamed language is the one the speaker field currently shows.
+Paints the Example frame the sentence gate answers for the held draft's language.
+The two lists are refilled, and every row on the form takes the word order.
+Neither the editor nor a card keeps the order, so a row opened later reads it when built.
+The gate owns the language and the empty lists a failed read leaves.
 
 ## `internal void PSentenceAttach(PCard card)`
 
 Points the card's row picks at this editor, so each becomes a request.
 
-## `internal void PSentenceAddHandle(object sender, RoutedEventArgs e)`
+## `private void PSentenceAddObserve(object sender, RoutedEventArgs e)`
 
-Asks for a further Example row directly under the row the user asked from.
+Hears the add button of a row and hands the row's place to the gate, which adds the row below.
 
-## `internal void PSentenceRemoveHandle(object sender, RoutedEventArgs e)`
+## `private void PSentenceRemoveObserve(object sender, RoutedEventArgs e)`
 
-Asks the engine to drop the Example row the user asked from.
+Hears the erase button of a row and hands the row to the gate to drop.
 
 ## `internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -101,9 +99,10 @@ The five command bindings are added once, since a refill finds them already ther
 It hands the chip line and the Gloss line their items and fills.
 It then asks the list to redraw its reveal, since the citation may have emptied.
 
-## `private void PSentenceFrameHandle(object sender, RoutedEventArgs e)`
+## `private void PSentenceOpeningRefine(object sender, RoutedEventArgs e)`
 
-Writes the frame switch back into the row, where a two-way binding stood.
+A Refine, since the switch only shows or hides the row's frame fields and asks no gate.
+It writes the switch back into the row, where a two-way binding stood.
 
 ## Inline notes
 
@@ -111,14 +110,14 @@ Writes the frame switch back into the row, where a two-way binding stood.
 
 Turns a pick a row noticed into its request, which today is only the language of a Gloss row.
 
-### `private void PSentenceChangeHandle(PCard card, PSentence row, string field, TextBox box)`
+### `private void PSentenceFieldObserve(PCard card, PSentence row, string field, TextBox box)`
 
-Turns the text typed into one field of a row into its request.
-The sentence, the marker and the role are deferred through the tenure, keyed by the request's own row and field.
+Hands the text typed into one field of a row to the gate for that field.
+The sentence, the marker and the role each have their own gate, which defers the edit.
 The typed citation line is no request at all, and only opens the dropdown of Sources answering it.
 The field is told apart by the row property name its caller passes.
-The request carries the box's text, so the row holds no copy of what was typed.
+The gate takes the box's raw text, so the row holds no copy of what was typed.
 
-### `private static void PSentenceFrameShow(ObservableCollection<string> catalog, IReadOnlyList<string> values)`
+### `private static void PSentenceListRefine(ObservableCollection<string> catalog, IReadOnlyList<string> values)`
 
 The list is refilled in place rather than replaced, because every row already holds it.

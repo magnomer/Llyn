@@ -9,7 +9,7 @@ So the headwords are read once for the whole entry and held here while it is sho
 The display cannot ask per card, because each card would then be its own query.
 One lookup for the entry keeps the reading of an entry to a single question.
 
-## `internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)`
+## `internal void PLinkConverterShow(IReadOnlyList<CTranslationTarget> targets)`
 
 Takes the headwords the entry's links resolved to.
 It is called before the cards are handed over, so the templates find them ready.

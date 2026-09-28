@@ -7,7 +7,6 @@ internal sealed class PSlateItem
     internal PSlateItem(long id, string text, string word)
     {
         PSlateItemId = id;
-        PSlateItemText = text;
 
         int found = -1;
         int size = 0;
@@ -31,8 +30,6 @@ internal sealed class PSlateItem
     }
 
     internal long PSlateItemId { get; }
-
-    public string PSlateItemText { get; }
 
     public string PSlateItemLead { get; }
 

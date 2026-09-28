@@ -140,7 +140,7 @@ public sealed class LWing
     {
         return _lWingVista is LVista vista
             ? LSplice.LSpliceBuild(
-                _lWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista), LPanel.LPanelRowRead)
+                _lWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista), CPanel.CPanelRowRead)
             : [];
     }
 
