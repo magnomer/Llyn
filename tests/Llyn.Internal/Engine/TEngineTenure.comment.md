@@ -88,6 +88,14 @@ A fresh footnote start cites the Source in the first sentence of the first card.
 
 A fresh footnote start without a Source is a blank entry that reads unchanged.
 
+## `public void MembershipStart_TagGiven_StartsAFreshEntryCarryingIt()`
+
+A fresh membership start puts the Tag on the first card.
+
+## `public void MembershipStart_NoTag_StartsABlankEntry()`
+
+A fresh membership start without a Tag is a blank entry that reads unchanged.
+
 ## `public void TenureDefer_GlossTwice_OneChronicleStep()`
 
 Two deferrals of one gloss text reach the chronicle as one step, so one undo clears the gloss.

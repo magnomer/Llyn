@@ -322,20 +322,22 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void TagAdd_FreshDraft_LinksTheFirstCard()
+    public void MembershipStart_TagGiven_OpensAFreshDraftCarryingIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("botany");
         CEditor editor = TEditorPrepare(engine, "membership");
         editor.CEditorEntryOpen(null);
+        long replaced = editor.CEditorDesk.CDeskId;
 
-        editor.CEditorTagAdd(tag.LTagId);
+        editor.CEditorDesk.TDeskMembershipStart(tag.LTagId);
 
         Assert.Contains(
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
             row => row.CTagDraftId == tag.LTagId);
-        Assert.True(editor.CEditorDesk.CDeskChanged);
+        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
     [Fact]

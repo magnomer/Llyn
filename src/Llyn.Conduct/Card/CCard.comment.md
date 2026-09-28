@@ -21,6 +21,11 @@ Only the editor builds one, so the constructor is internal.
 Every stored Source in author order, as the sentence menu offers them.
 A typed word instead ranks them by usage, like the other pickers.
 
+## `internal static CTag LCardTagRead(LTag tag)`
+
+The Conduct copy of a Tag the engine handed over, its id and its text.
+It is the one owner of that map, so the chip search and the taxonomy rows share it.
+
 ## `public void CCardTagAdd(long cardId, string text, int position)`
 
 The gate for a tag typed into a card, as the user wrote it.

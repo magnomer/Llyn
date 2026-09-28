@@ -176,11 +176,6 @@ public sealed class CEditor
         CEditorTenure?.LTenureVarietySet(target, variety);
     }
 
-    public void CEditorTagAdd(long tag)
-    {
-        CEditorTenure?.LTenureTagAdd(tag);
-    }
-
     public void CEditorRegisterAdd(long register)
     {
         CEditorTenure?.LTenureRegisterAdd(register);

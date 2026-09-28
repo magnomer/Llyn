@@ -140,6 +140,10 @@ The same fresh start for the corpus, already citing the Example in the first sen
 
 The same fresh start for the shelf, already citing the Source in the first sentence.
 
+## `internal void LDeskMembershipStart(long? tag)`
+
+The same fresh start for the taxonomy, already carrying the Tag on the first card.
+
 ## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
 
 Builds a desk that starts under its own origin and subject, so no owner decides the start.

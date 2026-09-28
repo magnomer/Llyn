@@ -36,6 +36,12 @@ Starts a fresh entry over the vista and cites the Source in its first sentence b
 The citation goes through `LTenureReferenceAdd`, so the clerk's rule applies unchanged.
 A null Source leaves the fresh entry blank.
 
+## `internal LTenure LEngineMembershipStart(LVista vista, long? tag)`
+
+Starts a fresh entry over the vista and puts the Tag on its first card before anyone sees it.
+The tag goes through `LTenureTagAdd`, so the clerk's pick rule applies unchanged.
+A null Tag leaves the fresh entry blank.
+
 ## `internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)`
 
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.

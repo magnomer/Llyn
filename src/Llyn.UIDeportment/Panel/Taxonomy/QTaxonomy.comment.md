@@ -20,8 +20,9 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QTaxonomyAttach(PWindow host)`
 
-Puts the panel to work through its deportment and its editor.
-The panel factory builds both over the engine's ports.
+Puts the panel to work through the Conduct taxonomy, which the forge builds with its own editor.
+The view wraps that editor for its editor page.
+The panel's loads and clears go straight to the lectern, so the veneer relays no draft.
 It binds its lists, attaches their row fills, and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.

@@ -38,7 +38,7 @@ The mark on the button is redrawn from the vista at once.
 
 ### `internal async void QTaxonomyVistaRestore()`
 
-The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+Conduct starts the tab's vistas from the window's posture, so no vista crosses the cut.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel answers the engine through the vistas rather than its own visibility.
 So a tag written in the input panel is in the catalog at once, with no tab switch needed.
@@ -68,7 +68,7 @@ Lets go of the chosen tag, so a switched workspace opens on every entry.
 New makes whatever the emptier panel would list.
 With no tag chosen and no entry shown, it names a new tag.
 With a tag chosen, or an entry shown, it starts a new entry.
-The controller makes that choice, so the view only follows its verdict.
+Conduct makes that choice, so the view only follows its verdict.
 
 ### `private void QDirectoryCoinageShow(object origin)`
 

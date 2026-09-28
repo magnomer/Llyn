@@ -13,7 +13,7 @@ internal sealed partial class QTaxonomy
 
     private PWindow _qTaxonomyHost = null!;
 
-    private LTaxonomy _lTaxonomy = null!;
+    private CTaxonomy _cTaxonomy = null!;
 
     private LEditor _lEditor = null!;
 
@@ -134,11 +134,12 @@ internal sealed partial class QTaxonomy
     internal void QTaxonomyAttach(PWindow host)
     {
         _qTaxonomyHost = host;
-        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
+        _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
+        _lEditor = new LEditor(_cTaxonomy.CTaxonomyEditor);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
-        _lTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(
-            _lEditor, lectern, QTaxonomyShownCheck, host.PWindowEnvoy);
-        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        CPanel panel = _cTaxonomy.CTaxonomyPanel;
+        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        panel.CPanelCleared += lectern.LLecternClear;
         panel.CPanelChanged += QTaxonomyModeUpdate;
         panel.CPanelRowsChanged += QMembershipFind;
 
@@ -160,7 +161,7 @@ internal sealed partial class QTaxonomy
 
     internal void QTaxonomyReset()
     {
-        _lTaxonomy.LTaxonomyPanel.CPanelEntryClose();
+        _cTaxonomy.CTaxonomyPanel.CPanelEntryClose();
         QDirectoryReset();
         QDirectoryFind();
     }
@@ -172,7 +173,7 @@ internal sealed partial class QTaxonomy
 
     internal bool QTaxonomyChangeCheck()
     {
-        return _lTaxonomy.LTaxonomyPanel.CPanelChangeCheck();
+        return _cTaxonomy.CTaxonomyPanel.CPanelChangeCheck();
     }
 
     internal void QTaxonomyClose()
@@ -183,17 +184,17 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTaxonomy?.LTaxonomyPanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cTaxonomy?.CTaxonomyPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTaxonomyHost.PWindowPressRun(_lTaxonomy.LTaxonomyPortraitPrint);
+        await _qTaxonomyHost.PWindowPressRun(_cTaxonomy.CTaxonomyPortraitPrint);
     }
 
     private async void QTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTaxonomyHost.PWindowPortraitExport(_lTaxonomy.LTaxonomyFileRead(), _lTaxonomy.LTaxonomyPortraitExport);
+        await _qTaxonomyHost.PWindowPortraitExport(_cTaxonomy.CTaxonomyFileRead(), _cTaxonomy.CTaxonomyPortraitExport);
     }
 
     internal void QTaxonomyVoyageShow(bool past, bool future)
@@ -236,7 +237,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyModeUpdate()
     {
-        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        CPanel panel = _cTaxonomy.CTaxonomyPanel;
         QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTaxonomyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);

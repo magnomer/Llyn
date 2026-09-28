@@ -14,7 +14,7 @@ internal sealed partial class QTaxonomy
         IReadOnlyList<CVistaRow> read;
         try
         {
-            read = _lTaxonomy.LTaxonomyMembershipRead();
+            read = _cTaxonomy.CTaxonomyMembershipRead();
         }
         catch (Exception exception)
         {
@@ -39,7 +39,7 @@ internal sealed partial class QTaxonomy
         LSplice.LSpliceApply(
             _qMembershipList, fresh, QMembershipItem.QMembershipItemMatch, QMembershipItem.QMembershipItemSync);
 
-        QMembershipEmpty.SetResourceReference(TextBlock.TextProperty, _lTaxonomy.LTaxonomyEmptyRead(QScout.Text));
+        QMembershipEmpty.SetResourceReference(TextBlock.TextProperty, _cTaxonomy.CTaxonomyEmptyKey);
         QMembershipEmpty.Visibility = _qMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -60,7 +60,7 @@ internal sealed partial class QTaxonomy
             return;
         }
 
-        _lTaxonomy.LTaxonomyPanel.CPanelRowOpen(item.QMembershipItemId);
+        _cTaxonomy.CTaxonomyPanel.CPanelRowOpen(item.QMembershipItemId);
     }
 
     private void QMembershipApply(FrameworkElement container, object item, string? _)

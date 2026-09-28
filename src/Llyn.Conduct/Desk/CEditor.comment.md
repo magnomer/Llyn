@@ -117,7 +117,7 @@ Names the variety of the reading a menu filled, after the reading itself was wri
 A menu opened on the primary reading targets whatever primary the draft now holds.
 Any other menu targets the accent row it was opened on.
 
-## `public void CEditorTagAdd(long tag)`
+## `public void CEditorRegisterAdd(long register)`
 
-Seeds the first card of the held draft with a stored tag, as a tag panel does.
-The register, situation, example and reference adds seed the same card for their panels.
+Seeds the first card of the held draft with a stored register, as the tenor panel does.
+The tag, situation, example and reference seeds now start with the fresh entry in one engine call.

@@ -1,0 +1,174 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Llyn.ShellEngine;
+
+namespace Llyn.Conduct;
+
+public sealed class CTaxonomy
+{
+    private readonly CAtelier _cTaxonomyAtelier;
+
+    private readonly LEntryPort _cTaxonomyEntryPort;
+
+    private readonly LPortraitPort _cTaxonomyPortraitPort;
+
+    private readonly LSettingsPort _cTaxonomySettingsPort;
+
+    private LVista? _cTaxonomyVista;
+
+    private LVista? _cTaxonomyMembership;
+
+    private CTaxonomy(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(atelier);
+        ArgumentNullException.ThrowIfNull(shownSeam);
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        _cTaxonomyAtelier = atelier;
+        _cTaxonomyEntryPort = atelier.CAtelierEntryPort;
+        _cTaxonomyPortraitPort = atelier.CAtelierPortraitPort;
+        _cTaxonomySettingsPort = atelier.CAtelierSettingsPort;
+        CEditor editor = CEditor.CEditorCreate(atelier, envoy);
+        CTaxonomyEditor = editor;
+        CTaxonomyPanel = new CPanel(
+            envoy, "Tag.LoadFailed", "Scribe", editor.CEditorDesk.CDeskChangeCheck, editor.CEditorFinish, shownSeam);
+        CTaxonomyPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        CTaxonomyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+    }
+
+    public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    {
+        return new CTaxonomy(atelier, shownSeam, envoy);
+    }
+
+    public CEditor CTaxonomyEditor { get; }
+
+    public CPanel CTaxonomyPanel { get; }
+
+    public long? CTaxonomyChosen => _cTaxonomyVista?.LVistaChosen;
+
+    public bool CTaxonomyFiltered => _cTaxonomyVista?.LVistaFiltered ?? false;
+
+    public bool CTaxonomyCoinageAllowed => CTaxonomyChosen is null && !CTaxonomyPanel.CPanelBinEnabled;
+
+    public string CTaxonomyEmptyKey =>
+        _cTaxonomyMembership?.LVistaQueried ?? false ? "Tag.Unmatched" : "Tag.Vacant";
+
+    public CCatalogOrder CTaxonomyOrder => CPanel.CPanelOrderRead(LVista.LVistaOrderRead(_cTaxonomyVista));
+
+    public CCatalogFilter CTaxonomyFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cTaxonomyVista));
+
+    public void CTaxonomyVistaRestore()
+    {
+        LVista vista = _cTaxonomyAtelier.CAtelierVistaStart(
+            "taxonomy", CSubject.CSubjectTag, CCatalogOrder.CCatalogOrderName);
+        LVista membership = _cTaxonomyAtelier.CAtelierVistaStart(
+            "membership", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        _cTaxonomyVista = vista;
+        _cTaxonomyMembership = membership;
+        CTaxonomyPanel.CPanelVistaRestore(membership);
+        CTaxonomyEditor.CEditorVistaRestore(membership);
+    }
+
+    public void CTaxonomyObserverAttach(CSubject subject, Action<CBulletin> observer)
+    {
+        ArgumentNullException.ThrowIfNull(observer);
+
+        _cTaxonomyVista?.LVistaObserverAttach(
+            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+    }
+
+    public void CTaxonomyQuerySet(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        _cTaxonomyVista?.LVistaQuerySet(query);
+    }
+
+    public void CTaxonomyOrderSet(CCatalogOrder? order)
+    {
+        _cTaxonomyVista?.LVistaOrderSet(CPanel.CPanelOrderRead(order));
+    }
+
+    public void CTaxonomyFilterSet(CCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        _cTaxonomyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
+    }
+
+    public void CTaxonomyMembershipFind(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        _cTaxonomyMembership?.LVistaQuerySet(query);
+    }
+
+    public void CTaxonomyTagSelect(long? id)
+    {
+        _cTaxonomyVista?.LVistaSelect(id);
+    }
+
+    public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()
+    {
+        return _cTaxonomyVista is LVista vista
+            ? _cTaxonomyEntryPort.LEngineTagFind(vista)
+                .Select(static row => new CCatalogTag(
+                    CCard.LCardTagRead(row.LCatalogTagStored), row.LCatalogTagChosen))
+                .ToList()
+            : [];
+    }
+
+    public IReadOnlyList<CVistaRow> CTaxonomyMembershipRead()
+    {
+        return _cTaxonomyEntryPort.LEngineEntryFind(_cTaxonomyVista, _cTaxonomyMembership)
+            .Select(CPanel.CPanelRowRead)
+            .ToList();
+    }
+
+    public IReadOnlyList<string> CTaxonomyLanguageRead()
+    {
+        return _cTaxonomySettingsPort.LEngineLanguageRead();
+    }
+
+    public long CTaxonomyTagCreate(string name)
+    {
+        return _cTaxonomyEntryPort.LEngineTagCreate(name).LTagId;
+    }
+
+    public void CTaxonomyEntryCreate()
+    {
+        long? chosen = CTaxonomyChosen;
+        CTaxonomyPanel.CPanelFreshOpen();
+        CTaxonomyEditor.CEditorDesk.LDeskMembershipStart(chosen);
+    }
+
+    public string CTaxonomyFileRead()
+    {
+        return LVista.LVistaFileRead(_cTaxonomyMembership);
+    }
+
+    public Task CTaxonomyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    {
+        if (!CTaxonomyPanel.CPanelPressAllowed)
+        {
+            return Task.CompletedTask;
+        }
+
+        return _cTaxonomyPortraitPort.LEnginePortraitPrint(
+            _cTaxonomyMembership, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+    }
+
+    public Task CTaxonomyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    {
+        if (!CTaxonomyPanel.CPanelPressAllowed)
+        {
+            return Task.CompletedTask;
+        }
+
+        return _cTaxonomyPortraitPort.LEnginePortraitExport(
+            _cTaxonomyMembership, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+    }
+}

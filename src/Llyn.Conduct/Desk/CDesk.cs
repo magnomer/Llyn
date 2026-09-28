@@ -160,6 +160,15 @@ public sealed class CDesk
         }
     }
 
+    internal void LDeskMembershipStart(long? tag)
+    {
+        CDeskCancel();
+        if (_cDeskVista is LVista vista)
+        {
+            CDeskStartRun(() => _cDeskPort.LEngineMembershipStart(vista, tag));
+        }
+    }
+
     private void CDeskStartRun(Func<LTenure> start)
     {
         try

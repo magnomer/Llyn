@@ -29,6 +29,9 @@ public sealed class LDraftOutlet : LDraftPort
     public LTenure LEngineFootnoteStart(LVista vista, long? reference) =>
         _lDraftOutletEngine.LEngineTenure.LEngineFootnoteStart(vista, reference);
 
+    public LTenure LEngineMembershipStart(LVista vista, long? tag) =>
+        _lDraftOutletEngine.LEngineTenure.LEngineMembershipStart(vista, tag);
+
     public void LEngineDraftDelete(long id) => _lDraftOutletEngine.LEngineDraft.LEngineDraftDelete(id);
 
     public void LEngineObserverAttach(Action<LBulletin> observer) =>

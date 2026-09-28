@@ -28,6 +28,10 @@ Starts a fresh entry already citing the Example, as a new quotation in the corpu
 
 Starts a fresh entry already citing the Source, as a new footnote on the shelf opens.
 
+## `LTenure LEngineMembershipStart(LVista vista, long? tag);`
+
+Starts a fresh entry already carrying the Tag, as a new member of the taxonomy opens.
+
 ## `IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);`
 
 The Authors a typed credit may already name, left out those the draft credits.

@@ -45,39 +45,6 @@ internal static class TInterfaceDeportment
 
     internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
 
-    internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
-    {
-        LDraftPort drafts = TEngineFake.TEngineStubCreate<LDraftPort>();
-        LPhonologyPort phonology = TEngineFake.TEngineStubCreate<LPhonologyPort>();
-        LEditor editor = new(
-            TInterfaceConduct.TEditorCreate(
-                drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()));
-        return new(
-            entries,
-            TEngineFake.TEngineStubCreate<LPortraitPort>(),
-            settings,
-            editor,
-            TLecternCreate(editor),
-            static () => true,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static IReadOnlyList<CCatalogTag> TTaxonomyRowsRead(this LTaxonomy taxonomy) =>
-        taxonomy.LTaxonomyRowsRead();
-
-    internal static long TTaxonomyTagCreate(this LTaxonomy taxonomy, string name) =>
-        taxonomy.LTaxonomyTagCreate(name);
-
-    internal static bool TTaxonomyCoinageCheck(this LTaxonomy taxonomy) => taxonomy.LTaxonomyCoinageCheck();
-
-    internal static string TTaxonomyEmptyRead(this LTaxonomy taxonomy, string query) =>
-        taxonomy.LTaxonomyEmptyRead(query);
-
-    internal static IReadOnlyList<CCatalogTag> TTaxonomyTagRead(IReadOnlyList<LCatalogTag> rows) =>
-        LTaxonomy.LTaxonomyTagRead(rows);
-
-    internal static LCatalogTag TCatalogTagCreate(LTag tag, bool chosen) => new(tag, chosen);
-
     internal static IReadOnlyList<CCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
         panel.LPhonologyRowsRead();
 

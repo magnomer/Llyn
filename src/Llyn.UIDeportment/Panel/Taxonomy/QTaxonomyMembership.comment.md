@@ -20,7 +20,7 @@ A clicked row is shown once the leave check has settled any unsaved draft.
 The entry list is never refilled on its own.
 It is refilled whenever the catalog is, because the chosen tag may have just changed or vanished.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
-The controller picks the empty line's wording from the text in the entry search box.
+Conduct picks the empty line's key from whether the entry search holds text.
 
 ## `private void QMembershipApply(FrameworkElement container, object item, string? _)`
 

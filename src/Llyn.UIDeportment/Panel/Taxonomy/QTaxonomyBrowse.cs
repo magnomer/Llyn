@@ -22,52 +22,52 @@ internal sealed partial class QTaxonomy
     private void QTaxonomyTagUpdate()
     {
         QDirectoryFind();
-        _lTaxonomy.LTaxonomyPanel.CPanelDraftResonate();
+        _cTaxonomy.CTaxonomyPanel.CPanelDraftResonate();
     }
 
     private void QExplorationHandle(object sender, TextChangedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyExplorationSet(QExploration.Text ?? string.Empty);
+        _cTaxonomy.CTaxonomyQuerySet(QExploration.Text ?? string.Empty);
     }
 
     private void QScoutHandle(object sender, TextChangedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyScoutSet(QScout.Text);
+        _cTaxonomy.CTaxonomyMembershipFind(QScout.Text);
     }
 
     private void QFunnelHandle(object sender, RoutedEventArgs e)
     {
         QFunnelDropper.IsChecked = false;
-        _lTaxonomy.LTaxonomyFunnelSet(QChoice.QChoiceOrderRead(sender));
+        _cTaxonomy.CTaxonomyOrderSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void QLatticeHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyLatticeSet(QChoice.QChoiceFilterRead(sender));
+        _cTaxonomy.CTaxonomyFilterSet(QChoice.QChoiceFilterRead(sender));
         QLatticeRestore();
     }
 
     internal async void QTaxonomyVistaRestore()
     {
         UserControl surface = _qTaxonomySurface;
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QTaxonomyWorkspaceUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectTag, LObserver.LObserverCreate<CBulletin>(surface, QTaxonomyTagUpdate));
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        CPanel panel = _cTaxonomy.CTaxonomyPanel;
         panel.CPanelObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QMembershipFind));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
-        _lTaxonomy.LTaxonomyObserverAttach(
+        _cTaxonomy.CTaxonomyObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         QTaxonomyDisplay.PDisplayObserverAttach();
         QTaxonomyEditor.PEditorVistaRestore();
@@ -79,26 +79,26 @@ internal sealed partial class QTaxonomy
                 CCatalogOrder.CCatalogOrderName,
                 CCatalogOrder.CCatalogOrderReverse,
             ]);
-        QChoice.QChoiceOrderApply(QFunnelDropdown, _lTaxonomy.LTaxonomyOrder);
+        QChoice.QChoiceOrderApply(QFunnelDropdown, _cTaxonomy.CTaxonomyOrder);
         QLatticeRestore();
 
         await LEnsignImage.LEnsignLoad(_qTaxonomyHost.PWindowAtelier);
 
         QChoice.QChoiceFilterBuild(
-            QLatticeList, _lTaxonomy.LTaxonomyLanguageRead(), _lTaxonomy.LTaxonomyFilter, QLatticeHandle);
-        _lTaxonomy.LTaxonomyExplorationSet(QExploration.Text ?? string.Empty);
-        _lTaxonomy.LTaxonomyScoutSet(QScout.Text);
+            QLatticeList, _cTaxonomy.CTaxonomyLanguageRead(), _cTaxonomy.CTaxonomyFilter, QLatticeHandle);
+        _cTaxonomy.CTaxonomyQuerySet(QExploration.Text ?? string.Empty);
+        _cTaxonomy.CTaxonomyMembershipFind(QScout.Text);
         QDirectoryFind();
     }
 
     private void QLatticeRestore()
     {
-        QLatticeMark.Visibility = _lTaxonomy.LTaxonomyFiltered ? Visibility.Visible : Visibility.Collapsed;
+        QLatticeMark.Visibility = _cTaxonomy.CTaxonomyFiltered ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void QDirectoryReset()
     {
-        _lTaxonomy.LTaxonomySelect(null);
+        _cTaxonomy.CTaxonomyTagSelect(null);
     }
 
     private void QDirectoryFind()
@@ -106,7 +106,7 @@ internal sealed partial class QTaxonomy
         IReadOnlyList<CCatalogTag> read;
         try
         {
-            read = _lTaxonomy.LTaxonomyRowsRead();
+            read = _cTaxonomy.CTaxonomyRowsRead();
         }
         catch (Exception exception)
         {
@@ -176,7 +176,7 @@ internal sealed partial class QTaxonomy
 
     private void QDirectorySelect(long? id)
     {
-        _lTaxonomy.LTaxonomySelect(id);
+        _cTaxonomy.CTaxonomyTagSelect(id);
         QDirectoryFind();
     }
 
@@ -184,7 +184,7 @@ internal sealed partial class QTaxonomy
     {
         QExploration.Text = string.Empty;
         QScout.Text = string.Empty;
-        _lTaxonomy.LTaxonomySelect(id);
+        _cTaxonomy.CTaxonomyTagSelect(id);
         QDirectoryFind();
     }
 
@@ -195,13 +195,13 @@ internal sealed partial class QTaxonomy
             return;
         }
 
-        if (_lTaxonomy.LTaxonomyCoinageCheck())
+        if (_cTaxonomy.CTaxonomyCoinageAllowed)
         {
             QDirectoryCoinageShow(sender);
             return;
         }
 
-        _lTaxonomy.LTaxonomyEntryCreate();
+        _cTaxonomy.CTaxonomyEntryCreate();
     }
 
     private void QDirectoryCoinageShow(object origin)
@@ -218,7 +218,7 @@ internal sealed partial class QTaxonomy
     {
         try
         {
-            QDirectoryTagOpen(_lTaxonomy.LTaxonomyTagCreate(text));
+            QDirectoryTagOpen(_cTaxonomy.CTaxonomyTagCreate(text));
         }
         catch (Exception exception)
         {
@@ -228,28 +228,28 @@ internal sealed partial class QTaxonomy
 
     private void QDirectoryTagOpen(long id)
     {
-        _lTaxonomy.LTaxonomyPanel.CPanelEntryClose();
+        _cTaxonomy.CTaxonomyPanel.CPanelEntryClose();
         QDirectoryTagShow(id);
     }
 
     private void QTaxonomyScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyPanel.CPanelScribeToggle(ReferenceEquals(sender, QTaxonomyScribe));
+        _cTaxonomy.CTaxonomyPanel.CPanelScribeToggle(ReferenceEquals(sender, QTaxonomyScribe));
     }
 
     internal void QTaxonomyScribeRestore(bool editing)
     {
-        _lTaxonomy.LTaxonomyPanel.CPanelScribeRestore(editing);
+        _cTaxonomy.CTaxonomyPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QTaxonomyLeaveConfirm()
     {
-        return _lTaxonomy.LTaxonomyPanel.CPanelLeaveConfirm();
+        return _cTaxonomy.CTaxonomyPanel.CPanelLeaveConfirm();
     }
 
     internal long QTaxonomyVoyageRead()
     {
-        return _lTaxonomy.LTaxonomyChosen ?? 0;
+        return _cTaxonomy.CTaxonomyChosen ?? 0;
     }
 
     private void QTaxonomyStoreHandle(object sender, RoutedEventArgs e)
@@ -259,6 +259,6 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyPanel.CPanelEntryDelete();
+        _cTaxonomy.CTaxonomyPanel.CPanelEntryDelete();
     }
 }

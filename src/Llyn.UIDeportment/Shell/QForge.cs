@@ -84,19 +84,11 @@ public sealed class QForge
             static repertoire => repertoire.CRepertoireVistaRestore());
     }
 
-    public LTaxonomy QForgeTaxonomyCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CTaxonomy QForgeTaxonomyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LTaxonomy(
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            taxonomy => taxonomy.LTaxonomyVistaRestore(_qForgeAtelier));
+            CTaxonomy.CTaxonomyCreate(_qForgeAtelier, shownSeam, envoy),
+            static taxonomy => taxonomy.CTaxonomyVistaRestore());
     }
 
     public LTenor QForgeTenorCreate(

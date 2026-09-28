@@ -84,8 +84,15 @@ public sealed class CCard
     public IReadOnlyList<CTag> CCardTagFind(string word)
     {
         return _cCardEntryPort.LEngineTagFind(word, LCatalogOrder.LCatalogOrderUsage)
-            .Select(static row => new CTag(row.LTagId, row.LTagText))
+            .Select(LCardTagRead)
             .ToList();
+    }
+
+    internal static CTag LCardTagRead(LTag tag)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+
+        return new CTag(tag.LTagId, tag.LTagText);
     }
 
     public void CCardTagAdd(long cardId, string text, int position)

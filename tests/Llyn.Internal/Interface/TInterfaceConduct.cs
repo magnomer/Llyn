@@ -236,6 +236,8 @@ internal static class TInterfaceConduct
 
     internal static void TDeskFootnoteStart(this CDesk desk, long? reference) => desk.LDeskFootnoteStart(reference);
 
+    internal static void TDeskMembershipStart(this CDesk desk, long? tag) => desk.LDeskMembershipStart(tag);
+
     internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista) =>
         footnote.LFootnoteVistaRestore(parent, vista);
 

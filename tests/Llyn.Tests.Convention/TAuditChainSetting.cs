@@ -191,6 +191,7 @@ internal static class TAuditChainSetting
             "COccurrence",
             "CRepertoire",
             "CShelf",
+            "CTaxonomy",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -322,8 +323,8 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 77,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 258,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 203,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 249,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 174,
         ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,

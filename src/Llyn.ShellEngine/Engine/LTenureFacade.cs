@@ -63,6 +63,17 @@ internal sealed class LTenureFacade
         return started;
     }
 
+    internal LTenure LEngineMembershipStart(LVista vista, long? tag)
+    {
+        LTenure started = LEngineTenureStart(vista, null);
+        if (tag is long carried)
+        {
+            started.LTenureTagAdd(carried);
+        }
+
+        return started;
+    }
+
     internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)
     {
         LDraft started = subject switch

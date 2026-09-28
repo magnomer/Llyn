@@ -388,6 +388,35 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void MembershipStart_TagGiven_StartsAFreshEntryCarryingIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTag tag = engine.TEngineTagCreate("botany");
+        LVista vista = engine.TEngineVistaStart("membership", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineMembershipStart(vista, tag.LTagId);
+
+        Assert.Contains(
+            tenure.TTenureRead()?.LDraftContent.LEntryDraftMeanings[0].LCardDraftTag ?? [],
+            row => row.LTagDraftId == tag.LTagId);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void MembershipStart_NoTag_StartsABlankEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista vista = engine.TEngineVistaStart("membership", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineMembershipStart(vista, null);
+
+        Assert.False(tenure.TTenureChangeCheck());
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public void TenureDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
