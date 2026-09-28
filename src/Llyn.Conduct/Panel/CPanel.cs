@@ -70,7 +70,7 @@ public sealed class CPanel
 
     public CCatalogFilter CPanelFilter => CPanelFilterRead(LVista.LVistaFilterRead(_cPanelVista));
 
-    public void CPanelRowsUpdate()
+    public void CPanelRowsResonate()
     {
         CPanelRowsChanged?.Invoke();
     }
@@ -130,7 +130,7 @@ public sealed class CPanel
     public void CPanelEntryClose()
     {
         _cPanelVista?.LVistaSelect(null);
-        CPanelRowsUpdate();
+        CPanelRowsResonate();
         CPanelCleared?.Invoke();
         CPanelScribeSet(false);
     }
@@ -250,7 +250,7 @@ public sealed class CPanel
             return false;
         }
 
-        CPanelRowsUpdate();
+        CPanelRowsResonate();
         if (!CPanelBinEnabled)
         {
             CPanelEntryClose();
@@ -270,7 +270,7 @@ public sealed class CPanel
         return true;
     }
 
-    public void CPanelDraftUpdate()
+    public void CPanelDraftResonate()
     {
         LDraft? draft;
         try
@@ -295,11 +295,11 @@ public sealed class CPanel
         }
     }
 
-    public void CPanelEntryUpdate(CBulletin bulletin)
+    public void CPanelEntryResonate(CBulletin bulletin)
     {
         CPanelEntrySelect(bulletin);
         CPanelChanged?.Invoke();
-        CPanelRowsUpdate();
+        CPanelRowsResonate();
     }
 
     public void CPanelEntrySelect(CBulletin bulletin)
@@ -348,12 +348,57 @@ public sealed class CPanel
 
     internal static CCatalogOrder CPanelOrderRead(LCatalogOrder order)
     {
-        return (CCatalogOrder)order;
+        return order switch
+        {
+            LCatalogOrder.LCatalogOrderName => CCatalogOrder.CCatalogOrderName,
+            LCatalogOrder.LCatalogOrderHeadword => CCatalogOrder.CCatalogOrderHeadword,
+            LCatalogOrder.LCatalogOrderReverse => CCatalogOrder.CCatalogOrderReverse,
+            LCatalogOrder.LCatalogOrderRecent => CCatalogOrder.CCatalogOrderRecent,
+            LCatalogOrder.LCatalogOrderEarliest => CCatalogOrder.CCatalogOrderEarliest,
+            LCatalogOrder.LCatalogOrderYear => CCatalogOrder.CCatalogOrderYear,
+            LCatalogOrder.LCatalogOrderAuthor => CCatalogOrder.CCatalogOrderAuthor,
+            LCatalogOrder.LCatalogOrderUsage => CCatalogOrder.CCatalogOrderUsage,
+            LCatalogOrder.LCatalogOrderLanguage => CCatalogOrder.CCatalogOrderLanguage,
+            LCatalogOrder.LCatalogOrderMarked => CCatalogOrder.CCatalogOrderMarked,
+            LCatalogOrder.LCatalogOrderText => CCatalogOrder.CCatalogOrderText,
+            LCatalogOrder.LCatalogOrderSource => CCatalogOrder.CCatalogOrderSource,
+            LCatalogOrder.LCatalogOrderKind => CCatalogOrder.CCatalogOrderKind,
+            LCatalogOrder.LCatalogOrderSound => CCatalogOrder.CCatalogOrderSound,
+            LCatalogOrder.LCatalogOrderPending => CCatalogOrder.CCatalogOrderPending,
+            LCatalogOrder.LCatalogOrderWork => CCatalogOrder.CCatalogOrderWork,
+            LCatalogOrder.LCatalogOrderGrasp => CCatalogOrder.CCatalogOrderGrasp,
+            _ => throw new ArgumentOutOfRangeException(nameof(order), order, null),
+        };
     }
 
     internal static LCatalogOrder? CPanelOrderRead(CCatalogOrder? order)
     {
-        return (LCatalogOrder?)order;
+        return order is CCatalogOrder held ? LPanelOrderRead(held) : null;
+    }
+
+    internal static LCatalogOrder LPanelOrderRead(CCatalogOrder order)
+    {
+        return order switch
+        {
+            CCatalogOrder.CCatalogOrderName => LCatalogOrder.LCatalogOrderName,
+            CCatalogOrder.CCatalogOrderHeadword => LCatalogOrder.LCatalogOrderHeadword,
+            CCatalogOrder.CCatalogOrderReverse => LCatalogOrder.LCatalogOrderReverse,
+            CCatalogOrder.CCatalogOrderRecent => LCatalogOrder.LCatalogOrderRecent,
+            CCatalogOrder.CCatalogOrderEarliest => LCatalogOrder.LCatalogOrderEarliest,
+            CCatalogOrder.CCatalogOrderYear => LCatalogOrder.LCatalogOrderYear,
+            CCatalogOrder.CCatalogOrderAuthor => LCatalogOrder.LCatalogOrderAuthor,
+            CCatalogOrder.CCatalogOrderUsage => LCatalogOrder.LCatalogOrderUsage,
+            CCatalogOrder.CCatalogOrderLanguage => LCatalogOrder.LCatalogOrderLanguage,
+            CCatalogOrder.CCatalogOrderMarked => LCatalogOrder.LCatalogOrderMarked,
+            CCatalogOrder.CCatalogOrderText => LCatalogOrder.LCatalogOrderText,
+            CCatalogOrder.CCatalogOrderSource => LCatalogOrder.LCatalogOrderSource,
+            CCatalogOrder.CCatalogOrderKind => LCatalogOrder.LCatalogOrderKind,
+            CCatalogOrder.CCatalogOrderSound => LCatalogOrder.LCatalogOrderSound,
+            CCatalogOrder.CCatalogOrderPending => LCatalogOrder.LCatalogOrderPending,
+            CCatalogOrder.CCatalogOrderWork => LCatalogOrder.LCatalogOrderWork,
+            CCatalogOrder.CCatalogOrderGrasp => LCatalogOrder.LCatalogOrderGrasp,
+            _ => throw new ArgumentOutOfRangeException(nameof(order), order, null),
+        };
     }
 
     internal static CCatalogFilter CPanelFilterRead(LCatalogFilter filter)
@@ -365,7 +410,29 @@ public sealed class CPanel
 
     internal static LSubject CPanelSubjectRead(CSubject subject)
     {
-        return (LSubject)subject;
+        return subject switch
+        {
+            CSubject.CSubjectEntry => LSubject.LSubjectEntry,
+            CSubject.CSubjectExample => LSubject.LSubjectExample,
+            CSubject.CSubjectSituation => LSubject.LSubjectSituation,
+            CSubject.CSubjectReference => LSubject.LSubjectReference,
+            CSubject.CSubjectAuthor => LSubject.LSubjectAuthor,
+            CSubject.CSubjectTag => LSubject.LSubjectTag,
+            CSubject.CSubjectRegister => LSubject.LSubjectRegister,
+            CSubject.CSubjectFavorite => LSubject.LSubjectFavorite,
+            CSubject.CSubjectWorkspace => LSubject.LSubjectWorkspace,
+            CSubject.CSubjectDraft => LSubject.LSubjectDraft,
+            CSubject.CSubjectFrequency => LSubject.LSubjectFrequency,
+            CSubject.CSubjectGrasp => LSubject.LSubjectGrasp,
+            CSubject.CSubjectInflection => LSubject.LSubjectInflection,
+            CSubject.CSubjectScript => LSubject.LSubjectScript,
+            CSubject.CSubjectFanqie => LSubject.LSubjectFanqie,
+            CSubject.CSubjectReflex => LSubject.LSubjectReflex,
+            CSubject.CSubjectSettings => LSubject.LSubjectSettings,
+            CSubject.CSubjectTenure => LSubject.LSubjectTenure,
+            CSubject.CSubjectVista => LSubject.LSubjectVista,
+            _ => throw new ArgumentOutOfRangeException(nameof(subject), subject, null),
+        };
     }
 
     internal static CVistaRow CPanelRowRead(LVistaRow row)

@@ -81,6 +81,6 @@ Runs a desk step and raises `CSessionFailed` with the desk scope's hold key when
 
 True when any panel holds unsaved changes.
 
-## `private void CSessionStateUpdate()`
+## `private void LSessionStateUpdate()`
 
 Relays a desk or editor state change as `CSessionChanged`.

@@ -55,11 +55,11 @@ public sealed class CFavorite
         CFavoriteEditor.CEditorVistaRestore(vista);
     }
 
-    public void CFavoriteGraspUpdate()
+    public void CFavoriteGraspResonate()
     {
         if (CFavoritePanel.CPanelOrder == CCatalogOrder.CCatalogOrderGrasp)
         {
-            CFavoritePanel.CPanelRowsUpdate();
+            CFavoritePanel.CPanelRowsResonate();
         }
     }
 

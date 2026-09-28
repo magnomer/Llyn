@@ -309,7 +309,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireEntryUpdate_NoChosenOccurrence_KeepsTheScenario()
+    public void RepertoireEntryResonate_NoChosenOccurrence_KeepsTheScenario()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -317,14 +317,14 @@ public sealed class TRepertoire
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.CRepertoireSituationCreate();
 
-        repertoire.CRepertoireEntryUpdate();
+        repertoire.CRepertoireEntryResonate();
 
         Assert.True(repertoire.CRepertoireScenarioShown);
         Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
     }
 
     [Fact]
-    public void RepertoireEntryUpdate_OccurrenceOnDisplay_KeepsTheOccurrenceSide()
+    public void RepertoireEntryResonate_OccurrenceOnDisplay_KeepsTheOccurrenceSide()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -335,7 +335,7 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
 
-        repertoire.CRepertoireEntryUpdate();
+        repertoire.CRepertoireEntryResonate();
 
         Assert.True(repertoire.CRepertoireDisplayShown);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);

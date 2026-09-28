@@ -135,6 +135,10 @@ A desk with no vista starts nothing.
 
 The same fresh start for the corpus, already citing the Example in the first sentence.
 
+## `internal void LDeskFootnoteStart(long? reference)`
+
+The same fresh start for the shelf, already citing the Source in the first sentence.
+
 ## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
 
 Builds a desk that starts under its own origin and subject, so no owner decides the start.
@@ -148,7 +152,7 @@ The held draft after the deferred requests have been applied, or null while noth
 The stored id the held draft stands on, or null for a fresh draft, no tenure or a failed read.
 A tally reads it, so a failed persist only blanks the count.
 
-## `public void CDeskDraftUpdate()`
+## `public void CDeskDraftResonate()`
 
 Reads the draft again and announces it, unless the announcement itself is what is running.
 
@@ -161,7 +165,7 @@ The completion runs inside the tenure's prepare turn, so the rows it adds raise 
 
 Announces the draft with the filling flag raised, so the controls' echo is ignored.
 
-## `public void CDeskStateUpdate()`
+## `public void CDeskStateResonate()`
 
 Announces the change of state, after raising the refusal if the tenure just halted.
 
@@ -221,4 +225,4 @@ A session over the desk names its failed undo under the same scope.
 Decides which bulletins refresh the desk, for every tenure it starts.
 A tenure bulletin updates the desk state, and a draft bulletin runs `drafted`.
 Both run through `marshal`, which the driver hands in to reach its own thread.
-The overload without `drafted` rereads and announces the draft through `CDeskDraftUpdate`.
+The overload without `drafted` rereads and announces the draft through `CDeskDraftResonate`.

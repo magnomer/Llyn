@@ -44,10 +44,10 @@ The comb above the list, narrowing the Sources by the typed text.
 
 The citation sentence for the chosen Source, which the engine counts and words.
 
-## `internal CColophon COeuvreColophonRead(LDraft draft)`
+## `internal static CColophon LOeuvreColophonRead(LEntryPort entries, LDraft draft)`
 
 The colophon of a Source draft, which the engine builds with its tally and this class shapes.
-The shelf composes its sheet through the same read.
+It is static, so the shelf reads its sheet through the same map without a second panel.
 
 ## `internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
 

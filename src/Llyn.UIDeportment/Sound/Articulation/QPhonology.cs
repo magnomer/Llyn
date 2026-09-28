@@ -181,17 +181,17 @@ internal sealed class QPhonology
         UserControl surface = _qPhonologySurface;
         CPanel panel = _lPhonology.LPhonologyPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QPhonologyWorkspaceUpdate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         QPhonologyDisplay.PDisplayObserverAttach();
         QPhonologyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -215,7 +215,7 @@ internal sealed class QPhonology
             _lPhonology.LPhonologyPanel.CPanelFilter,
             QLensHandle);
         _lPhonology.LPhonologyQuerySet(QProbe.Text);
-        _lPhonology.LPhonologyPanel.CPanelRowsUpdate();
+        _lPhonology.LPhonologyPanel.CPanelRowsResonate();
     }
 
     private async void QPhonologyWorkspaceUpdate()

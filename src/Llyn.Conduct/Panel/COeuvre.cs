@@ -81,12 +81,14 @@ public sealed class COeuvre
 
     private void LOeuvreColophonUpdate(LDraft draft)
     {
-        COeuvreColophonChanged?.Invoke(COeuvreColophonRead(draft));
+        COeuvreColophonChanged?.Invoke(LOeuvreColophonRead(_cOeuvreEntryPort, draft));
     }
 
-    internal CColophon COeuvreColophonRead(LDraft draft)
+    internal static CColophon LOeuvreColophonRead(LEntryPort entries, LDraft draft)
     {
-        return LOeuvreColophonRead(_cOeuvreEntryPort.LEngineColophonRead(draft));
+        ArgumentNullException.ThrowIfNull(entries);
+
+        return LOeuvreColophonRead(entries.LEngineColophonRead(draft));
     }
 
     private static CColophon LOeuvreColophonRead(LColophon sheet)

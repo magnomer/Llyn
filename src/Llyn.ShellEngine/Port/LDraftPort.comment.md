@@ -24,6 +24,10 @@ Starts a fresh entry already linked to the Situation, as a new occurrence in the
 
 Starts a fresh entry already citing the Example, as a new quotation in the corpus opens.
 
+## `LTenure LEngineFootnoteStart(LVista vista, long? reference);`
+
+Starts a fresh entry already citing the Source, as a new footnote on the shelf opens.
+
 ## `IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);`
 
 The Authors a typed credit may already name, left out those the draft credits.

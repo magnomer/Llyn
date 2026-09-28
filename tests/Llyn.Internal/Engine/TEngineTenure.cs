@@ -359,6 +359,35 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void FootnoteStart_SourceGiven_StartsAFreshEntryCitingIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference book = engine.TEngineCitationCreate("Book");
+        LVista vista = engine.TEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineFootnoteStart(vista, book.LReferenceId);
+
+        LExampleDraft? cited = tenure.TTenureRead()?.LDraftContent
+            .LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftExample;
+        Assert.Equal(book.LReferenceId, cited?.LExampleDraftReference.LStateAnchorShown);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void FootnoteStart_NoSource_StartsABlankEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista vista = engine.TEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineFootnoteStart(vista, null);
+
+        Assert.False(tenure.TTenureChangeCheck());
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public void TenureDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -35,7 +35,7 @@ public sealed class CGuild
             envoy, "Guild.LoadFailed", "Guild",
             CGuildAutograph.CDeskChangeCheck, store => CGuildSession!.CSessionFinish(store), shownSeam);
         CGuildOeuvre = new COeuvre(atelier.CAtelierEntryPort, envoy, shownSeam);
-        CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsUpdate;
+        CGuildPanel.CPanelRowsChanged += CGuildOeuvre.COeuvrePanel.CPanelRowsResonate;
         CGuildSession = new CSession(
             CGuildAutograph, [CGuildPanel.CPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
@@ -169,12 +169,12 @@ public sealed class CGuild
         CGuildPanel.CPanelEntryClose();
     }
 
-    public void CGuildCatalogUpdate()
+    public void CGuildCatalogResonate()
     {
-        CGuildPanel.CPanelRowsUpdate();
+        CGuildPanel.CPanelRowsResonate();
         if (LGuildSourceSide)
         {
-            CGuildOeuvre.COeuvrePanel.CPanelDraftUpdate();
+            CGuildOeuvre.COeuvrePanel.CPanelDraftResonate();
         }
 
         CGuildChanged?.Invoke();
@@ -211,7 +211,7 @@ public sealed class CGuild
     private void LGuildStoredShow(long id)
     {
         _cGuildVista?.LVistaSelect(id);
-        CGuildPanel.CPanelRowsUpdate();
+        CGuildPanel.CPanelRowsResonate();
         CGuildSession.CSessionStart(id);
         CGuildChanged?.Invoke();
     }

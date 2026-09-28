@@ -408,7 +408,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void ReferenceAdd_FreshDraft_CitesTheFirstSentence()
+    public void FootnoteStart_SourceGiven_OpensAFreshDraftCitingIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -416,7 +416,7 @@ public sealed class TEditor
         CEditor editor = TEditorPrepare(engine, "footnote");
         editor.CEditorEntryOpen(null);
 
-        editor.CEditorReferenceAdd(book.LReferenceId);
+        editor.CEditorDesk.TDeskFootnoteStart(book.LReferenceId);
 
         CExampleDraft? cited =
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;

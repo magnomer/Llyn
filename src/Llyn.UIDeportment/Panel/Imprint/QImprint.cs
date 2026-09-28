@@ -125,7 +125,7 @@ internal sealed class QImprint : QChronicleHost
 
     public void QChronicleUpdate()
     {
-        _cImprint.CImprintDesk.CDeskStateUpdate();
+        _cImprint.CImprintDesk.CDeskStateResonate();
     }
 
     private void QImprintDraftUpdate(CReference reference)

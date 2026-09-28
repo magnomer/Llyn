@@ -99,7 +99,7 @@ public sealed class CDesk
 
     public void CDeskObserverAttach(Action<Action> marshal)
     {
-        CDeskObserverAttach(marshal, CDeskDraftUpdate);
+        CDeskObserverAttach(marshal, CDeskDraftResonate);
     }
 
     public void CDeskObserverAttach(Action<Action> marshal, Action drafted)
@@ -107,7 +107,7 @@ public sealed class CDesk
         ArgumentNullException.ThrowIfNull(marshal);
         ArgumentNullException.ThrowIfNull(drafted);
 
-        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskStateUpdate));
+        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskStateResonate));
         CDeskVigil.LVigilDraftAttach(CSubject.CSubjectDraft, _ => marshal(drafted));
     }
 
@@ -151,6 +151,15 @@ public sealed class CDesk
         }
     }
 
+    internal void LDeskFootnoteStart(long? reference)
+    {
+        CDeskCancel();
+        if (_cDeskVista is LVista vista)
+        {
+            CDeskStartRun(() => _cDeskPort.LEngineFootnoteStart(vista, reference));
+        }
+    }
+
     private void CDeskStartRun(Func<LTenure> start)
     {
         try
@@ -170,7 +179,7 @@ public sealed class CDesk
             return;
         }
 
-        CDeskDraftUpdate();
+        CDeskDraftResonate();
         CDeskStateChanged?.Invoke();
     }
 
@@ -197,7 +206,7 @@ public sealed class CDesk
         }
     }
 
-    public void CDeskDraftUpdate()
+    public void CDeskDraftResonate()
     {
         if (CDeskFilling)
         {
@@ -244,7 +253,7 @@ public sealed class CDesk
         }
     }
 
-    public void CDeskStateUpdate()
+    public void CDeskStateResonate()
     {
         if (CDeskStalling)
         {

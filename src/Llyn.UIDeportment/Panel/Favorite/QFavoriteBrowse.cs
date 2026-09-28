@@ -44,9 +44,9 @@ internal sealed partial class QFavorite
         panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QFavoriteWorkspaceUpdate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(surface, _cFavorite.CFavoriteGraspUpdate));
+            CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(surface, _cFavorite.CFavoriteGraspResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectFavorite, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
         panel.CPanelObserverAttach(
@@ -54,7 +54,7 @@ internal sealed partial class QFavorite
         panel.CPanelObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         QFavoriteDisplay.PDisplayObserverAttach();
         QFavoriteEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(

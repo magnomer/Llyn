@@ -30,6 +30,12 @@ Starts a fresh entry over the vista and cites the Example in its first sentence 
 The citation goes through `LTenureExampleAdd`, so the clerk's rule applies unchanged.
 A null Example leaves the fresh entry blank.
 
+## `internal LTenure LEngineFootnoteStart(LVista vista, long? reference)`
+
+Starts a fresh entry over the vista and cites the Source in its first sentence before anyone sees it.
+The citation goes through `LTenureReferenceAdd`, so the clerk's rule applies unchanged.
+A null Source leaves the fresh entry blank.
+
 ## `internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)`
 
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.

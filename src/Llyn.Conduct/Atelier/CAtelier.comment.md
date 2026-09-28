@@ -58,6 +58,7 @@ It runs again after a workspace change, so the input tab follows the new workspa
 Starts the tab's vista on its stored order, filter and split.
 The driver names the subject and order in Conduct's enums, so it never names a Core one.
 It is internal, since the vista it answers is an engine handle.
+The subject and order reach the engine through `CPanel`'s by-name maps, never by cast.
 
 ## `public bool CAtelierSplitRead()`
 
@@ -158,7 +159,7 @@ Sweeping on the way out as well as on the way in bounds what a long session leav
 ## `public Action CAtelierObserverAttach(CSubject subject, Action<CBulletin> observer)`
 
 Hands `observer` only the bulletins about `subject`, and answers the detach.
-The engine subject is read into Conduct's enum, so the compare stays between Conduct values.
+The Conduct subject is mapped by name to the engine's, and the compare is between engine values.
 
 ## `private void CAtelierEstablishmentShow(Action<CEstablishment> show)`
 

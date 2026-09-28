@@ -169,7 +169,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelDraftUpdate_StoredEntry_RepaintsThePanel()
+    public void PanelDraftResonate_StoredEntry_RepaintsThePanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -178,14 +178,14 @@ public sealed class TPanel
         int changed = 0;
         panel.CPanelChanged += () => changed++;
 
-        panel.CPanelDraftUpdate();
+        panel.CPanelDraftResonate();
 
         Assert.Equal(1, changed);
         Assert.Equal(chosen, panel.CPanelChosenRead());
     }
 
     [Fact]
-    public void PanelDraftUpdate_DeletedEntry_ClosesThePanel()
+    public void PanelDraftResonate_DeletedEntry_ClosesThePanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -194,14 +194,14 @@ public sealed class TPanel
         int cleared = 0;
         panel.CPanelCleared += () => cleared++;
 
-        panel.CPanelDraftUpdate();
+        panel.CPanelDraftResonate();
 
         Assert.Equal(1, cleared);
         Assert.Equal(0, panel.CPanelChosenRead());
     }
 
     [Fact]
-    public void PanelEntryUpdate_StoredBulletin_RelistsTheRows()
+    public void PanelEntryResonate_StoredBulletin_RelistsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -211,7 +211,7 @@ public sealed class TPanel
         panel.CPanelRowsChanged += () => rows++;
         panel.CPanelChanged += () => changed++;
 
-        panel.CPanelEntryUpdate(new CBulletin(panel.CPanelChosenRead(), true));
+        panel.CPanelEntryResonate(new CBulletin(panel.CPanelChosenRead(), true));
 
         Assert.Equal(1, rows);
         Assert.Equal(1, changed);

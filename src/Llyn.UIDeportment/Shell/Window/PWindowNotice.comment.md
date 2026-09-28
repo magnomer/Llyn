@@ -32,14 +32,3 @@ Hands every editor the window closes over to `CAtelierQuitConfirm`, each with it
 The two lists run in the same order, so a panel is asked and finished as one.
 A panel whose edits have no store path yet belongs in neither list.
 The leave question itself is put through `CEnvoy`.
-
-### `internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)`
-
-The same question over one panel's own answer, with the panel's own way of saving.
-It is for a panel leaving its editing state while the rest of the window stays as it is.
-Nothing unsaved means nothing to ask about.
-So the question is only ever put when there is something to lose.
-That is why it can sit in front of every path that discards typed work.
-Saving runs the panel's finish and answers whether it went through, so a refused save keeps the panel put.
-Discarding answers yes and leaves the dropping to the path that asked, as it always did.
-A plain yes-or-no offered no way to keep the work, which a user leaving a word often means to keep.

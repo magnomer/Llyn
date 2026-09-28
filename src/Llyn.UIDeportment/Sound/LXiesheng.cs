@@ -214,13 +214,13 @@ public sealed class LXiesheng
     public void LXieshengRowsUpdate()
     {
         LXieshengChanged?.Invoke();
-        LXieshengPanel.CPanelRowsUpdate();
+        LXieshengPanel.CPanelRowsResonate();
     }
 
     public void LXieshengEntryHandle(CBulletin bulletin)
     {
         LXieshengChanged?.Invoke();
-        LXieshengPanel.CPanelEntryUpdate(bulletin);
+        LXieshengPanel.CPanelEntryResonate(bulletin);
     }
 
     public void LXieshengStemSelect(long? id)

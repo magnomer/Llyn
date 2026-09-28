@@ -68,7 +68,7 @@ Each subject the panel cares about is attached once, so no handler sorts announc
 A vista announcement re-lists the roster, since order, filter or query moved.
 A mark set from another tab puts its row here without the tab being opened.
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each re-lists too.
-A changed grasp goes to `CFavoriteGraspUpdate`, which re-lists only under the grasp ordering.
+A changed grasp goes to `CFavoriteGraspResonate`, which re-lists only under the grasp ordering.
 A draft edit or a fetched frequency, paradigm, script or fanqie row changes no listed row, and is not attached.
 The dropdown mark and the filter mark are drawn from it first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.

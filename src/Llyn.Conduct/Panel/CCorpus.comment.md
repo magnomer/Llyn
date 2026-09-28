@@ -161,7 +161,7 @@ Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Example only when `shown` holds.
 
-## `public void CCorpusEntryUpdate()`
+## `public void CCorpusEntryResonate()`
 
 Answers the chosen entry's notice by refreshing the quotation draft.
 It falls back to the chosen Example once the quotation side has closed.

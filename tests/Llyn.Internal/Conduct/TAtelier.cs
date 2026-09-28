@@ -30,6 +30,30 @@ public sealed class TAtelier
     }
 
     [Fact]
+    public void AtelierVistaStart_EverySubjectAndOrder_ReachesTheEngineByName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+
+        foreach (CCatalogOrder order in Enum.GetValues<CCatalogOrder>())
+        {
+            LVista vista = atelier.CAtelierVistaStart("order" + order, CSubject.CSubjectReference, order);
+
+            Assert.Equal(order.ToString()[1..], vista.LVistaOrder.ToString()[1..]);
+        }
+
+        foreach (CSubject subject in Enum.GetValues<CSubject>())
+        {
+            LVista vista = atelier.CAtelierVistaStart("subject" + subject, subject, CCatalogOrder.CCatalogOrderName);
+
+            Assert.Equal(subject.ToString()[1..], vista.LVistaSubject?.ToString()[1..]);
+        }
+
+        Assert.Null(atelier.CAtelierVistaStart("bare", null, CCatalogOrder.CCatalogOrderName).LVistaSubject);
+    }
+
+    [Fact]
     public void AtelierRead_FreshEngine_ReadsDefaultVolumeAndSplit()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());

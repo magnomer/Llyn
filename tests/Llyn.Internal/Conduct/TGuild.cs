@@ -397,7 +397,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildCatalogUpdate_Notice_RefreshesTheRollAndTheVerdicts()
+    public void GuildCatalogResonate_Notice_RefreshesTheRollAndTheVerdicts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -408,7 +408,7 @@ public sealed class TGuild
         guild.CGuildPanel.CPanelRowsChanged += () => refreshed++;
         guild.CGuildChanged += () => changed++;
 
-        guild.CGuildCatalogUpdate();
+        guild.CGuildCatalogResonate();
 
         Assert.Equal(1, refreshed);
         Assert.Equal(1, changed);

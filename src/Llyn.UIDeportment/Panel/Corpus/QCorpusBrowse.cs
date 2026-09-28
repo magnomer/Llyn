@@ -62,7 +62,7 @@ internal sealed partial class QCorpus
         _cCorpus.CCorpusQuotation.CQuotationQuerySet(QDredge.Text);
         QSpeakerLoad();
         QCitationFind();
-        anthology.CPanelRowsUpdate();
+        anthology.CPanelRowsResonate();
     }
 
     private void QCorpusObserverAttach()
@@ -70,7 +70,7 @@ internal sealed partial class QCorpus
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
         CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
         UserControl surface = _qCorpusSurface;
-        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsUpdate);
+        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsResonate);
         Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(surface, QCitationFind);
         anthology.CPanelObserverAttach(CSubject.CSubjectVista, rows);
         anthology.CPanelObserverAttach(
@@ -86,9 +86,9 @@ internal sealed partial class QCorpus
         quotation.CPanelObserverAttach(CSubject.CSubjectEntry, citation);
         quotation.CPanelObserverAttach(CSubject.CSubjectEntry, rows);
         quotation.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cCorpus.CCorpusEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cCorpus.CCorpusEntryResonate));
         quotation.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelRowsResonate));
     }
 
     private void QGauzeRestore()

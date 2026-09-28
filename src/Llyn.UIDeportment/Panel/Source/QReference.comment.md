@@ -5,7 +5,7 @@
 The driver of the Source panel: what it is made of, and what it forwards.
 A Source is independent data owned by nothing, so this panel is not a view of one citation of it.
 The visible label is Source and the internal base is Reference, because Source already names a pronunciation source.
-Every branch it once carried lives in `LShelf` and the two `CPanel` it holds.
+Every branch it once carried lives in the Conduct shelf `CShelf` and the two `CPanel` it holds.
 The driver forwards each handler to the shelf and writes the page's parts when a notice arrives.
 The shelf, the entry list, the read areas, the two edit areas and the shared rail are all wired here.
 The driver picks the area in front by the shelf's side verdict.
@@ -22,8 +22,9 @@ Each named part of the page is found through `QContract.QContractFind` under its
 
 ## `internal void QReferenceAttach(PWindow host)`
 
-Puts the driver to work on the panel factory, which builds the shelf over the engine's ports.
-It hands the shelf the seams the driver answers through and subscribes to the notices of both lists.
+Puts the driver to work on the panel factory, which builds the Conduct shelf with its own editor.
+It hands the shelf only the shown seam, and subscribes to the notices of both lists.
+The lectern follows the entry list's clears and loaded drafts, as the other panel drivers wire it.
 The editor's chronicle notice and the imprint desk's state notice refresh the rail's undo and redo.
 The print and portrait command bindings are added last, so no can-execute query meets a shelf not yet built.
 
@@ -31,7 +32,7 @@ The print and portrait command bindings are added last, so no can-execute query 
 
 Attaches the observers that carry each announcement onto the dispatcher.
 A stored entry re-lists the shelf too, because the citation counts on its rows may have moved.
-The offered orders come from `LShelf.LShelfOrderRead`, so the driver lists no order of its own.
+The offered orders come from `CShelf.CShelfOrderRead`, so the driver lists no order of its own.
 The flags are loaded before the first rows are built, because an entry row reads its flag at construction.
 
 ## `internal bool QReferenceChangeCheck()`
@@ -46,10 +47,6 @@ The side verdict picks the editor's or the imprint's finish, and its answer is p
 ## `internal bool QReferenceLeaveConfirm()`
 
 The panel's question before its unsaved work goes out of sight, asked by the window.
-
-## `private bool QReferenceDiscardConfirm()`
-
-The discard seam: the window's leave dialog over the finish of the area in front.
 
 ## `private void QShelfUpdate()`
 

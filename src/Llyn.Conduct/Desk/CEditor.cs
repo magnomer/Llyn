@@ -185,9 +185,4 @@ public sealed class CEditor
     {
         CEditorTenure?.LTenureRegisterAdd(register);
     }
-
-    public void CEditorReferenceAdd(long reference)
-    {
-        CEditorTenure?.LTenureReferenceAdd(reference);
-    }
 }

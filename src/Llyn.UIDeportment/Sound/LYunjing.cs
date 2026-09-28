@@ -292,13 +292,13 @@ public sealed class LYunjing
     public void LYunjingRowsUpdate()
     {
         LYunjingChanged?.Invoke();
-        LYunjingPanel.CPanelRowsUpdate();
+        LYunjingPanel.CPanelRowsResonate();
     }
 
     public void LYunjingEntryHandle(CBulletin bulletin)
     {
         LYunjingChanged?.Invoke();
-        LYunjingPanel.CPanelEntryUpdate(bulletin);
+        LYunjingPanel.CPanelEntryResonate(bulletin);
     }
 
     public void LYunjingDiweiSelect(long? id, bool? final)

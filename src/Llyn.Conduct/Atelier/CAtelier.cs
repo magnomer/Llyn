@@ -65,9 +65,12 @@ public sealed class CAtelier : IDisposable
 
     internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)
     {
-        return CAtelierPosture.LPostureVistaStart(tab, (LSubject?)subject, (LCatalogOrder)fallback, blank);
+        return CAtelierPosture.LPostureVistaStart(
+            tab,
+            subject is CSubject held ? CPanel.CPanelSubjectRead(held) : null,
+            CPanel.LPanelOrderRead(fallback),
+            blank);
     }
-
 
     internal void CAtelierInputRestore(CEditor editor)
     {
@@ -233,7 +236,7 @@ public sealed class CAtelier : IDisposable
 
         return CAtelierObserverAdd(bulletin =>
         {
-            if ((CSubject)bulletin.LBulletinSubject == subject)
+            if (bulletin.LBulletinSubject == CPanel.CPanelSubjectRead(subject))
             {
                 observer(CAtelierBulletinRead(bulletin));
             }

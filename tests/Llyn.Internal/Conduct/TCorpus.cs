@@ -238,7 +238,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusEntryUpdate_NoChosenQuotation_KeepsTheTranscript()
+    public void CorpusEntryResonate_NoChosenQuotation_KeepsTheTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -246,14 +246,14 @@ public sealed class TCorpus
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         corpus.CCorpusExampleCreate();
 
-        corpus.CCorpusEntryUpdate();
+        corpus.CCorpusEntryResonate();
 
         Assert.True(corpus.CCorpusTranscriptShown);
         Assert.True(corpus.CCorpusDesk.CDeskHeld);
     }
 
     [Fact]
-    public void CorpusEntryUpdate_QuotationOnDisplay_KeepsTheQuotationSide()
+    public void CorpusEntryResonate_QuotationOnDisplay_KeepsTheQuotationSide()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -265,7 +265,7 @@ public sealed class TCorpus
         corpus.CCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusQuotationSelect(water.LEntryId);
 
-        corpus.CCorpusEntryUpdate();
+        corpus.CCorpusEntryResonate();
 
         Assert.True(corpus.CCorpusDisplayShown);
         Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);

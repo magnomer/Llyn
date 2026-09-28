@@ -208,11 +208,11 @@ public class PYunjing : UserControl
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         CPanel panel = _lYunjing.LYunjingPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingEntryHandle));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelDraftResonate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(

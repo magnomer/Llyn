@@ -32,7 +32,7 @@ Whether the language filter hides any language, as the vista answers it.
 Starts the favorite vista through the atelier, headword order before any order is saved.
 The panel and the editor both take it, on a workspace start or switch.
 
-## `public void CFavoriteGraspUpdate()`
+## `public void CFavoriteGraspResonate()`
 
 Answers a grasp notice by refreshing the rows, but only while they are ordered by grasp.
 A grasp change in any other order moves no row, so the list is left alone.

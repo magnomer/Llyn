@@ -85,11 +85,11 @@ A store answer finishes the draft first, and a refused store keeps the tab.
 
 Closes the oeuvre and the roll panel, as a workspace change or a vanished row asks.
 
-## `public void CGuildCatalogUpdate()`
+## `public void CGuildCatalogResonate()`
 
 Something cited or credited changed, so the roll and the counts are read again.
 The colophon is reloaded only while a Source is in front, so no split preference is touched otherwise.
-It answers an engine notice the driver hands over, so it keeps the `Update` ending.
+It answers an engine notice the driver hands over, so it takes the `Resonate` ending.
 
 ## `public void CGuildAuthorSelect(long? id)`
 

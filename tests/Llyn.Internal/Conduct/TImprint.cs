@@ -15,7 +15,7 @@ public sealed class TImprint
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprintPrepare(engine, atelier);
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
 
         imprint.CImprintTitleSet("Book");
         imprint.CImprintYearSet(" ");
@@ -34,7 +34,7 @@ public sealed class TImprint
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprintPrepare(engine, atelier);
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
 
         imprint.CImprintKindSet("journal");
         imprint.CImprintKindSet(null);
@@ -51,7 +51,7 @@ public sealed class TImprint
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprintPrepare(engine, atelier);
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
 
         imprint.CImprintKindSet("unspecified");
 
@@ -67,15 +67,15 @@ public sealed class TImprint
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprintPrepare(engine, atelier);
         LReference book = engine.TEngineCitationCreate("Book");
-        imprint.CImprintOpen(book.LReferenceId);
+        imprint.TImprintOpen(book.LReferenceId);
 
-        imprint.CImprintSave();
+        imprint.TImprintSave();
 
         Assert.True(imprint.CImprintHeld);
         Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), imprint.CImprintTallyRead());
 
         imprint.CImprintTitleSet("Tome");
-        imprint.CImprintSave();
+        imprint.TImprintSave();
 
         Assert.False(imprint.CImprintHeld);
         Assert.Equal("Tome", engine.TEngineReferenceRead(book.LReferenceId)?.LReferenceTitle.TStateValueShow());
@@ -92,7 +92,7 @@ public sealed class TImprint
         List<CReference> shown = [];
         imprint.CImprintReferenceChanged += shown.Add;
 
-        imprint.CImprintOpen(book.LReferenceId);
+        imprint.TImprintOpen(book.LReferenceId);
 
         CReference reference = Assert.Single(shown);
         Assert.Equal("Book", reference.CReferenceTitle);
@@ -128,13 +128,13 @@ public sealed class TImprint
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprintPrepare(engine, atelier);
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         imprint.CImprintByline.CBylineWordSet("Ad", true);
         imprint.CImprintByline.CBylineRowsRead();
         int changed = 0;
         imprint.CImprintByline.CBylineChanged += () => changed++;
 
-        imprint.CImprintCancel();
+        imprint.TImprintCancel();
 
         Assert.False(imprint.CImprintHeld);
         Assert.False(imprint.CImprintByline.CBylineShown);

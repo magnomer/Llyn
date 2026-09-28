@@ -43,7 +43,7 @@ A stored Example or Source refills the citations and the catalog, because a row 
 A reflex fill or a flipped setting rewrites the epithet beside a headword, so each refills the catalog too.
 An entry announcement goes to the quotation panel first, which may adopt a freshly stored Entry.
 The citations and the catalog follow, since the store may quote an Example.
-The chosen entry's own announcement reaches `CCorpusEntryUpdate` last, which redraws or drops it.
+The chosen entry's own announcement reaches `CCorpusEntryResonate` last, which redraws or drops it.
 Every observer is bound to the surface, since the driver is no control.
 
 ## `private void QGauzeRestore()`

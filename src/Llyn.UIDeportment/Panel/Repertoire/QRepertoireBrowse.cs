@@ -53,7 +53,7 @@ internal sealed partial class QRepertoire
         QMeshBuild();
         _cRepertoire.CRepertoireAtlas.CAtlasQuerySet(QInquest.Text ?? string.Empty);
         _cRepertoire.CRepertoireOccurrence.COccurrenceQuerySet(QSortie.Text);
-        atlas.CPanelRowsUpdate();
+        atlas.CPanelRowsResonate();
     }
 
     private void QRepertoireObserverAttach()
@@ -61,7 +61,7 @@ internal sealed partial class QRepertoire
         UserControl surface = _qRepertoireSurface;
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
-        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, atlas.CPanelRowsUpdate);
+        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, atlas.CPanelRowsResonate);
         atlas.CPanelObserverAttach(CSubject.CSubjectVista, rows);
         atlas.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QRepertoireWorkspaceUpdate));
@@ -72,9 +72,10 @@ internal sealed partial class QRepertoire
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, occurrence.CPanelEntrySelect));
         occurrence.CPanelObserverAttach(CSubject.CSubjectEntry, rows);
         occurrence.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cRepertoire.CRepertoireEntryUpdate));
+            CSubject.CSubjectEntry,
+            LObserver.LObserverCreate<CBulletin>(surface, _cRepertoire.CRepertoireEntryResonate));
         occurrence.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, occurrence.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, occurrence.CPanelRowsResonate));
     }
 
     private void QMeshRestore()

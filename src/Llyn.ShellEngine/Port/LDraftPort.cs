@@ -14,6 +14,8 @@ public interface LDraftPort
 
     LTenure LEngineQuotationStart(LVista vista, long? example);
 
+    LTenure LEngineFootnoteStart(LVista vista, long? reference);
+
     void LEngineDraftDelete(long id);
 
     void LEngineObserverAttach(Action<LBulletin> observer);

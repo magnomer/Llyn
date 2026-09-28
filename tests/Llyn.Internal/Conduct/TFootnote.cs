@@ -66,7 +66,7 @@ public sealed class TFootnote
         (CFootnote footnote, LVista parent, CEditor editor) = TFootnotePrepare(engine, atelier);
         parent.TVistaSelect(book.LReferenceId);
 
-        footnote.CFootnoteEntryCreate();
+        footnote.TFootnoteEntryCreate();
 
         Assert.True(footnote.CFootnotePanel.CPanelEditing);
         Assert.False(footnote.CFootnotePanel.CPanelBinEnabled);
@@ -83,7 +83,7 @@ public sealed class TFootnote
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         (CFootnote footnote, _, CEditor editor) = TFootnotePrepare(engine, atelier);
 
-        footnote.CFootnoteEntryCreate();
+        footnote.TFootnoteEntryCreate();
 
         Assert.True(footnote.CFootnotePanel.CPanelEditing);
         Assert.All(
@@ -105,7 +105,7 @@ public sealed class TFootnote
             static () => true);
         LVista parent = engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName);
         LVista vista = engine.TEngineVistaStart("footnote", LCatalogOrder.LCatalogOrderHeadword);
-        footnote.CFootnoteVistaRestore(parent, vista);
+        footnote.TFootnoteVistaRestore(parent, vista);
         editor.CEditorVistaRestore(vista);
         return (footnote, parent, editor);
     }

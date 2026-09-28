@@ -173,17 +173,17 @@ internal sealed class QLibrary
         UserControl surface = _qLibrarySurface;
         CPanel panel = _cLibrary.CLibraryPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QLibraryWorkspaceUpdate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         QLibraryDisplay.PDisplayObserverAttach();
         QLibraryEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderHandle, QIndex.QIndexOrder);
@@ -198,7 +198,7 @@ internal sealed class QLibrary
             panel.CPanelFilter,
             QSieveHandle);
         _cLibrary.CLibraryQuerySet(QInquiry.Text);
-        panel.CPanelRowsUpdate();
+        panel.CPanelRowsResonate();
     }
 
     private async void QLibraryWorkspaceUpdate()

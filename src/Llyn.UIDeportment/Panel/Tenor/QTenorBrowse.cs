@@ -24,7 +24,7 @@ internal sealed partial class QTenor
     private void QTenorRegisterUpdate()
     {
         QGamutFind();
-        _lTenor.LTenorPanel.CPanelDraftUpdate();
+        _lTenor.LTenorPanel.CPanelDraftResonate();
     }
 
     private void QSoundingHandle(object sender, TextChangedEventArgs e)
@@ -64,11 +64,11 @@ internal sealed partial class QTenor
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
         CPanel panel = _lTenor.LTenorPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QCohortFind));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         _lTenor.LTenorObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
         QTenorDisplay.PDisplayObserverAttach();

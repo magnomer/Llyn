@@ -80,6 +80,14 @@ A fresh blank entry reads unchanged and not storable.
 
 A fresh quotation start cites the Example in the first sentence of the first card.
 
+## `public void FootnoteStart_SourceGiven_StartsAFreshEntryCitingIt()`
+
+A fresh footnote start cites the Source in the first sentence of the first card.
+
+## `public void FootnoteStart_NoSource_StartsABlankEntry()`
+
+A fresh footnote start without a Source is a blank entry that reads unchanged.
+
 ## `public void TenureDefer_GlossTwice_OneChronicleStep()`
 
 Two deferrals of one gloss text reach the chronicle as one step, so one undo clears the gloss.

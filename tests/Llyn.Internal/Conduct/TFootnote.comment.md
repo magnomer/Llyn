@@ -6,6 +6,7 @@ Covers the sources panel's entry list end to end on a real workspace.
 With no Source chosen it lists every entry, and a chosen Source that nothing cites empties it.
 An unmatched query empties the rows, and the empty list then reads as unmatched rather than vacant.
 A fresh entry opens in the editor, citing the chosen Source, or citing nothing while none is chosen.
+The create and the vista restore are internal helpers, reached through relays.
 
 ## `private static (CFootnote, LVista, CEditor) TFootnotePrepare(`
 

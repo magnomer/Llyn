@@ -51,7 +51,7 @@ public sealed class TByline
             engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada " + index));
         }
 
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         imprint.CImprintByline.CBylineWordSet("Ada", true);
 
         Assert.Equal(8, imprint.CImprintByline.CBylineRowsRead().Count);
@@ -66,7 +66,7 @@ public sealed class TByline
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adele"));
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         CByline byline = imprint.CImprintByline;
         byline.CBylineWordSet("Ad", true);
         Assert.Equal(2, byline.CBylineRowsRead().Count);
@@ -96,7 +96,7 @@ public sealed class TByline
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
         LAuthor adam = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         imprint.CImprintByline.CBylineWordSet("Ad", true);
         imprint.CImprintByline.CBylineRowsRead();
 
@@ -116,7 +116,7 @@ public sealed class TByline
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         imprint.CImprintByline.CBylineWordSet("Ad", true);
         imprint.CImprintByline.CBylineRowsRead();
 
@@ -134,7 +134,7 @@ public sealed class TByline
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
         engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         int reverted = 0;
         imprint.CImprintReverted += () => reverted++;
         imprint.CImprintByline.CBylineWordSet("Ad", true);
@@ -178,7 +178,7 @@ public sealed class TByline
         LReference book = engine.TEngineCitationCreate("Book");
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
-        imprint.CImprintOpen(book.LReferenceId);
+        imprint.TImprintOpen(book.LReferenceId);
         return ada;
     }
 }

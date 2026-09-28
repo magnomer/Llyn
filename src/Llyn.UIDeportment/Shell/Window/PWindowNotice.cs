@@ -63,21 +63,4 @@ public partial class PWindow
             ],
             PWindowEnvoy);
     }
-
-    internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)
-    {
-        ArgumentNullException.ThrowIfNull(finish);
-
-        if (!unsaved)
-        {
-            return true;
-        }
-
-        return QSLeave.QSLeaveShow(_pWindowSurface) switch
-        {
-            QSLeaveAnswer.QSLeaveAnswerStore => finish(true),
-            QSLeaveAnswer.QSLeaveAnswerDiscard => true,
-            _ => false,
-        };
-    }
 }

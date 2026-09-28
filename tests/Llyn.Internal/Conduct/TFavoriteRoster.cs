@@ -84,7 +84,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteGraspUpdate_GraspOrder_RefreshesTheRows()
+    public void FavoriteGraspResonate_GraspOrder_RefreshesTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -93,12 +93,12 @@ public sealed class TFavoriteRoster
         int refreshed = 0;
         favorite.CFavoritePanel.CPanelRowsChanged += () => refreshed++;
 
-        favorite.CFavoriteGraspUpdate();
+        favorite.CFavoriteGraspResonate();
 
         Assert.Equal(0, refreshed);
 
         favorite.CFavoriteOrderSet(CCatalogOrder.CCatalogOrderGrasp);
-        favorite.CFavoriteGraspUpdate();
+        favorite.CFavoriteGraspResonate();
 
         Assert.Equal(1, refreshed);
     }

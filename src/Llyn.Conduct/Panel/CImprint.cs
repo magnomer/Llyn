@@ -42,21 +42,21 @@ public sealed class CImprint
 
     public int CImprintBlankAt => _cImprintBlankAt;
 
-    public void CImprintOpen(long? id)
+    internal void LImprintOpen(long? id)
     {
         _cImprintBlankAt = -1;
         CImprintByline.LBylineReset();
         CImprintDesk.CDeskStart(id);
     }
 
-    public void CImprintCancel()
+    internal void LImprintCancel()
     {
         CImprintDesk.CDeskCancel();
         CImprintChanged?.Invoke();
         CImprintByline.CBylineClose();
     }
 
-    public void CImprintSave()
+    internal void LImprintSave()
     {
         if (!CImprintDesk.CDeskChangeCheck())
         {

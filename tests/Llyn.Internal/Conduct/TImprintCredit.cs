@@ -20,7 +20,7 @@ public sealed class TImprintCredit
         Assert.Empty(imprint.CImprintCreditRead());
         Assert.Equal(-1, imprint.CImprintBlankAt);
 
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
 
         Assert.Empty(imprint.CImprintCreditRead());
         Assert.Equal(0, imprint.CImprintBlankAt);
@@ -94,7 +94,7 @@ public sealed class TImprintCredit
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         int reverted = 0;
         imprint.CImprintReverted += () => reverted++;
 
@@ -109,7 +109,7 @@ public sealed class TImprintCredit
         Assert.Equal(["Ada"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
 
         imprint.CImprintTitleSet("Book");
-        imprint.CImprintSave();
+        imprint.TImprintSave();
 
         Assert.Equal(["Ada"], engine.TEngineAuthorFind(string.Empty).Select(author => author.LAuthorName));
     }
@@ -150,7 +150,7 @@ public sealed class TImprintCredit
         Assert.False(imprint.CImprintAuthorFinish(0, 0, "Ada", null));
         Assert.False(imprint.CImprintAuthorCancel(0, 0));
 
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
 
         Assert.False(imprint.CImprintAuthorFinish(null, 0, "Ada", null));
         Assert.False(imprint.CImprintAuthorCancel(0, null));
@@ -163,7 +163,7 @@ public sealed class TImprintCredit
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
-        imprint.CImprintOpen(null);
+        imprint.TImprintOpen(null);
         int reverted = 0;
         imprint.CImprintReverted += () => reverted++;
 
@@ -184,7 +184,7 @@ public sealed class TImprintCredit
             authors.Add(author);
         }
 
-        imprint.CImprintOpen(book.LReferenceId);
+        imprint.TImprintOpen(book.LReferenceId);
         return authors;
     }
 }

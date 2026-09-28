@@ -52,6 +52,17 @@ internal sealed class LTenureFacade
         return started;
     }
 
+    internal LTenure LEngineFootnoteStart(LVista vista, long? reference)
+    {
+        LTenure started = LEngineTenureStart(vista, null);
+        if (reference is long cited)
+        {
+            started.LTenureReferenceAdd(cited);
+        }
+
+        return started;
+    }
+
     internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)
     {
         LDraft started = subject switch

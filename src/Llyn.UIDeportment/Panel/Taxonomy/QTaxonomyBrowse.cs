@@ -22,7 +22,7 @@ internal sealed partial class QTaxonomy
     private void QTaxonomyTagUpdate()
     {
         QDirectoryFind();
-        _lTaxonomy.LTaxonomyPanel.CPanelDraftUpdate();
+        _lTaxonomy.LTaxonomyPanel.CPanelDraftResonate();
     }
 
     private void QExplorationHandle(object sender, TextChangedEventArgs e)
@@ -62,11 +62,11 @@ internal sealed partial class QTaxonomy
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         CPanel panel = _lTaxonomy.LTaxonomyPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QMembershipFind));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         _lTaxonomy.LTaxonomyObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         QTaxonomyDisplay.PDisplayObserverAttach();

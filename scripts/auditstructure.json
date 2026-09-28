@@ -204,8 +204,8 @@
   ],
   "ceilings": {
     "cross:Llyn.UIDeportment>Llyn.Application": 77,
-    "cross:Llyn.UIDeportment>Llyn.Core": 266,
-    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 227,
+    "cross:Llyn.UIDeportment>Llyn.Core": 258,
+    "cross:Llyn.UIDeportment>Llyn.ShellEngine": 203,
     "expose:Llyn.UIDemeanor>Llyn.Core": 23,
     "expose:Llyn.UIDemeanor>Llyn.ShellEngine": 1,
     "expose:Llyn.UIDeportment>Llyn.Core": 23,
@@ -368,7 +368,8 @@
       "CByline",
       "CLibrary",
       "COccurrence",
-      "CRepertoire"
+      "CRepertoire",
+      "CShelf"
     ],
     "Llyn.UIDemeanor>Llyn.Conduct": [
       "LDisplay",

@@ -37,16 +37,16 @@ The popup of Authors a typed credit may already name.
 
 The place of the one blank credit row, or `-1` when none is open.
 
-## `public void CImprintOpen(long? id)`
+## `internal void LImprintOpen(long? id)`
 
 Starts the desk over the Source, or over a fresh one when `id` is null.
 The blank row and the byline start closed.
 
-## `public void CImprintCancel()`
+## `internal void LImprintCancel()`
 
 Drops the held draft and closes the byline, then announces both.
 
-## `public void CImprintSave()`
+## `internal void LImprintSave()`
 
 Stores the draft only when it changed, so an unchanged save keeps the draft held.
 

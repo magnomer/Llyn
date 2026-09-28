@@ -181,11 +181,11 @@ internal sealed class QXiesheng
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengRowsUpdate));
         CPanel panel = _lXiesheng.LXieshengPanel;
         panel.CPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengEntryHandle));
         panel.CPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         QXieshengDisplay.PDisplayObserverAttach();
         QXieshengEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(

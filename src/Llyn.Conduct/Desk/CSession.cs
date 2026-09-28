@@ -42,10 +42,10 @@ public sealed class CSession
         _cSessionFinishSeam = finishSeam;
         _cSessionReadySeam = readySeam;
         _cSessionStoredSeam = storedSeam;
-        desk.CDeskStateChanged += CSessionStateUpdate;
+        desk.CDeskStateChanged += LSessionStateUpdate;
         if (editor is not null)
         {
-            editor.CDeskStateChanged += CSessionStateUpdate;
+            editor.CDeskStateChanged += LSessionStateUpdate;
         }
     }
 
@@ -199,7 +199,7 @@ public sealed class CSession
         return false;
     }
 
-    private void CSessionStateUpdate()
+    private void LSessionStateUpdate()
     {
         CSessionChanged?.Invoke();
     }

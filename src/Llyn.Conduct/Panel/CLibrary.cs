@@ -115,7 +115,7 @@ public sealed class CLibrary
                 return;
             }
 
-            CLibraryPanel.CPanelRowsUpdate();
+            CLibraryPanel.CPanelRowsResonate();
             _cLibraryEnvoy.CEnvoyOmissionShow(omissions.Select(LLibraryOmissionRead).ToList());
         }
         catch (Exception exception)

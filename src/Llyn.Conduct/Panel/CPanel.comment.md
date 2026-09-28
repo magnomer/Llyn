@@ -47,7 +47,7 @@ The engine answers the ordering before a vista arrives.
 The vista's language filter as a driver ticks it in a menu.
 The engine answers the filter before a vista arrives.
 
-## `public void CPanelRowsUpdate()`
+## `public void CPanelRowsResonate()`
 
 A notice changed the rows, so the panel tells its driver to re-read them.
 
@@ -128,12 +128,12 @@ Loads a row through the given vista load, after a click or a return to the displ
 A refused load is told through the envoy and answers false, and the vista has restored its prior choice.
 The vista drops a choice that no longer loads, so the chosen verdict decides the close.
 
-## `public void CPanelDraftUpdate()`
+## `public void CPanelDraftResonate()`
 
 The chosen entry changed under the panel, so it is reloaded quietly.
 A vanished entry closes the panel, and a refused reload changes nothing.
 
-## `public void CPanelEntryUpdate(CBulletin bulletin)`
+## `public void CPanelEntryResonate(CBulletin bulletin)`
 
 A stored entry re-lists the rows and repaints the mode, after the adoption below.
 
@@ -157,11 +157,16 @@ One something references is asked with its tally, because the delete drops those
 ## `internal static CCatalogOrder CPanelOrderRead(LCatalogOrder order)`
 
 The Conduct mirror of an engine ordering, member for member.
-It casts, since the mirror declares its members in the engine's order, and a test holds the order.
+It maps each member by name, never by cast, so a reordered enum cannot shift a meaning.
+An unknown member is a caller's error.
 
 ## `internal static LCatalogOrder? CPanelOrderRead(CCatalogOrder? order)`
 
 The engine ordering a driver's choice stands for, or null when the driver chose none.
+
+## `internal static LCatalogOrder LPanelOrderRead(CCatalogOrder order)`
+
+The by-name map from a Conduct ordering to the engine's, shared by the panels and the atelier.
 
 ## `internal static CCatalogFilter CPanelFilterRead(LCatalogFilter filter)`
 
@@ -169,7 +174,7 @@ The Conduct copy of an engine filter, carrying its hidden languages.
 
 ## `internal static LSubject CPanelSubjectRead(CSubject subject)`
 
-The engine subject a driver's subject names, cast member for member like the ordering.
+The engine subject a driver's subject names, mapped member by member by name like the ordering.
 
 ## `internal static CVistaRow CPanelRowRead(LVistaRow row)`
 

@@ -133,7 +133,7 @@ public sealed class TDesk
         List<bool> filling = [];
         desk.CDeskDraftChanged += _ => filling.Add(desk.CDeskFilling);
 
-        desk.CDeskDraftUpdate();
+        desk.CDeskDraftResonate();
 
         Assert.Equal([true], filling);
         Assert.False(desk.CDeskFilling);
@@ -151,7 +151,7 @@ public sealed class TDesk
         desk.CDeskRefused += refused.Add;
         desk.CDeskStateChanged += () => changed++;
 
-        desk.CDeskStateUpdate();
+        desk.CDeskStateResonate();
 
         Assert.False(desk.CDeskHalted);
         Assert.Empty(refused);

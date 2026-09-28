@@ -70,25 +70,11 @@ public sealed class QForge
             phonology => phonology.LPhonologyVistaRestore(_qForgeAtelier));
     }
 
-    public LShelf QForgeShelfCreate(
-        LEditor editor,
-        LLectern lectern,
-        Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        CEnvoy envoy)
+    public CShelf QForgeShelfCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LShelf(
-                _qForgeAtelier.CAtelierDraftPort,
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                editor,
-                lectern,
-                shownSeam,
-                leaveSeam,
-                envoy),
-            shelf => shelf.LShelfVistaRestore(_qForgeAtelier));
+            CShelf.CShelfCreate(_qForgeAtelier, shownSeam, envoy),
+            static shelf => shelf.CShelfVistaRestore());
     }
 
     public CRepertoire QForgeRepertoireCreate(Func<bool> shownSeam, CEnvoy envoy)

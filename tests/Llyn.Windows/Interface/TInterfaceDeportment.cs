@@ -43,43 +43,7 @@ internal static class TInterfaceDeportment
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
-    internal static LShelf TShelfCreate(LEngine engine, Func<bool> leaveSeam)
-    {
-        LEditor editor = TEditorCreate(engine);
-        return new(
-            new LDraftOutlet(engine),
-            new LEntryOutlet(engine),
-            new LPortraitOutlet(engine),
-            new LSettingsOutlet(engine),
-            editor,
-            TLecternCreate(editor),
-            () => true,
-            leaveSeam,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
-        shelf.LShelfVistaRestore(vista, footnote);
-
-    internal static IReadOnlyList<CCatalogReference> TShelfRowsRead(this LShelf shelf) => shelf.LShelfRowsRead();
-
-    internal static void TShelfRowSelect(this LShelf shelf, long? id) => shelf.LShelfRowSelect(id);
-
-    internal static void TShelfEntrySelect(this LShelf shelf, long? id) => shelf.LShelfEntrySelect(id);
-
-    internal static void TShelfFreshStart(this LShelf shelf) => shelf.LShelfFreshStart();
-
-    internal static void TShelfScribeSet(this LShelf shelf, bool editing) => shelf.LShelfScribeSet(editing);
-
-    internal static void TShelfDelete(this LShelf shelf) => shelf.LShelfDelete();
-
-    internal static IReadOnlyList<CCatalogOrder> TShelfOrderRead() => LShelf.LShelfOrderRead();
-
-    internal static void TShelfOrderSet(this LShelf shelf, CCatalogOrder order) => shelf.LShelfOrderSet(order);
-
     internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
-
-    internal static void TPanelScribeToggle(this CPanel panel, bool editing) => panel.CPanelScribeToggle(editing);
 
     internal static LTaxonomy TTaxonomyCreate(LEntryPort entries, LSettingsPort settings)
     {

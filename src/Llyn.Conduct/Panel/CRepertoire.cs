@@ -39,7 +39,7 @@ public sealed class CRepertoire
             editor.CEditorDesk.CDeskChangeCheck,
             store => CRepertoireSession!.CSessionFinish(store),
             shownSeam);
-        CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += CRepertoireOccurrence.COccurrencePanel.CPanelRowsUpdate;
+        CRepertoireAtlas.CAtlasPanel.CPanelRowsChanged += CRepertoireOccurrence.COccurrencePanel.CPanelRowsResonate;
         CRepertoireSession = new CSession(
             CRepertoireDesk,
             [CRepertoireOccurrence.COccurrencePanel.CPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.CPanelChangeCheck],
@@ -321,7 +321,7 @@ public sealed class CRepertoire
         return shown ? CRepertoireSession.CSessionFinish(true) : CRepertoireSession.CSessionClose(true);
     }
 
-    public void CRepertoireEntryUpdate()
+    public void CRepertoireEntryResonate()
     {
         if (!CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled)
         {
@@ -329,7 +329,7 @@ public sealed class CRepertoire
         }
 
         bool editing = CRepertoireScribeChecked;
-        CRepertoireOccurrence.COccurrencePanel.CPanelDraftUpdate();
+        CRepertoireOccurrence.COccurrencePanel.CPanelDraftResonate();
         if (LRepertoireOccurrenceSide)
         {
             return;

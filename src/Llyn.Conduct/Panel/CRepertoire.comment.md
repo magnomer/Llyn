@@ -162,7 +162,7 @@ Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.
 The finish shows the stored Situation only when `shown` holds.
 
-## `public void CRepertoireEntryUpdate()`
+## `public void CRepertoireEntryResonate()`
 
 Answers the chosen entry's notice by refreshing the occurrence draft.
 It falls back to the chosen Situation once the occurrence side has closed.

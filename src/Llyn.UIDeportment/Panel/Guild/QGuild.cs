@@ -164,25 +164,25 @@ internal sealed class QGuild
     {
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildPanel.CPanelRowsUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildPanel.CPanelRowsResonate));
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildOeuvre.COeuvrePanel.CPanelRowsResonate));
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildAuthorClose));
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectAuthor,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectReference,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectExample,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
         _cGuild.CGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectEntry,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _cGuild.CGuildCatalogResonate));
         QChoice.QChoiceOrderBuild(
             QEchelonList,
             "Echelon",
@@ -197,7 +197,7 @@ internal sealed class QGuild
         QChoice.QChoiceKindBuild(QLouverList, _cGuild.CGuildPanel.CPanelFilter, QLouverHandle);
         QLouverUpdate();
         _cGuild.CGuildQuerySet(QMuster.Text);
-        _cGuild.CGuildPanel.CPanelRowsUpdate();
+        _cGuild.CGuildPanel.CPanelRowsResonate();
     }
 
     internal bool QGuildChangeCheck()

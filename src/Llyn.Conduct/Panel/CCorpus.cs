@@ -32,7 +32,7 @@ public sealed class CCorpus
             editor.CEditorDesk.CDeskChangeCheck,
             store => CCorpusSession!.CSessionFinish(store),
             shownSeam);
-        CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CQuotationPanel.CPanelRowsUpdate;
+        CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CQuotationPanel.CPanelRowsResonate;
         CCorpusSession = new CSession(
             CCorpusDesk,
             [CCorpusQuotation.CQuotationPanel.CPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.CPanelChangeCheck],
@@ -309,7 +309,7 @@ public sealed class CCorpus
         return shown ? CCorpusSession.CSessionFinish(true) : CCorpusSession.CSessionClose(true);
     }
 
-    public void CCorpusEntryUpdate()
+    public void CCorpusEntryResonate()
     {
         if (!CCorpusQuotation.CQuotationPanel.CPanelBinEnabled)
         {
@@ -317,7 +317,7 @@ public sealed class CCorpus
         }
 
         bool editing = CCorpusScribeChecked;
-        CCorpusQuotation.CQuotationPanel.CPanelDraftUpdate();
+        CCorpusQuotation.CQuotationPanel.CPanelDraftResonate();
         if (LCorpusQuotationSide)
         {
             return;

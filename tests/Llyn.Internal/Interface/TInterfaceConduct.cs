@@ -234,6 +234,19 @@ internal static class TInterfaceConduct
 
     internal static void TDeskQuotationStart(this CDesk desk, long? example) => desk.LDeskQuotationStart(example);
 
+    internal static void TDeskFootnoteStart(this CDesk desk, long? reference) => desk.LDeskFootnoteStart(reference);
+
+    internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista) =>
+        footnote.LFootnoteVistaRestore(parent, vista);
+
+    internal static void TFootnoteEntryCreate(this CFootnote footnote) => footnote.LFootnoteEntryCreate();
+
+    internal static void TImprintOpen(this CImprint imprint, long? id) => imprint.LImprintOpen(id);
+
+    internal static void TImprintCancel(this CImprint imprint) => imprint.LImprintCancel();
+
+    internal static void TImprintSave(this CImprint imprint) => imprint.LImprintSave();
+
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 

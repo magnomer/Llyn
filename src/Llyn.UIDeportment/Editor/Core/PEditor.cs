@@ -226,7 +226,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
 
     public void QChronicleUpdate()
     {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateUpdate();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateResonate();
     }
 
     private void PEditorRequestDefer(LRequest request)
@@ -261,7 +261,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         desk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectReference, LObserver.LObserverCreate<CBulletin>(this, PSentenceLoad));
         desk.CDeskVigil.LVigilObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.CDeskDraftUpdate));
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, desk.CDeskDraftResonate));
         desk.CDeskObserverAttach(LObserver.LObserverCreate<Action>(static run => run()));
     }
 

@@ -35,7 +35,7 @@ public sealed class CFootnote
         _cFootnoteEditor = editor;
         CFootnotePanel = new CPanel(
             envoy, "List.LoadFailed", null, editor.CEditorDesk.CDeskChangeCheck, finishSeam, shownSeam);
-        CFootnotePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
+        CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
     }
 
@@ -44,7 +44,7 @@ public sealed class CFootnote
     public string CFootnoteEmptyKey =>
         _cFootnoteVista?.LVistaQueried ?? false ? "Source.Unmatched" : "Source.Vacant";
 
-    internal void CFootnoteVistaRestore(LVista parent, LVista vista)
+    internal void LFootnoteVistaRestore(LVista parent, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(vista);
@@ -68,18 +68,27 @@ public sealed class CFootnote
             .ToList();
     }
 
-    public void CFootnoteEntryCreate()
+    public string CFootnoteFileRead()
     {
-        CFootnotePanel.CPanelFreshOpen();
-        if (_cFootnoteParent?.LVistaChosen is long reference)
-        {
-            _cFootnoteEditor.CEditorReferenceAdd(reference);
-        }
+        return LVista.LVistaFileRead(_cFootnoteVista);
     }
 
-    public Task CFootnotePortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    internal void LFootnoteEntryCreate()
+    {
+        long? reference = _cFootnoteParent?.LVistaChosen;
+        CFootnotePanel.CPanelFreshOpen();
+        _cFootnoteEditor.CEditorDesk.LDeskFootnoteStart(reference);
+    }
+
+    internal Task LFootnotePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _cFootnotePortraitPort.LEnginePortraitPrint(
             _cFootnoteVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+    }
+
+    internal Task LFootnotePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    {
+        return _cFootnotePortraitPort.LEnginePortraitExport(
+            _cFootnoteVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
     }
 }
