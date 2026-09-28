@@ -24,6 +24,23 @@ public sealed class TEsteem
     }
 
     [Fact]
+    public void EsteemGraspSet_StandingStepPressedAgain_ClearsTheGrasp()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = TEsteemEntryPrepare(engine);
+        CEditor editor = TEsteemEditorPrepare(engine, "library");
+        editor.CEditorEntryOpen(entry.LEntryId);
+        editor.CEditorEsteem.CEsteemGraspSet(5);
+        Assert.Equal(5, editor.CEditorEsteem.CEsteemGrasp);
+
+        editor.CEditorEsteem.CEsteemGraspSet(5);
+
+        Assert.Equal(0, editor.CEditorEsteem.CEsteemGrasp);
+        Assert.Equal(0, engine.TEngineGraspRead(entry.LEntryId));
+    }
+
+    [Fact]
     public void EsteemGraspSet_FreshDraft_IgnoredAndAnnounced()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

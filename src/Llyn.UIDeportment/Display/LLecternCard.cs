@@ -30,7 +30,7 @@ public sealed class LLecternCard
 
     private ScrollViewer _lLecternCardContents = null!;
 
-    private LCompass _lLecternCardCompass = null!;
+    private QCompass _lLecternCardCompass = null!;
 
     private Action<IReadOnlyList<CTranslationTarget>> _lLecternCardTranslation = null!;
 
@@ -69,7 +69,7 @@ public sealed class LLecternCard
         ItemsControl collocation,
         UIElement collocationSection,
         ScrollViewer contents,
-        LCompass compass)
+        QCompass compass)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(resources);
@@ -289,7 +289,7 @@ public sealed class LLecternCard
             if ((LLecternCardFind(_lLecternCardMeaning, id) ?? LLecternCardFind(_lLecternCardCollocation, id))
                 is FrameworkElement card)
             {
-                _lLecternCardCompass.LCompassScroll(card);
+                _lLecternCardCompass.QCompassTargetRefine(card);
                 ((Storyboard)_lLecternCardContents.FindResource("Theme.Card.Spotlight")).Begin(card);
             }
         });

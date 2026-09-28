@@ -29,6 +29,25 @@ A fresh draft has no entry, so no frequency chip shows.
 
 A stored entry no source has ranked shows no chip, and the read asks the engine to fetch one.
 
+## `public void DisplayCompassRead_ShownCards_NamesEachPartAndCardAndNumbersTwins()`
+
+The lookup echoes each key, so every wording key Conduct chose shows in the names.
+A titled card keeps its title, an untitled one its kind, and an uncertain one the unknown mark.
+The collocation kind is looked up to the meaning wording, so the engine numbers the two twins.
+Each card carries its number, its depth and its place in its section's list.
+
+## `public void DisplayCompassRead_NothingShown_NamesOnlyTheParts()`
+
+With no draft shown, the parts are named through the lookup and carry no cards.
+
+## `public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()`
+
+A new step is stored, and the step that stands pressed again clears the grasp to zero.
+
+## `public void DisplayGraspSet_NoEntryChosen_StoresNothing()`
+
+With no entry chosen the gate stores nothing.
+
 ## `private static LEntryDraft TDisplayDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
 
 One English draft with a single meaning, carrying `reflexes`.

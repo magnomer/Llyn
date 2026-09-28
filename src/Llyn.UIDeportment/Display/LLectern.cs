@@ -78,7 +78,7 @@ public sealed class LLectern
 
     public LLecternCard LLecternCard { get; }
 
-    public LCompass LLecternCompass { get; private set; } = null!;
+    public QCompass LLecternCompass { get; private set; } = null!;
 
     public void LLecternCompassAttach(
         FrameworkElement view,
@@ -89,7 +89,7 @@ public sealed class LLectern
         ToggleButton toggle,
         ItemsControl list)
     {
-        LLecternCompass = new LCompass(_lLecternDisplay, view, contents, header, compass, surface, toggle, list);
+        LLecternCompass = new QCompass(_lLecternDisplay, view, contents, header, compass, surface, toggle, list);
     }
 
     public bool LLecternFoldOpened => _lLecternDisplay.LDisplaySound.LDisplayFoldOpened;
@@ -265,7 +265,7 @@ public sealed class LLectern
 
         _lLecternEmpty.Visibility = Visibility.Collapsed;
         _lLecternContents.Visibility = Visibility.Visible;
-        LLecternCompass.LCompassUpdate();
+        LLecternCompass.QCompassRefine();
     }
 
     public void LLecternClear()
@@ -284,7 +284,7 @@ public sealed class LLectern
         LLecternAccent.LLecternAccentClear();
         LLecternSound.LLecternSoundClear();
         LLecternCard.LLecternCardClear();
-        LLecternCompass.LCompassClear();
+        LLecternCompass.QCompassEmptyRefine();
 
         _lLecternLanguage.Text = string.Empty;
         LEnsignImage.LEnsignFlagRefine(_lLecternFlag, _lLecternGlobe, string.Empty);
@@ -308,7 +308,7 @@ public sealed class LLectern
 
     public void LLecternGraspHandle(int step)
     {
-        _lLecternDisplay.LDisplayGraspSave(_lLecternDisplay.LDisplayChosen, step);
+        _lLecternDisplay.CDisplayGraspSet(step);
         LLecternGraspUpdate();
     }
 

@@ -150,7 +150,7 @@ The toggle stands at the left edge of the panel it opens rather than the right.
 The right edge of that row belongs to the delete button every panel holding a Display puts there.
 The column keeps its width while folded.
 The toggle therefore does not slide under that button when the panel goes away.
-The behavior lives in [LCompass](../../../Llyn.UIDeportment/Display/LCompass.comment.md).
+The behavior lives in [QCompass](../../../Llyn.UIDeportment/Display/QCompass.comment.md).
 
 ## `<StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">`
 

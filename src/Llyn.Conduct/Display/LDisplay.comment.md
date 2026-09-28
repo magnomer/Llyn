@@ -3,7 +3,7 @@
 ## `public sealed class LDisplay`
 
 The reading view's conduct, which holds its state, decisions and engine reads.
-Only [LLectern](../../Llyn.UIDeportment/Display/LLectern.comment.md) names it, so no veneer reaches Conduct.
+Only the display drivers, such as [LLectern](../../Llyn.UIDeportment/Display/LLectern.comment.md), name it, so no veneer reaches Conduct.
 It forwards the pending checks the editor reads to the sound half.
 Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
 The card reads answer for the shown draft, and a refused one answers empty so the page still draws.
@@ -22,6 +22,7 @@ The card deportment hands it to the window's notice.
 
 Hands `observer` the display vista's bulletins about `subject` that name the chosen entry or no entry.
 The driver names the subject and hears the bulletin in Conduct's records, never the engine's.
+The subject maps through `CPanel.CPanelSubjectRead`, by name, so an unknown subject throws.
 
 ## `public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)`
 
@@ -39,18 +40,24 @@ Drops the shown draft from the sound half.
 
 The last grasp step, which the display's star control takes as its limit.
 
-## `public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
+## `public IReadOnlyList<CCompassRow> CDisplayCompassRead(`
 
-The compass labels made distinct, numbered in order where two sections share a name.
-A short answer is padded with the remaining labels, so every row the compass names has a name.
-A refused lookup raises `LDisplayFailed` and answers the plain labels.
+The read behind the floating contents, one row per shown part and one per card under it.
+The driver names the parts that stand on the page, in page order, and its own text lookup.
+Conduct chooses every wording key and the driver's lookup turns it into text.
+A card is named by its own title, else by its kind, and an uncertain title by the unknown mark.
+Its number is carried apart from its name, since a number is not part of a sentence.
+The cards are read through the one card map, so no engine card is read here.
+The engine then numbers the names two rows share, so the contents never show two rows alike.
 
-## `public static string LDisplayTitleRead(LCardDraft card, string kind, string unknown)`
+## `private static string LDisplayKeyRead(CCompassPart part)`
 
-A card is named by its own title.
-An untitled card is named by what kind of card it is, so the row is never blank.
-A title still uncertain reads as `unknown`, so a guess never passes for a name.
-It is static, because the label depends on the card alone.
+The wording key of each part, mapped by name so an unknown part throws.
+
+## `private IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
+
+The compass wordings made distinct by the engine's twin rule.
+A refused lookup raises `LDisplayFailed` and answers the plain wordings.
 
 ## `public static bool LDisplayCardCheck(LCardDraft card, long id)`
 
@@ -94,10 +101,22 @@ A refused mark raises `LDisplayFailed` with `Favorite.MarkFailed`, and the heart
 ## `public int LDisplayGraspRead(long? entry)`
 
 The entry's grasp step, zero when no entry is given or the read fails.
+The step it answers is held with its entry, since that is the step the stars now show.
 
-## `public void LDisplayGraspSave(long? entry, int step)`
+## `private (long, int)? _lDisplayGrasp;`
+
+The entry and grasp step last read or stored, which a repeated press compares against.
+
+## `public void CDisplayGraspSet(int step)`
+
+The gate for a grasp step the reader picked on the chosen entry.
+
+## `internal void LDisplayGraspSave(long? entry, int step)`
 
 Stores `step` as the entry's grasp.
+Picking the step that already stands clears the grasp, so one press unrates.
+Only the step held for the same entry counts, so another entry's step never clears this one.
+The lectern's gate and the editor's esteem both store through it, so the rule has one owner.
 A refused save raises `LDisplayFailed` with `Grasp.MarkFailed`, and the stars then redraw from the stored value.
 
 ## `public LDisplayStamp LDisplayStampRead()`

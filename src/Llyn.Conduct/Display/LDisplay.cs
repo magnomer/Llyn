@@ -17,6 +17,8 @@ public sealed class LDisplay
 
     private LEntryDraft? _lDisplayLoaded;
 
+    private (long, int)? _lDisplayGrasp;
+
     internal LDisplay(
         LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
     {
@@ -44,13 +46,13 @@ public sealed class LDisplay
     public void LDisplayChosenAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaChosenAttach(
-            (LSubject)subject, bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     public void LDisplayObserverAttach(CSubject subject, Action<CBulletin> observer)
     {
         _lDisplayVista?.LVistaObserverAttach(
-            (LSubject)subject, bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
+            CPanel.CPanelSubjectRead(subject), bulletin => observer(CAtelier.CAtelierBulletinRead(bulletin)));
     }
 
     public void LDisplayDraftLoad(Action<LEntryDraft?> show)
@@ -143,31 +145,72 @@ public sealed class LDisplay
 
     public int LDisplayGraspStep => _lEntryPort.LEngineGraspStep;
 
-    public IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)
+    public IReadOnlyList<CCompassRow> CDisplayCompassRead(
+        IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)
     {
-        ArgumentNullException.ThrowIfNull(labels);
+        ArgumentNullException.ThrowIfNull(parts);
+        ArgumentNullException.ThrowIfNull(lookup);
 
-        IReadOnlyList<string> names;
+        LEntryDraft? shown = LDisplaySound.LDisplayShown;
+        List<CCompassRow> rows = [];
+        List<string> labels = [];
+        foreach (CCompassPart part in parts)
+        {
+            rows.Add(new CCompassRow(part, null, string.Empty, string.Empty, 0));
+            labels.Add(lookup(LDisplayKeyRead(part)));
+            if (shown is null
+                || part is not (CCompassPart.CCompassPartMeaning or CCompassPart.CCompassPartCollocation))
+            {
+                continue;
+            }
+
+            bool collocated = part == CCompassPart.CCompassPartCollocation;
+            IReadOnlyList<CCardDraft> cards = CFolio.CFolioSheetRead(
+                collocated ? shown.LEntryDraftCollocations : shown.LEntryDraftMeanings);
+            string kind = lookup(collocated ? "Display.CollocationSingle" : "Display.MeaningSingle");
+            string unknown = lookup("Display.Unknown");
+            for (int index = 0; index < cards.Count; index++)
+            {
+                CStateValue title = cards[index].CCardDraftTitle;
+                rows.Add(new CCompassRow(
+                    part,
+                    index,
+                    string.Empty,
+                    cards[index].CCardDraftPosition.ToString(CultureInfo.CurrentCulture),
+                    1));
+                labels.Add(title.CStateValueUncertain ? unknown : title.CStateValueShown ?? kind);
+            }
+        }
+
+        IReadOnlyList<string> names = LDisplayNameResolve(labels);
+        return rows.Select((row, index) => row with { CCompassRowName = names[index] }).ToList();
+    }
+
+    private static string LDisplayKeyRead(CCompassPart part)
+    {
+        return part switch
+        {
+            CCompassPart.CCompassPartSpeech => "Speech.Title",
+            CCompassPart.CCompassPartFrequency => "Frequency.Title",
+            CCompassPart.CCompassPartMeaning => "Display.MeaningPlural",
+            CCompassPart.CCompassPartCollocation => "Display.Collocation",
+            CCompassPart.CCompassPartIncoming => "Display.Translated",
+            CCompassPart.CCompassPartNote => "Display.Note",
+            _ => throw new ArgumentOutOfRangeException(nameof(part), part, null),
+        };
+    }
+
+    private IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)
+    {
         try
         {
-            names = _lEntryPort.LEngineNameResolve(labels);
+            return _lEntryPort.LEngineNameResolve(labels);
         }
         catch (Exception exception)
         {
             LDisplayFailed?.Invoke("Display.NameFailed", exception);
             return labels;
         }
-
-        return names.Count >= labels.Count ? names : [.. names, .. labels.Skip(names.Count)];
-    }
-
-    public static string LDisplayTitleRead(LCardDraft card, string kind, string unknown)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-
-        return card.LCardDraftTitle.LStateValueUncertain
-            ? unknown
-            : card.LCardDraftTitle.LStateValueShown ?? kind;
     }
 
     public static bool LDisplayCardCheck(LCardDraft card, long id)
@@ -193,7 +236,9 @@ public sealed class LDisplay
 
         try
         {
-            return _lEntryPort.LEngineGraspRead(id);
+            int step = _lEntryPort.LEngineGraspRead(id);
+            _lDisplayGrasp = (id, step);
+            return step;
         }
         catch (Exception)
         {
@@ -201,16 +246,23 @@ public sealed class LDisplay
         }
     }
 
-    public void LDisplayGraspSave(long? entry, int step)
+    public void CDisplayGraspSet(int step)
+    {
+        LDisplayGraspSave(LDisplayChosen, step);
+    }
+
+    internal void LDisplayGraspSave(long? entry, int step)
     {
         if (entry is not long id)
         {
             return;
         }
 
+        int kept = _lDisplayGrasp == (id, step) ? 0 : step;
         try
         {
-            _lEntryPort.LEngineGraspSave(id, step);
+            _lEntryPort.LEngineGraspSave(id, kept);
+            _lDisplayGrasp = (id, kept);
         }
         catch (Exception exception)
         {

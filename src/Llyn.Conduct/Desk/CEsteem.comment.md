@@ -22,6 +22,7 @@ Marks or clears the favourite on the stored entry, then announces a re-read so a
 ## `public void CEsteemGraspSet(int step)`
 
 Writes the grasp step on the stored entry, then announces a re-read so a refusal redraws.
+The step pressed again while it stands clears the grasp, by the display's one rule.
 
 ## `public string CEsteemGraspRead(int step)`
 

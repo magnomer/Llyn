@@ -37,6 +37,8 @@ internal static class TInterfaceConduct
     internal static CFrequency? TDisplayFrequencyRead(this LDisplay display, long? entry, string once) =>
         display.LDisplayFrequencyRead(entry, once);
 
+    internal static int TDisplayGraspRead(this LDisplay display, long? entry) => display.LDisplayGraspRead(entry);
+
     internal static int TCustomsCardScan(IReadOnlyList<LCardDraft> cards) =>
         CSCustoms.CSCustomsCardScan(cards, card => card.LCardDraftChild);
 

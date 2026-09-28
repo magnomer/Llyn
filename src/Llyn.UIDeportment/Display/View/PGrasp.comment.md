@@ -46,31 +46,31 @@ The listener reads `PGraspPointed` and words the step beside the stars.
 
 ## `public PGrasp()`
 
-Builds the `LGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and images.
+Builds the `QGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and images.
 
 ## `public int PGraspPointed`
 
-The half step to word beside the stars, read from `LGraspStar.LGraspPointed`.
+The half step to word beside the stars, read from `QGraspStar.QGraspPointed`.
 
 ## `protected override Size MeasureOverride(Size availableSize)`
 
-The row's size comes from `LGraspStar.LGraspSizeResolve`.
+The row's size comes from `QGraspStar.QGraspSizeDraw`.
 
 ## `protected override void OnMouseMove(MouseEventArgs e)`
 
-Hands the pointer position to `LGraspStar.LGraspHoverHandle`.
+Hands the pointer position to `QGraspStar.QGraspHoverRefine`.
 
 ## `protected override void OnMouseLeave(MouseEventArgs e)`
 
-Hands the leave to `LGraspStar.LGraspLeaveHandle`.
+Hands the leave to `QGraspStar.QGraspLeaveRefine`.
 
 ## `protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)`
 
-Hands the press to `LGraspStar.LGraspPressHandle` and marks the click handled.
+Hands the press to `QGraspStar.QGraspPressRefine` and marks the click handled.
 
 ## `protected override void OnKeyDown(KeyEventArgs e)`
 
-Hands the key to `LGraspStar.LGraspKeyHandle`.
+Hands the key to `QGraspStar.QGraspKeyRefine`.
 
 ## `private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 

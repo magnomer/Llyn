@@ -5,7 +5,7 @@
 The floating contents column of the entry page: its row, its number and the row template.
 The row answers a click the panel handles.
 The Deportment class of the same name loads this markup and forwards the click to its host.
-The host hands the click on to [LCompass](../../../Llyn.UIDeportment/Display/LCompass.comment.md).
+The host hands the click on to [QCompass](../../../Llyn.UIDeportment/Display/QCompass.comment.md).
 The panel adds it from code after its own markup is parsed, so the list reads the template dynamically.
 
 ## `<Style x:Key="Theme.Compass.Choice" TargetType="Button">`

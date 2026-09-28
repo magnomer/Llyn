@@ -23,7 +23,7 @@ The sound half, built over the display's sound, which draws the transcriptions, 
 
 The playback half, built over the display's sound, which drives the play buttons and the volume slider.
 
-## `public LCompass LLecternCompass { get; private set; } = null!;`
+## `public QCompass LLecternCompass { get; private set; } = null!;`
 
 The floating contents, built once the veneer hands over its controls.
 Card scrolling goes through its scroll, so a card lands where a row would put it.
@@ -94,7 +94,8 @@ A refused mark thus springs the heart back, and the display reports the failure.
 
 ## `public void LLecternGraspHandle(int step)`
 
-Stores the star row's new step, then redraws the row from the stored value.
+Hands the star row's new step to the gate `CDisplayGraspSet`, then redraws the row from the stored value.
+A press on the standing step thus comes back cleared, since the gate owns that rule.
 
 ## `public void LLecternHoverHandle(int pointed)`
 

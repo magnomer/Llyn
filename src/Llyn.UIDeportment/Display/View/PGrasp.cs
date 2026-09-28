@@ -27,7 +27,7 @@ public sealed class PGrasp : FrameworkElement
             0,
             FrameworkPropertyMetadataOptions.AffectsRender,
             null,
-            (sender, value) => LGraspStar.LGraspStepClamp(sender, value, PGraspLimitProperty)),
+            (sender, value) => QGraspStar.QGraspLimitDraw(sender, value, PGraspLimitProperty)),
         value => (int)value >= 0);
 
     public static readonly DependencyProperty PGraspFillProperty = DependencyProperty.Register(
@@ -66,7 +66,7 @@ public sealed class PGrasp : FrameworkElement
         typeof(RoutedEventHandler),
         typeof(PGrasp));
 
-    private readonly LGraspStar _lGraspStar;
+    private readonly QGraspStar _qGraspStar;
 
     public PGrasp()
     {
@@ -76,7 +76,7 @@ public sealed class PGrasp : FrameworkElement
         SetResourceReference(PGraspEmptyProperty, "Theme.Grasp.Empty");
         SetResourceReference(PGraspUnratedProperty, "Theme.Grasp.Unrated");
         SetResourceReference(PGraspPreviewProperty, "Theme.Grasp.Preview");
-        _lGraspStar = new LGraspStar(
+        _qGraspStar = new QGraspStar(
             this,
             PGraspStepProperty,
             PGraspLimitProperty,
@@ -98,7 +98,7 @@ public sealed class PGrasp : FrameworkElement
         remove => RemoveHandler(PGraspHoveredEvent, value);
     }
 
-    public int PGraspPointed => _lGraspStar.LGraspPointed;
+    public int PGraspPointed => _qGraspStar.QGraspPointed;
 
     public int PGraspLimit
     {
@@ -138,38 +138,38 @@ public sealed class PGrasp : FrameworkElement
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        return _lGraspStar.LGraspSizeResolve();
+        return _qGraspStar.QGraspSizeDraw();
     }
 
     protected override void OnRender(DrawingContext drawingContext)
     {
         base.OnRender(drawingContext);
-        _lGraspStar.LGraspDraw(drawingContext);
+        _qGraspStar.QGraspDraw(drawingContext);
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        _lGraspStar.LGraspHoverHandle(e.GetPosition(this));
+        _qGraspStar.QGraspHoverRefine(e.GetPosition(this));
     }
 
     protected override void OnMouseLeave(MouseEventArgs e)
     {
         base.OnMouseLeave(e);
-        _lGraspStar.LGraspLeaveHandle();
+        _qGraspStar.QGraspLeaveRefine();
     }
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
-        _lGraspStar.LGraspPressHandle(e.GetPosition(this));
+        _qGraspStar.QGraspPressRefine(e.GetPosition(this));
         e.Handled = true;
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
-        _lGraspStar.LGraspKeyHandle(e);
+        _qGraspStar.QGraspKeyRefine(e);
     }
 
     private static void PGraspLimitHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)

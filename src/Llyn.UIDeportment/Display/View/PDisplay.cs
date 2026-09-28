@@ -241,7 +241,7 @@ public class PDisplay : UserControl
         lectern.LLecternSound.LLecternParadigmAttach(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
         lectern.LLecternCompassAttach(
             this, PDisplayContents, PDisplayHeader, PCompass, PCompassSurface, PCompassSwitch, PCompassList);
-        lectern.LLecternCompass.LCompassSectionAttach(
+        lectern.LLecternCompass.QCompassSectionIntroduce(
             PDisplaySpeechSection,
             PDisplayFrequencySection,
             PDisplayMeaningSection,
@@ -280,7 +280,7 @@ public class PDisplay : UserControl
 
     internal void PCompassRowHandle(object sender, RoutedEventArgs e)
     {
-        _lLectern.LLecternCompass.LCompassRowHandle(sender);
+        _lLectern.LLecternCompass.QCompassRowRefine(sender);
     }
 
     private void PReflexFoldHandle(object sender, RoutedEventArgs e)
@@ -412,14 +412,14 @@ public class PDisplay : UserControl
 
     private void PCompassApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not LCompassItem compass)
+        if (item is not QCompassItem compass)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCompassRow") is Button row)
         {
-            if (compass.LCompassItemCurrent)
+            if (compass.QCompassItemCurrent)
             {
                 row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
             }
@@ -434,17 +434,17 @@ public class PDisplay : UserControl
 
         if (QLook.QLookPartFind<Grid>(container, "PCompassIndent") is Grid indent)
         {
-            indent.Margin = compass.LCompassItemIndent;
+            indent.Margin = compass.QCompassItemIndent;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCompassNumber") is TextBlock number)
         {
-            number.Text = compass.LCompassItemNumber;
+            number.Text = compass.QCompassItemNumber;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCompassName") is TextBlock name)
         {
-            name.Text = compass.LCompassItemName;
+            name.Text = compass.QCompassItemName;
         }
     }
 }

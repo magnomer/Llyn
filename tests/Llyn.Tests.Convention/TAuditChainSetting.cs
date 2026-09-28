@@ -200,6 +200,8 @@ internal static class TAuditChainSetting
             "CPhonology",
             "CXiesheng",
             "CYunjing",
+            "CCompassPart",
+            "CCompassRow",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -330,11 +332,11 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 77,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 171,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 168,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 33,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 21,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 20,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 21,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 20,
         ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,

@@ -4,6 +4,7 @@
 
 Covers the marks an editor sets on its stored entry.
 A grasp write reads back from the engine and words its label.
+The standing step pressed again clears the grasp.
 A fresh draft ignores the write, words nothing and still announces a re-read.
 A favourite mark and its clearing read back the same way, each announced.
 The grasp limit comes from the engine, and a fresh draft reads no frequency chip.

@@ -7,7 +7,7 @@ It draws the Meaning and Collocation cards, their links and bylines, the incomin
 It answers every chip, row, source link and word clicked on them.
 The veneer hands over its converters and its navigation as seams, so no veneer type is named here.
 
-## `public void LLecternCardAttach(CAtelier atelier, ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, LCompass compass)`
+## `public void LLecternCardAttach(CAtelier atelier, ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
 
 Holds the window for the pack's typography and the view's resources the example templates read.
 Holds the two card lists with their sections, the scroll viewer and the compass a scroll measures by.

@@ -55,7 +55,7 @@ internal static class CFolio
             value.LStateValueShown ?? string.Empty, value.LStateValueUncertain, value.LStateValueLegible);
     }
 
-    private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards)
+    internal static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards)
     {
         return cards
             .Select(static card => new CCardDraft(

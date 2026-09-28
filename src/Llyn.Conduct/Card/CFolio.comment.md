@@ -25,10 +25,11 @@ The one map from a written value to its shape.
 It carries the engine's shown text and verdicts, so no driver judges a state.
 The panels and the display that later jobs dismantle still call it.
 
-## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards)`
+## `internal static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards)`
 
 Shapes the meaning or collocation cards with everything the card parts read.
 A card's situation link carries no media, so its picture and video lists stay empty.
+The display's compass reads the card titles and numbers through it, so it never reads an engine card.
 
 ## `private static CExampleDraft? CFolioExampleRead(LExampleDraft? example)`
 

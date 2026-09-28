@@ -46,7 +46,7 @@
   "ceiling": {
     "monolith": 6,
     "hub": 9,
-    "large": 44
+    "large": 43
   },
   "parts": {
     "Llyn.Infrastructure.LEntryArchive": 2,
