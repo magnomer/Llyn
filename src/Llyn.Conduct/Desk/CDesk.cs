@@ -129,7 +129,7 @@ public sealed class CDesk
 
         if (_cDeskOrigin is string origin)
         {
-            CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, (LSubject)_cDeskSubject, id));
+            CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, CPanel.CPanelSubjectRead(_cDeskSubject), id));
         }
     }
 

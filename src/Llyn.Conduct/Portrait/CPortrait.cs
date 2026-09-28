@@ -8,7 +8,15 @@ internal static class CPortrait
 {
     internal static LPortraitMedium CPortraitMediumRead(CPortraitMedium medium)
     {
-        return (LPortraitMedium)medium;
+        return medium switch
+        {
+            CPortraitMedium.CPortraitMediumMarkup => LPortraitMedium.LPortraitMediumMarkup,
+            CPortraitMedium.CPortraitMediumHtml => LPortraitMedium.LPortraitMediumHtml,
+            CPortraitMedium.CPortraitMediumMarkdown => LPortraitMedium.LPortraitMediumMarkdown,
+            CPortraitMedium.CPortraitMediumDocx => LPortraitMedium.LPortraitMediumDocx,
+            CPortraitMedium.CPortraitMediumPdf => LPortraitMedium.LPortraitMediumPdf,
+            _ => throw new ArgumentOutOfRangeException(nameof(medium), medium, null),
+        };
     }
 
     internal static LPressTicket CPortraitTicketRead(CPressTicket ticket)
@@ -22,8 +30,31 @@ internal static class CPortrait
             ticket.CPressTicketLandscape,
             ticket.CPressTicketCopies,
             ticket.CPressTicketCollated,
-            (LPressSide)ticket.CPressTicketSide,
-            (LPressInk)ticket.CPressTicketInk);
+            LPortraitSideRead(ticket.CPressTicketSide),
+            LPortraitInkRead(ticket.CPressTicketInk));
+    }
+
+    private static LPressSide LPortraitSideRead(CPressSide side)
+    {
+        return side switch
+        {
+            CPressSide.CPressSideDefault => LPressSide.LPressSideDefault,
+            CPressSide.CPressSideSingle => LPressSide.LPressSideSingle,
+            CPressSide.CPressSideLong => LPressSide.LPressSideLong,
+            CPressSide.CPressSideShort => LPressSide.LPressSideShort,
+            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
+        };
+    }
+
+    private static LPressInk LPortraitInkRead(CPressInk ink)
+    {
+        return ink switch
+        {
+            CPressInk.CPressInkDefault => LPressInk.LPressInkDefault,
+            CPressInk.CPressInkColor => LPressInk.LPressInkColor,
+            CPressInk.CPressInkGray => LPressInk.LPressInkGray,
+            _ => throw new ArgumentOutOfRangeException(nameof(ink), ink, null),
+        };
     }
 
     internal static LPortraitLabel CPortraitLabelRead(CPortraitLabel label)

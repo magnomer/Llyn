@@ -15,6 +15,9 @@ A chosen Source records the voyage station, and a kept leave records nothing and
 A stored leave saves the held draft and shows the stored Source.
 A leave with nothing unsaved asks nothing.
 The rail's undo, redo and save act on the Source draft while the Source side edits.
+A finish without storing drops the draft of the side in front, the Source draft or the entry draft.
+A kept leave on an entry click stays on the held Source draft.
+Toggling the Source side into edit mode opens its draft, and toggling it off drops the draft.
 An entry notice with the entry side closed shows the chosen Source again.
 A close clears both sides, and a print with nothing shown prints nothing.
 An export writes only an entry on display.

@@ -289,6 +289,85 @@ public sealed class TShelf
     }
 
     [Fact]
+    public void ShelfDraftFinish_UnstoredSourceDraft_DropsIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        shelf.CShelfReferenceCreate();
+        shelf.CShelfImprint.CImprintTitleSet("Tome");
+
+        Assert.True(shelf.CShelfDraftFinish(false));
+
+        Assert.False(shelf.CShelfImprint.CImprintHeld);
+        Assert.False(shelf.CShelfChangeRead());
+        Assert.DoesNotContain(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Tome");
+    }
+
+    [Fact]
+    public void ShelfDraftFinish_EntrySide_DropsTheEntryDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LReference book = engine.TEngineCitationCreate("Book");
+        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceCreate();
+
+        Assert.True(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
+
+        Assert.True(shelf.CShelfDraftFinish(false));
+
+        Assert.False(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
+        Assert.False(shelf.CShelfImprint.CImprintHeld);
+    }
+
+    [Fact]
+    public void ShelfEntrySelect_KeptLeave_StaysOnTheHeldDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        LEntry water = TShelfEntrySave(engine, "water");
+        shelf.CShelfReferenceCreate();
+        shelf.CShelfImprint.CImprintTitleSet("Tome");
+
+        shelf.CShelfEntrySelect(water.LEntryId);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.True(shelf.CShelfImprintShown);
+        Assert.False(shelf.CShelfDisplayShown);
+        Assert.True(shelf.CShelfChangeRead());
+    }
+
+    [Fact]
+    public void ShelfScribeToggle_SourceSideOff_DropsTheSourceDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LReference book = engine.TEngineCitationCreate("Book");
+        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+
+        shelf.CShelfScribeToggle(true);
+
+        Assert.True(shelf.CShelfImprintShown);
+        Assert.True(shelf.CShelfImprint.CImprintHeld);
+        Assert.True(shelf.CShelfScribeChecked);
+
+        shelf.CShelfScribeToggle(false);
+
+        Assert.True(shelf.CShelfColophonShown);
+        Assert.False(shelf.CShelfImprint.CImprintHeld);
+        Assert.True(shelf.CShelfViewerChecked);
+    }
+
+    [Fact]
     public void ShelfEntryResonate_EntrySideClosed_ReshowsTheChosenSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

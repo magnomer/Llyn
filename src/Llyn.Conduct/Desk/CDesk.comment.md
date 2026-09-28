@@ -122,6 +122,7 @@ Takes the vista a start runs over, handed on by the controller that owns the des
 Drops any held tenure and starts one over the record, or over nothing when the id is null.
 A desk with a restored vista starts over it.
 A desk built with an origin and a subject starts under them instead.
+Its subject reaches the engine through the panel's map by name, never by cast.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 A refused start is announced under the scope's load key and leaves the desk empty.
 

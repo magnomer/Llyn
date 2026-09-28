@@ -22,7 +22,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitTicketRead_EverySideAndInk_CastsToTheSameNamedEngineMember()
+    public void PortraitTicketRead_EverySideAndInk_MapsToTheSameNamedEngineMember()
     {
         Assert.Equal(Enum.GetValues<CPressSide>().Length, Enum.GetValues<LPressSide>().Length);
         Assert.Equal(Enum.GetValues<CPressInk>().Length, Enum.GetValues<LPressInk>().Length);
@@ -37,6 +37,21 @@ public sealed class TPortrait
                 Assert.Equal(ink.ToString()[1..], ticket.LPressTicketInk.ToString()[1..]);
             }
         }
+    }
+
+    [Fact]
+    public void PortraitMediumRead_UnknownFormat_Throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(static () => CPortrait.CPortraitMediumRead((CPortraitMedium)99));
+    }
+
+    [Fact]
+    public void PortraitTicketRead_UnknownSideOrInk_Throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(static () => CPortrait.CPortraitTicketRead(new CPressTicket(
+            "Office", null, null, false, 1, true, (CPressSide)99, CPressInk.CPressInkDefault)));
+        Assert.Throws<ArgumentOutOfRangeException>(static () => CPortrait.CPortraitTicketRead(new CPressTicket(
+            "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, (CPressInk)99)));
     }
 
     [Fact]
