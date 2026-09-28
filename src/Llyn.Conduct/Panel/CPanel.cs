@@ -18,6 +18,8 @@ public sealed class CPanel
 
     private readonly Func<bool> _cPanelShownSeam;
 
+    private Action? _cPanelStation;
+
     private LVista? _cPanelVista;
 
     internal CPanel(
@@ -151,7 +153,7 @@ public sealed class CPanel
         CPanelScribeSet(true);
     }
 
-    public void CPanelScribeRestore(bool editing)
+    internal void LPanelScribeRestore(bool editing)
     {
         if (editing && !CPanelBinEnabled)
         {
@@ -224,10 +226,18 @@ public sealed class CPanel
             return;
         }
 
+        _cPanelStation?.Invoke();
         CPanelRowOpen(id);
     }
 
-    public long CPanelChosenRead()
+    internal void LPanelStationAttach(Action record)
+    {
+        ArgumentNullException.ThrowIfNull(record);
+
+        _cPanelStation = record;
+    }
+
+    internal long LPanelChosenRead()
     {
         return _cPanelVista?.LVistaChosen ?? 0;
     }

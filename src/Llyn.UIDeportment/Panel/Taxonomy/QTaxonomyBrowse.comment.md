@@ -95,41 +95,23 @@ A chosen tag the rows no longer hold is dropped through the vista, and the list 
 The panel then falls back to every entry.
 Before a vista is handed over nothing is asked.
 
-### `internal void QDirectoryTagShow(long id)`
+### `private void QDirectoryTagShow(long id)`
 
-Browses by one tag for a caller outside the panel.
-That is how a tag chip read on a card reaches this panel.
-The query is emptied first.
-A tag left out by the standing query would be chosen and dropped in the same breath.
-The tag is then chosen through the vista and the catalog rebuilt, since it may be new to the list.
+Chooses a newly coined tag, then hands off to the refine as an arrival does.
 
-### `private void QDirectorySelect(long? id)`
+### `private void QDirectoryTagRefine()`
 
-Chooses one tag, or none, and re-marks the rows in place before listing the entries under it.
-No row is rebuilt, so the list keeps its scroll and its focus.
+Answers the area's opening event after a chip's arrival, and runs after a coinage too.
+Both queries are emptied and the catalog rebuilt, since the tag may be new to the list.
 
 ### `private void QDirectoryHandle(object sender, RoutedEventArgs e)`
 
 A clicked row hands its item to the helper, which ignores a click that carries none.
 
-### `QDirectorySelect(item.QDirectoryItemChosen ? null : item.QDirectoryItemId);`
+### `CTaxonomyTagToggle(item.QDirectoryItemId);`
 
-Clicking the chosen tag lets go of it.
+The gate records the station and toggles, so clicking the chosen tag lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
-
-### `internal void QTaxonomyScribeRestore(bool editing)`
-
-Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored.
-An empty editor is the state a new record is written in.
-
-A session that ended on the editor with nothing selected comes back on the reading side instead.
-Otherwise the launch would open a blank draft nobody asked for.
-
-## `internal long QTaxonomyVoyageRead()`
-
-The tag the panel shows, as the station the window records before a jump away.
-Zero says no tag is shown, so there is no place to come back to.
 
 ## `private void QDirectoryApply(FrameworkElement container, object item, string? _)`
 

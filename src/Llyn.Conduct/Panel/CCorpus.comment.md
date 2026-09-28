@@ -88,9 +88,10 @@ A driver reads it on each draft bulletin, so the desk never hands it a draft.
 
 Announces the Example a loaded draft carries and ignores drafts of other subjects.
 
-## `public void CCorpusExampleOpen(long id)`
+## `internal void LCorpusExampleOpen(long id)`
 
-Shows an Example that comes from outside the list, keeping the scribe open when either editor was open.
+The navigation's arrival on the corpus tab.
+It shows an Example that comes from outside the list, keeping the scribe open when either editor was open.
 When the query or the filter hides it, the list clears it at once.
 Both are then dropped and the Example is shown again, so an arrival never lands on a blank excerpt.
 A row that vanished stays cleared, and without a query or filter nothing is dropped.
@@ -100,7 +101,7 @@ A row that vanished stays cleared, and without a query or filter nothing is drop
 Clears the quotation side and shows the Example in the mode the caller read.
 The anthology panel loads the row, clears a vanished one and restarts the transcript through its edit event.
 
-## `public void CCorpusExampleSelect(long? id, Action record)`
+## `public void CCorpusExampleSelect(long? id)`
 
 Shows the clicked Example once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.

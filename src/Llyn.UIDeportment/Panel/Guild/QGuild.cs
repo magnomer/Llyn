@@ -210,16 +210,6 @@ internal sealed class QGuild
         return _cGuild.CGuildSession.CSessionFinish(store);
     }
 
-    internal bool QGuildLeaveConfirm()
-    {
-        return _cGuild.CGuildLeaveConfirm();
-    }
-
-    internal void QGuildScribeRestore(bool editing)
-    {
-        _cGuild.CGuildScribeRestore(editing);
-    }
-
     internal void QGuildClose()
     {
         QEchelonDropdown.IsOpen = false;
@@ -310,18 +300,7 @@ internal sealed class QGuild
 
     private void QRollHandle(object sender, RoutedEventArgs e)
     {
-        _qGuildHost.PVoyageRecord();
         _cGuild.CGuildAuthorSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
-    }
-
-    internal long QGuildVoyageRead()
-    {
-        return _cGuild.CGuildPanel.CPanelChosenRead();
-    }
-
-    internal void QRollAuthorShow(long id)
-    {
-        _cGuild.CGuildAuthorOpen(id);
     }
 
     private void QOeuvreHandle(object sender, RoutedEventArgs e)
@@ -367,12 +346,12 @@ internal sealed class QGuild
 
     private void QGuildRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qGuildHost.PVoyageRetreatRun();
+        _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QGuildAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qGuildHost.PVoyageAdvanceRun();
+        _qGuildHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QGuildUndoHandle(object sender, RoutedEventArgs e)

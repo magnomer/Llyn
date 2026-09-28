@@ -121,18 +121,7 @@ internal sealed partial class QFavorite
 
     private void QRosterRowShow(QRosterItem? item)
     {
-        if (item is null)
-        {
-            return;
-        }
-
-        if (!QFavoriteLeaveConfirm())
-        {
-            return;
-        }
-
-        _qFavoriteHost.PVoyageRecord();
-        _cFavorite.CFavoritePanel.CPanelRowOpen(item.QRosterItemId);
+        _cFavorite.CFavoritePanel.CPanelRowSelect(item?.QRosterItemId);
     }
 
     private void QRosterApply(FrameworkElement container, object item, string? _)
@@ -178,29 +167,9 @@ internal sealed partial class QFavorite
         }
     }
 
-    internal void QRosterEntryShow(long id)
-    {
-        _cFavorite.CFavoritePanel.CPanelRowOpen(id);
-    }
-
     private void QFavoriteScribeHandle(object sender, RoutedEventArgs e)
     {
         _cFavorite.CFavoritePanel.CPanelScribeToggle(ReferenceEquals(sender, QFavoriteScribe));
-    }
-
-    internal void QFavoriteScribeRestore(bool editing)
-    {
-        _cFavorite.CFavoritePanel.CPanelScribeRestore(editing);
-    }
-
-    internal long QFavoriteVoyageRead()
-    {
-        return _cFavorite.CFavoritePanel.CPanelChosenRead();
-    }
-
-    internal bool QFavoriteLeaveConfirm()
-    {
-        return _cFavorite.CFavoritePanel.CPanelLeaveConfirm();
     }
 
     private void QFavoriteStoreHandle(object sender, RoutedEventArgs e)

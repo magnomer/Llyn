@@ -22,6 +22,11 @@ A refused read is shown through `envoy`, so every driver over this display shows
 Raised on the calling thread once an entry opens and `CDisplayShown` holds its header.
 The panel and the wing open entries on the UI thread, so a driver answers it directly.
 
+## `internal event Action<string, long>? CDisplayRowChosen;`
+
+Raised with the tab and the record a clicked chip names.
+The display hands it to the atelier's navigation, which opens the record there.
+
 ## `public event Action? CDisplayClosed;`
 
 Raised once the shown entry closed and playback stopped, so every section empties.
@@ -151,13 +156,13 @@ The shown entry's etymology, with whether its field and its section show.
 The engine names the links and says whether a narrative or a link stands.
 A refused link read answers no links, and the field then shows by its narrative alone.
 
-## `public bool CDisplayChipOpen(object? chip, long? link, Func<long, bool> entrySeam, Func<long, bool> situationSeam, Func<long, bool> registerSeam, Func<long, bool> tagSeam)`
+## `public bool CDisplayChipOpen(object? chip, long? link)`
 
 The gate for a chip clicked on a card or a source link clicked in the etymology.
 `chip` is what the clicked chip carries, and `link` the entry id a link chip names.
 The engine says which stored record the click names, and a record never saved names none.
-The record's kind then picks the panel that opens it, through the driver's seam for that panel.
-It answers whether a panel was asked, so the driver marks the click handled.
+The record's kind then picks the tab that opens it, by name, and the chip is raised for the navigation.
+It answers whether a tab was asked, so the driver marks the click handled.
 
 ## `public CMentionResult? CDisplayMentionFind(string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)`
 

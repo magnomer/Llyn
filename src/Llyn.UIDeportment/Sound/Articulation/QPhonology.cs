@@ -237,16 +237,6 @@ internal sealed class QPhonology
         return _qPhonologySurface.IsVisible;
     }
 
-    internal bool QPhonologyLeaveConfirm()
-    {
-        return _cPhonology.CPhonologyPanel.CPanelLeaveConfirm();
-    }
-
-    internal void QPhonologyScribeRestore(bool editing)
-    {
-        _cPhonology.CPhonologyPanel.CPanelScribeRestore(editing);
-    }
-
     internal void QPhonologyClose()
     {
         QPhonologyEditor.PEditorClose();
@@ -307,19 +297,8 @@ internal sealed class QPhonology
 
     private void QInventoryHandle(object sender, RoutedEventArgs e)
     {
-        _qPhonologyHost.PVoyageRecord();
         _cPhonology.CPhonologyPanel.CPanelRowSelect(
             QSender.QSenderSourceRead<QInventoryItem>(e)?.QInventoryItemId);
-    }
-
-    internal long QPhonologyVoyageRead()
-    {
-        return _cPhonology.CPhonologyPanel.CPanelChosenRead();
-    }
-
-    internal void QInventoryEntryShow(long id)
-    {
-        _cPhonology.CPhonologyPanel.CPanelRowOpen(id);
     }
 
     private void QPhonologyFreshHandle(object sender, RoutedEventArgs e)
@@ -365,12 +344,12 @@ internal sealed class QPhonology
 
     private void QPhonologyRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qPhonologyHost.PVoyageRetreatRun();
+        _qPhonologyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QPhonologyAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qPhonologyHost.PVoyageAdvanceRun();
+        _qPhonologyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QPhonologyUndoHandle(object sender, RoutedEventArgs e)

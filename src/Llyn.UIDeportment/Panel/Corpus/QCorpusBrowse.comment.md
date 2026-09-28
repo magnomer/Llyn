@@ -86,11 +86,6 @@ Fills one catalog row from its item.
 The row carries the `Chosen` cue on the chosen item and none otherwise, which the look sheet paints.
 The click is subscribed once per row, removed first so a refill never doubles it.
 
-## `internal void QAnthologyExampleShow(long id)`
-
-A jump from another panel: the gate `CCorpusExampleOpen` opens the Example without asking.
-The window has already asked.
-
 ## `private void QCorpusBinHandle(object sender, RoutedEventArgs e)`
 
 Hands the delete to the deportment, which acts only while an Example and not an Entry is shown.
@@ -113,27 +108,14 @@ The viewer and scribe segments have their own handlers, so no control decides th
 Swaps the reading for the editor on whichever side the corpus stands.
 The gate asks before leaving an editor, so unsaved wording is never lost silently.
 
-## `internal void QCorpusScribeRestore(bool editing)`
-
-Puts the Example side back on the reader or the editor it was left standing on.
-
-## `internal bool QCorpusLeaveConfirm()`
-
-Asks `CCorpusLeaveConfirm` whether the panel may be left, which asks the envoy only over unsaved work.
-
-## `internal long QCorpusVoyageRead()`
-
-The Example the anthology panel shows, as the station the window records before a jump away.
-Zero says no Example is shown, so there is no place to come back to.
-
 ## `internal void QCorpusVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
+Lights the two trail buttons from the voyage state the navigation raises.
 
 ## `private void QCorpusRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QCorpusAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.

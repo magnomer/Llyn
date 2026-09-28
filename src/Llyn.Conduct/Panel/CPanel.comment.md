@@ -89,9 +89,10 @@ The fresh request: after the leave question it opens the scribe on nothing.
 
 The fresh step without the leave question, for a two-list tab that already asked for the whole tab.
 
-## `public void CPanelScribeRestore(bool editing)`
+## `internal void LPanelScribeRestore(bool editing)`
 
 Restores the mode the window closed on, but edit mode only over a chosen row.
+The navigation calls it for the tab it restores at startup.
 
 ## `public void CPanelScribeToggle(bool editing)`
 
@@ -111,10 +112,16 @@ A two-list tab carries the mode from one list to the other with it.
 ## `public void CPanelRowSelect(long? id)`
 
 A click on a row: after the leave question the row is opened.
+A panel standing on a tab first records the station the click leaves.
 
-## `public long CPanelChosenRead()`
+## `internal void LPanelStationAttach(Action record)`
 
-The record the panel stands on, as the station the window's trail records.
+The area whose tab this panel is hands in the navigation's station record.
+A sub-panel never gets one, so its clicks record nothing.
+
+## `internal long LPanelChosenRead()`
+
+The record the panel stands on, as the station the navigation's voyage records.
 Zero says the panel stands on none, so there is no place to come back to.
 
 ## `public bool CPanelRowOpen(long? id)`

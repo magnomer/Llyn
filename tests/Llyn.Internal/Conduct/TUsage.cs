@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Llyn.Conduct;
 using Xunit;
 
@@ -22,21 +21,6 @@ public sealed class TUsage
             "Display.Unknown",
             TUsageCreate(false, false, new CStateValue(string.Empty, true, false)).CUsageTitleKey);
         Assert.Null(TUsageCreate(false, false, new CStateValue("sense", false, true)).CUsageTitleKey);
-    }
-
-    [Fact]
-    public void UsageOpen_QuotedOrNamedPlace_OpensTheExampleOrTheEntry()
-    {
-        List<long> examples = [];
-        List<long> entries = [];
-
-        TUsageCreate(true, false, CStateValue.CStateValueEmpty).CUsageOpen(
-            id => { examples.Add(id); return true; }, id => { entries.Add(id); return true; });
-        TUsageCreate(false, false, CStateValue.CStateValueEmpty).CUsageOpen(
-            id => { examples.Add(id); return true; }, id => { entries.Add(id); return true; });
-
-        Assert.Equal([3], examples);
-        Assert.Equal([9], entries);
     }
 
     private static CUsage TUsageCreate(bool quoted, bool collocated, CStateValue title)

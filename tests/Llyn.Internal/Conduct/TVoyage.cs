@@ -12,7 +12,7 @@ public sealed class TVoyage
     {
         CVoyage voyage = new();
 
-        Assert.Equal(new CVoyageState(false, false), voyage.CVoyageRead());
+        Assert.Equal(new CVoyageState(false, false), voyage.TVoyageRead());
     }
 
     [Fact]
@@ -20,54 +20,54 @@ public sealed class TVoyage
     {
         CVoyage voyage = new();
 
-        voyage.CVoyageStationAdd("Library", 0);
-        voyage.CVoyageStationAdd("Library", 4);
-        voyage.CVoyageStationAdd("Library", 4);
+        voyage.TVoyageStationAdd("Library", 0);
+        voyage.TVoyageStationAdd("Library", 4);
+        voyage.TVoyageStationAdd("Library", 4);
         List<(string, long)> shown = [];
-        voyage.CVoyageUndo("Corpus", 9, TVoyageShowCreate(shown, true));
+        voyage.TVoyageUndo("Corpus", 9, TVoyageShowCreate(shown, true));
 
         Assert.Equal([("Library", 4L)], shown);
-        Assert.Equal(new CVoyageState(false, true), voyage.CVoyageRead());
+        Assert.Equal(new CVoyageState(false, true), voyage.TVoyageRead());
     }
 
     [Fact]
     public void VoyageUndo_ShownStation_ParksTheStandingStationForRedo()
     {
         CVoyage voyage = new();
-        voyage.CVoyageStationAdd("Library", 4);
+        voyage.TVoyageStationAdd("Library", 4);
         List<(string, long)> shown = [];
 
-        bool back = voyage.CVoyageUndo("Corpus", 9, TVoyageShowCreate(shown, true));
-        bool forward = voyage.CVoyageRedo("Library", 4, TVoyageShowCreate(shown, true));
+        bool back = voyage.TVoyageUndo("Corpus", 9, TVoyageShowCreate(shown, true));
+        bool forward = voyage.TVoyageRedo("Library", 4, TVoyageShowCreate(shown, true));
 
         Assert.True(back);
         Assert.True(forward);
         Assert.Equal([("Library", 4L), ("Corpus", 9L)], shown);
-        Assert.Equal(new CVoyageState(true, false), voyage.CVoyageRead());
+        Assert.Equal(new CVoyageState(true, false), voyage.TVoyageRead());
     }
 
     [Fact]
     public void VoyageUndo_RefusedJump_LeavesBothTrails()
     {
         CVoyage voyage = new();
-        voyage.CVoyageStationAdd("Library", 4);
+        voyage.TVoyageStationAdd("Library", 4);
 
-        bool back = voyage.CVoyageUndo("Corpus", 9, TVoyageShowCreate([], false));
+        bool back = voyage.TVoyageUndo("Corpus", 9, TVoyageShowCreate([], false));
 
         Assert.False(back);
-        Assert.Equal(new CVoyageState(true, false), voyage.CVoyageRead());
+        Assert.Equal(new CVoyageState(true, false), voyage.TVoyageRead());
     }
 
     [Fact]
     public void VoyageStationAdd_AfterUndo_ForgetsTheFuture()
     {
         CVoyage voyage = new();
-        voyage.CVoyageStationAdd("Library", 4);
-        voyage.CVoyageUndo("Corpus", 9, TVoyageShowCreate([], true));
+        voyage.TVoyageStationAdd("Library", 4);
+        voyage.TVoyageUndo("Corpus", 9, TVoyageShowCreate([], true));
 
-        voyage.CVoyageStationAdd("Library", 5);
+        voyage.TVoyageStationAdd("Library", 5);
 
-        Assert.Equal(new CVoyageState(true, false), voyage.CVoyageRead());
+        Assert.Equal(new CVoyageState(true, false), voyage.TVoyageRead());
     }
 
     [Fact]
@@ -76,11 +76,11 @@ public sealed class TVoyage
         CVoyage voyage = new();
         for (long id = 1; id <= 51; id++)
         {
-            voyage.CVoyageStationAdd("Library", id);
+            voyage.TVoyageStationAdd("Library", id);
         }
 
         List<(string, long)> shown = [];
-        while (voyage.CVoyageUndo("Corpus", 99, TVoyageShowCreate(shown, true)))
+        while (voyage.TVoyageUndo("Corpus", 99, TVoyageShowCreate(shown, true)))
         {
         }
 

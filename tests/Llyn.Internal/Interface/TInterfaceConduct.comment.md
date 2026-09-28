@@ -183,3 +183,49 @@ It records each failure key it is shown, so a fact reads the question and the fa
 
 A fake envoy whose printer question records `Ticket` and answers from `answer`, which may throw as a failing dialog does.
 It records each failure key it is shown.
+
+## `internal static long TPanelChosenRead(this CPanel panel) => panel.LPanelChosenRead();`
+
+Relays the record a panel stands on, which only the navigation reads in production.
+
+## `internal static void TPanelScribeRestore(this CPanel panel, bool editing) => panel.LPanelScribeRestore(editing);`
+
+Relays the startup editor restore, which only the navigation runs in production.
+
+## `internal static bool TAtelierSplitRead(CAtelier atelier) => atelier.LAtelierSplitRead();`
+
+Relays the stored split the navigation restores the open tab's editor from.
+
+## `internal static void TGuildScribeRestore(this CGuild guild, bool editing) => guild.LGuildScribeRestore(editing);`
+
+Relays the guild's startup editor restore, as the navigation runs it.
+
+## `internal static bool TRepertoireLeaveConfirm(this CRepertoire repertoire) =>`
+
+Relays the repertoire's leave question as the navigation asks it when the tab is left.
+
+## `internal static bool TShelfLeaveConfirm(this CShelf shelf) => shelf.LShelfLeaveConfirm();`
+
+Relays the sources tab's leave question.
+
+## `internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();`
+
+Relays the voyage's state, and the three relays below relay its record and its two steps.
+
+## `internal static void TNavigationTabAdd(`
+
+Registers a tab on a navigation as a panel area does, with its hooks handed in.
+The landed record is handed to `arrival`, as the area's own open would take it.
+
+## `internal static void TNavigationStationAdd(this CNavigation navigation) => navigation.LNavigationStationAdd();`
+
+Relays the station record the areas' row gates make.
+
+## `internal static void TNavigationDiweiAttach(this CNavigation navigation, Action<string, string, string> open) =>`
+
+Attaches a rime-cell open to a navigation as the yunjing area does.
+
+## `internal static void TCorpusExampleOpen(this CCorpus corpus, long id) => corpus.LCorpusExampleOpen(id);`
+
+Relays a panel's arrival open, as the navigation runs it.
+The relays below do the same for the other areas.

@@ -22,7 +22,7 @@ public sealed class TTenor
         engine.TEngineRegisterCreate("formal");
 
         Assert.Empty(tenor.CTenorRowsRead());
-        Assert.Null(tenor.CTenorChosen);
+        Assert.Null(tenor.LTenorChosen);
         Assert.False(tenor.CTenorFiltered);
     }
 
@@ -42,7 +42,7 @@ public sealed class TTenor
         Assert.Equal(new CRegister(register, "formal"), row.CCatalogRegisterStored);
         Assert.Equal(0, row.CCatalogRegisterUsage);
         Assert.True(row.CCatalogRegisterChosen);
-        Assert.Equal(register, tenor.CTenorChosen);
+        Assert.Equal(register, tenor.LTenorChosen);
     }
 
     [Fact]
@@ -218,6 +218,42 @@ public sealed class TTenor
 
         Assert.Equal("hearth", tenor.TTenorFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TenorRegisterToggle_RowClick_RecordsTheStationAndTogglesTheRegister()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        long first = engine.TEngineRegisterCreate("formal").LRegisterId;
+        atelier.CAtelierNavigation.CNavigationTabSelect("Tenor");
+        tenor.CTenorRegisterSelect(first);
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+
+        tenor.CTenorRegisterToggle(first);
+
+        Assert.Null(tenor.LTenorChosen);
+        Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
+    }
+
+    [Fact]
+    public void TenorRegisterOpen_Arrival_ChoosesTheRegisterAndRaisesTheOpening()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        long first = engine.TEngineRegisterCreate("formal").LRegisterId;
+        int opened = 0;
+        tenor.CTenorRegisterOpened += () => opened++;
+
+        tenor.TTenorRegisterOpen(first);
+
+        Assert.Equal(first, tenor.LTenorChosen);
+        Assert.Equal(1, opened);
     }
 
     private static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)

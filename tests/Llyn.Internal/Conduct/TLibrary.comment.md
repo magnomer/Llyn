@@ -8,6 +8,8 @@ A chosen row is marked and reported as the station, and a deleted one reports ze
 The markup import asks the customs question once and stores under the declared rows.
 A merge row appends to its target, so the declared mode reaches the engine unchanged.
 A declined question stores nothing, and a malformed file shows the import failure.
+An entry jump through the navigation opens the entry in the area, asking nothing.
+A row click on the tab records the station it leaves, and an empty click records nothing.
 
 ## `private static CEnvoy TLibraryEnvoyCreate(`
 

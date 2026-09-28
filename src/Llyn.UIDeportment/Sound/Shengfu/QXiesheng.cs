@@ -136,6 +136,7 @@ internal sealed class QXiesheng
     {
         _qXieshengHost = host;
         _cXiesheng = host.PWindowForge.QForgeXieshengCreate(QXieshengShownCheck, host.PWindowEnvoy);
+        _cXiesheng.CXieshengStemOpened += QLodestarRefine;
         _lEditor = new LEditor(_cXiesheng.CXieshengEditor);
         CPanel panel = _cXiesheng.CXieshengPanel;
         QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
@@ -144,7 +145,6 @@ internal sealed class QXiesheng
         panel.CPanelCleared += QXieshengClearUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
         _cXiesheng.CXieshengChanged += QXieshengColumnUpdate;
-        _cXiesheng.CXieshengGlyphChosen += host.PWindowGlyphRefine;
 
         QGrove.ItemsSource = _qGroveList;
         QKindred.ItemsSource = _qKindredList;
@@ -160,11 +160,6 @@ internal sealed class QXiesheng
     private void QXieshengStoreUpdate()
     {
         QXieshengStore.IsEnabled = _lEditor.LEditorStorable;
-    }
-
-    internal bool QXieshengCheck()
-    {
-        return _cXiesheng.CXieshengAllowed;
     }
 
     internal void QXieshengVistaRestore()
@@ -218,20 +213,9 @@ internal sealed class QXiesheng
         return _cXiesheng.CXieshengPanel.CPanelChangeCheck();
     }
 
-    internal bool QXieshengLeaveConfirm()
-    {
-        return _cXiesheng.CXieshengPanel.CPanelLeaveConfirm();
-    }
-
-    internal void QXieshengStemShow(string language, string? key)
+    private void QLodestarRefine()
     {
         QLodestar.Text = string.Empty;
-        _cXiesheng.CXieshengStemOpen(language, key);
-    }
-
-    internal void QXieshengScribeRestore(bool editing)
-    {
-        _cXiesheng.CXieshengPanel.CPanelScribeRestore(editing);
     }
 
     internal void QXieshengClose()
@@ -315,18 +299,7 @@ internal sealed class QXiesheng
 
     private void QKindredHandle(object sender, RoutedEventArgs e)
     {
-        _qXieshengHost.PVoyageRecord();
         _cXiesheng.CXieshengPanel.CPanelRowSelect(QSender.QSenderSourceRead<QKindredItem>(e)?.QKindredItemId);
-    }
-
-    internal long QXieshengVoyageRead()
-    {
-        return _cXiesheng.CXieshengPanel.CPanelChosenRead();
-    }
-
-    internal void QKindredEntryShow(long id)
-    {
-        _cXiesheng.CXieshengPanel.CPanelRowOpen(id);
     }
 
     private void QXieshengFreshHandle(object sender, RoutedEventArgs e)
@@ -372,12 +345,12 @@ internal sealed class QXiesheng
 
     private void QXieshengRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qXieshengHost.PVoyageRetreatRun();
+        _qXieshengHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QXieshengAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qXieshengHost.PVoyageAdvanceRun();
+        _qXieshengHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QXieshengUndoHandle(object sender, RoutedEventArgs e)

@@ -38,6 +38,7 @@ public sealed class CAtelier : IDisposable
         CAtelierMention = new CMention(this);
         CAtelierMarkdown = new CMarkdown(this);
         CAtelierRespelling = new CRespelling(this);
+        CAtelierNavigation = new CNavigation(this);
     }
 
     public CMention CAtelierMention { get; }
@@ -45,6 +46,8 @@ public sealed class CAtelier : IDisposable
     public CMarkdown CAtelierMarkdown { get; }
 
     public CRespelling CAtelierRespelling { get; }
+
+    public CNavigation CAtelierNavigation { get; }
 
     public CCatalog CAtelierCatalog => new(this);
 
@@ -81,7 +84,7 @@ public sealed class CAtelier : IDisposable
             CAtelierVistaStart("input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
 
-    public bool CAtelierSplitRead()
+    internal bool LAtelierSplitRead()
     {
         return CAtelierPosture.LPostureRead().LPostureStateSplit;
     }

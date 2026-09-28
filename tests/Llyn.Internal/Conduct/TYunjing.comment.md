@@ -14,7 +14,7 @@ The page of an initial cell groups its lines by division, with the characters so
 The section label is localized from a shared catalog, so `TDiwei` checks it with a localizer handed in.
 Under the bundled book language, a Korean reading under the cell reaches the page as one tally.
 The tally switch is saved once, and a switch without a side changes nothing.
-A glyph is raised only while a cell page shows, in the language of that page.
+A glyph opens in the library tab only while a cell page shows, in the language of that page.
 Unmatched queries read the unmatched keys, and a narrowed column unchooses its cell.
 Cancelling unchooses both columns and empties the entry list.
 A null order keeps the chosen one in each column.

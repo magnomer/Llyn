@@ -84,11 +84,11 @@ public sealed class TLibrary
         LEntry water = TLibraryEntrySave(engine, "water", "English");
         CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, []));
 
-        Assert.Equal(0, library.CLibraryPanel.CPanelChosenRead());
+        Assert.Equal(0, library.CLibraryPanel.TPanelChosenRead());
 
         library.CLibraryPanel.CPanelRowSelect(water.LEntryId);
 
-        Assert.Equal(water.LEntryId, library.CLibraryPanel.CPanelChosenRead());
+        Assert.Equal(water.LEntryId, library.CLibraryPanel.TPanelChosenRead());
         Assert.Equal(["water"], library.CLibraryRowsRead()
             .Where(row => row.CVistaRowChosen)
             .Select(row => row.CVistaRowHeadword));
@@ -96,7 +96,7 @@ public sealed class TLibrary
 
         library.CLibraryPanel.CPanelEntryDelete();
 
-        Assert.Equal(0, library.CLibraryPanel.CPanelChosenRead());
+        Assert.Equal(0, library.CLibraryPanel.TPanelChosenRead());
         Assert.Empty(library.CLibraryRowsRead());
     }
 
@@ -257,6 +257,48 @@ public sealed class TLibrary
 
         Assert.Equal(["List.ImportFailed"], asked);
         Assert.Empty(library.CLibraryRowsRead());
+    }
+
+    [Fact]
+    public void LibraryNavigation_EntryJump_OpensTheEntryInTheArea()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TLibraryEntrySave(engine, "water", "English");
+        List<string> asked = [];
+        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
+        int landed = 0;
+        atelier.CAtelierNavigation.CNavigationArrived += () => landed++;
+
+        bool opened = atelier.CAtelierNavigation.CNavigationEntryOpen(water.LEntryId);
+
+        Assert.True(opened);
+        Assert.Empty(asked);
+        Assert.Equal(1, landed);
+        Assert.Equal(water.LEntryId, library.CLibraryPanel.TPanelChosenRead());
+    }
+
+    [Fact]
+    public void LibraryPanelRowSelect_TabPanel_RecordsTheStationItLeaves()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TLibraryEntrySave(engine, "water", "English");
+        LEntry fire = TLibraryEntrySave(engine, "fire", "English");
+        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        atelier.CAtelierNavigation.CNavigationTabSelect("Library");
+        library.CLibraryPanel.CPanelRowSelect(water.LEntryId);
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+
+        library.CLibraryPanel.CPanelRowSelect(fire.LEntryId);
+        library.CLibraryPanel.CPanelRowSelect(null);
+
+        CNavigationState state = Assert.Single(states);
+        Assert.Equal(new CVoyageState(true, false), state.CNavigationStateVoyage);
+        Assert.Equal(fire.LEntryId, library.CLibraryPanel.TPanelChosenRead());
     }
 
     private static CLibrary TLibraryPrepare(CAtelier atelier, CEnvoy envoy)

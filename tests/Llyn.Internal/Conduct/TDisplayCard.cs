@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -122,7 +123,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplayChipOpen_StoredRecord_OpensThePanelItsKindPicks()
+    public void DisplayChipOpen_StoredRecord_RaisesTheTabItsKindPicks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -139,7 +140,7 @@ public sealed class TDisplayCard
         bool link = TDisplayChipOpen(area, "a link chip", 12, opened);
 
         Assert.Equal((true, true, true, true), (situation, register, tag, link));
-        Assert.Equal(["situation 7", "register 8", "tag 9", "entry 12"], opened);
+        Assert.Equal(["Repertoire 7", "Tenor 8", "Taxonomy 9", "Library 12"], opened);
     }
 
     [Fact]
@@ -206,19 +207,13 @@ public sealed class TDisplayCard
         Assert.Null(area.CDisplayCardFind(987654));
     }
 
-    private static bool TDisplayChipOpen(CDisplay area, object? chip, long? link, List<string> opened) =>
-        area.CDisplayChipOpen(
-            chip,
-            link,
-            id => TDisplayOpenAdd(opened, "entry", id),
-            id => TDisplayOpenAdd(opened, "situation", id),
-            id => TDisplayOpenAdd(opened, "register", id),
-            id => TDisplayOpenAdd(opened, "tag", id));
-
-    private static bool TDisplayOpenAdd(List<string> opened, string panel, long id)
+    private static bool TDisplayChipOpen(CDisplay area, object? chip, long? link, List<string> opened)
     {
-        opened.Add(panel + " " + id);
-        return true;
+        Action<string, long> chosen = (tab, id) => opened.Add(tab + " " + id);
+        area.CDisplayRowChosen += chosen;
+        bool asked = area.CDisplayChipOpen(chip, link);
+        area.CDisplayRowChosen -= chosen;
+        return asked;
     }
 
     private static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)

@@ -16,6 +16,7 @@ A no keeps both Authors.
 The union question shows the written and kept names trimmed, as the engine reads them.
 A confirmed delete removes the Author, a close empties the panel, and a catalog notice refreshes the roll.
 A print on the author side prints nothing.
+An Author click records the station it leaves before the Author opens.
 
 ## `internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)`
 

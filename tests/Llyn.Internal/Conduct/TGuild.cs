@@ -166,12 +166,32 @@ public sealed class TGuild
         guild.CGuildAuthorCreate();
         guild.CGuildAutograph.TDeskDefer(TInterface.TAuthorNameCreate(guild.CGuildAutograph.CDeskId, "Bob"));
 
-        guild.CGuildAuthorOpen(ada.LAuthorId);
+        guild.TGuildAuthorOpen(ada.LAuthorId);
 
         Assert.Empty(asked);
         Assert.True(guild.CGuildAutographShown);
         Assert.True(guild.CGuildBinEnabled);
         Assert.Equal("Ada", guild.CGuildVitaRead().CVitaName);
+    }
+
+    [Fact]
+    public void GuildAuthorSelect_Click_RecordsTheStationItLeaves()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CGuild guild = TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
+        LAuthor bob = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Bob"));
+        atelier.CAtelierNavigation.CNavigationTabSelect("Guild");
+        guild.CGuildAuthorSelect(ada.LAuthorId);
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+
+        guild.CGuildAuthorSelect(bob.LAuthorId);
+
+        Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
+        Assert.Equal("Bob", guild.CGuildVitaRead().CVitaName);
     }
 
     [Fact]
@@ -223,12 +243,12 @@ public sealed class TGuild
         CGuild guild = TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
 
-        guild.CGuildScribeRestore(true);
+        guild.TGuildScribeRestore(true);
 
         Assert.False(guild.CGuildAutographShown);
 
         guild.CGuildAuthorSelect(ada.LAuthorId);
-        guild.CGuildScribeRestore(true);
+        guild.TGuildScribeRestore(true);
 
         Assert.True(guild.CGuildAutographShown);
         Assert.True(guild.CGuildUnionShown);

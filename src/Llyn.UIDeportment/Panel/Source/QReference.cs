@@ -245,16 +245,6 @@ internal sealed class QReference
         return _cShelf.CShelfDraftFinish(store);
     }
 
-    internal bool QReferenceLeaveConfirm()
-    {
-        return _cShelf.CShelfLeaveConfirm();
-    }
-
-    internal void QReferenceScribeRestore(bool editing)
-    {
-        _cShelf.CShelfPanel.CPanelScribeRestore(editing);
-    }
-
     internal void QReferenceClose()
     {
         _qImprint.QImprintClose();
@@ -323,12 +313,12 @@ internal sealed class QReference
 
     private void QReferenceRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qReferenceHost.PVoyageRetreatRun();
+        _qReferenceHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QReferenceAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qReferenceHost.PVoyageAdvanceRun();
+        _qReferenceHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QTrellisUpdate()
@@ -360,18 +350,7 @@ internal sealed class QReference
 
     private void QShelfHandle(object sender, RoutedEventArgs e)
     {
-        _cShelf.CShelfReferenceSelect(
-            QSender.QSenderSourceRead<QShelfItem>(e)?.QShelfItemId, _qReferenceHost.PVoyageRecord);
-    }
-
-    internal long QReferenceVoyageRead()
-    {
-        return _cShelf.CShelfPanel.CPanelChosenRead();
-    }
-
-    internal void QShelfSourceShow(long id)
-    {
-        _cShelf.CShelfReferenceOpen(id);
+        _cShelf.CShelfReferenceSelect(QSender.QSenderSourceRead<QShelfItem>(e)?.QShelfItemId);
     }
 
     private void QFootnoteHandle(object sender, RoutedEventArgs e)

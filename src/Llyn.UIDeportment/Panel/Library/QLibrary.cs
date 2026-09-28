@@ -214,29 +214,9 @@ internal sealed class QLibrary
         return _cLibrary.CLibraryPanel.CPanelChangeCheck();
     }
 
-    internal bool QLibraryLeaveConfirm()
-    {
-        return _cLibrary.CLibraryPanel.CPanelLeaveConfirm();
-    }
-
-    internal long QLibraryVoyageRead()
-    {
-        return _cLibrary.CLibraryPanel.CPanelChosenRead();
-    }
-
-    internal void QIndexEntryShow(long id)
-    {
-        _cLibrary.CLibraryPanel.CPanelRowOpen(id);
-    }
-
     private bool QLibraryShownCheck()
     {
         return _qLibrarySurface.IsVisible;
-    }
-
-    internal void QLibraryScribeRestore(bool editing)
-    {
-        _cLibrary.CLibraryPanel.CPanelScribeRestore(editing);
     }
 
     internal void QLibraryClose()
@@ -287,7 +267,6 @@ internal sealed class QLibrary
 
     private void QLibraryRowSelect(QIndexItem? item)
     {
-        _qLibraryHost.PVoyageRecord();
         _cLibrary.CLibraryPanel.CPanelRowSelect(item?.QIndexItemId);
     }
 
@@ -350,12 +329,12 @@ internal sealed class QLibrary
 
     private void QLibraryRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qLibraryHost.PVoyageRetreatRun();
+        _qLibraryHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QLibraryAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qLibraryHost.PVoyageAdvanceRun();
+        _qLibraryHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QLibraryUndoHandle(object sender, RoutedEventArgs e)

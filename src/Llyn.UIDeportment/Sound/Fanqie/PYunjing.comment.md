@@ -26,23 +26,14 @@ The lectern is built here to follow the panel, so the session names no driver ty
 It then wires the lists, the page and the editor.
 The print and portrait command bindings are added last, so no can-execute query meets a session not yet built.
 
-## `internal bool PYunjingCheck()`
-
-Whether any loaded language pack carries rime books, so the navigation knows to show the tab.
-
 ## `internal void PYunjingVistaRestore()`
 
 The session starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Attaches the bulletins the panel follows, restores the order menus, and loads.
 
-## `internal bool PYunjingLeaveConfirm()`
+## `private void PYunjingQueryRefine()`
 
-Asks the panel whether the tab may be left, so an untouched entry is left without a word.
-The panel asks the window only once its editor holds a change.
-
-## `internal void PYunjingDiweiShow(string language, string kind, string key)`
-
-A glyph link from another panel: empties both search fields, then opens the page on the cell.
+Answers the area's opening of a cell a fanqie chip names by emptying both search fields.
 
 ## `private void PYunjingColumnUpdate()`
 
@@ -71,16 +62,16 @@ A click on either column hands the cell's id and side to the select gate.
 
 ## `internal void PYunjingVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the panel only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the panel only shows what it is told.
 
 ## `private void PYunjingRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void PYunjingAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.
 
 ## `private void PYunjingUndoHandle(object sender, RoutedEventArgs e)`
 
@@ -95,11 +86,3 @@ Walks the chronicle of the editor forward one step.
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
 
-## `internal long PYunjingVoyageRead()`
-
-The Entry the panel shows, read off the yunjing panel as the station of this panel.
-
-## `internal void PXiaoyunEntryShow(long id)`
-
-Shows one Entry by id, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.

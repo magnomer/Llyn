@@ -34,6 +34,8 @@ public sealed class CDisplay
 
     public event Action? CDisplayOpened;
 
+    internal event Action<string, long>? CDisplayRowChosen;
+
     public event Action? CDisplayClosed;
 
     public event Action<CBulletin>? CDisplayFavoriteChanged;
@@ -302,33 +304,22 @@ public sealed class CDisplay
             shown.LEntryDraftLanguage, text, CFolio.CFolioTargetRead(etymons), narrated, shown.LEntryDraftDerived);
     }
 
-    public bool CDisplayChipOpen(
-        object? chip,
-        long? link,
-        Func<long, bool> entrySeam,
-        Func<long, bool> situationSeam,
-        Func<long, bool> registerSeam,
-        Func<long, bool> tagSeam)
+    public bool CDisplayChipOpen(object? chip, long? link)
     {
-        ArgumentNullException.ThrowIfNull(entrySeam);
-        ArgumentNullException.ThrowIfNull(situationSeam);
-        ArgumentNullException.ThrowIfNull(registerSeam);
-        ArgumentNullException.ThrowIfNull(tagSeam);
-
         if (LEntryPort.LEngineChipRead(chip, link) is not (LSubject subject, long id))
         {
             return false;
         }
 
-        Func<long, bool> seam = subject switch
+        string tab = subject switch
         {
-            LSubject.LSubjectEntry => entrySeam,
-            LSubject.LSubjectSituation => situationSeam,
-            LSubject.LSubjectRegister => registerSeam,
-            LSubject.LSubjectTag => tagSeam,
+            LSubject.LSubjectEntry => "Library",
+            LSubject.LSubjectSituation => "Repertoire",
+            LSubject.LSubjectRegister => "Tenor",
+            LSubject.LSubjectTag => "Taxonomy",
             _ => throw new ArgumentOutOfRangeException(nameof(chip), subject, null),
         };
-        seam(id);
+        CDisplayRowChosen?.Invoke(tab, id);
         return true;
     }
 

@@ -105,38 +105,23 @@ A chosen Register the rows no longer hold is dropped through the vista, and the 
 The panel then falls back to every Entry.
 Before a vista is handed over nothing is asked.
 
-### `internal void QGamutRegisterShow(long id)`
+### `private void QGamutRegisterShow(long id)`
 
-Browses by one Register for a caller outside the panel.
-That is how a register chip read on a card reaches this panel.
-The query is emptied first.
-Otherwise a Register left out by the standing query would be chosen and dropped at once.
-The Register is then chosen through the vista and the catalog rebuilt, since it may be new to the list.
+Chooses a newly coined Register, then hands off to the refine as an arrival does.
 
-### `private void QGamutSelect(long? id)`
+### `private void QGamutRegisterRefine()`
 
-Chooses one Register, or none, and re-marks the rows in place before listing the entries under it.
-No row is rebuilt, so the list keeps its scroll and its focus.
+Answers the area's opening event after a chip's arrival, and runs after a coinage too.
+Both queries are emptied and the catalog rebuilt, since the Register may be new to the list.
 
 ### `private void QGamutHandle(object sender, RoutedEventArgs e)`
 
 A clicked row hands its item to the helper, which ignores a click that carries none.
 
-### `QGamutSelect(item.QGamutItemChosen ? null : item.QGamutItemId);`
+### `CTenorRegisterToggle(item.QGamutItemId);`
 
-Clicking the chosen Register lets go of it.
+The gate records the station and toggles, so clicking the chosen Register lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
-
-### `internal void QTenorScribeRestore(bool editing)`
-
-Puts the panel back on the side it was left standing on.
-A session that ended on the editor with nothing selected comes back on the reading side instead.
-Otherwise the launch would open a blank draft nobody asked for.
-
-## `internal long QTenorVoyageRead()`
-
-The Register the panel shows, as the station the window records before a jump away.
-Zero says no Register is shown, so there is no place to come back to.
 
 ## `private void QGamutApply(FrameworkElement container, object item, string? _)`
 

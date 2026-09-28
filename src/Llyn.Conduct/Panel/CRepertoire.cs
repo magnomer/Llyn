@@ -60,6 +60,12 @@ public sealed class CRepertoire
             draft => LRepertoireVignetteShow(CAtlas.LAtlasDraftRead(draft));
         CRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Repertoire",
+            () => LRepertoireLeaveConfirm(true),
+            CRepertoireAtlas.CAtlasPanel.LPanelChosenRead,
+            CRepertoireAtlas.CAtlasPanel.LPanelScribeRestore,
+            LRepertoireSituationOpen);
     }
 
     public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -147,7 +153,7 @@ public sealed class CRepertoire
         CRepertoireSituationChanged?.Invoke(situation);
     }
 
-    public void CRepertoireSituationOpen(long id)
+    internal void LRepertoireSituationOpen(long id)
     {
         bool editing = CRepertoireScribeChecked;
         LRepertoireSituationShow(id, editing);
@@ -172,10 +178,8 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelRowOpen(id);
     }
 
-    public void CRepertoireSituationSelect(long? id, Action record)
+    public void CRepertoireSituationSelect(long? id)
     {
-        ArgumentNullException.ThrowIfNull(record);
-
         if (id is not long chosen)
         {
             return;
@@ -187,7 +191,7 @@ public sealed class CRepertoire
             return;
         }
 
-        record();
+        _cRepertoireAtelier.CAtelierNavigation.LNavigationStationAdd();
         LRepertoireSituationShow(chosen, editing);
     }
 
@@ -287,7 +291,7 @@ public sealed class CRepertoire
     private void LRepertoireStoredShow(long id)
     {
         CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
-        CRepertoireSituationOpen(id);
+        LRepertoireSituationOpen(id);
     }
 
     private void LRepertoireOccurrenceCreate()
@@ -299,12 +303,7 @@ public sealed class CRepertoire
         CRepertoireEditor.CEditorDesk.LDeskOccurrenceStart(chosen);
     }
 
-    public bool CRepertoireLeaveConfirm()
-    {
-        return LRepertoireLeaveConfirm(true);
-    }
-
-    private bool LRepertoireLeaveConfirm(bool shown)
+    internal bool LRepertoireLeaveConfirm(bool shown)
     {
         if (!CRepertoireSession.CSessionChangeCheck())
         {

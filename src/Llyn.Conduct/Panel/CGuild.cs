@@ -46,6 +46,8 @@ public sealed class CGuild
         CGuildSession.CSessionFailed += envoy.CEnvoyFailureShow;
         CGuildPanel.CPanelCleared += CGuildSession.CSessionCancel;
         CGuildPanel.CPanelEdited += id => CGuildSession.CSessionStart(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Guild", LGuildLeaveConfirm, CGuildPanel.LPanelChosenRead, LGuildScribeRestore, LGuildAuthorOpen);
     }
 
     public static CGuild CGuildCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -151,7 +153,7 @@ public sealed class CGuild
         _cGuildVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    public bool CGuildLeaveConfirm()
+    internal bool LGuildLeaveConfirm()
     {
         if (!CGuildSession.CSessionChangeCheck())
         {
@@ -190,15 +192,16 @@ public sealed class CGuild
             return;
         }
 
-        if (!CGuildLeaveConfirm())
+        if (!LGuildLeaveConfirm())
         {
             return;
         }
 
+        _cGuildAtelier.CAtelierNavigation.LNavigationStationAdd();
         LGuildAuthorOpen(id, CGuildPanel.CPanelEditing);
     }
 
-    public void CGuildAuthorOpen(long id)
+    internal void LGuildAuthorOpen(long id)
     {
         LGuildAuthorOpen(id, CGuildPanel.CPanelEditing);
     }
@@ -226,7 +229,7 @@ public sealed class CGuild
             return;
         }
 
-        if (!CGuildLeaveConfirm())
+        if (!LGuildLeaveConfirm())
         {
             return;
         }
@@ -238,7 +241,7 @@ public sealed class CGuild
 
     public void CGuildAuthorCreate()
     {
-        if (!CGuildLeaveConfirm())
+        if (!LGuildLeaveConfirm())
         {
             return;
         }
@@ -268,14 +271,14 @@ public sealed class CGuild
         }
     }
 
-    public void CGuildScribeRestore(bool editing)
+    internal void LGuildScribeRestore(bool editing)
     {
         if (!LGuildEditCheck(editing))
         {
             return;
         }
 
-        CGuildPanel.CPanelScribeRestore(editing);
+        CGuildPanel.LPanelScribeRestore(editing);
         if (CGuildPanel.CPanelEditing)
         {
             CGuildSession.CSessionStart(LGuildAuthorStored);

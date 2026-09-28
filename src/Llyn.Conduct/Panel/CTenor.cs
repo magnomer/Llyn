@@ -44,6 +44,12 @@ public sealed class CTenor
             shownSeam);
         CTenorPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CTenorPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Tenor",
+            CTenorPanel.CPanelLeaveConfirm,
+            () => LTenorChosen ?? 0,
+            CTenorPanel.LPanelScribeRestore,
+            LTenorRegisterOpen);
     }
 
     public static CTenor CTenorCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -55,11 +61,13 @@ public sealed class CTenor
 
     public CPanel CTenorPanel { get; }
 
-    public long? CTenorChosen => _cTenorVista?.LVistaChosen;
+    public event Action? CTenorRegisterOpened;
+
+    internal long? LTenorChosen => _cTenorVista?.LVistaChosen;
 
     public bool CTenorFiltered => _cTenorVista?.LVistaFiltered ?? false;
 
-    public bool CTenorCoinageAllowed => CTenorChosen is null && !CTenorPanel.CPanelBinEnabled;
+    public bool CTenorCoinageAllowed => LTenorChosen is null && !CTenorPanel.CPanelBinEnabled;
 
     public string CTenorEmptyKey =>
         _cTenorCohort?.LVistaQueried ?? false ? "Register.Unmatched" : "Register.Vacant";
@@ -119,6 +127,18 @@ public sealed class CTenor
         _cTenorVista?.LVistaSelect(id);
     }
 
+    public void CTenorRegisterToggle(long id)
+    {
+        _cTenorAtelier.CAtelierNavigation.LNavigationStationAdd();
+        _cTenorVista?.LVistaToggle(id);
+    }
+
+    internal void LTenorRegisterOpen(long id)
+    {
+        CTenorRegisterSelect(id);
+        CTenorRegisterOpened?.Invoke();
+    }
+
     public IReadOnlyList<CCatalogRegister> CTenorRowsRead()
     {
         return _cTenorVista is LVista vista
@@ -150,7 +170,7 @@ public sealed class CTenor
 
     public void CTenorEntryCreate()
     {
-        long? chosen = CTenorChosen;
+        long? chosen = LTenorChosen;
         CTenorPanel.CPanelFreshOpen();
         CTenorEditor.CEditorDesk.LDeskCohortStart(chosen);
     }

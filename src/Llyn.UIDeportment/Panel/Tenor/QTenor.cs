@@ -135,6 +135,7 @@ internal sealed partial class QTenor
     {
         _qTenorHost = host;
         _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
+        _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         _lEditor = new LEditor(_cTenor.CTenorEditor);
         CPanel panel = _cTenor.CTenorPanel;
         QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
@@ -203,12 +204,12 @@ internal sealed partial class QTenor
 
     private void QTenorRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qTenorHost.PVoyageRetreatRun();
+        _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QTenorAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qTenorHost.PVoyageAdvanceRun();
+        _qTenorHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QTenorUndoHandle(object sender, RoutedEventArgs e)

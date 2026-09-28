@@ -39,7 +39,7 @@ public sealed class TCorpus
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
         List<CEntryDraft> shown = [];
         corpus.CCorpusEditor.CEditorDraftChanged += shown.Add;
 
@@ -66,7 +66,7 @@ public sealed class TCorpus
         List<CExample> shown = [];
         corpus.CCorpusExampleChanged += shown.Add;
 
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.True(corpus.CCorpusExcerptShown);
         Assert.True(corpus.CCorpusExcerptHeld);
@@ -89,7 +89,7 @@ public sealed class TCorpus
         int cleared = 0;
         corpus.CCorpusQueryCleared += () => cleared++;
 
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal(1, cleared);
         Assert.Equal(2, corpus.CCorpusRowsRead("?", "-").Count);
@@ -107,9 +107,10 @@ public sealed class TCorpus
         List<string> asked = [];
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        corpus.CCorpusExampleSelect(cat.LExampleId, () => recorded++);
-        corpus.CCorpusExampleSelect(null, () => recorded++);
+        corpus.CCorpusExampleSelect(cat.LExampleId);
+        corpus.CCorpusExampleSelect(null);
 
         Assert.Equal(1, recorded);
         Assert.Empty(asked);
@@ -129,8 +130,9 @@ public sealed class TCorpus
         corpus.CCorpusDesk.TDeskDefer(
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        corpus.CCorpusExampleSelect(cat.LExampleId, () => recorded++);
+        corpus.CCorpusExampleSelect(cat.LExampleId);
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
@@ -167,7 +169,7 @@ public sealed class TCorpus
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         corpus.CCorpusScribeToggle(true);
 
@@ -189,7 +191,7 @@ public sealed class TCorpus
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusExampleCreate();
 
         corpus.CCorpusScribeToggle(false);
@@ -209,7 +211,7 @@ public sealed class TCorpus
         LEntry water = TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         corpus.CCorpusQuotationSelect(water.LEntryId);
 
@@ -228,7 +230,7 @@ public sealed class TCorpus
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         corpus.CCorpusExampleClose();
 
@@ -262,7 +264,7 @@ public sealed class TCorpus
         LEntry water = TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusQuotationSelect(water.LEntryId);
 
         corpus.CCorpusEntryResonate();
@@ -331,7 +333,7 @@ public sealed class TCorpus
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         TCorpusExampleSave(engine, "a dog ran");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal(2, corpus.CCorpusRowsRead("?", "-").Count);
         Assert.True(corpus.CCorpusExcerptHeld);
@@ -352,7 +354,7 @@ public sealed class TCorpus
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         List<string> asked = [];
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         corpus.CCorpusExampleDelete();
 
@@ -372,7 +374,7 @@ public sealed class TCorpus
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         List<string> asked = [];
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
         corpus.CCorpusQuotationSelect(water.LEntryId);
 
         corpus.CCorpusExampleDelete();
@@ -394,7 +396,7 @@ public sealed class TCorpus
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
         CCorpus corpus = TCorpusPrepare(
             atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         await corpus.CCorpusPortraitExport();
 

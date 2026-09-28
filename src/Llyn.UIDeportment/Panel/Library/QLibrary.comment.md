@@ -59,21 +59,6 @@ What the editor answers is passed back up, because a store the engine refused mu
 Whether the editor holds modifications that have not been stored, as the controller reads it.
 That is what the window asks before the workspace changes or the program closes.
 
-## `internal bool QLibraryLeaveConfirm()`
-
-The question the window puts before a jump that lands on the library the user is already writing in.
-The panel asks it through the envoy only when it found changes.
-
-## `internal long QLibraryVoyageRead()`
-
-The entry the panel shows, as the station the window records before a jump away.
-Zero says no entry is shown, so there is no place to come back to.
-
-## `internal void QIndexEntryShow(long id)`
-
-Puts the whole right-hand side on one entry, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.
-
 ## `private bool QLibraryShownCheck()`
 
 The shown seam: whether this tab is the one in front, which only the page knows.
@@ -101,7 +86,7 @@ A clicked language row sets the filter its list now stands for, then redraws the
 
 ## `private void QLibraryRowSelect(QIndexItem? item)`
 
-Records the station, then puts the panel on the clicked row's entry.
+Puts the panel on the clicked row's entry, and the gate records the station first.
 The click hands over the row's item, so no control decides the request.
 A sender without a row selects none, which leaves the panel on no entry.
 
@@ -146,16 +131,16 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## `internal void QLibraryVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the panel only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the panel only shows what it is told.
 
 ## `private void QLibraryRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QLibraryAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.
 
 ## `private void QLibraryUndoHandle(object sender, RoutedEventArgs e)`
 

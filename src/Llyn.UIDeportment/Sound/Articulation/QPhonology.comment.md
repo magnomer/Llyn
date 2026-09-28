@@ -49,10 +49,6 @@ That is what the window asks before the workspace changes or the program closes.
 
 The shown seam: whether this tab is the one in front, which only the page knows.
 
-## `internal bool QPhonologyLeaveConfirm()`
-
-The panel's question before its unsaved work goes out of sight, asked by the window.
-
 ## `internal void QPhonologyClose()`
 
 Stops the panel: the editor is shut down and the shared display releases its playback.
@@ -95,16 +91,16 @@ It is named once here rather than looked up whenever a character is chosen.
 
 ## `internal void QPhonologyVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the panel only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the panel only shows what it is told.
 
 ## `private void QPhonologyRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QPhonologyAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.
 
 ## `private void QPhonologyUndoHandle(object sender, RoutedEventArgs e)`
 
@@ -118,15 +114,6 @@ Walks the chronicle of the editor forward one step.
 
 Lights the two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.
-
-## `internal long QPhonologyVoyageRead()`
-
-The Entry the panel shows, read off the phonology panel as the station of this panel.
-
-## `internal void QInventoryEntryShow(long id)`
-
-Shows one Entry by id, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.
 
 ## `private void QArticulationFoldHandle(object sender, RoutedEventArgs e)`
 

@@ -69,6 +69,12 @@ public sealed class CDisplaySound
 
     public event Action? CDisplayFoldChanged;
 
+    internal event Action<string, long>? CDisplayRowChosen;
+
+    internal event Action<string, string, string>? CDisplayDiweiChosen;
+
+    internal event Action<string, string?>? CDisplayStemChosen;
+
     public bool CDisplayFoldOpened => _cDisplayVoice.LDisplayFoldOpened;
 
     private LEntryDraft? LDisplayShown => _cDisplayVoice.LDisplayShown;
@@ -222,13 +228,16 @@ public sealed class CDisplaySound
             LDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
-    public bool CDisplayGlyphOpen(string character, string language, Func<long, bool> entrySeam)
+    public bool CDisplayGlyphOpen(string character, string language)
     {
-        ArgumentNullException.ThrowIfNull(entrySeam);
+        if (CCatalog.LCatalogGlyphOpen(
+                _cDisplayEnvoy, () => _cDisplayPort.LEngineGlyphResolve(character, language)) is not long entry)
+        {
+            return false;
+        }
 
-        return CCatalog.LCatalogGlyphOpen(
-                _cDisplayEnvoy, () => _cDisplayPort.LEngineGlyphResolve(character, language)) is long entry
-            && entrySeam(entry);
+        CDisplayRowChosen?.Invoke("Library", entry);
+        return true;
     }
 
     public IReadOnlyList<CTranscriptionDraft> CDisplayTranscriptionRead()
@@ -310,29 +319,25 @@ public sealed class CDisplaySound
         }
     }
 
-    public bool CDisplayDiweiOpen(string kind, string key, Action<string, string, string> diweiSeam)
+    public bool CDisplayDiweiOpen(string kind, string key)
     {
-        ArgumentNullException.ThrowIfNull(diweiSeam);
-
         if (LDisplayShown is null)
         {
             return false;
         }
 
-        diweiSeam(_cDisplayHeader.CDisplayShown.CLecternLanguage, kind, key);
+        CDisplayDiweiChosen?.Invoke(_cDisplayHeader.CDisplayShown.CLecternLanguage, kind, key);
         return true;
     }
 
-    public bool CDisplayStemOpen(string? key, Action<string, string?> stemSeam)
+    public bool CDisplayStemOpen(string? key)
     {
-        ArgumentNullException.ThrowIfNull(stemSeam);
-
         if (LDisplayShown is null)
         {
             return false;
         }
 
-        stemSeam(_cDisplayHeader.CDisplayShown.CLecternLanguage, key);
+        CDisplayStemChosen?.Invoke(_cDisplayHeader.CDisplayShown.CLecternLanguage, key);
         return true;
     }
 

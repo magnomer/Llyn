@@ -13,6 +13,7 @@ Closing the panel drops the fresh draft the editor held.
 A null order keeps the chosen one, the reverse order sorts, and the tag vista's observer hears it.
 An unmatched query lists no Tag, and a hidden language marks the panel filtered until cleared.
 Print and export do nothing until an entry is shown, then export writes it under its headword.
+A row click records the station and toggles the Tag, and an arrival chooses it and raises the opening.
 
 ## `private static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)`
 

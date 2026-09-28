@@ -72,7 +72,8 @@ internal sealed class QCadence
                 _lEditor.LEditorStudio.CEditorSounding.CSoundingFanqieResolve,
                 null);
         QCadenceFanqie.PFanqieDiweiNotice =
-            (kind, key) => _pWindow.PWindowDiweiShow(_lEditor.LEditorLanguage, kind, key);
+            (kind, key) => _pWindow.PWindowAtelier.CAtelierNavigation.CNavigationDiweiOpen(
+                _lEditor.LEditorLanguage, kind, key);
         QCadenceFanqie.PFanqieRepresentativeNotice =
             (fanqieId, rank) => _lEditor.LEditorStudio.CEditorSounding.CSoundingFanqieSet(fanqieId, rank);
     }

@@ -76,7 +76,7 @@ The same sheet feeds the count chips of the autograph, which show the Author bei
 
 The order menu of the roll, where no order keeps the one the vista holds.
 
-## `public bool CGuildLeaveConfirm()`
+## `internal bool LGuildLeaveConfirm()`
 
 Asks the leave question when the tab holds unsaved work, and answers whether the tab may be left.
 A store answer finishes the draft first, and a refused store keeps the tab.
@@ -94,11 +94,12 @@ It answers an engine notice the driver hands over, so it takes the `Resonate` en
 ## `public void CGuildAuthorSelect(long? id)`
 
 A click on the roll or a fellow: asks once for the tab, then opens the Author on its side.
+Once the leave is settled, the navigation records the station the click leaves.
 The mode carries over, so an Author clicked while writing opens in the autograph.
 
-## `public void CGuildAuthorOpen(long id)`
+## `internal void LGuildAuthorOpen(long id)`
 
-A jump from another panel: opens the Author without asking, since the window has already asked.
+The navigation's arrival: opens the Author without asking, since the navigation has already asked.
 
 ## `private void LGuildAuthorOpen(long? id, bool editing)`
 
@@ -124,7 +125,7 @@ The mode toggle of the author side, ignored while a Source is in front.
 Turning to writing with no stored Author clears the panel, because there is nothing to write.
 Leaving the autograph drops its held draft after the panel state has reloaded the Author.
 
-## `public void CGuildScribeRestore(bool editing)`
+## `internal void LGuildScribeRestore(bool editing)`
 
 Reopens the side the last session ended on, but only the reading side while no Author is stored.
 

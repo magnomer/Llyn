@@ -36,14 +36,6 @@ Whether the edit area holds a name not yet saved.
 
 Finishes the held edit before the panel is left, saving it or dropping it as asked.
 
-## `internal bool QGuildLeaveConfirm()`
-
-The panel's question before its unsaved work goes out of sight, asked by the window.
-
-## `internal void QGuildScribeRestore(bool editing)`
-
-Reopens the side the last session ended on.
-
 ## `internal void QGuildClose()`
 
 Closes the dropdowns, so nothing stays open over a window that is going.
@@ -78,16 +70,16 @@ The gate words the page with the Source legend.
 
 ## `internal void QGuildVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the panel only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the panel only shows what it is told.
 
 ## `private void QGuildRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QGuildAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.
 
 ## `private void QGuildUndoHandle(object sender, RoutedEventArgs e)`
 
@@ -102,11 +94,3 @@ Walks the autograph desk forward one step, the mirror of the undo.
 Lights the two chronicle buttons only while the desk has a step to walk.
 It runs whenever the desk reports its state again.
 
-## `internal long QGuildVoyageRead()`
-
-The Author the panel shows, read off the guild panel as the station of this panel.
-
-## `internal void QRollAuthorShow(long id)`
-
-Shows one Author by id, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.

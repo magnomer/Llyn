@@ -71,7 +71,8 @@ The leftovers are counted next, so the number describes the workspace as it was 
 The stored view state is read once here and applied after every panel is attached.
 Reading it once is what keeps the panels from each asking the workspace the same question.
 The status bar attaches after every panel, so its first reading already sees the drafts the panels opened.
-The navigation is built after every panel attaches, and the voyage shortcuts are hooked with it.
+The navigation is heard after every panel attaches, so every panel has registered its tab.
+The voyage shortcuts are hooked with it.
 
 ## `internal PLayout PWindowLayout => _pLayout;`
 
@@ -139,8 +140,8 @@ The third is attestation: example, source, author.
 The fourth is the rime table, the one tool with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode, not a page.
 
-The rail's tabs are held here, and Conduct's `CNavigation` decides which one shows.
-The voyage trail the tabs walk is held here too, as GUI state.
+The rail's buttons and panels are held here, and Conduct's `CNavigation` decides which one shows.
+The navigation also keeps the voyage trail the tabs walk.
 
 ## Inline notes
 

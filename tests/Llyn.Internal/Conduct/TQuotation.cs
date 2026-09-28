@@ -18,11 +18,11 @@ public sealed class TQuotation
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(dog.LExampleId);
+        corpus.TCorpusExampleOpen(dog.LExampleId);
 
         Assert.Empty(corpus.CCorpusQuotation.CQuotationRowsRead());
 
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal(water.LEntryId, Assert.Single(corpus.CCorpusQuotation.CQuotationRowsRead()).CVistaRowId);
     }
@@ -49,7 +49,7 @@ public sealed class TQuotation
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal("Example.Vacant", corpus.CCorpusQuotation.CQuotationEmptyKey);
 
@@ -73,7 +73,7 @@ public sealed class TQuotation
         LEntry water = TCorpus.TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
+        corpus.TCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal("entry", corpus.CCorpusQuotation.TQuotationFileRead());
 

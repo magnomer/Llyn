@@ -75,8 +75,7 @@ internal sealed class QVita
 
     private void QVitaCitationHandle(object sender, RoutedEventArgs e)
     {
-        QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage.CUsageOpen(
-            _qVitaHost.PWindowExampleShow,
-            _qVitaHost.PWindowEntryShow);
+        _qVitaHost.PWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
+            QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage);
     }
 }

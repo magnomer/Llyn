@@ -61,7 +61,7 @@ public sealed class TAtelier
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
 
         Assert.Equal(1, atelier.CAtelierVolumeRead());
-        Assert.False(atelier.CAtelierSplitRead());
+        Assert.False(TInterfaceConduct.TAtelierSplitRead(atelier));
     }
 
     [Fact]

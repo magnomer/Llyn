@@ -2,10 +2,9 @@
 
 ## `public sealed class TUsage`
 
-Covers the keys a citing place carries and the gate that opens it.
+Covers the keys a citing place carries.
 A Collocation, an Example and a Meaning each carry their own owner key.
 Only an uncertain title carries the unknown mark's key.
-A quoted place opens its Example, and any other place opens its Entry.
 
 ## `private static CUsage TUsageCreate(bool quoted, bool collocated, CStateValue title)`
 

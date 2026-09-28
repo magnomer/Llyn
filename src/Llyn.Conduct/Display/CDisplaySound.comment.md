@@ -30,6 +30,19 @@ Only the display builds its sound area, over the ports and the envoy the panel h
 
 Raised when the fold gate sets the fold, so every lectern over the display repaints its reflex rows.
 
+## `internal event Action<string, long>? CDisplayRowChosen;`
+
+Raised with the library tab and the entry a glyph cell resolved to.
+
+## `internal event Action<string, string, string>? CDisplayDiweiChosen;`
+
+Raised with the shown language and the kind and key of a clicked rime cell.
+
+## `internal event Action<string, string?>? CDisplayStemChosen;`
+
+Raised with the shown language and the key of a clicked phonetic series.
+The display hands all three to the atelier's navigation, which switches the tab.
+
 ## `public bool CDisplayFoldOpened`
 
 Whether the folded reflexes are shown, the state a driver's fold repaint reads.
@@ -94,10 +107,10 @@ The heading key is chosen by `CScheme.CSchemeKeyRead`, and the cells map the eng
 A language without a glyph section, or a refused read, answers the hidden row.
 A refused read also shows `Sound.LoadFailed`.
 
-## `public bool CDisplayGlyphOpen(string character, string language, Func<long, bool> entrySeam)`
+## `public bool CDisplayGlyphOpen(string character, string language)`
 
 The gate for a glyph cell: it opens the entry the character stands for in its language.
-The engine finds or makes that entry, and the driver's seam opens it in the library.
+The engine finds or makes that entry, and it is raised for the navigation to open in the library tab.
 A refused resolve shows `Glyph.OpenFailed` through the catalog's one failure owner and opens nothing.
 
 ## `public IReadOnlyList<CTranscriptionDraft> CDisplayTranscriptionRead()`
@@ -130,14 +143,14 @@ The anchors are read again, since new fanqie rows can change which reflex rows a
 The gate for a representative pick: it makes a fanqie row the shown entry's representative at `rank`.
 A refusal shows `Display.FanqieRepresentativeFailed`, as the editor's gate does.
 
-## `public bool CDisplayDiweiOpen(string kind, string key, Action<string, string, string> diweiSeam)`
+## `public bool CDisplayDiweiOpen(string kind, string key)`
 
-The gate for a rime-cell click: it opens the cell in the shown entry's language through the driver's seam.
+The gate for a rime-cell click: it raises the cell in the shown entry's language for the navigation.
 Nothing shown opens nothing.
 
-## `public bool CDisplayStemOpen(string? key, Action<string, string?> stemSeam)`
+## `public bool CDisplayStemOpen(string? key)`
 
-The gate for a phonetic-series click: it opens the series in the shown entry's language through the driver's seam.
+The gate for a phonetic-series click: it raises the series in the shown entry's language for the navigation.
 Nothing shown opens nothing.
 
 ## `public CLecternScript CDisplayScriptRead()`

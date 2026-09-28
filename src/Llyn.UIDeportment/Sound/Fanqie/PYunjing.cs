@@ -154,6 +154,7 @@ public class PYunjing : UserControl
     {
         _pYunjingHost = host;
         _cYunjing = host.PWindowForge.QForgeYunjingCreate(PYunjingShownCheck, host.PWindowEnvoy);
+        _cYunjing.CYunjingDiweiOpened += PYunjingQueryRefine;
         _lEditor = new LEditor(_cYunjing.CYunjingEditor);
         CPanel panel = _cYunjing.CYunjingPanel;
         QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
@@ -162,7 +163,6 @@ public class PYunjing : UserControl
         panel.CPanelCleared += PYunjingClearUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
         _cYunjing.CYunjingChanged += PYunjingColumnUpdate;
-        _cYunjing.CYunjingGlyphChosen += host.PWindowGlyphRefine;
 
         PShengmu.ItemsSource = _pShengmuList;
         PYunmu.ItemsSource = _pYunmuList;
@@ -183,11 +183,6 @@ public class PYunjing : UserControl
     private void PYunjingStoreUpdate()
     {
         PYunjingStore.IsEnabled = _lEditor.LEditorStorable;
-    }
-
-    internal bool PYunjingCheck()
-    {
-        return _cYunjing.CYunjingAllowed;
     }
 
     internal void PYunjingVistaRestore()
@@ -254,21 +249,10 @@ public class PYunjing : UserControl
         return _cYunjing.CYunjingPanel.CPanelChangeCheck();
     }
 
-    internal bool PYunjingLeaveConfirm()
-    {
-        return _cYunjing.CYunjingPanel.CPanelLeaveConfirm();
-    }
-
-    internal void PYunjingDiweiShow(string language, string kind, string key)
+    private void PYunjingQueryRefine()
     {
         PPlumb.Text = string.Empty;
         PFathom.Text = string.Empty;
-        _cYunjing.CYunjingDiweiOpen(language, kind, key);
-    }
-
-    internal void PYunjingScribeRestore(bool editing)
-    {
-        _cYunjing.CYunjingPanel.CPanelScribeRestore(editing);
     }
 
     internal void PYunjingClose()
@@ -372,18 +356,7 @@ public class PYunjing : UserControl
 
     private void PXiaoyunHandle(object sender, RoutedEventArgs e)
     {
-        _pYunjingHost.PVoyageRecord();
         _cYunjing.CYunjingPanel.CPanelRowSelect(QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
-    }
-
-    internal long PYunjingVoyageRead()
-    {
-        return _cYunjing.CYunjingPanel.CPanelChosenRead();
-    }
-
-    internal void PXiaoyunEntryShow(long id)
-    {
-        _cYunjing.CYunjingPanel.CPanelRowOpen(id);
     }
 
     private void PYunjingFreshHandle(object sender, RoutedEventArgs e)
@@ -429,12 +402,12 @@ public class PYunjing : UserControl
 
     private void PYunjingRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _pYunjingHost.PVoyageRetreatRun();
+        _pYunjingHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void PYunjingAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _pYunjingHost.PVoyageAdvanceRun();
+        _pYunjingHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void PYunjingUndoHandle(object sender, RoutedEventArgs e)

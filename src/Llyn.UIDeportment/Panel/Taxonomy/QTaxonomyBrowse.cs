@@ -136,8 +136,8 @@ internal sealed partial class QTaxonomy
             return;
         }
 
-        _qTaxonomyHost.PVoyageRecord();
-        QDirectorySelect(item.QDirectoryItemChosen ? null : item.QDirectoryItemId);
+        _cTaxonomy.CTaxonomyTagToggle(item.QDirectoryItemId);
+        QDirectoryFind();
     }
 
     private void QDirectoryApply(FrameworkElement container, object item, string? _)
@@ -173,17 +173,16 @@ internal sealed partial class QTaxonomy
         }
     }
 
-    private void QDirectorySelect(long? id)
+    private void QDirectoryTagShow(long id)
     {
         _cTaxonomy.CTaxonomyTagSelect(id);
-        QDirectoryFind();
+        QDirectoryTagRefine();
     }
 
-    internal void QDirectoryTagShow(long id)
+    private void QDirectoryTagRefine()
     {
         QExploration.Text = string.Empty;
         QScout.Text = string.Empty;
-        _cTaxonomy.CTaxonomyTagSelect(id);
         QDirectoryFind();
     }
 
@@ -236,19 +235,9 @@ internal sealed partial class QTaxonomy
         _cTaxonomy.CTaxonomyPanel.CPanelScribeToggle(ReferenceEquals(sender, QTaxonomyScribe));
     }
 
-    internal void QTaxonomyScribeRestore(bool editing)
-    {
-        _cTaxonomy.CTaxonomyPanel.CPanelScribeRestore(editing);
-    }
-
     internal bool QTaxonomyLeaveConfirm()
     {
         return _cTaxonomy.CTaxonomyPanel.CPanelLeaveConfirm();
-    }
-
-    internal long QTaxonomyVoyageRead()
-    {
-        return _cTaxonomy.CTaxonomyChosen ?? 0;
     }
 
     private void QTaxonomyStoreHandle(object sender, RoutedEventArgs e)

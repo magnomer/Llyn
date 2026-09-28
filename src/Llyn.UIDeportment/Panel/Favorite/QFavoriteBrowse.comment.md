@@ -35,7 +35,7 @@ Rows arrive as shapes, numbered and with their epithets, so the panel only copie
 
 ## `private void QRosterRowShow(QRosterItem? item)`
 
-Selects the clicked entry, after the editor has been given the chance to keep unsaved changes.
+Hands the clicked entry to the panel's row gate, which asks about unsaved changes and records the station.
 The click hands over the row's item, so no control decides the request.
 
 ## `private void QRosterApply(FrameworkElement container, object item, string? _)`
@@ -46,18 +46,9 @@ The click is subscribed once per row, removed first so a refill never doubles it
 It runs again on every change the item raises, so a chosen row moves without a refill.
 The epithet leads with an en space, as its string format did.
 
-## `internal void QRosterEntryShow(long id)`
-
-Shows the entry on the shared panel, which loads it and drives the display and any open editor from there.
-It asks nothing, because the window asks before it jumps.
-
 ## `private void QFavoriteScribeHandle(object sender, RoutedEventArgs e)`
 
 Swaps the read view for the editor, and back, through the shared panel.
-
-## `internal bool QFavoriteLeaveConfirm()`
-
-Asks the shared panel whether the unsaved changes may be dropped.
 
 ## `internal async void QFavoriteVistaRestore()`
 
@@ -80,11 +71,3 @@ The same vista is handed to the display, which reads its chosen entry from it.
 
 Shows the filter mark while the vista hides any language.
 
-## `internal void QFavoriteScribeRestore(bool editing)`
-
-Puts the panel back on the side it was left standing on, through the shared panel.
-
-## `internal long QFavoriteVoyageRead()`
-
-The Entry the panel shows, as the station the window's trail records.
-Zero says the panel shows none, so there is no place to come back to.

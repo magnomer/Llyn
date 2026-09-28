@@ -111,11 +111,6 @@ The click is subscribed once per row, removed first so a refill never doubles it
 It runs again on every change the item raises, so a chosen row moves without a refill.
 The kind is written as it is, and the look sheet collapses it while empty.
 
-## `internal void QAtlasSituationShow(long id)`
-
-A jump from another panel: opens the Situation without asking, since the window has already asked.
-The Conduct keeps the side the panel stood on, so an open editor restarts on the Situation.
-
 ## `private void QRepertoireBinHandle(object sender, RoutedEventArgs e)`
 
 Hands the delete to the Conduct, which acts only while a Situation and not an Entry is shown.
@@ -131,30 +126,15 @@ Each segment has its own handler, so no control is read to decide which was pres
 Swaps the reading for the editor, on whichever side the Conduct stands.
 The Conduct asks before leaving an editor, so unsaved wording is never lost silently.
 
-### `internal void QRepertoireScribeRestore(bool editing)`
-
-Puts the Situation side back on the reader or the editor it was left standing on.
-A session that ended on the editor with nothing selected comes back on the reading side instead.
-Otherwise the launch would open a blank draft nobody asked for.
-
-### `internal bool QRepertoireLeaveConfirm()`
-
-Asks the Conduct whether the panel may be left, which asks the window only over unsaved work.
-
-## `internal long QRepertoireVoyageRead()`
-
-The Situation the atlas panel shows, as the station the window records before a jump away.
-Zero says no Situation is shown, so there is no place to come back to.
-
 ## `internal void QRepertoireVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the panel only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the panel only shows what it is told.
 
 ## `private void QRepertoireRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QRepertoireAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.

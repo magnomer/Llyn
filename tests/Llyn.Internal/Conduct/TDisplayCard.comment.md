@@ -29,9 +29,10 @@ A narrative alone shows the field and the section, with its text.
 
 An entry with no etymology hides both.
 
-## `public void DisplayChipOpen_StoredRecord_OpensThePanelItsKindPicks()`
+## `public void DisplayChipOpen_StoredRecord_RaisesTheTabItsKindPicks()`
 
-A stored situation, register or tag opens its own panel, and a link chip opens its entry.
+A stored situation, register or tag raises its own tab.
+A link chip raises its entry in the library tab.
 
 ## `public void DisplayChipOpen_UnsavedRecord_OpensNothing()`
 
@@ -48,11 +49,7 @@ Each card answers its list and place, and an unknown card or an empty view answe
 
 ## `private static bool TDisplayChipOpen(CDisplay area, object? chip, long? link, List<string> opened)`
 
-Clicks `chip` with seams that note each panel asked in `opened`.
-
-## `private static bool TDisplayOpenAdd(List<string> opened, string panel, long id)`
-
-Notes one panel asked with its id.
+Clicks `chip` while noting in `opened` each tab and record the chip raises for the navigation.
 
 ## `private static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)`
 

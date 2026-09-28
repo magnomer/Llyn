@@ -44,10 +44,6 @@ Whether either edit area holds modifications that have not been stored, as the s
 Ends the draft of the area in front, committing it or discarding it.
 The side verdict picks the editor's or the imprint's finish, and its answer is passed back up.
 
-## `internal bool QReferenceLeaveConfirm()`
-
-The panel's question before its unsaved work goes out of sight, asked by the window.
-
 ## `private void QShelfUpdate()`
 
 Refills the shelf from the rows the shelf reads, spliced so the list keeps its scroll position.
@@ -75,22 +71,14 @@ Nothing is read back from the screen.
 
 ## `internal void QReferenceVoyageShow(bool past, bool future)`
 
-Lights the two trail buttons from the stacks the window keeps.
-The window owns the trail, so the driver only shows what it is told.
+Lights the two trail buttons from the voyage state the navigation raises.
+The navigation owns the trail, so the driver only shows what it is told.
 
 ## `private void QReferenceRetreatHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail back one station.
+Steps the navigation's trail back one station.
 
 ## `private void QReferenceAdvanceHandle(object sender, RoutedEventArgs e)`
 
-Steps the window's trail forward one station.
+Steps the navigation's trail forward one station.
 
-## `internal long QReferenceVoyageRead()`
-
-The Source the panel shows, read off the shelf panel as the station of this panel.
-
-## `internal void QShelfSourceShow(long id)`
-
-Shows one Source by id, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.

@@ -32,7 +32,7 @@ Holds the etymology field, its section and the seam that hands the field its lan
 
 ## `internal void QLecternRouteIntroduce(PWindow host)`
 
-Holds the window, whose tabs a clicked chip, row or source link opens its record in.
+Holds the window, whose navigation a clicked incoming row opens its record through.
 
 ## `public void QLecternCardRefine()`
 
@@ -74,14 +74,14 @@ Hands the field its language, narrative and links, and sets the field's and the 
 
 ## `public void QLecternChipObserve(RoutedEventArgs e)`
 
-Hears a click on a card chip and hands `CDisplayChipOpen` what the chip carries, with the window's tabs.
+Hears a click on a card chip and hands `CDisplayChipOpen` what the chip carries.
 The chip is read off what was clicked, since a click leaving a template is re-sourced to its presenter.
 A link chip also hands the entry id it names.
 The click is marked handled only when a tab was asked to open.
 
 ## `public void QLecternIncomingObserve(RoutedEventArgs e)`
 
-Hears a click on an incoming row and hands its usage's own gate, `CUsageOpen`, the window's tabs.
+Hears a click on an incoming row and hands its usage to the navigation's gate `CNavigationUsageOpen`.
 
 ## `public void QLecternEtymonObserve(object parameter)`
 

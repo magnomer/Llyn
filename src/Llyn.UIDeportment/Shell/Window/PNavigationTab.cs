@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Llyn.Conduct;
-using Llyn.Core;
 
 namespace Llyn.UIDeportment;
 
@@ -37,119 +37,44 @@ public partial class PWindow
 
     private PTab PNavigationSettings => (PTab)_pWindowSurface.FindName(nameof(PNavigationSettings));
 
-    private void PNavigationHandle(object sender, RoutedEventArgs e)
+    private void PNavigationObserve(object sender, RoutedEventArgs e)
     {
-        if (PNavigationFind(sender) is not LTab chosen)
+        if (PNavigationFind(sender) is LTab chosen)
         {
-            return;
-        }
-
-        if (_cNavigation.CNavigationTabSelect(chosen.LTabMode, false, PNavigationLeaveCheck))
-        {
-            PNavigationApply(chosen.LTabMode);
+            _cNavigation.CNavigationTabSelect(chosen.LTabMode);
         }
     }
 
-    private void PNavigationAttach()
+    private void PNavigationIntroduce()
     {
-        LTab[] tabs = PNavigationTabRead();
-        _pNavigationTabs = tabs;
-        string[] modes = new string[tabs.Length];
-        for (int index = 0; index < modes.Length; index++)
-        {
-            modes[index] = tabs[index].LTabMode;
-        }
-
-        _cNavigation = CNavigation.CNavigationCreate(PWindowAtelier, modes);
+        _pNavigationTabs = PNavigationTabRead();
+        _cNavigation = PWindowAtelier.CAtelierNavigation;
+        _cNavigation.CNavigationChanged += PNavigationRefine;
+        _cNavigation.CNavigationArrived += PMentionMenuHide;
         _pWindowSurface.PreviewKeyDown += PVoyageKeyHandle;
         _pWindowSurface.PreviewMouseDown += PVoyageMouseHandle;
     }
 
-    private void PNavigationRestore()
+    private void PNavigationRefine(CNavigationState state)
     {
         foreach (LTab tab in _pNavigationTabs)
         {
-            tab.LTabButton.Visibility = PNavigationAllowCheck(tab.LTabMode) ? Visibility.Visible : Visibility.Collapsed;
+            tab.LTabButton.Visibility = state.CNavigationStateHidden.Contains(tab.LTabMode)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
 
-        if (_cNavigation.CNavigationTabOpen(PNavigationAllowCheck) is string restored)
+        if (state.CNavigationStateTab is string mode)
         {
-            PNavigationApply(restored);
-            PNavigationFind(restored).LTabScribe?.Invoke(
-                PWindowAtelier.CAtelierSplitRead());
-        }
-    }
-
-    private bool PNavigationShow(object button, long id)
-    {
-        (string tab, long station) = PVoyageStationRead();
-        if (PNavigationFind(button) is not LTab target)
-        {
-            return false;
+            foreach (LTab tab in _pNavigationTabs)
+            {
+                bool shown = string.Equals(tab.LTabMode, mode, StringComparison.Ordinal);
+                tab.LTabButton.SetValue(PTab.PTabChosenProperty, shown);
+                tab.LTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
-        if (!PNavigationArrivalShow(target.LTabMode, id))
-        {
-            return false;
-        }
-
-        _cVoyage.CVoyageStationAdd(tab, station);
-        PVoyageUpdate();
-        return true;
-    }
-
-    private void PNavigationShow(object button, Action arrival)
-    {
-        if (PNavigationFind(button) is not LTab target)
-        {
-            return;
-        }
-
-        if (!_cNavigation.CNavigationTabSelect(target.LTabMode, true, PNavigationLeaveCheck))
-        {
-            return;
-        }
-
-        PNavigationApply(target.LTabMode);
-        arrival();
-    }
-
-    private bool PNavigationArrivalShow(string mode, long id)
-    {
-        LTab target = PNavigationFind(mode);
-        if (target.LTabArrival is null)
-        {
-            return false;
-        }
-
-        if (!_cNavigation.CNavigationTabSelect(mode, true, PNavigationLeaveCheck))
-        {
-            return false;
-        }
-
-        PNavigationApply(mode);
-        target.LTabArrival(id);
-        return true;
-    }
-
-    private void PNavigationApply(string mode)
-    {
-        foreach (LTab tab in _pNavigationTabs)
-        {
-            bool shown = string.Equals(tab.LTabMode, mode, StringComparison.Ordinal);
-            tab.LTabButton.SetValue(PTab.PTabChosenProperty, shown);
-            tab.LTabPanel.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
-        }
-    }
-
-    private bool PNavigationLeaveCheck(string mode)
-    {
-        return PNavigationFind(mode).LTabLeave?.Invoke() ?? true;
-    }
-
-    private bool PNavigationAllowCheck(string mode)
-    {
-        return PNavigationFind(mode).LTabAllowed?.Invoke() ?? true;
+        PVoyageRefine(state.CNavigationStateVoyage);
     }
 
     private LTab? PNavigationFind(object? button)
@@ -165,19 +90,6 @@ public partial class PWindow
         return null;
     }
 
-    private LTab PNavigationFind(string mode)
-    {
-        foreach (LTab tab in _pNavigationTabs)
-        {
-            if (string.Equals(tab.LTabMode, mode, StringComparison.Ordinal))
-            {
-                return tab;
-            }
-        }
-
-        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-    }
-
     private LTab[] PNavigationTabRead()
     {
         return
@@ -185,129 +97,55 @@ public partial class PWindow
             new LTab("Input", PNavigationInput, PInput),
             new LTab("Library", PNavigationLibrary, PLibrary)
             {
-                LTabLeave = _qLibrary.QLibraryLeaveConfirm,
-                LTabScribe = _qLibrary.QLibraryScribeRestore,
-                LTabStation = _qLibrary.QLibraryVoyageRead,
-                LTabVoyage = _qLibrary.QLibraryVoyageShow,
-                LTabArrival = _qLibrary.QIndexEntryShow
+                LTabVoyage = _qLibrary.QLibraryVoyageShow
             },
             new LTab("Phonology", PNavigationPhonology, PPhonology)
             {
-                LTabLeave = _qPhonology.QPhonologyLeaveConfirm,
-                LTabScribe = _qPhonology.QPhonologyScribeRestore,
-                LTabStation = _qPhonology.QPhonologyVoyageRead,
-                LTabVoyage = _qPhonology.QPhonologyVoyageShow,
-                LTabArrival = _qPhonology.QInventoryEntryShow
+                LTabVoyage = _qPhonology.QPhonologyVoyageShow
             },
             new LTab("Xiesheng", PNavigationXiesheng, PXiesheng)
             {
-                LTabAllowed = _qXiesheng.QXieshengCheck,
-                LTabLeave = _qXiesheng.QXieshengLeaveConfirm,
-                LTabScribe = _qXiesheng.QXieshengScribeRestore,
-                LTabStation = _qXiesheng.QXieshengVoyageRead,
-                LTabVoyage = _qXiesheng.QXieshengVoyageShow,
-                LTabArrival = _qXiesheng.QKindredEntryShow
+                LTabVoyage = _qXiesheng.QXieshengVoyageShow
             },
             new LTab("Yunjing", PNavigationYunjing, PYunjing)
             {
-                LTabAllowed = PYunjing.PYunjingCheck,
-                LTabLeave = PYunjing.PYunjingLeaveConfirm,
-                LTabScribe = PYunjing.PYunjingScribeRestore,
-                LTabStation = PYunjing.PYunjingVoyageRead,
-                LTabVoyage = PYunjing.PYunjingVoyageShow,
-                LTabArrival = PYunjing.PXiaoyunEntryShow
+                LTabVoyage = PYunjing.PYunjingVoyageShow
             },
             new LTab("Taxonomy", PNavigationTaxonomy, PTaxonomy)
             {
-                LTabLeave = _qTaxonomy.QTaxonomyLeaveConfirm,
-                LTabScribe = _qTaxonomy.QTaxonomyScribeRestore,
-                LTabStation = _qTaxonomy.QTaxonomyVoyageRead,
-                LTabVoyage = _qTaxonomy.QTaxonomyVoyageShow,
-                LTabArrival = _qTaxonomy.QDirectoryTagShow
+                LTabVoyage = _qTaxonomy.QTaxonomyVoyageShow
             },
             new LTab("Tenor", PNavigationTenor, PTenor)
             {
-                LTabLeave = _qTenor.QTenorLeaveConfirm,
-                LTabScribe = _qTenor.QTenorScribeRestore,
-                LTabStation = _qTenor.QTenorVoyageRead,
-                LTabVoyage = _qTenor.QTenorVoyageShow,
-                LTabArrival = _qTenor.QGamutRegisterShow
+                LTabVoyage = _qTenor.QTenorVoyageShow
             },
             new LTab("Repertoire", PNavigationRepertoire, PRepertoire)
             {
-                LTabLeave = _qRepertoire.QRepertoireLeaveConfirm,
-                LTabScribe = _qRepertoire.QRepertoireScribeRestore,
-                LTabStation = _qRepertoire.QRepertoireVoyageRead,
-                LTabVoyage = _qRepertoire.QRepertoireVoyageShow,
-                LTabArrival = _qRepertoire.QAtlasSituationShow
+                LTabVoyage = _qRepertoire.QRepertoireVoyageShow
             },
             new LTab("Corpus", PNavigationCorpus, PCorpus)
             {
-                LTabLeave = _qCorpus.QCorpusLeaveConfirm,
-                LTabScribe = _qCorpus.QCorpusScribeRestore,
-                LTabStation = _qCorpus.QCorpusVoyageRead,
-                LTabVoyage = _qCorpus.QCorpusVoyageShow,
-                LTabArrival = _qCorpus.QAnthologyExampleShow
+                LTabVoyage = _qCorpus.QCorpusVoyageShow
             },
             new LTab("Reference", PNavigationSource, PReference)
             {
-                LTabLeave = _qReference.QReferenceLeaveConfirm,
-                LTabScribe = _qReference.QReferenceScribeRestore,
-                LTabStation = _qReference.QReferenceVoyageRead,
-                LTabVoyage = _qReference.QReferenceVoyageShow,
-                LTabArrival = _qReference.QShelfSourceShow
+                LTabVoyage = _qReference.QReferenceVoyageShow
             },
             new LTab("Guild", PNavigationGuild, PGuild)
             {
-                LTabLeave = _qGuild.QGuildLeaveConfirm,
-                LTabScribe = _qGuild.QGuildScribeRestore,
-                LTabStation = _qGuild.QGuildVoyageRead,
-                LTabVoyage = _qGuild.QGuildVoyageShow,
-                LTabArrival = _qGuild.QRollAuthorShow
+                LTabVoyage = _qGuild.QGuildVoyageShow
             },
             new LTab("Favorite", PNavigationFavorite, PFavorite)
             {
-                LTabLeave = _qFavorite.QFavoriteLeaveConfirm,
-                LTabScribe = _qFavorite.QFavoriteScribeRestore,
-                LTabStation = _qFavorite.QFavoriteVoyageRead,
-                LTabVoyage = _qFavorite.QFavoriteVoyageShow,
-                LTabArrival = _qFavorite.QRosterEntryShow
+                LTabVoyage = _qFavorite.QFavoriteVoyageShow
             },
             new LTab("Duplex", PNavigationDuplex, PDuplex),
             new LTab("Settings", PNavigationSettings, PSettings)
         ];
     }
 
-    internal void PVoyageRecord()
+    private void PVoyageRefine(CVoyageState state)
     {
-        (string tab, long id) = PVoyageStationRead();
-        _cVoyage.CVoyageStationAdd(tab, id);
-        PVoyageUpdate();
-    }
-
-    internal void PVoyageRetreatRun()
-    {
-        (string tab, long id) = PVoyageStationRead();
-        _cVoyage.CVoyageUndo(tab, id, PNavigationArrivalShow);
-        PVoyageUpdate();
-    }
-
-    internal void PVoyageAdvanceRun()
-    {
-        (string tab, long id) = PVoyageStationRead();
-        _cVoyage.CVoyageRedo(tab, id, PNavigationArrivalShow);
-        PVoyageUpdate();
-    }
-
-    private (string PVoyageTab, long PVoyageId) PVoyageStationRead()
-    {
-        LTab tab = PNavigationFind(_cNavigation.CNavigationTabRead());
-        return (tab.LTabMode, tab.LTabStation?.Invoke() ?? 0);
-    }
-
-    private void PVoyageUpdate()
-    {
-        CVoyageState state = _cVoyage.CVoyageRead();
         foreach (LTab tab in _pNavigationTabs)
         {
             tab.LTabVoyage?.Invoke(state.CVoyageStatePast, state.CVoyageStateFuture);
@@ -323,12 +161,12 @@ public partial class PWindow
 
         if (e.SystemKey == Key.Left)
         {
-            PVoyageRetreatRun();
+            _cNavigation.CNavigationStationUndo();
             e.Handled = true;
         }
         else if (e.SystemKey == Key.Right)
         {
-            PVoyageAdvanceRun();
+            _cNavigation.CNavigationStationRedo();
             e.Handled = true;
         }
     }
@@ -337,12 +175,12 @@ public partial class PWindow
     {
         if (e.ChangedButton == MouseButton.XButton1)
         {
-            PVoyageRetreatRun();
+            _cNavigation.CNavigationStationUndo();
             e.Handled = true;
         }
         else if (e.ChangedButton == MouseButton.XButton2)
         {
-            PVoyageAdvanceRun();
+            _cNavigation.CNavigationStationRedo();
             e.Handled = true;
         }
     }
@@ -350,37 +188,7 @@ public partial class PWindow
     internal bool PWindowEntryShow(long id)
     {
         PMentionMenuHide();
-        return PNavigationShow(PNavigationLibrary, id);
-    }
-
-    internal bool PWindowSituationShow(long id)
-    {
-        return PNavigationShow(PNavigationRepertoire, id);
-    }
-
-    internal bool PWindowTagShow(long id)
-    {
-        return PNavigationShow(PNavigationTaxonomy, id);
-    }
-
-    internal bool PWindowExampleShow(long id)
-    {
-        return PNavigationShow(PNavigationCorpus, id);
-    }
-
-    internal bool PWindowRegisterShow(long id)
-    {
-        return PNavigationShow(PNavigationTenor, id);
-    }
-
-    internal void PWindowDiweiShow(string language, string kind, string key)
-    {
-        PNavigationShow(PNavigationYunjing, () => PYunjing.PYunjingDiweiShow(language, kind, key));
-    }
-
-    internal void PWindowStemShow(string language, string? key)
-    {
-        PNavigationShow(PNavigationXiesheng, () => _qXiesheng.QXieshengStemShow(language, key));
+        return _cNavigation.CNavigationEntryOpen(id);
     }
 
     internal void PWindowMentionHandle(PMention anchor, CMentionResult result)

@@ -203,30 +203,18 @@ public sealed class QLecternCard
         ArgumentNullException.ThrowIfNull(e);
 
         e.Handled = _qLecternCardArea.CDisplayChipOpen(
-            QSender.QSenderSourceRead<object>(e),
-            QSender.QSenderSourceRead<LLinkChip>(e)?.LLinkChipId,
-            _qLecternCardHost.PWindowEntryShow,
-            _qLecternCardHost.PWindowSituationShow,
-            _qLecternCardHost.PWindowRegisterShow,
-            _qLecternCardHost.PWindowTagShow);
+            QSender.QSenderSourceRead<object>(e), QSender.QSenderSourceRead<LLinkChip>(e)?.LLinkChipId);
     }
 
     public void QLecternIncomingObserve(RoutedEventArgs e)
     {
-        QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage.CUsageOpen(
-            _qLecternCardHost.PWindowExampleShow,
-            _qLecternCardHost.PWindowEntryShow);
+        _qLecternCardHost.PWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
+            QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage);
     }
 
     public void QLecternEtymonObserve(object parameter)
     {
-        _qLecternCardArea.CDisplayChipOpen(
-            null,
-            parameter as long?,
-            _qLecternCardHost.PWindowEntryShow,
-            _qLecternCardHost.PWindowSituationShow,
-            _qLecternCardHost.PWindowRegisterShow,
-            _qLecternCardHost.PWindowTagShow);
+        _qLecternCardArea.CDisplayChipOpen(null, parameter as long?);
     }
 
     public void QLecternMentionObserve<QLecternAnchor>(

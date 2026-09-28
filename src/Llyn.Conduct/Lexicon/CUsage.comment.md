@@ -23,9 +23,3 @@ Both drivers word the place by it, so neither picks the key.
 ## `public string? CUsageTitleKey`
 
 The key of the unknown mark while the title is uncertain, and null while the title's own text stands.
-
-## `public void CUsageOpen(Func<long, bool> exampleSeam, Func<long, bool> entrySeam)`
-
-The gate for a citing place the user clicked, which opens the place it names.
-A place that quotes an Example opens the Example, and any other place opens its Entry.
-The two seams switch the tab, which only the surface does until `CNavigation` owns it.

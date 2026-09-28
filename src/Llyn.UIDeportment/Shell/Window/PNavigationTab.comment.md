@@ -3,88 +3,42 @@
 ## `public partial class PWindow`
 
 The window's buttons and the jumps panels ask for.
-Conduct's `CNavigation` decides which panel shows, and this part marks the button and shows the panel.
-The tabs are held here with their buttons and hooks, and the navigation knows each only by key.
+Conduct's `CNavigation` decides which tab shows and keeps the voyage, and this part paints what it raises.
+The tabs are held here only with their buttons, panels and the two Veneer hooks each panel hands over.
 
 ## `private PTab PNavigationInput`
 
 The tab buttons are read through the loaded window's name scope.
 
-## `private void PNavigationHandle(object sender, RoutedEventArgs e)`
+## `private void PNavigationObserve(object sender, RoutedEventArgs e)`
 
 A tab button click, handed to the navigation's select gate as the key of the button pressed.
-Answers nothing for an unknown button or when the open tab refuses to be left.
+An unknown button sends nothing.
+The navigation raises the change it made, so nothing is painted here.
 
-## `private void PNavigationAttach()`
+## `private void PNavigationIntroduce()`
 
-Reads the tabs and builds Conduct's navigation over their keys.
+Reads the tabs and takes the atelier's navigation, whose changes this part paints.
+A landing only closes the mention menu, since the tab's area opens the record itself.
 It hooks the window's key and mouse previews to the voyage shortcuts.
 
-## `private void PNavigationRestore()`
+## `private void PNavigationRefine(CNavigationState state)`
 
-Shows every tab button unless its tab is not allowed.
-Then it shows the tab the navigation's startup gate answers, which asks no tab to be left.
-The restored tab's scribe takes the posture's split state.
-
-## `private bool PNavigationShow(object button, long id)`
-
-Jumps to a record in the tab of the given button.
-The station is read before anything moves.
-It is recorded only when the jump went, so a refused jump leaves no station.
-
-## `private void PNavigationShow(object button, Action arrival)`
-
-Jumps to the tab of the given button and records no station.
-The arrival runs only when the switch succeeds.
-
-## `private bool PNavigationArrivalShow(string mode, long id)`
-
-Opens the tab of `mode` and hands it the record id.
-Answers false for a tab without arrival or a refused switch.
-It records no station, so the voyage walks through it freely.
-
-## `private void PNavigationApply(string mode)`
-
-Marks the chosen button and shows only its panel.
-
-## `private bool PNavigationLeaveCheck(string mode)`
-
-The leave seam: whether the tab of `mode` may be left.
-
-## `private bool PNavigationAllowCheck(string mode)`
-
-The allow seam: whether the tab of `mode` is offered.
+Hides the tabs the session does not offer, then marks the open tab's button and shows only its panel.
+A state naming no tab leaves the open tab as it is.
+The voyage buttons are lit last.
 
 ## `private LTab? PNavigationFind(object? button)`
 
 The tab owning the given button, or null.
-The overload taking a key answers the tab of that key.
 
 ## `private LTab[] PNavigationTabRead()`
 
-The tabs of the window, each with the name it is stored under.
-The first tab is the one the window opens on.
-Input, dual panel and settings hold no station and ask nothing.
-Xiesheng and yunjing are offered only while a pack carries their tables.
+The tabs of the window, each with the key the navigation names it by.
+The panels with a record list hand their voyage buttons.
+Input, dual panel and settings hand none.
 
-## `internal void PVoyageRecord()`
-
-Forwards a panel's own row click to the voyage, so the place left is recorded.
-
-## `internal void PVoyageRetreatRun()`
-
-Forwards a panel's retreat button to the voyage.
-
-## `internal void PVoyageAdvanceRun()`
-
-Forwards a panel's advance button to the voyage.
-
-## `private (string PVoyageTab, long PVoyageId) PVoyageStationRead()`
-
-The station of the open tab, which comes from the posture.
-A tab without a station reader, or an id of zero, says there is nothing to come back to.
-
-## `private void PVoyageUpdate()`
+## `private void PVoyageRefine(CVoyageState state)`
 
 Enables each tab's pair only while the matching trail has somewhere to go.
 Every tab is told, because any of them may be the one on screen.
@@ -100,37 +54,8 @@ The two side buttons of a mouse step back and forward, as they do in a browser.
 
 ## `internal bool PWindowEntryShow(long id)`
 
-Switches to the library panel and opens one Entry there.
-Any open mention menu is closed first.
+Closes any open mention menu and opens one Entry through the navigation's gate.
 The answer says whether the jump went.
-
-## `internal bool PWindowSituationShow(long id)`
-
-Switches to the repertoire panel and opens one Situation there.
-
-## `internal bool PWindowTagShow(long id)`
-
-Switches to the taxonomy panel and browses by one tag, named by its id.
-
-## `internal bool PWindowExampleShow(long id)`
-
-Switches to the corpus panel and opens one Example there.
-
-## `internal bool PWindowRegisterShow(long id)`
-
-Switches to the tenor panel and opens one Register there.
-
-## `internal void PWindowDiweiShow(string language, string kind, string key)`
-
-Switches to the rime table and chooses the category a fanqie link names.
-An unsaved rime table draft is confirmed before the switch.
-It leaves no voyage station.
-
-## `internal void PWindowStemShow(string language, string? key)`
-
-Switches to the xiesheng panel and opens the series a chip names.
-An unsaved draft in the panel stops the switch, as it does for a rime-table cell.
-It leaves no voyage station.
 
 ## `internal void PWindowMentionHandle(PMention anchor, CMentionResult result)`
 

@@ -41,13 +41,15 @@ public sealed class CEditor
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
-        return new CEditor(
+        CEditor editor = new(
             atelier.CAtelierDraftPort,
             atelier.CAtelierEntryPort,
             atelier.CAtelierPhonologyPort,
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy);
+        editor.CEditorDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        return editor;
     }
 
     public event Action<CEntryDraft>? CEditorDraftChanged;

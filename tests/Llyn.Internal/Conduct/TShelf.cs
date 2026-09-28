@@ -22,8 +22,9 @@ public sealed class TShelf
         CColophon? shown = null;
         shelf.CShelfColophonChanged += colophon => shown = colophon;
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        shelf.CShelfReferenceSelect(book.LReferenceId, () => recorded++);
+        shelf.CShelfReferenceSelect(book.LReferenceId);
 
         Assert.Equal(1, recorded);
         Assert.True(shelf.CShelfColophonShown);
@@ -47,7 +48,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
         List<CEntryDraft> shown = [];
         shelf.CShelfEditor.CEditorDraftChanged += shown.Add;
 
@@ -87,7 +88,7 @@ public sealed class TShelf
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
         LEntry water = TShelfEntrySave(engine, "water");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
 
         shelf.CShelfEntrySelect(water.LEntryId);
 
@@ -117,7 +118,7 @@ public sealed class TShelf
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, []));
         LReference book = engine.TEngineCitationCreate("Book");
         LEntry water = TShelfEntrySave(engine, "water");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfEntrySelect(water.LEntryId);
 
         shelf.CShelfReferenceDelete();
@@ -125,7 +126,7 @@ public sealed class TShelf
         Assert.Contains(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
 
         shelf.CShelfFootnote.CFootnotePanel.CPanelScribeToggle(false);
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfReferenceDelete();
 
         Assert.DoesNotContain(shelf.CShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
@@ -178,7 +179,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
 
         shelf.CShelfQuerySet("zzz");
 
@@ -217,8 +218,9 @@ public sealed class TShelf
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        shelf.CShelfReferenceSelect(book.LReferenceId, () => recorded++);
+        shelf.CShelfReferenceSelect(book.LReferenceId);
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
@@ -238,7 +240,7 @@ public sealed class TShelf
         shelf.CShelfReferenceCreate();
         shelf.CShelfImprint.CImprintTitleSet("Tome");
 
-        Assert.True(shelf.CShelfLeaveConfirm());
+        Assert.True(shelf.TShelfLeaveConfirm());
 
         Assert.Equal(["Leave"], asked);
         Assert.False(shelf.CShelfChangeRead());
@@ -256,7 +258,7 @@ public sealed class TShelf
         List<string> asked = [];
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
 
-        Assert.True(shelf.CShelfLeaveConfirm());
+        Assert.True(shelf.TShelfLeaveConfirm());
         Assert.Empty(asked);
     }
 
@@ -313,7 +315,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
         shelf.CShelfReferenceCreate();
 
         Assert.True(shelf.CShelfEditor.CEditorDesk.CDeskHeld);
@@ -352,7 +354,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
 
         shelf.CShelfScribeToggle(true);
 
@@ -375,7 +377,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceSelect(book.LReferenceId, static () => { });
+        shelf.CShelfReferenceSelect(book.LReferenceId);
         List<CColophon> shown = [];
         shelf.CShelfColophonChanged += shown.Add;
 
@@ -393,7 +395,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         LReference book = engine.TEngineCitationCreate("Book");
-        shelf.CShelfReferenceOpen(book.LReferenceId);
+        shelf.TShelfReferenceOpen(book.LReferenceId);
 
         shelf.CShelfReferenceClose();
 

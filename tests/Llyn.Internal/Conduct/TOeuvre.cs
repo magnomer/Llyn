@@ -57,7 +57,7 @@ public sealed class TOeuvre
         oeuvre.COeuvreRowsRead();
 
         Assert.Equal(1, closed);
-        Assert.Equal(0, oeuvre.COeuvrePanel.CPanelChosenRead());
+        Assert.Equal(0, oeuvre.COeuvrePanel.TPanelChosenRead());
     }
 
     [Fact]

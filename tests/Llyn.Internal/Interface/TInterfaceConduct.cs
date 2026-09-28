@@ -369,4 +369,62 @@ internal static class TInterfaceConduct
                 return null;
             },
         });
+
+    internal static long TPanelChosenRead(this CPanel panel) => panel.LPanelChosenRead();
+
+    internal static void TPanelScribeRestore(this CPanel panel, bool editing) => panel.LPanelScribeRestore(editing);
+
+    internal static bool TAtelierSplitRead(CAtelier atelier) => atelier.LAtelierSplitRead();
+
+    internal static void TGuildScribeRestore(this CGuild guild, bool editing) => guild.LGuildScribeRestore(editing);
+
+    internal static bool TRepertoireLeaveConfirm(this CRepertoire repertoire) =>
+        repertoire.LRepertoireLeaveConfirm(true);
+
+    internal static bool TShelfLeaveConfirm(this CShelf shelf) => shelf.LShelfLeaveConfirm();
+
+    internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();
+
+    internal static void TVoyageStationAdd(this CVoyage voyage, string tab, long id) =>
+        voyage.LVoyageStationAdd(tab, id);
+
+    internal static bool TVoyageUndo(this CVoyage voyage, string tab, long id, Func<string, long, bool> show) =>
+        voyage.LVoyageUndo(tab, id, show);
+
+    internal static bool TVoyageRedo(this CVoyage voyage, string tab, long id, Func<string, long, bool> show) =>
+        voyage.LVoyageRedo(tab, id, show);
+
+    internal static void TNavigationTabAdd(
+        this CNavigation navigation,
+        string tab,
+        Func<bool> leave,
+        Func<long> station,
+        Action<bool> scribe,
+        Action<long> arrival,
+        Func<bool>? allowed = null) =>
+        navigation.LNavigationTabAdd(tab, leave, station, scribe, arrival, allowed);
+
+    internal static void TNavigationStationAdd(this CNavigation navigation) => navigation.LNavigationStationAdd();
+
+    internal static void TNavigationDiweiAttach(this CNavigation navigation, Action<string, string, string> open) =>
+        navigation.LNavigationDiweiAttach(open);
+
+    internal static void TCorpusExampleOpen(this CCorpus corpus, long id) => corpus.LCorpusExampleOpen(id);
+
+    internal static void TGuildAuthorOpen(this CGuild guild, long id) => guild.LGuildAuthorOpen(id);
+
+    internal static void TRepertoireSituationOpen(this CRepertoire repertoire, long id) =>
+        repertoire.LRepertoireSituationOpen(id);
+
+    internal static void TShelfReferenceOpen(this CShelf shelf, long id) => shelf.LShelfReferenceOpen(id);
+
+    internal static void TXieshengStemOpen(this CXiesheng xiesheng, string language, string? key) =>
+        xiesheng.LXieshengStemOpen(language, key);
+
+    internal static void TYunjingDiweiOpen(this CYunjing yunjing, string language, string kind, string key) =>
+        yunjing.LYunjingDiweiOpen(language, kind, key);
+
+    internal static void TTaxonomyTagOpen(this CTaxonomy taxonomy, long id) => taxonomy.LTaxonomyTagOpen(id);
+
+    internal static void TTenorRegisterOpen(this CTenor tenor, long id) => tenor.LTenorRegisterOpen(id);
 }

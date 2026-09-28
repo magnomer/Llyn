@@ -28,7 +28,19 @@ The entry editor on the cohort side, which the driver wraps for its editor page.
 
 The shared panel state over the cohort vista: the chosen entry, the scribe mode, the bin and the leave guard.
 
-## `public long? CTenorChosen`
+## `public event Action? CTenorRegisterOpened;`
+
+Raised when an arrival chooses a Register, so the driver empties both searches and lists again.
+
+## `public void CTenorRegisterToggle(long id)`
+
+A click on a row: records the station it leaves, then toggles the Register.
+
+## `internal void LTenorRegisterOpen(long id)`
+
+The navigation's arrival: chooses the Register, then raises `CTenorRegisterOpened` so the driver empties its searches.
+
+## `internal long? LTenorChosen`
 
 The Register the register vista has chosen, or null while none is, which the voyage records.
 

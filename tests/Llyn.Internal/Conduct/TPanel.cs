@@ -81,7 +81,7 @@ public sealed class TPanel
 
         panel.CPanelScribeToggle(true);
 
-        Assert.Equal([panel.CPanelChosenRead()], edited);
+        Assert.Equal([panel.TPanelChosenRead()], edited);
         Assert.True(panel.CPanelScribeChecked);
     }
 
@@ -94,7 +94,7 @@ public sealed class TPanel
 
         panel.CPanelEntryCreate();
 
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
         Assert.True(panel.CPanelEditing);
         Assert.True(panel.CPanelModeEnabled);
         Assert.False(panel.CPanelBinEnabled);
@@ -106,12 +106,12 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => true);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         panel.CPanelScribeToggle(true);
 
         panel.CPanelRowSelect(chosen + 100);
 
-        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(chosen, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         panel.CPanelEntryClose();
         int changed = 0;
         panel.CPanelChanged += () => changed++;
@@ -128,7 +128,7 @@ public sealed class TPanel
         bool opened = panel.CPanelRowOpen(chosen);
 
         Assert.True(opened);
-        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(chosen, panel.TPanelChosenRead());
         Assert.Equal(1, changed);
     }
 
@@ -139,14 +139,14 @@ public sealed class TPanel
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
         CPanel panel = TPanelPrepare(engine, null, asked, [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         int cleared = 0;
         panel.CPanelCleared += () => cleared++;
 
         bool opened = panel.CPanelRowOpen(chosen + 100);
 
         Assert.False(opened);
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
         Assert.Equal(1, cleared);
         Assert.Empty(asked);
     }
@@ -157,7 +157,7 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         panel.CPanelEntryCreate();
         List<long> edited = [];
         panel.CPanelEdited += edited.Add;
@@ -174,14 +174,14 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         int changed = 0;
         panel.CPanelChanged += () => changed++;
 
         panel.CPanelDraftResonate();
 
         Assert.Equal(1, changed);
-        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(chosen, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -190,14 +190,14 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
-        engine.TEngineEntryDelete(panel.CPanelChosenRead());
+        engine.TEngineEntryDelete(panel.TPanelChosenRead());
         int cleared = 0;
         panel.CPanelCleared += () => cleared++;
 
         panel.CPanelDraftResonate();
 
         Assert.Equal(1, cleared);
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -211,7 +211,7 @@ public sealed class TPanel
         panel.CPanelRowsChanged += () => rows++;
         panel.CPanelChanged += () => changed++;
 
-        panel.CPanelEntryResonate(new CBulletin(panel.CPanelChosenRead(), true));
+        panel.CPanelEntryResonate(new CBulletin(panel.TPanelChosenRead(), true));
 
         Assert.Equal(1, rows);
         Assert.Equal(1, changed);
@@ -224,12 +224,12 @@ public sealed class TPanel
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
         CPanel panel = TPanelPrepare(engine, false, asked, [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
 
         panel.CPanelEntryDelete();
 
         Assert.Equal(["Scribe.DeleteConfirm"], asked);
-        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(chosen, panel.TPanelChosenRead());
         Assert.NotNull(engine.TEngineEntryLoad(chosen));
     }
 
@@ -239,11 +239,11 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
 
         panel.CPanelEntryDelete();
 
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
         Assert.False(panel.CPanelBinEnabled);
         Assert.Null(engine.TEngineEntryLoad(chosen));
     }
@@ -255,7 +255,7 @@ public sealed class TPanel
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
         CPanel panel = TPanelPrepare(engine, true, asked, [], null, () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
 
         panel.CPanelEntryDelete();
 
@@ -281,7 +281,7 @@ public sealed class TPanel
         panel.CPanelEntryDelete();
 
         Assert.Equal(["Guild.DetachConfirm"], asked);
-        Assert.Equal(ada.LAuthorId, panel.CPanelChosenRead());
+        Assert.Equal(ada.LAuthorId, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -290,12 +290,12 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         panel.CPanelEntryCreate();
 
         panel.CPanelEntrySelect(new CBulletin(chosen, true));
 
-        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(chosen, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -304,12 +304,12 @@ public sealed class TPanel
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CPanel panel = TPanelPrepare(engine, true, [], [], "Scribe", () => false);
-        long chosen = panel.CPanelChosenRead();
+        long chosen = panel.TPanelChosenRead();
         panel.CPanelEntryClose();
 
         panel.CPanelEntrySelect(new CBulletin(chosen, true));
 
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
     }
 
     [Fact]
@@ -318,10 +318,10 @@ public sealed class TPanel
         CPanel panel = TInterfaceConduct.TPanelCreate(
             TInterfaceConduct.TEnvoyCreate(true, []), "Scribe", static () => false, static _ => true);
 
-        panel.CPanelScribeRestore(true);
+        panel.TPanelScribeRestore(true);
 
         Assert.False(panel.CPanelEditing);
-        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(0, panel.TPanelChosenRead());
     }
 
     [Fact]

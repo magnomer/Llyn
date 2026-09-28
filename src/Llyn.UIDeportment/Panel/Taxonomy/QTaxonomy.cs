@@ -135,6 +135,7 @@ internal sealed partial class QTaxonomy
     {
         _qTaxonomyHost = host;
         _cTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(QTaxonomyShownCheck, host.PWindowEnvoy);
+        _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
         _lEditor = new LEditor(_cTaxonomy.CTaxonomyEditor);
         CPanel panel = _cTaxonomy.CTaxonomyPanel;
         QLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay, panel);
@@ -203,12 +204,12 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qTaxonomyHost.PVoyageRetreatRun();
+        _qTaxonomyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QTaxonomyAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qTaxonomyHost.PVoyageAdvanceRun();
+        _qTaxonomyHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QTaxonomyUndoHandle(object sender, RoutedEventArgs e)

@@ -47,7 +47,7 @@ public sealed class TXiesheng
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
 
-        Assert.True(xiesheng.CXieshengAllowed);
+        Assert.True(xiesheng.LXieshengAllowed);
         Assert.Empty(xiesheng.CXieshengGroveRead());
         Assert.True(xiesheng.CXieshengGroveEmpty);
         Assert.Equal("Xiesheng.GroveEmpty", xiesheng.CXieshengGroveKey);
@@ -72,7 +72,7 @@ public sealed class TXiesheng
         int changed = 0;
         xiesheng.CXieshengChanged += () => changed++;
 
-        xiesheng.CXieshengStemOpen(language, "龍");
+        xiesheng.TXieshengStemOpen(language, "龍");
 
         Assert.Equal(1, changed);
         CStem row = Assert.Single(xiesheng.CXieshengGroveRead());
@@ -98,9 +98,9 @@ public sealed class TXiesheng
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
 
-        xiesheng.CXieshengStemOpen(language, null);
-        xiesheng.CXieshengStemOpen(language, string.Empty);
-        xiesheng.CXieshengStemOpen(language, "虎");
+        xiesheng.TXieshengStemOpen(language, null);
+        xiesheng.TXieshengStemOpen(language, string.Empty);
+        xiesheng.TXieshengStemOpen(language, "虎");
 
         Assert.DoesNotContain(xiesheng.CXieshengGroveRead(), static row => row.CStemChosen);
         Assert.False(xiesheng.CXieshengStemShown);
@@ -116,7 +116,7 @@ public sealed class TXiesheng
         string language = pack.TLanguageFixtureName;
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
-        xiesheng.CXieshengStemOpen(language, "龍");
+        xiesheng.TXieshengStemOpen(language, "龍");
         long stem = Assert.Single(xiesheng.CXieshengGroveRead()).CStemId;
 
         xiesheng.CXieshengStemSelect(stem);
@@ -135,7 +135,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengGlyphSelect_StemShown_RaisesTheGlyphEntryInTheSeriesLanguage()
+    public async Task XieshengGlyphSelect_StemShown_OpensTheGlyphEntryInTheSeriesLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -145,13 +145,14 @@ public sealed class TXiesheng
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
         List<long> chosen = [];
-        xiesheng.CXieshengGlyphChosen += chosen.Add;
+        atelier.CAtelierNavigation.TNavigationTabAdd(
+            "Library", static () => true, static () => 0, static _ => { }, chosen.Add);
 
         xiesheng.CXieshengGlyphSelect("龍");
 
         Assert.Empty(chosen);
 
-        xiesheng.CXieshengStemOpen(language, "龍");
+        xiesheng.TXieshengStemOpen(language, "龍");
         xiesheng.CXieshengGlyphSelect(string.Empty);
         xiesheng.CXieshengGlyphSelect("龍");
 
@@ -168,7 +169,7 @@ public sealed class TXiesheng
         string language = pack.TLanguageFixtureName;
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
-        xiesheng.CXieshengStemOpen(language, "龍");
+        xiesheng.TXieshengStemOpen(language, "龍");
 
         xiesheng.CXieshengKindredFind("zzz");
 
@@ -216,7 +217,7 @@ public sealed class TXiesheng
 
         Assert.False(File.Exists(path));
 
-        xiesheng.CXieshengStemOpen(language, "龍");
+        xiesheng.TXieshengStemOpen(language, "龍");
         xiesheng.CXieshengPanel.CPanelRowSelect(entry.LEntryId);
         await xiesheng.CXieshengPortraitExport();
 

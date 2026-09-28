@@ -21,6 +21,7 @@ A fresh store on the input tab reopens a blank draft, while every other store re
 Builds an entry editor over the atelier's ports, asking its questions through `envoy`.
 Each tab that edits entries holds its own, so no driver ever holds a port for it.
 Building a session is composition, not a user action, so it is no gate.
+The editor's display opens what it is asked to through the atelier's navigation.
 
 ## `public event Action<CEntryDraft>? CEditorDraftChanged;`
 

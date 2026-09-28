@@ -11,6 +11,7 @@ The driver owns the match list, the keys, the focus and the lectern that paints 
 
 Takes the atelier the side reads through and the envoy that reports a failed load.
 The reading display is built here, since a side has no editor to own it.
+It opens what it is asked to through the atelier's navigation.
 
 ## `public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy)`
 

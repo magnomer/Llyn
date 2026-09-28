@@ -142,8 +142,8 @@ internal sealed partial class QTenor
             return;
         }
 
-        _qTenorHost.PVoyageRecord();
-        QGamutSelect(item.QGamutItemChosen ? null : item.QGamutItemId);
+        _cTenor.CTenorRegisterToggle(item.QGamutItemId);
+        QGamutFind();
     }
 
     private void QGamutApply(FrameworkElement container, object item, string? _)
@@ -184,17 +184,16 @@ internal sealed partial class QTenor
         }
     }
 
-    private void QGamutSelect(long? id)
+    private void QGamutRegisterShow(long id)
     {
         _cTenor.CTenorRegisterSelect(id);
-        QGamutFind();
+        QGamutRegisterRefine();
     }
 
-    internal void QGamutRegisterShow(long id)
+    private void QGamutRegisterRefine()
     {
         QSounding.Text = string.Empty;
         QQuest.Text = string.Empty;
-        _cTenor.CTenorRegisterSelect(id);
         QGamutFind();
     }
 
@@ -247,19 +246,9 @@ internal sealed partial class QTenor
         _cTenor.CTenorPanel.CPanelScribeToggle(ReferenceEquals(sender, QTenorScribe));
     }
 
-    internal void QTenorScribeRestore(bool editing)
-    {
-        _cTenor.CTenorPanel.CPanelScribeRestore(editing);
-    }
-
     internal bool QTenorLeaveConfirm()
     {
         return _cTenor.CTenorPanel.CPanelLeaveConfirm();
-    }
-
-    internal long QTenorVoyageRead()
-    {
-        return _cTenor.CTenorChosen ?? 0;
     }
 
     private void QTenorStoreHandle(object sender, RoutedEventArgs e)

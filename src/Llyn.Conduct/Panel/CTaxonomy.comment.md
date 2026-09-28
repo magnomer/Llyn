@@ -28,7 +28,19 @@ The entry editor on the membership side, which the driver wraps for its editor p
 
 The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
 
-## `public long? CTaxonomyChosen`
+## `public event Action? CTaxonomyTagOpened;`
+
+Raised when an arrival chooses a Tag, so the driver empties both searches and lists again.
+
+## `public void CTaxonomyTagToggle(long id)`
+
+A click on a row: records the station it leaves, then toggles the Tag.
+
+## `internal void LTaxonomyTagOpen(long id)`
+
+The navigation's arrival: chooses the Tag, then raises `CTaxonomyTagOpened` so the driver empties its searches.
+
+## `internal long? LTaxonomyChosen`
 
 The Tag the tag vista has chosen, or null while none is, which the voyage records.
 

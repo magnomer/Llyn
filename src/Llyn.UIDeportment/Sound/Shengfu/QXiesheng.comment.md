@@ -29,10 +29,6 @@ It then attaches the reader, the series page and the editor.
 
 Enables the save button while the editor holds something storable.
 
-## `internal bool QXieshengCheck()`
-
-True while the tab may be shown at all, so the navigation can hide its button.
-
 ## `internal void QXieshengVistaRestore()`
 
 Attaches the observers, and builds the ordering menu of the series column.
@@ -50,17 +46,9 @@ Closes the held draft, saving it or dropping it, as the shell asks while leaving
 
 True while the panel holds an unsaved change.
 
-## `internal bool QXieshengLeaveConfirm()`
+## `private void QLodestarRefine()`
 
-Asks the user about an unsaved change before the panel is left.
-
-## `internal void QXieshengStemShow(string language, string? key)`
-
-Opens that series, clearing the column's query first so the series can be listed.
-
-## `internal void QXieshengScribeRestore(bool editing)`
-
-Restores the editing side the posture was saved in.
+Answers the area's opening of a series a chip names by emptying the column's query field.
 
 ## `internal void QXieshengClose()`
 
@@ -109,16 +97,7 @@ Chooses the series of the pressed row.
 
 ## `private void QKindredHandle(object sender, RoutedEventArgs e)`
 
-Records the voyage station and opens the entry of the pressed row.
-
-## `internal long QXieshengVoyageRead()`
-
-The entry the panel would return to, as the shell records a station.
-
-## `internal void QKindredEntryShow(long id)`
-
-Opens that entry in the panel, for a jump the window makes from another panel.
-It asks nothing, because the window asks before it jumps.
+Hands the pressed row to the panel's row gate, which records the voyage station and opens it.
 
 ## `private void QXieshengFreshHandle(object sender, RoutedEventArgs e)`
 

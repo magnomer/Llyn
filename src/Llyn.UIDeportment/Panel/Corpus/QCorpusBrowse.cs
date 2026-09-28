@@ -155,8 +155,7 @@ internal sealed partial class QCorpus
 
     private void QAnthologyHandle(object sender, RoutedEventArgs e)
     {
-        _cCorpus.CCorpusExampleSelect(
-            QSender.QSenderSourceRead<QAnthologyItem>(e)?.QAnthologyItemId, _qCorpusHost.PVoyageRecord);
+        _cCorpus.CCorpusExampleSelect(QSender.QSenderSourceRead<QAnthologyItem>(e)?.QAnthologyItemId);
     }
 
     private void QAnthologyApply(FrameworkElement container, object item, string? _)
@@ -202,11 +201,6 @@ internal sealed partial class QCorpus
         }
     }
 
-    internal void QAnthologyExampleShow(long id)
-    {
-        _cCorpus.CCorpusExampleOpen(id);
-    }
-
     private void QCorpusBinHandle(object sender, RoutedEventArgs e)
     {
         _cCorpus.CCorpusExampleDelete();
@@ -242,21 +236,6 @@ internal sealed partial class QCorpus
         _cCorpus.CCorpusScribeToggle(true);
     }
 
-    internal void QCorpusScribeRestore(bool editing)
-    {
-        _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelScribeRestore(editing);
-    }
-
-    internal bool QCorpusLeaveConfirm()
-    {
-        return _cCorpus.CCorpusLeaveConfirm();
-    }
-
-    internal long QCorpusVoyageRead()
-    {
-        return _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelChosenRead();
-    }
-
     internal void QCorpusVoyageShow(bool past, bool future)
     {
         QCorpusEarlier.IsEnabled = past;
@@ -265,11 +244,11 @@ internal sealed partial class QCorpus
 
     private void QCorpusRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qCorpusHost.PVoyageRetreatRun();
+        _qCorpusHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QCorpusAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qCorpusHost.PVoyageAdvanceRun();
+        _qCorpusHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 }

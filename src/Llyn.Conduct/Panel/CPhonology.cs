@@ -44,6 +44,13 @@ public sealed class CPhonology
             shownSeam);
         CPhonologyPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CPhonologyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Phonology",
+            CPhonologyPanel.CPanelLeaveConfirm,
+            CPhonologyPanel.LPanelChosenRead,
+            CPhonologyPanel.LPanelScribeRestore,
+            id => CPhonologyPanel.CPanelRowOpen(id));
+        CPhonologyPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
     public static CPhonology CPhonologyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

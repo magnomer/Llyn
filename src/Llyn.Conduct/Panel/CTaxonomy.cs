@@ -39,6 +39,12 @@ public sealed class CTaxonomy
             envoy, "Tag.LoadFailed", "Scribe", editor.CEditorDesk.CDeskChangeCheck, editor.CEditorFinish, shownSeam);
         CTaxonomyPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         CTaxonomyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Taxonomy",
+            CTaxonomyPanel.CPanelLeaveConfirm,
+            () => LTaxonomyChosen ?? 0,
+            CTaxonomyPanel.LPanelScribeRestore,
+            LTaxonomyTagOpen);
     }
 
     public static CTaxonomy CTaxonomyCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -50,11 +56,13 @@ public sealed class CTaxonomy
 
     public CPanel CTaxonomyPanel { get; }
 
-    public long? CTaxonomyChosen => _cTaxonomyVista?.LVistaChosen;
+    public event Action? CTaxonomyTagOpened;
+
+    internal long? LTaxonomyChosen => _cTaxonomyVista?.LVistaChosen;
 
     public bool CTaxonomyFiltered => _cTaxonomyVista?.LVistaFiltered ?? false;
 
-    public bool CTaxonomyCoinageAllowed => CTaxonomyChosen is null && !CTaxonomyPanel.CPanelBinEnabled;
+    public bool CTaxonomyCoinageAllowed => LTaxonomyChosen is null && !CTaxonomyPanel.CPanelBinEnabled;
 
     public string CTaxonomyEmptyKey =>
         _cTaxonomyMembership?.LVistaQueried ?? false ? "Tag.Unmatched" : "Tag.Vacant";
@@ -114,6 +122,18 @@ public sealed class CTaxonomy
         _cTaxonomyVista?.LVistaSelect(id);
     }
 
+    public void CTaxonomyTagToggle(long id)
+    {
+        _cTaxonomyAtelier.CAtelierNavigation.LNavigationStationAdd();
+        _cTaxonomyVista?.LVistaToggle(id);
+    }
+
+    internal void LTaxonomyTagOpen(long id)
+    {
+        CTaxonomyTagSelect(id);
+        CTaxonomyTagOpened?.Invoke();
+    }
+
     public IReadOnlyList<CCatalogTag> CTaxonomyRowsRead()
     {
         return _cTaxonomyVista is LVista vista
@@ -143,7 +163,7 @@ public sealed class CTaxonomy
 
     public void CTaxonomyEntryCreate()
     {
-        long? chosen = CTaxonomyChosen;
+        long? chosen = LTaxonomyChosen;
         CTaxonomyPanel.CPanelFreshOpen();
         CTaxonomyEditor.CEditorDesk.LDeskMembershipStart(chosen);
     }

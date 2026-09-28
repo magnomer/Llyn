@@ -27,6 +27,7 @@ public sealed class CWing
             atelier.CAtelierSettingsPort,
             atelier.CAtelierMediaPort,
             envoy);
+        CWingDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
     }
 
     public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy)

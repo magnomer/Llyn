@@ -15,10 +15,10 @@ It also answers its linked cells and the pack's glyph font.
 
 With nothing open, or for a language without a glyph section, the row is hidden and empty.
 
-## `public void DisplayGlyphOpen_LinkedCell_OpensTheCharacterEntryThroughTheSeam()`
+## `public void DisplayGlyphOpen_LinkedCell_RaisesTheCharacterEntryForTheLibrary()`
 
-A character opens the entry the engine resolves for it through the seam.
-A blank cell is refused, shows `Glyph.OpenFailed` and opens nothing.
+A character raises the entry the engine resolves for it, for the library tab.
+A blank cell is refused, shows `Glyph.OpenFailed` and raises nothing.
 
 ## `public void DisplayTranscriptionRead_GlyphAndEmptyRows_ListsOnlyOtherFilledRows()`
 
@@ -58,9 +58,9 @@ With nothing open, the fanqie, script and paradigm blocks are empty, not pending
 
 An English entry has no rime-book or script rows, and its paradigm block follows the morphology setting.
 
-## `public void DisplayDiweiAndStemOpen_ShownEntry_HandTheShownLanguageToTheSeam()`
+## `public void DisplayDiweiAndStemOpen_ShownEntry_RaiseTheShownLanguage()`
 
-Each click opens through its seam in the shown entry's language, and nothing open opens nothing.
+Each click is raised in the shown entry's language, and nothing open raises nothing.
 
 ## `public void DisplayFanqieSet_ShownEntry_SetsTheRankForTheShownEntry()`
 

@@ -55,6 +55,15 @@ public sealed class CYunjing
             shownSeam);
         CYunjingPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CYunjingPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Yunjing",
+            CYunjingPanel.CPanelLeaveConfirm,
+            CYunjingPanel.LPanelChosenRead,
+            CYunjingPanel.LPanelScribeRestore,
+            id => CYunjingPanel.CPanelRowOpen(id),
+            () => LYunjingAllowed);
+        atelier.CAtelierNavigation.LNavigationDiweiAttach(LYunjingDiweiOpen);
+        CYunjingPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
     public static CYunjing CYunjingCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -64,13 +73,13 @@ public sealed class CYunjing
 
     public event Action? CYunjingChanged;
 
-    public event Action<long>? CYunjingGlyphChosen;
-
     public CEditor CYunjingEditor { get; }
 
     public CPanel CYunjingPanel { get; }
 
-    public bool CYunjingAllowed => _cYunjingPort.LEngineBookCheck();
+    public event Action? CYunjingDiweiOpened;
+
+    internal bool LYunjingAllowed => _cYunjingPort.LEngineBookCheck();
 
     public bool CYunjingDiweiShown => LYunjingDiweiChosen && !CYunjingPanel.CPanelModeEnabled;
 
@@ -234,11 +243,13 @@ public sealed class CYunjing
         CYunjingChanged?.Invoke();
     }
 
-    public void CYunjingDiweiOpen(string language, string kind, string key)
+    internal void LYunjingDiweiOpen(string language, string kind, string key)
     {
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(key);
+
+        CYunjingDiweiOpened?.Invoke();
 
         if (_cYunjingPort.LEngineDiweiFind(language, kind, key) is not (long cell, bool rime))
         {
@@ -282,7 +293,7 @@ public sealed class CYunjing
                 _cYunjingEnvoy, () => _cYunjingPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
             is long entry)
         {
-            CYunjingGlyphChosen?.Invoke(entry);
+            _cYunjingAtelier.CAtelierNavigation.CNavigationEntryOpen(entry);
         }
     }
 

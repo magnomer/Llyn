@@ -232,7 +232,6 @@ public class PDisplay : UserControl
             PDisplayFanqie,
             PDisplayReading,
             PDisplayFanqie.PFanqieShow);
-        lectern.QLecternSound.QLecternRouteIntroduce(host);
         lectern.QLecternSound.QLecternScriptIntroduce(PDisplayScript, PDisplayScript.PScriptShow);
         lectern.QLecternSound.QLecternParadigmIntroduce(PDisplayParadigm, PDisplayParadigm.PParadigmShow);
         lectern.QLecternCompassIntroduce(

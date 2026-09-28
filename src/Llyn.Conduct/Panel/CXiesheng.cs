@@ -49,6 +49,15 @@ public sealed class CXiesheng
             shownSeam);
         CXieshengPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CXieshengPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Xiesheng",
+            CXieshengPanel.CPanelLeaveConfirm,
+            CXieshengPanel.LPanelChosenRead,
+            CXieshengPanel.LPanelScribeRestore,
+            id => CXieshengPanel.CPanelRowOpen(id),
+            () => LXieshengAllowed);
+        atelier.CAtelierNavigation.LNavigationStemAttach(LXieshengStemOpen);
+        CXieshengPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
     public static CXiesheng CXieshengCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -58,13 +67,13 @@ public sealed class CXiesheng
 
     public event Action? CXieshengChanged;
 
-    public event Action<long>? CXieshengGlyphChosen;
-
     public CEditor CXieshengEditor { get; }
 
     public CPanel CXieshengPanel { get; }
 
-    public bool CXieshengAllowed => _cXieshengPort.LEngineStemCheck();
+    public event Action? CXieshengStemOpened;
+
+    internal bool LXieshengAllowed => _cXieshengPort.LEngineStemCheck();
 
     public bool CXieshengStemShown => LXieshengStemChosen && !CXieshengPanel.CPanelModeEnabled;
 
@@ -185,9 +194,11 @@ public sealed class CXiesheng
         CXieshengChanged?.Invoke();
     }
 
-    public void CXieshengStemOpen(string language, string? key)
+    internal void LXieshengStemOpen(string language, string? key)
     {
         ArgumentNullException.ThrowIfNull(language);
+
+        CXieshengStemOpened?.Invoke();
 
         if (_cXieshengPort.LEngineStemFind(language, key) is not long stem)
         {
@@ -219,7 +230,7 @@ public sealed class CXiesheng
                 _cXieshengEnvoy, () => _cXieshengPort.LEngineStemResolve(_cXieshengGrove?.LVistaChosen, character))
             is long entry)
         {
-            CXieshengGlyphChosen?.Invoke(entry);
+            _cXieshengAtelier.CAtelierNavigation.CNavigationEntryOpen(entry);
         }
     }
 

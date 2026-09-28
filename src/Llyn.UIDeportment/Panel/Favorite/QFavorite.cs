@@ -187,12 +187,12 @@ internal sealed partial class QFavorite
 
     private void QFavoriteRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qFavoriteHost.PVoyageRetreatRun();
+        _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QFavoriteAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qFavoriteHost.PVoyageAdvanceRun();
+        _qFavoriteHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 
     private void QFavoriteUndoHandle(object sender, RoutedEventArgs e)

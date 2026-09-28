@@ -26,8 +26,6 @@ public sealed class QLecternSound
 
     private ItemsControl _qLecternSoundStrip = null!;
 
-    private PWindow _qLecternSoundHost = null!;
-
     private UIElement _qLecternSoundLoading = null!;
 
     private ToggleButton _qLecternSoundFold = null!;
@@ -101,13 +99,6 @@ public sealed class QLecternSound
         _qLecternSoundFanqie = fanqie;
         _qLecternSoundReading = reading;
         _qLecternSoundRime = fanqieSeam;
-    }
-
-    internal void QLecternRouteIntroduce(PWindow host)
-    {
-        ArgumentNullException.ThrowIfNull(host);
-
-        _qLecternSoundHost = host;
     }
 
     public void QLecternScriptIntroduce(DependencyObject script, Action<IReadOnlyList<CScriptGroup>, bool> scriptSeam)
@@ -222,20 +213,19 @@ public sealed class QLecternSound
 
     public void QLecternDiweiObserve(string kind, string key)
     {
-        _qLecternSoundArea.CDisplayDiweiOpen(kind, key, _qLecternSoundHost.PWindowDiweiShow);
+        _qLecternSoundArea.CDisplayDiweiOpen(kind, key);
     }
 
     public void QLecternStemObserve(string? key)
     {
-        _qLecternSoundArea.CDisplayStemOpen(key, _qLecternSoundHost.PWindowStemShow);
+        _qLecternSoundArea.CDisplayStemOpen(key);
     }
 
     public void QLecternGlyphObserve(object parameter)
     {
         if (parameter is QGlyphItem { QGlyphItemLinked: true } item)
         {
-            _qLecternSoundArea.CDisplayGlyphOpen(
-                item.QGlyphItemText, item.QGlyphItemLanguage, _qLecternSoundHost.PWindowEntryShow);
+            _qLecternSoundArea.CDisplayGlyphOpen(item.QGlyphItemText, item.QGlyphItemLanguage);
         }
     }
 

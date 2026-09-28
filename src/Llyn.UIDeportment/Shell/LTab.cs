@@ -8,15 +8,5 @@ public sealed record LTab(
     FrameworkElement LTabButton,
     FrameworkElement LTabPanel)
 {
-    public Func<bool>? LTabAllowed { get; init; }
-
-    public Func<bool>? LTabLeave { get; init; }
-
-    public Action<bool>? LTabScribe { get; init; }
-
-    public Func<long>? LTabStation { get; init; }
-
-    public Action<long>? LTabArrival { get; init; }
-
     public Action<bool, bool>? LTabVoyage { get; init; }
 }

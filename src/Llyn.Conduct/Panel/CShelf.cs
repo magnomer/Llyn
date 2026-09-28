@@ -49,6 +49,12 @@ public sealed class CShelf
         CShelfImprint.CImprintDesk.CDeskFinished += id => LShelfSourceOpen(id, false);
         CShelfImprint.CImprintDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
         editor.CEditorDesk.CDeskStateChanged += () => CShelfChanged?.Invoke();
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Reference",
+            LShelfLeaveConfirm,
+            CShelfPanel.LPanelChosenRead,
+            CShelfPanel.LPanelScribeRestore,
+            LShelfReferenceOpen);
     }
 
     public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -174,7 +180,7 @@ public sealed class CShelf
         return CShelfPanel.CPanelChangeCheck() || CShelfFootnote.CFootnotePanel.CPanelChangeCheck();
     }
 
-    public bool CShelfLeaveConfirm()
+    internal bool LShelfLeaveConfirm()
     {
         if (!CShelfChangeRead())
         {
@@ -195,25 +201,23 @@ public sealed class CShelf
         CShelfPanel.CPanelEntryClose();
     }
 
-    public void CShelfReferenceSelect(long? id, Action record)
+    public void CShelfReferenceSelect(long? id)
     {
-        ArgumentNullException.ThrowIfNull(record);
-
         if (id is null)
         {
             return;
         }
 
-        if (!CShelfLeaveConfirm())
+        if (!LShelfLeaveConfirm())
         {
             return;
         }
 
-        record();
+        _cShelfAtelier.CAtelierNavigation.LNavigationStationAdd();
         LShelfSourceOpen(id, LShelfEditing);
     }
 
-    public void CShelfReferenceOpen(long id)
+    internal void LShelfReferenceOpen(long id)
     {
         LShelfSourceOpen(id, LShelfEditing);
     }
@@ -243,7 +247,7 @@ public sealed class CShelf
             return;
         }
 
-        if (!CShelfLeaveConfirm())
+        if (!LShelfLeaveConfirm())
         {
             return;
         }
@@ -271,7 +275,7 @@ public sealed class CShelf
 
     public void CShelfReferenceCreate()
     {
-        if (!CShelfLeaveConfirm())
+        if (!LShelfLeaveConfirm())
         {
             return;
         }

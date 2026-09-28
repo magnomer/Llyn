@@ -38,6 +38,13 @@ public sealed class CLibrary
             shownSeam);
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Library",
+            CLibraryPanel.CPanelLeaveConfirm,
+            CLibraryPanel.LPanelChosenRead,
+            CLibraryPanel.LPanelScribeRestore,
+            id => CLibraryPanel.CPanelRowOpen(id));
+        CLibraryPanel.LPanelStationAttach(atelier.CAtelierNavigation.LNavigationStationAdd);
     }
 
     public static CLibrary CLibraryCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)

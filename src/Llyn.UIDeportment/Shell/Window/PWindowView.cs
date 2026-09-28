@@ -21,6 +21,6 @@ public partial class PWindow
 
         _qDuplex.QDuplexRestore(state);
 
-        PNavigationRestore();
+        _cNavigation.CNavigationTabOpen();
     }
 }

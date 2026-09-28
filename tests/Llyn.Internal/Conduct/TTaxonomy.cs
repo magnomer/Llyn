@@ -22,7 +22,7 @@ public sealed class TTaxonomy
         engine.TEngineTagCreate("motion");
 
         Assert.Empty(taxonomy.CTaxonomyRowsRead());
-        Assert.Null(taxonomy.CTaxonomyChosen);
+        Assert.Null(taxonomy.LTaxonomyChosen);
         Assert.False(taxonomy.CTaxonomyFiltered);
     }
 
@@ -40,7 +40,7 @@ public sealed class TTaxonomy
         CCatalogTag row = Assert.Single(taxonomy.CTaxonomyRowsRead(), row => row.CCatalogTagStored.CTagId == tag);
         Assert.Equal(new CTag(tag, "motion"), row.CCatalogTagStored);
         Assert.True(row.CCatalogTagChosen);
-        Assert.Equal(tag, taxonomy.CTaxonomyChosen);
+        Assert.Equal(tag, taxonomy.LTaxonomyChosen);
     }
 
     [Fact]
@@ -215,6 +215,42 @@ public sealed class TTaxonomy
 
         Assert.Equal("hearth", taxonomy.TTaxonomyFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TaxonomyTagToggle_RowClick_RecordsTheStationAndTogglesTheTag()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        long first = engine.TEngineTagCreate("motion").LTagId;
+        atelier.CAtelierNavigation.CNavigationTabSelect("Taxonomy");
+        taxonomy.CTaxonomyTagSelect(first);
+        List<CNavigationState> states = [];
+        atelier.CAtelierNavigation.CNavigationChanged += states.Add;
+
+        taxonomy.CTaxonomyTagToggle(first);
+
+        Assert.Null(taxonomy.LTaxonomyChosen);
+        Assert.Equal(new CVoyageState(true, false), Assert.Single(states).CNavigationStateVoyage);
+    }
+
+    [Fact]
+    public void TaxonomyTagOpen_Arrival_ChoosesTheTagAndRaisesTheOpening()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        long first = engine.TEngineTagCreate("motion").LTagId;
+        int opened = 0;
+        taxonomy.CTaxonomyTagOpened += () => opened++;
+
+        taxonomy.TTaxonomyTagOpen(first);
+
+        Assert.Equal(first, taxonomy.LTaxonomyChosen);
+        Assert.Equal(1, opened);
     }
 
     private static CTaxonomy TTaxonomyPrepare(CAtelier atelier, CEnvoy envoy)

@@ -39,7 +39,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
         List<CEntryDraft> shown = [];
         repertoire.CRepertoireEditor.CEditorDraftChanged += shown.Add;
 
@@ -84,8 +84,9 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationCreate();
         TRepertoireTitleDefer(repertoire);
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId, () => recorded++);
+        repertoire.CRepertoireSituationSelect(home.LSituationId);
 
         Assert.Equal(1, recorded);
         Assert.Equal(["Leave"], asked);
@@ -124,7 +125,7 @@ public sealed class TRepertoire
         List<CSituationDraft> shown = [];
         repertoire.CRepertoireSituationChanged += shown.Add;
 
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         Assert.True(repertoire.CRepertoireVignetteShown);
         Assert.True(repertoire.CRepertoireVignetteHeld);
@@ -147,7 +148,7 @@ public sealed class TRepertoire
         int cleared = 0;
         repertoire.CRepertoireQueryCleared += () => cleared++;
 
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         Assert.Equal(1, cleared);
         Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
@@ -165,9 +166,10 @@ public sealed class TRepertoire
         List<string> asked = [];
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId, () => recorded++);
-        repertoire.CRepertoireSituationSelect(null, () => recorded++);
+        repertoire.CRepertoireSituationSelect(home.LSituationId);
+        repertoire.CRepertoireSituationSelect(null);
 
         Assert.Equal(1, recorded);
         Assert.Empty(asked);
@@ -186,8 +188,9 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationCreate();
         TRepertoireTitleDefer(repertoire);
         int recorded = 0;
+        atelier.CAtelierNavigation.CNavigationChanged += _ => recorded++;
 
-        repertoire.CRepertoireSituationSelect(home.LSituationId, () => recorded++);
+        repertoire.CRepertoireSituationSelect(home.LSituationId);
 
         Assert.Equal(0, recorded);
         Assert.Equal(["Leave"], asked);
@@ -204,13 +207,13 @@ public sealed class TRepertoire
         List<string> asked = [];
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
 
-        Assert.True(repertoire.CRepertoireLeaveConfirm());
+        Assert.True(repertoire.TRepertoireLeaveConfirm());
         Assert.Empty(asked);
 
         repertoire.CRepertoireSituationCreate();
         TRepertoireTitleDefer(repertoire);
 
-        Assert.True(repertoire.CRepertoireLeaveConfirm());
+        Assert.True(repertoire.TRepertoireLeaveConfirm());
         Assert.Equal(["Leave"], asked);
         Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
         Assert.True(repertoire.CRepertoireVignetteHeld);
@@ -226,7 +229,7 @@ public sealed class TRepertoire
         repertoire.CRepertoireSituationCreate();
         TRepertoireTitleDefer(repertoire);
 
-        Assert.False(repertoire.CRepertoireLeaveConfirm());
+        Assert.False(repertoire.TRepertoireLeaveConfirm());
         Assert.True(repertoire.CRepertoireScenarioShown);
         Assert.True(repertoire.CRepertoireDesk.CDeskHeld);
     }
@@ -239,7 +242,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         repertoire.CRepertoireScribeToggle(true);
 
@@ -261,7 +264,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireSituationCreate();
 
         repertoire.CRepertoireScribeToggle(false);
@@ -280,7 +283,7 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
 
@@ -299,7 +302,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         repertoire.CRepertoireSituationClose();
 
@@ -332,7 +335,7 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
 
         repertoire.CRepertoireEntryResonate();
@@ -350,7 +353,7 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         TRepertoireSituationSave(engine, "in court");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
         Assert.True(repertoire.CRepertoireVignetteHeld);
@@ -371,7 +374,7 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         List<string> asked = [];
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         repertoire.CRepertoireSituationDelete();
 
@@ -390,7 +393,7 @@ public sealed class TRepertoire
         LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
         List<string> asked = [];
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
 
         repertoire.CRepertoireSituationDelete();
@@ -411,7 +414,7 @@ public sealed class TRepertoire
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
         CRepertoire repertoire = TRepertoirePrepare(
             atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
+        repertoire.TRepertoireSituationOpen(home.LSituationId);
 
         await repertoire.CRepertoirePortraitExport();
 

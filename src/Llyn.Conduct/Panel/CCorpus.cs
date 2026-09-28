@@ -53,6 +53,12 @@ public sealed class CCorpus
             draft => LCorpusExampleUpdate(CAnthology.LAnthologyDraftRead(draft));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        atelier.CAtelierNavigation.LNavigationTabAdd(
+            "Corpus",
+            CCorpusLeaveConfirm,
+            CCorpusAnthology.CAnthologyPanel.LPanelChosenRead,
+            CCorpusAnthology.CAnthologyPanel.LPanelScribeRestore,
+            LCorpusExampleOpen);
     }
 
     public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
@@ -135,7 +141,7 @@ public sealed class CCorpus
         CCorpusExampleChanged?.Invoke(example);
     }
 
-    public void CCorpusExampleOpen(long id)
+    internal void LCorpusExampleOpen(long id)
     {
         bool editing = CCorpusScribeChecked;
         LCorpusExampleShow(id, editing);
@@ -160,10 +166,8 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
     }
 
-    public void CCorpusExampleSelect(long? id, Action record)
+    public void CCorpusExampleSelect(long? id)
     {
-        ArgumentNullException.ThrowIfNull(record);
-
         if (id is not long chosen)
         {
             return;
@@ -175,7 +179,7 @@ public sealed class CCorpus
             return;
         }
 
-        record();
+        _cCorpusAtelier.CAtelierNavigation.LNavigationStationAdd();
         LCorpusExampleShow(chosen, editing);
     }
 
@@ -275,7 +279,7 @@ public sealed class CCorpus
     private void LCorpusStoredShow(long id)
     {
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
-        CCorpusExampleOpen(id);
+        LCorpusExampleOpen(id);
     }
 
     private void LCorpusQuotationCreate()

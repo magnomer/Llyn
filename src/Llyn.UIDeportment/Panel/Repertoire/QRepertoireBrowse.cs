@@ -143,8 +143,7 @@ internal sealed partial class QRepertoire
 
     private void QAtlasHandle(object sender, RoutedEventArgs e)
     {
-        _cRepertoire.CRepertoireSituationSelect(
-            QSender.QSenderSourceRead<QAtlasItem>(e)?.QAtlasItemId, _qRepertoireHost.PVoyageRecord);
+        _cRepertoire.CRepertoireSituationSelect(QSender.QSenderSourceRead<QAtlasItem>(e)?.QAtlasItemId);
     }
 
     private void QAtlasApply(FrameworkElement container, object item, string? _)
@@ -190,11 +189,6 @@ internal sealed partial class QRepertoire
         }
     }
 
-    internal void QAtlasSituationShow(long id)
-    {
-        _cRepertoire.CRepertoireSituationOpen(id);
-    }
-
     private void QRepertoireBinHandle(object sender, RoutedEventArgs e)
     {
         _cRepertoire.CRepertoireSituationDelete();
@@ -210,21 +204,6 @@ internal sealed partial class QRepertoire
         _cRepertoire.CRepertoireScribeToggle(true);
     }
 
-    internal void QRepertoireScribeRestore(bool editing)
-    {
-        _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelScribeRestore(editing);
-    }
-
-    internal bool QRepertoireLeaveConfirm()
-    {
-        return _cRepertoire.CRepertoireLeaveConfirm();
-    }
-
-    internal long QRepertoireVoyageRead()
-    {
-        return _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelChosenRead();
-    }
-
     internal void QRepertoireVoyageShow(bool past, bool future)
     {
         QRepertoireEarlier.IsEnabled = past;
@@ -233,11 +212,11 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireRetreatHandle(object sender, RoutedEventArgs e)
     {
-        _qRepertoireHost.PVoyageRetreatRun();
+        _qRepertoireHost.PWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
     }
 
     private void QRepertoireAdvanceHandle(object sender, RoutedEventArgs e)
     {
-        _qRepertoireHost.PVoyageAdvanceRun();
+        _qRepertoireHost.PWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
     }
 }

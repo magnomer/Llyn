@@ -89,9 +89,10 @@ A driver reads it on each draft bulletin, so the desk never hands it a draft.
 
 Announces the Situation a loaded draft carries and ignores drafts of other subjects.
 
-## `public void CRepertoireSituationOpen(long id)`
+## `internal void LRepertoireSituationOpen(long id)`
 
-Shows a Situation that comes from outside the list, keeping the scribe open when either editor was open.
+The navigation's arrival on the repertoire tab.
+It shows a Situation that comes from outside the list, keeping the scribe open when either editor was open.
 When the query or the filter hides it, the list clears it at once.
 Both are then dropped and the Situation is shown again, so an arrival never lands on a blank vignette.
 A row that vanished stays cleared, and without a query or filter nothing is dropped.
@@ -101,7 +102,7 @@ A row that vanished stays cleared, and without a query or filter nothing is drop
 Clears the occurrence side and shows the Situation in the mode the caller read.
 The atlas panel loads the row, clears a vanished one and restarts the scenario through its edit event.
 
-## `public void CRepertoireSituationSelect(long? id, Action record)`
+## `public void CRepertoireSituationSelect(long? id)`
 
 Shows the clicked Situation once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
@@ -151,12 +152,10 @@ Opens a fresh entry in the editor, already linked to the chosen Situation when t
 The engine starts and links it in one call, so the first paint shows the link.
 The fresh open clears the occurrence panel, which closes the editor before the blank opens.
 
-## `public bool CRepertoireLeaveConfirm()`
+## `internal bool LRepertoireLeaveConfirm(bool shown)`
 
 True when nothing is unsaved or the user agrees to leave.
-A save from the dialog shows the stored Situation afterwards.
-
-## `private bool LRepertoireLeaveConfirm(bool shown)`
+The navigation asks it with `shown` true when the tab is left, so a save shows the stored Situation afterwards.
 
 Asks the envoy only over unsaved changes.
 A store finishes the session, and a discard leaves without touching it.

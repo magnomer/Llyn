@@ -27,11 +27,6 @@ The fold repaint is subscribed to the area's fold change, so every lectern follo
 Holds the fanqie box for its font, the reading line and the seam the box owns.
 `fanqieSeam` draws the groups and the pending state, so no veneer type is named here.
 
-## `internal void QLecternRouteIntroduce(PWindow host)`
-
-Holds the window, whose openers the glyph, category and stem gates open through.
-The card half holds the window the same way for its chips.
-
 ## `public void QLecternScriptIntroduce(DependencyObject script, Action<IReadOnlyList<CScriptGroup>, bool> scriptSeam)`
 
 Holds the script box for its font and the seam that draws its groups.
@@ -88,16 +83,16 @@ Hears the fold toggle and hands its state to the fold gate.
 
 ## `public void QLecternDiweiObserve(string kind, string key)`
 
-Hears a rime-cell click in the fanqie box and hands it to the gate with the window's category opener.
+Hears a rime-cell click in the fanqie box and hands it to the gate, which asks the navigation.
 
 ## `public void QLecternStemObserve(string? key)`
 
-Hears a phonetic-series click in the fanqie box and hands it to the gate with the window's stem opener.
+Hears a phonetic-series click in the fanqie box and hands it to the gate, which asks the navigation.
 
 ## `public void QLecternGlyphObserve(object parameter)`
 
 Hears a chip's command and hands the chip's character and language to the glyph gate.
-The window's entry opener goes with them, so the gate opens what it resolved.
+The gate hands what it resolved to the navigation, which opens it in the library tab.
 An inert chip or anything else is ignored, since only a linked chip opens an entry.
 
 ## `private void QLecternReflexRefine(CLecternReflex reflex)`

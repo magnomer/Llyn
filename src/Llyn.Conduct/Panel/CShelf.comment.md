@@ -98,7 +98,7 @@ The engine's worded tally of the chosen Source's citations.
 
 Whether either panel edits a draft that holds unsaved changes.
 
-## `public bool CShelfLeaveConfirm()`
+## `internal bool LShelfLeaveConfirm()`
 
 Asks through the envoy before unsaved work goes out of sight, and answers whether to go on.
 A stored answer finishes the draft of the side in front, and a declined question stays.
@@ -107,14 +107,14 @@ A stored answer finishes the draft of the side in front, and a declined question
 
 Closes the entry side and the Source side, as a workspace change does.
 
-## `public void CShelfReferenceSelect(long? id, Action record)`
+## `public void CShelfReferenceSelect(long? id)`
 
 Opens the clicked Source after the leave question, keeping the edit mode of the side in front.
-`record` notes the voyage station only once the leave is settled, so a kept leave records nothing.
+The navigation records the voyage station only once the leave is settled, so a kept leave records nothing.
 
-## `public void CShelfReferenceOpen(long id)`
+## `internal void LShelfReferenceOpen(long id)`
 
-Opens one Source without asking, for a jump the window already asked about.
+The navigation's arrival: opens one Source without asking, since the navigation already asked.
 
 ## `public void CShelfEntrySelect(long? id)`
 

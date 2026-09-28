@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Llyn.Conduct;
 
-public sealed class CVoyage
+internal sealed class CVoyage
 {
     private const int LVoyageCap = 50;
 
@@ -11,12 +11,12 @@ public sealed class CVoyage
 
     private readonly LinkedList<(string LVoyageTab, long LVoyageId)> _cVoyageFuture = new();
 
-    public CVoyageState CVoyageRead()
+    internal CVoyageState LVoyageRead()
     {
         return new CVoyageState(_cVoyagePast.Count > 0, _cVoyageFuture.Count > 0);
     }
 
-    public void CVoyageStationAdd(string tab, long id)
+    internal void LVoyageStationAdd(string tab, long id)
     {
         ArgumentNullException.ThrowIfNull(tab);
 
@@ -29,12 +29,12 @@ public sealed class CVoyage
         _cVoyageFuture.Clear();
     }
 
-    public bool CVoyageUndo(string tab, long id, Func<string, long, bool> show)
+    internal bool LVoyageUndo(string tab, long id, Func<string, long, bool> show)
     {
         return LVoyageRun(_cVoyagePast, _cVoyageFuture, (tab, id), show);
     }
 
-    public bool CVoyageRedo(string tab, long id, Func<string, long, bool> show)
+    internal bool LVoyageRedo(string tab, long id, Func<string, long, bool> show)
     {
         return LVoyageRun(_cVoyageFuture, _cVoyagePast, (tab, id), show);
     }

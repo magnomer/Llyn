@@ -43,8 +43,6 @@ public partial class PWindow
 
     private CNavigation _cNavigation = null!;
 
-    private readonly CVoyage _cVoyage = new();
-
     private LTab[] _pNavigationTabs = [];
 
     public PWindow(CAtelier atelier)
@@ -103,20 +101,20 @@ public partial class PWindow
         PNavigationDuplex.PTabIcon = QIcon.QIconResolve("duplex", 24);
         PNavigationSettings.PTabIcon = QIcon.QIconResolve("settings", 24);
 
-        PNavigationInput.Click += PNavigationHandle;
-        PNavigationLibrary.Click += PNavigationHandle;
-        PNavigationFavorite.Click += PNavigationHandle;
-        PNavigationPhonology.Click += PNavigationHandle;
-        PNavigationRepertoire.Click += PNavigationHandle;
-        PNavigationTenor.Click += PNavigationHandle;
-        PNavigationTaxonomy.Click += PNavigationHandle;
-        PNavigationCorpus.Click += PNavigationHandle;
-        PNavigationSource.Click += PNavigationHandle;
-        PNavigationGuild.Click += PNavigationHandle;
-        PNavigationXiesheng.Click += PNavigationHandle;
-        PNavigationYunjing.Click += PNavigationHandle;
-        PNavigationDuplex.Click += PNavigationHandle;
-        PNavigationSettings.Click += PNavigationHandle;
+        PNavigationInput.Click += PNavigationObserve;
+        PNavigationLibrary.Click += PNavigationObserve;
+        PNavigationFavorite.Click += PNavigationObserve;
+        PNavigationPhonology.Click += PNavigationObserve;
+        PNavigationRepertoire.Click += PNavigationObserve;
+        PNavigationTenor.Click += PNavigationObserve;
+        PNavigationTaxonomy.Click += PNavigationObserve;
+        PNavigationCorpus.Click += PNavigationObserve;
+        PNavigationSource.Click += PNavigationObserve;
+        PNavigationGuild.Click += PNavigationObserve;
+        PNavigationXiesheng.Click += PNavigationObserve;
+        PNavigationYunjing.Click += PNavigationObserve;
+        PNavigationDuplex.Click += PNavigationObserve;
+        PNavigationSettings.Click += PNavigationObserve;
 
         _pMentionMenuTemplate = new PMentionMenuTemplate(this);
         _pWindowSurface.Resources.MergedDictionaries.Add(_pMentionMenuTemplate);
@@ -216,7 +214,7 @@ public partial class PWindow
         _qDuplex.QDuplexAttach(this);
         PSettings.PSettingsAttach(this);
         _qEstablishment.QEstablishmentAttach(this);
-        PNavigationAttach();
+        PNavigationIntroduce();
 
         PWindowLayoutAttach();
 

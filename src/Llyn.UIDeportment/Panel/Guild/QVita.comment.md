@@ -29,4 +29,4 @@ A co-author row selects that Author in the same panel.
 
 ## `private void QVitaCitationHandle(object sender, RoutedEventArgs e)`
 
-A clicked citing place goes to the gate `CUsageOpen`, which opens its Example or its Entry.
+A clicked citing place goes to the navigation's gate `CNavigationUsageOpen`, which opens its Example or its Entry.

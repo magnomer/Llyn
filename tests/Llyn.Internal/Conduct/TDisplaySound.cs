@@ -49,7 +49,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayGlyphOpen_LinkedCell_OpensTheCharacterEntryThroughTheSeam()
+    public void DisplayGlyphOpen_LinkedCell_RaisesTheCharacterEntryForTheLibrary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -57,11 +57,14 @@ public sealed class TDisplaySound
         List<string> asked = [];
         CWing wing = TDisplayWingPrepare(atelier, asked);
         List<long> opened = [];
+        wing.CWingDisplay.CDisplaySound.CDisplayRowChosen += (tab, entry) =>
+        {
+            Assert.Equal("Library", tab);
+            opened.Add(entry);
+        };
 
-        bool shown = wing.CWingDisplay.CDisplaySound.CDisplayGlyphOpen(
-            "漢", "Classical Chinese", entry => { opened.Add(entry); return true; });
-        bool refused = wing.CWingDisplay.CDisplaySound.CDisplayGlyphOpen(
-            " ", "Classical Chinese", entry => throw new InvalidOperationException("A blank cell opens nothing."));
+        bool shown = wing.CWingDisplay.CDisplaySound.CDisplayGlyphOpen("漢", "Classical Chinese");
+        bool refused = wing.CWingDisplay.CDisplaySound.CDisplayGlyphOpen(" ", "Classical Chinese");
 
         Assert.True(shown);
         Assert.True(Assert.Single(opened) > 0);
@@ -274,7 +277,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayDiweiAndStemOpen_ShownEntry_HandTheShownLanguageToTheSeam()
+    public void DisplayDiweiAndStemOpen_ShownEntry_RaiseTheShownLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -282,11 +285,13 @@ public sealed class TDisplaySound
         CWing wing = TDisplayWingPrepare(atelier, []);
         CDisplaySound area = wing.CWingDisplay.CDisplaySound;
         List<string> opened = [];
-        bool early = area.CDisplayDiweiOpen("initial", "k", (_, _, _) => opened.Add("early"));
+        area.CDisplayDiweiChosen += (language, kind, key) => opened.Add(language + kind + key);
+        area.CDisplayStemChosen += (language, key) => opened.Add(language + (key ?? "-"));
+        bool early = area.CDisplayDiweiOpen("initial", "k");
         wing.CWingEntryOpen(TDisplayKoreanSave(engine).LEntryId);
 
-        bool diwei = area.CDisplayDiweiOpen("initial", "k", (language, kind, key) => opened.Add(language + kind + key));
-        bool stem = area.CDisplayStemOpen(null, (language, key) => opened.Add(language + (key ?? "-")));
+        bool diwei = area.CDisplayDiweiOpen("initial", "k");
+        bool stem = area.CDisplayStemOpen(null);
 
         Assert.False(early);
         Assert.True(diwei);

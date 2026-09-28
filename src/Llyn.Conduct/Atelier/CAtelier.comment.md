@@ -26,6 +26,11 @@ The markdown gate, built once over this atelier's entry port.
 
 The respelling gates, built once over this atelier's phonology port.
 
+## `public CNavigation CAtelierNavigation { get; }`
+
+The session's one navigation, built once over this atelier.
+Every panel area registers its tab here, and every jump to a tab goes through it.
+
 ## `public CCatalog CAtelierCatalog => new(this);`
 
 The reference reads over this atelier's ports.
@@ -60,9 +65,10 @@ The driver names the subject and order in Conduct's enums, so it never names a C
 It is internal, since the vista it answers is an engine handle.
 The subject and order reach the engine through `CPanel`'s by-name maps, never by cast.
 
-## `public bool CAtelierSplitRead()`
+## `internal bool LAtelierSplitRead()`
 
 Whether the open tab shows its editor rather than its read area.
+Only the navigation reads it, when it restores the open tab at startup.
 
 ## `public double CAtelierVolumeRead()`
 

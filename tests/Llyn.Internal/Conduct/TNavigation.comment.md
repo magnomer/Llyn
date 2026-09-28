@@ -3,11 +3,24 @@
 ## `public sealed class TNavigation`
 
 Covers Conduct's navigation over a real posture on the fake rig, with no window.
-With nothing stored, the first tab reads as open and startup opens nothing.
-A stored tab opens again at startup, and one no longer allowed falls back to the first tab.
+The tabs are registered through the relay, each with a leave question that notes itself.
+With nothing stored, startup paints no tab.
+A stored tab opens again at startup with its editor restored, and one no longer offered falls back and hides.
 A tab click asks only the open tab to be left, and a jump asks its target first.
-Any refusal keeps the open tab and saves nothing.
+Any refusal keeps the open tab, saves nothing and paints nothing.
+A jump records the station it leaves, and the voyage steps land where they recorded.
+A citing place opens its Example or its Entry.
+The area's own open receives the landed record, and a rime cell reaches the yunjing area's attached open.
 
-## `private static readonly string[] TNavigationTabs`
+## `private static void TNavigationTabAdd(`
 
-Three tab keys in navigation order, the first standing in for the input tab.
+Registers `tab` with a leave question that notes the tab in `asked` and answers `leave`.
+The panel stands on `station`, and its open notes each landed record in `arrived`.
+
+## `private static List<CNavigationState> TNavigationStateAttach(CNavigation navigation)`
+
+Collects every state the navigation raises from here on.
+
+## `private static CUsage TNavigationUsageCreate(bool quoted)`
+
+A citing place of Example 3 in Entry 9, quoting the Example when `quoted`.

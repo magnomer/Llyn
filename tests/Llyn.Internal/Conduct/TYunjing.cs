@@ -24,7 +24,7 @@ public sealed class TYunjing
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CYunjing yunjing = TYunjingPrepare(atelier);
 
-        Assert.True(yunjing.CYunjingAllowed);
+        Assert.True(yunjing.LYunjingAllowed);
         Assert.Empty(yunjing.CYunjingShengmuRead());
         Assert.True(yunjing.CYunjingShengmuEmpty);
         Assert.Equal("Yunjing.ShengmuEmpty", yunjing.CYunjingShengmuKey);
@@ -69,7 +69,7 @@ public sealed class TYunjing
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
         Assert.Equal(1, changed);
         Assert.True(yunjing.CYunjingDiweiShown);
@@ -96,7 +96,7 @@ public sealed class TYunjing
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
 
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "見");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "見");
 
         Assert.Equal(0, changed);
         Assert.False(yunjing.CYunjingDiweiShown);
@@ -112,7 +112,7 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiRime, "寒 I");
         long rime = Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId;
 
         Assert.True(yunjing.CYunjingDiweiShown);
@@ -143,7 +143,7 @@ public sealed class TYunjing
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "蘭", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
         CDiweiPage page = yunjing.CYunjingDiweiRead();
 
@@ -166,7 +166,7 @@ public sealed class TYunjing
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "爛", "來");
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, TYunjingBook, "蘭", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(TYunjingBook, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(TYunjingBook, LDiwei.LDiweiInitial, "來");
 
         CDiweiSection section = Assert.Single(yunjing.CYunjingDiweiRead().CDiweiPageSections);
 
@@ -198,7 +198,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingGlyphSelect_PageShown_RaisesTheGlyphEntryInThePageLanguage()
+    public void YunjingGlyphSelect_PageShown_OpensTheGlyphEntryInThePageLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -208,13 +208,14 @@ public sealed class TYunjing
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
         List<long> chosen = [];
-        yunjing.CYunjingGlyphChosen += chosen.Add;
+        atelier.CAtelierNavigation.TNavigationTabAdd(
+            "Library", static () => true, static () => 0, static _ => { }, chosen.Add);
 
         yunjing.CYunjingGlyphSelect("爛");
 
         Assert.Empty(chosen);
 
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
         yunjing.CYunjingGlyphSelect(string.Empty);
         yunjing.CYunjingGlyphSelect("爛");
 
@@ -231,7 +232,7 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
 
         yunjing.CYunjingXiaoyunFind("zzz");
 
@@ -259,7 +260,7 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
         yunjing.CYunjingDiweiSelect(Assert.Single(yunjing.CYunjingYunmuRead()).CDiweiId, true);
         int changed = 0;
         yunjing.CYunjingChanged += () => changed++;
@@ -310,7 +311,7 @@ public sealed class TYunjing
 
         Assert.False(File.Exists(path));
 
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
         yunjing.CYunjingPanel.CPanelRowSelect(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
         await yunjing.CYunjingPortraitExport();
 
@@ -330,7 +331,7 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
+        yunjing.TYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
         long entry = Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId;
 
         yunjing.CYunjingPanel.CPanelRowOpen(entry);
@@ -397,7 +398,7 @@ public sealed class TYunjing
         yunjing.CYunjingPanel.CPanelRowsChanged += () => rows++;
         yunjing.CYunjingPanel.CPanelChanged += () => panel++;
 
-        yunjing.CYunjingEntryResonate(new CBulletin(yunjing.CYunjingPanel.CPanelChosenRead(), true));
+        yunjing.CYunjingEntryResonate(new CBulletin(yunjing.CYunjingPanel.TPanelChosenRead(), true));
 
         Assert.Equal((1, 1, 1), (changed, rows, panel));
     }
