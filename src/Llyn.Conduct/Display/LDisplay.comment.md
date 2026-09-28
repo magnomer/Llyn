@@ -148,7 +148,7 @@ Forwards to the sound half, since the editor asks whether the script images are 
 
 Forwards to the sound half, since the editor asks whether the inflections are still being fetched.
 
-## `public IReadOnlyList<LUsage> LDisplayIncomingRead()`
+## `public IReadOnlyList<CUsage> LDisplayIncomingRead()`
 
 The usages pointing at the chosen entry, each carrying the epithet of the entry that holds it.
 It reads the live choice, as favorite, grasp, stamp and frequency do.
@@ -156,10 +156,7 @@ No entry chosen answers no usages.
 A refused incoming read raises `LDisplayFailed` with `Display.IncomingFailed` and answers no usages.
 A refused epithet keeps its usage with an empty epithet, so one bad entry hides nothing else.
 Any refused epithet raises `Display.EpithetFailed` once, after every usage is read.
-
-## `public static string LDisplayOwnerRead(LUsage usage)`
-
-The text key naming what holds a usage: a Meaning or a Collocation.
+Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
 
 ## `public IReadOnlyList<LTranslationTarget> LDisplayTargetRead()`
 

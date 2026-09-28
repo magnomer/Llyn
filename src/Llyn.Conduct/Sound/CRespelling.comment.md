@@ -35,6 +35,11 @@ Otherwise it is the pronunciation mark.
 The mark a reflex row prints under.
 A phonemic language stands between slashes whatever the switch shows, and any other reading stands bare.
 
+## `public static CAccent CRespellingAccentRead(CRespellingMark mark, string language, CPronunciationDraft spoken)`
+
+One accent row of a draft in the language, ready to show under the mark.
+The text is already the form the mark picks, so no driver resolves a respelling for the row.
+
 ## `public static string CRespellingResolve(CRespellingMark mark, CPronunciationDraft spoken)`
 
 The form of a draft pronunciation to print under the mark.

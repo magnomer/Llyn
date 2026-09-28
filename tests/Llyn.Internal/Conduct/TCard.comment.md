@@ -3,7 +3,7 @@
 ## `public sealed class TCard`
 
 Covers the card gates over an entry desk on a real workspace, with no delay.
-An entry row copies its chosen mark, and a missing epithet reads as empty.
+An entry row copies every field and its chosen mark.
 A written value keeps the engine's verdict, and a draft splits its main pronunciation from the accents.
 The etymology gates write the narrative, the source links and the spans of the held draft.
 A typed title cites the Source the engine resolves it to.

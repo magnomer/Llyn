@@ -51,6 +51,7 @@ The rows are built by the shared builder under one lock.
 ## `internal IReadOnlyList<LVistaRow> LEngineVistaBuild(IReadOnlyList<LEntry> entries, long? chosen)`
 
 Turns entries in their listed order into rows ready to show: twin name, epithet and chosen mark.
+An entry with no epithet carries an empty one, so no reader of a row falls back on its own.
 Twins are numbered by entry id, so the older entry is `(1)` in every view.
 The epithets come from one scan, so a long list costs one statement rather than one session per row.
 The chosen row is the one whose id equals `chosen`.

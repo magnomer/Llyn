@@ -29,3 +29,8 @@ Writes the failure to the audit log and returns the path written, or null when t
 
 The language a new translation of an Example starts in.
 It is the gloss language of the settings when its pack is loaded, else the first loaded language.
+
+## `static string LEngineEnsignFormat(string language, string variety)`
+
+The key a variety's flag is kept under, through the ensign's one key format.
+A blank variety has no flag, so its key is empty and finds nothing.

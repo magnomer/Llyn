@@ -13,7 +13,7 @@ internal sealed partial class QTenor
 
     private PWindow _qTenorHost = null!;
 
-    private LTenor _lTenor = null!;
+    private CTenor _cTenor = null!;
 
     private LEditor _lEditor = null!;
 
@@ -134,11 +134,12 @@ internal sealed partial class QTenor
     internal void QTenorAttach(PWindow host)
     {
         _qTenorHost = host;
-        _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
+        _cTenor = host.PWindowForge.QForgeTenorCreate(QTenorShownCheck, host.PWindowEnvoy);
+        _lEditor = new LEditor(_cTenor.CTenorEditor);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
-        _lTenor = host.PWindowForge.QForgeTenorCreate(
-            _lEditor, lectern, QTenorShownCheck, host.PWindowEnvoy);
-        CPanel panel = _lTenor.LTenorPanel;
+        CPanel panel = _cTenor.CTenorPanel;
+        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        panel.CPanelCleared += lectern.LLecternClear;
         panel.CPanelChanged += QTenorModeUpdate;
         panel.CPanelRowsChanged += QCohortFind;
 
@@ -160,7 +161,7 @@ internal sealed partial class QTenor
 
     internal void QTenorReset()
     {
-        _lTenor.LTenorPanel.CPanelEntryClose();
+        _cTenor.CTenorPanel.CPanelEntryClose();
         QGamutReset();
         QGamutFind();
     }
@@ -172,7 +173,7 @@ internal sealed partial class QTenor
 
     internal bool QTenorChangeCheck()
     {
-        return _lTenor.LTenorPanel.CPanelChangeCheck();
+        return _cTenor.CTenorPanel.CPanelChangeCheck();
     }
 
     internal void QTenorClose()
@@ -183,17 +184,17 @@ internal sealed partial class QTenor
 
     private void QTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTenor?.LTenorPanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cTenor?.CTenorPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTenorHost.PWindowPressRun(_lTenor.LTenorPortraitPrint);
+        await _qTenorHost.PWindowPressRun(_cTenor.CTenorPortraitPrint);
     }
 
     private async void QTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTenorHost.PWindowPortraitExport(_lTenor.LTenorFileRead(), _lTenor.LTenorPortraitExport);
+        await _qTenorHost.PWindowPortraitExport(_cTenor.CTenorFileRead(), _cTenor.CTenorPortraitExport);
     }
 
     internal void QTenorVoyageShow(bool past, bool future)
@@ -236,7 +237,7 @@ internal sealed partial class QTenor
 
     private void QTenorModeUpdate()
     {
-        CPanel panel = _lTenor.LTenorPanel;
+        CPanel panel = _cTenor.CTenorPanel;
         QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
         QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
         QTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);

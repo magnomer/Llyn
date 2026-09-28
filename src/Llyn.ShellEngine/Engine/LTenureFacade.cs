@@ -74,6 +74,17 @@ internal sealed class LTenureFacade
         return started;
     }
 
+    internal LTenure LEngineCohortStart(LVista vista, long? register)
+    {
+        LTenure started = LEngineTenureStart(vista, null);
+        if (register is long carried)
+        {
+            started.LTenureRegisterAdd(carried);
+        }
+
+        return started;
+    }
+
     internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)
     {
         LDraft started = subject switch

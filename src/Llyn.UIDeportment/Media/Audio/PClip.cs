@@ -126,11 +126,11 @@ public partial class PEditor
             return new PClipReading(recording, string.Empty, null, action);
         }
 
+        CVariety regional = CSounding.CSoundingVarietyRead(_lEditor.LEditorClip.LClipLanguage, variety);
         return new PClipReading(
             recording,
-            LAccentItem.LAccentLabelFormat(variety),
-            LAccentItem.LAccentFlagFind(
-                _lEditor.LEditorClip.LClipLanguage, _lEditor.LEditorClip.LClipFlagged, variety),
+            QAccentItem.QAccentLabelRefine(regional),
+            QAccentItem.QAccentEnsignRefine(regional, _lEditor.LEditorClip.LClipFlagged),
             action);
     }
 

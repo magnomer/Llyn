@@ -11,11 +11,11 @@ The entry list itself lives in [QTenorCohort.cs](QTenorCohort.comment.md).
 
 ## Inline notes
 
-### `private LTenor _lTenor = null!;`
+### `private CTenor _cTenor = null!;`
 
-The panel's deportment, holding the register vista and the Cohort vista the window restored.
+The panel's Conduct, holding the register vista and the cohort vista it restored.
 The vista carries the order, the query, the chosen Register, and the languages hidden from its entries.
-The panel keeps no copy of any of the four and asks the deportment for each where it needs it.
+The panel keeps no copy of any of the four and asks Conduct for each where it needs it.
 The Register is held by its id rather than its name, since a name may be rewritten under the panel.
 A null Register is not an absence to be corrected.
 It is the whole workspace, which is what the panel shows first.
@@ -48,7 +48,7 @@ The mark on the button is redrawn from the vista at once.
 
 ### `internal async void QTenorVistaRestore()`
 
-The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+Conduct starts the tab's vistas from the window's posture, so no vista crosses the cut.
 Takes the vista the window started for this tab and puts the panel on it.
 The panel answers the engine through the vistas rather than its own visibility.
 So a Register written in the input panel is in the catalog at once, with no tab switch needed.
@@ -78,7 +78,7 @@ Lets go of the chosen Register, so a switched workspace opens on every Entry.
 New makes whatever the emptier panel would list.
 With no register chosen and no entry shown, it names a new register.
 With a register chosen, or an entry shown, it starts a new entry.
-The controller makes that choice, so the view only follows its verdict.
+Conduct makes that choice, so the view only follows its verdict.
 
 ### `private void QGamutCoinageShow(object origin)`
 

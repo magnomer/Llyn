@@ -131,13 +131,11 @@ public partial class PEditor
             return new PNotationReading(variety, string.Empty, null, phonetic, text, opener, closer);
         }
 
+        CVariety regional = CSounding.CSoundingVarietyRead(_lEditor.LEditorNotation.LNotationLanguage, variety);
         return new PNotationReading(
             variety,
-            LAccentItem.LAccentLabelFormat(variety),
-            LAccentItem.LAccentFlagFind(
-                _lEditor.LEditorNotation.LNotationLanguage,
-                _lEditor.LEditorNotation.LNotationFlagged,
-                variety),
+            QAccentItem.QAccentLabelRefine(regional),
+            QAccentItem.QAccentEnsignRefine(regional, _lEditor.LEditorNotation.LNotationFlagged),
             phonetic,
             text,
             opener,

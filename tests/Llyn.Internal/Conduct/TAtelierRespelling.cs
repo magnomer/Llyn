@@ -71,6 +71,20 @@ public sealed class TAtelierRespelling
         Assert.Equal("respelt", CRespelling.CRespellingResolve(mark, spoken));
     }
 
+    [Fact]
+    public void RespellingAccentRead_Pronunciation_AnswersTheRowReadyToShow()
+    {
+        CRespellingMark mark = new(true, "[", "]");
+        CPronunciationDraft spoken = new(4, "ipa", "respelt", "Scottish", "clip.mp3");
+
+        CAccent accent = CRespelling.CRespellingAccentRead(mark, "English", spoken);
+
+        Assert.Equal(4, accent.CAccentId);
+        Assert.Equal("respelt", accent.CAccentText);
+        Assert.Equal("clip.mp3", accent.CAccentAudio);
+        Assert.Equal(CSounding.CSoundingVarietyRead("English", "Scottish"), accent.CAccentVariety);
+    }
+
     private static CAtelier TAtelierRespellingCreate(LEngine engine, bool respelled, bool phonemic)
     {
         return TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>

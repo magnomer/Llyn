@@ -341,19 +341,22 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void RegisterAdd_FreshDraft_LinksTheFirstCard()
+    public void CohortStart_RegisterGiven_OpensAFreshDraftCarryingIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister register = engine.TEngineRegisterCreate("formal");
         CEditor editor = TEditorPrepare(engine, "cohort");
         editor.CEditorEntryOpen(null);
+        long replaced = editor.CEditorDesk.CDeskId;
 
-        editor.CEditorRegisterAdd(register.LRegisterId);
+        editor.CEditorDesk.TDeskCohortStart(register.LRegisterId);
 
         Assert.Contains(
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
             row => row.CRegisterDraftId == register.LRegisterId);
+        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
     [Fact]

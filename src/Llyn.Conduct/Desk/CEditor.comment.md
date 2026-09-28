@@ -116,8 +116,3 @@ Hands the typed reading to the tenure, which writes it the way the pack shows it
 Names the variety of the reading a menu filled, after the reading itself was written.
 A menu opened on the primary reading targets whatever primary the draft now holds.
 Any other menu targets the accent row it was opened on.
-
-## `public void CEditorRegisterAdd(long register)`
-
-Seeds the first card of the held draft with a stored register, as the tenor panel does.
-The tag, situation, example and reference seeds now start with the fresh entry in one engine call.

@@ -90,39 +90,6 @@ internal static class TInterfaceDeportment
 
     internal static QPosture TPostureCreate(string root) => new(() => root);
 
-    internal static LTenor TTenorCreate(LEntryPort entries, LSettingsPort settings)
-    {
-        LDraftPort drafts = TEngineFake.TEngineStubCreate<LDraftPort>();
-        LPhonologyPort phonology = TEngineFake.TEngineStubCreate<LPhonologyPort>();
-        LEditor editor = new(
-            TInterfaceConduct.TEditorCreate(
-                drafts, entries, phonology, settings, TEngineFake.TEngineStubCreate<LMediaPort>()));
-        return new(
-            entries,
-            TEngineFake.TEngineStubCreate<LPortraitPort>(),
-            settings,
-            editor,
-            TLecternCreate(editor),
-            static () => true,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static IReadOnlyList<CCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();
-
-    internal static IReadOnlyList<CVistaRow> TTenorCohortRead(this LTenor tenor) => tenor.LTenorCohortRead();
-
-    internal static long TTenorRegisterCreate(this LTenor tenor, string name) => tenor.LTenorRegisterCreate(name);
-
-    internal static bool TTenorCoinageCheck(this LTenor tenor) => tenor.LTenorCoinageCheck();
-
-    internal static IReadOnlyList<CCatalogRegister> TTenorRegisterRead(IReadOnlyList<LCatalogRegister> rows) =>
-        LTenor.LTenorRegisterRead(rows);
-
-    internal static LCatalogRegister TCatalogRegisterCreate(LRegister register, int usage, bool chosen) =>
-        new(register, usage, chosen);
-
-    internal static IReadOnlyList<string> TTenorLanguageRead(this LTenor tenor) => tenor.LTenorLanguageRead();
-
     internal static IReadOnlyList<QIndexItem> TIndexItemBuild(IReadOnlyList<CVistaRow> rows) =>
         QIndexItem.QIndexItemBuild(rows);
 

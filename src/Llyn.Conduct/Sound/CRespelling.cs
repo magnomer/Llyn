@@ -47,6 +47,17 @@ public sealed class CRespelling
         return new CRespellingMark(CRespellingCheck(language), slash, slash);
     }
 
+    public static CAccent CRespellingAccentRead(CRespellingMark mark, string language, CPronunciationDraft spoken)
+    {
+        ArgumentNullException.ThrowIfNull(spoken);
+
+        return new CAccent(
+            spoken.CPronunciationDraftId,
+            CSounding.CSoundingVarietyRead(language, spoken.CPronunciationDraftVariety),
+            CRespellingResolve(mark, spoken),
+            spoken.CPronunciationDraftAudio);
+    }
+
     public static string CRespellingResolve(CRespellingMark mark, CPronunciationDraft spoken)
     {
         ArgumentNullException.ThrowIfNull(spoken);

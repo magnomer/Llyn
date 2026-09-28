@@ -235,6 +235,14 @@ public sealed class CSounding
             spoken.LPronunciationDraftAudio);
     }
 
+    public static CVariety CSoundingVarietyRead(string language, string variety)
+    {
+        ArgumentNullException.ThrowIfNull(variety);
+
+        return new CVariety(
+            variety, string.Concat("Variety.", variety), LSettingsPort.LEngineEnsignFormat(language, variety));
+    }
+
     internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(
         IReadOnlyList<LTranscriptionDraft> transcriptions)
     {

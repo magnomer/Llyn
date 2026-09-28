@@ -6,6 +6,10 @@ The vista's promises, one fact per thing a browse panel relies on.
 Each fact starts a vista on a fresh workspace and drives it through the relays alone.
 A fact that must find an ordering or filter again starts its vistas through the posture, which stores them.
 
+## `public void EntryFind_NoEpithetHeld_CarriesAnEmptyEpithet()`
+
+A listed entry with no epithet carries an empty one, so no reader of the row supplies a fallback.
+
 ## `public void VistaOrderSet_WorkspaceReopened_KeepsOrder()`
 
 An ordering set on the vista is found again by a vista started on the reopened workspace.

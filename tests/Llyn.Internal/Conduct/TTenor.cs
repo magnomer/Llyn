@@ -1,0 +1,230 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Llyn.Conduct;
+using Llyn.Core;
+using Llyn.ShellEngine;
+using Xunit;
+
+namespace Llyn.Tests;
+
+public sealed class TTenor
+{
+    [Fact]
+    public void TenorRowsRead_NoVistaRestored_AnswersNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = CTenor.CTenorCreate(
+            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+        engine.TEngineRegisterCreate("formal");
+
+        Assert.Empty(tenor.CTenorRowsRead());
+        Assert.Null(tenor.CTenorChosen);
+        Assert.False(tenor.CTenorFiltered);
+    }
+
+    [Fact]
+    public void TenorRegisterCreate_Name_AnswersTheIdTheRowsList()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+
+        long register = tenor.CTenorRegisterCreate("formal");
+        tenor.CTenorRegisterSelect(register);
+
+        CCatalogRegister row = Assert.Single(
+            tenor.CTenorRowsRead(), row => row.CCatalogRegisterStored.CRegisterId == register);
+        Assert.Equal(new CRegister(register, "formal"), row.CCatalogRegisterStored);
+        Assert.Equal(0, row.CCatalogRegisterUsage);
+        Assert.True(row.CCatalogRegisterChosen);
+        Assert.Equal(register, tenor.CTenorChosen);
+    }
+
+    [Fact]
+    public void TenorCoinageAllowed_NothingChosenNorShown_NamesARegisterUntilOneIsChosen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LRegister register = engine.TEngineRegisterCreate("formal");
+
+        Assert.True(tenor.CTenorCoinageAllowed);
+
+        tenor.CTenorRegisterSelect(register.LRegisterId);
+
+        Assert.False(tenor.CTenorCoinageAllowed);
+    }
+
+    [Fact]
+    public void TenorEmptyKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+
+        tenor.CTenorCohortFind(" ");
+
+        Assert.Equal("Register.Vacant", tenor.CTenorEmptyKey);
+
+        tenor.CTenorCohortFind("aqua");
+
+        Assert.Equal("Register.Unmatched", tenor.CTenorEmptyKey);
+        Assert.Empty(tenor.CTenorCohortRead());
+    }
+
+    [Fact]
+    public void TenorEntryCreate_RegisterChosen_OpensAnEntryCarryingItThatListsOnceStored()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LRegister register = engine.TEngineRegisterCreate("formal");
+        tenor.CTenorRegisterSelect(register.LRegisterId);
+        List<CEntryDraft> shown = [];
+        tenor.CTenorEditor.CEditorDraftChanged += shown.Add;
+
+        tenor.CTenorEntryCreate();
+
+        Assert.Contains(
+            shown[0].CEntryDraftMeanings[0].CCardDraftRegister, row => row.CRegisterDraftId == register.LRegisterId);
+        Assert.True(tenor.CTenorPanel.CPanelEditing);
+        Assert.False(tenor.CTenorPanel.CPanelBinEnabled);
+
+        tenor.CTenorEditor.CEditorHeadwordSet("fern");
+        tenor.CTenorEditor.CEditorEntrySave();
+
+        Assert.Equal(["fern"], tenor.CTenorCohortRead().Select(row => row.CVistaRowHeadword));
+    }
+
+    [Fact]
+    public void TenorEntryCreate_NoRegisterChosen_OpensABlankEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        List<CEntryDraft> shown = [];
+        tenor.CTenorEditor.CEditorDraftChanged += shown.Add;
+
+        tenor.CTenorEntryCreate();
+
+        Assert.Empty(shown[0].CEntryDraftMeanings[0].CCardDraftRegister);
+        Assert.False(tenor.CTenorEditor.CEditorDesk.CDeskChanged);
+        Assert.True(tenor.CTenorPanel.CPanelEditing);
+    }
+
+    [Fact]
+    public void TenorPanelEntryClose_FreshEntryHeld_DropsTheDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        tenor.CTenorEntryCreate();
+        long held = tenor.CTenorEditor.CEditorDesk.CDeskId;
+
+        tenor.CTenorPanel.CPanelEntryClose();
+
+        Assert.Null(engine.TEngineDraftRead(held));
+        Assert.False(tenor.CTenorPanel.CPanelEditing);
+    }
+
+    [Fact]
+    public void TenorOrderSet_ReverseThenNull_KeepsTheChosenOrderAndTellsTheObserver()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        engine.TEngineRegisterCreate("alpha");
+        engine.TEngineRegisterCreate("beta");
+        int told = 0;
+        tenor.CTenorObserverAttach(CSubject.CSubjectVista, _ => told++);
+
+        Assert.Equal(CCatalogOrder.CCatalogOrderName, tenor.CTenorOrder);
+
+        tenor.CTenorOrderSet(CCatalogOrder.CCatalogOrderReverse);
+        tenor.CTenorOrderSet(null);
+
+        Assert.Equal(CCatalogOrder.CCatalogOrderReverse, tenor.CTenorOrder);
+        Assert.Equal(
+            ["beta", "alpha"],
+            tenor.CTenorRowsRead()
+                .Select(row => row.CCatalogRegisterStored.CRegisterName)
+                .Where(text => text is "alpha" or "beta"));
+        Assert.True(told > 0);
+    }
+
+    [Fact]
+    public void TenorQuerySet_UnmatchedText_ListsNoRegister()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        engine.TEngineRegisterCreate("formal");
+
+        tenor.CTenorQuerySet("zzz");
+
+        Assert.Empty(tenor.CTenorRowsRead());
+    }
+
+    [Fact]
+    public void TenorFilterSet_HiddenLanguage_MarksTheTenorFiltered()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+
+        tenor.CTenorFilterSet(new CCatalogFilter(["Latin"]));
+
+        Assert.True(tenor.CTenorFiltered);
+        Assert.Equal(["Latin"], tenor.CTenorFilter.CCatalogFilterHidden);
+
+        tenor.CTenorFilterSet(new CCatalogFilter([]));
+
+        Assert.False(tenor.CTenorFiltered);
+        Assert.NotNull(tenor.CTenorLanguageRead());
+    }
+
+    [Fact]
+    public async Task TenorPortraitExport_EntryShown_WritesItAndNothingBefore()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        LEntry hearth = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
+        string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
+
+        await tenor.CTenorPortraitExport(
+            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+
+        Assert.False(File.Exists(path));
+        Assert.Same(Task.CompletedTask, tenor.CTenorPortraitPrint(TCorpus.TCorpusLabelCreate(), null!));
+
+        tenor.CTenorPanel.CPanelRowOpen(hearth.LEntryId);
+        await tenor.CTenorPortraitExport(
+            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+
+        Assert.Equal("hearth", tenor.CTenorFileRead());
+        Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
+    }
+
+    private static CTenor TTenorPrepare(CAtelier atelier, CEnvoy envoy)
+    {
+        CTenor tenor = CTenor.CTenorCreate(atelier, static () => true, envoy);
+        tenor.CTenorVistaRestore();
+        return tenor;
+    }
+}

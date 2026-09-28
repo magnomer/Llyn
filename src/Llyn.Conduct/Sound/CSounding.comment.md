@@ -114,6 +114,12 @@ The pronunciations of a draft, shaped for the accent rows and the lectern.
 
 One pronunciation, shaped for the accent rows and the respelling resolve.
 
+## `public static CVariety CSoundingVarietyRead(string language, string variety)`
+
+A variety of the language, with the key of its label and the key of its flag.
+The label key is `Variety.` and the name, which a driver looks up and falls back to the name.
+The flag key comes from the engine, so the ensign's key format has one owner.
+
 ## `internal static IReadOnlyList<CTranscriptionDraft> CSoundingTranscriptionRead(`
 
 The transcriptions of a draft, shaped for the transcription rows and the lectern.

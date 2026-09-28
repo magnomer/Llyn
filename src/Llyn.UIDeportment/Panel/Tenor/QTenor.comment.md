@@ -19,7 +19,9 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QTenorAttach(PWindow host)`
 
-Binds the panel to the window, builds its deportment and its editor over the engine's ports, and wires their notices.
+Puts the panel to work through the Conduct tenor panel, which the forge builds with its own editor.
+The view wraps that editor for its editor page.
+The panel's loads and clears go straight to the lectern, so the veneer relays no draft.
 Both catalogs get their row fills here, where their sources are set.
 
 ## `internal void QTenorReset()`

@@ -443,7 +443,7 @@ public sealed class CPanel
             row.LVistaRowId,
             row.LVistaRowHeadword,
             row.LVistaRowLanguage,
-            row.LVistaRowEpithet ?? string.Empty,
+            row.LVistaRowEpithet,
             row.LVistaRowName,
             row.LVistaRowChosen);
     }

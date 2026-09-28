@@ -369,7 +369,7 @@ public class PDisplay : UserControl
 
     private static void PUsageApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not LUsageItem usage)
+        if (item is not QUsageItem usage)
         {
             return;
         }
@@ -381,32 +381,32 @@ public class PDisplay : UserControl
 
         if (QLook.QLookPartFind<Run>(container, "PUsageName") is Run name)
         {
-            name.Text = usage.LUsageItemName;
+            name.Text = usage.QUsageItemName;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PUsageEpithet") is Run epithet)
         {
-            epithet.Text = "\u2002" + usage.LUsageItemEpithet;
+            epithet.Text = "\u2002" + usage.QUsageItemEpithet;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PUsageTitle") is TextBlock title)
         {
-            title.Text = usage.LUsageItemTitle;
+            title.Text = usage.QUsageItemTitle;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PUsageOwner") is TextBlock owner)
         {
-            owner.Text = usage.LUsageItemOwner;
+            owner.Text = usage.QUsageItemOwner;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PUsageFlag") is Image flag)
         {
-            flag.Source = usage.LUsageItemFlag;
+            flag.Source = usage.QUsageItemFlag;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PUsageLanguage") is TextBlock language)
         {
-            language.Text = usage.LUsageItemLanguage;
+            language.Text = usage.QUsageItemLanguage;
         }
     }
 

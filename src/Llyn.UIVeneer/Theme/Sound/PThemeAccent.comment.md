@@ -66,7 +66,7 @@ It is drawn at full opacity, since the slot itself is what the hover reveals.
 ## `<DataTemplate x:Key="Theme.Accent.Row">`
 
 A row as the editor draws it: chip, bracketed field, play, lookup, download, and the plus and minus pair.
-`LAccentItem.LAccentItemApply` fills every named part from the row.
+`QAccentItem.QAccentItemRefine` fills every named part from the row.
 The row fill tags the reading cell with the field that grows over it while edited.
 The chip sits in the shared lead column, so the bracket starts where every other row's reading starts.
 
@@ -74,4 +74,4 @@ The chip sits in the shared lead column, so the bracket starts where every other
 
 A row as the reading view draws it: chip, bracketed text and play, nothing to type into.
 Its chip sits in the shared lead column too.
-`LAccentItem.LAccentItemApply` fills its named parts as well.
+`QAccentItem.QAccentItemRefine` fills its named parts as well.

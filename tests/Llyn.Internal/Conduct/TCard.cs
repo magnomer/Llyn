@@ -38,11 +38,11 @@ public sealed class TCard
     }
 
     [Fact]
-    public void PanelRowRead_MissingEpithet_ReadsEmptyAndKeepsTheMark()
+    public void PanelRowRead_EngineRow_CopiesEveryFieldAndTheMark()
     {
-        CVistaRow row = TInterfaceConduct.TPanelRowRead(TInterfaceConduct.TVistaRowCreate(4, null, true));
+        CVistaRow row = TInterfaceConduct.TPanelRowRead(TInterfaceConduct.TVistaRowCreate(4, "gloss", true));
 
-        Assert.Equal(new CVistaRow(4, "aqua", "Latin", string.Empty, "aqua (1)", true), row);
+        Assert.Equal(new CVistaRow(4, "aqua", "Latin", "gloss", "aqua (1)", true), row);
     }
 
     [Fact]

@@ -2,6 +2,7 @@ using System.Text.Json;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
+using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
@@ -104,6 +105,9 @@ internal static partial class TInterface
 
     internal static string TEnsignKeyFormat(string language, string variety) =>
         LEnsign.LEnsignKeyFormat(language, variety);
+
+    internal static string TEngineEnsignFormat(string language, string variety) =>
+        LSettingsPort.LEngineEnsignFormat(language, variety);
 
     internal static void TEnsignPathDelete(this LEnsign ensign, string path, Exception exception)
     {

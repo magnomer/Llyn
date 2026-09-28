@@ -10,7 +10,7 @@ Flags come from `LEnsignImage`, and the respelling mark from `CRespelling`.
 
 Holds the window, the pronunciation surface and its parts, and binds the accent list to its rows.
 `tonal` is the contour's own property, set as a value so no veneer type is named here.
-The accent list is attached to `LAccentItem.LAccentItemApply`, which fills each row.
+The accent list is attached to `QAccentItem.QAccentItemRefine`, which fills each row.
 
 ## `public void LLecternAccentShow()`
 
@@ -34,6 +34,7 @@ Writes the primary pronunciation, and collapses the surface and its label column
 ## `private void LLecternPrimaryShow()`
 
 Draws the primary pronunciation's variety as a flag when one is known, and as a label otherwise.
+The variety's label and flag keys come from `CSounding.CSoundingVarietyRead`.
 
 ## `private async Task LLecternFlagLoad(string language, bool flagged)`
 

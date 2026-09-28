@@ -169,6 +169,15 @@ public sealed class CDesk
         }
     }
 
+    internal void LDeskCohortStart(long? register)
+    {
+        CDeskCancel();
+        if (_cDeskVista is LVista vista)
+        {
+            CDeskStartRun(() => _cDeskPort.LEngineCohortStart(vista, register));
+        }
+    }
+
     private void CDeskStartRun(Func<LTenure> start)
     {
         try

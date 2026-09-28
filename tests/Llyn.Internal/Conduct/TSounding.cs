@@ -10,6 +10,17 @@ namespace Llyn.Tests;
 public sealed class TSounding
 {
     [Fact]
+    public void SoundingVarietyRead_NamedOrBlankVariety_KeysTheLabelAndTheFlag()
+    {
+        Assert.Equal(
+            new CVariety("Scottish", "Variety.Scottish", "English/Scottish"),
+            CSounding.CSoundingVarietyRead("English", "Scottish"));
+        Assert.Equal(
+            new CVariety(string.Empty, "Variety.", string.Empty),
+            CSounding.CSoundingVarietyRead("English", string.Empty));
+    }
+
+    [Fact]
     public void SoundingFanqieRead_FreshDraft_AnswersEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

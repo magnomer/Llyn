@@ -10,6 +10,7 @@ Before a vista arrives the side lists nothing and orders by headword.
 A typed query lists the match and announces the change.
 No order keeps the ordering, and a hidden language marks the side filtered.
 Selecting a row marks it without loading or saving.
+The shown entry's incoming usages arrive in their Conduct shape, each worded by its owner key.
 
 ## `private static LEntry TWingWaterSave(LEngine engine)`
 

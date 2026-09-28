@@ -21,7 +21,7 @@ The Entries are never refilled on their own.
 They are refilled whenever the catalog is, because the chosen Register may have just changed or vanished.
 A Register carrying no id stands for the whole workspace, which is what the engine reads an empty id as.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
-The controller picks the empty line's wording from the text in the entry search box.
+Conduct picks the empty line's key from whether the entry search holds text.
 
 ## `private void QCohortApply(FrameworkElement container, object item, string? _)`
 

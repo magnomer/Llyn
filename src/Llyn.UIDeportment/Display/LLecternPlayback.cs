@@ -63,13 +63,13 @@ public sealed class LLecternPlayback
 
     public void LLecternPlaybackHandle(object parameter)
     {
-        if (parameter is not LAccentItem row)
+        if (parameter is not QAccentItem row)
         {
             return;
         }
 
         _lLecternPlaybackDisplay.LDisplayRecordingPlay(
-            row.LAccentItemAudio, _lLecternPlaybackAtelier.CAtelierVolumeRead());
+            row.QAccentItemAudio, _lLecternPlaybackAtelier.CAtelierVolumeRead());
     }
 
     public void LLecternActionHandle()

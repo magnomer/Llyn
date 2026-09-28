@@ -66,6 +66,13 @@ public sealed class TEnsign
     }
 
     [Fact]
+    public void EnsignFormat_NamedOrBlankVariety_KeysTheFlagOrNothing()
+    {
+        Assert.Equal("English/Scottish", TInterface.TEngineEnsignFormat("English", "Scottish"));
+        Assert.Equal(string.Empty, TInterface.TEngineEnsignFormat("English", string.Empty));
+    }
+
+    [Fact]
     public async Task EnsignLoad_UnflaggedVariety_ReturnsNoRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

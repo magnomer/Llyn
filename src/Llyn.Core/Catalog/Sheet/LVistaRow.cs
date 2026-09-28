@@ -4,6 +4,6 @@ public sealed record LVistaRow(
     long LVistaRowId,
     string LVistaRowHeadword,
     string LVistaRowLanguage,
-    string? LVistaRowEpithet,
+    string LVistaRowEpithet,
     string LVistaRowName,
     bool LVistaRowChosen);

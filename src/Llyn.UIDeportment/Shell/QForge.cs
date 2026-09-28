@@ -91,19 +91,11 @@ public sealed class QForge
             static taxonomy => taxonomy.CTaxonomyVistaRestore());
     }
 
-    public LTenor QForgeTenorCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CTenor QForgeTenorCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LTenor(
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                _qForgeAtelier.CAtelierSettingsPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            tenor => tenor.LTenorVistaRestore(_qForgeAtelier));
+            CTenor.CTenorCreate(_qForgeAtelier, shownSeam, envoy),
+            static tenor => tenor.CTenorVistaRestore());
     }
 
     public LXiesheng QForgeXieshengCreate(

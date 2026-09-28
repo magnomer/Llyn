@@ -11,6 +11,6 @@ The panel copies it into its list and decides nothing.
 - `LVistaRowId` — The id of the record the row stands for.
 - `LVistaRowHeadword` — The stored headword, untouched.
 - `LVistaRowLanguage` — The language the record is in, which the panel turns into a flag.
-- `LVistaRowEpithet` — The reflex epithet shown beside the headword, or `null` when the workspace shows none.
+- `LVistaRowEpithet` — The reflex epithet shown beside the headword, or empty when the workspace shows none.
 - `LVistaRowName` — The headword as displayed, numbered when another listed row shares it.
 - `LVistaRowChosen` — Whether this row is the one the vista stands on.

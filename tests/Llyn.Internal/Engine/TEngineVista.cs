@@ -70,6 +70,18 @@ public sealed class TEngineVista
     }
 
     [Fact]
+    public void EntryFind_NoEpithetHeld_CarriesAnEmptyEpithet()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TVistaEntryCreate(engine, "water", "English");
+
+        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+
+        Assert.Equal(string.Empty, Assert.Single(engine.TEngineEntryFind(vista)).LVistaRowEpithet);
+    }
+
+    [Fact]
     public void EntryFind_VistaQuery_MatchesHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

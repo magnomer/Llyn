@@ -45,9 +45,9 @@ With no draft shown it clears instead.
 
 Fills the converters and the example typography, then hands the card lists their items.
 
-## `private void LLecternIncomingShow(IReadOnlyList<LUsage> usages)`
+## `private void LLecternIncomingShow(IReadOnlyList<CUsage> usages)`
 
-Lists one incoming row per usage, its owner named in the reader's words.
+Lists one incoming row per usage in its Conduct shape, its owner named under the key Conduct chose.
 The section collapses when no entry links here, because an empty relationship does not occupy the page.
 
 ## `private void LLecternEtymologyShow(string language, string text, IReadOnlyList<LTranslationTarget> etymons, bool derived)`

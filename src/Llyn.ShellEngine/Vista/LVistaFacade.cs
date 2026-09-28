@@ -127,7 +127,7 @@ internal sealed class LVistaFacade
                 entry.LEntryId,
                 entry.LEntryHeadword,
                 entry.LEntryLanguage,
-                epithets.GetValueOrDefault(entry.LEntryId),
+                epithets.GetValueOrDefault(entry.LEntryId, string.Empty),
                 names[index],
                 chosen == entry.LEntryId));
         }

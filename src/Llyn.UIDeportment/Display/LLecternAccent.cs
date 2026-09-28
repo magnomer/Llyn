@@ -14,7 +14,7 @@ public sealed class LLecternAccent
 {
     private readonly LDisplaySound _lLecternAccentDisplay;
 
-    private readonly ObservableCollection<LAccentItem> _lLecternAccentRow = [];
+    private readonly ObservableCollection<QAccentItem> _lLecternAccentRow = [];
 
     private CAtelier _lLecternAccentAtelier = null!;
 
@@ -79,7 +79,7 @@ public sealed class LLecternAccent
         _lLecternAccentContour = contour;
         _lLecternAccentTonal = tonal;
         accents.ItemsSource = _lLecternAccentRow;
-        QLookItem.QLookItemAttach(accents, LAccentItem.LAccentItemApply);
+        QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }
 
     public void LLecternAccentShow()
@@ -118,7 +118,8 @@ public sealed class LLecternAccent
         _lLecternAccentRow.Clear();
         foreach (CPronunciationDraft spoken in accents)
         {
-            _lLecternAccentRow.Add(LAccentItem.LAccentItemCreate(language, flagged, spoken, respelling));
+            _lLecternAccentRow.Add(QAccentItem.QAccentItemBuild(
+                CRespelling.CRespellingAccentRead(respelling, language, spoken), flagged, respelling));
         }
 
         LLecternPrimaryShow();
@@ -136,12 +137,12 @@ public sealed class LLecternAccent
     {
         LEntryDraft? draft = _lLecternAccentDisplay.LDisplayShown;
         string variety = draft?.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
+        CVariety primary = CSounding.CSoundingVarietyRead(draft?.LEntryDraftLanguage ?? string.Empty, variety);
         _lLecternAccentFlag.Source = draft is null
             ? null
-            : LAccentItem.LAccentFlagFind(
-                draft.LEntryDraftLanguage, _lLecternAccentDisplay.LDisplayFlaggedCheck(), variety);
+            : QAccentItem.QAccentEnsignRefine(primary, _lLecternAccentDisplay.LDisplayFlaggedCheck());
         _lLecternAccentLabel.Text = _lLecternAccentFlag.Source is null
-            ? LAccentItem.LAccentLabelFormat(variety)
+            ? QAccentItem.QAccentLabelRefine(primary)
             : string.Empty;
     }
 
@@ -152,7 +153,7 @@ public sealed class LLecternAccent
             return;
         }
 
-        List<string> varieties = _lLecternAccentRow.Select(static row => row.LAccentItemVariety).ToList();
+        List<string> varieties = _lLecternAccentRow.Select(static row => row.QAccentItemVariety).ToList();
         varieties.Add(
             _lLecternAccentDisplay.LDisplayShown?.LEntryDraftPronunciation?.LPronunciationDraftVariety
             ?? string.Empty);
@@ -172,9 +173,9 @@ public sealed class LLecternAccent
             return;
         }
 
-        foreach (LAccentItem row in _lLecternAccentRow)
+        foreach (QAccentItem row in _lLecternAccentRow)
         {
-            row.LAccentFlagUpdate(language, flagged);
+            row.QAccentFlagRefine(flagged);
         }
 
         LLecternPrimaryShow();

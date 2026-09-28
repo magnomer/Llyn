@@ -1,3 +1,5 @@
+using System;
+
 namespace Llyn.Conduct;
 
 public sealed record CUsage(
@@ -8,4 +10,24 @@ public sealed record CUsage(
     string CUsageLanguage,
     CStateValue CUsageTitle,
     bool CUsageQuoted,
-    bool CUsageCollocated);
+    bool CUsageCollocated)
+{
+    public string CUsageOwnerKey =>
+        CUsageCollocated ? "Display.CollocationSingle" : CUsageQuoted ? "Vita.Example" : "Display.MeaningSingle";
+
+    public string? CUsageTitleKey => CUsageTitle.CStateValueUncertain ? "Display.Unknown" : null;
+
+    public void CUsageOpen(Func<long, bool> exampleSeam, Func<long, bool> entrySeam)
+    {
+        ArgumentNullException.ThrowIfNull(exampleSeam);
+        ArgumentNullException.ThrowIfNull(entrySeam);
+
+        if (CUsageQuoted)
+        {
+            exampleSeam(CUsageId);
+            return;
+        }
+
+        entrySeam(CUsageEntry);
+    }
+}

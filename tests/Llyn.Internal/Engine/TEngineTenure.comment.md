@@ -96,6 +96,14 @@ A fresh membership start puts the Tag on the first card.
 
 A fresh membership start without a Tag is a blank entry that reads unchanged.
 
+## `public void CohortStart_RegisterGiven_StartsAFreshEntryCarryingIt()`
+
+A fresh cohort start puts the Register on the first card.
+
+## `public void CohortStart_NoRegister_StartsABlankEntry()`
+
+A fresh cohort start without a Register is a blank entry that reads unchanged.
+
 ## `public void TenureDefer_GlossTwice_OneChronicleStep()`
 
 Two deferrals of one gloss text reach the chronicle as one step, so one undo clears the gloss.

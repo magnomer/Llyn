@@ -21,6 +21,12 @@ Only the editor builds one, so the constructor is internal.
 Every stored Source in author order, as the sentence menu offers them.
 A typed word instead ranks them by usage, like the other pickers.
 
+## `internal static CRegister LCardRegisterRead(LRegister register)`
+
+The Conduct copy of a Register the engine handed over, its id and its shown name.
+The name goes through `CFolio.CFolioStateRead`, the one map of a written value.
+It is the one owner of that map, so the chip search and the tenor rows share it.
+
 ## `internal static CTag LCardTagRead(LTag tag)`
 
 The Conduct copy of a Tag the engine handed over, its id and its text.

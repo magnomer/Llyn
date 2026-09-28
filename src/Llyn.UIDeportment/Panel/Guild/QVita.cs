@@ -24,7 +24,7 @@ internal sealed class QVita
         QVitaCitation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QVitaCitationHandle));
 
         QLookItem.QLookItemAttach(QFellow, QFellowItem.QFellowItemApply);
-        QLookItem.QLookItemAttach(QVitaCitation, LUsageItem.LUsageItemApply);
+        QLookItem.QLookItemAttach(QVitaCitation, QUsageItem.QUsageItemRefine);
     }
 
     private StackPanel QVitaBody => QContract.QContractFind<StackPanel>(_qVitaSurface, "PVitaBody");
@@ -61,7 +61,7 @@ internal sealed class QVita
         QVitaWork.Text = vita.CVitaWork;
         QVitaTally.Text = vita.CVitaTally;
         QFellow.ItemsSource = QFellowItem.QFellowItemBuild(vita.CVitaFellows);
-        QVitaCitation.ItemsSource = LUsageItem.LUsageItemBuild(vita.CVitaUsages);
+        QVitaCitation.ItemsSource = QUsageItem.QUsageItemBuild(vita.CVitaUsages);
         QVitaFellowSection.Visibility = QLook.QLookVisibleRead(vita.CVitaFellowShown);
         QVitaCitationSection.Visibility = QLook.QLookVisibleRead(vita.CVitaUsageShown);
         QVitaBody.Visibility = QLook.QLookVisibleRead(held);
@@ -75,7 +75,7 @@ internal sealed class QVita
 
     private void QVitaCitationHandle(object sender, RoutedEventArgs e)
     {
-        QSender.QSenderSourceRead<LUsageItem>(e)?.LUsageItemShow(
+        QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage.CUsageOpen(
             _qVitaHost.PWindowExampleShow,
             _qVitaHost.PWindowEntryShow);
     }

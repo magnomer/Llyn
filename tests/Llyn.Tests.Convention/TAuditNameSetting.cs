@@ -13,7 +13,7 @@ internal static class TAuditNameSetting
     public const string TAuditCommandSuffix = "Command";
     public const string TAuditCancelSuffix = "CancelCommand";
 
-    public const int TAuditPrefixCeiling = 202;
+    public const int TAuditPrefixCeiling = 199;
 
     public static readonly string[] TAuditPrefixes =
     [

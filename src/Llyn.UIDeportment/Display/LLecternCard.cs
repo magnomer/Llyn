@@ -14,7 +14,7 @@ public sealed class LLecternCard
 {
     private readonly LDisplay _lLecternCardDisplay;
 
-    private readonly ObservableCollection<LUsageItem> _lLecternCardUsage = [];
+    private readonly ObservableCollection<QUsageItem> _lLecternCardUsage = [];
 
     private CAtelier _lLecternCardAtelier = null!;
 
@@ -179,17 +179,12 @@ public sealed class LLecternCard
         _lLecternCardPhrase.Visibility = draft.LEntryDraftCollocated ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void LLecternIncomingShow(IReadOnlyList<LUsage> usages)
+    private void LLecternIncomingShow(IReadOnlyList<CUsage> usages)
     {
         _lLecternCardUsage.Clear();
-        foreach (LUsage usage in usages)
+        foreach (CUsage usage in usages)
         {
-            _lLecternCardUsage.Add(new LUsageItem(
-                usage,
-                QLocalizationCatalog.QLocalizationTextRead(LDisplay.LDisplayOwnerRead(usage)),
-                QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
-                string.Empty,
-                usage.LUsageEpithet));
+            _lLecternCardUsage.Add(new QUsageItem(usage));
         }
 
         _lLecternCardReferral.Visibility = _lLecternCardUsage.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -249,9 +244,9 @@ public sealed class LLecternCard
 
     public void LLecternIncomingHandle(object sender)
     {
-        if (sender is FrameworkElement { DataContext: LUsageItem item })
+        if (sender is FrameworkElement { DataContext: QUsageItem item })
         {
-            _lLecternCardEntry(item.LUsageItemEntry);
+            _lLecternCardEntry(item.QUsageItemEntry);
         }
     }
 

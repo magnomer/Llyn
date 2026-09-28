@@ -180,3 +180,4 @@ The engine subject a driver's subject names, mapped member by member by name lik
 
 The Conduct copy of one entry a vista lists, carrying its chosen flag.
 Every entry list and the prospect popup map through here, so the copy has one home.
+It copies the engine's empty epithet as it stands, so the map holds no fallback.

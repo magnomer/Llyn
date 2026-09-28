@@ -146,6 +146,8 @@ internal static class TAuditChainSetting
             "CMarkdown",
             "CRespelling",
             "CRespellingMark",
+            "CVariety",
+            "CAccent",
             "CCatalogExample",
             "CCatalogAuthor",
             "CVita",
@@ -192,6 +194,7 @@ internal static class TAuditChainSetting
             "CRepertoire",
             "CShelf",
             "CTaxonomy",
+            "CTenor",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -323,16 +326,16 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 77,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 249,
-        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 174,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 23,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 232,
+        ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 145,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 21,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 23,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 21,
         ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
         ["reach:Llyn.Conduct>Llyn.Core"] = 1,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
         ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
-        ["seal:Llyn.UIDeportment>Llyn.Core"] = 3,
+        ["seal:Llyn.UIDeportment>Llyn.Core"] = 2,
         ["seal:Llyn.UIDeportment>Llyn.ShellEngine"] = 0,
     };
 

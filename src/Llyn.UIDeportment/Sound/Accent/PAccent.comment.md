@@ -13,7 +13,7 @@ Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, and what was waiting is written before the read.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
-## `private LRequest PAccentRequestCreate(LAccentItem row)`
+## `private LRequest PAccentRequestCreate(QAccentItem row)`
 
 A row's typed text becomes a respelling request while the row prints its respelling, and a reading request otherwise.
 The row prints the form the switch picks, so the text it holds belongs to that form.
@@ -45,7 +45,7 @@ A file gone from disk is cleared off the row instead, so the button stops offeri
 
 The button that raised the command, so the menu opens under it rather than under the list.
 
-## `private LAccentItem? PAccentFind(long id)`
+## `private QAccentItem? PAccentFind(long id)`
 
 The shown row with one pronunciation id, or nothing when the draft no longer has it.
 
@@ -65,7 +65,7 @@ The primary id is kept, so the primary row's own plus and minus reach the right 
 The primary variety chip is refreshed in the same pass.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
 
-## `private LAccentItem PAccentUpdate(LAccentItem row, CPronunciationDraft spoken)`
+## `private QAccentItem PAccentUpdate(QAccentItem row, CPronunciationDraft spoken)`
 
 Brings a shown row up to the draft row with the same id.
 A changed variety rebuilds the row, because its label and flag are fixed at creation.
@@ -76,6 +76,7 @@ The audio is always taken from the draft, because the row never edits it.
 
 Draws the primary pronunciation's variety as a flag when one is known, and as a label otherwise.
 Nothing is drawn for a primary without a variety.
+The variety's label and flag keys come from `CSounding.CSoundingVarietyRead`.
 
 ## `private async Task PAccentFlagLoad(string language, bool flagged)`
 

@@ -42,6 +42,12 @@ Starts a fresh entry over the vista and puts the Tag on its first card before an
 The tag goes through `LTenureTagAdd`, so the clerk's pick rule applies unchanged.
 A null Tag leaves the fresh entry blank.
 
+## `internal LTenure LEngineCohortStart(LVista vista, long? register)`
+
+Starts a fresh entry over the vista and puts the Register on its first card before anyone sees it.
+The register goes through `LTenureRegisterAdd`, so the clerk's pick rule applies unchanged.
+A null Register leaves the fresh entry blank.
+
 ## `internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)`
 
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.

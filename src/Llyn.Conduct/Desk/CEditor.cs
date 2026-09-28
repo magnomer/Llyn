@@ -175,9 +175,4 @@ public sealed class CEditor
             : pronunciation;
         CEditorTenure?.LTenureVarietySet(target, variety);
     }
-
-    public void CEditorRegisterAdd(long register)
-    {
-        CEditorTenure?.LTenureRegisterAdd(register);
-    }
 }

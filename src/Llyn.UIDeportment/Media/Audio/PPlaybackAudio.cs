@@ -103,7 +103,7 @@ public partial class PEditor
     private void PPlaybackTrayShow()
     {
         bool audible = _pRecording is not null
-            || _pAccentItem.Any(static row => row.LAccentItemAudio.Length > 0);
+            || _pAccentItem.Any(static row => row.QAccentItemAudio.Length > 0);
         PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

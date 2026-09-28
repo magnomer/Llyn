@@ -144,6 +144,10 @@ The same fresh start for the shelf, already citing the Source in the first sente
 
 The same fresh start for the taxonomy, already carrying the Tag on the first card.
 
+## `internal void LDeskCohortStart(long? register)`
+
+The same fresh start for the tenor panel, already carrying the Register on the first card.
+
 ## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
 
 Builds a desk that starts under its own origin and subject, so no owner decides the start.

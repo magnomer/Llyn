@@ -18,6 +18,8 @@ public interface LDraftPort
 
     LTenure LEngineMembershipStart(LVista vista, long? tag);
 
+    LTenure LEngineCohortStart(LVista vista, long? register);
+
     void LEngineDraftDelete(long id);
 
     void LEngineObserverAttach(Action<LBulletin> observer);

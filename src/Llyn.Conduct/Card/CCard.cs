@@ -59,8 +59,15 @@ public sealed class CCard
     public IReadOnlyList<CRegister> CCardRegisterFind(string word, string language)
     {
         return _cCardEntryPort.LEngineRegisterFind(word, language)
-            .Select(static row => new CRegister(row.LRegisterId, row.LRegisterName.LStateValueShown ?? string.Empty))
+            .Select(LCardRegisterRead)
             .ToList();
+    }
+
+    internal static CRegister LCardRegisterRead(LRegister register)
+    {
+        ArgumentNullException.ThrowIfNull(register);
+
+        return new CRegister(register.LRegisterId, CFolio.CFolioStateRead(register.LRegisterName).CStateValueText);
     }
 
     public IReadOnlyList<CCatalogSituation> CCardSituationFind(string word)

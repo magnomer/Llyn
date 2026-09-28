@@ -417,6 +417,35 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void CohortStart_RegisterGiven_StartsAFreshEntryCarryingIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LRegister register = engine.TEngineRegisterCreate("formal");
+        LVista vista = engine.TEngineVistaStart("cohort", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineCohortStart(vista, register.LRegisterId);
+
+        Assert.Contains(
+            tenure.TTenureRead()?.LDraftContent.LEntryDraftMeanings[0].LCardDraftRegister ?? [],
+            row => row.LRegisterDraftId == register.LRegisterId);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void CohortStart_NoRegister_StartsABlankEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista vista = engine.TEngineVistaStart("cohort", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineCohortStart(vista, null);
+
+        Assert.False(tenure.TTenureChangeCheck());
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public void TenureDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

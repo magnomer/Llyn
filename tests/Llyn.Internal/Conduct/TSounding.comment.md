@@ -5,6 +5,11 @@
 Covers the editor's sound sheet gates and reads end to end, driven with no window.
 A real desk holds the entry, and fake ports let a test shape or refuse each engine answer.
 
+## `public void SoundingVarietyRead_NamedOrBlankVariety_KeysTheLabelAndTheFlag()`
+
+A named variety keys its label under `Variety.` and its flag under the ensign format.
+A blank variety has no flag key, and its label key finds no text.
+
 ## `public void SoundingFanqieRead_FreshDraft_AnswersEmpty()`
 
 A fresh draft has no stored entry, so every read answers empty without asking the engine.

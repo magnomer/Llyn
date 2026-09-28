@@ -238,6 +238,10 @@ internal static class TInterfaceConduct
 
     internal static void TDeskMembershipStart(this CDesk desk, long? tag) => desk.LDeskMembershipStart(tag);
 
+    internal static void TDeskCohortStart(this CDesk desk, long? register) => desk.LDeskCohortStart(register);
+
+    internal static IReadOnlyList<CUsage> TDisplayIncomingRead(this LDisplay display) => display.LDisplayIncomingRead();
+
     internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista) =>
         footnote.LFootnoteVistaRestore(parent, vista);
 
@@ -249,7 +253,7 @@ internal static class TInterfaceConduct
 
     internal static void TImprintSave(this CImprint imprint) => imprint.LImprintSave();
 
-    internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
+    internal static LVistaRow TVistaRowCreate(long id, string epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 
     internal static CCard TCardCreate(LEngine engine, CDesk desk) => new(

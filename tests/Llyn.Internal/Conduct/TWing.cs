@@ -30,6 +30,27 @@ public sealed class TWing
     }
 
     [Fact]
+    public void WingDisplayIncomingRead_EntryPointedAt_AnswersTheCitingCardsInTheirShape()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry target = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("eau", "French", "", "", [], []));
+        LCardDraft card = TInterface.TCardCreate("liquid", 1) with { LCardDraftTranslation = [target.LEntryId] };
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [card], []));
+        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        wing.CWingVistaRestore("left");
+
+        wing.CWingEntryOpen(target.LEntryId);
+
+        CUsage usage = Assert.Single(wing.CWingDisplay.TDisplayIncomingRead());
+        Assert.Equal(water.LEntryId, usage.CUsageEntry);
+        Assert.Equal("water", usage.CUsageName);
+        Assert.Equal("English", usage.CUsageLanguage);
+        Assert.Equal("Display.MeaningSingle", usage.CUsageOwnerKey);
+    }
+
+    [Fact]
     public void WingEntryOpen_RightSide_SavesTheRightSlot()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

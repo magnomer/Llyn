@@ -22,6 +22,9 @@ internal static partial class TInterface
     internal static LTenure TEngineMembershipStart(this LEngine engine, LVista vista, long? tag) =>
         engine.LEngineTenure.LEngineMembershipStart(vista, tag);
 
+    internal static LTenure TEngineCohortStart(this LEngine engine, LVista vista, long? register) =>
+        engine.LEngineTenure.LEngineCohortStart(vista, register);
+
     internal static void TEngineDelaySet(this LEngine engine, int delay) =>
         engine.LEngineTenure.LEngineTenureDelay = delay;
 

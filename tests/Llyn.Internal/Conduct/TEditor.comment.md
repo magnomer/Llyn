@@ -13,11 +13,11 @@ Field gates write the headword, the trimmed note and the reading, and an empty l
 A variety lands on the primary reading the draft holds, and a blank one or a missing row changes nothing.
 The reads answer empty on an empty desk, and an added etymon reads back by headword.
 A field edit made while the desk fills its controls is dropped.
-The seed gate links a register to the first card.
 A fresh occurrence start opens a draft already linked to its Situation, and a blank one without.
 A fresh quotation start replaces the held draft with one already citing its Example.
 A fresh footnote start opens a draft already citing its Source in the first sentence.
 A fresh membership start replaces the held draft with one already carrying its Tag.
+A fresh cohort start replaces the held draft with one already carrying its Register.
 A recording search over the held draft streams the source, the recording and the end to the sink.
 
 ## `private const string TEditorClipPack`

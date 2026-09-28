@@ -301,7 +301,7 @@ public sealed class LDisplay
         return prefix + (count == 0 ? LDisplayUnknown : LFrequency.LFrequencyScale[count - 1]);
     }
 
-    public IReadOnlyList<LUsage> LDisplayIncomingRead()
+    public IReadOnlyList<CUsage> LDisplayIncomingRead()
     {
         if (LDisplayChosen is not long id)
         {
@@ -320,7 +320,7 @@ public sealed class LDisplay
         }
 
         Exception? missed = null;
-        List<LUsage> usages = new(incoming.Count);
+        List<CUsage> usages = new(incoming.Count);
         foreach (LUsage usage in incoming)
         {
             string epithet;
@@ -334,7 +334,7 @@ public sealed class LDisplay
                 missed ??= exception;
             }
 
-            usages.Add(usage with { LUsageEpithet = epithet });
+            usages.Add(COeuvre.COeuvreUsageRead(usage with { LUsageEpithet = epithet }));
         }
 
         if (missed is not null)
@@ -343,13 +343,6 @@ public sealed class LDisplay
         }
 
         return usages;
-    }
-
-    public static string LDisplayOwnerRead(LUsage usage)
-    {
-        ArgumentNullException.ThrowIfNull(usage);
-
-        return usage.LUsageCollocated ? "Display.CollocationSingle" : "Display.MeaningSingle";
     }
 
     public IReadOnlyList<LTranslationTarget> LDisplayTargetRead()

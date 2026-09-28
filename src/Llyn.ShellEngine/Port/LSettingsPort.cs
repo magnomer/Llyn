@@ -56,4 +56,11 @@ public interface LSettingsPort
     IReadOnlyList<string> LEngineLanguageRead();
 
     string LEngineGlossRead();
+
+    static string LEngineEnsignFormat(string language, string variety)
+    {
+        ArgumentNullException.ThrowIfNull(variety);
+
+        return variety.Length == 0 ? string.Empty : LEnsign.LEnsignKeyFormat(language, variety);
+    }
 }

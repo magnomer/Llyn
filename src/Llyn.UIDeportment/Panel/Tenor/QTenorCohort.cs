@@ -14,7 +14,7 @@ internal sealed partial class QTenor
         IReadOnlyList<CVistaRow> read;
         try
         {
-            read = _lTenor.LTenorCohortRead();
+            read = _cTenor.CTenorCohortRead();
         }
         catch (Exception exception)
         {
@@ -39,7 +39,7 @@ internal sealed partial class QTenor
         LSplice.LSpliceApply(
             _qCohortList, fresh, QCohortItem.QCohortItemMatch, QCohortItem.QCohortItemSync);
 
-        QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _lTenor.LTenorEmptyRead(QQuest.Text));
+        QCohortEmpty.SetResourceReference(TextBlock.TextProperty, _cTenor.CTenorEmptyKey);
         QCohortEmpty.Visibility = _qCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -60,7 +60,7 @@ internal sealed partial class QTenor
             return;
         }
 
-        _lTenor.LTenorPanel.CPanelRowOpen(item.QCohortItemId);
+        _cTenor.CTenorPanel.CPanelRowOpen(item.QCohortItemId);
     }
 
     private void QCohortApply(FrameworkElement container, object item, string? _)
