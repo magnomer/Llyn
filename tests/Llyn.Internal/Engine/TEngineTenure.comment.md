@@ -58,6 +58,28 @@ The check writes the queued name first, so the long hold never has to pass.
 
 An author tenure on a stored Author reads its name, stays unchanged until a name is deferred, then renames it.
 
+## `public void OccurrenceStart_SituationGiven_StartsAFreshEntryAlreadyLinked()`
+
+A fresh occurrence start links the Situation to the first card before it returns.
+The draft is unstored, so the link is the only change.
+
+## `public void OccurrenceStart_NoSituation_StartsABlankEntry()`
+
+Without a Situation the start is a plain fresh entry, unchanged and with no link.
+
+## `public void TenureStorable_UnnamedOccurrence_AnswersFalseUntilTheHeadwordIsWritten()`
+
+A linked occurrence has changed but refuses its store while it has no headword.
+The storable verdict never writes the queue, so a waiting headword counts only after the change check writes it.
+
+## `public void TenureChangeCheck_FreshEntry_AnswersUnchanged()`
+
+A fresh blank entry reads unchanged and not storable.
+
+## `public void QuotationStart_ExampleGiven_StartsAFreshEntryCitingIt()`
+
+A fresh quotation start cites the Example in the first sentence of the first card.
+
 ## `public void TenureDefer_GlossTwice_OneChronicleStep()`
 
 Two deferrals of one gloss text reach the chronicle as one step, so one undo clears the gloss.

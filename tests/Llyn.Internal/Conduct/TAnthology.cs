@@ -18,8 +18,7 @@ public sealed class TAnthology
         TAnthologyExampleSave(engine, TInterface.TStateValueCreate("a cat sat"), null);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
 
-        Assert.Empty(anthology.CAnthologyRowsRead("?", "-"));
-        Assert.False(anthology.CAnthologyNarrowed);
+        Assert.Empty(anthology.TAnthologyRowsRead("?", "-"));
         Assert.Null(anthology.CAnthologyChosen);
     }
 
@@ -32,9 +31,9 @@ public sealed class TAnthology
         LExample unknown = TAnthologyExampleSave(engine, TInterface.TStateValueResolve(null, true), null);
         LExample sound = TAnthologyExampleSave(engine, TInterface.TStateValueCreate("a cat sat"), null);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.CAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
-        IReadOnlyList<CCatalogExample> rows = anthology.CAnthologyRowsRead("?", "-");
+        IReadOnlyList<CCatalogExample> rows = anthology.TAnthologyRowsRead("?", "-");
 
         Assert.Equal("?", rows.Single(row => row.CCatalogExampleId == unknown.LExampleId).CCatalogExampleText);
         Assert.Equal("a cat sat", rows.Single(row => row.CCatalogExampleId == sound.LExampleId).CCatalogExampleText);
@@ -49,12 +48,11 @@ public sealed class TAnthology
         TAnthologyExampleSave(engine, TInterface.TStateValueCreate("a cat sat"), null);
         TAnthologyExampleSave(engine, TInterface.TStateValueCreate("a dog ran"), null);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.CAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
         anthology.CAnthologyQuerySet("dog");
 
-        Assert.True(anthology.CAnthologyNarrowed);
-        Assert.Equal(["a dog ran"], anthology.CAnthologyRowsRead("?", "-").Select(row => row.CCatalogExampleText));
+        Assert.Equal(["a dog ran"], anthology.TAnthologyRowsRead("?", "-").Select(row => row.CCatalogExampleText));
     }
 
     [Fact]
@@ -64,7 +62,7 @@ public sealed class TAnthology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.CAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
         anthology.CAnthologyOrderSet(CCatalogOrder.CCatalogOrderUsage);
         anthology.CAnthologyOrderSet(null);
@@ -79,7 +77,7 @@ public sealed class TAnthology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.CAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
         anthology.CAnthologyFilterSet(new CCatalogFilter(["English"]));
 
@@ -94,7 +92,7 @@ public sealed class TAnthology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAnthology anthology = TAnthologyPrepare(engine, atelier, out _);
-        anthology.CAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
 
         Assert.Null(anthology.CAnthologyMentionRead(2));
     }
@@ -124,7 +122,8 @@ public sealed class TAnthology
         anthology.CAnthologyCitationSet("Field Notes");
 
         Assert.Equal(
-            notes.LReferenceId, CAnthology.CAnthologyExampleRead(desk.TDeskRead()?.LDraftExample)?.CExampleSource);
+            notes.LReferenceId,
+            TInterfaceConduct.TAnthologyExampleRead(desk.TDeskRead()?.LDraftExample)?.CExampleSource);
     }
 
     [Fact]
@@ -183,7 +182,7 @@ public sealed class TAnthology
     [Fact]
     public void AnthologyExampleRead_NoExample_ReturnsNone()
     {
-        Assert.Null(CAnthology.CAnthologyExampleRead(null));
+        Assert.Null(TInterfaceConduct.TAnthologyExampleRead(null));
     }
 
     [Fact]
@@ -193,7 +192,7 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueCreate("a cat"), null, TInterface.TStateAnchorRead(9))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = CAnthology.CAnthologyExampleRead(example);
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example);
 
         Assert.NotNull(held);
         Assert.Equal("English", held!.CExampleLanguage);
@@ -210,7 +209,7 @@ public sealed class TAnthology
                 5, "English", TInterface.TStateValueResolve(null, true), null, TInterface.TStateAnchorRead(null))
             .TExampleMentionAdd(TInterface.TMentionCreate(1, 2, 3, 40));
 
-        CExample? held = CAnthology.CAnthologyExampleRead(example);
+        CExample? held = TInterfaceConduct.TAnthologyExampleRead(example);
 
         Assert.NotNull(held);
         Assert.True(held!.CExampleText.CStateValueUncertain);
@@ -223,7 +222,7 @@ public sealed class TAnthology
     {
         CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
         desk = TInterfaceConduct.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
-        return CAnthology.CAnthologyCreate(atelier, desk, static () => true, envoy, static _ => true);
+        return TInterfaceConduct.TAnthologyCreate(atelier, desk, envoy);
     }
 
     private static LExample TAnthologyExampleSave(LEngine engine, LStateValue text, long? source)

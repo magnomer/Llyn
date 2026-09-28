@@ -30,6 +30,28 @@ internal sealed class LTenureFacade
         return LEngineTenureStart(vista.LVistaTab, subject, id);
     }
 
+    internal LTenure LEngineOccurrenceStart(LVista vista, long? situation)
+    {
+        LTenure started = LEngineTenureStart(vista, null);
+        if (situation is long linked)
+        {
+            started.LTenureSituationAdd(linked);
+        }
+
+        return started;
+    }
+
+    internal LTenure LEngineQuotationStart(LVista vista, long? example)
+    {
+        LTenure started = LEngineTenureStart(vista, null);
+        if (example is long cited)
+        {
+            started.LTenureExampleAdd(cited);
+        }
+
+        return started;
+    }
+
     internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)
     {
         LDraft started = subject switch

@@ -355,24 +355,40 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void SituationAdd_FreshDraft_LinksTheFirstCard()
+    public void OccurrenceStart_SituationGiven_OpensAFreshDraftAlreadyLinked()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue text = TInterface.TStateValueCreate("at the market");
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
         CEditor editor = TEditorPrepare(engine, "occurrence");
-        editor.CEditorEntryOpen(null);
+        List<CEntryDraft> shown = [];
+        editor.CEditorDraftChanged += shown.Add;
 
-        editor.TEditorSituationAdd(situation.LSituationId);
+        editor.CEditorDesk.TDeskOccurrenceStart(situation.LSituationId);
 
+        Assert.True(editor.CEditorDesk.CDeskHeld);
+        Assert.False(editor.CEditorDesk.CDeskStored);
         Assert.Contains(
-            editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSituation ?? [],
+            Assert.Single(shown).CEntryDraftMeanings[0].CCardDraftSituation,
             row => row.CSituationDraftId == situation.LSituationId);
     }
 
     [Fact]
-    public void ExampleAdd_FreshDraft_FillsTheFirstSentence()
+    public void OccurrenceStart_NoSituation_OpensABlankDraft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CEditor editor = TEditorPrepare(engine, "occurrence");
+
+        editor.CEditorDesk.TDeskOccurrenceStart(null);
+
+        Assert.True(editor.CEditorDesk.CDeskHeld);
+        Assert.False(editor.CEditorDesk.CDeskChanged);
+    }
+
+    [Fact]
+    public void QuotationStart_ExampleGiven_OpensAFreshDraftCitingIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -380,12 +396,15 @@ public sealed class TEditor
             0, "English", TInterface.TStateValueCreate("Water is wet."), null, LStateAnchor.LStateAnchorUnspecified));
         CEditor editor = TEditorPrepare(engine, "quotation");
         editor.CEditorEntryOpen(null);
+        long replaced = editor.CEditorDesk.CDeskId;
 
-        editor.TEditorExampleAdd(example.LExampleId);
+        editor.CEditorDesk.TDeskQuotationStart(example.LExampleId);
 
         CExampleDraft? cited =
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal("Water is wet.", cited?.CExampleDraftText.CStateValueText);
+        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
     [Fact]

@@ -23,7 +23,7 @@ public sealed class CCorpus
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CCorpusEditor = editor;
         CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
-        CCorpusAnthology = CAnthology.CAnthologyCreate(
+        CCorpusAnthology = CAnthology.LAnthologyCreate(
             atelier, CCorpusDesk, shownSeam, envoy, store => CCorpusSession!.CSessionFinish(store));
         CCorpusQuotation = new CQuotation(
             atelier.CAtelierEntryPort,
@@ -47,7 +47,7 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelEdited += id => CCorpusSession.CSessionStart(id);
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
-            draft => LCorpusExampleUpdate(CAnthology.CAnthologyDraftRead(draft));
+            draft => LCorpusExampleUpdate(CAnthology.LAnthologyDraftRead(draft));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
     }
@@ -113,7 +113,7 @@ public sealed class CCorpus
     {
         try
         {
-            return CAnthology.CAnthologyDraftRead(CCorpusDesk.CDeskRead());
+            return CAnthology.LAnthologyDraftRead(CCorpusDesk.CDeskRead());
         }
         catch (Exception exception)
         {
@@ -141,7 +141,7 @@ public sealed class CCorpus
             return;
         }
 
-        if (!CCorpusAnthology.CAnthologyNarrowed)
+        if (!CCorpusAnthology.LAnthologyNarrowed)
         {
             return;
         }
@@ -281,11 +281,7 @@ public sealed class CCorpus
         CCorpusDesk.CDeskCancel();
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         CCorpusQuotation.CQuotationPanel.CPanelFreshOpen();
-        CCorpusEditor.CEditorEntryOpen(null);
-        if (chosen is long id)
-        {
-            CCorpusEditor.LEditorExampleAdd(id);
-        }
+        CCorpusEditor.CEditorDesk.LDeskQuotationStart(chosen);
     }
 
     public bool CCorpusLeaveConfirm()
@@ -332,7 +328,7 @@ public sealed class CCorpus
 
     public IReadOnlyList<CCatalogExample> CCorpusRowsRead(string unknown, string unwritten)
     {
-        IReadOnlyList<CCatalogExample> rows = CCorpusAnthology.CAnthologyRowsRead(unknown, unwritten);
+        IReadOnlyList<CCatalogExample> rows = CCorpusAnthology.LAnthologyRowsRead(unknown, unwritten);
         if (LCorpusRowShown && !rows.Any(static row => row.CCatalogExampleChosen))
         {
             CCorpusExampleClose();
@@ -382,7 +378,7 @@ public sealed class CCorpus
             "corpus", CSubject.CSubjectExample, CCatalogOrder.CCatalogOrderText);
         LVista quotation = _cCorpusAtelier.CAtelierVistaStart(
             "quotation", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
-        CCorpusAnthology.CAnthologyVistaRestore(vista);
+        CCorpusAnthology.LAnthologyVistaRestore(vista);
         CCorpusQuotation.LQuotationVistaRestore(vista, quotation);
         CCorpusEditor.CEditorVistaRestore(quotation);
     }

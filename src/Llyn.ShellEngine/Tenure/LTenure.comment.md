@@ -105,6 +105,20 @@ Whether the draft carries no refusal the engine knows ahead, once the waiting re
 It writes first, so a name typed a moment ago counts.
 A save asks it before storing, and a store button asks it before enabling.
 
+## `public bool LTenureChangeCheck()`
+
+Whether the draft differs from what is stored, once the waiting requests are written.
+It writes first, so a leave question sees what was typed a moment ago.
+
+## `public bool LTenureStorable`
+
+Whether the draft has changed and carries no refusal, read without writing the queue.
+A store button asks it on every repaint, so it must not write.
+
+## `private static bool LTenureReadyCheck(LTenureState state)`
+
+The one owner of the no-refusal rule, shared by the ready check and the storable verdict.
+
 ## `public void LTenureHeadwordSet(string text)`
 
 Defers the typed headword.

@@ -139,8 +139,19 @@ public sealed partial class LTenure
     public bool LTenureReadyCheck()
     {
         LTenurePersist();
-        return LTenureStateRead().LTenureStateRefusal is null;
+        return LTenureReadyCheck(LTenureStateRead());
     }
+
+    public bool LTenureChangeCheck()
+    {
+        LTenurePersist();
+        return LTenureStateRead().LTenureStateChanged;
+    }
+
+    public bool LTenureStorable =>
+        LTenureStateRead() is { LTenureStateChanged: true } state && LTenureReadyCheck(state);
+
+    private static bool LTenureReadyCheck(LTenureState state) => state.LTenureStateRefusal is null;
 
     public void LTenureHeadwordSet(string text)
     {

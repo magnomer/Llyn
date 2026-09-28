@@ -14,7 +14,7 @@ The Example map links its excerpt only while the text reads soundly.
 
 ## `private static CAnthology TAnthologyPrepare(LEngine engine, CAtelier atelier, out CDesk desk)`
 
-Builds the list over the atelier and a corpus desk.
+Builds the list over the atelier and a corpus desk, through the relay of its internal factory.
 Its seams answer that the tab is in front and that every finish succeeds.
 
 ## `private static LExample TAnthologyExampleSave(LEngine engine, LStateValue text, long? source)`

@@ -217,10 +217,22 @@ internal static class TInterfaceConduct
                 DateTimeOffset.UnixEpoch,
                 LDraftSituation: situation));
 
-    internal static void TEditorSituationAdd(this CEditor editor, long situation) =>
-        editor.LEditorSituationAdd(situation);
+    internal static CAnthology TAnthologyCreate(CAtelier atelier, CDesk desk, CEnvoy envoy) =>
+        CAnthology.LAnthologyCreate(atelier, desk, static () => true, envoy, static _ => true);
 
-    internal static void TEditorExampleAdd(this CEditor editor, long example) => editor.LEditorExampleAdd(example);
+    internal static void TAnthologyVistaRestore(this CAnthology anthology, LVista vista) =>
+        anthology.LAnthologyVistaRestore(vista);
+
+    internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(
+        this CAnthology anthology, string unknown, string unwritten) =>
+        anthology.LAnthologyRowsRead(unknown, unwritten);
+
+    internal static CExample? TAnthologyExampleRead(LExample? example) => CAnthology.LAnthologyExampleRead(example);
+
+    internal static void TDeskOccurrenceStart(this CDesk desk, long? situation) =>
+        desk.LDeskOccurrenceStart(situation);
+
+    internal static void TDeskQuotationStart(this CDesk desk, long? example) => desk.LDeskQuotationStart(example);
 
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);

@@ -165,7 +165,7 @@ public sealed class COeuvre
                 row.LCatalogReferenceStored.LReferenceId,
                 row.LCatalogReferenceName,
                 row.LCatalogReferenceByline,
-                COeuvreCreditRead(
+                LOeuvreCreditRead(
                     row.LCatalogReferenceWriter,
                     row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkUncertain),
                 CFolio.CFolioStateRead(row.LCatalogReferenceStored.LReferenceYear),
@@ -174,7 +174,7 @@ public sealed class COeuvre
             .ToList();
     }
 
-    private static CStateValue COeuvreCreditRead(string? credit, bool uncertain)
+    private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)
     {
         return credit is null ? new CStateValue(string.Empty, uncertain, false) : new CStateValue(credit, false, true);
     }

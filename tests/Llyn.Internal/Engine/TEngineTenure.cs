@@ -272,6 +272,93 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void OccurrenceStart_SituationGiven_StartsAFreshEntryAlreadyLinked()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LStateValue text = TInterface.TStateValueCreate("at the market");
+        LSituation market = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
+        LVista vista = engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineOccurrenceStart(vista, market.LSituationId);
+
+        LEntryDraft? content = tenure.TTenureRead()?.LDraftContent;
+        Assert.Null(tenure.TTenureRead()?.LDraftStored);
+        Assert.Contains(
+            content?.LEntryDraftMeanings[0].LCardDraftSituation ?? [],
+            row => row.LSituationDraftId == market.LSituationId);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void OccurrenceStart_NoSituation_StartsABlankEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LVista vista = engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineOccurrenceStart(vista, null);
+
+        Assert.False(tenure.TTenureStateRead().LTenureStateChanged);
+        Assert.All(
+            tenure.TTenureRead()?.LDraftContent.LEntryDraftMeanings ?? [],
+            card => Assert.Empty(card.LCardDraftSituation));
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void TenureStorable_UnnamedOccurrence_AnswersFalseUntilTheHeadwordIsWritten()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(TTenureHold);
+        LStateValue text = TInterface.TStateValueCreate("at the market");
+        LSituation market = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
+        LVista vista = engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword);
+        LTenure tenure = engine.TEngineOccurrenceStart(vista, market.LSituationId);
+
+        Assert.True(tenure.TTenureChangeCheck());
+        Assert.False(tenure.TTenureStorableRead());
+
+        tenure.TTenureRequestDefer(TInterface.TRequestHeadwordCreate(tenure.LTenureId, "stall"));
+
+        Assert.False(tenure.TTenureStorableRead());
+        Assert.True(tenure.TTenureChangeCheck());
+        Assert.True(tenure.TTenureStorableRead());
+        Assert.Equal("stall", tenure.TTenureRead()?.LDraftContent.LEntryDraftHeadword);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void TenureChangeCheck_FreshEntry_AnswersUnchanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectEntry, null);
+
+        Assert.False(tenure.TTenureChangeCheck());
+        Assert.False(tenure.TTenureStorableRead());
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
+    public void QuotationStart_ExampleGiven_StartsAFreshEntryCitingIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LExample example = engine.TEngineExampleCreate(TInterface.TExampleCreate(
+            0, "English", TInterface.TStateValueCreate("Water is wet."), null, LStateAnchor.LStateAnchorUnspecified));
+        LVista vista = engine.TEngineVistaStart("quotation", LCatalogOrder.LCatalogOrderHeadword);
+
+        LTenure tenure = engine.TEngineQuotationStart(vista, example.LExampleId);
+
+        LExampleDraft? cited = tenure.TTenureRead()?.LDraftContent
+            .LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftExample;
+        Assert.Equal(example.LExampleId, cited?.LExampleDraftId);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public void TenureDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

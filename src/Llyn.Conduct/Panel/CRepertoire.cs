@@ -293,11 +293,7 @@ public sealed class CRepertoire
         CRepertoireDesk.CDeskCancel();
         CRepertoireAtlas.CAtlasPanel.CPanelScribeSet(false);
         CRepertoireOccurrence.COccurrencePanel.CPanelFreshOpen();
-        CRepertoireEditor.CEditorEntryOpen(null);
-        if (chosen is long id)
-        {
-            CRepertoireEditor.LEditorSituationAdd(id);
-        }
+        CRepertoireEditor.CEditorDesk.LDeskOccurrenceStart(chosen);
     }
 
     public bool CRepertoireLeaveConfirm()

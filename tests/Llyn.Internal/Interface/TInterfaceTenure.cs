@@ -10,6 +10,12 @@ internal static partial class TInterface
     internal static LTenure TEngineTenureStart(this LEngine engine, string origin, LSubject subject, long? id) =>
         engine.LEngineTenure.LEngineTenureStart(origin, subject, id);
 
+    internal static LTenure TEngineOccurrenceStart(this LEngine engine, LVista vista, long? situation) =>
+        engine.LEngineTenure.LEngineOccurrenceStart(vista, situation);
+
+    internal static LTenure TEngineQuotationStart(this LEngine engine, LVista vista, long? example) =>
+        engine.LEngineTenure.LEngineQuotationStart(vista, example);
+
     internal static void TEngineDelaySet(this LEngine engine, int delay) =>
         engine.LEngineTenure.LEngineTenureDelay = delay;
 
@@ -36,6 +42,10 @@ internal static partial class TInterface
 
     internal static bool TTenureReadyCheck(this LTenure tenure) =>
         tenure.LTenureReadyCheck();
+
+    internal static bool TTenureChangeCheck(this LTenure tenure) => tenure.LTenureChangeCheck();
+
+    internal static bool TTenureStorableRead(this LTenure tenure) => tenure.LTenureStorable;
 
     internal static LDraft? TTenureUndo(this LTenure tenure) =>
         tenure.LTenureUndo();

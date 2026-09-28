@@ -36,7 +36,7 @@ public sealed class CAnthology
             envoy, "Example.LoadFailed", "Example", desk.CDeskChangeCheck, finishSeam, shownSeam);
     }
 
-    public static CAnthology CAnthologyCreate(
+    internal static CAnthology LAnthologyCreate(
         CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -51,9 +51,9 @@ public sealed class CAnthology
 
     public bool CAnthologyFiltered => _cAnthologyVista?.LVistaFiltered ?? false;
 
-    public bool CAnthologyNarrowed => _cAnthologyVista?.LVistaNarrowed ?? false;
+    internal bool LAnthologyNarrowed => _cAnthologyVista?.LVistaNarrowed ?? false;
 
-    internal void CAnthologyVistaRestore(LVista vista)
+    internal void LAnthologyVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -80,7 +80,7 @@ public sealed class CAnthology
         _cAnthologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    public IReadOnlyList<CCatalogExample> CAnthologyRowsRead(string unknown, string unwritten)
+    internal IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
     {
         return _cAnthologyVista is LVista vista
             ? _cAnthologyEntryPort.LEngineExampleFind(vista, unknown, unwritten).Select(LAnthologyRowRead).ToList()
@@ -138,12 +138,12 @@ public sealed class CAnthology
         return LEntryPort.LEngineTextMatch(text, value.CStateValueText);
     }
 
-    internal static CExample? CAnthologyDraftRead(LDraft? draft)
+    internal static CExample? LAnthologyDraftRead(LDraft? draft)
     {
-        return CAnthologyExampleRead(draft?.LDraftExample);
+        return LAnthologyExampleRead(draft?.LDraftExample);
     }
 
-    internal static CExample? CAnthologyExampleRead(LExample? example)
+    internal static CExample? LAnthologyExampleRead(LExample? example)
     {
         return example is null
             ? null

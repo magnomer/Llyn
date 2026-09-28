@@ -147,7 +147,8 @@ The save button, a tab leave and the window's close finish through it, and a row
 
 ## `private void LRepertoireOccurrenceCreate()`
 
-Opens a blank entry in the editor, linking the chosen Situation when there is one.
+Opens a fresh entry in the editor, already linked to the chosen Situation when there is one.
+The engine starts and links it in one call, so the first paint shows the link.
 The fresh open clears the occurrence panel, which closes the editor before the blank opens.
 
 ## `public bool CRepertoireLeaveConfirm()`

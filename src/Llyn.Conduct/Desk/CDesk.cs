@@ -83,8 +83,7 @@ public sealed class CDesk
 
     public bool CDeskChanged => _cDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true };
 
-    public bool CDeskStorable =>
-        _cDeskTenure?.LTenureStateRead() is { LTenureStateChanged: true, LTenureStateRefusal: null };
+    public bool CDeskStorable => _cDeskTenure?.LTenureStorable ?? false;
 
     public bool CDeskHalted => _cDeskTenure?.LTenureStateRead() is { LTenureStateHalted: true };
 
@@ -131,6 +130,24 @@ public sealed class CDesk
         if (_cDeskOrigin is string origin)
         {
             CDeskStartRun(() => _cDeskPort.LEngineTenureStart(origin, (LSubject)_cDeskSubject, id));
+        }
+    }
+
+    internal void LDeskOccurrenceStart(long? situation)
+    {
+        CDeskCancel();
+        if (_cDeskVista is LVista vista)
+        {
+            CDeskStartRun(() => _cDeskPort.LEngineOccurrenceStart(vista, situation));
+        }
+    }
+
+    internal void LDeskQuotationStart(long? example)
+    {
+        CDeskCancel();
+        if (_cDeskVista is LVista vista)
+        {
+            CDeskStartRun(() => _cDeskPort.LEngineQuotationStart(vista, example));
         }
     }
 
@@ -274,13 +291,7 @@ public sealed class CDesk
 
     public bool CDeskChangeCheck()
     {
-        if (_cDeskTenure is not LTenure held)
-        {
-            return false;
-        }
-
-        held.LTenurePersist();
-        return held.LTenureStateRead().LTenureStateChanged;
+        return _cDeskTenure?.LTenureChangeCheck() ?? false;
     }
 
     public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()

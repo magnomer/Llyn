@@ -4,10 +4,13 @@
 
 Covers the repertoire panel's gates end to end on a real workspace.
 A fresh start with no row chosen opens a blank scenario, and with a Situation chosen a linked entry.
+The linked entry shows the link from its first paint.
+A saved fresh scenario shows the stored Situation on the vignette, outside the scribe.
+A stored leave on a click stores the scenario and shows the clicked Situation.
 An opened Situation shows on the vignette, and one hidden by the query drops the query first.
 A click records the voyage and shows the Situation, and a refused leave records nothing.
 A leave with nothing unsaved asks nothing, and a stored leave keeps the Situation.
-A kept leave stays on the scenario.
+A kept leave stays on the scenario, from the leave question and from an occurrence click alike.
 Closing the scenario cancels the desk, and closing the occurrence editor falls back to the chosen Situation.
 A referencing entry shows on the display, and a close clears both lists.
 An entry notice keeps the scenario without a chosen occurrence, and keeps the display with one.

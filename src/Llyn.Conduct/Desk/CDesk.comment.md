@@ -90,6 +90,7 @@ Whether the held draft differs from what is stored, as the tenure last reported 
 ## `public bool CDeskStorable`
 
 Whether the held draft has changed and nothing refuses its store.
+The tenure answers the verdict, so the desk combines no state fields itself.
 
 ## `public bool CDeskHalted`
 
@@ -124,14 +125,19 @@ A desk built with an origin and a subject starts under them instead.
 The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 A refused start is announced under the scope's load key and leaves the desk empty.
 
+## `internal void LDeskOccurrenceStart(long? situation)`
+
+Drops any held tenure and starts a fresh entry over the vista, already linked to the Situation.
+The engine starts and links in one call, so the first draft shown carries the link.
+A desk with no vista starts nothing.
+
+## `internal void LDeskQuotationStart(long? example)`
+
+The same fresh start for the corpus, already citing the Example in the first sentence.
+
 ## `internal CDesk(LDraftPort drafts, string scope, CEnvoy envoy, string origin, CSubject subject)`
 
 Builds a desk that starts under its own origin and subject, so no owner decides the start.
-
-## `public void CDeskStart(string origin, CSubject subject, long? id)`
-
-The same start for a desk that holds no vista, naming the origin and the subject itself.
-The repertoire and corpus desks start this way, since their vistas list the records rather than the tab.
 
 ## `internal LDraft? CDeskRead()`
 
@@ -174,6 +180,7 @@ Hands a request to the tenure to apply at once, unless the controls are being fi
 ## `public bool CDeskChangeCheck()`
 
 Whether the held draft differs from what is stored, after the deferred requests have been applied.
+The tenure writes and answers in one call, and an empty desk answers false.
 
 ## `public bool CDeskFinish(bool store)`
 

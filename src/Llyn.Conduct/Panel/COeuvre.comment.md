@@ -66,6 +66,6 @@ The lectern's usage rows build through it too, so both lists word a place alike.
 
 The one map for reference rows, shared with the card, the anthology and the shelf.
 
-## `private static CStateValue COeuvreCreditRead(string? credit, bool uncertain)`
+## `private static CStateValue LOeuvreCreditRead(string? credit, bool uncertain)`
 
 The authors as a written value, uncertain when the engine marks them unknown.

@@ -16,6 +16,14 @@ Starts a tenure over the entry the vista chose, or a fresh entry when `id` is nu
 
 Starts a tenure for a non-entry subject from a named origin, as the corpus and repertoire holds do.
 
+## `LTenure LEngineOccurrenceStart(LVista vista, long? situation);`
+
+Starts a fresh entry already linked to the Situation, as a new occurrence in the repertoire opens.
+
+## `LTenure LEngineQuotationStart(LVista vista, long? example);`
+
+Starts a fresh entry already citing the Example, as a new quotation in the corpus opens.
+
 ## `IReadOnlyList<LAuthor> LEngineBylineFind(long draft, string query);`
 
 The Authors a typed credit may already name, left out those the draft credits.

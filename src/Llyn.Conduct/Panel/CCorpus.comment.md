@@ -146,7 +146,8 @@ The save button, a tab leave and the window's close finish through it, and a row
 
 ## `private void LCorpusQuotationCreate()`
 
-Opens a blank entry in the editor, attaching the chosen Example when there is one.
+Opens a fresh entry in the editor, already citing the chosen Example when there is one.
+The engine starts and cites it in one call, so the first paint shows the citation.
 The fresh open clears the quotation panel, which closes the editor before the blank opens.
 
 ## `public bool CCorpusLeaveConfirm()`

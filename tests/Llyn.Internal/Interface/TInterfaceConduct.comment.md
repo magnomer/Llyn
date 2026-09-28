@@ -80,13 +80,29 @@ Reads the atlas rows through its internal helper, without the repertoire's stale
 Wraps the Situation in a bare draft and maps it through the atlas's internal helper.
 A null Situation reads as no draft at all.
 
-## `internal static void TEditorSituationAdd(this CEditor editor, long situation)`
+## `internal static CAnthology TAnthologyCreate(CAtelier atelier, CDesk desk, CEnvoy envoy)`
 
-Links a Situation to the editor's first card through its internal helper, as the repertoire's fresh occurrence does.
+Builds the example list through its internal factory, always shown and always finishing.
 
-## `internal static void TEditorExampleAdd(this CEditor editor, long example)`
+## `internal static void TAnthologyVistaRestore(this CAnthology anthology, LVista vista)`
 
-Cites an Example in the editor's first sentence through its internal helper, as the corpus's fresh quotation does.
+Hands the example list its vista through the internal helper the corpus calls.
+
+## `internal static IReadOnlyList<CCatalogExample> TAnthologyRowsRead(this CAnthology anthology, string unknown, string unwritten)`
+
+Reads the example rows through their internal helper, without the corpus's stale-selection close.
+
+## `internal static CExample? TAnthologyExampleRead(LExample? example)`
+
+Maps a stored Example through the list's internal helper.
+
+## `internal static void TDeskOccurrenceStart(this CDesk desk, long? situation)`
+
+Starts a fresh entry already linked to the Situation, as the repertoire's new occurrence does.
+
+## `internal static void TDeskQuotationStart(this CDesk desk, long? example)`
+
+Starts a fresh entry already citing the Example, as the corpus's new quotation does.
 
 ## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
 

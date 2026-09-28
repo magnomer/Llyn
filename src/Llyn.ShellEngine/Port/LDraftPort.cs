@@ -10,6 +10,10 @@ public interface LDraftPort
 
     LTenure LEngineTenureStart(string origin, LSubject subject, long? id);
 
+    LTenure LEngineOccurrenceStart(LVista vista, long? situation);
+
+    LTenure LEngineQuotationStart(LVista vista, long? example);
+
     void LEngineDraftDelete(long id);
 
     void LEngineObserverAttach(Action<LBulletin> observer);

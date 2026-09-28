@@ -40,6 +40,8 @@ public sealed class TCorpus
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         corpus.CCorpusExampleOpen(cat.LExampleId);
+        List<CEntryDraft> shown = [];
+        corpus.CCorpusEditor.CEditorDraftChanged += shown.Add;
 
         corpus.CCorpusExampleCreate();
 
@@ -47,6 +49,10 @@ public sealed class TCorpus
         Assert.False(corpus.CCorpusExcerptShown);
         Assert.False(corpus.CCorpusDesk.CDeskHeld);
         Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
+        Assert.Equal(
+            "a cat sat",
+            shown[0].CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample?.CExampleDraftText
+                .CStateValueText);
     }
 
     [Fact]
@@ -86,7 +92,7 @@ public sealed class TCorpus
         corpus.CCorpusExampleOpen(cat.LExampleId);
 
         Assert.Equal(1, cleared);
-        Assert.False(corpus.CCorpusAnthology.CAnthologyNarrowed);
+        Assert.Equal(2, corpus.CCorpusRowsRead("?", "-").Count);
         Assert.Equal(cat.LExampleId, corpus.CCorpusAnthology.CAnthologyChosen);
         Assert.True(corpus.CCorpusExcerptHeld);
     }
@@ -150,7 +156,7 @@ public sealed class TCorpus
 
         Assert.True(corpus.CCorpusLeaveConfirm());
         Assert.Equal(["Leave"], asked);
-        Assert.Empty(corpus.CCorpusAnthology.CAnthologyRowsRead("?", "-"));
+        Assert.Empty(corpus.CCorpusAnthology.TAnthologyRowsRead("?", "-"));
     }
 
     [Fact]
@@ -295,7 +301,7 @@ public sealed class TCorpus
             TInterface.TExampleTextCreate(corpus.CCorpusDesk.CDeskId, TInterface.TStateValueCreate("a dog")));
 
         Assert.True(corpus.CCorpusLeaveConfirm());
-        Assert.Single(corpus.CCorpusAnthology.CAnthologyRowsRead("?", "-"));
+        Assert.Single(corpus.CCorpusAnthology.TAnthologyRowsRead("?", "-"));
     }
 
     [Fact]
@@ -351,7 +357,7 @@ public sealed class TCorpus
         corpus.CCorpusExampleDelete();
 
         Assert.Equal(["Example.DeleteConfirm"], asked);
-        Assert.Empty(corpus.CCorpusAnthology.CAnthologyRowsRead("?", "-"));
+        Assert.Empty(corpus.CCorpusAnthology.TAnthologyRowsRead("?", "-"));
         Assert.True(corpus.CCorpusExcerptBlank);
     }
 
@@ -372,7 +378,7 @@ public sealed class TCorpus
         corpus.CCorpusExampleDelete();
 
         Assert.Empty(asked);
-        Assert.Single(corpus.CCorpusAnthology.CAnthologyRowsRead("?", "-"));
+        Assert.Single(corpus.CCorpusAnthology.TAnthologyRowsRead("?", "-"));
         Assert.True(corpus.CCorpusDisplayShown);
     }
 

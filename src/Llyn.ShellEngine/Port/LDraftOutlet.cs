@@ -20,6 +20,12 @@ public sealed class LDraftOutlet : LDraftPort
     public LTenure LEngineTenureStart(string origin, LSubject subject, long? id) =>
         _lDraftOutletEngine.LEngineTenure.LEngineTenureStart(origin, subject, id);
 
+    public LTenure LEngineOccurrenceStart(LVista vista, long? situation) =>
+        _lDraftOutletEngine.LEngineTenure.LEngineOccurrenceStart(vista, situation);
+
+    public LTenure LEngineQuotationStart(LVista vista, long? example) =>
+        _lDraftOutletEngine.LEngineTenure.LEngineQuotationStart(vista, example);
+
     public void LEngineDraftDelete(long id) => _lDraftOutletEngine.LEngineDraft.LEngineDraftDelete(id);
 
     public void LEngineObserverAttach(Action<LBulletin> observer) =>

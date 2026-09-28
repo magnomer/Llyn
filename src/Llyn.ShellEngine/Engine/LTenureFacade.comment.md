@@ -18,6 +18,18 @@ Read and written volatile because a tenure's timer reads it off the UI thread.
 Starts a tenure over the vista's tab and subject.
 A vista with no subject cannot name what to hold, so it is refused.
 
+## `internal LTenure LEngineOccurrenceStart(LVista vista, long? situation)`
+
+Starts a fresh entry over the vista and links the Situation to its first card before anyone sees it.
+The link goes through `LTenureSituationAdd`, so the clerk's pick rule applies unchanged.
+A null Situation leaves the fresh entry blank.
+
+## `internal LTenure LEngineQuotationStart(LVista vista, long? example)`
+
+Starts a fresh entry over the vista and cites the Example in its first sentence before anyone sees it.
+The citation goes through `LTenureExampleAdd`, so the clerk's rule applies unchanged.
+A null Example leaves the fresh entry blank.
+
 ## `internal LTenure LEngineTenureStart(string origin, LSubject subject, long? id)`
 
 Starts a draft of the kind the subject names, on a stored record or on nothing, and returns its tenure.

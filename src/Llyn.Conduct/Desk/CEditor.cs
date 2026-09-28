@@ -186,16 +186,6 @@ public sealed class CEditor
         CEditorTenure?.LTenureRegisterAdd(register);
     }
 
-    internal void LEditorSituationAdd(long situation)
-    {
-        CEditorTenure?.LTenureSituationAdd(situation);
-    }
-
-    internal void LEditorExampleAdd(long example)
-    {
-        CEditorTenure?.LTenureExampleAdd(example);
-    }
-
     public void CEditorReferenceAdd(long reference)
     {
         CEditorTenure?.LTenureReferenceAdd(reference);

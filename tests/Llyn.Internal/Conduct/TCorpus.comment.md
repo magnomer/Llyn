@@ -4,6 +4,7 @@
 
 Covers the corpus panel's gates end to end on a real workspace.
 A fresh start with no row chosen opens a blank transcript, and with an Example chosen a quoting entry.
+The quoting entry shows the citation from its first paint.
 An opened Example shows on the excerpt, and one hidden by the query drops the query first.
 A click records the voyage and shows the Example, and a refused leave records nothing.
 A leave with nothing unsaved asks nothing, and a discard stores nothing.

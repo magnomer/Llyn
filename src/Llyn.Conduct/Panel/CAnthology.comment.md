@@ -12,16 +12,16 @@ It also answers the transcript's citation field and prints the chosen Example.
 Takes the ports it reads and prints through, the corpus desk holding the transcript, and the panel's seams.
 The panel asks whether the desk changed before it leaves an Example.
 
-## `public static CAnthology CAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
+## `internal static CAnthology LAnthologyCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
 Builds the list over the atelier's ports, so the driver hands it no port.
 Building it is no user action, so it is no gate on the atelier.
 
-## `public bool CAnthologyNarrowed`
+## `internal bool LAnthologyNarrowed`
 
 Whether the query or the filter hides any row, as the vista answers it.
 
-## `internal void CAnthologyVistaRestore(LVista vista)`
+## `internal void LAnthologyVistaRestore(LVista vista)`
 
 Binds the list and its panel to the corpus vista a workspace start or switch hands over.
 
@@ -29,7 +29,7 @@ Binds the list and its panel to the corpus vista a workspace start or switch han
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
-## `public IReadOnlyList<CCatalogExample> CAnthologyRowsRead(string unknown, string unwritten)`
+## `internal IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)`
 
 The rows the vista lists, none before a vista arrives.
 The driver hands the words for an unknown or unwritten text, and the engine words each row with them.
@@ -69,13 +69,13 @@ Whether a field showing `text` already shows `value`, as the engine would store 
 The transcript keeps a matching field untouched, so a bulletin never moves the caret.
 It is static, since it reads no state of the list.
 
-## `internal static CExample? CAnthologyDraftRead(LDraft? draft)`
+## `internal static CExample? LAnthologyDraftRead(LDraft? draft)`
 
 Maps the Example a draft carries to its shape, and a draft of another subject to null.
 `CCorpus` calls it for the transcript desk and for the anthology's loaded drafts.
 So the corpus names no engine record.
 
-## `internal static CExample? CAnthologyExampleRead(LExample? example)`
+## `internal static CExample? LAnthologyExampleRead(LExample? example)`
 
 Maps a stored Example to its shape, and null to null.
 The excerpt links only the Mentions the Example lets a reading link, while the transcript keeps them all.

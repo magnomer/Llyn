@@ -40,6 +40,8 @@ public sealed class TRepertoire
         LSituation home = TRepertoireSituationSave(engine, "at home");
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         repertoire.CRepertoireSituationOpen(home.LSituationId);
+        List<CEntryDraft> shown = [];
+        repertoire.CRepertoireEditor.CEditorDraftChanged += shown.Add;
 
         repertoire.CRepertoireSituationCreate();
 
@@ -48,8 +50,67 @@ public sealed class TRepertoire
         Assert.False(repertoire.CRepertoireDesk.CDeskHeld);
         Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
         Assert.Contains(
-            repertoire.CRepertoireEditor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSituation ?? [],
+            shown[0].CEntryDraftMeanings[0].CCardDraftSituation,
             row => row.CSituationDraftId == home.LSituationId);
+    }
+
+    [Fact]
+    public void RepertoireSessionSave_FreshScenario_ShowsTheStoredSituationOnTheVignette()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        repertoire.CRepertoireSituationCreate();
+        TRepertoireTitleDefer(repertoire);
+
+        Assert.True(repertoire.CRepertoireSession.CSessionSave());
+
+        Assert.True(repertoire.CRepertoireVignetteShown);
+        Assert.True(repertoire.CRepertoireVignetteHeld);
+        Assert.False(repertoire.CRepertoireScribeChecked);
+        Assert.Single(repertoire.CRepertoireRowsRead("?", "-"));
+    }
+
+    [Fact]
+    public void RepertoireSituationSelect_UnsavedScenarioStored_StoresItAndShowsTheChosenSituation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LSituation home = TRepertoireSituationSave(engine, "at home");
+        List<string> asked = [];
+        CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(true, asked));
+        repertoire.CRepertoireSituationCreate();
+        TRepertoireTitleDefer(repertoire);
+        int recorded = 0;
+
+        repertoire.CRepertoireSituationSelect(home.LSituationId, () => recorded++);
+
+        Assert.Equal(1, recorded);
+        Assert.Equal(["Leave"], asked);
+        Assert.Equal(2, repertoire.CRepertoireRowsRead("?", "-").Count);
+        Assert.Equal(home.LSituationId, repertoire.CRepertoireAtlas.CAtlasChosen);
+    }
+
+    [Fact]
+    public void RepertoireOccurrenceSelect_UnsavedScenarioKept_StaysOnTheScenario()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LSituation home = TRepertoireSituationSave(engine, "at home");
+        LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
+        List<string> asked = [];
+        CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(null, asked));
+        repertoire.CRepertoireSituationCreate();
+        TRepertoireTitleDefer(repertoire);
+
+        repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
+
+        Assert.Equal(["Leave"], asked);
+        Assert.True(repertoire.CRepertoireScenarioShown);
+        Assert.False(repertoire.CRepertoireDisplayShown);
     }
 
     [Fact]
