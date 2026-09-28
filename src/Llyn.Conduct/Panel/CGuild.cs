@@ -77,7 +77,9 @@ public sealed class CGuild
     public bool CGuildBinEnabled => !LGuildSourceSide && LGuildAuthorHeld;
 
     public bool CGuildStoreEnabled =>
-        CGuildAutographShown && CGuildAutograph.CDeskChangeCheck() && CGuildAutograph.LDeskReadyCheck();
+        CGuildAutographShown
+        && CGuildAutograph.CDeskChangeCheck()
+        && CGuildAutograph.CDeskTenure?.LTenureReadyCheck() is true;
 
     public bool CGuildPressAllowed => LGuildSourceSide;
 
@@ -105,14 +107,14 @@ public sealed class CGuild
             "oeuvre", CSubject.CSubjectReference, CCatalogOrder.CCatalogOrderName);
         _cGuildVista = vista;
         CGuildPanel.CPanelVistaRestore(vista);
-        CGuildOeuvre.COeuvreVistaRestore(vista, oeuvre);
+        CGuildOeuvre.LOeuvreVistaRestore(vista, oeuvre);
         CGuildAutograph.CDeskVistaRestore(vista);
     }
 
     public IReadOnlyList<CCatalogAuthor> CGuildRollRead()
     {
         IReadOnlyList<CCatalogAuthor> rows =
-            CGuildOeuvre.COeuvreAuthorRead(_cGuildEntryPort.LEngineRollFind(_cGuildVista));
+            CGuildOeuvre.LOeuvreAuthorRead(_cGuildEntryPort.LEngineRollFind(_cGuildVista));
         _cGuildCount = rows.Count;
         if (LGuildRowShown && !rows.Any(static row => row.CCatalogAuthorChosen))
         {
@@ -124,7 +126,7 @@ public sealed class CGuild
 
     public CVita CGuildVitaRead()
     {
-        return COeuvre.COeuvreVitaRead(_cGuildEntryPort.LEngineVitaRead(_cGuildVista));
+        return COeuvre.LOeuvreVitaRead(_cGuildEntryPort.LEngineVitaRead(_cGuildVista));
     }
 
     public void CGuildQuerySet(string query)
@@ -202,7 +204,7 @@ public sealed class CGuild
     {
         CGuildSession.CSessionCancel();
         CGuildOeuvre.COeuvrePanel.CPanelEntryClose();
-        CGuildPanel.CPanelScribeSet(editing && id is > 0);
+        CGuildPanel.CPanelScribeSet(editing && LVista.LVistaStoredCheck(id));
         CGuildPanel.CPanelRowOpen(id);
     }
 
@@ -284,7 +286,7 @@ public sealed class CGuild
 
     private bool LGuildAutographCheck()
     {
-        if (CGuildAutograph.LDeskReadyCheck())
+        if (CGuildAutograph.CDeskTenure?.LTenureReadyCheck() is true)
         {
             return true;
         }
@@ -320,7 +322,7 @@ public sealed class CGuild
     {
         ArgumentNullException.ThrowIfNull(typed);
 
-        return CGuildOeuvre.COeuvreAuthorRead(_cGuildEntryPort.LEngineUnionFind(_cGuildVista, typed));
+        return CGuildOeuvre.LOeuvreAuthorRead(_cGuildEntryPort.LEngineUnionFind(_cGuildVista, typed));
     }
 
     public void CGuildUnionSelect(long? id)

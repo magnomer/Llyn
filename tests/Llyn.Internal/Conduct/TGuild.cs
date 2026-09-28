@@ -428,7 +428,7 @@ public sealed class TGuild
         Assert.False(guild.CGuildPressAllowed);
     }
 
-    private static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)
+    internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)
     {
         CGuild guild = CGuild.CGuildCreate(atelier, static () => true, envoy);
         guild.CGuildVistaRestore();

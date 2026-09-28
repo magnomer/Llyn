@@ -51,6 +51,14 @@ Relays the internal entry row map.
 
 Builds the oeuvre over a real entry outlet on `engine`, as the guild does.
 
+## `internal static void TOeuvreVistaRestore(this COeuvre oeuvre, LVista roll, LVista vista)`
+
+Binds the oeuvre to the two vistas through its internal helper, as the guild's restore does.
+
+## `internal static IReadOnlyList<CCatalogAuthor> TOeuvreAuthorRead(this COeuvre oeuvre, IReadOnlyList<LCatalogAuthor> rows)`
+
+Maps roll rows through the oeuvre's internal helper, as the guild's roll read does.
+
 ## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
 
 Builds one Latin entry row with the given id, epithet and chosen mark.

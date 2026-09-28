@@ -34,6 +34,9 @@ internal static partial class TInterface
         tenure.LTenurePersist();
     }
 
+    internal static bool TTenureReadyCheck(this LTenure tenure) =>
+        tenure.LTenureReadyCheck();
+
     internal static LDraft? TTenureUndo(this LTenure tenure) =>
         tenure.LTenureUndo();
 

@@ -49,6 +49,11 @@ Finishing a changed reference tenure stores the source the same way.
 
 Finishing a changed author tenure creates the Author under the deferred name.
 
+## `public void TenureReadyCheck_AuthorNamedLater_ReadyOnceTheNameIsWritten()`
+
+A fresh author tenure is refused for its blank name, and a deferred name makes it ready.
+The check writes the queued name first, so the long hold never has to pass.
+
 ## `public void TenureFinish_Renamed_UpdatesAuthor()`
 
 An author tenure on a stored Author reads its name, stays unchanged until a name is deferred, then renames it.

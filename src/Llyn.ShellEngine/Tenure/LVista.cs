@@ -49,7 +49,12 @@ public sealed class LVista
 
     public bool LVistaEditing { get; private set; }
 
-    public long? LVistaStored => LVistaChosen is > 0 and long id ? id : null;
+    public long? LVistaStored => LVistaStoredCheck(LVistaChosen) ? LVistaChosen : null;
+
+    public static bool LVistaStoredCheck(long? id)
+    {
+        return id is > 0;
+    }
 
     public bool LVistaMatch(long id)
     {

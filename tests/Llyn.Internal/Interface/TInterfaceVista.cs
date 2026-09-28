@@ -72,6 +72,8 @@ internal static partial class TInterface
 
     internal static string TVistaFileRead(LVista? vista) => LVista.LVistaFileRead(vista);
 
+    internal static bool TVistaStoredCheck(long? id) => LVista.LVistaStoredCheck(id);
+
     internal static LCatalogOrder TVistaOrderRead(LVista? vista) => LVista.LVistaOrderRead(vista);
 
     internal static LCatalogFilter TVistaFilterRead(LVista? vista) => LVista.LVistaFilterRead(vista);

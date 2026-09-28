@@ -175,11 +175,6 @@ Hands a request to the tenure to apply at once, unless the controls are being fi
 
 Whether the held draft differs from what is stored, after the deferred requests have been applied.
 
-## `internal bool LDeskReadyCheck()`
-
-Whether the held draft carries no refusal the engine knows ahead, after the deferred requests have been applied.
-With no draft held it answers false.
-
 ## `public bool CDeskFinish(bool store)`
 
 Ends the tenure, storing the draft or dropping it as asked, and reports whether it ended.

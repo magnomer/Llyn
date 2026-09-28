@@ -233,6 +233,24 @@ public sealed class TEngineTenure
     }
 
     [Fact]
+    public void TenureReadyCheck_AuthorNamedLater_ReadyOnceTheNameIsWritten()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(TTenureHold);
+
+        LTenure tenure = engine.TEngineTenureStart("test", LSubject.LSubjectAuthor, null);
+
+        Assert.False(tenure.TTenureReadyCheck());
+
+        tenure.TTenureRequestDefer(TInterface.TAuthorNameCreate(tenure.LTenureId, "Ada"));
+
+        Assert.True(tenure.TTenureReadyCheck());
+        Assert.Equal("Ada", tenure.TTenureRead()?.LDraftAuthorHeld?.LAuthorName);
+        tenure.TTenureCancel();
+    }
+
+    [Fact]
     public void TenureFinish_Renamed_UpdatesAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -43,7 +43,7 @@ public sealed class COeuvre
 
     private bool LOeuvreSourceHeld => _cOeuvreVista?.LVistaChosen is not null;
 
-    internal void COeuvreVistaRestore(LVista roll, LVista vista)
+    internal void LOeuvreVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
@@ -111,7 +111,7 @@ public sealed class COeuvre
             sheet.LColophonTally);
     }
 
-    internal IReadOnlyList<CCatalogAuthor> COeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)
+    internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -126,7 +126,7 @@ public sealed class COeuvre
             .ToList();
     }
 
-    internal static CVita COeuvreVitaRead(LVita vita)
+    internal static CVita LOeuvreVitaRead(LVita vita)
     {
         ArgumentNullException.ThrowIfNull(vita);
 

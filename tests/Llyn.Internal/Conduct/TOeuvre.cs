@@ -102,7 +102,7 @@ public sealed class TOeuvre
         (COeuvre oeuvre, _, _) = TOeuvrePrepare(engine);
         oeuvre.COeuvreQuerySet("gram");
 
-        oeuvre.COeuvreVistaRestore(
+        oeuvre.TOeuvreVistaRestore(
             engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName),
             engine.TEngineVistaStart("oeuvre", LCatalogOrder.LCatalogOrderName));
 
@@ -148,7 +148,7 @@ public sealed class TOeuvre
         COeuvre oeuvre = TInterfaceConduct.TOeuvreCreate(engine);
 
         IReadOnlyList<CCatalogAuthor> rows =
-            oeuvre.COeuvreAuthorRead(engine.TEngineAuthorFind(string.Empty, LCatalogOrder.LCatalogOrderName));
+            oeuvre.TOeuvreAuthorRead(engine.TEngineAuthorFind(string.Empty, LCatalogOrder.LCatalogOrderName));
 
         Assert.Equal(["Ada"], rows.Select(row => row.CCatalogAuthorName));
         Assert.Equal(TInterface.TLocalizationTextRead("Guild.WorkOne"), rows[0].CCatalogAuthorWork);
@@ -159,7 +159,7 @@ public sealed class TOeuvre
         COeuvre oeuvre = TInterfaceConduct.TOeuvreCreate(engine);
         LVista roll = engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName);
         LVista vista = engine.TEngineVistaStart("oeuvre", LCatalogOrder.LCatalogOrderName);
-        oeuvre.COeuvreVistaRestore(roll, vista);
+        oeuvre.TOeuvreVistaRestore(roll, vista);
         return (oeuvre, roll, vista);
     }
 }

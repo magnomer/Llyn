@@ -86,6 +86,10 @@ The anchor is what the onset's entry count is tallied over, so a placement alone
 
 A panel with no vista yet reads the headword order.
 
+## `public void VistaStoredCheck_OrphanRowOrNone_IsNotStored()`
+
+No row and the zero row the engine words itself name no stored record, and a positive id does.
+
 ## `public void VistaFilterRead_NoVista_ReadsEmptyFilter()`
 
 A panel with no vista yet reads the shared empty filter.

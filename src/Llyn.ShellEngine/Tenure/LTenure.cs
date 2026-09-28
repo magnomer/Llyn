@@ -136,6 +136,12 @@ public sealed partial class LTenure
         }
     }
 
+    public bool LTenureReadyCheck()
+    {
+        LTenurePersist();
+        return LTenureStateRead().LTenureStateRefusal is null;
+    }
+
     public void LTenureHeadwordSet(string text)
     {
         LTenureRequestDefer(new LRequestHeadword(LTenureId, text));

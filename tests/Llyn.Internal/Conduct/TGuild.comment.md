@@ -17,7 +17,8 @@ The union question shows the written and kept names trimmed, as the engine reads
 A confirmed delete removes the Author, a close empties the panel, and a catalog notice refreshes the roll.
 A print on the author side prints nothing.
 
-## `private static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)`
+## `internal static CGuild TGuildPrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the panel over the atelier and restores both vistas as the forge does.
 Its seam answers that the tab is in front.
+`TGuildMode` builds its panels through it too.

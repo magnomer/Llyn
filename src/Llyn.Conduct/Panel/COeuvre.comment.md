@@ -25,7 +25,7 @@ Answers the panel's loaded draft with the colophon sheet it shapes.
 
 The key of the empty text: the plain empty text with no Author chosen, else unmatched while narrowed, else vacant.
 
-## `internal void COeuvreVistaRestore(LVista roll, LVista vista)`
+## `internal void LOeuvreVistaRestore(LVista roll, LVista vista)`
 
 Binds the roll vista the rows follow and the oeuvre vista that holds the query and the chosen Source.
 The panel takes the oeuvre vista with it.
@@ -49,11 +49,11 @@ The citation sentence for the chosen Source, which the engine counts and words.
 The colophon of a Source draft, which the engine builds with its tally and this class shapes.
 The shelf composes its sheet through the same read.
 
-## `internal IReadOnlyList<CCatalogAuthor> COeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
+## `internal IReadOnlyList<CCatalogAuthor> LOeuvreAuthorRead(IReadOnlyList<LCatalogAuthor> rows)`
 
 Maps the guild's roll or union rows to their shape, each work count worded by the engine.
 
-## `internal static CVita COeuvreVitaRead(LVita vita)`
+## `internal static CVita LOeuvreVitaRead(LVita vita)`
 
 Maps the vita the engine built to its shape, with its fellows and citing places.
 

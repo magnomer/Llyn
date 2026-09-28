@@ -75,6 +75,12 @@ The search text the rows are matched against, empty for every row.
 
 The id of the row the panel stands on, or null when none is chosen.
 
+## `public static bool LVistaStoredCheck(long? id)`
+
+Whether a row id names a stored record.
+A zero id marks a row the engine words itself, such as the uncredited authors.
+`LVistaStored` asks it, and so does `CGuild` before it keeps edit mode on an opened row.
+
 ## `public void LVistaOrderSet(LCatalogOrder? order)`
 
 Takes the ordering and announces the move, which the posture stores under the tab.

@@ -99,6 +99,12 @@ For a change with no keystroke coming to end it, such as a chosen language or an
 Writes what is waiting now, in arrival order, and stops the wait.
 It takes the turn even when nothing waits, so the next draft read sees a flush in flight finished.
 
+## `public bool LTenureReadyCheck()`
+
+Whether the draft carries no refusal the engine knows ahead, once the waiting requests are written.
+It writes first, so a name typed a moment ago counts.
+A save asks it before storing, and a store button asks it before enabling.
+
 ## `public void LTenureHeadwordSet(string text)`
 
 Defers the typed headword.

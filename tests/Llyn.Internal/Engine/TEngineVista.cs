@@ -328,6 +328,14 @@ public sealed class TEngineVista
     }
 
     [Fact]
+    public void VistaStoredCheck_OrphanRowOrNone_IsNotStored()
+    {
+        Assert.False(TInterface.TVistaStoredCheck(null));
+        Assert.False(TInterface.TVistaStoredCheck(0));
+        Assert.True(TInterface.TVistaStoredCheck(7));
+    }
+
+    [Fact]
     public void VistaFilterRead_NoVista_ReadsEmptyFilter()
     {
         Assert.Same(LCatalogFilter.LCatalogFilterEmpty, TInterface.TVistaFilterRead(null));

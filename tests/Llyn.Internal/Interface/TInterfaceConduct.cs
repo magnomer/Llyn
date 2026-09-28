@@ -184,6 +184,12 @@ internal static class TInterfaceConduct
     internal static COeuvre TOeuvreCreate(LEngine engine) =>
         new(new LEntryOutlet(engine), TEnvoyCreate(true, []), static () => true);
 
+    internal static void TOeuvreVistaRestore(this COeuvre oeuvre, LVista roll, LVista vista) =>
+        oeuvre.LOeuvreVistaRestore(roll, vista);
+
+    internal static IReadOnlyList<CCatalogAuthor> TOeuvreAuthorRead(
+        this COeuvre oeuvre, IReadOnlyList<LCatalogAuthor> rows) => oeuvre.LOeuvreAuthorRead(rows);
+
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);
 

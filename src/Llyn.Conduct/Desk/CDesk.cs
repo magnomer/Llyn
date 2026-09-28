@@ -283,17 +283,6 @@ public sealed class CDesk
         return held.LTenureStateRead().LTenureStateChanged;
     }
 
-    internal bool LDeskReadyCheck()
-    {
-        if (_cDeskTenure is not LTenure held)
-        {
-            return false;
-        }
-
-        held.LTenurePersist();
-        return held.LTenureStateRead().LTenureStateRefusal is null;
-    }
-
     public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()
     {
         if (_cDeskTenure is not LTenure held)

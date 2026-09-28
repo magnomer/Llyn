@@ -42,6 +42,7 @@ The orphan row is chosen with nothing to read or write, so it leaves the toggle 
 ## `public bool CGuildStoreEnabled`
 
 The store button is live while the autograph holds a changed draft the engine would store.
+The tenure's `LTenureReadyCheck` answers whether it would.
 
 ## `public bool CGuildUnionShown`
 
@@ -68,7 +69,7 @@ It counts the rows and closes the panel when a chosen row being read is no longe
 ## `public CVita CGuildVitaRead()`
 
 The read sheet of the chosen Author, or the sheet of nobody while none is stored.
-The engine builds the sheet, and `COeuvre.COeuvreVitaRead` maps it to its shape.
+The engine builds the sheet, and `COeuvre.LOeuvreVitaRead` maps it to its shape.
 The same sheet feeds the count chips of the autograph, which show the Author being written.
 
 ## `public void CGuildOrderSet(CCatalogOrder? order)`
@@ -103,6 +104,7 @@ A jump from another panel: opens the Author without asking, since the window has
 
 Drops the held draft, clears the oeuvre, sets the carried mode, then loads the Author.
 The orphan row is never written, so the mode is dropped for it.
+The engine's `LVista.LVistaStoredCheck` tells a stored Author from the orphan row.
 
 ## `private void LGuildStoredShow(long id)`
 
@@ -129,6 +131,7 @@ Reopens the side the last session ended on, but only the reading side while no A
 ## `private bool LGuildAutographCheck()`
 
 Whether the held draft may be stored, telling the user `Guild.NameBlank` when the engine refuses it.
+The tenure answers the refusal itself through `LTenureReadyCheck`, so no draft state is read here.
 
 ## `public void CGuildAuthorDelete()`
 
