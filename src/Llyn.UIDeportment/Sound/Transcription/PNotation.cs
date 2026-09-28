@@ -74,13 +74,13 @@ public partial class PEditor
 
     private void PNotationApply(PNotationReading reading)
     {
-        if (!_lEditor.LEditorNotation.LNotationHeld)
+        if (!_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionHeld)
         {
             return;
         }
 
-        long id = _lEditor.LEditorNotation.LNotationTarget;
-        if (_lEditor.LEditorNotation.LNotationSchemed)
+        long id = _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionTarget;
+        if (_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionSchemed)
         {
             if (PTranscriptionFind(id) is { } spelled)
             {
@@ -91,7 +91,7 @@ public partial class PEditor
             return;
         }
 
-        if (_lEditor.LEditorNotation.LNotationPrimary)
+        if (_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionPrimary)
         {
             PEditorRequestSend(new LRequestIpa(PEditorDraft, reading.PNotationReadingPhonetic));
         }
@@ -106,7 +106,9 @@ public partial class PEditor
         }
 
         _lEditor.LEditorStudio.CEditorVarietySet(
-            _lEditor.LEditorNotation.LNotationPrimary, id, reading.PNotationReadingVariety);
+            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionPrimary,
+            id,
+            reading.PNotationReadingVariety);
     }
 
     private PNotationReading PNotationReadingCreate(CCandidate candidate)
@@ -114,7 +116,7 @@ public partial class PEditor
         return PNotationReadingCreate(
             candidate,
             _pEditorHost.PWindowAtelier.CAtelierRespelling.CRespellingMarkRead(
-                _lEditor.LEditorLanguage, _lEditor.LEditorNotation.LNotationSchemed));
+                _lEditor.LEditorLanguage, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionSchemed));
     }
 
     private PNotationReading PNotationReadingCreate(CCandidate candidate, CRespellingMark respelling)
@@ -131,11 +133,13 @@ public partial class PEditor
             return new PNotationReading(variety, string.Empty, null, phonetic, text, opener, closer);
         }
 
-        CVariety regional = CSounding.CSoundingVarietyRead(_lEditor.LEditorNotation.LNotationLanguage, variety);
+        CVariety regional = CSounding.CSoundingVarietyRead(
+            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionLanguage, variety);
         return new PNotationReading(
             variety,
             QAccentItem.QAccentLabelRefine(regional),
-            QAccentItem.QAccentEnsignRefine(regional, _lEditor.LEditorNotation.LNotationFlagged),
+            QAccentItem.QAccentEnsignRefine(
+                regional, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionFlagged),
             phonetic,
             text,
             opener,
@@ -176,7 +180,8 @@ public partial class PEditor
                 word,
                 target,
                 scheme,
-                LObserver.LObserverCreate<CLookupStep>(this, _lEditor.LEditorNotation.LNotationStepHandle));
+                LObserver.LObserverCreate<CLookupStep>(
+                    this, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandLookupResonate));
         }
         catch (Exception)
         {
@@ -187,7 +192,7 @@ public partial class PEditor
 
     private void PNotationCancel()
     {
-        _lEditor.LEditorNotation.LNotationCancel();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandCancel();
     }
 
     private PNotationItem PNotationPlace(string source, int order)
@@ -211,7 +216,7 @@ public partial class PEditor
 
     private void PNotationUpdate()
     {
-        PNotationUpdate(_lEditor.LEditorNotation.LNotationScheme);
+        PNotationUpdate(_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionScheme);
     }
 
     private void PNotationUpdate(string scheme)

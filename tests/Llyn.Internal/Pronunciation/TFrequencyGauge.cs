@@ -21,7 +21,12 @@ public sealed class TFrequencyGauge
             TInterface.TFrequencyCreate("two", "3", null),
         ];
 
-        Assert.Equal(0, TInterface.TFrequencyGaugeResolve(rows, "{0}")?.LFrequencyGaugeBand);
+        LFrequencyGauge? gauge = TInterface.TFrequencyGaugeResolve(rows, "{0}");
+
+        Assert.Equal(0, gauge?.LFrequencyGaugeBand);
+        Assert.False(gauge?.LFrequencyGaugeRanked);
+        Assert.Equal("Unknown", gauge?.LFrequencyGaugeRank);
+        Assert.Equal(4, gauge?.LFrequencyGaugeSpare);
     }
 
     [Fact]
@@ -45,7 +50,12 @@ public sealed class TFrequencyGauge
             TInterface.TFrequencyCreate("two", "3", "Core"),
         ];
 
-        Assert.Equal(4, TInterface.TFrequencyGaugeResolve(rows, "{0}")?.LFrequencyGaugeBand);
+        LFrequencyGauge? gauge = TInterface.TFrequencyGaugeResolve(rows, "{0}");
+
+        Assert.Equal(4, gauge?.LFrequencyGaugeBand);
+        Assert.True(gauge?.LFrequencyGaugeRanked);
+        Assert.Equal("Core", gauge?.LFrequencyGaugeRank);
+        Assert.Equal(0, gauge?.LFrequencyGaugeSpare);
     }
 
     [Fact]

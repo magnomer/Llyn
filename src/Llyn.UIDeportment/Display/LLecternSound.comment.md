@@ -14,7 +14,7 @@ The play button and the volume live on [LLecternPlayback](LLecternPlayback.comme
 Holds the window and the glyph section, and binds the transcription and glyph lists to their rows.
 `glyphSeam` opens a character's entry in a language, and the window owns it.
 
-The chip list is attached to `LGlyphItem.LGlyphItemApply`, which fills each chip.
+The chip list is attached to `QGlyphItem.QGlyphItemRefine`, which fills each chip.
 The transcription list is attached to `LTranscriptionItem.LTranscriptionItemApply` the same way.
 
 ## `public void LLecternReflexAttach(ItemsControl reflex, UIElement loading, ToggleButton fold)`

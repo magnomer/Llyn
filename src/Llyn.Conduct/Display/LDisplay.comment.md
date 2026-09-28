@@ -118,23 +118,10 @@ The draft keeps the stored value beside the name, and the page shows only the na
 ## `public CFrequency? LDisplayFrequencyRead(long? entry, string once)`
 
 The entry's frequency chip, since the draft does not carry the frequency.
-The engine gathers the rows and words them, and this read only reshapes the answer.
+The engine gathers the rows, words them, and names the rank and the spare stars.
+This read only reshapes the answer.
 It answers null when no entry is given, the entry has no frequency, or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
-
-## `public static int LDisplayBandLimit`
-
-The rung count of the ladder, which is the widest star row.
-
-## `public static int LDisplaySpareRead(int count)`
-
-The stars past `count` in a full row, never below zero.
-
-## `public static string LDisplayBandRead(int count, string prefix)`
-
-The ladder name at a star count behind `prefix`, or the unknown name at zero.
-The ladder is `LFrequency.LFrequencyScale`, so the engine and the chip read one list.
-The chip passes the localization prefix for its name and the theme prefix for its brush.
 
 ## `public bool LDisplayFanqieCheck(long? id)`
 

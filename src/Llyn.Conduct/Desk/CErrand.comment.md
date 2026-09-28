@@ -14,10 +14,31 @@ The recording search running over the held tenure.
 
 Only the desk builds one, over itself.
 
-## `internal LForay? CErrandRecording`
+## `public event Action<string, int>? CErrandHarvestStarted;`
 
-The running recording search, read by the clip for its language, target and save.
-`CErrandTranscription` hands the reading search to the notation the same way.
+Raised with a source and its place when a recording source starts searching.
+`CErrandRecordingAdded` carries a found recording, and `CErrandHarvestFinished` the end of the search.
+`CErrandLookupStarted`, `CErrandCandidateAdded` and `CErrandLookupFinished` do the same for the reading search.
+The drivers repaint their menus from these events.
+
+## `public bool CErrandRecordingHeld`
+
+Whether a recording search runs, so a pick has a search to land in.
+The recording reads below answer the running search's language, flag mode, primary mark and target row.
+Each answers empty, false or zero while none runs.
+The transcription reads answer the reading search the same way, its scheme included.
+
+## `public void CErrandHarvestResonate(CHarvestStep step)`
+
+Answers one step of the recording search, which the driver hands over on its own thread.
+A found recording, the end, or a starting source each raises its own event.
+`CErrandLookupResonate` answers a step of the reading search the same way.
+
+## `public Task<bool> CErrandRecordingSave(CRecording recording)`
+
+Saves the picked recording through the running search and answers whether it attached.
+The engine downloads it and builds the request, so no driver holds the search.
+It answers false while no recording search runs.
 
 ## `public bool CErrandRecordingStart(string word, long target, Action<CHarvestStep> sink)`
 

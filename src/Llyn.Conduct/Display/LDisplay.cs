@@ -9,8 +9,6 @@ namespace Llyn.Conduct;
 
 public sealed class LDisplay
 {
-    private const string LDisplayUnknown = "Unknown";
-
     private readonly LEntryPort _lEntryPort;
 
     private readonly LPhonologyPort _lPhonologyPort;
@@ -286,19 +284,14 @@ public sealed class LDisplay
             return null;
         }
 
-        return gauge is null ? null : new CFrequency(gauge.LFrequencyGaugeBand, gauge.LFrequencyGaugeSource);
-    }
-
-    public static int LDisplayBandLimit => LFrequency.LFrequencyScale.Count;
-
-    public static int LDisplaySpareRead(int count)
-    {
-        return Math.Max(LDisplayBandLimit - count, 0);
-    }
-
-    public static string LDisplayBandRead(int count, string prefix)
-    {
-        return prefix + (count == 0 ? LDisplayUnknown : LFrequency.LFrequencyScale[count - 1]);
+        return gauge is null
+            ? null
+            : new CFrequency(
+                gauge.LFrequencyGaugeBand,
+                gauge.LFrequencyGaugeSource,
+                gauge.LFrequencyGaugeRank,
+                gauge.LFrequencyGaugeSpare,
+                gauge.LFrequencyGaugeRanked);
     }
 
     public IReadOnlyList<CUsage> LDisplayIncomingRead()

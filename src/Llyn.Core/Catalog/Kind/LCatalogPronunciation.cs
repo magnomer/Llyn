@@ -8,7 +8,7 @@ public sealed record LCatalogPronunciation(
     LEntry LCatalogPronunciationEntry,
     string LCatalogPronunciationSound,
     string LCatalogPronunciationName = "",
-    string? LCatalogPronunciationEpithet = null,
+    string LCatalogPronunciationEpithet = "",
     bool LCatalogPronunciationChosen = false)
 {
     public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)

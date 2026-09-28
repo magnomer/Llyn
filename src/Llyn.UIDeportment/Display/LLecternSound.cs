@@ -17,7 +17,7 @@ public sealed class LLecternSound
 
     private readonly ObservableCollection<LTranscriptionItem> _lLecternSoundTranscription = [];
 
-    private readonly ObservableCollection<LGlyphItem> _lLecternSoundGlyph = [];
+    private readonly ObservableCollection<QGlyphItem> _lLecternSoundGlyph = [];
 
     private CAtelier _lLecternSoundAtelier = null!;
 
@@ -88,7 +88,7 @@ public sealed class LLecternSound
         transcriptions.ItemsSource = _lLecternSoundTranscription;
         QLookItem.QLookItemAttach(transcriptions, LTranscriptionItem.LTranscriptionItemApply);
         glyph.ItemsSource = _lLecternSoundGlyph;
-        QLookItem.QLookItemAttach(glyph, LGlyphItem.LGlyphItemApply);
+        QLookItem.QLookItemAttach(glyph, QGlyphItem.QGlyphItemRefine);
     }
 
     public void LLecternReflexAttach(ItemsControl reflex, UIElement loading, ToggleButton fold)
@@ -239,9 +239,9 @@ public sealed class LLecternSound
 
     public void LLecternGlyphHandle(object parameter)
     {
-        if (parameter is LGlyphItem item && item.LGlyphItemLanguage.Length > 0)
+        if (parameter is QGlyphItem { QGlyphItemLinked: true } item)
         {
-            _lLecternSoundOpening(item.LGlyphItemText, item.LGlyphItemLanguage);
+            _lLecternSoundOpening(item.QGlyphItemText, item.QGlyphItemLanguage);
         }
     }
 
@@ -260,7 +260,8 @@ public sealed class LLecternSound
 
         foreach (LGlyphCell cell in _lLecternSoundDisplay.LDisplayGlyphDivide())
         {
-            _lLecternSoundGlyph.Add(new LGlyphItem(cell.LGlyphCellText, cell.LGlyphCellLanguage));
+            _lLecternSoundGlyph.Add(
+                new QGlyphItem(cell.LGlyphCellText, cell.LGlyphCellLanguage, cell.LGlyphCellLinked));
         }
 
         _lLecternSoundHeading.Text = LTranscriptionItem.LTranscriptionLabelFormat(section.LGlyphName);

@@ -5,7 +5,7 @@
 The entry editor's holder until its remaining pieces reach Conduct.
 Every entry gate, read and session flag lives on `CEditor`, which the atelier builds.
 The marks, the sound facts and the sound sheet are `CEditor`'s too, so it holds no port.
-It still builds the clip and the notation, whose own jobs dismantle them.
+The recording and reading searches are the desk's `CErrand`, so it builds nothing of its own.
 
 ## `public CEditor LEditorStudio { get; }`
 

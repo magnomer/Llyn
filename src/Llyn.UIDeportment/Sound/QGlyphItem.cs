@@ -4,11 +4,11 @@ using System.Windows.Input;
 
 namespace Llyn.UIDeportment;
 
-public sealed record LGlyphItem(string LGlyphItemText, string LGlyphItemLanguage)
+public sealed record QGlyphItem(string QGlyphItemText, string QGlyphItemLanguage, bool QGlyphItemLinked)
 {
-    internal static void LGlyphItemApply(FrameworkElement container, object item, string? _)
+    internal static void QGlyphItemRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not LGlyphItem glyph || QLook.QLookPartFind<Button>(container, "PGlyphChip") is not Button chip)
+        if (item is not QGlyphItem glyph || QLook.QLookPartFind<Button>(container, "PGlyphChip") is not Button chip)
         {
             return;
         }
@@ -16,10 +16,10 @@ public sealed record LGlyphItem(string LGlyphItemText, string LGlyphItemLanguage
         chip.CommandParameter = glyph;
         if (QLook.QLookPartFind<TextBlock>(chip, "PGlyphCharacter") is TextBlock character)
         {
-            character.Text = glyph.LGlyphItemText;
+            character.Text = glyph.QGlyphItemText;
         }
 
-        if (glyph.LGlyphItemLanguage.Length == 0)
+        if (!glyph.QGlyphItemLinked)
         {
             chip.IsHitTestVisible = false;
             chip.Cursor = Cursors.Arrow;

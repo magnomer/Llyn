@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -19,9 +20,41 @@ public sealed class CErrand
         _cErrandDesk = desk;
     }
 
-    internal LForay? CErrandRecording => _cErrandRecording;
+    public event Action<string, int>? CErrandHarvestStarted;
 
-    internal LForay? CErrandTranscription => _cErrandTranscription;
+    public event Action<CRecording>? CErrandRecordingAdded;
+
+    public event Action? CErrandHarvestFinished;
+
+    public event Action<string, int>? CErrandLookupStarted;
+
+    public event Action<CCandidate>? CErrandCandidateAdded;
+
+    public event Action? CErrandLookupFinished;
+
+    public bool CErrandRecordingHeld => _cErrandRecording is not null;
+
+    public string CErrandRecordingLanguage => _cErrandRecording?.LForayLanguage ?? string.Empty;
+
+    public bool CErrandRecordingFlagged => _cErrandRecording?.LForayFlagged ?? false;
+
+    public bool CErrandRecordingPrimary => _cErrandRecording?.LForayPrimary ?? false;
+
+    public long CErrandRecordingTarget => _cErrandRecording?.LForayTarget ?? 0;
+
+    public bool CErrandTranscriptionHeld => _cErrandTranscription is not null;
+
+    public string CErrandTranscriptionLanguage => _cErrandTranscription?.LForayLanguage ?? string.Empty;
+
+    public bool CErrandTranscriptionFlagged => _cErrandTranscription?.LForayFlagged ?? false;
+
+    public bool CErrandTranscriptionPrimary => _cErrandTranscription?.LForayPrimary ?? false;
+
+    public long CErrandTranscriptionTarget => _cErrandTranscription?.LForayTarget ?? 0;
+
+    public string CErrandTranscriptionScheme => _cErrandTranscription?.LForayScheme ?? string.Empty;
+
+    public bool CErrandTranscriptionSchemed => _cErrandTranscription?.LForaySchemed ?? false;
 
     public bool CErrandRecordingStart(string word, long target, Action<CHarvestStep> sink)
     {
@@ -54,6 +87,51 @@ public sealed class CErrand
                 step.LLookupStepSource, step.LLookupStepOrder,
                 CErrandCandidateRead(step.LLookupStepCandidate), step.LLookupStepEnded));
         }
+    }
+
+    public void CErrandHarvestResonate(CHarvestStep step)
+    {
+        ArgumentNullException.ThrowIfNull(step);
+
+        if (step.CHarvestStepRecording is CRecording recording)
+        {
+            CErrandRecordingAdded?.Invoke(recording);
+            return;
+        }
+
+        if (step.CHarvestStepEnded)
+        {
+            CErrandHarvestFinished?.Invoke();
+            return;
+        }
+
+        CErrandHarvestStarted?.Invoke(step.CHarvestStepSource, step.CHarvestStepOrder);
+    }
+
+    public void CErrandLookupResonate(CLookupStep step)
+    {
+        ArgumentNullException.ThrowIfNull(step);
+
+        if (step.CLookupStepCandidate is CCandidate candidate)
+        {
+            CErrandCandidateAdded?.Invoke(candidate);
+            return;
+        }
+
+        if (step.CLookupStepEnded)
+        {
+            CErrandLookupFinished?.Invoke();
+            return;
+        }
+
+        CErrandLookupStarted?.Invoke(step.CLookupStepSource, step.CLookupStepOrder);
+    }
+
+    public Task<bool> CErrandRecordingSave(CRecording recording)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+
+        return _cErrandRecording?.LForayRecordingSave(CErrandRecordingRead(recording)) ?? Task.FromResult(false);
     }
 
     public void CErrandCancel()

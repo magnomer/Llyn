@@ -25,8 +25,6 @@ internal static class TInterfaceConduct
         LDisplaySound.LDisplayFoldScan(
             rules.Select(static rule => new CReflexRule(rule.LReflexRuleLanguage, rule.LReflexRuleFolded)).ToList());
 
-    internal static string TDisplayBandRead(int count) => LDisplay.LDisplayBandRead(count, string.Empty);
-
     internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
         sound.LDisplaySoundShow(id, draft);
 

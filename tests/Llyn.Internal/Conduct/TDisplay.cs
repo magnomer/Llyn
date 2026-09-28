@@ -34,12 +34,6 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void DisplayBandRead_TopRank_ReturnsCore()
-    {
-        Assert.Equal("Core", TInterfaceConduct.TDisplayBandRead(4));
-    }
-
-    [Fact]
     public void DisplayFoldScan_FoldedRule_ReturnsItsLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(

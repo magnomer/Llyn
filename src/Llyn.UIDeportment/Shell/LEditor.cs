@@ -12,15 +12,9 @@ public sealed class LEditor
         ArgumentNullException.ThrowIfNull(studio);
 
         LEditorStudio = studio;
-        LEditorClip = new LClip(studio.CEditorDesk);
-        LEditorNotation = new LNotation(studio.CEditorDesk);
     }
 
     public CEditor LEditorStudio { get; }
-
-    public LClip LEditorClip { get; }
-
-    public LNotation LEditorNotation { get; }
 
     public bool LEditorChanged => LEditorStudio.CEditorDesk.CDeskChanged;
 

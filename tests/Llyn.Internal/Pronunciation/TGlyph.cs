@@ -50,6 +50,8 @@ public sealed class TGlyph
 
         Assert.Equal("Classical Chinese", cells[0].LGlyphCellLanguage);
         Assert.Empty(cells[1].LGlyphCellLanguage);
+        Assert.True(cells[0].LGlyphCellLinked);
+        Assert.False(cells[1].LGlyphCellLinked);
     }
 
     [Fact]

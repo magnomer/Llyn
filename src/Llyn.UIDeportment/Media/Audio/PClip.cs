@@ -84,7 +84,10 @@ public partial class PEditor
             }
 
             _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(
-                word, target, LObserver.LObserverCreate<CHarvestStep>(this, _lEditor.LEditorClip.LClipStepHandle));
+                word,
+                target,
+                LObserver.LObserverCreate<CHarvestStep>(
+                    this, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestResonate));
         }
         catch (Exception)
         {
@@ -95,7 +98,7 @@ public partial class PEditor
 
     private void PClipCancel()
     {
-        _lEditor.LEditorClip.LClipCancel();
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandCancel();
     }
 
     private PClipItem PClipPlace(string source, int order)
@@ -126,11 +129,13 @@ public partial class PEditor
             return new PClipReading(recording, string.Empty, null, action);
         }
 
-        CVariety regional = CSounding.CSoundingVarietyRead(_lEditor.LEditorClip.LClipLanguage, variety);
+        CVariety regional = CSounding.CSoundingVarietyRead(
+            _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingLanguage, variety);
         return new PClipReading(
             recording,
             QAccentItem.QAccentLabelRefine(regional),
-            QAccentItem.QAccentEnsignRefine(regional, _lEditor.LEditorClip.LClipFlagged),
+            QAccentItem.QAccentEnsignRefine(
+                regional, _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingFlagged),
             action);
     }
 
@@ -285,7 +290,7 @@ public partial class PEditor
     {
         if (sender is not FrameworkElement { DataContext: PClipReading reading }
             || !reading.PClipReadingReady
-            || !_lEditor.LEditorClip.LClipHeld)
+            || !_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingHeld)
         {
             return;
         }
@@ -295,7 +300,8 @@ public partial class PEditor
 
         try
         {
-            bool attached = await _lEditor.LEditorClip.LClipRecordingSave(reading.PClipReadingModel);
+            bool attached = await _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingSave(
+                reading.PClipReadingModel);
             reading.PClipReadingAction = QLocalizationCatalog.QLocalizationTextRead("Downloader.Saved");
 
             if (!attached)
@@ -304,7 +310,9 @@ public partial class PEditor
             }
 
             _lEditor.LEditorStudio.CEditorVarietySet(
-                _lEditor.LEditorClip.LClipPrimary, _lEditor.LEditorClip.LClipTarget, reading.PClipReadingVariety);
+                _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,
+                _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingTarget,
+                reading.PClipReadingVariety);
             PClip.IsOpen = false;
         }
         catch (Exception)

@@ -7,6 +7,15 @@ namespace Llyn.Core;
 
 public sealed record LFrequencyGauge(int LFrequencyGaugeBand, string LFrequencyGaugeSource)
 {
+    private const string LFrequencyGaugeUnknown = "Unknown";
+
+    public bool LFrequencyGaugeRanked => LFrequencyGaugeBand > 0;
+
+    public string LFrequencyGaugeRank =>
+        LFrequencyGaugeRanked ? LFrequency.LFrequencyScale[LFrequencyGaugeBand - 1] : LFrequencyGaugeUnknown;
+
+    public int LFrequencyGaugeSpare => Math.Max(LFrequency.LFrequencyScale.Count - LFrequencyGaugeBand, 0);
+
     public static LFrequencyGauge? LFrequencyGaugeResolve(IReadOnlyList<LFrequency> rows, string once)
     {
         ArgumentNullException.ThrowIfNull(rows);

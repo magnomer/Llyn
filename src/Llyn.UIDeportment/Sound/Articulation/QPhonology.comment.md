@@ -3,7 +3,7 @@
 ## `internal sealed class QPhonology`
 
 Drives the phonology panel: what it is made of, and what it forwards.
-Every branch it once carried lives in `LPhonology` and the `CPanel` it holds.
+Every branch it once carried lives in Conduct's `CPhonology` and the `CPanel` it holds.
 The search, the ordering, the inventory, the read-only display and the editor are all wired here.
 The panel itself is the veneer's `QPhonology` page, which the window places.
 It names no Core type, since its rows arrive as `CCatalogPronunciation`.
@@ -22,15 +22,16 @@ Each named part is pulled from the page by its contract ID on every read.
 
 ## `internal void QPhonologyAttach(PWindow host)`
 
-Puts the panel to work on the panel factory, which builds its deportment over the engine's ports.
-It news the deportment with the seams the panel answers through and subscribes to its notices.
+Puts the panel to work through the Conduct phonology panel, which the forge builds with its own editor.
+The view wraps that editor for its editor page.
+The panel's loads and clears go straight to the lectern, so the veneer relays no draft.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 
 ## `internal async void QPhonologyVistaRestore()`
 
-The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
-Hands the vista to the deportment and attaches the observers that carry each announcement onto the dispatcher.
+The Conduct panel starts the tab's vista itself, so no vista crosses the veneer.
+Attaches the observers that carry each announcement onto the dispatcher.
 The flags are loaded before the first rows are built, because a row reads its flag at construction.
 
 ## `internal bool QPhonologyDraftFinish(bool store)`

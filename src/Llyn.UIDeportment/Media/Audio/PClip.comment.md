@@ -34,6 +34,7 @@ A menu closed while the flags loaded starts no search.
 ### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
+The delegate hands each step back to the errand on the menu's thread, which raises one event per step.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
 The search is over when the listener is told it is, never when the start returns.
 The engine reports the end with a finish step.
@@ -117,7 +118,7 @@ The draft moved on while the bytes came down, and the foray attached nothing.
 The file stays in the workspace.
 But it is audio of a word the form no longer holds.
 
-### `long id = _lEditor.LEditorClip.LClipPrimary`
+### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingPrimary,`
 
 The foray attached the recording to the row it was opened for, and the draft bulletin refills the form.
 The primary row's id is read back after the audio is attached, since the engine mints that row late.

@@ -23,33 +23,6 @@ internal static class TInterfaceDeportment
 
     internal static LLectern TLecternCreate(LEditor editor) => new(editor.LEditorStudio.CEditorDisplay);
 
-    internal static LClip TClipCreate(LEngine engine) =>
-        new(TInterfaceConduct.TDeskCreate(engine, "Input", TInterfaceConduct.TEnvoyCreate(false, [])));
-
-    internal static void TClipStepHandle(this LClip clip, CHarvestStep step) => clip.LClipStepHandle(step);
-
-    internal static LPhonology TPhonologyCreate(LEngine engine)
-    {
-        LEditor editor = TEditorCreate(engine);
-        return new(
-            new LPhonologyOutlet(engine),
-            new LPortraitOutlet(engine),
-            editor,
-            TLecternCreate(editor),
-            () => true,
-            TInterfaceConduct.TEnvoyCreate(true, []));
-    }
-
-    internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
-        panel.LPhonologyVistaRestore(vista);
-
-    internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
-
-    internal static IReadOnlyList<CCatalogPronunciation> TPhonologyRowsRead(this LPhonology panel) =>
-        panel.LPhonologyRowsRead();
-
-    internal static void TPhonologyQuerySet(this LPhonology panel, string query) => panel.LPhonologyQuerySet(query);
-
     internal static bool TDeskChangeCheck(this CDesk desk) => desk.CDeskChangeCheck();
 
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>

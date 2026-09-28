@@ -290,7 +290,7 @@ public sealed class LLectern
         LEnsignImage.LEnsignFlagRefine(_lLecternFlag, _lLecternGlobe, string.Empty);
         _lLecternSpeech.ItemsSource = null;
         _lLecternSpeechSection.Visibility = Visibility.Collapsed;
-        LFrequencyLabel.LFrequencyChipShow(
+        QFrequencyLabel.QFrequencyChipRefine(
             _lLecternFrequencySection, _lLecternChip, _lLecternName, _lLecternBand, null);
         _lLecternNoteSection.Visibility = Visibility.Collapsed;
         _lLecternStamp.Visibility = Visibility.Collapsed;
@@ -354,7 +354,7 @@ public sealed class LLectern
 
     private void LLecternFrequencyUpdate()
     {
-        LFrequencyLabel.LFrequencyChipShow(
+        QFrequencyLabel.QFrequencyChipRefine(
             _lLecternFrequencySection,
             _lLecternChip,
             _lLecternName,

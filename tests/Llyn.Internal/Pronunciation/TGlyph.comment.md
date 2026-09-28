@@ -6,6 +6,7 @@ Covers the glyph section: the split of a text into its Han characters and the en
 The split keeps Han characters only, each once, in first-seen order, and keeps an ideograph beyond the basic plane whole.
 The divide reads the transcription of the glyph scheme over the headword.
 Each Han cell of the divide carries the glyph language and any other cell carries none.
+So only a Han cell is linked and opens an entry.
 Resolving a character makes its entry in the glyph language once and finds that same entry afterwards.
 An entry of the same character in another language is never taken, so the glyph language gets its own.
 The engine hands the section back for a pack that declares one and null for a pack that does not.

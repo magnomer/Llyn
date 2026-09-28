@@ -56,18 +56,11 @@ public sealed class QForge
             static library => library.CLibraryVistaRestore());
     }
 
-    public LPhonology QForgePhonologyCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CPhonology QForgePhonologyCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LPhonology(
-                _qForgeAtelier.CAtelierPhonologyPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            phonology => phonology.LPhonologyVistaRestore(_qForgeAtelier));
+            CPhonology.CPhonologyCreate(_qForgeAtelier, shownSeam, envoy),
+            static phonology => phonology.CPhonologyVistaRestore());
     }
 
     public CShelf QForgeShelfCreate(Func<bool> shownSeam, CEnvoy envoy)

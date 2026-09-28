@@ -78,7 +78,7 @@ internal sealed class QRegard
 
     internal void QRegardFrequencyUpdate()
     {
-        LFrequencyLabel.LFrequencyChipShow(
+        QFrequencyLabel.QFrequencyChipRefine(
             QRegardFrequencySection,
             QRegardFrequencyChip,
             QRegardFrequency,

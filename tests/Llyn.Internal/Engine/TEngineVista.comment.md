@@ -73,6 +73,10 @@ The favorites vista find answers vista rows, twins numbered by entry id as the l
 
 The phonology vista find fills each row's twin name, so the panel numbers nothing itself.
 
+## `public void PronunciationFind_NoEpithet_CarriesAnEmptyOne()`
+
+A phonology row with no epithet carries an empty one, so the Conduct map needs no fallback.
+
 ## `public void VistaOrderSet_SameOrder_RaisesNothing()`
 
 Setting any of the four to what it already is raises no bulletin, so a repeated click re-lists nothing.

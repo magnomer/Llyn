@@ -16,10 +16,6 @@ No reflex rule folds no language.
 
 Setting the fold to the value it already holds leaves it there, so a toggle echo changes nothing.
 
-## `public void DisplayBandRead_TopRank_ReturnsCore()`
-
-The highest rank reads as the core band.
-
 ## `public void DisplayFoldScan_FoldedRule_ReturnsItsLanguage()`
 
 Only the language of a folded rule is folded.

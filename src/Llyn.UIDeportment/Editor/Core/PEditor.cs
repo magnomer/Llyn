@@ -158,12 +158,12 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         _lEditor.LEditorStudio.CEditorDesk.CDeskRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lEditor.LEditorStudio.CEditorSounding.CSoundingChanged += PEditorFanqieUpdate;
         _lEditor.LEditorStudio.CEditorDisplay.LDisplayFailed += host.PWindowFailureShow;
-        _lEditor.LEditorClip.LClipSourceStarted += PClipSourceHandle;
-        _lEditor.LEditorClip.LClipRecordingAdded += PClipRecordingHandle;
-        _lEditor.LEditorClip.LClipFinished += PClipFinishHandle;
-        _lEditor.LEditorNotation.LNotationSourceStarted += PNotationSourceHandle;
-        _lEditor.LEditorNotation.LNotationCandidateAdded += PNotationCandidateHandle;
-        _lEditor.LEditorNotation.LNotationFinished += PNotationFinishHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestStarted += PClipSourceHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandRecordingAdded += PClipRecordingHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandHarvestFinished += PClipFinishHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandLookupStarted += PNotationSourceHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandCandidateAdded += PNotationCandidateHandle;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandLookupFinished += PNotationFinishHandle;
 
         PSentenceLoad();
         PSpeakerLoad();

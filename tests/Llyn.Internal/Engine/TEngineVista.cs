@@ -184,6 +184,18 @@ public sealed class TEngineVista
     }
 
     [Fact]
+    public void PronunciationFind_NoEpithet_CarriesAnEmptyOne()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TVistaEntryCreate(engine, "water", "English");
+
+        LVista vista = engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword);
+
+        Assert.Equal(string.Empty, Assert.Single(engine.TEnginePronunciationFind(vista)).LCatalogPronunciationEpithet);
+    }
+
+    [Fact]
     public void EntryFind_VistaChosen_MarksRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

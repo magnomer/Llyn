@@ -44,6 +44,7 @@ A menu closed while the flags loaded starts no search.
 ### `_lEditor.LEditorStudio.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(`
 
 The tenure starts the search and the menu listens through the wrapped delegate.
+The delegate hands each step back to the errand on the menu's thread, which raises one event per step.
 The tenure passes the draft it holds, so the engine can hand back what that draft already found.
 Whether a search runs at all is the engine's answer, not the menu's.
 The search is over when the finish step arrives, never when the start returns.

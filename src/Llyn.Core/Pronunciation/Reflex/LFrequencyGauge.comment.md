@@ -12,6 +12,24 @@ The rules that rank and word the sources live here, beside the frequency record 
   It is zero when no row carries a ladder band.
 - `LFrequencyGaugeSource` — Every source's figure, one line each, in the order the sources arrive.
 
+## `private const string LFrequencyGaugeUnknown`
+
+The rank name of an entry no source ranks.
+
+## `public bool LFrequencyGaugeRanked`
+
+Whether any source ranks the entry, so the chip shows a star row.
+
+## `public string LFrequencyGaugeRank`
+
+The ladder name at the band, or the unknown name while no source ranks the entry.
+The ladder is `LFrequency.LFrequencyScale`, so the ranking and the chip read one list.
+
+## `public int LFrequencyGaugeSpare`
+
+The stars past the band in a full row, never below zero.
+The row then stays as wide as the ladder.
+
 ## `public static LFrequencyGauge? LFrequencyGaugeResolve(IReadOnlyList<LFrequency> rows, string once)`
 
 Gathers the rows into one answer, or null when the entry has no frequency at all.
