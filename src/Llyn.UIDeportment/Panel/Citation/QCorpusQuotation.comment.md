@@ -8,10 +8,10 @@ A chosen row swaps the Example reading for the entry display in place, without l
 
 ## `private void QQuotationFind()`
 
-Refills the middle column with the rows the quotation deportment reads.
+Refills the middle column with the rows the quotation list reads.
 The engine matches the dredge text and drops the hidden languages, so the driver decides nothing about what matches.
 An empty result is shown rather than hidden.
-Its wording is the deportment's `LQuotationEmptyRead`, which reads the dredge field's text.
+Its wording key is `CQuotationEmptyKey`, chosen by whether the list holds a query.
 
 ## `private void QQuotationHandle(object sender, RoutedEventArgs e)`
 

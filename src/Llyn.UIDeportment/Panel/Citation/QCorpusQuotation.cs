@@ -17,7 +17,7 @@ internal sealed partial class QCorpus
         IReadOnlyList<CVistaRow> read;
         try
         {
-            read = _lCorpus.LCorpusQuotation.LQuotationRowsRead();
+            read = _cCorpus.CCorpusQuotation.CQuotationRowsRead();
         }
         catch (Exception exception)
         {
@@ -34,8 +34,7 @@ internal sealed partial class QCorpus
         LSplice.LSpliceApply(
             _qQuotationList, fresh, QQuotationItem.QQuotationItemMatch, QQuotationItem.QQuotationItemSync);
 
-        QQuotationEmpty.SetResourceReference(
-            TextBlock.TextProperty, _lCorpus.LCorpusQuotation.LQuotationEmptyRead(QDredge.Text));
+        QQuotationEmpty.SetResourceReference(TextBlock.TextProperty, _cCorpus.CCorpusQuotation.CQuotationEmptyKey);
         QQuotationEmpty.Visibility = QLook.QLookVisibleRead(_qQuotationList.Count == 0);
     }
 

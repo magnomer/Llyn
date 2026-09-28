@@ -1,38 +1,43 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
 public sealed class CCorpus
 {
-    private readonly CEditor _cCorpusEditor;
+    private readonly CAtelier _cCorpusAtelier;
 
     private readonly CEnvoy _cCorpusEnvoy;
 
-    private CCorpus(CAtelier atelier, CEditor editor, Func<bool> shownSeam, CEnvoy envoy)
+    private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(atelier);
-        ArgumentNullException.ThrowIfNull(editor);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cCorpusEditor = editor;
+        _cCorpusAtelier = atelier;
         _cCorpusEnvoy = envoy;
+        CEditor editor = CEditor.CEditorCreate(atelier, envoy);
+        CCorpusEditor = editor;
         CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         CCorpusAnthology = CAnthology.CAnthologyCreate(
             atelier, CCorpusDesk, shownSeam, envoy, store => CCorpusSession!.CSessionFinish(store));
-        CCorpusQuotation = new CPanel(
+        CCorpusQuotation = new CQuotation(
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPortraitPort,
             envoy,
-            "List.LoadFailed",
-            null,
             editor.CEditorDesk.CDeskChangeCheck,
             store => CCorpusSession!.CSessionFinish(store),
             shownSeam);
-        CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CPanelRowsUpdate;
+        CCorpusAnthology.CAnthologyPanel.CPanelRowsChanged += CCorpusQuotation.CQuotationPanel.CPanelRowsUpdate;
         CCorpusSession = new CSession(
             CCorpusDesk,
-            [CCorpusQuotation.CPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.CPanelChangeCheck],
+            [CCorpusQuotation.CQuotationPanel.CPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.CPanelChangeCheck],
             editor.CEditorDesk,
-            () => CCorpusQuotation.CPanelEditing,
+            () => CCorpusQuotation.CQuotationPanel.CPanelEditing,
             editor.CEditorFinish,
             static () => true,
             LCorpusStoredShow);
@@ -43,13 +48,13 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelCleared += CCorpusSession.CSessionCancel;
         CCorpusAnthology.CAnthologyPanel.CPanelDraftChanged +=
             draft => LCorpusExampleUpdate(CAnthology.CAnthologyDraftRead(draft));
-        CCorpusQuotation.CPanelEdited += id => editor.CEditorEntryOpen(id);
-        CCorpusQuotation.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
     }
 
-    public static CCorpus CCorpusCreate(CAtelier atelier, CEditor editor, Func<bool> shownSeam, CEnvoy envoy)
+    public static CCorpus CCorpusCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
     {
-        return new CCorpus(atelier, editor, shownSeam, envoy);
+        return new CCorpus(atelier, shownSeam, envoy);
     }
 
     public event Action? CCorpusChanged;
@@ -60,23 +65,23 @@ public sealed class CCorpus
 
     public event Action? CCorpusQueryCleared;
 
+    public CEditor CCorpusEditor { get; }
+
     public CDesk CCorpusDesk { get; }
 
     public CSession CCorpusSession { get; }
 
     public CAnthology CCorpusAnthology { get; }
 
-    public CPanel CCorpusQuotation { get; }
+    public CQuotation CCorpusQuotation { get; }
 
-    public bool CCorpusQuotationSide => CCorpusQuotation.CPanelModeEnabled;
+    public bool CCorpusTranscriptShown => !LCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelEditing;
 
-    public bool CCorpusTranscriptShown => !CCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelEditing;
+    public bool CCorpusExcerptShown => !LCorpusQuotationSide && !CCorpusAnthology.CAnthologyPanel.CPanelEditing;
 
-    public bool CCorpusExcerptShown => !CCorpusQuotationSide && !CCorpusAnthology.CAnthologyPanel.CPanelEditing;
+    public bool CCorpusDisplayShown => LCorpusQuotationSide && !CCorpusQuotation.CQuotationPanel.CPanelEditing;
 
-    public bool CCorpusDisplayShown => CCorpusQuotationSide && !CCorpusQuotation.CPanelEditing;
-
-    public bool CCorpusEditorShown => CCorpusQuotation.CPanelEditing;
+    public bool CCorpusEditorShown => CCorpusQuotation.CQuotationPanel.CPanelEditing;
 
     public bool CCorpusExcerptHeld => CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
@@ -86,21 +91,23 @@ public sealed class CCorpus
 
     public bool CCorpusViewerChecked => !CCorpusScribeChecked;
 
-    public bool CCorpusModeEnabled => CCorpusQuotationSide || CCorpusAnthology.CAnthologyPanel.CPanelModeEnabled;
+    public bool CCorpusModeEnabled => LCorpusQuotationSide || CCorpusAnthology.CAnthologyPanel.CPanelModeEnabled;
 
-    public bool CCorpusBinEnabled => !CCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
+    public bool CCorpusBinEnabled => !LCorpusQuotationSide && CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled;
 
     public bool CCorpusStoreEnabled =>
-        CCorpusEditorShown ? _cCorpusEditor.CEditorDesk.CDeskStorable : CCorpusDesk.CDeskChanged;
+        CCorpusEditorShown ? CCorpusEditor.CEditorDesk.CDeskStorable : CCorpusDesk.CDeskChanged;
 
-    public bool CCorpusPressAllowed => CCorpusDisplayShown || CCorpusRowShown;
+    public bool CCorpusPressAllowed => CCorpusDisplayShown || LCorpusRowShown;
 
     public bool CCorpusPortraitAllowed => CCorpusDisplayShown;
 
-    public bool CCorpusRowShown => CCorpusExcerptShown && CCorpusExcerptHeld;
+    private bool LCorpusQuotationSide => CCorpusQuotation.CQuotationPanel.CPanelModeEnabled;
+
+    private bool LCorpusRowShown => CCorpusExcerptShown && CCorpusExcerptHeld;
 
     private bool LCorpusRowHeld =>
-        CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled || CCorpusQuotation.CPanelBinEnabled;
+        CCorpusAnthology.CAnthologyPanel.CPanelBinEnabled || CCorpusQuotation.CQuotationPanel.CPanelBinEnabled;
 
     public CExample? CCorpusTranscriptRead()
     {
@@ -145,7 +152,7 @@ public sealed class CCorpus
 
     private void LCorpusExampleShow(long id, bool editing)
     {
-        CCorpusQuotation.CPanelEntryClose();
+        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(editing);
         CCorpusAnthology.CAnthologyPanel.CPanelRowOpen(id);
     }
@@ -171,7 +178,7 @@ public sealed class CCorpus
 
     private void LCorpusQuotationOpen(long id, bool editing)
     {
-        if (!CCorpusQuotation.CPanelRowOpen(id))
+        if (!CCorpusQuotation.CQuotationPanel.CPanelRowOpen(id))
         {
             return;
         }
@@ -180,7 +187,7 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
         if (editing)
         {
-            CCorpusQuotation.CPanelScribeToggle(true);
+            CCorpusQuotation.CQuotationPanel.CPanelScribeToggle(true);
         }
     }
 
@@ -213,17 +220,17 @@ public sealed class CCorpus
             return;
         }
 
-        CCorpusQuotation.CPanelEntryClose();
+        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelFreshOpen();
         CCorpusSession.CSessionStart(null);
     }
 
     public void CCorpusScribeToggle(bool editing)
     {
-        if (CCorpusQuotationSide)
+        if (LCorpusQuotationSide)
         {
-            CCorpusQuotation.CPanelScribeToggle(editing);
-            if (!CCorpusQuotationSide)
+            CCorpusQuotation.CQuotationPanel.CPanelScribeToggle(editing);
+            if (!LCorpusQuotationSide)
             {
                 LCorpusExampleRestore(editing);
             }
@@ -251,7 +258,7 @@ public sealed class CCorpus
 
     public void CCorpusExampleClose()
     {
-        CCorpusQuotation.CPanelEntryClose();
+        CCorpusQuotation.CQuotationPanel.CPanelEntryClose();
         CCorpusAnthology.CAnthologyPanel.CPanelEntryClose();
     }
 
@@ -273,11 +280,11 @@ public sealed class CCorpus
         long? chosen = CCorpusAnthology.CAnthologyChosen;
         CCorpusDesk.CDeskCancel();
         CCorpusAnthology.CAnthologyPanel.CPanelScribeSet(false);
-        CCorpusQuotation.CPanelFreshOpen();
-        _cCorpusEditor.CEditorEntryOpen(null);
+        CCorpusQuotation.CQuotationPanel.CPanelFreshOpen();
+        CCorpusEditor.CEditorEntryOpen(null);
         if (chosen is long id)
         {
-            _cCorpusEditor.CEditorExampleAdd(id);
+            CCorpusEditor.CEditorExampleAdd(id);
         }
     }
 
@@ -308,18 +315,75 @@ public sealed class CCorpus
 
     public void CCorpusEntryUpdate()
     {
-        if (!CCorpusQuotation.CPanelBinEnabled)
+        if (!CCorpusQuotation.CQuotationPanel.CPanelBinEnabled)
         {
             return;
         }
 
         bool editing = CCorpusScribeChecked;
-        CCorpusQuotation.CPanelDraftUpdate();
-        if (CCorpusQuotationSide)
+        CCorpusQuotation.CQuotationPanel.CPanelDraftUpdate();
+        if (LCorpusQuotationSide)
         {
             return;
         }
 
         LCorpusExampleRestore(editing);
+    }
+
+    public IReadOnlyList<CCatalogExample> CCorpusRowsRead(string unknown, string unwritten)
+    {
+        IReadOnlyList<CCatalogExample> rows = CCorpusAnthology.CAnthologyRowsRead(unknown, unwritten);
+        if (LCorpusRowShown && !rows.Any(static row => row.CCatalogExampleChosen))
+        {
+            CCorpusExampleClose();
+        }
+
+        return rows;
+    }
+
+    public void CCorpusExampleDelete()
+    {
+        if (LCorpusQuotationSide)
+        {
+            return;
+        }
+
+        CCorpusAnthology.CAnthologyPanel.CPanelEntryDelete();
+    }
+
+    public Task CCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
+    {
+        if (CCorpusDisplayShown)
+        {
+            return CCorpusQuotation.LQuotationPortraitPrint(label, ticket);
+        }
+
+        if (CCorpusPressAllowed)
+        {
+            return CCorpusAnthology.LAnthologyPortraitPrint(legend, ticket);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task CCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    {
+        if (!CCorpusPortraitAllowed)
+        {
+            return Task.CompletedTask;
+        }
+
+        return CCorpusQuotation.LQuotationPortraitExport(path, format, label);
+    }
+
+    public void CCorpusVistaRestore()
+    {
+        LVista vista = _cCorpusAtelier.CAtelierVistaStart(
+            "corpus", CSubject.CSubjectExample, CCatalogOrder.CCatalogOrderText);
+        LVista quotation = _cCorpusAtelier.CAtelierVistaStart(
+            "quotation", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword);
+        CCorpusAnthology.CAnthologyVistaRestore(vista);
+        CCorpusQuotation.CQuotationVistaRestore(vista, quotation);
+        CCorpusEditor.CEditorVistaRestore(quotation);
     }
 }

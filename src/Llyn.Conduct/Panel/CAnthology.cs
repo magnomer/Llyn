@@ -99,7 +99,7 @@ public sealed class CAnthology
             : null;
     }
 
-    public Task CAnthologyPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
+    internal Task LAnthologyPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
         return _cAnthologyPortraitPort.LEnginePortraitPrint(
             _cAnthologyVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));

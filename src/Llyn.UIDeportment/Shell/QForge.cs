@@ -28,11 +28,11 @@ public sealed class QForge
             QForgeEditorCreate(envoy), editor => _qForgeAtelier.CAtelierInputRestore(editor.LEditorStudio));
     }
 
-    public LCorpus QForgeCorpusCreate(LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CCorpus QForgeCorpusCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LCorpus(_qForgeAtelier, editor, lectern, shownSeam, envoy),
-            corpus => corpus.LCorpusVistaRestore(_qForgeAtelier));
+            CCorpus.CCorpusCreate(_qForgeAtelier, shownSeam, envoy),
+            static corpus => corpus.CCorpusVistaRestore());
     }
 
     public LFavorite QForgeFavoriteCreate(

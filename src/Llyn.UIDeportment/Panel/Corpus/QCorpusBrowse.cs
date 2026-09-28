@@ -59,7 +59,7 @@ internal sealed partial class QCorpus
 
         QGauzeBuild();
         _cCorpus.CCorpusAnthology.CAnthologyQuerySet(QQuery.Text ?? string.Empty);
-        _lCorpus.LCorpusQuotation.LQuotationDredgeSet(QDredge.Text);
+        _cCorpus.CCorpusQuotation.CQuotationQuerySet(QDredge.Text);
         QSpeakerLoad();
         QCitationFind();
         anthology.CPanelRowsUpdate();
@@ -68,7 +68,7 @@ internal sealed partial class QCorpus
     private void QCorpusObserverAttach()
     {
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
-        CPanel quotation = _cCorpus.CCorpusQuotation;
+        CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
         UserControl surface = _qCorpusSurface;
         Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsUpdate);
         Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(surface, QCitationFind);
@@ -114,7 +114,7 @@ internal sealed partial class QCorpus
 
     private void QDredgeHandle(object sender, TextChangedEventArgs e)
     {
-        _lCorpus.LCorpusQuotation.LQuotationDredgeSet(QDredge.Text);
+        _cCorpus.CCorpusQuotation.CQuotationQuerySet(QDredge.Text);
     }
 
     private void QGauzeHandle(object sender, RoutedEventArgs e)
@@ -128,7 +128,7 @@ internal sealed partial class QCorpus
         IReadOnlyList<CCatalogExample> read;
         try
         {
-            read = _cCorpus.CCorpusAnthology.CAnthologyRowsRead(
+            read = _cCorpus.CCorpusRowsRead(
                 QLocalizationCatalog.QLocalizationTextRead("Display.Unknown"),
                 QLocalizationCatalog.QLocalizationTextRead("Example.Unwritten"));
             _qAnthologyCount = _cCorpus.CCorpusAnthology.CAnthologyUsageRead();
@@ -152,7 +152,6 @@ internal sealed partial class QCorpus
 
         QExcerptTally.Text = QCorpusTallyRead(_cCorpus.CCorpusAnthology.CAnthologyChosen);
         QTranscriptTally.Text = QCorpusTallyRead(QTranscriptDesk.CDeskStoredRead());
-        _lCorpus.LCorpusRowsApply(read);
     }
 
     private void QAnthologyHandle(object sender, RoutedEventArgs e)
@@ -211,7 +210,7 @@ internal sealed partial class QCorpus
 
     private void QCorpusBinHandle(object sender, RoutedEventArgs e)
     {
-        _lCorpus.LCorpusDelete();
+        _cCorpus.CCorpusExampleDelete();
     }
 
     private string QCorpusTallyRead(long? id)

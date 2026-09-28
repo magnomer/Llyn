@@ -15,8 +15,6 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private PWindow _qCorpusHost = null!;
 
-    private LCorpus _lCorpus = null!;
-
     private CCorpus _cCorpus = null!;
 
     private CDesk _qCorpusDesk = null!;
@@ -228,10 +226,9 @@ internal sealed partial class QCorpus : QChronicleHost
     internal void QCorpusAttach(PWindow host)
     {
         _qCorpusHost = host;
-        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
+        _cCorpus = host.PWindowForge.QForgeCorpusCreate(QCorpusShownCheck, host.PWindowEnvoy);
+        LEditor editor = new(_cCorpus.CCorpusEditor);
         LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
-        _lCorpus = host.PWindowForge.QForgeCorpusCreate(editor, lectern, QCorpusShownCheck, host.PWindowEnvoy);
-        _cCorpus = _lCorpus.LCorpusStudio;
         _qCorpusDesk = _cCorpus.CCorpusDesk;
         QTranscriptDeskAttach();
 
@@ -249,7 +246,9 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusEditor.PEditorAttach(host, editor, lectern);
 
         CPanel anthology = _cCorpus.CCorpusAnthology.CAnthologyPanel;
-        CPanel quotation = _cCorpus.CCorpusQuotation;
+        CPanel quotation = _cCorpus.CCorpusQuotation.CQuotationPanel;
+        quotation.CPanelCleared += lectern.LLecternClear;
+        quotation.CPanelDraftChanged += lectern.LLecternDraftShow;
         _cCorpus.CCorpusChanged += QCorpusModeUpdate;
         _cCorpus.CCorpusTranscriptChanged += QTranscriptApply;
         _cCorpus.CCorpusExampleChanged += QExcerptShow;
@@ -316,7 +315,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private async void QCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qCorpusHost.PWindowPressRun("Example", _lCorpus.LCorpusPortraitPrint);
+        await _qCorpusHost.PWindowPressRun("Example", _cCorpus.CCorpusPortraitPrint);
     }
 
     private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -327,6 +326,6 @@ internal sealed partial class QCorpus : QChronicleHost
     private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
         await _qCorpusHost.PWindowPortraitExport(
-            _lCorpus.LCorpusQuotation.LQuotationFileRead(), _lCorpus.LCorpusPortraitExport);
+            _cCorpus.CCorpusQuotation.CQuotationFileRead(), _cCorpus.CCorpusPortraitExport);
     }
 }

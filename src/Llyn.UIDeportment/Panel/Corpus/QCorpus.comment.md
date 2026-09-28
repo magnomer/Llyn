@@ -4,20 +4,15 @@
 
 The Corpus panel's driver: the view of the shared stock of sentences itself.
 An Example is independent data owned by nothing, so this panel is not a view of one Entry's sentences.
-It holds the surface, the host, the drawer and the deportment the browsing side calls, and nothing else.
+It holds the surface, the host, the drawer and the corpus Conduct the browsing side calls, and nothing else.
 The browsing behavior lives in `QCorpusBrowse.cs` and the editing in `QCorpusEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QCorpusHold.cs`, apart from the controls it reads.
 The linking gesture over the transcript lives in `QCorpusMention.cs`.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
 
-## `private LCorpus _lCorpus`
-
-The panel's deportment, holding the quotation list and the corpus Conduct the window restored.
-It is null until the window hands one over.
-
 ## `private CCorpus _cCorpus`
 
-The corpus Conduct, holding the anthology, the quotation panel, the desk, the session and the panel's mode.
+The corpus Conduct, holding the anthology, the quotation list, the desk, the session and the panel's mode.
 The anthology's vista carries the order, the query, and the languages hidden from the entry column.
 The driver keeps no copy of any of them and asks the Conduct for each where it needs it.
 It is null until the window hands one over, so the command checks answer false before that.
@@ -42,7 +37,8 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 ## `internal void QCorpusAttach(PWindow host)`
 
-Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
+Takes the corpus Conduct and its editor from the forge, and wires the desk's notices.
+The quotation panel's loads and clears go straight to the lectern, so the veneer relays no draft.
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.

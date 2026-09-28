@@ -6,7 +6,7 @@ The corpus panel's session: the example list, the quotation list, the transcript
 The two vistas' chosen rows and editing flags are the panel's mode, and the drivers only follow.
 Every gate holds only the interaction and reaches the engine through a panel, the desk or the editor.
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
-The quotation list's prints, exports and vista stay in the deportment's `LQuotation` until its own job.
+It restores both vistas itself and chooses which side prints, exports or deletes.
 
 ## `private CCorpus(CAtelier atelier, CEditor editor, Func<bool> shownSeam, CEnvoy envoy)`
 
@@ -38,14 +38,14 @@ Raised with the Example a loaded anthology draft carries, so the excerpt shows i
 
 Raised once an arrival drops the query and the language filter, so a driver empties both controls.
 
-## `public CPanel CCorpusQuotation { get; }`
+## `private readonly CAtelier _cCorpusAtelier`
 
-The quotation list's panel, which asks the entry editor's desk whether the entry holds unsaved changes.
-The quotation side never deletes, so the panel has no delete scope.
+The atelier the two vistas start through when the forge restores them.
 
-## `public bool CCorpusQuotationSide`
+## `public CQuotation CCorpusQuotation { get; }`
 
-The quotation side is in front exactly when the quotation list has a chosen row or is in edit mode.
+The quotation list, whose panel asks the entry editor's desk whether the entry holds unsaved changes.
+It is built over the atelier's entry and portrait ports, so no driver holds either.
 
 ## `public bool CCorpusTranscriptShown`
 
@@ -65,7 +65,12 @@ The other mode flags follow the same two facts: which side is in front and wheth
 Print takes an entry on display or a chosen Example on the excerpt.
 Export, as `CCorpusPortraitAllowed` says, takes only an entry on display.
 
-## `public bool CCorpusRowShown`
+## `private bool LCorpusQuotationSide`
+
+The quotation side is in front exactly when the quotation list has a chosen row or is in edit mode.
+No driver reads it, since the mode flags it feeds answer every question a driver asks.
+
+## `private bool LCorpusRowShown`
 
 True while the excerpt shows a chosen Example, the only case a missing row clears.
 
@@ -161,3 +166,31 @@ Answers the chosen entry's notice by refreshing the quotation draft.
 It falls back to the chosen Example once the quotation side has closed.
 It does nothing without a chosen quotation, so a whole-set bulletin never clears a transcript or a new entry.
 The mode is read before the refresh, so a vanished entry under edit reopens the transcript.
+
+## `public IReadOnlyList<CCatalogExample> CCorpusRowsRead(string unknown, string unwritten)`
+
+Reads the example list's rows, worded by the driver's two placeholders.
+When the excerpt shows a chosen Example the rows no longer list, both lists clear before the rows return.
+The clear announces fresh rows, which carry the same Examples, so a driver's nested refill is harmless.
+
+## `public void CCorpusExampleDelete()`
+
+Deletes the chosen Example through the anthology panel, which asks the envoy first.
+It does nothing on the quotation side, whose panel has no delete scope.
+A failure reads `Example.DeleteFailed`, the delete key `CAnthology` hands its panel.
+
+## `public Task CCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
+
+Prints the entry on display, else the chosen Example on the excerpt, else nothing.
+The label serves the entry and the legend serves the Example list.
+
+## `public Task CCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+
+Exports the entry on display, and does nothing otherwise.
+
+## `public void CCorpusVistaRestore()`
+
+Starts the `corpus` vista over Examples by text and the `quotation` vista over entries by headword.
+The anthology takes the first, and the quotation list takes both, since its rows follow the chosen Example.
+The entry editor takes the quotation vista, so an entry it stores lands in that list.
+The forge runs it at build and again after a workspace change.
