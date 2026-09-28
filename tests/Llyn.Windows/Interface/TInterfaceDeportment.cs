@@ -37,7 +37,7 @@ internal static class TInterfaceDeportment
     internal static void TEditorFavoriteSet(this LEditor editor, bool marked) =>
         editor.LEditorEsteem.QEsteemFavoriteSet(marked);
 
-    internal static LPhonology TPhonologyCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    internal static LPhonology TPhonologyCreate(LEngine engine)
     {
         LEditor editor = TEditorCreate(engine);
         return new(
@@ -46,14 +46,13 @@ internal static class TInterfaceDeportment
             editor,
             TLecternCreate(editor),
             () => true,
-            leaveSeam,
-            deleteSeam);
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static void TPhonologyVistaRestore(this LPhonology panel, LVista vista) =>
         panel.LPhonologyVistaRestore(vista);
 
-    internal static LLibrary TLibraryCreate(LEngine engine, Func<bool> leaveSeam, Func<bool> deleteSeam)
+    internal static LLibrary TLibraryCreate(LEngine engine)
     {
         LEditor editor = TEditorCreate(engine);
         return new(
@@ -62,8 +61,7 @@ internal static class TInterfaceDeportment
             editor,
             TLecternCreate(editor),
             () => true,
-            leaveSeam,
-            deleteSeam);
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static void TLibraryVistaRestore(this LLibrary panel, LVista vista) =>
@@ -85,8 +83,7 @@ internal static class TInterfaceDeportment
             TLecternCreate(editor),
             () => true,
             leaveSeam,
-            _ => true,
-            TInterfaceConduct.TEnvoyCreate(false, []));
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static void TShelfVistaRestore(this LShelf shelf, LVista vista, LVista footnote) =>
@@ -150,23 +147,11 @@ internal static class TInterfaceDeportment
 
     internal static void TBylineHide(this LImprint imprint) => imprint.LBylineHide();
 
-    internal static void TPanelRowSelect(this LPanel panel, long? id) => panel.LPanelRowSelect(id);
+    internal static void TPanelRowSelect(this CPanel panel, long? id) => panel.CPanelRowSelect(id);
 
-    internal static void TPanelScribeSet(this LPanel panel, bool editing) => panel.LPanelScribeSet(editing);
+    internal static void TPanelScribeToggle(this CPanel panel, bool editing) => panel.CPanelScribeToggle(editing);
 
-    internal static void TPanelFreshStart(this LPanel panel) => panel.LPanelFreshStart();
-
-    internal static void TPanelDelete(this LPanel panel) => panel.LPanelDelete();
-
-    internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => LPanel.LPanelOrderRead(order);
-
-    internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => LPanel.LPanelOrderRead(order);
-
-    internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => LPanel.LPanelFilterRead(filter);
-
-    internal static LCatalogFilter TPanelFilterRead(CCatalogFilter filter) => LPanel.LPanelFilterRead(filter);
-
-    internal static LSubject TPanelSubjectRead(CSubject subject) => LPanel.LPanelSubjectRead(subject);
+    internal static void TPanelDelete(this CPanel panel) => panel.CPanelEntryDelete();
 
     internal static LPortraitMedium TPanelMediumRead(CPortraitMedium medium) => QPortrait.QPortraitMediumRead(medium);
 
@@ -190,8 +175,7 @@ internal static class TInterfaceDeportment
             editor,
             TLecternCreate(editor),
             static () => true,
-            static () => true,
-            static () => true);
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static IReadOnlyList<CCatalogTag> TTaxonomyRowsRead(this LTaxonomy taxonomy) =>
@@ -226,8 +210,7 @@ internal static class TInterfaceDeportment
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicleRead();
 
-    internal static LGuild TGuildCreate(
-        LEngine engine, Func<bool> leaveSeam, Func<int, bool> removalSeam, Func<string, string, bool> unionSeam) =>
+    internal static LGuild TGuildCreate(LEngine engine, Func<bool> leaveSeam, Func<string, string, bool> unionSeam) =>
         new(
             new LDraftOutlet(engine),
             new LEntryOutlet(engine),
@@ -235,7 +218,6 @@ internal static class TInterfaceDeportment
             new LSettingsOutlet(engine),
             () => true,
             leaveSeam,
-            removalSeam,
             unionSeam,
             TInterfaceConduct.TEnvoyCreate(false, []));
 
@@ -267,7 +249,7 @@ internal static class TInterfaceDeportment
 
     internal static void TGuildDelete(this LGuild guild) => guild.LGuildDelete();
 
-    internal static LYunjing TYunjingCreate(LEngine engine, Func<bool> leaveSeam)
+    internal static LYunjing TYunjingCreate(LEngine engine)
     {
         LEditor editor = TEditorCreate(engine);
         return new(
@@ -277,8 +259,7 @@ internal static class TInterfaceDeportment
             editor,
             TLecternCreate(editor),
             () => true,
-            leaveSeam,
-            () => true);
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static void TYunjingVistaRestore(this LYunjing panel, LVista shengmu, LVista yunmu, LVista xiaoyun) =>
@@ -319,8 +300,7 @@ internal static class TInterfaceDeportment
             editor,
             TLecternCreate(editor),
             static () => true,
-            static () => true,
-            static () => true);
+            TInterfaceConduct.TEnvoyCreate(true, []));
     }
 
     internal static IReadOnlyList<CCatalogRegister> TTenorRowsRead(this LTenor tenor) => tenor.LTenorRowsRead();

@@ -7,7 +7,7 @@ The tab stands on one side at a time.
 The source side is in front while a Source is chosen in the oeuvre, else the author side.
 The author side shows the vita while reading and the autograph while writing.
 The leave seam is the window's discard dialog, asked once for the whole tab before any switch.
-The removal seam is the window's delete question, worded by how many Sources credit the Author.
+The panel's delete question is worded under the Guild scope and counted by the vista.
 The union seam is the window's merge question, worded by the two names.
 It is sealed, so its public members name only .NET types, Conduct shapes and deportment handles.
 Its constructor and vista restore take engine types, so they stay internal.
@@ -24,13 +24,6 @@ A request the deportment itself refused, named by the localization key the windo
 
 The draft session over the autograph, which the views save, undo and redo through.
 A save refuses a blank name through `LGuildAutographCheck` before the engine is asked.
-
-## `public LPanel LGuildOeuvrePanel { get; }`
-
-The panel state over the oeuvre vista, built here until the panel itself moves into Conduct.
-The list never edits, so its change seam answers false and its delete seam refuses.
-It loads a chosen Source, whose draft the oeuvre turns into the colophon.
-It clears when the oeuvre reports that the chosen Source left the list.
 
 ## `public QUnion LGuildUnion { get; }`
 
@@ -75,10 +68,6 @@ The roll as the view lists it, each source count worded through the engine.
 The read sheet of the chosen Author, or the sheet of nobody while none is stored.
 The engine builds the sheet, and `COeuvre.COeuvreVitaRead` maps it to its shape.
 The same sheet feeds the count chips of the autograph, which show the Author being written.
-
-## `private bool LGuildDeleteConfirm()`
-
-Asks the removal seam with the Source count of the chosen Author, read from the engine at that moment.
 
 ## `public void LGuildCatalogUpdate()`
 

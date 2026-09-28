@@ -157,7 +157,24 @@ internal static class TInterfaceConduct
 
     internal static CVistaRow TPanelRowRead(LVistaRow row) => CPanel.CPanelRowRead(row);
 
-    internal static COeuvre TOeuvreCreate(LEngine engine) => new(new LEntryOutlet(engine));
+    internal static CPanel TPanelCreate(
+        CEnvoy envoy, string? deleteScope, Func<bool> changeSeam, Func<bool, bool> finishSeam) =>
+        new(envoy, "List.LoadFailed", deleteScope, changeSeam, finishSeam, static () => true);
+
+    internal static void TPanelVistaRestore(this CPanel panel, LVista vista) => panel.CPanelVistaRestore(vista);
+
+    internal static LVista? TPanelVistaRead(this CPanel panel) => panel.CPanelVista;
+
+    internal static CCatalogOrder TPanelOrderRead(LCatalogOrder order) => CPanel.CPanelOrderRead(order);
+
+    internal static LCatalogOrder? TPanelOrderRead(CCatalogOrder? order) => CPanel.CPanelOrderRead(order);
+
+    internal static CCatalogFilter TPanelFilterRead(LCatalogFilter filter) => CPanel.CPanelFilterRead(filter);
+
+    internal static LSubject TPanelSubjectRead(CSubject subject) => CPanel.CPanelSubjectRead(subject);
+
+    internal static COeuvre TOeuvreCreate(LEngine engine) =>
+        new(new LEntryOutlet(engine), TEnvoyCreate(true, []), static () => true);
 
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);

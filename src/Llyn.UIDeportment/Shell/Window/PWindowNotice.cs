@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Windows;
 
 namespace Llyn.UIDeportment;
@@ -65,30 +64,6 @@ public partial class PWindow
             PWindowEnvoy);
     }
 
-    internal bool PWindowRemovalConfirm(int usage)
-    {
-        return PWindowRemovalConfirm(usage, "Situation");
-    }
-
-    internal bool PWindowRemovalConfirm(int usage, string scope)
-    {
-        string count = string.Concat(
-            QLocalizationCatalog.QLocalizationTextRead($"{scope}.DetachCount"),
-            " ",
-            usage.ToString(CultureInfo.CurrentCulture));
-
-        string question = usage > 0
-            ? $"{QLocalizationCatalog.QLocalizationTextRead($"{scope}.DetachConfirm")}\n\n{count}"
-            : QLocalizationCatalog.QLocalizationTextRead($"{scope}.DeleteConfirm");
-
-        return MessageBox.Show(
-            _pWindowSurface,
-            question,
-            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question) == MessageBoxResult.Yes;
-    }
-
     internal bool PWindowUnionConfirm(string dropped, string kept)
     {
         string confirm = QLocalizationCatalog.QLocalizationTextRead("Guild.MergeConfirm");
@@ -100,11 +75,6 @@ public partial class PWindow
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Question) == MessageBoxResult.Yes;
-    }
-
-    internal bool PWindowDeleteConfirm()
-    {
-        return PWindowEnvoy.CEnvoyConfirm("Scribe.DeleteConfirm");
     }
 
     internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)

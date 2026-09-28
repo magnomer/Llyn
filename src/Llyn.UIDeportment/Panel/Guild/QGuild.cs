@@ -142,21 +142,18 @@ internal sealed class QGuild
         _lGuild = host.PWindowForge.QForgeGuildCreate(
             QGuildShownCheck,
             QGuildDiscardConfirm,
-            QGuildRemovalConfirm,
             host.PWindowUnionConfirm,
             host.PWindowEnvoy);
         _lGuild.LGuildChanged += QGuildModeUpdate;
         _lGuild.LGuildRefused += host.PWindowEnvoy.CEnvoyFailureShow;
         _lGuild.LGuildFailed += host.PWindowFailureShow;
-        _lGuild.LGuildPanel.LPanelChanged += QGuildModeUpdate;
-        _lGuild.LGuildPanel.LPanelRowsChanged += QRollUpdate;
-        _lGuild.LGuildPanel.LPanelFailed += host.PWindowFailureShow;
-        _lGuild.LGuildOeuvrePanel.LPanelChanged += QGuildModeUpdate;
-        _lGuild.LGuildOeuvrePanel.LPanelRowsChanged += QOeuvreUpdate;
-        _lGuild.LGuildOeuvrePanel.LPanelRowsChanged += QTallyRefine;
-        _lGuild.LGuildOeuvrePanel.LPanelCleared += _qColophon.QColophonClear;
+        _lGuild.LGuildPanel.CPanelChanged += QGuildModeUpdate;
+        _lGuild.LGuildPanel.CPanelRowsChanged += QRollUpdate;
+        _lGuild.LGuildOeuvre.COeuvrePanel.CPanelChanged += QGuildModeUpdate;
+        _lGuild.LGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QOeuvreUpdate;
+        _lGuild.LGuildOeuvre.COeuvrePanel.CPanelRowsChanged += QTallyRefine;
+        _lGuild.LGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClear;
         _lGuild.LGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonShow;
-        _lGuild.LGuildOeuvrePanel.LPanelFailed += host.PWindowFailureShow;
         _qVita.QVitaAttach(host, _lGuild);
         _qAutograph.QAutographAttach(_lGuild);
         _lGuild.LGuildAutograph.CDeskFailed += host.PWindowFailureShow;
@@ -171,24 +168,24 @@ internal sealed class QGuild
 
     internal void QGuildVistaRestore()
     {
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildPanel.LPanelRowsUpdate));
-        _lGuild.LGuildOeuvrePanel.LPanelObserverAttach(
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildPanel.CPanelRowsUpdate));
+        _lGuild.LGuildOeuvre.COeuvrePanel.CPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildOeuvrePanel.LPanelRowsUpdate));
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+            LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildOeuvre.COeuvrePanel.CPanelRowsUpdate));
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildReset));
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectAuthor,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildCatalogUpdate));
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectReference,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildCatalogUpdate));
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectExample,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildCatalogUpdate));
-        _lGuild.LGuildPanel.LPanelObserverAttach(
+        _lGuild.LGuildPanel.CPanelObserverAttach(
             CSubject.CSubjectEntry,
             LObserver.LObserverCreate<CBulletin>(_qGuildSurface, _lGuild.LGuildCatalogUpdate));
         QChoice.QChoiceOrderBuild(
@@ -201,11 +198,11 @@ internal sealed class QGuild
                 CCatalogOrder.CCatalogOrderWork,
                 CCatalogOrder.CCatalogOrderUsage,
             ]);
-        QChoice.QChoiceOrderApply(QEchelonDropdown, _lGuild.LGuildPanel.LPanelOrder);
+        QChoice.QChoiceOrderApply(QEchelonDropdown, _lGuild.LGuildPanel.CPanelOrder);
         QChoice.QChoiceKindBuild(QLouverList, _lGuild.LGuildLouverRead(), QLouverHandle);
         QLouverUpdate();
         _lGuild.LGuildQuerySet(QMuster.Text);
-        _lGuild.LGuildPanel.LPanelRowsUpdate();
+        _lGuild.LGuildPanel.CPanelRowsUpdate();
     }
 
     internal bool QGuildChangeCheck()
@@ -242,11 +239,6 @@ internal sealed class QGuild
     private bool QGuildDiscardConfirm()
     {
         return _qGuildHost.PWindowDiscardConfirm(true, QGuildDraftFinish);
-    }
-
-    private bool QGuildRemovalConfirm(int works)
-    {
-        return _qGuildHost.PWindowRemovalConfirm(works, "Guild");
     }
 
     private void QRollUpdate()
@@ -334,7 +326,7 @@ internal sealed class QGuild
 
     internal long QGuildVoyageRead()
     {
-        return _lGuild.LGuildPanel.LPanelVoyageRead();
+        return _lGuild.LGuildPanel.CPanelChosenRead();
     }
 
     internal void QRollAuthorShow(long id)

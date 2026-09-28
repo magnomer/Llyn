@@ -24,7 +24,7 @@ internal sealed partial class QTenor
     private void QTenorRegisterUpdate()
     {
         QGamutFind();
-        _lTenor.LTenorPanel.LPanelDraftUpdate();
+        _lTenor.LTenorPanel.CPanelDraftUpdate();
     }
 
     private void QSoundingHandle(object sender, TextChangedEventArgs e)
@@ -62,13 +62,13 @@ internal sealed partial class QTenor
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
         _lTenor.LTenorObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
-        LPanel panel = _lTenor.LTenorPanel;
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(
+        CPanel panel = _lTenor.LTenorPanel;
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QCohortFind));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelDraftUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
         _lTenor.LTenorObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QGamutFind));
         QTenorDisplay.PDisplayObserverAttach();
@@ -239,23 +239,23 @@ internal sealed partial class QTenor
 
     private void QGamutRegisterOpen(long id)
     {
-        _lTenor.LTenorPanel.LPanelClear();
+        _lTenor.LTenorPanel.CPanelEntryClose();
         QGamutRegisterShow(id);
     }
 
     private void QTenorScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lTenor.LTenorPanel.LPanelScribeSet(ReferenceEquals(sender, QTenorScribe));
+        _lTenor.LTenorPanel.CPanelScribeToggle(ReferenceEquals(sender, QTenorScribe));
     }
 
     internal void QTenorScribeRestore(bool editing)
     {
-        _lTenor.LTenorPanel.LPanelScribeRestore(editing);
+        _lTenor.LTenorPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QTenorLeaveConfirm()
     {
-        return _lTenor.LTenorPanel.LPanelLeaveConfirm();
+        return _lTenor.LTenorPanel.CPanelLeaveConfirm();
     }
 
     internal long QTenorVoyageRead()
@@ -270,6 +270,6 @@ internal sealed partial class QTenor
 
     private void QTenorBinHandle(object sender, RoutedEventArgs e)
     {
-        _lTenor.LTenorPanel.LPanelDelete();
+        _lTenor.LTenorPanel.CPanelEntryDelete();
     }
 }

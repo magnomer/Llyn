@@ -13,6 +13,16 @@ Takes the loaded window that owns every box, and the host whose editors the disc
 
 Asks the question under a warning, and answers true on yes.
 
+## `public bool CEnvoyConfirm(string key, string tallyKey, int tally)`
+
+Asks the question with the tally of what it reaches on a line of its own.
+It answers true on yes.
+It is the question before a shared record is deleted, so it shows under a question mark.
+
+## `public void CEnvoyFailureShow(string key, Exception exception)`
+
+Presents a failure that carries an exception through the window, which words the detail and records a fault.
+
 ## `public void CEnvoyFailureShow(string key)`
 
 Presents a request that failed with nothing further to say about why.

@@ -13,7 +13,7 @@ Its public members name only .NET and Conduct types, and the window alone builds
 
 The entry editor's deportment on the cohort side, which takes the cohort vista when the panel's vistas are restored.
 
-## `public LPanel LTenorPanel { get; }`
+## `public CPanel LTenorPanel { get; }`
 
 The shared panel state over the cohort vista: the chosen entry, the scribe mode, the bin and the leave guard.
 

@@ -38,10 +38,6 @@ Hands the vistas down, attaches the bulletins the panel follows, restores the or
 Asks the panel whether the tab may be left, so an untouched entry is left without a word.
 The panel asks the window only once its editor holds a change.
 
-## `private bool PYunjingDiscardConfirm()`
-
-The seam the panel calls once it finds a change: the window's leave dialog, in wording every panel shares.
-
 ## `internal void PYunjingDiweiShow(string language, string kind, string key)`
 
 A glyph link from another panel: empties both search fields, then opens the page on the cell.

@@ -20,7 +20,12 @@ public sealed class LFootnote
     private int _lFootnoteCount;
 
     internal LFootnote(
-        LEntryPort entries, LPortraitPort portraits, LEditor editor, Func<bool> shownSeam, Func<bool> leaveSeam)
+        LEntryPort entries,
+        LPortraitPort portraits,
+        LEditor editor,
+        Func<bool> shownSeam,
+        CEnvoy envoy,
+        Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -29,11 +34,11 @@ public sealed class LFootnote
         _lEntryPort = entries;
         _lPortraitPort = portraits;
         LFootnoteEditor = editor;
-        LFootnotePanel = new LPanel(
-            "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, static () => false);
-        LFootnotePanel.LPanelCleared += LFootnoteEditorClear;
-        LFootnotePanel.LPanelEdited += LFootnoteEditorOpen;
+        LFootnotePanel = new CPanel(
+            envoy, "List.LoadFailed", null,
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, finishSeam, shownSeam);
+        LFootnotePanel.CPanelCleared += LFootnoteEditorClear;
+        LFootnotePanel.CPanelEdited += LFootnoteEditorOpen;
         LFootnoteCreated += editor.LEditorStudio.CEditorReferenceAdd;
     }
 
@@ -41,7 +46,7 @@ public sealed class LFootnote
 
     public LEditor LFootnoteEditor { get; }
 
-    public LPanel LFootnotePanel { get; }
+    public CPanel LFootnotePanel { get; }
 
     private void LFootnoteEditorClear()
     {
@@ -66,7 +71,7 @@ public sealed class LFootnote
 
         _lFootnoteParent = parent;
         _lFootnoteVista = vista;
-        LFootnotePanel.LPanelVistaRestore(vista);
+        LFootnotePanel.CPanelVistaRestore(vista);
     }
 
     public IReadOnlyList<CVistaRow> LFootnoteRowsRead()
@@ -86,7 +91,7 @@ public sealed class LFootnote
 
     public void LFootnoteEntryCreate()
     {
-        LFootnotePanel.LPanelFreshOpen();
+        LFootnotePanel.CPanelFreshOpen();
         if (_lFootnoteParent?.LVistaChosen is long reference)
         {
             LFootnoteCreated?.Invoke(reference);

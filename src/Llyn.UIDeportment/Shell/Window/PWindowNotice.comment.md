@@ -44,14 +44,6 @@ Saving runs the panel's finish and answers whether it went through, so a refused
 Discarding answers yes and leaves the dropping to the path that asked, as it always did.
 A plain yes-or-no offered no way to keep the work, which a user leaving a word often means to keep.
 
-### `internal bool PWindowRemovalConfirm(int usage, string scope)`
-
-Asks before a shared record is deleted, and says how much the delete reaches.
-A record nothing references is a plain question.
-One something references names the number of places first, because the delete drops those references too.
-`scope` names the kind of record, so a Situation and an Example each speak of themselves.
-The wording is the panel's, but the shape of the question belongs to the window that asks it.
-
 ### `internal bool PWindowUnionConfirm(string dropped, string kept)`
 
 Asks before one Author is folded into another, naming both so the direction of the fold is plain.

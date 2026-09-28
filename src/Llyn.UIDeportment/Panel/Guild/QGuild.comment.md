@@ -52,10 +52,6 @@ Closes the dropdowns, so nothing stays open over a window that is going.
 
 The leave seam: the window's discard question over this panel's finish.
 
-## `private bool QGuildRemovalConfirm(int works)`
-
-The removal seam: the window's delete question worded by how many Sources credit the Author.
-
 ## `private void QRollUpdate()`
 
 Lists the roll afresh and reads the vita and the count chips, which follow the same Author.

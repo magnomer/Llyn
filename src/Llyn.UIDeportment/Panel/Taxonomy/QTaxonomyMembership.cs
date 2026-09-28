@@ -60,7 +60,7 @@ internal sealed partial class QTaxonomy
             return;
         }
 
-        _lTaxonomy.LTaxonomyPanel.LPanelRowShow(item.QMembershipItemId);
+        _lTaxonomy.LTaxonomyPanel.CPanelRowOpen(item.QMembershipItemId);
     }
 
     private void QMembershipApply(FrameworkElement container, object item, string? _)

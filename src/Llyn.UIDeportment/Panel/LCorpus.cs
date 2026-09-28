@@ -20,7 +20,6 @@ public sealed class LCorpus
         LLectern lectern,
         Func<bool> shownSeam,
         Func<Func<bool, bool>, bool> leaveSeam,
-        Func<int, bool> removalSeam,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -34,28 +33,38 @@ public sealed class LCorpus
         LCorpusEditor = editor;
         LCorpusDesk = new CDesk(drafts, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         LCorpusAnthology = new LAnthology(
-            entries, portraits, LCorpusDesk, shownSeam, LCorpusLeaveConfirm, removalSeam);
+            entries,
+            portraits,
+            LCorpusDesk,
+            shownSeam,
+            envoy,
+            store => LCorpusSession!.CSessionFinish(store));
         LCorpusQuotation = new LQuotation(
-            entries, portraits, editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, LCorpusLeaveConfirm);
-        LCorpusAnthology.LAnthologyPanel.LPanelRowsChanged += LCorpusQuotation.LQuotationPanel.LPanelRowsUpdate;
+            entries,
+            portraits,
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck,
+            shownSeam,
+            envoy,
+            store => LCorpusSession!.CSessionFinish(store));
+        LCorpusAnthology.LAnthologyPanel.CPanelRowsChanged += LCorpusQuotation.LQuotationPanel.CPanelRowsUpdate;
         LCorpusSession = new CSession(
             LCorpusDesk,
-            [LCorpusQuotation.LQuotationPanel.LPanelChangeCheck, LCorpusAnthology.LAnthologyPanel.LPanelChangeCheck],
+            [LCorpusQuotation.LQuotationPanel.CPanelChangeCheck, LCorpusAnthology.LAnthologyPanel.CPanelChangeCheck],
             editor.LEditorStudio.CEditorDesk,
-            () => LCorpusQuotation.LQuotationPanel.LPanelEditing,
+            () => LCorpusQuotation.LQuotationPanel.CPanelEditing,
             editor.LEditorStudio.CEditorFinish,
             static () => true,
             LCorpusStoredShow);
         LCorpusSession.CSessionHeld += () => LCorpusTranscriptChanged?.Invoke(LCorpusTranscriptRead());
         LCorpusSession.CSessionChanged += () => LCorpusChanged?.Invoke();
         LCorpusSession.CSessionFailed += (key, exception) => LCorpusFailed?.Invoke(key, exception);
-        LCorpusAnthology.LAnthologyPanel.LPanelEdited += id => LCorpusSession.CSessionStart(id);
-        LCorpusAnthology.LAnthologyPanel.LPanelCleared += LCorpusSession.CSessionCancel;
-        LCorpusAnthology.LAnthologyPanel.LPanelDraftChanged += LCorpusExampleUpdate;
-        LCorpusQuotation.LQuotationPanel.LPanelEdited += LCorpusEditorOpen;
-        LCorpusQuotation.LQuotationPanel.LPanelCleared += editor.LEditorStudio.CEditorDesk.CDeskCancel;
-        LCorpusQuotation.LQuotationPanel.LPanelCleared += lectern.LLecternClear;
-        LCorpusQuotation.LQuotationPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
+        LCorpusAnthology.LAnthologyPanel.CPanelEdited += id => LCorpusSession.CSessionStart(id);
+        LCorpusAnthology.LAnthologyPanel.CPanelCleared += LCorpusSession.CSessionCancel;
+        LCorpusAnthology.LAnthologyPanel.CPanelDraftChanged += LCorpusExampleUpdate;
+        LCorpusQuotation.LQuotationPanel.CPanelEdited += LCorpusEditorOpen;
+        LCorpusQuotation.LQuotationPanel.CPanelCleared += editor.LEditorStudio.CEditorDesk.CDeskCancel;
+        LCorpusQuotation.LQuotationPanel.CPanelCleared += lectern.LLecternClear;
+        LCorpusQuotation.LQuotationPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
     }
 
     public event Action? LCorpusChanged;
@@ -78,27 +87,27 @@ public sealed class LCorpus
 
     public LQuotation LCorpusQuotation { get; }
 
-    private bool LCorpusQuotationSide => LCorpusQuotation.LQuotationPanel.LPanelModeEnabled;
+    private bool LCorpusQuotationSide => LCorpusQuotation.LQuotationPanel.CPanelModeEnabled;
 
-    public bool LCorpusTranscriptShown => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.LPanelEditing;
+    public bool LCorpusTranscriptShown => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.CPanelEditing;
 
-    public bool LCorpusExcerptShown => !LCorpusQuotationSide && !LCorpusAnthology.LAnthologyPanel.LPanelEditing;
+    public bool LCorpusExcerptShown => !LCorpusQuotationSide && !LCorpusAnthology.LAnthologyPanel.CPanelEditing;
 
-    public bool LCorpusDisplayShown => LCorpusQuotationSide && !LCorpusQuotation.LQuotationPanel.LPanelEditing;
+    public bool LCorpusDisplayShown => LCorpusQuotationSide && !LCorpusQuotation.LQuotationPanel.CPanelEditing;
 
-    public bool LCorpusEditorShown => LCorpusQuotation.LQuotationPanel.LPanelEditing;
+    public bool LCorpusEditorShown => LCorpusQuotation.LQuotationPanel.CPanelEditing;
 
-    public bool LCorpusExcerptHeld => LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+    public bool LCorpusExcerptHeld => LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
 
-    public bool LCorpusExcerptBlank => !LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+    public bool LCorpusExcerptBlank => !LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
 
     public bool LCorpusScribeChecked => LCorpusTranscriptShown || LCorpusEditorShown;
 
     public bool LCorpusViewerChecked => !LCorpusScribeChecked;
 
-    public bool LCorpusModeEnabled => LCorpusQuotationSide || LCorpusAnthology.LAnthologyPanel.LPanelModeEnabled;
+    public bool LCorpusModeEnabled => LCorpusQuotationSide || LCorpusAnthology.LAnthologyPanel.CPanelModeEnabled;
 
-    public bool LCorpusBinEnabled => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled;
+    public bool LCorpusBinEnabled => !LCorpusQuotationSide && LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled;
 
     public bool LCorpusStoreEnabled => LCorpusEditorShown ? LCorpusEditor.LEditorStorable : LCorpusDesk.CDeskChanged;
 
@@ -155,9 +164,9 @@ public sealed class LCorpus
 
     private void LCorpusExampleShow(long id, bool editing)
     {
-        LCorpusQuotation.LQuotationPanel.LPanelClear();
-        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(editing);
-        LCorpusAnthology.LAnthologyPanel.LPanelRowShow(id);
+        LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
+        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(editing);
+        LCorpusAnthology.LAnthologyPanel.CPanelRowOpen(id);
     }
 
     public void LCorpusSelect(long? id, Action record)
@@ -181,16 +190,16 @@ public sealed class LCorpus
 
     private void LCorpusQuotationOpen(long id, bool editing)
     {
-        if (!LCorpusQuotation.LQuotationPanel.LPanelRowShow(id))
+        if (!LCorpusQuotation.LQuotationPanel.CPanelRowOpen(id))
         {
             return;
         }
 
         LCorpusDesk.CDeskCancel();
-        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
+        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
         if (editing)
         {
-            LCorpusQuotation.LQuotationPanel.LPanelScribeSet(true);
+            LCorpusQuotation.LQuotationPanel.CPanelScribeToggle(true);
         }
     }
 
@@ -223,8 +232,8 @@ public sealed class LCorpus
             return;
         }
 
-        LCorpusQuotation.LQuotationPanel.LPanelClear();
-        LCorpusAnthology.LAnthologyPanel.LPanelFreshOpen();
+        LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
+        LCorpusAnthology.LAnthologyPanel.CPanelFreshOpen();
         LCorpusSession.CSessionStart(null);
     }
 
@@ -232,7 +241,7 @@ public sealed class LCorpus
     {
         if (LCorpusQuotationSide)
         {
-            LCorpusQuotation.LQuotationPanel.LPanelScribeSet(editing);
+            LCorpusQuotation.LQuotationPanel.CPanelScribeToggle(editing);
             if (!LCorpusQuotationSide)
             {
                 LCorpusExampleRestore(editing);
@@ -241,8 +250,8 @@ public sealed class LCorpus
             return;
         }
 
-        LCorpusAnthology.LAnthologyPanel.LPanelScribeSet(editing);
-        if (!LCorpusAnthology.LAnthologyPanel.LPanelEditing)
+        LCorpusAnthology.LAnthologyPanel.CPanelScribeToggle(editing);
+        if (!LCorpusAnthology.LAnthologyPanel.CPanelEditing)
         {
             LCorpusDesk.CDeskCancel();
         }
@@ -261,8 +270,8 @@ public sealed class LCorpus
 
     public void LCorpusClear()
     {
-        LCorpusQuotation.LQuotationPanel.LPanelClear();
-        LCorpusAnthology.LAnthologyPanel.LPanelClear();
+        LCorpusQuotation.LQuotationPanel.CPanelEntryClose();
+        LCorpusAnthology.LAnthologyPanel.CPanelEntryClose();
     }
 
     public void LCorpusRowsApply(IReadOnlyList<CCatalogExample> rows)
@@ -288,7 +297,7 @@ public sealed class LCorpus
     private bool LCorpusRowShown => LCorpusExcerptShown && LCorpusExcerptHeld;
 
     private bool LCorpusRowHeld =>
-        LCorpusAnthology.LAnthologyPanel.LPanelBinEnabled || LCorpusQuotation.LQuotationPanel.LPanelBinEnabled;
+        LCorpusAnthology.LAnthologyPanel.CPanelBinEnabled || LCorpusQuotation.LQuotationPanel.CPanelBinEnabled;
 
     private void LCorpusQueryClear()
     {
@@ -299,7 +308,7 @@ public sealed class LCorpus
 
     private void LCorpusStoredShow(long id)
     {
-        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
+        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
         LCorpusExampleShow(id);
     }
 
@@ -310,15 +319,15 @@ public sealed class LCorpus
             return;
         }
 
-        LCorpusAnthology.LAnthologyPanel.LPanelDelete();
+        LCorpusAnthology.LAnthologyPanel.CPanelEntryDelete();
     }
 
     private void LCorpusQuotationCreate()
     {
         long? chosen = LCorpusAnthology.LAnthologyChosen;
         LCorpusDesk.CDeskCancel();
-        LCorpusAnthology.LAnthologyPanel.LPanelScribeShow(false);
-        LCorpusQuotation.LQuotationPanel.LPanelFreshOpen();
+        LCorpusAnthology.LAnthologyPanel.CPanelScribeSet(false);
+        LCorpusQuotation.LQuotationPanel.CPanelFreshOpen();
         LCorpusEditor.LEditorStudio.CEditorEntryOpen(null);
         if (chosen is long id)
         {
@@ -348,13 +357,13 @@ public sealed class LCorpus
 
     public void LCorpusEntryUpdate()
     {
-        if (!LCorpusQuotation.LQuotationPanel.LPanelBinEnabled)
+        if (!LCorpusQuotation.LQuotationPanel.CPanelBinEnabled)
         {
             return;
         }
 
         bool editing = LCorpusScribeChecked;
-        LCorpusQuotation.LQuotationPanel.LPanelDraftUpdate();
+        LCorpusQuotation.LQuotationPanel.CPanelDraftUpdate();
         if (LCorpusQuotationSide)
         {
             return;

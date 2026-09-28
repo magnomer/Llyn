@@ -26,8 +26,7 @@ public sealed class LTenor
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -40,18 +39,19 @@ public sealed class LTenor
         _lSettingsPort = settings;
         LTenorEditor = editor;
 
-        LTenorPanel = new LPanel(
-            "Register.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LTenorPanel.LPanelCleared += LTenorEditorClear;
-        LTenorPanel.LPanelEdited += LTenorEditorOpen;
-        LTenorPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LTenorPanel.LPanelCleared += lectern.LLecternClear;
+        LTenorPanel = new CPanel(
+            envoy, "Register.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LTenorPanel.CPanelCleared += LTenorEditorClear;
+        LTenorPanel.CPanelEdited += LTenorEditorOpen;
+        LTenorPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LTenorPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LTenorEditor { get; }
 
-    public LPanel LTenorPanel { get; }
+    public CPanel LTenorPanel { get; }
 
     private void LTenorEditorClear()
     {
@@ -65,7 +65,7 @@ public sealed class LTenor
 
     public void LTenorEntryCreate()
     {
-        LTenorPanel.LPanelFreshOpen();
+        LTenorPanel.CPanelFreshOpen();
         if (LTenorChosen is long register)
         {
             LTenorEditor.LEditorStudio.CEditorRegisterAdd(register);
@@ -74,7 +74,7 @@ public sealed class LTenor
 
     public bool LTenorCoinageCheck()
     {
-        return LTenorChosen is null && !LTenorPanel.LPanelBinEnabled;
+        return LTenorChosen is null && !LTenorPanel.CPanelBinEnabled;
     }
 
     public long? LTenorChosen => _lTenorVista?.LVistaChosen;
@@ -93,7 +93,7 @@ public sealed class LTenor
 
         _lTenorVista = vista;
         _lTenorCohort = cohort;
-        LTenorPanel.LPanelVistaRestore(cohort);
+        LTenorPanel.CPanelVistaRestore(cohort);
         LTenorEditor.LEditorStudio.CEditorVistaRestore(cohort);
     }
 
@@ -111,14 +111,14 @@ public sealed class LTenor
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LTenorGrilleSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lTenorVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lTenorVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public void LTenorQuestSet(string query)
@@ -186,7 +186,7 @@ public sealed class LTenor
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        _lTenorVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LTenorBulletinSend);
+        _lTenorVista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), LTenorBulletinSend);
 
         void LTenorBulletinSend(LBulletin bulletin)
         {
@@ -195,10 +195,10 @@ public sealed class LTenor
     }
 
     public CCatalogOrder LTenorOrder =>
-        LPanel.LPanelOrderRead(_lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
+        CPanel.CPanelOrderRead(_lTenorVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
     public CCatalogFilter LTenorFilter =>
-        LPanel.LPanelFilterRead(_lTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+        CPanel.CPanelFilterRead(_lTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public string LTenorFileRead()
     {

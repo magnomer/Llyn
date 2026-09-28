@@ -233,7 +233,6 @@ internal sealed partial class QCorpus : QChronicleHost
             lectern,
             QCorpusShownCheck,
             QCorpusDiscardConfirm,
-            QCorpusRemovalConfirm,
             host.PWindowEnvoy);
         _qCorpusDesk = _lCorpus.LCorpusDesk;
         QTranscriptDeskAttach();
@@ -251,19 +250,17 @@ internal sealed partial class QCorpus : QChronicleHost
         QCorpusDisplay.PDisplayAttach(host, lectern);
         QCorpusEditor.PEditorAttach(host, editor, lectern);
 
-        LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
-        LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
+        CPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
+        CPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
         _lCorpus.LCorpusChanged += QCorpusModeUpdate;
         _lCorpus.LCorpusTranscriptChanged += QTranscriptApply;
         _lCorpus.LCorpusExampleChanged += QExcerptShow;
         _lCorpus.LCorpusFailed += host.PWindowFailureShow;
         _lCorpus.LCorpusQueryCleared += QQueryClear;
-        anthology.LPanelChanged += QCorpusModeUpdate;
-        anthology.LPanelRowsChanged += QAnthologyFind;
-        anthology.LPanelFailed += host.PWindowFailureShow;
-        quotation.LPanelChanged += QCorpusModeUpdate;
-        quotation.LPanelRowsChanged += QQuotationFind;
-        quotation.LPanelFailed += host.PWindowFailureShow;
+        anthology.CPanelChanged += QCorpusModeUpdate;
+        anthology.CPanelRowsChanged += QAnthologyFind;
+        quotation.CPanelChanged += QCorpusModeUpdate;
+        quotation.CPanelRowsChanged += QQuotationFind;
     }
 
     private bool QCorpusShownCheck()
@@ -274,11 +271,6 @@ internal sealed partial class QCorpus : QChronicleHost
     private bool QCorpusDiscardConfirm(Func<bool, bool> finish)
     {
         return _qCorpusHost.PWindowDiscardConfirm(true, finish);
-    }
-
-    private bool QCorpusRemovalConfirm(int usage)
-    {
-        return _qCorpusHost.PWindowRemovalConfirm(usage, "Example");
     }
 
     private void QCorpusModeUpdate()

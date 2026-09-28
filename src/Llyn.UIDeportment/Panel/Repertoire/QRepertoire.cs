@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -210,7 +211,6 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
             lectern,
             QRepertoireShownCheck,
             QRepertoireDiscardConfirm,
-            QRepertoireRemovalConfirm,
             host.PWindowEnvoy);
         QScenarioDeskAttach();
 
@@ -229,20 +229,18 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QRepertoireDisplay.PDisplayAttach(host, lectern);
         QRepertoireEditor.PEditorAttach(host, editor, lectern);
 
-        LPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
-        LPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
+        CPanel atlas = _lRepertoire.LRepertoireAtlas.LAtlasPanel;
+        CPanel occurrence = _lRepertoire.LRepertoireOccurrence.LOccurrencePanel;
         _lRepertoire.LRepertoireChanged += QRepertoireModeUpdate;
         _lRepertoire.LRepertoireScenarioChanged += QScenarioApply;
         _lRepertoire.LRepertoireSituationChanged += QVignetteShow;
         _lRepertoire.LRepertoireFailed += host.PWindowFailureShow;
         _lRepertoire.LRepertoireInquestCleared += QInquestClear;
-        atlas.LPanelChanged += QRepertoireModeUpdate;
-        atlas.LPanelRowsChanged += QAtlasFind;
-        atlas.LPanelCleared += QVignetteClear;
-        atlas.LPanelFailed += host.PWindowFailureShow;
-        occurrence.LPanelChanged += QRepertoireModeUpdate;
-        occurrence.LPanelRowsChanged += QOccurrenceFind;
-        occurrence.LPanelFailed += host.PWindowFailureShow;
+        atlas.CPanelChanged += QRepertoireModeUpdate;
+        atlas.CPanelRowsChanged += QAtlasFind;
+        atlas.CPanelCleared += QVignetteClear;
+        occurrence.CPanelChanged += QRepertoireModeUpdate;
+        occurrence.CPanelRowsChanged += QOccurrenceFind;
     }
 
     private bool QRepertoireShownCheck()
@@ -253,11 +251,6 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     private bool QRepertoireDiscardConfirm(Func<bool, bool> finish)
     {
         return _qRepertoireHost.PWindowDiscardConfirm(true, finish);
-    }
-
-    private bool QRepertoireRemovalConfirm(int usage)
-    {
-        return _qRepertoireHost.PWindowRemovalConfirm(usage);
     }
 
     private void QRepertoireModeUpdate()

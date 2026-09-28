@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows;
 using Llyn.Conduct;
 
@@ -27,6 +28,24 @@ internal sealed class QEnvoy : CEnvoy
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
+    }
+
+    public bool CEnvoyConfirm(string key, string tallyKey, int tally)
+    {
+        string count = string.Concat(
+            QLocalizationCatalog.QLocalizationTextRead(tallyKey), " ", tally.ToString(CultureInfo.CurrentCulture));
+
+        return MessageBox.Show(
+            _qEnvoySurface,
+            $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{count}",
+            QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) == MessageBoxResult.Yes;
+    }
+
+    public void CEnvoyFailureShow(string key, Exception exception)
+    {
+        _qEnvoyHost.PWindowFailureShow(key, exception);
     }
 
     public void CEnvoyFailureShow(string key)

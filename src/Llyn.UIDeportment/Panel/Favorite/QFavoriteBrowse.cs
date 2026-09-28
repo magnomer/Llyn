@@ -43,23 +43,23 @@ internal sealed partial class QFavorite
     internal async void QFavoriteVistaRestore()
     {
         UserControl surface = _qFavoriteSurface;
-        LPanel panel = _lFavorite.LFavoritePanel;
-        panel.LPanelObserverAttach(
+        CPanel panel = _lFavorite.LFavoritePanel;
+        panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.LPanelObserverAttach(
+        panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QFavoriteWorkspaceUpdate));
-        panel.LPanelObserverAttach(
+        panel.CPanelObserverAttach(
             CSubject.CSubjectGrasp, LObserver.LObserverCreate<CBulletin>(surface, QSeriesGraspUpdate));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectFavorite, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.LPanelObserverAttach(
+        panel.CPanelObserverAttach(
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.LPanelObserverAttach(
+        panel.CPanelObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QRosterFind));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelDraftUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
         QFavoriteDisplay.PDisplayObserverAttach();
         QFavoriteEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -138,7 +138,7 @@ internal sealed partial class QFavorite
         }
 
         _qFavoriteHost.PVoyageRecord();
-        _lFavorite.LFavoritePanel.LPanelRowShow(item.QRosterItemId);
+        _lFavorite.LFavoritePanel.CPanelRowOpen(item.QRosterItemId);
     }
 
     private void QRosterApply(FrameworkElement container, object item, string? _)
@@ -186,17 +186,17 @@ internal sealed partial class QFavorite
 
     internal void QRosterEntryShow(long id)
     {
-        _lFavorite.LFavoritePanel.LPanelRowShow(id);
+        _lFavorite.LFavoritePanel.CPanelRowOpen(id);
     }
 
     private void QFavoriteScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lFavorite.LFavoritePanel.LPanelScribeSet(ReferenceEquals(sender, QFavoriteScribe));
+        _lFavorite.LFavoritePanel.CPanelScribeToggle(ReferenceEquals(sender, QFavoriteScribe));
     }
 
     internal void QFavoriteScribeRestore(bool editing)
     {
-        _lFavorite.LFavoritePanel.LPanelScribeRestore(editing);
+        _lFavorite.LFavoritePanel.CPanelScribeRestore(editing);
     }
 
     internal long QFavoriteVoyageRead()
@@ -206,7 +206,7 @@ internal sealed partial class QFavorite
 
     internal bool QFavoriteLeaveConfirm()
     {
-        return _lFavorite.LFavoritePanel.LPanelLeaveConfirm();
+        return _lFavorite.LFavoritePanel.CPanelLeaveConfirm();
     }
 
     private void QFavoriteStoreHandle(object sender, RoutedEventArgs e)
@@ -216,6 +216,6 @@ internal sealed partial class QFavorite
 
     private void QFavoriteBinHandle(object sender, RoutedEventArgs e)
     {
-        _lFavorite.LFavoritePanel.LPanelDelete();
+        _lFavorite.LFavoritePanel.CPanelEntryDelete();
     }
 }

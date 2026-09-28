@@ -32,7 +32,7 @@ Raised with a character and its language, as one is picked off a series page.
 
 The editor the reader column shares with the panel.
 
-## `public LPanel LXieshengPanel`
+## `public CPanel LXieshengPanel`
 
 The panel state of the entry list: its mode, its chosen row and its draft.
 

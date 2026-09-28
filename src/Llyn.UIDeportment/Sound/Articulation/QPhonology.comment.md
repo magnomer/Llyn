@@ -3,7 +3,7 @@
 ## `internal sealed class QPhonology`
 
 Drives the phonology panel: what it is made of, and what it forwards.
-Every branch it once carried lives in `LPhonology` and the `LPanel` it holds.
+Every branch it once carried lives in `LPhonology` and the `CPanel` it holds.
 The search, the ordering, the inventory, the read-only display and the editor are all wired here.
 The panel itself is the veneer's `QPhonology` page, which the window places.
 It names no Core type, since its rows arrive as `CCatalogPronunciation`.
@@ -51,10 +51,6 @@ The shown seam: whether this tab is the one in front, which only the page knows.
 ## `internal bool QPhonologyLeaveConfirm()`
 
 The panel's question before its unsaved work goes out of sight, asked by the window.
-
-## `private bool QPhonologyDiscardConfirm()`
-
-The leave seam: the window's leave dialog over the editor's finish, asked only when the deportment found changes.
 
 ## `internal void QPhonologyClose()`
 

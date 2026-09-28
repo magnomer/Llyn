@@ -16,16 +16,20 @@ public sealed class COeuvre
 
     private int _cOeuvreCount;
 
-    internal COeuvre(LEntryPort entries)
+    internal COeuvre(LEntryPort entries, CEnvoy envoy, Func<bool> shownSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
 
         _cOeuvreEntryPort = entries;
+        COeuvrePanel = new CPanel(
+            envoy, "Source.LoadFailed", null,
+            static () => false, static _ => true, shownSeam);
+        COeuvrePanel.CPanelDraftChanged += LOeuvreColophonUpdate;
     }
 
     public event Action<CColophon>? COeuvreColophonChanged;
 
-    public event Action? COeuvreStrayed;
+    public CPanel COeuvrePanel { get; }
 
     public bool COeuvreEmpty => _cOeuvreCount == 0;
 
@@ -47,6 +51,7 @@ public sealed class COeuvre
         vista.LVistaQuerySet(_cOeuvreVista?.LVistaQuery ?? string.Empty);
         _cOeuvreRoll = roll;
         _cOeuvreVista = vista;
+        COeuvrePanel.CPanelVistaRestore(vista);
     }
 
     public IReadOnlyList<CCatalogReference> COeuvreRowsRead()
@@ -56,7 +61,7 @@ public sealed class COeuvre
         _cOeuvreCount = rows.Count;
         if (LOeuvreSourceHeld && !rows.Any(static row => row.CCatalogReferenceChosen))
         {
-            COeuvreStrayed?.Invoke();
+            COeuvrePanel.CPanelEntryClose();
         }
 
         return rows;
@@ -74,7 +79,7 @@ public sealed class COeuvre
         return _cOeuvreEntryPort.LEngineTallyRead(_cOeuvreVista?.LVistaChosen);
     }
 
-    internal void COeuvreColophonUpdate(LDraft draft)
+    private void LOeuvreColophonUpdate(LDraft draft)
     {
         COeuvreColophonChanged?.Invoke(COeuvreColophonRead(draft));
     }

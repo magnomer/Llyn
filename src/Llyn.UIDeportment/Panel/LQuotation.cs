@@ -22,19 +22,20 @@ public sealed class LQuotation
         LPortraitPort portraits,
         Func<bool> changeSeam,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam)
+        CEnvoy envoy,
+        Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
-        LQuotationPanel = new LPanel(
-            "List.LoadFailed", "Scribe.DeleteFailed",
-            changeSeam, shownSeam, leaveSeam, static () => false);
+        LQuotationPanel = new CPanel(
+            envoy, "List.LoadFailed", null,
+            changeSeam, finishSeam, shownSeam);
     }
 
-    public LPanel LQuotationPanel { get; }
+    public CPanel LQuotationPanel { get; }
 
     internal void LQuotationVistaRestore(LVista roll, LVista vista)
     {
@@ -43,7 +44,7 @@ public sealed class LQuotation
 
         _lQuotationRoll = roll;
         _lQuotationVista = vista;
-        LQuotationPanel.LPanelVistaRestore(vista);
+        LQuotationPanel.CPanelVistaRestore(vista);
     }
 
     public string LQuotationEmptyRead(string? dredge)

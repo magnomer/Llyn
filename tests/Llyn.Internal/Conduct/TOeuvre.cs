@@ -38,7 +38,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreRowsRead_ChosenSourceLeftTheList_RaisesStrayed()
+    public void OeuvreRowsRead_ChosenSourceLeftTheList_ClosesThePanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,8 +47,8 @@ public sealed class TOeuvre
         LAuthor ada = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
         engine.TRequestCreditApply(book.LReferenceId, ada.LAuthorId, 0);
         (COeuvre oeuvre, LVista roll, LVista vista) = TOeuvrePrepare(engine);
-        int strayed = 0;
-        oeuvre.COeuvreStrayed += () => strayed++;
+        int closed = 0;
+        oeuvre.COeuvrePanel.CPanelCleared += () => closed++;
         roll.TVistaSelect(ada.LAuthorId);
         vista.TVistaSelect(book.LReferenceId);
 
@@ -56,7 +56,8 @@ public sealed class TOeuvre
         vista.TVistaSelect(orphan.LReferenceId);
         oeuvre.COeuvreRowsRead();
 
-        Assert.Equal(1, strayed);
+        Assert.Equal(1, closed);
+        Assert.Equal(0, oeuvre.COeuvrePanel.CPanelChosenRead());
     }
 
     [Fact]
@@ -121,17 +122,16 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreColophonUpdate_SourceDraft_RaisesItsSheet()
+    public void OeuvrePanelRowOpen_SourceDraft_RaisesItsSheet()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LReference book = engine.TEngineCitationCreate("Book");
-        (COeuvre oeuvre, _, LVista vista) = TOeuvrePrepare(engine);
+        (COeuvre oeuvre, _, _) = TOeuvrePrepare(engine);
         CColophon? shown = null;
         oeuvre.COeuvreColophonChanged += colophon => shown = colophon;
-        vista.TVistaSelect(book.LReferenceId);
 
-        oeuvre.COeuvreColophonUpdate(vista.TVistaLoad()!);
+        oeuvre.COeuvrePanel.CPanelRowOpen(book.LReferenceId);
 
         Assert.Equal("Book", shown?.CColophonTitle);
         Assert.Equal(TInterface.TLocalizationTextRead("Source.UsageNone"), shown?.CColophonTally);

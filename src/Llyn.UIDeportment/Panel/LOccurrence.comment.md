@@ -4,7 +4,7 @@
 
 The deportment of the repertoire panel's occurrence list: the panel state over the occurrence vista and its rows.
 The rows are the entries referencing the chosen Situation, so it keeps a handle on the situation vista too.
-The occurrence side never deletes, so its delete seam always refuses.
+The occurrence side never deletes, so its panel has no delete scope.
 It prints and exports the occurrence vista's chosen entry.
 It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
 Its constructor and vista restore take engine types, so they stay internal.

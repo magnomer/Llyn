@@ -81,3 +81,24 @@ Stores one entry with one meaning in the given language, the least an entry need
 
 Stores one entry for the character, places the character under one onset, and anchors the entry's reflex to it.
 The anchor is what the onset's entry count is tallied over, so a placement alone counts nothing.
+
+## `public void VistaOrderRead_NoVista_ReadsHeadwordOrder()`
+
+A panel with no vista yet reads the headword order.
+
+## `public void VistaFilterRead_NoVista_ReadsEmptyFilter()`
+
+A panel with no vista yet reads the shared empty filter.
+
+## `public void VistaFilterSet_NothingHidden_KeepsSharedEmptyFilter()`
+
+Hidden languages set on the vista are kept as given.
+Hiding nothing sets the engine's shared empty filter.
+
+## `public void VistaUsageRead_CreditedAuthor_CountsItsWorks()`
+
+An Author reaches the Sources that credit it, and nothing while no row is chosen.
+
+## `public void VistaUsageRead_ChosenEntry_CountsNothing()`
+
+A deleted entry drops no reference elsewhere, so its count is zero.

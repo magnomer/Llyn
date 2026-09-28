@@ -5,7 +5,7 @@
 The driver of the Source panel: what it is made of, and what it forwards.
 A Source is independent data owned by nothing, so this panel is not a view of one citation of it.
 The visible label is Source and the internal base is Reference, because Source already names a pronunciation source.
-Every branch it once carried lives in `LShelf` and the two `LPanel` it holds.
+Every branch it once carried lives in `LShelf` and the two `CPanel` it holds.
 The driver forwards each handler to the shelf and writes the page's parts when a notice arrives.
 The shelf, the entry list, the read areas, the two edit areas and the shared rail are all wired here.
 The driver picks the area in front by the shelf's side verdict.
@@ -50,10 +50,6 @@ The panel's question before its unsaved work goes out of sight, asked by the win
 ## `private bool QReferenceDiscardConfirm()`
 
 The discard seam: the window's leave dialog over the finish of the area in front.
-
-## `private bool QReferenceRemovalConfirm(int usage)`
-
-The removal seam: the window's delete question, worded by how many rows still cite the Source.
 
 ## `private void QShelfUpdate()`
 

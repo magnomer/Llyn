@@ -60,7 +60,7 @@ internal sealed partial class QTenor
             return;
         }
 
-        _lTenor.LTenorPanel.LPanelRowShow(item.QCohortItemId);
+        _lTenor.LTenorPanel.CPanelRowOpen(item.QCohortItemId);
     }
 
     private void QCohortApply(FrameworkElement container, object item, string? _)

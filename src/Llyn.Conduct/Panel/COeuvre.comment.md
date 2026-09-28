@@ -5,12 +5,21 @@
 The source list of the authors panel: its rows, its query, its empty text, its tally and its colophon.
 The rows are the Sources crediting the chosen Author, the uncredited ones under the orphan row, or all.
 It keeps a handle on the roll vista too, because the engine narrows the rows by the roll's state.
-The panel over the oeuvre vista still lives in the guild's deportment, so the stray notice asks it to clear.
+It owns the panel over the oeuvre vista, with the Source keys and no delete scope.
 It also holds the reference, author, vita and usage maps that other lists share.
 
-## `public event Action? COeuvreStrayed;`
+## `internal COeuvre(LEntryPort entries, CEnvoy envoy, Func<bool> shownSeam)`
 
-The chosen Source is no longer among the rows, so the panel drops it.
+Builds the oeuvre over the entry port, with its panel asking through `envoy`.
+The panel never edits, so it holds no changes and stores nothing on leaving.
+
+## `public CPanel COeuvrePanel { get; }`
+
+The panel over the oeuvre vista, whose loaded Source raises the colophon.
+
+## `private void LOeuvreColophonUpdate(LDraft draft)`
+
+Answers the panel's loaded draft with the colophon sheet it shapes.
 
 ## `public string COeuvreEmptyKey`
 
@@ -19,11 +28,12 @@ The key of the empty text: the plain empty text with no Author chosen, else unma
 ## `internal void COeuvreVistaRestore(LVista roll, LVista vista)`
 
 Binds the roll vista the rows follow and the oeuvre vista that holds the query and the chosen Source.
+The panel takes the oeuvre vista with it.
 A workspace switch hands fresh vistas, and the comb query carries over, so the driver never replays it.
 
 ## `public IReadOnlyList<CCatalogReference> COeuvreRowsRead()`
 
-Reads the rows, counts them, and raises the stray notice when a chosen Source is no longer listed.
+Reads the rows, counts them, and closes the panel when a chosen Source is no longer listed.
 Before the vistas are restored the engine answers no rows.
 
 ## `public void COeuvreQuerySet(string query)`
@@ -33,11 +43,6 @@ The comb above the list, narrowing the Sources by the typed text.
 ## `public string COeuvreTallyRead()`
 
 The citation sentence for the chosen Source, which the engine counts and words.
-
-## `internal void COeuvreColophonUpdate(LDraft draft)`
-
-Turns a loaded Source draft into the colophon and announces it.
-The panel hands the draft over, so the driver receives the sheet and never the draft.
 
 ## `internal CColophon COeuvreColophonRead(LDraft draft)`
 

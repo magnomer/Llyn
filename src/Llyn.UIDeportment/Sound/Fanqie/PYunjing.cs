@@ -158,15 +158,13 @@ public class PYunjing : UserControl
             editor,
             lectern,
             PYunjingShownCheck,
-            PYunjingDiscardConfirm,
-            host.PWindowDeleteConfirm);
+            host.PWindowEnvoy);
         _lYunjing.LYunjingEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
         _lYunjing.LYunjingChanged += PYunjingColumnUpdate;
         _lYunjing.LYunjingGlyphChosen += host.PWindowGlyphShow;
-        _lYunjing.LYunjingPanel.LPanelChanged += PYunjingModeUpdate;
-        _lYunjing.LYunjingPanel.LPanelRowsChanged += PXiaoyunUpdate;
-        _lYunjing.LYunjingPanel.LPanelCleared += PYunjingClearUpdate;
-        _lYunjing.LYunjingPanel.LPanelFailed += host.PWindowFailureShow;
+        _lYunjing.LYunjingPanel.CPanelChanged += PYunjingModeUpdate;
+        _lYunjing.LYunjingPanel.CPanelRowsChanged += PXiaoyunUpdate;
+        _lYunjing.LYunjingPanel.CPanelCleared += PYunjingClearUpdate;
 
         PShengmu.ItemsSource = _pShengmuList;
         PYunmu.ItemsSource = _pYunmuList;
@@ -208,13 +206,13 @@ public class PYunjing : UserControl
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
         _lYunjing.LYunjingShengmuAttach(
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingRowsUpdate));
-        LPanel panel = _lYunjing.LYunjingPanel;
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelRowsUpdate));
-        panel.LPanelObserverAttach(
+        CPanel panel = _lYunjing.LYunjingPanel;
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelRowsUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, _lYunjing.LYunjingEntryHandle));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.LPanelDraftUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(this, panel.CPanelDraftUpdate));
         PDisplay.PDisplayObserverAttach();
         PEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -256,17 +254,12 @@ public class PYunjing : UserControl
 
     internal bool PYunjingChangeCheck()
     {
-        return _lYunjing.LYunjingPanel.LPanelChangeCheck();
+        return _lYunjing.LYunjingPanel.CPanelChangeCheck();
     }
 
     internal bool PYunjingLeaveConfirm()
     {
-        return _lYunjing.LYunjingPanel.LPanelLeaveConfirm();
-    }
-
-    private bool PYunjingDiscardConfirm()
-    {
-        return _pYunjingHost.PWindowDiscardConfirm(true, PEditor.PEditorDraftFinish);
+        return _lYunjing.LYunjingPanel.CPanelLeaveConfirm();
     }
 
     internal void PYunjingDiweiShow(string language, string kind, string key)
@@ -278,7 +271,7 @@ public class PYunjing : UserControl
 
     internal void PYunjingScribeRestore(bool editing)
     {
-        _lYunjing.LYunjingPanel.LPanelScribeRestore(editing);
+        _lYunjing.LYunjingPanel.CPanelScribeRestore(editing);
     }
 
     internal void PYunjingClose()
@@ -333,12 +326,12 @@ public class PYunjing : UserControl
         PEditor.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingEditorShown);
         PDisplay.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingDisplayShown);
         PYunjingDiwei.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingDiweiShown);
-        PYunjingViewer.IsChecked = QLook.QLookCheckedRead(_lYunjing.LYunjingPanel.LPanelViewerChecked);
-        PYunjingScribe.IsChecked = QLook.QLookCheckedRead(_lYunjing.LYunjingPanel.LPanelScribeChecked);
-        PYunjingVoyage.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingPanel.LPanelViewerChecked);
-        PYunjingChronicle.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingPanel.LPanelScribeChecked);
-        PYunjingMode.IsEnabled = _lYunjing.LYunjingPanel.LPanelModeEnabled;
-        PYunjingBin.IsEnabled = _lYunjing.LYunjingPanel.LPanelBinEnabled;
+        PYunjingViewer.IsChecked = QLook.QLookCheckedRead(_lYunjing.LYunjingPanel.CPanelViewerChecked);
+        PYunjingScribe.IsChecked = QLook.QLookCheckedRead(_lYunjing.LYunjingPanel.CPanelScribeChecked);
+        PYunjingVoyage.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingPanel.CPanelViewerChecked);
+        PYunjingChronicle.Visibility = QLook.QLookVisibleRead(_lYunjing.LYunjingPanel.CPanelScribeChecked);
+        PYunjingMode.IsEnabled = _lYunjing.LYunjingPanel.CPanelModeEnabled;
+        PYunjingBin.IsEnabled = _lYunjing.LYunjingPanel.CPanelBinEnabled;
     }
 
     private void PYunjingClearUpdate()
@@ -383,27 +376,27 @@ public class PYunjing : UserControl
     private void PXiaoyunHandle(object sender, RoutedEventArgs e)
     {
         _pYunjingHost.PVoyageRecord();
-        _lYunjing.LYunjingPanel.LPanelRowSelect(QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
+        _lYunjing.LYunjingPanel.CPanelRowSelect(QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
     }
 
     internal long PYunjingVoyageRead()
     {
-        return _lYunjing.LYunjingPanel.LPanelVoyageRead();
+        return _lYunjing.LYunjingPanel.CPanelChosenRead();
     }
 
     internal void PXiaoyunEntryShow(long id)
     {
-        _lYunjing.LYunjingPanel.LPanelRowShow(id);
+        _lYunjing.LYunjingPanel.CPanelRowOpen(id);
     }
 
     private void PYunjingFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lYunjing.LYunjingPanel.LPanelFreshStart();
+        _lYunjing.LYunjingPanel.CPanelEntryCreate();
     }
 
     private void PYunjingScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lYunjing.LYunjingPanel.LPanelScribeSet(ReferenceEquals(sender, PYunjingScribe));
+        _lYunjing.LYunjingPanel.CPanelScribeToggle(ReferenceEquals(sender, PYunjingScribe));
     }
 
     private void PYunjingStoreHandle(object sender, RoutedEventArgs e)
@@ -413,12 +406,12 @@ public class PYunjing : UserControl
 
     private void PYunjingBinHandle(object sender, RoutedEventArgs e)
     {
-        _lYunjing.LYunjingPanel.LPanelDelete();
+        _lYunjing.LYunjingPanel.CPanelEntryDelete();
     }
 
     private void PYunjingPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lYunjing.LYunjingPanel.LPanelPressAllowed;
+        e.CanExecute = _lYunjing.LYunjingPanel.CPanelPressAllowed;
     }
 
     private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)

@@ -27,8 +27,7 @@ public sealed class LXiesheng
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -38,13 +37,14 @@ public sealed class LXiesheng
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
         LXieshengEditor = editor;
-        LXieshengPanel = new LPanel(
-            "Xiesheng.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LXieshengPanel.LPanelCleared += LXieshengEditorClear;
-        LXieshengPanel.LPanelEdited += LXieshengEditorOpen;
-        LXieshengPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LXieshengPanel.LPanelCleared += lectern.LLecternClear;
+        LXieshengPanel = new CPanel(
+            envoy, "Xiesheng.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LXieshengPanel.CPanelCleared += LXieshengEditorClear;
+        LXieshengPanel.CPanelEdited += LXieshengEditorOpen;
+        LXieshengPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LXieshengPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     private void LXieshengEditorClear()
@@ -63,15 +63,15 @@ public sealed class LXiesheng
 
     public LEditor LXieshengEditor { get; }
 
-    public LPanel LXieshengPanel { get; }
+    public CPanel LXieshengPanel { get; }
 
     public bool LXieshengAllowed => _lPhonologyPort.LEngineStemFind() is not null;
 
-    public bool LXieshengStemShown => LXieshengStemChosen && !LXieshengPanel.LPanelModeEnabled;
+    public bool LXieshengStemShown => LXieshengStemChosen && !LXieshengPanel.CPanelModeEnabled;
 
-    public bool LXieshengDisplayShown => !LXieshengStemShown && !LXieshengPanel.LPanelEditing;
+    public bool LXieshengDisplayShown => !LXieshengStemShown && !LXieshengPanel.CPanelEditing;
 
-    public bool LXieshengEditorShown => LXieshengPanel.LPanelEditing;
+    public bool LXieshengEditorShown => LXieshengPanel.CPanelEditing;
 
     public bool LXieshengGroveEmpty => _lGroveCount == 0;
 
@@ -82,7 +82,7 @@ public sealed class LXiesheng
     public string LXieshengKindredKey => LXieshengStemChosen ? LXieshengVacantKey : "Xiesheng.KindredEmpty";
 
     public CCatalogOrder LXieshengRung =>
-        LPanel.LPanelOrderRead(_lGroveVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
+        CPanel.CPanelOrderRead(_lGroveVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
     private string LXieshengVacantKey =>
         LXieshengSextantQueried ? "Xiesheng.KindredUnmatched" : "Xiesheng.KindredVacant";
@@ -115,7 +115,7 @@ public sealed class LXiesheng
 
         _lGroveVista = grove;
         _lKindredVista = kindred;
-        LXieshengPanel.LPanelVistaRestore(kindred);
+        LXieshengPanel.CPanelVistaRestore(kindred);
         LXieshengEditor.LEditorStudio.CEditorVistaRestore(kindred);
     }
 
@@ -201,26 +201,26 @@ public sealed class LXiesheng
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LXieshengReset()
     {
         _lGroveVista?.LVistaSelect(null);
-        LXieshengPanel.LPanelClear();
+        LXieshengPanel.CPanelEntryClose();
         LXieshengChanged?.Invoke();
     }
 
     public void LXieshengRowsUpdate()
     {
         LXieshengChanged?.Invoke();
-        LXieshengPanel.LPanelRowsUpdate();
+        LXieshengPanel.CPanelRowsUpdate();
     }
 
     public void LXieshengEntryHandle(CBulletin bulletin)
     {
         LXieshengChanged?.Invoke();
-        LXieshengPanel.LPanelEntryHandle(bulletin);
+        LXieshengPanel.CPanelEntryUpdate(bulletin);
     }
 
     public void LXieshengStemSelect(long? id)
@@ -231,7 +231,7 @@ public sealed class LXiesheng
         }
 
         _lGroveVista?.LVistaToggle(stem);
-        LXieshengPanel.LPanelClear();
+        LXieshengPanel.CPanelEntryClose();
         LXieshengChanged?.Invoke();
     }
 
@@ -265,7 +265,7 @@ public sealed class LXiesheng
             return;
         }
 
-        if (!LXieshengPanel.LPanelLeaveConfirm())
+        if (!LXieshengPanel.CPanelLeaveConfirm())
         {
             return;
         }
@@ -277,7 +277,7 @@ public sealed class LXiesheng
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        _lGroveVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LXieshengBulletinSend);
+        _lGroveVista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), LXieshengBulletinSend);
 
         void LXieshengBulletinSend(LBulletin bulletin)
         {
@@ -287,19 +287,19 @@ public sealed class LXiesheng
 
     public Task LXieshengPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        if (!LXieshengPanel.LPanelPressAllowed)
+        if (!LXieshengPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LXieshengPanel.LPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            LXieshengPanel.CPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     public Task LXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            LXieshengPanel.LPanelVista,
+            LXieshengPanel.CPanelVista,
             path,
             QPortrait.QPortraitMediumRead(format),
             QPortrait.QPortraitLabelRead(label));
@@ -307,6 +307,6 @@ public sealed class LXiesheng
 
     public string LXieshengFileRead()
     {
-        return LVista.LVistaFileRead(LXieshengPanel.LPanelVista);
+        return LVista.LVistaFileRead(LXieshengPanel.CPanelVista);
     }
 }

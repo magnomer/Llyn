@@ -70,7 +70,7 @@ public sealed class TPhonologyRows
     {
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
-        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine, () => true, () => true);
+        LPhonology panel = TInterfaceDeportment.TPhonologyCreate(engine);
         panel.TPhonologyVistaRestore(engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword));
         return panel;
     }

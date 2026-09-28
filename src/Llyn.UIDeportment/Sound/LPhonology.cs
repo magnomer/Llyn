@@ -23,8 +23,7 @@ public sealed class LPhonology
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -34,18 +33,19 @@ public sealed class LPhonology
         _lPhonologyPort = phonology;
         _lPortraitPort = portraits;
         LPhonologyEditor = editor;
-        LPhonologyPanel = new LPanel(
-            "Sound.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LPhonologyPanel.LPanelCleared += LPhonologyEditorClear;
-        LPhonologyPanel.LPanelEdited += LPhonologyEditorOpen;
-        LPhonologyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LPhonologyPanel.LPanelCleared += lectern.LLecternClear;
+        LPhonologyPanel = new CPanel(
+            envoy, "Sound.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LPhonologyPanel.CPanelCleared += LPhonologyEditorClear;
+        LPhonologyPanel.CPanelEdited += LPhonologyEditorOpen;
+        LPhonologyPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LPhonologyPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LPhonologyEditor { get; }
 
-    public LPanel LPhonologyPanel { get; }
+    public CPanel LPhonologyPanel { get; }
 
     private void LPhonologyEditorClear()
     {
@@ -64,7 +64,7 @@ public sealed class LPhonology
     internal void LPhonologyVistaRestore(LVista vista)
     {
         _lPhonologyVista = vista;
-        LPhonologyPanel.LPanelVistaRestore(vista);
+        LPhonologyPanel.CPanelVistaRestore(vista);
         LPhonologyEditor.LEditorStudio.CEditorVistaRestore(vista);
     }
 
@@ -107,14 +107,14 @@ public sealed class LPhonology
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LPhonologyFilterSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lPhonologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lPhonologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public Task LPhonologyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
@@ -139,13 +139,13 @@ public sealed class LPhonology
 
     public string LPhonologyFileRead()
     {
-        return LVista.LVistaFileRead(LPhonologyPanel.LPanelVista);
+        return LVista.LVistaFileRead(LPhonologyPanel.CPanelVista);
     }
 
     public Task LPhonologyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            LPhonologyPanel.LPanelVista,
+            LPhonologyPanel.CPanelVista,
             path,
             QPortrait.QPortraitMediumRead(format),
             QPortrait.QPortraitLabelRead(label));

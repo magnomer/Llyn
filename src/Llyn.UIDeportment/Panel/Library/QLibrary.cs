@@ -131,12 +131,10 @@ internal sealed class QLibrary
             editor,
             lectern,
             QLibraryShownCheck,
-            QLibraryDiscardConfirm,
-            host.PWindowDeleteConfirm);
+            host.PWindowEnvoy);
         _lLibrary.LLibraryFailed += host.PWindowFailureShow;
         _lLibrary.LLibraryEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QLibraryStoreUpdate;
-        _lLibrary.LLibraryPanel.LPanelChanged += QLibraryModeUpdate;
-        _lLibrary.LLibraryPanel.LPanelFailed += host.PWindowFailureShow;
+        _lLibrary.LLibraryPanel.CPanelChanged += QLibraryModeUpdate;
 
         QLibraryIndexAttach(
             QContract.QContractFind<ItemsControl>(_qLibrarySurface, "PIndex"),
@@ -153,7 +151,7 @@ internal sealed class QLibrary
     {
         _qIndex = new QIndex(view, empty);
         QLookItem.QLookItemAttach(view, QIndexApply);
-        _lLibrary.LLibraryPanel.LPanelRowsChanged += QLibraryIndexShow;
+        _lLibrary.LLibraryPanel.CPanelRowsChanged += QLibraryIndexShow;
     }
 
     private void QLibraryIndexShow()
@@ -174,23 +172,23 @@ internal sealed class QLibrary
     internal async void QLibraryVistaRestore()
     {
         UserControl surface = _qLibrarySurface;
-        LPanel panel = _lLibrary.LLibraryPanel;
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelObserverAttach(
+        CPanel panel = _lLibrary.LLibraryPanel;
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QLibraryWorkspaceUpdate));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelDraftUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
         QLibraryDisplay.PDisplayObserverAttach();
         QLibraryEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderHandle, QIndex.QIndexOrder);
-        QChoice.QChoiceOrderApply(QOrderDropdown, panel.LPanelOrder);
+        QChoice.QChoiceOrderApply(QOrderDropdown, panel.CPanelOrder);
         QLibrarySieveShow(QSieveMark);
 
         await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier);
@@ -198,16 +196,16 @@ internal sealed class QLibrary
         QChoice.QChoiceFilterBuild(
             QSieveList,
             _qLibraryHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
-            panel.LPanelFilter,
+            panel.CPanelFilter,
             QSieveHandle);
         _lLibrary.LLibraryInquirySet(QInquiry.Text);
-        panel.LPanelRowsUpdate();
+        panel.CPanelRowsUpdate();
     }
 
     private async void QLibraryWorkspaceUpdate()
     {
         await LEnsignImage.LEnsignLoad(_qLibraryHost.PWindowAtelier);
-        _lLibrary.LLibraryPanel.LPanelClear();
+        _lLibrary.LLibraryPanel.CPanelEntryClose();
     }
 
     internal bool QLibraryDraftFinish(bool store)
@@ -217,12 +215,12 @@ internal sealed class QLibrary
 
     internal bool QLibraryChangeCheck()
     {
-        return _lLibrary.LLibraryPanel.LPanelChangeCheck();
+        return _lLibrary.LLibraryPanel.CPanelChangeCheck();
     }
 
     internal bool QLibraryLeaveConfirm()
     {
-        return _lLibrary.LLibraryPanel.LPanelLeaveConfirm();
+        return _lLibrary.LLibraryPanel.CPanelLeaveConfirm();
     }
 
     internal long QLibraryVoyageRead()
@@ -232,7 +230,7 @@ internal sealed class QLibrary
 
     internal void QIndexEntryShow(long id)
     {
-        _lLibrary.LLibraryPanel.LPanelRowShow(id);
+        _lLibrary.LLibraryPanel.CPanelRowOpen(id);
     }
 
     private bool QLibraryShownCheck()
@@ -240,14 +238,9 @@ internal sealed class QLibrary
         return _qLibrarySurface.IsVisible;
     }
 
-    private bool QLibraryDiscardConfirm()
-    {
-        return _qLibraryHost.PWindowDiscardConfirm(true, QLibraryEditor.PEditorDraftFinish);
-    }
-
     internal void QLibraryScribeRestore(bool editing)
     {
-        _lLibrary.LLibraryPanel.LPanelScribeRestore(editing);
+        _lLibrary.LLibraryPanel.CPanelScribeRestore(editing);
     }
 
     internal void QLibraryClose()
@@ -258,15 +251,15 @@ internal sealed class QLibrary
 
     private void QLibraryModeUpdate()
     {
-        LPanel panel = _lLibrary.LLibraryPanel;
-        QLibraryEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
-        QLibraryDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QLibraryViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
-        QLibraryScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
-        QLibraryVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QLibraryChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
-        QLibraryMode.IsEnabled = panel.LPanelModeEnabled;
-        QLibraryBin.IsEnabled = panel.LPanelBinEnabled;
+        CPanel panel = _lLibrary.LLibraryPanel;
+        QLibraryEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
+        QLibraryDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QLibraryViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
+        QLibraryScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QLibraryVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QLibraryChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
+        QLibraryMode.IsEnabled = panel.CPanelModeEnabled;
+        QLibraryBin.IsEnabled = panel.CPanelBinEnabled;
     }
 
     private string? QLibraryMarkupOpen()
@@ -309,7 +302,7 @@ internal sealed class QLibrary
     private void QLibraryRowSelect(QIndexItem? item)
     {
         _qLibraryHost.PVoyageRecord();
-        _lLibrary.LLibraryPanel.LPanelRowSelect(item?.QIndexItemId);
+        _lLibrary.LLibraryPanel.CPanelRowSelect(item?.QIndexItemId);
     }
 
     private void QIndexApply(FrameworkElement container, object item, string? change)
@@ -325,12 +318,12 @@ internal sealed class QLibrary
 
     private void QLibraryFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lLibrary.LLibraryPanel.LPanelFreshStart();
+        _lLibrary.LLibraryPanel.CPanelEntryCreate();
     }
 
     private void QLibraryScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lLibrary.LLibraryPanel.LPanelScribeSet(ReferenceEquals(sender, QLibraryScribe));
+        _lLibrary.LLibraryPanel.CPanelScribeToggle(ReferenceEquals(sender, QLibraryScribe));
     }
 
     private void QLibraryStoreHandle(object sender, RoutedEventArgs e)
@@ -340,7 +333,7 @@ internal sealed class QLibrary
 
     private void QLibraryBinHandle(object sender, RoutedEventArgs e)
     {
-        _lLibrary.LLibraryPanel.LPanelDelete();
+        _lLibrary.LLibraryPanel.CPanelEntryDelete();
     }
 
     private async void QLibraryMarkupHandle(object sender, RoutedEventArgs e)
@@ -350,7 +343,7 @@ internal sealed class QLibrary
 
     private void QLibraryPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lLibrary?.LLibraryPanel.LPanelPressAllowed ?? false;
+        e.CanExecute = _lLibrary?.LLibraryPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)

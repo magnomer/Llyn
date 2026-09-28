@@ -17,8 +17,6 @@ public sealed class LGuild
 
     private readonly Func<bool> _lGuildLeaveSeam;
 
-    private readonly Func<int, bool> _lGuildRemovalSeam;
-
     private LVista? _lGuildVista;
 
     private int _lGuildCount;
@@ -27,7 +25,6 @@ public sealed class LGuild
         LDraftPort drafts, LEntryPort entries, LPortraitPort portraits, LSettingsPort settings,
         Func<bool> shownSeam,
         Func<bool> leaveSeam,
-        Func<int, bool> removalSeam,
         Func<string, string, bool> unionSeam,
         CEnvoy envoy)
     {
@@ -36,27 +33,20 @@ public sealed class LGuild
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(leaveSeam);
-        ArgumentNullException.ThrowIfNull(removalSeam);
         ArgumentNullException.ThrowIfNull(unionSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
         _lGuildLeaveSeam = leaveSeam;
-        _lGuildRemovalSeam = removalSeam;
         LGuildAutograph = new CDesk(drafts, "Guild", envoy);
-        LGuildPanel = new LPanel(
-            "Guild.LoadFailed", "Guild.DeleteFailed",
-            LGuildAutograph.CDeskChangeCheck, shownSeam, leaveSeam, LGuildDeleteConfirm);
-        LGuildOeuvre = new COeuvre(entries);
-        LGuildOeuvrePanel = new LPanel(
-            "Source.LoadFailed", "Source.DeleteFailed",
-            static () => false, shownSeam, static () => true, static () => false);
-        LGuildOeuvrePanel.LPanelDraftChanged += LGuildOeuvre.COeuvreColophonUpdate;
-        LGuildOeuvre.COeuvreStrayed += LGuildOeuvrePanel.LPanelClear;
-        LGuildPanel.LPanelRowsChanged += LGuildOeuvrePanel.LPanelRowsUpdate;
+        LGuildPanel = new CPanel(
+            envoy, "Guild.LoadFailed", "Guild",
+            LGuildAutograph.CDeskChangeCheck, store => LGuildSession!.CSessionFinish(store), shownSeam);
+        LGuildOeuvre = new COeuvre(entries, envoy, shownSeam);
+        LGuildPanel.CPanelRowsChanged += LGuildOeuvre.COeuvrePanel.CPanelRowsUpdate;
         LGuildSession = new CSession(
-            LGuildAutograph, [LGuildPanel.LPanelChangeCheck], null, static () => false, static _ => true,
+            LGuildAutograph, [LGuildPanel.CPanelChangeCheck], null, static () => false, static _ => true,
             LGuildAutographCheck, LGuildStoredShow);
         LGuildUnion = new QUnion(
             LGuildAutograph,
@@ -69,8 +59,8 @@ public sealed class LGuild
         LGuildSession.CSessionChanged += () => LGuildChanged?.Invoke();
         LGuildSession.CSessionFailed += (key, exception) => LGuildFailed?.Invoke(key, exception);
         LGuildUnion.QUnionFailed += (key, exception) => LGuildFailed?.Invoke(key, exception);
-        LGuildPanel.LPanelCleared += LGuildSession.CSessionCancel;
-        LGuildPanel.LPanelEdited += id => LGuildSession.CSessionStart(id);
+        LGuildPanel.CPanelCleared += LGuildSession.CSessionCancel;
+        LGuildPanel.CPanelEdited += id => LGuildSession.CSessionStart(id);
     }
 
     public event Action? LGuildChanged;
@@ -79,11 +69,9 @@ public sealed class LGuild
 
     public event Action<string, Exception>? LGuildFailed;
 
-    public LPanel LGuildPanel { get; }
+    public CPanel LGuildPanel { get; }
 
     public COeuvre LGuildOeuvre { get; }
-
-    public LPanel LGuildOeuvrePanel { get; }
 
     public CDesk LGuildAutograph { get; }
 
@@ -91,19 +79,19 @@ public sealed class LGuild
 
     public QUnion LGuildUnion { get; }
 
-    private bool LGuildSourceSide => LGuildOeuvrePanel.LPanelBinEnabled;
+    private bool LGuildSourceSide => LGuildOeuvre.COeuvrePanel.CPanelBinEnabled;
 
     public bool LGuildColophonShown => LGuildSourceSide;
 
-    public bool LGuildAutographShown => !LGuildSourceSide && LGuildPanel.LPanelEditing;
+    public bool LGuildAutographShown => !LGuildSourceSide && LGuildPanel.CPanelEditing;
 
-    public bool LGuildVitaShown => !LGuildSourceSide && !LGuildPanel.LPanelEditing;
+    public bool LGuildVitaShown => !LGuildSourceSide && !LGuildPanel.CPanelEditing;
 
-    public bool LGuildVitaHeld => LGuildAuthorHeld && !LGuildPanel.LPanelEditing;
+    public bool LGuildVitaHeld => LGuildAuthorHeld && !LGuildPanel.CPanelEditing;
 
-    public bool LGuildViewerChecked => !LGuildPanel.LPanelEditing;
+    public bool LGuildViewerChecked => !LGuildPanel.CPanelEditing;
 
-    public bool LGuildScribeChecked => LGuildPanel.LPanelEditing;
+    public bool LGuildScribeChecked => LGuildPanel.CPanelEditing;
 
     public bool LGuildModeEnabled => !LGuildSourceSide && LGuildAuthorShown;
 
@@ -122,7 +110,7 @@ public sealed class LGuild
 
     private bool LGuildAuthorHeld => LGuildAuthorStored is not null;
 
-    private bool LGuildAuthorShown => LGuildAuthorHeld || LGuildPanel.LPanelEditing;
+    private bool LGuildAuthorShown => LGuildAuthorHeld || LGuildPanel.CPanelEditing;
 
     private bool LGuildAutographNamed => LGuildAutograph.CDeskRead()?.LDraftAuthorHeld?.LAuthorNamed ?? false;
 
@@ -134,8 +122,7 @@ public sealed class LGuild
         ArgumentNullException.ThrowIfNull(oeuvre);
 
         _lGuildVista = vista;
-        LGuildPanel.LPanelVistaRestore(vista);
-        LGuildOeuvrePanel.LPanelVistaRestore(oeuvre);
+        LGuildPanel.CPanelVistaRestore(vista);
         LGuildOeuvre.COeuvreVistaRestore(vista, oeuvre);
         LGuildAutograph.CDeskVistaRestore(vista);
     }
@@ -169,7 +156,7 @@ public sealed class LGuild
         return rows;
     }
 
-    private bool LGuildRowShown => LGuildPanel.LPanelBinEnabled && !LGuildPanel.LPanelEditing;
+    private bool LGuildRowShown => LGuildPanel.CPanelBinEnabled && !LGuildPanel.CPanelEditing;
 
     private static bool LGuildChosenCheck(IReadOnlyList<LCatalogAuthor> rows)
     {
@@ -212,19 +199,19 @@ public sealed class LGuild
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public CCatalogFilter LGuildLouverRead()
     {
-        return LPanel.LPanelFilterRead(_lGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+        return CPanel.CPanelFilterRead(_lGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
     }
 
     public void LGuildLouverSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lGuildVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lGuildVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public bool LGuildLeaveConfirm()
@@ -237,34 +224,24 @@ public sealed class LGuild
         return _lGuildLeaveSeam();
     }
 
-    private bool LGuildDeleteConfirm()
-    {
-        return _lGuildRemovalSeam(LGuildWorkRead(_lEntryPort.LEngineAuthorFind(LGuildAuthorId)));
-    }
-
-    private static int LGuildWorkRead(LCatalogAuthor? row)
-    {
-        return row?.LCatalogAuthorWork ?? 0;
-    }
-
     private void LGuildClear()
     {
-        LGuildOeuvrePanel.LPanelClear();
-        LGuildPanel.LPanelClear();
+        LGuildOeuvre.COeuvrePanel.CPanelEntryClose();
+        LGuildPanel.CPanelEntryClose();
     }
 
     public void LGuildReset()
     {
-        LGuildOeuvrePanel.LPanelClear();
-        LGuildPanel.LPanelClear();
+        LGuildOeuvre.COeuvrePanel.CPanelEntryClose();
+        LGuildPanel.CPanelEntryClose();
     }
 
     public void LGuildCatalogUpdate()
     {
-        LGuildPanel.LPanelRowsUpdate();
+        LGuildPanel.CPanelRowsUpdate();
         if (LGuildSourceSide)
         {
-            LGuildOeuvrePanel.LPanelDraftUpdate();
+            LGuildOeuvre.COeuvrePanel.CPanelDraftUpdate();
         }
 
         LGuildChanged?.Invoke();
@@ -282,26 +259,26 @@ public sealed class LGuild
             return;
         }
 
-        LGuildAuthorOpen(id, LGuildPanel.LPanelEditing);
+        LGuildAuthorOpen(id, LGuildPanel.CPanelEditing);
     }
 
     public void LGuildRowShow(long id)
     {
-        LGuildAuthorOpen(id, LGuildPanel.LPanelEditing);
+        LGuildAuthorOpen(id, LGuildPanel.CPanelEditing);
     }
 
     private void LGuildAuthorOpen(long? id, bool editing)
     {
         LGuildSession.CSessionCancel();
-        LGuildOeuvrePanel.LPanelClear();
-        LGuildPanel.LPanelScribeShow(editing && id is > 0);
-        LGuildPanel.LPanelRowShow(id);
+        LGuildOeuvre.COeuvrePanel.CPanelEntryClose();
+        LGuildPanel.CPanelScribeSet(editing && id is > 0);
+        LGuildPanel.CPanelRowOpen(id);
     }
 
     private void LGuildStoredShow(long id)
     {
         _lGuildVista?.LVistaSelect(id);
-        LGuildPanel.LPanelRowsUpdate();
+        LGuildPanel.CPanelRowsUpdate();
         LGuildSession.CSessionStart(id);
         LGuildChanged?.Invoke();
     }
@@ -319,8 +296,8 @@ public sealed class LGuild
         }
 
         LGuildSession.CSessionCancel();
-        LGuildPanel.LPanelScribeShow(false);
-        LGuildOeuvrePanel.LPanelRowShow(id);
+        LGuildPanel.CPanelScribeSet(false);
+        LGuildOeuvre.COeuvrePanel.CPanelRowOpen(id);
     }
 
     public void LGuildFreshStart()
@@ -330,8 +307,8 @@ public sealed class LGuild
             return;
         }
 
-        LGuildOeuvrePanel.LPanelClear();
-        LGuildPanel.LPanelFreshOpen();
+        LGuildOeuvre.COeuvrePanel.CPanelEntryClose();
+        LGuildPanel.CPanelFreshOpen();
         LGuildSession.CSessionStart(null);
     }
 
@@ -344,12 +321,12 @@ public sealed class LGuild
 
         if (!LGuildEditCheck(editing))
         {
-            LGuildPanel.LPanelClear();
+            LGuildPanel.CPanelEntryClose();
             return;
         }
 
-        LGuildPanel.LPanelScribeSet(editing);
-        if (!LGuildPanel.LPanelEditing)
+        LGuildPanel.CPanelScribeToggle(editing);
+        if (!LGuildPanel.CPanelEditing)
         {
             LGuildSession.CSessionCancel();
         }
@@ -362,8 +339,8 @@ public sealed class LGuild
             return;
         }
 
-        LGuildPanel.LPanelScribeRestore(editing);
-        if (LGuildPanel.LPanelEditing)
+        LGuildPanel.CPanelScribeRestore(editing);
+        if (LGuildPanel.CPanelEditing)
         {
             LGuildSession.CSessionStart(LGuildAuthorId);
         }
@@ -392,7 +369,7 @@ public sealed class LGuild
             return;
         }
 
-        LGuildPanel.LPanelDelete();
+        LGuildPanel.CPanelEntryDelete();
     }
 
     public Task LGuildPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
@@ -403,7 +380,7 @@ public sealed class LGuild
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LGuildOeuvrePanel.LPanelVista,
+            LGuildOeuvre.COeuvrePanel.CPanelVista,
             LAtlas.LAtlasLegendRead(legend),
             QPortrait.QPortraitTicketRead(ticket));
     }

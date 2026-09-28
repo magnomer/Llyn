@@ -155,12 +155,10 @@ internal sealed class QPhonology
             editor,
             lectern,
             QPhonologyShownCheck,
-            QPhonologyDiscardConfirm,
-            host.PWindowDeleteConfirm);
+            host.PWindowEnvoy);
         _lPhonology.LPhonologyEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QPhonologyStoreUpdate;
-        _lPhonology.LPhonologyPanel.LPanelChanged += QPhonologyModeUpdate;
-        _lPhonology.LPhonologyPanel.LPanelRowsChanged += QInventoryUpdate;
-        _lPhonology.LPhonologyPanel.LPanelFailed += host.PWindowFailureShow;
+        _lPhonology.LPhonologyPanel.CPanelChanged += QPhonologyModeUpdate;
+        _lPhonology.LPhonologyPanel.CPanelRowsChanged += QInventoryUpdate;
 
         QInventory.ItemsSource = _qInventoryList;
 
@@ -181,19 +179,19 @@ internal sealed class QPhonology
     internal async void QPhonologyVistaRestore()
     {
         UserControl surface = _qPhonologySurface;
-        LPanel panel = _lPhonology.LPhonologyPanel;
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelObserverAttach(
+        CPanel panel = _lPhonology.LPhonologyPanel;
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QPhonologyWorkspaceUpdate));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelRowsUpdate));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelDraftUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
         QPhonologyDisplay.PDisplayObserverAttach();
         QPhonologyEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(
@@ -206,7 +204,7 @@ internal sealed class QPhonology
                 CCatalogOrder.CCatalogOrderSound,
                 CCatalogOrder.CCatalogOrderPending,
             ]);
-        QChoice.QChoiceOrderApply(QSequenceDropdown, _lPhonology.LPhonologyPanel.LPanelOrder);
+        QChoice.QChoiceOrderApply(QSequenceDropdown, _lPhonology.LPhonologyPanel.CPanelOrder);
         QLensUpdate();
 
         await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier);
@@ -214,16 +212,16 @@ internal sealed class QPhonology
         QChoice.QChoiceFilterBuild(
             QLensList,
             _qPhonologyHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
-            _lPhonology.LPhonologyPanel.LPanelFilter,
+            _lPhonology.LPhonologyPanel.CPanelFilter,
             QLensHandle);
         _lPhonology.LPhonologyQuerySet(QProbe.Text);
-        _lPhonology.LPhonologyPanel.LPanelRowsUpdate();
+        _lPhonology.LPhonologyPanel.CPanelRowsUpdate();
     }
 
     private async void QPhonologyWorkspaceUpdate()
     {
         await LEnsignImage.LEnsignLoad(_qPhonologyHost.PWindowAtelier);
-        _lPhonology.LPhonologyPanel.LPanelClear();
+        _lPhonology.LPhonologyPanel.CPanelEntryClose();
     }
 
     internal bool QPhonologyDraftFinish(bool store)
@@ -233,7 +231,7 @@ internal sealed class QPhonology
 
     internal bool QPhonologyChangeCheck()
     {
-        return _lPhonology.LPhonologyPanel.LPanelChangeCheck();
+        return _lPhonology.LPhonologyPanel.CPanelChangeCheck();
     }
 
     private bool QPhonologyShownCheck()
@@ -243,17 +241,12 @@ internal sealed class QPhonology
 
     internal bool QPhonologyLeaveConfirm()
     {
-        return _lPhonology.LPhonologyPanel.LPanelLeaveConfirm();
-    }
-
-    private bool QPhonologyDiscardConfirm()
-    {
-        return _qPhonologyHost.PWindowDiscardConfirm(true, QPhonologyEditor.PEditorDraftFinish);
+        return _lPhonology.LPhonologyPanel.CPanelLeaveConfirm();
     }
 
     internal void QPhonologyScribeRestore(bool editing)
     {
-        _lPhonology.LPhonologyPanel.LPanelScribeRestore(editing);
+        _lPhonology.LPhonologyPanel.CPanelScribeRestore(editing);
     }
 
     internal void QPhonologyClose()
@@ -274,15 +267,15 @@ internal sealed class QPhonology
 
     private void QPhonologyModeUpdate()
     {
-        LPanel panel = _lPhonology.LPhonologyPanel;
-        QPhonologyEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
-        QPhonologyDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QPhonologyViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
-        QPhonologyScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
-        QPhonologyVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QPhonologyChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
-        QPhonologyMode.IsEnabled = panel.LPanelModeEnabled;
-        QPhonologyBin.IsEnabled = panel.LPanelBinEnabled;
+        CPanel panel = _lPhonology.LPhonologyPanel;
+        QPhonologyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
+        QPhonologyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QPhonologyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
+        QPhonologyScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QPhonologyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QPhonologyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
+        QPhonologyMode.IsEnabled = panel.CPanelModeEnabled;
+        QPhonologyBin.IsEnabled = panel.CPanelBinEnabled;
     }
 
     private void QLensUpdate()
@@ -317,28 +310,28 @@ internal sealed class QPhonology
     private void QInventoryHandle(object sender, RoutedEventArgs e)
     {
         _qPhonologyHost.PVoyageRecord();
-        _lPhonology.LPhonologyPanel.LPanelRowSelect(
+        _lPhonology.LPhonologyPanel.CPanelRowSelect(
             QSender.QSenderSourceRead<QInventoryItem>(e)?.QInventoryItemId);
     }
 
     internal long QPhonologyVoyageRead()
     {
-        return _lPhonology.LPhonologyPanel.LPanelVoyageRead();
+        return _lPhonology.LPhonologyPanel.CPanelChosenRead();
     }
 
     internal void QInventoryEntryShow(long id)
     {
-        _lPhonology.LPhonologyPanel.LPanelRowShow(id);
+        _lPhonology.LPhonologyPanel.CPanelRowOpen(id);
     }
 
     private void QPhonologyFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lPhonology.LPhonologyPanel.LPanelFreshStart();
+        _lPhonology.LPhonologyPanel.CPanelEntryCreate();
     }
 
     private void QPhonologyScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lPhonology.LPhonologyPanel.LPanelScribeSet(ReferenceEquals(sender, QPhonologyScribe));
+        _lPhonology.LPhonologyPanel.CPanelScribeToggle(ReferenceEquals(sender, QPhonologyScribe));
     }
 
     private void QPhonologyStoreHandle(object sender, RoutedEventArgs e)
@@ -348,12 +341,12 @@ internal sealed class QPhonology
 
     private void QPhonologyBinHandle(object sender, RoutedEventArgs e)
     {
-        _lPhonology.LPhonologyPanel.LPanelDelete();
+        _lPhonology.LPhonologyPanel.CPanelEntryDelete();
     }
 
     private void QPhonologyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lPhonology?.LPhonologyPanel.LPanelPressAllowed ?? false;
+        e.CanExecute = _lPhonology?.LPhonologyPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)

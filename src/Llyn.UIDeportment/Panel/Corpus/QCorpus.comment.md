@@ -59,10 +59,6 @@ Whether the page is on screen, so the engine knows when a notice needs painting.
 Asks the window whether unsaved work may be dropped before the engine moves on.
 A save runs the finish the deportment handed in, so the deportment decides what follows it.
 
-## `private bool QCorpusRemovalConfirm(int usage)`
-
-Asks the window whether an Example cited this many times may be removed.
-
 ## `private void QCorpusModeUpdate()`
 
 Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.

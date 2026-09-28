@@ -26,8 +26,7 @@ public sealed class LTaxonomy
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -40,18 +39,19 @@ public sealed class LTaxonomy
         _lSettingsPort = settings;
         LTaxonomyEditor = editor;
 
-        LTaxonomyPanel = new LPanel(
-            "Tag.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LTaxonomyPanel.LPanelCleared += LTaxonomyEditorClear;
-        LTaxonomyPanel.LPanelEdited += LTaxonomyEditorOpen;
-        LTaxonomyPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LTaxonomyPanel.LPanelCleared += lectern.LLecternClear;
+        LTaxonomyPanel = new CPanel(
+            envoy, "Tag.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LTaxonomyPanel.CPanelCleared += LTaxonomyEditorClear;
+        LTaxonomyPanel.CPanelEdited += LTaxonomyEditorOpen;
+        LTaxonomyPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LTaxonomyPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     public LEditor LTaxonomyEditor { get; }
 
-    public LPanel LTaxonomyPanel { get; }
+    public CPanel LTaxonomyPanel { get; }
 
     private void LTaxonomyEditorClear()
     {
@@ -65,7 +65,7 @@ public sealed class LTaxonomy
 
     public void LTaxonomyEntryCreate()
     {
-        LTaxonomyPanel.LPanelFreshOpen();
+        LTaxonomyPanel.CPanelFreshOpen();
         if (LTaxonomyChosen is long tag)
         {
             LTaxonomyEditor.LEditorStudio.CEditorTagAdd(tag);
@@ -74,7 +74,7 @@ public sealed class LTaxonomy
 
     public bool LTaxonomyCoinageCheck()
     {
-        return LTaxonomyChosen is null && !LTaxonomyPanel.LPanelBinEnabled;
+        return LTaxonomyChosen is null && !LTaxonomyPanel.CPanelBinEnabled;
     }
 
     public long? LTaxonomyChosen => _lTaxonomyVista?.LVistaChosen;
@@ -93,7 +93,7 @@ public sealed class LTaxonomy
 
         _lTaxonomyVista = vista;
         _lTaxonomyMembership = membership;
-        LTaxonomyPanel.LPanelVistaRestore(membership);
+        LTaxonomyPanel.CPanelVistaRestore(membership);
         LTaxonomyEditor.LEditorStudio.CEditorVistaRestore(membership);
     }
 
@@ -111,14 +111,14 @@ public sealed class LTaxonomy
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LTaxonomyLatticeSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lTaxonomyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lTaxonomyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public void LTaxonomyScoutSet(string query)
@@ -182,7 +182,7 @@ public sealed class LTaxonomy
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        _lTaxonomyVista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LTaxonomyBulletinSend);
+        _lTaxonomyVista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), LTaxonomyBulletinSend);
 
         void LTaxonomyBulletinSend(LBulletin bulletin)
         {
@@ -191,10 +191,10 @@ public sealed class LTaxonomy
     }
 
     public CCatalogOrder LTaxonomyOrder =>
-        LPanel.LPanelOrderRead(_lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
+        CPanel.CPanelOrderRead(_lTaxonomyVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
 
     public CCatalogFilter LTaxonomyFilter =>
-        LPanel.LPanelFilterRead(_lTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
+        CPanel.CPanelFilterRead(_lTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
 
     public string LTaxonomyFileRead()
     {

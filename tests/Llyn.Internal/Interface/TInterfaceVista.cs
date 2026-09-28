@@ -72,6 +72,15 @@ internal static partial class TInterface
 
     internal static string TVistaFileRead(LVista? vista) => LVista.LVistaFileRead(vista);
 
+    internal static LCatalogOrder TVistaOrderRead(LVista? vista) => LVista.LVistaOrderRead(vista);
+
+    internal static LCatalogFilter TVistaFilterRead(LVista? vista) => LVista.LVistaFilterRead(vista);
+
+    internal static void TVistaFilterSet(this LVista vista, IReadOnlyList<string> hidden) =>
+        vista.LVistaFilterSet(hidden);
+
+    internal static int TVistaUsageRead(this LVista vista) => vista.LVistaUsageRead();
+
     internal static LRevision? TVistaDelete(this LVista vista) => vista.LVistaDelete();
 
     internal static IReadOnlyList<LVistaRow> TEngineEntryFind(this LEngine engine, LVista parent, LVista child) =>

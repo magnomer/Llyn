@@ -84,6 +84,11 @@ Takes the ordering and announces the move, which the posture stores under the ta
 Takes the filter and announces the move, which the posture stores under the tab.
 Two filters compare by the list they hold, so the same list built twice still announces.
 
+## `public void LVistaFilterSet(IReadOnlyList<string> hidden)`
+
+Takes the languages a driver ticked off and builds the filter from them.
+The filter's own rule makes a list hiding nothing the shared empty filter.
+
 ## `public void LVistaQuerySet(string query)`
 
 Takes the search text and announces the move.
@@ -146,6 +151,21 @@ The file name an export of the vista's entry is offered under: the headword with
 The trail port of the vista's engine says which characters are barred, so the vista reads no file rule itself.
 A vista that holds nothing, or fails to load, is offered as `entry`.
 A cleared selection or missing record returns null.
+
+## `public static LCatalogOrder LVistaOrderRead(LVista? vista)`
+
+The ordering a panel shows, headword order before a vista arrives.
+
+## `public static LCatalogFilter LVistaFilterRead(LVista? vista)`
+
+The filter a panel shows, the shared empty filter before a vista arrives.
+
+## `public int LVistaUsageRead()`
+
+How many places the chosen stored record reaches, which a delete would drop.
+An Example, a Situation and a Source count the entries that cite them.
+An Author counts the Sources crediting it.
+Any other subject, or no stored choice, reaches nothing.
 
 ## `public LRevision? LVistaDelete()`
 

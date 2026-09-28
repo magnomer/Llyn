@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -136,11 +137,10 @@ internal sealed partial class QTaxonomy
         _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         _lTaxonomy = host.PWindowForge.QForgeTaxonomyCreate(
-            _lEditor, lectern, QTaxonomyShownCheck, QTaxonomyDiscardConfirm, host.PWindowDeleteConfirm);
-        LPanel panel = _lTaxonomy.LTaxonomyPanel;
-        panel.LPanelChanged += QTaxonomyModeUpdate;
-        panel.LPanelRowsChanged += QMembershipFind;
-        panel.LPanelFailed += host.PWindowFailureShow;
+            _lEditor, lectern, QTaxonomyShownCheck, host.PWindowEnvoy);
+        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        panel.CPanelChanged += QTaxonomyModeUpdate;
+        panel.CPanelRowsChanged += QMembershipFind;
 
         QDirectory.ItemsSource = _qDirectoryList;
         QMembership.ItemsSource = _qMembershipList;
@@ -160,7 +160,7 @@ internal sealed partial class QTaxonomy
 
     internal void QTaxonomyReset()
     {
-        _lTaxonomy.LTaxonomyPanel.LPanelClear();
+        _lTaxonomy.LTaxonomyPanel.CPanelEntryClose();
         QDirectoryReset();
         QDirectoryFind();
     }
@@ -172,7 +172,7 @@ internal sealed partial class QTaxonomy
 
     internal bool QTaxonomyChangeCheck()
     {
-        return _lTaxonomy.LTaxonomyPanel.LPanelChangeCheck();
+        return _lTaxonomy.LTaxonomyPanel.CPanelChangeCheck();
     }
 
     internal void QTaxonomyClose()
@@ -183,7 +183,7 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTaxonomy?.LTaxonomyPanel.LPanelPressAllowed ?? false;
+        e.CanExecute = _lTaxonomy?.LTaxonomyPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
@@ -234,21 +234,16 @@ internal sealed partial class QTaxonomy
         return _qTaxonomySurface.IsVisible;
     }
 
-    private bool QTaxonomyDiscardConfirm()
-    {
-        return _qTaxonomyHost.PWindowDiscardConfirm(true, QTaxonomyEditor.PEditorDraftFinish);
-    }
-
     private void QTaxonomyModeUpdate()
     {
-        LPanel panel = _lTaxonomy.LTaxonomyPanel;
-        QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
-        QTaxonomyDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
-        QTaxonomyScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
-        QTaxonomyVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QTaxonomyChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
-        QTaxonomyMode.IsEnabled = panel.LPanelModeEnabled;
-        QTaxonomyBin.IsEnabled = panel.LPanelBinEnabled;
+        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        QTaxonomyEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
+        QTaxonomyDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QTaxonomyViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
+        QTaxonomyScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QTaxonomyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QTaxonomyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
+        QTaxonomyMode.IsEnabled = panel.CPanelModeEnabled;
+        QTaxonomyBin.IsEnabled = panel.CPanelBinEnabled;
     }
 }

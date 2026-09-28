@@ -10,9 +10,19 @@ Conduct chooses the text key, and the driver looks up its wording.
 
 Asks the yes-or-no question named by `key`, and answers true on yes.
 
+## `bool CEnvoyConfirm(string key, string tallyKey, int tally);`
+
+Asks the question named by `key` with a tally under it, and answers true on yes.
+`tallyKey` names the label of the count, so the driver words both from its own catalog.
+
 ## `void CEnvoyFailureShow(string key);`
 
 Tells the user the failure named by `key`.
+
+## `void CEnvoyFailureShow(string key, Exception exception);`
+
+Tells the user the failure named by `key`, with the exception the engine threw.
+The driver words the detail and records a fault, so nothing diagnosable is lost.
 
 ## `bool CEnvoyDiscardConfirm();`
 

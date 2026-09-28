@@ -36,8 +36,7 @@ public sealed class LYunjing
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -49,13 +48,14 @@ public sealed class LYunjing
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
         LYunjingEditor = editor;
-        LYunjingPanel = new LPanel(
-            "Yunjing.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LYunjingPanel.LPanelCleared += LYunjingEditorClear;
-        LYunjingPanel.LPanelEdited += LYunjingEditorOpen;
-        LYunjingPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LYunjingPanel.LPanelCleared += lectern.LLecternClear;
+        LYunjingPanel = new CPanel(
+            envoy, "Yunjing.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LYunjingPanel.CPanelCleared += LYunjingEditorClear;
+        LYunjingPanel.CPanelEdited += LYunjingEditorOpen;
+        LYunjingPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LYunjingPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     private void LYunjingEditorClear()
@@ -74,15 +74,15 @@ public sealed class LYunjing
 
     public LEditor LYunjingEditor { get; }
 
-    public LPanel LYunjingPanel { get; }
+    public CPanel LYunjingPanel { get; }
 
     public bool LYunjingAllowed => _lPhonologyPort.LEngineBookFind() is not null;
 
-    public bool LYunjingDiweiShown => LYunjingDiweiChosen && !LYunjingPanel.LPanelModeEnabled;
+    public bool LYunjingDiweiShown => LYunjingDiweiChosen && !LYunjingPanel.CPanelModeEnabled;
 
-    public bool LYunjingDisplayShown => !LYunjingDiweiShown && !LYunjingPanel.LPanelEditing;
+    public bool LYunjingDisplayShown => !LYunjingDiweiShown && !LYunjingPanel.CPanelEditing;
 
-    public bool LYunjingEditorShown => LYunjingPanel.LPanelEditing;
+    public bool LYunjingEditorShown => LYunjingPanel.CPanelEditing;
 
     public string LYunjingDiweiKey => _lYunjingFinalSide ? "Yunjing.Yunmu" : "Yunjing.Shengmu";
 
@@ -125,7 +125,7 @@ public sealed class LYunjing
         _lShengmuVista = shengmu;
         _lYunmuVista = yunmu;
         _lXiaoyunVista = xiaoyun;
-        LYunjingPanel.LPanelVistaRestore(xiaoyun);
+        LYunjingPanel.CPanelVistaRestore(xiaoyun);
         LYunjingEditor.LEditorStudio.CEditorVistaRestore(xiaoyun);
     }
 
@@ -278,27 +278,27 @@ public sealed class LYunjing
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LYunjingReset()
     {
         _lShengmuVista?.LVistaSelect(null);
         _lYunmuVista?.LVistaSelect(null);
-        LYunjingPanel.LPanelClear();
+        LYunjingPanel.CPanelEntryClose();
         LYunjingChanged?.Invoke();
     }
 
     public void LYunjingRowsUpdate()
     {
         LYunjingChanged?.Invoke();
-        LYunjingPanel.LPanelRowsUpdate();
+        LYunjingPanel.CPanelRowsUpdate();
     }
 
     public void LYunjingEntryHandle(CBulletin bulletin)
     {
         LYunjingChanged?.Invoke();
-        LYunjingPanel.LPanelEntryHandle(bulletin);
+        LYunjingPanel.CPanelEntryUpdate(bulletin);
     }
 
     public void LYunjingDiweiSelect(long? id, bool? final)
@@ -315,7 +315,7 @@ public sealed class LYunjing
 
         _lYunjingFinalSide = rime;
         LYunjingSideVista?.LVistaToggle(cell);
-        LYunjingPanel.LPanelClear();
+        LYunjingPanel.CPanelEntryClose();
         LYunjingChanged?.Invoke();
     }
 
@@ -363,7 +363,7 @@ public sealed class LYunjing
             return;
         }
 
-        if (!LYunjingPanel.LPanelLeaveConfirm())
+        if (!LYunjingPanel.CPanelLeaveConfirm())
         {
             return;
         }
@@ -373,13 +373,13 @@ public sealed class LYunjing
 
     public Task LYunjingPortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
-        if (!LYunjingPanel.LPanelPressAllowed)
+        if (!LYunjingPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
         return _lPortraitPort.LEnginePortraitPrint(
-            LYunjingPanel.LPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
+            LYunjingPanel.CPanelVista, QPortrait.QPortraitLabelRead(label), QPortrait.QPortraitTicketRead(ticket));
     }
 
     internal void LYunjingVistaRestore(CAtelier atelier)
@@ -407,7 +407,7 @@ public sealed class LYunjing
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        vista?.LVistaObserverAttach(LPanel.LPanelSubjectRead(subject), LYunjingBulletinSend);
+        vista?.LVistaObserverAttach(CPanel.CPanelSubjectRead(subject), LYunjingBulletinSend);
 
         void LYunjingBulletinSend(LBulletin bulletin)
         {
@@ -416,20 +416,20 @@ public sealed class LYunjing
     }
 
     public CCatalogOrder LYunjingLadder =>
-        LPanel.LPanelOrderRead(_lShengmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
+        CPanel.CPanelOrderRead(_lShengmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
     public CCatalogOrder LYunjingStair =>
-        LPanel.LPanelOrderRead(_lYunmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
+        CPanel.CPanelOrderRead(_lYunmuVista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderName);
 
     public string LYunjingFileRead()
     {
-        return LVista.LVistaFileRead(LYunjingPanel.LPanelVista);
+        return LVista.LVistaFileRead(LYunjingPanel.CPanelVista);
     }
 
     public Task LYunjingPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            LYunjingPanel.LPanelVista,
+            LYunjingPanel.CPanelVista,
             path,
             QPortrait.QPortraitMediumRead(format),
             QPortrait.QPortraitLabelRead(label));

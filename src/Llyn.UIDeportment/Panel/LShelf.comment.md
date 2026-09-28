@@ -11,7 +11,7 @@ The source edit area is the imprint deportment held here, so its draft answers a
 The entry edit area is still a veneer hold, so its change answer arrives through a seam.
 The unreadable seam is the window's sweep question, passed on to the imprint's desk.
 The leave seam is the window's discard dialog, asked once for the whole tab before any switch of side.
-The removal seam is the window's delete question, worded by how many rows still cite the Source.
+The panel's delete question is worded under the Source scope and counted by the vista.
 The citing entries' loads and clears go straight to its view's lectern, so the veneer relays no draft.
 
 ## `public event Action? LShelfChanged;`
@@ -105,7 +105,7 @@ The panel's edited notice, carried to the imprint as a nullable id.
 
 ## `public void LShelfDelete()`
 
-Deletes the chosen Source from the source side alone, behind the removal seam.
+Deletes the chosen Source from the source side alone, through the panel's delete gate.
 
 ## `public Task LShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
 

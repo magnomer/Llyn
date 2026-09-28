@@ -14,8 +14,6 @@ public sealed class LAnthology
 
     private readonly LPortraitPort _lPortraitPort;
 
-    private readonly Func<int, bool> _lAnthologyRemovalSeam;
-
     private readonly CDesk _lAnthologyDesk;
 
     private LVista? _lAnthologyVista;
@@ -25,24 +23,22 @@ public sealed class LAnthology
         LPortraitPort portraits,
         CDesk desk,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<int, bool> removalSeam)
+        CEnvoy envoy,
+        Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(desk);
-        ArgumentNullException.ThrowIfNull(removalSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
         _lAnthologyDesk = desk;
-        _lAnthologyRemovalSeam = removalSeam;
-        LAnthologyPanel = new LPanel(
-            "Example.LoadFailed", "Example.DeleteFailed",
-            desk.CDeskChangeCheck, shownSeam, leaveSeam, LAnthologyDeleteConfirm);
+        LAnthologyPanel = new CPanel(
+            envoy, "Example.LoadFailed", "Example",
+            desk.CDeskChangeCheck, finishSeam, shownSeam);
     }
 
-    public LPanel LAnthologyPanel { get; }
+    public CPanel LAnthologyPanel { get; }
 
     public long? LAnthologyChosen => _lAnthologyVista?.LVistaChosen;
 
@@ -55,7 +51,7 @@ public sealed class LAnthology
         ArgumentNullException.ThrowIfNull(vista);
 
         _lAnthologyVista = vista;
-        LAnthologyPanel.LPanelVistaRestore(vista);
+        LAnthologyPanel.CPanelVistaRestore(vista);
     }
 
     public void LAnthologyQuerySet(string query)
@@ -72,14 +68,14 @@ public sealed class LAnthology
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LAnthologyGauzeSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lAnthologyVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lAnthologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public IReadOnlyList<CCatalogExample> LAnthologyRowsRead(string unknown, string unwritten)
@@ -94,16 +90,6 @@ public sealed class LAnthology
     public IReadOnlyDictionary<long, int> LAnthologyUsageRead()
     {
         return _lEntryPort.LEngineUsageRead(LOwner.LOwnerExample);
-    }
-
-    private int LAnthologyUsageRead(long? id)
-    {
-        return id is long stored ? LAnthologyUsageRead().GetValueOrDefault(stored) : 0;
-    }
-
-    private bool LAnthologyDeleteConfirm()
-    {
-        return _lAnthologyRemovalSeam(LAnthologyUsageRead(LAnthologyChosen));
     }
 
     public CMentionResult? LAnthologyMentionFind(long? id, int offset)

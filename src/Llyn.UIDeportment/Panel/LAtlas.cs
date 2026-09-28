@@ -16,8 +16,6 @@ public sealed class LAtlas
 
     private readonly LSettingsPort _lSettingsPort;
 
-    private readonly Func<int, bool> _lAtlasRemovalSeam;
-
     private LVista? _lAtlasVista;
 
     internal LAtlas(
@@ -26,24 +24,22 @@ public sealed class LAtlas
         LSettingsPort settings,
         Func<bool> changeSeam,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<int, bool> removalSeam)
+        CEnvoy envoy,
+        Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
-        ArgumentNullException.ThrowIfNull(removalSeam);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
         _lSettingsPort = settings;
-        _lAtlasRemovalSeam = removalSeam;
-        LAtlasPanel = new LPanel(
-            "Situation.LoadFailed", "Situation.DeleteFailed",
-            changeSeam, shownSeam, leaveSeam, LAtlasDeleteConfirm);
+        LAtlasPanel = new CPanel(
+            envoy, "Situation.LoadFailed", "Situation",
+            changeSeam, finishSeam, shownSeam);
     }
 
-    public LPanel LAtlasPanel { get; }
+    public CPanel LAtlasPanel { get; }
 
     public long? LAtlasChosen => _lAtlasVista?.LVistaChosen;
 
@@ -56,7 +52,7 @@ public sealed class LAtlas
         ArgumentNullException.ThrowIfNull(vista);
 
         _lAtlasVista = vista;
-        LAtlasPanel.LPanelVistaRestore(vista);
+        LAtlasPanel.CPanelVistaRestore(vista);
     }
 
     public void LAtlasInquestSet(string inquest)
@@ -73,14 +69,14 @@ public sealed class LAtlas
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LAtlasMeshSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lAtlasVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lAtlasVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
@@ -93,16 +89,6 @@ public sealed class LAtlas
     public IReadOnlyDictionary<long, int> LAtlasUsageRead()
     {
         return _lEntryPort.LEngineUsageRead(LOwner.LOwnerSituation);
-    }
-
-    private int LAtlasUsageRead(long? id)
-    {
-        return id is long stored ? LAtlasUsageRead().GetValueOrDefault(stored) : 0;
-    }
-
-    private bool LAtlasDeleteConfirm()
-    {
-        return _lAtlasRemovalSeam(LAtlasUsageRead(LAtlasChosen));
     }
 
     public IReadOnlyList<string> LAtlasLanguageRead()

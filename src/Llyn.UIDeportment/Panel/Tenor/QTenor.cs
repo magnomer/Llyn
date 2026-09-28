@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -136,11 +137,10 @@ internal sealed partial class QTenor
         _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         _lTenor = host.PWindowForge.QForgeTenorCreate(
-            _lEditor, lectern, QTenorShownCheck, QTenorDiscardConfirm, host.PWindowDeleteConfirm);
-        LPanel panel = _lTenor.LTenorPanel;
-        panel.LPanelChanged += QTenorModeUpdate;
-        panel.LPanelRowsChanged += QCohortFind;
-        panel.LPanelFailed += host.PWindowFailureShow;
+            _lEditor, lectern, QTenorShownCheck, host.PWindowEnvoy);
+        CPanel panel = _lTenor.LTenorPanel;
+        panel.CPanelChanged += QTenorModeUpdate;
+        panel.CPanelRowsChanged += QCohortFind;
 
         QGamut.ItemsSource = _qGamutList;
         QCohort.ItemsSource = _qCohortList;
@@ -160,7 +160,7 @@ internal sealed partial class QTenor
 
     internal void QTenorReset()
     {
-        _lTenor.LTenorPanel.LPanelClear();
+        _lTenor.LTenorPanel.CPanelEntryClose();
         QGamutReset();
         QGamutFind();
     }
@@ -172,7 +172,7 @@ internal sealed partial class QTenor
 
     internal bool QTenorChangeCheck()
     {
-        return _lTenor.LTenorPanel.LPanelChangeCheck();
+        return _lTenor.LTenorPanel.CPanelChangeCheck();
     }
 
     internal void QTenorClose()
@@ -183,7 +183,7 @@ internal sealed partial class QTenor
 
     private void QTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lTenor?.LTenorPanel.LPanelPressAllowed ?? false;
+        e.CanExecute = _lTenor?.LTenorPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
@@ -234,21 +234,16 @@ internal sealed partial class QTenor
         return _qTenorSurface.IsVisible;
     }
 
-    private bool QTenorDiscardConfirm()
-    {
-        return _qTenorHost.PWindowDiscardConfirm(true, QTenorEditor.PEditorDraftFinish);
-    }
-
     private void QTenorModeUpdate()
     {
-        LPanel panel = _lTenor.LTenorPanel;
-        QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
-        QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
-        QTenorScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
-        QTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QTenorChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
-        QTenorMode.IsEnabled = panel.LPanelModeEnabled;
-        QTenorBin.IsEnabled = panel.LPanelBinEnabled;
+        CPanel panel = _lTenor.LTenorPanel;
+        QTenorEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
+        QTenorDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QTenorViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
+        QTenorScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QTenorChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
+        QTenorMode.IsEnabled = panel.CPanelModeEnabled;
+        QTenorBin.IsEnabled = panel.CPanelBinEnabled;
     }
 }

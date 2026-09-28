@@ -11,7 +11,7 @@ The panel's loads and clears go straight to the lectern its view hands in, so th
 
 The entry editor's deportment, which takes the favorite vista when the panel's vista is restored.
 
-## `public LPanel LFavoritePanel { get; }`
+## `public CPanel LFavoritePanel { get; }`
 
 The shared panel state: the chosen row, the scribe mode, the bin and the leave guard.
 

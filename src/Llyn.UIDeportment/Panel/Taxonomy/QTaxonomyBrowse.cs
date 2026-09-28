@@ -22,7 +22,7 @@ internal sealed partial class QTaxonomy
     private void QTaxonomyTagUpdate()
     {
         QDirectoryFind();
-        _lTaxonomy.LTaxonomyPanel.LPanelDraftUpdate();
+        _lTaxonomy.LTaxonomyPanel.CPanelDraftUpdate();
     }
 
     private void QExplorationHandle(object sender, TextChangedEventArgs e)
@@ -60,13 +60,13 @@ internal sealed partial class QTaxonomy
             CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         _lTaxonomy.LTaxonomyObserverAttach(
             CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
-        LPanel panel = _lTaxonomy.LTaxonomyPanel;
-        panel.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelEntryHandle));
-        panel.LPanelObserverAttach(
+        CPanel panel = _lTaxonomy.LTaxonomyPanel;
+        panel.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelEntryUpdate));
+        panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, QMembershipFind));
-        panel.LPanelChosenAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.LPanelDraftUpdate));
+        panel.CPanelChosenAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftUpdate));
         _lTaxonomy.LTaxonomyObserverAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, QDirectoryFind));
         QTaxonomyDisplay.PDisplayObserverAttach();
@@ -228,23 +228,23 @@ internal sealed partial class QTaxonomy
 
     private void QDirectoryTagOpen(long id)
     {
-        _lTaxonomy.LTaxonomyPanel.LPanelClear();
+        _lTaxonomy.LTaxonomyPanel.CPanelEntryClose();
         QDirectoryTagShow(id);
     }
 
     private void QTaxonomyScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyPanel.LPanelScribeSet(ReferenceEquals(sender, QTaxonomyScribe));
+        _lTaxonomy.LTaxonomyPanel.CPanelScribeToggle(ReferenceEquals(sender, QTaxonomyScribe));
     }
 
     internal void QTaxonomyScribeRestore(bool editing)
     {
-        _lTaxonomy.LTaxonomyPanel.LPanelScribeRestore(editing);
+        _lTaxonomy.LTaxonomyPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QTaxonomyLeaveConfirm()
     {
-        return _lTaxonomy.LTaxonomyPanel.LPanelLeaveConfirm();
+        return _lTaxonomy.LTaxonomyPanel.CPanelLeaveConfirm();
     }
 
     internal long QTaxonomyVoyageRead()
@@ -259,6 +259,6 @@ internal sealed partial class QTaxonomy
 
     private void QTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        _lTaxonomy.LTaxonomyPanel.LPanelDelete();
+        _lTaxonomy.LTaxonomyPanel.CPanelEntryDelete();
     }
 }

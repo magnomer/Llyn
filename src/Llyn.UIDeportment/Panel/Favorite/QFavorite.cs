@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -124,11 +125,10 @@ internal sealed partial class QFavorite
         _lEditor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
         LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
         _lFavorite = host.PWindowForge.QForgeFavoriteCreate(
-            _lEditor, lectern, QFavoriteShownCheck, QFavoriteDiscardConfirm, host.PWindowDeleteConfirm);
-        LPanel panel = _lFavorite.LFavoritePanel;
-        panel.LPanelChanged += QFavoriteModeUpdate;
-        panel.LPanelRowsChanged += QRosterFind;
-        panel.LPanelFailed += host.PWindowFailureShow;
+            _lEditor, lectern, QFavoriteShownCheck, host.PWindowEnvoy);
+        CPanel panel = _lFavorite.LFavoritePanel;
+        panel.CPanelChanged += QFavoriteModeUpdate;
+        panel.CPanelRowsChanged += QRosterFind;
 
         QRoster.ItemsSource = _qRosterList;
         QLookItem.QLookItemAttach(QRoster, QRosterApply);
@@ -146,7 +146,7 @@ internal sealed partial class QFavorite
 
     internal void QFavoriteReset()
     {
-        _lFavorite.LFavoritePanel.LPanelClear();
+        _lFavorite.LFavoritePanel.CPanelEntryClose();
     }
 
     internal bool QFavoriteDraftFinish(bool store)
@@ -156,7 +156,7 @@ internal sealed partial class QFavorite
 
     internal bool QFavoriteChangeCheck()
     {
-        return _lFavorite.LFavoritePanel.LPanelChangeCheck();
+        return _lFavorite.LFavoritePanel.CPanelChangeCheck();
     }
 
     internal void QFavoriteClose()
@@ -167,7 +167,7 @@ internal sealed partial class QFavorite
 
     private void QFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lFavorite?.LFavoritePanel.LPanelPressAllowed ?? false;
+        e.CanExecute = _lFavorite?.LFavoritePanel.CPanelPressAllowed ?? false;
     }
 
     private async void QFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
@@ -218,21 +218,16 @@ internal sealed partial class QFavorite
         return _qFavoriteSurface.IsVisible;
     }
 
-    private bool QFavoriteDiscardConfirm()
-    {
-        return _qFavoriteHost.PWindowDiscardConfirm(true, QFavoriteEditor.PEditorDraftFinish);
-    }
-
     private void QFavoriteModeUpdate()
     {
-        LPanel panel = _lFavorite.LFavoritePanel;
-        QFavoriteEditor.Visibility = QLook.QLookVisibleRead(panel.LPanelEditing);
-        QFavoriteDisplay.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QFavoriteViewer.IsChecked = QLook.QLookCheckedRead(panel.LPanelViewerChecked);
-        QFavoriteScribe.IsChecked = QLook.QLookCheckedRead(panel.LPanelScribeChecked);
-        QFavoriteVoyage.Visibility = QLook.QLookVisibleRead(panel.LPanelViewerChecked);
-        QFavoriteChronicle.Visibility = QLook.QLookVisibleRead(panel.LPanelScribeChecked);
-        QFavoriteMode.IsEnabled = panel.LPanelModeEnabled;
-        QFavoriteBin.IsEnabled = panel.LPanelBinEnabled;
+        CPanel panel = _lFavorite.LFavoritePanel;
+        QFavoriteEditor.Visibility = QLook.QLookVisibleRead(panel.CPanelEditing);
+        QFavoriteDisplay.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QFavoriteViewer.IsChecked = QLook.QLookCheckedRead(panel.CPanelViewerChecked);
+        QFavoriteScribe.IsChecked = QLook.QLookCheckedRead(panel.CPanelScribeChecked);
+        QFavoriteVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
+        QFavoriteChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
+        QFavoriteMode.IsEnabled = panel.CPanelModeEnabled;
+        QFavoriteBin.IsEnabled = panel.CPanelBinEnabled;
     }
 }

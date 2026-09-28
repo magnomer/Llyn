@@ -159,18 +159,15 @@ internal sealed class QReference
             lectern,
             QReferenceShownCheck,
             QReferenceDiscardConfirm,
-            QReferenceRemovalConfirm,
             host.PWindowEnvoy);
         _lShelf.LShelfChanged += QReferenceModeUpdate;
-        _lShelf.LShelfPanel.LPanelChanged += QReferenceModeUpdate;
-        _lShelf.LShelfPanel.LPanelRowsChanged += QShelfUpdate;
-        _lShelf.LShelfPanel.LPanelCleared += _qImprint.QImprintClear;
-        _lShelf.LShelfPanel.LPanelCleared += _qColophon.QColophonClear;
+        _lShelf.LShelfPanel.CPanelChanged += QReferenceModeUpdate;
+        _lShelf.LShelfPanel.CPanelRowsChanged += QShelfUpdate;
+        _lShelf.LShelfPanel.CPanelCleared += _qImprint.QImprintClear;
+        _lShelf.LShelfPanel.CPanelCleared += _qColophon.QColophonClear;
         _lShelf.LShelfColophonChanged += _qColophon.QColophonShow;
-        _lShelf.LShelfPanel.LPanelFailed += host.PWindowFailureShow;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelChanged += QReferenceModeUpdate;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelRowsChanged += QFootnoteUpdate;
-        _lShelf.LShelfFootnote.LFootnotePanel.LPanelFailed += host.PWindowFailureShow;
+        _lShelf.LShelfFootnote.LFootnotePanel.CPanelChanged += QReferenceModeUpdate;
+        _lShelf.LShelfFootnote.LFootnotePanel.CPanelRowsChanged += QFootnoteUpdate;
 
         QShelf.ItemsSource = _qShelfList;
         QFootnote.ItemsSource = _qFootnoteList;
@@ -188,43 +185,43 @@ internal sealed class QReference
 
     internal async void QReferenceVistaRestore()
     {
-        LPanel footnote = _lShelf.LShelfFootnote.LFootnotePanel;
-        LPanel shelf = _lShelf.LShelfPanel;
-        shelf.LPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        shelf.LPanelObserverAttach(
+        CPanel footnote = _lShelf.LShelfFootnote.LFootnotePanel;
+        CPanel shelf = _lShelf.LShelfPanel;
+        shelf.CPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        shelf.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, _lShelf.LShelfClear));
-        shelf.LPanelObserverAttach(
+        shelf.CPanelObserverAttach(
             CSubject.CSubjectAuthor,
             LObserver.LObserverCreate<CBulletin>(
                 _qReferenceSurface, _lShelf.LShelfImprint.LImprintDesk.CDeskDraftUpdate));
-        shelf.LPanelObserverAttach(
-            CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        shelf.LPanelObserverAttach(
+        shelf.CPanelObserverAttach(
+            CSubject.CSubjectAuthor, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        shelf.CPanelObserverAttach(
             CSubject.CSubjectReference,
-            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        shelf.LPanelObserverAttach(
-            CSubject.CSubjectExample, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        shelf.LPanelObserverAttach(
-            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        shelf.LPanelObserverAttach(
+            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        shelf.CPanelObserverAttach(
+            CSubject.CSubjectExample, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        shelf.CPanelObserverAttach(
+            CSubject.CSubjectReflex, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        shelf.CPanelObserverAttach(
             CSubject.CSubjectSettings,
-            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        footnote.LPanelObserverAttach(
+            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        footnote.CPanelObserverAttach(
             CSubject.CSubjectEntry,
-            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, footnote.LPanelEntryHandle));
-        footnote.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.LPanelRowsUpdate));
-        footnote.LPanelChosenAttach(
+            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, footnote.CPanelEntryUpdate));
+        footnote.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, shelf.CPanelRowsUpdate));
+        footnote.CPanelChosenAttach(
             CSubject.CSubjectEntry,
             LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, _lShelf.LShelfEntryUpdate));
-        footnote.LPanelObserverAttach(
+        footnote.CPanelObserverAttach(
             CSubject.CSubjectVista,
-            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, footnote.LPanelRowsUpdate));
+            LObserver.LObserverCreate<CBulletin>(_qReferenceSurface, footnote.CPanelRowsUpdate));
         QReferenceDisplay.PDisplayObserverAttach();
         QReferenceEditor.PEditorVistaRestore();
         QChoice.QChoiceOrderBuild(QGradeList, "Grade", QGradeHandle, LShelf.LShelfOrderRead());
-        QChoice.QChoiceOrderApply(QGradeDropdown, _lShelf.LShelfPanel.LPanelOrder);
+        QChoice.QChoiceOrderApply(QGradeDropdown, _lShelf.LShelfPanel.CPanelOrder);
         QTrellisUpdate();
 
         await LEnsignImage.LEnsignLoad(_qReferenceHost.PWindowAtelier);
@@ -232,11 +229,11 @@ internal sealed class QReference
         QChoice.QChoiceFilterBuild(
             QTrellisList,
             _qReferenceHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
-            _lShelf.LShelfPanel.LPanelFilter,
+            _lShelf.LShelfPanel.CPanelFilter,
             QTrellisHandle);
         _lShelf.LShelfQuerySet(QSurvey.Text);
         _lShelf.LShelfFootnote.LFootnoteQuerySet(QRummage.Text);
-        _lShelf.LShelfPanel.LPanelRowsUpdate();
+        _lShelf.LShelfPanel.CPanelRowsUpdate();
     }
 
     internal bool QReferenceChangeCheck()
@@ -276,11 +273,6 @@ internal sealed class QReference
     private bool QReferenceDiscardConfirm()
     {
         return _qReferenceHost.PWindowDiscardConfirm(true, QReferenceDraftFinish);
-    }
-
-    private bool QReferenceRemovalConfirm(int usage)
-    {
-        return _qReferenceHost.PWindowRemovalConfirm(usage, "Source");
     }
 
     private void QShelfUpdate()
@@ -380,7 +372,7 @@ internal sealed class QReference
 
     internal long QReferenceVoyageRead()
     {
-        return _lShelf.LShelfPanel.LPanelVoyageRead();
+        return _lShelf.LShelfPanel.CPanelChosenRead();
     }
 
     internal void QShelfSourceShow(long id)

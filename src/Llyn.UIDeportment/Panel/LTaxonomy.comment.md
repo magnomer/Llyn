@@ -13,7 +13,7 @@ Its public members name only .NET and Conduct types, and the window alone builds
 
 The entry editor's deportment on the membership side, which takes the membership vista when the panel's vistas are restored.
 
-## `public LPanel LTaxonomyPanel { get; }`
+## `public CPanel LTaxonomyPanel { get; }`
 
 The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
 

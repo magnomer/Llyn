@@ -52,10 +52,6 @@ True while the panel holds an unsaved change.
 
 Asks the user about an unsaved change before the panel is left.
 
-## `private bool QXieshengDiscardConfirm()`
-
-The seam the deportment discards a draft through.
-
 ## `internal void QXieshengStemShow(string language, string? key)`
 
 Opens that series, clearing the column's query first so the series can be listed.

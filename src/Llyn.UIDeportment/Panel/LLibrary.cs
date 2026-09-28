@@ -21,8 +21,7 @@ public sealed class LLibrary
         LEditor editor,
         LLectern lectern,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam,
-        Func<bool> deleteSeam)
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
@@ -32,20 +31,21 @@ public sealed class LLibrary
         _lEntryPort = entries;
         _lPortraitPort = portraits;
         LLibraryEditor = editor;
-        LLibraryPanel = new LPanel(
-            "List.LoadFailed", "Scribe.DeleteFailed",
-            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, shownSeam, leaveSeam, deleteSeam);
-        LLibraryPanel.LPanelCleared += LLibraryEditorClear;
-        LLibraryPanel.LPanelEdited += LLibraryEditorOpen;
-        LLibraryPanel.LPanelDraftChanged += lectern.LLecternDraftShow;
-        LLibraryPanel.LPanelCleared += lectern.LLecternClear;
+        LLibraryPanel = new CPanel(
+            envoy, "List.LoadFailed", "Scribe",
+            editor.LEditorStudio.CEditorDesk.CDeskChangeCheck, editor.LEditorStudio.CEditorFinish,
+            shownSeam);
+        LLibraryPanel.CPanelCleared += LLibraryEditorClear;
+        LLibraryPanel.CPanelEdited += LLibraryEditorOpen;
+        LLibraryPanel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        LLibraryPanel.CPanelCleared += lectern.LLecternClear;
     }
 
     public event Action<string, Exception>? LLibraryFailed;
 
     public LEditor LLibraryEditor { get; }
 
-    public LPanel LLibraryPanel { get; }
+    public CPanel LLibraryPanel { get; }
 
     private void LLibraryEditorClear()
     {
@@ -62,7 +62,7 @@ public sealed class LLibrary
     internal void LLibraryVistaRestore(LVista vista)
     {
         _lLibraryVista = vista;
-        LLibraryPanel.LPanelVistaRestore(vista);
+        LLibraryPanel.CPanelVistaRestore(vista);
         LLibraryEditor.LEditorStudio.CEditorVistaRestore(vista);
     }
 
@@ -92,14 +92,14 @@ public sealed class LLibrary
             return;
         }
 
-        vista.LVistaOrderSet(LPanel.LPanelOrderRead(order) ?? vista.LVistaOrder);
+        vista.LVistaOrderSet(CPanel.CPanelOrderRead(order) ?? vista.LVistaOrder);
     }
 
     public void LLibrarySieveSet(CCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        _lLibraryVista?.LVistaFilterSet(LPanel.LPanelFilterRead(filter));
+        _lLibraryVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
     public Task LLibraryPortraitPrint(CPortraitLabel label, CPressTicket ticket)
@@ -150,7 +150,7 @@ public sealed class LLibrary
 
         LMarkupOutcome outcome = await _lPortraitPort.LEngineMarkupStart(cargo, LLibraryIntakeRead(rows));
 
-        LLibraryPanel.LPanelRowsUpdate();
+        LLibraryPanel.CPanelRowsUpdate();
         omissionSeam(LLibraryOmissionRead(outcome.LMarkupOutcomeOmission));
     }
 
@@ -201,13 +201,13 @@ public sealed class LLibrary
 
     public string LLibraryFileRead()
     {
-        return LVista.LVistaFileRead(LLibraryPanel.LPanelVista);
+        return LVista.LVistaFileRead(LLibraryPanel.CPanelVista);
     }
 
     public Task LLibraryPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _lPortraitPort.LEnginePortraitExport(
-            LLibraryPanel.LPanelVista,
+            LLibraryPanel.CPanelVista,
             path,
             QPortrait.QPortraitMediumRead(format),
             QPortrait.QPortraitLabelRead(label));

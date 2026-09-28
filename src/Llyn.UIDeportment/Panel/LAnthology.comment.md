@@ -5,7 +5,7 @@
 The deportment of the corpus panel's example list: the panel state over the example vista and its rows.
 The list finds rows and their usage, and takes the query, order and kind filter.
 Its panel loads, edits and deletes the chosen Example.
-The delete seam asks the removal seam with how many entries cite the chosen Example.
+The panel's delete question is worded under the Example scope and counted by the vista.
 It is sealed, so rows, Mention results, legends and tickets cross as Conduct shapes.
 Its constructor and vista restore take engine types, so they stay internal.
 
@@ -13,14 +13,6 @@ Its constructor and vista restore take engine types, so they stay internal.
 
 Whether the query or the filter hides any row, as the vista answers it.
 
-## `private int LAnthologyUsageRead(long? id)`
-
-How many entries cite the given Example, read fresh from the engine.
-Zero when no Example is given.
-
-## `private bool LAnthologyDeleteConfirm()`
-
-Asks the removal seam whether to delete the chosen Example, given its usage.
 
 ## `public void LAnthologyCitationSet(string title)`
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -114,6 +115,36 @@ public sealed class LVista
             : vista._lEngine.LEngineSettings.LEngineTrailNormalize(trimmed);
     }
 
+    public static LCatalogOrder LVistaOrderRead(LVista? vista)
+    {
+        return vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword;
+    }
+
+    public static LCatalogFilter LVistaFilterRead(LVista? vista)
+    {
+        return vista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty;
+    }
+
+    public int LVistaUsageRead()
+    {
+        if (LVistaStored is not long id)
+        {
+            return 0;
+        }
+
+        return LVistaSubject switch
+        {
+            LSubject.LSubjectExample =>
+                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerExample).GetValueOrDefault(id),
+            LSubject.LSubjectSituation =>
+                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerSituation).GetValueOrDefault(id),
+            LSubject.LSubjectReference =>
+                _lEngine.LEngineEntry.LEngineUsageRead(LOwner.LOwnerReference).GetValueOrDefault(id),
+            LSubject.LSubjectAuthor => _lEngine.LEngineAuthor.LEngineAuthorFind(id)?.LCatalogAuthorWork ?? 0,
+            _ => 0,
+        };
+    }
+
     public LRevision? LVistaDelete()
     {
         if (LVistaChosen is not long id || id <= 0)
@@ -189,6 +220,13 @@ public sealed class LVista
 
         LVistaFilter = filter;
         _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+    }
+
+    public void LVistaFilterSet(IReadOnlyList<string> hidden)
+    {
+        ArgumentNullException.ThrowIfNull(hidden);
+
+        LVistaFilterSet(LCatalogClerk.LCatalogClerkCreate(hidden));
     }
 
     public void LVistaQuerySet(string query)

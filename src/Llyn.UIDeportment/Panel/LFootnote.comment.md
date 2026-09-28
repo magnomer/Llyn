@@ -6,7 +6,7 @@ The deportment of the sources panel's entry list: the shared panel state over th
 The rows are the entries citing the chosen Source, or every entry while none is chosen.
 It keeps a handle on the parent vista too, because the engine narrows the rows by the parent's choice.
 The panel state is held rather than inherited, because a shell type deriving from logic is a custody hit.
-Its delete seam always refuses, because an entry is never deleted from this list.
+Its panel has no delete scope, because an entry is never deleted from this list.
 
 ## `public IReadOnlyList<CVistaRow> LFootnoteRowsRead()`
 

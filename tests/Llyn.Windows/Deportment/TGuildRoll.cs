@@ -107,7 +107,7 @@ public sealed class TGuildRoll
 
     private static LGuild TGuildPrepare(LEngine engine)
     {
-        LGuild guild = TInterfaceDeportment.TGuildCreate(engine, () => true, _ => true, (_, _) => true);
+        LGuild guild = TInterfaceDeportment.TGuildCreate(engine, () => true, (_, _) => true);
         guild.TGuildVistaRestore(
             engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderName),
             engine.TEngineVistaStart("oeuvre", LCatalogOrder.LCatalogOrderName));

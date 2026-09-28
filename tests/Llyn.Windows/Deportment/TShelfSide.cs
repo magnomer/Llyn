@@ -111,7 +111,7 @@ public sealed class TShelfSide
         Assert.Contains(shelf.TShelfRowsRead(), row => row.CCatalogReferenceName == "Book");
 
         shelf.TShelfScribeSet(false);
-        shelf.LShelfFootnote.LFootnotePanel.TPanelScribeSet(false);
+        shelf.LShelfFootnote.LFootnotePanel.TPanelScribeToggle(false);
         shelf.TShelfRowSelect(book.LReferenceId);
         shelf.TShelfDelete();
 

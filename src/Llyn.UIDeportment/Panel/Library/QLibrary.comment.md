@@ -3,7 +3,7 @@
 ## `internal sealed class QLibrary`
 
 Drives the library panel: what it is made of, and what it forwards.
-Every branch it once carried lives in `LLibrary` and the `LPanel` it holds.
+Every branch it once carried lives in `LLibrary` and the `CPanel` it holds.
 The search, the ordering, the index, the read-only display, the editor and the import are all wired here.
 The panel itself is the veneer's `PLibrary` page, which the window places.
 
@@ -61,7 +61,7 @@ That is what the window asks before the workspace changes or the program closes.
 ## `internal bool QLibraryLeaveConfirm()`
 
 The question the window puts before a jump that lands on the library the user is already writing in.
-The controller asks it through the discard seam only when it found changes.
+The panel asks it through the envoy only when it found changes.
 
 ## `internal long QLibraryVoyageRead()`
 
@@ -75,10 +75,6 @@ It asks nothing, because the window asks before it jumps.
 ## `private bool QLibraryShownCheck()`
 
 The shown seam: whether this tab is the one in front, which only the page knows.
-
-## `private bool QLibraryDiscardConfirm()`
-
-The discard seam: the window's leave dialog over the editor's finish, asked only when the controller found changes.
 
 ## `internal void QLibraryClose()`
 

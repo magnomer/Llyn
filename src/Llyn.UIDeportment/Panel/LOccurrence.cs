@@ -22,19 +22,20 @@ public sealed class LOccurrence
         LPortraitPort portraits,
         Func<bool> changeSeam,
         Func<bool> shownSeam,
-        Func<bool> leaveSeam)
+        CEnvoy envoy,
+        Func<bool, bool> finishSeam)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(portraits);
 
         _lEntryPort = entries;
         _lPortraitPort = portraits;
-        LOccurrencePanel = new LPanel(
-            "List.LoadFailed", "Scribe.DeleteFailed",
-            changeSeam, shownSeam, leaveSeam, static () => false);
+        LOccurrencePanel = new CPanel(
+            envoy, "List.LoadFailed", null,
+            changeSeam, finishSeam, shownSeam);
     }
 
-    public LPanel LOccurrencePanel { get; }
+    public CPanel LOccurrencePanel { get; }
 
     internal void LOccurrenceVistaRestore(LVista roll, LVista vista)
     {
@@ -43,7 +44,7 @@ public sealed class LOccurrence
 
         _lOccurrenceRoll = roll;
         _lOccurrenceVista = vista;
-        LOccurrencePanel.LPanelVistaRestore(vista);
+        LOccurrencePanel.CPanelVistaRestore(vista);
     }
 
     public void LOccurrenceSortieSet(string inquest)

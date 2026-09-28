@@ -38,7 +38,7 @@ internal sealed partial class QCorpus
 
     internal async void QCorpusVistaRestore()
     {
-        LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
+        CPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
         QCorpusObserverAttach();
         QCorpusDisplay.PDisplayObserverAttach();
         QCorpusEditor.PEditorVistaRestore();
@@ -52,7 +52,7 @@ internal sealed partial class QCorpus
                 CCatalogOrder.CCatalogOrderSource,
                 CCatalogOrder.CCatalogOrderUsage,
             ]);
-        QChoice.QChoiceOrderApply(QRankDropdown, anthology.LPanelOrder);
+        QChoice.QChoiceOrderApply(QRankDropdown, anthology.CPanelOrder);
         QGauzeRestore();
 
         await LEnsignImage.LEnsignLoad(_qCorpusHost.PWindowAtelier);
@@ -62,33 +62,33 @@ internal sealed partial class QCorpus
         _lCorpus.LCorpusQuotation.LQuotationDredgeSet(QDredge.Text);
         QSpeakerLoad();
         QCitationFind();
-        anthology.LPanelRowsUpdate();
+        anthology.CPanelRowsUpdate();
     }
 
     private void QCorpusObserverAttach()
     {
-        LPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
-        LPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
+        CPanel anthology = _lCorpus.LCorpusAnthology.LAnthologyPanel;
+        CPanel quotation = _lCorpus.LCorpusQuotation.LQuotationPanel;
         UserControl surface = _qCorpusSurface;
-        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.LPanelRowsUpdate);
+        Action<CBulletin> rows = LObserver.LObserverCreate<CBulletin>(surface, anthology.CPanelRowsUpdate);
         Action<CBulletin> citation = LObserver.LObserverCreate<CBulletin>(surface, QCitationFind);
-        anthology.LPanelObserverAttach(CSubject.CSubjectVista, rows);
-        anthology.LPanelObserverAttach(
+        anthology.CPanelObserverAttach(CSubject.CSubjectVista, rows);
+        anthology.CPanelObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QCorpusWorkspaceUpdate));
-        anthology.LPanelObserverAttach(CSubject.CSubjectExample, citation);
-        anthology.LPanelObserverAttach(CSubject.CSubjectExample, rows);
-        anthology.LPanelObserverAttach(CSubject.CSubjectReference, citation);
-        anthology.LPanelObserverAttach(CSubject.CSubjectReference, rows);
-        anthology.LPanelObserverAttach(CSubject.CSubjectReflex, rows);
-        anthology.LPanelObserverAttach(CSubject.CSubjectSettings, rows);
-        quotation.LPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, quotation.LPanelEntrySelect));
-        quotation.LPanelObserverAttach(CSubject.CSubjectEntry, citation);
-        quotation.LPanelObserverAttach(CSubject.CSubjectEntry, rows);
-        quotation.LPanelChosenAttach(
+        anthology.CPanelObserverAttach(CSubject.CSubjectExample, citation);
+        anthology.CPanelObserverAttach(CSubject.CSubjectExample, rows);
+        anthology.CPanelObserverAttach(CSubject.CSubjectReference, citation);
+        anthology.CPanelObserverAttach(CSubject.CSubjectReference, rows);
+        anthology.CPanelObserverAttach(CSubject.CSubjectReflex, rows);
+        anthology.CPanelObserverAttach(CSubject.CSubjectSettings, rows);
+        quotation.CPanelObserverAttach(
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelEntrySelect));
+        quotation.CPanelObserverAttach(CSubject.CSubjectEntry, citation);
+        quotation.CPanelObserverAttach(CSubject.CSubjectEntry, rows);
+        quotation.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _lCorpus.LCorpusEntryUpdate));
-        quotation.LPanelObserverAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, quotation.LPanelRowsUpdate));
+        quotation.CPanelObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, quotation.CPanelRowsUpdate));
     }
 
     private void QGauzeRestore()
@@ -101,7 +101,7 @@ internal sealed partial class QCorpus
         QChoice.QChoiceFilterBuild(
             QGauzeList,
             _qCorpusHost.PWindowAtelier.CAtelierCatalog.CCatalogLanguageRead(),
-            _lCorpus.LCorpusAnthology.LAnthologyPanel.LPanelFilter,
+            _lCorpus.LCorpusAnthology.LAnthologyPanel.CPanelFilter,
             QGauzeHandle);
     }
 
@@ -246,7 +246,7 @@ internal sealed partial class QCorpus
 
     internal void QCorpusScribeRestore(bool editing)
     {
-        _lCorpus.LCorpusAnthology.LAnthologyPanel.LPanelScribeRestore(editing);
+        _lCorpus.LCorpusAnthology.LAnthologyPanel.CPanelScribeRestore(editing);
     }
 
     internal bool QCorpusLeaveConfirm()
@@ -256,7 +256,7 @@ internal sealed partial class QCorpus
 
     internal long QCorpusVoyageRead()
     {
-        return _lCorpus.LCorpusAnthology.LAnthologyPanel.LPanelVoyageRead();
+        return _lCorpus.LCorpusAnthology.LAnthologyPanel.CPanelChosenRead();
     }
 
     internal void QCorpusVoyageShow(bool past, bool future)
