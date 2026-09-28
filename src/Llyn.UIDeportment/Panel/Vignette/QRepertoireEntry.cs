@@ -17,7 +17,7 @@ internal sealed partial class QRepertoire
         IReadOnlyList<CVistaRow> read;
         try
         {
-            read = _lRepertoire.LRepertoireOccurrence.COccurrenceRowsRead();
+            read = _cRepertoire.CRepertoireOccurrence.COccurrenceRowsRead();
         }
         catch (Exception exception)
         {
@@ -35,13 +35,13 @@ internal sealed partial class QRepertoire
             _qOccurrenceList, fresh, QOccurrenceItem.QOccurrenceItemMatch, QOccurrenceItem.QOccurrenceItemSync);
 
         QOccurrenceEmpty.SetResourceReference(
-            TextBlock.TextProperty, _lRepertoire.LRepertoireOccurrence.COccurrenceEmptyKey);
+            TextBlock.TextProperty, _cRepertoire.CRepertoireOccurrence.COccurrenceEmptyKey);
         QOccurrenceEmpty.Visibility = QLook.QLookVisibleRead(_qOccurrenceList.Count == 0);
     }
 
     private void QOccurrenceHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireOccurrenceSelect(QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
+        _cRepertoire.CRepertoireOccurrenceSelect(QSender.QSenderSourceRead<QOccurrenceItem>(e)?.QOccurrenceItemId);
     }
 
     private void QOccurrenceApply(FrameworkElement container, object item, string? _)
@@ -89,11 +89,11 @@ internal sealed partial class QRepertoire
 
     private void QRepertoireStoreHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireSession.CSessionSave();
+        _cRepertoire.CRepertoireSession.CSessionSave();
     }
 
     private void QRepertoireFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lRepertoire.LRepertoireFreshStart();
+        _cRepertoire.CRepertoireSituationCreate();
     }
 }

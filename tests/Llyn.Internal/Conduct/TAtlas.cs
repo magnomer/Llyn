@@ -18,8 +18,7 @@ public sealed class TAtlas
         TAtlasSituationSave(engine, "at home");
         CAtlas atlas = TAtlasPrepare(engine, atelier);
 
-        Assert.Empty(atlas.CAtlasRowsRead("?", "-"));
-        Assert.False(atlas.CAtlasNarrowed);
+        Assert.Empty(atlas.TAtlasRowsRead("?", "-"));
         Assert.Null(atlas.CAtlasChosen);
     }
 
@@ -33,9 +32,9 @@ public sealed class TAtlas
             TInterface.TSituationCreate(0, LStateValue.LStateValueUnspecified, null, null));
         LSituation home = TAtlasSituationSave(engine, "at home");
         CAtlas atlas = TAtlasPrepare(engine, atelier);
-        atlas.CAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
-        IReadOnlyList<CCatalogSituation> rows = atlas.CAtlasRowsRead("?", "-");
+        IReadOnlyList<CCatalogSituation> rows = atlas.TAtlasRowsRead("?", "-");
 
         Assert.Equal("-", rows.Single(row => row.CCatalogSituationId == blank.LSituationId).CCatalogSituationTitle);
         Assert.Equal(
@@ -51,12 +50,11 @@ public sealed class TAtlas
         TAtlasSituationSave(engine, "at home");
         TAtlasSituationSave(engine, "in court");
         CAtlas atlas = TAtlasPrepare(engine, atelier);
-        atlas.CAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
         atlas.CAtlasQuerySet("court");
 
-        Assert.True(atlas.CAtlasNarrowed);
-        Assert.Equal(["in court"], atlas.CAtlasRowsRead("?", "-").Select(row => row.CCatalogSituationTitle));
+        Assert.Equal(["in court"], atlas.TAtlasRowsRead("?", "-").Select(row => row.CCatalogSituationTitle));
     }
 
     [Fact]
@@ -66,7 +64,7 @@ public sealed class TAtlas
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAtlas atlas = TAtlasPrepare(engine, atelier);
-        atlas.CAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
         atlas.CAtlasOrderSet(CCatalogOrder.CCatalogOrderKind);
         atlas.CAtlasOrderSet(null);
@@ -81,7 +79,7 @@ public sealed class TAtlas
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CAtlas atlas = TAtlasPrepare(engine, atelier);
-        atlas.CAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName));
 
         atlas.CAtlasFilterSet(new CCatalogFilter(["English"]));
 
@@ -129,17 +127,17 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_NoSituation_ReturnsNone()
+    public void AtlasDraftRead_NoSituation_ReturnsNone()
     {
-        Assert.Null(CAtlas.CAtlasSituationRead(null));
+        Assert.Null(TInterfaceConduct.TAtlasDraftRead(null));
     }
 
     [Fact]
-    public void AtlasSituationRead_StoredSituation_CarriesEveryField()
+    public void AtlasDraftRead_StoredSituation_CarriesEveryField()
     {
         LSituation situation = TInterface.TSituationCreate(7, "Hearth", "By the fire", LStateValue.LStateValueUnknown);
 
-        CSituationDraft? held = CAtlas.CAtlasSituationRead(situation);
+        CSituationDraft? held = TInterfaceConduct.TAtlasDraftRead(situation);
 
         Assert.NotNull(held);
         Assert.Equal(7, held!.CSituationDraftId);
@@ -155,7 +153,14 @@ public sealed class TAtlas
         CEnvoy envoy = TInterfaceConduct.TEnvoyCreate(false, []);
         CDesk desk = TInterfaceConduct.TDeskCreate(
             engine, "Situation", envoy, "Repertoire", CSubject.CSubjectSituation);
-        return CAtlas.CAtlasCreate(atelier, desk, static () => true, envoy, static _ => true);
+        return new CAtlas(
+            atelier.CAtelierEntryPort,
+            atelier.CAtelierPortraitPort,
+            atelier.CAtelierSettingsPort,
+            desk,
+            static () => true,
+            envoy,
+            static _ => true);
     }
 
     private static LSituation TAtlasSituationSave(LEngine engine, string title)

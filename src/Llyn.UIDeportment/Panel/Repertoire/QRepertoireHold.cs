@@ -7,7 +7,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed partial class QRepertoire
 {
-    private CDesk QScenarioDesk => _lRepertoire.LRepertoireDesk;
+    private CDesk QScenarioDesk => _cRepertoire.CRepertoireDesk;
 
     private void QScenarioDeskAttach()
     {
@@ -25,7 +25,7 @@ internal sealed partial class QRepertoire
 
     private void QScenarioDraftRestore()
     {
-        if (_lRepertoire.LRepertoireScenarioRead() is CSituationDraft situation)
+        if (_cRepertoire.CRepertoireScenarioRead() is CSituationDraft situation)
         {
             QScenarioShow(situation);
         }
@@ -33,17 +33,17 @@ internal sealed partial class QRepertoire
 
     public void QChronicleUndo()
     {
-        QChronicle.QChronicleRun(_lRepertoire.LRepertoireSession.CSessionUndo);
+        QChronicle.QChronicleRun(_cRepertoire.CRepertoireSession.CSessionUndo);
     }
 
     public void QChronicleRedo()
     {
-        QChronicle.QChronicleRun(_lRepertoire.LRepertoireSession.CSessionRedo);
+        QChronicle.QChronicleRun(_cRepertoire.CRepertoireSession.CSessionRedo);
     }
 
     public void QChronicleUpdate()
     {
-        (bool undo, bool redo) = _lRepertoire.LRepertoireSession.CSessionChronicleRead();
+        (bool undo, bool redo) = _cRepertoire.CRepertoireSession.CSessionChronicleRead();
         QRepertoireBackward.IsEnabled = undo;
         QRepertoireForward.IsEnabled = redo;
     }

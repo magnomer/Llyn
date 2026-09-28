@@ -4,7 +4,7 @@
 
 The Repertoire panel's driver: the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
-It holds the surface, the host and the deportment the browsing side calls, and nothing else.
+It holds the surface, the host and the repertoire Conduct the browsing side calls, and nothing else.
 The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `QRepertoireHold.cs`, apart from the controls it reads.
 It merges the card's picture and video row templates, answering their clicks as `PImageHost` and `PVideoHost`.
@@ -25,14 +25,16 @@ Each named part of the page is pulled through `QContract.QContractFind` by its c
 
 ## `internal void QRepertoireAttach(PWindow host)`
 
-Builds the panel's deportment and its editor over the engine's ports, and wires the desk's notices.
+Takes the repertoire Conduct and its editor from the forge, and wires the desk's notices.
+The occurrence panel's loads and clears go straight to the lectern, so the veneer relays no draft.
 Binds the panel to the window it asks for confirmations and panel switches through.
 The media host is attached to the surface, so the rows inside it find the atelier.
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 The atlas and occurrence lists get their row fills through `QLookItemAttach`.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The engine's change notices drive the mode, and its row notices drive the two lists.
-Its scenario and situation notices paint the sheet, and its failures reach the window.
+Its scenario and situation notices paint the sheet.
+Its failures reach the window through the envoy, which the Conduct asks directly.
 A dropped inquest empties the inquest box and the language menu.
 The window fills the situation catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
@@ -41,11 +43,6 @@ The panel is current whether or not its tab is in front.
 ## `private bool QRepertoireShownCheck()`
 
 Whether the panel is on screen, so the engine knows when a notice needs painting.
-
-## `private bool QRepertoireDiscardConfirm(Func<bool, bool> finish)`
-
-Asks the window whether unsaved work may be dropped before the engine moves on.
-A save runs the finish the deportment handed in, so the deportment decides what follows it.
 
 ## `private void QRepertoireModeUpdate()`
 
@@ -56,19 +53,19 @@ It ends by refreshing the rail's undo and redo.
 
 ## `internal void QRepertoireReset()`
 
-Drops both selections through the deportment and reads the catalog again, for when the workspace underneath changed.
+Drops both selections through the Conduct and reads the catalog again, for when the workspace underneath changed.
 
 ## `internal bool QRepertoireChangeCheck()`
 
 Whether the editor holds work nothing has saved yet.
 The engine answers it against the held draft rather than the panel against a copy of a stored record.
 The window asks before anything can leave the panel.
-The deportment asks the occurrence side and the atlas side, and each answers only while it edits.
+The session asks the occurrence side and the atlas side, and each answers only while it edits.
 
 ## `internal bool QRepertoireDraftFinish(bool store)`
 
 Ends whichever draft is in front, committing it or discarding it.
-The deportment finishes the entry editor's draft while it is in front, and the held situation otherwise.
+The session finishes the entry editor's draft while it is in front, and the held situation otherwise.
 
 ## `internal void QRepertoireClose()`
 
@@ -85,7 +82,7 @@ The button follows this answer on its own, so no panel state has to switch it.
 
 Prints the entry being read, or else the situation being read, as the engine portrays it.
 The window reads the labels and the situation legend, so the panel hands over no word of its own.
-The deportment picks the page from the side it shows, and the engine builds it from stored rows.
+The Conduct picks the page from the side it shows, and the engine builds it from stored rows.
 Nothing is read back from the screen.
 
 ## `private void QRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)`

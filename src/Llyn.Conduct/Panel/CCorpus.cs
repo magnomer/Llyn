@@ -284,7 +284,7 @@ public sealed class CCorpus
         CCorpusEditor.CEditorEntryOpen(null);
         if (chosen is long id)
         {
-            CCorpusEditor.CEditorExampleAdd(id);
+            CCorpusEditor.LEditorExampleAdd(id);
         }
     }
 

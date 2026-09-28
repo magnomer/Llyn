@@ -13,11 +13,11 @@ The panel answers two questions rather than one: what this Situation is, and whe
 
 ## Inline notes
 
-### `private LRepertoire _lRepertoire = null!;`
+### `private CRepertoire _cRepertoire = null!;`
 
-The panel's deportment, holding the atlas, the occurrence and the desk the window restored.
+The repertoire Conduct, holding the atlas, the occurrence list, the desk, the session and the panel's mode.
 The atlas's vista carries the order, the inquest, and the languages hidden from the entry column.
-The panel keeps no copy of any of them and asks the deportment for each where it needs it.
+The panel keeps no copy of any of them and asks the Conduct for each where it needs it.
 It is null until the window hands one over, so the handlers do nothing before that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
@@ -42,7 +42,7 @@ The vista saves it and announces it, and the announcement refills the catalog.
 
 ### `internal async void QRepertoireVistaRestore()`
 
-The deportment starts the tab's vistas from the window's posture, so no vista crosses the veneer.
+The Conduct starts the tab's vistas from the window's posture, so no vista crosses the veneer.
 Takes the vistas the window started for this tab and puts the panel on them.
 The dropdown mark and the filter mark are drawn from the atlas first.
 The flags are loaded before any row is built, then the language menu is built from the loaded packs.
@@ -58,7 +58,7 @@ A reflex fill or a flipped setting rewrites the epithet beside a headword, so ea
 An entry announcement goes to the occurrence panel first, which may adopt a freshly stored Entry.
 The catalog follows, since the store may reference a Situation.
 The catalog's row notice re-lists the entry column, so the column is read once per announcement.
-The chosen entry's own announcement reaches the deportment last, which redraws or drops it.
+The chosen entry's own announcement reaches the Conduct last, which redraws or drops it.
 The occurrence vista carries the entry search box, so its announcement refills the entry column alone.
 A fetched frequency, paradigm, script or fanqie row changes no situation or entry row, and is not attached.
 
@@ -93,15 +93,15 @@ The panel hands over its vista and decides nothing about the ordering or the inq
 Before a vista is handed over nothing is asked.
 What a title, a description or a kind answers is decided below the shell.
 The rows arrive as `CCatalogSituation` shapes, the kind carrying its own unknown mark.
-The applied rows then go to the deportment, so a clear it makes never re-enters this fill.
-It drops a shown selection whose row no longer stands, and keeps one an open editor holds.
+The Conduct read drops a shown selection whose row no longer stands, and keeps one an open editor holds.
+Its clear announces fresh rows that list the same Situations, so the nested refill is harmless.
 Both tally chips are rewritten from the fresh counts, so a reference added elsewhere shows at once.
 The entry column follows through the atlas's row notice, so it is not refilled here.
 
 ## `private void QAtlasHandle(object sender, RoutedEventArgs e)`
 
-A clicked row asks the deportment to select it, handing over the trail's record.
-The deportment asks about unsaved work first, and records the station only when the move goes ahead.
+A clicked row asks the Conduct to select it, handing over the trail's record.
+The Conduct asks about unsaved work first, and records the station only when the move goes ahead.
 
 ## `private void QAtlasApply(FrameworkElement container, object item, string? _)`
 
@@ -114,22 +114,22 @@ The kind is written as it is, and the look sheet collapses it while empty.
 ## `internal void QAtlasSituationShow(long id)`
 
 A jump from another panel: opens the Situation without asking, since the window has already asked.
-The deportment keeps the side the panel stood on, so an open editor restarts on the Situation.
+The Conduct keeps the side the panel stood on, so an open editor restarts on the Situation.
 
 ## `private void QRepertoireBinHandle(object sender, RoutedEventArgs e)`
 
-Hands the delete to the deportment, which acts only while a Situation and not an Entry is shown.
+Hands the delete to the Conduct, which acts only while a Situation and not an Entry is shown.
 A Situation something references is named to the user first, through the removal question the panel lent it.
 
 ## `private void QRepertoireViewerHandle(object sender, RoutedEventArgs e)`
 
-Swaps the editor for the reading, on whichever side the deportment stands.
+Swaps the editor for the reading, on whichever side the Conduct stands.
 Each segment has its own handler, so no control is read to decide which was pressed.
 
 ## `private void QRepertoireScribeHandle(object sender, RoutedEventArgs e)`
 
-Swaps the reading for the editor, on whichever side the deportment stands.
-The deportment asks before leaving an editor, so unsaved wording is never lost silently.
+Swaps the reading for the editor, on whichever side the Conduct stands.
+The Conduct asks before leaving an editor, so unsaved wording is never lost silently.
 
 ### `internal void QRepertoireScribeRestore(bool editing)`
 
@@ -139,7 +139,7 @@ Otherwise the launch would open a blank draft nobody asked for.
 
 ### `internal bool QRepertoireLeaveConfirm()`
 
-Asks the deportment whether the panel may be left, which asks the window only over unsaved work.
+Asks the Conduct whether the panel may be left, which asks the window only over unsaved work.
 
 ## `internal long QRepertoireVoyageRead()`
 

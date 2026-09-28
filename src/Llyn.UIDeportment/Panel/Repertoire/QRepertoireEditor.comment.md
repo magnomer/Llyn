@@ -28,14 +28,19 @@ The title asks with the untitled text the catalog uses, so an empty title reads 
 
 Feeds the two unseen twins of the title, the work their bindings did before.
 The hint copies the placeholder and shows only while the title is empty, so the head row closes on it.
-The deportment answers whether the title is empty, so the view measures no input.
+The empty check only switches a placeholder, which no console would need.
 The ghost copies the written title, so the head row closes on the text.
 It runs after the title or its placeholder changes.
 
 ## `private void QScenarioMeasureApply()`
 
 Feeds the unseen twin of the kind with the written kind, or with the placeholder while the kind is empty.
-The deportment picks between the two, and the chip closes on that text.
+The pick only fills an unseen measuring twin, so it stays in the driver.
+
+## `private void QScenarioMeasureRefine(string kind, string hint)`
+
+Writes the kind, or the placeholder while the kind is empty, into the measuring twin.
+It takes both texts as parameters, so no control input decides inside a Refine.
 
 ## `private void QScenarioApply(CSituationDraft? situation)`
 

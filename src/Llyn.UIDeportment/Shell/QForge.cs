@@ -91,22 +91,11 @@ public sealed class QForge
             shelf => shelf.LShelfVistaRestore(_qForgeAtelier));
     }
 
-    public LRepertoire QForgeRepertoireCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, Func<Func<bool, bool>, bool> leaveSeam,
-        CEnvoy envoy)
+    public CRepertoire QForgeRepertoireCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LRepertoire(
-                _qForgeAtelier,
-                _qForgeAtelier.CAtelierDraftPort,
-                _qForgeAtelier.CAtelierEntryPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                editor,
-                lectern,
-                shownSeam,
-                leaveSeam,
-                envoy),
-            repertoire => repertoire.LRepertoireVistaRestore(_qForgeAtelier));
+            CRepertoire.CRepertoireCreate(_qForgeAtelier, shownSeam, envoy),
+            static repertoire => repertoire.CRepertoireVistaRestore());
     }
 
     public LTaxonomy QForgeTaxonomyCreate(

@@ -364,7 +364,7 @@ public sealed class TEditor
         CEditor editor = TEditorPrepare(engine, "occurrence");
         editor.CEditorEntryOpen(null);
 
-        editor.CEditorSituationAdd(situation.LSituationId);
+        editor.TEditorSituationAdd(situation.LSituationId);
 
         Assert.Contains(
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSituation ?? [],
@@ -381,7 +381,7 @@ public sealed class TEditor
         CEditor editor = TEditorPrepare(engine, "quotation");
         editor.CEditorEntryOpen(null);
 
-        editor.CEditorExampleAdd(example.LExampleId);
+        editor.TEditorExampleAdd(example.LExampleId);
 
         CExampleDraft? cited =
             editor.CEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;

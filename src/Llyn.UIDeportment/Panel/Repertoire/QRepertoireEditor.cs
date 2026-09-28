@@ -48,14 +48,18 @@ internal sealed partial class QRepertoire
     private void QScenarioHintApply()
     {
         QScenarioHint.Text = (string)QScenarioTitle.GetValue(QField.QFieldHintProperty);
-        QScenarioHint.Visibility = QLook.QLookVisibleRead(_lRepertoire.LRepertoireVacantCheck(QScenarioTitle.Text));
+        QScenarioHint.Visibility = QLook.QLookVisibleRead(string.IsNullOrEmpty(QScenarioTitle.Text));
         QScenarioGhost.Text = QScenarioTitle.Text;
     }
 
     private void QScenarioMeasureApply()
     {
-        QScenarioMeasure.Text = _lRepertoire.LRepertoireMeasureRead(
-            QScenarioKind.Text, (string)QScenarioKind.GetValue(QField.QFieldHintProperty));
+        QScenarioMeasureRefine(QScenarioKind.Text, (string)QScenarioKind.GetValue(QField.QFieldHintProperty));
+    }
+
+    private void QScenarioMeasureRefine(string kind, string hint)
+    {
+        QScenarioMeasure.Text = string.IsNullOrEmpty(kind) ? hint : kind;
     }
 
     private void QScenarioApply(CSituationDraft? situation)

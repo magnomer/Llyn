@@ -38,30 +38,15 @@ public sealed class CAtlas
             envoy, "Situation.LoadFailed", "Situation", desk.CDeskChangeCheck, finishSeam, shownSeam);
     }
 
-    public static CAtlas CAtlasCreate(
-        CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-
-        return new CAtlas(
-            atelier.CAtelierEntryPort,
-            atelier.CAtelierPortraitPort,
-            atelier.CAtelierSettingsPort,
-            desk,
-            shownSeam,
-            envoy,
-            finishSeam);
-    }
-
     public CPanel CAtlasPanel { get; }
 
     public long? CAtlasChosen => _cAtlasVista?.LVistaChosen;
 
     public bool CAtlasFiltered => _cAtlasVista?.LVistaFiltered ?? false;
 
-    public bool CAtlasNarrowed => _cAtlasVista?.LVistaNarrowed ?? false;
+    internal bool LAtlasNarrowed => _cAtlasVista?.LVistaNarrowed ?? false;
 
-    internal void CAtlasVistaRestore(LVista vista)
+    internal void LAtlasVistaRestore(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
@@ -88,10 +73,10 @@ public sealed class CAtlas
         _cAtlasVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    public IReadOnlyList<CCatalogSituation> CAtlasRowsRead(string unknown, string untitled)
+    internal IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)
     {
         return _cAtlasVista is LVista vista
-            ? _cAtlasEntryPort.LEngineSituationFind(vista, unknown, untitled).Select(CAtlasRowRead).ToList()
+            ? _cAtlasEntryPort.LEngineSituationFind(vista, unknown, untitled).Select(LAtlasRowRead).ToList()
             : [];
     }
 
@@ -105,13 +90,13 @@ public sealed class CAtlas
         return _cAtlasSettingsPort.LEngineLanguageRead();
     }
 
-    public Task CAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
+    internal Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
     {
         return _cAtlasPortraitPort.LEnginePortraitPrint(
             _cAtlasVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
     }
 
-    internal static CCatalogSituation CAtlasRowRead(LCatalogSituation row)
+    internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)
     {
         ArgumentNullException.ThrowIfNull(row);
 
@@ -123,16 +108,16 @@ public sealed class CAtlas
             row.LCatalogSituationChosen);
     }
 
-    internal static CSituationDraft? CAtlasSituationRead(LSituation? situation)
+    internal static CSituationDraft? LAtlasDraftRead(LDraft? draft)
     {
-        return situation is null
-            ? null
-            : new CSituationDraft(
+        return draft?.LDraftSituation is LSituation situation
+            ? new CSituationDraft(
                 situation.LSituationId,
                 CFolio.CFolioStateRead(situation.LSituationTitle),
                 CFolio.CFolioStateRead(situation.LSituationKind),
                 CFolio.CFolioStateRead(situation.LSituationDescription),
                 CFolio.CFolioImageRead(situation.LSituationImage),
-                CFolio.CFolioVideoRead(situation.LSituationVideo));
+                CFolio.CFolioVideoRead(situation.LSituationVideo))
+            : null;
     }
 }

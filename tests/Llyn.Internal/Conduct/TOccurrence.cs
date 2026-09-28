@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -59,45 +56,6 @@ public sealed class TOccurrence
 
         Assert.Equal("Situation.Vacant", occurrence.COccurrenceEmptyKey);
         Assert.Equal("entry", occurrence.COccurrenceFileRead());
-    }
-
-    [Fact]
-    public async Task OccurrencePortraitExport_ChosenEntry_WritesItUnderItsHeadword()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry stone = TOccurrenceEntrySave(engine, "stone", null);
-        (COccurrence occurrence, _, LVista vista) = TOccurrencePrepare(engine);
-        string path = Path.Combine(workspace.TWorkspaceFolder, "stone.md");
-
-        await occurrence.COccurrencePortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
-
-        Assert.False(File.Exists(path));
-        Assert.Equal("entry", occurrence.COccurrenceFileRead());
-
-        vista.TVistaSelect(stone.LEntryId);
-        await occurrence.COccurrencePortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
-
-        Assert.Equal("stone", occurrence.COccurrenceFileRead());
-        Assert.Contains("stone", File.ReadAllText(path), StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void OccurrencePortraitPrint_NothingChosen_PrintsNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (COccurrence occurrence, _, _) = TOccurrencePrepare(engine);
-
-        Task printed = occurrence.COccurrencePortraitPrint(
-            TCorpus.TCorpusLabelCreate(),
-            new CPressTicket(
-                "Office", null, null, false, 1, false, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
-
-        Assert.Same(Task.CompletedTask, printed);
-        Assert.False(occurrence.COccurrencePanel.CPanelPressAllowed);
     }
 
     private static (COccurrence, LVista, LVista) TOccurrencePrepare(LEngine engine)

@@ -11,17 +11,14 @@ It also prints the listed situations.
 
 Takes the ports it reads and prints through, the repertoire desk holding the situation, and the panel's seams.
 The panel asks whether the desk changed before it leaves a Situation.
+Only `CRepertoire` builds it, over the atelier's ports.
 
-## `public static CAtlas CAtlasCreate(CAtelier atelier, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
-
-Builds the list over the atelier's ports, so the driver hands it no port.
-Building it is no user action, so it is no gate on the atelier.
-
-## `public bool CAtlasNarrowed`
+## `internal bool LAtlasNarrowed`
 
 Whether the query or the filter hides any row, as the vista answers it.
+Only `CRepertoire` reads it, when an arrival lands on a hidden row.
 
-## `internal void CAtlasVistaRestore(LVista vista)`
+## `internal void LAtlasVistaRestore(LVista vista)`
 
 Binds the list and its panel to the repertoire vista a workspace start or switch hands over.
 
@@ -29,9 +26,10 @@ Binds the list and its panel to the repertoire vista a workspace start or switch
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
 
-## `public IReadOnlyList<CCatalogSituation> CAtlasRowsRead(string unknown, string untitled)`
+## `internal IReadOnlyList<CCatalogSituation> LAtlasRowsRead(string unknown, string untitled)`
 
 The rows the vista lists, none before a vista arrives.
+Drivers read them through `CRepertoireRowsRead`, which closes a stale selection.
 The driver hands the words for an unknown or untitled situation, and the engine names each row with them.
 
 ## `public IReadOnlyDictionary<long, int> CAtlasUsageRead()`
@@ -42,16 +40,18 @@ How many places cite each Situation, keyed by id.
 
 The workspace's languages, which the driver offers as the filter's choices.
 
-## `public Task CAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
+## `internal Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
 
 Prints the vista's situations with the driver's localized legend and dialog answer.
+Only the repertoire's print gate calls it, which chooses the side that prints.
 
-## `internal static CCatalogSituation CAtlasRowRead(LCatalogSituation row)`
+## `internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)`
 
 The one map for a found situation, shared by the candidate popup and the atlas.
 The title is the name the engine gave the row, so the atlas keeps its unknown and untitled words.
 
-## `internal static CSituationDraft? CAtlasSituationRead(LSituation? situation)`
+## `internal static CSituationDraft? LAtlasDraftRead(LDraft? draft)`
 
-Maps a whole stored Situation to its shape, and null to null.
-The repertoire desk still calls it until the repertoire session reaches Conduct.
+Maps the Situation a draft carries to its shape, and a missing draft or Situation to null.
+It is a plain map with no rule, so it stays in Conduct, since ShellEngine cannot name a Conduct shape.
+`CRepertoire` hands it the desk's draft and every loaded atlas draft unread.

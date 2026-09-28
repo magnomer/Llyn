@@ -199,7 +199,28 @@ internal static class TInterfaceConduct
         static () => true);
 
     internal static void TOccurrenceVistaRestore(this COccurrence occurrence, LVista roll, LVista vista) =>
-        occurrence.COccurrenceVistaRestore(roll, vista);
+        occurrence.LOccurrenceVistaRestore(roll, vista);
+
+    internal static void TAtlasVistaRestore(this CAtlas atlas, LVista vista) => atlas.LAtlasVistaRestore(vista);
+
+    internal static IReadOnlyList<CCatalogSituation> TAtlasRowsRead(
+        this CAtlas atlas, string unknown, string untitled) => atlas.LAtlasRowsRead(unknown, untitled);
+
+    internal static CSituationDraft? TAtlasDraftRead(LSituation? situation) => CAtlas.LAtlasDraftRead(
+        situation is null
+            ? null
+            : new LDraft(
+                0,
+                "repertoire",
+                0,
+                TInterface.TEntryDraftCreate(string.Empty, "English", string.Empty, string.Empty, [], []),
+                DateTimeOffset.UnixEpoch,
+                LDraftSituation: situation));
+
+    internal static void TEditorSituationAdd(this CEditor editor, long situation) =>
+        editor.LEditorSituationAdd(situation);
+
+    internal static void TEditorExampleAdd(this CEditor editor, long example) => editor.LEditorExampleAdd(example);
 
     internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen) =>
         new(id, "aqua", "Latin", epithet, "aqua (1)", chosen);

@@ -37,7 +37,7 @@ public sealed class COccurrence
     public string COccurrenceEmptyKey =>
         _cOccurrenceVista?.LVistaQueried ?? false ? "Situation.Unmatched" : "Situation.Vacant";
 
-    internal void COccurrenceVistaRestore(LVista roll, LVista vista)
+    internal void LOccurrenceVistaRestore(LVista roll, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(roll);
         ArgumentNullException.ThrowIfNull(vista);
@@ -66,13 +66,13 @@ public sealed class COccurrence
         return LVista.LVistaFileRead(_cOccurrenceVista);
     }
 
-    public Task COccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    internal Task LOccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)
     {
         return _cOccurrencePortraitPort.LEnginePortraitPrint(
             _cOccurrenceVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
     }
 
-    public Task COccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    internal Task LOccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
     {
         return _cOccurrencePortraitPort.LEnginePortraitExport(
             _cOccurrenceVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));

@@ -67,6 +67,27 @@ Builds the occurrence list over real outlets on `engine`, as the repertoire does
 
 Binds the occurrence list to the situation vista and its own, as the repertoire's restore does.
 
+## `internal static void TAtlasVistaRestore(this CAtlas atlas, LVista vista)`
+
+Binds the atlas to the situation vista through its internal helper, as the repertoire's restore does.
+
+## `internal static IReadOnlyList<CCatalogSituation> TAtlasRowsRead(this CAtlas atlas, string unknown, string untitled)`
+
+Reads the atlas rows through its internal helper, without the repertoire's stale-selection close.
+
+## `internal static CSituationDraft? TAtlasDraftRead(LSituation? situation)`
+
+Wraps the Situation in a bare draft and maps it through the atlas's internal helper.
+A null Situation reads as no draft at all.
+
+## `internal static void TEditorSituationAdd(this CEditor editor, long situation)`
+
+Links a Situation to the editor's first card through its internal helper, as the repertoire's fresh occurrence does.
+
+## `internal static void TEditorExampleAdd(this CEditor editor, long example)`
+
+Cites an Example in the editor's first sentence through its internal helper, as the corpus's fresh quotation does.
+
 ## `internal static LVistaRow TVistaRowCreate(long id, string? epithet, bool chosen)`
 
 Builds one Latin entry row with the given id, epithet and chosen mark.

@@ -21,7 +21,7 @@ internal sealed partial class QRepertoire
         QVignetteDescriptionShow(situation.CSituationDraftDescription);
         QVignetteMediaShow(
             QVignetteImageRead(situation.CSituationDraftImage), QVignetteVideoRead(situation.CSituationDraftVideo));
-        QVignetteTally.Text = QRepertoireTallyRead(_lRepertoire.LRepertoireAtlas.CAtlasChosen);
+        QVignetteTally.Text = QRepertoireTallyRead(_cRepertoire.CRepertoireAtlas.CAtlasChosen);
     }
 
     private void QVignetteClear()

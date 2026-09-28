@@ -66,7 +66,7 @@ public sealed class CCard
     public IReadOnlyList<CCatalogSituation> CCardSituationFind(string word)
     {
         return _cCardEntryPort.LEngineSituationFind(word, LCatalogOrder.LCatalogOrderUsage)
-            .Select(CAtlas.CAtlasRowRead)
+            .Select(CAtlas.LAtlasRowRead)
             .ToList();
     }
 
