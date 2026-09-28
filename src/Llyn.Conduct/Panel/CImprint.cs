@@ -51,7 +51,6 @@ public sealed class CImprint
 
     public void CImprintCancel()
     {
-        CImprintByline.LBylineReset();
         CImprintDesk.CDeskCancel();
         CImprintChanged?.Invoke();
         CImprintByline.CBylineClose();
@@ -239,27 +238,29 @@ public sealed class CImprint
 
     internal void LImprintAuthorInsert(int at, long author, long picked)
     {
-        if (picked == author)
+        int blank = _cImprintBlankAt;
+        _cImprintBlankAt = -1;
+        if (CImprintDesk.CDeskQuill?.LQuillAuthorInsert(picked, at, author) == true)
         {
-            CImprintReverted?.Invoke();
             return;
         }
 
-        _cImprintBlankAt = -1;
-        CImprintDesk.CDeskQuill?.LQuillAuthorInsert(picked, at, author);
+        _cImprintBlankAt = blank;
+        CImprintReverted?.Invoke();
     }
 
     private void LImprintCreditCommit(int at, long author, string? text)
     {
         CImprintByline.CBylineClose();
-        if (!LQuill.LQuillAuthorCheck(text))
+        int blank = _cImprintBlankAt;
+        _cImprintBlankAt = -1;
+        if (CImprintDesk.CDeskQuill?.LQuillAuthorAdd(text, at, author) == true)
         {
-            CImprintReverted?.Invoke();
             return;
         }
 
-        _cImprintBlankAt = -1;
-        CImprintDesk.CDeskQuill?.LQuillAuthorAdd(text, at, author);
+        _cImprintBlankAt = blank;
+        CImprintReverted?.Invoke();
     }
 
     private void LImprintBlankSet()

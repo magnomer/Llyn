@@ -109,6 +109,49 @@ public sealed class TByline
     }
 
     [Fact]
+    public void ImprintAuthorFinish_BylineOfferedNothingLit_CreditsTheTypedName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
+        imprint.CImprintOpen(null);
+        imprint.CImprintByline.CBylineWordSet("Ad", true);
+        imprint.CImprintByline.CBylineRowsRead();
+
+        Assert.True(imprint.CImprintAuthorFinish(0, 0, "Adele", null));
+
+        Assert.False(imprint.CImprintByline.CBylineShown);
+        Assert.Equal(["Adele"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
+    }
+
+    [Fact]
+    public void ImprintAuthorCancel_BylineOffered_ClosesOnlyTheByline()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Adam"));
+        imprint.CImprintOpen(null);
+        int reverted = 0;
+        imprint.CImprintReverted += () => reverted++;
+        imprint.CImprintByline.CBylineWordSet("Ad", true);
+        imprint.CImprintByline.CBylineRowsRead();
+
+        Assert.True(imprint.CImprintAuthorCancel(0, 0));
+
+        Assert.Equal(0, reverted);
+        Assert.False(imprint.CImprintByline.CBylineShown);
+        Assert.Equal(string.Empty, imprint.CImprintByline.CBylineWord);
+
+        Assert.True(imprint.CImprintAuthorCancel(0, 0));
+
+        Assert.Equal(1, reverted);
+    }
+
+    [Fact]
     public void BylineSelect_SameAuthorAsRow_OnlyReverts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

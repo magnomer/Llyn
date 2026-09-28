@@ -102,11 +102,13 @@ An offered byline only closes, and with none the field reverts.
 ## `internal void LImprintAuthorInsert(int at, long author, long picked)`
 
 Credits a picked Author in place of the row's former credit.
-Picking the Author the row already credits only reverts the field.
+The blank row closes before the quill sends, since the new credit repaints the rows at once.
+When the quill sends nothing, the blank row comes back and the field reverts.
 
 ## `private void LImprintCreditCommit(int at, long author, string? text)`
 
-Credits a typed name in place of the row's former credit, once the quill rules it names someone.
+Credits a typed name in place of the row's former credit, in one quill call.
+A name the quill refuses keeps the blank row and reverts the field, as a picked Author does.
 
 ## `private void LImprintBlankSet()`
 

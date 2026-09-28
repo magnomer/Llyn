@@ -115,6 +115,31 @@ public sealed class TImprintCredit
     }
 
     [Fact]
+    public void ImprintAuthorFinish_BlankNameOnBlankRow_KeepsTheBlankRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CImprint imprint = TImprint.TImprintPrepare(engine, atelier);
+        LAuthor ada = TImprintOpen(engine, imprint, "Ada").Single();
+        imprint.CImprintAuthorAdd(0, ada.LAuthorId);
+        int reverted = 0;
+        imprint.CImprintReverted += () => reverted++;
+
+        Assert.True(imprint.CImprintAuthorFinish(1, 0, " ", null));
+
+        Assert.Equal(1, reverted);
+        Assert.Equal(1, imprint.CImprintBlankAt);
+        Assert.False(imprint.CImprintDesk.CDeskChangeCheck());
+
+        Assert.True(imprint.CImprintAuthorFinish(1, 0, "Bob", null));
+
+        Assert.Equal(1, reverted);
+        Assert.Equal(["Ada", "Bob"], imprint.CImprintCreditRead().Select(row => row.CAuthorRowName));
+        Assert.Equal(-1, imprint.CImprintBlankAt);
+    }
+
+    [Fact]
     public void ImprintAuthorFinish_NoRowOrNoDraft_IsNotHandled()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

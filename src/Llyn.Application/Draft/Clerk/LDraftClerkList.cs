@@ -30,7 +30,7 @@ public static class LDraftClerkList
         long former,
         Func<LDraftItem, long> key)
     {
-        if (id == former)
+        if (!LDraftFormerCheck(id, former))
         {
             return items;
         }
@@ -42,6 +42,11 @@ public static class LDraftClerkList
         }
 
         return LDraftListRemove(written, former, key);
+    }
+
+    public static bool LDraftFormerCheck(long id, long former)
+    {
+        return id != former;
     }
 
     public static IReadOnlyList<LDraftItem> LDraftListRemove<LDraftItem>(

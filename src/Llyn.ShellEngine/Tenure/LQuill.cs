@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -207,23 +206,28 @@ public sealed class LQuill
         _lQuillTenure.LTenureRequestApply(new LRequestReferenceKind(_lQuillTenure.LTenureId, kind));
     }
 
-    public static bool LQuillAuthorCheck([NotNullWhen(true)] string? text)
+    public bool LQuillAuthorAdd(string? name, int position, long former)
     {
-        return LDraftClerkPanel.LAuthorNameCheck(text);
-    }
-
-    public void LQuillAuthorAdd(string name, int position, long former)
-    {
-        ArgumentNullException.ThrowIfNull(name);
+        if (!LDraftClerkPanel.LAuthorNameCheck(name))
+        {
+            return false;
+        }
 
         _lQuillTenure.LTenureRequestApply(
             new LRequestAuthorAddition(_lQuillTenure.LTenureId, name, position, former));
+        return true;
     }
 
-    public void LQuillAuthorInsert(long author, int position, long former)
+    public bool LQuillAuthorInsert(long author, int position, long former)
     {
+        if (!LDraftClerkList.LDraftFormerCheck(author, former))
+        {
+            return false;
+        }
+
         _lQuillTenure.LTenureRequestApply(
             new LRequestAuthorPick(_lQuillTenure.LTenureId, author, position, former));
+        return true;
     }
 
     public void LQuillAuthorRemove(long author)

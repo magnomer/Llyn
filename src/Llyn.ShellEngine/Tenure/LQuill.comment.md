@@ -112,18 +112,16 @@ Defers the held Source's typed note.
 Sends the kind a menu tag names at once, since it came from a click.
 The reference clerk decides the kind, and a tag the Source already has sends nothing.
 
-## `public static bool LQuillAuthorCheck([NotNullWhen(true)] string? text)`
-
-Whether a typed credit names an Author, as the draft clerk rules.
-
-## `public void LQuillAuthorAdd(string name, int position, long former)`
+## `public bool LQuillAuthorAdd(string? name, int position, long former)`
 
 Sends the credit of a typed name at `position`, in place of the credit `former` stood for.
 The draft clerk trims the name and resolves it to an Author.
+A blank name sends nothing and answers false, as `LAuthorNameCheck` rules.
 
-## `public void LQuillAuthorInsert(long author, int position, long former)`
+## `public bool LQuillAuthorInsert(long author, int position, long former)`
 
 Sends the credit of a stored Author at `position`, in place of the credit `former` stood for.
+Picking the Author `former` already names sends nothing and answers false, as `LDraftFormerCheck` rules.
 
 ## `public void LQuillAuthorRemove(long author)`
 
