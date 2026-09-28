@@ -23,7 +23,6 @@
     "src/Llyn.UIDeportment/Shell/Window/PNavigationTab.cs": 1,
     "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 8,
     "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 2,
-    "src/Llyn.UIDeportment/Sound/LXiesheng.cs": 3,
     "src/Llyn.UIDeportment/Sound/LYunjing.cs": 7,
     "src/Llyn.UIDeportment/Sound/Reflex/PReflex.cs": 15,
     "src/Llyn.UIDeportment/Sound/Script/PGlyph.cs": 1,
@@ -88,7 +87,6 @@
     "src/Llyn.UIDeportment/Sound/Accent/PAccent.cs": 3,
     "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 1,
     "src/Llyn.UIDeportment/Sound/Fanqie/PFanqie.cs": 2,
-    "src/Llyn.UIDeportment/Sound/LXiesheng.cs": 9,
     "src/Llyn.UIDeportment/Sound/LYunjing.cs": 17,
     "src/Llyn.UIDeportment/Sound/QAccentItem.cs": 3,
     "src/Llyn.UIDeportment/Sound/QReflexItem.cs": 10,
@@ -100,7 +98,6 @@
   },
   "Mirror": {
     "src/Llyn.UIDeportment/Sound/Accent/PContour.cs": 1,
-    "src/Llyn.UIDeportment/Sound/LXiesheng.cs": 4,
     "src/Llyn.UIDeportment/Sound/LYunjing.cs": 6
   },
   "Mutation": {
@@ -234,7 +231,7 @@
     "src/Llyn.UIDeportment/Shell/LFontFace.cs": 6,
     "src/Llyn.UIDeportment/Shell/LMarkdownFace.cs": 17,
     "src/Llyn.UIDeportment/Shell/QBootstrap.cs": 2,
-    "src/Llyn.UIDeportment/Shell/QForge.cs": 23,
+    "src/Llyn.UIDeportment/Shell/QForge.cs": 25,
     "src/Llyn.UIDeportment/Shell/Tool/PWindowGlyph.cs": 2,
     "src/Llyn.UIDeportment/Shell/Window/PHeadquarter.cs": 1,
     "src/Llyn.UIDeportment/Shell/Window/PNavigationTab.cs": 20,
@@ -253,7 +250,6 @@
     "src/Llyn.UIDeportment/Sound/Fanqie/PXiaoyunItem.cs": 6,
     "src/Llyn.UIDeportment/Sound/Fanqie/PYunjing.cs": 20,
     "src/Llyn.UIDeportment/Sound/Fanqie/PYunjingItem.cs": 5,
-    "src/Llyn.UIDeportment/Sound/LXiesheng.cs": 22,
     "src/Llyn.UIDeportment/Sound/LYunjing.cs": 22,
     "src/Llyn.UIDeportment/Sound/QAccentItem.cs": 10,
     "src/Llyn.UIDeportment/Sound/QFrequencyLabel.cs": 6,
@@ -266,8 +262,8 @@
     "src/Llyn.UIDeportment/Sound/Script/PScriptItem.cs": 4,
     "src/Llyn.UIDeportment/Sound/Shengfu/QGroveItem.cs": 4,
     "src/Llyn.UIDeportment/Sound/Shengfu/QKindredItem.cs": 6,
-    "src/Llyn.UIDeportment/Sound/Shengfu/QStem.cs": 4,
-    "src/Llyn.UIDeportment/Sound/Shengfu/QXiesheng.cs": 20,
+    "src/Llyn.UIDeportment/Sound/Shengfu/QStem.cs": 5,
+    "src/Llyn.UIDeportment/Sound/Shengfu/QXiesheng.cs": 46,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotation.cs": 25,
     "src/Llyn.UIDeportment/Sound/Transcription/PNotationItem.cs": 1,
     "src/Llyn.UIDeportment/Sound/Transcription/PTranscription.cs": 10

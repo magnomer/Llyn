@@ -33,11 +33,16 @@ internal sealed class LStemFacade
         }
     }
 
-    public LStem? LEngineStemFind(string language, string key)
+    public long? LEngineStemFind(string language, string? key)
     {
+        if (string.IsNullOrEmpty(key))
+        {
+            return null;
+        }
+
         lock (_lStemFacadeGate)
         {
-            return LStemFacadeStaff.LEngineStaffStem.LStemClerkFind(language, key);
+            return LStemFacadeStaff.LEngineStaffStem.LStemClerkFind(language, key)?.LStemId;
         }
     }
 
@@ -54,10 +59,21 @@ internal sealed class LStemFacade
         return null;
     }
 
-    public IReadOnlyList<LStem> LEngineStemFind(LVista vista, string language)
+    public bool LEngineStemCheck()
+    {
+        return LEngineStemFind() is not null;
+    }
+
+    public IReadOnlyList<LStem> LEngineStemFind(LVista vista)
     {
         ArgumentNullException.ThrowIfNull(vista);
 
+        if (!LEngineStemCheck())
+        {
+            return [];
+        }
+
+        string language = LEngineLanguageRead(vista.LVistaChosen);
         string wanted = vista.LVistaQuery.Trim();
         IEnumerable<LStem> kept = LEngineStemRead(language).Where(row =>
             wanted.Length == 0 || row.LStemKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
@@ -87,7 +103,7 @@ internal sealed class LStemFacade
         }
     }
 
-    public IReadOnlyList<LVistaRow> LEngineKindredFind(string language, LVista grove, LVista vista)
+    public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(grove);
         ArgumentNullException.ThrowIfNull(vista);
@@ -97,7 +113,7 @@ internal sealed class LStemFacade
             return [];
         }
 
-        return LEngineKindredFind(language, [chosen], vista.LVistaQuery.Trim(), vista);
+        return LEngineKindredFind(LEngineLanguageRead(chosen), [chosen], vista.LVistaQuery.Trim(), vista);
     }
 
     internal IReadOnlyList<LVistaRow> LEngineKindredFind(
@@ -110,6 +126,11 @@ internal sealed class LStemFacade
                 ? []
                 : _lStemFacadeEngine.LEngineVista.LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
+    }
+
+    private string LEngineLanguageRead(long? chosen)
+    {
+        return LEngineStemRead(chosen)?.LStemLanguage ?? LEngineStemFind() ?? string.Empty;
     }
 
     private bool LEngineStemCheck(string language)

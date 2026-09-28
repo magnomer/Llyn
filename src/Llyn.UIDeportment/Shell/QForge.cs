@@ -91,18 +91,11 @@ public sealed class QForge
             static tenor => tenor.CTenorVistaRestore());
     }
 
-    public LXiesheng QForgeXieshengCreate(
-        LEditor editor, LLectern lectern, Func<bool> shownSeam, CEnvoy envoy)
+    public CXiesheng QForgeXieshengCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
         return QForgeVistaAdd(
-            new LXiesheng(
-                _qForgeAtelier.CAtelierPhonologyPort,
-                _qForgeAtelier.CAtelierPortraitPort,
-                editor,
-                lectern,
-                shownSeam,
-                envoy),
-            xiesheng => xiesheng.LXieshengVistaRestore(_qForgeAtelier));
+            CXiesheng.CXieshengCreate(_qForgeAtelier, shownSeam, envoy),
+            static xiesheng => xiesheng.CXieshengVistaRestore());
     }
 
     public LYunjing QForgeYunjingCreate(

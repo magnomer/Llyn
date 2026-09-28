@@ -90,20 +90,18 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, LVista onset, LVista rime, LVista vista) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineXiaoyunFind(language, onset, rime, vista);
 
-    public LStem? LEngineStemFind(string language, string key) =>
+    public long? LEngineStemFind(string language, string? key) =>
         _lPhonologyOutletEngine.LEngineStem.LEngineStemFind(language, key);
 
-    public IReadOnlyList<LStem> LEngineStemFind(LVista vista, string language) =>
-        _lPhonologyOutletEngine.LEngineStem.LEngineStemFind(vista, language);
+    public IReadOnlyList<LStem> LEngineStemFind(LVista vista) =>
+        _lPhonologyOutletEngine.LEngineStem.LEngineStemFind(vista);
 
-    public string? LEngineStemFind() => _lPhonologyOutletEngine.LEngineStem.LEngineStemFind();
-
-    public LStem? LEngineStemRead(long? id) => _lPhonologyOutletEngine.LEngineStem.LEngineStemRead(id);
+    public bool LEngineStemCheck() => _lPhonologyOutletEngine.LEngineStem.LEngineStemCheck();
 
     public LStemPage LEngineStemResolve(long? id) => _lPhonologyOutletEngine.LEngineStem.LEngineStemResolve(id);
 
-    public IReadOnlyList<LVistaRow> LEngineKindredFind(string language, LVista grove, LVista vista) =>
-        _lPhonologyOutletEngine.LEngineStem.LEngineKindredFind(language, grove, vista);
+    public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista) =>
+        _lPhonologyOutletEngine.LEngineStem.LEngineKindredFind(grove, vista);
 
     public bool LEngineBookCheck(string language) => _lPhonologyOutletEngine.LEngineFanqie.LEngineBookCheck(language);
 

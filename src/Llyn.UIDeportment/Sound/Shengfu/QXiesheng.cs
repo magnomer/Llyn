@@ -20,7 +20,9 @@ internal sealed class QXiesheng
 
     private PWindow _qXieshengHost = null!;
 
-    private LXiesheng _lXiesheng = null!;
+    private CXiesheng _cXiesheng = null!;
+
+    private LEditor _lEditor = null!;
 
     internal QXiesheng(UserControl surface)
     {
@@ -133,57 +135,57 @@ internal sealed class QXiesheng
     internal void QXieshengAttach(PWindow host)
     {
         _qXieshengHost = host;
-        LEditor editor = host.PWindowForge.QForgeEditorCreate(host.PWindowEnvoy);
-        LLectern lectern = new(editor.LEditorStudio.CEditorDisplay);
-        _lXiesheng = host.PWindowForge.QForgeXieshengCreate(
-            editor,
-            lectern,
-            QXieshengShownCheck,
-            host.PWindowEnvoy);
-        _lXiesheng.LXieshengEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
-        _lXiesheng.LXieshengChanged += QXieshengColumnUpdate;
-        _lXiesheng.LXieshengGlyphChosen += host.PWindowGlyphShow;
-        _lXiesheng.LXieshengPanel.CPanelChanged += QXieshengModeUpdate;
-        _lXiesheng.LXieshengPanel.CPanelRowsChanged += QKindredUpdate;
-        _lXiesheng.LXieshengPanel.CPanelCleared += QXieshengClearUpdate;
+        _cXiesheng = host.PWindowForge.QForgeXieshengCreate(QXieshengShownCheck, host.PWindowEnvoy);
+        _lEditor = new LEditor(_cXiesheng.CXieshengEditor);
+        LLectern lectern = new(_lEditor.LEditorStudio.CEditorDisplay);
+        CPanel panel = _cXiesheng.CXieshengPanel;
+        panel.CPanelDraftChanged += lectern.LLecternDraftShow;
+        panel.CPanelCleared += lectern.LLecternClear;
+        panel.CPanelChanged += QXieshengModeUpdate;
+        panel.CPanelRowsChanged += QKindredUpdate;
+        panel.CPanelCleared += QXieshengClearUpdate;
+        _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
+        _cXiesheng.CXieshengChanged += QXieshengColumnUpdate;
+        _cXiesheng.CXieshengGlyphChosen += host.PWindowGlyphShow;
 
         QGrove.ItemsSource = _qGroveList;
         QKindred.ItemsSource = _qKindredList;
 
         QXieshengDisplay.PDisplayAttach(host, lectern);
-        _qStem.QStemAttach(host.PWindowAtelier, _lXiesheng);
+        _qStem.QStemAttach(host.PWindowAtelier, _cXiesheng);
 
-        QXieshengEditor.PEditorAttach(host, _lXiesheng.LXieshengEditor, lectern);
+        QXieshengEditor.PEditorAttach(host, _lEditor, lectern);
 
         QXieshengEditor.PEditorChronicleChanged += QXieshengChronicleUpdate;
     }
 
     private void QXieshengStoreUpdate()
     {
-        QXieshengStore.IsEnabled = _lXiesheng.LXieshengEditor.LEditorStorable;
+        QXieshengStore.IsEnabled = _lEditor.LEditorStorable;
     }
 
     internal bool QXieshengCheck()
     {
-        return _lXiesheng.LXieshengAllowed;
+        return _cXiesheng.CXieshengAllowed;
     }
 
     internal void QXieshengVistaRestore()
     {
         UserControl surface = _qXieshengSurface;
-        _lXiesheng.LXieshengGroveAttach(
-            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengRowsUpdate));
-        _lXiesheng.LXieshengGroveAttach(
+        _cXiesheng.CXieshengObserverAttach(
+            CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengRowsResonate));
+        _cXiesheng.CXieshengObserverAttach(
             CSubject.CSubjectWorkspace, LObserver.LObserverCreate<CBulletin>(surface, QXieshengWorkspaceUpdate));
-        _lXiesheng.LXieshengGroveAttach(
-            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengRowsUpdate));
-        _lXiesheng.LXieshengGroveAttach(
-            CSubject.CSubjectSettings, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengRowsUpdate));
-        CPanel panel = _lXiesheng.LXieshengPanel;
+        _cXiesheng.CXieshengObserverAttach(
+            CSubject.CSubjectFanqie, LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengRowsResonate));
+        _cXiesheng.CXieshengObserverAttach(
+            CSubject.CSubjectSettings,
+            LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengRowsResonate));
+        CPanel panel = _cXiesheng.CXieshengPanel;
         panel.CPanelObserverAttach(
             CSubject.CSubjectVista, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelRowsResonate));
         panel.CPanelObserverAttach(
-            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _lXiesheng.LXieshengEntryHandle));
+            CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, _cXiesheng.CXieshengEntryResonate));
         panel.CPanelChosenAttach(
             CSubject.CSubjectEntry, LObserver.LObserverCreate<CBulletin>(surface, panel.CPanelDraftResonate));
         QXieshengDisplay.PDisplayObserverAttach();
@@ -197,16 +199,16 @@ internal sealed class QXiesheng
                 CCatalogOrder.CCatalogOrderReverse,
                 CCatalogOrder.CCatalogOrderUsage,
             ]);
-        QChoice.QChoiceOrderApply(QRungDropdown, _lXiesheng.LXieshengRung);
-        _lXiesheng.LXieshengLodestarSet(QLodestar.Text);
-        _lXiesheng.LXieshengSextantSet(QSextant.Text);
-        _lXiesheng.LXieshengRowsUpdate();
+        QChoice.QChoiceOrderApply(QRungDropdown, _cXiesheng.CXieshengOrder);
+        _cXiesheng.CXieshengGroveFind(QLodestar.Text);
+        _cXiesheng.CXieshengKindredFind(QSextant.Text);
+        _cXiesheng.CXieshengRowsResonate();
     }
 
     private async void QXieshengWorkspaceUpdate()
     {
         await LEnsignImage.LEnsignLoad(_qXieshengHost.PWindowAtelier);
-        _lXiesheng.LXieshengReset();
+        _cXiesheng.CXieshengStemCancel();
     }
 
     internal bool QXieshengDraftFinish(bool store)
@@ -216,23 +218,23 @@ internal sealed class QXiesheng
 
     internal bool QXieshengChangeCheck()
     {
-        return _lXiesheng.LXieshengPanel.CPanelChangeCheck();
+        return _cXiesheng.CXieshengPanel.CPanelChangeCheck();
     }
 
     internal bool QXieshengLeaveConfirm()
     {
-        return _lXiesheng.LXieshengPanel.CPanelLeaveConfirm();
+        return _cXiesheng.CXieshengPanel.CPanelLeaveConfirm();
     }
 
     internal void QXieshengStemShow(string language, string? key)
     {
         QLodestar.Text = string.Empty;
-        _lXiesheng.LXieshengStemShow(language, key);
+        _cXiesheng.CXieshengStemOpen(language, key);
     }
 
     internal void QXieshengScribeRestore(bool editing)
     {
-        _lXiesheng.LXieshengPanel.CPanelScribeRestore(editing);
+        _cXiesheng.CXieshengPanel.CPanelScribeRestore(editing);
     }
 
     internal void QXieshengClose()
@@ -250,11 +252,11 @@ internal sealed class QXiesheng
     {
         LSplice.LSpliceApply(
             _qGroveList,
-            QGroveItem.QGroveItemBuild(_lXiesheng.LXieshengGroveRead()),
+            QGroveItem.QGroveItemBuild(_cXiesheng.CXieshengGroveRead()),
             QGroveItem.QGroveItemMatch,
             QGroveItem.QGroveItemSync);
-        QGroveEmpty.SetResourceReference(TextBlock.TextProperty, _lXiesheng.LXieshengGroveKey);
-        QGroveEmpty.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengGroveEmpty);
+        QGroveEmpty.SetResourceReference(TextBlock.TextProperty, _cXiesheng.CXieshengGroveKey);
+        QGroveEmpty.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengGroveEmpty);
         QStemUpdate();
         QXieshengModeUpdate();
     }
@@ -263,29 +265,29 @@ internal sealed class QXiesheng
     {
         LSplice.LSpliceApply(
             _qKindredList,
-            QKindredItem.QKindredItemBuild(_lXiesheng.LXieshengKindredRead()),
+            QKindredItem.QKindredItemBuild(_cXiesheng.CXieshengKindredRead()),
             QKindredItem.QKindredItemMatch,
             QKindredItem.QKindredItemSync);
-        QKindredEmpty.SetResourceReference(TextBlock.TextProperty, _lXiesheng.LXieshengKindredKey);
-        QKindredEmpty.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengKindredEmpty);
+        QKindredEmpty.SetResourceReference(TextBlock.TextProperty, _cXiesheng.CXieshengKindredKey);
+        QKindredEmpty.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengKindredEmpty);
     }
 
     private void QStemUpdate()
     {
-        _qStem.QStemShow(_lXiesheng.LXieshengStemRead());
+        _qStem.QStemShow(_cXiesheng.CXieshengStemRead());
     }
 
     private void QXieshengModeUpdate()
     {
-        QXieshengEditor.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengEditorShown);
-        QXieshengDisplay.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengDisplayShown);
-        QXieshengStem.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengStemShown);
-        QXieshengViewer.IsChecked = QLook.QLookCheckedRead(_lXiesheng.LXieshengPanel.CPanelViewerChecked);
-        QXieshengScribe.IsChecked = QLook.QLookCheckedRead(_lXiesheng.LXieshengPanel.CPanelScribeChecked);
-        QXieshengVoyage.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengPanel.CPanelViewerChecked);
-        QXieshengChronicle.Visibility = QLook.QLookVisibleRead(_lXiesheng.LXieshengPanel.CPanelScribeChecked);
-        QXieshengMode.IsEnabled = _lXiesheng.LXieshengPanel.CPanelModeEnabled;
-        QXieshengBin.IsEnabled = _lXiesheng.LXieshengPanel.CPanelBinEnabled;
+        QXieshengEditor.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengEditorShown);
+        QXieshengDisplay.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengDisplayShown);
+        QXieshengStem.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengStemShown);
+        QXieshengViewer.IsChecked = QLook.QLookCheckedRead(_cXiesheng.CXieshengPanel.CPanelViewerChecked);
+        QXieshengScribe.IsChecked = QLook.QLookCheckedRead(_cXiesheng.CXieshengPanel.CPanelScribeChecked);
+        QXieshengVoyage.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengPanel.CPanelViewerChecked);
+        QXieshengChronicle.Visibility = QLook.QLookVisibleRead(_cXiesheng.CXieshengPanel.CPanelScribeChecked);
+        QXieshengMode.IsEnabled = _cXiesheng.CXieshengPanel.CPanelModeEnabled;
+        QXieshengBin.IsEnabled = _cXiesheng.CXieshengPanel.CPanelBinEnabled;
     }
 
     private void QXieshengClearUpdate()
@@ -295,49 +297,49 @@ internal sealed class QXiesheng
 
     private void QLodestarHandle(object sender, TextChangedEventArgs e)
     {
-        _lXiesheng.LXieshengLodestarSet(QLodestar.Text);
+        _cXiesheng.CXieshengGroveFind(QLodestar.Text);
     }
 
     private void QSextantHandle(object sender, TextChangedEventArgs e)
     {
-        _lXiesheng.LXieshengSextantSet(QSextant.Text);
+        _cXiesheng.CXieshengKindredFind(QSextant.Text);
     }
 
     private void QRungHandle(object sender, RoutedEventArgs e)
     {
         QRungDropper.IsChecked = false;
-        _lXiesheng.LXieshengRungSet(QChoice.QChoiceOrderRead(sender));
+        _cXiesheng.CXieshengGroveSet(QChoice.QChoiceOrderRead(sender));
     }
 
     private void QGroveHandle(object sender, RoutedEventArgs e)
     {
-        _lXiesheng.LXieshengStemSelect(QSender.QSenderSourceRead<QGroveItem>(e)?.QGroveItemId);
+        _cXiesheng.CXieshengStemSelect(QSender.QSenderSourceRead<QGroveItem>(e)?.QGroveItemId);
     }
 
     private void QKindredHandle(object sender, RoutedEventArgs e)
     {
         _qXieshengHost.PVoyageRecord();
-        _lXiesheng.LXieshengPanel.CPanelRowSelect(QSender.QSenderSourceRead<QKindredItem>(e)?.QKindredItemId);
+        _cXiesheng.CXieshengPanel.CPanelRowSelect(QSender.QSenderSourceRead<QKindredItem>(e)?.QKindredItemId);
     }
 
     internal long QXieshengVoyageRead()
     {
-        return _lXiesheng.LXieshengPanel.CPanelChosenRead();
+        return _cXiesheng.CXieshengPanel.CPanelChosenRead();
     }
 
     internal void QKindredEntryShow(long id)
     {
-        _lXiesheng.LXieshengPanel.CPanelRowOpen(id);
+        _cXiesheng.CXieshengPanel.CPanelRowOpen(id);
     }
 
     private void QXieshengFreshHandle(object sender, RoutedEventArgs e)
     {
-        _lXiesheng.LXieshengPanel.CPanelEntryCreate();
+        _cXiesheng.CXieshengPanel.CPanelEntryCreate();
     }
 
     private void QXieshengScribeHandle(object sender, RoutedEventArgs e)
     {
-        _lXiesheng.LXieshengPanel.CPanelScribeToggle(ReferenceEquals(sender, QXieshengScribe));
+        _cXiesheng.CXieshengPanel.CPanelScribeToggle(ReferenceEquals(sender, QXieshengScribe));
     }
 
     private void QXieshengStoreHandle(object sender, RoutedEventArgs e)
@@ -347,23 +349,23 @@ internal sealed class QXiesheng
 
     private void QXieshengBinHandle(object sender, RoutedEventArgs e)
     {
-        _lXiesheng.LXieshengPanel.CPanelEntryDelete();
+        _cXiesheng.CXieshengPanel.CPanelEntryDelete();
     }
 
     private void QXieshengPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _lXiesheng?.LXieshengPanel.CPanelPressAllowed ?? false;
+        e.CanExecute = _cXiesheng?.CXieshengPanel.CPanelPressAllowed ?? false;
     }
 
     private async void QXieshengPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qXieshengHost.PWindowPressRun(_lXiesheng.LXieshengPortraitPrint);
+        await _qXieshengHost.PWindowPressRun(_cXiesheng.CXieshengPortraitPrint);
     }
 
     private async void QXieshengPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
         await _qXieshengHost.PWindowPortraitExport(
-            _lXiesheng.LXieshengFileRead(), _lXiesheng.LXieshengPortraitExport);
+            _cXiesheng.CXieshengFileRead(), _cXiesheng.CXieshengPortraitExport);
     }
 
     internal void QXieshengVoyageShow(bool past, bool future)

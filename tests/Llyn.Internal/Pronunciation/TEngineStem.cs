@@ -51,8 +51,11 @@ public sealed class TEngineStem
         await TStemSettle(engine, entry.LEntryId);
 
         Assert.NotNull(engine.TEngineStemFind());
-        LStem stem = Assert.IsType<LStem>(engine.TEngineStemFind(language, "龍"));
+        long id = Assert.IsType<long>(engine.TEngineStemFind(language, "龍"));
+        LStem stem = Assert.IsType<LStem>(engine.TEngineStemRead(id));
         Assert.Equal(1, stem.LStemCount);
+        Assert.Null(engine.TEngineStemFind(language, string.Empty));
+        Assert.Null(engine.TEngineStemFind(language, null));
         LStemPage page = engine.TEngineStemResolve(stem.LStemId);
         Assert.Equal((language, "龍"), (page.LStemPageLanguage, page.LStemPageKey));
         Assert.Equal("龍", Assert.Single(page.LStemPageCharacters));

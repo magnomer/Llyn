@@ -9,6 +9,7 @@ The pages are fakes, so nothing here reaches the web.
 
 Fetching a character's series makes its series a row a chip can open.
 The page carries the member character and the entry list reaches the entry written with it.
+A blank key finds no series.
 
 ## `public void StemFind_PackWithoutSeries_StoresNoSeriesOfItsOwn()`
 

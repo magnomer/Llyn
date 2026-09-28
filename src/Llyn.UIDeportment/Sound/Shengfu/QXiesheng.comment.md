@@ -4,7 +4,7 @@
 
 The xiesheng panel: the workspace browsed by the phonetic series its characters belong to.
 It is shown only while a loaded language pack declares a series source, since without one there is no series.
-Every decision lives in [LXiesheng](../LXiesheng.comment.md), and this file writes controls on notice.
+Every decision lives in [CXiesheng](../../../Llyn.Conduct/Panel/CXiesheng.comment.md), and this file writes controls on notice.
 The series column, the entry list, the reader and the editor are served from one file.
 The series page has its own driver, `QStem`, which this one builds over the nested page.
 
@@ -21,7 +21,9 @@ Each named part of the page is pulled through `QContract.QContractFind`.
 
 ## `internal void QXieshengAttach(PWindow host)`
 
-Builds the deportment, subscribes the notices, and attaches the reader, the series page and the editor.
+Builds the Conduct session, wraps its editor, and subscribes the notices.
+The lectern takes the panel's loads and clears here, so the session names no driver type.
+It then attaches the reader, the series page and the editor.
 
 ## `private void QXieshengStoreUpdate()`
 
@@ -87,7 +89,7 @@ Shows the reader, the page or the editor, and enables the mode and bin buttons.
 ## `private void QXieshengClearUpdate()`
 
 Writes the page again, as the panel is cleared.
-The deportment empties the reader itself.
+The lectern empties the reader itself.
 
 ## `private void QLodestarHandle(object sender, TextChangedEventArgs e)`
 

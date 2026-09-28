@@ -401,8 +401,11 @@ internal static partial class TInterface
     internal static LDiwei? TEngineDiweiFind(this LEngine engine, string language, string kind, string key) =>
         engine.LEngineFanqie.LEngineDiweiFind(language, kind, key);
 
-    internal static LStem? TEngineStemFind(this LEngine engine, string language, string key) =>
+    internal static long? TEngineStemFind(this LEngine engine, string language, string? key) =>
         engine.LEngineStem.LEngineStemFind(language, key);
+
+    internal static LStem? TEngineStemRead(this LEngine engine, long? id) =>
+        engine.LEngineStem.LEngineStemRead(id);
 
     internal static string? TEngineStemFind(this LEngine engine) =>
         engine.LEngineStem.LEngineStemFind();

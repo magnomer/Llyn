@@ -11,7 +11,7 @@ internal sealed class QStem
 
     private CAtelier _qStemAtelier = null!;
 
-    private LXiesheng _lXiesheng = null!;
+    private CXiesheng _cXiesheng = null!;
 
     internal QStem(UserControl surface)
     {
@@ -31,10 +31,10 @@ internal sealed class QStem
 
     private ItemsControl QStemList => QContract.QContractFind<ItemsControl>(_qStemSurface, "PStemList");
 
-    internal void QStemAttach(CAtelier atelier, LXiesheng xiesheng)
+    internal void QStemAttach(CAtelier atelier, CXiesheng xiesheng)
     {
         _qStemAtelier = atelier;
-        _lXiesheng = xiesheng;
+        _cXiesheng = xiesheng;
     }
 
     internal void QStemShow(CStemPage page)
@@ -54,6 +54,6 @@ internal sealed class QStem
 
     private void QStemEntryHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _lXiesheng.LXieshengGlyphSelect(QSender.QSenderTextRead(e));
+        _cXiesheng.CXieshengGlyphSelect(QSender.QSenderTextRead(e));
     }
 }
