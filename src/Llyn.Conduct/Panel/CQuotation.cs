@@ -61,20 +61,25 @@ public sealed class CQuotation
             .ToList();
     }
 
-    public string CQuotationFileRead()
+    internal string LQuotationFileRead()
     {
         return LVista.LVistaFileRead(_cQuotationVista);
     }
 
-    internal Task LQuotationPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cQuotationPortraitPort.LEnginePortraitPrint(
-            _cQuotationVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            envoy,
+            chosen => _cQuotationPortraitPort.LEnginePortraitPrint(
+                _cQuotationVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
-    internal Task LQuotationPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    internal Task LQuotationPortraitExport(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cQuotationPortraitPort.LEnginePortraitExport(
-            _cQuotationVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            envoy,
+            LQuotationFileRead(),
+            (file, medium) => _cQuotationPortraitPort.LEnginePortraitExport(
+                _cQuotationVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }
 }

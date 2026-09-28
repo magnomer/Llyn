@@ -36,16 +36,16 @@ Takes the text typed into the search field as the list's query.
 Reads the entries referencing the roll's chosen Situation, or every entry while none is chosen.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 
-## `public string COccurrenceFileRead()`
+## `internal string LOccurrenceFileRead()`
 
 The file name an export of the entry on display is offered under.
 
-## `internal Task LOccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry, mapping the label and ticket to the engine's records unread.
+Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
 Only the repertoire's print gate calls it, which chooses the side that prints.
 
-## `internal Task LOccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)`
 
 Exports the chosen entry to `path` in the chosen format.
 Only the repertoire's export gate calls it, which checks that an entry is on display.

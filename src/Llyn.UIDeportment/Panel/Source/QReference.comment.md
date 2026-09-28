@@ -70,7 +70,7 @@ Reads the chronicle of the area in front and writes the rail's undo and redo.
 ## `private async void QReferencePressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the source being read, as the engine portrays it.
-The window supplies the label and the Source legend as Conduct shapes, and the shelf picks the vista.
+The shelf asks for the ticket through the envoy, picks the vista and words the page.
 Nothing is read back from the screen.
 
 ## `internal void QReferenceVoyageShow(bool past, bool future)`

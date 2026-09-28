@@ -54,6 +54,8 @@ public interface LPhonologyPort
 
     LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize);
 
+    long LEngineDiweiResolve(long? id, string character);
+
     IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista);
 
     long? LEngineStemFind(string language, string? key);
@@ -63,6 +65,8 @@ public interface LPhonologyPort
     bool LEngineStemCheck();
 
     LStemPage LEngineStemResolve(long? id);
+
+    long LEngineStemResolve(long? id, string character);
 
     IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista);
 

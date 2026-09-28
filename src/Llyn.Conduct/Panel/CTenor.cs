@@ -14,6 +14,8 @@ public sealed class CTenor
 
     private readonly LPortraitPort _cTenorPortraitPort;
 
+    private readonly CEnvoy _cTenorEnvoy;
+
     private readonly LSettingsPort _cTenorSettingsPort;
 
     private LVista? _cTenorVista;
@@ -29,6 +31,7 @@ public sealed class CTenor
         _cTenorAtelier = atelier;
         _cTenorEntryPort = atelier.CAtelierEntryPort;
         _cTenorPortraitPort = atelier.CAtelierPortraitPort;
+        _cTenorEnvoy = envoy;
         _cTenorSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTenorEditor = editor;
@@ -152,30 +155,35 @@ public sealed class CTenor
         CTenorEditor.CEditorDesk.LDeskCohortStart(chosen);
     }
 
-    public string CTenorFileRead()
+    internal string LTenorFileRead()
     {
         return LVista.LVistaFileRead(_cTenorCohort);
     }
 
-    public Task CTenorPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CTenorPortraitPrint()
     {
         if (!CTenorPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cTenorPortraitPort.LEnginePortraitPrint(
-            _cTenorCohort, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cTenorEnvoy,
+            chosen => _cTenorPortraitPort.LEnginePortraitPrint(
+                _cTenorCohort, CPortrait.LPortraitLabelRead(_cTenorSettingsPort), chosen));
     }
 
-    public Task CTenorPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CTenorPortraitExport()
     {
         if (!CTenorPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cTenorPortraitPort.LEnginePortraitExport(
-            _cTenorCohort, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cTenorEnvoy,
+            LTenorFileRead(),
+            (file, medium) => _cTenorPortraitPort.LEnginePortraitExport(
+                _cTenorCohort, file, medium, CPortrait.LPortraitLabelRead(_cTenorSettingsPort)));
     }
 }

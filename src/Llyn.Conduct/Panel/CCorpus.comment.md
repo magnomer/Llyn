@@ -180,14 +180,18 @@ Deletes the chosen Example through the anthology panel, which asks the envoy fir
 It does nothing on the quotation side, whose panel has no delete scope.
 A failure reads `Example.DeleteFailed`, the delete key `CAnthology` hands its panel.
 
-## `public Task CCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
+## `public Task CCorpusPortraitPrint()`
 
 Prints the entry on display, else the chosen Example on the excerpt, else nothing.
-The label serves the entry and the legend serves the Example list.
+The entry prints with the label, and the Example list with the Example realm's legend.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
-## `public Task CCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `public Task CCorpusPortraitExport()`
 
 Exports the entry on display, and does nothing otherwise.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
 ## `public void CCorpusVistaRestore()`
 

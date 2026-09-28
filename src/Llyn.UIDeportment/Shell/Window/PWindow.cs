@@ -75,9 +75,9 @@ public partial class PWindow
         _pWindowSurface.SetValue(PMention.PMentionHostProperty, this);
 
         PRoof.MouseLeftButtonDown += PRoofHandle;
-        PLogo.MouseLeftButtonDown += PLogoHandle;
-        PHeadquarterAbout.MouseLeftButtonDown += PHeadquarterAboutHandle;
-        PHeadquarterExit.MouseLeftButtonDown += PHeadquarterExitHandle;
+        PLogo.MouseLeftButtonDown += PLogoRefine;
+        PHeadquarterAbout.MouseLeftButtonDown += PHeadquarterAboutRefine;
+        PHeadquarterExit.MouseLeftButtonDown += PHeadquarterExitRefine;
         PCaptionMinimize.Click += PCaptionMinimizeHandle;
         PCaptionMaximize.Click += PCaptionMaximizeHandle;
         PCaptionExit.Click += PCaptionExitHandle;
@@ -124,7 +124,7 @@ public partial class PWindow
         PMentionList.ItemsSource = _pMentionItem;
         QLookItem.QLookItemAttach(PMentionList, PMentionRowApply);
         _pWindowSurface.PreviewKeyDown += PMentionKeyHandle;
-        _pWindowSurface.PreviewKeyDown += PChronicleKeyHandle;
+        _pWindowSurface.PreviewKeyDown += PChronicleKeyObserve;
         _pWindowSurface.Deactivated += PMentionLeaveHandle;
 
         _lFootprint = new LFootprint(PWindowPosture);

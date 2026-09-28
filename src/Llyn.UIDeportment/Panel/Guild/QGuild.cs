@@ -356,7 +356,7 @@ internal sealed class QGuild
 
     private async void QGuildPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qGuildHost.PWindowPressRun("Source", _cGuild.CGuildPortraitPrint);
+        await _cGuild.CGuildPortraitPrint();
     }
 
     internal void QGuildVoyageShow(bool past, bool future)

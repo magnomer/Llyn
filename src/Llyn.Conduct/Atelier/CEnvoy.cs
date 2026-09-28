@@ -22,4 +22,9 @@ public interface CEnvoy
     IReadOnlyList<CSCustomsRow>? CEnvoyCustomsRead(IReadOnlyList<CMarkupEntry> entries);
 
     void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);
+
+    (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(
+        string file, IReadOnlyList<CPortraitChoice> choices);
+
+    CPressTicket? CEnvoyTicketRead();
 }

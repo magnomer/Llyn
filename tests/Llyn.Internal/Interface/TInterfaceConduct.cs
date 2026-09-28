@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -300,4 +301,72 @@ internal static class TInterfaceConduct
                 return true;
             },
             static () => true, static _ => { });
+
+    internal static LPortraitMedium TPortraitMediumRead(CPortraitMedium medium) =>
+        CPortrait.LPortraitMediumRead(medium);
+
+    internal static LPressTicket TPortraitTicketRead(CPressTicket ticket) => CPortrait.LPortraitTicketRead(ticket);
+
+    internal static LPortraitLabel TPortraitLabelRead(LSettingsPort settings) => CPortrait.LPortraitLabelRead(settings);
+
+    internal static LPortraitLegend TPortraitLegendRead(LSettingsPort settings, string realm) =>
+        CPortrait.LPortraitLegendRead(settings, realm);
+
+    internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() => CPortrait.LPortraitChoiceRead();
+
+    internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>
+        CPortrait.LPortraitFileExport(envoy, file, export);
+
+    internal static Task TPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print) =>
+        CPortrait.LPortraitTicketPrint(envoy, print);
+
+    internal static string TFavoriteFileRead(this CFavorite favorite) => favorite.LFavoriteFileRead();
+
+    internal static string TLibraryFileRead(this CLibrary library) => library.LLibraryFileRead();
+
+    internal static string TPhonologyFileRead(this CPhonology phonology) => phonology.LPhonologyFileRead();
+
+    internal static string TTaxonomyFileRead(this CTaxonomy taxonomy) => taxonomy.LTaxonomyFileRead();
+
+    internal static string TTenorFileRead(this CTenor tenor) => tenor.LTenorFileRead();
+
+    internal static string TXieshengFileRead(this CXiesheng xiesheng) => xiesheng.LXieshengFileRead();
+
+    internal static string TYunjingFileRead(this CYunjing yunjing) => yunjing.LYunjingFileRead();
+
+    internal static string TQuotationFileRead(this CQuotation quotation) => quotation.LQuotationFileRead();
+
+    internal static string TOccurrenceFileRead(this COccurrence occurrence) => occurrence.LOccurrenceFileRead();
+
+    internal static string TFootnoteFileRead(this CFootnote footnote) => footnote.LFootnoteFileRead();
+
+    internal static CEnvoy TEnvoyFileCreate(string? path, CPortraitMedium medium, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyFileRead"] = args =>
+            {
+                asked.Add("File:" + (string)args![0]!);
+                return (path, medium);
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
+
+    internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyTicketRead"] = _ =>
+            {
+                asked.Add("Ticket");
+                return answer();
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
 }

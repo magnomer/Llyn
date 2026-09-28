@@ -90,10 +90,12 @@ public sealed class CAtlas
         return _cAtlasSettingsPort.LEngineLanguageRead();
     }
 
-    internal Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
+    internal Task LAtlasPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cAtlasPortraitPort.LEnginePortraitPrint(
-            _cAtlasVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            envoy,
+            chosen => _cAtlasPortraitPort.LEnginePortraitPrint(
+                _cAtlasVista, CPortrait.LPortraitLegendRead(settings, "Situation"), chosen));
     }
 
     internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)

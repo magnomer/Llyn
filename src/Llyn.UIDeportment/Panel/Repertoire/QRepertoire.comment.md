@@ -81,7 +81,7 @@ The button follows this answer on its own, so no panel state has to switch it.
 ## `private async void QRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the situation being read, as the engine portrays it.
-The window reads the labels and the situation legend, so the panel hands over no word of its own.
+The gate asks for the ticket through the envoy and words the page through the engine.
 The Conduct picks the page from the side it shows, and the engine builds it from stored rows.
 Nothing is read back from the screen.
 
@@ -95,5 +95,6 @@ The button follows this answer on its own, so no panel state has to switch it.
 ## `private async void QRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
+The gate asks for the file and the format through the envoy.
+The engine writes the document from stored rows.
 Nothing is read back from the screen.

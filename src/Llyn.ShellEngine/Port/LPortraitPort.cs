@@ -35,6 +35,16 @@ public interface LPortraitPort
         return LPortraitClerk.LPortraitLabelCreate(words);
     }
 
+    static IReadOnlyList<(LPortraitMedium, string, bool)> LEngineMediumRead()
+    {
+        return LPortraitClerk.LPortraitMediumRead();
+    }
+
+    static IReadOnlyList<string> LEngineKindRead()
+    {
+        return LPortraitClerk.LPortraitKindRead();
+    }
+
     static LMarkupIntake LEngineIntakeRead(int index, LMarkupMode mode, long target)
     {
         return LMarkupClerkIntake.LMarkupIntakeCreate(index, mode, target);

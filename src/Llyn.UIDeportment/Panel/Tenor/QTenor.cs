@@ -187,12 +187,12 @@ internal sealed partial class QTenor
 
     private async void QTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTenorHost.PWindowPressRun(_cTenor.CTenorPortraitPrint);
+        await _cTenor.CTenorPortraitPrint();
     }
 
     private async void QTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTenorHost.PWindowPortraitExport(_cTenor.CTenorFileRead(), _cTenor.CTenorPortraitExport);
+        await _cTenor.CTenorPortraitExport();
     }
 
     internal void QTenorVoyageShow(bool past, bool future)

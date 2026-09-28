@@ -7,9 +7,7 @@ Four editors answer: the entry form, the source form, the situation form and the
 Each flushes its own debounced request first, then asks the engine to step its chronicle.
 The engine's draft bulletin brings the restored fields back through the same path a reload uses.
 So nothing here draws anything by hand.
-`QChronicleUpdate` settles the undo and redo buttons against what the engine can still step.
-Each host runs it after every change update and every step.
-So the buttons never lag the chronicle.
+The desk's own state notice settles the undo and redo buttons after every step.
 
 ## `internal static class QChronicle`
 

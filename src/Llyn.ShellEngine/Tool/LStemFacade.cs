@@ -103,6 +103,18 @@ internal sealed class LStemFacade
         }
     }
 
+    public long LEngineStemResolve(long? id, string character)
+    {
+        LStem? stem;
+        lock (_lStemFacadeGate)
+        {
+            stem = LStemFacadeStaff.LEngineStaffStem.LStemClerkRead(id);
+        }
+
+        return _lStemFacadeEngine.LEngineEntry.LEngineGlyphResolve(
+            character, stem?.LStemLanguage ?? LStemPage.LStemPageBlank.LStemPageLanguage).LEntryId;
+    }
+
     public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista)
     {
         ArgumentNullException.ThrowIfNull(grove);

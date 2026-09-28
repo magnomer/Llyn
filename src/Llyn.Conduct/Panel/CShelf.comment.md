@@ -158,10 +158,14 @@ Stores the draft of the side in front when it changed.
 Steps the draft of the side in front back.
 `CShelfDraftRedo` steps it forward.
 
-## `public Task CShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
+## `public Task CShelfPortraitPrint()`
 
-Prints the shown entry, or else the shown Source, and nothing while neither is shown.
+Prints the shown entry, or else the shown Source with the Source realm's legend, and nothing while neither is shown.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
-## `public Task CShelfPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `public Task CShelfPortraitExport()`
 
 Exports the shown entry, and nothing while no entry is shown.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

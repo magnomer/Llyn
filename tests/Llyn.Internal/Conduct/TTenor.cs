@@ -202,22 +202,21 @@ public sealed class TTenor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTenor tenor = TTenorPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
+        CTenor tenor = TTenorPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         LEntry hearth = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
-        string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
 
-        await tenor.CTenorPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await tenor.CTenorPortraitExport();
 
         Assert.False(File.Exists(path));
-        Assert.Same(Task.CompletedTask, tenor.CTenorPortraitPrint(TCorpus.TCorpusLabelCreate(), null!));
+        Assert.Same(Task.CompletedTask, tenor.CTenorPortraitPrint());
 
         tenor.CTenorPanel.CPanelRowOpen(hearth.LEntryId);
-        await tenor.CTenorPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await tenor.CTenorPortraitExport();
 
-        Assert.Equal("hearth", tenor.CTenorFileRead());
+        Assert.Equal("hearth", tenor.TTenorFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
     }
 

@@ -55,7 +55,7 @@ public sealed class TOccurrence
         occurrence.COccurrenceQuerySet("zzz");
 
         Assert.Equal("Situation.Vacant", occurrence.COccurrenceEmptyKey);
-        Assert.Equal("entry", occurrence.COccurrenceFileRead());
+        Assert.Equal("entry", occurrence.TOccurrenceFileRead());
     }
 
     private static (COccurrence, LVista, LVista) TOccurrencePrepare(LEngine engine)

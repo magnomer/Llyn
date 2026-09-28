@@ -21,7 +21,7 @@ public sealed class TFavoriteRoster
 
         Assert.Empty(favorite.CFavoriteRowsRead());
         Assert.False(favorite.CFavoriteFiltered);
-        Assert.Equal("entry", favorite.CFavoriteFileRead());
+        Assert.Equal("entry", favorite.TFavoriteFileRead());
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public sealed class TFavoriteRoster
 
         favorite.CFavoritePanel.CPanelRowOpen(stone.LEntryId);
 
-        Assert.Equal("stone", favorite.CFavoriteFileRead());
+        Assert.Equal("stone", favorite.TFavoriteFileRead());
 
         favorite.CFavoritePanel.CPanelScribeToggle(true);
 

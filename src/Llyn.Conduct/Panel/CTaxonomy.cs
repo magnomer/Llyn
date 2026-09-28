@@ -14,6 +14,8 @@ public sealed class CTaxonomy
 
     private readonly LPortraitPort _cTaxonomyPortraitPort;
 
+    private readonly CEnvoy _cTaxonomyEnvoy;
+
     private readonly LSettingsPort _cTaxonomySettingsPort;
 
     private LVista? _cTaxonomyVista;
@@ -29,6 +31,7 @@ public sealed class CTaxonomy
         _cTaxonomyAtelier = atelier;
         _cTaxonomyEntryPort = atelier.CAtelierEntryPort;
         _cTaxonomyPortraitPort = atelier.CAtelierPortraitPort;
+        _cTaxonomyEnvoy = envoy;
         _cTaxonomySettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CTaxonomyEditor = editor;
@@ -145,30 +148,35 @@ public sealed class CTaxonomy
         CTaxonomyEditor.CEditorDesk.LDeskMembershipStart(chosen);
     }
 
-    public string CTaxonomyFileRead()
+    internal string LTaxonomyFileRead()
     {
         return LVista.LVistaFileRead(_cTaxonomyMembership);
     }
 
-    public Task CTaxonomyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CTaxonomyPortraitPrint()
     {
         if (!CTaxonomyPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cTaxonomyPortraitPort.LEnginePortraitPrint(
-            _cTaxonomyMembership, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cTaxonomyEnvoy,
+            chosen => _cTaxonomyPortraitPort.LEnginePortraitPrint(
+                _cTaxonomyMembership, CPortrait.LPortraitLabelRead(_cTaxonomySettingsPort), chosen));
     }
 
-    public Task CTaxonomyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CTaxonomyPortraitExport()
     {
         if (!CTaxonomyPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cTaxonomyPortraitPort.LEnginePortraitExport(
-            _cTaxonomyMembership, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cTaxonomyEnvoy,
+            LTaxonomyFileRead(),
+            (file, medium) => _cTaxonomyPortraitPort.LEnginePortraitExport(
+                _cTaxonomyMembership, file, medium, CPortrait.LPortraitLabelRead(_cTaxonomySettingsPort)));
     }
 }

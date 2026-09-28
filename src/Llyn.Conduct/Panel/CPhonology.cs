@@ -14,6 +14,10 @@ public sealed class CPhonology
 
     private readonly LPortraitPort _cPhonologyPortraitPort;
 
+    private readonly LSettingsPort _cPhonologySettingsPort;
+
+    private readonly CEnvoy _cPhonologyEnvoy;
+
     private LVista? _cPhonologyVista;
 
     private int _cPhonologyCount;
@@ -27,6 +31,8 @@ public sealed class CPhonology
         _cPhonologyAtelier = atelier;
         _cPhonologyPort = atelier.CAtelierPhonologyPort;
         _cPhonologyPortraitPort = atelier.CAtelierPortraitPort;
+        _cPhonologySettingsPort = atelier.CAtelierSettingsPort;
+        _cPhonologyEnvoy = envoy;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CPhonologyEditor = editor;
         CPhonologyPanel = new CPanel(
@@ -100,20 +106,25 @@ public sealed class CPhonology
         _cPhonologyVista?.LVistaFilterSet(filter.CCatalogFilterHidden);
     }
 
-    public string CPhonologyFileRead()
+    internal string LPhonologyFileRead()
     {
         return LVista.LVistaFileRead(_cPhonologyVista);
     }
 
-    public Task CPhonologyPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CPhonologyPortraitPrint()
     {
-        return _cPhonologyPortraitPort.LEnginePortraitPrint(
-            _cPhonologyVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cPhonologyEnvoy,
+            chosen => _cPhonologyPortraitPort.LEnginePortraitPrint(
+                _cPhonologyVista, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort), chosen));
     }
 
-    public Task CPhonologyPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CPhonologyPortraitExport()
     {
-        return _cPhonologyPortraitPort.LEnginePortraitExport(
-            _cPhonologyVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cPhonologyEnvoy,
+            LPhonologyFileRead(),
+            (file, medium) => _cPhonologyPortraitPort.LEnginePortraitExport(
+                _cPhonologyVista, file, medium, CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));
     }
 }

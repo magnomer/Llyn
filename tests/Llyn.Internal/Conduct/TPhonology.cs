@@ -138,20 +138,19 @@ public sealed class TPhonology
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TPhonologyEntrySave(engine, "water", "ˈwɔːtə");
-        CPhonology phonology = TPhonologyPrepare(atelier);
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
+        CPhonology phonology = TPhonologyPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
-        await phonology.CPhonologyPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await phonology.CPhonologyPortraitExport();
 
         Assert.False(File.Exists(path));
 
         phonology.CPhonologyPanel.CPanelRowSelect(water.LEntryId);
-        await phonology.CPhonologyPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await phonology.CPhonologyPortraitExport();
 
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
-        Assert.Contains("water", phonology.CPhonologyFileRead(), StringComparison.Ordinal);
+        Assert.Contains("water", phonology.TPhonologyFileRead(), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -175,8 +174,12 @@ public sealed class TPhonology
 
     private static CPhonology TPhonologyPrepare(CAtelier atelier)
     {
-        CPhonology phonology = CPhonology.CPhonologyCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TPhonologyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+    }
+
+    private static CPhonology TPhonologyPrepare(CAtelier atelier, CEnvoy envoy)
+    {
+        CPhonology phonology = CPhonology.CPhonologyCreate(atelier, static () => true, envoy);
         phonology.CPhonologyVistaRestore();
         return phonology;
     }

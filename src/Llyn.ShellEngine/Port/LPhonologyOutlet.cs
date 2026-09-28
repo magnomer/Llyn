@@ -81,6 +81,9 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiResolve(id, localize);
 
+    public long LEngineDiweiResolve(long? id, string character) =>
+        _lPhonologyOutletEngine.LEngineFanqie.LEngineDiweiResolve(id, character);
+
     public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(long? chosen, LVista onset, LVista rime, LVista vista) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineXiaoyunFind(chosen, onset, rime, vista);
 
@@ -93,6 +96,9 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEngineStemCheck() => _lPhonologyOutletEngine.LEngineStem.LEngineStemCheck();
 
     public LStemPage LEngineStemResolve(long? id) => _lPhonologyOutletEngine.LEngineStem.LEngineStemResolve(id);
+
+    public long LEngineStemResolve(long? id, string character) =>
+        _lPhonologyOutletEngine.LEngineStem.LEngineStemResolve(id, character);
 
     public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista) =>
         _lPhonologyOutletEngine.LEngineStem.LEngineKindredFind(grove, vista);

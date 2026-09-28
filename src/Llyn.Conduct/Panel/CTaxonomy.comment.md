@@ -81,7 +81,11 @@ Opens a fresh entry in the editor, in edit mode.
 The chosen Tag goes down with the start, so the engine puts it on the first card in one call.
 With no Tag chosen the fresh entry starts blank.
 
-## `public Task CTaxonomyPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `public Task CTaxonomyPortraitPrint()`
 
 Prints the shown entry, and does nothing while none is shown outside edit mode.
 `CTaxonomyPortraitExport` exports it under the same condition.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

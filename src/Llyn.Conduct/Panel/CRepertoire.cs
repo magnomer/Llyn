@@ -12,6 +12,8 @@ public sealed class CRepertoire
 
     private readonly CEnvoy _cRepertoireEnvoy;
 
+    private readonly LSettingsPort _cRepertoireSettingsPort;
+
     private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -20,6 +22,7 @@ public sealed class CRepertoire
 
         _cRepertoireAtelier = atelier;
         _cRepertoireEnvoy = envoy;
+        _cRepertoireSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CRepertoireEditor = editor;
         CRepertoireDesk = new CDesk(
@@ -359,29 +362,30 @@ public sealed class CRepertoire
         CRepertoireAtlas.CAtlasPanel.CPanelEntryDelete();
     }
 
-    public Task CRepertoirePortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
+    public Task CRepertoirePortraitPrint()
     {
         if (CRepertoireDisplayShown)
         {
-            return CRepertoireOccurrence.LOccurrencePortraitPrint(label, ticket);
+            return CRepertoireOccurrence.LOccurrencePortraitPrint(
+                _cRepertoireEnvoy, _cRepertoireSettingsPort);
         }
 
         if (CRepertoirePressAllowed)
         {
-            return CRepertoireAtlas.LAtlasPortraitPrint(legend, ticket);
+            return CRepertoireAtlas.LAtlasPortraitPrint(_cRepertoireEnvoy, _cRepertoireSettingsPort);
         }
 
         return Task.CompletedTask;
     }
 
-    public Task CRepertoirePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CRepertoirePortraitExport()
     {
         if (!CRepertoirePortraitAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return CRepertoireOccurrence.LOccurrencePortraitExport(path, format, label);
+        return CRepertoireOccurrence.LOccurrencePortraitExport(_cRepertoireEnvoy, _cRepertoireSettingsPort);
     }
 
     public void CRepertoireVistaRestore()

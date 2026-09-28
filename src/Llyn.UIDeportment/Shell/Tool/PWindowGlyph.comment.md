@@ -2,9 +2,9 @@
 
 ## `public partial class PWindow`
 
-The window's answer to a glyph chip: the character's entry in the glyph language, shown in the library.
+The window's answer to a glyph chip: the character's entry, shown in the library.
 
-## `internal void PWindowGlyphShow(string character, string language)`
+## `internal void PWindowGlyphRefine(long entry)`
 
-Resolves the entry through the engine, which makes one when none exists, then shows it as a mention link would.
-A failure is reported and nothing is shown, so a broken workspace never leaves the reader on a blank page.
+Opens the entry a panel's glyph gate resolved, as a mention link would.
+The gate has already found or made the entry and reported any failure, so this only switches the window.

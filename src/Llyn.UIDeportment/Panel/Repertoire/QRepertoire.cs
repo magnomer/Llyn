@@ -292,7 +292,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
     private async void QRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qRepertoireHost.PWindowPressRun("Situation", _cRepertoire.CRepertoirePortraitPrint);
+        await _cRepertoire.CRepertoirePortraitPrint();
     }
 
     private void QRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -302,7 +302,6 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
     private async void QRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qRepertoireHost.PWindowPortraitExport(
-            _cRepertoire.CRepertoireOccurrence.COccurrenceFileRead(), _cRepertoire.CRepertoirePortraitExport);
+        await _cRepertoire.CRepertoirePortraitExport();
     }
 }

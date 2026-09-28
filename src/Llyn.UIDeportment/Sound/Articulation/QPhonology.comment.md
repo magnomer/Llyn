@@ -75,12 +75,14 @@ The binding can be asked before the deportment is built, and then answers false.
 ## `private async void QPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
-The window asks for the ticket and the deportment names the vista, so nothing is read back from the screen.
+The gate asks for the ticket through the envoy and names the vista.
+Nothing is read back from the screen.
 
 ## `private async void QPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
+The gate asks for the file and the format through the envoy.
+The engine writes the document from stored rows.
 
 ## Inline notes
 

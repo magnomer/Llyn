@@ -220,11 +220,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, QChronicleHo
         QChronicle.QChronicleRun(_lEditor.LEditorStudio.CEditorDesk.CDeskRedo);
     }
 
-    public void QChronicleUpdate()
-    {
-        _lEditor.LEditorStudio.CEditorDesk.CDeskStateResonate();
-    }
-
     private void PEditorRequestDefer(LRequest request)
     {
         _lEditor.LEditorStudio.CEditorDesk.CDeskDefer(request);

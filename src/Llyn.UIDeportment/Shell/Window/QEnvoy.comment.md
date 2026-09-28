@@ -52,3 +52,19 @@ A cancelled window answers null.
 ## `public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)`
 
 Puts up the customs window's report of what an import could not place.
+
+## `public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(string file, IReadOnlyList<CPortraitChoice> choices)`
+
+Opens the save dialog with the formats the gate offers and the name it suggests.
+The dialog lists the rows in order and starts on the chosen one.
+It returns a one-based index into that same list, so the filter and the format cannot drift apart.
+A cancelled dialog answers no file, which the gate reads as nothing to export.
+The dialog's title stays here, since only a windowed chooser has one.
+
+## `public CPressTicket? CEnvoyTicketRead()`
+
+Opens the printer dialog and answers what the reader chose, or null when they cancelled.
+Everything the dialog offers is carried: printer, sheet, turn, copies, collation, sides and color.
+The sheet is carried as the dialog measured it, and the engine turns it into inches.
+A choice the dialog left unsaid maps to the default the printer applies on its own.
+A dialog that raises, as with the spooler down, is reported by the gate as `Print.Failed`.

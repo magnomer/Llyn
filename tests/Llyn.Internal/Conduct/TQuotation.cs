@@ -75,10 +75,10 @@ public sealed class TQuotation
         CCorpus corpus = TCorpus.TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         corpus.CCorpusExampleOpen(cat.LExampleId);
 
-        Assert.Equal("entry", corpus.CCorpusQuotation.CQuotationFileRead());
+        Assert.Equal("entry", corpus.CCorpusQuotation.TQuotationFileRead());
 
         corpus.CCorpusQuotationSelect(water.LEntryId);
 
-        Assert.Equal("water", corpus.CCorpusQuotation.CQuotationFileRead());
+        Assert.Equal("water", corpus.CCorpusQuotation.TQuotationFileRead());
     }
 }

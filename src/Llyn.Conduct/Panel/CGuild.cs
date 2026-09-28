@@ -16,6 +16,8 @@ public sealed class CGuild
 
     private readonly LPortraitPort _cGuildPortraitPort;
 
+    private readonly LSettingsPort _cGuildSettingsPort;
+
     private LVista? _cGuildVista;
 
     private int _cGuildCount;
@@ -30,6 +32,7 @@ public sealed class CGuild
         _cGuildEnvoy = envoy;
         _cGuildEntryPort = atelier.CAtelierEntryPort;
         _cGuildPortraitPort = atelier.CAtelierPortraitPort;
+        _cGuildSettingsPort = atelier.CAtelierSettingsPort;
         CGuildAutograph = new CDesk(atelier.CAtelierDraftPort, "Guild", envoy);
         CGuildPanel = new CPanel(
             envoy, "Guild.LoadFailed", "Guild",
@@ -305,17 +308,19 @@ public sealed class CGuild
         CGuildPanel.CPanelEntryDelete();
     }
 
-    public Task CGuildPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
+    public Task CGuildPortraitPrint()
     {
         if (!LGuildSourceSide)
         {
             return Task.CompletedTask;
         }
 
-        return _cGuildPortraitPort.LEnginePortraitPrint(
-            CGuildOeuvre.COeuvrePanel.CPanelVista,
-            CPortrait.CPortraitLegendRead(legend),
-            CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cGuildEnvoy,
+            chosen => _cGuildPortraitPort.LEnginePortraitPrint(
+                CGuildOeuvre.COeuvrePanel.CPanelVista,
+                CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source"),
+                chosen));
     }
 
     public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)

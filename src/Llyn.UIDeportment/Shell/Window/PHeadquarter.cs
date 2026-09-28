@@ -1,3 +1,6 @@
+using System;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
@@ -8,22 +11,33 @@ public partial class PWindow
 {
     private Popup PHeadquarter => (Popup)_pWindowSurface.FindName(nameof(PHeadquarter));
 
-    private void PLogoHandle(object sender, MouseButtonEventArgs e)
+    private void PLogoRefine(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterMenuRefine(PHeadquarter, e);
+        PHeadquarter.IsOpen = !PHeadquarter.IsOpen;
+        e.Handled = true;
     }
 
-    private void PHeadquarterAboutHandle(object sender, MouseButtonEventArgs e)
+    private void PHeadquarterAboutRefine(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterAboutRefine(
+        PHeadquarter.IsOpen = false;
+        e.Handled = true;
+
+        Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+        string build = version is null ? string.Empty : version.ToString(3);
+        string product = QLocalizationCatalog.QLocalizationTextRead("Terms.Product");
+        MessageBox.Show(
             _pWindowSurface,
-            PHeadquarter,
-            e,
-            CAtelier.CAtelierAboutRead());
+            $"{product}\n{QLocalizationCatalog.QLocalizationTextRead(CAtelier.CAtelierAboutRead())} {build}",
+            product,
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 
-    private void PHeadquarterExitHandle(object sender, MouseButtonEventArgs e)
+    private void PHeadquarterExitRefine(object sender, MouseButtonEventArgs e)
     {
-        LHeadquarter.LHeadquarterExitRefine(_pWindowSurface, PHeadquarter, e);
+        PHeadquarter.IsOpen = false;
+        e.Handled = true;
+
+        SystemCommands.CloseWindow(_pWindowSurface);
     }
 }

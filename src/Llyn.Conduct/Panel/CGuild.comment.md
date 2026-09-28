@@ -137,10 +137,12 @@ The tenure answers the refusal itself through `LTenureReadyCheck`, so no draft s
 
 Deletes the chosen Author through the panel's question, and nothing while a Source is in front.
 
-## `public Task CGuildPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
+## `public Task CGuildPortraitPrint()`
 
 Prints the Source read in the colophon, since an Author has no page to print.
-The legend and ticket are mapped to the engine by `CPortrait`.
+The page is worded with the Source realm's legend.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
 ## `public IReadOnlyList<CCatalogAuthor> CGuildUnionRead(string typed)`
 

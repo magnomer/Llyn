@@ -162,7 +162,7 @@ public class PYunjing : UserControl
         panel.CPanelCleared += PYunjingClearUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += PYunjingStoreUpdate;
         _cYunjing.CYunjingChanged += PYunjingColumnUpdate;
-        _cYunjing.CYunjingGlyphChosen += host.PWindowGlyphShow;
+        _cYunjing.CYunjingGlyphChosen += host.PWindowGlyphRefine;
 
         PShengmu.ItemsSource = _pShengmuList;
         PYunmu.ItemsSource = _pYunmuList;
@@ -413,12 +413,12 @@ public class PYunjing : UserControl
 
     private async void PYunjingPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pYunjingHost.PWindowPressRun(_cYunjing.CYunjingPortraitPrint);
+        await _cYunjing.CYunjingPortraitPrint();
     }
 
     private async void PYunjingPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _pYunjingHost.PWindowPortraitExport(_cYunjing.CYunjingFileRead(), _cYunjing.CYunjingPortraitExport);
+        await _cYunjing.CYunjingPortraitExport();
     }
 
     internal void PYunjingVoyageShow(bool past, bool future)

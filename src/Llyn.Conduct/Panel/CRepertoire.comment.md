@@ -180,14 +180,18 @@ The clear announces fresh rows, which carry the same Situations, so a driver's n
 Deletes the chosen Situation through the atlas panel, which asks the envoy first.
 It does nothing on the occurrence side, whose panel has no delete scope.
 
-## `public Task CRepertoirePortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)`
+## `public Task CRepertoirePortraitPrint()`
 
 Prints the entry on display, else the chosen Situation on the vignette, else nothing.
-The label serves the entry and the legend serves the Situation list.
+The entry prints with the label, and the Situation list with the Situation realm's legend.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
-## `public Task CRepertoirePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `public Task CRepertoirePortraitExport()`
 
 Exports the entry on display, and does nothing otherwise.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
 ## `public void CRepertoireVistaRestore()`
 

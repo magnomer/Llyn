@@ -123,11 +123,6 @@ internal sealed class QImprint : QChronicleHost
         QChronicle.QChronicleRun(_cImprint.CImprintDesk.CDeskRedo);
     }
 
-    public void QChronicleUpdate()
-    {
-        _cImprint.CImprintDesk.CDeskStateResonate();
-    }
-
     private void QImprintDraftUpdate(CReference reference)
     {
         QImprintTitle.Text = reference.CReferenceTitle;

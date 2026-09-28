@@ -97,9 +97,20 @@ public sealed class CCatalog
         return glyph is null ? null : new CGlyph(glyph.LGlyphName, glyph.LGlyphSourced);
     }
 
-    public long CCatalogGlyphResolve(string character, string language)
+    internal static long? LCatalogGlyphOpen(CEnvoy envoy, Func<long> resolve)
     {
-        return _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphResolve(character, language);
+        ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(resolve);
+
+        try
+        {
+            return resolve();
+        }
+        catch (Exception exception)
+        {
+            envoy.CEnvoyFailureShow("Glyph.OpenFailed", exception);
+            return null;
+        }
     }
 
     public IReadOnlyList<string> CCatalogLanguageRead()

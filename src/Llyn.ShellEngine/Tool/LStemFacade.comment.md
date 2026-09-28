@@ -42,6 +42,13 @@ A chosen series that the narrowing dropped is unchosen, so the column never poin
 
 The page of the chosen series, or the blank page when nothing was chosen.
 
+## `public long LEngineStemResolve(long? id, string character)`
+
+The entry of a character on the series' page, in the page's language, made first when none exists.
+The entry resolve is the entry facade's own, so a glyph chip anywhere lands on the same entry.
+The series is read under this facade's gate, and the resolve takes the entry facade's gate afterwards.
+With no series the page's language is blank, which the resolve refuses.
+
 ## `public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista)`
 
 The entry rows of the series the column chose, in its language, narrowed by the list's own query.

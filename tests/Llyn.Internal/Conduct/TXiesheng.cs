@@ -135,7 +135,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengGlyphSelect_StemShown_RaisesTheGlyphInTheSeriesLanguage()
+    public async Task XieshengGlyphSelect_StemShown_RaisesTheGlyphEntryInTheSeriesLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -144,8 +144,8 @@ public sealed class TXiesheng
         string language = pack.TLanguageFixtureName;
         await TXieshengStemSave(engine, language);
         CXiesheng xiesheng = TXieshengPrepare(atelier);
-        List<(string, string)> chosen = [];
-        xiesheng.CXieshengGlyphChosen += (glyph, spoken) => chosen.Add((glyph, spoken));
+        List<long> chosen = [];
+        xiesheng.CXieshengGlyphChosen += chosen.Add;
 
         xiesheng.CXieshengGlyphSelect("龍");
 
@@ -155,7 +155,7 @@ public sealed class TXiesheng
         xiesheng.CXieshengGlyphSelect(string.Empty);
         xiesheng.CXieshengGlyphSelect("龍");
 
-        Assert.Equal([("龍", language)], chosen);
+        Assert.Equal([engine.TEngineGlyphResolve("龍", language).LEntryId], chosen);
     }
 
     [Fact]
@@ -208,21 +208,20 @@ public sealed class TXiesheng
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         string language = pack.TLanguageFixtureName;
         LEntry entry = await TXieshengStemSave(engine, language);
-        CXiesheng xiesheng = TXieshengPrepare(atelier);
         string path = Path.Combine(workspace.TWorkspaceFolder, "dragon.md");
+        CXiesheng xiesheng = TXieshengPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
-        await xiesheng.CXieshengPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await xiesheng.CXieshengPortraitExport();
 
         Assert.False(File.Exists(path));
 
         xiesheng.CXieshengStemOpen(language, "龍");
         xiesheng.CXieshengPanel.CPanelRowSelect(entry.LEntryId);
-        await xiesheng.CXieshengPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await xiesheng.CXieshengPortraitExport();
 
         Assert.Contains("龍", File.ReadAllText(path), StringComparison.Ordinal);
-        Assert.Contains("龍", xiesheng.CXieshengFileRead(), StringComparison.Ordinal);
+        Assert.Contains("龍", xiesheng.TXieshengFileRead(), StringComparison.Ordinal);
         Assert.False(xiesheng.CXieshengStemShown);
         Assert.True(xiesheng.CXieshengDisplayShown);
     }
@@ -251,8 +250,12 @@ public sealed class TXiesheng
 
     private static CXiesheng TXieshengPrepare(CAtelier atelier)
     {
-        CXiesheng xiesheng = CXiesheng.CXieshengCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TXieshengPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+    }
+
+    private static CXiesheng TXieshengPrepare(CAtelier atelier, CEnvoy envoy)
+    {
+        CXiesheng xiesheng = CXiesheng.CXieshengCreate(atelier, static () => true, envoy);
         xiesheng.CXieshengVistaRestore();
         return xiesheng;
     }

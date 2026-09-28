@@ -99,10 +99,12 @@ public sealed class CAnthology
             : null;
     }
 
-    internal Task LAnthologyPortraitPrint(CPortraitLegend legend, CPressTicket ticket)
+    internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cAnthologyPortraitPort.LEnginePortraitPrint(
-            _cAnthologyVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            envoy,
+            chosen => _cAnthologyPortraitPort.LEnginePortraitPrint(
+                _cAnthologyVista, CPortrait.LPortraitLegendRead(settings, "Example"), chosen));
     }
 
     public IReadOnlyList<CCatalogReference> CAnthologyReferenceRead()

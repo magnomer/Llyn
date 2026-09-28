@@ -43,9 +43,9 @@ How many places quote each Example, keyed by id.
 What a click at `offset` in the chosen Example's text found, read fresh from the engine.
 Null while no Example is chosen, so the excerpt hands the window nothing.
 
-## `internal Task LAnthologyPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
+## `internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen Example with the driver's localized legend and dialog answer.
+Prints the chosen Example through `CPortrait`, with the Example realm's legend.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
 ## `public IReadOnlyList<CCatalogReference> CAnthologyReferenceRead()`

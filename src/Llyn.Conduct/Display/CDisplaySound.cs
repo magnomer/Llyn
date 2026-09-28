@@ -226,18 +226,9 @@ public sealed class CDisplaySound
     {
         ArgumentNullException.ThrowIfNull(entrySeam);
 
-        long entry;
-        try
-        {
-            entry = _cDisplayPort.LEngineGlyphResolve(character, language);
-        }
-        catch (Exception exception)
-        {
-            _cDisplayEnvoy.CEnvoyFailureShow("Glyph.OpenFailed", exception);
-            return false;
-        }
-
-        return entrySeam(entry);
+        return CCatalog.LCatalogGlyphOpen(
+                _cDisplayEnvoy, () => _cDisplayPort.LEngineGlyphResolve(character, language)) is long entry
+            && entrySeam(entry);
     }
 
     public IReadOnlyList<CTranscriptionDraft> CDisplayTranscriptionRead()

@@ -198,7 +198,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingGlyphSelect_PageShown_RaisesTheGlyphInThePageLanguage()
+    public void YunjingGlyphSelect_PageShown_RaisesTheGlyphEntryInThePageLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -207,8 +207,8 @@ public sealed class TYunjing
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
         CYunjing yunjing = TYunjingPrepare(atelier);
-        List<(string, string)> chosen = [];
-        yunjing.CYunjingGlyphChosen += (glyph, spoken) => chosen.Add((glyph, spoken));
+        List<long> chosen = [];
+        yunjing.CYunjingGlyphChosen += chosen.Add;
 
         yunjing.CYunjingGlyphSelect("爛");
 
@@ -218,7 +218,7 @@ public sealed class TYunjing
         yunjing.CYunjingGlyphSelect(string.Empty);
         yunjing.CYunjingGlyphSelect("爛");
 
-        Assert.Equal([("爛", language)], chosen);
+        Assert.Equal([engine.TEngineGlyphResolve("爛", language).LEntryId], chosen);
     }
 
     [Fact]
@@ -302,21 +302,20 @@ public sealed class TYunjing
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         string language = pack.TLanguageFixtureName;
         TEngineXiaoyun.TXiaoyunDiweiPlace(engine, workspace, language, "爛", "來");
-        CYunjing yunjing = TYunjingPrepare(atelier);
         string path = Path.Combine(workspace.TWorkspaceFolder, "rotten.md");
+        CYunjing yunjing = TYunjingPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
-        await yunjing.CYunjingPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await yunjing.CYunjingPortraitExport();
 
         Assert.False(File.Exists(path));
 
         yunjing.CYunjingDiweiOpen(language, LDiwei.LDiweiInitial, "來");
         yunjing.CYunjingPanel.CPanelRowSelect(Assert.Single(yunjing.CYunjingXiaoyunRead()).CVistaRowId);
-        await yunjing.CYunjingPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await yunjing.CYunjingPortraitExport();
 
         Assert.Contains("爛", File.ReadAllText(path), StringComparison.Ordinal);
-        Assert.Contains("爛", yunjing.CYunjingFileRead(), StringComparison.Ordinal);
+        Assert.Contains("爛", yunjing.TYunjingFileRead(), StringComparison.Ordinal);
         Assert.False(yunjing.CYunjingDiweiShown);
         Assert.True(yunjing.CYunjingDisplayShown);
     }
@@ -412,13 +411,17 @@ public sealed class TYunjing
         CYunjing yunjing = TYunjingPrepare(atelier);
 
         Assert.False(yunjing.CYunjingPanel.CPanelPressAllowed);
-        Assert.Same(Task.CompletedTask, yunjing.CYunjingPortraitPrint(TCorpus.TCorpusLabelCreate(), null!));
+        Assert.Same(Task.CompletedTask, yunjing.CYunjingPortraitPrint());
     }
 
     private static CYunjing TYunjingPrepare(CAtelier atelier)
     {
-        CYunjing yunjing = CYunjing.CYunjingCreate(
-            atelier, static () => true, TInterfaceConduct.TEnvoyCreate(false, []));
+        return TYunjingPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+    }
+
+    private static CYunjing TYunjingPrepare(CAtelier atelier, CEnvoy envoy)
+    {
+        CYunjing yunjing = CYunjing.CYunjingCreate(atelier, static () => true, envoy);
         yunjing.CYunjingVistaRestore();
         return yunjing;
     }

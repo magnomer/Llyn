@@ -24,7 +24,7 @@ public sealed class TLibrary
 
         Assert.Empty(library.CLibraryRowsRead());
         Assert.False(library.CLibraryFiltered);
-        Assert.Equal("entry", library.CLibraryFileRead());
+        Assert.Equal("entry", library.TLibraryFileRead());
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public sealed class TLibrary
         Assert.Equal(["water"], library.CLibraryRowsRead()
             .Where(row => row.CVistaRowChosen)
             .Select(row => row.CVistaRowHeadword));
-        Assert.Equal("water", library.CLibraryFileRead());
+        Assert.Equal("water", library.TLibraryFileRead());
 
         library.CLibraryPanel.CPanelEntryDelete();
 
@@ -126,19 +126,44 @@ public sealed class TLibrary
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LEntry water = TLibraryEntrySave(engine, "water", "English");
-        CLibrary library = TLibraryPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
+        CLibrary library = TLibraryPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
 
-        await library.CLibraryPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await library.CLibraryPortraitExport();
 
         Assert.False(File.Exists(path));
 
         library.CLibraryPanel.CPanelRowSelect(water.LEntryId);
-        await library.CLibraryPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await library.CLibraryPortraitExport();
 
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task LibraryPortraitExport_CancelledOrUnwritable_ExportsNothingOrShowsTheFailure()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TLibraryEntrySave(engine, "water", "English");
+        List<string> asked = [];
+        CLibrary cancelled = TLibraryPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(null, CPortraitMedium.CPortraitMediumMarkdown, asked));
+        cancelled.CLibraryPanel.CPanelRowSelect(water.LEntryId);
+
+        await cancelled.CLibraryPortraitExport();
+
+        Assert.Equal(["File:water"], asked);
+
+        CLibrary unwritable = TLibraryPrepare(
+            atelier,
+            TInterfaceConduct.TEnvoyFileCreate(
+                workspace.TWorkspaceFolder, CPortraitMedium.CPortraitMediumMarkdown, asked));
+        unwritable.CLibraryPanel.CPanelRowSelect(water.LEntryId);
+        await unwritable.CLibraryPortraitExport();
+
+        Assert.Equal(["File:water", "File:water", "Export.Failed"], asked);
     }
 
     [Fact]

@@ -141,3 +141,45 @@ The Example with `mention` as its only Mention, so a test builds an Example that
 ## `internal static CMentionResult TMentionResultRead(int offset, LMention? stored) =>`
 
 Maps a click result holding only `stored`, so a test builds no engine record itself.
+
+## `internal static LPortraitMedium TPortraitMediumRead(CPortraitMedium medium) =>`
+
+Relays the internal export format map.
+
+## `internal static LPressTicket TPortraitTicketRead(CPressTicket ticket) =>`
+
+Relays the internal print ticket map.
+
+## `internal static LPortraitLabel TPortraitLabelRead(LSettingsPort settings) =>`
+
+Relays the label wording, so a fact reads each key through a fake settings port.
+
+## `internal static LPortraitLegend TPortraitLegendRead(LSettingsPort settings, string realm) =>`
+
+Relays the legend wording of `realm`.
+
+## `internal static IReadOnlyList<CPortraitChoice> TPortraitChoiceRead() =>`
+
+Relays the export formats the file question offers.
+
+## `internal static Task TPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export) =>`
+
+Relays the shared export core with its question and failure policy.
+
+## `internal static Task TPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print) =>`
+
+Relays the shared print core with its question and failure policy.
+
+## `internal static string TFavoriteFileRead(this CFavorite favorite) =>`
+
+Relays a panel's internal offered file name, as the siblings below do for their panels.
+
+## `internal static CEnvoy TEnvoyFileCreate(string? path, CPortraitMedium medium, List<string> asked) =>`
+
+A fake envoy whose file question answers `path` and `medium` and records `File:` plus the offered name.
+It records each failure key it is shown, so a fact reads the question and the failure in order.
+
+## `internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked) =>`
+
+A fake envoy whose printer question records `Ticket` and answers from `answer`, which may throw as a failing dialog does.
+It records each failure key it is shown.

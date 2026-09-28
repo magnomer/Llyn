@@ -298,7 +298,7 @@
       "^\\s*extern\\s+alias\\b"
     ],
     "loader": [
-      "LHeadquarter.cs"
+      "PHeadquarter.cs"
     ],
     "reflection": "\\bSystem\\.Reflection\\b",
     "timer": "\\bCancellationTokenSource\\b",

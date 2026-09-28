@@ -143,7 +143,7 @@ It answers no before the panel is attached, since the commands are bound at cons
 
 ## `private async void QXieshengPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
-Prints the read entry through the shell's press.
+Prints the read entry on the printer the gate asks for.
 
 ## `private async void QXieshengPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 

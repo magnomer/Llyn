@@ -35,7 +35,7 @@ Takes the text typed into the rummage field as the list's query.
 
 Reads the entries citing the parent's chosen Source, mapped as the quotation list maps its own.
 
-## `public string CFootnoteFileRead()`
+## `internal string LFootnoteFileRead()`
 
 The file name an export of the chosen entry offers, read from the list's own vista.
 
@@ -45,10 +45,10 @@ Opens a fresh entry without asking, for the shelf that already asked for the who
 The fresh entry starts already citing the chosen Source, in one ShellEngine call.
 So the first draft shown carries the citation, as the corpus and repertoire twins do.
 
-## `internal Task LFootnotePortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry, mapping the label and ticket to the engine's records unread.
+Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
 
-## `internal Task LFootnotePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)`
 
-Exports the chosen entry to the path, mapping the medium and label to the engine's records unread.
+Exports the chosen entry to the path through `CPortrait`, worded through `settings`.

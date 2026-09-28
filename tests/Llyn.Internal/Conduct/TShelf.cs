@@ -408,20 +408,19 @@ public sealed class TShelf
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        LEntry hearth = TShelfEntrySave(engine, "hearth");
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
+        CShelf shelf = TShelfPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+        LEntry hearth = TShelfEntrySave(engine, "hearth");
 
-        await shelf.CShelfPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await shelf.CShelfPortraitExport();
 
         Assert.False(File.Exists(path));
 
         shelf.CShelfEntrySelect(hearth.LEntryId);
-        await shelf.CShelfPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await shelf.CShelfPortraitExport();
 
-        Assert.Equal("hearth", shelf.CShelfFootnote.CFootnoteFileRead());
+        Assert.Equal("hearth", shelf.CShelfFootnote.TFootnoteFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
     }
 
@@ -433,7 +432,7 @@ public sealed class TShelf
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CShelf shelf = TShelfPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        Task printed = shelf.CShelfPortraitPrint(TCorpus.TCorpusLabelCreate(), null!, null!);
+        Task printed = shelf.CShelfPortraitPrint();
 
         Assert.Same(Task.CompletedTask, printed);
         Assert.False(shelf.CShelfPressAllowed);

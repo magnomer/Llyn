@@ -171,12 +171,12 @@ internal sealed partial class QFavorite
 
     private async void QFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qFavoriteHost.PWindowPressRun(_cFavorite.CFavoritePortraitPrint);
+        await _cFavorite.CFavoritePortraitPrint();
     }
 
     private async void QFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qFavoriteHost.PWindowPortraitExport(_cFavorite.CFavoriteFileRead(), _cFavorite.CFavoritePortraitExport);
+        await _cFavorite.CFavoritePortraitExport();
     }
 
     internal void QFavoriteVoyageShow(bool past, bool future)

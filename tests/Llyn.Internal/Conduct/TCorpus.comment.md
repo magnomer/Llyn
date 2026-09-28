@@ -27,10 +27,6 @@ Its seam answers that the tab is in front.
 
 Stores one English Example with the given text and no cited Source.
 
-## `internal static CPortraitLabel TCorpusLabelCreate()`
-
-Fills every export word with a placeholder, since the test reads only the headword.
-
 ## `internal static LEntry TCorpusEntrySave(LEngine engine)`
 
 Stores one English entry to quote.

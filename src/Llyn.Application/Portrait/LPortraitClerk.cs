@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Core;
 
@@ -7,6 +8,8 @@ namespace Llyn.Application;
 
 public sealed class LPortraitClerk
 {
+    private const double LPortraitInch = 96.0;
+
     private readonly LPortraitVault _lPortraitClerkPortraits;
     private readonly LPress _lPortraitClerkPress;
     private readonly LLanguageClerk _lPortraitClerkLanguages;
@@ -183,10 +186,27 @@ public sealed class LPortraitClerk
         LPressSide side,
         LPressInk ink)
     {
-        LPressPaper paper = width is double across && height is double down
-            ? new LPressPaper(across, down)
+        LPressPaper paper = width is > 0 and double across && height is > 0 and double down
+            ? new LPressPaper(across / LPortraitInch, down / LPortraitInch)
             : LPressPaper.LPressPaperLocal;
         return new LPressTicket(printer, paper, landscape, copies, collated, side, ink);
+    }
+
+    public static IReadOnlyList<(LPortraitMedium, string, bool)> LPortraitMediumRead()
+    {
+        return
+        [
+            (LPortraitMedium.LPortraitMediumMarkup, ".llx", false),
+            (LPortraitMedium.LPortraitMediumHtml, ".html", true),
+            (LPortraitMedium.LPortraitMediumMarkdown, ".md", false),
+            (LPortraitMedium.LPortraitMediumDocx, ".docx", false),
+            (LPortraitMedium.LPortraitMediumPdf, ".pdf", false),
+        ];
+    }
+
+    public static IReadOnlyList<string> LPortraitKindRead()
+    {
+        return Enum.GetValues<LReferenceKind>().Select(LReference.LReferenceKindResolve).ToList();
     }
 
     public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)

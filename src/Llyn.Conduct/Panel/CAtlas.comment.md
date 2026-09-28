@@ -40,9 +40,9 @@ How many places cite each Situation, keyed by id.
 
 The workspace's languages, which the driver offers as the filter's choices.
 
-## `internal Task LAtlasPortraitPrint(CPortraitLegend legend, CPressTicket ticket)`
+## `internal Task LAtlasPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the vista's situations with the driver's localized legend and dialog answer.
+Prints the vista's situations through `CPortrait`, with the Situation realm's legend.
 Only the repertoire's print gate calls it, which chooses the side that prints.
 
 ## `internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)`

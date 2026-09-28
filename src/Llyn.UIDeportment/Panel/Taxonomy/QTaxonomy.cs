@@ -187,12 +187,12 @@ internal sealed partial class QTaxonomy
 
     private async void QTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTaxonomyHost.PWindowPressRun(_cTaxonomy.CTaxonomyPortraitPrint);
+        await _cTaxonomy.CTaxonomyPortraitPrint();
     }
 
     private async void QTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qTaxonomyHost.PWindowPortraitExport(_cTaxonomy.CTaxonomyFileRead(), _cTaxonomy.CTaxonomyPortraitExport);
+        await _cTaxonomy.CTaxonomyPortraitExport();
     }
 
     internal void QTaxonomyVoyageShow(bool past, bool future)

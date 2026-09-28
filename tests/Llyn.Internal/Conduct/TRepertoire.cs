@@ -408,20 +408,19 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LSituation home = TRepertoireSituationSave(engine, "at home");
         LEntry hearth = TRepertoireEntrySave(engine, "hearth", home);
-        CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        repertoire.CRepertoireSituationOpen(home.LSituationId);
         string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
+        CRepertoire repertoire = TRepertoirePrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+        repertoire.CRepertoireSituationOpen(home.LSituationId);
 
-        await repertoire.CRepertoirePortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await repertoire.CRepertoirePortraitExport();
 
         Assert.False(File.Exists(path));
 
         repertoire.CRepertoireOccurrenceSelect(hearth.LEntryId);
-        await repertoire.CRepertoirePortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await repertoire.CRepertoirePortraitExport();
 
-        Assert.Equal("hearth", repertoire.CRepertoireOccurrence.COccurrenceFileRead());
+        Assert.Equal("hearth", repertoire.CRepertoireOccurrence.TOccurrenceFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), StringComparison.Ordinal);
     }
 
@@ -433,7 +432,7 @@ public sealed class TRepertoire
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CRepertoire repertoire = TRepertoirePrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        Task printed = repertoire.CRepertoirePortraitPrint(TCorpus.TCorpusLabelCreate(), null!, null!);
+        Task printed = repertoire.CRepertoirePortraitPrint();
 
         Assert.Same(Task.CompletedTask, printed);
         Assert.False(repertoire.CRepertoirePressAllowed);

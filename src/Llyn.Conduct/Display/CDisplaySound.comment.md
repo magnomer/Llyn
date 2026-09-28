@@ -98,7 +98,7 @@ A refused read also shows `Sound.LoadFailed`.
 
 The gate for a glyph cell: it opens the entry the character stands for in its language.
 The engine finds or makes that entry, and the driver's seam opens it in the library.
-A refused resolve shows `Glyph.OpenFailed` and opens nothing.
+A refused resolve shows `Glyph.OpenFailed` through the catalog's one failure owner and opens nothing.
 
 ## `public IReadOnlyList<CTranscriptionDraft> CDisplayTranscriptionRead()`
 

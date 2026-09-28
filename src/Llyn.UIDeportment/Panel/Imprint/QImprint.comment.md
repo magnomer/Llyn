@@ -27,10 +27,6 @@ A desk failure goes straight to the window's failure dialog.
 
 Writes the editor's empty Source, so every field blanks and restores its placeholder.
 
-## `public void QChronicleUpdate()`
-
-Asks the desk to raise its state again, so the rail reads the chronicle after a step.
-
 ## `private void QImprintDraftUpdate(CReference reference)`
 
 Writes the four fields, their placeholders, the kind chip and the tally from the Source the imprint announced.

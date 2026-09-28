@@ -16,6 +16,8 @@ public sealed class CShelf
 
     private readonly LPortraitPort _cShelfPortraitPort;
 
+    private readonly LSettingsPort _cShelfSettingsPort;
+
     private LVista? _cShelfVista;
 
     private int _cShelfCount;
@@ -30,6 +32,7 @@ public sealed class CShelf
         _cShelfEnvoy = envoy;
         _cShelfEntryPort = atelier.CAtelierEntryPort;
         _cShelfPortraitPort = atelier.CAtelierPortraitPort;
+        _cShelfSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CShelfEditor = editor;
         CShelfImprint = new CImprint(atelier.CAtelierDraftPort, atelier.CAtelierEntryPort, envoy);
@@ -368,29 +371,31 @@ public sealed class CShelf
         CShelfImprint.CImprintDesk.CDeskRedo();
     }
 
-    public Task CShelfPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
+    public Task CShelfPortraitPrint()
     {
         if (CShelfFootnote.CFootnotePanel.CPanelPressAllowed)
         {
-            return CShelfFootnote.LFootnotePortraitPrint(label, ticket);
+            return CShelfFootnote.LFootnotePortraitPrint(_cShelfEnvoy, _cShelfSettingsPort);
         }
 
         if (LShelfSourcePrintable)
         {
-            return _cShelfPortraitPort.LEnginePortraitPrint(
-                _cShelfVista, CPortrait.CPortraitLegendRead(legend), CPortrait.CPortraitTicketRead(ticket));
+            return CPortrait.LPortraitTicketPrint(
+                _cShelfEnvoy,
+                chosen => _cShelfPortraitPort.LEnginePortraitPrint(
+                    _cShelfVista, CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source"), chosen));
         }
 
         return Task.CompletedTask;
     }
 
-    public Task CShelfPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CShelfPortraitExport()
     {
         if (!CShelfPortraitAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return CShelfFootnote.LFootnotePortraitExport(path, format, label);
+        return CShelfFootnote.LFootnotePortraitExport(_cShelfEnvoy, _cShelfSettingsPort);
     }
 }

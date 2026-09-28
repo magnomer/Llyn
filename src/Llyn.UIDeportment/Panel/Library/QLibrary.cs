@@ -334,12 +334,12 @@ internal sealed class QLibrary
 
     private async void QLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qLibraryHost.PWindowPressRun(_cLibrary.CLibraryPortraitPrint);
+        await _cLibrary.CLibraryPortraitPrint();
     }
 
     private async void QLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qLibraryHost.PWindowPortraitExport(_cLibrary.CLibraryFileRead(), _cLibrary.CLibraryPortraitExport);
+        await _cLibrary.CLibraryPortraitExport();
     }
 
     internal void QLibraryVoyageShow(bool past, bool future)

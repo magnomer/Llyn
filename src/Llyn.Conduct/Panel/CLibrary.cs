@@ -15,6 +15,8 @@ public sealed class CLibrary
 
     private readonly LPortraitPort _cLibraryPortraitPort;
 
+    private readonly LSettingsPort _cLibrarySettingsPort;
+
     private readonly CEnvoy _cLibraryEnvoy;
 
     private LVista? _cLibraryVista;
@@ -27,6 +29,7 @@ public sealed class CLibrary
         _cLibraryAtelier = atelier;
         _cLibraryEntryPort = atelier.CAtelierEntryPort;
         _cLibraryPortraitPort = atelier.CAtelierPortraitPort;
+        _cLibrarySettingsPort = atelier.CAtelierSettingsPort;
         _cLibraryEnvoy = envoy;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CLibraryEditor = editor;
@@ -83,21 +86,26 @@ public sealed class CLibrary
             : [];
     }
 
-    public string CLibraryFileRead()
+    internal string LLibraryFileRead()
     {
         return LVista.LVistaFileRead(_cLibraryVista);
     }
 
-    public Task CLibraryPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CLibraryPortraitPrint()
     {
-        return _cLibraryPortraitPort.LEnginePortraitPrint(
-            _cLibraryVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cLibraryEnvoy,
+            chosen => _cLibraryPortraitPort.LEnginePortraitPrint(
+                _cLibraryVista, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort), chosen));
     }
 
-    public Task CLibraryPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CLibraryPortraitExport()
     {
-        return _cLibraryPortraitPort.LEnginePortraitExport(
-            _cLibraryVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cLibraryEnvoy,
+            LLibraryFileRead(),
+            (file, medium) => _cLibraryPortraitPort.LEnginePortraitExport(
+                _cLibraryVista, file, medium, CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
     public async Task CLibraryMarkupImport(string? path)

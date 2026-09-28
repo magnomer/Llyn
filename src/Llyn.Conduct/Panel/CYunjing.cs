@@ -15,6 +15,8 @@ public sealed class CYunjing
 
     private readonly LPortraitPort _cYunjingPortraitPort;
 
+    private readonly CEnvoy _cYunjingEnvoy;
+
     private readonly LSettingsPort _cYunjingSettingsPort;
 
     private LVista? _cYunjingShengmu;
@@ -40,6 +42,7 @@ public sealed class CYunjing
         _cYunjingAtelier = atelier;
         _cYunjingPort = atelier.CAtelierPhonologyPort;
         _cYunjingPortraitPort = atelier.CAtelierPortraitPort;
+        _cYunjingEnvoy = envoy;
         _cYunjingSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CYunjingEditor = editor;
@@ -61,7 +64,7 @@ public sealed class CYunjing
 
     public event Action? CYunjingChanged;
 
-    public event Action<string, string>? CYunjingGlyphChosen;
+    public event Action<long>? CYunjingGlyphChosen;
 
     public CEditor CYunjingEditor { get; }
 
@@ -275,29 +278,39 @@ public sealed class CYunjing
             return;
         }
 
-        CYunjingGlyphChosen?.Invoke(character, CYunjingDiweiRead().CDiweiPageLanguage);
+        if (CCatalog.LCatalogGlyphOpen(
+                _cYunjingEnvoy, () => _cYunjingPort.LEngineDiweiResolve(LYunjingSide?.LVistaChosen, character))
+            is long entry)
+        {
+            CYunjingGlyphChosen?.Invoke(entry);
+        }
     }
 
-    public string CYunjingFileRead()
+    internal string LYunjingFileRead()
     {
         return LVista.LVistaFileRead(_cYunjingXiaoyun);
     }
 
-    public Task CYunjingPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CYunjingPortraitPrint()
     {
         if (!CYunjingPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cYunjingPortraitPort.LEnginePortraitPrint(
-            _cYunjingXiaoyun, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cYunjingEnvoy,
+            chosen => _cYunjingPortraitPort.LEnginePortraitPrint(
+                _cYunjingXiaoyun, CPortrait.LPortraitLabelRead(_cYunjingSettingsPort), chosen));
     }
 
-    public Task CYunjingPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CYunjingPortraitExport()
     {
-        return _cYunjingPortraitPort.LEnginePortraitExport(
-            _cYunjingXiaoyun, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cYunjingEnvoy,
+            LYunjingFileRead(),
+            (file, medium) => _cYunjingPortraitPort.LEnginePortraitExport(
+                _cYunjingXiaoyun, file, medium, CPortrait.LPortraitLabelRead(_cYunjingSettingsPort)));
     }
 
     private IReadOnlyList<CDiwei> LYunjingColumnRead(LVista? vista, bool final)

@@ -6,6 +6,10 @@ The entry page composed for display, export and print.
 Every side reading is guarded, so a failing fetch or vault leaves a section out rather than a page unrendered.
 The kind pages of examples, references and situations are composed by their own clerks.
 
+## `private const double LPortraitInch = 96.0;`
+
+The device-independent pixels in one inch, the unit a print dialog measures a sheet in.
+
 ## `public LPortraitClerk(LRig rig, LLanguageClerk languages, LEntryClerk entries, LVocabularyClerk vocabulary, LTranslationClerk translations, LReferenceClerk references, LFavoriteClerk favorites, LFanqieClerk fanqie, LFrequencyClerk frequencies, LParadigmClerk paradigms, LScriptClerk scripts, LMarkupClerk markup, Func<LSettings> settings)`
 
 Reads the portrait port and the press out of `rig` and keeps the clerks each section reads through.
@@ -30,7 +34,20 @@ The page rendered as sheet HTML and handed to the press with the ticket.
 ## `public static LPressTicket LPortraitTicketCreate(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
 
 The ticket a print dialog's answer stands for.
+The dialog measures the sheet in device-independent pixels, and the paper takes inches.
 A dialog that named no usable sheet size prints on the local sheet.
+A side left unnamed, empty or negative is no usable size.
+
+## `public static IReadOnlyList<(LPortraitMedium, string, bool)> LPortraitMediumRead()`
+
+Every format an entry can be exported to, in the order a chooser offers them.
+Each row carries the file suffix the format is written under, and whether it is the default.
+HTML is the default, since every reader can open it.
+
+## `public static IReadOnlyList<string> LPortraitKindRead()`
+
+The stored word of every Source kind, in the kind's own order.
+A legend is worded per kind by these words, so no caller names the kinds.
 
 ## `public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)`
 

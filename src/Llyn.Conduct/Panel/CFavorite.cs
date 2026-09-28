@@ -14,6 +14,8 @@ public sealed class CFavorite
 
     private readonly LPortraitPort _cFavoritePortraitPort;
 
+    private readonly CEnvoy _cFavoriteEnvoy;
+
     private readonly LSettingsPort _cFavoriteSettingsPort;
 
     private LVista? _cFavoriteVista;
@@ -25,6 +27,7 @@ public sealed class CFavorite
         _cFavoriteAtelier = atelier;
         _cFavoriteEntryPort = atelier.CAtelierEntryPort;
         _cFavoritePortraitPort = atelier.CAtelierPortraitPort;
+        _cFavoriteEnvoy = envoy;
         _cFavoriteSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CFavoriteEditor = editor;
@@ -94,20 +97,25 @@ public sealed class CFavorite
         return _cFavoriteSettingsPort.LEngineLanguageRead();
     }
 
-    public string CFavoriteFileRead()
+    internal string LFavoriteFileRead()
     {
         return LVista.LVistaFileRead(_cFavoriteVista);
     }
 
-    public Task CFavoritePortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CFavoritePortraitPrint()
     {
-        return _cFavoritePortraitPort.LEnginePortraitPrint(
-            _cFavoriteVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cFavoriteEnvoy,
+            chosen => _cFavoritePortraitPort.LEnginePortraitPrint(
+                _cFavoriteVista, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort), chosen));
     }
 
-    public Task CFavoritePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CFavoritePortraitExport()
     {
-        return _cFavoritePortraitPort.LEnginePortraitExport(
-            _cFavoriteVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cFavoriteEnvoy,
+            LFavoriteFileRead(),
+            (file, medium) => _cFavoritePortraitPort.LEnginePortraitExport(
+                _cFavoriteVista, file, medium, CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));
     }
 }

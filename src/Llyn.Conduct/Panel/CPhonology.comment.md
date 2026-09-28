@@ -49,7 +49,11 @@ It answers nothing before the vista is restored.
 Orders the rows as the user chose.
 A null order keeps the current one, which the vista decides.
 
-## `public Task CPhonologyPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `public Task CPhonologyPortraitPrint()`
 
-Prints the chosen entry as the engine portrays it, with the labels the driver localized.
+Prints the chosen entry as the engine portrays it.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 `CPhonologyPortraitExport` exports it to a file the same way.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

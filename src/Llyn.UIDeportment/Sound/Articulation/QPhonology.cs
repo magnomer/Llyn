@@ -349,13 +349,12 @@ internal sealed class QPhonology
 
     private async void QPhonologyPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qPhonologyHost.PWindowPressRun(_cPhonology.CPhonologyPortraitPrint);
+        await _cPhonology.CPhonologyPortraitPrint();
     }
 
     private async void QPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qPhonologyHost.PWindowPortraitExport(
-            _cPhonology.CPhonologyFileRead(), _cPhonology.CPhonologyPortraitExport);
+        await _cPhonology.CPhonologyPortraitExport();
     }
 
     internal void QPhonologyVoyageShow(bool past, bool future)

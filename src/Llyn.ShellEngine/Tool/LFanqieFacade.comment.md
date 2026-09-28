@@ -65,6 +65,13 @@ One diwei by id, or null for no id.
 The page of one diwei, blank for no id.
 Respellings show under the respelling setting for the diwei's language, and the tally under its own setting.
 
+## `public long LEngineDiweiResolve(long? id, string character)`
+
+The entry of a character on the diwei's page, in the page's language, made first when none exists.
+The entry resolve is the entry facade's own, so a glyph chip anywhere lands on the same entry.
+The diwei is read under this facade's gate, and the resolve takes the entry facade's gate afterwards.
+With no diwei the page's language is blank, which the resolve refuses.
+
 ## `public (long, bool)? LEngineDiweiFind(string language, string kind, string key)`
 
 The identity of the diwei of one kind with the given key, and whether it is a rime.

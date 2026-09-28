@@ -99,4 +99,5 @@ Print may also act on the other page this panel reads, but export acts on entrie
 ## `private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
+The gate asks for the file and the format through the envoy.
+The engine writes the document from stored rows.

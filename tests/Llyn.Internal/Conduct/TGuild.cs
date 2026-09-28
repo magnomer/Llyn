@@ -422,7 +422,7 @@ public sealed class TGuild
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CGuild guild = TGuildPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        Task printed = guild.CGuildPortraitPrint(null!, null!);
+        Task printed = guild.CGuildPortraitPrint();
 
         Assert.Same(Task.CompletedTask, printed);
         Assert.False(guild.CGuildPressAllowed);

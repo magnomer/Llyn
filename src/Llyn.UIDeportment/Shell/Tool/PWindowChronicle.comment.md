@@ -15,7 +15,7 @@ Climbing meets the nearer of the two first, which is the one the user is typing 
 A focused element outside the visual tree climbs the logical tree instead, so a text run still finds its form.
 Nothing focused, or nothing above it that answers, says the chord is not ours.
 
-## `private void PChronicleKeyHandle(object sender, KeyEventArgs e)`
+## `private void PChronicleKeyObserve(object sender, KeyEventArgs e)`
 
 Turns the chord into an undo or a redo on the host found, and swallows the key when one was.
 It runs on preview, so it beats the text box's own undo, which the theme has switched off anyway.

@@ -11,8 +11,6 @@ internal interface QChronicleHost
     void QChronicleUndo();
 
     void QChronicleRedo();
-
-    void QChronicleUpdate();
 }
 
 internal static class QChronicle

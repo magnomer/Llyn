@@ -125,12 +125,14 @@ The controller answers, so no control state is read.
 ## `private async void QLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, as the engine portrays it.
-The window asks for the ticket and the controller names the vista, so nothing is read back from the screen.
+The gate asks for the ticket through the envoy and names the vista.
+Nothing is read back from the screen.
 
 ## `private async void QLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
+The gate asks for the file and the format through the envoy.
+The engine writes the document from stored rows.
 
 ## Inline notes
 

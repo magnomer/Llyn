@@ -144,7 +144,7 @@ internal sealed class QXiesheng
         panel.CPanelCleared += QXieshengClearUpdate;
         _lEditor.LEditorStudio.CEditorDesk.CDeskStateChanged += QXieshengStoreUpdate;
         _cXiesheng.CXieshengChanged += QXieshengColumnUpdate;
-        _cXiesheng.CXieshengGlyphChosen += host.PWindowGlyphShow;
+        _cXiesheng.CXieshengGlyphChosen += host.PWindowGlyphRefine;
 
         QGrove.ItemsSource = _qGroveList;
         QKindred.ItemsSource = _qKindredList;
@@ -356,13 +356,12 @@ internal sealed class QXiesheng
 
     private async void QXieshengPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qXieshengHost.PWindowPressRun(_cXiesheng.CXieshengPortraitPrint);
+        await _cXiesheng.CXieshengPortraitPrint();
     }
 
     private async void QXieshengPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qXieshengHost.PWindowPortraitExport(
-            _cXiesheng.CXieshengFileRead(), _cXiesheng.CXieshengPortraitExport);
+        await _cXiesheng.CXieshengPortraitExport();
     }
 
     internal void QXieshengVoyageShow(bool past, bool future)

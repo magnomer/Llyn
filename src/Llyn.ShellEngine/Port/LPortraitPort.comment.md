@@ -16,6 +16,14 @@ The statics build the records a print or export takes from plain values, so Cond
 
 The engine label an entry page is worded with, word by word in the record's order.
 
+## `static IReadOnlyList<(LPortraitMedium, string, bool)> LEngineMediumRead()`
+
+The formats an export offers, each with its file suffix and whether it is the default.
+
+## `static IReadOnlyList<string> LEngineKindRead()`
+
+The stored word of every Source kind, which a legend is worded by.
+
 ## `static LMarkupIntake LEngineIntakeRead(int index, LMarkupMode mode, long target)`
 
 The engine intake one declared row stands for, built from plain values through the intake clerk.

@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -6,7 +9,100 @@ namespace Llyn.Conduct;
 
 internal static class CPortrait
 {
-    internal static LPortraitMedium CPortraitMediumRead(CPortraitMedium medium)
+    private static readonly string[] LPortraitLabelKeys =
+    [
+        "Display.Unknown",
+        "Display.MeaningSingle",
+        "Display.MeaningPlural",
+        "Display.CollocationSingle",
+        "Display.Collocation",
+        "Display.Translated",
+        "Display.Note",
+        "Portrait.Form",
+        "Portrait.Paradigm",
+        "Frequency.Title",
+        "Portrait.Glyph",
+        "Display.Script",
+        "Display.Fanqie",
+        "Portrait.Example",
+        "Portrait.Gloss",
+        "Reference.Title",
+        "Portrait.Mention",
+        "Portrait.Etymology",
+        "Portrait.Situation",
+        "Portrait.Register",
+        "Portrait.Translation",
+        "Portrait.Tag",
+    ];
+
+    internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()
+    {
+        return LPortraitPort.LEngineMediumRead()
+            .Select(static row => LPortraitChoiceCreate(row.Item1, row.Item2, row.Item3))
+            .ToList();
+    }
+
+    private static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)
+    {
+        return medium switch
+        {
+            LPortraitMedium.LPortraitMediumMarkup => new CPortraitChoice(
+                "Export.Markup", suffix, chosen, CPortraitMedium.CPortraitMediumMarkup),
+            LPortraitMedium.LPortraitMediumHtml => new CPortraitChoice(
+                "Export.Html", suffix, chosen, CPortraitMedium.CPortraitMediumHtml),
+            LPortraitMedium.LPortraitMediumMarkdown => new CPortraitChoice(
+                "Export.Markdown", suffix, chosen, CPortraitMedium.CPortraitMediumMarkdown),
+            LPortraitMedium.LPortraitMediumDocx => new CPortraitChoice(
+                "Export.Docx", suffix, chosen, CPortraitMedium.CPortraitMediumDocx),
+            LPortraitMedium.LPortraitMediumPdf => new CPortraitChoice(
+                "Export.Pdf", suffix, chosen, CPortraitMedium.CPortraitMediumPdf),
+            _ => throw new ArgumentOutOfRangeException(nameof(medium), medium, null),
+        };
+    }
+
+    internal static async Task LPortraitFileExport(
+        CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(export);
+
+        (string? path, CPortraitMedium format) = envoy.CEnvoyFileRead(file, LPortraitChoiceRead());
+        if (path is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await export(path, LPortraitMediumRead(format));
+        }
+        catch (Exception exception)
+        {
+            envoy.CEnvoyFailureShow("Export.Failed", exception);
+        }
+    }
+
+    internal static async Task LPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(print);
+
+        try
+        {
+            if (envoy.CEnvoyTicketRead() is not CPressTicket ticket)
+            {
+                return;
+            }
+
+            await print(LPortraitTicketRead(ticket));
+        }
+        catch (Exception exception)
+        {
+            envoy.CEnvoyFailureShow("Print.Failed", exception);
+        }
+    }
+
+    internal static LPortraitMedium LPortraitMediumRead(CPortraitMedium medium)
     {
         return medium switch
         {
@@ -19,7 +115,7 @@ internal static class CPortrait
         };
     }
 
-    internal static LPressTicket CPortraitTicketRead(CPressTicket ticket)
+    internal static LPressTicket LPortraitTicketRead(CPressTicket ticket)
     {
         ArgumentNullException.ThrowIfNull(ticket);
 
@@ -57,57 +153,40 @@ internal static class CPortrait
         };
     }
 
-    internal static LPortraitLabel CPortraitLabelRead(CPortraitLabel label)
+    internal static LPortraitLabel LPortraitLabelRead(LSettingsPort settings)
     {
-        ArgumentNullException.ThrowIfNull(label);
+        ArgumentNullException.ThrowIfNull(settings);
 
-        return LPortraitPort.LEngineLabelRead(
-        [
-            label.CPortraitLabelUnknown,
-            label.CPortraitLabelMeaning,
-            label.CPortraitLabelMeanings,
-            label.CPortraitLabelCollocation,
-            label.CPortraitLabelCollocations,
-            label.CPortraitLabelIncoming,
-            label.CPortraitLabelNote,
-            label.CPortraitLabelForm,
-            label.CPortraitLabelParadigm,
-            label.CPortraitLabelFrequency,
-            label.CPortraitLabelGlyph,
-            label.CPortraitLabelScript,
-            label.CPortraitLabelFanqie,
-            label.CPortraitLabelExample,
-            label.CPortraitLabelGloss,
-            label.CPortraitLabelSource,
-            label.CPortraitLabelMention,
-            label.CPortraitLabelEtymology,
-            label.CPortraitLabelSituation,
-            label.CPortraitLabelRegister,
-            label.CPortraitLabelTranslation,
-            label.CPortraitLabelTag,
-        ]);
+        return LPortraitPort.LEngineLabelRead(LPortraitLabelKeys.Select(settings.LEngineTextRead).ToList());
     }
 
-    internal static LPortraitLegend CPortraitLegendRead(CPortraitLegend legend)
+    internal static LPortraitLegend LPortraitLegendRead(LSettingsPort settings, string realm)
     {
-        ArgumentNullException.ThrowIfNull(legend);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(realm);
 
-        return LPortraitPort.LEngineLegendRead(
-            [
-                legend.CPortraitLegendUnknown,
-                legend.CPortraitLegendUntitled,
-                legend.CPortraitLegendUnwritten,
-                legend.CPortraitLegendUnused,
-                legend.CPortraitLegendOnce,
-                legend.CPortraitLegendUses,
-                legend.CPortraitLegendTranslation,
-                legend.CPortraitLegendSource,
-                legend.CPortraitLegendAuthor,
-                legend.CPortraitLegendYear,
-                legend.CPortraitLegendUrl,
-                legend.CPortraitLegendNote,
-                legend.CPortraitLegendDescription,
-            ],
-            legend.CPortraitLegendKind);
+        string[] keys =
+        [
+            "Display.Unknown",
+            realm == "Example" ? "Example.Unwritten" : realm + ".Untitled",
+            "Example.Unwritten",
+            realm + ".UsageNone",
+            realm + ".UsageOne",
+            realm + ".UsageMany",
+            "Example.Translation",
+            "Reference.Title",
+            "Source.Author",
+            "Source.Year",
+            "Source.Url",
+            "Source.Note",
+            "Situation.Description",
+        ];
+        Dictionary<string, string> kinds = [];
+        foreach (string kind in LPortraitPort.LEngineKindRead())
+        {
+            kinds[kind] = settings.LEngineTextRead(kind);
+        }
+
+        return LPortraitPort.LEngineLegendRead(keys.Select(settings.LEngineTextRead).ToList(), kinds);
     }
 }

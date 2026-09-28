@@ -23,10 +23,10 @@ Building it is no user action, so it is no gate on the atelier.
 
 Raised whenever a column, the page or the mode changed and the driver must copy again.
 
-## `public event Action<string, string>? CXieshengGlyphChosen`
+## `public event Action<long>? CXieshengGlyphChosen`
 
-Raised with a character and its language, as one is picked off a series page.
-The driver answers it by showing the glyph, until `CNavigation` owns the tab switch.
+Raised with the entry of a character picked off a series page.
+The driver answers it by opening the entry, until `CNavigation` owns the tab switch.
 
 ## `public CEditor CXieshengEditor { get; }`
 
@@ -142,20 +142,24 @@ The engine finds the series, and nothing happens for a blank key or a series nev
 
 ## `public void CXieshengGlyphSelect(string? character)`
 
-Raises the glyph picked off a series page, in the language of the page.
+Resolves the glyph picked off a series page to its entry, in the language of the page, and raises it.
 Nothing is raised while no series page shows.
 An unsaved draft is asked about through the panel's leave question first.
+The page's language and the resolve are one engine call, so the page is never read whole for its language.
+A refused resolve is shown through the catalog's one glyph failure owner, and nothing is raised.
 
-## `public string CXieshengFileRead()`
+## `internal string LXieshengFileRead()`
 
 The file name an export of the read entry is offered under.
 
-## `public Task CXieshengPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `public Task CXieshengPortraitPrint()`
 
 Prints the entry the reader holds, doing nothing while there is none.
-The label and ticket are mapped down through `CPortrait`.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
-## `public Task CXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `public Task CXieshengPortraitExport()`
 
 Exports the entry the reader holds as a portrait file.
-The medium and label are mapped down through `CPortrait`.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.

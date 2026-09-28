@@ -313,7 +313,7 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private async void QCorpusPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qCorpusHost.PWindowPressRun("Example", _cCorpus.CCorpusPortraitPrint);
+        await _cCorpus.CCorpusPortraitPrint();
     }
 
     private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -323,7 +323,6 @@ internal sealed partial class QCorpus : QChronicleHost
 
     private async void QCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qCorpusHost.PWindowPortraitExport(
-            _cCorpus.CCorpusQuotation.CQuotationFileRead(), _cCorpus.CCorpusPortraitExport);
+        await _cCorpus.CCorpusPortraitExport();
     }
 }

@@ -15,6 +15,10 @@ public sealed class CXiesheng
 
     private readonly LPortraitPort _cXieshengPortraitPort;
 
+    private readonly LSettingsPort _cXieshengSettingsPort;
+
+    private readonly CEnvoy _cXieshengEnvoy;
+
     private LVista? _cXieshengGrove;
 
     private LVista? _cXieshengKindred;
@@ -32,6 +36,8 @@ public sealed class CXiesheng
         _cXieshengAtelier = atelier;
         _cXieshengPort = atelier.CAtelierPhonologyPort;
         _cXieshengPortraitPort = atelier.CAtelierPortraitPort;
+        _cXieshengSettingsPort = atelier.CAtelierSettingsPort;
+        _cXieshengEnvoy = envoy;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CXieshengEditor = editor;
         CXieshengPanel = new CPanel(
@@ -52,7 +58,7 @@ public sealed class CXiesheng
 
     public event Action? CXieshengChanged;
 
-    public event Action<string, string>? CXieshengGlyphChosen;
+    public event Action<long>? CXieshengGlyphChosen;
 
     public CEditor CXieshengEditor { get; }
 
@@ -209,28 +215,38 @@ public sealed class CXiesheng
             return;
         }
 
-        CXieshengGlyphChosen?.Invoke(character, CXieshengStemRead().CStemPageLanguage);
+        if (CCatalog.LCatalogGlyphOpen(
+                _cXieshengEnvoy, () => _cXieshengPort.LEngineStemResolve(_cXieshengGrove?.LVistaChosen, character))
+            is long entry)
+        {
+            CXieshengGlyphChosen?.Invoke(entry);
+        }
     }
 
-    public string CXieshengFileRead()
+    internal string LXieshengFileRead()
     {
         return LVista.LVistaFileRead(_cXieshengKindred);
     }
 
-    public Task CXieshengPortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    public Task CXieshengPortraitPrint()
     {
         if (!CXieshengPanel.CPanelPressAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return _cXieshengPortraitPort.LEnginePortraitPrint(
-            _cXieshengKindred, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            _cXieshengEnvoy,
+            chosen => _cXieshengPortraitPort.LEnginePortraitPrint(
+                _cXieshengKindred, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort), chosen));
     }
 
-    public Task CXieshengPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CXieshengPortraitExport()
     {
-        return _cXieshengPortraitPort.LEnginePortraitExport(
-            _cXieshengKindred, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            _cXieshengEnvoy,
+            LXieshengFileRead(),
+            (file, medium) => _cXieshengPortraitPort.LEnginePortraitExport(
+                _cXieshengKindred, file, medium, CPortrait.LPortraitLabelRead(_cXieshengSettingsPort)));
     }
 }

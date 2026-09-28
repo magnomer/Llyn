@@ -61,20 +61,25 @@ public sealed class COccurrence
             .ToList();
     }
 
-    public string COccurrenceFileRead()
+    internal string LOccurrenceFileRead()
     {
         return LVista.LVistaFileRead(_cOccurrenceVista);
     }
 
-    internal Task LOccurrencePortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cOccurrencePortraitPort.LEnginePortraitPrint(
-            _cOccurrenceVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            envoy,
+            chosen => _cOccurrencePortraitPort.LEnginePortraitPrint(
+                _cOccurrenceVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
-    internal Task LOccurrencePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cOccurrencePortraitPort.LEnginePortraitExport(
-            _cOccurrenceVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            envoy,
+            LOccurrenceFileRead(),
+            (file, medium) => _cOccurrencePortraitPort.LEnginePortraitExport(
+                _cOccurrenceVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }
 }

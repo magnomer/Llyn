@@ -2,16 +2,45 @@
 
 ## `internal static class CPortrait`
 
-The print and export shapes a driver hands down, turned into the engine's own.
+What every panel's export and print gate shares: the formats offered, the words, and the failure policy.
 Each map only copies or maps by name, and the engine builds every record it takes.
-An enum member the map does not know throws, so a reordered enum cannot shift a meaning.
-The panels still printing through a port call them until their own gates stand, so they keep `C` names.
+An enum member a map does not know throws, so a reordered enum cannot shift a meaning.
+Only the panel gates call it, so every member is an `L` helper.
 
-## `internal static LPortraitMedium CPortraitMediumRead(CPortraitMedium medium)`
+## `private static readonly string[] LPortraitLabelKeys`
+
+The wording keys of an entry page, in the order of the engine label's words.
+
+## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()`
+
+The export formats the file question offers, in the engine's order, each with its wording key.
+The engine names the formats, their suffixes and the default one.
+
+## `private static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)`
+
+One engine format as a ready row, mapped by name, with the key its name is worded by.
+
+## `internal static async Task LPortraitFileExport(CEnvoy envoy, string file, Func<string, LPortraitMedium, Task> export)`
+
+Asks the reader through `envoy` for a path and a format, offering `file` as the name.
+Then it runs the panel's export.
+The question needs the gate's offered name and formats, so the envoy asks it rather than the driver beforehand.
+No path means the reader cancelled, which exports nothing and is no failure.
+A failed export shows `Export.Failed` through the panel's envoy.
+The whole attempt stands together, because a half-written document is of no use.
+
+## `internal static async Task LPortraitTicketPrint(CEnvoy envoy, Func<LPressTicket, Task> print)`
+
+Asks the reader through `envoy` for a printer, then runs the panel's print with the engine's ticket.
+No ticket means the reader cancelled, which prints nothing and is no failure.
+The question stands inside the guard, because a print dialog raises when the spooler is down.
+A failed dialog or print shows `Print.Failed` through the panel's envoy.
+
+## `internal static LPortraitMedium LPortraitMediumRead(CPortraitMedium medium)`
 
 The engine format a driver's export choice stands for, mapped member for member by name.
 
-## `internal static LPressTicket CPortraitTicketRead(CPressTicket ticket)`
+## `internal static LPressTicket LPortraitTicketRead(CPressTicket ticket)`
 
 The engine ticket a driver's print dialog answer stands for.
 Side and ink map member for member by name, and the engine picks the sheet when the dialog named none.
@@ -24,11 +53,15 @@ The engine print side a dialog's side names, member by member by name.
 
 The engine ink a dialog's ink names, member by member by name.
 
-## `internal static LPortraitLabel CPortraitLabelRead(CPortraitLabel label)`
+## `internal static LPortraitLabel LPortraitLabelRead(LSettingsPort settings)`
 
-The engine label a driver's localized words stand for, handed down word by word in the record's order.
+The engine label an entry page is worded with.
+Conduct chooses every key, and the engine words each in the workspace's language.
+A printed or exported page is not the screen, so the driver's lookup takes no part.
 
-## `internal static LPortraitLegend CPortraitLegendRead(CPortraitLegend legend)`
+## `internal static LPortraitLegend LPortraitLegendRead(LSettingsPort settings, string realm)`
 
-The engine legend a driver's localized words stand for, with the Source kinds worded by their stored word.
-The engine words a kind the driver left out by its own name.
+The engine legend a catalog page of `realm` is worded with: Example, Source or Situation.
+The realm picks the untitled fallback and the usage tally wording, which differ by realm.
+Each Source kind is worded by its stored word, which is also its key.
+The engine names the kinds, so Conduct names no kind of its own.

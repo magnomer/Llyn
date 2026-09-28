@@ -29,7 +29,7 @@ public partial class PWindow
         return null;
     }
 
-    private void PChronicleKeyHandle(object sender, KeyEventArgs e)
+    private void PChronicleKeyObserve(object sender, KeyEventArgs e)
     {
         if (Keyboard.Modifiers is not (ModifierKeys.Control or (ModifierKeys.Control | ModifierKeys.Shift)))
         {

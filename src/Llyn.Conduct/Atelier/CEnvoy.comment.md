@@ -48,3 +48,15 @@ It answers null when the user declines, and the gate then stores nothing.
 ## `void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);`
 
 Tells the user what a markup import could not place, line by line.
+
+## `(string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(string file, IReadOnlyList<CPortraitChoice> choices);`
+
+Asks where an export is written and in which of `choices`, offering `file` as the name.
+It answers no file when the user declines, and the gate then exports nothing.
+The gate chooses the offered name and the formats, so the question needs no read of its own.
+
+## `CPressTicket? CEnvoyTicketRead();`
+
+Asks which printer a print goes to and how, and answers the dialog's choice as a ticket.
+It answers null when the user declines, and the gate then prints nothing.
+The gate asks it inside its failure policy, so a dialog that fails is reported as `Print.Failed`.

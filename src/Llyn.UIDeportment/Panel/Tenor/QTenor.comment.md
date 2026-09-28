@@ -55,7 +55,8 @@ Nothing is read back from the screen.
 ## `private async void QTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
-The window asks for the file and the format, and the engine writes the document from stored rows.
+The gate asks for the file and the format through the envoy.
+The engine writes the document from stored rows.
 Nothing is read back from the screen.
 
 ## `internal void QTenorVoyageShow(bool past, bool future)`

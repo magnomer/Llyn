@@ -73,7 +73,8 @@ The voyage and chronicle pairs follow the viewer and scribe verdicts.
 
 ## `private async void QGuildPressHandle(object sender, ExecutedRoutedEventArgs e)`
 
-Prints the Source read in the colophon, through the window's press run with the source legend.
+Prints the Source read in the colophon on the printer the gate asks for.
+The gate words the page with the Source legend.
 
 ## `internal void QGuildVoyageShow(bool past, bool future)`
 

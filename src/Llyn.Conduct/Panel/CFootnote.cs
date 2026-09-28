@@ -68,7 +68,7 @@ public sealed class CFootnote
             .ToList();
     }
 
-    public string CFootnoteFileRead()
+    internal string LFootnoteFileRead()
     {
         return LVista.LVistaFileRead(_cFootnoteVista);
     }
@@ -80,15 +80,20 @@ public sealed class CFootnote
         _cFootnoteEditor.CEditorDesk.LDeskFootnoteStart(reference);
     }
 
-    internal Task LFootnotePortraitPrint(CPortraitLabel label, CPressTicket ticket)
+    internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cFootnotePortraitPort.LEnginePortraitPrint(
-            _cFootnoteVista, CPortrait.CPortraitLabelRead(label), CPortrait.CPortraitTicketRead(ticket));
+        return CPortrait.LPortraitTicketPrint(
+            envoy,
+            chosen => _cFootnotePortraitPort.LEnginePortraitPrint(
+                _cFootnoteVista, CPortrait.LPortraitLabelRead(settings), chosen));
     }
 
-    internal Task LFootnotePortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)
     {
-        return _cFootnotePortraitPort.LEnginePortraitExport(
-            _cFootnoteVista, path, CPortrait.CPortraitMediumRead(format), CPortrait.CPortraitLabelRead(label));
+        return CPortrait.LPortraitFileExport(
+            envoy,
+            LFootnoteFileRead(),
+            (file, medium) => _cFootnotePortraitPort.LEnginePortraitExport(
+                _cFootnoteVista, file, medium, CPortrait.LPortraitLabelRead(settings)));
     }
 }

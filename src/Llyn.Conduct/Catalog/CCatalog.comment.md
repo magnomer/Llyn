@@ -57,9 +57,11 @@ Adds a part of speech to a language, and answers nothing when the engine decline
 
 The glyph set a language writes in, or nothing when it has none.
 
-## `public long CCatalogGlyphResolve(string character, string language)`
+## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, Func<long> resolve)`
 
-The entry a character stands for in a language, by id.
+The one failure owner of every glyph chip that opens a character's entry.
+`resolve` is the gate's one engine call, which finds or makes the entry.
+A refused resolve shows `Glyph.OpenFailed` through the panel's envoy and answers null.
 
 ## `public IReadOnlyList<string> CCatalogLanguageRead()`
 

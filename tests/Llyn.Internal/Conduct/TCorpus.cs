@@ -391,16 +391,17 @@ public sealed class TCorpus
         LExample cat = TCorpusExampleSave(engine, "a cat sat");
         LEntry water = TCorpusEntrySave(engine);
         engine.TRequestQuoteApply(water.LEntryId, cat.LExampleId);
-        CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        corpus.CCorpusExampleOpen(cat.LExampleId);
         string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
+        CCorpus corpus = TCorpusPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
+        corpus.CCorpusExampleOpen(cat.LExampleId);
 
-        await corpus.CCorpusPortraitExport(path, CPortraitMedium.CPortraitMediumMarkdown, TCorpusLabelCreate());
+        await corpus.CCorpusPortraitExport();
 
         Assert.False(File.Exists(path));
 
         corpus.CCorpusQuotationSelect(water.LEntryId);
-        await corpus.CCorpusPortraitExport(path, CPortraitMedium.CPortraitMediumMarkdown, TCorpusLabelCreate());
+        await corpus.CCorpusPortraitExport();
 
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
     }
@@ -413,7 +414,7 @@ public sealed class TCorpus
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CCorpus corpus = TCorpusPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
 
-        Task printed = corpus.CCorpusPortraitPrint(TCorpusLabelCreate(), null!, null!);
+        Task printed = corpus.CCorpusPortraitPrint();
 
         Assert.Same(Task.CompletedTask, printed);
         Assert.False(corpus.CCorpusPressAllowed);
@@ -430,12 +431,6 @@ public sealed class TCorpus
     {
         return engine.TEngineExampleCreate(TInterface.TExampleCreate(
             0, "English", TInterface.TStateValueCreate(text), null, TInterface.TStateAnchorRead(null)));
-    }
-
-    internal static CPortraitLabel TCorpusLabelCreate()
-    {
-        string[] words = [.. Enumerable.Range(0, 22).Select(static index => $"word{index}")];
-        return (CPortraitLabel)Activator.CreateInstance(typeof(CPortraitLabel), words)!;
     }
 
     internal static LEntry TCorpusEntrySave(LEngine engine)

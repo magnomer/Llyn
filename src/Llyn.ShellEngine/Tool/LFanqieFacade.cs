@@ -126,6 +126,18 @@ internal sealed class LFanqieFacade
         }
     }
 
+    public long LEngineDiweiResolve(long? id, string character)
+    {
+        LDiwei? diwei;
+        lock (_lFanqieFacadeGate)
+        {
+            diwei = LFanqieFacadeStaff.LEngineStaffDiwei.LDiweiClerkRead(id);
+        }
+
+        return _lFanqieFacadeEngine.LEngineEntry.LEngineGlyphResolve(
+            character, diwei?.LDiweiLanguage ?? LDiweiPage.LDiweiPageBlank.LDiweiPageLanguage).LEntryId;
+    }
+
     public (long, bool)? LEngineDiweiFind(string language, string kind, string key)
     {
         lock (_lFanqieFacadeGate)

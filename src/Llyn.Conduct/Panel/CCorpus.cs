@@ -12,6 +12,8 @@ public sealed class CCorpus
 
     private readonly CEnvoy _cCorpusEnvoy;
 
+    private readonly LSettingsPort _cCorpusSettingsPort;
+
     private CCorpus(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -20,6 +22,7 @@ public sealed class CCorpus
 
         _cCorpusAtelier = atelier;
         _cCorpusEnvoy = envoy;
+        _cCorpusSettingsPort = atelier.CAtelierSettingsPort;
         CEditor editor = CEditor.CEditorCreate(atelier, envoy);
         CCorpusEditor = editor;
         CCorpusDesk = new CDesk(atelier.CAtelierDraftPort, "Example", envoy, "Corpus", CSubject.CSubjectExample);
@@ -347,29 +350,29 @@ public sealed class CCorpus
         CCorpusAnthology.CAnthologyPanel.CPanelEntryDelete();
     }
 
-    public Task CCorpusPortraitPrint(CPortraitLabel label, CPortraitLegend legend, CPressTicket ticket)
+    public Task CCorpusPortraitPrint()
     {
         if (CCorpusDisplayShown)
         {
-            return CCorpusQuotation.LQuotationPortraitPrint(label, ticket);
+            return CCorpusQuotation.LQuotationPortraitPrint(_cCorpusEnvoy, _cCorpusSettingsPort);
         }
 
         if (CCorpusPressAllowed)
         {
-            return CCorpusAnthology.LAnthologyPortraitPrint(legend, ticket);
+            return CCorpusAnthology.LAnthologyPortraitPrint(_cCorpusEnvoy, _cCorpusSettingsPort);
         }
 
         return Task.CompletedTask;
     }
 
-    public Task CCorpusPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)
+    public Task CCorpusPortraitExport()
     {
         if (!CCorpusPortraitAllowed)
         {
             return Task.CompletedTask;
         }
 
-        return CCorpusQuotation.LQuotationPortraitExport(path, format, label);
+        return CCorpusQuotation.LQuotationPortraitExport(_cCorpusEnvoy, _cCorpusSettingsPort);
     }
 
     public void CCorpusVistaRestore()

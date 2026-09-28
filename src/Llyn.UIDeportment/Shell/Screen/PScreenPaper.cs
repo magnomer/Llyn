@@ -19,7 +19,7 @@ public partial class PScreen
         if (film is null)
         {
             return PScreenPaperFormat(
-                "<video id=\"reel\" src=\"" + PScreenTextFormat(address.AbsoluteUri) + "\" playsinline></video>\n"
+                "<video id=\"reel\" src=\"" + WebUtility.HtmlEncode(address.AbsoluteUri) + "\" playsinline></video>\n"
                 + "<script>\n"
                 + "var START = " + from + ";\n"
                 + "var END = " + until + ";\n"
@@ -59,7 +59,7 @@ public partial class PScreen
             + "    };\n"
             + "    if (END > START) { settings.end = END; }\n"
             + "    player = new YT.Player('reel', {\n"
-            + "        videoId: '" + PScreenTextFormat(film) + "',\n"
+            + "        videoId: '" + WebUtility.HtmlEncode(film) + "',\n"
             + "        playerVars: settings,\n"
             + "        events: {\n"
             + "            onReady: function () {\n"
@@ -102,10 +102,5 @@ public partial class PScreen
             + "html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }\n"
             + "#reel, iframe, video { width: 100%; height: 100%; border: 0; display: block; }\n"
             + "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>";
-    }
-
-    private static string PScreenTextFormat(string text)
-    {
-        return WebUtility.HtmlEncode(text);
     }
 }

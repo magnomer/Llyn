@@ -199,22 +199,21 @@ public sealed class TTaxonomy
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CTaxonomy taxonomy = TTaxonomyPrepare(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
+        string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
+        CTaxonomy taxonomy = TTaxonomyPrepare(
+            atelier, TInterfaceConduct.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, []));
         LEntry hearth = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "hearth", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
-        string path = Path.Combine(workspace.TWorkspaceFolder, "hearth.md");
 
-        await taxonomy.CTaxonomyPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await taxonomy.CTaxonomyPortraitExport();
 
         Assert.False(File.Exists(path));
-        Assert.Same(Task.CompletedTask, taxonomy.CTaxonomyPortraitPrint(TCorpus.TCorpusLabelCreate(), null!));
+        Assert.Same(Task.CompletedTask, taxonomy.CTaxonomyPortraitPrint());
 
         taxonomy.CTaxonomyPanel.CPanelRowOpen(hearth.LEntryId);
-        await taxonomy.CTaxonomyPortraitExport(
-            path, CPortraitMedium.CPortraitMediumMarkdown, TCorpus.TCorpusLabelCreate());
+        await taxonomy.CTaxonomyPortraitExport();
 
-        Assert.Equal("hearth", taxonomy.CTaxonomyFileRead());
+        Assert.Equal("hearth", taxonomy.TTaxonomyFileRead());
         Assert.Contains("hearth", File.ReadAllText(path), System.StringComparison.Ordinal);
     }
 

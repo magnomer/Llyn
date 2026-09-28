@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Printing;
 using System.Windows;
+using System.Windows.Controls;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -95,5 +98,67 @@ internal sealed class QEnvoy : CEnvoy
     public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)
     {
         QSCustoms.QSCustomsOmissionShow(_qEnvoyHost, omissions);
+    }
+
+    public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(
+        string file, IReadOnlyList<CPortraitChoice> choices)
+    {
+        ArgumentNullException.ThrowIfNull(choices);
+
+        Microsoft.Win32.SaveFileDialog dialog = new()
+        {
+            Title = QLocalizationCatalog.QLocalizationTextRead("Export.Title"),
+            Filter = string.Join(
+                "|",
+                choices.Select(static choice => string.Concat(
+                    QLocalizationCatalog.QLocalizationTextRead(choice.CPortraitChoiceKey),
+                    "|*",
+                    choice.CPortraitChoiceSuffix))),
+            FilterIndex = choices.ToList().FindIndex(static choice => choice.CPortraitChoiceChosen) + 1,
+            AddExtension = true,
+            FileName = file,
+        };
+
+        bool chosen = dialog.ShowDialog(_qEnvoySurface) == true;
+        CPortraitMedium medium = choices[Math.Clamp(dialog.FilterIndex - 1, 0, choices.Count - 1)]
+            .CPortraitChoiceMedium;
+
+        return (chosen ? dialog.FileName : null, medium);
+    }
+
+    public CPressTicket? CEnvoyTicketRead()
+    {
+        PrintDialog dialog = new()
+        {
+            UserPageRangeEnabled = false,
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return null;
+        }
+
+        PrintTicket chosen = dialog.PrintTicket;
+
+        return new CPressTicket(
+            dialog.PrintQueue.FullName,
+            chosen.PageMediaSize?.Width,
+            chosen.PageMediaSize?.Height,
+            chosen.PageOrientation is PageOrientation.Landscape or PageOrientation.ReverseLandscape,
+            chosen.CopyCount ?? 1,
+            chosen.Collation != Collation.Uncollated,
+            chosen.Duplexing switch
+            {
+                Duplexing.OneSided => CPressSide.CPressSideSingle,
+                Duplexing.TwoSidedLongEdge => CPressSide.CPressSideLong,
+                Duplexing.TwoSidedShortEdge => CPressSide.CPressSideShort,
+                _ => CPressSide.CPressSideDefault,
+            },
+            chosen.OutputColor switch
+            {
+                OutputColor.Color => CPressInk.CPressInkColor,
+                OutputColor.Grayscale or OutputColor.Monochrome => CPressInk.CPressInkGray,
+                _ => CPressInk.CPressInkDefault,
+            });
     }
 }

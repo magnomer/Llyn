@@ -22,6 +22,14 @@ Starts every background fetch a reading view of the entry shows, in the engine's
 
 The page of one rime cell with its labels localized through the given lookup.
 
+## `long LEngineDiweiResolve(long? id, string character);`
+
+The entry of a character shown on one rime cell, in the cell's language, made first when none exists.
+
+## `long LEngineStemResolve(long? id, string character);`
+
+The entry of a character in one phonetic series, in the series' language, made first when none exists.
+
 ## `(bool, string, string) LEngineMarkRead(string language);`
 
 Whether readings of `language` show their respelling, and the two brackets around a reading.

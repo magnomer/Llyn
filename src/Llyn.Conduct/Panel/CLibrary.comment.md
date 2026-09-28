@@ -41,17 +41,21 @@ Hands a chosen ordering to the vista, which keeps its own when the sender is no 
 The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, numbered and marked, so the list decides nothing about them.
 
-## `public string CLibraryFileRead()`
+## `internal string LLibraryFileRead()`
 
 The file name an export of the chosen entry is offered under.
 
-## `public Task CLibraryPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `public Task CLibraryPortraitPrint()`
 
-Prints the chosen entry, mapping the label and ticket to the engine's records unread.
+Prints the chosen entry.
+The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
+`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
 
-## `public Task CLibraryPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `public Task CLibraryPortraitExport()`
 
 Exports the chosen entry to `path` in the chosen format.
+The reader is asked for the file and format through the panel's envoy, and a decline exports nothing.
+`CPortrait` words the page through the engine and shows `Export.Failed` through the panel's envoy.
 
 ## `public async Task CLibraryMarkupImport(string? path)`
 

@@ -35,15 +35,15 @@ Takes the text typed into the dredge field as the list's query.
 Reads the entries quoting the roll's chosen Example, or every entry while none is chosen.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
 
-## `public string CQuotationFileRead()`
+## `internal string LQuotationFileRead()`
 
 The file name an export of the entry on display is offered under.
 
-## `internal Task LQuotationPortraitPrint(CPortraitLabel label, CPressTicket ticket)`
+## `internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry, mapping the label and ticket to the engine's records unread.
+Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
-## `internal Task LQuotationPortraitExport(string path, CPortraitMedium format, CPortraitLabel label)`
+## `internal Task LQuotationPortraitExport(CEnvoy envoy, LSettingsPort settings)`
 
 Exports the chosen entry to `path` in the chosen format.

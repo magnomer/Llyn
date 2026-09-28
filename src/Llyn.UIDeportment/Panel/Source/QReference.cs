@@ -416,7 +416,7 @@ internal sealed class QReference
 
     private async void QReferencePressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qReferenceHost.PWindowPressRun("Source", _cShelf.CShelfPortraitPrint);
+        await _cShelf.CShelfPortraitPrint();
     }
 
     private void QReferencePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -426,7 +426,6 @@ internal sealed class QReference
 
     private async void QReferencePortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        await _qReferenceHost.PWindowPortraitExport(
-            _cShelf.CShelfFootnote.CFootnoteFileRead(), _cShelf.CShelfPortraitExport);
+        await _cShelf.CShelfPortraitExport();
     }
 }
