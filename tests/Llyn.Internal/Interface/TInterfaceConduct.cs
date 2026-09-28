@@ -237,7 +237,6 @@ internal static class TInterfaceConduct
 
     internal static void TDeskCohortStart(this CDesk desk, long? register) => desk.LDeskCohortStart(register);
 
-    internal static IReadOnlyList<CUsage> TDisplayIncomingRead(this LDisplay display) => display.LDisplayIncomingRead();
 
     internal static void TFootnoteVistaRestore(this CFootnote footnote, LVista parent, LVista vista) =>
         footnote.LFootnoteVistaRestore(parent, vista);

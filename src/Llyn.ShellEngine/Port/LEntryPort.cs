@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
@@ -32,17 +33,16 @@ public interface LEntryPort
 
     LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once);
 
-    string LEngineEpithetRead(long entryId);
-
     IReadOnlyList<LUsage> LEngineIncomingRead(long entryId);
 
     IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft);
 
-    IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft);
+    (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft);
 
     LMentionResult LEngineMentionFind(long exampleId, int offset);
 
-    LMentionResult LEngineMentionFind(string text, string language, int offset, IReadOnlyList<LMention> mentions);
+    LMentionResult LEngineMentionFind(
+        string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions);
 
     IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions);
 
@@ -122,5 +122,41 @@ public interface LEntryPort
     static bool LEngineNarrativeCheck(string text)
     {
         return new LEtymologyDraft(text).LEtymologyDraftNarrated;
+    }
+
+    static (LSubject, long)? LEngineChipRead(object? chip, long? link)
+    {
+        return chip switch
+        {
+            LSituationDraft { LSituationDraftStored: true } situation
+                => (LSubject.LSubjectSituation, situation.LSituationDraftId),
+            LRegisterDraft { LRegisterDraftStored: true } register
+                => (LSubject.LSubjectRegister, register.LRegisterDraftId),
+            LTagDraft { LTagDraftStored: true } tag => (LSubject.LSubjectTag, tag.LTagDraftId),
+            _ => link is long id && id != 0 ? (LSubject.LSubjectEntry, id) : null,
+        };
+    }
+
+    static (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        for (int index = 0; index < draft.LEntryDraftMeanings.Count; index++)
+        {
+            if (draft.LEntryDraftMeanings[index].LCardDraftId == id)
+            {
+                return (LOwner.LOwnerMeaning, index);
+            }
+        }
+
+        for (int index = 0; index < draft.LEntryDraftCollocations.Count; index++)
+        {
+            if (draft.LEntryDraftCollocations[index].LCardDraftId == id)
+            {
+                return (LOwner.LOwnerCollocation, index);
+            }
+        }
+
+        return null;
     }
 }

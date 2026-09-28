@@ -12,7 +12,7 @@ An entry every page was not found for is asked once per session and stores nothi
 A held draft of the entry with no rows takes the stored rows and stays unchanged against the entry.
 The epithet is derived when the rows are stored and kept on the entry.
 It reads back blank once the rows are dropped.
-The setting hides it from the read without touching what is stored.
+The setting hides it from an incoming usage without touching what is stored.
 A workspace rebuilt from an older schema has its blank epithets and respellings derived once on open.
 The find that reads rows off the pages is covered in `TEngineReflex.cs`.
 The packs, pages and row readers the two share live in `TReflexFixture.cs`.

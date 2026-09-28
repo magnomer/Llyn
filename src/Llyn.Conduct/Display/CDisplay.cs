@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -9,17 +12,34 @@ public sealed class CDisplay
     private static readonly CLectern _cDisplayBlank = new(
         string.Empty, string.Empty, [], false, string.Empty, false, string.Empty, string.Empty, false);
 
+    private static readonly CLecternAccent _cDisplayMute = new(
+        new CRespellingMark(false, string.Empty, string.Empty),
+        false,
+        string.Empty,
+        false,
+        CSounding.CSoundingVarietyRead(string.Empty, string.Empty),
+        [],
+        false);
+
     private readonly LDisplay _cDisplayRule;
 
     private readonly LEntryPort _cDisplayPort;
 
-    internal CDisplay(LDisplay display, LEntryPort entries)
+    private readonly LPhonologyPort _cDisplayPhonology;
+
+    private readonly CEnvoy _cDisplayEnvoy;
+
+    internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(phonology);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cDisplayRule = display;
         _cDisplayPort = entries;
+        _cDisplayPhonology = phonology;
+        _cDisplayEnvoy = envoy;
     }
 
     public event Action? CDisplayOpened;
@@ -49,6 +69,8 @@ public sealed class CDisplay
     public int CDisplayGraspStep => _cDisplayRule.LDisplayGraspStep;
 
     private long? LDisplayChosen => _cDisplayRule.LDisplayChosen;
+
+    private LEntryDraft? LDisplayShown => _cDisplayRule.LDisplaySound.LDisplayShown;
 
     internal void LDisplayVistaAttach()
     {
@@ -201,5 +223,219 @@ public sealed class CDisplay
     public static bool CDisplayEtymonCheck(bool editable, int count)
     {
         return editable || count > 0;
+    }
+
+    public CLecternAccent CDisplayAccentRead()
+    {
+        if (LDisplayShown is not LEntryDraft shown)
+        {
+            return _cDisplayMute;
+        }
+
+        try
+        {
+            return LDisplayAccentRead(_cDisplayPhonology.LEngineAccentRead(shown));
+        }
+        catch (Exception exception)
+        {
+            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
+            return _cDisplayMute;
+        }
+    }
+
+    public async Task<CLecternAccent?> CDisplayEnsignLoad(
+        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+
+        if (LDisplayShown is not LEntryDraft shown)
+        {
+            return null;
+        }
+
+        LAccentSheet sheet;
+        try
+        {
+            sheet = await _cDisplayPhonology.LEngineAccentLoad(
+                shown, (rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete));
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return ReferenceEquals(shown, LDisplayShown) ? LDisplayAccentRead(sheet) : null;
+    }
+
+    private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)
+    {
+        string language = sheet.LAccentSheetLanguage;
+        return new CLecternAccent(
+            new CRespellingMark(sheet.LAccentSheetRespelled, sheet.LAccentSheetOpener, sheet.LAccentSheetCloser),
+            sheet.LAccentSheetTonal,
+            sheet.LAccentSheetPrimary.LAccentRowText,
+            sheet.LAccentSheetSpoken,
+            CSounding.CSoundingVarietyRead(language, sheet.LAccentSheetPrimary.LAccentRowVariety),
+            sheet.LAccentSheetRows
+                .Select(row => new CAccent(
+                    row.LAccentRowId,
+                    CSounding.CSoundingVarietyRead(language, row.LAccentRowVariety),
+                    row.LAccentRowText,
+                    row.LAccentRowAudio))
+                .ToList(),
+            sheet.LAccentSheetFlagged);
+    }
+
+    public CLecternCard CDisplayCardRead()
+    {
+        if (LDisplayShown is not LEntryDraft shown)
+        {
+            return new CLecternCard(LDisplayOrderRead(string.Empty), new Dictionary<long, string>(), [], false, false);
+        }
+
+        return new CLecternCard(
+            LDisplayOrderRead(shown.LEntryDraftLanguage),
+            LDisplayCitationRead(),
+            LDisplayTargetRead(shown),
+            shown.LEntryDraftDefined,
+            shown.LEntryDraftCollocated);
+    }
+
+    private CSentenceOrder LDisplayOrderRead(string language)
+    {
+        try
+        {
+            return CFolio.CFolioOrderRead(_cDisplayPhonology.LEngineOrderRead(language));
+        }
+        catch (Exception)
+        {
+            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
+        }
+    }
+
+    private IReadOnlyDictionary<long, string> LDisplayCitationRead()
+    {
+        try
+        {
+            return _cDisplayPort.LEngineCitationRead();
+        }
+        catch (Exception)
+        {
+            return new Dictionary<long, string>();
+        }
+    }
+
+    private IReadOnlyList<CTranslationTarget> LDisplayTargetRead(LEntryDraft shown)
+    {
+        try
+        {
+            return CFolio.CFolioTargetRead(_cDisplayPort.LEngineTargetRead(shown));
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    public IReadOnlyList<CUsage> CDisplayIncomingRead()
+    {
+        if (LDisplayChosen is not long id)
+        {
+            return [];
+        }
+
+        try
+        {
+            return _cDisplayPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
+        }
+        catch (Exception exception)
+        {
+            _cDisplayEnvoy.CEnvoyFailureShow("Display.IncomingFailed", exception);
+            return [];
+        }
+    }
+
+    public CLecternEtymology CDisplayEtymologyRead()
+    {
+        if (LDisplayShown is not LEntryDraft shown)
+        {
+            return new CLecternEtymology(string.Empty, string.Empty, [], false, false);
+        }
+
+        string text = shown.LEntryDraftEtymology.LEtymologyDraftText;
+        IReadOnlyList<LTranslationTarget> etymons;
+        bool narrated;
+        try
+        {
+            (etymons, narrated) = _cDisplayPort.LEngineEtymologyRead(shown);
+        }
+        catch (Exception)
+        {
+            (etymons, narrated) = ([], LEntryPort.LEngineNarrativeCheck(text));
+        }
+
+        return new CLecternEtymology(
+            shown.LEntryDraftLanguage, text, CFolio.CFolioTargetRead(etymons), narrated, shown.LEntryDraftDerived);
+    }
+
+    public bool CDisplayChipOpen(
+        object? chip,
+        long? link,
+        Func<long, bool> entrySeam,
+        Func<long, bool> situationSeam,
+        Func<long, bool> registerSeam,
+        Func<long, bool> tagSeam)
+    {
+        ArgumentNullException.ThrowIfNull(entrySeam);
+        ArgumentNullException.ThrowIfNull(situationSeam);
+        ArgumentNullException.ThrowIfNull(registerSeam);
+        ArgumentNullException.ThrowIfNull(tagSeam);
+
+        if (LEntryPort.LEngineChipRead(chip, link) is not (LSubject subject, long id))
+        {
+            return false;
+        }
+
+        Func<long, bool> seam = subject switch
+        {
+            LSubject.LSubjectEntry => entrySeam,
+            LSubject.LSubjectSituation => situationSeam,
+            LSubject.LSubjectRegister => registerSeam,
+            LSubject.LSubjectTag => tagSeam,
+            _ => throw new ArgumentOutOfRangeException(nameof(chip), subject, null),
+        };
+        seam(id);
+        return true;
+    }
+
+    public CMentionResult? CDisplayMentionFind(
+        string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)
+    {
+        try
+        {
+            return CMention.CMentionResultRead(_cDisplayPort.LEngineMentionFind(
+                text, language, LDisplayShown, offset, mentions is null ? null : CMention.CMentionRead(mentions)));
+        }
+        catch (Exception exception)
+        {
+            _cDisplayEnvoy.CEnvoyFailureShow("Mention.FindFailed", exception);
+            return null;
+        }
+    }
+
+    public (CCompassPart, int)? CDisplayCardFind(long id)
+    {
+        if (LDisplayShown is not LEntryDraft shown
+            || LEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, int index))
+        {
+            return null;
+        }
+
+        return owner switch
+        {
+            LOwner.LOwnerMeaning => (CCompassPart.CCompassPartMeaning, index),
+            LOwner.LOwnerCollocation => (CCompassPart.CCompassPartCollocation, index),
+            _ => throw new ArgumentOutOfRangeException(nameof(id), owner, null),
+        };
     }
 }

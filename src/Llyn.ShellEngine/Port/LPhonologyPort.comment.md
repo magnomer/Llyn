@@ -16,3 +16,15 @@ Whether the entry's rime-book rows are still being fetched.
 ## `LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize);`
 
 The page of one rime cell with its labels localized through the given lookup.
+
+## `(bool, string, string) LEngineMarkRead(string language);`
+
+Whether readings of `language` show their respelling, and the two brackets around a reading.
+
+## `LAccentSheet LEngineAccentRead(LEntryDraft draft);`
+
+The pronunciation block of `draft`, ready for the reading view.
+
+## `Task<LAccentSheet> LEngineAccentLoad(`
+
+Loads the variety flags the block of a draft draws, then answers the block.

@@ -187,6 +187,12 @@ internal sealed class LCardFacade
         return [.. etymons.Where(found.ContainsKey).Select(id => found[id])];
     }
 
+    public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft)
+    {
+        IReadOnlyList<LTranslationTarget> etymons = LEngineEtymonRead(draft);
+        return (etymons, draft.LEntryDraftEtymology.LEtymologyDraftNarrated || etymons.Count > 0);
+    }
+
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId)
     {
         LEntryDraft? draft = _lCardFacadeEngine.LEngineDraft.LEngineDraftRead(ownerId)?.LDraftContent;

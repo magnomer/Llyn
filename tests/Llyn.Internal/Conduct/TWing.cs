@@ -43,7 +43,7 @@ public sealed class TWing
 
         wing.CWingEntryOpen(target.LEntryId);
 
-        CUsage usage = Assert.Single(wing.CWingDisplay.TDisplayIncomingRead());
+        CUsage usage = Assert.Single(wing.CWingDisplay.CDisplayArea.CDisplayIncomingRead());
         Assert.Equal(water.LEntryId, usage.CUsageEntry);
         Assert.Equal("water", usage.CUsageName);
         Assert.Equal("English", usage.CUsageLanguage);

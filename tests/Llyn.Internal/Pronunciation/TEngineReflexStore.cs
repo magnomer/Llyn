@@ -145,9 +145,14 @@ public sealed class TEngineReflexStore
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry target = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("evil", "English", "", "", [], []));
         LEntry entry = engine.TEngineEntrySave(
             TReflexFixture.TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
             {
+                LEntryDraftMeanings =
+                [
+                    TInterface.TCardCreate("a state", 1) with { LCardDraftTranslation = [target.LEntryId] },
+                ],
                 LEntryDraftReflexes =
                 [
                     TInterface.TReflexDraftCreate("Korean", "", "악할 악(악)"),
@@ -156,14 +161,15 @@ public sealed class TEngineReflexStore
                 ],
             });
 
-        Assert.Equal("악할 악, 미워할 오", engine.TEngineEpithetRead(entry.LEntryId));
+        Assert.Equal(
+            "악할 악, 미워할 오", Assert.Single(engine.TEngineIncomingRead(target.LEntryId)).LUsageEpithet);
         Assert.Equal(
             "악할 악, 미워할 오",
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(entry.LEntryId));
 
         engine.TEngineEpithetSave(false);
 
-        Assert.Equal(string.Empty, engine.TEngineEpithetRead(entry.LEntryId));
+        Assert.Equal(string.Empty, Assert.Single(engine.TEngineIncomingRead(target.LEntryId)).LUsageEpithet);
 
         engine.TEngineEntryUpdate(
             entry.LEntryId, engine.TEngineEntryLoad(entry.LEntryId)! with { LEntryDraftReflexes = [] });
@@ -244,7 +250,7 @@ public sealed class TEngineReflexStore
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
 
-        Assert.Equal("악할 악", reopened.TEngineEpithetRead(id));
+        Assert.Equal("악할 악", TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(id));
         Assert.Equal(["", "tsiŋ³⁵"], reopened.TEntryReflexRead(id).Select(row => row.LReflexDraftRespelling));
     }
 

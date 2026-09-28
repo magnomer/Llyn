@@ -27,6 +27,12 @@ The setting must be on and the pack must declare respelling groups.
 The primary reading of `draft` as a field shows it, respelled when the setting and its pack both respell.
 A draft without a reading answers empty.
 
+## `public LAccentRow LLanguageAccentRead(LPronunciationDraft? spoken, bool respelled)`
+
+One pronunciation as the reading view prints it, its reading resolved by the draft's own rule.
+`respelled` is the pack's answer for the switch, so the caller asks it once for every row.
+No pronunciation answers a blank row.
+
 ## `public bool LLanguagePhonemicCheck(string language)`
 
 Whether the pack of `language` is phonemic.

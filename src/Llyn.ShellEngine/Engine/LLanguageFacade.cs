@@ -144,6 +144,46 @@ internal sealed class LLanguageFacade
         return draft.LEntryDraftLanguage.Length > 0 && LEngineFlaggedCheck(draft.LEntryDraftLanguage);
     }
 
+    public LAccentSheet LEngineAccentRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        string language = draft.LEntryDraftLanguage;
+        (bool respelled, string opener, string closer) =
+            _lLanguageFacadeEngine.LEngineSettings.LEngineMarkRead(language);
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return new LAccentSheet(
+            language,
+            LEngineFlaggedCheck(draft),
+            LEngineTonalCheck(language),
+            respelled,
+            opener,
+            closer,
+            languages.LLanguageAccentRead(draft.LEntryDraftPronunciation, respelled),
+            draft.LEntryDraftAccents
+                .Where(static spoken => spoken.LPronunciationDraftNotated)
+                .Select(spoken => languages.LLanguageAccentRead(spoken, respelled))
+                .ToList());
+    }
+
+    public async Task<LAccentSheet> LEngineAccentLoad(
+        LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)
+    {
+        LAccentSheet sheet = LEngineAccentRead(draft);
+        if (sheet.LAccentSheetFlagged)
+        {
+            await LEngineEnsignLoad(sheet.LAccentSheetLanguage, sheet.LAccentSheetVarieties, store)
+                .ConfigureAwait(true);
+        }
+
+        return sheet;
+    }
+
     public bool LEngineTonalCheck(string language)
     {
         return !string.IsNullOrWhiteSpace(language) && LEngineLanguageLoad(language).LLanguageTonal;

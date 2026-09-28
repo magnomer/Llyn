@@ -220,47 +220,6 @@ public sealed class LDisplaySound
         }
     }
 
-    public bool LDisplayTonalCheck()
-    {
-        try
-        {
-            return _lDisplaySoundDraft is not null
-                && _lPhonologyPort.LEngineTonalCheck(_lDisplaySoundDraft.LEntryDraftLanguage);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
-            return false;
-        }
-    }
-
-    public bool LDisplayFlaggedCheck()
-    {
-        try
-        {
-            return _lDisplaySoundDraft is not null && _lPhonologyPort.LEngineFlaggedCheck(_lDisplaySoundDraft);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
-            return false;
-        }
-    }
-
-    public bool LDisplayFlaggedCheck(string language)
-    {
-        return string.Equals(_lDisplaySoundDraft?.LEntryDraftLanguage, language, StringComparison.Ordinal)
-            && LDisplayFlaggedCheck();
-    }
-
-    public IReadOnlyList<LPronunciationDraft> LDisplayAccentRead()
-    {
-        return _lDisplaySoundDraft?.LEntryDraftAccents
-            .Where(static spoken => spoken.LPronunciationDraftNotated)
-            .ToList()
-            ?? [];
-    }
-
     public IReadOnlyList<LTranscriptionDraft> LDisplayTranscriptionRead()
     {
         if (_lDisplaySoundDraft is null)

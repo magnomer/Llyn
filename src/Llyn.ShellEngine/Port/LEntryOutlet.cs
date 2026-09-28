@@ -48,16 +48,14 @@ public sealed class LEntryOutlet : LEntryPort
     public LFrequencyGauge? LEngineFrequencyResolve(long entryId, string once) =>
         _lEntryOutletEngine.LEnginePronunciation.LEngineFrequencyResolve(entryId, once);
 
-    public string LEngineEpithetRead(long entryId) => _lEntryOutletEngine.LEngineEntry.LEngineEpithetRead(entryId);
-
     public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId) =>
         _lEntryOutletEngine.LEngineCard.LEngineIncomingRead(entryId);
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineCard.LEngineTargetRead(draft);
 
-    public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft) =>
-        _lEntryOutletEngine.LEngineCard.LEngineEtymonRead(draft);
+    public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft) =>
+        _lEntryOutletEngine.LEngineCard.LEngineEtymologyRead(draft);
 
     public LMentionResult LEngineMentionFind(long exampleId, int offset) =>
         _lEntryOutletEngine.LEngineMention.LEngineMentionFind(exampleId, offset);
@@ -65,9 +63,10 @@ public sealed class LEntryOutlet : LEntryPort
     public LMentionResult LEngineMentionFind(
         string text,
         string language,
+        LEntryDraft? shown,
         int offset,
-        IReadOnlyList<LMention> mentions) =>
-        _lEntryOutletEngine.LEngineMention.LEngineMentionFind(text, language, offset, mentions);
+        IReadOnlyList<LMention>? mentions) =>
+        _lEntryOutletEngine.LEngineMention.LEngineMentionFind(text, language, shown, offset, mentions);
 
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions) =>
         _lEntryOutletEngine.LEngineMention.LEngineMentionResolve(text, mentions);

@@ -11,29 +11,33 @@ public sealed class LDisplay
 {
     private readonly LEntryPort _lEntryPort;
 
-    private readonly LPhonologyPort _lPhonologyPort;
+    private readonly CEnvoy _lDisplayEnvoy;
 
     private LVista? _lDisplayVista;
 
     private (long, int)? _lDisplayGrasp;
 
     internal LDisplay(
-        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media)
+        LDraftPort drafts,
+        LEntryPort entries,
+        LPhonologyPort phonology,
+        LSettingsPort settings,
+        LMediaPort media,
+        CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _lEntryPort = entries;
-        _lPhonologyPort = phonology;
+        _lDisplayEnvoy = envoy;
         LDisplaySound = new LDisplaySound(drafts, entries, phonology, media, settings);
-        LDisplaySound.LDisplaySoundFailed += (key, exception) => LDisplayFailed?.Invoke(key, exception);
-        CDisplayArea = new CDisplay(this, entries);
+        LDisplaySound.LDisplaySoundFailed += envoy.CEnvoyFailureShow;
+        CDisplayArea = new CDisplay(this, entries, phonology, envoy);
     }
 
     public LDisplaySound LDisplaySound { get; }
 
     public CDisplay CDisplayArea { get; }
-
-    public event Action<string, Exception>? LDisplayFailed;
 
     internal long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
 
@@ -68,7 +72,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            LDisplayFailed?.Invoke("Sound.LoadFailed", exception);
+            _lDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
             return;
         }
 
@@ -125,7 +129,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            LDisplayFailed?.Invoke("Favorite.MarkFailed", exception);
+            _lDisplayEnvoy.CEnvoyFailureShow("Favorite.MarkFailed", exception);
         }
     }
 
@@ -194,16 +198,9 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            LDisplayFailed?.Invoke("Display.NameFailed", exception);
+            _lDisplayEnvoy.CEnvoyFailureShow("Display.NameFailed", exception);
             return labels;
         }
-    }
-
-    public static bool LDisplayCardCheck(LCardDraft card, long id)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-
-        return card.LCardDraftId == id;
     }
 
     internal string LDisplayGraspFormat(long? entry, int step)
@@ -247,7 +244,7 @@ public sealed class LDisplay
         }
         catch (Exception exception)
         {
-            LDisplayFailed?.Invoke("Grasp.MarkFailed", exception);
+            _lDisplayEnvoy.CEnvoyFailureShow("Grasp.MarkFailed", exception);
         }
     }
 
@@ -276,144 +273,5 @@ public sealed class LDisplay
                 gauge.LFrequencyGaugeRank,
                 gauge.LFrequencyGaugeSpare,
                 gauge.LFrequencyGaugeRanked);
-    }
-
-    public IReadOnlyList<CUsage> LDisplayIncomingRead()
-    {
-        if (LDisplayChosen is not long id)
-        {
-            return [];
-        }
-
-        IReadOnlyList<LUsage> incoming;
-        try
-        {
-            incoming = _lEntryPort.LEngineIncomingRead(id);
-        }
-        catch (Exception exception)
-        {
-            LDisplayFailed?.Invoke("Display.IncomingFailed", exception);
-            return [];
-        }
-
-        Exception? missed = null;
-        List<CUsage> usages = new(incoming.Count);
-        foreach (LUsage usage in incoming)
-        {
-            string epithet;
-            try
-            {
-                epithet = _lEntryPort.LEngineEpithetRead(usage.LUsageEntry);
-            }
-            catch (Exception exception)
-            {
-                epithet = string.Empty;
-                missed ??= exception;
-            }
-
-            usages.Add(COeuvre.COeuvreUsageRead(usage with { LUsageEpithet = epithet }));
-        }
-
-        if (missed is not null)
-        {
-            LDisplayFailed?.Invoke("Display.EpithetFailed", missed);
-        }
-
-        return usages;
-    }
-
-    public IReadOnlyList<LTranslationTarget> LDisplayTargetRead()
-    {
-        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
-        {
-            return [];
-        }
-
-        try
-        {
-            return _lEntryPort.LEngineTargetRead(draft);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
-    }
-
-    public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead()
-    {
-        return LDisplaySound.LDisplayShown is LEntryDraft draft ? LDisplayEtymonRead(draft) : [];
-    }
-
-    public CSentenceOrder LDisplayOrderRead()
-    {
-        if (LDisplaySound.LDisplayShown is not LEntryDraft draft)
-        {
-            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
-        }
-
-        try
-        {
-            return CFolio.CFolioOrderRead(_lPhonologyPort.LEngineOrderRead(draft.LEntryDraftLanguage));
-        }
-        catch (Exception)
-        {
-            return CFolio.CFolioOrderRead(LSentenceOrder.LSentenceOrderDefault);
-        }
-    }
-
-    public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)
-    {
-        try
-        {
-            return _lEntryPort.LEngineEtymonRead(draft);
-        }
-        catch (Exception)
-        {
-            return [];
-        }
-    }
-
-    public static bool LDisplayEtymologyCheck(string text, int count)
-    {
-        return text.Trim().Length > 0 || count > 0;
-    }
-
-    public IReadOnlyDictionary<long, string> LDisplayCitationRead()
-    {
-        try
-        {
-            return _lEntryPort.LEngineCitationRead();
-        }
-        catch (Exception)
-        {
-            return new Dictionary<long, string>();
-        }
-    }
-
-    public void LDisplayMentionFind<LDisplayAnchor>(
-        LDisplayAnchor anchor,
-        string text,
-        string language,
-        int offset,
-        IReadOnlyList<LMention>? mentions,
-        Action<LDisplayAnchor, LMentionResult> show)
-    {
-        ArgumentNullException.ThrowIfNull(show);
-
-        string shown = language.Length > 0
-            ? language
-            : LDisplaySound.LDisplayShown?.LEntryDraftLanguage ?? string.Empty;
-        LMentionResult result;
-        try
-        {
-            result = _lEntryPort.LEngineMentionFind(text, shown, offset, mentions ?? []);
-        }
-        catch (Exception exception)
-        {
-            LDisplayFailed?.Invoke("Mention.FindFailed", exception);
-            return;
-        }
-
-        show(anchor, result);
     }
 }

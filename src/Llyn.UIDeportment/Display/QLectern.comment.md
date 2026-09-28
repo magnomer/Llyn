@@ -17,13 +17,13 @@ A view following no panel, such as the wing's, takes the other constructor.
 
 The display's area, whose gates the view hosting this driver calls directly.
 
-## `public LLecternCard QLecternCard { get; }`
+## `public QLecternCard QLecternCard { get; }`
 
 The card half, built over the display, which draws the cards, incoming rows and etymology and answers their clicks.
 
-## `public LLecternAccent QLecternAccent { get; }`
+## `public QLecternAccent QLecternAccent { get; }`
 
-The accent half, built over the display's sound, which draws the primary pronunciation and the accent rows.
+The accent half, built over the display's area, which draws the primary pronunciation and the accent rows.
 
 ## `public LLecternSound QLecternSound { get; }`
 
@@ -50,6 +50,8 @@ Takes the atelier, the unselected notice, the page and the swath's clear, then a
 The swath's clear is a seam, since the band a reader drags lies in the veneer.
 Opening or closing an entry drops the band first, since the text it spanned is gone.
 The header, the halves and the compass then redraw in subscription order.
+The card half fills its converters before its card lists, and both before the compass measures them.
+The accent half draws its rows before it loads their flags, so the late flags land on drawn rows.
 The engine's notices arrive on its own thread, so each is marshalled onto `contents` through `LObserver`.
 The draft reload and the workspace swap go straight back to the area's resonates.
 A lectern no view attached to answers nothing, since panels announce drafts in tests with no veneer.

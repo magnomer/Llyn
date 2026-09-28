@@ -48,6 +48,17 @@ public sealed class LLanguageClerk
                 LLanguageRespellingCheck(draft.LEntryDraftLanguage, respelled))
             ?? string.Empty;
     }
+    public LAccentRow LLanguageAccentRead(LPronunciationDraft? spoken, bool respelled)
+    {
+        return spoken is null
+            ? new LAccentRow(0, string.Empty, string.Empty, string.Empty)
+            : new LAccentRow(
+                spoken.LPronunciationDraftId,
+                spoken.LPronunciationDraftVariety,
+                spoken.LPronunciationDraftRead(respelled),
+                spoken.LPronunciationDraftAudio);
+    }
+
     public bool LLanguagePhonemicCheck(string language)
     {
         ArgumentNullException.ThrowIfNull(language);

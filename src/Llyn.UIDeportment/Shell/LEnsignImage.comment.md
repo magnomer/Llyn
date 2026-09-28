@@ -35,6 +35,12 @@ A catalog row must be built the moment its list is filled, so it cannot wait for
 Every surface that shows a flag awaits this first, and then reads without waiting.
 A pack installed while the program runs is picked up by the next call.
 
+## `public static async Task<LEnsignAnswer> LEnsignLoad<LEnsignAnswer>(`
+
+Runs a Conduct flag load that picks its own flags, handing it this store, and answers what the load answers.
+The reading view's pronunciation block loads through it, so Conduct names the varieties and the driver none.
+It shares the gate with the other fills, so one fill runs at a time.
+
 ## `public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)`
 
 The same fill for the named varieties of `language`, each drawn under `language/variety`.

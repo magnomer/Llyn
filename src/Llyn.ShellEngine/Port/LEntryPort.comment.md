@@ -85,3 +85,15 @@ The engine parses and words the stored stamps, so Conduct only copies them.
 
 Whether an etymology narrative holds words, by the etymology draft's own rule.
 It is static, since the reading view asks it of text a control holds and no port is at hand.
+
+## `static (LSubject, long)? LEngineChipRead(object? chip, long? link)`
+
+The kind and id of the stored record a clicked chip names, or null when it names none.
+A situation, register or tag chip names its record once it is stored.
+A link names its entry, which only a stored id can be.
+It is static, since it reads only what the click hands over.
+
+## `static (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)`
+
+Which card list of `draft` holds the card `id`, and at which place, or null when neither does.
+It is static, since it reads only the draft the caller holds.

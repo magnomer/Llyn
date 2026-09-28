@@ -10,25 +10,25 @@ namespace Llyn.Tests;
 public sealed class TAtelierRespelling
 {
     [Theory]
-    [InlineData(false, false, "[", "]")]
-    [InlineData(false, true, "[", "]")]
-    [InlineData(true, false, "[", "]")]
-    [InlineData(true, true, "/", "/")]
-    public void RespellingMarkRead_Modes_ReadsBrackets(bool respelled, bool phonemic, string opener, string closer)
+    [InlineData(false, "[", "]")]
+    [InlineData(true, "/", "/")]
+    public void RespellingMarkRead_EngineMark_CopiesTheSwitchAndBrackets(bool respelled, string opener, string closer)
     {
+        List<string> asked = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierRespellingCreate(engine, respelled, phonemic);
+        using CAtelier atelier = TAtelierRespellingCreate(engine, (respelled, opener, closer), asked);
 
         CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en");
 
         Assert.Equal(new CRespellingMark(respelled, opener, closer), mark);
+        Assert.Equal(["en"], asked);
     }
 
     [Fact]
     public void RespellingMarkRead_Schemed_ReadsBare()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
-        using CAtelier atelier = TAtelierRespellingCreate(engine, true, true);
+        using CAtelier atelier = TAtelierRespellingCreate(engine, (true, "/", "/"), []);
 
         CRespellingMark mark = atelier.CAtelierRespelling.CRespellingMarkRead("en", true);
 
@@ -133,12 +133,16 @@ public sealed class TAtelierRespelling
             [7], "55");
     }
 
-    private static CAtelier TAtelierRespellingCreate(LEngine engine, bool respelled, bool phonemic)
+    private static CAtelier TAtelierRespellingCreate(
+        LEngine engine, (bool, string, string) mark, List<string> asked)
     {
         return TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["LEngineRespellingCheck"] = _ => respelled,
-            ["LEnginePhonemicCheck"] = _ => phonemic,
+            ["LEngineMarkRead"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return mark;
+            },
         });
     }
 }

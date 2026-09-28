@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -80,7 +82,12 @@ public interface LPhonologyPort
 
     bool LEngineRespellingCheck(string language);
 
-    bool LEngineFlaggedCheck(LEntryDraft draft);
+    (bool, string, string) LEngineMarkRead(string language);
+
+    LAccentSheet LEngineAccentRead(LEntryDraft draft);
+
+    Task<LAccentSheet> LEngineAccentLoad(
+        LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store);
 
     IReadOnlyList<string> LEngineSchemeRead(string language);
 

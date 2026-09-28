@@ -72,6 +72,22 @@ public static class LEnsignImage
     }
 
 
+    public static async Task<LEnsignAnswer> LEnsignLoad<LEnsignAnswer>(
+        Func<Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action>, Task<LEnsignAnswer>> load)
+    {
+        ArgumentNullException.ThrowIfNull(load);
+
+        await LEnsignGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            return await load(LEnsignStoreAdd).ConfigureAwait(true);
+        }
+        finally
+        {
+            LEnsignGate.Release();
+        }
+    }
+
     public static async Task LEnsignVarietyLoad(CAtelier atelier, string language, IEnumerable<string> varieties)
     {
         ArgumentNullException.ThrowIfNull(atelier);

@@ -3,7 +3,7 @@
 ## `public sealed class TAtelierRespelling`
 
 Covers every notation rule the respelling gates own, over a fake phonology port.
-A pronunciation stands between slashes only when respelled and phonemic, and in square brackets otherwise.
+A pronunciation's mark copies the switch and both brackets the engine answers for its language.
 A schemed transcription prints the phonetic bare.
 A reflex stands between slashes whenever its language is phonemic, and bare otherwise.
 A reflex row answers ready to show, its text resolved and its fold read in the same engine call.
@@ -15,6 +15,6 @@ An accent row carries the resolved form, its audio and its variety's keys.
 
 Builds one draft reflex with one anchor and a tone, so a scan's copy of them shows.
 
-## `private static CAtelier TAtelierRespellingCreate(LEngine engine, bool respelled, bool phonemic)`
+## `private static CAtelier TAtelierRespellingCreate(LEngine engine, (bool, string, string) mark, List<string> asked)`
 
-Builds the atelier whose phonology port answers the two switches for every language.
+Builds the atelier whose phonology port answers `mark` for every language and notes each language asked.

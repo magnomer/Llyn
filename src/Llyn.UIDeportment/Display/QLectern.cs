@@ -60,10 +60,10 @@ public sealed class QLectern
 
         _qLecternDisplay = display;
         QLecternArea = display.CDisplayArea;
-        QLecternAccent = new LLecternAccent(display.LDisplaySound);
+        QLecternAccent = new QLecternAccent(display.CDisplayArea);
         QLecternSound = new LLecternSound(display.LDisplaySound);
         QLecternPlayback = new LLecternPlayback(display.LDisplaySound);
-        QLecternCard = new LLecternCard(display);
+        QLecternCard = new QLecternCard(display);
     }
 
     public QLectern(LDisplay display, CPanel panel)
@@ -74,13 +74,13 @@ public sealed class QLectern
 
     public CDisplay QLecternArea { get; }
 
-    public LLecternAccent QLecternAccent { get; }
+    public QLecternAccent QLecternAccent { get; }
 
     public LLecternSound QLecternSound { get; }
 
     public LLecternPlayback QLecternPlayback { get; }
 
-    public LLecternCard QLecternCard { get; }
+    public QLecternCard QLecternCard { get; }
 
     public QCompass QLecternCompass { get; private set; } = null!;
 
@@ -118,16 +118,20 @@ public sealed class QLectern
         QLecternArea.CDisplayOpened += QLecternGraspRefine;
         QLecternArea.CDisplayOpened += QLecternFrequencyRefine;
         QLecternArea.CDisplayOpened += QLecternPlayback.LLecternPlaybackShow;
-        QLecternArea.CDisplayOpened += QLecternAccent.LLecternAccentShow;
+        QLecternArea.CDisplayOpened += QLecternAccent.QLecternAccentRefine;
+        QLecternArea.CDisplayOpened += QLecternAccent.QLecternEnsignRefine;
         QLecternArea.CDisplayOpened += QLecternSound.LLecternSoundShow;
-        QLecternArea.CDisplayOpened += QLecternCard.LLecternCardShow;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternCardRefine;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternLeafRefine;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternIncomingRefine;
+        QLecternArea.CDisplayOpened += QLecternCard.QLecternEtymologyRefine;
 
         QLecternArea.CDisplayClosed += swathSeam;
         QLecternArea.CDisplayClosed += QLecternEmptyRefine;
         QLecternArea.CDisplayClosed += QLecternPlayback.LLecternPlaybackClear;
-        QLecternArea.CDisplayClosed += QLecternAccent.LLecternAccentClear;
+        QLecternArea.CDisplayClosed += QLecternAccent.QLecternMuteRefine;
         QLecternArea.CDisplayClosed += QLecternSound.LLecternSoundClear;
-        QLecternArea.CDisplayClosed += QLecternCard.LLecternCardClear;
+        QLecternArea.CDisplayClosed += QLecternCard.QLecternBlankRefine;
 
         QLecternArea.CDisplayFavoriteChanged += LObserver.LObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
         QLecternArea.CDisplayGraspChanged += LObserver.LObserverCreate<CBulletin>(contents, QLecternGraspRefine);

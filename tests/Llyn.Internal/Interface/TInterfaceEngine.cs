@@ -326,9 +326,6 @@ internal static partial class TInterface
     internal static void TEngineEpithetSave(this LEngine engine, bool epithet) =>
         engine.LEngineSettings.LEngineEpithetSave(epithet);
 
-    internal static string TEngineEpithetRead(this LEngine engine, long entryId) =>
-        engine.LEngineEntry.LEngineEpithetRead(entryId);
-
     internal static void TEngineRespellingSave(this LEngine engine, bool respelled)
     {
         engine.LEngineSettings.LEngineRespellingSave(respelled);
@@ -344,6 +341,9 @@ internal static partial class TInterface
 
     internal static bool TEnginePhonemicCheck(this LEngine engine, string language) =>
         engine.LEngineSettings.LEnginePhonemicCheck(language);
+
+    internal static (bool, string, string) TEngineMarkRead(this LEngine engine, string language) =>
+        engine.LEngineSettings.LEngineMarkRead(language);
 
     internal static void TEngineFrequencySave(this LEngine engine, bool frequency)
     {

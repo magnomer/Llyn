@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -117,8 +119,15 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEngineRespellingCheck(string language) =>
         _lPhonologyOutletEngine.LEngineSettings.LEngineRespellingCheck(language);
 
-    public bool LEngineFlaggedCheck(LEntryDraft draft) =>
-        _lPhonologyOutletEngine.LEngineLanguage.LEngineFlaggedCheck(draft);
+    public (bool, string, string) LEngineMarkRead(string language) =>
+        _lPhonologyOutletEngine.LEngineSettings.LEngineMarkRead(language);
+
+    public LAccentSheet LEngineAccentRead(LEntryDraft draft) =>
+        _lPhonologyOutletEngine.LEngineLanguage.LEngineAccentRead(draft);
+
+    public Task<LAccentSheet> LEngineAccentLoad(
+        LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store) =>
+        _lPhonologyOutletEngine.LEngineLanguage.LEngineAccentLoad(draft, store);
 
     public IReadOnlyList<string> LEngineSchemeRead(string language) =>
         _lPhonologyOutletEngine.LEnginePronunciation.LEngineSchemeRead(language);

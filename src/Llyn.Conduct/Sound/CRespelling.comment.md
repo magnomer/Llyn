@@ -3,26 +3,17 @@
 ## `public sealed class CRespelling`
 
 The respelling gates: which form of a reading a driver prints, and what stands around it.
-Every notation rule lives here, so no driver chooses a bracket or a slash.
+Every notation answer is read here, so no driver chooses a bracket or a slash.
 It stands on the atelier's phonology port, and `CAtelier` builds the one instance every driver shares.
 
 ## `internal CRespelling(CAtelier atelier)`
 
 Only the atelier builds it, so each session has one.
 
-## `public bool CRespellingCheck(string language)`
-
-Whether the switch shows respellings for the language.
-
-## `public bool CRespellingPhonemicCheck(string language)`
-
-Whether the language's pack marks its respelling as phonemic.
-
 ## `public CRespellingMark CRespellingMarkRead(string language)`
 
 The mark a pronunciation row prints under.
-A phonemic respelling stands between slashes, and anything else between square brackets.
-The phonemic flag is asked only while respellings are shown.
+The engine answers the switch and both brackets, so the bracket rule has one owner below.
 
 ## `public CRespellingMark CRespellingMarkRead(string language, bool schemed)`
 

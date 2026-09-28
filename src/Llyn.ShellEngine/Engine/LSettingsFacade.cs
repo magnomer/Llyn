@@ -117,6 +117,13 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal (bool, string, string) LEngineMarkRead(string language)
+    {
+        bool respelled = LEngineRespellingCheck(language);
+        bool slashed = respelled && LEnginePhonemicCheck(language);
+        return (respelled, slashed ? "/" : "[", slashed ? "/" : "]");
+    }
+
     internal void LEngineEpithetSave(bool epithet)
     {
         if (LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet }))

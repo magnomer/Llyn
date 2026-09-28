@@ -11,6 +11,15 @@ It holds no state beyond the shown header, since the shown draft stays in the so
 
 The header while nothing is shown, every field empty.
 
+## `private static readonly CLecternAccent _cDisplayMute`
+
+The pronunciation block while nothing is shown or the pack refused, with no reading, row or flag.
+
+## `internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, CEnvoy envoy)`
+
+Only the display builds its area, over the ports and the envoy the panel handed down.
+A refused read is shown through `envoy`, so every driver over this display shows it once.
+
 ## `public event Action? CDisplayOpened;`
 
 Raised on the calling thread once an entry opens and `CDisplayShown` holds its header.
@@ -112,3 +121,80 @@ Whether text holds words is the engine's rule, so no trim happens here.
 ## `public static bool CDisplayEtymonCheck(bool editable, int count)`
 
 Whether the row of source links shows: always while editable, else only with a link.
+
+## `private LEntryDraft? LDisplayShown`
+
+The shown draft the sound half holds, passed unread to the engine.
+
+## `public CLecternAccent CDisplayAccentRead()`
+
+The shown entry's pronunciation block, ready to draw.
+The engine answers the readings, the brackets and the pack's verdicts in one read.
+Conduct only chooses each variety's label key through `CSounding.CSoundingVarietyRead`.
+Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed` and answers it too.
+
+## `public async Task<CLecternAccent?> CDisplayEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
+
+The load a driver starts once an entry opened, for the flags its pronunciation block draws.
+The engine picks the varieties and loads nothing for a pack that names them.
+`store` is the driver's own image store, handed the rows through the one flag map.
+It answers the block again once the flags are in, so the driver repaints its rows.
+Another entry shown meanwhile wins, so a late load answers null and paints nothing.
+A refused load answers null too, since a missing flag falls back to its name.
+
+## `private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
+
+Maps the engine's block into the Conduct record, reading no rule.
+
+## `public CLecternCard CDisplayCardRead()`
+
+What the card templates read beside the shown entry's cards.
+The order, the bylines and the link names are three reads, each answering empty when refused.
+The page thus still draws, as the sentence frame's read does in the editor.
+
+## `private CSentenceOrder LDisplayOrderRead(string language)`
+
+The sentence order of `language`, or the default order when the read is refused.
+
+## `private IReadOnlyDictionary<long, string> LDisplayCitationRead()`
+
+The byline of every Source, or none when the read is refused.
+It is read on every open, so a Source edited elsewhere reads fresh.
+
+## `private IReadOnlyList<CTranslationTarget> LDisplayTargetRead(LEntryDraft shown)`
+
+The headwords the shown draft's cards and etymology link to, or none when the read is refused.
+
+## `public IReadOnlyList<CUsage> CDisplayIncomingRead()`
+
+The usages pointing at the chosen entry, each with the epithet the settings ask for.
+The engine names each usage and its epithet in one read.
+No entry chosen answers no usages.
+A refused read shows `Display.IncomingFailed` and answers no usages.
+Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
+
+## `public CLecternEtymology CDisplayEtymologyRead()`
+
+The shown entry's etymology, with whether its field and its section show.
+The engine names the links and says whether a narrative or a link stands.
+A refused link read answers no links, and the field then shows by its narrative alone.
+
+## `public bool CDisplayChipOpen(object? chip, long? link, Func<long, bool> entrySeam, Func<long, bool> situationSeam, Func<long, bool> registerSeam, Func<long, bool> tagSeam)`
+
+The gate for a chip clicked on a card or a source link clicked in the etymology.
+`chip` is what the clicked chip carries, and `link` the entry id a link chip names.
+The engine says which stored record the click names, and a record never saved names none.
+The record's kind then picks the panel that opens it, through the driver's seam for that panel.
+It answers whether a panel was asked, so the driver marks the click handled.
+
+## `public CMentionResult? CDisplayMentionFind(string text, string language, int offset, IReadOnlyList<CMentionMark>? mentions)`
+
+The gate for a word clicked in a sentence of the reading view.
+The engine reads what stands at `offset`, in the shown entry's language when the text names none.
+A refused lookup shows `Mention.FindFailed` and answers null, so the click opens nothing.
+
+## `public (CCompassPart, int)? CDisplayCardFind(long id)`
+
+Which card list of the shown entry holds the card `id`, and at which place.
+The engine finds the card, and its list maps by name to the compass part.
+It answers null when nothing is shown or the entry has no such card.

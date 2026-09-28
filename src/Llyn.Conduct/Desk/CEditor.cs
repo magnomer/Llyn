@@ -26,7 +26,7 @@ public sealed class CEditor
         ArgumentNullException.ThrowIfNull(media);
 
         CEditorDesk = new CDesk(drafts, "Input", envoy);
-        CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media);
+        CEditorDisplay = new LDisplay(drafts, entries, phonology, settings, media, envoy);
         CEditorCard = new CCard(CEditorDesk, drafts, entries);
         CEditorSentence = new CSentence(CEditorDesk, phonology);
         CEditorSounding = new CSounding(CEditorDesk, phonology, drafts, envoy);

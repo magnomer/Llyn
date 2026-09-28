@@ -106,10 +106,6 @@ Writes the user's grasp onto the entry.
 The range is checked before any write, so a bad value reaches neither the store nor a subscriber.
 No revision is recorded, because a rating is a reading mark and not an edit of the word.
 
-## `public string LEntryEpithetRead(long entryId)`
-
-The epithet stored on the entry, or empty for an id no entry carries.
-
 ## `public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)`
 
 The epithet of every listed entry that has one, keyed by id, in one statement.

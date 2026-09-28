@@ -77,6 +77,13 @@ The primary reading of `draft` under the held respelling setting, through the la
 
 Whether the pack of `language` is phonemic, through the language clerk.
 
+## `internal (bool, string, string) LEngineMarkRead(string language)`
+
+Whether readings of `language` show their respelling, and the brackets around them.
+A respelled phonemic pack writes its readings between slashes.
+Every other reading stands between square brackets.
+This is the one owner of the bracket rule, so the editor and the reading view print alike.
+
 ## `internal void LEngineEpithetSave(bool epithet)`
 
 Turns the epithet after every listed headword on or off.

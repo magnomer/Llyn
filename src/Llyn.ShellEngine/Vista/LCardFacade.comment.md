@@ -63,6 +63,11 @@ The library list then shows the stub at once.
 The source links of the draft's etymology, named and in the draft's own order.
 A link whose entry is gone is left out, so a chip is never drawn blank.
 
+## `public (IReadOnlyList<LTranslationTarget>, bool) LEngineEtymologyRead(LEntryDraft draft)`
+
+The draft's named source links, and whether its etymology has anything to show.
+It shows with a narrative that holds words or with a link whose entry still stands.
+
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(LEntryDraft draft)`
 
 The targets of the draft's link ids, so a card resolves its chips in one read.

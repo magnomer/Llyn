@@ -180,11 +180,6 @@ public sealed class LEntryClerk
         _lEntryClerkEntries.LEntryGraspSet(entryId, grasp);
     }
 
-    public string LEntryEpithetRead(long entryId)
-    {
-        return entryId <= 0 ? string.Empty : _lEntryClerkEntries.LEntryEpithetRead(entryId);
-    }
-
     public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)
     {
         ArgumentNullException.ThrowIfNull(ids);

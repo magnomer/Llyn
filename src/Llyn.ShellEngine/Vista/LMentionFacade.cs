@@ -36,6 +36,16 @@ internal sealed class LMentionFacade
         }
     }
 
+    public LMentionResult LEngineMentionFind(
+        string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions)
+    {
+        return LEngineMentionFind(
+            text,
+            language.Length > 0 ? language : shown?.LEntryDraftLanguage ?? string.Empty,
+            offset,
+            mentions ?? []);
+    }
+
     public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)
     {
         return LMentionClerk.LMentionClerkDivide(text, mentions);

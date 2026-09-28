@@ -7,7 +7,7 @@ Only the display drivers, such as [QLectern](../../Llyn.UIDeportment/Display/QLe
 The lectern's gates and change events live in its area, [CDisplay](CDisplay.comment.md), so this class holds the rules they share.
 It forwards the pending checks the editor reads to the sound half.
 Every other member forwards one read or one mark request to the ports, so the view never holds an engine.
-The card reads answer for the shown draft, and a refused one answers empty so the page still draws.
+A refused read or mark reaches the user through the envoy the panel handed over.
 
 ## `public LDisplaySound LDisplaySound { get; }`
 
@@ -17,11 +17,10 @@ The sound half, which holds the shown draft, the fold state and every phonology 
 
 The lectern's area, built once here, so every driver over this display hears the same events.
 
-## `public event Action<string, Exception>? LDisplayFailed;`
+## `private readonly CEnvoy _lDisplayEnvoy;`
 
-Raised with the text key and the exception when a word lookup, a mark or a load is refused.
-The sound half's failures arrive here too.
-The card deportment hands it to the window's notice.
+The envoy a refused load, mark or name lookup is shown through, with its text key.
+The sound half's failures go to it too, so every driver over this display shows each one once.
 
 ## `public void LDisplayVistaRestore(LVista vista)`
 
@@ -59,11 +58,7 @@ The wording key of each part, mapped by name so an unknown part throws.
 ## `private IReadOnlyList<string> LDisplayNameResolve(IReadOnlyList<string> labels)`
 
 The compass wordings made distinct by the engine's twin rule.
-A refused lookup raises `LDisplayFailed` and answers the plain wordings.
-
-## `public static bool LDisplayCardCheck(LCardDraft card, long id)`
-
-Whether `card` is the one with `id`, which a card scroll looks for.
+A refused lookup is shown through the envoy and answers the plain wordings.
 
 ## `internal string LDisplayGraspFormat(long? entry, int step)`
 
@@ -72,7 +67,7 @@ The wording of a grasp step, or empty when no entry is given.
 ## `internal void LDisplayDraftLoad(Action<LEntryDraft?> show)`
 
 Reloads the chosen entry's draft from the vista and hands it to `show`, or null once the entry is gone.
-A refused load calls nothing and raises `LDisplayFailed` with `Sound.LoadFailed`.
+A refused load calls nothing and shows `Sound.LoadFailed` through the envoy.
 The page keeps what it shows, so no draft is paired with an id it was not loaded for.
 
 ## `internal void LDisplayEntryLoad(long id)`
@@ -89,7 +84,7 @@ The area passes the chosen entry and the editor's esteem the stored one, so both
 ## `internal void LDisplayFavoriteSave(long? entry, bool marked)`
 
 Marks or unmarks the entry as a favorite.
-A refused mark raises `LDisplayFailed` with `Favorite.MarkFailed`, and the heart then redraws from the stored value.
+A refused mark shows `Favorite.MarkFailed` through the envoy, and the heart then redraws from the stored value.
 
 ## `internal int LDisplayGraspRead(long? entry)`
 
@@ -106,7 +101,7 @@ Stores `step` as the entry's grasp.
 Picking the step that already stands clears the grasp, so one press unrates.
 Only the step held for the same entry counts, so another entry's step never clears this one.
 The area's gate and the editor's esteem both store through it, so the rule has one owner.
-A refused save raises `LDisplayFailed` with `Grasp.MarkFailed`, and the stars then redraw from the stored value.
+A refused save shows `Grasp.MarkFailed` through the envoy, and the stars then redraw from the stored value.
 
 ## `internal CFrequency? LDisplayFrequencyRead(long? entry, string once)`
 
@@ -127,47 +122,3 @@ Forwards to the sound half, since the editor asks whether the script images are 
 ## `public bool LDisplayParadigmCheck(long? id)`
 
 Forwards to the sound half, since the editor asks whether the inflections are still being fetched.
-
-## `public IReadOnlyList<CUsage> LDisplayIncomingRead()`
-
-The usages pointing at the chosen entry, each carrying the epithet of the entry that holds it.
-It reads the live choice, as the area's favorite, grasp, stamp and frequency reads do.
-No entry chosen answers no usages.
-A refused incoming read raises `LDisplayFailed` with `Display.IncomingFailed` and answers no usages.
-A refused epithet keeps its usage with an empty epithet, so one bad entry hides nothing else.
-Any refused epithet raises `Display.EpithetFailed` once, after every usage is read.
-Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
-
-## `public IReadOnlyList<LTranslationTarget> LDisplayTargetRead()`
-
-The headwords the shown draft's cards link to, or none when nothing is shown or the read is refused.
-
-## `public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead()`
-
-The source links of the shown draft's etymology.
-
-## `public CSentenceOrder LDisplayOrderRead()`
-
-The sentence order of the shown draft's language, shaped for the display's frame converter.
-It is the default order when nothing is shown or the read is refused.
-
-## `public IReadOnlyDictionary<long, string> LDisplayCitationRead()`
-
-The byline of every Source, or none when the read is refused.
-It is read on every show, so a Source edited elsewhere reads fresh.
-
-## `public void LDisplayMentionFind<LDisplayAnchor>(`
-
-What stands at `offset` of a clicked sentence, asked of the engine with its Mentions and language.
-A sentence carrying no language is read in the shown entry's language.
-The answer goes to `show` with `anchor`, which runs only when the lookup succeeds.
-A refused lookup raises `LDisplayFailed` and never calls `show`, so the click opens nothing.
-
-## `public IReadOnlyList<LTranslationTarget> LDisplayEtymonRead(LEntryDraft draft)`
-
-The source links of an etymology, named by the engine.
-A read the engine refuses answers no links, so the page still draws.
-
-## `public static bool LDisplayEtymologyCheck(string text, int count)`
-
-Whether a read etymology is worth a place at all: a narrative or a link.

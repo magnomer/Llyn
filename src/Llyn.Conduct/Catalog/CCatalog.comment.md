@@ -88,6 +88,7 @@ The customs window shows the two counts as what a Replace would drop.
 
 The stored entries a markup entry could stand for, by id.
 
-## `private static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)`
+## `internal static IReadOnlyList<CEnsignRow> CCatalogEnsignRead(IReadOnlyList<LEnsignRow> rows)`
 
 Maps the engine's flag rows into Conduct rows.
+The reading view's flag load shares it, so the map has one owner.

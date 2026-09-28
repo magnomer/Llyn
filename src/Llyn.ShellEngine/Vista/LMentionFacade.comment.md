@@ -17,6 +17,12 @@ The clerk's find over a stored Example, under the gate.
 
 The clerk's find over the text a draft-backed form shows, under the gate.
 
+## `public LMentionResult LEngineMentionFind(string text, string language, LEntryDraft? shown, int offset, IReadOnlyList<LMention>? mentions)`
+
+The find over a word clicked in the reading view.
+A text that names no language is read in the language of the `shown` entry.
+A text without Mentions is read as holding none.
+
 ## `public IReadOnlyList<LMentionPiece> LEngineMentionDivide(string text, IReadOnlyList<LMention> mentions)`
 
 The pieces a sentence falls into around its Mentions.

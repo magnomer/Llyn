@@ -172,16 +172,6 @@ internal sealed class LEntryFacade
         _lEntryFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
     }
 
-    public string LEngineEpithetRead(long entryId)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return _lEntryFacadeEngine.LEngineSettingsHeld.LSettingsEpithet
-                ? LEntryFacadeStaff.LEngineStaffEntry.LEntryEpithetRead(entryId)
-                : string.Empty;
-        }
-    }
-
     public LEstablishment LEngineEstablishmentRead()
     {
         lock (_lEntryFacadeGate)

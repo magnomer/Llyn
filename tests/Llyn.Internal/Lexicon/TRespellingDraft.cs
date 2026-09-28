@@ -194,6 +194,22 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
+    public void MarkRead_SwitchAndPack_SlashOnlyARespelledPhonemicReading()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Equal((false, "[", "]"), engine.TEngineMarkRead("Mandarin"));
+
+        engine.TEngineRespellingSave(true);
+
+        Assert.Equal((true, "/", "/"), engine.TEngineMarkRead("Mandarin"));
+        Assert.Equal((true, "[", "]"), engine.TEngineMarkRead("English"));
+        Assert.Equal((false, "[", "]"), engine.TEngineMarkRead("Spanish"));
+        Assert.Equal((false, "[", "]"), engine.TEngineMarkRead(string.Empty));
+    }
+
+    [Fact]
     public void RespellingSave_Flip_RaisesSettingsBulletin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

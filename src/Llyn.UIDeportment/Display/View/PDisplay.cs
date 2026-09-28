@@ -210,8 +210,7 @@ public class PDisplay : UserControl
         lectern.QLecternNoteIntroduce(PDisplayNoteSection, PDisplayNote);
         PMedia.PMediaAttach(this, host.PWindowAtelier);
         lectern.QLecternPlayback.LLecternPlaybackAttach(host.PWindowAtelier, PPlaybackAction, PPlayback, PVolume);
-        lectern.QLecternAccent.LLecternAccentAttach(
-            host.PWindowAtelier,
+        lectern.QLecternAccent.QLecternAccentIntroduce(
             PDisplayPronunciationSurface,
             PDisplayPronunciationLead,
             PDisplayPronunciationFlag,
@@ -250,7 +249,7 @@ public class PDisplay : UserControl
             PDisplayCollocation,
             PDisplayIncomingSection,
             PDisplayNoteSection);
-        lectern.QLecternCard.LLecternCardAttach(
+        lectern.QLecternCard.QLecternCardIntroduce(
             host.PWindowAtelier,
             Resources,
             PDisplayMeaning,
@@ -259,19 +258,14 @@ public class PDisplay : UserControl
             PDisplayCollocationSection,
             PDisplayContents,
             lectern.QLecternCompass);
-        lectern.QLecternCard.LLecternLinkAttach(
+        lectern.QLecternCard.QLecternLinkIntroduce(
             _pLeaf.PLeafLink.PLinkConverterShow,
             _pLeaf.PLeafCitation.QCitationConverterShow,
             _pLeaf.PLeafFrame.PSentenceConverterApply);
-        lectern.QLecternCard.LLecternIncomingAttach(PDisplayIncoming, PDisplayIncomingSection);
-        lectern.QLecternCard.LLecternEtymologyAttach(
+        lectern.QLecternCard.QLecternIncomingIntroduce(PDisplayIncoming, PDisplayIncomingSection);
+        lectern.QLecternCard.QLecternEtymologyIntroduce(
             PDisplayEtymology, PDisplayEtymologySection, PDisplayEtymology.PEtymologyShow);
-        lectern.QLecternCard.LLecternRouteAttach(
-            host.PWindowEntryShow,
-            host.PWindowSituationShow,
-            host.PWindowRegisterShow,
-            host.PWindowTagShow,
-            host.PWindowFailureShow);
+        lectern.QLecternCard.QLecternRouteIntroduce(host);
         PDisplayFanqie.PFanqieNoticeAttach(
             lectern.QLecternSound.LLecternDiweiShow,
             lectern.QLecternSound.LLecternStemShow,
@@ -325,22 +319,22 @@ public class PDisplay : UserControl
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
     {
-        _qLectern.QLecternCard.LLecternCardHandle(e);
+        _qLectern.QLecternCard.QLecternChipObserve(e);
     }
 
     private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
     {
-        _qLectern.QLecternCard.LLecternIncomingHandle(e.OriginalSource);
+        _qLectern.QLecternCard.QLecternIncomingObserve(e);
     }
 
     private void PDisplayEtymonHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        _qLectern.QLecternCard.LLecternEtymonHandle(e.Parameter);
+        _qLectern.QLecternCard.QLecternEtymonObserve(e.Parameter);
     }
 
     private void PDisplayMentionHandle(object? sender, PMentionArgument e)
     {
-        _qLectern.QLecternCard.LLecternMentionFind(
+        _qLectern.QLecternCard.QLecternMentionObserve(
             e.PMentionArgumentOrigin,
             e.PMentionArgumentText,
             e.PMentionArgumentLanguage,
@@ -351,7 +345,7 @@ public class PDisplay : UserControl
 
     internal void PDisplayCardScroll(long id)
     {
-        _qLectern.QLecternCard.LLecternCardScroll(id);
+        _qLectern.QLecternCard.QLecternSpotlightRefine(id);
     }
 
     private static void PSpeechApply(FrameworkElement container, object item, string? _)

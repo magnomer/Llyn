@@ -43,26 +43,6 @@ Reflexes loaded for an earlier entry are dropped, so the rows follow the new dra
 Drops the shown draft, its id, the slots and the loaded reflexes.
 It stops its own playback, and a sound another view started plays on.
 
-## `public bool LDisplayTonalCheck()`
-
-Whether the shown draft's language marks tone, so the contour draws.
-A refused read raises `LDisplaySoundFailed` and answers false.
-
-## `public bool LDisplayFlaggedCheck()`
-
-Whether the shown draft's varieties draw as flags rather than labels.
-A refused read raises `LDisplaySoundFailed` and answers false.
-
-## `public bool LDisplayFlaggedCheck(string language)`
-
-Whether the shown draft is still in `language` and its varieties draw as flags.
-A flag load that finishes late asks it, so another entry shown meanwhile wins.
-
-## `public IReadOnlyList<LPronunciationDraft> LDisplayAccentRead()`
-
-The shown draft's further pronunciations that hold notation.
-A row without notation is left out, because the reading view shows only what reads.
-
 ## `public IReadOnlyList<LTranscriptionDraft> LDisplayTranscriptionRead()`
 
 The shown draft's transcriptions that hold text, in the order the entry keeps them.

@@ -6,7 +6,7 @@ The reading view's sound deportment, standing between the veneer and [LDisplaySo
 It draws the transcriptions and the glyph row.
 It draws the reflex rows and fills the fanqie, script and paradigm controls through the seams handed over.
 Fonts come from `LFontFace`.
-The primary pronunciation and the accents live on [LLecternAccent](LLecternAccent.comment.md).
+The primary pronunciation and the accents live on [QLecternAccent](QLecternAccent.comment.md).
 The play button and the volume live on [LLecternPlayback](LLecternPlayback.comment.md), which shares the display's sound.
 
 ## `public void LLecternGlyphAttach(CAtelier atelier, ItemsControl transcriptions, UIElement section, ColumnDefinition lead, TextBlock label, ItemsControl glyph, Action<string, string> glyphSeam)`

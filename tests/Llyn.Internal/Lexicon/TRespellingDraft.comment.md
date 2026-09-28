@@ -11,6 +11,7 @@ The two forms are stored in their own columns and read back into the draft.
 A respelling-only edit counts as a change.
 The check answers true only while the switch is on and the pack declares groups.
 The phonemic flag is the pack's alone.
+A reading stands between slashes only when respelled under a phonemic pack, and in square brackets otherwise.
 Flipping the switch raises a settings bulletin so open readings redraw.
 A reflex row's text derives a respelling through the row's own language, slashed for a phonemic pack.
 A reflex respelling written by hand stands until the text or the language changes.

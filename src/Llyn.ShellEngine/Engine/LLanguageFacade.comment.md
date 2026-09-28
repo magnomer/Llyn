@@ -51,6 +51,18 @@ It reads the pack from the engine's cache, so a menu reopened does not reparse t
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
 It reads the cached pack as `LEngineVarietyRead` does.
 
+## `public LAccentSheet LEngineAccentRead(LEntryDraft draft)`
+
+The pronunciation block of `draft` as the reading view prints it.
+The pack's flag, tone and respelling verdicts come in one answer with the rows.
+The language clerk resolves each row, so the reading rule has its one owner below.
+Only further pronunciations that carry a reading become rows.
+
+## `public async Task<LAccentSheet> LEngineAccentLoad(LEntryDraft draft, Func<IReadOnlyList<LEnsignRow>, Action<string, Exception>, Action> store)`
+
+Loads the flags the block of `draft` draws into `store`, then answers the block.
+A pack that labels varieties by name loads nothing.
+
 ## `public bool LEngineTonalCheck(string language)`
 
 Reports whether the pack declares the language tonal, so the UI knows to draw a tone contour under a reading.

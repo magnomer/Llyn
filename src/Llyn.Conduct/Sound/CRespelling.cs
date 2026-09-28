@@ -16,16 +16,6 @@ public sealed class CRespelling
         _cRespellingAtelier = atelier;
     }
 
-    public bool CRespellingCheck(string language)
-    {
-        return _cRespellingAtelier.CAtelierPhonologyPort.LEngineRespellingCheck(language);
-    }
-
-    public bool CRespellingPhonemicCheck(string language)
-    {
-        return _cRespellingAtelier.CAtelierPhonologyPort.LEnginePhonemicCheck(language);
-    }
-
     public CRespellingMark CRespellingMarkRead(string language)
     {
         return CRespellingMarkRead(language, false);
@@ -38,9 +28,9 @@ public sealed class CRespelling
             return new CRespellingMark(false, string.Empty, string.Empty);
         }
 
-        bool shown = CRespellingCheck(language);
-        bool slashed = shown && CRespellingPhonemicCheck(language);
-        return new CRespellingMark(shown, slashed ? "/" : "[", slashed ? "/" : "]");
+        (bool shown, string opener, string closer) =
+            _cRespellingAtelier.CAtelierPhonologyPort.LEngineMarkRead(language);
+        return new CRespellingMark(shown, opener, closer);
     }
 
     public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)

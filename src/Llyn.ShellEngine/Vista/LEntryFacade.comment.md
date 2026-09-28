@@ -67,10 +67,6 @@ A missing entry reads zero, the same as an entry never rated.
 
 The clerk writes the grasp under the gate, then a Grasp bulletin is raised for the entry.
 
-## `public string LEngineEpithetRead(long entryId)`
-
-The epithet stored on the entry, or empty while the workspace hides epithets.
-
 ## `public LEstablishment LEngineEstablishmentRead()`
 
 Counts the held drafts that differ from their origin, the stored entries and the database bytes.

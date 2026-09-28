@@ -25,7 +25,8 @@ public sealed class CWing
             atelier.CAtelierEntryPort,
             atelier.CAtelierPhonologyPort,
             atelier.CAtelierSettingsPort,
-            atelier.CAtelierMediaPort);
+            atelier.CAtelierMediaPort,
+            envoy);
     }
 
     public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy)

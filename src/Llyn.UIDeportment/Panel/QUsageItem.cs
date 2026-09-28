@@ -16,7 +16,6 @@ internal sealed class QUsageItem
         ArgumentNullException.ThrowIfNull(usage);
 
         QUsageItemUsage = usage;
-        QUsageItemEntry = usage.CUsageEntry;
         QUsageItemName = usage.CUsageName;
         QUsageItemEpithet = usage.CUsageEpithet;
         QUsageItemLanguage = usage.CUsageLanguage;
@@ -28,8 +27,6 @@ internal sealed class QUsageItem
     }
 
     internal CUsage QUsageItemUsage { get; }
-
-    internal long QUsageItemEntry { get; }
 
     internal string QUsageItemName { get; }
 
