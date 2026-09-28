@@ -8,6 +8,10 @@ Keeping stays in the scribe, storing finishes the draft, and discarding shows th
 A clean editor never asks, and entering the scribe hands the chosen row to the editor.
 The fresh gate drops the chosen row and opens the scribe on nothing.
 A refused leave keeps the row the panel stands on.
+Opening a stored row chooses it, and in edit mode hands it to the editor.
+Opening a row that no longer loads closes the panel without a failure notice.
+A quiet reload repaints a stored entry and closes the panel on a deleted one.
+A stored-entry notice re-lists the rows and repaints the mode once each.
 The delete gate asks through the envoy, keeps everything on a refusal and drops the row on a yes.
 A panel with no delete scope never deletes, and a referenced record is asked about with its tally.
 A stored entry is adopted only by a panel editing on nothing.

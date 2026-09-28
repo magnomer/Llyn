@@ -115,6 +115,109 @@ public sealed class TPanel
     }
 
     [Fact]
+    public void PanelRowOpen_StoredRow_ChoosesTheRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
+        long chosen = panel.CPanelChosenRead();
+        panel.CPanelEntryClose();
+        int changed = 0;
+        panel.CPanelChanged += () => changed++;
+
+        bool opened = panel.CPanelRowOpen(chosen);
+
+        Assert.True(opened);
+        Assert.Equal(chosen, panel.CPanelChosenRead());
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
+    public void PanelRowOpen_MissingRow_ClosesThePanel()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CPanel panel = TPanelPrepare(engine, null, asked, [], "Scribe", () => false);
+        long chosen = panel.CPanelChosenRead();
+        int cleared = 0;
+        panel.CPanelCleared += () => cleared++;
+
+        bool opened = panel.CPanelRowOpen(chosen + 100);
+
+        Assert.False(opened);
+        Assert.Equal(0, panel.CPanelChosenRead());
+        Assert.Equal(1, cleared);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public void PanelRowOpen_EditingPanel_HandsTheRowToTheEditor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
+        long chosen = panel.CPanelChosenRead();
+        panel.CPanelEntryCreate();
+        List<long> edited = [];
+        panel.CPanelEdited += edited.Add;
+
+        panel.CPanelRowOpen(chosen);
+
+        Assert.Equal([chosen], edited);
+        Assert.True(panel.CPanelEditing);
+    }
+
+    [Fact]
+    public void PanelDraftUpdate_StoredEntry_RepaintsThePanel()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
+        long chosen = panel.CPanelChosenRead();
+        int changed = 0;
+        panel.CPanelChanged += () => changed++;
+
+        panel.CPanelDraftUpdate();
+
+        Assert.Equal(1, changed);
+        Assert.Equal(chosen, panel.CPanelChosenRead());
+    }
+
+    [Fact]
+    public void PanelDraftUpdate_DeletedEntry_ClosesThePanel()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
+        engine.TEngineEntryDelete(panel.CPanelChosenRead());
+        int cleared = 0;
+        panel.CPanelCleared += () => cleared++;
+
+        panel.CPanelDraftUpdate();
+
+        Assert.Equal(1, cleared);
+        Assert.Equal(0, panel.CPanelChosenRead());
+    }
+
+    [Fact]
+    public void PanelEntryUpdate_StoredBulletin_RelistsTheRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CPanel panel = TPanelPrepare(engine, null, [], [], "Scribe", () => false);
+        int rows = 0;
+        int changed = 0;
+        panel.CPanelRowsChanged += () => rows++;
+        panel.CPanelChanged += () => changed++;
+
+        panel.CPanelEntryUpdate(new CBulletin(panel.CPanelChosenRead(), true));
+
+        Assert.Equal(1, rows);
+        Assert.Equal(1, changed);
+    }
+
+    [Fact]
     public void PanelEntryDelete_Declined_KeepsChosenAndEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
