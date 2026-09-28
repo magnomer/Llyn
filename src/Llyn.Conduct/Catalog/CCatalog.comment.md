@@ -14,9 +14,18 @@ Only the atelier builds it, over its own ports.
 
 ## `public CFont CCatalogFontRead(string language, CFontRole role)`
 
-The font a language shows `role` in, with an unsized font carrying no size.
-The role is cast across, since the two enums mirror each other name for name.
+The font a language shows `role` in, read through `LCatalogFontRead`.
+
+## `internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)`
+
+The one font rule, shared by the catalog and the reading view's sound area.
+An unsized font carries no size.
 A blank language or a refused read answers the font with nothing set, so the surface keeps its theme.
+
+## `private static LFontRole LCatalogRoleRead(CFontRole role)`
+
+The engine role of the same name, switched name by name.
+An unknown role throws, so a role added on one side alone fails loudly.
 
 ## `public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)`
 

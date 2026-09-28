@@ -188,7 +188,7 @@ public partial class PEditor
 
     internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
     {
-        _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldSet(
+        _lEditor.LEditorStudio.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(
             QLook.QLookCheckedRead(PReflexFold.IsChecked));
         QReflexItem.QReflexFoldRefine(
             _pReflexItem, PReflexFold, _lEditor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened);

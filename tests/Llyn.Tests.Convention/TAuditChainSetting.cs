@@ -207,6 +207,15 @@ internal static class TAuditChainSetting
             "CLecternAccent",
             "CLecternCard",
             "CLecternEtymology",
+            "CDisplaySound",
+            "CLecternGlyph",
+            "CGlyphCell",
+            "CLecternReflex",
+            "CLecternAnchor",
+            "CLecternFanqie",
+            "CLecternScript",
+            "CLecternParadigm",
+            "CLecternPlayback",
         ],
         ["Llyn.UIDemeanor>Llyn.Conduct"] =
         [
@@ -336,13 +345,13 @@ internal static class TAuditChainSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditChainCeiling = new Dictionary<string, int>
     {
         ["cross:Llyn.UIDeportment>Llyn.Application"] = 77,
-        ["cross:Llyn.UIDeportment>Llyn.Core"] = 129,
+        ["cross:Llyn.UIDeportment>Llyn.Core"] = 114,
         ["cross:Llyn.UIDeportment>Llyn.ShellEngine"] = 33,
-        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 9,
+        ["expose:Llyn.UIDemeanor>Llyn.Core"] = 1,
         ["expose:Llyn.UIDemeanor>Llyn.ShellEngine"] = 1,
-        ["expose:Llyn.UIDeportment>Llyn.Core"] = 9,
+        ["expose:Llyn.UIDeportment>Llyn.Core"] = 1,
         ["expose:Llyn.UIDeportment>Llyn.ShellEngine"] = 1,
-        ["reach:Llyn.Conduct>Llyn.Core"] = 1,
+        ["reach:Llyn.Conduct>Llyn.Core"] = 0,
         ["reach:Llyn.ShellEngine>Llyn.Core"] = 15,
         ["seal:Llyn.UIDeportment>Llyn.Application"] = 0,
         ["seal:Llyn.UIDeportment>Llyn.Core"] = 0,

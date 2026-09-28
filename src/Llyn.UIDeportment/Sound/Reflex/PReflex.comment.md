@@ -62,7 +62,8 @@ An unsaved entry has no fill and shows nothing.
 
 ## `internal void PReflexFoldHandle(object sender, RoutedEventArgs e)`
 
-Opens or closes the fold as the toggle under the rows was pressed.
+Opens or closes the fold as the toggle under the rows was pressed, through the display's fold gate.
+The gate's change event also redraws every reading view over the same display.
 
 ## `private void PReflexPrepare(CEntryDraft draft)`
 

@@ -22,7 +22,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(water.LEntryId);
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplayArea.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
 
         Assert.Equal(new CRespellingMark(false, "[", "]"), accent.CLecternAccentMark);
         Assert.False(accent.CLecternAccentTonal);
@@ -48,7 +48,7 @@ public sealed class TDisplayAccent
         IReadOnlyList<LPronunciationDraft> stored =
             wing.CWingDisplay.LDisplaySound.LDisplayShown!.LEntryDraftPronunciations;
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplayArea.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
 
         Assert.Equal(new CRespellingMark(true, "[", "]"), accent.CLecternAccentMark);
         Assert.NotEqual("ˈweɪtə", accent.CLecternAccentText);
@@ -63,7 +63,7 @@ public sealed class TDisplayAccent
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternAccent accent = wing.CWingDisplay.CDisplayArea.CDisplayAccentRead();
+        CLecternAccent accent = wing.CWingDisplay.CDisplaySound.CDisplayAccentRead();
 
         Assert.Empty(accent.CLecternAccentText);
         Assert.False(accent.CLecternAccentSpoken);
@@ -83,7 +83,7 @@ public sealed class TDisplayAccent
         wing.CWingEntryOpen(hill.LEntryId);
         List<string> stored = [];
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplayArea.CDisplayEnsignLoad((rows, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad((rows, _) =>
         {
             stored.AddRange(rows.Select(static row => row.CEnsignRowKey));
             return static () => { };
@@ -109,7 +109,7 @@ public sealed class TDisplayAccent
         CWing wing = TDisplayWingPrepare(atelier, []);
         wing.CWingEntryOpen(hill.LEntryId);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplayArea.CDisplayEnsignLoad((_, _) =>
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad((_, _) =>
         {
             wing.CWingEntryOpen(dale.LEntryId);
             return static () => { };
@@ -126,7 +126,7 @@ public sealed class TDisplayAccent
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier, []);
 
-        CLecternAccent? accent = await wing.CWingDisplay.CDisplayArea.CDisplayEnsignLoad(
+        CLecternAccent? accent = await wing.CWingDisplay.CDisplaySound.CDisplayEnsignLoad(
             (_, _) => throw new InvalidOperationException("Nothing is shown, so nothing loads."));
 
         Assert.Null(accent);

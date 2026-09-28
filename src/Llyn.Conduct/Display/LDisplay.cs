@@ -30,14 +30,18 @@ public sealed class LDisplay
 
         _lEntryPort = entries;
         _lDisplayEnvoy = envoy;
-        LDisplaySound = new LDisplaySound(drafts, entries, phonology, media, settings);
+        LDisplaySound = new LDisplaySound(entries, phonology, media, settings);
         LDisplaySound.LDisplaySoundFailed += envoy.CEnvoyFailureShow;
         CDisplayArea = new CDisplay(this, entries, phonology, envoy);
+        CDisplaySound = new CDisplaySound(
+            LDisplaySound, CDisplayArea, drafts, entries, phonology, media, settings, envoy);
     }
 
     public LDisplaySound LDisplaySound { get; }
 
     public CDisplay CDisplayArea { get; }
+
+    public CDisplaySound CDisplaySound { get; }
 
     internal long? LDisplayChosen => _lDisplayVista?.LVistaChosen;
 
@@ -86,11 +90,11 @@ public sealed class LDisplay
         CDisplayArea.LDisplayEntryOpen(loaded);
     }
 
-    public bool LDisplayFanqieCheck(long? id) => LDisplaySound.LDisplayFanqieCheck(id);
+    internal bool LDisplayFanqieCheck(long? id) => LDisplaySound.LDisplayFanqieCheck(id);
 
-    public bool LDisplayScriptCheck(long? id) => LDisplaySound.LDisplayScriptCheck(id);
+    internal bool LDisplayScriptCheck(long? id) => LDisplaySound.LDisplayScriptCheck(id);
 
-    public bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
+    internal bool LDisplayParadigmCheck(long? id) => LDisplaySound.LDisplayParadigmCheck(id);
 
     internal bool LDisplayFavoriteRead(long? entry)
     {

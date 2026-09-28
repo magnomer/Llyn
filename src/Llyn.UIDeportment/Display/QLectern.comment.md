@@ -17,21 +17,25 @@ A view following no panel, such as the wing's, takes the other constructor.
 
 The display's area, whose gates the view hosting this driver calls directly.
 
+## `public CDisplaySound QLecternSoundArea { get; }`
+
+The display's sound area, whose playback cancel and fanqie gate the view hosting this driver calls directly.
+
 ## `public QLecternCard QLecternCard { get; }`
 
 The card half, built over the display, which draws the cards, incoming rows and etymology and answers their clicks.
 
 ## `public QLecternAccent QLecternAccent { get; }`
 
-The accent half, built over the display's area, which draws the primary pronunciation and the accent rows.
+The accent half, built over the display's sound area, which draws the primary pronunciation and the accent rows.
 
-## `public LLecternSound QLecternSound { get; }`
+## `public QLecternSound QLecternSound { get; }`
 
-The sound half, built over the display's sound, which draws the transcriptions, glyph row and every phonology section.
+The sound half, built over the display's sound area, which draws the transcriptions, glyph row and every phonology section.
 
-## `public LLecternPlayback QLecternPlayback { get; }`
+## `public QLecternPlayback QLecternPlayback { get; }`
 
-The playback half, built over the display's sound, which drives the play buttons and the volume slider.
+The playback half, built over the display's sound area, which drives the play buttons and the volume slider.
 
 ## `public QCompass QLecternCompass { get; private set; } = null!;`
 
@@ -52,6 +56,8 @@ Opening or closing an entry drops the band first, since the text it spanned is g
 The header, the halves and the compass then redraw in subscription order.
 The card half fills its converters before its card lists, and both before the compass measures them.
 The accent half draws its rows before it loads their flags, so the late flags land on drawn rows.
+The sound half draws its reflex rows before their fold and its fanqie block, which writes their anchors.
+A reflex notice redraws the rows through the resonate, then the fold, in that order on the page.
 The engine's notices arrive on its own thread, so each is marshalled onto `contents` through `LObserver`.
 The draft reload and the workspace swap go straight back to the area's resonates.
 A lectern no view attached to answers nothing, since panels announce drafts in tests with no veneer.

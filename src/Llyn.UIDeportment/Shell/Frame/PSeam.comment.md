@@ -11,7 +11,7 @@ The strip is twelve pixels wide and centred on the line, so the line itself stay
 The keeper the seam reports its drags to, set by the window when the tab is registered.
 A seam with no keeper still resizes its own tab, so a tab standing alone keeps working.
 
-### `PSeamLayout?.PLayoutPropagate(host);`
+### `PSeamLayout?.PLayoutLinkRefine(host);`
 
 Every step of the drag is reported, so linked tabs follow live rather than at the end.
 A step that crossed back over its start is reported too, because the snapshot was just put back.

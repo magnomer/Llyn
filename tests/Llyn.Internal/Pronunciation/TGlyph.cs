@@ -41,6 +41,23 @@ public sealed class TGlyph
     }
 
     [Fact]
+    public void GlyphOtherRead_GlyphAndEmptyRows_KeepsOnlyOtherFilledRows()
+    {
+        LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");
+        IReadOnlyList<LTranscriptionDraft> rows =
+        [
+            TInterface.TTranscriptionDraftCreate("Pinyin", "guójiā"),
+            TInterface.TTranscriptionDraftCreate("Traditional", "國家"),
+            TInterface.TTranscriptionDraftCreate("Zhuyin", string.Empty),
+        ];
+
+        Assert.Equal(["Pinyin"], TInterface.TGlyphOtherRead(glyph, rows).Select(row => row.LTranscriptionDraftScheme));
+        Assert.Equal(
+            ["Pinyin", "Traditional"],
+            TInterface.TGlyphOtherRead(null, rows).Select(row => row.LTranscriptionDraftScheme));
+    }
+
+    [Fact]
     public void GlyphDivide_SingleCharacter_CarriesLanguage()
     {
         LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");

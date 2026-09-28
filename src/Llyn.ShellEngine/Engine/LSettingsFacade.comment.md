@@ -100,6 +100,10 @@ Persists whether an entry's frequency is fetched from the pack's web source and 
 The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
 A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
 
+## `internal bool LEngineMorphologyCheck()`
+
+Whether the morphology fetch is on, so a reading view offers its paradigm.
+
 ## `internal void LEngineMorphologySave(bool morphology)`
 
 Turns the morphology fetch on or off.

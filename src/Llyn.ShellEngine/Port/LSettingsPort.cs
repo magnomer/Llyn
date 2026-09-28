@@ -34,6 +34,8 @@ public interface LSettingsPort
 
     void LEngineFrequencySave(bool frequency);
 
+    bool LEngineMorphologyCheck();
+
     void LEngineMorphologySave(bool morphology);
 
     void LEngineRespellingSave(bool respelled);

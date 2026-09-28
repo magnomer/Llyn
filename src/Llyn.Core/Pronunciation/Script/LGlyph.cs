@@ -53,6 +53,17 @@ public sealed record LGlyph(
         return rows.Any(spelled => glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) != true);
     }
 
+    public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(
+        LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows
+            .Where(spelled => !spelled.LTranscriptionDraftEmpty
+                && glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) != true)
+            .ToList();
+    }
+
     public bool LGlyphSchemeCheck(string scheme)
     {
         return string.Equals(LGlyphName, scheme, StringComparison.Ordinal);

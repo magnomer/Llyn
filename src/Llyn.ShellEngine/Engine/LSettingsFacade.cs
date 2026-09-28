@@ -143,6 +143,11 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal bool LEngineMorphologyCheck()
+    {
+        return LEngineSettingsRead().LSettingsMorphology;
+    }
+
     internal void LEngineMorphologySave(bool morphology)
     {
         bool changed;

@@ -2,13 +2,13 @@
 
 ## `public sealed class QLecternAccent`
 
-The reading view's accent driver, standing between the veneer and the display's area, [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md).
+The reading view's accent driver, standing between the veneer and the display's sound area, [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md).
 It draws the primary pronunciation and the accent rows from the block Conduct answers ready.
 Flags come from `LEnsignImage`, and every rule of which flag or reading shows stays in Conduct and below.
 
-## `public QLecternAccent(CDisplay area)`
+## `public QLecternAccent(CDisplaySound area)`
 
-Builds the half over the display's area, whose reads it paints from.
+Builds the half over the display's sound area, whose reads it paints from.
 
 ## `public void QLecternAccentIntroduce(UIElement surface, ColumnDefinition lead, Image flag, TextBlock label, TextBlock opener, TextBlock pronunciation, TextBlock closer, ItemsControl accents, DependencyObject contour, DependencyProperty tonal)`
 

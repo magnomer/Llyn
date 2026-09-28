@@ -2,18 +2,15 @@
 
 ## `public sealed class CDisplay`
 
-The reading view's area: the lectern's gates, its reads and the change events its drivers answer.
+The reading view's header and card area: the lectern's gates, its reads and the change events its drivers answer.
 The display builds one over itself, so every driver over that display hears the same events.
+The sound half's gates and reads stand on [CDisplaySound](CDisplaySound.comment.md), split by role, and read the header here.
 The rules it shares with the editor's esteem stay on [LDisplay](LDisplay.comment.md), which it calls.
 It holds no state beyond the shown header, since the shown draft stays in the sound half.
 
 ## `private static readonly CLectern _cDisplayBlank`
 
 The header while nothing is shown, every field empty.
-
-## `private static readonly CLecternAccent _cDisplayMute`
-
-The pronunciation block while nothing is shown or the pack refused, with no reading, row or flag.
 
 ## `internal CDisplay(LDisplay display, LEntryPort entries, LPhonologyPort phonology, CEnvoy envoy)`
 
@@ -108,11 +105,6 @@ A press on the standing step comes back cleared, since the display's one rule ow
 The chosen entry's frequency chip, or null when none stands.
 Conduct chooses the key of the one-off wording, and the driver's lookup turns it into text.
 
-## `public void CDisplayPlaybackCancel()`
-
-The gate for a view going away: it stops this view's own play.
-A sound another view started plays on.
-
 ## `public static bool CDisplayNarrativeCheck(bool editable, string text)`
 
 Whether the read face of the narrative stands: only on the read side, and only with words in it.
@@ -125,26 +117,6 @@ Whether the row of source links shows: always while editable, else only with a l
 ## `private LEntryDraft? LDisplayShown`
 
 The shown draft the sound half holds, passed unread to the engine.
-
-## `public CLecternAccent CDisplayAccentRead()`
-
-The shown entry's pronunciation block, ready to draw.
-The engine answers the readings, the brackets and the pack's verdicts in one read.
-Conduct only chooses each variety's label key through `CSounding.CSoundingVarietyRead`.
-Nothing shown answers the mute block, and a refused read shows `Sound.LoadFailed` and answers it too.
-
-## `public async Task<CLecternAccent?> CDisplayEnsignLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
-
-The load a driver starts once an entry opened, for the flags its pronunciation block draws.
-The engine picks the varieties and loads nothing for a pack that names them.
-`store` is the driver's own image store, handed the rows through the one flag map.
-It answers the block again once the flags are in, so the driver repaints its rows.
-Another entry shown meanwhile wins, so a late load answers null and paints nothing.
-A refused load answers null too, since a missing flag falls back to its name.
-
-## `private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)`
-
-Maps the engine's block into the Conduct record, reading no rule.
 
 ## `public CLecternCard CDisplayCardRead()`
 

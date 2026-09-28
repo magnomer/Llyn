@@ -62,8 +62,8 @@ public partial class PSettings
             return;
         }
 
-        _pSettingsHost.PWindowLayout.PLayoutReset();
-        _pSettingsHost.PWindowLayout.PLayoutRestore();
+        _pSettingsHost.PWindowLayout.PLayoutResetRefine();
+        _pSettingsHost.PWindowLayout.PLayoutRefine();
         _pSettingsHost.PWindowForge.QForgeVistaRestore();
         _pSettingsHost.PWindowViewRestore(state);
     }

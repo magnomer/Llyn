@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -11,15 +10,6 @@ public sealed class CDisplay
 {
     private static readonly CLectern _cDisplayBlank = new(
         string.Empty, string.Empty, [], false, string.Empty, false, string.Empty, string.Empty, false);
-
-    private static readonly CLecternAccent _cDisplayMute = new(
-        new CRespellingMark(false, string.Empty, string.Empty),
-        false,
-        string.Empty,
-        false,
-        CSounding.CSoundingVarietyRead(string.Empty, string.Empty),
-        [],
-        false);
 
     private readonly LDisplay _cDisplayRule;
 
@@ -210,11 +200,6 @@ public sealed class CDisplay
         return _cDisplayRule.LDisplayFrequencyRead(LDisplayChosen, lookup("Frequency.Once"));
     }
 
-    public void CDisplayPlaybackCancel()
-    {
-        _cDisplayRule.LDisplaySound.LDisplayPlaybackStop();
-    }
-
     public static bool CDisplayNarrativeCheck(bool editable, string text)
     {
         return !editable && LEntryPort.LEngineNarrativeCheck(text);
@@ -223,67 +208,6 @@ public sealed class CDisplay
     public static bool CDisplayEtymonCheck(bool editable, int count)
     {
         return editable || count > 0;
-    }
-
-    public CLecternAccent CDisplayAccentRead()
-    {
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return _cDisplayMute;
-        }
-
-        try
-        {
-            return LDisplayAccentRead(_cDisplayPhonology.LEngineAccentRead(shown));
-        }
-        catch (Exception exception)
-        {
-            _cDisplayEnvoy.CEnvoyFailureShow("Sound.LoadFailed", exception);
-            return _cDisplayMute;
-        }
-    }
-
-    public async Task<CLecternAccent?> CDisplayEnsignLoad(
-        Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)
-    {
-        ArgumentNullException.ThrowIfNull(store);
-
-        if (LDisplayShown is not LEntryDraft shown)
-        {
-            return null;
-        }
-
-        LAccentSheet sheet;
-        try
-        {
-            sheet = await _cDisplayPhonology.LEngineAccentLoad(
-                shown, (rows, delete) => store(CCatalog.CCatalogEnsignRead(rows), delete));
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-
-        return ReferenceEquals(shown, LDisplayShown) ? LDisplayAccentRead(sheet) : null;
-    }
-
-    private static CLecternAccent LDisplayAccentRead(LAccentSheet sheet)
-    {
-        string language = sheet.LAccentSheetLanguage;
-        return new CLecternAccent(
-            new CRespellingMark(sheet.LAccentSheetRespelled, sheet.LAccentSheetOpener, sheet.LAccentSheetCloser),
-            sheet.LAccentSheetTonal,
-            sheet.LAccentSheetPrimary.LAccentRowText,
-            sheet.LAccentSheetSpoken,
-            CSounding.CSoundingVarietyRead(language, sheet.LAccentSheetPrimary.LAccentRowVariety),
-            sheet.LAccentSheetRows
-                .Select(row => new CAccent(
-                    row.LAccentRowId,
-                    CSounding.CSoundingVarietyRead(language, row.LAccentRowVariety),
-                    row.LAccentRowText,
-                    row.LAccentRowAudio))
-                .ToList(),
-            sheet.LAccentSheetFlagged);
     }
 
     public CLecternCard CDisplayCardRead()

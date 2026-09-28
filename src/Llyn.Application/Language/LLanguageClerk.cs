@@ -59,6 +59,16 @@ public sealed class LLanguageClerk
                 spoken.LPronunciationDraftAudio);
     }
 
+    public IReadOnlyList<LTranscriptionDraft> LLanguageTranscriptionRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        LGlyph? glyph = draft.LEntryDraftLanguage.Trim().Length > 0
+            ? LLanguageClerkLoad(draft.LEntryDraftLanguage).LLanguageGlyph
+            : null;
+        return LGlyph.LGlyphOtherRead(glyph, draft.LEntryDraftTranscriptions);
+    }
+
     public bool LLanguagePhonemicCheck(string language)
     {
         ArgumentNullException.ThrowIfNull(language);

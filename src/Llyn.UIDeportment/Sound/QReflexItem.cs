@@ -357,10 +357,25 @@ public sealed class QReflexItem : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(format);
 
+        Dictionary<long, string> texts = [];
+        foreach (QReflexItem row in rows)
+        {
+            texts[row.QReflexItemId] = format(row.QReflexItemAnchors);
+        }
+
+        QReflexAnchorRefine(rows, anchorable, texts);
+    }
+
+    internal static void QReflexAnchorRefine(
+        IReadOnlyList<QReflexItem> rows, bool anchorable, IReadOnlyDictionary<long, string> texts)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(texts);
+
         foreach (QReflexItem row in rows)
         {
             row.QReflexItemAnchorable = anchorable;
-            row.QReflexItemAnchor = format(row.QReflexItemAnchors);
+            row.QReflexItemAnchor = texts.TryGetValue(row.QReflexItemId, out string? text) ? text : string.Empty;
         }
     }
 

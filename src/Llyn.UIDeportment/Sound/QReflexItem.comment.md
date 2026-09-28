@@ -166,9 +166,15 @@ The editor calls it while a language is typed, before the draft brings the marks
 
 ## `internal static void QReflexAnchorRefine(`
 
-Writes each row's anchor label through `format`, and whether the row may be anchored at all.
+Formats each row's anchor label through `format`, then writes the labels through the form below.
 The caller's Conduct read decides both, so the fanqie rows never reach this item.
-Shared by both panes, so the label reads the same in the editor and the reading view.
+The editor's reflex block paints through it, until job75.
+
+## `internal static void QReflexAnchorRefine(IReadOnlyList<QReflexItem> rows, bool anchorable, IReadOnlyDictionary<long, string> texts)`
+
+Writes each row's anchor label by its id, and whether the row may be anchored at all.
+It is the one writer of both, so the reading view's ready labels and the editor's land alike.
+A row the labels do not name shows no anchor.
 
 ## `internal static void QReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened)`
 

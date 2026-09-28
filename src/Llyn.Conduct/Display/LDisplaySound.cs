@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -8,8 +7,6 @@ namespace Llyn.Conduct;
 
 public sealed class LDisplaySound
 {
-    private readonly LDraftPort _lDraftPort;
-
     private readonly LEntryPort _lEntryPort;
 
     private readonly LPhonologyPort _lPhonologyPort;
@@ -24,22 +21,15 @@ public sealed class LDisplaySound
 
     private bool _lDisplaySoundOpened;
 
-    private IReadOnlyList<LParadigmRow> _lDisplaySoundParadigm = [];
+    private LEntryDraft? _lDisplaySoundReflex;
 
-    private IReadOnlyList<LReflexDraft>? _lDisplaySoundReflex;
-
-    private int _lDisplaySoundTicket;
-
-    internal LDisplaySound(
-        LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
+    internal LDisplaySound(LEntryPort entries, LPhonologyPort phonology, LMediaPort media, LSettingsPort settings)
     {
-        ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(settings);
 
-        _lDraftPort = drafts;
         _lEntryPort = entries;
         _lPhonologyPort = phonology;
         _lMediaPort = media;
@@ -48,11 +38,13 @@ public sealed class LDisplaySound
 
     public LEntryDraft? LDisplayShown => _lDisplaySoundDraft;
 
-    public long? LDisplayEntry => _lDisplaySoundEntry;
+    internal long? LDisplayEntry => _lDisplaySoundEntry;
 
     public bool LDisplayFoldOpened => _lDisplaySoundOpened;
 
-    public event Action<string, Exception>? LDisplaySoundFailed;
+    internal int LDisplayTicket { get; set; }
+
+    internal event Action<string, Exception>? LDisplaySoundFailed;
 
     internal void LDisplaySoundShow(long? id, LEntryDraft draft)
     {
@@ -61,23 +53,23 @@ public sealed class LDisplaySound
         _lDisplaySoundEntry = id;
         _lDisplaySoundDraft = draft;
         _lDisplaySoundReflex = null;
+        LDisplayMarkSend(_lPhonologyPort.LEngineSoundStart, id);
     }
 
     internal void LDisplaySoundClear()
     {
         _lDisplaySoundEntry = null;
         _lDisplaySoundDraft = null;
-        _lDisplaySoundParadigm = [];
         _lDisplaySoundReflex = null;
-        _lMediaPort.LEngineRecordingStop(_lDisplaySoundTicket);
+        _lMediaPort.LEngineRecordingStop(LDisplayTicket);
     }
 
-    public void LDisplayFoldSet(bool opened)
+    internal void LDisplayFoldSet(bool opened)
     {
         _lDisplaySoundOpened = opened;
     }
 
-    public void LDisplayReflexLoad()
+    internal void LDisplayReflexLoad()
     {
         if (_lDisplaySoundEntry is not long shown)
         {
@@ -86,7 +78,7 @@ public sealed class LDisplaySound
 
         try
         {
-            _lDisplaySoundReflex = _lEntryPort.LEngineEntryLoad(shown)?.LEntryDraftReflexes ?? _lDisplaySoundReflex;
+            _lDisplaySoundReflex = _lEntryPort.LEngineEntryLoad(shown) ?? _lDisplaySoundReflex;
         }
         catch (Exception exception)
         {
@@ -94,12 +86,10 @@ public sealed class LDisplaySound
         }
     }
 
-    public IReadOnlyList<LReflexDraft> LDisplayReflexRead()
+    internal IReadOnlyList<LReflexDraft> LDisplayReflexRead()
     {
-        return (_lDisplaySoundReflex ?? _lDisplaySoundDraft?.LEntryDraftReflexes)?
-            .Where(static reflex => reflex.LReflexDraftWritten)
-            .ToList()
-            ?? [];
+        LEntryDraft? source = _lDisplaySoundReflex ?? _lDisplaySoundDraft;
+        return source is null ? [] : _lEntryPort.LEngineReflexRead(source);
     }
 
     public void LDisplayReflexStart(long? id)
@@ -117,102 +107,26 @@ public sealed class LDisplaySound
         LDisplayMarkSend(_lPhonologyPort.LEngineReflexRebuild, id);
     }
 
-    public bool LDisplayFanqieCheck(long? id)
+    internal bool LDisplayFanqieCheck(long? id)
     {
         return LDisplayPendingRead(_lPhonologyPort.LEngineFanqieCheck, id);
     }
 
-    public bool LDisplayScriptCheck(long? id)
+    internal bool LDisplayScriptCheck(long? id)
     {
         return LDisplayPendingRead(_lPhonologyPort.LEngineScriptCheck, id);
     }
 
-    public bool LDisplayParadigmCheck(long? id)
+    internal bool LDisplayParadigmCheck(long? id)
     {
         return LDisplayPendingRead(_lPhonologyPort.LEngineInflectionCheck, id);
-    }
-
-    public void LDisplayFanqieStart()
-    {
-        LDisplayMarkSend(_lPhonologyPort.LEngineFanqieStart, _lDisplaySoundEntry);
-    }
-
-    public IReadOnlyList<LFanqieGroup> LDisplayFanqieDivide()
-    {
-        return LDisplayListRead(_lPhonologyPort.LEngineFanqieDivide);
-    }
-
-    public (bool, Func<IReadOnlyList<long>, string>) LDisplayAnchorRead(IReadOnlyList<LFanqieGroup> groups)
-    {
-        ArgumentNullException.ThrowIfNull(groups);
-
-        IReadOnlyList<LFanqieRow> rows = groups.SelectMany(static group => group.LFanqieGroupRows).ToList();
-        string headword = _lDisplaySoundDraft!.LEntryDraftHeadword;
-        return (
-            _lDraftPort.LEngineAnchorCheck(rows, headword),
-            anchors => _lDraftPort.LEngineAnchorFormat(rows, anchors, headword, CReflex.LReflexSeparator));
-    }
-
-    public string LDisplayReadingRead()
-    {
-        if (_lDisplaySoundEntry is not long shown || _lDisplaySoundDraft is null)
-        {
-            return string.Empty;
-        }
-
-        try
-        {
-            return _lPhonologyPort.LEngineReadingRead(shown, _lDisplaySoundDraft.LEntryDraftHeadword);
-        }
-        catch (Exception)
-        {
-            return string.Empty;
-        }
-    }
-
-    public void LDisplayFanqieSet(long fanqieId, int rank)
-    {
-        LDisplayMarkSend(shown => _lPhonologyPort.LEngineFanqieSet(shown, fanqieId, rank), _lDisplaySoundEntry);
-    }
-
-    public void LDisplayScriptStart()
-    {
-        LDisplayMarkSend(_lPhonologyPort.LEngineScriptStart, _lDisplaySoundEntry);
-    }
-
-    public IReadOnlyList<LScriptGroup> LDisplayScriptDivide()
-    {
-        return LDisplayListRead(_lPhonologyPort.LEngineScriptDivide);
-    }
-
-    public IReadOnlyList<LParadigmRow> LDisplayParadigmRead()
-    {
-        _lDisplaySoundParadigm = LDisplayListRead(_lPhonologyPort.LEngineParadigmScan);
-        return _lDisplaySoundParadigm;
-    }
-
-    public void LDisplayInflectionStart()
-    {
-        if (!LDisplayMorphologyRead())
-        {
-            return;
-        }
-
-        LDisplayMarkSend(_lPhonologyPort.LEngineInflectionStart, _lDisplaySoundEntry);
-    }
-
-    public string LDisplayLanguageRead()
-    {
-        return _lDisplaySoundParadigm.Count == 0
-            ? string.Empty
-            : _lDisplaySoundParadigm[0].LParadigmRowFirst.LParadigmSlotSpeech.LSpeechValueLanguage;
     }
 
     public bool LDisplayMorphologyRead()
     {
         try
         {
-            return _lSettingsPort.LEngineSettingsRead().LSettingsMorphology;
+            return _lSettingsPort.LEngineMorphologyCheck();
         }
         catch (Exception)
         {
@@ -220,98 +134,12 @@ public sealed class LDisplaySound
         }
     }
 
-    public IReadOnlyList<LTranscriptionDraft> LDisplayTranscriptionRead()
-    {
-        if (_lDisplaySoundDraft is null)
-        {
-            return [];
-        }
-
-        LGlyph? glyph = LDisplayGlyphRead();
-        return _lDisplaySoundDraft.LEntryDraftTranscriptions
-            .Where(spelled => !spelled.LTranscriptionDraftEmpty
-                && glyph?.LGlyphSchemeCheck(spelled.LTranscriptionDraftScheme) != true)
-            .ToList();
-    }
-
-    public LGlyph? LDisplayGlyphRead()
-    {
-        try
-        {
-            return _lDisplaySoundDraft is null
-                ? null
-                : _lEntryPort.LEngineGlyphRead(_lDisplaySoundDraft.LEntryDraftLanguage);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
-            return null;
-        }
-    }
-
-    public IReadOnlyList<LGlyphCell> LDisplayGlyphDivide()
-    {
-        try
-        {
-            return _lDisplaySoundDraft is null ? [] : _lEntryPort.LEngineGlyphDivide(_lDisplaySoundDraft);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
-            return [];
-        }
-    }
-
-    public bool LDisplayRecordingCheck()
-    {
-        try
-        {
-            return _lDisplaySoundDraft is not null
-                && _lMediaPort.LEngineRecordingExist(_lDisplaySoundDraft.LEntryDraftAudio);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.LoadFailed", exception);
-            return false;
-        }
-    }
-
-    public bool LDisplayAudibleCheck()
-    {
-        return LDisplayRecordingCheck()
-            || (_lDisplaySoundDraft?.LEntryDraftAccents.Any(
-                static spoken => spoken.LPronunciationDraftNotated && spoken.LPronunciationDraftAudio.Length > 0)
-                ?? false);
-    }
-
-    public void LDisplayRecordingPlay(double volume)
-    {
-        if (!LDisplayRecordingCheck())
-        {
-            return;
-        }
-
-        LDisplayRecordingPlay(_lDisplaySoundDraft!.LEntryDraftAudio, volume);
-    }
-
-    public void LDisplayRecordingPlay(string? file, double volume)
-    {
-        try
-        {
-            _lDisplaySoundTicket = _lMediaPort.LEngineRecordingPlay(file, volume);
-        }
-        catch (Exception exception)
-        {
-            LDisplaySoundFailed?.Invoke("Sound.PlayFailed", exception);
-        }
-    }
-
     internal void LDisplayPlaybackStop()
     {
-        _lMediaPort.LEngineRecordingStop(_lDisplaySoundTicket);
+        _lMediaPort.LEngineRecordingStop(LDisplayTicket);
     }
 
-    private IReadOnlyList<LDisplayItem> LDisplayListRead<LDisplayItem>(Func<long, IReadOnlyList<LDisplayItem>> read)
+    internal IReadOnlyList<LDisplayItem> LDisplayListRead<LDisplayItem>(Func<long, IReadOnlyList<LDisplayItem>> read)
     {
         if (_lDisplaySoundEntry is not long shown)
         {

@@ -233,6 +233,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LGlyphCell> TGlyphDivide(this LGlyph glyph, LEntryDraft draft) =>
         glyph.LGlyphDivide(draft);
 
+    internal static IReadOnlyList<LTranscriptionDraft> TGlyphOtherRead(
+        LGlyph? glyph, IReadOnlyList<LTranscriptionDraft> rows) =>
+        LGlyph.LGlyphOtherRead(glyph, rows);
+
     internal static LTrove TTroveCreate() =>
         new LTrove();
 

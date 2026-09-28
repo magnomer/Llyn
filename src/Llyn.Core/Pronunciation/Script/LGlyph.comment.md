@@ -32,6 +32,12 @@ Whether a transcription row already stands under the glyph section's own scheme.
 
 Whether a row stands under any scheme but the glyph section's, or under any scheme when there is no section.
 
+## `public static IReadOnlyList<LTranscriptionDraft> LGlyphOtherRead(`
+
+The filled rows a reading view lists as transcriptions, in draft order.
+A row under the glyph section's scheme is left out, since the glyph row shows it.
+Without a section, every filled row stays.
+
 ## `public bool LGlyphSchemeCheck(string scheme)`
 
 Whether `scheme` is this section's own name, so a transcription under it is the glyph row.

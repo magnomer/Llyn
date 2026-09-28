@@ -66,6 +66,15 @@ Whether the recording resolves to a file that exists.
 Plays the recording at `volume` under the gate, and plays nothing for a file that does not exist.
 Answers the play's ticket, or zero when nothing played.
 
+## `public int LEngineRecordingPlay(LEntryDraft draft, double volume)`
+
+Plays the draft's own recording, the audio of its first pronunciation, as the file form does.
+
+## `public (bool, bool) LEnginePlaybackRead(LEntryDraft draft)`
+
+Whether the draft's own recording exists, and whether the view has anything to play at all.
+The second holds for the own recording or for any accent row that is notated and carries audio.
+
 ## `public void LEngineRecordingStop(int ticket)`
 
 Stops the playing recording while `ticket` names it.

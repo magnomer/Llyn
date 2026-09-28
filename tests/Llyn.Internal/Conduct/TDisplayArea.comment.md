@@ -57,10 +57,6 @@ With no entry chosen the gate stores nothing and words nothing.
 
 Conduct chooses the one-off key for the driver's lookup, and an unranked entry shows no chip.
 
-## `public void DisplayPlaybackCancel_NothingPlaying_KeepsTheShownEntry()`
-
-Stopping play with nothing playing leaves the shown entry standing.
-
 ## `public void DisplayNarrativeCheck_ReadSide_ShowsOnlyWords(bool editable, string text, bool expected)`
 
 The read face shows only text with words in it, and never while editing.

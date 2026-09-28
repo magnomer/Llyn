@@ -237,7 +237,7 @@ public partial class PWindow
         _pLayout.PLayoutAttach((Grid)PGuild.Content, "guild");
         _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
 
-        _pLayout.PLayoutRestore();
+        _pLayout.PLayoutRefine();
     }
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)

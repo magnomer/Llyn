@@ -58,9 +58,4 @@ public interface LDraftPort
     bool LEngineAnchorCheck(long entryId, string headword);
 
     string LEngineAnchorFormat(long entryId, IReadOnlyList<long> anchors, string headword, string separator);
-
-    bool LEngineAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword);
-
-    string LEngineAnchorFormat(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator);
 }

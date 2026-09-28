@@ -17,6 +17,10 @@ The sound half, which holds the shown draft, the fold state and every phonology 
 
 The lectern's area, built once here, so every driver over this display hears the same events.
 
+## `public CDisplaySound CDisplaySound { get; }`
+
+The lectern's sound area, built once here over the sound half and the header area.
+
 ## `private readonly CEnvoy _lDisplayEnvoy;`
 
 The envoy a refused load, mark or name lookup is shown through, with its text key.
@@ -111,14 +115,14 @@ This read only reshapes the answer.
 It answers null when no entry is given, the entry has no frequency, or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
 
-## `public bool LDisplayFanqieCheck(long? id)`
+## `internal bool LDisplayFanqieCheck(long? id)`
 
-Forwards to the sound half, since the editor asks whether the rime-book rows are still being fetched.
+Forwards to the sound half, since the editor's timbre asks whether the rime-book rows are still being fetched.
 
-## `public bool LDisplayScriptCheck(long? id)`
+## `internal bool LDisplayScriptCheck(long? id)`
 
-Forwards to the sound half, since the editor asks whether the script images are still being fetched.
+Forwards to the sound half, since the editor's timbre asks whether the script images are still being fetched.
 
-## `public bool LDisplayParadigmCheck(long? id)`
+## `internal bool LDisplayParadigmCheck(long? id)`
 
-Forwards to the sound half, since the editor asks whether the inflections are still being fetched.
+Forwards to the sound half, since the editor's timbre asks whether the inflections are still being fetched.

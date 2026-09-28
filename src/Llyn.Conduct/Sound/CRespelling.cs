@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -35,11 +36,17 @@ public sealed class CRespelling
 
     public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)
     {
+        return LRespellingReflexScan(_cRespellingAtelier.CAtelierPhonologyPort, language, reflexes);
+    }
+
+    internal static IReadOnlyList<CReflex> LRespellingReflexScan(
+        LPhonologyPort phonology, string language, IReadOnlyList<CReflexDraft> reflexes)
+    {
+        ArgumentNullException.ThrowIfNull(phonology);
         ArgumentNullException.ThrowIfNull(reflexes);
 
         IReadOnlyList<string> languages = reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList();
-        IReadOnlyList<LReflexGuise> guises =
-            _cRespellingAtelier.CAtelierPhonologyPort.LEngineGuiseRead(language, languages);
+        IReadOnlyList<LReflexGuise> guises = phonology.LEngineGuiseRead(language, languages);
         IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(languages);
         return reflexes.Select((reflex, index) => LRespellingReflexRead(reflex, guises[index], leads[index])).ToList();
     }

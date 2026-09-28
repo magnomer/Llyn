@@ -23,10 +23,14 @@ Otherwise it is the pronunciation mark.
 
 ## `public IReadOnlyList<CReflex> CRespellingReflexScan(string language, IReadOnlyList<CReflexDraft> reflexes)`
 
+The editor's reflex rows of an entry in `language`, read through `LRespellingReflexScan`.
+
+## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(`
+
 The reflex rows of an entry in `language`, in order, each ready to show.
 One engine read answers every row's switch, phonemic mark and fold.
 Each row is marked when it leads its run of one language.
-The editor and the reading view both read their rows here.
+The editor and the reading view's sound area both read their rows here, so the rule has one owner.
 
 ## `private static CReflex LRespellingReflexRead(CReflexDraft reflex, LReflexGuise guise, bool lead)`
 

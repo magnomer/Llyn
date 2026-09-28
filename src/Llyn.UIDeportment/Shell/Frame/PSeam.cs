@@ -79,7 +79,7 @@ public sealed class PSeam : Thumb
         shift = Math.Min(Math.Abs(shift), _pSeamWidth[pay] - _pSeamRoom[pay]);
         if (shift <= 0)
         {
-            PSeamLayout?.PLayoutPropagate(host);
+            PSeamLayout?.PLayoutLinkRefine(host);
             return;
         }
 
@@ -93,7 +93,7 @@ public sealed class PSeam : Thumb
             host.ColumnDefinitions[pay].Width = new GridLength(_pSeamWidth[pay] - shift);
         }
 
-        PSeamLayout?.PLayoutPropagate(host);
+        PSeamLayout?.PLayoutLinkRefine(host);
     }
 
     private void PSeamFinishHandle(object sender, DragCompletedEventArgs e)

@@ -9,3 +9,7 @@ Each play answers a ticket, and a stop acts only for the ticket of the latest pl
 It opens a folder or a link through the usher, so the veneer starts no process.
 The sweep drops recordings no draft or entry names any more.
 `LEngine` implements it today, and a media clerk takes it over when the parts are dismantled.
+
+## `(bool, bool) LEnginePlaybackRead(LEntryDraft draft);`
+
+Whether the draft's own recording exists, and whether a reading view has anything to play.

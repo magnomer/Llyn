@@ -4,7 +4,8 @@
 
 The slice of the engine a deportment sees when it asks about sounds and scripts.
 It covers the rime-book rows, the script images, the reflex readings and the inflection paradigm of an entry.
-Each of those has a check, a start and a read, since the rows are fetched in the background.
+Each of those has a check and a read, since the rows are fetched in the background.
+One start opens every fetch of an entry, and the reflexes keep a start of their own for the editor.
 It also answers the language facts a panel words its fields by.
 Those are tonal, silent, phonemic, respelled, the tone list, the schemes and the parts of speech.
 `LEngine` implements it today, and a phonology clerk takes it over when the parts are dismantled.
@@ -12,6 +13,10 @@ Those are tonal, silent, phonemic, respelled, the tone list, the schemes and the
 ## `bool LEngineFanqieCheck(long entryId);`
 
 Whether the entry's rime-book rows are still being fetched.
+
+## `void LEngineSoundStart(long entryId);`
+
+Starts every background fetch a reading view of the entry shows, in the engine's order.
 
 ## `LDiweiPage LEngineDiweiResolve(long? id, Func<string, string?> localize);`
 

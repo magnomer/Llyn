@@ -76,8 +76,17 @@ public sealed class LEntryOutlet : LEntryPort
     public IReadOnlyList<LGlyphCell> LEngineGlyphDivide(LEntryDraft draft) =>
         _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage)?.LGlyphDivide(draft) ?? [];
 
-    public LEntry LEngineGlyphResolve(string character, string language) =>
-        _lEntryOutletEngine.LEngineEntry.LEngineGlyphResolve(character, language);
+    public LGlyph? LEngineGlyphRead(LEntryDraft draft) =>
+        _lEntryOutletEngine.LEngineEntry.LEngineGlyphRead(draft.LEntryDraftLanguage);
+
+    public long LEngineGlyphResolve(string character, string language) =>
+        _lEntryOutletEngine.LEngineEntry.LEngineGlyphResolve(character, language).LEntryId;
+
+    public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft) =>
+        _lEntryOutletEngine.LEngineLanguage.LEngineTranscriptionRead(draft);
+
+    public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft) =>
+        _lEntryOutletEngine.LEngineEntry.LEngineReflexRead(draft);
 
     public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner) =>
         _lEntryOutletEngine.LEngineCard.LEngineMeaningRead(ownerId, owner);

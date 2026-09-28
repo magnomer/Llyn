@@ -279,22 +279,6 @@ public sealed class TDisplayArea
         Assert.Equal(["Frequency.Once"], keys);
     }
 
-    [Fact]
-    public void DisplayPlaybackCancel_NothingPlaying_KeepsTheShownEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        LEntry water = TDisplayEntrySave(engine, "water");
-        CWing wing = TDisplayWingPrepare(atelier);
-        CDisplay area = wing.CWingDisplay.CDisplayArea;
-        wing.CWingEntryOpen(water.LEntryId);
-
-        area.CDisplayPlaybackCancel();
-
-        Assert.Equal("water", area.CDisplayShown.CLecternHeadword);
-    }
-
     [Theory]
     [InlineData(false, "  a tale  ", true)]
     [InlineData(false, " \n ", false)]

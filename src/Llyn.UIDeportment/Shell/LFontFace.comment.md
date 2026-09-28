@@ -12,6 +12,10 @@ Takes any element that carries text, because a text box and a text block share t
 Both read them from `TextElement`, so one attached property serves either.
 Every caller names the role, from a headword to whole controls such as the fanqie and script panels.
 
+### `public static void LFontRefine(CFont font, params DependencyObject[] surfaces)`
+
+Puts a font Conduct already read onto every surface, so a block handed its font asks nothing more.
+
 ### `public static void LFontRefine(`
 
 The several-role form reads every role at once and puts role by role onto surface by surface.
@@ -32,7 +36,8 @@ Called after `LFontRefine`, because the family it reads is the one just put on.
 
 ### `public static void LFontGlyphRefine(ResourceDictionary resources, CAtelier atelier, string language)`
 
-Puts the typography a pack declares for its glyph row into the resources of the row's list.
+Reads the glyph font of `language` and puts it through the font form below.
+It puts the typography a pack declares for its glyph row into the resources of the row's list.
 Only the glyph value reads those keys, so the row's label keeps the theme face.
 The shared label column then measures the same in both panels.
 Setting the font on the list itself once leaked into the label.
@@ -40,6 +45,10 @@ That pushed every reading row sideways in the editor alone.
 The editor field and the reading chips read the same two keys.
 So both draw the characters at one size in one face.
 A part the pack leaves out has its key removed, so the theme's default in `PThemeGlyph.xaml` stands.
+
+### `public static void LFontGlyphRefine(ResourceDictionary resources, CFont glyph)`
+
+Puts a glyph font Conduct already read into the row's resources, by the same two keys.
 
 ### `public static void LFontExampleRefine(ResourceDictionary resources, CAtelier atelier, string language)`
 

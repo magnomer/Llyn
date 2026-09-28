@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -123,6 +124,13 @@ internal sealed class LEntryFacade
         }
 
         return _lEntryFacadeEngine.LEngineLanguage.LEngineLanguageLoad(language).LLanguageGlyph;
+    }
+
+    public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return draft.LEntryDraftReflexes.Where(static reflex => reflex.LReflexDraftWritten).ToList();
     }
 
     public LEntry LEngineGlyphResolve(string character, string language)

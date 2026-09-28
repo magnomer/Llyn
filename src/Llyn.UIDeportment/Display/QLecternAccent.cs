@@ -8,7 +8,7 @@ namespace Llyn.UIDeportment;
 
 public sealed class QLecternAccent
 {
-    private readonly CDisplay _qLecternAccentArea;
+    private readonly CDisplaySound _qLecternAccentArea;
 
     private readonly ObservableCollection<QAccentItem> _qLecternAccentRow = [];
 
@@ -30,7 +30,7 @@ public sealed class QLecternAccent
 
     private DependencyProperty _qLecternAccentTonal = null!;
 
-    public QLecternAccent(CDisplay area)
+    public QLecternAccent(CDisplaySound area)
     {
         ArgumentNullException.ThrowIfNull(area);
 

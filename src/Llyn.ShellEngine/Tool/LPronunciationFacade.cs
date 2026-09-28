@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Application;
@@ -231,6 +232,22 @@ internal sealed class LPronunciationFacade
         {
             return LPronunciationFacadeStaff.LEngineStaffRecording.LRecordingClerkPlay(file, volume);
         }
+    }
+
+    public int LEngineRecordingPlay(LEntryDraft draft, double volume)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        return LEngineRecordingPlay(draft.LEntryDraftAudio, volume);
+    }
+
+    public (bool, bool) LEnginePlaybackRead(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        bool recorded = LEngineRecordingExist(draft.LEntryDraftAudio);
+        return (recorded, recorded || draft.LEntryDraftAccents.Any(static spoken =>
+            spoken.LPronunciationDraftNotated && spoken.LPronunciationDraftAudio.Length > 0));
     }
 
     public void LEngineRecordingStop(int ticket)

@@ -32,9 +32,10 @@ The swath's clear and the star row's two properties are its seams.
 `PMedia` is set on the view, so the cards below it build picture and video rows through the window.
 The play button, the volume tray and the slider are handed to the lectern's playback, which drives them.
 The pronunciation surface, the accent and transcription lists and the glyph row are handed over too.
-The window's glyph opener is the seam a character chip opens its entry through.
+The window goes to the lectern's sound, whose glyph, category and stem gates open through its openers.
 The reflex, fanqie, script and paradigm controls go to the lectern's sound with their show members as seams.
-The fanqie's notices are wired back to the sound, so a click reaches the shown entry.
+The fanqie's category and stem notices go to the sound's observers, so a click reaches the shown entry's language.
+Its representative notice goes straight to the sound area's gate, since the notice already carries raw values.
 The floating contents and its eight sections are handed to the lectern's compass, which places and fills it.
 The card lists, incoming rows and etymology go to the lectern's card.
 The converters' fill members and the window's openers and failure notice are its seams.
@@ -65,7 +66,7 @@ It is internal, because the contents dictionary forwards its row clicks here.
 
 ## `private void PReflexFoldHandle(object sender, RoutedEventArgs e)`
 
-Hands the fold toggle's state to the lectern's sound, which sets the fold and redraws the rows.
+Tells the lectern's sound that the fold toggle moved, and it reads the toggle for the fold gate.
 
 ## `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 
@@ -93,7 +94,7 @@ Hands the pressed chip to the lectern, which opens the character's entry.
 
 ## `internal void PDisplayClose()`
 
-Calls the display area's gate that stops this view's own play, since the view is going away.
+Calls the sound area's gate that stops this view's own play, since the view is going away.
 
 ## Inline notes
 

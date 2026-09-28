@@ -44,6 +44,11 @@ Returns the recorded revision.
 
 The glyph section the pack of `language` declares, or null when the language shows no glyph row.
 
+## `public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft)`
+
+The reflex rows of the draft that carry written text, in draft order.
+A row the reflex fetch left blank stays out of a reading view.
+
 ## `public LEntry LEngineGlyphResolve(string character, string language)`
 
 The entry `character` stands for in `language`, made when none exists yet.

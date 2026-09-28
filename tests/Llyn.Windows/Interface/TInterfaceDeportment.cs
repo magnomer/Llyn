@@ -45,17 +45,16 @@ internal static class TInterfaceDeportment
         QCaret.QCaretKeyApply(key, caret, length, selection, remove, move, place);
 
     internal static void TDisplayFoldSet(this LEditor editor, bool opened) =>
-        editor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldSet(opened);
+        editor.LEditorStudio.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(opened);
 
     internal static bool TDisplayFoldRead(this LEditor editor) =>
         editor.LEditorStudio.CEditorDisplay.LDisplaySound.LDisplayFoldOpened;
 
     internal static void TLecternReflexAttach(
         this QLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>
-        lectern.QLecternSound.LLecternReflexAttach(reflex, loading, fold);
+        lectern.QLecternSound.QLecternReflexIntroduce(reflex, loading, fold);
 
-    internal static void TLecternFoldHandle(this QLectern lectern, bool opened) =>
-        lectern.QLecternSound.LLecternFoldHandle(opened);
+    internal static void TLecternFoldObserve(this QLectern lectern) => lectern.QLecternSound.QLecternFoldObserve();
 
     internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
         QReflexItem.QReflexFoldRefine(rows, fold, opened);

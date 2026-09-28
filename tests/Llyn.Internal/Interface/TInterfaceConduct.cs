@@ -14,7 +14,6 @@ internal static class TInterfaceConduct
         CReflex.LReflexLeadRead(languages);
 
     internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
-        new LDraftOutlet(engine),
         new LEntryOutlet(engine),
         new LPhonologyOutlet(engine),
         new LMediaOutlet(engine),
@@ -154,6 +153,16 @@ internal static class TInterfaceConduct
         new LSettingsOutlet(engine),
         new LMediaOutlet(engine),
         TEnvoyCreate(false, []));
+
+    internal static CEditor TEditorCreate(LEngine engine, LPhonologyPort phonology) =>
+        TEditorCreate(
+            new LDraftOutlet(engine),
+            new LEntryOutlet(engine),
+            phonology,
+            new LSettingsOutlet(engine),
+            TEngineFake.TEngineStubCreate<LMediaPort>());
+
+    internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);
 
     internal static CEditor TEditorCreate(
         LDraftPort drafts, LEntryPort entries, LPhonologyPort phonology, LSettingsPort settings, LMediaPort media) =>

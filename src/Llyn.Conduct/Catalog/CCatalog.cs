@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
 
@@ -20,6 +21,13 @@ public sealed class CCatalog
 
     public CFont CCatalogFontRead(string language, CFontRole role)
     {
+        return LCatalogFontRead(_cCatalogAtelier.CAtelierSettingsPort, language, role);
+    }
+
+    internal static CFont LCatalogFontRead(LSettingsPort settings, string language, CFontRole role)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
         if (string.IsNullOrWhiteSpace(language))
         {
             return new CFont(null, null, null);
@@ -27,13 +35,25 @@ public sealed class CCatalog
 
         try
         {
-            LFont font = _cCatalogAtelier.CAtelierSettingsPort.LEngineFontRead(language, (LFontRole)role);
+            LFont font = settings.LEngineFontRead(language, LCatalogRoleRead(role));
             return new CFont(font.LFontFamily, font.LFontSized, font.LFontStyle);
         }
         catch (Exception)
         {
             return new CFont(null, null, null);
         }
+    }
+
+    private static LFontRole LCatalogRoleRead(CFontRole role)
+    {
+        return role switch
+        {
+            CFontRole.CFontRoleHeadword => LFontRole.LFontRoleHeadword,
+            CFontRole.CFontRoleExample => LFontRole.LFontRoleExample,
+            CFontRole.CFontRoleGloss => LFontRole.LFontRoleGloss,
+            CFontRole.CFontRoleGlyph => LFontRole.LFontRoleGlyph,
+            _ => throw new ArgumentOutOfRangeException(nameof(role), role, null),
+        };
     }
 
     public IReadOnlyList<CFont> CCatalogFontRead(string language, IReadOnlyList<CFontRole> roles)
@@ -79,7 +99,7 @@ public sealed class CCatalog
 
     public long CCatalogGlyphResolve(string character, string language)
     {
-        return _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphResolve(character, language).LEntryId;
+        return _cCatalogAtelier.CAtelierEntryPort.LEngineGlyphResolve(character, language);
     }
 
     public IReadOnlyList<string> CCatalogLanguageRead()

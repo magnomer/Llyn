@@ -20,7 +20,7 @@ public sealed class PLayout
     {
         ArgumentNullException.ThrowIfNull(posture);
         _pLayoutPosture = posture;
-        _pLayoutPosture.QPostureCleared += PLayoutReset;
+        _pLayoutPosture.QPostureCleared += PLayoutResetRefine;
     }
 
     internal void PLayoutAttach(Grid host, string tab)
@@ -44,14 +44,14 @@ public sealed class PLayout
         }
     }
 
-    internal void PLayoutRestore()
+    internal void PLayoutRefine()
     {
         foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
             if (_pLayoutPosture.QPostureColumnRead(tab) is LCapsuleColumn record)
             {
-                PLayoutColumnApply(host, 0, record.LCapsuleColumnLeft);
-                PLayoutColumnApply(host, 1, record.LCapsuleColumnMiddle);
+                PLayoutColumnRefine(host, 0, record.LCapsuleColumnLeft);
+                PLayoutColumnRefine(host, 1, record.LCapsuleColumnMiddle);
             }
         }
 
@@ -73,14 +73,17 @@ public sealed class PLayout
 
         foreach ((_, Grid host, _, _) in _pLayoutList)
         {
-            PLayoutColumnApply(host, 0, left);
-            PLayoutColumnApply(host, 1, middle);
+            PLayoutColumnRefine(host, 0, left);
+            PLayoutColumnRefine(host, 1, middle);
         }
     }
 
-    internal void PLayoutPropagate(Grid source)
+    internal void PLayoutLinkRefine(Grid? dragged)
     {
-        ArgumentNullException.ThrowIfNull(source);
+        if (PLayoutSourceRead(dragged) is not Grid source)
+        {
+            return;
+        }
 
         _pLayoutRecent = source;
 
@@ -100,14 +103,17 @@ public sealed class PLayout
 
             for (int index = 0; index < last; index++)
             {
-                PLayoutColumnApply(host, index, PLayoutColumnRead(source.ColumnDefinitions[index]));
+                PLayoutColumnRefine(host, index, PLayoutColumnRead(source.ColumnDefinitions[index]));
             }
         }
     }
 
-    internal void PLayoutSave(Grid source)
+    internal void PLayoutSave(Grid? dragged)
     {
-        ArgumentNullException.ThrowIfNull(source);
+        if (PLayoutSourceRead(dragged) is not Grid source)
+        {
+            return;
+        }
 
         _pLayoutRecent = source;
 
@@ -129,19 +135,7 @@ public sealed class PLayout
         _pLayoutPosture.QPostureLayoutSave(list);
     }
 
-    internal void PLayoutSync()
-    {
-        Grid? source = _pLayoutRecent ?? (_pLayoutList.Count > 0 ? _pLayoutList[0].PLayoutHost : null);
-        if (source is null)
-        {
-            return;
-        }
-
-        PLayoutPropagate(source);
-        PLayoutSave(source);
-    }
-
-    internal void PLayoutReset()
+    internal void PLayoutResetRefine()
     {
         foreach ((_, Grid host, GridLength left, GridLength middle) in _pLayoutList)
         {
@@ -159,6 +153,11 @@ public sealed class PLayout
         }
 
         _pLayoutRecent = null;
+    }
+
+    private Grid? PLayoutSourceRead(Grid? dragged)
+    {
+        return dragged ?? _pLayoutRecent ?? (_pLayoutList.Count > 0 ? _pLayoutList[0].PLayoutHost : null);
     }
 
     private static LCapsuleColumn PLayoutRecordRead(string tab, Grid host)
@@ -181,7 +180,7 @@ public sealed class PLayout
         return column.ActualWidth > 0 ? column.ActualWidth : null;
     }
 
-    private static void PLayoutColumnApply(Grid host, int index, double? width)
+    private static void PLayoutColumnRefine(Grid host, int index, double? width)
     {
         int last = host.ColumnDefinitions.Count - 1;
 

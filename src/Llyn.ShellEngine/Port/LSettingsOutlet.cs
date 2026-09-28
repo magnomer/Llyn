@@ -46,6 +46,8 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineFrequencySave(bool frequency) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineFrequencySave(frequency);
 
+    public bool LEngineMorphologyCheck() => _lSettingsOutletEngine.LEngineSettings.LEngineMorphologyCheck();
+
     public void LEngineMorphologySave(bool morphology) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineMorphologySave(morphology);
 

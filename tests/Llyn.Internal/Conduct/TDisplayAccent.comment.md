@@ -3,7 +3,7 @@
 ## `public sealed class TDisplayAccent`
 
 Covers the reading view's pronunciation block, read and flag load alike, on a real workspace.
-The wing opens the entry, so each case stands on its display's area.
+The wing opens the entry, so each case stands on its display's sound area.
 
 ## `public void DisplayAccentRead_ShownEntry_AnswersTheBlockReadyToShow()`
 

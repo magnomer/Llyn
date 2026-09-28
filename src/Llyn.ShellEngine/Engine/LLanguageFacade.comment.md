@@ -116,6 +116,18 @@ The script styles of a language.
 
 Starts the fetch of every character that has no images.
 
+## `public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft)`
+
+The filled transcription rows a reading view lists, without the glyph row, through the language clerk.
+The gate is taken only to read the clerk field, which a rig apply replaces.
+
+## `public void LEngineSoundStart(long entryId)`
+
+Starts every background fetch a reading view of the entry shows, in one fixed order.
+The reflexes go first, then the inflections, the script images and the rime-book rows.
+Each start skips what is stored or pending, so opening an entry again starts nothing twice.
+The inflection start itself holds back while the morphology setting is off.
+
 ## `public bool LEngineStyleCheck(string language)`
 
 Whether the language pack names any script style at all.

@@ -18,6 +18,22 @@ The entry rows of a child list narrowed by the parent catalog's choice, as the f
 
 The cells of the draft's glyph row, empty when its language declares no glyph section.
 
+## `LGlyph? LEngineGlyphRead(LEntryDraft draft);`
+
+The glyph section of the draft's language, so a reader hands the draft unread.
+
+## `long LEngineGlyphResolve(string character, string language);`
+
+The id of the entry a glyph cell opens, made when none exists yet.
+
+## `IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft);`
+
+The filled transcription rows a reading view lists, without the glyph row.
+
+## `IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft);`
+
+The written reflex rows of the draft, which a reading view lists.
+
 ## `IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner);`
 
 How many places cite each record of one owner kind, keyed by record id.

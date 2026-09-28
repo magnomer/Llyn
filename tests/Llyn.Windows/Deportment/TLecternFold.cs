@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TLecternFold
 {
     [Fact]
-    public void FoldHandle_DisagreeingToggle_SettlesOnFlag()
+    public void FoldObserve_DisagreeingToggle_SettlesOnFlag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,8 +26,8 @@ public sealed class TLecternFold
             {
                 ToggleButton fold = new();
                 lectern.TLecternReflexAttach(new ItemsControl(), new TextBlock(), fold);
-                fold.Checked += (_, _) => lectern.TLecternFoldHandle(fold.IsChecked == true);
-                fold.Unchecked += (_, _) => lectern.TLecternFoldHandle(fold.IsChecked == true);
+                fold.Checked += (_, _) => lectern.TLecternFoldObserve();
+                fold.Unchecked += (_, _) => lectern.TLecternFoldObserve();
 
                 editor.TDisplayFoldSet(true);
                 TInterfaceDeportment.TReflexFoldRefine([], fold, editor.TDisplayFoldRead());

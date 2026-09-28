@@ -21,8 +21,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
 
     public bool LEngineFanqieCheck(long entryId) => _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieCheck(entryId);
 
-    public void LEngineFanqieStart(long entryId) => _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieStart(entryId);
-
     public IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId) =>
         _lPhonologyOutletEngine.LEngineFanqie.LEngineFanqieDivide(entryId);
 
@@ -40,9 +38,6 @@ public sealed class LPhonologyOutlet : LPhonologyPort
 
     public bool LEngineScriptCheck(long entryId) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineScriptCheck(entryId);
-
-    public void LEngineScriptStart(long entryId) =>
-        _lPhonologyOutletEngine.LEngineLanguage.LEngineScriptStart(entryId);
 
     public void LEngineScriptRebuild(long entryId) =>
         _lPhonologyOutletEngine.LEngineLanguage.LEngineScriptRebuild(entryId);
@@ -69,11 +64,10 @@ public sealed class LPhonologyOutlet : LPhonologyPort
     public bool LEngineInflectionCheck(long entryId) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineInflectionCheck(entryId);
 
-    public void LEngineInflectionStart(long entryId) =>
-        _lPhonologyOutletEngine.LEngineVocabulary.LEngineInflectionStart(entryId);
-
     public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineParadigmScan(entryId);
+
+    public void LEngineSoundStart(long entryId) => _lPhonologyOutletEngine.LEngineLanguage.LEngineSoundStart(entryId);
 
     public string LEngineLanguageResolve(long entryId) =>
         _lPhonologyOutletEngine.LEngineVocabulary.LEngineLanguageResolve(entryId);

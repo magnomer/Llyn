@@ -229,6 +229,25 @@ internal sealed class LLanguageFacade
         LLanguageFacadeStaff.LEngineStaffScript.LScriptClerkStart(entryId);
     }
 
+    public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft)
+    {
+        LLanguageClerk languages;
+        lock (_lLanguageFacadeGate)
+        {
+            languages = LLanguageFacadeStaff.LEngineStaffLanguage;
+        }
+
+        return languages.LLanguageTranscriptionRead(draft);
+    }
+
+    public void LEngineSoundStart(long entryId)
+    {
+        _lLanguageFacadeEngine.LEngineReflex.LEngineReflexStart(entryId);
+        _lLanguageFacadeEngine.LEngineVocabulary.LEngineInflectionStart(entryId);
+        LEngineScriptStart(entryId);
+        _lLanguageFacadeEngine.LEngineFanqie.LEngineFanqieStart(entryId);
+    }
+
     public bool LEngineStyleCheck(string language)
     {
         return LEngineStyleRead(language).Count > 0;

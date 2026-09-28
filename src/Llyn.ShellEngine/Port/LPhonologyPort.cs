@@ -12,8 +12,6 @@ public interface LPhonologyPort
 
     bool LEngineFanqieCheck(long entryId);
 
-    void LEngineFanqieStart(long entryId);
-
     IReadOnlyList<LFanqieGroup> LEngineFanqieDivide(long entryId);
 
     IReadOnlyList<LFanqieGroup> LEngineFanqieRead(long entryId);
@@ -25,8 +23,6 @@ public interface LPhonologyPort
     void LEngineFanqieSet(long entryId, long fanqieId, int rank);
 
     bool LEngineScriptCheck(long entryId);
-
-    void LEngineScriptStart(long entryId);
 
     void LEngineScriptRebuild(long entryId);
 
@@ -46,9 +42,9 @@ public interface LPhonologyPort
 
     bool LEngineInflectionCheck(long entryId);
 
-    void LEngineInflectionStart(long entryId);
-
     IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId);
+
+    void LEngineSoundStart(long entryId);
 
     string LEngineLanguageResolve(long entryId);
 

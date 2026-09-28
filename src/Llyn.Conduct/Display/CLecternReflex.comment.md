@@ -1,0 +1,11 @@
+# CLecternReflex.cs
+
+## `public sealed record CLecternReflex(`
+
+The reflex block of the reading view for the shown entry, ready to show.
+
+**Parameters**
+
+- `CLecternReflexRows`: the written reflex rows, each resolved by the shared reflex scan.
+- `CLecternReflexAnchor`: the anchor text of each row and whether anchoring is offered.
+- `CLecternReflexPending`: whether a reflex fill still runs, which shows the loading line.

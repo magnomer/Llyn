@@ -60,9 +60,10 @@ public sealed class QLectern
 
         _qLecternDisplay = display;
         QLecternArea = display.CDisplayArea;
-        QLecternAccent = new QLecternAccent(display.CDisplayArea);
-        QLecternSound = new LLecternSound(display.LDisplaySound);
-        QLecternPlayback = new LLecternPlayback(display.LDisplaySound);
+        QLecternSoundArea = display.CDisplaySound;
+        QLecternAccent = new QLecternAccent(display.CDisplaySound);
+        QLecternSound = new QLecternSound(display.CDisplaySound);
+        QLecternPlayback = new QLecternPlayback(display.CDisplaySound);
         QLecternCard = new QLecternCard(display);
     }
 
@@ -74,11 +75,13 @@ public sealed class QLectern
 
     public CDisplay QLecternArea { get; }
 
+    public CDisplaySound QLecternSoundArea { get; }
+
     public QLecternAccent QLecternAccent { get; }
 
-    public LLecternSound QLecternSound { get; }
+    public QLecternSound QLecternSound { get; }
 
-    public LLecternPlayback QLecternPlayback { get; }
+    public QLecternPlayback QLecternPlayback { get; }
 
     public QLecternCard QLecternCard { get; }
 
@@ -117,10 +120,17 @@ public sealed class QLectern
         QLecternArea.CDisplayOpened += QLecternFavoriteRefine;
         QLecternArea.CDisplayOpened += QLecternGraspRefine;
         QLecternArea.CDisplayOpened += QLecternFrequencyRefine;
-        QLecternArea.CDisplayOpened += QLecternPlayback.LLecternPlaybackShow;
+        QLecternArea.CDisplayOpened += QLecternPlayback.QLecternPlaybackRefine;
+        QLecternArea.CDisplayOpened += QLecternPlayback.QLecternVolumeRefine;
         QLecternArea.CDisplayOpened += QLecternAccent.QLecternAccentRefine;
         QLecternArea.CDisplayOpened += QLecternAccent.QLecternEnsignRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.LLecternSoundShow;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternGlyphRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternTranscriptionRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternReflexRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternFoldRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternParadigmRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternScriptRefine;
+        QLecternArea.CDisplayOpened += QLecternSound.QLecternFanqieRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternCardRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternLeafRefine;
         QLecternArea.CDisplayOpened += QLecternCard.QLecternIncomingRefine;
@@ -128,9 +138,9 @@ public sealed class QLectern
 
         QLecternArea.CDisplayClosed += swathSeam;
         QLecternArea.CDisplayClosed += QLecternEmptyRefine;
-        QLecternArea.CDisplayClosed += QLecternPlayback.LLecternPlaybackClear;
+        QLecternArea.CDisplayClosed += QLecternPlayback.QLecternTrayRefine;
         QLecternArea.CDisplayClosed += QLecternAccent.QLecternMuteRefine;
-        QLecternArea.CDisplayClosed += QLecternSound.LLecternSoundClear;
+        QLecternArea.CDisplayClosed += QLecternSound.QLecternSilenceRefine;
         QLecternArea.CDisplayClosed += QLecternCard.QLecternBlankRefine;
 
         QLecternArea.CDisplayFavoriteChanged += LObserver.LObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
@@ -138,13 +148,15 @@ public sealed class QLectern
         QLecternArea.CDisplayFrequencyChanged +=
             LObserver.LObserverCreate<CBulletin>(contents, QLecternFrequencyRefine);
         QLecternArea.CDisplayParadigmChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.LLecternParadigmUpdate);
+            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternParadigmRefine);
         QLecternArea.CDisplayReflexChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.LLecternReflexUpdate);
+            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternRenewalRefine);
+        QLecternArea.CDisplayReflexChanged +=
+            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternFoldRefine);
         QLecternArea.CDisplayScriptChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.LLecternScriptUpdate);
+            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternScriptRefine);
         QLecternArea.CDisplayFanqieChanged +=
-            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.LLecternFanqieUpdate);
+            LObserver.LObserverCreate<CBulletin>(contents, QLecternSound.QLecternFanqieRefine);
         QLecternArea.CDisplayEntryChanged +=
             LObserver.LObserverCreate<CBulletin>(contents, QLecternArea.CDisplayEntryResonate);
         QLecternArea.CDisplayWorkspaceChanged +=

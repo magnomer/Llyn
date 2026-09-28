@@ -26,6 +26,12 @@ public sealed class LMediaOutlet : LMediaPort
     public int LEngineRecordingPlay(string? file, double volume) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(file, volume);
 
+    public int LEngineRecordingPlay(LEntryDraft draft, double volume) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(draft, volume);
+
+    public (bool, bool) LEnginePlaybackRead(LEntryDraft draft) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEnginePlaybackRead(draft);
+
     public void LEngineRecordingStop(int ticket) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingStop(ticket);
 

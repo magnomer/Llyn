@@ -15,6 +15,10 @@ public interface LMediaPort
 
     int LEngineRecordingPlay(string? file, double volume);
 
+    int LEngineRecordingPlay(LEntryDraft draft, double volume);
+
+    (bool, bool) LEnginePlaybackRead(LEntryDraft draft);
+
     void LEngineRecordingStop(int ticket);
 
     void LEngineVolumeSet(double volume);

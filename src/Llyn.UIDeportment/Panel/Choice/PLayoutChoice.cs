@@ -8,6 +8,7 @@ public partial class PSettings
     {
         PSettingsPosture.QPostureLinkedSave(PLayoutLinked.IsChecked == true);
         PLedgerMetaApply();
-        _pSettingsHost.PWindowLayout.PLayoutSync();
+        _pSettingsHost.PWindowLayout.PLayoutLinkRefine(null);
+        _pSettingsHost.PWindowLayout.PLayoutSave(null);
     }
 }

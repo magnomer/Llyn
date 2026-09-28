@@ -31,7 +31,14 @@ public static class LFontFace
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(surfaces);
 
-        CFont font = atelier.CAtelierCatalog.CCatalogFontRead(language, role);
+        LFontRefine(atelier.CAtelierCatalog.CCatalogFontRead(language, role), surfaces);
+    }
+
+    public static void LFontRefine(CFont font, params DependencyObject[] surfaces)
+    {
+        ArgumentNullException.ThrowIfNull(font);
+        ArgumentNullException.ThrowIfNull(surfaces);
+
         foreach (DependencyObject surface in surfaces)
         {
             LFontSurfaceRefine(surface, font);
@@ -68,7 +75,14 @@ public static class LFontFace
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(atelier);
 
-        CFont glyph = atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleGlyph);
+        LFontGlyphRefine(resources, atelier.CAtelierCatalog.CCatalogFontRead(language, CFontRole.CFontRoleGlyph));
+    }
+
+    public static void LFontGlyphRefine(ResourceDictionary resources, CFont glyph)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        ArgumentNullException.ThrowIfNull(glyph);
+
         LFontResourceSet(
             resources, "Theme.Glyph.Family", glyph.CFontFamily is string named ? new FontFamily(named) : null);
         LFontResourceSet(resources, "Theme.Glyph.Size", glyph.CFontSize);

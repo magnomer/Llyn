@@ -88,11 +88,4 @@ public sealed class LDraftOutlet : LDraftPort
 
     public string LEngineAnchorFormat(long entryId, IReadOnlyList<long> anchors, string headword, string separator) =>
         _lDraftOutletEngine.LEngineReflex.LEngineAnchorFormat(entryId, anchors, headword, separator);
-
-    public bool LEngineAnchorCheck(IReadOnlyList<LFanqieRow> rows, string headword) =>
-        _lDraftOutletEngine.LEngineReflex.LEngineAnchorCheck(rows, headword);
-
-    public string LEngineAnchorFormat(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, string headword, string separator) =>
-        _lDraftOutletEngine.LEngineReflex.LEngineAnchorFormat(rows, anchors, headword, separator);
 }
