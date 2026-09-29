@@ -67,7 +67,7 @@ The roof, logo, menu lines, caption buttons and tab buttons are subscribed here 
 The flag store is subscribed first, so it empties before any panel reloads on an open.
 Every panel is attached next, and the status bar after them, so it paints the drafts the panels opened.
 The navigation is heard after every panel attaches, so every panel has registered its tab.
-Each panel's restore answers `CWorkspaceOpened`, and the duplex answers `CWorkspaceStateOpened`.
+Each panel's restore answers `CWorkspaceOpened`, and each duplex wing subscribes its own.
 The widths answer `CWorkspaceOpened` too: the reset, then the stored widths of the workspace opened.
 So the open is one gate call, and Conduct decides what shows and in which order.
 The widths are registered last, and the open applies them before any tab is shown.

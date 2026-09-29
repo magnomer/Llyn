@@ -28,7 +28,7 @@ public sealed class TRepertoire
         Assert.True(repertoire.CRepertoireScenarioShown);
         Assert.True(repertoire.CRepertoireScribeChecked);
         Assert.NotNull(held[^1]);
-        Assert.NotNull(repertoire.CRepertoireScenarioRead());
+        Assert.NotNull(repertoire.TRepertoireScenarioRead());
     }
 
     [Fact]
@@ -443,16 +443,16 @@ public sealed class TRepertoire
 
     internal static CRepertoire TRepertoirePrepare(CAtelier atelier, CEnvoy envoy)
     {
-        CRepertoire repertoire = CRepertoire.CRepertoireCreate(atelier, static () => true, envoy);
+        CRepertoire repertoire = CRepertoire.CRepertoireCreate(atelier, static () => true, envoy, static run => run());
         repertoire.CRepertoireVistaRestore();
         return repertoire;
     }
 
-    private static void TRepertoireTitleDefer(CRepertoire repertoire)
+    internal static void TRepertoireTitleDefer(CRepertoire repertoire)
     {
         repertoire.CRepertoireDesk.TDeskDefer(TInterface.TSituationTitleCreate(
             repertoire.CRepertoireDesk.CDeskId,
-            repertoire.CRepertoireScenarioRead()!.CSituationDraftId,
+            repertoire.TRepertoireScenarioRead()!.CSituationDraftId,
             TInterface.TStateValueCreate("in court")));
     }
 

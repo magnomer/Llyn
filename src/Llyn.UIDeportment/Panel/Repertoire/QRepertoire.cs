@@ -30,9 +30,9 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         surface.Resources.MergedDictionaries.Add(_qVideoTemplate);
 
         surface.CommandBindings.Add(new CommandBinding(
-            ApplicationCommands.Print, QRepertoirePressHandle, QRepertoirePressCheck));
+            ApplicationCommands.Print, QRepertoirePressObserve, QRepertoirePressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QRepertoirePortraitHandle, QRepertoirePortraitCheck));
+            PDisplayCommand.PDisplayCommandPortrait, QRepertoirePortraitObserve, QRepertoirePortraitRefine));
         QRepertoirePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
         QRepertoirePress.Command = ApplicationCommands.Print;
 
@@ -201,13 +201,13 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
     private QIconImage QRepertoireBinIcon =>
         QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PRepertoireBinIcon");
 
-    internal void QRepertoireAttach(PWindow host)
+    internal void QRepertoireIntroduce(PWindow host)
     {
         _qRepertoireHost = host;
         _cRepertoire = host.PWindowForge.QForgeRepertoireCreate(QRepertoireShownCheck, host.PWindowEnvoy);
         QLectern lectern = new(
             _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
-        QScenarioDeskAttach();
+        QScenarioDeskIntroduce();
 
         QAtlas.ItemsSource = _qAtlasList;
         QOccurrence.ItemsSource = _qOccurrenceList;
@@ -226,14 +226,14 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
 
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
         CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
-        _cRepertoire.CRepertoireChanged += QRepertoireModeUpdate;
+        _cRepertoire.CRepertoireChanged += QRepertoireModeRefine;
         _cRepertoire.CRepertoireScenarioChanged += QScenarioApply;
         _cRepertoire.CRepertoireSituationChanged += QVignetteShow;
         _cRepertoire.CRepertoireQueryCleared += QInquestClear;
-        atlas.CPanelChanged += QRepertoireModeUpdate;
+        atlas.CPanelChanged += QRepertoireModeRefine;
         atlas.CPanelRowsChanged += QAtlasFind;
         atlas.CPanelCleared += QVignetteClear;
-        occurrence.CPanelChanged += QRepertoireModeUpdate;
+        occurrence.CPanelChanged += QRepertoireModeRefine;
         occurrence.CPanelRowsChanged += QOccurrenceFind;
     }
 
@@ -242,7 +242,7 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         return _qRepertoireSurface.IsVisible;
     }
 
-    private void QRepertoireModeUpdate()
+    private void QRepertoireModeRefine()
     {
         QScenario.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireScenarioShown);
         QVignette.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteShown);
@@ -261,35 +261,29 @@ internal sealed partial class QRepertoire : PImageHost, PVideoHost, QChronicleHo
         QChronicleUpdate();
     }
 
-    internal void QRepertoireReset()
+    internal void QRepertoireExitRefine()
     {
-        _cRepertoire.CRepertoireSituationClose();
-    }
-
-    internal void QRepertoireClose()
-    {
-        QRepertoireEditor.PEditorClose();
-        QRepertoireDisplay.PDisplayClose();
+        QRepertoireEditor.PEditorPlayerRefine();
         QTierDropdown.IsOpen = false;
         QMeshDropdown.IsOpen = false;
     }
 
-    private void QRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QRepertoirePressRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = _cRepertoire?.CRepertoirePressAllowed ?? false;
     }
 
-    private async void QRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QRepertoirePressObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cRepertoire.CRepertoirePortraitPrint();
     }
 
-    private void QRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
+    private void QRepertoirePortraitRefine(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = _cRepertoire?.CRepertoirePortraitAllowed ?? false;
     }
 
-    private async void QRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    private async void QRepertoirePortraitObserve(object sender, ExecutedRoutedEventArgs e)
     {
         await _cRepertoire.CRepertoirePortraitExport();
     }

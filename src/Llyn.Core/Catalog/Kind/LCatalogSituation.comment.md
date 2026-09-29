@@ -11,6 +11,15 @@ The count travels with the row because the ordering reads it and the row shows i
 - `LCatalogSituationUsage` — How many Meanings and Collocations reference it.
 - `LCatalogSituationChosen` — True on the row of the Situation the vista stands on, false until the vista find fills it.
 
+## `public string LCatalogSituationKind { get; init; }`
+
+The kind as the row shows it, empty when none is stated.
+The vista find words an unknown kind with the wording the panel hands in.
+
+## `public string LCatalogSituationCount => LCatalog.LCatalogUsageFormat(LCatalogSituationUsage)`
+
+The usage worded through the one shared rule, blank for an unused Situation.
+
 ## `public static LCatalogSituation LCatalogSituationCreate(LSituation situation, int usage)`
 
 Builds the row from the stored Situation and the number of places referencing it.

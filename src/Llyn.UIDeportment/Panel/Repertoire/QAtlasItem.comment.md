@@ -11,10 +11,10 @@ It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the untitled text for the first so no row stands blank beside the next.
 
-## `internal QAtlasItem(CCatalogSituation row, string unknown, bool chosen)`
+## `internal QAtlasItem(CCatalogSituation row, bool chosen)`
 
-Builds the row from the found Situation and the number of places referencing it.
-The unknown mark is handed in rather than read here, and the engine already named an untitled row.
+Builds the row from the found Situation, whose kind and count already arrive worded.
+The engine already named an untitled row and an unknown kind, so the row only copies the text.
 The chosen mark comes as its own parameter, so the mark has one kind of writer.
 A row is built while the list is being filled.
 

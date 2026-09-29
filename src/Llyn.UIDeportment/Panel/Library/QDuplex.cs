@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Controls;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -20,19 +19,7 @@ internal sealed class QDuplex
 
     internal void QDuplexIntroduce(PWindow host)
     {
-        _qLeftWing.QWingAttach(host);
-        _qRightWing.QWingAttach(host);
-    }
-
-    internal void QDuplexRefine(CWorkspaceState state)
-    {
-        _qLeftWing.QWingRestore("left", state.CWorkspaceStateLeft);
-        _qRightWing.QWingRestore("right", state.CWorkspaceStateRight);
-    }
-
-    internal void QDuplexCloseRefine()
-    {
-        _qLeftWing.QWingClose();
-        _qRightWing.QWingClose();
+        _qLeftWing.QWingIntroduce(host, true);
+        _qRightWing.QWingIntroduce(host, false);
     }
 }

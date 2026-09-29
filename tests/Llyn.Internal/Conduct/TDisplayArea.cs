@@ -307,8 +307,7 @@ public sealed class TDisplayArea
 
     private static CWing TDisplayWingPrepare(CAtelier atelier)
     {
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []));
-        wing.CWingVistaRestore("left");
+        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, []), true);
         return wing;
     }
 

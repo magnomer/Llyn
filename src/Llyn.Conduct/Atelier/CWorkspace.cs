@@ -27,7 +27,7 @@ public sealed class CWorkspace
 
     public event Action? CWorkspaceOpened;
 
-    public event Action<CWorkspaceState>? CWorkspaceStateOpened;
+    internal event Action<CWorkspaceState>? LWorkspaceStateOpened;
 
     public event Action<CEstablishment>? CWorkspaceEstablishmentChanged;
 
@@ -91,7 +91,7 @@ public sealed class CWorkspace
         CWorkspaceOpened?.Invoke();
         _cWorkspaceAtelier.CAtelierLedger.LLedgerRaise();
         LWorkspaceEstablishmentRaise();
-        CWorkspaceStateOpened?.Invoke(state);
+        LWorkspaceStateOpened?.Invoke(state);
         _cWorkspaceAtelier.CAtelierNavigation.LNavigationTabOpen();
     }
 

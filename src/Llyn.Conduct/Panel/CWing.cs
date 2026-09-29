@@ -11,17 +11,20 @@ public sealed class CWing
 
     private readonly CEnvoy _cWingEnvoy;
 
+    private readonly bool _cWingLeft;
+
     private LVista? _cWingVista;
 
     private IReadOnlyList<CVistaRow> _cWingRows = [];
 
-    internal CWing(CAtelier atelier, CEnvoy envoy)
+    private CWing(CAtelier atelier, CEnvoy envoy, bool left)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cWingAtelier = atelier;
         _cWingEnvoy = envoy;
+        _cWingLeft = left;
         CWingDisplay = new LDisplay(
             atelier.CAtelierDraftPort,
             atelier.CAtelierEntryPort,
@@ -30,11 +33,15 @@ public sealed class CWing
             atelier.CAtelierMediaPort,
             envoy);
         CWingDisplay.LDisplayNavigationAttach(atelier.CAtelierNavigation);
+        LWingVistaRestore();
+        atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LWingVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LWingClose);
+        atelier.CAtelierWorkspace.LWorkspaceStateOpened += LWingEntryRestore;
     }
 
-    public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy)
+    public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy, bool left)
     {
-        return new CWing(atelier, envoy);
+        return new CWing(atelier, envoy, left);
     }
 
     public event Action<CBulletin>? CWingChanged;
@@ -55,12 +62,10 @@ public sealed class CWing
 
     public CCatalogFilter CWingFilter => CPanel.CPanelFilterRead(LVista.LVistaFilterRead(_cWingVista));
 
-    public void CWingVistaRestore(string tab)
+    private void LWingVistaRestore()
     {
-        ArgumentNullException.ThrowIfNull(tab);
-
         _cWingVista = _cWingAtelier.CAtelierVistaStart(
-            tab, CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true);
+            _cWingLeft ? "left" : "right", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true);
         _cWingRows = [];
         CWingDisplay.LDisplayVistaRestore(_cWingVista);
         CWingDisplay.LDisplayObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
@@ -117,18 +122,25 @@ public sealed class CWing
         return id;
     }
 
-    public void CWingEntryRestore(long? id)
+    private void LWingEntryRestore(CWorkspaceState state)
     {
-        if (id is long shown)
+        CWingDisplay.CDisplayArea.CDisplayEntryClose();
+        if ((_cWingLeft ? state.CWorkspaceStateLeft : state.CWorkspaceStateRight) is long shown)
         {
             LWingEntryLoad(shown);
         }
     }
 
-    public void CWingEntryOpen(long id)
+    public bool CWingEntryOpen(long? id)
     {
-        LWingEntryLoad(id);
+        if (id is not long chosen)
+        {
+            return false;
+        }
+
+        LWingEntryLoad(chosen);
         _cWingVista?.LVistaSideSave();
+        return true;
     }
 
     public IReadOnlyList<CVistaRow> CWingRowsRead()
@@ -137,11 +149,6 @@ public sealed class CWing
             ? _cWingAtelier.CAtelierEntryPort.LEngineEntryFind(vista).Select(CPanel.CPanelRowRead).ToList()
             : [];
         return _cWingRows;
-    }
-
-    public IReadOnlyList<string> CWingLanguageRead()
-    {
-        return _cWingAtelier.CAtelierSettingsPort.LEngineLanguageRead();
     }
 
     private void LWingEntryLoad(long id)
@@ -157,6 +164,11 @@ public sealed class CWing
         }
 
         CWingLoaded?.Invoke();
+    }
+
+    private void LWingClose()
+    {
+        CWingDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     private void LWingBulletinSend(CBulletin bulletin)

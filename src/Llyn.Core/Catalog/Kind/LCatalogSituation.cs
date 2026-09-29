@@ -11,6 +11,10 @@ public sealed record LCatalogSituation(
 {
     public string LCatalogSituationName { get; init; } = LCatalogSituationStored.LSituationTitle.LStateValueShow();
 
+    public string LCatalogSituationKind { get; init; } = LCatalogSituationStored.LSituationKind.LStateValueShow();
+
+    public string LCatalogSituationCount => LCatalog.LCatalogUsageFormat(LCatalogSituationUsage);
+
     public static LCatalogSituation LCatalogSituationCreate(LSituation situation, int usage)
     {
         ArgumentNullException.ThrowIfNull(situation);

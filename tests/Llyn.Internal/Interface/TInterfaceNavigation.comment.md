@@ -34,3 +34,7 @@ Relays the series jump, which only the display asks in production.
 
 Relays a panel's arrival open, as the navigation runs it.
 The arrival relays of the other areas do the same.
+
+## `internal static CSituationDraft? TRepertoireScenarioRead(this CRepertoire repertoire) =>`
+
+Relays the held Situation read, which only the repertoire's own notices ask in production.

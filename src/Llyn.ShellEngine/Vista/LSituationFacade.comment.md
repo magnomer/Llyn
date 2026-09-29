@@ -28,6 +28,7 @@ The Situations the repertoire panel's vista lists, with the query and order read
 Each row carries its chosen mark, true where its id is the one the vista stands on.
 The twin names are read from the title.
 The panel hands in the words shown for an unknown or untitled one.
+The kind is worded the same way, with the unknown wording for an unknown kind.
 
 ## `internal LSituation? LEngineSituationRead(long id)`
 

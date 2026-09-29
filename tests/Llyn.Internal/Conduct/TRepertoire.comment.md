@@ -18,7 +18,7 @@ A rows read that no longer lists the shown Situation clears both lists.
 A confirmed delete removes the chosen Situation, and the occurrence side deletes nothing.
 An export writes only the entry on display, and a print with nothing chosen prints nothing.
 
-## `private static void TRepertoireTitleDefer(CRepertoire repertoire)`
+## `internal static void TRepertoireTitleDefer(CRepertoire repertoire)`
 
 Writes a title into the held scenario, so the desk holds an unsaved change.
 The draft's own Situation id comes from the scenario read.
@@ -26,7 +26,7 @@ The draft's own Situation id comes from the scenario read.
 ## `internal static CRepertoire TRepertoirePrepare(CAtelier atelier, CEnvoy envoy)`
 
 Builds the repertoire over the atelier with its own editor, and restores both vistas as the forge does.
-Its seam answers that the tab is in front.
+Its seam answers that the tab is in front, and its marshal runs each notice at once.
 
 ## `internal static LSituation TRepertoireSituationSave(LEngine engine, string title)`
 

@@ -49,6 +49,7 @@ Only the repertoire's print gate calls it, which chooses the side that prints.
 
 The one map for a found situation, shared by the Proffer dropdown and the atlas.
 The title is the name the engine gave the row, so the atlas keeps its unknown and untitled words.
+The kind and the count arrive worded, so no driver words either.
 
 ## `internal static CSituationDraft? LAtlasDraftRead(LDraft? draft)`
 

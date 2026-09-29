@@ -108,8 +108,8 @@ public sealed class CAtlas
         return new CCatalogSituation(
             row.LCatalogSituationStored.LSituationId,
             row.LCatalogSituationName,
-            row.LCatalogSituationUsage,
-            CFolio.CFolioStateRead(row.LCatalogSituationStored.LSituationKind),
+            row.LCatalogSituationCount,
+            row.LCatalogSituationKind,
             row.LCatalogSituationChosen);
     }
 

@@ -39,6 +39,9 @@ internal static class TInterfaceNavigation
     internal static void TRepertoireSituationOpen(this CRepertoire repertoire, long id) =>
         repertoire.LRepertoireSituationOpen(id);
 
+    internal static CSituationDraft? TRepertoireScenarioRead(this CRepertoire repertoire) =>
+        repertoire.LRepertoireScenarioRead();
+
     internal static void TShelfReferenceOpen(this CShelf shelf, long id) => shelf.LShelfReferenceOpen(id);
 
     internal static void TXieshengStemOpen(this CXiesheng xiesheng, string language, string? key) =>

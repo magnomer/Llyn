@@ -8,13 +8,13 @@ internal sealed class QAtlasItem : INotifyPropertyChanged
 {
     private bool _qAtlasItemChosen;
 
-    internal QAtlasItem(CCatalogSituation row, string unknown, bool chosen)
+    internal QAtlasItem(CCatalogSituation row, bool chosen)
     {
         _qAtlasItemChosen = chosen;
         QAtlasItemId = row.CCatalogSituationId;
         QAtlasItemTitle = row.CCatalogSituationTitle;
-        QAtlasItemKind = QAtlasTextRead(row.CCatalogSituationKind, unknown) ?? string.Empty;
-        QAtlasItemCount = row.CCatalogSituationUsage.ToString(System.Globalization.CultureInfo.CurrentCulture);
+        QAtlasItemKind = row.CCatalogSituationKind;
+        QAtlasItemCount = row.CCatalogSituationCount;
     }
 
     public long QAtlasItemId { get; }
@@ -24,11 +24,6 @@ internal sealed class QAtlasItem : INotifyPropertyChanged
     public string QAtlasItemKind { get; }
 
     public string QAtlasItemCount { get; }
-
-    private static string? QAtlasTextRead(CStateValue value, string unknown)
-    {
-        return value.CStateValueUncertain ? unknown : value.CStateValueShown;
-    }
 
     internal static bool QAtlasItemMatch(QAtlasItem held, QAtlasItem fresh)
     {

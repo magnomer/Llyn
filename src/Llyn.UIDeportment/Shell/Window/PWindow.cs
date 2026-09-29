@@ -183,7 +183,7 @@ public partial class PWindow
         PYunjing.PYunjingAttach(this);
         _qTaxonomy.QTaxonomyAttach(this);
         _qTenor.QTenorAttach(this);
-        _qRepertoire.QRepertoireAttach(this);
+        _qRepertoire.QRepertoireIntroduce(this);
         _qCorpus.QCorpusIntroduce(this);
         _qReference.QReferenceAttach(this);
         _qGuild.QGuildIntroduce(this);
@@ -207,7 +207,6 @@ public partial class PWindow
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qGuild.QTallyRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _qXiesheng.QXieshengVistaRestore;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += PYunjing.PYunjingVistaRestore;
-        PWindowAtelier.CAtelierWorkspace.CWorkspaceStateOpened += _qDuplex.QDuplexRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutResetRefine;
         PWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += _pLayout.PLayoutRefine;
 
@@ -330,12 +329,11 @@ public partial class PWindow
         PYunjing.PYunjingClose();
         _qTaxonomy.QTaxonomyClose();
         _qTenor.QTenorClose();
-        _qRepertoire.QRepertoireClose();
+        _qRepertoire.QRepertoireExitRefine();
         _qCorpus.QCorpusExitRefine();
         _qReference.QReferenceClose();
         _qGuild.QGuildClose();
         _qFavorite.QFavoriteExitRefine();
-        _qDuplex.QDuplexCloseRefine();
         _qEstablishment.QEstablishmentClose();
         PWindowPosture.Dispose();
     }

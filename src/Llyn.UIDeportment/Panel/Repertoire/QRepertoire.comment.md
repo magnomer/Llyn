@@ -23,7 +23,7 @@ It ties both droppers to their popups, sets every icon, and subscribes every cli
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
 
-## `internal void QRepertoireAttach(PWindow host)`
+## `internal void QRepertoireIntroduce(PWindow host)`
 
 Takes the repertoire Conduct and its editor from the forge, and wires the desk's notices.
 The lectern follows the occurrence panel, whose loads and clears reach the display's area, never the veneer.
@@ -44,43 +44,40 @@ The panel is current whether or not its tab is in front.
 
 Whether the panel is on screen, so the engine knows when a notice needs painting.
 
-## `private void QRepertoireModeUpdate()`
+## `private void QRepertoireModeRefine()`
 
 Paints the mode the engine decides: which page shows, which toggle is checked, which button is live.
 The scenario is live only while its desk runs.
 It folds the trail pair and the chronicle pair by the same mode as the toggle.
 It ends by refreshing the rail's undo and redo.
 
-## `internal void QRepertoireReset()`
+## `internal void QRepertoireExitRefine()`
 
-Drops both selections through the Conduct and reads the catalog again, for when the workspace underneath changed.
+The Veneer half of the window's exit, since the editor's stop and the playback cancel run in Conduct.
+Releases the editor's recording player and closes the popups the panel owns, so neither outlives the window.
 
-## `internal void QRepertoireClose()`
-
-Closes the popups the panel owns, so neither outlives the window.
-
-## `private void QRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QRepertoirePressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the print button is live: an entry is read, or a situation is read.
 It answers no before attach, because the command binding exists from the constructor on.
 An editor on screen prints nothing, because what is printed is what is read.
 The button follows this answer on its own, so no panel state has to switch it.
 
-## `private async void QRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QRepertoirePressObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Prints the entry being read, or else the situation being read, as the engine portrays it.
 The gate asks for the ticket through the envoy and words the page through the engine.
 The Conduct picks the page from the side it shows, and the engine builds it from stored rows.
 Nothing is read back from the screen.
 
-## `private void QRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QRepertoirePortraitRefine(object sender, CanExecuteRoutedEventArgs e)`
 
 Whether the export button is live: exactly when an entry is read in the display.
 It answers no before attach, as the print check does.
 Print may also act on the other page this panel reads, but export acts on entries alone.
 The button follows this answer on its own, so no panel state has to switch it.
 
-## `private async void QRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private async void QRepertoirePortraitObserve(object sender, ExecutedRoutedEventArgs e)`
 
 Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.

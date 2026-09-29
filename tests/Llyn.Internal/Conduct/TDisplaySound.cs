@@ -326,8 +326,7 @@ public sealed class TDisplaySound
 
     private static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)
     {
-        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, asked));
-        wing.CWingVistaRestore("left");
+        CWing wing = CWing.CWingCreate(atelier, TInterfaceConduct.TEnvoyCreate(false, asked), true);
         return wing;
     }
 

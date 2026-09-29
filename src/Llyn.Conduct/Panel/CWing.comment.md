@@ -6,17 +6,25 @@ One side of the duplex panel: the entry vista it holds and the reading display u
 It finds the rows, takes the query, order and language sieve, and loads the chosen entry.
 It moves the choice through the listed rows for the keys that walk the list.
 The chosen entry is saved to the workspace state under the side, so the next run reopens it.
+It restores itself: its vista on every workspace change and its entry on every open.
 The driver owns the match list, the focus and the lectern that paints the display.
 
-## `internal CWing(CAtelier atelier, CEnvoy envoy)`
+## `private readonly bool _cWingLeft;`
 
-Takes the atelier the side reads through and the envoy that reports a failed load.
+Whether this is the left side, which names its vista's tab and its slot in the workspace state.
+
+## `private CWing(CAtelier atelier, CEnvoy envoy, bool left)`
+
+Takes the atelier the side reads through, the envoy that reports a failed load, and which place it is.
 The reading display is built here, since a side has no editor to own it.
 It opens what it is asked to through the atelier's navigation.
+It starts its first vista at once, so the driver's first paint finds one.
+It registers its vista restore and its close with the workspace, as every area does.
+It hears the workspace state itself, so no driver hands an entry id down.
 
-## `public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy)`
+## `public static CWing CWingCreate(CAtelier atelier, CEnvoy envoy, bool left)`
 
-Builds one side over the atelier.
+Builds one side over the atelier, the left place when `left` is true.
 Building it is no user action, so it is no gate on the atelier.
 
 ## `public event Action<CBulletin>? CWingChanged;`
@@ -59,12 +67,13 @@ The ordering the side lists in, headword order before a vista arrives.
 
 The languages the side hides, none before a vista arrives.
 
-## `public void CWingVistaRestore(string tab)`
+## `private void LWingVistaRestore()`
 
 Starts a fresh vista under the side's tab, with entries in headword order and nothing chosen.
 It forgets the rows last read, so the keys move nothing until the new rows are read.
 The display reads the same vista, and the side hears its announcements through `CWingChanged`.
-A workspace switch calls it again, so the side follows the new workspace.
+The workspace runs it on every change, so the side follows the new workspace.
+The fresh vista starts with nothing typed and nothing chosen, so neither needs setting.
 
 ## `public void CWingOrderSet(CCatalogOrder? order)`
 
@@ -84,19 +93,27 @@ So Down and Up both land on the first row when nothing is chosen.
 It raises `CWingRowsChanged` and answers the chosen entry, which the driver scrolls into view.
 An empty list answers null and raises nothing, so the key stays with the field.
 
-## `public void CWingEntryRestore(long? id)`
+## `private void LWingEntryRestore(CWorkspaceState state)`
 
-Loads the entry the side last showed, and a null id loads nothing.
+Answers every workspace open with the entry `state` names for this side.
+The shown entry closes first, so a failed load never leaves another workspace's entry standing.
+An empty slot loads nothing.
 The restore saves nothing, since the workspace state already names that entry.
 
-## `public void CWingEntryOpen(long id)`
+## `public bool CWingEntryOpen(long? id)`
 
 Loads the entry picked from the list and saves the side's standing.
+A click hands its row's id and Enter the chosen one, so no control decides the request.
+No row picks nothing and answers false, so the key stays with the field and the list stays open.
 
 ## `public IReadOnlyList<CVistaRow> CWingRowsRead()`
 
 The rows the engine returns for the vista, crossing as shapes so the side names no engine row.
 The side holds them, so the keys and the empty notice follow what the driver shows.
+
+## `private void LWingClose()`
+
+Stops the display's playback when the atelier closes, registered with the workspace's closures.
 
 ## `private void LWingEntryLoad(long id)`
 

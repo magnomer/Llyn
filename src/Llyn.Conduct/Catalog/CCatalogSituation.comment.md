@@ -8,6 +8,6 @@ One situation a search found, as the Proffer dropdown or the atlas lists it.
 
 - `CCatalogSituationId`: the stored situation.
 - `CCatalogSituationTitle`: the situation's title as shown.
-- `CCatalogSituationUsage`: how many cards use the situation.
-- `CCatalogSituationKind`: the kind of situation.
+- `CCatalogSituationCount`: how many cards use the situation, worded ready, blank when none.
+- `CCatalogSituationKind`: the kind as shown, the unknown wording for an unknown kind.
 - `CCatalogSituationChosen`: whether the vista has this situation chosen.

@@ -34,8 +34,8 @@ Its draft port answers the sweep and the observer attach, so the ledger can atta
 ## `internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)`
 
 Builds an atelier whose draft, entry and phonology ports answer from `answers`, for the text gates.
-The settings and portrait ports are outlets on `engine`, and the player is a stub.
-It adds the leftover sweep, so disposing the atelier needs no answer from the test.
+The settings and portrait ports are outlets on `engine`, and the media port answers from `answers` too.
+It adds the leftover sweep and the recording stop, so disposing the atelier needs no answer from the test.
 
 ## `internal static CEnvoy TEnvoyCreate(bool? answer, List<string> asked)`
 
@@ -250,3 +250,7 @@ Relays the corpus's answer to the chosen entry's notice, which its quotation obs
 ## `internal static bool TCorpusLeaveConfirm(this CCorpus corpus) => corpus.LCorpusLeaveConfirm(true);`
 
 Relays the corpus's leave question, which the navigation's tab and the excerpt's word click ask.
+
+## `internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard)`
+
+Subscribes `heard` to the workspace's internal state event, so a test hears what the wings restore from.

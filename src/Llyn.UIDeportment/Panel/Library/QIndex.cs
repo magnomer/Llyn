@@ -57,7 +57,7 @@ internal sealed class QIndex
         return _qIndexList.FirstOrDefault(row => row.QIndexItemChosen)?.QIndexItemId;
     }
 
-    internal void QIndexScrollRefine(long id)
+    internal void QIndexScrollRefine(long? id)
     {
         if (_qIndexList.FirstOrDefault(row => row.QIndexItemId == id) is not QIndexItem target)
         {

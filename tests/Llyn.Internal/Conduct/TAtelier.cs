@@ -206,11 +206,11 @@ public sealed class TAtelier
         List<string> heard = [];
         CWorkspaceState? state = null;
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => heard.Add("Opened");
-        atelier.CAtelierWorkspace.CWorkspaceStateOpened += opened =>
+        atelier.CAtelierWorkspace.TWorkspaceStateAdd(opened =>
         {
             heard.Add("State");
             state = opened;
-        };
+        });
 
         atelier.CAtelierWorkspace.CWorkspaceChange(second.TWorkspaceFolder, TEngineFake.TEngineStubCreate<CEnvoy>());
 
@@ -357,8 +357,8 @@ public sealed class TAtelier
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> heard = [];
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => heard.Add("Opened");
-        atelier.CAtelierWorkspace.CWorkspaceStateOpened +=
-            state => heard.Add(state == new CWorkspaceState(null, null) ? "Blank" : "Kept");
+        atelier.CAtelierWorkspace.TWorkspaceStateAdd(
+            state => heard.Add(state == new CWorkspaceState(null, null) ? "Blank" : "Kept"));
 
         atelier.CAtelierOpen();
 

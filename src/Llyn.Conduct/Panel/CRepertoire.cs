@@ -14,11 +14,12 @@ public sealed class CRepertoire
 
     private readonly LSettingsPort _cRepertoireSettingsPort;
 
-    private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(shownSeam);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(marshal);
 
         _cRepertoireAtelier = atelier;
         _cRepertoireEnvoy = envoy;
@@ -52,7 +53,7 @@ public sealed class CRepertoire
             editor.LEditorFinish,
             static () => true,
             LRepertoireStoredShow);
-        CRepertoireSession.CSessionHeld += () => CRepertoireScenarioChanged?.Invoke(CRepertoireScenarioRead());
+        CRepertoireSession.CSessionHeld += () => CRepertoireScenarioChanged?.Invoke(LRepertoireScenarioRead());
         CRepertoireSession.CSessionChanged += () => CRepertoireChanged?.Invoke();
         CRepertoireSession.CSessionFailed +=
             (key, exception) => CLedger.LLedgerFailureShow(envoy, _cRepertoireSettingsPort, key, exception);
@@ -71,16 +72,21 @@ public sealed class CRepertoire
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(CRepertoireVistaRestore);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(LRepertoireClose);
+        CRepertoireDesk.CDeskObserverAttach(marshal, LRepertoireDraftResonate);
     }
 
-    public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)
+    public static CRepertoire CRepertoireCreate(
+        CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)
     {
-        return new CRepertoire(atelier, shownSeam, envoy);
+        return new CRepertoire(atelier, shownSeam, envoy, marshal);
     }
 
     public event Action? CRepertoireChanged;
 
     public event Action<CSituationDraft?>? CRepertoireScenarioChanged;
+
+    public event Action<CSituationDraft>? CRepertoireDraftChanged;
 
     public event Action<CSituationDraft>? CRepertoireSituationChanged;
 
@@ -135,7 +141,7 @@ public sealed class CRepertoire
     private bool LRepertoireRowHeld =>
         CRepertoireAtlas.CAtlasPanel.CPanelBinEnabled || CRepertoireOccurrence.COccurrencePanel.CPanelBinEnabled;
 
-    public CSituationDraft? CRepertoireScenarioRead()
+    internal CSituationDraft? LRepertoireScenarioRead()
     {
         try
         {
@@ -146,6 +152,20 @@ public sealed class CRepertoire
             CLedger.LLedgerFailureShow(_cRepertoireEnvoy, _cRepertoireSettingsPort, "Situation.HoldFailed", exception);
             return null;
         }
+    }
+
+    private void LRepertoireDraftResonate()
+    {
+        if (LRepertoireScenarioRead() is CSituationDraft situation)
+        {
+            CRepertoireDraftChanged?.Invoke(situation);
+        }
+    }
+
+    private void LRepertoireClose()
+    {
+        CRepertoireEditor.CEditorClose();
+        CRepertoireEditor.CEditorDisplay.CDisplaySound.CDisplayPlaybackCancel();
     }
 
     private void LRepertoireVignetteShow(CSituationDraft? situation)

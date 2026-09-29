@@ -116,13 +116,14 @@ internal static class TInterfaceConduct
     internal static CAtelier TAtelierCreate(LEngine engine, Dictionary<string, Func<object?[]?, object?>> answers)
     {
         answers["LEngineLeftoverSweep"] = _ => null;
+        answers["LEngineRecordingStop"] = _ => null;
         return new CAtelier(
             new LPosture(engine),
             TEngineFake.TEngineCreate<LDraftPort>(answers),
             TEngineFake.TEngineCreate<LEntryPort>(answers),
             new LSettingsOutlet(engine),
             TEngineFake.TEngineCreate<LPhonologyPort>(answers),
-            TEngineFake.TEngineStubCreate<LMediaPort>(),
+            TEngineFake.TEngineCreate<LMediaPort>(answers),
             new LPortraitOutlet(engine));
     }
 
@@ -452,13 +453,16 @@ internal static class TInterfaceConduct
     internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>
         workspace.LWorkspaceDraftAdd(pending, closure);
 
+    internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard) =>
+        workspace.LWorkspaceStateOpened += heard;
+
     internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)
     {
         CWorkspaceState? opened = null;
         Action<CWorkspaceState> heard = state => opened = state;
-        atelier.CAtelierWorkspace.CWorkspaceStateOpened += heard;
+        atelier.CAtelierWorkspace.LWorkspaceStateOpened += heard;
         atelier.CAtelierOpen();
-        atelier.CAtelierWorkspace.CWorkspaceStateOpened -= heard;
+        atelier.CAtelierWorkspace.LWorkspaceStateOpened -= heard;
         return opened;
     }
 

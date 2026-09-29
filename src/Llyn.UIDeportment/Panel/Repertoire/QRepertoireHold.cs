@@ -1,4 +1,3 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -9,26 +8,17 @@ internal sealed partial class QRepertoire
 {
     private CDesk QScenarioDesk => _cRepertoire.CRepertoireDesk;
 
-    private void QScenarioDeskAttach()
+    private void QScenarioDeskIntroduce()
     {
-        QScenarioDesk.CDeskObserverAttach(
-            LObserver.LObserverCreate<Action>(static run => run()), QScenarioDraftRestore);
         QScenarioDesk.CDeskFailed += _qRepertoireHost.PWindowFailureRefine;
         QScenarioDesk.CDeskRefused += _qRepertoireHost.PWindowEnvoy.CEnvoyFailureShow;
+        _cRepertoire.CRepertoireDraftChanged += QScenarioShow;
     }
 
     private void QScenarioChangeDefer()
     {
         QScenarioDesk.CDeskQuill?.LQuillSituationSet(
             QScenarioTitle.Text, QScenarioDescription.Text, QScenarioKind.Text);
-    }
-
-    private void QScenarioDraftRestore()
-    {
-        if (_cRepertoire.CRepertoireScenarioRead() is CSituationDraft situation)
-        {
-            QScenarioShow(situation);
-        }
     }
 
     public void QChronicleUndoObserve()

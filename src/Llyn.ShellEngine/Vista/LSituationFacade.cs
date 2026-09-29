@@ -51,6 +51,8 @@ internal sealed class LSituationFacade
             rows.Add(row with
             {
                 LCatalogSituationName = names[index],
+                LCatalogSituationKind = LVistaFacade.LEngineNameRead(
+                    row.LCatalogSituationStored.LSituationKind, unknown, string.Empty),
                 LCatalogSituationChosen = row.LCatalogSituationStored.LSituationId == vista.LVistaChosen,
             });
         }

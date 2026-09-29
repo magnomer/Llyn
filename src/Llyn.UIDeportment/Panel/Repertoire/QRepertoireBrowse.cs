@@ -16,7 +16,7 @@ internal sealed partial class QRepertoire
     private async void QRepertoireWorkspaceUpdate()
     {
         await LEnsignImage.LEnsignLoad(_qRepertoireHost.PWindowAtelier);
-        QRepertoireReset();
+        _cRepertoire.CRepertoireSituationClose();
     }
 
     private void QInquestHandle(object sender, TextChangedEventArgs e)
@@ -124,12 +124,10 @@ internal sealed partial class QRepertoire
             return;
         }
 
-        string unknown = QLocalizationCatalog.QLocalizationTextRead("Display.Unknown");
-
         List<QAtlasItem> fresh = [];
         foreach (CCatalogSituation row in read)
         {
-            fresh.Add(new QAtlasItem(row, unknown, row.CCatalogSituationChosen));
+            fresh.Add(new QAtlasItem(row, row.CCatalogSituationChosen));
         }
 
         LSplice.LSpliceApply(_qAtlasList, fresh, QAtlasItem.QAtlasItemMatch, QAtlasItem.QAtlasItemSync);

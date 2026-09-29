@@ -2,8 +2,8 @@
 
 ## `internal sealed class QDuplex`
 
-Drives the duplex panel: two wings and when they start and stop.
-Searching, picking and reading live in the wing, so this file only forwards to both.
+Drives the duplex panel: it builds its two wings and puts them to work.
+Searching, picking, reading and restoring live in the wing, so this file only introduces both.
 The panel itself is the veneer's `PDuplex` page, which the window places.
 
 ## `internal QDuplex(UserControl surface)`
@@ -13,15 +13,5 @@ The page places the veneer's `PWing` twice, and each place gets its own wing dri
 
 ## `internal void QDuplexIntroduce(PWindow host)`
 
-Puts both wings to work on the window `host`.
+Puts both wings to work on the window `host`, telling each whether it is the left place.
 Each wing subscribes for itself, so the panel subscribes to nothing.
-
-## `internal void QDuplexRefine(CWorkspaceState state)`
-
-Puts both wings back on the workspace open now, each standing on the Entry `state` names for it.
-Each wing gets a vista started now under `left` or `right`, so a switched workspace's layout is read.
-Both vistas are blank, so a wing with nothing typed offers no rows.
-
-## `internal void QDuplexCloseRefine()`
-
-Releases what both wings hold open.

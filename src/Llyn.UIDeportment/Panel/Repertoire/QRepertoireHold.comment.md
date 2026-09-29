@@ -14,21 +14,15 @@ The tenure raises a bulletin when its state moves, and the Conduct settles the b
 
 The desk holding the Situation being edited, read off the Conduct each time.
 
-## `private void QScenarioDeskAttach()`
+## `private void QScenarioDeskIntroduce()`
 
-Wires the desk's notices once, and a failure and a refused hold both go straight to the window.
-The desk decides which bulletins refresh it, and the driver hands only its marshaller and its draft reread.
+Wires the desk's failure and refusal to the window, and the Conduct's draft notice to `QScenarioShow`.
+The Conduct attaches the desk's observers itself at build, through the marshal the forge hands it.
 
 ## `private void QScenarioChangeDefer()`
 
 Hands the three texts to the text gate, for every edit the three fields report.
 The engine decides what changed, and an unchanged body raises no bulletin, so nothing is redrawn under the caret.
-
-## `private void QScenarioDraftRestore()`
-
-Reads the held Situation back and redraws the controls from it.
-This is what the panel's own draft bulletin does.
-What is waiting is written first, so a bulletin from the tenure's timer never redraws over a newer keystroke.
 
 ## `public void QChronicleUndoObserve()`
 

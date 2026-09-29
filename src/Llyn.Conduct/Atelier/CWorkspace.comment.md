@@ -37,10 +37,11 @@ Keeps the atelier, whose ports, ledger and bulletins the life cycle reaches.
 Raised on every open once the workspace is swept, for every view to restore itself.
 A driver subscribes each view in its introduce, so one gate call fans out without a second request.
 
-## `public event Action<CWorkspaceState>? CWorkspaceStateOpened;`
+## `internal event Action<CWorkspaceState>? LWorkspaceStateOpened;`
 
 Raised after `CWorkspaceOpened` with the entries the duplex wings last stood on.
 The views restore first, so a wing lists before it opens its entry.
+Each `CWing` subscribes itself, so no driver hands the state on.
 
 ## `public event Action<CEstablishment>? CWorkspaceEstablishmentChanged;`
 

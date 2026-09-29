@@ -68,7 +68,8 @@ public sealed class QForge
 
     public CRepertoire QForgeRepertoireCreate(Func<bool> shownSeam, CEnvoy envoy)
     {
-        CRepertoire repertoire = CRepertoire.CRepertoireCreate(_qForgeAtelier, shownSeam, envoy);
+        CRepertoire repertoire = CRepertoire.CRepertoireCreate(
+            _qForgeAtelier, shownSeam, envoy, LObserver.LObserverCreate<Action>(static run => run()));
         repertoire.CRepertoireVistaRestore();
         return repertoire;
     }

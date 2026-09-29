@@ -8,7 +8,7 @@ Every gate holds only the interaction and reaches the engine through a panel, th
 It asks the user and reports failures through the envoy, never through a seam a driver hands up.
 It restores both vistas itself and chooses which side prints, exports or deletes.
 
-## `private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `private CRepertoire(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the desk under the `Situation` scope, the atlas over it and the occurrence list over the editor's desk.
 The desk starts by subject rather than by a vista, with the `Repertoire` origin.
@@ -16,8 +16,9 @@ The session defers to the entry editor while the occurrence list edits.
 A stored Situation is shown again outside the scribe through `LRepertoireStoredShow`.
 The occurrence panel opens the editor on the entry it edits, and a clear cancels the editor's desk.
 The atlas's row notices reach the occurrence panel, whose rows follow the chosen Situation.
+It registers `LRepertoireClose` with the workspace and attaches the scenario desk's observers through the marshal.
 
-## `public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy)`
+## `public static CRepertoire CRepertoireCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
 Builds the repertoire over the atelier and the panel's own editor.
 Building it is no user action, so it is no gate on the atelier.
@@ -30,6 +31,11 @@ Raised when the desk or the entry editor changes state, so a driver repaints the
 ## `public event Action<CSituationDraft?>? CRepertoireScenarioChanged`
 
 Raised with the Situation the desk holds after a start, or null after a cancel or a refused start.
+
+## `public event Action<CSituationDraft>? CRepertoireDraftChanged`
+
+Raised with the held Situation after an edit to its draft, through the marshal the repertoire was built with.
+`CRepertoireScenarioChanged` fills the scenario anew, while this one only refreshes what the edit changed.
 
 ## `public event Action<CSituationDraft>? CRepertoireSituationChanged`
 
@@ -79,11 +85,22 @@ True while the vignette shows a chosen Situation, the only case a missing row cl
 
 True while either list has a chosen row, so a fresh start opens an occurrence.
 
-## `public CSituationDraft? CRepertoireScenarioRead()`
+## `internal CSituationDraft? LRepertoireScenarioRead()`
 
 Reads the Situation the desk holds, which persists the tenure first and so can throw.
 A throw reports `Situation.HoldFailed` through the envoy and reads as null.
-A driver reads it on each draft bulletin, so the desk never hands it a draft.
+`CRepertoireDraftChanged` hands it on each draft bulletin, so the desk never hands a driver a draft.
+
+## `private void LRepertoireDraftResonate()`
+
+Answers the desk's draft notice with the held Situation read afresh.
+A notice with no Situation to show raises nothing, so the driver never redraws from nothing.
+
+## `private void LRepertoireClose()`
+
+The repertoire's part of the window's exit gate `CAtelier.CAtelierClose`, registered with the workspace at build.
+It closes the entry editor and cancels its display's playback.
+It leaves the scenario desk alone, as the panel's close always did.
 
 ## `private void LRepertoireVignetteShow(CSituationDraft? situation)`
 

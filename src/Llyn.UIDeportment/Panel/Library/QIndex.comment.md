@@ -39,9 +39,10 @@ Empties the list without touching the empty notice.
 The entry of the row the engine marked chosen, or null when no listed row is.
 A choice made under an earlier query may name an entry the rows no longer hold, and reads null.
 
-## `internal void QIndexScrollRefine(long id)`
+## `internal void QIndexScrollRefine(long? id)`
 
 Brings the row of `id` into view, when its container is built.
+A null `id` scrolls nothing, since the gate answered no row.
 
 ## `internal bool QIndexHoldCheck(Visual target)`
 
